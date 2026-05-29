@@ -7,7 +7,6 @@ import { Card, Column, H4, IconButton, Row, Textarea } from '@trezor/components'
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
-const inputAsciiName = 'ethereumDataAscii';
 const inputHexName = 'transactionData';
 const inputAmountName = 'outputs.0.amount';
 
@@ -19,7 +18,6 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
     const {
         register,
         formState: { errors },
-        setValue,
         setAmount,
         composeTransaction,
         resetDefaultValue,
@@ -28,13 +26,11 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
     } = useSendFormContext();
     const { translationString } = useTranslation();
 
-    const [asciiValue, hexValue, amount] = watch([inputAsciiName, inputHexName, inputAmountName]);
+    const [hexValue, amount] = watch([inputHexName, inputAmountName]);
 
-    const asciiError = errors.ethereumDataAscii;
     const hexError = errors.transactionData;
 
     const handleClose = () => {
-        resetDefaultValue(inputAsciiName);
         resetDefaultValue(inputHexName);
         if (amount === '0') {
             setAmount(0, '');
@@ -42,28 +38,17 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
         close();
     };
 
-    const getChangeHandler =
-        (isHex: boolean) => (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-            setValue(
-                isHex ? inputAsciiName : inputHexName,
-                Buffer.from(event.target.value, isHex ? 'hex' : 'ascii').toString(
-                    isHex ? 'ascii' : 'hex',
-                ),
-                { shouldValidate: true },
-            );
-            if (!event.target.value && amount === '0') {
-                setAmount(0, '');
-            } else if (event.target.value && amount === '') {
-                setAmount(0, '0');
-            }
-            composeTransaction(isHex ? inputHexName : inputAsciiName);
-        };
+    const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (!event.target.value && amount === '0') {
+            setAmount(0, '');
+        } else if (event.target.value && amount === '') {
+            setAmount(0, '0');
+        }
+        composeTransaction(inputHexName);
+    };
 
-    const { ref: asciiRef, ...asciiField } = register(inputAsciiName, {
-        onChange: getChangeHandler(false),
-    });
     const { ref: hexRef, ...hexField } = register(inputHexName, {
-        onChange: getChangeHandler(true),
+        onChange: handleChange,
         validate: value => {
             if (value && !isHexValid(value, '0x')) {
                 return translationString('DATA_NOT_VALID_HEX');
@@ -99,35 +84,19 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                         tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />
                 </Row>
-                <Row gap={16}>
-                    <Textarea
-                        hasError={!!asciiError}
-                        data-testid={inputAsciiName}
-                        defaultValue={asciiValue}
-                        maxLength={formInputsMaxLength.ethData}
-                        bottomText={asciiError?.message || null}
-                        innerRef={asciiRef}
-                        {...asciiField}
-                        characterCount={{
-                            current: asciiValue?.length,
-                            max: formInputsMaxLength.ethData,
-                        }}
-                    />
-                    <>=</>
-                    <Textarea
-                        hasError={!!hexError}
-                        data-testid={inputHexName}
-                        defaultValue={hexValue}
-                        maxLength={formInputsMaxLength.ethData}
-                        bottomText={hexError?.message || null}
-                        innerRef={hexRef}
-                        {...hexField}
-                        characterCount={{
-                            current: hexValue?.length,
-                            max: formInputsMaxLength.ethData * 2,
-                        }}
-                    />
-                </Row>
+                <Textarea
+                    hasError={!!hexError}
+                    data-testid={inputHexName}
+                    defaultValue={hexValue}
+                    maxLength={formInputsMaxLength.ethData * 2}
+                    bottomText={hexError?.message || null}
+                    innerRef={hexRef}
+                    {...hexField}
+                    characterCount={{
+                        current: hexValue?.length,
+                        max: formInputsMaxLength.ethData * 2,
+                    }}
+                />
             </Column>
         </Card>
     );

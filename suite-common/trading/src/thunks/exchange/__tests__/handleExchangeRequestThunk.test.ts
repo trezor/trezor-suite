@@ -70,7 +70,6 @@ describe('handleExchangeRequestThunk', () => {
             bitcoinLocktimeBlockHeight: '',
             bitcoinLocktimeDatetime: '',
             ethereumNonce: '',
-            ethereumDataAscii: '',
             transactionData: '',
             destinationTag: '',
             outputs: [

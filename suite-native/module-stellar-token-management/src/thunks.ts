@@ -91,7 +91,6 @@ const createTrustlineFormState = (address: string, feePerUnit: string): FormStat
     bitcoinLocktimeBlockHeight: '',
     bitcoinLocktimeDatetime: '',
     ethereumNonce: '',
-    ethereumDataAscii: '',
     ethereumAdjustGasLimit: '',
     transactionData: '',
     rbfParams: undefined,
