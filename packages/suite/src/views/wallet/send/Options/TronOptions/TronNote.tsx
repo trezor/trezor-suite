@@ -7,8 +7,7 @@ import { Card, Column, H4, Icon, IconButton, Row, Text, Textarea } from '@trezor
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
-const inputAsciiName = 'tronDataAscii';
-const inputHexName = 'transactionData';
+const inputName = 'destinationTag';
 
 type TronNoteProps = {
     close: () => void;
@@ -19,7 +18,6 @@ export const TronNote = ({ close }: TronNoteProps) => {
         account: { symbol },
         register,
         watch,
-        setValue,
         composeTransaction,
         resetDefaultValue,
     } = useSendFormContext();
@@ -28,26 +26,21 @@ export const TronNote = ({ close }: TronNoteProps) => {
 
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
-    const asciiValue = watch(inputAsciiName);
-    const hexValue = watch(inputHexName);
-
-    const isHexTooLong = !hexValue ? false : hexValue.length > formInputsMaxLength.tronNote;
-    const error = isHexTooLong ? translationString('TR_TRON_NOTE_TOO_LONG') : undefined;
-
-    useEffect(() => {
-        setValue(inputHexName, Buffer.from(asciiValue || '', 'utf8').toString('hex'));
-    }, [asciiValue, setValue]);
+    const value = watch(inputName);
+    const byteSize = Buffer.from(value || '', 'utf8').length;
+    const isTooLong = byteSize > formInputsMaxLength.tronNote;
+    const error = isTooLong ? translationString('TR_TRON_NOTE_TOO_LONG') : undefined;
 
     useEffect(() => {
-        composeTransaction(inputHexName);
-    }, [hexValue, composeTransaction]);
+        composeTransaction(inputName);
+    }, [value, composeTransaction]);
 
     const handleClose = () => {
-        resetDefaultValue(inputAsciiName);
+        resetDefaultValue(inputName);
         close();
     };
 
-    const { ref: inputRef, ...inputField } = register(inputAsciiName);
+    const { ref: inputRef, ...inputField } = register(inputName);
 
     return (
         <Card>
@@ -80,13 +73,13 @@ export const TronNote = ({ close }: TronNoteProps) => {
                 </Row>
 
                 <Textarea
-                    hasError={isHexTooLong}
+                    hasError={isTooLong}
                     bottomText={error}
-                    defaultValue={asciiValue}
+                    defaultValue={value}
                     innerRef={inputRef}
                     rows={3}
                     characterCount={{
-                        current: hexValue?.length,
+                        current: byteSize,
                         max: formInputsMaxLength.tronNote,
                     }}
                     {...inputField}

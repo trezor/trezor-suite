@@ -19,9 +19,6 @@ import { Translation, useTranslate } from '@suite-native/intl';
 
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
-const inputAsciiName = 'tronDataAscii';
-const inputHexName = 'transactionData';
-
 type TronNoteInputProps = {
     symbol: NetworkSymbol;
 };
@@ -34,41 +31,33 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
 
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
-    const asciiValue = watch(inputAsciiName) ?? '';
-    const hexValue = Buffer.from(localNote || '', 'utf8').toString('hex');
-
-    const hexByteSize = hexValue.length;
+    const value = watch('destinationTag') ?? '';
+    const hexByteSize = Buffer.from(localNote || '', 'utf8').length;
     const isHexTooLong = hexByteSize > formInputsMaxLength.tronNote;
 
     useEffect(() => {
-        setLocalNote(asciiValue);
-    }, [asciiValue]);
-
-    useEffect(() => {
-        setValue(inputHexName, Buffer.from(asciiValue || '', 'utf8').toString('hex'));
-    }, [asciiValue, setValue]);
+        setLocalNote(value);
+    }, [value]);
 
     const onOpenPress = () => {
-        setLocalNote(asciiValue);
+        setLocalNote(value);
         openModal();
     };
 
     const onSavePress = () => {
-        setValue(inputAsciiName, localNote);
-        setValue(inputHexName, hexValue);
+        setValue('destinationTag', localNote);
         closeModal();
     };
 
     const onRemovePress = () => {
-        setValue(inputAsciiName, '');
-        setValue(inputHexName, '');
+        setValue('destinationTag', '');
         setLocalNote('');
         closeModal();
     };
 
     return (
         <>
-            {asciiValue ? (
+            {value ? (
                 <Card>
                     <VStack spacing="sp12" alignItems="center">
                         <HStack alignItems="center">
@@ -78,7 +67,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                                 </Text>
 
                                 <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                                    {asciiValue}
+                                    {value}
                                 </Text>
                             </VStack>
 
@@ -151,7 +140,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                         <Translation id="moduleSend.tron.note.saveButton" />
                     </Button>
 
-                    {asciiValue && (
+                    {value && (
                         <Button intent="neutral" priority="secondary" onPress={onRemovePress}>
                             <Translation id="moduleSend.tron.note.removeButton" />
                         </Button>
