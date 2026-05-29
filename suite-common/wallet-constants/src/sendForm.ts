@@ -48,7 +48,6 @@ export const DEFAULT_VALUES = {
     bitcoinLocktimeBlockHeight: '',
     bitcoinLocktimeDatetime: '',
     ethereumNonce: '',
-    ethereumDataAscii: '',
     transactionData: '',
     destinationTag: '',
     outputs: [],

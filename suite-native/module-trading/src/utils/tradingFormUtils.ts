@@ -137,7 +137,6 @@ export const createFormStateForSendForm = ({
         bitcoinLocktimeBlockHeight: '',
         bitcoinLocktimeDatetime: '',
         ethereumNonce: '',
-        ethereumDataAscii: '',
         ethereumAdjustGasLimit,
         transactionData,
         destinationTag,

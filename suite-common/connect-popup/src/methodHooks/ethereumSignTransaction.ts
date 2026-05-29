@@ -42,7 +42,6 @@ const _storePrecomposedTransaction = ({
             hasCoinControlBeenOpened: false,
             options: ['ethereumNonce', 'transactionData'],
             selectedFee: 'custom',
-            ethereumDataAscii: '',
             transactionData: typedPayload.transaction.data?.replace(/^0x/, ''),
             ethereumNonce: typedPayload.transaction.nonce,
         },

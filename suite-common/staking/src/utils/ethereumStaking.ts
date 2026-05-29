@@ -372,7 +372,6 @@ export const getStakeFormsDefaultValues = ({
 
     stakeType,
     ethereumNonce: '',
-    ethereumDataAscii: '',
     transactionData: '',
 
     estimatedFeeLimit: undefined,
