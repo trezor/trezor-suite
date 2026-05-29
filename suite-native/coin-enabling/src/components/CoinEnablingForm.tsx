@@ -4,28 +4,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import {
-    selectDeviceEnabledDiscoveryNetworkSymbols,
-    selectDiscoveryNetworkSymbols,
-} from '@suite-native/discovery';
+import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
-import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 import {
     type CoinEnablingFormValues,
     coinEnablingFormValidationSchema,
 } from '../coinEnablingSchema';
+import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 
 export const CoinEnablingForm = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
-    const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 
     const { showAlert } = useAlert();
 
@@ -50,7 +47,7 @@ export const CoinEnablingForm = () => {
     });
 
     const handleSubmit = form.handleSubmit(values => {
-        const changedCoins = networkSymbols.filter(
+        const changedCoins = networkSymbolCollection.filter(
             symbol =>
                 enabledNetworkSymbols.includes(symbol) !== values.enabledCoins.includes(symbol),
         );
@@ -81,10 +78,7 @@ export const CoinEnablingForm = () => {
 
     return (
         <Form form={form}>
-            <DiscoveryCoinsFilter
-                networkSymbols={networkSymbols}
-                onDisablingLastCoin={showLastNetworkAlert}
-            />
+            <DiscoveryCoinsFilter onDisablingLastCoin={showLastNetworkAlert} />
         </Form>
     );
 };
