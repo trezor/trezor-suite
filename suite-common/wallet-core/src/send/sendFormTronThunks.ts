@@ -277,8 +277,8 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                   },
               };
 
-        const tronData = formState.transactionData
-            ? formState.transactionData.replace(/^0x/, '')
+        const tronData = formState.destinationTag
+            ? Buffer.from(formState.destinationTag, 'utf8').toString('hex')
             : undefined;
 
         const bandwidthEstimate = await TrezorConnect.tronComposeTransaction({
@@ -464,8 +464,8 @@ export const signTronSendFormTransactionThunk = createThunk<
                   },
               };
 
-        const tronData = formState.transactionData
-            ? formState.transactionData.replace(/^0x/, '')
+        const tronData = formState.destinationTag
+            ? Buffer.from(formState.destinationTag, 'utf8').toString('hex')
             : undefined;
 
         const composed = await TrezorConnect.tronComposeTransaction({

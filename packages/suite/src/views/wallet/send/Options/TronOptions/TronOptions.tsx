@@ -10,14 +10,14 @@ export const TronOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
 
     const options = getDefaultValue('options', []);
-    const isNoteEnabled = options.includes('transactionData');
+    const isNoteEnabled = options.includes('destinationTag');
 
     const toggle = (option: FormOptions) => {
         toggleOption(option);
         composeTransaction();
     };
 
-    const toggleNote = () => toggle('transactionData');
+    const toggleNote = () => toggle('destinationTag');
 
     return (
         <Column gap={16}>
