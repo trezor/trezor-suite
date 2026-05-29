@@ -31,7 +31,9 @@ const ethAccount = mockWalletAccount({
 
 describe('getReceiveAccountPreselection', () => {
     it('returns null when there are no accounts', () => {
-        expect(getReceiveAccountPreselection({ symbol: 'btc', accounts: [] })).toBeNull();
+        expect(
+            getReceiveAccountPreselection({ receiveAssetNetworkSymbol: 'btc', accounts: [] }),
+        ).toBeNull();
     });
 
     it('returns the send account key when send account has the receive symbol', () => {
@@ -42,7 +44,7 @@ describe('getReceiveAccountPreselection', () => {
 
         expect(
             getReceiveAccountPreselection({
-                symbol: 'eth',
+                receiveAssetNetworkSymbol: 'eth',
                 accounts: [ethAccount],
                 sendAccount,
             }),
@@ -52,14 +54,24 @@ describe('getReceiveAccountPreselection', () => {
     });
 
     it('returns the first unused address for non-account-based networks', () => {
-        expect(getReceiveAccountPreselection({ symbol: 'btc', accounts: [btcAccount] })).toEqual({
+        expect(
+            getReceiveAccountPreselection({
+                receiveAssetNetworkSymbol: 'btc',
+                accounts: [btcAccount],
+            }),
+        ).toEqual({
             accountKey: btcAccount.key,
             address: btcUnusedAddress,
         });
     });
 
     it('returns the first account key for account-based networks', () => {
-        expect(getReceiveAccountPreselection({ symbol: 'eth', accounts: [ethAccount] })).toEqual({
+        expect(
+            getReceiveAccountPreselection({
+                receiveAssetNetworkSymbol: 'eth',
+                accounts: [ethAccount],
+            }),
+        ).toEqual({
             accountKey: ethAccount.key,
         });
     });
