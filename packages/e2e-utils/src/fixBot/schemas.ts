@@ -10,7 +10,7 @@ export const FixTaskSchema = z.object({
     id: z.string(),
     branch: z.string(),
     root_cause: z.string(),
-    fix_scope: z.enum(['TEST_CODE', 'LOCATOR_ADD', 'PRODUCT_BUG', 'INFRA']),
+    fix_scope: z.enum(['TEST_CODE', 'LOCATOR_ADD']),
     confidence: z.enum(['HIGH', 'MEDIUM', 'LOW']),
     fix_description: z.string(),
     diagnosis: z.string(),

@@ -1,11 +1,10 @@
-import { execFileSync, spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { execFileSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
-import { processAgentOutput } from './reportTokenUsage';
+import { processAgentOutput, runClaude } from './common';
 import { ReportSchema } from './schemas';
 
 function main(): void {
@@ -25,16 +24,13 @@ function main(): void {
 
     log('Starting nightly test failure analysis...');
 
-    const env = { ...process.env };
-    delete env['MCP_CONNECTION_NONBLOCKING'];
-
-    // Write stdout to a temp file to avoid spawnSync's in-memory buffer limit (ENOBUFS).
-    const tmpFile = join(tmpdir(), `claude-analyze-${Date.now()}.json`);
-    const stdoutFd = openSync(tmpFile, 'w');
-
-    const result = spawnSync(
-        join(root, 'node_modules/.bin/claude'),
-        [
+    const {
+        output: claudeOutput,
+        status,
+        spawnError,
+    } = runClaude({
+        root,
+        args: [
             '--print',
             '--verbose',
             '--output-format',
@@ -45,27 +41,20 @@ function main(): void {
             join(botDir, 'mcp.json'),
             '--strict-mcp-config',
         ],
-        {
-            input: readFileSync(join(botDir, 'ANALYSIS_AGENT.md'), 'utf-8'),
-            cwd: root,
-            env,
-            stdio: ['pipe', stdoutFd, 'inherit'],
-        },
-    );
-
-    closeSync(stdoutFd);
-    const claudeOutput = readFileSync(tmpFile, 'utf-8');
-    unlinkSync(tmpFile);
-
-    if (result.error) {
-        error(`Failed to run claude: ${result.error.message}`);
-        process.exit(1);
-    }
-    const reportMd = join(reportDir, 'report.md');
-    const reportJson = join(reportDir, 'report.json');
+        input: readFileSync(join(botDir, 'ANALYSIS_AGENT.md'), 'utf-8'),
+        tmpPrefix: 'claude-analyze',
+    });
 
     const { model } = JSON.parse(readFileSync(join(botDir, 'settings.json'), 'utf-8'));
     processAgentOutput(claudeOutput, 'nightlyAnalyzer', model);
+
+    if (spawnError) {
+        error(`Failed to run claude: ${spawnError.message}`);
+        process.exit(1);
+    }
+
+    const reportMd = join(reportDir, 'report.md');
+    const reportJson = join(reportDir, 'report.json');
 
     const missing = [reportMd, reportJson].filter(f => !existsSync(f));
 
@@ -86,7 +75,7 @@ function main(): void {
     log(`Fix tasks saved to ${reportJson}`);
     log('');
 
-    process.exit(result.status ?? 0);
+    process.exit(status);
 }
 
 main();

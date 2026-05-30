@@ -266,10 +266,17 @@ jobs:
             echo "No token usage file found, skipping."
           fi
 
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
       - name: Publish PR
         if: ${{ !cancelled() && steps.run-fix-agent.outcome != 'skipped' }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: yarn workspace @trezor/e2e-utils fix-bot:publish
 
       - name: Docker Compose Down

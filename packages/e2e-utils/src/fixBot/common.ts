@@ -1,5 +1,45 @@
+import { spawnSync } from 'node:child_process';
+import { closeSync, openSync, readFileSync, unlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import { reportTokenUsage } from '../tokenUsage';
 import { type ClaudeResult, ClaudeResultSchema } from './schemas';
+
+export interface ClaudeRunResult {
+    output: string;
+    status: number | null;
+    signal: NodeJS.Signals | null;
+    spawnError: Error | undefined;
+}
+
+export function runClaude(opts: {
+    root: string;
+    args: string[];
+    input: string;
+    tmpPrefix: string;
+}): ClaudeRunResult {
+    const { root, args, input, tmpPrefix } = opts;
+
+    const env = { ...process.env };
+    delete env['MCP_CONNECTION_NONBLOCKING'];
+
+    const tmpFile = join(tmpdir(), `${tmpPrefix}-${Date.now()}.json`);
+    const stdoutFd = openSync(tmpFile, 'w');
+
+    const result = spawnSync(join(root, 'node_modules/.bin/claude'), args, {
+        input,
+        cwd: root,
+        env,
+        stdio: ['pipe', stdoutFd, 'inherit'],
+    });
+
+    closeSync(stdoutFd);
+    const output = readFileSync(tmpFile, 'utf-8');
+    unlinkSync(tmpFile);
+
+    return { output, status: result.status, signal: result.signal, spawnError: result.error };
+}
 
 function parseClaudeOutput(raw: string): ClaudeResult {
     const unsafeParsed: unknown = JSON.parse(raw.trim());
@@ -20,7 +60,7 @@ export function processAgentOutput(
     agent: 'nightlyAnalyzer' | 'nightlyFixer',
     model: string,
 ): void {
-    let result: ClaudeResult = {};
+    let result: ClaudeResult;
     try {
         result = parseClaudeOutput(rawOutput);
     } catch {
