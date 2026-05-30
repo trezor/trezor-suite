@@ -77,7 +77,6 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await assetsSection.activateAssetsModalSaveButton.click();
                 await page.discoveryShouldFinish();
                 await settingsPage.navigateTo('coins');
-                await settingsPage.coinsTab.temporarilySetOfficialCardanoBackend();
                 for (const network of defaultUncheckedTestnet) {
                     await settingsPage.coinsTab.enableNetwork(network);
                 }
