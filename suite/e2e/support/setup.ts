@@ -1,12 +1,88 @@
+import * as http from 'http';
+
 import { BrowserContext, TestInfo } from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { BRIDGE_VERSION } from './bridge';
+import { BRIDGE_VERSION, BRIDGE_URL } from './bridge';
 import { getVideoPath, mockRemoteMessageSystem } from './common';
 import { Suite, launchSuite } from './electron';
 import { ElectronConf } from './types';
+
+// Compatibility relay for older Suite versions (e.g. 22.5, 25.7) that connect to the
+// legacy Go-bridge port 21325. The node-bridge now runs only on 21328 so requests to
+// 21325 are proxied across.  We also inject the Private-Network-Access response header
+// so Chrome's PNA enforcement does not block the cross-origin requests from
+// dev.suite.sldev.cz.
+const LEGACY_BRIDGE_PORT = 21325;
+let compatibilityRelay: http.Server | null = null;
+
+const startCompatibilityBridgeRelay = () =>
+    new Promise<void>(resolve => {
+        if (compatibilityRelay?.listening) {
+            resolve();
+
+            return;
+        }
+
+        const relay = http.createServer((req, res) => {
+            // Handle CORS pre-flight (including Chrome Private Network Access pre-flights).
+            if (req.method === 'OPTIONS') {
+                if (req.headers.origin) {
+                    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+                }
+                res.setHeader('Access-Control-Allow-Private-Network', 'true');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+                res.setHeader(
+                    'Access-Control-Allow-Headers',
+                    req.headers['access-control-request-headers'] ?? '',
+                );
+                res.statusCode = 200;
+                res.end();
+
+                return;
+            }
+
+            const bridgePort = Number(new URL(BRIDGE_URL).port);
+            const proxyReq = http.request(
+                {
+                    hostname: '127.0.0.1',
+                    port: bridgePort,
+                    path: req.url,
+                    method: req.method,
+                    headers: { ...req.headers, host: `127.0.0.1:${bridgePort}` },
+                },
+                proxyRes => {
+                    const responseHeaders: http.OutgoingHttpHeaders = { ...proxyRes.headers };
+                    if (req.headers.origin) {
+                        responseHeaders['access-control-allow-origin'] = req.headers.origin;
+                    }
+                    responseHeaders['access-control-allow-private-network'] = 'true';
+                    res.writeHead(proxyRes.statusCode!, responseHeaders);
+                    proxyRes.pipe(res, { end: true });
+                },
+            );
+
+            req.pipe(proxyReq, { end: true });
+            proxyReq.on('error', () => {
+                res.statusCode = 502;
+                res.end();
+            });
+        });
+
+        relay.listen(LEGACY_BRIDGE_PORT, '127.0.0.1', () => {
+            compatibilityRelay = relay;
+            resolve();
+        });
+
+        relay.on('error', (err: NodeJS.ErrnoException) => {
+            // Port already in use — another process has the relay; that's acceptable.
+            if (err.code === 'EADDRINUSE') {
+                resolve();
+            }
+        });
+    });
 
 export const electronSetup = async (
     testInfo: TestInfo,
@@ -84,6 +160,7 @@ export const electronTeardown = async (
 
 export const webSetup = async (browserContext: BrowserContext) => {
     await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
+    await startCompatibilityBridgeRelay();
 
     // Need to allow this to be able to access bridge on localhost
     // When running tests against suite deployed elsewhere
