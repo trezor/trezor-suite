@@ -48,6 +48,10 @@ file path.
 > which instances need investigation. It does **not** contain per-test error messages or artifact
 > URLs. Those only come from `currents-get-spec-instance` in Step 3, which is always required.
 
+**Excluded directories:** Skip any instance whose spec path starts with
+`suite/e2e/tests/trading-live`. Do not investigate, diagnose, or include these in fix tasks
+or the skipped list — omit them entirely from the report.
+
 ## Step 3 — Get full debugging data per instance
 
 For each failed or pending `instanceId`, use `currents-get-spec-instance` and extract:

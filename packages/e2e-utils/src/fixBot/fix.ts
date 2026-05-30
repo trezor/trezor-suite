@@ -1,10 +1,9 @@
-import { execFileSync, spawnSync } from 'node:child_process';
-import { closeSync, openSync, readFileSync, unlinkSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
-import { processAgentOutput } from './reportTokenUsage';
+import { processAgentOutput, runClaude } from './common';
 import { ReportSchema } from './schemas';
 
 function main(): void {
@@ -44,17 +43,9 @@ function main(): void {
 
     const prompt = `${readFileSync(join(fixAgentDir, 'FIX_AGENT.md'), 'utf-8')}\n\n---\n\n## Fix Task\n\n\`\`\`json\n${JSON.stringify(task, null, 2)}\n\`\`\`\n`;
 
-    // Write stdout to a temp file to avoid spawnSync's in-memory buffer limit (ENOBUFS).
-    const tmpFile = join(tmpdir(), `claude-fix-${task.id}-${Date.now()}.json`);
-    const stdoutFd = openSync(tmpFile, 'w');
-
-    const env = { ...process.env };
-    // Prevents an internal Claude Code setting from accidentally being inherited by the subprocess and breaking it
-    delete env['MCP_CONNECTION_NONBLOCKING'];
-
-    const result = spawnSync(
-        join(root, 'node_modules/.bin/claude'),
-        [
+    const { output, status, spawnError } = runClaude({
+        root,
+        args: [
             '--print',
             '--verbose',
             '--output-format',
@@ -62,23 +53,20 @@ function main(): void {
             '--settings',
             join(fixAgentDir, 'settings.json'),
         ],
-        { input: prompt, cwd: root, env, stdio: ['pipe', stdoutFd, 'inherit'] },
-    );
-
-    closeSync(stdoutFd);
-
-    const output = readFileSync(tmpFile, 'utf-8');
-    unlinkSync(tmpFile);
+        input: prompt,
+        tmpPrefix: `claude-fix-${task.id}`,
+    });
 
     const { model } = JSON.parse(readFileSync(join(fixAgentDir, 'settings.json'), 'utf-8'));
     processAgentOutput(output, 'nightlyFixer', model);
 
-    if (result.error) throw result.error;
-    if (result.status !== 0 || result.signal) {
-        log(`Agent exited with status=${result.status ?? '?'} signal=${result.signal ?? 'none'}`);
+    if (spawnError) {
+        error(`Failed to run claude: ${spawnError.message}`);
+        process.exit(1);
     }
 
     log('Agent done.');
+    process.exit(status);
 }
 
 main();

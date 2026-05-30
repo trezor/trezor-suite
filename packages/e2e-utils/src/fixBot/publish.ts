@@ -2,11 +2,12 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { log } from '../logger';
+import { error, log } from '../logger';
 import { type FixResult, FixResultSchema } from './schemas';
 
 const BASE_BRANCH = 'develop';
 const GIT_REMOTE = 'origin';
+const QA_PROJECT_NUMBER = 78; // QA and Test Automation
 
 const ICONS: Record<FixResult['result'], string> = {
     pass: '✅',
@@ -19,7 +20,7 @@ function publishPR(): void {
     const branch = process.env.BRANCH;
 
     if (!branch) {
-        log('BRANCH env var is required');
+        error('BRANCH env var is required');
         process.exit(1);
     }
 
@@ -29,8 +30,8 @@ function publishPR(): void {
     const resultFile = join(root, 'fix-result.json');
 
     if (!existsSync(resultFile)) {
-        log(`Result: ❌  fix-result.json missing — agent did not complete`);
-        log(`         expected at: ${resultFile}`);
+        error(`Result: ❌  fix-result.json missing — agent did not complete`);
+        error(`         expected at: ${resultFile}`);
 
         return;
     }
@@ -68,6 +69,13 @@ function publishPR(): void {
     // and print the existing PR URL instead (e.g. via `gh pr list --head <branch> --json url`)
     const prUrl = execFileSync('gh', prArgs, { encoding: 'utf-8' }).trim();
     log(`PR: ${prUrl}`);
+
+    execFileSync(
+        'gh',
+        ['project', 'item-add', String(QA_PROJECT_NUMBER), '--owner', 'trezor', '--url', prUrl],
+        { stdio: 'inherit' },
+    );
+    log(`Assigned PR to QA and Test Automation project (#${QA_PROJECT_NUMBER})`);
 }
 
 publishPR();

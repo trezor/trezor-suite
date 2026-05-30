@@ -23,7 +23,7 @@ GitHub Actions: fix-tests.yml
   final job: Slack notification (reads GHA job outputs, no filesystem access needed)
 
 GHA: .github/workflows/test-suite-nightly-fix-agent.yml
-Folder: packages/e2e-utils/src/fixBot
+Source: packages/e2e-utils/src/fixBot
 ```
 
 The GitHub Actions workflow IS the orchestrator. No separate orchestration program needed.
@@ -166,7 +166,49 @@ Every iteration commits locally. First iteration is a regular commit, subsequent
 
 - One branch and worktree per fix task, name prepared by the analysis agent and included in `report.json` as `branch`: `fix/nightly-YYYY-MM-DD-<root-cause-slug>`
 - PRs are created only when ≥1 validation passes
+- PR is assigned to the **QA and Test Automation** GitHub project (org project #78)
 
 ### PR description
 
 The fix agent writes a per-task `pr-description.md` covering: root cause, fix applied, a validation status table (✅/❌ per platform/group/spec), the commit log, and any prompt gaps encountered. See `FIX_AGENT.md` Step 4 for the authoritative structure.
+
+### Excluded test directories
+
+Tests under `suite/e2e/tests/trading-live/` are excluded from analysis — omitted entirely, not placed in `skipped`.
+
+---
+
+## Known Problems
+
+### No cross-run state: redundant re-processing of known failures
+
+Each run of the system is fully stateless. There is no memory of what previous runs analyzed, attempted, or produced. This causes a class of problems when the same root causes recur across consecutive nightly runs.
+
+**Concrete scenario:**
+
+On Day 1, four root causes fail: A, B, C, D.
+
+- A is diagnosed as unfixable (`PRODUCT_BUG` or `INFRA`) and placed in `skipped`.
+- B, C, D are fixable. The fix agent succeeds on C and D, fails on B.
+- D's PR is merged immediately. C's PR remains open pending further review.
+- B produced no PR — the fix attempt exhausted its iteration budget without passing.
+
+On Day 2, the nightly run produces failures for A, B, C, and a new root cause E.
+
+- **A** is re-analyzed from scratch — traces fetched, code read, the same unfixable conclusion reached. All of that work was already done the day before.
+- **B** is re-analyzed from scratch and a new fix task is generated. The fixer starts over with no knowledge of what was attempted the previous day.
+- **C** already has an open PR. The system generates a new fix task for it anyway, and the fixer creates a competing branch targeting the same failing tests.
+- **E** is genuinely new and needs to be processed. ✅
+
+The result: tokens and CI time are spent re-diagnosing A, B, and C; a competing PR is created for C; and the system provides no signal distinguishing chronic failures from new ones.
+
+**What the system does not currently track between runs:**
+
+- Which root causes were already diagnosed as unfixable
+- Which root causes have an open fix PR
+- Which root causes were attempted but produced no PR (fix agent failed)
+- How many times a given root cause has been attempted without success
+
+### Failed fix attempts leave no readable audit trail
+
+When the fix agent exhausts its iteration budget without passing a single validation, no branch is pushed and no PR is created. The only record of what was attempted lives in the raw GHA job log, which is verbose, ephemeral, and not structured for human reading.
