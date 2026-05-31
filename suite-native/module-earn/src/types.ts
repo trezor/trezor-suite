@@ -23,9 +23,12 @@ export type StakingEarnItem = {
 export type StablecoinYieldEarnItem = {
     id: string;
     type: 'stablecoin-yield';
+    yieldId: string;
     vaultName: string;
     tokenSymbol: TokenSymbol;
     networkSymbol: NetworkSymbol;
+    underlyingTokenContract: TokenAddress;
+    receiptTokenContract: TokenAddress | null;
     contractAddress: TokenAddress;
     tokenContractAddress: TokenAddress;
     accountKey: AccountKey | null;

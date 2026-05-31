@@ -11,6 +11,7 @@ export enum RootStackRoutes {
     StakingInsufficientBalance = 'StakingInsufficientBalance',
     HowStakeWorksScreen = 'HowStakeWorksScreen',
     YieldNavigator = 'YieldNavigator',
+    YieldInsufficientBalance = 'YieldInsufficientBalance',
     EarnForm = 'EarnForm',
     EarnConsents = 'EarnConsents',
     EarnTransactionDataReview = 'EarnTransactionDataReview',
