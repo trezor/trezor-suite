@@ -82,7 +82,7 @@ export const electronTeardown = async (
     await closePromise;
 };
 
-export const webSetup = async (browserContext: BrowserContext) => {
+export const webSetup = async (browserContext: BrowserContext, skipInitNavigation = false) => {
     await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
     // Need to allow this to be able to access bridge on localhost
@@ -98,7 +98,10 @@ export const webSetup = async (browserContext: BrowserContext) => {
     await page.context().addInitScript(() => {
         window.Playwright = true;
     });
-    await page.goto('./');
+
+    // Prevent the app from polluting IndexedDB before loading legacy versions.
+    if (!skipInitNavigation) await page.goto('./');
+
     await mockRemoteMessageSystem(page);
 
     return page;

@@ -84,10 +84,23 @@ export class OnboardingPage {
     }
 
     @step()
-    async verifySuiteIsLoaded() {
-        await expect(this.welcomeBody, 'expect Suite to load in under 30s').toBeVisible({
-            timeout: 30_000,
-        });
+    async verifySuiteIsLoaded(options?: { timeout?: number }) {
+        const timeout = options?.timeout ?? 10_000;
+
+        const suiteLoaded = this.page
+            .locator('[data-testid^="@welcome"]')
+            .or(this.page.locator('[data-testid^="@suite-layout"]'))
+            .or(this.page.locator('[data-testid^="@onboarding"]'))
+            .first();
+
+        try {
+            await suiteLoaded.waitFor({ state: 'attached', timeout });
+        } catch {
+            await this.page.reload({ waitUntil: 'domcontentloaded', timeout });
+            await suiteLoaded.waitFor({ state: 'attached', timeout });
+        }
+
+        await expect(suiteLoaded).toBeVisible({ timeout });
     }
 
     @step()

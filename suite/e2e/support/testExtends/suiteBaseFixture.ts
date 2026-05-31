@@ -28,6 +28,7 @@ type SuiteBaseFixture = {
     trezorUserEnv: TrezorUserEnv;
     electronApp: ElectronApplication | undefined;
     page: Page;
+    skipInitNavigation: boolean;
     exceptionLogger: void;
     coverageMapCollector: void;
 };
@@ -51,6 +52,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
     target: [PlaywrightTarget.Web, { option: true }],
     model: [undefined, { option: true }],
     firmwareVersion: [undefined, { option: true }],
+    skipInitNavigation: [false, { option: true }],
     startEmulator: true,
     setupEmulator: true,
     deviceSetup: {},
