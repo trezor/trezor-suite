@@ -17,8 +17,10 @@ import { EarnPoweredByProvider } from '../components/EarnPoweredByProvider';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
 import { EarnPromoListRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
-import { EnableNetworkForStakingBottomSheet } from '../components/EnableNetworkForStakingBottomSheet';
+import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
+import { useStablecoinYieldFlag } from '../hooks/useStablecoinYieldFlag';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
+import { useStablecoinYieldPromoNavigation } from '../hooks/useStablecoinYieldPromoNavigation';
 import { useStakingListData } from '../hooks/useStakingListData';
 import { useStakingPromoNavigation } from '../hooks/useStakingPromoNavigation';
 import { type EarnPromoItem, type EarnPromoListDataItem } from '../types';
@@ -36,6 +38,7 @@ const EarnScreenContent = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
         useBottomSheetModal();
+    const isStablecoinYieldEnabled = useStablecoinYieldFlag();
 
     const {
         promoListData: stakingPromoItems,
@@ -48,19 +51,10 @@ const EarnScreenContent = () => {
         isLoading: isYieldLoading,
     } = useStablecoinYieldListData();
 
-    const {
-        handleStakingPromoPress,
-        handleAccountSelected,
-        handleEnableNetworkPress,
-        handleChooseAccountDismiss,
-        handleEnableNetworkDismiss,
-        chosenAccounts,
-        pendingEnableSymbol,
-        infoSheetRef,
-        chooseAccountSheetRef,
-        enableNetworkSheetRef,
-        closeChooseAccountModal,
-    } = useStakingPromoNavigation();
+    const staking = useStakingPromoNavigation();
+    const stablecoinYield = useStablecoinYieldPromoNavigation();
+    const { handleStakingPromoPress } = staking;
+    const { handleStablecoinYieldPromoPress } = stablecoinYield;
 
     const earnListData = useMemo(
         (): EarnPromoListDataItem[] => [...stakingPromoItems, ...stablecoinYieldPromoItems],
@@ -80,7 +74,11 @@ const EarnScreenContent = () => {
                     type: events.earnStablecoinYieldTilePressedEvent.name,
                 });
 
-                openStablecoinYieldModal();
+                if (isStablecoinYieldEnabled) {
+                    handleStablecoinYieldPromoPress(item);
+                } else {
+                    openStablecoinYieldModal();
+                }
 
                 return;
             }
@@ -91,7 +89,13 @@ const EarnScreenContent = () => {
 
             handleStakingPromoPress(item);
         },
-        [analytics, handleStakingPromoPress, openStablecoinYieldModal],
+        [
+            analytics,
+            handleStablecoinYieldPromoPress,
+            handleStakingPromoPress,
+            isStablecoinYieldEnabled,
+            openStablecoinYieldModal,
+        ],
     );
 
     const renderItem = useCallback(
@@ -147,20 +151,34 @@ const EarnScreenContent = () => {
                     renderItem={renderItem}
                 />
 
-                <EarnItemInfoModal ref={infoSheetRef} type="staking" />
+                <EarnItemInfoModal ref={staking.infoSheetRef} type="staking" />
                 <EarnItemInfoModal ref={stablecoinYieldBottomSheetRef} type="stablecoin-yield" />
                 <ChooseStakingAccountBottomSheet
-                    ref={chooseAccountSheetRef}
-                    accounts={chosenAccounts}
-                    onAccountSelected={handleAccountSelected}
-                    onClose={closeChooseAccountModal}
-                    onDismiss={handleChooseAccountDismiss}
+                    ref={staking.chooseAccountSheetRef}
+                    accounts={staking.chosenAccounts}
+                    onAccountSelected={staking.handleAccountSelected}
+                    onClose={staking.closeChooseAccountModal}
+                    onDismiss={staking.handleChooseAccountDismiss}
                 />
-                <EnableNetworkForStakingBottomSheet
-                    ref={enableNetworkSheetRef}
-                    symbol={pendingEnableSymbol}
-                    onEnablePress={handleEnableNetworkPress}
-                    onDismiss={handleEnableNetworkDismiss}
+                <EnableNetworkForEarnBottomSheet
+                    ref={staking.enableNetworkSheetRef}
+                    symbol={staking.pendingEnableSymbol}
+                    onEnablePress={staking.handleEnableNetworkPress}
+                    onDismiss={staking.handleEnableNetworkDismiss}
+                />
+                <ChooseStakingAccountBottomSheet
+                    ref={stablecoinYield.chooseAccountSheetRef}
+                    accounts={stablecoinYield.chosenAccounts}
+                    onAccountSelected={stablecoinYield.handleAccountSelected}
+                    onClose={stablecoinYield.closeChooseAccountModal}
+                    onDismiss={stablecoinYield.handleChooseAccountDismiss}
+                />
+                <EnableNetworkForEarnBottomSheet
+                    ref={stablecoinYield.enableNetworkSheetRef}
+                    symbol={stablecoinYield.pendingEnableSymbol}
+                    type="stablecoin-yield"
+                    onEnablePress={stablecoinYield.handleEnableNetworkPress}
+                    onDismiss={stablecoinYield.handleEnableNetworkDismiss}
                 />
             </VStack>
         </Screen>

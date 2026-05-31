@@ -2368,7 +2368,7 @@ export const messages = {
         poweredBy: 'Powered by',
         portfolioTracker: {
             alert: {
-                title: 'Staking is disabled in the portfolio tracker',
+                title: 'Earn is disabled in the portfolio tracker',
                 description:
                     'Connect your device to enable full functionality or use our desktop app.',
                 copyLabel: 'Tap to copy',
@@ -2566,6 +2566,12 @@ export const messages = {
                 subtitle:
                     'Support the {networkName} network. Lock in your funds and earn staking rewards.',
                 cta: 'Enable {networkName}',
+                stablecoinYield: {
+                    title: 'Enable {networkName} to use Stablecoin Yield',
+                    subtitle:
+                        'Add the {networkName} network to deposit eligible stablecoins and earn yield.',
+                    cta: 'Enable {networkName}',
+                },
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
         },
