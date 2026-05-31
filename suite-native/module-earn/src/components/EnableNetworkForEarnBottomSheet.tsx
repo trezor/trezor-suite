@@ -10,11 +10,13 @@ import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { type EarnType } from './EarnItemInfoModal';
 import { StakingPromoRingIcon } from './StakingPromoRingIcon';
 
-type EnableNetworkForStakingBottomSheetProps = {
+type EnableNetworkForEarnBottomSheetProps = {
     ref: BottomSheetModalRef;
     symbol: NetworkSymbol | null;
+    type?: EarnType;
     onEnablePress: () => void;
     onDismiss?: () => void;
 };
@@ -24,15 +26,30 @@ const buttonContainerStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp24,
 }));
 
-export const EnableNetworkForStakingBottomSheet = ({
+const translationIdByEarnType = {
+    staking: {
+        title: 'earn.earnScreen.enableNetworkModal.title',
+        subtitle: 'earn.earnScreen.enableNetworkModal.subtitle',
+        cta: 'earn.earnScreen.enableNetworkModal.cta',
+    },
+    'stablecoin-yield': {
+        title: 'earn.earnScreen.enableNetworkModal.stablecoinYield.title',
+        subtitle: 'earn.earnScreen.enableNetworkModal.stablecoinYield.subtitle',
+        cta: 'earn.earnScreen.enableNetworkModal.stablecoinYield.cta',
+    },
+} as const;
+
+export const EnableNetworkForEarnBottomSheet = ({
     ref,
     symbol,
+    type = 'staking',
     onEnablePress,
     onDismiss,
-}: EnableNetworkForStakingBottomSheetProps) => {
+}: EnableNetworkForEarnBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
 
     const networkName = symbol ? getNetwork(symbol).name : '';
+    const translationIds = translationIdByEarnType[type];
 
     return (
         <BottomSheetModal ref={ref} onDismiss={onDismiss}>
@@ -43,26 +60,15 @@ export const EnableNetworkForStakingBottomSheet = ({
                     </StakingPromoRingIcon>
                     <TitleHeader
                         titleVariant="headline-sm"
-                        title={
-                            <Translation
-                                id="earn.earnScreen.enableNetworkModal.title"
-                                values={{ networkName }}
-                            />
-                        }
+                        title={<Translation id={translationIds.title} values={{ networkName }} />}
                         subtitle={
-                            <Translation
-                                id="earn.earnScreen.enableNetworkModal.subtitle"
-                                values={{ networkName }}
-                            />
+                            <Translation id={translationIds.subtitle} values={{ networkName }} />
                         }
                         textAlign="center"
                     />
                     <Box style={applyStyle(buttonContainerStyle)}>
                         <Button onPress={onEnablePress}>
-                            <Translation
-                                id="earn.earnScreen.enableNetworkModal.cta"
-                                values={{ networkName }}
-                            />
+                            <Translation id={translationIds.cta} values={{ networkName }} />
                         </Button>
                     </Box>
                 </Box>

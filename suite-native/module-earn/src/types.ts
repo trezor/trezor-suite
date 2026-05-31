@@ -37,6 +37,14 @@ export type StablecoinYieldEarnItem = {
     apy: number | null;
 };
 
+export type StablecoinYieldNavigationItem = Pick<
+    StablecoinYieldEarnItem,
+    'yieldId' | 'underlyingTokenContract' | 'receiptTokenContract'
+>;
+
+export type StablecoinYieldPromoNavigationItem = StablecoinYieldNavigationItem &
+    Pick<StablecoinYieldEarnItem, 'networkSymbol'>;
+
 export type EarnPromoItem = StakingEarnItem | StablecoinYieldEarnItem;
 
 export type EarnPromoSectionType = EarnPromoItem['type'];
