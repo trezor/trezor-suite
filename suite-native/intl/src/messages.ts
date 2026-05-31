@@ -2428,6 +2428,11 @@ export const messages = {
             subtitle: 'The minimum amount to stake is {minAmount} {displaySymbol}.',
             getButton: 'Get more {displaySymbol}',
         },
+        yieldInsufficientBalance: {
+            title: "You don't have enough {tokenSymbol}",
+            subtitle: 'Get more {tokenSymbol} in this account to start earning yield.',
+            getButton: 'Get more {tokenSymbol}',
+        },
         earnConsentsScreen: {
             title: 'Before you continue',
             entryPeriodCard: {

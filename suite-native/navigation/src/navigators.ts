@@ -91,6 +91,12 @@ export type YieldFlowParams = {
     yieldId?: string;
 };
 
+export type YieldInsufficientBalanceParams = {
+    accountKey: AccountKey;
+    tokenContract: TokenAddress;
+    yieldId: string;
+};
+
 export type YieldDepositApprovalReviewParams = YieldFlowParams & {
     amount: string;
     approvalLimitType: 'per-deposit' | 'unlimited';
@@ -419,6 +425,7 @@ export type RootStackParamList = {
         symbol: NetworkSymbol;
     };
     [RootStackRoutes.YieldNavigator]: NavigatorScreenParams<YieldStackParamList>;
+    [RootStackRoutes.YieldInsufficientBalance]: YieldInsufficientBalanceParams;
     [RootStackRoutes.EarnForm]: {
         accountKey: AccountKey;
     };

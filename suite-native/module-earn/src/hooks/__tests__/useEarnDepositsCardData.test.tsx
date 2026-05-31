@@ -20,7 +20,8 @@ jest.mock('@suite-native/intl', () => ({
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseTranslate = jest.mocked(useTranslate);
 
-const testContractAddress = 'test-contract-address' as TokenAddress;
+const testUnderlyingTokenContract = 'test-underlying-token-contract' as TokenAddress;
+const testReceiptTokenContract = 'test-receipt-token-contract' as TokenAddress;
 const testTokenSymbol = 'USDC' as TokenSymbol;
 
 const stakingActiveItem: StakingEarnItem = {
@@ -62,11 +63,14 @@ const invalidStakingActiveItem: StakingEarnItem = {
 const stablecoinYieldActiveItem: StablecoinYieldEarnItem = {
     id: 'steakhouse-usdc',
     type: 'stablecoin-yield',
+    yieldId: 'steakhouse-usdc',
     vaultName: 'Steakhouse USDC Vault',
     tokenSymbol: testTokenSymbol,
     networkSymbol: 'eth',
-    contractAddress: testContractAddress,
-    tokenContractAddress: testContractAddress,
+    underlyingTokenContract: testUnderlyingTokenContract,
+    receiptTokenContract: testReceiptTokenContract,
+    contractAddress: testReceiptTokenContract,
+    tokenContractAddress: testUnderlyingTokenContract,
     accountKey: 'usdc-account' as AccountKey,
     accountLabel: 'Ethereum #3',
     tokenBalance: '400',
@@ -76,11 +80,14 @@ const stablecoinYieldActiveItem: StablecoinYieldEarnItem = {
 const secondStablecoinYieldActiveItem: StablecoinYieldEarnItem = {
     id: 'moonwell-usdc',
     type: 'stablecoin-yield',
+    yieldId: 'moonwell-usdc',
     vaultName: 'Moonwell USDC Vault',
     tokenSymbol: testTokenSymbol,
     networkSymbol: 'base',
-    contractAddress: testContractAddress,
-    tokenContractAddress: testContractAddress,
+    underlyingTokenContract: testUnderlyingTokenContract,
+    receiptTokenContract: testReceiptTokenContract,
+    contractAddress: testReceiptTokenContract,
+    tokenContractAddress: testUnderlyingTokenContract,
     accountKey: 'usdc-account-2' as AccountKey,
     accountLabel: 'Base Ethereum #1',
     tokenBalance: '600',
@@ -90,11 +97,14 @@ const secondStablecoinYieldActiveItem: StablecoinYieldEarnItem = {
 const invalidStablecoinYieldActiveItem: StablecoinYieldEarnItem = {
     id: 'invalid-steakhouse-usdc',
     type: 'stablecoin-yield',
+    yieldId: 'invalid-steakhouse-usdc',
     vaultName: 'Invalid Steakhouse USDC Vault',
     tokenSymbol: testTokenSymbol,
     networkSymbol: 'eth',
-    contractAddress: testContractAddress,
-    tokenContractAddress: testContractAddress,
+    underlyingTokenContract: testUnderlyingTokenContract,
+    receiptTokenContract: testReceiptTokenContract,
+    contractAddress: testReceiptTokenContract,
+    tokenContractAddress: testUnderlyingTokenContract,
     accountKey: null,
     accountLabel: 'Ethereum invalid',
     tokenBalance: '400',
@@ -168,8 +178,8 @@ describe('useEarnDepositsCardData', () => {
             title: 'Steakhouse USDC Vault',
             networkSymbol: 'eth',
             tokenSymbol: 'USDC',
-            contractAddress: testContractAddress,
-            tokenContractAddress: testContractAddress,
+            contractAddress: testReceiptTokenContract,
+            tokenContractAddress: testUnderlyingTokenContract,
             accountKey: 'usdc-account',
             accountLabel: 'Ethereum #3',
             balance: '400',

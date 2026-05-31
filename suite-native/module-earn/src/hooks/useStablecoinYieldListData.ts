@@ -69,8 +69,11 @@ export const useStablecoinYieldListData = () => {
                 ? Number((vault.rewardRate.total * 100).toFixed(2))
                 : null;
 
-            const tokenContractAddress = toTokenAddress(vault.token.address);
-            const outputTokenAddress = vault.outputToken?.address?.toLowerCase();
+            const underlyingTokenContract = toTokenAddress(vault.token.address);
+            const receiptTokenContract = vault.outputToken?.address
+                ? toTokenAddress(vault.outputToken.address)
+                : null;
+            const outputTokenAddress = receiptTokenContract?.toLowerCase();
 
             const accountsWithPosition = outputTokenAddress
                 ? accounts.filter(account => {
@@ -87,11 +90,14 @@ export const useStablecoinYieldListData = () => {
             const defaultYieldItem: StablecoinYieldEarnItem = {
                 id: vault.id,
                 type: 'stablecoin-yield',
+                yieldId: vault.id,
                 vaultName: vault.outputToken?.name ?? '',
                 tokenSymbol: stablecoinSymbol,
                 networkSymbol: network.symbol,
-                contractAddress: tokenContractAddress,
-                tokenContractAddress,
+                underlyingTokenContract,
+                receiptTokenContract,
+                contractAddress: underlyingTokenContract,
+                tokenContractAddress: underlyingTokenContract,
                 accountKey: null,
                 accountLabel: undefined,
                 tokenBalance: null,
