@@ -48,10 +48,12 @@ export const ExchangeConfirmation = () => {
                         <Button
                             onPress={selectQuote}
                             testID={CONFIRMATION_TEST_ID}
-                            disabled={isLoading || !canProceed}
+                            isDisabled={isLoading || !canProceed}
                             isLoading={isLoading}
                         >
-                            <Translation id="moduleTrading.tradingScreen.buttons.continue" />
+                            {!isLoading && (
+                                <Translation id="moduleTrading.tradingScreen.buttons.continue" />
+                            )}
                         </Button>
                     </AnimatedBox>
                     {canRevoke && (
