@@ -65,6 +65,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             <Input
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
+                size="small"
                 onChange={e => setQuery(e.currentTarget.value)}
                 showClearButton={true}
                 onClear={() => setQuery('')}

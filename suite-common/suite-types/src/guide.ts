@@ -14,6 +14,8 @@ export interface GuideCategory {
         [key: string]: string;
     };
     image?: string;
+    /** Icon name from @trezor/components. Takes precedence over `image` in the UI. */
+    icon?: string;
     /** Sub-categories and sub-pages. */
     children: GuideNode[];
 }

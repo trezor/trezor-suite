@@ -6,7 +6,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
-import { Icon } from '@trezor/components';
+import { Card, Icon, IconCircle, type IconName, Paragraph, Row } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, spacings, transitions, typography } from '@trezor/theme';
 
@@ -46,18 +46,10 @@ const Label = styled.div<{ $isBold: boolean }>`
     justify-content: center;
 `;
 
-const CategoryNodeButton = styled(NodeButton)`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 140px;
-    text-align: center;
-    height: 150px;
-    flex: 1;
-`;
-
-const Image = styled.img`
-    width: 64px;
+const CategoryImage = styled.img`
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
 `;
 
 type GuideNodeProps = {
@@ -105,10 +97,22 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     if (node.type === 'category') {
         return (
-            <CategoryNodeButton data-testid={`@guide/category${node.id}`} onClick={navigateToNode}>
-                {node.image && <Image src={resolveStaticPath(node.image)} />}
-                {label}
-            </CategoryNodeButton>
+            <Card
+                data-testid={`@guide/category${node.id}`}
+                onClick={navigateToNode}
+                paddingType="small"
+            >
+                <Row gap={16}>
+                    {node.icon ? (
+                        <IconCircle name={node.icon as IconName} size={40} intent="neutral" />
+                    ) : (
+                        node.image && <CategoryImage src={resolveStaticPath(node.image)} />
+                    )}
+                    <Paragraph typographyStyle="body-md" flex="1">
+                        {getNodeTitle(node, language)}
+                    </Paragraph>
+                </Row>
+            </Card>
         );
     }
 
