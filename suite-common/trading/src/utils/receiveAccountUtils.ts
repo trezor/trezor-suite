@@ -19,7 +19,9 @@ export const getReceiveAccountPreselection = ({
     accounts,
     sendAccount,
 }: GetReceiveAccountPreselectionParams): ReceiveAccountPreselection | null => {
-    if (accounts.length === 0) {
+    const account = accounts?.[0];
+
+    if (!account) {
         return null;
     }
 
@@ -32,7 +34,6 @@ export const getReceiveAccountPreselection = ({
         };
     }
 
-    const account = accounts[0];
     const { address } = getUnusedAddressFromAccount(account);
 
     return {
