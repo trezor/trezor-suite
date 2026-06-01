@@ -1,3 +1,5 @@
+import type { WalletDescriptor } from '@suite-common/wallet-types';
+
 export interface LabelableEntityKeys {
     fileName: string; // file name in data provider
     aesKey: string; // symmetric key for file encryption
@@ -238,6 +240,7 @@ export type MetadataProvider = {
 export interface MetadataState {
     enabled: boolean; // global for all devices
     providers: MetadataProvider[];
+    hasLegacyLabelsMigrated: Partial<Record<WalletDescriptor, boolean>>;
     // being selected means:
     // - see data from this provider
     // - save data to this provider when making changes

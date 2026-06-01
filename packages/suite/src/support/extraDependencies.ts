@@ -1,4 +1,4 @@
-import { type PayloadAction } from '@reduxjs/toolkit';
+import type { Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
@@ -8,12 +8,9 @@ import {
     metadataActions,
     metadataLabelingActions,
     selectLabelingDataForAccount,
-    selectLabelingDataForWallet,
 } from '@suite/metadata';
-import {
-    type MetadataMigrationDep,
-    createMetadataMigrationCompositionRoot,
-} from '@suite/metadata-migration';
+import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
+import type { MetadataMigrationDep } from '@suite/metadata-migration';
 import { closeModal, openModal } from '@suite/modal';
 import {
     type HistoryDep,
@@ -31,7 +28,7 @@ import { createSuiteSyncDesktopCompositionRoot, suiteSyncErrorHandler } from '@s
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
-import { type DeviceReducerState } from '@suite-common/device';
+import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
@@ -89,7 +86,7 @@ const connectInitSettings: ConnectInitSettings = {
 
 export type StoreAPIDep = {
     getState: () => any;
-    dispatch: (_: any) => any;
+    dispatch: Dispatch;
 };
 
 export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep;
@@ -127,22 +124,26 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             }),
     });
 
+    const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
+    const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
+
+    const { migrateLabelsIfAvailable, migrateLegacyLabelsToSuiteSync } =
+        createMetadataMigrationCompositionRoot({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            getAccountsByDeviceState,
+            getCurrentWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
+            getCurrentAccountLabels,
+            getDeviceByStaticSessionId: toGetter(deps.getState, selectDeviceByStaticSessionId),
+            labeling: suiteSync.labeling,
+        });
+
+    suiteSync.onWalletSuiteSyncOnEnsured(migrateLabelsIfAvailable);
+
     const { bip329 } = createBip329CompositionRoot({
         getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
         getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
-        getAllLabelsForAccount: toGetter(deps.getState, selectAllLabelsForAccount),
-        updateAddressLabel: suiteSync.labeling.updateAddressLabel,
-        updateOutputLabel: suiteSync.labeling.updateOutputLabel,
-    });
-
-    const { migrateLegacyLabelsToSuiteSync } = createMetadataMigrationCompositionRoot({
-        getAccountsByDeviceState: toGetter(deps.getState, selectAccountsByDeviceState),
-        getLegacyWalletLabels: toGetter(deps.getState, selectLabelingDataForWallet),
-        getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
-        getCurrentWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
-        getCurrentAccountLabels: toGetter(deps.getState, selectAllLabelsForAccount),
-        updateWalletLabel: suiteSync.labeling.updateWalletLabel,
-        updateAccountLabel: suiteSync.labeling.updateAccountLabel,
+        getAllLabelsForAccount: getCurrentAccountLabels,
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
@@ -210,6 +211,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
             payload.backendSettings.forEach(backend => {
                 const blockchain = state[backend.key];
+
                 if (blockchain) {
                     blockchain.backends = backend.value;
                 }
@@ -232,9 +234,11 @@ export const extraDependencies: ExtraDependenciesStatic = {
                     networkSymbol: item.tx.symbol,
                     deviceStaticSessionId: item.tx.deviceState,
                 });
+
                 if (!state.transactions[k]) {
                     state.transactions[k] = [];
                 }
+
                 state.transactions[k][item.order] = item.tx;
             });
 

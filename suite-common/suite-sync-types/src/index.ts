@@ -1,4 +1,9 @@
-export { type SuiteSync, type SuiteSyncDep, selectSuiteSyncDep } from './SuiteSync';
+export {
+    type LabelingDep,
+    type SuiteSync,
+    type SuiteSyncDep,
+    selectSuiteSyncDep,
+} from './SuiteSync';
 
 export type {
     SuiteSyncStorageRepositoryDep,
@@ -58,8 +63,12 @@ export {
     type EnsureWalletSuiteSyncOnErrors,
     type EnsureWalletSuiteSyncOnDep,
     type EnsureWalletSuiteSyncOnParams,
+    type OnWalletSuiteSyncOnEnsured,
+    type OnWalletSuiteSyncOnEnsuredDep,
     type SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
     type SuiteSyncUserFacingErrorType,
+    type WalletSuiteSyncOnEnsuredListener,
+    type WalletSuiteSyncOnEnsuredParams,
     selectEnsureWalletSuiteSyncOnAsyncDep,
     selectEnsureWalletSuiteSyncOnDep,
 } from './storage/ensureWalletSuiteSyncOn';
