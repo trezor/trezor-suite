@@ -2,7 +2,8 @@ import * as yup from 'yup';
 
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountDescriptor } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/device-utils';
 import { type Result } from '@trezor/type-utils';
 
 export const bip329LabelTypeValues = [
@@ -51,7 +52,8 @@ export type ExportBip329Dep = {
 };
 
 export type ImportBip329Params = {
-    account: Account;
+    deviceStaticSessionId: StaticSessionId;
+    accountDescriptor: AccountDescriptor;
     bip329Labels: Bip329Label[];
 };
 

@@ -1,0 +1,34 @@
+{
+    "name": "@suite-native/bip329",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest:native",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/bip329": "workspace:*",
+        "@suite-common/bip329-types": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/accounts": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/labeling": "workspace:*",
+        "@suite-native/suite-sync": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "expo-file-system": "~55.0.22",
+        "expo-sharing": "~55.0.20",
+        "react": "19.2.4",
+        "react-native": "0.83.2",
+        "react-redux": "9.2.0"
+    }
+}

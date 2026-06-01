@@ -1906,14 +1906,22 @@ export const messages = {
                     'Used for smart contract actions like sending tokens. If depleted, TRX is burned as a fee. Refills automatically over time (up to 24 hours).',
             },
         },
-        accountSettingsExportBip329Button: {
-            title: 'Export labels',
-            button: 'Export',
+        accountSettingsBip329: {
+            title: 'Transaction labels',
             description:
-                'Export transaction labels for this account. Compatible with other wallet applications that support the BIP-329 format.',
-            exportSuccessfulToast: 'Labels exported successfully',
-            exportFailedToast: 'Labels export failed',
-            fileSavingNotSupported: 'File saving isn’t supported on mobile devices.',
+                ‘Import or export transaction labels for this account. Compatible with other wallet applications that support the BIP-329 format.’,
+            importButton: ‘Import’,
+            exportButton: ‘Export’,
+            export: {
+                exportSuccessfulToast: ‘Labels exported successfully’,
+                exportFailedToast: ‘Labels export failed’,
+                fileSavingNotSupported: "File saving isn’t supported on this platform.",
+            },
+            import: {
+                importSuccessfulToast: ‘Labels imported successfully’,
+                importFailedToast: ‘Labels import failed’,
+                invalidFileToast: ‘The selected file is not a valid BIP-329 labels file.’,
+            },
         },
     },
     transactions: {

@@ -2,8 +2,9 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
-import { type Bip329 } from '@suite-common/bip329-types';
+import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
+import { toGetter } from '@suite-common/dependency-injection';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
     type ExtraDependenciesStatic,
@@ -14,6 +15,7 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
+import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
@@ -27,7 +29,6 @@ import TrezorConnect from '@trezor/connect';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
-import { ok } from '@trezor/type-utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -42,11 +43,6 @@ const transportsPerDeviceType = {
 } as const;
 
 const transports = transportsPerDeviceType[deviceType];
-
-const bip329: Bip329 = {
-    export: () => ({ accountLabel: null, labelsToExport: [] }),
-    import: () => Promise.resolve(ok()),
-};
 
 type NativeAppDeps = {
     getState: () => any;
@@ -73,6 +69,15 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
+    });
+
+    const { bip329 } = createBip329CompositionRoot({
+        getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
+        // Legacy metadata labeling is not used on native — suite-sync is the only path.
+        getLegacyAccountLabels: () => ({ outputLabels: {}, addressLabels: {} }),
+        getAllLabelsForAccount: toGetter(deps.getState, selectAllLabelsForAccount),
+        updateAddressLabel: suiteSync.labeling.updateAddressLabel,
+        updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
     return {
