@@ -1,5 +1,5 @@
 import cors, { type CorsOptions } from 'cors';
-import express from 'express';
+import express, { type ErrorRequestHandler } from 'express';
 
 const app = express();
 
@@ -24,6 +24,39 @@ const checkResponse = (responseBody: object, expectedProperties: string[]) => {
             throw new Error('Unexpected response from authentication server.');
         }
     });
+};
+
+const getErrorStatusCode = (error: unknown): number => {
+    if (typeof error !== 'object' || error === null) return 500;
+    if ('status' in error && typeof error.status === 'number') return error.status;
+    if ('statusCode' in error && typeof error.statusCode === 'number') return error.statusCode;
+
+    return 500;
+};
+
+const sanitizeExpressError: ErrorRequestHandler = (error, _req, res, next) => {
+    // Once headers are sent, the server can no longer safely change the response body.
+    if (res.headersSent) {
+        next(error);
+
+        return;
+    }
+
+    const statusCode = getErrorStatusCode(error);
+
+    if (statusCode === 400) {
+        res.status(statusCode).json('Invalid request body.');
+
+        return;
+    }
+
+    if (statusCode === 401) {
+        res.status(statusCode).json('Authentication failed.');
+
+        return;
+    }
+
+    res.status(statusCode >= 400 && statusCode < 600 ? statusCode : 500).json('Request failed.');
 };
 
 /**
@@ -59,8 +92,8 @@ app.post('/google-oauth-init', async (req, res) => {
         const json = await response.json();
         checkResponse(json, ['refresh_token', 'access_token']);
         res.status(response.status).send(json);
-    } catch (error) {
-        res.status(401).json(`Authorization failed: ${error}`);
+    } catch {
+        res.status(401).json('Authorization failed.');
     }
 });
 
@@ -81,10 +114,12 @@ app.post('/google-oauth-refresh', async (req, res) => {
         const json = await response.json();
         checkResponse(json, ['access_token']);
         res.status(response.status).send(json);
-    } catch (error) {
-        res.status(401).json(`Refresh failed: ${error}`);
+    } catch {
+        res.status(401).json('Refresh failed.');
     }
 });
+
+app.use(sanitizeExpressError);
 
 app.listen(PORT, () => {
     // eslint-disable-next-line no-console
