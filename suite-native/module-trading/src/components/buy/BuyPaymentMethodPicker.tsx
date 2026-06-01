@@ -7,8 +7,11 @@ import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
-import { PaymentMethodTranslation } from '@suite-native/trading-common';
+import {
+    OverviewRow,
+    OverviewValueSkeleton,
+    PaymentMethodTranslation,
+} from '@suite-native/trading-atoms';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';

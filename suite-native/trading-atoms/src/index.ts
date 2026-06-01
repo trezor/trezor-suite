@@ -28,6 +28,10 @@ export * from './components/SearchableSheetHeader';
 export * from './components/SheetHeaderTitle';
 export { IconWithSpinner, type IconWithSpinnerProps } from './components/IconWithSpinner';
 export { WaitingCard, type WaitingCardProps } from './components/WaitingCard';
+export {
+    PaymentMethodTranslation,
+    type PaymentMethodTranslationProps,
+} from './components/PaymentMethodTranslation';
 
 export * from './hooks/useAnimatedBorderStyle';
 export * from './hooks/useBottomSheetBackButtonSubscription';
