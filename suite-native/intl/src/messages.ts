@@ -1245,6 +1245,8 @@ export const messages = {
                 'Enable coins to buy or receive assets. Disable unused coins to improve loading speed.',
         },
         coinEnabling: {
+            testnetsLabel: 'Testnet networks',
+            unsupportedSubtitle: 'Not supported on this device',
             bottomNote:
                 'Didn’t find what you’re looking for? Check if it’s not a token running one of the listed coin’s network.',
             toasts: {
