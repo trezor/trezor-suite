@@ -120,7 +120,7 @@ export const GuideRouter = () => {
                 zIndex={zIndices.guide}
             >
                 <Box
-                    height="100vh"
+                    height="100dvh"
                     maxWidth="100vw"
                     overflow="hidden auto"
                     borderWidth={{ left: borders.widths.small }}

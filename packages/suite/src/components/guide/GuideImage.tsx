@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Button, Modal } from '@trezor/components';
+import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, zIndices } from '@trezor/theme';
 
 const ThumbnailImage = styled.img`
@@ -44,15 +45,20 @@ export const GuideImage = ({ src, alt }: GuideImageProps) => {
 
     if (!src) return null;
 
+    // The transformer emits internal asset paths as `/guide/assets/...`.
+    // Resolve them at runtime so each build target (web / desktop file://)
+    // gets the correct ASSET_PREFIX baked into its renderer bundle.
+    const resolvedSrc = src.startsWith('/guide/') ? resolveStaticPath(src) : src;
+
     const close = () => setIsOpen(false);
 
     return (
         <>
-            <ThumbnailImage src={src} alt={alt} onClick={() => setIsOpen(true)} />
+            <ThumbnailImage src={resolvedSrc} alt={alt} onClick={() => setIsOpen(true)} />
             {isOpen &&
                 createPortal(
                     <Modal.Backdrop onClick={close} zIndex={zIndices.guide}>
-                        <FullSizeImage src={src} alt={alt} onClick={close} />
+                        <FullSizeImage src={resolvedSrc} alt={alt} onClick={close} />
                         <CloseButtonWrapper>
                             <Button
                                 iconLeft="x"
