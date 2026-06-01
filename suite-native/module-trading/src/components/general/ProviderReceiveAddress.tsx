@@ -11,10 +11,10 @@ import {
     selectTradingSellAccountKey,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
-import { Text, VStack } from '@suite-native/atoms';
+import { AnimatedBox, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { TradeInfoRow } from '@suite-native/trading-atoms';
+import { SkeletonSmall, TradeInfoRow } from '@suite-native/trading-atoms';
 
 export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellFiatTrade }) => {
     const { translate } = useTranslate();
@@ -23,7 +23,7 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
         selectTradingProviderByNameAndTradeType(state, trade.exchange, tradeType),
     );
     const sendAccountKey = useSelector((state: TradingRootState) =>
-        isExchangeTrade(trade)
+        tradeType === 'exchange'
             ? selectTradingExchangeAccountKey(state)
             : selectTradingSellAccountKey(state),
     );
@@ -38,10 +38,10 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
 
     const receiveAddress =
         tradeType === 'exchange'
-            ? (trade as ExchangeTrade).sendAddress
+            ? ((trade as ExchangeTrade).sendAddress ?? (trade as ExchangeTrade)?.dexTx?.to)
             : (trade as SellFiatTrade).destinationAddress;
 
-    if (!receiveAddress || !networkType) {
+    if (!networkType) {
         return null;
     }
 
@@ -63,12 +63,21 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
             <TradeInfoRow>
                 <VStack spacing="sp4">
                     <Text variant="body-sm">{addressTitle}</Text>
-                    <AddressFormatter
-                        value={receiveAddress}
-                        format="full"
-                        variant="body-sm"
-                        color="contentSecondary"
-                    />
+                    {receiveAddress ? (
+                        <AnimatedBox entering={FadeIn}>
+                            <AddressFormatter
+                                value={receiveAddress}
+                                format="full"
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        </AnimatedBox>
+                    ) : (
+                        <VStack spacing="sp12">
+                            <SkeletonSmall widthPercentage={0.8} height={14} />
+                            <SkeletonSmall widthPercentage={0.3} height={14} />
+                        </VStack>
+                    )}
                 </VStack>
             </TradeInfoRow>
         </Animated.View>

@@ -38,7 +38,7 @@ export const ExchangePreviewView = memo(
         const hasEIP712SignData = hasEip712SignData(quote);
 
         return (
-            <VStack spacing="sp20" paddingVertical="sp20">
+            <VStack spacing="sp16">
                 <LastErrorMessage tradingType="exchange" />
                 {!!isApproved && (
                     <InlineAlertBox
@@ -53,7 +53,7 @@ export const ExchangePreviewView = memo(
                         <InlineAlertBox variant="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
-                <AnimatedVStack layout={LinearTransition}>
+                <AnimatedVStack layout={LinearTransition} spacing="sp16">
                     <ExchangeFromAccountTradePreviewCard quote={quote} />
                     <ExchangeToAccountTradePreviewCard quote={quote} />
                     <ExchangeFiatDeviationWarning quote={quote} />
