@@ -61,7 +61,8 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
 
     const handleImportBip329 = async (bip329Labels: Bip329Label[]) => {
         const result = await bip329.import({
-            account,
+            deviceStaticSessionId: account.deviceState,
+            accountDescriptor: account.descriptor,
             bip329Labels,
         });
 

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { shouldDisplayExportBip329Labels } from '@suite-common/bip329';
+import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Bip329ManageLabelsCard } from '@suite-native/bip329';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -24,7 +25,6 @@ import {
 } from '@suite-native/navigation';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
-import { AccountSettingsExportBip329Card } from '../components/AccountSettingsExportBip329Card';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
@@ -77,7 +77,7 @@ export const AccountSettingsScreen = ({
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     if (!account) return null;
 
-    const shouldDisplayExport = shouldDisplayExportBip329Labels({
+    const shouldDisplayExportImport = shouldDisplayExportImportBip329Labels({
         account,
         isSuiteSyncEnabled,
     });
@@ -113,8 +113,8 @@ export const AccountSettingsScreen = ({
                             )}
                         </VStack>
                     </Card>
-                    {shouldDisplayExport && (
-                        <AccountSettingsExportBip329Card
+                    {shouldDisplayExportImport && (
+                        <Bip329ManageLabelsCard
                             accountDescriptor={account.descriptor}
                             networkSymbol={account.symbol}
                             deviceStaticSessionId={account.deviceState}
