@@ -64,8 +64,23 @@ export const ClaudeResultSchema = z.object({
     duration_ms: z.number().optional(),
 });
 
+export const SlackFixSummarySchema = FixResultSchema.extend({
+    prUrl: z.string().nullable(),
+    costUsd: z.number().nullable(),
+});
+
+export type AnalysisReport = z.infer<typeof AnalysisReportSchema>;
 export type FixResult = z.infer<typeof FixResultSchema>;
+export type SlackFixSummary = z.infer<typeof SlackFixSummarySchema>;
 export type ClaudeResult = z.infer<typeof ClaudeResultSchema>;
 
-export const AnalysisReportJsonSchema = z.toJSONSchema(AnalysisReportSchema);
-export const FixResultJsonSchema = z.toJSONSchema(FixResultSchema);
+// Strip the top-level `$schema` which breaks Agent's attempt of JSON output
+const toCliJsonSchema = (schema: z.ZodType) => {
+    const jsonSchema = z.toJSONSchema(schema);
+    delete jsonSchema.$schema;
+
+    return jsonSchema;
+};
+
+export const AnalysisReportJsonSchema = toCliJsonSchema(AnalysisReportSchema);
+export const FixResultJsonSchema = toCliJsonSchema(FixResultSchema);

@@ -152,14 +152,21 @@ belong in one fix task, regardless of which platform, device group, or spec file
 Use your judgment: errors may differ in wording across platforms or tests and still point to the
 same fix. Only split into separate tasks when the required changes are genuinely independent.
 
-For each fix task assign:
+**First, decide where each cluster goes:**
+
+- Can the fix be made entirely inside `suite/e2e/`? → `fixScope: TEST_CODE` → **fix_task**
+- Can the fix be made by adding `data-testid` attributes (plus test changes)? → `fixScope: LOCATOR_ADD` → **fix_task**
+- Does the fix require changing product logic or behavior? → **skipped**, `reason: "PRODUCT_BUG — <brief explanation>"`
+- Does the fix require infrastructure or environment changes? → **skipped**, `reason: "INFRA — <brief explanation>"`
+
+For each **fix_task** assign:
 
 - **`id`** — sequential string: `"fix-001"`, `"fix-002"`, …
 - **`branch`** — `"fix/nightly-<YYYY-MM-DD>-<slug>"` where `<slug>` is a short kebab-case
   summary of the root cause (e.g. `send-button-locator`, `receive-address-timeout`).
   Use today's date. Keep the slug under 40 characters.
 - **`rootCause`** — one sentence describing the underlying problem
-- **`fixScope`** — one of: `TEST_CODE`, `LOCATOR_ADD`, `PRODUCT_BUG`, `INFRA`
+- **`fixScope`** — `TEST_CODE` or `LOCATOR_ADD`
 - **`confidence`** — `HIGH`, `MEDIUM`, or `LOW`
 - **`fixDescription`** — concrete description of what needs to change and where
 - **`diagnosis`** — the full MD prose from Step 6 for every test that belongs to this fix
@@ -181,37 +188,11 @@ For each fix task assign:
 Do **not** write `report.json` to disk — the harness captures your final answer and writes
 it. Return a JSON object (validated against a matching JSON Schema) with:
 
-```json
-{
-    "runDate": "<YYYY-MM-DD>",
-    "webRunId": "<runId or null>",
-    "desktopRunId": "<runId or null>",
-    "fixTasks": [
-        {
-            "id": "fix-001",
-            "branch": "fix/nightly-<YYYY-MM-DD>-<slug>",
-            "rootCause": "<one sentence>",
-            "fixScope": "TEST_CODE | LOCATOR_ADD",
-            "confidence": "HIGH | MEDIUM | LOW",
-            "fixDescription": "<what to change and where>",
-            "validations": [
-                {
-                    "platform": "web | desktop",
-                    "group": "T3W1 | T3T1 | ...",
-                    "spec": "suite/e2e/tests/..."
-                }
-            ]
-        }
-    ],
-    "skipped": [
-        {
-            "rootCause": "<one sentence>",
-            "reason": "<fixScope> — <brief explanation>",
-            "affectedTests": ["suite/e2e/tests/..."]
-        }
-    ]
-}
-```
+- **`runDate`** — today's date, `YYYY-MM-DD`
+- **`webRunId`** / **`desktopRunId`** — the `runId`s from Step 1, or `null` if that platform had no run
+- **`fixTasks`** — the fix tasks from Step 7, each with the fields listed there
+- **`skipped`** — one entry per skipped cluster: `rootCause` (one sentence), `reason`
+  (`PRODUCT_BUG`/`INFRA` — brief explanation), `affectedTests` (spec paths)
 
 ---
 
