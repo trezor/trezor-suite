@@ -1,9 +1,9 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
-import { type FixResult, FixResultSchema } from './schemas';
+import { type FixResult, FixResultSchema, type SlackFixSummary } from './schemas';
 
 const BASE_BRANCH = 'develop';
 const GIT_REMOTE = 'origin';
@@ -15,6 +15,25 @@ const ICONS: Record<FixResult['result'], string> = {
     fail: '❌',
     not_duplicated: '🔵',
 };
+
+function writeSummary(root: string, summary: SlackFixSummary): void {
+    writeFileSync(
+        join(root, `slack-fix-summary-${summary.taskId}.json`),
+        JSON.stringify(summary, null, 2),
+    );
+    log('Slack summary written.');
+}
+
+function readCostUsd(): number | null {
+    const path = process.env.LLM_TOKEN_USAGE_FILE ?? '/tmp/llm-token-usage.json';
+    try {
+        const usage = JSON.parse(readFileSync(path, 'utf-8'));
+
+        return typeof usage.total_cost_usd === 'number' ? usage.total_cost_usd : null;
+    } catch {
+        return null;
+    }
+}
 
 function publishPR(): void {
     const branch = process.env.BRANCH;
@@ -36,9 +55,10 @@ function publishPR(): void {
         return;
     }
 
-    const { result, passed, failed, iterations, prTitle } = FixResultSchema.parse(
+    const { result, passed, failed, iterations, prTitle, taskId } = FixResultSchema.parse(
         JSON.parse(readFileSync(resultFile, 'utf-8')),
     );
+    const costUsd = readCostUsd();
 
     log(
         `Result: ${ICONS[result] ?? '?'} ${result}  passed=${passed.length}  failed=${failed.length}  iterations=${iterations}`,
@@ -50,6 +70,16 @@ function publishPR(): void {
                 ? '  → No branch pushed (zero validations pass).'
                 : '  → No branch pushed (failure not reproduced in pre-flight).',
         );
+        writeSummary(root, {
+            taskId,
+            result,
+            passed,
+            failed,
+            iterations,
+            prTitle,
+            prUrl: null,
+            costUsd,
+        });
 
         return;
     }
@@ -61,7 +91,12 @@ function publishPR(): void {
     const prDescriptionFile = join(root, 'pr-description.md');
     const prArgs = ['pr', 'create', '--title', prTitle, '--head', branch, '--base', BASE_BRANCH];
 
-    if (existsSync(prDescriptionFile)) prArgs.push('--body-file', prDescriptionFile);
+    if (existsSync(prDescriptionFile)) {
+        if (costUsd !== null) {
+            appendFileSync(prDescriptionFile, `\n\n### Agent cost\n~$${costUsd.toFixed(2)}\n`);
+        }
+        prArgs.push('--body-file', prDescriptionFile);
+    }
 
     // TODO: if 'gh pr create' errors because a PR for this branch already exists, catch it
     // and print the existing PR URL instead (e.g. via `gh pr list --head <branch> --json url`)
@@ -78,6 +113,17 @@ function publishPR(): void {
     } catch (err) {
         error(`Failed to assign PR to QA and Test Automation project: ${err}`);
     }
+
+    writeSummary(root, {
+        taskId,
+        result,
+        passed,
+        failed,
+        iterations,
+        prTitle,
+        prUrl,
+        costUsd,
+    });
 }
 
 publishPR();

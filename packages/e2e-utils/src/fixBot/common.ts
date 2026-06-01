@@ -3,6 +3,7 @@ import { closeSync, openSync, readFileSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+import { log, warn } from '../logger';
 import { reportTokenUsage } from '../tokenUsage';
 import { type ClaudeResult, ClaudeResultSchema } from './schemas';
 
@@ -22,6 +23,7 @@ export function runClaude(opts: {
     const { root, args, input, tmpPrefix } = opts;
 
     const env = { ...process.env };
+    // Prevents an internal Claude Code setting from accidentally being inherited
     delete env['MCP_CONNECTION_NONBLOCKING'];
 
     const tmpFile = join(tmpdir(), `${tmpPrefix}-${Date.now()}.json`);
@@ -64,7 +66,7 @@ export function processAgentOutput(
     try {
         result = parseClaudeOutput(rawOutput);
     } catch {
-        process.stderr.write(`[${agent}] agent output unparsable (${rawOutput.length} bytes)\n`);
+        warn(`[${agent}] agent output unparsable (${rawOutput.length} bytes)`);
 
         return null;
     }
@@ -73,8 +75,8 @@ export function processAgentOutput(
     const text = result.result ?? '';
     const preview = text.length > 800 ? `${text.slice(0, 800)}…` : text;
 
-    process.stderr.write(`[${agent}] subtype=${subtype}\n`);
-    if (preview) process.stderr.write(`${preview}\n`);
+    log(`[${agent}] subtype=${subtype}`);
+    if (preview) log(preview);
 
     reportTokenUsage({
         timestamp: new Date().toISOString(),

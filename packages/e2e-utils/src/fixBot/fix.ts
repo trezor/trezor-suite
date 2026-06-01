@@ -91,7 +91,7 @@ function main(): void {
     writeFileSync(join(root, 'fix-result.json'), `${JSON.stringify(fixResult.data, null, 2)}\n`);
 
     log('Agent done.');
-    process.exit(status);
+    process.exit(status ?? 1);
 }
 
 main();

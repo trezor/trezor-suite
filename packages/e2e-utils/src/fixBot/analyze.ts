@@ -86,7 +86,7 @@ function main(): void {
 
     log('Agent done.');
 
-    process.exit(status);
+    process.exit(status ?? 1);
 }
 
 main();

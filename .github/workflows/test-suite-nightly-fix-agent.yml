@@ -65,11 +65,20 @@ jobs:
           fi
 
       - name: Upload report
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: fix-agent-report
           path: packages/e2e-utils/src/fixBot/reports/
           if-no-files-found: error
+
+      - name: Upload analyze cost artifact
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: slack-analyze-cost
+          path: /tmp/llm-token-usage.json
+          if-no-files-found: warn
 
   prepare-matrix:
     needs: [analyze]
@@ -188,7 +197,7 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web
+        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web @trezor/suite-desktop
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
@@ -263,6 +272,7 @@ jobs:
           TASK_ID: ${{ matrix.task-id }}
           AGENT_GITHUB_ACTION: true
           REPORT_PATH: ${{ github.workspace }}/report-download/report.json
+          ELECTRON_DISABLE_SANDBOX: 1
         run: yarn workspace @trezor/e2e-utils fix-bot:fix
 
       - name: Store token usage record to S3
@@ -296,9 +306,72 @@ jobs:
           GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: yarn workspace @trezor/e2e-utils fix-bot:publish
 
+      - name: Upload Slack fix summary artifact
+        if: ${{ !cancelled() && steps.run-fix-agent.outcome != 'skipped' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: slack-fix-summary-${{ matrix.task-id }}
+          path: slack-fix-summary-${{ matrix.task-id }}.json
+          if-no-files-found: warn
+
       - name: Docker Compose Down
         if: always()
         run: docker compose down
+
+  notify:
+    needs: [analyze, fix]
+    if: always() && github.repository == 'trezor/trezor-suite' && needs.analyze.result != 'cancelled'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/e2e-utils
+
+      - name: Download report artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: fix-agent-report
+          path: report-download/
+
+      - name: Download analyze cost artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: slack-analyze-cost
+          path: analyze-cost-download/
+        continue-on-error: true
+
+      - name: Download Slack fix summary artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: slack-fix-summary-*
+          path: summaries/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Send Slack notification
+        env:
+          REPORT_PATH: ${{ github.workspace }}/report-download/report.json
+          SUMMARIES_DIR: ${{ github.workspace }}/summaries
+          ANALYZE_COST_FILE: ${{ github.workspace }}/analyze-cost-download/llm-token-usage.json
+          SLACK_FIX_AGENT_WEBHOOK: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
+        run: yarn workspace @trezor/e2e-utils fix-bot:notify
 
   aggregate:
     needs: [analyze, fix]
