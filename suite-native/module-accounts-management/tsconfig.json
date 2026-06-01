@@ -40,6 +40,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../banner-flags" },
+        { "path": "../bip329" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
@@ -60,10 +61,8 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../suite-sync" },
-        { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../transactions" },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/styles-native"

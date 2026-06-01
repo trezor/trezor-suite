@@ -13,7 +13,7 @@ export type ImportBip329ToSuiteSyncDeps = UpdateAddressLabelDep & UpdateOutputLa
 
 export const createBip329ToSuiteSync =
     (deps: ImportBip329ToSuiteSyncDeps): ImportBip329 =>
-    async ({ account, bip329Labels }) => {
+    async ({ deviceStaticSessionId, accountDescriptor, bip329Labels }) => {
         for (const label of bip329Labels) {
             switch (label.type) {
                 case 'output': {
@@ -28,8 +28,8 @@ export const createBip329ToSuiteSync =
                         txTargetId,
                         label: label.label ?? null,
                         networkSymbol: 'btc',
-                        deviceStaticSessionId: account.deviceState,
-                        accountDescriptor: account.descriptor,
+                        deviceStaticSessionId,
+                        accountDescriptor,
                     });
 
                     if (!result.success) {
@@ -44,8 +44,8 @@ export const createBip329ToSuiteSync =
                         address: label.ref,
                         label: label.label ?? null,
                         networkSymbol: 'btc',
-                        deviceStaticSessionId: account.deviceState,
-                        accountDescriptor: account.descriptor,
+                        deviceStaticSessionId,
+                        accountDescriptor,
                     });
 
                     if (!result.success) {

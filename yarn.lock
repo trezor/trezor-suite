@@ -10250,6 +10250,7 @@ __metadata:
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     yup: "npm:1.7.1"
   languageName: unknown
@@ -11806,6 +11807,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/bip329@workspace:*, @suite-native/bip329@workspace:suite-native/bip329":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/bip329@workspace:suite-native/bip329"
+  dependencies:
+    "@suite-common/bip329": "workspace:*"
+    "@suite-common/bip329-types": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/labeling": "workspace:*"
+    "@suite-native/suite-sync": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    expo-file-system: "npm:~55.0.22"
+    expo-sharing: "npm:~55.0.20"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/blockchain@workspace:*, @suite-native/blockchain@workspace:suite-native/blockchain":
   version: 0.0.0-use.local
   resolution: "@suite-native/blockchain@workspace:suite-native/blockchain"
@@ -12548,6 +12574,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/banner-flags": "workspace:*"
+    "@suite-native/bip329": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
@@ -12567,18 +12594,14 @@ __metadata:
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
-    "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/transactions": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
-    expo-file-system: "npm:~55.0.22"
-    expo-sharing: "npm:~55.0.20"
     jotai: "npm:2.17.1"
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
@@ -13683,7 +13706,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@rozenite/redux-devtools-plugin": "npm:^1.4.0"
     "@suite-common/analytics-redux": "workspace:*"
-    "@suite-common/bip329-types": "workspace:*"
+    "@suite-common/bip329": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
