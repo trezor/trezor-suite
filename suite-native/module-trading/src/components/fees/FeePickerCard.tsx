@@ -5,7 +5,7 @@ import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { type FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
 import { type AccountKey, type FeeLevelLabel } from '@suite-common/wallet-types';
-import { AnimatedContainerCard, Divider } from '@suite-native/atoms';
+import { Card, Divider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
@@ -33,7 +33,7 @@ export const FeePickerCard = ({ trade, accountKey, tradingType }: FeePickerCardP
     );
 
     return (
-        <AnimatedContainerCard noPadding>
+        <Card noPadding>
             <TradeInfoHeader
                 title={<Translation id="moduleTrading.tradingExchangePreviewScreen.details" />}
             />
@@ -47,6 +47,6 @@ export const FeePickerCard = ({ trade, accountKey, tradingType }: FeePickerCardP
                 formDraft={formDraft}
                 formDraftKey={formDraftKey}
             />
-        </AnimatedContainerCard>
+        </Card>
     );
 };

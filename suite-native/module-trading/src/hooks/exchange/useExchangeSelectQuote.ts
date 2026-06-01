@@ -13,6 +13,7 @@ import {
     selectTradingMaxSlippagePercentage,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { useWatch } from '@suite-native/forms';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -40,7 +41,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const dispatch = useDispatch();
-    const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
+    const candidateQuote = useWatch({ name: 'quote', control: form.control });
+    const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
 
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const isDexQuoteApprovalPrefetchLoadingForCandidateQuote = useSelector(

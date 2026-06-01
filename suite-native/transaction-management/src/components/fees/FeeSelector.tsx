@@ -120,8 +120,6 @@ export const FeeSelector = ({
         return <InlineAlertBox variant="critical" title={feeUnavailableErrorTitle} />;
     }
 
-    if (!fee && !areFeesLoading) return null;
-
     return (
         <>
             {networkType === 'tron' ? (

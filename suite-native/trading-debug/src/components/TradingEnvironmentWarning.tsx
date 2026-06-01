@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { Box, InlineAlertBox } from '@suite-native/atoms';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 
 export const TradingEnvironmentWarning = () => {
@@ -11,11 +11,11 @@ export const TradingEnvironmentWarning = () => {
     }
 
     return (
-        <VStack paddingHorizontal="sp16">
+        <Box paddingHorizontal="sp16">
             <InlineAlertBox
                 title={`Trading environment: ${tradingEnvironment}`}
                 variant="warning"
             />
-        </VStack>
+        </Box>
     );
 };
