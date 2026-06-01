@@ -6,7 +6,9 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
     type NetworkSymbol,
+    getMainnets,
     getNetwork,
+    getTestnets,
     networksCollection,
 } from '@suite-common/wallet-config';
 import {
@@ -27,7 +29,7 @@ import {
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
 } from '@suite-native/tokens';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
+import { arrayPartition, versionUtils } from '@trezor/utils';
 
 /**
  * Filter collection of activated networks to only include those supported by device & suite
@@ -125,4 +127,47 @@ export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
                 A.uniq,
             ),
         ),
+);
+
+export const selectDiscoveryNetworkGroups = createMemoizedSelector(
+    [
+        selectDeviceSupportedNetworks,
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
+        selectAreTestnetsEnabled,
+    ],
+    (
+        deviceSupportedNetworks,
+        areDebugOnlyNetworksEnabled,
+        areExperimentalOnlyNetworksEnabled,
+        areTestnetsEnabled,
+    ) => {
+        const mainnets = getMainnets({
+            debug: areDebugOnlyNetworksEnabled,
+            useExperimentalNetworks: areExperimentalOnlyNetworksEnabled,
+        });
+        const testnets = getTestnets({
+            debug: areDebugOnlyNetworksEnabled,
+            useExperimentalNetworks: areExperimentalOnlyNetworksEnabled,
+            useTestnetNetworks: areTestnetsEnabled,
+        });
+
+        const isNetworkSupported = (network: Network) =>
+            deviceSupportedNetworks.includes(network.symbol);
+        const [supportedMainnets, unsupportedMainnets] = arrayPartition(
+            mainnets,
+            isNetworkSupported,
+        );
+        const [supportedTestnets, unsupportedTestnets] = arrayPartition(
+            testnets,
+            isNetworkSupported,
+        );
+
+        return {
+            supportedMainnets,
+            supportedTestnets,
+            unsupportedMainnets,
+            unsupportedTestnets,
+        };
+    },
 );
