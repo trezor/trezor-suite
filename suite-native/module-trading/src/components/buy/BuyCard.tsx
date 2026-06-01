@@ -1,6 +1,6 @@
 import { Box, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { CryptoToFiatValueBadge } from '@suite-native/trading-common';
+import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';

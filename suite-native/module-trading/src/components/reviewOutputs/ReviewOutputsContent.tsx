@@ -5,7 +5,7 @@ import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType, ScreenHeader } from '@suite-native/navigation';
-import { getFormDraftKeyPrefixFromTradingType } from '@suite-native/trading-common';
+import { getFormDraftKeyPrefixFromTradingType } from '@suite-native/trading-quote-utils';
 import { ReviewOutputItemList } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

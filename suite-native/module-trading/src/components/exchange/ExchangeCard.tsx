@@ -1,5 +1,5 @@
 import { Translation } from '@suite-native/intl';
-import { CryptoToFiatValueBadge } from '@suite-native/trading-common';
+import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 import { ExchangeReceiveContent } from './receive/ExchangeReceiveContent';
 import { ExchangeSendAmountBadge } from './send/ExchangeSendAmountBadge';

@@ -14,7 +14,7 @@ import {
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { getTradeStatusStep } from '@suite-native/trading-common';
+import { getTradeStatusStep } from '@suite-native/trading-quote-utils';
 import { type TradingRootState } from '@suite-native/trading-state';
 
 import { useReloadTimer } from './useReloadTimer';

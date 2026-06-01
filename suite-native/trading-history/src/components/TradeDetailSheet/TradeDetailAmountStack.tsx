@@ -7,7 +7,7 @@ import {
 import type { NetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
-import { CryptoToFiatValueBadge } from '@suite-native/trading-common';
+import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 type TradeDetailAmountStackProps = {
     isCrypto: boolean | undefined;

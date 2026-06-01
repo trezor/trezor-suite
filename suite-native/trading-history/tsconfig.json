@@ -21,8 +21,8 @@
         { "path": "../link" },
         { "path": "../trading-atoms" },
         { "path": "../trading-browser-auth" },
-        { "path": "../trading-common" },
         { "path": "../trading-provider-utils" },
+        { "path": "../trading-quote-utils" },
         { "path": "../trading-state" },
         {
             "path": "../../packages/styles-native"

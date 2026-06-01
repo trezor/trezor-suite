@@ -19,7 +19,7 @@ Main module providing buy, sell, and exchange flows.
 
 Provides the trade history screen and all history-related components (trade list, trade detail sheet).
 
-### @suite-native/trading-common
+### @suite-native/trading-quote-utils
 
 Shared trading utilities used by both `module-trading` and `trading-history` components.
 
@@ -67,7 +67,7 @@ graph TD
     trading-state["@suite-native/trading-state"]
     subgraph trading-internal["Trading internal modules"]
         trading-history["@suite-native/trading-history"]
-        trading-common["@suite-native/trading-common"]
+        trading-quote-utils["@suite-native/trading-quote-utils"]
         trading-provider-utils["@suite-native/trading-provider-utils"]
         trading-atoms["@suite-native/trading-atoms"]
         trading-analytics["@suite-native/trading-analytics"]
@@ -102,18 +102,18 @@ graph TD
     module-trading --> trading-analytics
     module-trading --> trading-debug
     module-trading --> trading-browser-auth
-    module-trading --> trading-common
+    module-trading --> trading-quote-utils
     module-trading --> trading-provider-utils
     module-trading --> trading-history
     module-trading --> trading-state
     module-trading --> transaction-management
     module-trading --> trading-residence
     trading-history --> trading-browser-auth
-    trading-history --> trading-common
+    trading-history --> trading-quote-utils
     trading-history --> trading-provider-utils
     trading-history --> trading-atoms
     trading-history --> trading-state
-    trading-common -.-> trading-fixtures
+    trading-quote-utils -.-> trading-fixtures
     trading-provider-utils -.-> trading-fixtures
     trading-provider-utils -.-> trading-types
     trading-provider-utils --> trading-state

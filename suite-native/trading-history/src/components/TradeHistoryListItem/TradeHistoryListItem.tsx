@@ -12,7 +12,7 @@ import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { ProviderLogo } from '@suite-native/trading-atoms';
-import { useChangeStringsExtractor } from '@suite-native/trading-common';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeStatusBadge } from '../TradeStatusBadge';

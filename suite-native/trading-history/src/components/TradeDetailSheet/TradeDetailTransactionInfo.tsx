@@ -7,7 +7,7 @@ import { type AccountsRootState } from '@suite-common/wallet-core';
 import { Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
-import { useChangeStringsExtractor } from '@suite-native/trading-common';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { selectAccountLabelWithNetworkFallback } from '@suite-native/trading-state';
 
 import { TradeDetailAmountStack } from './TradeDetailAmountStack';

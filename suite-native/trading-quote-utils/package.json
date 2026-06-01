@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/trading-common",
+    "name": "@suite-native/trading-quote-utils",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
