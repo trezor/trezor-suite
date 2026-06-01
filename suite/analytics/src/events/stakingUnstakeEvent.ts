@@ -32,7 +32,7 @@ export const stakingUnstakeEvent: EventDef<Attributes, EventType.StakingUnstake>
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The blockchain network symbol where unstaking is occurring (e.g., `eth`, `matic`)',
+            description: 'The blockchain network symbol where unstaking is occurring (e.g., `eth`)',
         },
         currency: {
             changelog: [{ version: '25.4.0', notes: 'added' }],

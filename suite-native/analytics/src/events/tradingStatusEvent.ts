@@ -30,7 +30,15 @@ export const tradingStatusEvent: EventDef<Attributes, EventType.TradingStatus> =
         },
         status: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The current status: `waiting` (pending user action), `processing` (being processed), `pending` (confirmation waiting), `converting` (currency conversion in progress), `sending` (funds being sent), `kyc` (KYC verification required), `success` (completed), or `error` (failed)',
+            description: `The current status:
+- \`waiting\`: pending user action
+- \`processing\`: being processed
+- \`pending\`: awaiting confirmation
+- \`converting\`: currency conversion in progress
+- \`sending\`: funds being sent
+- \`kyc\`: KYC verification required
+- \`success\`: completed
+- \`error\`: failed`,
         },
     },
 };

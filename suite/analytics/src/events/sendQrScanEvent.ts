@@ -16,7 +16,7 @@ export const sendQrScanEvent: EventDef<Attributes, EventType.SendQrScan> = {
     attributes: {
         scheme: {
             changelog: [{ version: '25.12.0', notes: 'added' }],
-            description: 'The URI scheme detected in the QR code (e.g., `bitcoin:`, `ethereum:`, `solana:`)',
+            description: 'The URI scheme detected in the QR code (e.g., `bitcoin`, `ethereum`, `solana`)',
         },
         isAmountPresent: {
             changelog: [{ version: '25.12.0', notes: 'added' }],

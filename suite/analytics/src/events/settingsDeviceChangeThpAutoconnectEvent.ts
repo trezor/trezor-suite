@@ -15,7 +15,7 @@ export const settingsDeviceChangeThpAutoconnectEvent: EventDef<
     EventType.SettingsDeviceChangeThpAutoconnect
 > = {
     name: EventType.SettingsDeviceChangeThpAutoconnect,
-    descriptionTrigger: 'User changes the THP (Touchpad and Hand Proximity) auto-connect setting on their device',
+    descriptionTrigger: 'User changes the THP (Trezor Host Protocol) auto-connect setting on their device',
     changelog: [{ version: '25.7.1', notes: 'added' }],
 
     attributes: {

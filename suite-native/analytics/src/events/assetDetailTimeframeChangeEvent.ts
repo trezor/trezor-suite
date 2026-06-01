@@ -16,7 +16,7 @@ export const assetDetailTimeframeChangeEvent: EventDef<
     EventType.AssetDetailTimeframeChange
 > = {
     name: EventType.AssetDetailTimeframeChange,
-    descriptionTrigger: 'User changes the timeframe for the asset detail chart (e.g., 1D, 7D, 1M, 1Y, All)',
+    descriptionTrigger: 'User changes the timeframe for the asset detail chart (e.g., 1d, 1w, 1m, 6m, 1y, All)',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {

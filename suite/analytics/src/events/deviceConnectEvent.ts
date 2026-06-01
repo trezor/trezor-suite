@@ -42,7 +42,7 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         firmwareSource: {
-            description: 'The source or type of firmware (e.g., official, custom, or development build)',
+            description: 'The source or type of firmware (e.g., `NA - bootloader`, `official`, `unknown`)',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
         bootloader: {

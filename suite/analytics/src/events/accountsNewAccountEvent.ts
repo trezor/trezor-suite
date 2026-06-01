@@ -21,7 +21,7 @@ export const accountsNewAccountEvent: EventDef<Attributes, EventType.AccountsNew
 
     attributes: {
         symbol: {
-            description: 'The blockchain network symbol: `btc` for Bitcoin, `eth` for Ethereum, `etc` for Ethereum Classic, `doge` for Dogecoin, etc.',
+            description: 'The blockchain network symbol: `btc` for Bitcoin, `eth` for Ethereum, etc.',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         path: {

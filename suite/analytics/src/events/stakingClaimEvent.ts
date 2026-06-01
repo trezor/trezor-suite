@@ -30,7 +30,7 @@ export const stakingClaimEvent: EventDef<Attributes, EventType.StakingClaim> = {
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
         networkSymbol: {
-            description: 'The blockchain network symbol for which rewards are being claimed (e.g., `eth`, `dot`)',
+            description: 'The blockchain network symbol for which rewards are being claimed (e.g., `eth`)',
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
     },

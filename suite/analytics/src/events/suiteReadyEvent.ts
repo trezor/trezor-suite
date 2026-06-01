@@ -51,7 +51,7 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
         },
         enabledNetworks: {
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'Available suite coins e.g. `btc,ltc,doge`',
+            description: 'Available suite coins e.g. `btc`, `ltc`',
         },
         localCurrency: {
             changelog: [{ version: '1.0.0', notes: 'added' }],
@@ -127,7 +127,7 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
         },
         customBackends: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'Available suite coins e.g. `btc,ltc,doge`',
+            description: 'Available suite coins e.g. `btc`, `ltc`',
         },
         autodetectLanguage: {
             description: 'Whether automatic language detection from system settings is enabled',
@@ -139,11 +139,11 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
         },
         labeling: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: `'dropbox' | 'google' | 'fileSystem' | 'sdCard' | ''`,
+            description: `'dropbox' | 'google' | 'fileSystem' | 'suite-sync' | 'dropbox' | 'missing-provider' | 'off' - labeling provider used for fetching transaction labels (if any)`,
         },
         bitcoinUnit: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: `'BTC' | 'μBTC' | 'mBTC' | 'sat'`,
+            description: `'BTC' | 'sat'`,
         },
         experimentalFeatures: {
             changelog: [{ version: '24.8.0', notes: 'added' }],

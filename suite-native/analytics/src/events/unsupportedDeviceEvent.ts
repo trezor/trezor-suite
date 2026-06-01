@@ -19,7 +19,11 @@ export const unsupportedDeviceEvent: EventDef<Attributes, EventType.UnsupportedD
     attributes: {
         deviceState: {
             changelog: [{ version: '23.11.1', notes: 'added' }],
-            description: '`unsupportedFirmware` for incompatible firmware, `noSeed` when device has no recovery seed, `bootloaderMode` when device is in firmware update mode, `noSeedWithFirmware` for devices missing seed but with firmware',
+            description: `The state of the unsupported device:
+- \`unsupportedFirmware\`: incompatible firmware
+- \`noSeed\`: device has no recovery seed
+- \`bootloaderMode\`: device is in firmware update mode
+- \`noSeedWithFirmware\`: device has firmware but no seed`,
         },
     },
 };

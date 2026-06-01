@@ -13,7 +13,8 @@ export const passphraseExitEvent: EventDef<Attributes, EventType.PassphraseExit>
     attributes: {
         screen: {
             changelog: [{ version: '24.7.2', notes: 'added' }],
-            description: 'Screen route name or identifier where the user exited the passphrase flow (e.g., `passphrase-form`, `passphrase-confirm`, `passphrase-success`)',
+
+            description: 'Screen route name or identifier where the user exited the passphrase flow (e.g., `PassphraseForm`, `PassphraseConfirmOnTrezor`, `PassphraseConfirmOnTrezor`, `PassphraseEmptyWallet`, `PassphraseForm`, `PassphraseLoading`, `PassphraseStack`, `PassphraseVerifyEmptyWallet`, `PassphraseRedirecting`)',
         },
     },
 };
