@@ -44,6 +44,48 @@ const resolveHostname = (url: string | URL | http.RequestOptions) => {
     return new URL(url).hostname;
 };
 
+const reportInterceptedRequest = (context: InterceptorContext, details: string) => {
+    context.handler({ type: 'INTERCEPTED_REQUEST', method: 'http.request', details });
+};
+
+/**
+ * Assigns a Tor proxy agent to the request and returns the identity used for it.
+ * The identity comes from the Proxy-Authorization header or falls back to 'default'.
+ */
+const assignTorAgent = ({
+    context,
+    options,
+    protocol,
+}: {
+    context: InterceptorContext;
+    options: http.RequestOptions;
+    protocol: 'http' | 'https';
+}) => {
+    const identity = getIdentityForAgent(options) || 'default';
+
+    options.agent = context.torIdentities.getIdentity(identity, options.timeout, protocol);
+
+    return identity;
+};
+
+/**
+ * Handles a request that explicitly requires Tor (via Proxy-Authorization) while Tor is off.
+ * It is either conditionally allowed or blocked by throwing.
+ */
+const enforceTorRequirement = (context: InterceptorContext, host?: string | null) => {
+    if (context.allowTorBypass) {
+        reportInterceptedRequest(
+            context,
+            `Conditionally allowed request with Proxy-Authorization ${host}`,
+        );
+
+        return;
+    }
+
+    reportInterceptedRequest(context, `Request blocked ${host}`);
+    throw new Error('Blocked request with Proxy-Authorization. TOR not enabled.');
+};
+
 /**
  * http(s).request could have different arguments according to its types definition,
  * but we only care when second argument (url) is object containing RequestOptions.
@@ -60,56 +102,34 @@ export const overloadHttpRequest = ({
 
     validateRequest({ hostname });
 
+    const isOverloadableUrl = typeof url === 'object' && 'headers' in url;
+    const isOverloadableOptions = !options || typeof options === 'function';
+
     if (
-        !callback &&
-        typeof url === 'object' &&
-        'headers' in url &&
-        !isWhitelistedHost(hostname, context.notRequiredTorDomainsList) &&
-        (!options || typeof options === 'function')
+        !!callback ||
+        !isOverloadableUrl ||
+        !isOverloadableOptions ||
+        isWhitelistedHost(hostname, context.notRequiredTorDomainsList)
     ) {
-        const isTorEnabled = context.getTorSettings().running;
-        const isTorRequired = getIsTorRequired(url);
-        const overloadedOptions = url;
-        const overloadedCallback = options;
-        const { host, path } = overloadedOptions;
-        let identity: string | undefined;
-
-        if (isTorEnabled) {
-            // Create proxy agent for the request (from Proxy-Authorization or default)
-            // get authorization data from request headers
-            identity = getIdentityForAgent(overloadedOptions) || 'default';
-            overloadedOptions.agent = context.torIdentities.getIdentity(
-                identity,
-                overloadedOptions.timeout,
-                protocol,
-            );
-        } else if (isTorRequired) {
-            // Block requests that explicitly requires TOR using Proxy-Authorization
-            if (context.allowTorBypass) {
-                context.handler({
-                    type: 'INTERCEPTED_REQUEST',
-                    method: 'http.request',
-                    details: `Conditionally allowed request with Proxy-Authorization ${host}`,
-                });
-            } else {
-                context.handler({
-                    type: 'INTERCEPTED_REQUEST',
-                    method: 'http.request',
-                    details: `Request blocked ${host}`,
-                });
-                throw new Error('Blocked request with Proxy-Authorization. TOR not enabled.');
-            }
-        }
-
-        context.handler({
-            type: 'INTERCEPTED_REQUEST',
-            method: 'http.request',
-            details: `${host}${path} with agent ${!!overloadedOptions.agent}`,
-        });
-
-        delete overloadedOptions.headers?.['Proxy-Authorization'];
-
-        // return tuple of params for original request
-        return [identity, overloadedOptions, overloadedCallback] as const;
+        return;
     }
+
+    const overloadedOptions = url;
+    const overloadedCallback = options;
+    const { host, path } = overloadedOptions;
+
+    let identity: string | undefined;
+
+    if (context.getTorSettings().running) {
+        identity = assignTorAgent({ context, options: overloadedOptions, protocol });
+    } else if (getIsTorRequired(url)) {
+        enforceTorRequirement(context, host);
+    }
+
+    reportInterceptedRequest(context, `${host}${path} with agent ${!!overloadedOptions.agent}`);
+
+    delete overloadedOptions.headers?.['Proxy-Authorization'];
+
+    // Tuple of params for the original request.
+    return [identity, overloadedOptions, overloadedCallback] as const;
 };
