@@ -43,6 +43,7 @@ export const TotalSent = () => {
     const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
     const tokenInfo = hasTransactionInfo ? transactionInfo.token : undefined;
     const includingRent = networkType === 'solana';
+    const isZeroValueTx = hasTransactionInfo && transactionInfo.totalSpent === '0' && !tokenInfo;
 
     const tronResources = misc && 'tronResources' in misc ? misc.tronResources : undefined;
     const tronFees =
@@ -51,7 +52,7 @@ export const TotalSent = () => {
             : null;
 
     const feeLabelId = useMemo(() => {
-        if (isTokenTransfer) {
+        if (isTokenTransfer || isZeroValueTx) {
             return 'FEE';
         }
 
@@ -60,45 +61,47 @@ export const TotalSent = () => {
         }
 
         return 'INCLUDING_FEE';
-    }, [isTokenTransfer, includingRent]);
+    }, [isTokenTransfer, isZeroValueTx, includingRent]);
 
     return (
         <Container>
             <Card height="min-content" fillType="flat">
                 <Column gap={4} margin={{ bottom: 24 }}>
-                    <InfoItem
-                        label={<Translation id="TOTAL_SENT" />}
-                        direction="row"
-                        verticalAlignment="start"
-                        intent="neutral"
-                        priority="primary"
-                        typographyStyle="body-md"
-                    >
-                        <ChildOrSkeleton isLoading={areFeesLoading}>
-                            <Column alignItems="flex-end">
-                                <CardanoSentTokenInfo />
-                                {hasTransactionInfo && (
-                                    <FormattedCryptoAmount
-                                        disableHiddenPlaceholder
-                                        value={
-                                            tokenInfo
-                                                ? convertAmountSubunitsToUnits(
-                                                      transactionInfo.totalSpent,
-                                                      tokenInfo.decimals,
-                                                  )
-                                                : formatNetworkAmount(
-                                                      transactionInfo.totalSpent,
-                                                      symbol,
-                                                  )
-                                        }
-                                        symbol={tokenInfo?.symbol ?? symbol}
-                                        contractAddress={tokenInfo?.contract}
-                                        data-testid="@wallet/send/total-sent"
-                                    />
-                                )}
-                            </Column>
-                        </ChildOrSkeleton>
-                    </InfoItem>
+                    {!isZeroValueTx && (
+                        <InfoItem
+                            label={<Translation id="TOTAL_SENT" />}
+                            direction="row"
+                            verticalAlignment="start"
+                            intent="neutral"
+                            priority="primary"
+                            typographyStyle="body-md"
+                        >
+                            <ChildOrSkeleton isLoading={areFeesLoading}>
+                                <Column alignItems="flex-end">
+                                    <CardanoSentTokenInfo />
+                                    {hasTransactionInfo && (
+                                        <FormattedCryptoAmount
+                                            disableHiddenPlaceholder
+                                            value={
+                                                tokenInfo
+                                                    ? convertAmountSubunitsToUnits(
+                                                          transactionInfo.totalSpent,
+                                                          tokenInfo.decimals,
+                                                      )
+                                                    : formatNetworkAmount(
+                                                          transactionInfo.totalSpent,
+                                                          symbol,
+                                                      )
+                                            }
+                                            symbol={tokenInfo?.symbol ?? symbol}
+                                            contractAddress={tokenInfo?.contract}
+                                            data-testid="@wallet/send/total-sent"
+                                        />
+                                    )}
+                                </Column>
+                            </ChildOrSkeleton>
+                        </InfoItem>
+                    )}
 
                     <InfoItem
                         label={<Translation id={feeLabelId} />}
