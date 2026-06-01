@@ -15480,7 +15480,7 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@trezor/eslint": "workspace:*"
     cbor: "npm:^10.0.12"
-    crc: "npm:^3.8.0"
+    crc: "npm:^4.3.2"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -22889,6 +22889,18 @@ __metadata:
   dependencies:
     buffer: "npm:^5.1.0"
   checksum: 10/3a43061e692113d60fbaf5e438c5f6aa3374fe2368244a75cc083ecee6762513bcee8583f67c2c56feea0b0c72b41b7304fbd3c1e26cfcfaec310b9a18543fa8
+  languageName: node
+  linkType: hard
+
+"crc@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "crc@npm:4.3.2"
+  peerDependencies:
+    buffer: ">=6.0.3"
+  peerDependenciesMeta:
+    buffer:
+      optional: true
+  checksum: 10/daa5c340de4ccb0d248ad579d1ca1317efe89d2b3f68a124850a140e9afc17d595cdfc058bd14ea78325c0a706ac73ad94962c1efede6a2a1abf58a48ebbb9da
   languageName: node
   linkType: hard
 

@@ -1,5 +1,5 @@
 import { utils } from '@scure/base';
-import crc from 'crc';
+import crc16xmodem from 'crc/calculators/crc16xmodem';
 
 import * as cryptoUtils from './crypto/utils';
 import { addressType } from './crypto/utils';
@@ -26,7 +26,7 @@ function verifyChecksum(address: string): boolean {
 
     const payload = bytes.slice(0, -2);
     const checksum = cryptoUtils.toHex(bytes.slice(-2));
-    const computedChecksum = cryptoUtils.numberToHex(swap16(crc.crc16xmodem(payload)), 2);
+    const computedChecksum = cryptoUtils.numberToHex(swap16(crc16xmodem(payload)), 2);
 
     return computedChecksum === checksum;
 }
