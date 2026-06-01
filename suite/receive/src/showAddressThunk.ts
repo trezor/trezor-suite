@@ -28,6 +28,7 @@ export const showAddressThunk =
         if (!device || !account) return;
 
         const modalPayload = {
+            accountKey: account.key,
             value: address,
             addressPath: path,
         };

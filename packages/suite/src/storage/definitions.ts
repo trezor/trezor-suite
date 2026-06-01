@@ -3,6 +3,7 @@ import { type FieldValues } from 'react-hook-form';
 import type { DBSchema } from 'idb';
 
 import type { FlagsState } from '@suite/flags';
+import type { ReceiveAccountState } from '@suite/receive';
 import type { SuiteSettingsState } from '@suite/settings';
 import { type DesktopSuiteSyncState } from '@suite/suite-sync';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
@@ -77,6 +78,10 @@ export interface SuiteDBSchema extends DBSchema {
     sendFormDrafts: {
         key: AccountKey;
         value: FormState;
+    };
+    receive: {
+        key: AccountKey;
+        value: ReceiveAccountState;
     };
     suiteSettings: {
         key: string;

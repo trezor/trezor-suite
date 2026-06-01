@@ -23,3 +23,4 @@ export { default as m26_5_0_1 } from './26.5.0.1';
 export { default as m26_5_0_2 } from './26.5.0.2';
 export { default as m26_6_0 } from './26.6.0';
 export { default as m26_6_0_1 } from './26.6.0.1';
+export { default as m26_6_0_2 } from './26.6.0.2';

@@ -2,7 +2,6 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
 import { selectSelectedAccountKey } from '@suite/account';
-import { receiveActions } from '@suite/receive';
 import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
@@ -89,7 +88,6 @@ const walletMiddleware =
         if (resetReducers) {
             api.dispatch(accountsActions.disposeAccount());
             api.dispatch(sendFormActions.dispose());
-            api.dispatch(receiveActions.receiveDispose());
             api.dispatch(tradingActions.setVerifiedAddress(undefined));
             api.dispatch(stakeActions.dispose());
         }

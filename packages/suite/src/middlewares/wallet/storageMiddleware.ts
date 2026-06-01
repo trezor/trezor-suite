@@ -4,6 +4,7 @@ import { type MiddlewareAPI } from 'redux';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
 import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
+import { receiveActions } from '@suite/receive';
 import { suiteSettingsActions } from '@suite/settings';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -101,6 +102,16 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (accountsActions.removeAccount.match(action)) {
                 action.payload.forEach(storageActions.removeAccountWithDependencies(api.getState));
+            }
+
+            if (
+                isAnyOf(
+                    receiveActions.showAddress,
+                    receiveActions.showUnverifiedAddress,
+                    receiveActions.setCurrentFreshAddress,
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveAccountReceive(action.payload.accountKey));
             }
 
             if (isAnyOf(metadataActions.setAccountAdd)(action)) {

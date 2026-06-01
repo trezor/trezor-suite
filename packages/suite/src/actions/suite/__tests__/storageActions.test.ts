@@ -2,6 +2,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
+import { receiveReducer } from '@suite/receive';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { suiteSyncSlice } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
@@ -112,6 +113,7 @@ type PartialState = Pick<
             | 'settings'
             | 'discovery'
             | 'send'
+            | 'receive'
             | 'transactions'
             | 'graph'
             | 'fiat'
@@ -157,6 +159,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
             action || ({ type: 'foo' } as any),
         ),
         send: sendFormReducer(prevState?.wallet?.send, action || ({ type: 'foo' } as any)),
+        receive: receiveReducer(prevState?.wallet?.receive, action || ({ type: 'foo' } as any)),
         transactions: transactionsReducer(
             prevState?.wallet?.transactions,
             action || ({ type: 'foo' } as any),

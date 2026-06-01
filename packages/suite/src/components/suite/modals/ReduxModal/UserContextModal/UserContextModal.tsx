@@ -80,6 +80,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
         case 'unverified-address':
             return (
                 <ConfirmUnverifiedAddressModal
+                    accountKey={payload.accountKey}
                     addressPath={payload.addressPath}
                     value={payload.value}
                 />
