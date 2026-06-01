@@ -23,7 +23,10 @@ export const interceptHttp: Interceptor = ({ context, validateRequest }) => {
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 
-            return context.requestPool(originalHttpRequest(...overloadedArgs), identity);
+            return context.requestPool(
+                originalHttpRequest(...(overloadedArgs as Parameters<typeof http.request>)),
+                identity,
+            );
         }
 
         // In cases that are not considered above we pass the args as they came.
@@ -47,7 +50,10 @@ export const interceptHttp: Interceptor = ({ context, validateRequest }) => {
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 
-            return context.requestPool(originalHttpGet(...overloadedArgs), identity);
+            return context.requestPool(
+                originalHttpGet(...(overloadedArgs as Parameters<typeof http.get>)),
+                identity,
+            );
         }
 
         return originalHttpGet(...(args as Parameters<typeof https.get>));
