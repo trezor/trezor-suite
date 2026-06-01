@@ -6,7 +6,7 @@ import { HStack, Text, VStack } from '@suite-native/atoms';
 import { PaymentMethodIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { PaymentMethodTranslation } from '@suite-native/trading-atoms';
-import { useChangeStringsExtractor } from '@suite-native/trading-common';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type PaymentMethodListItemProps<T extends BuyTrade | SellFiatTrade> = {

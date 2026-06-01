@@ -3,13 +3,13 @@ import type { CryptoId } from 'invity-api';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { act } from '@suite-native/test-utils-store';
-import { useTradingFiatValues } from '@suite-native/trading-common';
 import {
     btcAsset,
     createMockRate,
     mockWalletFiatRatesAndSettings,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
+import { useTradingFiatValues } from '@suite-native/trading-quote-utils';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

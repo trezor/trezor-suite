@@ -46,7 +46,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
-import { getErrorStrFromThunkRejectedValue } from '@suite-native/trading-common';
+import { getErrorStrFromThunkRejectedValue } from '@suite-native/trading-quote-utils';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
     type UpdateSelectedFeeLevelThunkParams,
