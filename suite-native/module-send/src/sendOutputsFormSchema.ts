@@ -292,7 +292,7 @@ export const sendOutputsFormValidationSchema = yup.object({
 
                 if (!symbol) return true;
                 const networkType = getNetworkType(symbol);
-                if (networkType === 'stellar' || networkType === 'solana') return true;
+                if (['solana', 'stellar', 'tron'].includes(networkType)) return true;
 
                 if (!value) return true;
 
