@@ -1,6 +1,6 @@
 import { bech32 } from '@scure/base';
 import * as cbor from 'cbor';
-import CRC from 'crc';
+import crc32 from 'crc/calculators/crc32';
 
 import * as base58 from './crypto/base58';
 import { addressType } from './crypto/utils';
@@ -29,7 +29,8 @@ function isValidLegacyAddress(address: string): boolean {
     if (typeof validCrc !== 'number') {
         return false;
     }
-    const crc = CRC.crc32(tagged.value);
+    // crc/calculators/crc32 returns a signed 32-bit int; coerce to unsigned to match the CBOR-decoded checksum
+    const crc = crc32(tagged.value) >>> 0;
 
     return crc === validCrc;
 }
