@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { error, log } from '../logger';
 import { processAgentOutput, runClaude } from './common';
-import { ReportSchema } from './schemas';
+import { AnalysisReportSchema } from './schemas';
 
 function main(): void {
     const reportPath = process.env.REPORT_PATH;
@@ -25,7 +25,7 @@ function main(): void {
     }).trim();
     const fixAgentDir = join(root, 'packages/e2e-utils/src/fixBot');
 
-    const report = ReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
+    const report = AnalysisReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
     const task = report.fix_tasks.find(t => t.id === taskId);
 
     if (!task) {
@@ -66,7 +66,7 @@ function main(): void {
     }
 
     log('Agent done.');
-    process.exit(status);
+    process.exit(status ?? 1);
 }
 
 main();

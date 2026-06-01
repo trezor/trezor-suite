@@ -29,7 +29,7 @@ export const SkippedTaskSchema = z.object({
     affected_tests: z.array(z.string()),
 });
 
-export const ReportSchema = z.object({
+export const AnalysisReportSchema = z.object({
     run_date: z.string(),
     web_run_id: z.string().nullable(),
     desktop_run_id: z.string().nullable(),
@@ -63,8 +63,14 @@ export const ClaudeResultSchema = z.object({
     duration_ms: z.number().optional(),
 });
 
+export const SlackFixSummarySchema = FixResultSchema.extend({
+    pr_url: z.string().nullable(),
+    cost_usd: z.number().nullable(),
+});
+
 export type FixTask = z.infer<typeof FixTaskSchema>;
 export type SkippedTask = z.infer<typeof SkippedTaskSchema>;
-export type Report = z.infer<typeof ReportSchema>;
+export type AnalysisReport = z.infer<typeof AnalysisReportSchema>;
 export type FixResult = z.infer<typeof FixResultSchema>;
+export type SlackFixSummary = z.infer<typeof SlackFixSummarySchema>;
 export type ClaudeResult = z.infer<typeof ClaudeResultSchema>;

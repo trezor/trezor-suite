@@ -5,7 +5,7 @@ import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
 import { processAgentOutput, runClaude } from './common';
-import { ReportSchema } from './schemas';
+import { AnalysisReportSchema } from './schemas';
 
 function main(): void {
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
@@ -64,7 +64,7 @@ function main(): void {
     }
 
     const unsafeParse = JSON.parse(readFileSync(reportJson, 'utf-8'));
-    const report = ReportSchema.safeParse(unsafeParse);
+    const report = AnalysisReportSchema.safeParse(unsafeParse);
     if (!report.success) {
         error(`report.json failed schema validation: ${prettifyError(report.error)}`);
         process.exit(1);
@@ -75,7 +75,7 @@ function main(): void {
     log(`Fix tasks saved to ${reportJson}`);
     log('');
 
-    process.exit(status);
+    process.exit(status ?? 1);
 }
 
 main();

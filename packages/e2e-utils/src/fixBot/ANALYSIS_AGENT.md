@@ -152,14 +152,21 @@ belong in one fix task, regardless of which platform, device group, or spec file
 Use your judgment: errors may differ in wording across platforms or tests and still point to the
 same fix. Only split into separate tasks when the required changes are genuinely independent.
 
-For each fix task assign:
+**First, decide where each cluster goes:**
+
+- Can the fix be made entirely inside `suite/e2e/`? → `fix_scope: TEST_CODE` → **fix_task**
+- Can the fix be made by adding `data-testid` attributes (plus test changes)? → `fix_scope: LOCATOR_ADD` → **fix_task**
+- Does the fix require changing product logic or behavior? → **skipped**, `reason: "PRODUCT_BUG — <brief explanation>"`
+- Does the fix require infrastructure or environment changes? → **skipped**, `reason: "INFRA — <brief explanation>"`
+
+For each **fix_task** assign:
 
 - **`id`** — sequential string: `"fix-001"`, `"fix-002"`, …
 - **`branch`** — `"fix/nightly-<YYYY-MM-DD>-<slug>"` where `<slug>` is a short kebab-case
   summary of the root cause (e.g. `send-button-locator`, `receive-address-timeout`).
   Use today's date. Keep the slug under 40 characters.
 - **`root_cause`** — one sentence describing the underlying problem
-- **`fix_scope`** — one of: `TEST_CODE`, `LOCATOR_ADD`, `PRODUCT_BUG`, `INFRA`
+- **`fix_scope`** — `TEST_CODE` or `LOCATOR_ADD`
 - **`confidence`** — `HIGH`, `MEDIUM`, or `LOW`
 - **`fix_description`** — concrete description of what needs to change and where
 - **`diagnosis`** — the full MD prose from Step 6 for every test that belongs to this fix
@@ -175,8 +182,6 @@ For each fix task assign:
       playwright config excludes it via `grepInvert` and playwright will report "No tests found".
     - If the test carries `@webOnly`, do **not** add a `platform: "desktop"` entry for the same reason.
     - Only include a platform in `validations` if that platform actually ran the test.
-
-Tasks with `fix_scope` of `PRODUCT_BUG` or `INFRA` go into `skipped` instead of `fix_tasks`.
 
 ## Step 8 — Write report.json
 
@@ -195,6 +200,7 @@ Write the following JSON structure to `packages/e2e-utils/src/fixBot/reports/rep
             "fix_scope": "TEST_CODE | LOCATOR_ADD",
             "confidence": "HIGH | MEDIUM | LOW",
             "fix_description": "<what to change and where>",
+            "diagnosis": "diagnosis section,  verbatim",
             "validations": [
                 {
                     "platform": "web | desktop",
@@ -207,7 +213,7 @@ Write the following JSON structure to `packages/e2e-utils/src/fixBot/reports/rep
     "skipped": [
         {
             "root_cause": "<one sentence>",
-            "reason": "<fix_scope> — <brief explanation>",
+            "reason": "PRODUCT_BUG | INFRA — <brief explanation>",
             "affected_tests": ["suite/e2e/tests/..."]
         }
     ]
