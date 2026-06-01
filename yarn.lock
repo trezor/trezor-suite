@@ -16736,7 +16736,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     cashaddrjs: "npm:0.4.4"
-    minimaldata: "npm:^1.0.2"
     varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
   peerDependencies:
@@ -20661,13 +20660,6 @@ __metadata:
   dependencies:
     file-uri-to-path: "npm:1.0.0"
   checksum: 10/593d5ae975ffba15fbbb4788fe5abd1e125afbab849ab967ab43691d27d6483751805d98cb92f7ac24a2439a8a8678cd0131c535d5d63de84e383b0ce2786133
-  languageName: node
-  linkType: hard
-
-"bitcoin-ops@npm:^1.3.0":
-  version: 1.4.1
-  resolution: "bitcoin-ops@npm:1.4.1"
-  checksum: 10/3daa3303d6af49c0727041b5d7801a20c5806d00f1cc1afa2d53099974e30a7b1e7e9e578723dd25f5e120903f2725c595c0205d5d99a6578ad65213d74d806d
   languageName: node
   linkType: hard
 
@@ -35640,16 +35632,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimaldata@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "minimaldata@npm:1.0.2"
-  dependencies:
-    bitcoin-ops: "npm:^1.3.0"
-    pushdata-bitcoin: "npm:^1.0.1"
-  checksum: 10/246cb5795d86e4f1c97d653090be80ae2a7259e1a5c980544980ff8457f5b56304263a5a822f9b664bb3ca0f1d4e81090450b98685fa82e18ddec50ad36f99aa
-  languageName: node
-  linkType: hard
-
 "minimalistic-assert@npm:^1.0.0, minimalistic-assert@npm:^1.0.1":
   version: 1.0.1
   resolution: "minimalistic-assert@npm:1.0.1"
@@ -39293,15 +39275,6 @@ __metadata:
   version: 7.0.1
   resolution: "pure-rand@npm:7.0.1"
   checksum: 10/c61a576fda5032ec9763ecb000da4a8f19263b9e2f9ae9aa2759c8fbd9dc6b192b2ce78391ebd41abb394a5fedb7bcc4b03c9e6141ac8ab20882dd5717698b80
-  languageName: node
-  linkType: hard
-
-"pushdata-bitcoin@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "pushdata-bitcoin@npm:1.0.1"
-  dependencies:
-    bitcoin-ops: "npm:^1.3.0"
-  checksum: 10/963fb0b61258e7654d6e3e34e68c8672bc3fdbd154da0a9af0482d2b7b9e9227b11bc17a39f42003f92e996cb552395e903d369347c840381a356964cf553967
   languageName: node
   linkType: hard
 
