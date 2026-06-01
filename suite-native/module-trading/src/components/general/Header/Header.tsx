@@ -6,11 +6,7 @@ import { selectIsAmountInputActive } from '@suite-native/trading-state';
 
 import { HeaderTabs } from './HeaderTabs';
 
-export type HeaderProps = {
-    isFormMountedRecently?: boolean;
-};
-
-export const Header = ({ isFormMountedRecently }: HeaderProps) => {
+export const Header = () => {
     const shouldHideHeader = useSelector(selectIsAmountInputActive);
 
     if (shouldHideHeader) {
@@ -18,7 +14,7 @@ export const Header = ({ isFormMountedRecently }: HeaderProps) => {
     }
 
     return (
-        <AnimatedBox entering={isFormMountedRecently ? undefined : FadeInUp} exiting={FadeOutUp}>
+        <AnimatedBox entering={FadeInUp} exiting={FadeOutUp}>
             <HeaderTabs />
         </AnimatedBox>
     );

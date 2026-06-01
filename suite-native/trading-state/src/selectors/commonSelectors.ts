@@ -169,6 +169,9 @@ export const selectIsAmountInputActive = (state: TradingRootState) =>
 export const selectActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType;
 
+export const selectHasActiveTradingType = (state: TradingRootState) =>
+    state.wallet.trading.activeTradingType !== null;
+
 export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
     [
         selectCurrentFiatRates,
