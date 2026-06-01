@@ -133,13 +133,12 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeOnTheScreen();
     });
 
-    it('should not render anything when receive address is missing for exchange trade', () => {
+    it('should render skeleton when receive address is missing for exchange trade', () => {
         const tradeWithoutAddress = { ...mockExchangeTrade, sendAddress: undefined };
 
-        const { queryByText } = renderProviderReceiveAddress(tradeWithoutAddress, 'exchange');
+        const { getByTestId } = renderProviderReceiveAddress(tradeWithoutAddress, 'exchange');
 
-        // User should not see any address information when address is missing
-        expect(queryByText(receiveAddressLabel('Mercuryo'))).toBeNull();
+        expect(getByTestId('@trading/provider-receive-address-skeleton')).toBeOnTheScreen();
     });
 
     it('should not render anything when destination address is missing for sell fiat trade', () => {

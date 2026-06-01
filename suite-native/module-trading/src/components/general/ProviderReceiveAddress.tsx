@@ -41,7 +41,7 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
             ? ((trade as ExchangeTrade).sendAddress ?? (trade as ExchangeTrade)?.dexTx?.to)
             : (trade as SellFiatTrade).destinationAddress;
 
-    if (!networkType) {
+    if (!networkType || (tradeType === 'sell' && !receiveAddress)) {
         return null;
     }
 
@@ -73,7 +73,7 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
                             />
                         </AnimatedBox>
                     ) : (
-                        <VStack spacing="sp12">
+                        <VStack spacing="sp12" testID="@trading/provider-receive-address-skeleton">
                             <SkeletonSmall widthPercentage={0.8} height={14} />
                             <SkeletonSmall widthPercentage={0.3} height={14} />
                         </VStack>
