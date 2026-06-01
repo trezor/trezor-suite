@@ -44,13 +44,7 @@
 
 /packages/icons @trezor/suite-mobile
 
-/suite-common/message-system @tomasklim @matejkriz @MiroslavProchazka @pavelmario
-
-/suite-common/token-definitions @tomasklim
-
 /packages/suite-desktop-api @szymonlesisz @marekrjpolak
-
-/suite-native @trezor/suite-mobile
 
 /packages/suite-storage @matejkriz
 
@@ -76,10 +70,6 @@
 
 /packages/dom-utils @trezor/suite-growth
 
-/suite/src/messages.ts @pavelmario
-
-/suite-common/graph @trezor/suite-mobile
-
 /packages/device-authenticity/src/config/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka
 /packages/device-authenticity/src/config/deviceAuthenticityBlacklistConfig.ts @tsusanka @MiroslavProchazka
 
@@ -104,19 +94,26 @@
 /packages/analytics-log-server @jvaclavik
 /packages/analytics-uploader @jvaclavik
 
-# Desktop analytics
+# Suite Desktop Packages
 /suite/analytics @jvaclavik
 /suite/analytics/src/events @jvaclavik @kolomaznikt
 /suite/analytics/src/constants.ts @jvaclavik @kolomaznikt
+/suite/src/messages.ts @pavelmario
 
-# Mobile analytics
+# Suite Mobile Packages
 /suite-native/analytics @jvaclavik
 /suite-native/analytics/src/events @jvaclavik @kolomaznikt
 /suite-native/analytics/src/constants.ts @jvaclavik @kolomaznikt
 /suite-native/analytics/src/types.ts @jvaclavik @kolomaznikt
+/suite-native/module-authorize-device @juriczech
+/suite-native/module-passphrase @juriczech
+/suite-native/passphrase @juriczech
 
-# Common analytics
+# Suite Common Packages
 /suite-common/analytics @jvaclavik
 /suite-common/analytics/src/events @jvaclavik @kolomaznikt
 /suite-common/analytics/src/constants.ts @jvaclavik @kolomaznikt
 /suite-common/analytics/src/types.ts @jvaclavik @kolomaznikt
+/suite-common/graph @trezor/suite-mobile
+/suite-common/message-system @tomasklim @matejkriz @MiroslavProchazka @pavelmario
+/suite-common/token-definitions @tomasklim
