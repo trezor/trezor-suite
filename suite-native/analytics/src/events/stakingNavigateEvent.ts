@@ -20,7 +20,7 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
         },
         from: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The staking dashboard state from which navigation occurred (e.g., `staking-inactive`, `staking-active`, `insufficient-funds`)',
+            description: 'The staking dashboard state from which navigation occurred (e.g., `account/banner`, `dashboard/banner`, `earn/staking-active` etc.)',
         },
         networkSymbol: {
             changelog: [{ version: '26.4.1', notes: 'added' }],

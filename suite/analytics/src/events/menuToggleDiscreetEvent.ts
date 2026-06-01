@@ -8,7 +8,7 @@ type Attributes = {
 
 export const menuToggleDiscreetEvent: EventDef<Attributes, EventType.MenuToggleDiscreet> = {
     name: EventType.MenuToggleDiscreet,
-    descriptionTrigger: 'User clicks the eye icon in the top-right corner of the application to toggle discreet mode on or off',
+    descriptionTrigger: 'User clicks the Hide Balances button to toggle discreet mode on or off',
     changelog: [{ version: '1.0.0', notes: 'added' }],
 
     attributes: {

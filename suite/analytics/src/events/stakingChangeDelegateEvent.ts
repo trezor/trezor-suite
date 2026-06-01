@@ -32,7 +32,7 @@ export const stakingChangeDelegateEvent: EventDef<Attributes, EventType.StakingC
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The blockchain network symbol where the delegate change is occurring (e.g., `eth`, `matic`)',
+            description: 'The blockchain network symbol where the delegate change is occurring (e.g., `ada`)',
         },
         currency: {
             changelog: [{ version: '25.4.0', notes: 'added' }],

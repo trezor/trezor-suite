@@ -42,19 +42,19 @@ export const firmwareFirmwareUpdateStartedEvent: EventDef<
         },
         fromFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Type of firmware before update (e.g., official, beta, or `none`)',
+            description: 'Type of firmware before update (e.g., `bitcoin-only`, `regular`, `universal`, or `none`)',
         },
         toFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Type of target firmware (e.g., official, beta)',
+            description: 'Type of target firmware (e.g., `bitcoin-only`, `regular`, `universal`)',
         },
         location: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Where the update was initiated: `settings` from device settings, `onboarding` during initial setup, null if not specified',
+            description: 'Where the update was initiated: `settings` from device settings, `onboarding` during initial setup, `null` if not specified',
         },
         startType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'How the update was started: `initial` for first attempt, `retry` if retrying after a previous failure',
+            description: 'How the update was started: `normal` for first attempt, `retry` if retrying after a previous failure',
         },
     },
 };

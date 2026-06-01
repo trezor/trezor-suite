@@ -43,15 +43,15 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
         },
         fromFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The firmware type before update (e.g., `official`, `beta`, or `none`)',
+            description: 'The firmware type before update (e.g., `bitcoin-only`, `regular`, `universal`, or `none`)',
         },
         toFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The target firmware type (e.g., `official`, `beta`)',
+            description: 'The target firmware type (e.g., `bitcoin-only`, `regular`, `universal`)',
         },
         location: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Where the firmware update was initiated: `settings`, `onboarding`, or null',
+            description: 'Where the firmware update was initiated: `settings`, `onboarding`, or `null`',
         },
         duration: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
@@ -59,7 +59,10 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
         },
         stuckedType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The specific stuck state: `uploading` if stuck during upload, `installing` if stuck during installation, `restarting` if stuck during restart',
+            description: `The step at which the stuck state was reported:
+- \`buttonVisible\`: the "I might be stuck" button appears after a timeout on the installation screen (no user action yet)
+- \`modalPart1\`: user presses the button to open the recovery bottom sheet
+- \`modalPart2\`: user advances to the second screen of the bottom sheet (recovery tips)`,
         },
     },
 };

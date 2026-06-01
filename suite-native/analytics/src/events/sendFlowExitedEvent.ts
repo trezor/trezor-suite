@@ -15,7 +15,7 @@ export const sendFlowExitedEvent: EventDef<Attributes, EventType.SendFlowExited>
     attributes: {
         step: {
             changelog: [{ version: '24.10.1', notes: 'added' }],
-            description: 'The step in the send flow where the user exited (e.g., `address_and_amount`, `address_and_amount`, `destination_tag_review`, `fee_settings_review`, `outputs_review`, `utxo_selection`)',
+            description: 'The step in the send flow where the user exited (e.g., `address_and_amount`, `address_review`, `destination_tag_review`, `fee_settings`, `outputs_review`, `utxo_selection`)',
         },
     },
 };

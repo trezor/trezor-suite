@@ -48,7 +48,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
         symbol: {
-            description: 'Account[`symbol`] e.g. `btc`, `eth`, `doge`',
+            description: 'Network symbol e.g. `btc`, `eth`',
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
         tokens: {
@@ -77,11 +77,11 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         },
         destinationTag: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'Whether the transaction includes a destination tag (specific to certain networks like Ripple)',
+            description: 'Whether the transaction includes a destination tag',
         },
         selectedFee: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'The selected fee level for the transaction (e.g., `slow`, `normal`, `fast`)',
+            description: 'The selected fee level for the transaction (e.g., `custom`, `normal`, `economy`, `high`, `low`)',
         },
         isCoinControlEnabled: {
             changelog: [{ version: '1.9.0', notes: 'added' }],

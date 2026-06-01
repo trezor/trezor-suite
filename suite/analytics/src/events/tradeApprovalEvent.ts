@@ -46,7 +46,7 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         sendCryptoNetworkSymbol: {
-            description: 'The blockchain network symbol for the sent cryptocurrency (e.g., `eth`, `bsc`, `polygon`)',
+            description: 'The blockchain network symbol for the sent cryptocurrency (e.g., `eth`, `bsc`)',
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         sendCryptoContractAddress: {
@@ -58,7 +58,7 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         receiveCryptoNetworkSymbol: {
-            description: 'The blockchain network symbol for the received cryptocurrency (e.g., `eth`, `bsc`, `polygon`)',
+            description: 'The blockchain network symbol for the received cryptocurrency (e.g., `eth`, `bsc`)',
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         receiveCryptoContractAddress: {

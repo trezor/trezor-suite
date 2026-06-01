@@ -17,7 +17,7 @@ export const accountsEmptyAccountReceiveEvent: EventDef<
     attributes: {
         symbol: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'The cryptocurrency/token symbol of the account (e.g., `btc`, `eth`, `usdc`)',
+            description: 'The cryptocurrency/token symbol of the account (e.g., `btc`, `eth`)',
         },
     },
 };
