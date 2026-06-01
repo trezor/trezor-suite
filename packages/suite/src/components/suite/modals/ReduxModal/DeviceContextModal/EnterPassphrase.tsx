@@ -4,6 +4,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
@@ -36,7 +37,14 @@ export const EnterPassphrase = ({
 }: EnterPassphraseProps) => {
     const [value, setValue] = useState('');
     const deviceModel = useSelector(selectDeviceModel);
+    const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device.path));
     const isUsingNonAsciiCharacters = getNonAsciiChars(value) !== null;
+
+    // Scoped add-wallet flow: REQUEST_PASSPHRASE is kept out of the global modal, so the device's
+    // readiness for the passphrase comes from discovery.status.
+    const isDeviceLoading = !(
+        discovery?.status === 'enter-passphrase' || discovery?.status === 'confirm-empty-passphrase'
+    );
 
     return (
         <SwitchDeviceModal onCancel={onCancel}>
@@ -177,6 +185,7 @@ export const EnterPassphrase = ({
                         </Column>
                     </Column>
                     <PassphraseInputCard
+                        isDeviceLoading={isDeviceLoading}
                         deviceModel={deviceModel ?? undefined}
                         isLoading={submitting}
                         onSubmit={onSubmit}

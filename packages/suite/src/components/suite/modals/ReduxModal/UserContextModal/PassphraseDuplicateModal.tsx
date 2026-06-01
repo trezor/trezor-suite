@@ -2,8 +2,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
     cancelDiscoveryThunk,
-    runDiscoveryThunk,
-    startDiscoveryThunk,
+    startAddWalletDiscoveryThunk,
     switchToDuplicatedWallet,
 } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
@@ -36,10 +35,10 @@ export const PassphraseDuplicateModal = ({
     const onTryDifferentPassphrase = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
                 isAddingHiddenWallet: true,
-                isAddingExistingWallet: !!discovery.isAddingExistingWallet,
+                isAddingExistingWallet: discovery.isAddingExistingWallet,
             }),
         );
     };
@@ -47,13 +46,12 @@ export const PassphraseDuplicateModal = ({
     const onBack = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
-                ...discovery,
+                isAddingHiddenWallet: discovery.isAddingHiddenWallet,
+                isAddingExistingWallet: discovery.isAddingExistingWallet,
             }),
         );
-
-        dispatch(runDiscoveryThunk(device));
     };
 
     return (

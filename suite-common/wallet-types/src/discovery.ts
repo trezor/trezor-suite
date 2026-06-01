@@ -1,5 +1,12 @@
 import type { BundleProgress, DeviceUniquePath, StaticSessionId } from '@trezor/connect';
 
+export type DiscoveryCallIds = {
+    initialDeviceState: string;
+    emptyPassphraseCheck: string;
+    discoverAccounts: string;
+    confirmDeviceState: string;
+};
+
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
@@ -7,6 +14,7 @@ type CommonDiscoveryStatus = {
     passphraseOnDevice?: boolean;
     startTimestamp?: number;
     passphraseSubmitted?: boolean;
+    useScopedCallIds?: boolean;
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &
