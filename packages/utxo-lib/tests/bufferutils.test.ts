@@ -216,28 +216,18 @@ describe('bufferutils', () => {
             });
         });
 
-        // int64-buffer silently coerces unparseable strings and overflows modulo 2^64
-        // without throwing. These snapshots pin that behavior so a future library swap
-        // (e.g. to viem / @noble) surfaces the change instead of corrupting silently.
-        // FIXME(bigint-migration): silent coercion is a latent bug — once int64-buffer
-        // is replaced, flip these expectations to `toThrow` for invalid inputs.
-        describe('invalid string input (regression guard)', () => {
+        describe('invalid string input', () => {
             [
-                { description: 'non-numeric string', input: 'abc', hex: '0000000000000000' },
-                { description: 'empty string', input: '', hex: '0000000000000000' },
-                {
-                    description: 'overflow > UINT64_MAX',
-                    input: '99999999999999999999',
-                    hex: 'ffff0f632d5ec76b',
-                },
+                { description: 'non-numeric string', input: 'abc' },
+                { description: 'empty string', input: '' },
+                { description: 'overflow > UINT64_MAX', input: '99999999999999999999' },
             ].forEach(f => {
-                it(`writes deterministic bytes for ${f.description}`, () => {
+                it(`throws for ${f.description}`, () => {
                     const buffer = Buffer.alloc(8, 0);
 
-                    const n = bufferutils.writeUInt64LEasString(buffer, f.input, 0);
-
-                    expect(buffer.toString('hex')).toEqual(f.hex);
-                    expect(n).toEqual(8);
+                    expect(() => {
+                        bufferutils.writeUInt64LEasString(buffer, f.input, 0);
+                    }).toThrow();
                 });
             });
         });
@@ -278,39 +268,27 @@ describe('bufferutils', () => {
                 });
             });
 
-        it('overflows for INT64_MIN due to JS number precision loss', () => {
-            // The JS Number literal -9223372036854775808 rounds to -9223372036854776000,
-            // which int64-buffer wraps modulo 2^64 to INT64_MAX. This regression test
-            // pins the current (buggy) behavior so future migrations of int64-buffer
-            // surface the change instead of silently corrupting amounts.
-            // FIXME(bigint-migration): once arithmetic moves to BigInt, expect either
-            // the correct INT64_MIN encoding (0000000000000080) or a thrown range error.
+        it('encodes INT64_MIN correctly', () => {
             const buffer = Buffer.alloc(8, 0);
 
-            bufferutils.writeInt64LE(buffer, -9223372036854775808, 0);
+            const n = bufferutils.writeInt64LE(buffer, -9223372036854775808, 0);
 
-            expect(buffer.toString('hex')).not.toEqual('0000000000000080');
-            expect(buffer.toString('hex')).toEqual('ffffffffffffff7f');
+            expect(buffer.toString('hex')).toEqual('0000000000000080');
+            expect(n).toEqual(8);
         });
 
-        // int64-buffer silently coerces NaN / Infinity to deterministic bytes
-        // without throwing. These snapshots pin that behavior so a future library swap
-        // surfaces the change instead of corrupting silently.
-        // FIXME(bigint-migration): silent coercion is a latent bug — once int64-buffer
-        // is replaced, flip these expectations to `toThrow` for invalid inputs.
-        describe('invalid number input (regression guard)', () => {
+        describe('invalid number input', () => {
             [
-                { description: 'NaN', input: NaN, hex: '0000000000000000' },
-                { description: 'Infinity', input: Infinity, hex: '0000000000000000' },
-                { description: '-Infinity', input: -Infinity, hex: 'ffffffffffffffff' },
+                { description: 'NaN', input: NaN },
+                { description: 'Infinity', input: Infinity },
+                { description: '-Infinity', input: -Infinity },
             ].forEach(f => {
-                it(`writes deterministic bytes for ${f.description}`, () => {
+                it(`throws for ${f.description}`, () => {
                     const buffer = Buffer.alloc(8, 0);
 
-                    const n = bufferutils.writeInt64LE(buffer, f.input, 0);
-
-                    expect(buffer.toString('hex')).toEqual(f.hex);
-                    expect(n).toEqual(8);
+                    expect(() => {
+                        bufferutils.writeInt64LE(buffer, f.input, 0);
+                    }).toThrow();
                 });
             });
         });

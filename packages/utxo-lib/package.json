@@ -54,7 +54,6 @@
         "@sinclair/typebox": "^0.34.49",
         "@trezor/utils": "workspace:*",
         "cashaddrjs": "0.4.4",
-        "int64-buffer": "^1.1.0",
         "varuint-bitcoin": "2.0.0",
         "wif": "^5.0.0"
     },

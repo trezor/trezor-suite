@@ -32,7 +32,6 @@ cashaddrjs
 event-target-shim
 golomb
 immer
-int64-buffer
 json-schema-to-typescript
 jws
 minimaldata
