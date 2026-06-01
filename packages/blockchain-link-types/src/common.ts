@@ -356,6 +356,7 @@ export interface AccountInfo {
         sequence?: number;
         // Stellar
         stellarSequence?: string;
+        baseReserve?: string;
         reserve?: string;
         // blockfrost
         rewards?: string;

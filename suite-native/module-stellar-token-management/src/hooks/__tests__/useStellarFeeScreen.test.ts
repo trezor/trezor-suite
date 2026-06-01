@@ -12,7 +12,7 @@ import {
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils-store';
-import { BASE_INFO } from '@trezor/coins-stellar/constants';
+import { STELLAR_BASE_RESERVE } from '@trezor/coins-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useStellarFeeScreen } from '../useStellarFeeScreen';
@@ -43,6 +43,7 @@ const mockAccount = {
     balance: '10000000000',
     availableBalance: '10000000000',
     formattedBalance: '1000',
+    misc: {},
 };
 
 jest.mock('@suite-native/alerts', () => ({
@@ -256,7 +257,7 @@ describe('useStellarFeeScreen', () => {
 
         const { result } = renderUseStellarFeeScreen();
 
-        const requiredAmount = BigNumber('100').plus(BASE_INFO.BASE_RESERVE).toString();
+        const requiredAmount = BigNumber('100').plus(STELLAR_BASE_RESERVE).toString();
 
         expect(result.current.insufficientBalanceInfo).toEqual({
             required: requiredAmount,
