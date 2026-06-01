@@ -7,6 +7,7 @@ import {
     getNetworkType,
 } from '@suite-common/wallet-config';
 import {
+    type EthereumSpecific,
     type TokenInfo,
     type TokenStandard,
     type TokenTransfer,
@@ -112,6 +113,12 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
     token.name?.toLowerCase().includes(search) ||
     token.contract?.toLowerCase().includes(search);
+
+export const isFunctionSelectorMatchesSearch = (evmSpecific: EthereumSpecific, search: string) => {
+    if (evmSpecific?.parsedData?.name.toLowerCase().includes(search.toLowerCase())) return true;
+
+    return false;
+};
 
 const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set([
     'ERC20',

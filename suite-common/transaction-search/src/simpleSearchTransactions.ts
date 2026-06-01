@@ -1,5 +1,8 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { isTokenTransferMatchesSearch } from '@suite-common/wallet-utils';
+import {
+    isFunctionSelectorMatchesSearch,
+    isTokenTransferMatchesSearch,
+} from '@suite-common/wallet-utils';
 import { BigNumber, typedObjectKeys, unique } from '@trezor/utils';
 
 import { getTargetAmounts } from './getTargetAmounts';
@@ -199,6 +202,20 @@ export const simpleSearchTransactions = (
         return [];
     });
     txsToSearch.push(...foundTxsForToken);
+
+    // Find by evm parsed function selector
+    const foundTxsForFunctionSelector = transactions.flatMap(transaction => {
+        const hasMatchingFunctionSelector =
+            transaction.ethereumSpecific &&
+            isFunctionSelectorMatchesSearch(transaction.ethereumSpecific, search.toLowerCase());
+
+        if (hasMatchingFunctionSelector) {
+            return transaction.txid;
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForFunctionSelector);
 
     // Remove duplicate txIDs
     return transactions.filter(
