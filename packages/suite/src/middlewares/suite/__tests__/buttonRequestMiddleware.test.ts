@@ -6,6 +6,7 @@ import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
+import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_REQUEST } from '@trezor/connect';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
@@ -73,11 +74,13 @@ describe('buttonRequest middleware', () => {
             { type: connectInitThunk.pending.type, payload: undefined },
             { type: connectInitThunk.fulfilled.type, payload: undefined },
             { type: lockDevice.type, payload: true },
+            { type: defaultTrezorUIEventHandlerThunk.pending.type },
             { type: UI_REQUEST.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
                 type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
             },
+            { type: defaultTrezorUIEventHandlerThunk.pending.type },
             {
                 type: UI_REQUEST.REQUEST_PIN,
                 payload: { type: 'PinMatrixRequestType_NewFirst', device },
@@ -86,6 +89,8 @@ describe('buttonRequest middleware', () => {
                 type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
             },
+            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
+            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
             { type: lockDevice.type, payload: false },
             { type: deviceActions.removeButtonRequests.type, payload: { device } },
         ]);

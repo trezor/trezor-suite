@@ -22,6 +22,7 @@ import {
     type StaticSessionId,
 } from '@trezor/connect';
 
+import { type ConnectInitHooks } from './connectInitHooksType';
 import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -39,6 +40,7 @@ export type CommonServices = SuiteSyncDep &
         analytics: Analytics<AnalyticsSharedEvents>;
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
+        connectInitHooks: ConnectInitHooks;
     } & ReportSecurityCheckDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep;
 

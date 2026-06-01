@@ -85,6 +85,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings,
+        connectInitHooks: { deviceEvent: {}, uiEvent: {} },
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {
