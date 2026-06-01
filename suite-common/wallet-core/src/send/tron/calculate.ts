@@ -13,6 +13,7 @@ export const calculate = (
     feeLevel: EstimateFeeLevel,
     networkSymbol: NetworkSymbol,
     bytes: number,
+    hasMemo: boolean,
     token?: TokenInfo,
     isNewAccount?: boolean,
     userCallDataHex?: string,
@@ -25,11 +26,26 @@ export const calculate = (
             token,
             networkSymbol,
             bytes,
+            hasMemo,
         );
     }
     if (userCallDataHex) {
-        return calculateRawContractCall(availableBalance, output, feeLevel, networkSymbol, bytes);
+        return calculateRawContractCall(
+            availableBalance,
+            output,
+            feeLevel,
+            networkSymbol,
+            bytes,
+            hasMemo,
+        );
     }
 
-    return calculateTrxTransfer(availableBalance, output, feeLevel, isNewAccount ?? false, bytes);
+    return calculateTrxTransfer(
+        availableBalance,
+        output,
+        feeLevel,
+        isNewAccount ?? false,
+        bytes,
+        hasMemo,
+    );
 };

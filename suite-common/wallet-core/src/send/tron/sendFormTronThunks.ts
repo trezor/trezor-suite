@@ -169,6 +169,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             feeLevel,
             account.symbol,
             bytes,
+            noteHex !== undefined,
             token,
             isNewAccount,
             userCallDataHex,
