@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
+import { getAddress, isAddress } from 'viem';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
@@ -239,11 +239,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     learnMoreUrl: addressDeprecatedUrl ? ALL_URLS[addressDeprecatedUrl] : undefined,
                 };
             case 'evmChecks':
-                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                if (networkType === 'ethereum' && !isAddress(address)) {
                     return {
                         buttonProps: {
                             onClick: () => {
-                                setValue(inputName, toChecksumAddress(address), {
+                                setValue(inputName, getAddress(address), {
                                     shouldValidate: true,
                                 });
 
@@ -371,7 +371,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                 // 1. Validate address checksum.
                 // Eth addresses are valid without checksum but Trezor displays them as checksummed.
-                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                if (networkType === 'ethereum' && !isAddress(address)) {
                     const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
                         address,
                         payload.history,

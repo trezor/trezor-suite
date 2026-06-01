@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
-import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
+import { getAddress, isAddress } from 'viem';
 
 import { isAddressValid } from '@suite-common/address';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
@@ -29,7 +29,7 @@ export const useAddressChecksum = (addressFieldName: string) => {
     const isFilledValidAddress = !!addressValue && !!symbol && isAddressValid(addressValue, symbol);
 
     const convertAddressToChecksum = useCallback(() => {
-        setValue(addressFieldName, toChecksumAddress(addressValue), {
+        setValue(addressFieldName, getAddress(addressValue), {
             shouldValidate: true,
         });
         setWasAddressChecksummed(true);
@@ -40,7 +40,7 @@ export const useAddressChecksum = (addressFieldName: string) => {
     }, []);
 
     const handleAddressChecksum = useCallback(async () => {
-        if (isFilledValidAddress && symbol && !checkAddressCheckSum(addressValue)) {
+        if (isFilledValidAddress && symbol && !isAddress(addressValue)) {
             const params = {
                 descriptor: addressValue,
                 coin: symbol,
