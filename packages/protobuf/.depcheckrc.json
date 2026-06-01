@@ -1,4 +1,4 @@
 {
-    "ignore-patterns": ["lib", "libDev", "libESM"],
+    "ignore-patterns": ["lib", "libDev"],
     "ignores": ["@bufbuild/buf", "@bufbuild/protoc-gen-es", "tsx"]
 }
