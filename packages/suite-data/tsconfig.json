@@ -13,7 +13,6 @@
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../../suite/intl" },
-        { "path": "../env-utils" },
         { "path": "../eslint" }
     ]
 }
