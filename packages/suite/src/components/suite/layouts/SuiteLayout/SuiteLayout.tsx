@@ -16,14 +16,15 @@ import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { LayoutContext, type LayoutContextPayload } from 'src/support/suite/LayoutContext';
 
 import { AppShortcuts } from './AppShortcuts';
+import { ContentContainer } from '../ContentContainer';
+import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { DebugLegend } from './DebugLegend';
-import { PassphraseFlow } from './PassphraseFlow';
 import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
 import { Sidebar } from './Sidebar/Sidebar';
-import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
-import { ContentContainer } from '../ContentContainer';
+import { SwitchDeviceLayer } from './SwitchDeviceLayer';
 import { useResponsiveContextOnChange } from './useResponsiveContextOnChange';
+import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -119,7 +120,8 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
                             <Metadata title={title} />
 
                             <ModalSwitcher />
-                            <PassphraseFlow />
+                            <SwitchDeviceLayer />
+                            <AddPassphraseWalletFlow />
 
                             <AppShortcuts />
                             <PowerMonitorManager />

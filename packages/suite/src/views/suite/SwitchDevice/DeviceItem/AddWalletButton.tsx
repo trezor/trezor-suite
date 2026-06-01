@@ -7,7 +7,7 @@ import { closeModalApp, goto } from '@suite/router';
 import {
     selectDeviceThunk,
     selectIsAnyNetworkEnabled,
-    startDiscoveryThunk,
+    startAddWalletDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
@@ -71,7 +71,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         dispatch(closeModalApp());
         // TODO: when creating a new hidden wallet, we should not start discovery yet, but only after going through the best practices flow
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
                 isAddingHiddenWallet: walletType === WalletType.PASSPHRASE,
                 isAddingExistingWallet: isExisting,

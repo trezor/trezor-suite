@@ -148,10 +148,10 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
         dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
     }
 
-    dispatch(startDiscoveryThunk({ device }));
-
-    // only to satisfy typescript, there must be a device to progress with onboarding
+    // there must be a device to progress with onboarding
     if (device?.features === undefined) return;
+
+    dispatch(startDiscoveryThunk({ device }));
     const reportAnalytics = () => {
         const payload = {
             ...onboardingAnalytics,

@@ -46,7 +46,7 @@ export const AddHiddenWalletButton = () => {
                 isAddingExistingWallet: false,
             }),
         );
-        dispatch(runDiscoveryThunk(device));
+        dispatch(runDiscoveryThunk({ device }));
 
         navigation.navigate(RootStackRoutes.PassphraseStack, {
             screen: PassphraseStackRoutes.PassphraseForm,

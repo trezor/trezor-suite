@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Box,
@@ -19,18 +18,19 @@ import {
     Tooltip,
     motionEasing,
 } from '@trezor/components';
-import { UI_REQUEST } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 type PassphraseInputCardProps = {
     deviceModel?: DeviceModelInternal;
     isLoading?: boolean;
+    // Whether the device is still busy and not yet waiting for the passphrase, so submit must
+    // stay disabled. Computed by the parent because the "ready" signal differs per flow (global
+    // passphrase modal vs. scoped add-wallet discovery).
+    isDeviceLoading: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     offerPassphraseOnDevice: boolean;
     allowNonAsciiCharacters?: boolean;
@@ -56,13 +56,13 @@ const heightFadeMotionProps = {
 export const PassphraseInputCard = ({
     deviceModel,
     isLoading,
+    isDeviceLoading,
     onSubmit,
     offerPassphraseOnDevice,
     allowNonAsciiCharacters = false,
     value: externalValue,
     setValue: setExternalValue,
 }: PassphraseInputCardProps) => {
-    const modal = useSelector(state => state.modal);
     const [internalValue, setInternalValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
@@ -70,10 +70,6 @@ export const PassphraseInputCard = ({
     const { translationString } = useTranslation();
     const value = externalValue ?? internalValue;
     const setValue = setExternalValue ?? setInternalValue;
-
-    const isDeviceLoading = !(
-        modal.context === MODAL_CONTEXT_DEVICE && modal.windowType === UI_REQUEST.REQUEST_PASSPHRASE
-    );
 
     const isPassphraseTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
     const isUsingNonAsciiCharacters = allowNonAsciiCharacters

@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -25,11 +25,10 @@ export const PassphraseMismatchModal = ({
 
     const onStartOver = () => {
         dispatch(cancelDiscoveryThunk(device));
-
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
-                isAddingHiddenWallet: discovery.isAddingHiddenWallet,
+                isAddingHiddenWallet: true,
                 isAddingExistingWallet: discovery.isAddingExistingWallet,
             }),
         );

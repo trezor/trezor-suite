@@ -83,3 +83,4 @@ export * from './phishing/phishingSelectors';
 export type * from './phishing/phishingReducerTypes';
 export * from './stake/stakeDataSlice';
 export * from './uiEvent/defaultTrezorUIEventHandlerThunk';
+export * from './discovery/passphraseWalletThunks';

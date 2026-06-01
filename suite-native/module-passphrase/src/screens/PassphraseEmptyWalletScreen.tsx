@@ -46,7 +46,7 @@ export const PassphraseEmptyWalletScreen = () => {
                     isAddingExistingWallet: false,
                 }),
             );
-            dispatch(runDiscoveryThunk(device));
+            dispatch(runDiscoveryThunk({ device }));
         }
         analytics.report({ type: events.passphraseTryAgainEvent.name });
     };

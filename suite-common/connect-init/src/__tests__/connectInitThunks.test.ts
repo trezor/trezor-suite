@@ -4,7 +4,15 @@ import {
     extraDependenciesCommonMock,
     testMocks,
 } from '@suite-common/test-utils';
-import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
+import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
+import {
+    BLOCKCHAIN_EVENT,
+    DEVICE,
+    DEVICE_EVENT,
+    TRANSPORT_EVENT,
+    UI_EVENT,
+    UI_REQUEST,
+} from '@trezor/connect';
 
 import { connectInitThunk } from '../connectInitThunks';
 
@@ -149,6 +157,128 @@ describe('TrezorConnect Actions', () => {
             type: extraDependenciesCommonMock.actions.lockDevice.type,
             payload: true,
         });
+    });
+
+    it('callId-bearing UI events are swallowed by the global listener', async () => {
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        await store.dispatch(connectInitThunk());
+        const actionsBefore = store.getActions().length;
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+
+        emitTestEvent(UI_EVENT, {
+            type: UI_REQUEST.REQUEST_BUTTON,
+            payload: { code: 'ButtonRequest_ProtectCall' },
+        });
+        emitTestEvent(UI_EVENT, {
+            type: UI_REQUEST.REQUEST_BUTTON,
+            payload: { code: 'ButtonRequest_ProtectCall' },
+            callId: 'scoped-call-id',
+        });
+        await new Promise(resolve => setImmediate(resolve));
+
+        const newActions = store.getActions().slice(actionsBefore);
+
+        const pendingCount = newActions.filter(
+            a => a.type === defaultTrezorUIEventHandlerThunk.pending.type,
+        ).length;
+        const fulfilledCount = newActions.filter(
+            a => a.type === defaultTrezorUIEventHandlerThunk.fulfilled.type,
+        ).length;
+        const buttonActionCount = newActions.filter(
+            a => a.type === UI_REQUEST.REQUEST_BUTTON,
+        ).length;
+
+        expect(pendingCount).toBe(1);
+        expect(fulfilledCount).toBe(1);
+        expect(buttonActionCount).toBe(1);
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('callId=scoped-call-id'));
+
+        warnSpy.mockRestore();
+    });
+
+    it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
+        const onConnect = jest.fn();
+        const onConnectUnacquired = jest.fn();
+        const storeWithHooks = configureMockStore({
+            preloadedState: {
+                wallet: { settings: { enabledNetworks: [] } },
+                device: { selectedDevice: undefined, devices: [] },
+                firmware: { firmwareChannel: 'production' },
+                messageSystem: messageSystemInitialState,
+            },
+            extra: {
+                services: {
+                    connectInitHooks: {
+                        deviceEvent: {
+                            [DEVICE.CONNECT]: onConnect,
+                            [DEVICE.CONNECT_UNACQUIRED]: onConnectUnacquired,
+                        },
+                        uiEvent: {},
+                    },
+                },
+            },
+        });
+
+        await storeWithHooks.dispatch(connectInitThunk());
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+
+        const connectPayload = { path: 'device-1', features: {} };
+        emitTestEvent(DEVICE_EVENT, { type: DEVICE.CONNECT, payload: connectPayload });
+        const unacquiredPayload = { path: 'device-2' };
+        emitTestEvent(DEVICE_EVENT, {
+            type: DEVICE.CONNECT_UNACQUIRED,
+            payload: unacquiredPayload,
+        });
+
+        expect(onConnect).toHaveBeenCalledWith(connectPayload, expect.any(Array));
+        expect(onConnectUnacquired).toHaveBeenCalledWith(unacquiredPayload, expect.any(Array));
+    });
+
+    it('connectInitHooks.uiEvent is called per action.type forwarded from the global listener', async () => {
+        const onInvalidPinDepleted = jest.fn();
+        const onRequestWord = jest.fn();
+        const storeWithHooks = configureMockStore({
+            preloadedState: {
+                wallet: { settings: { enabledNetworks: [] } },
+                device: { selectedDevice: undefined, devices: [] },
+                firmware: { firmwareChannel: 'production' },
+                messageSystem: messageSystemInitialState,
+            },
+            extra: {
+                services: {
+                    connectInitHooks: {
+                        deviceEvent: {},
+                        uiEvent: {
+                            [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: onInvalidPinDepleted,
+                            [UI_REQUEST.REQUEST_WORD]: onRequestWord,
+                        },
+                    },
+                },
+            },
+        });
+
+        await storeWithHooks.dispatch(connectInitThunk());
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+
+        emitTestEvent(UI_EVENT, {
+            type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED,
+            payload: {},
+        });
+        await Promise.resolve();
+        emitTestEvent(UI_EVENT, { type: UI_REQUEST.REQUEST_WORD, payload: {} });
+        await Promise.resolve();
+
+        expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);
+        expect(onRequestWord).toHaveBeenCalledTimes(1);
+
+        emitTestEvent(UI_EVENT, {
+            type: UI_REQUEST.REQUEST_BUTTON,
+            payload: { code: 'ButtonRequest_ProtectCall' },
+        });
+        await Promise.resolve();
+
+        expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);
+        expect(onRequestWord).toHaveBeenCalledTimes(1);
     });
 
     it('Test that connect mock works with __info parameter', async () => {
