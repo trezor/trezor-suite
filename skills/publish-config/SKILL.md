@@ -16,9 +16,9 @@ Applies to any package with `publishConfig`.
 3. **`publishConfig.main`** and **`publishConfig.types`** — both required.
 4. **`publishConfig.exports["."].default`** and **`publishConfig.exports["."].types`** — must export the same files as in Rule 3.
 5. **Wildcard exports** — (`./lib/*`) must be a passthrough string (`"./lib/*"`) — an object would double the `.mjs` extension.
-6. **Explicit (non-wildcard) exports** — not shape-checked (intentional overrides), but must still have a counterpart. Typically used to route a directory import to its `index.js`, e.g. `"./lib/protocol-thp": { "types": "./lib/protocol-thp/index.d.ts", "default": "./lib/protocol-thp/index.js" }` — without this, the wildcard would resolve to `protocol-thp.js` instead of `protocol-thp/index.js`.
+6. **Explicit (non-wildcard) exports** — not shape-checked (intentional overrides). Typically used to route a directory import to its `index.mjs`, e.g. `"./lib/protocol-thp": { "types": "./lib/protocol-thp/index.d.mts", "default": "./lib/protocol-thp/index.mjs" }` — without this, the wildcard would resolve to `protocol-thp.mjs` instead of `protocol-thp/index.mjs`.
 7. **Key order** — `"types"` must come before `"default"` in every condition object (recursive). TypeScript evaluates conditions in declaration order.
-8. **ESM-only packages** — must declare top-level `"type": "module"`. Do not duplicate it under `publishConfig.type` — `publishConfig` would only shadow the top level with the same value at publish time, so we keep a single source of truth.
+8. **`type`** — must declare top-level `"type": "module"`. Do not duplicate it under `publishConfig.type` — `publishConfig` would only shadow the top level with the same value at publish time, so we keep a single source of truth.
 
 ## Example
 
@@ -26,7 +26,7 @@ Applies to any package with `publishConfig`.
 {
     "name": "@trezor/example",
     "main": "./src/index.ts", // Rule 1
-    "type": "module", // Rule 9 — ESM-only packages only
+    "type": "module", // Rule 8
     "files": ["lib/", "CHANGELOG.md"], // Rule 2
     "publishConfig": {
         "main": "./lib/index.mjs", // Rule 3
@@ -34,14 +34,8 @@ Applies to any package with `publishConfig`.
         "exports": {
             ".": {
                 // Rule 4: exact shape required
-                "import": {
-                    "types": "./lib/index.d.mts", // Rule 7: "types" before "default"
-                    "default": "./lib/index.mjs",
-                },
-                "require": {
-                    "types": "./lib/index.d.ts",
-                    "default": "./lib/index.js",
-                },
+                "types": "./lib/index.d.mts", // Rule 7: "types" before "default"
+                "default": "./lib/index.mjs",
             },
             // Rule 5: ESM wildcard — passthrough string
             "./lib/*": "./lib/*",
