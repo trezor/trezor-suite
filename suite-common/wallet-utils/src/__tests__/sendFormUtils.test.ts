@@ -433,7 +433,7 @@ describe('sendForm utils', () => {
                 },
                 {
                     ...networkSpecificDefaultStellar,
-                    misc: { reserve: '5000000', stellarSequence: '0' },
+                    misc: { reserve: '5000000', baseReserve: '5000000', stellarSequence: '0' },
                 },
             );
 

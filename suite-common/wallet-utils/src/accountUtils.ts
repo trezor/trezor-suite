@@ -761,6 +761,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             networkType,
             misc: {
                 stellarSequence: misc?.stellarSequence ?? '0',
+                baseReserve: misc?.baseReserve ?? '0',
                 reserve: misc?.reserve ?? '0',
             },
             marker: undefined,
