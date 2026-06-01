@@ -6,7 +6,7 @@ import {
     type PrecomposedTransaction,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { calculateTotalGasCost, gweiToWei } from '@suite-common/wallet-utils';
+import { calculateTotalGasCost, fromGwei } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -52,7 +52,7 @@ const buildYieldClaimFeeLevel = ({
         return buildInsufficientFeeBalanceTransaction();
     }
 
-    const fee = calculateTotalGasCost(gweiToWei(feeRate), gasLimit);
+    const fee = calculateTotalGasCost(fromGwei(feeRate).toWei(), gasLimit);
 
     if (new BigNumber(fee).gt(availableBalance)) {
         return buildInsufficientFeeBalanceTransaction();
@@ -152,15 +152,15 @@ export const getYieldClaimFee = (feePreview: PrecomposedTransactionFinal): Yield
     if (feePreview.maxFeePerGas && feePreview.maxPriorityFeePerGas) {
         return {
             gasLimit: feePreview.feeLimit,
-            maxFeePerGas: gweiToWei(feePreview.maxFeePerGas),
-            maxPriorityFeePerGas: gweiToWei(feePreview.maxPriorityFeePerGas),
+            maxFeePerGas: fromGwei(feePreview.maxFeePerGas).toWei(),
+            maxPriorityFeePerGas: fromGwei(feePreview.maxPriorityFeePerGas).toWei(),
         };
     }
 
     if (feePreview.feePerByte) {
         return {
             gasLimit: feePreview.feeLimit,
-            gasPrice: gweiToWei(feePreview.feePerByte),
+            gasPrice: fromGwei(feePreview.feePerByte).toWei(),
         };
     }
 

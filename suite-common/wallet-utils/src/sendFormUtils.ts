@@ -7,8 +7,6 @@ import {
     type Merge,
 } from 'react-hook-form';
 
-import { padLeft } from 'web3-utils';
-
 import {
     type Network,
     type NetworkSymbol,
@@ -59,7 +57,7 @@ import {
 } from './amountUtils';
 import { isBaseCurrencyWithSats } from './baseCurrency';
 import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
-import { isEip1559, isEvmApprovalTx, sanitizeHex } from './ethUtils';
+import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -129,11 +127,11 @@ const getSerializedAmount = (amount?: string) => (amount ? fromEther(amount).toW
 
 const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string) => {
     // 32 bytes address parameter, remove '0x' prefix
-    const erc20recipient = padLeft(to, 64).substring(2);
+    const erc20recipient = strip(to).padStart(64, '0');
     // convert amount to satoshi
     const tokenAmount = convertAmountUnitsToSubunits(amount, token.decimals);
     // 32 bytes amount paramter, remove '0x' prefix
-    const erc20amount = padLeft(fromIntegerString(tokenAmount).toHex(), 64).substring(2);
+    const erc20amount = fromIntegerString(tokenAmount).toHex().substring(2).padStart(64, '0');
 
     // join data
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;

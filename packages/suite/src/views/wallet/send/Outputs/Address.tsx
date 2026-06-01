@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
@@ -13,9 +11,11 @@ import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import {
     type AddressCorrection,
     autocorrectAddress,
+    checkAddressChecksum,
     isAddressDeprecated,
     isAddressValid,
     isTaprootAddress,
+    toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -239,7 +239,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     learnMoreUrl: addressDeprecatedUrl ? ALL_URLS[addressDeprecatedUrl] : undefined,
                 };
             case 'evmChecks':
-                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                if (networkType === 'ethereum' && !checkAddressChecksum(address)) {
                     return {
                         buttonProps: {
                             onClick: () => {
@@ -371,7 +371,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                 // 1. Validate address checksum.
                 // Eth addresses are valid without checksum but Trezor displays them as checksummed.
-                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                if (networkType === 'ethereum' && !checkAddressChecksum(address)) {
                     const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
                         address,
                         payload.history,
