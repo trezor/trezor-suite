@@ -111,8 +111,10 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
-    const currentFreshAddress = useSelector(selectCurrentFreshAddress);
-    const revealedAddresses = useSelector(selectReceiveRevealedAddresses);
+    const currentFreshAddress = useSelector(state => selectCurrentFreshAddress(state, account.key));
+    const revealedAddresses = useSelector(state =>
+        selectReceiveRevealedAddresses(state, account.key),
+    );
     const labeledUnusedAddresses = useSelector((state: SelectLabeledUnusedAddressesState) =>
         selectLabeledUnusedAddresses(state, account),
     );

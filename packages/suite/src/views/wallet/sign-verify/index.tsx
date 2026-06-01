@@ -39,7 +39,9 @@ const SignVerify = () => {
     const [isCompleted, setIsCompleted] = useState(false);
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const revealedAddresses = useSelector(selectReceiveRevealedAddresses);
+    const revealedAddresses = useSelector(state =>
+        selectReceiveRevealedAddresses(state, selectedAccount.account?.key),
+    );
     const dispatch = useDispatch();
 
     const isSignPage = page === 'sign';

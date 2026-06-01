@@ -81,6 +81,16 @@ export const saveAccountDraft = (account: Account) => (_: Dispatch, getState: Ge
     }
 };
 
+export const saveAccountReceive = (accountKey: AccountKey) => (_: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+
+    const state = getState();
+
+    return state.wallet.receive.accounts[accountKey]
+        ? db.addItem('receive', state.wallet.receive.accounts[accountKey], accountKey, true)
+        : undefined;
+};
+
 const removeAccountDraft = (account: Account) => {
     if (!db.isAccessible()) return Promise.resolve();
 
@@ -238,6 +248,7 @@ export const removeAccountWithDependencies = (getState: GetState) => (account: A
     Promise.all([
         ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
         removeAccountDraft(account),
+        db.removeItemByPK('receive', account.key),
         removeAccountTransactions(account),
         removeAccountGraph(account),
         removeCoinjoinAccount(account.key, getState()),
@@ -353,6 +364,7 @@ export const rememberDevice =
             (promises, account) =>
                 promises.concat(
                     [
+                        dispatch(saveAccountReceive(account.key)),
                         dispatch(saveAccountTransactions(account)),
                         dispatch(saveAccountDraft(account)),
                         dispatch(saveCoinjoinAccount(account.key)),

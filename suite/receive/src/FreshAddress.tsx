@@ -24,6 +24,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import {
+    type ReceiveRootState,
     receiveActions,
     selectCurrentFreshAddress,
     selectReceiveRevealedAddresses,
@@ -94,8 +95,12 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account.key),
     );
-    const revealedAddresses = useSelector(selectReceiveRevealedAddresses);
-    const currentFreshAddress = useSelector(selectCurrentFreshAddress);
+    const revealedAddresses = useSelector((state: ReceiveRootState) =>
+        selectReceiveRevealedAddresses(state, account.key),
+    );
+    const currentFreshAddress = useSelector((state: ReceiveRootState) =>
+        selectCurrentFreshAddress(state, account.key),
+    );
 
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const { translationString } = useTranslation();
@@ -116,7 +121,12 @@ export const FreshAddress = ({
             isAccountUtxoBased,
         );
 
-        dispatch(receiveActions.setCurrentFreshAddress(firstFreshAddress));
+        dispatch(
+            receiveActions.setCurrentFreshAddress({
+                accountKey: account.key,
+                currentFreshAddress: firstFreshAddress,
+            }),
+        );
     }, [
         account,
         revealedAddresses,

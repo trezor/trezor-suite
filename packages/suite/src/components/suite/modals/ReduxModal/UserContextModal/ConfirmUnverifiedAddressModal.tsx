@@ -1,15 +1,18 @@
 import { useCallback } from 'react';
 
 import { openAddressModal, showAddressThunk } from '@suite/receive';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 
 interface ConfirmUnverifiedAddressModalProps {
+    accountKey: AccountKey;
     addressPath: string;
     value: string;
 }
 
 export const ConfirmUnverifiedAddressModal = ({
+    accountKey,
     addressPath,
     value,
 }: ConfirmUnverifiedAddressModalProps) => {
@@ -17,7 +20,7 @@ export const ConfirmUnverifiedAddressModal = ({
         () => showAddressThunk({ path: addressPath, address: value }),
         [addressPath, value],
     );
-    const showUnverifiedAddress = () => openAddressModal({ addressPath, value });
+    const showUnverifiedAddress = () => openAddressModal({ accountKey, addressPath, value });
 
     return (
         <ConfirmUnverifiedModal
