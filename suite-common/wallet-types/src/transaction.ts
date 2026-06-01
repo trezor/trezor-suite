@@ -147,6 +147,7 @@ export type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectRespon
     token?: TokenInfo;
     energyConsumed?: number;
     accountActivationFee?: string;
+    memoFee?: string;
 };
 
 // base of PrecomposedTransactionFinal
@@ -157,6 +158,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     token?: TokenInfo;
     energyConsumed?: number;
     accountActivationFee?: string;
+    memoFee?: string;
     /** override the network's native token
      * used with EVMs that are used via Connect, but not natively supported in Suite */
     nativeToken?: TokenInfo;

@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { calculateTotal } from '@suite-common/wallet-utils';
+import { TRON_MEMO_FEE_SUN, calculateTotal } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type EstimateFeeLevel } from './types';
@@ -11,8 +11,11 @@ export const calculateRawContractCall = (
     feeLevel: EstimateFeeLevel,
     networkSymbol: NetworkSymbol,
     bytes: number,
+    hasMemo: boolean,
 ): PrecomposedTransaction => {
-    const totalFeeInSun = feeLevel.feePerTx || '0';
+    const baseFeeInSun = feeLevel.feePerTx || '0';
+    const memoFeeInSun = hasMemo ? TRON_MEMO_FEE_SUN : 0;
+    const totalFeeInSun = new BigNumber(baseFeeInSun).plus(memoFeeInSun).toString();
     const amount = 'amount' in output ? (output.amount ?? '0') : '0';
 
     if (new BigNumber(calculateTotal(amount, totalFeeInSun)).isGreaterThan(availableBalance)) {
@@ -36,7 +39,8 @@ export const calculateRawContractCall = (
         type: 'nonfinal' as const,
         totalSpent: amount,
         max: undefined,
-        fee: totalFeeInSun,
+        fee: baseFeeInSun,
+        memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
         energyConsumed,

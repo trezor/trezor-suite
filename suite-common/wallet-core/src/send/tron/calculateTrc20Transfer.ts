@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import { TRON_MEMO_FEE_SUN, asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -13,8 +13,11 @@ export const calculateTrc20Transfer = (
     token: TokenInfo,
     networkSymbol: NetworkSymbol,
     bytes: number,
+    hasMemo: boolean,
 ): PrecomposedTransaction => {
-    const totalFeeInSun = feeLevel.feePerTx || '0';
+    const baseFeeInSun = feeLevel.feePerTx || '0';
+    const memoFeeInSun = hasMemo ? TRON_MEMO_FEE_SUN : 0;
+    const totalFeeInSun = new BigNumber(baseFeeInSun).plus(memoFeeInSun).toString();
     const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
 
     const tokenBalanceInSubunits = unitsToSubunits({
@@ -46,7 +49,8 @@ export const calculateTrc20Transfer = (
         type: 'nonfinal' as const,
         totalSpent: amount,
         max,
-        fee: totalFeeInSun,
+        fee: baseFeeInSun,
+        memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit, // energy cap in energy units; fee_limit in the signed tx uses the equivalent in SUN (feeLimit × feePerUnit)
         energyConsumed,

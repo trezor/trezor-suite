@@ -1,5 +1,5 @@
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { calculateMax, calculateTotal } from '@suite-common/wallet-utils';
+import { TRON_MEMO_FEE_SUN, calculateMax, calculateTotal } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type EstimateFeeLevel } from './types';
@@ -12,10 +12,15 @@ export const calculateTrxTransfer = (
     feeLevel: EstimateFeeLevel,
     isNewAccount: boolean,
     bytes: number,
+    hasMemo: boolean,
 ): PrecomposedTransaction => {
     const baseFeeInSun = feeLevel.feePerTx || '0';
     const activationFeeInSun = isNewAccount ? TRON_ACCOUNT_ACTIVATION_FEE_SUN : 0;
-    const totalFeeInSun = new BigNumber(baseFeeInSun).plus(activationFeeInSun).toString();
+    const memoFeeInSun = hasMemo ? TRON_MEMO_FEE_SUN : 0;
+    const totalFeeInSun = new BigNumber(baseFeeInSun)
+        .plus(activationFeeInSun)
+        .plus(memoFeeInSun)
+        .toString();
     const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
 
     let amount: string;
@@ -42,6 +47,7 @@ export const calculateTrxTransfer = (
         max,
         fee: baseFeeInSun,
         accountActivationFee: isNewAccount ? String(TRON_ACCOUNT_ACTIVATION_FEE_SUN) : undefined,
+        memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
         feePerByte: feeLevel.feePerUnit,
         bytes,
         inputs: [],
