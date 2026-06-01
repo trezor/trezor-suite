@@ -105,7 +105,7 @@ type AccountNetworkSpecific =
       }
     | {
           networkType: 'stellar';
-          misc: { stellarSequence: string; reserve: string };
+          misc: { stellarSequence: string; reserve: string; baseReserve: string };
           marker: undefined;
           stellarCursor: AccountInfo['stellarCursor'];
           page: undefined;

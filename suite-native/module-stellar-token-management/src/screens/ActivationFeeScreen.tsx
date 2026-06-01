@@ -20,7 +20,7 @@ import {
     type StellarManageTokenStackParamList,
     type StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { BASE_INFO } from '@trezor/coins-stellar/constants';
+import { STELLAR_BASE_RESERVE } from '@trezor/coins-stellar/constants';
 import { HELP_CENTER_XLM_URL } from '@trezor/urls';
 
 import { FeeOptionsSection } from '../components/FeeOptionsSection';
@@ -91,7 +91,7 @@ export const ActivationFeeScreen = () => {
         onSuccess: handleSuccess,
     });
 
-    if (!account) return null;
+    if (account?.networkType !== 'stellar') return null;
 
     return (
         <Form form={form}>
@@ -122,7 +122,7 @@ export const ActivationFeeScreen = () => {
                                 id="moduleStellarToken.networkFee.reserveInfo"
                                 values={{
                                     reserve: formatNetworkAmount(
-                                        BASE_INFO.BASE_RESERVE.toString(),
+                                        account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
                                         account.symbol,
                                         true,
                                     ),

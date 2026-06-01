@@ -6,7 +6,7 @@ import type {
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
-import { BASE_INFO, STELLAR_DECIMALS } from '@trezor/coins-stellar/constants';
+import { STELLAR_BASE_RESERVE, STELLAR_DECIMALS } from '@trezor/coins-stellar/constants';
 import stellar from '@trezor/coins-stellar/runtime';
 import type { StellarAPI } from '@trezor/coins-stellar/types';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
@@ -19,6 +19,8 @@ type Context = ContextType<StellarAPI> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;
 };
 type Request<T> = T & Context;
+
+let BASE_RESERVE = new BigNumber(STELLAR_BASE_RESERVE);
 
 const fetchLatestLedger = async (api: StellarAPI) => {
     const latestLedgerInfo = await api.ledgers().order('desc').limit(1).call();
@@ -43,8 +45,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         base_reserve_in_stroops: baseReserveInStroops,
     } = await fetchLatestLedger(api);
 
-    BASE_INFO.BASE_RESERVE = new BigNumber(baseReserveInStroops);
-    BASE_INFO.MINIMUM_RESERVE = BASE_INFO.BASE_RESERVE.times(2);
+    BASE_RESERVE = new BigNumber(baseReserveInStroops);
 
     const serverInfo = {
         url: api.serverURL.toString(),
@@ -85,7 +86,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         misc: {
             // default misc
             stellarSequence: '0',
-            reserve: BASE_INFO.MINIMUM_RESERVE.toString(),
+            reserve: BASE_RESERVE.times(2).toString(),
+            baseReserve: BASE_RESERVE.toString(),
         },
     };
 
@@ -103,12 +105,11 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     // Account is not empty, we can fill the account object with the data
     // https://developers.stellar.org/docs/learn/fundamentals/lumens#minimum-balance
-    const reserve = BASE_INFO.MINIMUM_RESERVE.plus(
-        BASE_INFO.BASE_RESERVE.times(info.subentry_count),
-    );
+    const reserve = BASE_RESERVE.times(2 + info.subentry_count);
     account.misc = {
         stellarSequence: info.sequence,
         reserve: reserve.toString(),
+        baseReserve: BASE_RESERVE.toString(),
     };
 
     // XLM balance
@@ -122,8 +123,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     account.availableBalance = new BigNumber(account.balance)
         .minus(reserve)
         .minus(sellingLiabilities)
-        .minus(BASE_INFO.BASE_RESERVE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
-        .plus(BASE_INFO.BASE_RESERVE.times(info.num_sponsored))
+        .minus(BASE_RESERVE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
+        .plus(BASE_RESERVE.times(info.num_sponsored))
         .toString();
 
     // Tokens balance

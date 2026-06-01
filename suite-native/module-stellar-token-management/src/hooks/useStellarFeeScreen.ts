@@ -41,7 +41,7 @@ import {
     selectFeeLevels,
     useFeesManagement,
 } from '@suite-native/transaction-management';
-import { BASE_INFO } from '@trezor/coins-stellar/constants';
+import { STELLAR_BASE_RESERVE } from '@trezor/coins-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { getStellarTokenFormDraftKey, updateStellarTokenSelectedFeeLevelThunk } from '../thunks';
@@ -148,13 +148,15 @@ export const useStellarFeeScreen = ({
     // Track if we're waiting for device confirmation
     const [isWaitingForDevice, setIsWaitingForDevice] = useState(false);
 
-    // Check if balance is sufficient for activation (need fee + BASE_RESERVE for new trustline)
+    // Check if balance is sufficient for activation (need fee + base reserve for new trustline)
     const insufficientBalanceInfo = (() => {
-        if (mode !== 'activation' || !account || !fee) {
+        if (mode !== 'activation' || account?.networkType !== 'stellar' || !fee) {
             return null;
         }
         const availableBalance = BigNumber(account.availableBalance);
-        const requiredAmount = BigNumber(fee).plus(BASE_INFO.BASE_RESERVE);
+        const requiredAmount = BigNumber(fee).plus(
+            account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
+        );
 
         if (availableBalance.lt(requiredAmount)) {
             return {

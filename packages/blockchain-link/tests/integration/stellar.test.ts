@@ -92,6 +92,7 @@ describe('Stellar', () => {
                 unconfirmed: 0,
             },
             misc: {
+                baseReserve: '5000000',
                 reserve: expectedReverse,
                 stellarSequence: accountRawResp.sequence,
             },
@@ -126,6 +127,7 @@ describe('Stellar', () => {
             },
             misc: {
                 reserve: '10000000',
+                baseReserve: '5000000',
                 stellarSequence: '0',
             },
         });
@@ -175,6 +177,7 @@ describe('Stellar', () => {
                 unconfirmed: 0,
             },
             misc: {
+                baseReserve: '5000000',
                 reserve: expectedReverse,
                 stellarSequence: accountRawResp.sequence,
             },

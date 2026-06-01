@@ -58,7 +58,7 @@ export const networkSpecificDefaultCardano = {
 
 export const networkSpecificDefaultStellar = {
     marker: undefined,
-    misc: { reserve: '100', stellarSequence: '0' },
+    misc: { reserve: '100', baseReserve: '50', stellarSequence: '0' },
     page: undefined,
     stellarCursor: undefined,
     networkType: 'stellar' as const,
