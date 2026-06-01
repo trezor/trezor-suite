@@ -5,7 +5,7 @@ import {
     type PrecomposedTransactionFinal,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
-import { evmHexToBigNumber, evmHexWeiToGwei, sanitizeHex } from '@suite-common/wallet-utils';
+import { fromHex, sanitizeHex } from '@suite-common/wallet-utils';
 import { type EthereumSignTransaction } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -107,18 +107,18 @@ const getNonceHex = (nonceValue: string | number): `0x${string}` => {
 
 const getClaimFeeData = (fee: EvmFeeHex) => {
     const gasPriceHex = fee.type === 'eip1559' ? fee.maxFeePerGas : fee.gasPrice;
-    const gasLimit = evmHexToBigNumber(fee.gasLimit);
-    const gasPrice = evmHexToBigNumber(gasPriceHex);
+    const gasLimit = fromHex(fee.gasLimit).toBigNumber();
+    const gasPrice = fromHex(gasPriceHex).toBigNumber();
 
     return {
         feeWei: gasLimit.multipliedBy(gasPrice).toFixed(0),
         feeLimitWei: gasLimit.toFixed(0),
-        feePerUnitGwei: evmHexWeiToGwei(gasPriceHex),
+        feePerUnitGwei: fromHex(gasPriceHex).asWei().toGwei(),
         eip1559Fields: (fee.type === 'eip1559'
             ? {
-                  maxFeePerGas: evmHexWeiToGwei(fee.maxFeePerGas),
-                  maxPriorityFeePerGas: evmHexWeiToGwei(fee.maxPriorityFeePerGas),
-                  baseFeePerGas: evmHexWeiToGwei(fee.baseFeePerGas),
+                  maxFeePerGas: fromHex(fee.maxFeePerGas).asWei().toGwei(),
+                  maxPriorityFeePerGas: fromHex(fee.maxPriorityFeePerGas).asWei().toGwei(),
+                  baseFeePerGas: fromHex(fee.baseFeePerGas).asWei().toGwei(),
               }
             : {}) satisfies ClaimEip1559Fields,
     };

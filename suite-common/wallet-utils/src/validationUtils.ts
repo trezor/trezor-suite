@@ -1,5 +1,4 @@
-import { toChecksumAddress } from 'web3-utils';
-
+import { toChecksumAddress } from '@suite-common/address';
 import { type AccountInfo } from '@trezor/blockchain-link-types';
 
 // Re-export address functions from their new home for backwards compatibility.

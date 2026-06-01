@@ -2,9 +2,8 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
-import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
-import { isAddressValid } from '@suite-common/address';
+import { checkAddressChecksum, isAddressValid, toChecksumAddress } from '@suite-common/address';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext } from '@suite-native/forms';
@@ -40,7 +39,7 @@ export const useAddressChecksum = (addressFieldName: string) => {
     }, []);
 
     const handleAddressChecksum = useCallback(async () => {
-        if (isFilledValidAddress && symbol && !checkAddressCheckSum(addressValue)) {
+        if (isFilledValidAddress && symbol && !checkAddressChecksum(addressValue)) {
             const params = {
                 descriptor: addressValue,
                 coin: symbol,
