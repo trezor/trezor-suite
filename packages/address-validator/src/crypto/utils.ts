@@ -118,7 +118,7 @@ export function sha256x2(hexPayload: string): string {
 }
 
 export function sha256Checksum(hexPayload: string): string {
-    return sha256(sha256(hexPayload)).substr(0, 8);
+    return sha256(sha256(hexPayload)).slice(0, 8);
 }
 
 export function blake256(hexString: string): string {
@@ -126,7 +126,7 @@ export function blake256(hexString: string): string {
 }
 
 export function blake256Checksum(payload: string): string {
-    return blake256(blake256(payload)).substr(0, 8);
+    return blake256(blake256(payload)).slice(0, 8);
 }
 
 export function blake2b(hexString: string, outlen: number): string {
@@ -140,7 +140,7 @@ export function keccak256(hexString: string): string {
 export function keccak256Checksum(payload: string | Buffer | Uint8Array): string {
     return keccak256Fn(payload as any)
         .toString()
-        .substr(0, 8);
+        .slice(0, 8);
 }
 
 export function blake2b256(hexString: string): string {
