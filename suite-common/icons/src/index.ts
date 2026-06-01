@@ -7,5 +7,6 @@ export * from './constants';
 export * from './tokenIcons';
 export * from './cryptoIcons';
 export * from './networkIcons';
+export * from './networkIconUtils';
 export * from './coinImages';
 export * from './paymentMethodLogos';

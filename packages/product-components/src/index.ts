@@ -40,7 +40,7 @@ export {
     allowedAssetLogoSizes,
 } from './components/AssetLogo/AssetLogoWithId';
 export { shouldShowNetworkIcon } from './components/AssetLogo/assetLogoUtils';
-export { isNetworkSymbolWithIcon } from './constants/networks';
+export { isNetworkIconSymbol as isNetworkSymbolWithIcon } from '@suite-common/icons';
 export * from './components/TopAssets/TopAssets';
 export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
 export { TransactionNotification } from './components/Notifications/TransactionNotification';
