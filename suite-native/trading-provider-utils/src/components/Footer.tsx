@@ -1,4 +1,4 @@
-import { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { ProviderMetadata } from 'invity-api';
@@ -11,10 +11,6 @@ import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { HowTradingWorksSheet } from './HowTradingWorksSheet';
-
-export type FooterProps = {
-    isFormMountedRecently?: boolean;
-};
 
 interface FooterProviderContentProps {
     provider: ProviderMetadata | undefined;
@@ -58,7 +54,7 @@ const linkStyle = prepareNativeStyle(({ spacings }) => ({
     paddingVertical: spacings.sp10,
 }));
 
-export const Footer = ({ isFormMountedRecently }: FooterProps) => {
+export const Footer = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
@@ -70,12 +66,8 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
     }
 
     return (
-        <>
-            <AnimatedBox
-                entering={isFormMountedRecently ? undefined : FadeInDown}
-                exiting={FadeOutDown}
-                layout={LinearTransition}
-            >
+        <VStack style={{ marginTop: 'auto' }}>
+            <AnimatedBox entering={FadeInDown}>
                 <VStack alignItems="center" paddingBottom="sp12">
                     <FooterProviderContent provider={providerInfo} />
                     <Link
@@ -92,6 +84,6 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
                 </VStack>
             </AnimatedBox>
             <HowTradingWorksSheet ref={bottomSheetRef} closeModal={closeModal} />
-        </>
+        </VStack>
     );
 };
