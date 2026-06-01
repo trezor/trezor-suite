@@ -21,7 +21,7 @@
                 "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
-            "outputs": ["{projectRoot}/lib", "{projectRoot}/libESM", "{projectRoot}/build"],
+            "outputs": ["{projectRoot}/lib", "{projectRoot}/build"],
             "cache": true
         },
         "type-check": {
