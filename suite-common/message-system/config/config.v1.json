@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-05-28T00:00:00+00:00",
-    "sequence": 140,
+    "timestamp": "2026-06-01T00:00:00+00:00",
+    "sequence": 141,
     "actions": [
         {
             "conditions": [
@@ -1560,7 +1560,7 @@
             ],
             "message": {
                 "id": "ab805171-6266-4618-be4f-a7c25d4c19ce",
-                "priority": 2,
+                "priority": 3,
                 "dismissible": true,
                 "variant": "info",
                 "category": "feature",
