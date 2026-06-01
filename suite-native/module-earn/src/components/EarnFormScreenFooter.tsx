@@ -32,7 +32,7 @@ const rewardsBoxStyle = prepareNativeStyle(utils => ({
 
 const continueButtonStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
-    marginTop: -utils.spacings.sp40,
+    marginTop: -utils.spacings.sp32,
 }));
 
 type EarnFormScreenFooterProps = {
