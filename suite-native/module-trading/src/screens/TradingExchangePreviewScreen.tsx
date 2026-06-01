@@ -12,6 +12,7 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
+import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -187,12 +188,14 @@ const TradingExchangePreviewScreenContent = ({
                 />
             }
         >
-            <ExchangePreviewView
-                quote={quote}
-                txnErrorString={errorString}
-                isApproved={isApproved}
-            />
-            <Footer />
+            <VStack spacing="sp16">
+                <ExchangePreviewView
+                    quote={quote}
+                    txnErrorString={errorString}
+                    isApproved={isApproved}
+                />
+                <Footer />
+            </VStack>
         </Screen>
     );
 };
