@@ -8,8 +8,7 @@ import {
 } from '@suite-common/trading';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { ProviderLogo } from '@suite-native/trading-atoms';
-import { PaymentMethodTranslation } from '@suite-native/trading-common';
+import { PaymentMethodTranslation, ProviderLogo } from '@suite-native/trading-atoms';
 
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
 

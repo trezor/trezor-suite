@@ -113,7 +113,7 @@ graph TD
     trading-history --> trading-provider-utils
     trading-history --> trading-atoms
     trading-history --> trading-state
-    trading-common -.-> trading-types
+    trading-common -.-> trading-fixtures
     trading-provider-utils -.-> trading-fixtures
     trading-provider-utils -.-> trading-types
     trading-provider-utils --> trading-state
@@ -134,8 +134,8 @@ graph TD
     trading-debug -.-> trading-consts
     trading-debug --> trading-state
     trading-atoms -.-> trading-fixtures
-    trading-fixtures -.-> trading-types
     trading-fixtures --> trading-consts
+    trading-fixtures -.-> trading-types
     trading-consts -.-> trading-types
 
     classDef outer fill: #6c757d, color: #fff, stroke: #495057
