@@ -34,7 +34,6 @@ golomb
 immer
 json-schema-to-typescript
 jws
-minimaldata
 n64
 raw-loader
 react-hook-form

@@ -1,8 +1,46 @@
-import minimalData from 'minimaldata';
-
 import * as bscript from '../src/script';
 import { fixtures } from './__fixtures__/script';
 import { templates } from './__fixtures__/templates';
+import { OPS } from '../src/script/ops';
+import { decode as pushdataDecode } from '../src/script/pushdata';
+
+// https://github.com/bitcoin/bitcoin/blob/master/src/script/script.h#L22
+const MAX_SCRIPT_ELEMENT_SIZE = 520;
+
+// https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki
+function checkMinimalPush(opcode: number, data: Buffer): boolean {
+    if (data.length === 0) return opcode === OPS.OP_0;
+    if (data.length === 1 && typeof data[0] === 'number' && data[0] >= 1 && data[0] <= 16)
+        return opcode === OPS.OP_1 + (data[0] - 1);
+    if (data.length === 1 && data[0] === 0x81) return opcode === OPS.OP_1NEGATE;
+    if (data.length <= 75) return opcode === data.length;
+    if (data.length <= 255) return opcode === OPS.OP_PUSHDATA1;
+    if (data.length <= 65535) return opcode === OPS.OP_PUSHDATA2;
+
+    return false;
+}
+
+// https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki
+function isBip62(buffer: Buffer): boolean {
+    let i = 0;
+    while (i < buffer.length) {
+        const opcode = buffer[i] as number;
+        if (opcode >= 0 && opcode <= OPS.OP_PUSHDATA4) {
+            const d = pushdataDecode(buffer, i);
+            if (d === null) return false;
+            i += d.size;
+            if (i + d.number > buffer.length) return false;
+            const data = buffer.subarray(i, i + d.number);
+            i += d.number;
+            if (d.number > MAX_SCRIPT_ELEMENT_SIZE) return false;
+            if (!checkMinimalPush(opcode, data)) return false;
+        } else {
+            i++;
+        }
+    }
+
+    return true;
+}
 
 describe('script', () => {
     // TODO
@@ -162,7 +200,7 @@ describe('script', () => {
             it(`compliant for scriptSig ${f.asm}`, () => {
                 const script = Buffer.from(f.script, 'hex');
 
-                expect(minimalData(script)).toBe(true);
+                expect(isBip62(script)).toBe(true);
             });
         });
 
@@ -171,7 +209,7 @@ describe('script', () => {
                 const buffer = Buffer.alloc(num);
                 const script = bscript.compile([buffer]);
 
-                expect(minimalData(script)).toBe(true);
+                expect(isBip62(script)).toBe(true);
             });
         }
 

@@ -58,8 +58,7 @@
         "wif": "^5.0.0"
     },
     "devDependencies": {
-        "@trezor/eslint": "workspace:*",
-        "minimaldata": "^1.0.2"
+        "@trezor/eslint": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
