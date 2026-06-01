@@ -35,9 +35,9 @@ export const calculateTronFeeBreakdown = (
     const coveredBandwidth = new BigNumber(isBandwidthCovered ? bandwidthBytes : 0);
     const coveredEnergy = new BigNumber(Math.min(availableEnergy, energyConsumed));
 
-    const isTRC20Transfer = 'token' in tx && tx.token !== undefined;
+    const isContractCall = 'feeLimit' in tx && tx.feeLimit !== undefined;
 
-    if (!isTRC20Transfer) {
+    if (!isContractCall) {
         const trxBurned = isBandwidthCovered
             ? new BigNumber(0)
             : toTrx(new BigNumber(bandwidthBytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE), symbol);

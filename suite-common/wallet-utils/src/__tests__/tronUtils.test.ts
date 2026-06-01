@@ -7,6 +7,7 @@ const makeTrc20Tx = (overrides: Record<string, unknown> = {}): GeneralPrecompose
     ({
         type: 'nonfinal',
         feePerByte: '100',
+        feeLimit: '100000',
         bytes: 300,
         energyConsumed: 1000,
         token: { name: 'USDT', symbol: 'USDT', decimals: 6, balance: '100000000' },
