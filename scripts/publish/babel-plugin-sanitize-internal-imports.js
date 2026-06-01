@@ -2,7 +2,9 @@ const sanitizeInternalImports = (src, moduleType) => {
     const searchValue = new RegExp('@trezor/([^/]+)/src', 'g');
 
     if (moduleType === 'cjs' && searchValue.test(src)) {
-        throw `Cannot sanitize internal require, Connect does not support CJS anymore, got: ${src}`;
+        throw new Error(
+            `Cannot sanitize internal require, Connect does not support CJS anymore, got: ${src}`,
+        );
     }
 
     const replaceValue = `@trezor/$1/lib`;
