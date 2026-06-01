@@ -6,12 +6,18 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const IGNORED_PATTERNS = [
+    'github.com/trezor/trezor-suite/releases/tag',
+    'apps.apple.com/app/id1631884497',
+];
+
 async function getAllLinksFromAllPages(
     page: Page,
     testInfo: TestInfo,
     paths: Array<string>,
-): Promise<Set<string>> {
-    const allValidHrefs = new Set<string>();
+    filter: (url: string) => boolean,
+): Promise<string[]> {
+    const matchingLinks: string[] = [];
 
     for (const path of paths) {
         await test.step(`Get the links from ${path}`, async () => {
@@ -46,8 +52,11 @@ async function getAllLinksFromAllPages(
 
             for (const link of allHrefs) {
                 if (link) {
-                    // Normalize the links.
-                    allValidHrefs.add(new URL(link, page.url()).href);
+                    const url = new URL(link, page.url()).href;
+
+                    if (!IGNORED_PATTERNS.some(pattern => url.includes(pattern)) && filter(url)) {
+                        matchingLinks.push(url);
+                    }
                 } else {
                     testInfo.annotations.push({
                         type: 'Not Link',
@@ -58,7 +67,7 @@ async function getAllLinksFromAllPages(
         });
     }
 
-    return allValidHrefs;
+    return Array.from(new Set(matchingLinks));
 }
 
 async function fetchWithRetry(page: Page, url: string, maxRetries = 3) {
@@ -78,98 +87,128 @@ async function fetchWithRetry(page: Page, url: string, maxRetries = 3) {
     return response;
 }
 
+async function checkLinks(page: Page, urls: string[]) {
+    const chunkSize = 20;
+
+    // Implement batching to prevent network flooding and false failures or timeouts.
+    for (let i = 0; i < urls.length; i += chunkSize) {
+        const chunk = urls.slice(i, i + chunkSize);
+
+        await Promise.all(
+            chunk.map(async url => {
+                await test.step(`Checking link: ${url}`, async () => {
+                    const response = await fetchWithRetry(page, url);
+
+                    expect
+                        .soft(
+                            response.ok(),
+                            `${url} failed: HTTP Status ${response.status()} ${response.statusText()}`,
+                        )
+                        .toBeTruthy();
+                });
+            }),
+        );
+    }
+}
+
+const SECTIONS = {
+    general: [
+        '/',
+        '/notifications',
+        '/version',
+        '/bridge',
+        '/bridge-requested',
+        '/bridge-deprecated',
+        '/connect-popup',
+        '/udev',
+        '/switch-device',
+        '/password-manager',
+        '/coinmarket-redirect',
+    ],
+    onboarding: [
+        '/start',
+        '/onboarding',
+        '/recovery',
+        '/backup',
+        '/firmware',
+        '/firmware-type',
+        '/firmware-custom',
+        '/create-multi-share-backup',
+    ],
+    settings: [
+        '/settings',
+        '/settings/debug',
+        '/settings/device',
+        '/settings/coins',
+        '/settings/connected-apps',
+    ],
+    wallet: [
+        '/accounts',
+        '/accounts/send',
+        '/accounts/receive',
+        '/accounts/staking',
+        '/accounts/sign-verify',
+        '/accounts/details',
+        '/accounts/anonymize',
+        '/accounts/tokens',
+        '/accounts/tokens/hidden',
+        '/accounts/tokens/inactive',
+        '/accounts/tokens/defi',
+        '/accounts/nfts',
+        '/accounts/nfts/hidden',
+    ],
+    trading: [
+        '/accounts/coinmarket/buy',
+        '/accounts/coinmarket/exchange',
+        '/accounts/coinmarket/sell',
+        '/accounts/coinmarket/concierge',
+        '/accounts/coinmarket/transactions',
+    ],
+    earn: ['/earn', '/earn/yield/deposit', '/earn/yield/withdraw', '/earn/yield/claim'],
+} as const satisfies Record<string, string[]>;
+
+const allPaths = routes
+    .map(route => route.pattern)
+    .filter(pattern => pattern.split('/').filter(Boolean).length < 4);
+
+const coveredPaths = new Set<string>(Object.values(SECTIONS).flat());
+
+test('All routes are covered by SECTIONS', { tag: ['@webOnly', '@noDevice'] }, () => {
+    const uncovered = allPaths.filter(path => !coveredPaths.has(path));
+
+    expect(uncovered, `Routes not assigned to any section: ${uncovered.join(', ')}`).toHaveLength(
+        0,
+    );
+});
+
 test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () => {
     test.use({
         ignoreJSExceptions: ['Aborted by signal', 'Failed to fetch'],
     });
-    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-    });
 
-    test(
-        'No 404s allowed',
-        {
-            annotation: createTestAnnotation({
-                testCase: 'Verify that each link is OK',
-                category: TestCategory.NotCategorized,
-                priority: TestPriority.Low,
-                stream: TestStream.Foundation,
-            }),
-        },
-        async ({ page }, testInfo) => {
-            let allUrls = new Set<string>();
+    for (const [section, paths] of Object.entries(SECTIONS) as [
+        keyof typeof SECTIONS,
+        string[],
+    ][]) {
+        test(
+            `${section} links return 200`,
+            {
+                annotation: createTestAnnotation({
+                    testCase: `Verify that all links in the ${section} section are OK`,
+                    category: TestCategory.NotCategorized,
+                    priority: TestPriority.Low,
+                    stream: TestStream.Foundation,
+                }),
+            },
+            async ({ page, onboardingPage, settingsPage }, testInfo) => {
+                test.slow();
 
-            const urlsToCheck: string[] = [];
-            // Test is slow due to opening the pages for all known routes.
-            // The standard timeout must be extended to ensure test completion.
-            test.slow();
+                await onboardingPage.completeOnboarding();
+                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+                const links = await getAllLinksFromAllPages(page, testInfo, paths, () => true);
 
-            await test.step('Get all links from all routes', async () => {
-                // Create an array of all routes except those containing 4 segments
-                // to keep the list a bit shorter, and reduce execution time.
-                const allPaths = routes
-                    .map(route => route.pattern)
-                    .filter(pattern => {
-                        const segments = pattern.split('/').filter(segment => !!segment);
-
-                        return segments.length < 4;
-                    });
-
-                // After onboarding, the URL is cleared to the base domain by the application's routing logic.
-                // We need to navigate back to the correct base URL for the test environment.
-                allUrls = await getAllLinksFromAllPages(page, testInfo, allPaths);
-            });
-
-            await test.step('Filter known broken links', () => {
-                // Define patterns for known broken links here.
-                const ignoredPatterns: string[] = [
-                    'github.com/trezor/trezor-suite/releases/tag',
-                    'apps.apple.com/app/id1631884497',
-                ];
-                const knownBrokenLinks: string[] = [];
-
-                for (const url of allUrls) {
-                    const ignoredUrl = ignoredPatterns.some(pattern => url.includes(pattern));
-
-                    if (ignoredUrl) {
-                        knownBrokenLinks.push(url);
-                    } else {
-                        urlsToCheck.push(url);
-                    }
-                }
-
-                if (knownBrokenLinks.length > 0) {
-                    testInfo.annotations.push({
-                        type: 'Warning: Known Broken Links',
-                        description: `\nThe following links returned non-200 status codes but are known issues:\n${knownBrokenLinks.join('\n')}`,
-                    });
-                }
-            });
-
-            await test.step(`Check ${urlsToCheck.length} valid links`, async () => {
-                const chunkSize = 20;
-
-                // Implement batching to prevent network flooding and false failures or timeouts.
-                for (let i = 0; i < urlsToCheck.length; i += chunkSize) {
-                    const chunk = urlsToCheck.slice(i, i + chunkSize);
-
-                    await Promise.all(
-                        chunk.map(async url => {
-                            await test.step(`Checking link: ${url}`, async () => {
-                                const response = await fetchWithRetry(page, url);
-
-                                expect
-                                    .soft(
-                                        response.ok(),
-                                        `${url} failed: HTTP Status ${response.status()} ${response.statusText()}`,
-                                    )
-                                    .toBeTruthy();
-                            });
-                        }),
-                    );
-                }
-            });
-        },
-    );
+                await checkLinks(page, links);
+            },
+        );
+    }
 });
