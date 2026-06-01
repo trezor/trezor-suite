@@ -111,6 +111,8 @@
         "electron": "41.3.0",
         "@types/node": "22.13.10",
         "bn.js": "5.2.3",
+        "### Force buffer >=6 so the browser polyfill has writeBig(U)Int64LE etc. (5.x lacks them, see suite-build)": "1.0.0",
+        "buffer": "^6.0.3",
         "node-addon-api": "8.5.0",
         "node-gyp": "12.2.0",
         "reselect": "5.1.1",

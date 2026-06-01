@@ -30,6 +30,7 @@
         "@trezor/bundler-security": "workspace:*",
         "babel-loader": "^10.1.1",
         "babel-plugin-styled-components": "^2.1.4",
+        "buffer": "^6.0.3",
         "copy-webpack-plugin": "^14.0.0",
         "crypto-browserify": "3.12.1",
         "css-minimizer-webpack-plugin": "^7.0.4",
