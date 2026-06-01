@@ -35,6 +35,20 @@ export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,
 ) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
 
+export type WalletSuiteSyncOnEnsuredParams = EnsureWalletSuiteSyncOnParams & {
+    storage: SuiteSyncStorage;
+};
+
+export type WalletSuiteSyncOnEnsuredListener = (
+    params: WalletSuiteSyncOnEnsuredParams,
+) => Promise<void> | void;
+
+export type OnWalletSuiteSyncOnEnsured = (listener: WalletSuiteSyncOnEnsuredListener) => void;
+
+export type OnWalletSuiteSyncOnEnsuredDep = {
+    onWalletSuiteSyncOnEnsured: OnWalletSuiteSyncOnEnsured;
+};
+
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
 
 export const selectEnsureWalletSuiteSyncOnDep = (services: any): EnsureWalletSuiteSyncOnDep => ({

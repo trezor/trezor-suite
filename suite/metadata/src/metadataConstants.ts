@@ -10,5 +10,7 @@ export const SET_INITIATING = '@metadata/set-initiating' as const;
 export const SET_DATA = '@metadata/set-data' as const;
 export const SET_SELECTED_PROVIDER = '@metadata/set-selected-provider' as const;
 export const SET_ERROR_FOR_DEVICE = '@metadata/set-error-for-device' as const;
+export const SET_LEGACY_LABELS_MIGRATION_FOR_WALLET =
+    '@metadata/set-legacy-labels-migration-for-wallet' as const;
 export const EXPORT_METADATA_TO_BIP329_FILE = '@metadata/exportMetadataToBip329File';
 export const MODULE_PREFIX = '@suite/metadata';

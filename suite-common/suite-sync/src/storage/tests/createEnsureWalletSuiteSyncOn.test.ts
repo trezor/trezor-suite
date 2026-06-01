@@ -1,6 +1,7 @@
 import { createMockDeps } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { deviceReducerInitialState } from '@suite-common/device';
+import { type WalletSuiteSyncOnEnsuredListener } from '@suite-common/suite-sync-types';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
@@ -29,6 +30,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             ensureSubscribedStorage: null,
             subscriptionStorage: createSubscriptionStorageMock(),
             ensureSuiteSyncKeys: null,
+            getWalletSuiteSyncOnEnsuredListeners: () => [],
         });
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
@@ -51,6 +53,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             ensureSuiteSyncKeys: null,
             ensureSubscribedStorage: null,
             subscriptionStorage: createSubscriptionStorageMock(),
+            getWalletSuiteSyncOnEnsuredListeners: () => [],
         });
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
@@ -73,6 +76,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             ensureSuiteSyncKeys: null,
             ensureSubscribedStorage: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
+            getWalletSuiteSyncOnEnsuredListeners: () => [],
         });
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
@@ -95,6 +99,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             ensureSuiteSyncKeys: null,
             ensureSubscribedStorage: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
+            getWalletSuiteSyncOnEnsuredListeners: () => [],
         });
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
@@ -107,5 +112,35 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             isWriteMode: false,
         });
         expect(result).toBe(ensureResult);
+    });
+
+    it('calls onWalletSuiteSyncOnEnsured listeners after successful ensure', async () => {
+        const ensureResult = ok({ data: {} } as any);
+        if (!ensureResult.success) {
+            throw new Error('Expected successful ensureResult in test.');
+        }
+
+        const onWalletSuiteSyncOnEnsured: WalletSuiteSyncOnEnsuredListener = jest.fn(() =>
+            Promise.resolve(),
+        );
+
+        const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
+            getState: () => createMockState([DEVICE_123]),
+            ensureSuiteSyncKeys: null,
+            ensureSubscribedStorage: () => Promise.resolve(ensureResult),
+            subscriptionStorage: createSubscriptionStorageMock(),
+            getWalletSuiteSyncOnEnsuredListeners: () => [onWalletSuiteSyncOnEnsured],
+        });
+
+        await createEnsureWalletSuiteSyncOn(deps)({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
+        });
+
+        expect(onWalletSuiteSyncOnEnsured).toHaveBeenCalledWith({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
+            storage: ensureResult.payload,
+        });
     });
 });

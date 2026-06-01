@@ -19,7 +19,12 @@ import {
     type CreateSuiteStorageDep,
     type CreateSuiteSyncOwnerDep,
 } from '@suite-common/suite-sync-storage';
-import { type SuiteSync, type SuiteSyncInternalErrorHandler } from '@suite-common/suite-sync-types';
+import {
+    type OnWalletSuiteSyncOnEnsured,
+    type SuiteSync,
+    type SuiteSyncInternalErrorHandler,
+    type WalletSuiteSyncOnEnsuredListener,
+} from '@suite-common/suite-sync-types';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Analytics } from '@trezor/analytics-uploader';
 import type TrezorConnect from '@trezor/connect';
@@ -169,6 +174,12 @@ export const createSuiteSyncCompositionRoot = (
         suiteSyncListener,
     });
 
+    const walletSuiteSyncOnEnsuredListeners: WalletSuiteSyncOnEnsuredListener[] = [];
+
+    const onWalletSuiteSyncOnEnsured: OnWalletSuiteSyncOnEnsured = listener => {
+        walletSuiteSyncOnEnsuredListeners.push(listener);
+    };
+
     const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOnWithErrorHandler({
         dispatch: deps.dispatch,
         ensureWalletSuiteSyncOn: createEnsureWalletSuiteSyncOn({
@@ -176,6 +187,7 @@ export const createSuiteSyncCompositionRoot = (
             ensureSuiteSyncKeys,
             ensureSubscribedStorage,
             subscriptionStorage,
+            getWalletSuiteSyncOnEnsuredListeners: () => walletSuiteSyncOnEnsuredListeners,
         }),
     });
 
@@ -215,6 +227,7 @@ export const createSuiteSyncCompositionRoot = (
             getAllDeviceSessionIds,
             dispatch: deps.dispatch,
         }),
+        onWalletSuiteSyncOnEnsured,
         ensureWalletSuiteSyncOnAsync,
         ensureWalletSuiteSyncOn,
         turnOffSuiteSyncForWallet,

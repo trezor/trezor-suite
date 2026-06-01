@@ -4,6 +4,7 @@ import path from 'path';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
+import { asWalletDescriptor } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import * as fixtures from '../__fixtures__/metadataActions';
@@ -306,6 +307,17 @@ describe('Metadata Actions', () => {
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }
+        });
+    });
+
+    it('marks wallet as migrated after legacy labeling migration succeeds', () => {
+        const walletDescriptor = asWalletDescriptor('wallet-descriptor');
+        const store = initStore(getInitialState());
+
+        store.dispatch(metadataActions.setLegacyLabelsMigrationForWallet(walletDescriptor));
+
+        expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
+            [walletDescriptor]: true,
         });
     });
 });

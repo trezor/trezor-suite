@@ -1,10 +1,21 @@
-import {
-    type UpdateAccountLabelDep,
-    type UpdateAddressLabelDep,
-    type UpdateOutputLabelDep,
-    type UpdateWalletLabelDep,
-} from '@suite-common/suite-sync-types';
+import { type Dispatch } from '@reduxjs/toolkit';
 
+import {
+    type MetadataRootState,
+    selectHasLegacyLabelsMigrated,
+    selectIsMetadataEnabled,
+    selectLabelingDataForAccount,
+    selectLabelingDataForWallet,
+    selectSelectedProviderForLabels,
+} from '@suite/metadata';
+import { toGetter } from '@suite-common/dependency-injection';
+import {
+    type LabelingDep,
+    type WalletSuiteSyncOnEnsuredListener,
+} from '@suite-common/suite-sync-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
+
+import { createMigrateLabelsIfAvailable } from './createEnsureWalletSuiteSyncOnWithMigration';
 import { createMigrateAccountLabels } from './entities/createMigrateAccountLabels';
 import { createMigrateAddressLabels } from './entities/createMigrateAddressLabels';
 import { createMigrateOutputLabels } from './entities/createMigrateOutputLabels';
@@ -13,7 +24,6 @@ import type {
     GetAccountsByDeviceState,
     GetCurrentAccountLabels,
     GetCurrentWalletLabel,
-    GetLegacyAccountLabels,
     GetLegacyWalletLabels,
 } from './legacyLabelsMigration';
 import {
@@ -30,45 +40,58 @@ export const selectMetadataMigrationDep = (services: any): MetadataMigrationDep 
 });
 
 type CreateMetadataMigrationCompositionRootDeps = {
+    dispatch: Dispatch;
+    getState: () => MetadataRootState;
     getAccountsByDeviceState: GetAccountsByDeviceState;
-    getLegacyWalletLabels: GetLegacyWalletLabels;
-    getLegacyAccountLabels: GetLegacyAccountLabels;
     getCurrentWalletLabel: GetCurrentWalletLabel;
     getCurrentAccountLabels: GetCurrentAccountLabels;
-} & UpdateWalletLabelDep &
-    UpdateAccountLabelDep &
-    UpdateAddressLabelDep &
-    UpdateOutputLabelDep;
+    getDeviceByStaticSessionId: (
+        deviceStaticSessionId: Parameters<GetLegacyWalletLabels>[0],
+    ) => TrezorDevice | undefined;
+} & LabelingDep;
+
+type MetadataMigrationCompositionRootResult = MetadataMigrationDep & {
+    migrateLabelsIfAvailable: WalletSuiteSyncOnEnsuredListener;
+};
 
 export const createMetadataMigrationCompositionRoot = (
     deps: CreateMetadataMigrationCompositionRootDeps,
-): MetadataMigrationDep => {
-    const migrateWalletLabels = createMigrateWalletLabels({
-        getLegacyWalletLabels: deps.getLegacyWalletLabels,
-        getCurrentWalletLabel: deps.getCurrentWalletLabel,
-        updateWalletLabel: deps.updateWalletLabel,
-    });
-    const migrateAccountLabels = createMigrateAccountLabels({
-        updateAccountLabel: deps.updateAccountLabel,
-    });
-    const migrateAddressLabels = createMigrateAddressLabels({
-        updateAddressLabel: deps.updateAddressLabel,
-    });
-    const migrateOutputLabels = createMigrateOutputLabels({
-        updateOutputLabel: deps.updateOutputLabel,
-    });
+): MetadataMigrationCompositionRootResult => {
+    const getIsMetadataEnabled = toGetter(deps.getState, selectIsMetadataEnabled);
+    const getSelectedProviderForLabels = toGetter(deps.getState, selectSelectedProviderForLabels);
+    const getHasLegacyLabelsMigrated = toGetter(deps.getState, selectHasLegacyLabelsMigrated);
 
     const migrateLegacyLabelsToSuiteSync = createMigrateLegacyLabelsToSuiteSync({
         getAccountsByDeviceState: deps.getAccountsByDeviceState,
-        getLegacyAccountLabels: deps.getLegacyAccountLabels,
+        getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
         getCurrentAccountLabels: deps.getCurrentAccountLabels,
-        migrateWalletLabels,
-        migrateAccountLabels,
-        migrateAddressLabels,
-        migrateOutputLabels,
+        migrateWalletLabels: createMigrateWalletLabels({
+            getLegacyWalletLabels: toGetter(deps.getState, selectLabelingDataForWallet),
+            getCurrentWalletLabel: deps.getCurrentWalletLabel,
+            updateWalletLabel: deps.labeling.updateWalletLabel,
+        }),
+        migrateAccountLabels: createMigrateAccountLabels({
+            updateAccountLabel: deps.labeling.updateAccountLabel,
+        }),
+        migrateAddressLabels: createMigrateAddressLabels({
+            updateAddressLabel: deps.labeling.updateAddressLabel,
+        }),
+        migrateOutputLabels: createMigrateOutputLabels({
+            updateOutputLabel: deps.labeling.updateOutputLabel,
+        }),
+    });
+
+    const migrateLabelsIfAvailable = createMigrateLabelsIfAvailable({
+        dispatch: deps.dispatch,
+        migrateLegacyLabelsToSuiteSync,
+        getIsMetadataEnabled,
+        getSelectedProviderForLabels,
+        getHasLegacyLabelsMigrated,
+        getDeviceByStaticSessionId: deps.getDeviceByStaticSessionId,
     });
 
     return {
+        migrateLabelsIfAvailable,
         migrateLegacyLabelsToSuiteSync,
     };
 };
