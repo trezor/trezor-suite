@@ -15909,6 +15909,7 @@ __metadata:
     "@storybook/react": "npm:^10.3.4"
     "@storybook/react-webpack5": "npm:^10.3.4"
     "@suite-common/feedback": "workspace:*"
+    "@suite-common/icons": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"

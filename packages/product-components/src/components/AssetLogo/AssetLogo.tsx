@@ -1,7 +1,7 @@
 import { type NetworkSymbol, getCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
 
 import { type AssetLogoProps, AssetLogoWithId } from './AssetLogoWithId';
-import { type LegacyNetworkSymbol } from '../../constants/networks';
+import { type LegacyNetworkSymbol } from '../../constants/coins';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
 export type { AssetLogoProps };

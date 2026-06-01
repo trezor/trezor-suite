@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { isNetworkIconSymbol } from '@suite-common/icons';
+import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
@@ -31,8 +32,7 @@ import {
     makeCacheKey,
     resolvedLogoCache,
 } from './assetLogoUtils';
-import { type LegacyNetworkSymbol } from '../../constants/networks';
-import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
+import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 export const allowedAssetLogoSizes = [20, 24, 32, 40] as const satisfies number[];
 export type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
@@ -80,13 +80,6 @@ const Logo = styled.img<{ $size: number; $elevation: Elevation; $isBordered: boo
             box-shadow: inset 0 0 0 1px ${mapElevationToBorder};
             background-color: ${mapElevationToBackground};
         `}
-`;
-
-const StyledNetworkIcon = styled(NetworkIcon)`
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    line-height: 0;
 `;
 
 interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -260,11 +253,8 @@ export const AssetLogoWithId = ({
                 </ElevationUp>
             )}
 
-            {showNetworkIcon && (
-                <StyledNetworkIcon
-                    networkSymbol={symbol as NetworkSymbol | LegacyNetworkSymbol}
-                    size={size * 0.375}
-                />
+            {showNetworkIcon && symbol && isNetworkIconSymbol(symbol) && (
+                <NetworkIconBadge networkSymbol={symbol} parentSize={size} />
             )}
         </Container>
     );

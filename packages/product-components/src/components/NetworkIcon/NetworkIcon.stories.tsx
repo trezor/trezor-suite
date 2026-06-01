@@ -1,10 +1,10 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
+import { isNetworkIconSymbol, networkIconSymbolMap } from '@suite-common/icons';
 import { Column, H2, Paragraph, StoryColumn } from '@trezor/components';
 
 import { NetworkIcon } from './NetworkIcon';
-import { NETWORK_ICONS, isNetworkSymbolWithIcon } from '../../constants/networks';
 
 const WrapperIcons = styled.div`
     display: grid;
@@ -25,7 +25,7 @@ export const All: StoryObj = {
             <H2 margin={{ bottom: 2 }}>Network Icons</H2>
             <Paragraph>All available network SVG icons</Paragraph>
             <WrapperIcons>
-                {Object.keys(NETWORK_ICONS).map(networkSymbol => (
+                {Object.keys(networkIconSymbolMap).map(networkSymbol => (
                     <Column
                         key={networkSymbol}
                         minHeight={100}
@@ -35,7 +35,7 @@ export const All: StoryObj = {
                         <Paragraph margin={{ bottom: 8 }} intent="neutral" priority="secondary">
                             {networkSymbol}
                         </Paragraph>
-                        {isNetworkSymbolWithIcon(networkSymbol) && (
+                        {isNetworkIconSymbol(networkSymbol) && (
                             <NetworkIcon networkSymbol={networkSymbol} size={32} />
                         )}
                     </Column>

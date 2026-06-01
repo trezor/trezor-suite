@@ -1,12 +1,12 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
+import { isNetworkIconSymbol, networkIconSymbolMap } from '@suite-common/icons';
 import { networksCollection } from '@suite-common/wallet-config';
 import { StoryColumn } from '@trezor/components';
 
 import { CoinLogo } from './CoinLogo';
 import { COINS, isCoinSymbol } from '../../constants/coins';
-import { NETWORK_ICONS, isNetworkSymbolWithIcon } from '../../constants/networks';
 
 const Heading = styled.h2`
     margin-bottom: 2px;
@@ -64,10 +64,10 @@ export const All: StoryObj = {
                 <Heading>Network</Heading>
                 <SubHeading>Network squared SVG icons</SubHeading>
                 <WrapperIcons>
-                    {Object.keys(NETWORK_ICONS).map(network => (
+                    {Object.keys(networkIconSymbolMap).map(network => (
                         <Icon key={network}>
                             <CoinName>{network}</CoinName>
-                            {isNetworkSymbolWithIcon(network) && (
+                            {isNetworkIconSymbol(network) && (
                                 <CoinLogo
                                     symbol={network}
                                     data-testid={`network-${network}`}

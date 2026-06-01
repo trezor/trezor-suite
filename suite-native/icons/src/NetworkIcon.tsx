@@ -1,10 +1,26 @@
-import { Image } from 'expo-image';
+import { View } from 'react-native';
 
-import { networkIcons } from '@suite-common/icons';
+import {
+    BlendColor,
+    Canvas,
+    Group,
+    ImageSVG,
+    Paint,
+    RoundedRect,
+    useSVG,
+} from '@shopify/react-native-skia';
+
+import {
+    type NetworkIconName,
+    getNetworkIconName,
+    isNetworkIconSymbol,
+    isTestnetNetworkIconSymbol,
+    networkIcons,
+} from '@suite-common/icons';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
-import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type CSSColor } from '@trezor/theme';
 
 import { type CryptoIconSize } from './CryptoIcon';
 
@@ -26,26 +42,80 @@ const iconStyle = prepareNativeStyle<{ width: number; height: number }>((_, { wi
     height,
 }));
 
-export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
-    const { applyStyle } = useNativeStyles();
-    const isDarkScheme = useActiveColorScheme() === 'dark';
-    const { translate } = useTranslate();
-    const iconName = `${symbol.toLowerCase()}${isDarkScheme ? '_inverse' : ''}`;
+type NetworkIconCanvasProps = {
+    iconName: NetworkIconName;
+    size: number;
+    backgroundColor: CSSColor;
+    iconColor: CSSColor;
+};
 
-    const sizeNumber = typeof size === 'number' ? size : networkIconSizes[size];
-    const sourceUrl = networkIcons[iconName as keyof typeof networkIcons] ?? undefined;
+const NetworkIconCanvas = ({
+    iconName,
+    size,
+    backgroundColor,
+    iconColor,
+}: NetworkIconCanvasProps) => {
+    const iconSvg = useSVG(networkIcons[iconName]);
 
-    if (!sourceUrl) {
+    if (!iconSvg) {
         return null;
     }
 
     return (
-        <Image
+        <Canvas style={{ width: size, height: size }}>
+            <RoundedRect
+                x={0}
+                y={0}
+                width={size}
+                height={size}
+                r={size / 4}
+                color={backgroundColor}
+            />
+            <Group
+                layer={
+                    <Paint>
+                        <BlendColor color={iconColor} mode="srcIn" />
+                    </Paint>
+                }
+            >
+                <ImageSVG svg={iconSvg} x={0} y={0} width={size} height={size} />
+            </Group>
+        </Canvas>
+    );
+};
+
+export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
+    const { applyStyle, utils } = useNativeStyles();
+    const { translate } = useTranslate();
+
+    const sizeNumber = typeof size === 'number' ? size : networkIconSizes[size];
+
+    if (!isNetworkIconSymbol(symbol)) {
+        return null;
+    }
+
+    const iconName = getNetworkIconName(symbol);
+    const isTestnet = isTestnetNetworkIconSymbol(symbol);
+    const backgroundColor = isTestnet
+        ? utils.colors.elementFillCriticalBold
+        : utils.colors.elementFillContrast;
+    const iconColor = isTestnet
+        ? utils.colors.contentOnDarkPrimary
+        : utils.colors.contentPrimaryInverse;
+
+    return (
+        <View
+            accessible
+            accessibilityRole="image"
             accessibilityHint={translate('icons.networkIconHint')}
-            source={sourceUrl}
-            recyclingKey={symbol}
             style={applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber })}
-            cachePolicy="memory-disk"
-        />
+        >
+            <NetworkIconCanvas
+                iconName={iconName}
+                size={sizeNumber}
+                backgroundColor={backgroundColor}
+                iconColor={iconColor}
+            />
+        </View>
     );
 };

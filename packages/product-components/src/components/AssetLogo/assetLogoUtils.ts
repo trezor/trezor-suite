@@ -1,3 +1,4 @@
+import { isNetworkIconSymbol } from '@suite-common/icons';
 import {
     type NetworkSymbolExtended,
     getNetwork,
@@ -5,8 +6,6 @@ import {
     getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-
-import { isNetworkSymbolWithIcon } from '../../constants/networks';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -27,7 +26,7 @@ export function shouldShowNetworkIcon(
 ) {
     return (
         networkSymbol &&
-        isNetworkSymbolWithIcon(networkSymbol) &&
+        isNetworkIconSymbol(networkSymbol) &&
         isNetworkSymbol(networkSymbol) &&
         Boolean(contractAddress) &&
         getNetworkFeatures(networkSymbol).includes('tokens')
