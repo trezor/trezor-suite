@@ -114,8 +114,8 @@ export default class AuthenticateDevice extends AbstractMethod<
 
         // 2. Fetch all certificates and signatures based on sizes received in the first response.
         for (const { name, type, certSizes, sigSize } of proofTypes) {
-            for (let i = 0; i < certSizes.length; i++) {
-                const cert = await getChunk({ proof_type: type, index: i }, certSizes[i]);
+            for (const [i, certSize] of certSizes.entries()) {
+                const cert = await getChunk({ proof_type: type, index: i }, certSize);
                 (authenticityProof[`${name}_certificates`] as string[]).push(cert);
             }
 
