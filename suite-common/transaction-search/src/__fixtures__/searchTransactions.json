@@ -12045,6 +12045,78 @@
                 "totalInput": "130000000",
                 "totalOutput": "129999867"
             }
+        },
+        {
+            "descriptor": "0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3",
+            "deviceState": "mgpdqcar9VSuvXnX1dnf94adSgnfAMn42Q@3B2B576D5EA7D8BD25E74C8B:2",
+            "symbol": "eth",
+            "type": "sent",
+            "txid": "0xb2e15b2029bfecb74f8cfddafa35bd09f72c1c003f725c6c8391169d726f6c30",
+            "blockTime": 1780380791,
+            "blockHeight": 25227831,
+            "blockHash": "0xfb09f9317d2fc79cbe18fcef1f51413f7be3e4a02b5979577df7f48ba3f9ec5c",
+            "totalSpent": "0",
+            "amount": "0",
+            "fee": "25428986493708",
+            "targets": [],
+            "tokens": [],
+            "rbf": true,
+            "ethereumSpecific": {
+                "status": 1,
+                "nonce": 1311,
+                "gasLimit": 275349,
+                "gasUsed": 220773,
+                "gasPrice": "115181596",
+                "maxPriorityFeePerGas": "266666",
+                "maxFeePerGas": "163369719",
+                "baseFeePerGas": "114914930",
+                "data": "0xdeadbeefseed",
+                "parsedData": {
+                    "methodId": "0x71ee95c0",
+                    "name": "Claim",
+                    "function": "claim(address[], address[], uint256[], bytes32[][])",
+                    "params": [
+                        {
+                            "type": "address[]",
+                            "values": []
+                        },
+                        {
+                            "type": "address[]",
+                            "values": []
+                        },
+                        {
+                            "type": "uint256[]",
+                            "values": []
+                        },
+                        {
+                            "type": "bytes32[][]",
+                            "values": []
+                        }
+                    ]
+                }
+            },
+            "details": {
+                "vin": [
+                    {
+                        "n": 0,
+                        "addresses": ["0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3"],
+                        "isAddress": true,
+                        "isOwn": true,
+                        "isAccountOwned": true
+                    }
+                ],
+                "vout": [
+                    {
+                        "value": "0",
+                        "n": 0,
+                        "addresses": ["0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae"],
+                        "isAddress": true
+                    }
+                ],
+                "size": 0,
+                "totalInput": "0",
+                "totalOutput": "0"
+            }
         }
     ]
 }
