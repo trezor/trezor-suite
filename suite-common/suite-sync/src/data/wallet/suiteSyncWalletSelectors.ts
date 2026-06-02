@@ -4,7 +4,7 @@ import {
     type SuiteSyncAddress,
     type SuiteSyncOutput,
 } from '@suite-common/suite-sync-storage';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { typedObjectValues } from '@trezor/utils';
 
 import { type SuiteSyncDataRootState, type WalletData } from '../suiteSyncDataReducer';

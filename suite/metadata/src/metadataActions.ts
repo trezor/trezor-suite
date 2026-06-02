@@ -7,7 +7,8 @@ import {
     type MetadataProvider,
     type PasswordManagerState,
 } from '@suite-common/metadata-types';
-import { type Account, type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
+import { type Account } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 
 import * as METADATA from './metadataConstants';

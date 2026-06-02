@@ -2,7 +2,7 @@ import {
     type EnsureWalletSuiteSyncOnDep,
     type UpdateWalletLabel,
 } from '@suite-common/suite-sync-types';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import {

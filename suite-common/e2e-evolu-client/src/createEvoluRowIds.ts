@@ -13,8 +13,9 @@ import {
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import type { WalletDescriptor } from '@suite-common/wallet';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountDescriptor, TxTargetId, WalletDescriptor } from '@suite-common/wallet-types';
+import type { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 
 export const createOwnerIdFromSecret = (ownerSecret: SuiteSyncOwnerSecretHex): string => {
     const result = createEvoluAppOwnerFromTrezorData({ data: ownerSecret });

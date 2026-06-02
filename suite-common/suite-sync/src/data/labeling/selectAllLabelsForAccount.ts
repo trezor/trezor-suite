@@ -1,7 +1,8 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import type { WalletDescriptor } from '@suite-common/wallet';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
+import type { AccountDescriptor } from '@suite-common/wallet-types';
 
 import { selectSuiteSyncAccountLabel } from '../account/selectSuiteSyncAccountLabel';
 import { selectSuiteSyncAccountAddressesByAccount } from '../address/suiteSyncAddressSelectors';

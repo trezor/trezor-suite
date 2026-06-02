@@ -1,5 +1,5 @@
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { type Result } from '@trezor/type-utils';
 
 import { type EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';

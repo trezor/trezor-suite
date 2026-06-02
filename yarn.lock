@@ -10236,6 +10236,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -10390,6 +10391,7 @@ __metadata:
     "@evolu/nodejs": "npm:3.0.0-next.3"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     ws: "npm:^8.20.0"
@@ -10673,6 +10675,8 @@ __metadata:
 "@suite-common/metadata-types@workspace:*, @suite-common/metadata-types@workspace:suite-common/metadata-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
+  dependencies:
+    "@suite-common/wallet": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -10799,6 +10803,7 @@ __metadata:
   dependencies:
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -10830,6 +10835,7 @@ __metadata:
     "@evolu/nodejs": "npm:3.0.0-next.3"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -10852,7 +10858,7 @@ __metadata:
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -10869,6 +10875,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-storage@workspace:suite-common/suite-sync-storage"
   dependencies:
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -10883,6 +10890,7 @@ __metadata:
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -10911,6 +10919,7 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11230,6 +11239,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11245,6 +11255,14 @@ __metadata:
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     web3-utils: "npm:^4.3.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/wallet@workspace:*, @suite-common/wallet@workspace:suite-common/wallet":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/wallet@workspace:suite-common/wallet"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -11298,6 +11316,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -14570,6 +14589,7 @@ __metadata:
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -14606,6 +14626,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -16290,6 +16311,7 @@ __metadata:
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"

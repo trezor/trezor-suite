@@ -7,7 +7,7 @@ import { type MetadataProvider } from '@suite-common/metadata-types';
 import { type WalletSuiteSyncOnEnsuredListener } from '@suite-common/suite-sync-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 

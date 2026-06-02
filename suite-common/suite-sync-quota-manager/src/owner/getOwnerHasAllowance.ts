@@ -1,4 +1,4 @@
-import type { WalletDescriptor } from '@suite-common/wallet-types';
+import type { WalletDescriptor } from '@suite-common/wallet';
 
 export type GetOwnerHasAllowance = (walletDescriptor: WalletDescriptor) => boolean;
 

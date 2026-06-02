@@ -13,7 +13,6 @@ export type * from './transactionReviewOutput';
 export * from './ethereumStaking';
 export type * from './stakeForm';
 export type * from './send';
-export * from './wallet';
 export type * from './globalSendReceive';
 export * from './baseCurrency';
 export type * from './transactionSimulation';

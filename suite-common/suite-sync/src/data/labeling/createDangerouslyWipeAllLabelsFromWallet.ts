@@ -5,7 +5,8 @@ import {
     type UpdateOutputLabelDep,
     type UpdateWalletLabelDep,
 } from '@suite-common/suite-sync-types';
-import { type Account, type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
+import { type Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { ok } from '@trezor/type-utils';
 

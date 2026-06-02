@@ -6,8 +6,7 @@ import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type MetadataProvider } from '@suite-common/metadata-types';
 import { createSuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { asWalletDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@suite-common/wallet';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
@@ -17,7 +16,7 @@ import {
 } from '../createEnsureWalletSuiteSyncOnWithMigration';
 
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'device@wallet:1';
-const WALLET_DESCRIPTOR = asWalletDescriptor('wallet');
+const WALLET_DESCRIPTOR = asWalletDescriptor('device');
 
 const createDevice = (staticSessionId: StaticSessionId = DEVICE_STATIC_SESSION_ID) => {
     const device = mockSuiteDevice({
@@ -63,10 +62,13 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         );
         expect(deps.dispatch).toHaveBeenNthCalledWith(
             2,
-            notificationsActions.addToast({
-                type: 'legacy-labeling-migration-success',
-                added: 2,
-                skipped: 1,
+            expect.objectContaining({
+                type: '@common/in-app-notifications/addToast',
+                payload: expect.objectContaining({
+                    type: 'legacy-labeling-migration-success',
+                    added: 2,
+                    skipped: 1,
+                }),
             }),
         );
     });
@@ -145,6 +147,15 @@ describe(createMigrateLabelsIfAvailable.name, () => {
             storage: {} as any,
         });
 
-        expect(deps.dispatch).not.toHaveBeenCalled();
+        expect(deps.dispatch).toHaveBeenCalledTimes(1);
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: '@common/in-app-notifications/addToast',
+                payload: expect.objectContaining({
+                    type: 'error',
+                    error: 'Failed to update Suite Sync data.',
+                }),
+            }),
+        );
     });
 });

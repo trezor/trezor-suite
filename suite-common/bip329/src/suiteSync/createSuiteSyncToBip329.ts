@@ -1,7 +1,8 @@
 import { type ExportBip329 } from '@suite-common/bip329-types';
 import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountDescriptor, type WalletDescriptor } from '@suite-common/wallet-types';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { suiteSyncToBip329 } from './suiteSyncToBip329';
