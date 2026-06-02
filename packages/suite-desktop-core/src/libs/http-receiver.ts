@@ -64,6 +64,7 @@ const applyTemplate = (content = 'You may now close this window.', options?: Tem
 };
 
 export const createHttpReceiver = (options?: { port?: number }) => {
+    // Note that if we override the `address` to something else than 127.0.0.1 or localhost, it might break google oauth
     const httpReceiver = new HttpServer<Events>({
         logger: convertILoggerToLog(global.logger, { serviceName: 'http-receiver' }),
         port: options?.port ?? 21335,

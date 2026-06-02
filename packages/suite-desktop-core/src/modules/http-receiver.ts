@@ -34,7 +34,8 @@ export const initBackground: ModuleInitBackground = ({
         if (httpReceiver) {
             return httpReceiver.getInfo();
         }
-        // External request handler
+        // External request handler.
+        // Note that if we override the `port` to something else than 21335, it might break google oauth
         const receiver = createHttpReceiver();
         httpReceiver = receiver;
 
