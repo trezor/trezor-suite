@@ -56,6 +56,7 @@ type TradingAssetOptionBase = {
     coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
     networkName: NetworkConfig['name'];
     networkSymbol: NetworkSymbol;
+    displaySymbolName?: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
