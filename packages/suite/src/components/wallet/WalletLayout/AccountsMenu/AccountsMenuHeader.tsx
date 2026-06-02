@@ -96,7 +96,7 @@ export const AccountsMenuHeader = () => {
                             </>
                         )}
                     </Row>
-                    {isCoinsFilterVisible && showCoinFilter && <CoinsFilter />}
+                    {isCoinsFilterVisible && showCoinFilter && !isEmpty && <CoinsFilter />}
                 </ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
                     <Column alignItems="center" margin={{ bottom: 12 }}>
