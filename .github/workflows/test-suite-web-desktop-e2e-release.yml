@@ -1,7 +1,7 @@
-name: "[Test] Release Suite Web e2e tests"
+name: "[Test] Release Suite Web & Desktop e2e tests"
 # Triggered by push to release branch
-# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web
-# Runs e2e full test suite for Suite Web
+# Builds the desktop app and deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web
+# Runs full e2e test suite for Suite Desktop and Suite Web
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -27,7 +27,7 @@ on:
         type: boolean
 
 concurrency:
-  group: web-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 env:
@@ -35,10 +35,6 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
-  build-web:
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/build-suite-web-e2e.yml
-
   extract-branch:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
@@ -52,6 +48,45 @@ jobs:
           BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "release_build=${BRANCH_NAME}-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
+
+  # ── Desktop ────────────────────────────────────────────────────────────────
+
+  build-app:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
+
+  run-e2e-suite-desktop-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - build-app
+      - extract-branch
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+    uses: ./.github/workflows/template-suite-run-e2e.yml
+    with:
+      target: "desktop"
+      pw-config: "./playwright-config/playwright-desktop.config.ts"
+      workspace-dependencies: "@trezor/suite-desktop"
+      test-group: ${{ matrix.TEST_GROUP }}
+      fail-fast: "false"
+      currents-project-id: "4ytF0E"
+      download-artifact-name: "desktop-app-build-e2e"
+      release-build: ${{ needs.extract-branch.outputs.release_build }}
+      run-reporter: ${{ inputs.publish_results_to_github == true }}
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+      e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+      trezor-bot-app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+      trezor-bot-private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+  # ── Web ────────────────────────────────────────────────────────────────────
+
+  build-web:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-web-e2e.yml
 
   build-connect:
     needs: [extract-branch]
