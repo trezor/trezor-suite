@@ -1263,6 +1263,7 @@ export const composeTxFixture: Fixture[] = [
             feeRate: '1000',
             sortingStrategy: 'bip69',
             network: doge,
+            feePolicy: 'doge',
             outputs: [
                 {
                     address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',

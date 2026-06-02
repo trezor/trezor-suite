@@ -1,4 +1,3 @@
-import { type Network, isNetworkType } from '../networks';
 import {
     type CoinSelectAlgorithm,
     type CoinSelectInput,
@@ -163,13 +162,6 @@ export function sumOrNaN(range: { value?: bigint }[], forgiving = false) {
 
         return value + a;
     }, ZERO);
-}
-
-export function getFeePolicy(network?: Network) {
-    if (isNetworkType('doge', network)) return 'doge';
-    if (isNetworkType('zcash', network)) return 'zcash';
-
-    return 'bitcoin';
 }
 
 function getBitcoinFee(
