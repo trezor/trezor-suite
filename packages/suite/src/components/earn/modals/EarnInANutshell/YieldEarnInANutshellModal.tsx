@@ -1,7 +1,7 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { RewardDtoYieldSource } from '@suite-common/earn-stablecoin-api';
+import { RewardDtoYieldSource, useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -41,7 +41,7 @@ export const YieldEarnInANutshellModal = ({
 }: YieldEarnInANutshellModalProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
-    const { handleAction, onCancelClick, vault } = useEarnInANutshell({
+    const { handleAction, onCancelClick } = useEarnInANutshell({
         flow: EarnFlow.Yield,
         provider,
         onCancel,
@@ -49,6 +49,7 @@ export const YieldEarnInANutshellModal = ({
         actionType,
         yieldContext,
     });
+    const { data: vault } = useYieldOpportunity(yieldContext?.id);
 
     if (!isStakingNetworkType(account.networkType)) return null;
 

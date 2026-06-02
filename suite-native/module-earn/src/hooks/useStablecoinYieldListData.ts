@@ -37,7 +37,7 @@ type UseStablecoinYieldListDataReturn = {
 export const useStablecoinYieldListData = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
-    const { yieldOpportunities, isLoading } = useAllYieldOpportunities();
+    const { data: yieldOpportunities, isLoading } = useAllYieldOpportunities();
 
     return useMemo<UseStablecoinYieldListDataReturn>(() => {
         if (isLoading) {

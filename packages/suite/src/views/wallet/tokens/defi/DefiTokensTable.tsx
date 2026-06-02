@@ -29,7 +29,7 @@ export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTabl
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
-    const { yieldOpportunities } = useAllYieldOpportunities();
+    const { data: yieldOpportunities } = useAllYieldOpportunities();
 
     const enhancedTokens = useMemo(() => {
         const erc4626Tokens = account.tokens?.filter(isErc4626);

@@ -4,7 +4,7 @@ import { type DexApprovalType } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { KNOWN_VAULTS } from '@suite-common/suite-constants';
+import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
@@ -46,7 +46,9 @@ export const YieldApproveModal = ({
     const handledTxidRef = useRef<string | null>(null);
     const cryptoId = toTokenCryptoId(account.symbol, contractAddress);
     const { networkId, contractAddress: parsedContract } = parseCryptoId(cryptoId);
-    const vaultName = KNOWN_VAULTS[spender.toLowerCase()];
+    const { data: vaultName } = useYieldOpportunity(vaultId, {
+        select: yieldOpportunity => yieldOpportunity.metadata.name,
+    });
 
     const provider = {
         name: vaultName,

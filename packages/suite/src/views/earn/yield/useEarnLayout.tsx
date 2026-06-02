@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, goto } from '@suite/router';
 import { isStablecoinYieldSupported, selectSelectedDevice } from '@suite-common/device';
-import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
@@ -136,11 +137,11 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
     const { account, routeParams } = useEarnRouteAccount();
     const selectedDevice = useSelector(selectSelectedDevice);
     const {
-        yieldOpportunities,
-        isLoading: isYieldOpportunitiesLoading,
-        isSuccess: isYieldOpportunitiesSuccess,
-        isError: isYieldOpportunitiesError,
-    } = useAllYieldOpportunities();
+        data: vault,
+        isLoading,
+        isSuccess,
+        isError,
+    } = useYieldOpportunity(routeParams?.yieldId);
 
     useEffect(() => {
         if (!routeParams) {
@@ -148,20 +149,15 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
         }
     }, [dispatch, routeParams]);
 
-    const vault =
-        isYieldOpportunitiesSuccess && routeParams
-            ? yieldOpportunities.find(opportunity => opportunity.id === routeParams.yieldId)
-            : undefined;
-
     const layoutState = getEarnLayoutResult({
         account,
         device: selectedDevice,
         routeParams,
         vault,
         type,
-        isYieldOpportunitiesLoading,
-        isYieldOpportunitiesSuccess,
-        isYieldOpportunitiesError,
+        isYieldOpportunitiesLoading: isLoading,
+        isYieldOpportunitiesSuccess: isSuccess,
+        isYieldOpportunitiesError: isError,
     });
 
     const isFirmwareNotSupported =
