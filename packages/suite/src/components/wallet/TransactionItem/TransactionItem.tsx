@@ -108,13 +108,16 @@ export const TransactionItem = memo(
                 }),
             );
         };
-        const { isPhishing: isPhishingTransaction } = useSelector(state =>
-            selectIsPhishingTransaction(state, transaction.txid, accountKey),
+        const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
+            state => selectIsPhishingTransaction(state, transaction.txid, accountKey),
         );
 
         const dataTestBase = `@transaction-item/${index}${
             transaction.deadline ? '/prepending' : ''
         }`;
+
+        const isZeroPhishingTransaction =
+            isPhishingTransaction && phishingDetectorId == 'DUST_AMOUNT';
 
         return (
             <Wrapper ref={anchorRef} data-testid="@wallet/transaction-item">
@@ -126,7 +129,7 @@ export const TransactionItem = memo(
                             <TransactionHeading
                                 transaction={transaction}
                                 isPending={isPending}
-                                isPhishingTransaction={isPhishingTransaction}
+                                isZeroPhishingTransaction={isZeroPhishingTransaction}
                                 dataTestBase={dataTestBase}
                             />
                         }
