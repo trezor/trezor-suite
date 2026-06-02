@@ -9,8 +9,12 @@ import type {
     SelectFeeLevel,
 } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
-import { composeTx } from '@trezor/utxo-lib';
+import type {
+    ComposeFeePolicy,
+    ComposeOutput,
+    TransactionInputOutputSortingStrategy,
+} from '@trezor/utxo-lib';
+import { composeTx, networks } from '@trezor/utxo-lib';
 
 import type { Blockchain } from '../../backend/BlockchainLink';
 import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
@@ -168,6 +172,13 @@ export class TransactionComposer {
         const changeAddress = addresses.change.find(a => !a.transfers) || lastChange;
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 
+        let feePolicy: ComposeFeePolicy | undefined;
+        if (networks.isNetworkType('doge', coinInfo.network)) {
+            feePolicy = 'doge';
+        } else if (networks.isNetworkType('zcash', coinInfo.network)) {
+            feePolicy = 'zcash';
+        }
+
         return composeTx({
             txType: account.type,
             utxos: this.utxos,
@@ -179,6 +190,7 @@ export class TransactionComposer {
             changeAddress,
             dustThreshold: coinInfo.dustLimit,
             baseFee,
+            feePolicy,
         });
     }
 

@@ -1,4 +1,4 @@
-import { type TransactionInputOutputSortingStrategy } from './compose';
+import type { ComposeFeePolicy, TransactionInputOutputSortingStrategy } from './compose';
 
 export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2wsh';
 
@@ -24,7 +24,7 @@ export interface CoinSelectOptions {
      */
     floorBaseFee?: boolean;
     sortingStrategy: TransactionInputOutputSortingStrategy;
-    feePolicy?: 'bitcoin' | 'doge' | 'zcash';
+    feePolicy?: ComposeFeePolicy;
 }
 
 export interface CoinSelectInput {

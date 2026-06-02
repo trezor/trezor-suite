@@ -1,11 +1,4 @@
-import {
-    getDustAmount,
-    getFee,
-    getFeePolicy,
-    parseBigInt,
-    sumOrNaN,
-} from '../../src/coinselect/coinselectUtils';
-import { zcash as zcashNetwork } from '../../src/networks';
+import { getDustAmount, getFee, parseBigInt, sumOrNaN } from '../../src/coinselect/coinselectUtils';
 
 describe('coinselectUtils', () => {
     it('parseBigInt', () => {
@@ -43,10 +36,6 @@ describe('coinselectUtils', () => {
         expect(
             getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000, floorBaseFee: true }),
         ).toEqual(1000);
-    });
-
-    it('getFeePolicy returns "zcash" for the zcash network', () => {
-        expect(getFeePolicy(zcashNetwork)).toEqual('zcash');
     });
 
     it('sumOrNaN short-circuits subsequent items once accumulator becomes undefined', () => {

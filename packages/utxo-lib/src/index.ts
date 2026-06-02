@@ -44,7 +44,8 @@ export type {
     ComposeResultFinal,
     ComposedTransaction,
     CoinSelectPaymentType,
+    ComposeFeePolicy,
+    TransactionInputOutputSortingStrategy,
 } from './types';
 export type { Network } from './networks';
 export type { BIP32Interface } from './bip32';
-export type { TransactionInputOutputSortingStrategy } from './types/compose';

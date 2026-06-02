@@ -4,7 +4,6 @@ import { toOutputScript } from '../address';
 import {
     INPUT_SCRIPT_LENGTH,
     OUTPUT_SCRIPT_LENGTH,
-    getFeePolicy,
     inputWeight,
     outputWeight,
     parseBigInt,
@@ -228,7 +227,7 @@ export function validateAndParseRequest(request: Request): CoinSelectRequest | C
         return changeOutput;
     }
 
-    const feePolicy = getFeePolicy(request.network);
+    const feePolicy = request.feePolicy ?? 'bitcoin';
 
     return {
         txType,
