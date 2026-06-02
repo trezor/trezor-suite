@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Card, Column, Grid, InfoSegments, Row, Text } from '@trezor/components';
+import { Card, Column, Flex, Grid, InfoSegments, Row, Text } from '@trezor/components';
 
 import { useLayoutSize } from 'src/hooks/suite';
 
@@ -21,13 +21,19 @@ export const TransactionLayout = ({
     icon,
     children,
 }: TransactionLayoutProps) => {
-    const { isBelowLaptop, isAboveMobile } = useLayoutSize();
+    const { isBelowLaptop } = useLayoutSize();
 
     return (
         <Card onClick={onClick} paddingType="none">
-            <Row gap={24} padding={{ vertical: 20, horizontal: 24 }}>
-                {isAboveMobile && icon}
-                <Column flex="1" gap={6}>
+            <Flex
+                gap={isBelowLaptop ? 12 : 24}
+                padding={{ vertical: 20, horizontal: 24 }}
+                alignItems="flex-start"
+                direction={isBelowLaptop ? 'column' : 'row'}
+                flexWrap="nowrap"
+            >
+                {icon}
+                <Column flex="1" gap={6} width="100%">
                     <Row justifyContent="space-between" gap={24}>
                         <InfoSegments intent="neutral" priority="secondary">
                             <Text typographyStyle="body-md-strong" intent="neutral" as="div">
@@ -37,7 +43,6 @@ export const TransactionLayout = ({
                                 {timestamp}
                             </Text>
                         </InfoSegments>
-                        {actions}
                     </Row>
 
                     <Grid
@@ -52,8 +57,9 @@ export const TransactionLayout = ({
                     >
                         {children}
                     </Grid>
+                    {actions}
                 </Column>
-            </Row>
+            </Flex>
         </Card>
     );
 };
