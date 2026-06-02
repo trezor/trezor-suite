@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-06-01T00:00:00+00:00",
-    "sequence": 141,
+    "timestamp": "2026-06-02T00:00:00+00:00",
+    "sequence": 142,
     "actions": [
         {
             "conditions": [
@@ -1754,11 +1754,11 @@
                     },
                     {
                         "variant": "B",
-                        "percentage": 70
+                        "percentage": 100
                     },
                     {
                         "variant": "C",
-                        "percentage": 30
+                        "percentage": 0
                     }
                 ]
             }
