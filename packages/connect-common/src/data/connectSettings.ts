@@ -21,7 +21,6 @@ const initialSettings: ConnectSettings = {
     pendingTransportEvent: true,
     env: 'node',
     timestamp: new Date().getTime(),
-    sharedLogger: true,
     transportReconnect: true,
 };
 
@@ -117,10 +116,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.manifest === 'object') {
         settings.manifest = parseManifest(input.manifest);
-    }
-
-    if (typeof input.sharedLogger === 'boolean') {
-        settings.sharedLogger = input.sharedLogger;
     }
 
     if (

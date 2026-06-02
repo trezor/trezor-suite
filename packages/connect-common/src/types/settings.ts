@@ -66,7 +66,6 @@ export interface ConnectSettingsInternal {
     env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
     timestamp: number;
     proxy?: Proxy;
-    sharedLogger?: boolean;
     localFirmwares?: LocalFirmwares;
     firmwareChannel?: FirmwareChannel;
 }
