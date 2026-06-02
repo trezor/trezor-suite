@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { getTxAnchor, goto, selectRouteName } from '@suite/router';
+import { getTxAnchor, goto, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
     selectAccounts,
@@ -40,6 +40,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const devices = useSelector(selectDevices);
     const currentDevice = useSelector(selectSelectedDevice);
     const routeName = useSelector(selectRouteName);
+    const routerApp = useSelector(selectRouterApp);
     const dispatch = useDispatch();
 
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
@@ -56,6 +57,9 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
         ? 'wallet-staking'
         : 'wallet-index';
     const isTradingRoute = !!routeName?.includes('wallet-trading');
+    // Keep the user inside the yield flow: the toast action navigates away (goto) which makes
+    // users think the approve step is the whole transaction. Mirror the trading behavior above.
+    const isYieldRoute = routerApp === 'earn-yield';
     const transactionToken = 'token' in props.notification ? props.notification.token : undefined;
     const toastTestIdPrefix = `@toast/${props.notification.type}`;
 
@@ -143,7 +147,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                 ),
             }}
             action={
-                tx && !isTradingRoute
+                tx && !isTradingRoute && !isYieldRoute
                     ? {
                           onClick: handleTransactionClick,
                           label: 'TOAST_TX_BUTTON',
