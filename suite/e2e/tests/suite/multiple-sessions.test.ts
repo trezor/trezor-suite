@@ -66,6 +66,11 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
             // });
 
             await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
+                await page.reload();
+                await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_CONNECTED', {
+                    timeout: 30_000,
+                });
+                await stealBridgeSession();
                 await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE', {
                     timeout: 30_000,
                 });
