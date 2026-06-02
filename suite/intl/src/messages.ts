@@ -1266,6 +1266,26 @@ export const messages = defineMessages({
         defaultMessage: 'Provider',
         id: 'TR_TRADING_PROVIDER',
     },
+    TR_TRADING_INTENT: {
+        defaultMessage: 'Intent',
+        id: 'TR_TRADING_INTENT',
+    },
+    TR_TRADING_INTENT_SWAP: {
+        defaultMessage: 'Swap',
+        id: 'TR_TRADING_INTENT_SWAP',
+    },
+    TR_RECIPIENT: {
+        defaultMessage: 'Recipient',
+        id: 'TR_RECIPIENT',
+    },
+    TR_CONTRACT: {
+        defaultMessage: 'Contract',
+        id: 'TR_CONTRACT',
+    },
+    TR_NETWORK_FEE: {
+        defaultMessage: 'Network fee',
+        id: 'TR_NETWORK_FEE',
+    },
     TR_TRADING_PROVIDERS: {
         defaultMessage: 'Providers',
         id: 'TR_TRADING_PROVIDERS',

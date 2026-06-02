@@ -48,6 +48,7 @@ type FormStateTradingSell = {
 export type FormStateTradingExchange = {
     activeSection: 'exchange';
     receive: FormStateTradingCryptoCurrency;
+    receiveAddress?: string;
 } & FormStateTradingCommon;
 
 export type FormStateTrading =

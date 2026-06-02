@@ -67,7 +67,7 @@ export const confirmExchangeTradeThunk = createThunk(
             }
         }
 
-        const response = await invityAPI.doExchangeTrade(
+        const rawResponse = await invityAPI.doExchangeTrade(
             {
                 trade,
                 receiveAddress,
@@ -82,6 +82,12 @@ export const confirmExchangeTradeThunk = createThunk(
         if (signal.aborted) {
             return undefined;
         }
+
+        // invity drops DEX-specific fields on the response — preserve those the review flow needs
+        const response = rawResponse && {
+            ...rawResponse,
+            swapSlippage: rawResponse.swapSlippage ?? trade.swapSlippage,
+        };
 
         if (!response) {
             dispatch(

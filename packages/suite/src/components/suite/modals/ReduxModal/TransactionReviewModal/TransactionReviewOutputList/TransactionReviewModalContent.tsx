@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import {
     type SerializedTx,
     selectSendFormReviewButtonRequestsCount,
@@ -58,6 +59,7 @@ export const TransactionReviewModalContent = ({
 }: TransactionReviewModalContentProps) => {
     const { symbol, networkType } = account;
     const device = useSelector(selectSelectedDevice);
+    const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
 
     const createdTxTimestamp = useMemo(
         () => precomposedTx.createdTimestamp ?? 0,
@@ -88,6 +90,7 @@ export const TransactionReviewModalContent = ({
                 precomposedForm,
                 precomposedTx,
                 vaultName,
+                swapSlippage,
             }),
         [
             account,
@@ -97,6 +100,7 @@ export const TransactionReviewModalContent = ({
             precomposedForm,
             precomposedTx,
             vaultName,
+            swapSlippage,
         ],
     );
 
