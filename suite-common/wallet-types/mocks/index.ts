@@ -6,3 +6,4 @@ export {
     networkSpecificDefaultCardano,
     networkSpecificDefaultStellar,
 } from './mockWalletAccount';
+export { mockAccountToken } from './mockAccountToken';
