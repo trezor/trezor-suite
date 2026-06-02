@@ -74,6 +74,8 @@ export class WalletPage {
     readonly discoveryWarning: Locator;
     readonly usedAddress = (index: number) =>
         this.page.getByTestId(`@wallet/receive/used-address/${index}`);
+    readonly usedAddressRevealButton = (index: number) =>
+        this.page.getByTestId(`@wallet/receive/reveal-address-button/${index}`);
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
