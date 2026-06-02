@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
   id-token: write
 
 concurrency:
@@ -86,6 +85,14 @@ jobs:
           name: fix-agent-report
           path: report-download/
 
+      - name: Validate report
+        run: |
+          if ! jq -e 'all(.fix_tasks[]; (.id | type == "string" and test("^fix-[0-9]{3}$") and (test("[\\r\\n]") | not)) and (.branch | type == "string" and test("^fix/nightly-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]{1,40}$") and (test("[\\r\\n]") | not)))' report-download/report.json >/dev/null; then
+            echo "INVALID task id or branch found"
+            exit 1
+          fi
+          echo "Report validation passed"
+
       - name: Build matrix from report
         id: set-matrix
         run: |
@@ -149,6 +156,10 @@ jobs:
     runs-on: ubuntu-24.04
     if: github.repository == 'trezor/trezor-suite' && needs.prepare-matrix.outputs.has-tasks == 'true'
     timeout-minutes: 120
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -231,10 +242,14 @@ jobs:
           git config --global user.name "Nightly Fix Agent"
 
       - name: Checkout fix branch
+        env:
+          TASK_ID: ${{ matrix.task-id }}
         run: |
-          BRANCH=$(jq -r --arg id "${{ matrix.task-id }}" '.fix_tasks[] | select(.id == $id) | .branch' "report-download/report.json")
+          BRANCH=$(jq -r --arg id "$TASK_ID" \
+            'first(.fix_tasks[] | select(.id == $id) | .branch) // empty' "report-download/report.json")
+          if [ -z "$BRANCH" ]; then echo "Branch not found for task id: $TASK_ID" && exit 1; fi
           git checkout -b "$BRANCH"
-          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
 
       - name: Wait for web preview server
         timeout-minutes: 2
@@ -252,9 +267,11 @@ jobs:
 
       - name: Store token usage record to S3
         if: always()
+        env:
+          TASK_ID: ${{ matrix.task-id }}
         run: |
           if [ -f /tmp/llm-token-usage.json ]; then
-            SAFE_TASK_ID=$(echo "${{ matrix.task-id }}" | tr -cs 'a-zA-Z0-9_-' '_')
+            SAFE_TASK_ID=$(echo "$TASK_ID" | tr -cs 'a-zA-Z0-9_-' '_')
             aws s3api put-object \
               --bucket dev.suite.sldev.cz \
               --key "coverage/e2e/llm-usage/runs/${{ github.run_id }}_FixAgent_${SAFE_TASK_ID}.json" \
