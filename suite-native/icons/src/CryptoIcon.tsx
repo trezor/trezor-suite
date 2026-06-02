@@ -27,7 +27,7 @@ export const cryptoIconSizes = {
     extraSmall: 24,
     small: 32,
     large: 48,
-    extraLarge: 68,
+    extraLarge: 64,
 } as const;
 
 const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
