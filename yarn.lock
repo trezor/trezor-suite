@@ -15583,6 +15583,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/utxo-selection": "workspace:*"
     "@types/chrome": "npm:^0.1.40"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
@@ -15803,6 +15804,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/utxo-selection": "workspace:*"
     "@types/jws": "npm:^3.2.11"
     "@types/node": "npm:22.13.10"
     "@types/w3c-web-usb": "npm:^1.0.14"
@@ -16784,7 +16786,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/utxo-selection@workspace:packages/utxo-selection":
+"@trezor/utxo-selection@workspace:*, @trezor/utxo-selection@workspace:packages/utxo-selection":
   version: 0.0.0-use.local
   resolution: "@trezor/utxo-selection@workspace:packages/utxo-selection"
   dependencies:

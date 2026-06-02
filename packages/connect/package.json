@@ -105,6 +105,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
+        "@trezor/utxo-selection": "workspace:*",
         "cbor": "^10.0.12",
         "cross-fetch": "^4.1.0",
         "jws": "^4.0.1",
