@@ -209,7 +209,7 @@ export const useResolvedYieldFlowData = ({
     displayError = true,
     yieldId,
 }: YieldFlowProps) => {
-    const { yieldOpportunities } = useAllYieldOpportunities();
+    const { data: yieldOpportunities } = useAllYieldOpportunities();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

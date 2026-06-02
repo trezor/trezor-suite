@@ -1,9 +1,6 @@
-import { useMemo } from 'react';
-
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -37,14 +34,6 @@ export const useEarnInANutshell = ({
     const validatorsQueueData = useSelector(selectEthValidatorsQueue);
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
     const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
-
-    const { yieldOpportunities } = useAllYieldOpportunities();
-
-    const yieldContextId = yieldContext?.id;
-    const vault: YieldDto | undefined = useMemo(
-        () => yieldOpportunities.find(opportunity => opportunity.id === yieldContextId),
-        [yieldOpportunities, yieldContextId],
-    );
 
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -94,7 +83,6 @@ export const useEarnInANutshell = ({
     return {
         unstakingPeriod,
         apy,
-        vault,
         handleAction,
         onCancelClick,
     };

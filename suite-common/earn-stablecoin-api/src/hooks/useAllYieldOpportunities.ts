@@ -30,6 +30,6 @@ export const useAllYieldOpportunities = ({
 
     return {
         ...queryResult,
-        yieldOpportunities: queryResult.data ?? stableEmptyArray,
+        data: queryResult.data ?? stableEmptyArray,
     };
 };
