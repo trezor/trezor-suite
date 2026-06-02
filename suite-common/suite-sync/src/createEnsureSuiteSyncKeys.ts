@@ -78,6 +78,7 @@ export const createEnsureSuiteSyncKeys =
             switch (errType) {
                 case 'DeviceError':
                 case 'DeviceCancelled':
+                case 'DeviceNotConnectedError':
                     return err(result.error);
 
                 // Those errors are most likely due to Bug in the code or data corruption

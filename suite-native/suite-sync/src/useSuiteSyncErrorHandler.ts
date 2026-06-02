@@ -41,6 +41,10 @@ export const useSuiteSyncErrorHandler = () => {
                 }
 
                 return;
+            case 'DeviceNotConnectedError':
+                // A disconnected device is an expected condition — Suite Sync stays enabled
+                // and will fetch keys the next time the device connects, so we stay silent.
+                return;
             case 'WriteModeRequiredForAllocation':
                 // Do nothing, this is expected control flow error when we want allocate on-demand.
                 return;

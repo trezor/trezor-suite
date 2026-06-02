@@ -1,6 +1,7 @@
 import type {
     DeviceCancelledErrType,
     DeviceErrorType,
+    DeviceNotConnectedErrorType,
     TrezorDevice,
     TrezorDeviceWithState,
     YieldFlowType,
@@ -19,6 +20,13 @@ export const isCanceledErrorMessage = (errorMessage: string | null | undefined) 
 export const DeviceError = (message: string): DeviceErrorType => ({
     type: 'DeviceError' as const,
     message,
+});
+
+export const DeviceNotConnectedError = (
+    message: string | null = null,
+): DeviceNotConnectedErrorType => ({
+    type: 'DeviceNotConnectedError' as const,
+    message: message ?? 'Device is not connected',
 });
 
 export const shouldDeviceBeRemembered = ({

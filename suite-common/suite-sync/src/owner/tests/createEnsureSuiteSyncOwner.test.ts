@@ -16,6 +16,7 @@ const device: RetrieveSuiteSyncOwnerParams['device'] = {
         staticSessionId: 'A@B:0',
     },
     useEmptyPassphrase: false,
+    connected: true,
 };
 
 const owner = {
