@@ -1,4 +1,5 @@
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
+import type { Logger } from '@trezor/utils';
 
 import { type TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
@@ -7,7 +8,6 @@ import type {
     ApiType,
     AsyncResultWithTypedError,
     DescriptorApiLevel,
-    Logger,
     PathInternal,
 } from '../types';
 import { error, success, unknownError } from '../utils/result';

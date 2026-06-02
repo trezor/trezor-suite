@@ -6,9 +6,9 @@ import {
 } from '@trezor/protocol';
 import { THP_CONTROL_BYTE } from '@trezor/protocol/src/protocol-v2/constants';
 import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE, scheduleAction } from '@trezor/utils';
+import type { Logger } from '@trezor/utils';
 
 import type { AbstractApi } from '../api/abstract';
-import { type Logger } from '../types';
 import { receive } from '../utils/receive';
 import { error } from '../utils/result';
 

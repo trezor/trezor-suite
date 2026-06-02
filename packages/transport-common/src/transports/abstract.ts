@@ -1,5 +1,6 @@
 import { type PROTOCOL_MALFORMED, type ThpState, type TransportProtocol } from '@trezor/protocol';
 import {
+    type Logger,
     type ScheduleActionParams,
     type ScheduledAction,
     TypedEmitter,
@@ -15,7 +16,6 @@ import type {
     AsyncResultWithTypedError,
     BridgeCommonErrors,
     Descriptor,
-    Logger,
     MessageResponse,
     PathPublic,
     ResultWithTypedError,
