@@ -40,15 +40,3 @@ export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
     /** only reported by old bridge */
     debug?: boolean;
 };
-
-export interface Logger {
-    info(...args: unknown[]): void;
-
-    debug(...args: unknown[]): void;
-
-    log(...args: unknown[]): void;
-
-    warn(...args: unknown[]): void;
-
-    error(...args: unknown[]): void;
-}
