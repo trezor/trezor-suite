@@ -12,14 +12,14 @@ import { BlurWrapper } from './TransactionItemBlurWrapper';
 type TransactionHeadingProps = {
     transaction: WalletAccountTransaction;
     isPending: boolean;
-    isPhishingTransaction: boolean;
+    isZeroPhishingTransaction: boolean;
     dataTestBase: string;
 };
 
 export const TransactionHeading = ({
     transaction,
     isPending,
-    isPhishingTransaction,
+    isZeroPhishingTransaction,
     dataTestBase,
 }: TransactionHeadingProps) => {
     const symbol = getTxHeaderSymbol(transaction);
@@ -47,7 +47,7 @@ export const TransactionHeading = ({
             isActive={isPhishingTransaction}
             hasIcon
         >
-            <BlurWrapper $isBlurred={isPhishingTransaction}>
+            <BlurWrapper $isBlurred={isZeroPhishingTransaction}>
                 <Row gap={4} data-testid={`${dataTestBase}/heading`}>
                     <TransactionHeader transaction={transaction} isPending={isPending} />
                     {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
