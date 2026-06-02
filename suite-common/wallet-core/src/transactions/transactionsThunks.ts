@@ -180,6 +180,35 @@ export const addFakePendingTxThunk = createThunk(
                     signedTransaction,
                     affectedAccount.addresses ?? affectedAccount.descriptor,
                 );
+                if (affectedAccountTransaction.type === 'unknown') {
+                    const unusedCount = affectedAccount.addresses?.unused.length ?? 0;
+                    const usedCount = affectedAccount.addresses?.used.length ?? 0;
+                    const changeCount = affectedAccount.addresses?.change.length ?? 0;
+                    // [btc-unknown-tx-debug] the just-signed BTC tx was classified as 'unknown' before
+                    // even reaching the backend. The user will see "Unknown transaction" in the list
+                    // until the backend response replaces this entry. This is the clean, send-path-only
+                    // smoking gun (see also the createPendingTx.ts and blockbook.ts logs for upstream
+                    // detail). The payload reaches Sentry as event.extra.arguments[1]; the bug is rare
+                    // enough to triage per-event, and mobile-vs-desktop frequency is already split by
+                    // Sentry project (native vs desktop/web DSN), so tags are not needed here.
+                    // emptyAddresses separates the two leading hypotheses at a glance:
+                    //   true  -> no addresses at classification time (account addresses absent)
+                    //   false -> addresses present but nothing matched (path mismatch: gap-limit / taproot)
+                    // Intentionally no txid / accountKey / descriptor / raw addresses: these reach Sentry
+                    // and could deanonymize the user. accountType + symbol are low-cardinality, non-PII.
+                    console.error(
+                        '[btc-unknown-tx-debug] addFakePendingTxThunk → prepending tx has type=unknown',
+                        {
+                            accountType: affectedAccount.accountType,
+                            symbol: affectedAccount.symbol,
+                            hasAddresses: Boolean(affectedAccount.addresses),
+                            emptyAddresses: unusedCount + usedCount + changeCount === 0,
+                            unusedCount,
+                            usedCount,
+                            changeCount,
+                        },
+                    );
+                }
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
                 dispatch(
                     transactionsActions.addTransaction({

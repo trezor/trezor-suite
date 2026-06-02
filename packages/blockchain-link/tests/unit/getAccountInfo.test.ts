@@ -26,6 +26,16 @@ workers.forEach(instance => {
         beforeAll(setup);
         afterAll(teardown);
 
+        // [btc-unknown-tx-debug] getAccountInfo parses tx history through transformTransaction, which
+        // emits a temporary console.error for txs classified as 'unknown' with account context. Silence
+        // the JestCustomEnv console.error trap for these fixtures.
+        beforeEach(() => {
+            jest.spyOn(console, 'error').mockImplementation(() => {});
+        });
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
