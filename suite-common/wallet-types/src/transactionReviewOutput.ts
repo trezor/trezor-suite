@@ -23,6 +23,7 @@ export type ReviewOutput =
               | 'regular_legacy'
               | 'approve_data'
               | 'recipient_name'
+              | 'swap_intent'
               | 'fee-limit';
           label?: string;
           value: string;
@@ -30,6 +31,7 @@ export type ReviewOutput =
           token?: TokenInfo;
           send?: undefined;
           receive?: undefined;
+          receiveAddress?: undefined;
       }
     | {
           type: 'fee-replace';
@@ -39,6 +41,7 @@ export type ReviewOutput =
           token?: undefined;
           send?: undefined;
           receive?: undefined;
+          receiveAddress?: undefined;
       }
     | {
           type: 'reduce-output';
@@ -48,6 +51,7 @@ export type ReviewOutput =
           token?: undefined;
           send?: undefined;
           receive?: undefined;
+          receiveAddress?: undefined;
       }
     | {
           type: 'traded_assets';
@@ -57,6 +61,7 @@ export type ReviewOutput =
           token?: undefined;
           send: FormStateTradingCryptoCurrency;
           receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+          receiveAddress?: string;
       }
     | {
           type: 'rewards';
@@ -67,6 +72,7 @@ export type ReviewOutput =
           token?: undefined;
           send?: undefined;
           receive?: undefined;
+          receiveAddress?: undefined;
       };
 
 export type ReviewOutputType = ReviewOutput['type'];

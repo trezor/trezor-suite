@@ -711,6 +711,30 @@ describe('getTradingFormState', () => {
                 },
             });
         });
+
+        it('should propagate trade.receiveAddress', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                receive: 'ethereum' as CryptoId,
+                receiveStringAmount: '1',
+                send: 'bitcoin' as CryptoId,
+                sendStringAmount: '0.025',
+                receiveAddress: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+            } as ExchangeTrade;
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers: { 'test-exchange': mockProvider },
+                isSlip24Active: false,
+                sendAccountKey,
+                receiveAccountKey,
+            });
+
+            expect(result).toMatchObject({
+                receiveAddress: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+            });
+        });
     });
 
     describe('edge cases', () => {

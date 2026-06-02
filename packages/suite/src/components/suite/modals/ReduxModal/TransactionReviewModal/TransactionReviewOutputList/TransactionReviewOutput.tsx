@@ -175,6 +175,7 @@ const getOutputTitle = (
     stakeType: StakeType | undefined,
     evmTxType?: EvmTransactionPurpose,
     device?: TrezorDevice,
+    receiveAddress?: string,
 ): ReactNode | undefined => {
     const translation = getTranslationValues(networkType, stakeType, evmTxType, device);
     const contractTitle = getContractTitle(networkType, isApprovalFlowSupported(device), evmTxType);
@@ -241,8 +242,10 @@ const getOutputTitle = (
             );
         case 'recipient_name':
             return <Translation id="TR_TRADING_PROVIDER" />;
+        case 'swap_intent':
+            return <Translation id="TR_TRADING_INTENT" />;
         case 'traded_assets':
-            return <Translation id="TR_MY_ASSETS" />;
+            return <Translation id={receiveAddress ? 'TR_CONTRACT' : 'TR_MY_ASSETS'} />;
         case 'fee-limit':
             return <Translation id="TR_SUMMARY" />;
         case 'rewards':
@@ -438,6 +441,14 @@ const getOutputLines = ({
                     value,
                 },
             ];
+        case 'swap_intent':
+            return [
+                {
+                    id: 'swap_intent',
+                    type: 'data',
+                    value: translationString('TR_TRADING_INTENT_SWAP', {}),
+                },
+            ];
         case 'amount': {
             if (isYieldAction(evmTxType)) {
                 return [
@@ -571,6 +582,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         nativeToken,
     } = props;
     const rewards = type === 'rewards' ? props.rewards : undefined;
+    const receiveAddress = type === 'traded_assets' ? props.receiveAddress : undefined;
     const { networkType, symbol } = account;
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
@@ -590,6 +602,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         stakeType,
         evmTxType,
         device,
+        receiveAddress,
     );
 
     const outputLines = getOutputLines({
@@ -656,6 +669,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
                 state={state}
                 send={send}
                 receive={receive}
+                receiveAddress={receiveAddress}
             />
         );
     }

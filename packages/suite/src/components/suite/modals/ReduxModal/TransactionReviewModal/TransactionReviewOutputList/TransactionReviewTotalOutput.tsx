@@ -12,6 +12,7 @@ import {
     getEvmTransactionTextSignature,
     getIsUpdatedEthereumSendFlow,
     getIsUpdatedSendFlow,
+    isClearSignedEvmTradingSwapTransaction,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
     isTestnet,
@@ -36,6 +37,7 @@ interface GetLinesParams {
     isRbfAction?: boolean;
     stakeType?: StakeType;
     nativeToken?: TokenInfo;
+    isClearSignedTradingSwap: boolean;
 }
 
 const getLines = ({
@@ -46,6 +48,7 @@ const getLines = ({
     isRbfAction,
     stakeType,
     nativeToken,
+    isClearSignedTradingSwap,
 }: GetLinesParams): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType, stakeType);
@@ -72,7 +75,7 @@ const getLines = ({
         .minus(precomposedTx.fee)
         .toString();
 
-    if (precomposedForm.trading?.isSlip24Active) {
+    if (precomposedForm.trading?.isSlip24Active || isClearSignedTradingSwap) {
         return [
             {
                 id: 'fee',
@@ -181,6 +184,13 @@ export const TransactionReviewTotalOutput = ({
             ? precomposedTx.nativeToken
             : undefined;
     const isFiatVisible = !isTestnet(account.symbol) && account.accountType !== 'placeholder';
+    const isClearSignedTradingSwap = isClearSignedEvmTradingSwapTransaction({
+        account,
+        device,
+        precomposedTx,
+        transactionData: precomposedForm.transactionData,
+        trading: precomposedForm.trading,
+    });
     const lines = getLines({
         device,
         networkType,
@@ -189,17 +199,19 @@ export const TransactionReviewTotalOutput = ({
         isRbfAction: isRbf,
         stakeType,
         nativeToken,
+        isClearSignedTradingSwap,
     });
+
+    const titleId = (() => {
+        if (isClearSignedTradingSwap) return 'TR_NETWORK_FEE';
+        if (precomposedForm.trading?.isSlip24Active) return 'TR_SUMMARY';
+
+        return 'TR_TOTAL_INCLUDING_FEE';
+    })();
 
     return (
         <TransactionReviewOutputElement
-            title={
-                precomposedForm.trading?.isSlip24Active ? (
-                    <Translation id="TR_SUMMARY" />
-                ) : (
-                    <Translation id="TR_TOTAL_INCLUDING_FEE" />
-                )
-            }
+            title={<Translation id={titleId} />}
             account={account}
             lines={lines}
             state={state}

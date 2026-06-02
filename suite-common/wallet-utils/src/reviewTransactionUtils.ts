@@ -1,6 +1,6 @@
 import { fromWei, toWei } from 'web3-utils';
 
-import { Calldata } from '@suite-common/calldata';
+import { Calldata, isEvmClearSigningTx } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS, KNOWN_VAULTS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
@@ -16,7 +16,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
+import { BigNumber, versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
@@ -114,6 +114,47 @@ type ConstructOutputsParams = {
     precomposedForm: FormState | StakeFormState;
     vaultName?: string;
     availableRewards?: YieldClaimReward[];
+    swapSlippage?: string;
+    isClearSignedTradingSwap: boolean;
+};
+
+type IsClearSignedEvmTradingSwapTransactionParams = {
+    account: Account;
+    device: TrezorDevice;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    transactionData?: string;
+    trading?: FormState['trading'];
+};
+
+const getClearSignedSwapRecipientName = (
+    precomposedTx: GeneralPrecomposedTransactionFinal,
+    fallback: string,
+): string => {
+    const routerAddress = precomposedTx.outputs.find(
+        o => 'address' in o && typeof o.address === 'string',
+    )?.address as string | undefined;
+
+    return (routerAddress && EVM_SPENDER_LABELS[routerAddress.toLowerCase()]) ?? fallback;
+};
+
+export const isClearSignedEvmTradingSwapTransaction = ({
+    account,
+    device,
+    precomposedTx,
+    transactionData,
+    trading,
+}: IsClearSignedEvmTradingSwapTransactionParams): boolean => {
+    if (!isExchangeTradingForm(trading)) return false;
+    if (!isEvmClearSigningSupportedByDevice(device)) return false;
+    if (isEvmApprovalTx(transactionData)) return false;
+    if (account.networkType !== 'ethereum' || !transactionData) return false;
+    const network = networks[account.symbol];
+    if (!('chainId' in network)) return false;
+    const to = precomposedTx.outputs.find(
+        o => 'address' in o && typeof o.address === 'string',
+    )?.address;
+
+    return isEvmClearSigningTx(network.chainId, to, transactionData);
 };
 
 const constructOldFlow = ({
@@ -121,6 +162,7 @@ const constructOldFlow = ({
     decreaseOutputId,
     account,
     precomposedForm,
+    isClearSignedTradingSwap,
 }: ConstructOutputsParams): ReviewOutput[] => {
     const outputs: ReviewOutput[] = [];
 
@@ -247,7 +289,11 @@ const constructOldFlow = ({
 
     if (networkType === 'tron' && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
-    } else if (precomposedForm.transactionData && (!precomposedTx.token || isYieldOperation)) {
+    } else if (
+        precomposedForm.transactionData &&
+        (!precomposedTx.token || isYieldOperation) &&
+        !isClearSignedTradingSwap
+    ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
 
@@ -281,6 +327,8 @@ const constructNewFlow = ({
     precomposedForm,
     vaultName,
     availableRewards,
+    swapSlippage,
+    isClearSignedTradingSwap,
     isApprovalFlowSupported,
     isEvmClearSigningSupported,
     isUpdatedEthereumSendFlow,
@@ -373,10 +421,11 @@ const constructNewFlow = ({
     if (isTron && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
     } else if (
-        (precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
-        (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
-        (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
-        (precomposedForm.transactionData && isClaimOp && !isEvmClaimClearSign)
+        ((precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
+            (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
+            (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
+            (precomposedForm.transactionData && isClaimOp && !isEvmClaimClearSign)) &&
+        !isClearSignedTradingSwap
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
@@ -439,14 +488,39 @@ const constructNewFlow = ({
                 }
             }
         });
-    } else if (precomposedForm.trading?.isSlip24Active && isExchangeTradingForm(trading)) {
-        outputs.push({ type: 'recipient_name', value: trading.recipientName });
+    } else if (
+        (precomposedForm.trading?.isSlip24Active || isClearSignedTradingSwap) &&
+        isExchangeTradingForm(trading)
+    ) {
+        const recipientName = isClearSignedTradingSwap
+            ? getClearSignedSwapRecipientName(precomposedTx, trading.recipientName)
+            : trading.recipientName;
+
+        if (recipientName) {
+            outputs.push({ type: 'recipient_name', value: recipientName });
+        }
+        if (isClearSignedTradingSwap) {
+            outputs.push({ type: 'swap_intent', value: 'swap' });
+        }
+        // TODO: extract the receive amount directly from the actual transaction data
+        // instead of deriving it from the quote and slippage.
+        const receive =
+            isClearSignedTradingSwap && swapSlippage
+                ? {
+                      ...trading.receive,
+                      amount: new BigNumber(trading.receive.amount)
+                          .multipliedBy(new BigNumber(100).minus(swapSlippage))
+                          .dividedBy(100)
+                          .toString(),
+                  }
+                : trading.receive;
         outputs.push({
             type: 'traded_assets',
-            value: '', // placeholder
-            value2: '', // placeholder
+            value: '',
+            value2: '',
             send: trading.send,
-            receive: trading.receive,
+            receive,
+            receiveAddress: isClearSignedTradingSwap ? trading.receiveAddress : undefined,
         });
     } else {
         precomposedTx.outputs.forEach(o => {
@@ -563,7 +637,12 @@ const constructNewFlow = ({
     return outputs;
 };
 
-type ConstructTransactionReviewOutputsProps = ConstructOutputsParams & { device: TrezorDevice };
+type ConstructTransactionReviewOutputsProps = Omit<
+    ConstructOutputsParams,
+    'isClearSignedTradingSwap'
+> & {
+    device: TrezorDevice;
+};
 
 export const constructTransactionReviewOutputs = ({
     device,
@@ -578,16 +657,24 @@ export const constructTransactionReviewOutputs = ({
         device,
         params.account.networkType,
     ); // > 2.9.0 && isStellar
+    const isClearSignedTradingSwap = isClearSignedEvmTradingSwapTransaction({
+        account: params.account,
+        device,
+        precomposedTx: params.precomposedTx,
+        transactionData: params.precomposedForm.transactionData,
+        trading: params.precomposedForm.trading,
+    });
     if (!isUpdatedSendFlow) {
-        return constructOldFlow(params);
+        return constructOldFlow({ ...params, isClearSignedTradingSwap });
     }
 
     return constructNewFlow({
+        ...params,
+        isClearSignedTradingSwap,
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
         isEvmClearSigningSupported: isEvmClearSigningSupportedByDevice(device),
         isUpdatedStellarSendFlow,
-        ...params,
     });
 };
 
@@ -599,6 +686,7 @@ export const constructTransactionReviewOutputsOptional = ({
     precomposedForm,
     precomposedTx,
     vaultName,
+    swapSlippage,
 }: Partial<ConstructTransactionReviewOutputsProps>): ReviewOutput[] => {
     if (
         account === undefined ||
@@ -617,5 +705,6 @@ export const constructTransactionReviewOutputsOptional = ({
         precomposedForm,
         precomposedTx,
         vaultName,
+        swapSlippage,
     });
 };
