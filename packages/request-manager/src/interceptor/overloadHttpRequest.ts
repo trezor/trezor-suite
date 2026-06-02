@@ -27,11 +27,13 @@ const getIdentityForAgent = (options?: Readonly<http.RequestOptions>) => {
     }
 };
 
+type RequestCallback = (response: http.IncomingMessage) => void;
+
 type OverloadHttpRequestParams = {
     context: InterceptorContext;
     protocol: 'http' | 'https';
     url: string | URL | http.RequestOptions;
-    options?: http.RequestOptions | ((r: http.IncomingMessage) => void);
+    options?: http.RequestOptions | RequestCallback;
     callback?: unknown;
     validateRequest: (params: { hostname: string }) => void;
 };
@@ -42,6 +44,58 @@ const resolveHostname = (url: string | URL | http.RequestOptions) => {
     }
 
     return new URL(url).hostname;
+};
+
+const isRequestOptions = (
+    value: string | URL | http.RequestOptions | RequestCallback | undefined,
+): value is http.RequestOptions =>
+    typeof value === 'object' && value !== null && !(value instanceof URL);
+
+type ParsedRequestArgs = {
+    requestUrl?: string | URL;
+    requestOptions: http.RequestOptions;
+    requestCallback?: RequestCallback;
+};
+
+/**
+ * http(s).request supports several call signatures:
+ *   1. request(options[, callback])
+ *   2. request(url[, callback])
+ *   3. request(url, options[, callback])
+ *
+ * They are normalized into a single mutable RequestOptions object (creating an empty one when
+ * the call only carried a url) plus the optional url and callback, so the same Tor/proxy logic
+ * can be applied regardless of how the request was originally called.
+ */
+const parseRequestArgs = ({
+    url,
+    options,
+    callback,
+}: Pick<OverloadHttpRequestParams, 'url' | 'options' | 'callback'>): ParsedRequestArgs => {
+    // Signature 1: request(options[, callback])
+    if (isRequestOptions(url)) {
+        return {
+            requestOptions: url,
+            requestCallback: typeof options === 'function' ? options : undefined,
+        };
+    }
+
+    // Signature 3: request(url, options[, callback])
+    if (isRequestOptions(options)) {
+        return {
+            requestUrl: url,
+            requestOptions: options,
+            requestCallback:
+                typeof callback === 'function' ? (callback as RequestCallback) : undefined,
+        };
+    }
+
+    // Signature 2: request(url[, callback])
+    return {
+        requestUrl: url,
+        requestOptions: {},
+        requestCallback: typeof options === 'function' ? options : undefined,
+    };
 };
 
 const reportInterceptedRequest = (context: InterceptorContext, details: string) => {
@@ -87,8 +141,10 @@ const enforceTorRequirement = (context: InterceptorContext, host?: string | null
 };
 
 /**
- * http(s).request could have different arguments according to its types definition,
- * but we only care when second argument (url) is object containing RequestOptions.
+ * Intercepts http(s).request regardless of which of its call signatures was used and, for
+ * non-whitelisted hosts, routes the request through the appropriate Tor identity (or blocks it
+ * when Tor is required but disabled). Returns the reconstructed params for the original request,
+ * preserving the original call signature, or `undefined` when the request is left untouched.
  */
 export const overloadHttpRequest = ({
     context,
@@ -102,34 +158,34 @@ export const overloadHttpRequest = ({
 
     validateRequest({ hostname });
 
-    const isOverloadableUrl = typeof url === 'object' && 'headers' in url;
-    const isOverloadableOptions = !options || typeof options === 'function';
-
-    if (
-        !!callback ||
-        !isOverloadableUrl ||
-        !isOverloadableOptions ||
-        isWhitelistedHost(hostname, context.notRequiredTorDomainsList)
-    ) {
+    if (isWhitelistedHost(hostname, context.notRequiredTorDomainsList)) {
         return;
     }
 
-    const overloadedOptions = url;
-    const overloadedCallback = options;
-    const { host, path } = overloadedOptions;
+    const { requestUrl, requestOptions, requestCallback } = parseRequestArgs({
+        url,
+        options,
+        callback,
+    });
 
     let identity: string | undefined;
 
     if (context.getTorSettings().running) {
-        identity = assignTorAgent({ context, options: overloadedOptions, protocol });
-    } else if (getIsTorRequired(url)) {
-        enforceTorRequirement(context, host);
+        identity = assignTorAgent({ context, options: requestOptions, protocol });
+    } else if (getIsTorRequired(requestOptions)) {
+        enforceTorRequirement(context, requestOptions.host ?? hostname);
     }
 
-    reportInterceptedRequest(context, `${host}${path} with agent ${!!overloadedOptions.agent}`);
+    const target = requestUrl ?? `${requestOptions.host ?? ''}${requestOptions.path ?? ''}`;
+    reportInterceptedRequest(context, `${target} with agent ${!!requestOptions.agent}`);
 
-    delete overloadedOptions.headers?.['Proxy-Authorization'];
+    delete requestOptions.headers?.['Proxy-Authorization'];
 
-    // Tuple of params for the original request.
-    return [identity, overloadedOptions, overloadedCallback] as const;
+    // Params for the original request, preserving the original call signature.
+    const requestArgs: Array<string | URL | http.RequestOptions | RequestCallback | undefined> =
+        requestUrl !== undefined
+            ? [requestUrl, requestOptions, requestCallback]
+            : [requestOptions, requestCallback];
+
+    return { identity, requestArgs };
 };
