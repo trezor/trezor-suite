@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Switch, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -45,7 +45,7 @@ export const NetworkSymbolSwitchItem = ({
             >
                 <HStack style={applyStyle(wrapperStyle)}>
                     <View style={applyStyle(iconWrapperStyle)}>
-                        <CryptoIcon symbol={symbol} />
+                        <NetworkIcon symbol={symbol} size={32} />
                     </View>
                     <HStack
                         flex={1}
