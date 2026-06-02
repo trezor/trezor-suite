@@ -3,6 +3,7 @@ import {
     type BuyTrade,
     type Coins,
     type CryptoId,
+    type ExchangeTrade,
     type FiatCurrencyCode,
     type Platforms,
     type SellCryptoPaymentMethod,
@@ -46,6 +47,7 @@ import {
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
+import { getDisplayNetworkFee } from '../utils/exchange/exchangeUtils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -630,6 +632,12 @@ export const selectTradingSellFormStep = (state: TradingRootState) =>
 
 export const selectTradingComposedTransactionInfo = (state: TradingRootState) =>
     state.wallet.trading.composedTransactionInfo;
+
+export const selectTradingDisplayComposedFee = (
+    state: TradingRootState,
+    quote: ExchangeTrade | undefined,
+): string | undefined =>
+    getDisplayNetworkFee(quote, state.wallet.trading.composedTransactionInfo.composed?.fee);
 
 export const selectTradingAccountAccordingActiveSection =
     createMemoizedSelectorWithDeviceAndAccounts(

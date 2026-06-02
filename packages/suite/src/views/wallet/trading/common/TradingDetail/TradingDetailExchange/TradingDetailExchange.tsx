@@ -11,6 +11,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
+    selectTradingDisplayComposedFee,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components';
@@ -69,12 +70,14 @@ export const TradingDetailExchange = () => {
     const exchange = trade?.data?.exchange;
     const provider = exchange ? info?.providerInfos?.[exchange] : undefined;
 
+    const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, trade?.data));
+
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         sendAmount: trade?.data?.sendStringAmount ?? '',
         sendCurrency: trade?.data?.send,
         receiveAmount: trade?.data?.receiveStringAmount ?? '',
         receiveCurrency: trade?.data?.receive,
-        networkFee: composedTransaction?.composed?.fee,
+        networkFee,
     };
 
     useEffect(() => {
