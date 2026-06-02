@@ -6,12 +6,16 @@ import {
 import {
     type DelegatedIdentityKey,
     type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { type Result } from '@trezor/type-utils';
 
 export type EnsureSuiteSyncOwnerParams = {
-    device: Pick<TrezorDeviceWithState, 'useEmptyPassphrase' | 'path' | 'state' | 'instance'>;
+    device: Pick<
+        TrezorDeviceWithState,
+        'useEmptyPassphrase' | 'path' | 'state' | 'instance' | 'connected'
+    >;
     delegatedKey: DelegatedIdentityKey;
 };
 
@@ -20,7 +24,10 @@ export type EnsureSuiteSyncOwner = (
 ) => Promise<
     Result<
         SuiteSyncOwner,
-        DeviceErrorType | ProofOfDelegatedSignFailedType | CreateSuiteSyncOwnerError
+        | DeviceErrorType
+        | ProofOfDelegatedSignFailedType
+        | CreateSuiteSyncOwnerError
+        | DeviceNotConnectedErrorType
     >
 >;
 

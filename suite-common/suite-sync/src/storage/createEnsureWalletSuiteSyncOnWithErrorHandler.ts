@@ -28,6 +28,7 @@ export const createEnsureWalletSuiteSyncOnWithErrorHandler =
                 case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
                 case 'DeviceCancelled':
                 case 'DeviceError':
+                case 'DeviceNotConnectedError':
                     deps.dispatch(
                         setSuiteSyncError({
                             deviceStaticSessionId: params.deviceStaticSessionId,

@@ -142,3 +142,5 @@ export type DeviceCancelledErrType = { type: 'DeviceCancelled' };
  * This is (generic) delegated error from the Device (from Firmware/Connect).
  */
 export type DeviceErrorType = { type: 'DeviceError'; message: string };
+
+export type DeviceNotConnectedErrorType = { type: 'DeviceNotConnectedError'; message: string };

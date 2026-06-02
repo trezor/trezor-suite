@@ -22,6 +22,7 @@ const device: EnsureDelegatedIdentityKeyParams['device'] = {
     state: {
         staticSessionId: '1@2:3',
     },
+    connected: true,
 };
 
 describe(createEnsureDelegatedIdentityKey.name, () => {
