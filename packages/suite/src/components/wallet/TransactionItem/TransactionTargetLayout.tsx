@@ -31,9 +31,14 @@ export const TransactionTargetLayout = ({
         as: 'div',
     } as const;
 
+    const cryptoAmountProps = {
+        ...commonProps,
+        priority: 'primary',
+    } as const;
+
     const amounts = (
         <>
-            <Text {...commonProps} align="end">
+            <Text {...cryptoAmountProps} align="end">
                 {amount && (
                     <BlurWrapper $isBlurred={isPhishingTransaction ?? false}>{amount}</BlurWrapper>
                 )}
