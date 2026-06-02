@@ -80,7 +80,6 @@ const connectInitSettings: ConnectInitSettings = {
         appName: isDesktop() ? 'Trezor Suite desktop' : 'Trezor Suite web',
         appUrl: isDesktop() ? 'Trezor Suite desktop' : window.origin,
     },
-    sharedLogger: false,
     enableFirmwareHashCheck: true,
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
 };
