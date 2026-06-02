@@ -1,7 +1,7 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkFeature } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
@@ -201,6 +201,19 @@ describe('account utils', () => {
             ),
         ).toBe(true);
         expect(accountSearchFn(btcAcc, '#1', { accountLabel: 'Bitcoin #1' })).toBe(true);
+    });
+
+    it('accountSearchFn empty tokens', () => {
+        const ethAcc = mockWalletAccount({
+            symbol: 'eth',
+            tokens: [
+                mockAccountToken({ balance: '0.000069', name: 'test' }),
+                mockAccountToken({ balance: '0.0', name: 'test2' }),
+            ],
+        });
+
+        expect(accountSearchFn(ethAcc, 'test', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(ethAcc, 'test2', { accountLabel: '' })).toBe(false);
     });
 
     it('getNetworkAccountFeatures', () => {
