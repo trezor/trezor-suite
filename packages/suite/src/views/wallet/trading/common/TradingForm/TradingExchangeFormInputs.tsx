@@ -9,6 +9,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
     type TradingExchangeType,
+    getDisplayComposedLevels,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
@@ -56,8 +57,14 @@ export const TradingExchangeFormInputs = () => {
         shouldSendInSats,
         showReserveBanner,
         resetSelectedOffer,
+        selectedQuote,
         setAmountLimits,
     } = context;
+
+    const displayComposedLevels = useMemo(
+        () => getDisplayComposedLevels(selectedQuote, composedLevels),
+        [selectedQuote, composedLevels],
+    );
     const { getValues, setValue } = useFormContext<TradingExchangeFormProps>();
     const {
         [TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: sendCryptoSelect,
@@ -179,7 +186,7 @@ export const TradingExchangeFormInputs = () => {
                 <TradingFormFees
                     feeInfo={feeInfo}
                     account={account}
-                    composedLevels={composedLevels}
+                    composedLevels={displayComposedLevels}
                     changeFeeLevel={changeFeeLevel}
                 />
                 <TradingSelectedOfferProvider />

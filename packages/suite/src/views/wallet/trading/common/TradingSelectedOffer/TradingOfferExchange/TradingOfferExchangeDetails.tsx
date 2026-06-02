@@ -6,7 +6,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeType,
     cryptoIdToNetwork,
-    selectTradingComposedTransactionInfo,
+    selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
     useTradingUtils,
 } from '@suite-common/trading';
@@ -44,14 +44,12 @@ export const TradingOfferExchangeDetails = ({
     const formStep = useSelector(selectTradingExchangeFormStep);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const context = useTradingFormContext<TradingExchangeType>();
     const { account, exchangeInfo, getValues } = context;
     const { symbol } = account;
-
-    const networkFee = composedTransactionInfo?.composed?.fee;
     const formattedNetworkFee = formatNetworkAmount(networkFee || '0', symbol);
 
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
