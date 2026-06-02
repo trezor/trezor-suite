@@ -112,6 +112,11 @@ export const SuiteSyncTurnOnModal = ({
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES" />
                             </Paragraph>
                         </List.Item>
+                        <List.Item bulletComponent={<Icon name="thumbsUp" size={20} />}>
+                            <Paragraph>
+                                <Translation id="TR_TURN_ON_SECURE_SYNC_MIGRATION" />
+                            </Paragraph>
+                        </List.Item>
                     </List>
                 </Card>
             </Column>

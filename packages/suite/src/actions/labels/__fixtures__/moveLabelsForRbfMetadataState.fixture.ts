@@ -8,6 +8,7 @@ import {
 export const moveLabelsForRbfMetadataStateFixture: MetadataState = {
     enabled: true,
     initiating: false,
+    hasLegacyLabelsMigrated: {},
     providers: [
         {
             type: 'inMemoryTest',
