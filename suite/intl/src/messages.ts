@@ -795,12 +795,12 @@ export const messages = defineMessages({
     TR_TRADING_TERMS: {
         id: 'TR_TRADING_TERMS',
         defaultMessage:
-            "This service is provided by <comp>{provider}</comp> and governed by their Terms & Conditions. Trezor isn't involved.",
+            "This service is provided and governed by <comp>{provider}</comp>'s Terms & Conditions. Trezor isn't involved.",
     },
     TR_TRADING_TERMS_NO_PROVIDER: {
         id: 'TR_TRADING_TERMS_NO_PROVIDER',
         defaultMessage:
-            "This service is provided by the provider and governed by their Terms & Conditions. Trezor isn't involved.",
+            "This service is provided and governed by the provider’s Terms & Conditions. Trezor isn't involved.",
     },
     TR_BUY_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
@@ -1132,15 +1132,15 @@ export const messages = defineMessages({
     },
     TR_TRADING_BUY_VIA: {
         id: 'TR_TRADING_BUY_VIA',
-        defaultMessage: 'Buy via {providerName}',
+        defaultMessage: 'Buy with {providerName}',
     },
     TR_TRADING_SELL_VIA: {
         id: 'TR_TRADING_SELL_VIA',
-        defaultMessage: 'Sell via {providerName}',
+        defaultMessage: 'Sell with {providerName}',
     },
     TR_TRADING_KYC_REQUIRED_WARNING: {
         id: 'TR_TRADING_KYC_REQUIRED_WARNING',
-        defaultMessage: 'Identity verification will be required.',
+        defaultMessage: 'KYC is required.',
     },
     TR_TRADING_RATE: {
         id: 'TR_TRADING_RATE',
@@ -7696,7 +7696,7 @@ export const messages = defineMessages({
     },
     TR_ONBOARDING_FINAL_GO_TO_DASHBOARD: {
         id: 'TR_ONBOARDING_FINAL_GO_TO_DASHBOARD',
-        defaultMessage: 'Go to dashboard',
+        defaultMessage: 'Go to Dashboard',
     },
     TR_ONBOARDING_CURRENT_VERSION: {
         id: 'TR_ONBOARDING_CURRENT_VERSION',
