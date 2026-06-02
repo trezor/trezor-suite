@@ -215,6 +215,7 @@ export const DashboardFooter = () => {
                             onClick={() =>
                                 analytics.report({
                                     type: events.promoDesktopEvent.name,
+                                    payload: { placement: 'footer' },
                                 })
                             }
                         >

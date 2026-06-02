@@ -115,6 +115,7 @@ export const DesktopSuiteBanner = () => {
                                 onClick={() =>
                                     analytics.report({
                                         type: events.promoDesktopEvent.name,
+                                        payload: { placement: 'settings' },
                                     })
                                 }
                             >
