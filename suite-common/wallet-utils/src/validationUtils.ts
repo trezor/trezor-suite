@@ -1,6 +1,6 @@
 import { type UseFormSetValue } from 'react-hook-form';
 
-import { toChecksumAddress } from 'web3-utils';
+import { getAddress } from 'viem';
 
 import { type AccountInfo } from '@trezor/blockchain-link-types';
 
@@ -52,7 +52,7 @@ export const checkIsAddressNotUsedNotChecksummed = (
     const hasHistory = history.total !== 0;
 
     if (hasHistory) {
-        setValue(inputName, toChecksumAddress(address), { shouldValidate: true });
+        setValue(inputName, getAddress(address), { shouldValidate: true });
         setHasAddressChecksummed(true);
 
         return false;

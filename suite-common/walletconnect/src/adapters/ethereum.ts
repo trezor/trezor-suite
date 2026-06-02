@@ -75,7 +75,7 @@ const ethereumRequestThunk = createThunk<
             const messageDecoded = message.startsWith('0x')
                 ? Buffer.from(message.slice(2), 'hex').toString('utf8')
                 : message;
-            const messageHex = isHex(message)
+            const messageHex = isHex(message, { prefix: 'optional', allowEmpty: false })
                 ? sanitizeHex(message)
                 : Buffer.from(message, 'utf8').toString('hex');
             const isReadable = isAscii(messageDecoded);

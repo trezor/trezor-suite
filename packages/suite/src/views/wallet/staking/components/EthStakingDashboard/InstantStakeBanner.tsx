@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { fromWei } from 'web3-utils';
-
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { fromWei } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { type InternalTransfer } from '@trezor/connect';
 
@@ -60,7 +59,7 @@ export const InstantStakeBanner = ({
         setIsBannerShown(false);
     };
 
-    const amount = fromWei(instantStakeTransfer?.amount ?? '0', 'ether');
+    const amount = fromWei(instantStakeTransfer?.amount ?? '0').toEther();
     const stakeType = getInstantStakeType(instantStakeTransfer, address, symbol);
 
     if (!stakeType || stakeType === 'claim') return null; // claim is not supported

@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { fromEther } from '@suite-common/wallet-utils';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
-import { ethToWei } from '@suite-native/staking';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
@@ -69,7 +69,7 @@ export const UnstakeTransactionDataReviewStepList = ({
         }
     };
 
-    const amountInWei = ethToWei(amount);
+    const amountInWei = fromEther(amount).toWei();
 
     return (
         <View>

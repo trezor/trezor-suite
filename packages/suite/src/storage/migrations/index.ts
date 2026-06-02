@@ -1,5 +1,3 @@
-import { toWei } from 'web3-utils';
-
 import {
     type NetworkSymbol,
     getNetwork,
@@ -15,6 +13,7 @@ import {
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
+    fromGwei,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
@@ -429,7 +428,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                     ethereumSpecific: origTx.ethereumSpecific
                         ? {
                               ...origTx.ethereumSpecific,
-                              gasPrice: toWei(origTx.ethereumSpecific?.gasPrice ?? '0', 'gwei'),
+                              gasPrice: fromGwei(origTx.ethereumSpecific?.gasPrice ?? '0').toWei(),
                           }
                         : undefined,
                     cardanoSpecific: origTx.cardanoSpecific

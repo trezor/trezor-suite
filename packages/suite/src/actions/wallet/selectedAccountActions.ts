@@ -173,7 +173,6 @@ const actions = new Set<Action['type']>([
     blockchainActions.synced.type,
     blockchainActions.connected.type,
     discoveryActions.updateDiscovery.type,
-    feesActions.updateFee.type,
     feesActions.updateMultipleFees.type,
 ]);
 

@@ -1,5 +1,3 @@
-import { toWei } from 'web3-utils';
-
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
@@ -17,6 +15,7 @@ import {
     ensureHexPrefix,
     findAccountsByAddress,
     findTransactions,
+    fromGwei,
     getEvmTransactionTextSignature,
     getPendingAccount,
     getRbfParams,
@@ -281,13 +280,13 @@ const buildFakePendingEvmTx = ({
             status: -1,
             nonce: parseInt(nonce),
             gasLimit: parseInt(precomposedTransaction.feeLimit ?? '0'),
-            gasPrice: isLegacyTx ? toWei(precomposedTransaction.feePerByte, 'gwei') : undefined,
+            gasPrice: isLegacyTx ? fromGwei(precomposedTransaction.feePerByte).toWei() : undefined,
             maxFeePerGas: isLegacyTx
                 ? undefined
-                : toWei(precomposedTransaction.maxFeePerGas ?? '0', 'gwei'),
+                : fromGwei(precomposedTransaction.maxFeePerGas ?? '0').toWei(),
             maxPriorityFeePerGas: isLegacyTx
                 ? undefined
-                : toWei(precomposedTransaction.maxPriorityFeePerGas ?? '0', 'gwei'),
+                : fromGwei(precomposedTransaction.maxPriorityFeePerGas ?? '0').toWei(),
             data: ensureHexPrefix(precomposedForm?.transactionData),
         },
         details: {
