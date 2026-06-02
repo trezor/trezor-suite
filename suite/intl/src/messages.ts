@@ -3156,10 +3156,6 @@ export const messages = defineMessages({
         defaultMessage: "Device settings can't be changed in the current state",
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
-    TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
-        defaultMessage: 'Connect & unlock your Trezor to change settings.',
-        id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
-    },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
         defaultMessage: 'Other settings are unavailable in bootloader mode',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
@@ -3378,10 +3374,6 @@ export const messages = defineMessages({
     TR_TESTNET_COINS: {
         defaultMessage: 'Testnet',
         id: 'TR_TESTNET_COINS',
-    },
-    TR_TESTNET_COINS_DESCRIPTION: {
-        defaultMessage: 'These assets are for testing purposes only and have no real value.',
-        id: 'TR_TESTNET_COINS_DESCRIPTION',
     },
     TR_TESTNET_COINS_LABEL: {
         defaultMessage: 'TEST COIN',
@@ -4430,10 +4422,6 @@ export const messages = defineMessages({
         defaultMessage:
             "This wallet backup check is precisely the same as the normal recovery process. You should only trust the information and instructions displayed on your Trezor's screen.",
     },
-    TR_ACCOUNT_TYPE: {
-        id: 'TR_ACCOUNT_TYPE',
-        defaultMessage: 'Account type',
-    },
     TR_ACTIVATED_COINS: {
         id: 'TR_ACTIVATED_COINS',
         defaultMessage: 'Active assets',
@@ -4516,10 +4504,6 @@ export const messages = defineMessages({
     TR_DASHBOARD_GET_STARTED: {
         id: 'TR_DASHBOARD_GET_STARTED',
         defaultMessage: 'Get started',
-    },
-    TR_SELECT_COIN_FOR_SETTINGS: {
-        id: 'TR_SELECT_COIN_FOR_SETTINGS',
-        defaultMessage: 'Select active asset to change settings',
     },
     FW_CAPABILITY_UPDATE_REQUIRED: {
         id: 'FW_CAPABILITY_UPDATE_REQUIRED',
