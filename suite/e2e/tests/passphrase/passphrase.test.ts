@@ -98,11 +98,11 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.receiveButton.click();
             });
 
-            await test.step('No address is yet in table of wallet #1', async () => {
-                await expect(walletPage.usedAddress(0)).toBeHidden();
+            await test.step('Revealed address stays visible in table of wallet #1', async () => {
+                await expect(walletPage.usedAddress(0)).toBeVisible();
                 await expect(walletPage.revealAddressButton).toBeEnabled();
 
-                await walletPage.revealAddressButton.click();
+                await walletPage.usedAddressRevealButton(0).click();
                 await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(abcAddr);
