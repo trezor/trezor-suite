@@ -195,12 +195,66 @@ describe('sendDexTransactionThunk', () => {
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
+        expect(
+            (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock.calls[0][0],
+        ).toEqual(
+            expect.objectContaining({
+                address: 'to',
+                amount: 'value',
+                destinationTag: 'partnerPaymentExtraId',
+                transactionData: 'data',
+                ethereumAdjustGasLimit: expect.any(String),
+                recalculateCustomLimit: true,
+            }),
+        );
         expect(store.getState().wallet.trading.trades).toEqual([]);
         expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
         expect(confirmTradeThunkArgs.trade?.approvalSendTxHash).toEqual('txid');
         expect(confirmTradeThunkArgs.trade?.status).toEqual('APPROVAL_PENDING');
         expect(nextStep).not.toHaveBeenCalled();
         expect(confirmTradeThunkArgs.nextStep).toBe(nextStep);
+    });
+
+    it('should base64→hex convert dexTx.data when account.networkType is solana', async () => {
+        const base64Data = Buffer.from('hello', 'utf8').toString('base64');
+        const expectedHex = Buffer.from(base64Data, 'base64').toString('hex');
+
+        const quote = getQuote();
+        const { store, returnUrl } = getMocks({
+            selectedQuote: {
+                ...quote,
+                dexTx: { ...quote.dexTx, data: base64Data },
+            } as TradingExchangeState['selectedQuote'],
+        });
+
+        const solanaAccount = { ...accountBtc, networkType: 'solana' } as Account;
+
+        (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
+            .fn()
+            .mockImplementation(
+                createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
+                    fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
+                ),
+            );
+        (confirmExchangeTradeThunk as unknown as jest.Mock).mockImplementation(
+            createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
+        );
+
+        await store.dispatch(
+            exchangeThunks.sendDexTransactionThunk({
+                account: solanaAccount,
+                returnUrl,
+                nextStep: jest.fn(),
+                triggerAnalyticsTradeConfirmation: jest.fn(),
+                processResponseData: jest.fn(),
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+
+        expect(
+            (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock.calls[0][0]
+                .transactionData,
+        ).toBe(expectedHex);
     });
 
     it('should successfully call confirmTradeThunk for making trade', async () => {
@@ -246,6 +300,18 @@ describe('sendDexTransactionThunk', () => {
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
+        expect(
+            (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock.calls[0][0],
+        ).toEqual(
+            expect.objectContaining({
+                address: 'to',
+                amount: 'value',
+                destinationTag: 'partnerPaymentExtraId',
+                transactionData: 'data',
+                ethereumAdjustGasLimit: expect.any(String),
+                recalculateCustomLimit: true,
+            }),
+        );
         expect(store.getState().wallet.trading.trades).toEqual([
             {
                 tradeType: 'exchange',

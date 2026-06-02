@@ -3,7 +3,6 @@ import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
-import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -17,6 +16,7 @@ import {
 import { type TradingSellFormProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
+import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendSellTransactionThunkProps = {
@@ -70,17 +70,19 @@ export const sendSellTransactionThunk = createThunk(
             isSlip24Active,
             sendAccountKey: account.key,
         });
-        const cryptoStringAmount = shouldSendInSats
-            ? convertAmountUnitsToSubunits(selectedTrade.cryptoStringAmount, decimals)
-            : selectedTrade.cryptoStringAmount;
         const { destinationPaymentExtraId } = selectedTrade;
+        const recomposeInputs = buildRecomposeInputsFromTrade({
+            destinationAddress,
+            cryptoStringAmount: selectedTrade.cryptoStringAmount,
+            destinationPaymentExtraId,
+            shouldSendInSats,
+            decimals,
+        });
 
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
-                address: destinationAddress,
-                amount: cryptoStringAmount,
-                destinationTag: destinationPaymentExtraId,
+                ...recomposeInputs,
                 isSlip24Active,
                 signAndPushSendFormTransaction,
                 // when lockSendAmount is true, the amount should not be recomputed based on the maximum balance.

@@ -320,6 +320,18 @@ describe('sendTransactionThunk', () => {
         expect(store.getState().wallet.trading.modalAccountKey).toBe(account.key);
         expect(sendDexTransactionThunkSpy).toHaveBeenCalledTimes(0);
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
+        const recomposeCallArg = (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock)
+            .mock.calls[0][0];
+        expect(recomposeCallArg).toEqual(
+            expect.objectContaining({
+                address: '1',
+                amount: '1200000000',
+                destinationTag: undefined,
+            }),
+        );
+        expect(recomposeCallArg.transactionData).toBeUndefined();
+        expect(recomposeCallArg.ethereumAdjustGasLimit).toBeUndefined();
+        expect(recomposeCallArg.recalculateCustomLimit).toBeUndefined();
         expect(store.getState().wallet.trading.trades).toEqual([
             {
                 tradeType: 'exchange',
