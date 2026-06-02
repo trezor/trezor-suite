@@ -240,7 +240,7 @@ export type MetadataProvider = {
 export interface MetadataState {
     enabled: boolean; // global for all devices
     providers: MetadataProvider[];
-    hasLegacyLabelsMigrated: Partial<Record<WalletDescriptor, boolean>>;
+    hasLegacyLabelsMigrated: Partial<Record<WalletDescriptor, true>>;
     // being selected means:
     // - see data from this provider
     // - save data to this provider when making changes

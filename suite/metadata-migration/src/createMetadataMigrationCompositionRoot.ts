@@ -15,7 +15,7 @@ import {
 } from '@suite-common/suite-sync-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
 
-import { createMigrateLabelsIfAvailable } from './createEnsureWalletSuiteSyncOnWithMigration';
+import { createMigrateLabelsIfAvailable } from './createMigrateLabelsIfAvailable';
 import { createMigrateAccountLabels } from './entities/createMigrateAccountLabels';
 import { createMigrateAddressLabels } from './entities/createMigrateAddressLabels';
 import { createMigrateOutputLabels } from './entities/createMigrateOutputLabels';
