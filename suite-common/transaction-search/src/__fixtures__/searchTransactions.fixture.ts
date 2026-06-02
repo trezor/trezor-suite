@@ -152,6 +152,7 @@ export const searchTransactionsFixture = [
         result: [
             '62431e78bb13a4fdd9c87517db1ea70b4cb5763227327da35748c96497c6ea9a', // 2020-12-27
             'f5cea29dec1d4e8b83a81b61627caf36adc33085284bde2969ae5beb75bd413c', // 2020-12-14
+            '0xb2e15b2029bfecb74f8cfddafa35bd09f72c1c003f725c6c8391169d726f6c30', // 2026-06-02 - EVM Claim tx
         ],
     },
     {
@@ -194,5 +195,17 @@ export const searchTransactionsFixture = [
             'f5cea29dec1d4e8b83a81b61627caf36adc33085284bde2969ae5beb75bd413c', // 2020-12-14 - 0.01 TEST
             '5be0cfd5b439c3112cfaea3cd05fdcea387433990885c86937d2488c59f1e692', // 2020-12-03 - 0.00019199 TEST
         ],
+    },
+    {
+        description: 'EVM function label search',
+        search: 'claim',
+        results: [
+            '0xb2e15b2029bfecb74f8cfddafa35bd09f72c1c003f725c6c8391169d726f6c30', // 2026-06-02 - EVM Claim tx
+        ],
+    },
+    {
+        description: 'AND operator (EVM func Claim + < July)',
+        search: 'claim & < 2026-06-01',
+        results: [],
     },
 ];
