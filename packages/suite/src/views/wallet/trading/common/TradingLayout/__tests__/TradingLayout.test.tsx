@@ -26,6 +26,10 @@ jest.mock('../TradingLayoutNavigation', () => ({
     ),
 }));
 
+jest.mock('../TradingLayoutHeader', () => ({
+    TradingLayoutHeader: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+}));
+
 jest.mock('src/components/wallet/WalletLayout/AccountException/DiscoveryEmpty', () => ({
     DiscoveryEmpty: () => <div data-testid="discovery-empty" />,
 }));

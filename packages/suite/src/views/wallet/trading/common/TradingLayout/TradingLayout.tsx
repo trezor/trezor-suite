@@ -8,6 +8,7 @@ import { Column } from '@trezor/components';
 import { DiscoveryEmpty } from 'src/components/wallet/WalletLayout/AccountException/DiscoveryEmpty';
 import { useSelector } from 'src/hooks/suite';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
+import { TradingLayoutHeader } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutHeader';
 import { TradingLayoutNavigation } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutNavigation';
 
 export const TradingLayout = ({ children }: PropsWithChildren) => {
@@ -26,7 +27,9 @@ export const TradingLayout = ({ children }: PropsWithChildren) => {
     return (
         <Column data-testid="@trading" gap={24}>
             <TradingLayoutNavigation route={routeName} />
-            {hasVisibleAccounts ? children : noVisibleAccountsContent}
+            <TradingLayoutHeader>
+                {hasVisibleAccounts ? children : noVisibleAccountsContent}
+            </TradingLayoutHeader>
         </Column>
     );
 };
