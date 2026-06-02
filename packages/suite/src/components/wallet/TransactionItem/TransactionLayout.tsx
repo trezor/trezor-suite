@@ -21,7 +21,7 @@ export const TransactionLayout = ({
     icon,
     children,
 }: TransactionLayoutProps) => {
-    const { isBelowLaptop } = useLayoutSize();
+    const { isBelowLaptop, isBelowTablet } = useLayoutSize();
 
     return (
         <Card onClick={onClick} paddingType="none">
@@ -47,11 +47,11 @@ export const TransactionLayout = ({
 
                     <Grid
                         columns={
-                            isBelowLaptop
+                            isBelowTablet
                                 ? '1fr max-content'
                                 : '1fr max-content minmax(110px, max-content)'
                         }
-                        rowGap={isBelowLaptop ? 12 : 4}
+                        rowGap={isBelowTablet ? 12 : 4}
                         columnGap={24}
                         flex="1"
                     >

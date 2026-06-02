@@ -22,7 +22,7 @@ export const TransactionTargetLayout = ({
     useHiddenPlaceholder,
     isPhishingTransaction,
 }: TransactionTargetLayoutProps) => {
-    const { isBelowLaptop } = useLayoutSize();
+    const { isBelowTablet } = useLayoutSize();
 
     const commonProps = {
         typographyStyle: 'body-md',
@@ -59,7 +59,7 @@ export const TransactionTargetLayout = ({
                 )}
             </Text>
 
-            {isBelowLaptop ? <Column>{amounts}</Column> : amounts}
+            {isBelowTablet ? <Column>{amounts}</Column> : amounts}
         </>
     );
 };
