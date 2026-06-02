@@ -73,7 +73,6 @@ export const submitYieldWithdrawThunk = createThunk(
             }
 
             const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
-            const vaultName = flowData.vault.outputToken?.name ?? flowData.vault.metadata.name;
             const isSharesInput = withdrawInputUnit === 'shares';
             const reviewToken = isSharesInput ? flowData.receiptToken : flowData.token;
 
@@ -82,7 +81,7 @@ export const submitYieldWithdrawThunk = createThunk(
                 amount,
                 token: reviewToken,
                 unsignedTransaction,
-                vaultName,
+                vaultName: flowData.vault.metadata.name,
                 dispatch,
                 getState,
                 selectedFee,

@@ -10416,13 +10416,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin@workspace:suite-common/earn-stablecoin"
   dependencies:
+    "@suite-common/calldata": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:^"
     "@suite-common/schemas": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
+    "@suite-common/wallet-core": "workspace:^"
     "@suite-common/wallet-types": "workspace:^"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -11145,7 +11148,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-core@workspace:*, @suite-common/wallet-core@workspace:suite-common/wallet-core":
+"@suite-common/wallet-core@workspace:*, @suite-common/wallet-core@workspace:^, @suite-common/wallet-core@workspace:suite-common/wallet-core":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:

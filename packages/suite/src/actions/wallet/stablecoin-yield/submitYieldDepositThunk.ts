@@ -126,14 +126,13 @@ export const submitYieldDepositThunk = createThunk(
             }
 
             const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
-            const vaultName = flowData.vault.outputToken?.name ?? flowData.vault.metadata.name;
 
             const result = await sendYieldTransaction({
                 account: flowData.account,
                 amount,
                 token: flowData.token,
                 unsignedTransaction: actionTransaction.unsignedTransaction,
-                vaultName,
+                vaultName: flowData.vault.metadata.name,
                 dispatch,
                 getState,
                 selectedFee,
