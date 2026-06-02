@@ -87,4 +87,13 @@ describe('isAddressValid', () => {
         expect(isAddressValid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhmN', 'txrp')).toEqual(true);
         expect(isAddressValid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV0', 'xrp')).toEqual(false);
     });
+
+    it('TRX, tTRX', () => {
+        expect(isAddressValid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx')).toEqual(true);
+        expect(isAddressValid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'ttrx')).toEqual(true);
+        expect(isAddressValid('TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4', 'trx')).toEqual(true);
+        expect(isAddressValid('TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4', 'ttrx')).toEqual(true);
+        expect(isAddressValid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'trx')).toEqual(false);
+        expect(isAddressValid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'ttrx')).toEqual(false);
+    });
 });
