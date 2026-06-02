@@ -82,6 +82,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         }
     }
 
+    // Runtime function supplied by the host composition root; passthrough (not validated).
+    if (typeof input.createLogger === 'function') {
+        settings.createLogger = input.createLogger;
+    }
+
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;
     }

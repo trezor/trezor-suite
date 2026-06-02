@@ -1,8 +1,7 @@
 import { randomBytes } from '@noble/hashes/utils.js';
 
 import type { FirmwareHashCheckError, FirmwareHashCheckResult } from '@trezor/connect-common';
-import type { Log } from '@trezor/connect-common/src/utils/debug';
-import { serializeError } from '@trezor/utils';
+import { type Logger, serializeError } from '@trezor/utils';
 
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
@@ -18,7 +17,7 @@ const createFailResult = (error: FirmwareHashCheckError, errorPayload?: unknown)
 
 type Context = {
     device: IDevice;
-    logger: Log;
+    logger: Logger;
 };
 
 export const checkFirmwareHash = async ({

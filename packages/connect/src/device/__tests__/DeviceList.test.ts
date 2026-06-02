@@ -1,4 +1,5 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { noopCreateLogger, noopLogger } from '@trezor/connect-common/src/utils/debug';
 
 import { initializeFirmwareConfig } from '../../data/firmwareInfo';
 import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
@@ -39,6 +40,7 @@ describe('DeviceList', () => {
         list = new DeviceList({
             ...parseConnectSettings({}),
             priority: 0,
+            createLogger: noopCreateLogger,
         });
         eventsSpy = jest.fn();
         list.on('transport-start', ({ apiType }) => eventsSpy('transport-start', apiType));
@@ -59,6 +61,19 @@ describe('DeviceList', () => {
 
     afterEach(() => {
         list.dispose();
+    });
+
+    it('builds the transport logger through injected createLogger', () => {
+        const createLogger = jest.fn(() => noopLogger);
+        const local = new DeviceList({
+            ...parseConnectSettings({}),
+            priority: 0,
+            createLogger,
+        });
+
+        expect(createLogger).toHaveBeenCalledWith('@trezor/transport');
+
+        return local.dispose();
     });
 
     it('.init() throws error on unknown transport (string)', async () => {

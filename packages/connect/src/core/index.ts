@@ -27,14 +27,15 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
 import { parseLocalFirmwares } from '@trezor/connect-common/src/data/connectSettings';
+import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
 import {
     type LogWriter,
-    enableLog,
-    initLog,
+    noopCreateLogger,
+    noopLogger,
     setLogWriter,
 } from '@trezor/connect-common/src/utils/debug';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
-import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
+import { type Logger, createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
@@ -50,9 +51,6 @@ import type { IDeviceList } from '../device/DeviceList';
 import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import { validateState } from '../device/workflow/validateState';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
-
-// custom log
-const _log = initLog('Core');
 
 type CoreContext = ReturnType<Core['getCoreContext']>;
 
@@ -199,6 +197,7 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         methodSynchronize,
         resolveWaitForFirstMethod,
         sendCoreMessage,
+        logger,
     } = context;
     const responseID = message.id;
 
@@ -206,9 +205,9 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     let method: AbstractMethod<any>;
     try {
         method = await methodSynchronize(async () => {
-            _log.debug('loading method...');
+            logger.debug('loading method...');
             const method2 = await getMethod(message);
-            _log.debug('method selected', method2.name);
+            logger.debug('method selected', method2.name);
 
             await method2.initAsync?.();
 
@@ -265,7 +264,7 @@ const onCallDevice = async (
     message: CoreCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
-    const { deviceList, callMethods, sendCoreMessage } = context;
+    const { deviceList, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
     const { env, transports, pendingTransportEvent } = settingsStore.get();
 
@@ -369,7 +368,7 @@ const onCallDevice = async (
     } catch (error) {
         // just a log proving that cause propagates all the way up
         if (error.cause) {
-            _log.debug('device.run error caught, caused by:', error.cause);
+            logger.debug('device.run error caught, caused by:', error.cause);
         }
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
@@ -432,9 +431,9 @@ const onCallDevice = async (
  * @returns {void}
  * @memberof Core
  */
-const cleanup = ({ uiPromises }: CoreContext) => {
+const cleanup = ({ uiPromises, logger }: CoreContext) => {
     uiPromises.clear();
-    _log.debug('Cleanup...');
+    logger.debug('Cleanup...');
 };
 
 /**
@@ -729,7 +728,7 @@ const onCallCancel = (context: CoreContext, reason?: string, callId?: string) =>
 };
 
 const initDeviceList = (context: CoreContext) => {
-    const { deviceList, sendCoreMessage } = context;
+    const { deviceList, sendCoreMessage, logger } = context;
 
     deviceList.on(DEVICE.CONNECT, device => {
         sendCoreMessage(createDeviceMessage(DEVICE.CONNECT, device.toMessageObject()));
@@ -762,7 +761,7 @@ const initDeviceList = (context: CoreContext) => {
     );
 
     deviceList.on(TRANSPORT.ERROR, error => {
-        _log.warn('TRANSPORT.ERROR', error.error);
+        logger.warn('TRANSPORT.ERROR', error.error);
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, error));
     });
 };
@@ -777,6 +776,9 @@ export class Core extends EventEmitter {
     private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
     private methodSynchronize = getSynchronize();
     private uiPromises = createUiPromiseManager();
+
+    private createLogger: CreateLogger = noopCreateLogger;
+    private coreLogger: Logger = noopLogger;
 
     private waitForFirstMethod = createDeferred();
 
@@ -803,6 +805,7 @@ export class Core extends EventEmitter {
             signal: this.abortController.signal,
             uiPromises: this.uiPromises,
             deviceList: this.deviceList,
+            logger: this.coreLogger,
             callMethods: this.callMethods,
             methodSynchronize: this.methodSynchronize,
             sendCoreMessage: this.sendCoreMessage.bind(this),
@@ -816,7 +819,7 @@ export class Core extends EventEmitter {
     }
 
     handleMessage(message: CoreRequestMessage) {
-        _log.debug('handleMessage', message.type);
+        this.coreLogger.debug('handleMessage', message.type);
 
         switch (message.type) {
             case POPUP.CLOSED:
@@ -892,7 +895,7 @@ export class Core extends EventEmitter {
                             deviceList: this.deviceList,
                             postMessage: sendCoreMessageWithCallId,
                             selectDevice: path => selectDevice(coreContext, { path }),
-                            log: _log,
+                            log: this.coreLogger,
                             abortSignal: this.abortController.signal,
                             registerEvents: registerDeviceEvents(coreContext),
                             uiPromises: coreContext.uiPromises,
@@ -905,11 +908,11 @@ export class Core extends EventEmitter {
                             this.sendCoreMessage(
                                 createResponseMessage(message.id, false, { error }),
                             );
-                            _log.error('onCallFirmwareUpdate', error);
+                            this.coreLogger.error('onCallFirmwareUpdate', error);
                         });
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {
-                        _log.error('onCall', error);
+                        this.coreLogger.error('onCall', error);
                     });
                 }
         }
@@ -949,6 +952,11 @@ export class Core extends EventEmitter {
             setLogWriter(logWriterFactory);
         }
 
+        // Logger factory comes from the host composition root and must be ready before DeviceList
+        // is created because device discovery/handshake can log during init.
+        this.createLogger = settings.createLogger ?? noopCreateLogger;
+        this.coreLogger = this.createLogger('Core');
+
         // do not send any event until Core is fully loaded
         // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
         const throttlePromise = createDeferred();
@@ -969,21 +977,19 @@ export class Core extends EventEmitter {
                 localFirmwareStore.set(localFirmwares);
             }
             await loadProtobufModules();
-            const { debug, priority, manifest } = settingsStore.get();
-
-            enableLog(debug);
+            const { priority, manifest } = settingsStore.get();
 
             this._deviceList = new DeviceList({
-                debug,
                 priority,
                 manifest,
+                createLogger: this.createLogger,
             });
             initDeviceList(this.getCoreContext());
 
             this.on(CORE_EVENT, onCoreEventThrottled);
         } catch (error) {
             // TODO: kill app
-            _log.error('init', error);
+            this.coreLogger.error('init', error);
             throttlePromise.reject(error);
             throw error;
         }

@@ -27,9 +27,9 @@ import {
     type CancelParams,
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
-import { initLog } from '@trezor/connect-common/src/utils/debug';
+import { noopLogger } from '@trezor/connect-common/src/utils/debug';
 import { TRANSPORT } from '@trezor/transport-common';
-import { cloneObject, createDeferredManager } from '@trezor/utils';
+import { type Logger, cloneObject, createDeferredManager } from '@trezor/utils';
 
 import { initCoreState } from '../core';
 
@@ -38,7 +38,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
 
     private settings;
     private coreManager;
-    private log;
+    private log: Logger;
     private messagePromises;
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
@@ -47,7 +47,8 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
 
     public constructor() {
         this.settings = parseConnectSettings();
-        this.log = initLog('@trezor/connect');
+        // No-op until init() resolves the host logger settings.
+        this.log = noopLogger;
         this.coreManager = initCoreState();
         this.messagePromises = createDeferredManager<
             Omit<MethodResponseMessage, 'event' | 'type'>,
@@ -124,7 +125,8 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
             this.settings.transports = this.defaultTransports;
         }
 
-        this.log.enabled = !!this.settings.debug;
+        // `createLogger` is optional. Without it, connect stays silent.
+        this.log = this.settings.createLogger?.('@trezor/connect') ?? noopLogger;
 
         await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }

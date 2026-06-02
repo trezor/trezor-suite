@@ -2,7 +2,6 @@
 
 import { DEVICE } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { initLog } from '@trezor/connect-common/src/utils/debug';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import {
@@ -12,7 +11,7 @@ import {
     type Transport,
     isErrorWithoutDeviceInteraction,
 } from '@trezor/transport-common';
-import { scheduleAction } from '@trezor/utils';
+import { type Logger, scheduleAction } from '@trezor/utils';
 
 import type { IDevice } from '../types/idevice';
 import type { TypedCallProvider } from '../types/typed-call-provider';
@@ -57,8 +56,6 @@ const filterForLog = (type: string, msg: any) =>
         ? '(redacted...)'
         : (blacklist[type] ?? []).reduce((prev, cur) => ({ ...prev, [cur]: '(redacted...)' }), msg);
 
-const logger = initLog('DeviceCommands');
-
 const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKey[]>(
     response: Pick<MessageResponse, 'type'>,
     expected: Key,
@@ -77,15 +74,17 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private readonly device: IDevice;
     private readonly transport: Transport;
     private readonly session: Session;
+    private readonly logger: Logger;
 
     private disposed?: Error;
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
 
-    constructor(device: IDevice, transport: Transport, session: Session) {
+    constructor(device: IDevice, transport: Transport, session: Session, logger: Logger) {
         this.device = device;
         this.transport = transport;
         this.session = session;
+        this.logger = logger;
 
         transport.deviceEvents.once(device.transportPath, e => {
             if (!this.disposed) {
@@ -300,7 +299,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     async call(name: string, data: Record<string, unknown>, options: AbortableOptions = {}) {
         if (this.disposed) return Promise.resolve(nestedError(this.disposed));
 
-        logger.debug('Sending', name, filterForLog(name, data));
+        this.logger.debug('Sending', name, filterForLog(name, data));
 
         const result = await this.transport.call({
             name,
@@ -313,10 +312,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
         if (result.success) {
             const { type, message } = result.payload;
-            logger.debug('Received', type, filterForLog(type, message));
+            this.logger.debug('Received', type, filterForLog(type, message));
         } else {
             // result.error.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
-            logger.warn('Received transport error', result.error.code, result.error.message);
+            this.logger.warn('Received transport error', result.error.code, result.error.message);
         }
 
         return result.success

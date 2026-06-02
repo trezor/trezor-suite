@@ -5,6 +5,7 @@ import TrezorConnect, {
     type Device,
     ThpPairingMethod,
     type UiRequestThpPairing,
+    initLog,
 } from '@trezor/connect';
 
 import { HELP, args } from './args';
@@ -289,6 +290,9 @@ const run = async () => {
         transports: [transport],
         pendingTransportEvent: false,
         debug: args.debug,
+        // connect runs in-process here, so supply the core logger factory directly.
+        // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
+        createLogger: (prefix: string) => initLog(prefix, !!args.debug),
         thp: {
             appName: 'TrezorConnect Cli',
             hostName: 'localhost',
