@@ -114,7 +114,6 @@ export const TransactionTarget = ({
                         value={amount}
                         symbol={transaction.symbol}
                         signValue={operation}
-                        signGrayscale
                     />
                 ) : undefined;
             case 'token':
@@ -123,7 +122,6 @@ export const TransactionTarget = ({
                         transfer={payload}
                         withLink={false}
                         withSign
-                        signGrayscale
                         alignMultitoken="flex-end"
                     />
                 );
