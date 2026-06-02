@@ -46,7 +46,6 @@ export const CustomRow = ({
                     value={amount}
                     symbol={transaction.symbol}
                     signValue={sign}
-                    signGrayscale
                 />
             }
             fiatAmount={
