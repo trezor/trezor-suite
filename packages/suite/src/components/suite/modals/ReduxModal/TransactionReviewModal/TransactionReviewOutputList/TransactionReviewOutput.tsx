@@ -371,7 +371,7 @@ const getOutputLines = ({
                         {
                             id: 'address',
                             type: 'default',
-                            value: translationString('TR_EARN_YIELD_VAULT_NAME', { vault: value }),
+                            value,
                         },
                     ];
                 }

@@ -1,7 +1,7 @@
 import { fromWei, toWei } from 'web3-utils';
 
 import { Calldata, isEvmClearSigningTx } from '@suite-common/calldata';
-import { EVM_SPENDER_LABELS, KNOWN_VAULTS } from '@suite-common/suite-constants';
+import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
 import {
@@ -372,11 +372,7 @@ const constructNewFlow = ({
         const fallbackAddress = precomposedTx.outputs.find(
             o => 'address' in o && typeof o.address === 'string',
         )?.address;
-        const resolvedVaultName =
-            vaultName ??
-            (typeof fallbackAddress === 'string'
-                ? (KNOWN_VAULTS[fallbackAddress.toLowerCase()] ?? fallbackAddress)
-                : '');
+        const resolvedVaultName = vaultName ?? fallbackAddress ?? '';
 
         outputs.push({ type: 'data', value: '' }, { type: 'address', value: resolvedVaultName });
 
@@ -577,7 +573,7 @@ const constructNewFlow = ({
         const { spender } = evmApprovalTxData;
         outputs.push({
             type: 'contract',
-            value: KNOWN_VAULTS[spender] ?? EVM_SPENDER_LABELS[spender] ?? spender,
+            value: vaultName ?? EVM_SPENDER_LABELS[spender] ?? spender,
         });
 
         if (precomposedTx.token) {

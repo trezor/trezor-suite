@@ -9784,10 +9784,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_REDEEM_FROM',
         defaultMessage: 'Redeem from',
     },
-    TR_EARN_YIELD_VAULT_NAME: {
-        id: 'TR_EARN_YIELD_VAULT_NAME',
-        defaultMessage: '{vault} Vault',
-    },
     TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
         defaultMessage: 'Deposit amount',
