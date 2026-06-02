@@ -116,6 +116,7 @@ describe('handleExchangeRequestThunk', () => {
                 contractAddress: null,
                 symbol: 'eth',
                 displaySymbol: 'ETH',
+                displaySymbolName: 'Ethereum',
                 networkName: 'Ethereum',
                 networkSymbol: 'eth',
             } satisfies TradingAssetOption,
