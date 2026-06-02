@@ -41,6 +41,7 @@ export const YieldPageHeader = ({
     const { isBelowMobile } = useLayoutSize();
     const vaultName = vault?.outputToken?.name;
     const networkSymbol = account?.symbol;
+    const isHowItWorksVisible = !isInvalid;
 
     const onBackClick = () => {
         analytics.report({
@@ -148,29 +149,31 @@ export const YieldPageHeader = ({
                     </Row>
                 )}
 
-                <Box margin={{ left: 'auto' }}>
-                    {isBelowMobile ? (
-                        <IconButton
-                            icon="info"
-                            intent="neutral"
-                            priority="secondary"
-                            size="large"
-                            aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
-                            onClick={onHowItWorksClick}
-                            isDisabled={!account || !routeParams}
-                            tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
-                        />
-                    ) : (
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={onHowItWorksClick}
-                            isDisabled={!account || !routeParams}
-                        >
-                            <Translation id="TR_EARN_HOW_IT_WORKS" />
-                        </Button>
-                    )}
-                </Box>
+                {isHowItWorksVisible && (
+                    <Box margin={{ left: 'auto' }}>
+                        {isBelowMobile ? (
+                            <IconButton
+                                icon="info"
+                                intent="neutral"
+                                priority="secondary"
+                                size="large"
+                                aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
+                                onClick={onHowItWorksClick}
+                                isDisabled={!account || !routeParams}
+                                tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
+                            />
+                        ) : (
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={onHowItWorksClick}
+                                isDisabled={!account || !routeParams}
+                            >
+                                <Translation id="TR_EARN_HOW_IT_WORKS" />
+                            </Button>
+                        )}
+                    </Box>
+                )}
             </Row>
         </PageHeader>
     );

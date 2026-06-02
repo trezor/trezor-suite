@@ -8,6 +8,7 @@ export type EarnLayoutInvalidReason =
     | 'missing-vault'
     | 'network-mismatch'
     | 'token-mismatch'
+    | 'firmware-not-supported'
     | 'yield-opportunities-error';
 
 export type EarnLayoutState =
