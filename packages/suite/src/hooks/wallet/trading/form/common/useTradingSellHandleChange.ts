@@ -6,7 +6,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     type TradingSellFormProps,
-    getTradingPaymentMethods,
     isCountrySubdivisionEmpty,
     sellThunks,
     tradingActions,
@@ -85,10 +84,9 @@ export const useTradingSellHandleChange = ({
                 const bestQuotePaymentMethodName =
                     bestQuote?.paymentMethodName ?? bestQuotePaymentMethod;
                 const paymentMethodSelected = formValues.paymentMethod?.value;
-                const paymentMethodsFromQuotes = getTradingPaymentMethods(quotes);
-                const isSelectedPaymentMethodAvailable =
-                    paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
-                    undefined;
+                const isSelectedPaymentMethodAvailable = quotes.some(
+                    quote => quote.paymentMethod === paymentMethodSelected,
+                );
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
                     setValue(TRADING_FORM_PAYMENT_METHOD_SELECT, {
                         value: bestQuotePaymentMethod ?? '',

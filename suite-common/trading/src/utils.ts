@@ -24,7 +24,6 @@ import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
 
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
@@ -37,7 +36,6 @@ import {
     type TradingCountrySubdivisionOption,
     type TradingExchangeType,
     type TradingParsedCryptoIdProps,
-    type TradingPaymentMethodListProps,
     type TradingPaymentMethodProps,
     type TradingProviderInfo,
     type TradingSellType,
@@ -271,35 +269,6 @@ export const getNetworkDecimalsWithFallback = (
     symbol: NetworkSymbol | undefined,
     fallback = getNetwork('btc').decimals,
 ): number => (symbol ? (getNetwork(symbol).decimals ?? fallback) : fallback);
-
-export const getTradingPaymentMethods = (
-    quotes: BuyTrade[] | SellFiatTrade[],
-): TradingPaymentMethodListProps[] => {
-    const uniqueMethods = new Map<string, TradingPaymentMethodListProps>();
-
-    quotes.forEach(quote => {
-        if (!quote.paymentMethod) return;
-        if (uniqueMethods.has(quote.paymentMethod)) return;
-        const amount = isBuyTrade(quote) ? quote.receiveStringAmount : quote.fiatStringAmount;
-        uniqueMethods.set(quote.paymentMethod, {
-            value: quote.paymentMethod,
-            label: quote.paymentMethodName ?? quote.paymentMethod,
-            receiveAmount: amount,
-            symbol: isBuyTrade(quote)
-                ? cryptoIdToSymbol(quote.receiveCurrency)
-                : (quote as SellFiatTrade).fiatCurrency,
-        });
-    });
-
-    const sortedMethods = Array.from(uniqueMethods.values()).sort((a, b) => {
-        const aAmount = new BigNumber(a.receiveAmount || '0');
-        const bAmount = new BigNumber(b.receiveAmount || '0');
-
-        return bAmount.minus(aAmount).toNumber();
-    });
-
-    return sortedMethods;
-};
 
 export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeMapProps[T][],

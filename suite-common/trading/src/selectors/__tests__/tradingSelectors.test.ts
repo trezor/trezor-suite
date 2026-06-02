@@ -39,6 +39,7 @@ import {
     selectTradingBuyIsLoading,
     selectTradingBuyLastErrorMessage,
     selectTradingBuyLoadingTimestampAndStatus,
+    selectTradingBuyPaymentMethods,
     selectTradingBuyProviders,
     selectTradingBuyQuoteByOrderId,
     selectTradingBuyQuotes,
@@ -83,6 +84,7 @@ import {
     selectTradingSellIsFromRedirect,
     selectTradingSellLastErrorMessage,
     selectTradingSellLoadingTimestampAndStatus,
+    selectTradingSellPaymentMethods,
     selectTradingSellProviders,
     selectTradingSellQuotes,
     selectTradingSellQuotesByPaymentMethod,
@@ -1355,6 +1357,111 @@ describe('tradingSelectors', () => {
 
         it('should be stable', () => {
             expect(selectValidTradingSellQuotes(state)).toBe(selectValidTradingSellQuotes(state));
+        });
+    });
+
+    describe(selectTradingBuyPaymentMethods.name, () => {
+        const usdcCryptoId = 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId;
+        const buildBuyQuote = (overrides: Partial<BuyTrade>): BuyTrade => ({
+            fiatStringAmount: '10',
+            fiatCurrency: 'EUR',
+            receiveCurrency: 'bitcoin' as CryptoId,
+            receiveStringAmount: '5',
+            rate: 2,
+            paymentMethod: 'creditCard',
+            paymentMethodName: 'Credit Card',
+            quoteId: 'quoteId1',
+            ...overrides,
+        });
+
+        it('should resolve token symbol from coin info for ERC-20 quotes', () => {
+            state.wallet.trading.buy.quotes = [buildBuyQuote({ receiveCurrency: usdcCryptoId })];
+
+            expect(selectTradingBuyPaymentMethods(state)).toEqual([
+                expect.objectContaining({ value: 'creditCard', symbol: 'USDC' }),
+            ]);
+        });
+
+        it('should return undefined symbol when coin info is missing', () => {
+            state.wallet.trading.buy.quotes = [
+                buildBuyQuote({ receiveCurrency: 'ethereum--0xunknown' as CryptoId }),
+            ];
+
+            expect(selectTradingBuyPaymentMethods(state)).toEqual([
+                expect.objectContaining({ value: 'creditCard', symbol: undefined }),
+            ]);
+        });
+
+        it('should dedupe by paymentMethod and keep first quote', () => {
+            state.wallet.trading.buy.quotes = [
+                buildBuyQuote({ quoteId: 'first', receiveStringAmount: '5' }),
+                buildBuyQuote({ quoteId: 'second', receiveStringAmount: '0.0001' }),
+            ];
+
+            const result = selectTradingBuyPaymentMethods(state);
+
+            expect(result).toHaveLength(1);
+            expect(result[0]?.receiveAmount).toBe('5');
+        });
+
+        it('should sort by receiveAmount descending', () => {
+            state.wallet.trading.buy.quotes = [
+                buildBuyQuote({
+                    paymentMethod: 'bankTransfer',
+                    paymentMethodName: 'Bank Transfer',
+                    receiveStringAmount: '1',
+                }),
+                buildBuyQuote({
+                    paymentMethod: 'creditCard',
+                    receiveStringAmount: '10',
+                }),
+            ];
+
+            expect(selectTradingBuyPaymentMethods(state).map(m => m.value)).toEqual([
+                'creditCard',
+                'bankTransfer',
+            ]);
+        });
+
+        it('should skip quotes without paymentMethod', () => {
+            state.wallet.trading.buy.quotes = [
+                buildBuyQuote({ paymentMethod: '' as BuyTrade['paymentMethod'] }),
+            ];
+
+            expect(selectTradingBuyPaymentMethods(state)).toEqual([]);
+        });
+
+        it('should be stable', () => {
+            state.wallet.trading.buy.quotes = [buildBuyQuote({ receiveCurrency: usdcCryptoId })];
+
+            expect(selectTradingBuyPaymentMethods(state)).toBe(
+                selectTradingBuyPaymentMethods(state),
+            );
+        });
+    });
+
+    describe(selectTradingSellPaymentMethods.name, () => {
+        it('should set fiat currency as symbol', () => {
+            const quoteDraft = state.wallet.trading.sell.quotes[0];
+            state.wallet.trading.sell.quotes = [
+                {
+                    ...quoteDraft,
+                    rate: 20000,
+                    orderId: 'orderId1',
+                    fiatCurrency: 'EUR',
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    fiatStringAmount: '100',
+                },
+            ];
+
+            expect(selectTradingSellPaymentMethods(state)).toEqual([
+                expect.objectContaining({
+                    value: 'creditCard',
+                    symbol: 'EUR',
+                    receiveAmount: '100',
+                }),
+            ]);
         });
     });
 
