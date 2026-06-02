@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 12, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 13],
+    "min_firmware_version": [2, 9, 3],
+    "bootloader_version": [2, 1, 17],
+    "firmware_revision": "4d89c11df37355bd2cb0f3b8e28cfc661b65f743",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3w1/translation-T3W1-cs-CZ-2.12.0.bin",
+        "de-DE": "firmware/translations/t3w1/translation-T3W1-de-DE-2.12.0.bin",
+        "es-ES": "firmware/translations/t3w1/translation-T3W1-es-ES-2.12.0.bin",
+        "fr-FR": "firmware/translations/t3w1/translation-T3W1-fr-FR-2.12.0.bin",
+        "pt-BR": "firmware/translations/t3w1/translation-T3W1-pt-BR-2.12.0.bin"
+    },
+    "url": "firmware/t3w1/trezor-t3w1-2.12.0.bin",
+    "fingerprint": "ed862539d6a6b4e67a2717149d458b188231b512257ca9e449ba4b076358b648",
+    "changelog": "* Added UI flows for some ERC-4626 vault interactions.\n* Prolonged minimal auto-suspend time during backup and recovery to 2 minutes.\n* Introduced font kerning.\n* Improved EVM address chunking.\n* Made cancel option consistent across screens.\n* Updated translations in Cardano flow.\n* Re-introduced initial blob confirmation layout for Ethereum.\n* Truncated device name on BLE pairing.\n* Fixed out-of-memory failure when confirming large input data.\n* Cached confirmed EIP-712 domain.\n* Fixed Solana ALT recipient account parsing.\n* Fixed bug in Solana account type identification."
+}

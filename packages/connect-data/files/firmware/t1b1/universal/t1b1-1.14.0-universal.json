@@ -1,0 +1,13 @@
+{
+    "required": false,
+    "version": [1, 14, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [1, 12, 0],
+    "min_firmware_version": [1, 12, 0],
+    "bootloader_version": [1, 12, 1],
+    "firmware_revision": "de4b70e2e89a64f3894dba2124f6ec56e5cbd088",
+    "translations": {},
+    "url": "firmware/t1b1/trezor-t1b1-1.14.0.bin",
+    "fingerprint": "7b33c7d21aff9e2ca70e6667955380436b1e77d1886c15783d9c40031d1b44cb",
+    "changelog": "* Send BIP-380 descriptor in GetPublicKey response.\n* Deprecate ETH Holesky testnet and use Hoodi testnet instead.\n* Allow using Ethereum mainnet addresses on all non-Ethereum networks. This enables access to networks like Hyperliquid that use conflicting chain IDs and cannot obtain official SLIP-44 registration.\n* Fix cancellation handling during `GetPublicKey`.\n* Use network symbol instead of EVM network shortcut.\n* Make sure EVM symbol is visible.\n* Increase access list capacity of Ethereum EIP1559 transactions from 8 to 12.\n* Fixed side-channel vulnerability in BIP-39 mnemonic processing."
+}

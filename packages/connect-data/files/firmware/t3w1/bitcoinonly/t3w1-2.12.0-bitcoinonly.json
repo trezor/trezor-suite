@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 12, 0],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 13],
+    "min_firmware_version": [2, 9, 3],
+    "bootloader_version": [2, 1, 17],
+    "firmware_revision": "4d89c11df37355bd2cb0f3b8e28cfc661b65f743",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3w1/translation-T3W1-cs-CZ-2.12.0.bin",
+        "de-DE": "firmware/translations/t3w1/translation-T3W1-de-DE-2.12.0.bin",
+        "es-ES": "firmware/translations/t3w1/translation-T3W1-es-ES-2.12.0.bin",
+        "fr-FR": "firmware/translations/t3w1/translation-T3W1-fr-FR-2.12.0.bin",
+        "pt-BR": "firmware/translations/t3w1/translation-T3W1-pt-BR-2.12.0.bin"
+    },
+    "url": "firmware/t3w1/trezor-t3w1-2.12.0-bitcoinonly.bin",
+    "fingerprint": "4b5abd6da9844d655709b54e35daf4f1b74bf79ba916d759d4a36e6650bf60b3",
+    "changelog": "* Prolonged minimal auto-suspend time during backup and recovery to 2 minutes.\n* Introduced font kerning.\n* Made cancel option consistent across screens.\n* Truncated device name on BLE pairing."
+}
