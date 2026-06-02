@@ -52,6 +52,7 @@ expo-sqlite
 expo-file-system
 expo-sharing
 express
+express-rate-limit
 fake-indexeddb
 file-saver
 globals

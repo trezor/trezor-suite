@@ -15,7 +15,8 @@
     },
     "dependencies": {
         "cors": "^2.8.6",
-        "express": "^5.2.1"
+        "express": "^5.2.1",
+        "express-rate-limit": "^8.5.2"
     },
     "devDependencies": {
         "@types/cors": "^2.8.17"
