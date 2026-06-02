@@ -393,7 +393,7 @@ describe('WAValidator.validate()', function () {
 
         it('should return true for correct trx addresses', function () {
             valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
-            valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx', 'testnet');
         });
 
         it('should return true for correct stellar addresses', function () {

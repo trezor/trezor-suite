@@ -23,6 +23,8 @@ export const getCoinFromTestnet = (symbol: NetworkSymbol) => {
         case 'tsep':
         case 'thod':
             return 'eth';
+        case 'ttrx':
+            return 'trx';
         default:
             return symbol;
     }
