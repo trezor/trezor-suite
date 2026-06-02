@@ -1,4 +1,5 @@
 import type { ThpChannelState, TransportProtocol } from '@trezor/protocol';
+import { isHex } from '@trezor/utils';
 
 export type BridgeProtocolMessage = {
     data: string;
@@ -10,7 +11,6 @@ export type BridgeProtocolMessage = {
 // - json string (protocol message)
 // - parsed json string (parsed protocol message)
 export function validateProtocolMessage(body: unknown, withData = true): BridgeProtocolMessage {
-    const isHex = (s: string) => /^[0-9A-Fa-f]+$/g.test(s); // TODO: trezor/utils accepts 0x prefix (eth)
     const isValidProtocol = (s: any): s is BridgeProtocolMessage['protocol'] =>
         s === 'v1' || s === 'v2' || s === 'bridge';
 
@@ -34,7 +34,11 @@ export function validateProtocolMessage(body: unknown, withData = true): BridgeP
         throw new Error('Invalid BridgeProtocolMessage protocol');
     }
     // optionally validate BridgeProtocolMessage['data]
-    if (withData && (typeof json.data !== 'string' || !isHex(json.data))) {
+    if (
+        withData &&
+        (typeof json.data !== 'string' ||
+            !isHex(json.data, { prefix: 'prohibited', allowEmpty: false }))
+    ) {
         throw new Error('Invalid BridgeProtocolMessage data');
     }
 
