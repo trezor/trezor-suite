@@ -1,6 +1,7 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
+import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { suiteSyncSlice } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
@@ -9,6 +10,7 @@ import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
+import { asWalletDescriptor } from '@suite-common/wallet';
 import {
     changeCoinVisibility,
     prepareDiscoveryReducer,
@@ -94,7 +96,13 @@ const tx2 = getWalletTransaction({
 
 type PartialState = Pick<
     AppState,
-    'suite' | 'suiteSettings' | 'device' | 'suiteSync' | 'suiteSyncQuotaManager' | 'flags'
+    | 'suite'
+    | 'suiteSettings'
+    | 'device'
+    | 'suiteSync'
+    | 'suiteSyncQuotaManager'
+    | 'flags'
+    | 'metadata'
 > & {
     wallet: Partial<
         Pick<
@@ -119,6 +127,10 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     suiteSettings: prevState?.suiteSettings ?? suiteSettingsInitialState,
     flags: flagsReducer(
         prevState ? prevState.flags : undefined,
+        action || ({ type: 'foo' } as any),
+    ),
+    metadata: metadataReducer(
+        prevState ? prevState.metadata : initialMetadataState,
         action || ({ type: 'foo' } as any),
     ),
     suiteSync: suiteSyncReducer(
@@ -169,6 +181,7 @@ const updateStore = (store: mockStoreType) => {
         store.getState().suite = getInitialState(prevState, action).suite;
         store.getState().suiteSettings = getInitialState(prevState, action).suiteSettings;
         store.getState().flags = getInitialState(prevState, action).flags;
+        store.getState().metadata = getInitialState(prevState, action).metadata;
         store.getState().suiteSync = getInitialState(prevState, action).suiteSync;
         store.getState().device = getInitialState(prevState, action).device;
         store.getState().wallet = getInitialState(prevState, action).wallet;
@@ -488,5 +501,47 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.forgetDevice(dev1));
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
+    });
+
+    it('should remove legacy labels migration flag on forgetDevice', async () => {
+        const forgottenDeviceStaticSessionId = 'forgotten-wallet@device_a_id:0';
+        const forgottenWalletDescriptor = asWalletDescriptor('forgotten-wallet');
+        const keptWalletDescriptor = asWalletDescriptor('kept-wallet');
+
+        const forgottenDevice = mockSuiteDevice({
+            state: { staticSessionId: forgottenDeviceStaticSessionId },
+            remember: true,
+        });
+
+        let store = mockStore(
+            getInitialState({
+                metadata: {
+                    ...initialMetadataState,
+                    hasLegacyLabelsMigrated: {
+                        [forgottenWalletDescriptor]: true,
+                        [keptWalletDescriptor]: true,
+                    },
+                    error: {
+                        [forgottenDeviceStaticSessionId]: true,
+                        'other-device': true,
+                    },
+                },
+            }),
+        );
+        updateStore(store);
+
+        await store.dispatch(storageActions.saveMetadataSettings());
+        await store.dispatch(storageActions.forgetDevice(forgottenDevice));
+
+        store = mockStore(getInitialState());
+        updateStore(store);
+        store.dispatch(await preloadStore());
+
+        expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
+            [keptWalletDescriptor]: true,
+        });
+        expect(store.getState().metadata.error).toEqual({
+            'other-device': true,
+        });
     });
 });

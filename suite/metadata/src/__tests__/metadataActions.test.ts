@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { prepareDeviceReducer } from '@suite-common/device';
+import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { asWalletDescriptor } from '@suite-common/wallet';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
@@ -318,6 +318,24 @@ describe('Metadata Actions', () => {
 
         expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
             [walletDescriptor]: true,
+        });
+    });
+
+    it('removes wallet migration flag after wallet is forgotten', () => {
+        const forgottenWalletDescriptor = asWalletDescriptor('1stTestnetAddress');
+        const otherWalletDescriptor = asWalletDescriptor('other-wallet');
+        const store = initStore(getInitialState());
+
+        store.dispatch(
+            metadataActions.setLegacyLabelsMigrationForWallet(forgottenWalletDescriptor),
+        );
+        store.dispatch(metadataActions.setLegacyLabelsMigrationForWallet(otherWalletDescriptor));
+        store.dispatch(
+            deviceActions.forgetDevice({ device: store.getState().device.selectedDevice }),
+        );
+
+        expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
+            [otherWalletDescriptor]: true,
         });
     });
 });

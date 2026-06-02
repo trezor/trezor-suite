@@ -21,6 +21,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { type WalletDescriptor } from '@suite-common/wallet';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 
 import * as METADATA from './metadataConstants';
@@ -131,7 +132,11 @@ export const metadataReducer = (
                 break;
             case deviceActions.forgetDevice.type:
                 if (action.payload.device.state?.staticSessionId) {
-                    delete draft.error?.[action.payload.device.state.staticSessionId];
+                    const { staticSessionId } = action.payload.device.state;
+                    const { walletDescriptor } = parseDeviceStaticSessionId(staticSessionId);
+
+                    delete draft.error?.[staticSessionId];
+                    delete draft.hasLegacyLabelsMigrated[walletDescriptor];
                 }
 
             // no default
