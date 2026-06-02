@@ -50,7 +50,7 @@ describe('thp', () => {
             const abortController = new AbortController();
             let attempt = 0;
             const apiRead = jest.fn(
-                (options = {}) =>
+                (options: { signal?: AbortSignal } = {}) =>
                     new Promise<any>(resolve => {
                         if (++attempt < 5) {
                             resolve({ success: true, payload: Buffer.alloc(32) });
@@ -193,7 +193,7 @@ describe('thp', () => {
             jest.useFakeTimers();
 
             const apiRead = jest.fn(
-                (options = {}) =>
+                (options: { signal?: AbortSignal } = {}) =>
                     new Promise<any>((_resolve, reject) => {
                         const listener = () => {
                             options.signal?.removeEventListener('abort', listener);
@@ -291,7 +291,7 @@ describe('thp', () => {
                     ),
                 ],
                 apiWrite,
-                apiRead: (options = {}) =>
+                apiRead: (options: { signal?: AbortSignal } = {}) =>
                     new Promise<any>((_resolve, reject) => {
                         const listener = () => {
                             options.signal?.removeEventListener('abort', listener);
