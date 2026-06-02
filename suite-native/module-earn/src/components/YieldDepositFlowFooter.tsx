@@ -30,6 +30,7 @@ type YieldDepositFlowFooterProps = {
     isDisabled: boolean;
     isLoading?: boolean;
     onPress: () => void;
+    shouldKeepEstimatedRewardsVisible?: boolean;
     tokenSymbol: TokenSymbol;
 };
 
@@ -54,6 +55,7 @@ export const YieldDepositFlowFooter = ({
     isDisabled,
     isLoading = false,
     onPress,
+    shouldKeepEstimatedRewardsVisible = false,
     tokenSymbol,
 }: YieldDepositFlowFooterProps) => {
     const { applyStyle } = useNativeStyles();
@@ -77,7 +79,8 @@ export const YieldDepositFlowFooter = ({
     const buttonTranslationId = getSubmitButtonTranslationId(approvalAction);
     const isApprovalLimitAction = approvalAction === 'increase' || approvalAction === 'revoke';
     const isEstimatedRewardsVisible =
-        !isApprovalLimitAction && !isDisabled && estimatedRewards !== null;
+        (shouldKeepEstimatedRewardsVisible || (!isApprovalLimitAction && !isDisabled)) &&
+        estimatedRewards !== null;
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>

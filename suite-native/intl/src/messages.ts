@@ -2755,6 +2755,10 @@ export const messages = {
                     title: 'Deposit unavailable',
                     description: 'Deposit could not be prepared. Check the amount and try again.',
                 },
+                approvalTooLow: {
+                    title: 'Approval is too low. Change approval or lower amount.',
+                    primaryButton: 'Change approval',
+                },
                 transactionFailed: {
                     title: 'Transaction failed',
                     description:

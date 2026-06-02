@@ -173,6 +173,7 @@ export const YieldDepositScreen = () => {
                 amount: amountValue || undefined,
             }),
         );
+
         navigation.goBack();
     }, [amountValue, dispatch, flowKey, isDepositPending, navigation]);
 
