@@ -10,7 +10,7 @@ import type {
     TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { initLog } from '@trezor/connect-common/src/utils/debug';
+import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import {
     type Descriptor,
@@ -98,7 +98,9 @@ export const assertDeviceListConnected: (
     }
 };
 
-type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | 'manifest'>;
+type ConstructorParams = Pick<ConnectSettings, 'priority' | 'manifest'> & {
+    createLogger: CreateLogger;
+};
 type InitParams = Pick<
     ConnectSettings,
     'transports' | 'pendingTransportEvent' | 'transportReconnect'
@@ -114,6 +116,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private readonly handshakeLock;
     private readonly authPenaltyManager;
+    private readonly createLogger: CreateLogger;
 
     private updateTransports;
 
@@ -139,15 +142,14 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getConnectedTransports().map(getTransportInfo);
     }
 
-    constructor({ priority, debug, manifest }: ConstructorParams) {
+    constructor({ priority, manifest, createLogger }: ConstructorParams) {
         super();
 
-        const transportLogger = initLog('@trezor/transport', debug);
-
+        this.createLogger = createLogger;
         this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
         this.updateTransports = createTransportList({
-            logger: transportLogger,
+            logger: createLogger('@trezor/transport'),
             id: manifest?.appName || manifest?.appUrl || 'unknown app',
         });
     }
@@ -173,7 +175,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private async onDeviceConnected(descriptor: Descriptor, transport: Transport) {
         const id = (this.deviceCounter++).toString(16).slice(-8);
-        const device = new Device({ id: asDeviceUniquePath(id), transport, descriptor });
+        const device = new Device({
+            id: asDeviceUniquePath(id),
+            transport,
+            descriptor,
+            createLogger: this.createLogger,
+        });
 
         const similarUsedDevices = this.getSimilarDevices(device).some(
             d => d.isUsed() || d.getBusy() === 'rebooting',

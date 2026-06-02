@@ -7,6 +7,7 @@ import TrezorConnect, {
     UI_REQUEST,
     UI_RESPONSE,
 } from '@trezor/connect';
+import { initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -95,6 +96,10 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                         settings.localFirmwares = localFirmwares.payload;
                     }
                     settings.transports = getTransportsParam(settings.transports);
+                    // Core runs in this (main) process; the renderer cannot send a logger factory
+                    // across IPC, so build it here from the serializable `debug` enabled hint.
+                    // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
+                    settings.createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();

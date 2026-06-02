@@ -1,4 +1,5 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
 
 import { initializeFirmwareConfig } from '../../data/firmwareInfo';
 import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
@@ -34,6 +35,7 @@ const getAcquiredDevice = async (apiMethods: any = {}) => {
         id: 'ABCD' as any, // any = DeviceUniquePath
         transport,
         descriptor: { path: '1' as any, type: 1, session: null, apiType: 'usb' }, // any = PathPublic
+        createLogger: noopCreateLogger,
     });
     await device.acquire();
 

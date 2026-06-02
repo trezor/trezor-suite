@@ -5,6 +5,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 import type { Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
+import type { Logger } from '@trezor/utils';
 
 import type { FirmwareChannel } from './firmware';
 
@@ -40,9 +41,22 @@ export type ConnectSettingsTransport =
     | Transport
     | (new (...args: any[]) => Transport);
 
+export type CreateLogger = (prefix: string) => Logger;
+
 export interface ConnectSettingsPublic {
     manifest?: Manifest;
+    // Enables connect logs. NOTE: connect core no longer uses this to gate its COMPONENT loggers
+    // (Core/Device/DeviceCommands/@trezor/transport) — those are driven by `createLogger`. It is still
+    // read by core's backend layer (BackendManager → BlockchainLink worker debug logging), by the
+    // connect-web/connect-mobile host wrappers (their own `@trezor/connect-web` logger + popup URL),
+    // and serves as the desktop IPC enabled hint that suite-desktop-core's trezor-connect.ts uses to
+    // build the core's `createLogger` factory.
     debug?: boolean;
+    // Logger factory supplied by the host composition root. Core expands it to logger instances for
+    // internal components instead of creating its own loggers. When omitted, connect does not log
+    // (no-op) — there is no internal fallback.
+    // TODO(logger-unification): unify connect's logger with the rest of the app's loggers.
+    createLogger?: CreateLogger;
     transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
     pendingTransportEvent?: boolean;

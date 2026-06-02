@@ -16,7 +16,7 @@ import type {
     UnavailableCapabilities,
 } from '@trezor/connect-common';
 import { DEVICE, ERRORS, FIRMWARE, UI_REQUEST } from '@trezor/connect-common';
-import { initLog } from '@trezor/connect-common/src/utils/debug';
+import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
@@ -34,7 +34,7 @@ import {
     type Transport,
     type TransportDeviceEvent,
 } from '@trezor/transport-common';
-import type { Deferred } from '@trezor/utils';
+import type { Deferred, Logger } from '@trezor/utils';
 import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
@@ -62,15 +62,13 @@ import { changeLanguage } from './workflow/changeLanguage';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { handshakeCancel } from './workflow/handshake';
 
-// custom log
-const _log = initLog('Device');
-
 export { type DeviceEvents } from '../types/idevice';
 
 type DeviceParams = {
     id: DeviceUniquePath;
     transport: Transport;
     descriptor: Descriptor;
+    createLogger: CreateLogger;
 };
 
 export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
@@ -167,14 +165,19 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private readonly uniquePath;
 
+    private readonly createLogger: CreateLogger;
+    private readonly logger: Logger;
+
     readonly lifecycle = new TypedEmitter<DeviceLifecycleEvents>();
 
     private sessionDfd?: Deferred<Session | null>;
 
-    constructor({ id, transport, descriptor }: DeviceParams) {
+    constructor({ id, transport, descriptor, createLogger }: DeviceParams) {
         super();
 
         this._protocol = protocolV1;
+        this.createLogger = createLogger;
+        this.logger = createLogger('Device');
 
         // === immutable properties
         this.uniquePath = id;
@@ -263,6 +266,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                         this,
                         this.transport,
                         this.sessionAcquired,
+                        this.createLogger('DeviceCommands'),
                     );
 
                     return result;
@@ -278,7 +282,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     reset() {
-        _log.info(`Resetting Features and ThpState`);
+        this.logger.info(`Resetting Features and ThpState`);
         // @ts-expect-error
         this._features = undefined;
         this._protocol = protocolV1;
@@ -315,7 +319,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     setupThp() {
-        _log.info('Setup THP device');
+        this.logger.info('Setup THP device');
         this._protocol = protocolV2;
 
         if (
@@ -343,7 +347,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         try {
             await this.run();
         } catch (error) {
-            _log.warn(`device.run error.message: ${error.message}, code: ${error.code}`);
+            this.logger.warn(`device.run error.message: ${error.message}, code: ${error.code}`);
 
             if (
                 error.code === 'Device_NotFound' ||
@@ -393,13 +397,13 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     startPiggybackAck() {
-        _log.debug('start PiggybackAck');
+        this.logger.debug('start PiggybackAck');
         this.thp?.enablePiggybackAck(true);
     }
 
     async stopPiggybackAck() {
         if (this.currentSession && this.thp?.isPiggybackAckEnabled) {
-            _log.debug('stop PiggybackAck');
+            this.logger.debug('stop PiggybackAck');
             // send ThpAck for previously seen message
             await this.currentSession.send('ThpAck', {});
             this.thp?.enablePiggybackAck(false);
@@ -409,7 +413,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options: RunOptions = {}) {
         if (this.runPromise) {
-            _log.warn('Previous call is still running');
+            this.logger.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
         }
 
@@ -473,7 +477,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         this.transport.releaseDevice(this.sessionAcquired);
         this.sessionAcquired = null;
 
-        _log.debug('interruptionFromOutside');
+        this.logger.debug('interruptionFromOutside');
 
         this.runAbort?.abort(ERRORS.TypedError('Device_UsedElsewhere'));
     }
@@ -502,7 +506,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
             // update features
             try {
-                await handshakeCancel({ device: this, logger: _log, signal: abortSignal });
+                await handshakeCancel({ device: this, logger: this.logger, signal: abortSignal });
 
                 if (this.protocol.name === 'v2') {
                     const withInteraction = !!fn;
@@ -517,7 +521,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                     await this.getFeatures();
                 }
             } catch (error) {
-                _log.warn('Device._runInner error: ', error.message);
+                this.logger.warn('Device._runInner error: ', error.message);
 
                 if (error.code === 'Failure_Busy') {
                     this.busy = 'busy';
@@ -547,7 +551,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         }
 
         if (!options.skipFirmwareChecks) {
-            await checkFirmwareHashWithRetries({ device: this, logger: _log });
+            await checkFirmwareHashWithRetries({ device: this, logger: this.logger });
             await this.checkFirmwareRevisionWithRetries();
         }
 
@@ -557,12 +561,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             !this.features.language_version_matches &&
             this.atLeast('2.7.0')
         ) {
-            _log.info('language version mismatch. silently updating...');
+            this.logger.info('language version mismatch. silently updating...');
 
             try {
                 await changeLanguage({ device: this, language: this.features.language });
             } catch (err) {
-                _log.error('change language failed silently', err);
+                this.logger.error('change language failed silently', err);
             }
         }
 
@@ -885,7 +889,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     private disconnect() {
-        _log.debug('Disconnect cleanup');
+        this.logger.debug('Disconnect cleanup');
 
         this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
         this.transport.deviceEvents.off(this.descriptor.path, this.onTransportDeviceEvent);
