@@ -194,7 +194,7 @@ export const TransactionItem = memo(
                                                 }}
                                                 isDisabled={disableBumpFee}
                                                 data-testid="@transaction-item/bump-fee-button"
-                                                size="small"
+                                                size="medium"
                                             >
                                                 <Translation id="TR_BUMP_FEE" />
                                             </Button>
@@ -211,7 +211,7 @@ export const TransactionItem = memo(
                                                 });
                                                 e.stopPropagation();
                                             }}
-                                            size="small"
+                                            size="medium"
                                         >
                                             <Translation id="TR_CANCEL_TX" />
                                         </Button>
