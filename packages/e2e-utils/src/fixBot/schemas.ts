@@ -7,8 +7,14 @@ export const TestToValidateSchema = z.object({
 });
 
 export const FixTaskSchema = z.object({
-    id: z.string(),
-    branch: z.string(),
+    id: z
+        .string()
+        .regex(/^fix-\d{3}$/)
+        .refine(v => !/[\r\n]/.test(v), 'id must not contain newlines'),
+    branch: z
+        .string()
+        .regex(/^fix\/nightly-\d{4}-\d{2}-\d{2}-[a-z0-9-]{1,40}$/)
+        .refine(v => !/[\r\n]/.test(v), 'branch must not contain newlines'),
     root_cause: z.string(),
     fix_scope: z.enum(['TEST_CODE', 'LOCATOR_ADD']),
     confidence: z.enum(['HIGH', 'MEDIUM', 'LOW']),
