@@ -2,7 +2,6 @@ import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
@@ -18,6 +17,7 @@ import {
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
+import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
@@ -96,21 +96,18 @@ export const sendDexTransactionThunk = createThunk<
             }
         }
 
-        // after discussion with 1inch, adjust the gas limit by the factor of 1.25
-        // swap can use different swap paths when mining tx than when estimating tx
-        // the geth gas estimate may be too low
+        const recomposeInputs = buildRecomposeInputsFromTrade({
+            dexTx: selectedQuote.dexTx,
+            partnerPaymentExtraId: selectedQuote.partnerPaymentExtraId,
+            serializedTx,
+        });
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
-                address: selectedQuote.dexTx.to,
-                amount: selectedQuote.dexTx.value,
-                destinationTag: selectedQuote.partnerPaymentExtraId,
-                recalculateCustomLimit: true,
-                ethereumAdjustGasLimit: ETHEREUM_ADJUST_GAS_LIMIT,
+                ...recomposeInputs,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
                 tradingFormState,
-                transactionData: serializedTx,
             }),
         );
 

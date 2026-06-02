@@ -2,7 +2,6 @@ import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { tradingThunks } from '../common';
 import {
@@ -20,6 +19,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 
 export type SendTransactionThunkProps = {
     trade: ExchangeTrade | undefined;
@@ -99,17 +99,18 @@ export const sendTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
-        const sendStringAmount = shouldSendInSats
-            ? convertAmountUnitsToSubunits(selectedTrade.sendStringAmount, decimals)
-            : selectedTrade.sendStringAmount;
-        const sendPaymentExtraId =
-            selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId;
+        const recomposeInputs = buildRecomposeInputsFromTrade({
+            sendAddress,
+            sendStringAmount: selectedTrade.sendStringAmount,
+            partnerPaymentExtraId:
+                selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId,
+            shouldSendInSats,
+            decimals,
+        });
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
-                address: sendAddress,
-                amount: sendStringAmount,
-                destinationTag: sendPaymentExtraId,
+                ...recomposeInputs,
                 signAndPushSendFormTransaction,
                 setMaxOutputId,
                 isSlip24Active,
