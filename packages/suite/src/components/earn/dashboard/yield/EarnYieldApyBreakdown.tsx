@@ -16,11 +16,15 @@ type EarnYieldApyBreakdownProps = {
     underlyingToken: TokenDto | undefined;
 };
 
-const getYieldSourceTranslationId = (yieldSource: RewardDtoYieldSource): TranslationKey | null => {
+// Translatable explainer rendered as the secondary text of a reward row. Unknown sources return
+// null so we never render the raw, untranslated description coming from the API.
+const getYieldSourceDescriptionId = (yieldSource: RewardDtoYieldSource): TranslationKey | null => {
     switch (yieldSource) {
+        case 'lending':
         case 'lending_interest':
             return 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST';
         case 'protocol_incentive':
+        case 'campaign_incentive':
             return 'TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE';
         default:
             return null;
@@ -36,12 +40,7 @@ export const EarnYieldApyBreakdown = ({
         {sortRewardsByUnderlyingToken(rewards, underlyingToken).map((reward, index) => {
             const ratePercent = getApyPercent(reward.rate);
             const hasRatePercent = ratePercent !== null && ratePercent > 0;
-            const translationId = getYieldSourceTranslationId(reward.yieldSource);
-            const description = translationId ? (
-                <Translation id={translationId} />
-            ) : (
-                reward.description
-            );
+            const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
 
             return (
                 <Row key={index} gap={8} alignItems="center">
@@ -55,9 +54,9 @@ export const EarnYieldApyBreakdown = ({
                     />
                     <Column flex="1">
                         <Text typographyStyle="body-sm">{reward.token.symbol}</Text>
-                        {description && (
+                        {descriptionId && (
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                                {description}
+                                <Translation id={descriptionId} />
                             </Text>
                         )}
                     </Column>
