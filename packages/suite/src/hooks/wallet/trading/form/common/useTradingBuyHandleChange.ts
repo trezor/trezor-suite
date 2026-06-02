@@ -7,7 +7,6 @@ import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     type TradingBuyFormProps,
     buyThunks,
-    getTradingPaymentMethods,
     isCountrySubdivisionEmpty,
     tradingActions,
     useTradingRefetchScheduler,
@@ -82,10 +81,9 @@ export const useTradingBuyHandleChange = ({
                 const bestQuotePaymentMethodName =
                     bestQuote?.paymentMethodName ?? bestQuotePaymentMethod;
                 const paymentMethodSelected = formValues.paymentMethod?.value;
-                const paymentMethodsFromQuotes = getTradingPaymentMethods(quotes);
-                const isSelectedPaymentMethodAvailable =
-                    paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
-                    undefined;
+                const isSelectedPaymentMethodAvailable = quotes.some(
+                    quote => quote.paymentMethod === paymentMethodSelected,
+                );
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
                     setValue(TRADING_FORM_PAYMENT_METHOD_SELECT, {
                         value: bestQuotePaymentMethod ?? '',

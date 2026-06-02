@@ -8,7 +8,10 @@ import { TRADING_DEFAULT_SELL_FLOWS, TRADING_SELL_THUNK_PREFIX } from '../../con
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
-import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
+import {
+    selectTradingCoinSymbolByCryptoId,
+    selectTradingSellPaymentMethods,
+} from '../../selectors/tradingSelectors';
 import {
     type HandleSellRequestThunkProps,
     type MinimalSellFormProps,
@@ -18,7 +21,6 @@ import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
     getNetworkDecimalsWithFallback,
-    getTradingPaymentMethods,
     tradingGetSuccessQuotes,
 } from '../../utils';
 import { isCountrySubdivisionEmpty } from '../../utils/countryUtils';
@@ -156,11 +158,9 @@ export const handleSellRequestThunk = createThunk<
         // without errors
         const successQuotes = tradingGetSuccessQuotes<TradingSellType>(quotesDefault);
 
-        const paymentMethodsFromQuotes = getTradingPaymentMethods(successQuotes);
-
         dispatch(tradingSellActions.saveQuotes(successQuotes));
         dispatch(tradingSellActions.saveQuoteRequest(requestData));
-        dispatch(tradingActions.savePaymentMethods(paymentMethodsFromQuotes));
+        dispatch(tradingActions.savePaymentMethods(selectTradingSellPaymentMethods(getState())));
         dispatch(tradingSellActions.setAmountLimits(limits));
 
         const { setMaxOutputId } = formValues;
