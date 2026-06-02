@@ -13,7 +13,7 @@ import { type StaticSessionId } from '@trezor/connect';
 
 import type { MigrateLegacyLabelsToSuiteSync } from './migrateLegacyLabelsToSuiteSync';
 
-type CreateEnsureWalletSuiteSyncOnWithMigrationDeps = {
+export type CreateMigrateLabelsIfAvailableDeps = {
     dispatch: Dispatch;
     migrateLegacyLabelsToSuiteSync: MigrateLegacyLabelsToSuiteSync;
     getIsMetadataEnabled: () => boolean;
@@ -25,12 +25,14 @@ type CreateEnsureWalletSuiteSyncOnWithMigrationDeps = {
 };
 
 export const createMigrateLabelsIfAvailable = (
-    deps: CreateEnsureWalletSuiteSyncOnWithMigrationDeps,
+    deps: CreateMigrateLabelsIfAvailableDeps,
 ): WalletSuiteSyncOnEnsuredListener => {
-    let isMigrating = false;
+    const isMigratingByWalletDescriptor = new Map<WalletDescriptor, true>();
 
     return async ({ deviceStaticSessionId }) => {
-        if (isMigrating) {
+        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+        if (isMigratingByWalletDescriptor.has(walletDescriptor)) {
             return;
         }
 
@@ -40,8 +42,6 @@ export const createMigrateLabelsIfAvailable = (
             return;
         }
 
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-
         if (
             !deps.getIsMetadataEnabled() ||
             deps.getHasLegacyLabelsMigrated(walletDescriptor) ||
@@ -50,11 +50,11 @@ export const createMigrateLabelsIfAvailable = (
             return;
         }
 
-        isMigrating = true;
+        isMigratingByWalletDescriptor.set(walletDescriptor, true);
 
-        const migrationResult = await deps.migrateLegacyLabelsToSuiteSync(device);
-
-        isMigrating = false;
+        const migrationResult = await deps.migrateLegacyLabelsToSuiteSync(device).finally(() => {
+            isMigratingByWalletDescriptor.delete(walletDescriptor);
+        });
 
         if (!migrationResult.success) {
             suiteSyncErrorHandler({

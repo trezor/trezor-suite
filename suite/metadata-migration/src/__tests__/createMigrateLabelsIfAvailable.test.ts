@@ -9,11 +9,12 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asWalletDescriptor } from '@suite-common/wallet';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
+import { createDeferred } from '@trezor/utils';
 
 import {
     type CreateMigrateLabelsIfAvailableDeps,
     createMigrateLabelsIfAvailable,
-} from '../createEnsureWalletSuiteSyncOnWithMigration';
+} from '../createMigrateLabelsIfAvailable';
 
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'device@wallet:1';
 const WALLET_DESCRIPTOR = asWalletDescriptor('device');
@@ -34,6 +35,10 @@ const createDevice = (staticSessionId: StaticSessionId = DEVICE_STATIC_SESSION_I
 };
 
 const metadataProvider = { type: 'dropbox' } as MetadataProvider;
+
+type MigrationResult = Awaited<
+    ReturnType<CreateMigrateLabelsIfAvailableDeps['migrateLegacyLabelsToSuiteSync']>
+>;
 
 describe(createMigrateLabelsIfAvailable.name, () => {
     it('dispatches migration flag and success toast after successful migration with changes', async () => {
@@ -93,6 +98,102 @@ describe(createMigrateLabelsIfAvailable.name, () => {
 
         expect(deps.migrateLegacyLabelsToSuiteSync).not.toHaveBeenCalled();
         expect(deps.dispatch).not.toHaveBeenCalled();
+    });
+
+    it('does not run multiple migrations for the same wallet at the same time', async () => {
+        const device = createDevice();
+        const migration = createDeferred<MigrationResult>();
+        const dispatch: Dispatch = jest.fn();
+        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+            dispatch,
+            migrateLegacyLabelsToSuiteSync: () => migration.promise,
+            getIsMetadataEnabled: () => true,
+            getSelectedProviderForLabels: () => metadataProvider,
+            getHasLegacyLabelsMigrated: () => false,
+            getDeviceByStaticSessionId: () => device,
+        });
+        const listener = createMigrateLabelsIfAvailable(deps);
+
+        const firstMigration = listener({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
+            isWriteMode: false,
+            storage: {} as any,
+        });
+
+        await listener({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
+            isWriteMode: false,
+            storage: {} as any,
+        });
+
+        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledTimes(1);
+
+        migration.resolve(ok({ changed: 0, skipped: 0 }));
+        await firstMigration;
+
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            metadataActions.setLegacyLabelsMigrationForWallet(WALLET_DESCRIPTOR),
+        );
+    });
+
+    it('runs migrations for different wallets at the same time', async () => {
+        const dispatch: Dispatch = jest.fn();
+
+        const firstDeviceStaticSessionId: StaticSessionId = 'first-wallet@device:1';
+        const firstDevice = createDevice(firstDeviceStaticSessionId);
+        const firstMigration = createDeferred<MigrationResult>();
+
+        const secondDeviceStaticSessionId: StaticSessionId = 'second-wallet@device:1';
+        const secondDevice = createDevice(secondDeviceStaticSessionId);
+        const secondMigration = createDeferred<MigrationResult>();
+
+        const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
+            dispatch,
+            migrateLegacyLabelsToSuiteSync: selectedDevice => {
+                if (selectedDevice === firstDevice) {
+                    return firstMigration.promise;
+                }
+
+                return secondMigration.promise;
+            },
+            getIsMetadataEnabled: () => true,
+            getSelectedProviderForLabels: () => metadataProvider,
+            getHasLegacyLabelsMigrated: () => false,
+            getDeviceByStaticSessionId: deviceStaticSessionId => {
+                if (deviceStaticSessionId === firstDeviceStaticSessionId) {
+                    return firstDevice;
+                }
+
+                return secondDevice;
+            },
+        });
+        const listener = createMigrateLabelsIfAvailable(deps);
+
+        const firstListenerResult = listener({
+            deviceStaticSessionId: firstDeviceStaticSessionId,
+            isWriteMode: false,
+            storage: {} as any,
+        });
+        const secondListenerResult = listener({
+            deviceStaticSessionId: secondDeviceStaticSessionId,
+            isWriteMode: false,
+            storage: {} as any,
+        });
+
+        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledTimes(2);
+        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(firstDevice);
+        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(secondDevice);
+
+        firstMigration.resolve(ok({ changed: 0, skipped: 0 }));
+        secondMigration.resolve(ok({ changed: 0, skipped: 0 }));
+        await Promise.all([firstListenerResult, secondListenerResult]);
+
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            metadataActions.setLegacyLabelsMigrationForWallet(asWalletDescriptor('first-wallet')),
+        );
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            metadataActions.setLegacyLabelsMigrationForWallet(asWalletDescriptor('second-wallet')),
+        );
     });
 
     it('marks wallet as migrated without showing toast when nothing changed', async () => {
