@@ -1,4 +1,9 @@
-import { deleteNestedTranslationKey, flatten, unflatten } from '../utils';
+import {
+    deleteNestedTranslationKey,
+    findTranslationStructureCollisions,
+    flatten,
+    unflatten,
+} from '../utils';
 
 describe('flatten', () => {
     it('should flatten nested translation object to dot notation', () => {
@@ -227,5 +232,60 @@ describe('deleteNestedTranslationKey', () => {
                 fees: {},
             },
         });
+    });
+});
+
+describe(findTranslationStructureCollisions.name, () => {
+    it('returns no collisions for a well-formed key set', () => {
+        expect(
+            findTranslationStructureCollisions(
+                ['generic.cancel', 'generic.confirm', 'navigation.tabs.home'],
+                [],
+            ),
+        ).toEqual([]);
+    });
+
+    it('does not treat ordinary sibling keys as collisions', () => {
+        // A shared prefix is fine as long as the prefix itself is not also a key.
+        expect(
+            findTranslationStructureCollisions(
+                ['generic.cancel.ios', 'generic.cancel.android'],
+                [],
+            ),
+        ).toEqual([]);
+    });
+
+    it('detects a collision on a deep ancestor path', () => {
+        expect(findTranslationStructureCollisions(['a.b.c', 'a.b.c.d.e'], [])).toEqual([
+            { current: 'a.b.c', baseline: 'a.b.c.d.e' },
+        ]);
+    });
+
+    it('reports every ancestor that exists as a string key', () => {
+        // Both 'a' and 'a.b' exist as keys while 'a.b.c' nests beneath them.
+        expect(findTranslationStructureCollisions(['a', 'a.b', 'a.b.c'], [])).toEqual(
+            expect.arrayContaining([
+                { current: 'a', baseline: 'a.b' },
+                { current: 'a', baseline: 'a.b.c' },
+                { current: 'a.b', baseline: 'a.b.c' },
+            ]),
+        );
+    });
+
+    it('detects a wrong format of baseline (crowdin) where is a single key defined as both object and a string', () => {
+        expect(
+            findTranslationStructureCollisions([], ['generic.cancel', 'generic.cancel.ios']),
+        ).toEqual([{ current: 'generic.cancel', baseline: 'generic.cancel.ios' }]);
+    });
+
+    it('catches a collision that spans messages and the baseline (crowdin)', () => {
+        // 'generic.cancel' is a string in the Crowdin baseline but nested in messages.ts.
+        expect(
+            findTranslationStructureCollisions(['generic.cancel.ios'], ['generic.cancel']),
+        ).toEqual([{ current: 'generic.cancel', baseline: 'generic.cancel.ios' }]);
+    });
+
+    it('handles empty key sets', () => {
+        expect(findTranslationStructureCollisions([], [])).toEqual([]);
     });
 });

@@ -13,6 +13,7 @@
         "test:unit": "yarn g:jest:native",
         "translations:format": "yarn g:prettier --write \"translations/*\"",
         "translations:extract": "yarn g:tsx ./scripts/extractTranslations.ts",
+        "translations:verify-structure": "yarn g:tsx ./scripts/verifyTranslationStructure.ts",
         "translations:backport-en": "yarn g:tsx ./scripts/backportEnglish.ts && yarn g:prettier --write src/messages.ts",
         "translations:list-unused": "yarn g:tsx ./scripts/listUnused.ts",
         "translations:remove-unused": "yarn g:tsx ./scripts/listUnused.ts --cleanup",

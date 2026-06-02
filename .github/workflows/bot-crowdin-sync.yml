@@ -82,6 +82,7 @@ jobs:
         if: github.event.inputs.platform == 'mobile'
         run: |
           yarn workspace @suite-native/intl translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN_MOBILE }}
+          yarn workspace @suite-native/intl translations:verify-structure
           yarn workspace @suite-native/intl translations:backport-en
           if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
             yarn workspace @suite-native/intl translations:remove-unused
