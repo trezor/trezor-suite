@@ -851,10 +851,13 @@ export const accountSearchFn = (
 
     const accountLabelMatch = accountLabel.toLowerCase().includes(searchString);
 
+    // filter tokens by search string and balance greater than zero
     const filterTokens = (token: TokenInfo) =>
-        token.name?.toLowerCase().includes(searchString) ||
-        token.symbol?.toLowerCase().includes(searchString) ||
-        token.contract.toLowerCase().includes(searchString);
+        [token.name, token.symbol, token.contract].some(
+            field =>
+                field?.toLowerCase().includes(searchString) &&
+                new BigNumber(token.balance || '0').gt(0),
+        );
 
     const tokenMatch = tokensMatch && !!account.tokens?.some(filterTokens);
 
