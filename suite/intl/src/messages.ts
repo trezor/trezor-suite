@@ -2211,7 +2211,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC: {
         defaultMessage:
-            'Set a strong PIN to help protect your device from unauthorized access and keep your assets safe.',
+            'Use a strong PIN to help protect your device from unauthorized access and keep your assets safe.',
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC',
     },
     TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE: {
@@ -2253,7 +2253,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_SETTINGS_WIPE_CODE_DESC: {
         defaultMessage:
-            'A wipe code is an advanced feature that lets you create a "self-destruct" code. When entered on your Trezor, this code securely erases the data stored on the device.',
+            'Set up a wipe code to create a "self-destruct" code that securely erases your Trezor\'s data when entered.',
         id: 'TR_DEVICE_SETTINGS_WIPE_CODE_DESC',
     },
     TR_DEVICE_SETTINGS_AUTO_LOCK: {
@@ -2324,7 +2324,7 @@ export const messages = defineMessages({
         id: 'TR_RE_ENTER_NEW_PIN',
     },
     TR_ENTER_WIPECODE: {
-        defaultMessage: 'Enter Wipe Code',
+        defaultMessage: 'Enter wipe code',
         description: 'Text for Header and Button when submitting wipe code',
         id: 'TR_ENTER_WIPECODE',
     },
@@ -3579,7 +3579,7 @@ export const messages = defineMessages({
     },
     TR_WIPE_DEVICE_DESCRIPTION: {
         defaultMessage:
-            "Wiping the device permanently erases all stored data, including your wallet backup and PIN. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before wiping the device, as it's essential for restoring access to your funds. Proceed with caution.",
+            "Permanently erase all stored data on your Trezor, including your wallet backup and PIN. Make sure you have your wallet backup before wiping the device, as it's essential for restoring access to your funds. Proceed with caution.",
         id: 'TR_WIPE_DEVICE_DESCRIPTION',
     },
     TR_WORDS: {
@@ -4618,7 +4618,7 @@ export const messages = defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED',
-        defaultMessage: 'Bluetooth pairing will be removed, and your Trezor will be disconnected.',
+        defaultMessage: 'Your Trezor will be disconnected and its Bluetooth pairing removed.',
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED',
@@ -6551,7 +6551,7 @@ export const messages = defineMessages({
         id: 'TR_LABELING_NOT_SYNCED',
     },
     TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS: {
-        defaultMessage: 'Label server (Trezor)',
+        defaultMessage: 'Label server — Trezor',
         id: 'TR_LABELING_SYNCED_THROUGH_TREZOR_SERVERS',
     },
     TR_LABELING_SERVERS_DESCRIPTION: {
@@ -6560,11 +6560,11 @@ export const messages = defineMessages({
         id: 'TR_LABELING_SERVERS_DESCRIPTION',
     },
     TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER: {
-        defaultMessage: 'Label server (Custom)',
+        defaultMessage: 'Label server — Custom',
         id: 'TR_LABELING_SYNCED_THROUGH_CUSTOM_SERVER',
     },
     TR_LABELING_SERVERS_CHANGE: {
-        defaultMessage: 'Change server',
+        defaultMessage: 'Change',
         id: 'TR_LABELING_SERVERS_CHANGE',
     },
     TR_LEGACY_LABELING_TURN_ON_SUITE_SYNC_BANNER_DESCRIPTION: {
@@ -8034,7 +8034,7 @@ export const messages = defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION',
         defaultMessage:
-            'Firmware authenticity check is a crucial security feature. We strongly recommend keeping it turned on.',
+            'Verify that installed firmware is genuine and trusted. We strongly recommend keeping this feature turned on.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED',
@@ -8075,11 +8075,11 @@ export const messages = defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
         defaultMessage:
-            "Firmware authenticity check couldn't be performed. Go online to verify your firmware version.",
+            "Firmware authenticity check couldn't be performed. Connect to the internet to verify your firmware version.",
     },
     TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR: {
         id: 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
-        defaultMessage: "Couldn't perform firmware authenticity check.",
+        defaultMessage: "Firmware authenticity check couldn't be performed.",
     },
     TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_HASH_MISMATCH',
@@ -9785,7 +9785,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_VAULT_NAME: {
         id: 'TR_EARN_YIELD_VAULT_NAME',
-        defaultMessage: '{vault}',
+        defaultMessage: '{vault} Vault',
     },
     TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
@@ -11162,7 +11162,7 @@ export const messages = defineMessages({
     },
     TR_BLUETOOTH_PAIRING: {
         id: 'TR_BLUETOOTH_PAIRING',
-        defaultMessage: 'Pairing',
+        defaultMessage: 'Pairing Bluetooth device...',
     },
     TR_BLUETOOTH_PAIRED: {
         id: 'TR_BLUETOOTH_PAIRED',
@@ -11170,7 +11170,7 @@ export const messages = defineMessages({
     },
     TR_BLUETOOTH_PAIRING_FAILED: {
         id: 'TR_BLUETOOTH_PAIRING_FAILED',
-        defaultMessage: 'Pairing failed',
+        defaultMessage: 'Bluetooth pairing failed',
     },
     TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN: {
         id: 'TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN',
