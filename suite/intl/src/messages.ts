@@ -11387,6 +11387,10 @@ export const messages = defineMessages({
         id: 'TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES',
         defaultMessage: 'Only devices you approve using your Trezor can access your labels.',
     },
+    TR_TURN_ON_SECURE_SYNC_MIGRATION: {
+        id: 'TR_TURN_ON_SECURE_SYNC_MIGRATION',
+        defaultMessage: 'Your existing labels will be migrated automatically.',
+    },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING',
         defaultMessage: 'Firmware update required',

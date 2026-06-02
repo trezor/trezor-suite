@@ -457,7 +457,12 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
     );
 };
 
-type MetadataPersistentKeys = 'providers' | 'enabled' | 'selectedProvider' | 'error';
+type MetadataPersistentKeys =
+    | 'providers'
+    | 'enabled'
+    | 'selectedProvider'
+    | 'error'
+    | 'hasLegacyLabelsMigrated';
 
 const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersistentKeys>>) => {
     if (!db.isAccessible()) return;
@@ -491,6 +496,7 @@ export const saveMetadataSettings = () => async (_dispatch: Dispatch, getState: 
         providers: metadata.providers,
         enabled: metadata.enabled,
         selectedProvider: metadata.selectedProvider,
+        hasLegacyLabelsMigrated: metadata.hasLegacyLabelsMigrated,
     });
 };
 
