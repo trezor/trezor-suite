@@ -100,8 +100,8 @@ export class BluetoothApi extends AbstractApi {
         return this.api.disconnect();
     }
 
-    read(...[path, options = {}]: AbstractApiArgs<'read'>) {
-        return this.readBuffer.read(path, options.signal);
+    read(...[path, options]: AbstractApiArgs<'read'>) {
+        return this.readBuffer.read(path, options?.signal);
     }
 
     write(...[path, buffer]: AbstractApiArgs<'write'>) {
