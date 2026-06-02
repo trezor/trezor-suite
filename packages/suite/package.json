@@ -72,6 +72,7 @@
         "@suite-common/transaction-search": "workspace:*",
         "@suite-common/tx-simulation": "workspace:^",
         "@suite-common/validators": "workspace:*",
+        "@suite-common/wallet": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

@@ -136,6 +136,7 @@
         {
             "path": "../../suite-common/validators"
         },
+        { "path": "../../suite-common/wallet" },
         {
             "path": "../../suite-common/wallet-config"
         },

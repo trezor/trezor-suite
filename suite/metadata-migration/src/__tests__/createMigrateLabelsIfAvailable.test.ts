@@ -8,13 +8,14 @@ import { createSuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asWalletDescriptor } from '@suite-common/wallet';
 import type { StaticSessionId } from '@trezor/connect';
-import { err, ok } from '@trezor/type-utils';
+import { type Result, err, ok } from '@trezor/type-utils';
 import { createDeferred } from '@trezor/utils';
 
 import {
     type CreateMigrateLabelsIfAvailableDeps,
     createMigrateLabelsIfAvailable,
 } from '../createMigrateLabelsIfAvailable';
+import { type MigrationCounts, type MigrationError } from '../legacyLabelsMigration';
 
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'device@wallet:1';
 const WALLET_DESCRIPTOR = asWalletDescriptor('device');
@@ -35,10 +36,6 @@ const createDevice = (staticSessionId: StaticSessionId = DEVICE_STATIC_SESSION_I
 };
 
 const metadataProvider = { type: 'dropbox' } as MetadataProvider;
-
-type MigrationResult = Awaited<
-    ReturnType<CreateMigrateLabelsIfAvailableDeps['migrateLegacyLabelsToSuiteSync']>
->;
 
 describe(createMigrateLabelsIfAvailable.name, () => {
     it('dispatches migration flag and success toast after successful migration with changes', async () => {
@@ -102,7 +99,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
 
     it('does not run multiple migrations for the same wallet at the same time', async () => {
         const device = createDevice();
-        const migration = createDeferred<MigrationResult>();
+        const migration = createDeferred<Result<MigrationCounts, MigrationError>>();
         const dispatch: Dispatch = jest.fn();
         const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
             dispatch,
@@ -141,11 +138,11 @@ describe(createMigrateLabelsIfAvailable.name, () => {
 
         const firstDeviceStaticSessionId: StaticSessionId = 'first-wallet@device:1';
         const firstDevice = createDevice(firstDeviceStaticSessionId);
-        const firstMigration = createDeferred<MigrationResult>();
+        const firstMigration = createDeferred<Result<MigrationCounts, MigrationError>>();
 
         const secondDeviceStaticSessionId: StaticSessionId = 'second-wallet@device:1';
         const secondDevice = createDevice(secondDeviceStaticSessionId);
-        const secondMigration = createDeferred<MigrationResult>();
+        const secondMigration = createDeferred<Result<MigrationCounts, MigrationError>>();
 
         const deps = createMockDeps<CreateMigrateLabelsIfAvailableDeps>({
             dispatch,
