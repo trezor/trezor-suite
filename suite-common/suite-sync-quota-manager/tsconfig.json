@@ -13,7 +13,7 @@
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
-        { "path": "../wallet-types" },
+        { "path": "../wallet" },
         { "path": "../wallet-utils" },
         { "path": "../../packages/connect" },
         {

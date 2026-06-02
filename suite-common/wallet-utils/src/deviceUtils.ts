@@ -1,5 +1,5 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { asWalletDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@suite-common/wallet';
 import { isStaticSessionId, parseStaticSessionId } from '@trezor/device-utils';
 
 /**

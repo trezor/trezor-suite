@@ -9,7 +9,7 @@ import {
     type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
 import { type DelegatedIdentityKey } from '@suite-common/suite-types';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import {

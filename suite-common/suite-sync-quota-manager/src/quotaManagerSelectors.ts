@@ -1,6 +1,6 @@
 import { type DeviceRootState, selectDeviceId } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { type WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 
 import { type SuiteSyncQuotaManagerState } from './quotaManagerReducer';
 

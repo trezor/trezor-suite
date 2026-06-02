@@ -3,8 +3,8 @@ import path from 'path';
 
 import { prepareDeviceReducer } from '@suite-common/device';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { asWalletDescriptor } from '@suite-common/wallet';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
-import { asWalletDescriptor } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import * as fixtures from '../__fixtures__/metadataActions';

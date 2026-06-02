@@ -6,8 +6,9 @@ import {
 } from '@suite-common/suite-sync-evolu';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { asAccountDescriptor, asTxTargetId, asWalletDescriptor } from '@suite-common/wallet-types';
-import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet';
+import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
+import type { AccountDescriptor } from '@suite-common/wallet-types';
 
 import {
     createAccountRowId,

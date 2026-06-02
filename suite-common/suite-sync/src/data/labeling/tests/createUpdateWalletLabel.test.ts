@@ -1,6 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { WalletTable } from '@suite-common/suite-sync-storage';
-import { asWalletDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@suite-common/wallet';
 import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 

@@ -6,7 +6,7 @@ import {
     type SuiteSyncOutput,
     type SuiteSyncWallet,
 } from '@suite-common/suite-sync-storage';
-import type { WalletDescriptor } from '@suite-common/wallet-types';
+import type { WalletDescriptor } from '@suite-common/wallet';
 
 export type WalletData = {
     wallet: SuiteSyncWallet;

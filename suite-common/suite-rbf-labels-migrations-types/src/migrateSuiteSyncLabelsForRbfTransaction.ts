@@ -1,11 +1,11 @@
 import { type SuiteSyncOutput, type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountDescriptor,
     type AccountKey,
     type WalletAccountTransaction,
-    type WalletDescriptor,
 } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { type Result } from '@trezor/type-utils';

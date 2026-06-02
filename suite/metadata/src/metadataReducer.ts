@@ -18,8 +18,9 @@ import {
 } from '@suite-common/metadata-types';
 import { type AnyAction } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { type WalletDescriptor } from '@suite-common/wallet';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type WalletDescriptor } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 
 import * as METADATA from './metadataConstants';

@@ -5,7 +5,8 @@ import type {
 } from '@suite-common/suite-sync';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
-import type { Account, AccountKey, WalletDescriptor } from '@suite-common/wallet-types';
+import type { WalletDescriptor } from '@suite-common/wallet';
+import type { Account, AccountKey } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 
 export type MigrationCounts = {

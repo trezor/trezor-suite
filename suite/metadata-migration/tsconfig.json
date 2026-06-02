@@ -30,6 +30,7 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
+        { "path": "../../suite-common/wallet" },
         {
             "path": "../../suite-common/wallet-config"
         },
