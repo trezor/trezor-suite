@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, goto } from '@suite/router';
+import { isStablecoinYieldSupported, selectSelectedDevice } from '@suite-common/device';
 import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { type YieldActionFlowType } from '@suite-common/wallet-core';
@@ -11,7 +13,7 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { YieldPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
-import { useDispatch, useLayout } from 'src/hooks/suite';
+import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { type EarnLayoutState } from 'src/types/earn/earnLayout';
 
 type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
@@ -23,8 +25,10 @@ type UseEarnLayoutParams = {
 
 type GetEarnLayoutResultParams = {
     account?: Account;
+    device?: TrezorDevice;
     routeParams?: EarnParams;
     vault?: YieldDto;
+    type: YieldActionFlowType;
     isYieldOpportunitiesLoading: boolean;
     isYieldOpportunitiesSuccess: boolean;
     isYieldOpportunitiesError: boolean;
@@ -79,8 +83,10 @@ const isVaultTokenMismatch = ({
 
 const getEarnLayoutResult = ({
     account,
+    device,
     routeParams,
     vault,
+    type,
     isYieldOpportunitiesLoading,
     isYieldOpportunitiesSuccess,
     isYieldOpportunitiesError,
@@ -117,6 +123,10 @@ const getEarnLayoutResult = ({
         return { status: 'invalid', reason: 'token-mismatch' };
     }
 
+    if (device && !isStablecoinYieldSupported(device, type)) {
+        return { status: 'invalid', reason: 'firmware-not-supported' };
+    }
+
     return { status: 'valid', account, routeParams, vault };
 };
 
@@ -124,6 +134,7 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
     const analyticsStep = getAnalyticsStep(type);
     const dispatch = useDispatch();
     const { account, routeParams } = useEarnRouteAccount();
+    const selectedDevice = useSelector(selectSelectedDevice);
     const {
         yieldOpportunities,
         isLoading: isYieldOpportunitiesLoading,
@@ -144,12 +155,23 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
 
     const layoutState = getEarnLayoutResult({
         account,
+        device: selectedDevice,
         routeParams,
         vault,
+        type,
         isYieldOpportunitiesLoading,
         isYieldOpportunitiesSuccess,
         isYieldOpportunitiesError,
     });
+
+    const isFirmwareNotSupported =
+        layoutState.status === 'invalid' && layoutState.reason === 'firmware-not-supported';
+
+    useEffect(() => {
+        if (isFirmwareNotSupported) {
+            dispatch(goto({ routeName: 'suite-earn' }));
+        }
+    }, [dispatch, isFirmwareNotSupported]);
 
     useLayout(
         'Earn',

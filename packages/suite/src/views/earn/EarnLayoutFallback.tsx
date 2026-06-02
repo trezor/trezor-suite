@@ -35,6 +35,8 @@ export const EarnLayoutFallback = ({ layoutState }: EarnLayoutFallbackProps) => 
             );
         case 'token-mismatch':
             return <EarnException title={<Translation id="TR_EARN_YIELD_TOKEN_NOT_EXIST" />} />;
+        case 'firmware-not-supported':
+            return null;
         case 'yield-opportunities-error':
             return <EarnException title={<Translation id="TR_EARN_YIELD_OPPORTUNITIES_ERROR" />} />;
     }
