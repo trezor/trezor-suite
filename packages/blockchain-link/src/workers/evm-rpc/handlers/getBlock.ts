@@ -1,7 +1,6 @@
-import { isHex } from 'viem';
-
 import { CustomError } from '@trezor/blockchain-link-types';
 import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
+import { isHex } from '@trezor/utils';
 
 import { mapGetBlockResponse } from '../mappers/block';
 import type { Request } from '../types';
