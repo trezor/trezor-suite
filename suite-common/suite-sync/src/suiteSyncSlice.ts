@@ -4,12 +4,17 @@ import { deviceActions } from '@suite-common/device';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { type SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
-import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
+import {
+    type DeviceCancelledErrType,
+    type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
+} from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect';
 
 export type SuiteSyncErrorType =
     | DeviceErrorType
     | DeviceCancelledErrType
+    | DeviceNotConnectedErrorType
     | SuiteSyncFirmwareUpgradeNeededDeviceErrorType;
 
 export type SuiteSyncSettings = {

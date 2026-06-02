@@ -3,6 +3,7 @@ import {
     type DelegatedIdentityKey,
     type DeviceCancelledErrType,
     type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
     type TrezorDevice,
 } from '@suite-common/suite-types';
 import { type Result } from '@trezor/type-utils';
@@ -31,7 +32,10 @@ export type EnsureSuiteSyncKeys = (
 ) => Promise<
     Result<
         EnsureSuiteSyncKeysResult,
-        SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
+        | SuiteSyncUnavailableOnDeviceErrorType
+        | DeviceErrorType
+        | DeviceCancelledErrType
+        | DeviceNotConnectedErrorType
     >
 >;
 

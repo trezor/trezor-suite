@@ -1,5 +1,9 @@
 import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
+import {
+    type DeviceCancelledErrType,
+    type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
+} from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect-common';
 import { type Result } from '@trezor/type-utils';
 
@@ -28,6 +32,7 @@ export type EnsureWalletSuiteSyncOnErrors =
     | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
     | DeviceErrorType
     | DeviceCancelledErrType
+    | DeviceNotConnectedErrorType
     | WriteModeRequiredForAllocationErrType
     | QuotaManagerCommunicationFailedErrType;
 

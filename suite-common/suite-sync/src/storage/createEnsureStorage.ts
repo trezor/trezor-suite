@@ -13,7 +13,11 @@ import {
     type SuiteSyncUnavailableOnDeviceErrorType,
     type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
-import { type DeviceCancelledErrType, type DeviceErrorType } from '@suite-common/suite-types';
+import {
+    type DeviceCancelledErrType,
+    type DeviceErrorType,
+    type DeviceNotConnectedErrorType,
+} from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
@@ -45,6 +49,7 @@ export type CreateEnsureStorage = (
         | SuiteSyncUnavailableOnDeviceErrorType
         | DeviceErrorType
         | DeviceCancelledErrType
+        | DeviceNotConnectedErrorType
         | WriteModeRequiredForAllocationErrType
         | QuotaManagerCommunicationFailedErrType
     >

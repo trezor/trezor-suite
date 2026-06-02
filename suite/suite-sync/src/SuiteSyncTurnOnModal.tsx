@@ -55,6 +55,11 @@ export const SuiteSyncTurnOnModal = ({
 
                     return;
 
+                case 'DeviceNotConnectedError':
+                    // A disconnected device is an expected condition - Suite Sync stays
+                    // enabled and will retry once the device reconnects, so we stay silent.
+                    return;
+
                 case 'DeviceCancelled':
                 case 'DeviceError':
                 case 'SuiteSyncUnavailableOnDeviceError':
