@@ -27,6 +27,8 @@ import TrezorConnect, {
     type SignTransaction,
     type SignedTransaction,
 } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic; getSerializedPath is not re-exported from the @trezor/connect public barrel
+import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -334,6 +336,40 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         if (isArrayMember(selectedAccount.symbol, BITCOIN_ONLY_SYMBOLS)) {
             // nVersion, use 2 as it enables BIP68 + seems to be the most commonly used (= harder to fingerprint the Trezor)
             signEnhancement.version = 2;
+        }
+
+        const accountAddressPaths = new Set(
+            selectedAccount.addresses
+                ? selectedAccount.addresses.change
+                      .concat(selectedAccount.addresses.used, selectedAccount.addresses.unused)
+                      .map(({ path }) => path)
+                : [],
+        );
+        const inputPaths = precomposedTransaction.inputs
+            .map(input =>
+                Array.isArray(input.address_n) && input.address_n.length > 0
+                    ? getSerializedPath(input.address_n)
+                    : undefined,
+            )
+            .filter((path): path is string => typeof path === 'string');
+        const unmatchedInputPathCount = inputPaths.filter(
+            path => !accountAddressPaths.has(path),
+        ).length;
+
+        if (unmatchedInputPathCount > 0) {
+            // [btc-unknown-tx-debug] the selected account does not contain paths used by the tx inputs.
+            // This can make Connect build a pending tx with wrong or empty vin addresses, which can then
+            // classify the optimistic pending tx incorrectly before the backend response arrives.
+            // Intentionally no paths / addresses / descriptor / txid: these reach Sentry and could
+            // deanonymize the user. accountType + symbol are low-cardinality, non-PII.
+            console.error('[btc-unknown-tx-debug] signBitcoin → input paths missing in account', {
+                accountType: selectedAccount.accountType,
+                symbol: selectedAccount.symbol,
+                inputCount: precomposedTransaction.inputs.length,
+                inputsWithAddressNCount: inputPaths.length,
+                knownAddressesCount: accountAddressPaths.size,
+                unmatchedInputPathCount,
+            });
         }
 
         const signPayload: Params<SignTransaction> = {

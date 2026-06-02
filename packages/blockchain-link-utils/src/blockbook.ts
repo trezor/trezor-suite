@@ -272,6 +272,30 @@ export const transformTransaction = (
         type = 'unknown';
         amount = tx.value;
         targets = [];
+        // [btc-unknown-tx-debug] 'unknown' is the catch-all the categorizer falls back to when it cannot
+        // tell whether the tx is recv/sent/self for this account — for an account's own tx that is never a
+        // desired outcome, it is a hole in our categorization (we show "something" rather than dropping it).
+        // We log every such case EXCEPT calls that pass no account context at all — transformTransaction(tx)
+        // by id (prev/ref-tx during signing, CoinControl UTXO detail): there is no account to compare
+        // against, so `type` is an unused placeholder that is never shown, not a categorization miss, and
+        // logging it would only flood Sentry. When account context WAS provided (an addresses object or a
+        // descriptor), an 'unknown' is a genuine gap worth capturing — including the anomalous case where
+        // the supplied addresses were empty (myAddressesCount === 0).
+        // Intentionally no txid / addresses / descriptor: these reach Sentry and could deanonymize the user.
+        if (addressesOrDescriptor !== undefined) {
+            console.error('[btc-unknown-tx-debug] transformTransaction → type=unknown', {
+                isPending: !tx.blockHeight || tx.blockHeight <= 0,
+                myAddressesCount: myAddresses.length,
+                vinCount: inputs.length,
+                voutCount: outputs.length,
+                vinWithAddressesCount: inputs.filter(
+                    v => Array.isArray(v.addresses) && v.addresses.length > 0,
+                ).length,
+                voutWithAddressesCount: outputs.filter(
+                    v => Array.isArray(v.addresses) && v.addresses.length > 0,
+                ).length,
+            });
+        }
     }
 
     type = isTxFailed(tx) ? 'failed' : type;

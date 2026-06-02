@@ -41,6 +41,16 @@ workers.forEach(instance => {
             beforeAll(setup);
             afterAll(teardown);
 
+            // [btc-unknown-tx-debug] notification txs are parsed through transformTransaction, which emits
+            // a temporary console.error for txs classified as 'unknown' with account context. Silence the
+            // JestCustomEnv console.error trap for these fixtures.
+            beforeEach(() => {
+                jest.spyOn(console, 'error').mockImplementation(() => {});
+            });
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
+
             // NOTE: do not skip any test because id's sequence must be continuous!
             fixtures[instance.name].notifyAddresses.forEach((f, id) => {
                 it(f.description, async () => {

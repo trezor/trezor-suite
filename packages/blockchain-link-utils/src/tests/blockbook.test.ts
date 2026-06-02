@@ -13,6 +13,15 @@ describe('blockbook/utils', () => {
     });
 
     describe('transformTransaction', () => {
+        // [btc-unknown-tx-debug] transformTransaction emits a temporary console.error when it classifies
+        // a tx as 'unknown' with account context. Silence the JestCustomEnv console.error trap for these
+        // classification fixtures (the only console.error in transformTransaction is that diagnostic).
+        beforeEach(() => {
+            jest.spyOn(console, 'error').mockImplementation(() => {});
+        });
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
         fixtures.transformTransaction.forEach(f => {
             it(f.description, () => {
                 // @ts-expect-error incorrect params
