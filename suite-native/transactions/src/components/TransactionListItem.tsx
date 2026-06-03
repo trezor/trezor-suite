@@ -7,6 +7,8 @@ import {
     type PhishingRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
+    createTargets,
+    selectAccountByKey,
     selectIsPhishingTransaction,
     selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
@@ -26,6 +28,7 @@ import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
+import { TransactionTarget } from './TransactionTarget';
 
 type TransactionListItemProps = {
     transaction: WalletAccountTransaction;
@@ -111,10 +114,24 @@ export const TransactionListItem = ({
     isFirst = false,
     isLast = false,
 }: TransactionListItemProps) => {
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const { isPhishing: isPhishingTransaction } = useSelector(
+        (
+            state: TokenDefinitionsRootState &
+                TransactionsRootState &
+                FiatRatesRootState &
+                PhishingRootState,
+        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
+    );
+
     const includedCoinsCount = transaction.tokens.length;
 
     const firstToken = transaction.tokens[0];
     const isTokenOnlyTransaction = transaction.amount === '0' && firstToken !== undefined;
+
+    const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
     if (isTokenOnlyTransaction)
         return (
@@ -140,7 +157,15 @@ export const TransactionListItem = ({
             isFirst={isFirst}
             isLast={isLast}
         >
-            <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
+            {allOutputs.map((target, i) => (
+                <TransactionTarget
+                    key={i}
+                    accountKey={accountKey}
+                    isPhishingTransaction={isPhishingTransaction}
+                    transaction={transaction}
+                    {...target}
+                />
+            ))}
         </TransactionListItemContainer>
     );
 };
