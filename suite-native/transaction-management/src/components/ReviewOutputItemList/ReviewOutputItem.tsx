@@ -105,6 +105,8 @@ const OutputLabel = ({
             return <Translation id="transactionManagement.review.outputs.feeLimitSummaryLabel" />;
         case 'note':
             return <Translation id="transactionManagement.review.outputs.noteLabel" />;
+        case 'swap_intent':
+            return <Translation id="transactionManagement.review.outputs.swapIntentLabel" />;
         default:
             return type;
     }

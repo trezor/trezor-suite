@@ -255,6 +255,16 @@ export const ReviewOutputItemContent = ({
                     </Box>
                 </HStack>
             );
+        case 'swap_intent':
+            return (
+                <Text variant="body-sm">
+                    {value === 'swap' ? (
+                        <Translation id="transactionManagement.review.outputs.swapIntentValue" />
+                    ) : (
+                        value
+                    )}
+                </Text>
+            );
 
         default:
             // TODO: handle other output types when are other coins supported (ETH feeGas etc.)

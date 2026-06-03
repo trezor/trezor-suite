@@ -63,6 +63,7 @@ describe('ReviewOutputItem', () => {
             'traded_assets',
             getTranslation('transactionManagement.review.outputs.tradedAssetsOutputLabel'),
         ],
+        ['swap_intent', getTranslation('transactionManagement.review.outputs.swapIntentLabel')],
     ])('should display title based on type [%s]', (type, expectedTitle) => {
         // Suppress console warnings for unsupported types
         jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -303,6 +304,19 @@ describe('ReviewOutputItem', () => {
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent('');
+    });
+
+    it('should render "Swap" for "swap_intent"', () => {
+        const { getByTestId } = renderReviewOutputItem({
+            reviewOutput: {
+                type: 'swap_intent',
+                value: 'swap',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.swapIntentValue'),
+        );
     });
 
     it.each<StatefulReviewOutput['type']>([

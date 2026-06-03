@@ -3586,6 +3586,8 @@ export const messages = {
                 tradedAssetsOutputLabel: 'My assets',
                 tradedAssetsSendLabel: 'You send',
                 tradedAssetsReceiveLabel: 'You receive',
+                swapIntentLabel: 'Intent',
+                swapIntentValue: 'Swap',
                 summary: {
                     label: 'Total including fee',
                     totalAmount: 'Total amount',
