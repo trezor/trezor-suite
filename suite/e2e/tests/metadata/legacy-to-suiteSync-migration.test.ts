@@ -25,15 +25,7 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
         await metadataPage.enableLegacyLabeling(MetadataProvider.LOCAL);
     });
 
-    test('Migration from local file', async ({
-        page,
-        walletPage,
-        metadataPage,
-        device,
-        devicePrompt,
-        evoluClient,
-        settingsPage,
-    }) => {
+    test('Migration from local file', async ({ page, walletPage, metadataPage, evoluClient }) => {
         await test.step('Set up local file labeling', async () => {
             await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
             await expect(
@@ -83,11 +75,6 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
 
         await test.step('Switch to Suite Sync labeling and confirm legacy label is migrated', async () => {
             await metadataPage.enableSuiteSync();
-            await settingsPage.navigateTo('application');
-            await metadataPage.migrateLabelsButton.click();
-            await metadataPage.migrateFromLocalFileButton.click();
-            await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 30_000 });
-            await device.pressYes();
             await expect(
                 page.getByTestId('@toast/legacy-labeling-migration-success'),
             ).toHaveTranslation('TR_LABELING_MIGRATION_SUCCESS', {
