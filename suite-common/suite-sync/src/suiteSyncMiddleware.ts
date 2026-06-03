@@ -18,7 +18,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
                 action.payload.staticSessionId,
             );
             if (!suiteSyncErrors) {
-                extra.services.suiteSync.ensureWalletSuiteSyncOnAsync({
+                extra.services.suiteSync.ensureWalletSuiteSyncOnUncontrolled({
                     deviceStaticSessionId: action.payload.staticSessionId,
                     isWriteMode: false,
                 });
@@ -36,7 +36,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
 
                 // If the device is reselected with already existing error within the session, don't trigger it again.
                 if (!suiteSyncErrors) {
-                    extra.services.suiteSync.ensureWalletSuiteSyncOnAsync({
+                    extra.services.suiteSync.ensureWalletSuiteSyncOnUncontrolled({
                         deviceStaticSessionId: payload.device.state.staticSessionId,
                         isWriteMode: false,
                     });

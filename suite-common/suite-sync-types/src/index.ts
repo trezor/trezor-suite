@@ -57,8 +57,8 @@ export {
     selectTurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';
 export {
-    type EnsureWalletSuiteSyncOnAsync,
-    type EnsureWalletSuiteSyncOnAsyncDep,
+    type EnsureWalletSuiteSyncOnUncontrolled,
+    type EnsureWalletSuiteSyncOnUncontrolledDep,
     type EnsureWalletSuiteSyncOn,
     type EnsureWalletSuiteSyncOnErrors,
     type EnsureWalletSuiteSyncOnDep,
@@ -69,7 +69,7 @@ export {
     type SuiteSyncUserFacingErrorType,
     type WalletSuiteSyncOnEnsuredListener,
     type WalletSuiteSyncOnEnsuredParams,
-    selectEnsureWalletSuiteSyncOnAsyncDep,
+    selectEnsureWalletSuiteSyncOnUncontrolledDep,
     selectEnsureWalletSuiteSyncOnDep,
 } from './storage/ensureWalletSuiteSyncOn';
 

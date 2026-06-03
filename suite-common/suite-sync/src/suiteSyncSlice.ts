@@ -3,7 +3,10 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { deviceActions } from '@suite-common/device';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
-import { type SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '@suite-common/suite-sync-types';
+import {
+    type SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
+    type SuiteSyncUnavailableOnDeviceErrorType,
+} from '@suite-common/suite-sync-types';
 import {
     type DeviceCancelledErrType,
     type DeviceErrorType,
@@ -15,6 +18,7 @@ export type SuiteSyncErrorType =
     | DeviceErrorType
     | DeviceCancelledErrType
     | DeviceNotConnectedErrorType
+    | SuiteSyncUnavailableOnDeviceErrorType
     | SuiteSyncFirmwareUpgradeNeededDeviceErrorType;
 
 export type SuiteSyncSettings = {

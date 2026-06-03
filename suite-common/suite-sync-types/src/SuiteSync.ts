@@ -5,8 +5,8 @@ import { type UpdateOutputLabelDep } from './data/updateOutputLabel';
 import { type UpdateWalletLabelDep } from './data/updateWalletLabel';
 import { type ChangeRelayUrlDep } from './relay/changeRelayUrl';
 import {
-    type EnsureWalletSuiteSyncOnAsyncDep,
     type EnsureWalletSuiteSyncOnDep,
+    type EnsureWalletSuiteSyncOnUncontrolledDep,
     type OnWalletSuiteSyncOnEnsuredDep,
 } from './storage/ensureWalletSuiteSyncOn';
 import { type TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
@@ -24,7 +24,7 @@ export type SuiteSync = ChangeRelayUrlDep &
     TurnOnSuiteSyncDep &
     TurnOffSuiteSyncDep &
     EnsureWalletSuiteSyncOnDep &
-    EnsureWalletSuiteSyncOnAsyncDep &
+    EnsureWalletSuiteSyncOnUncontrolledDep &
     OnWalletSuiteSyncOnEnsuredDep &
     DangerouslyWipeAllLabelsFromWalletDep &
     TurnOffSuiteSyncForWalletDep &

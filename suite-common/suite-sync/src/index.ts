@@ -83,6 +83,6 @@ export {
 } from './suiteSyncUtils';
 export { createSuiteSyncInternalErrorHandler } from './createSuiteSyncInternalErrorHandler';
 export type {
-    SuiteSyncAsyncErrorHandlerDep,
-    SuiteSyncAsyncError,
-} from './createSuiteSyncInternalErrorHandler';
+    SuiteSyncUncontrolledError,
+    SuiteSyncUncontrolledErrorHandlerDep,
+} from './suiteSyncUncontrolledErrorHandler';

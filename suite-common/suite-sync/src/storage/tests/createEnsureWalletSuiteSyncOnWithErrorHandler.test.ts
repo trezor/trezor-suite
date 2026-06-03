@@ -27,6 +27,21 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
             },
         },
         {
+            description: 'unsupported device error',
+            innerResult: err({
+                type: 'SuiteSyncUnavailableOnDeviceError' as const,
+            }),
+            expectedDispatchedAction: {
+                type: 'suiteSync/setSuiteSyncError',
+                payload: {
+                    deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+                    error: {
+                        type: 'SuiteSyncUnavailableOnDeviceError',
+                    },
+                },
+            },
+        },
+        {
             description: 'device error',
             innerResult: err({ type: 'DeviceError' as const, message: 'some error' }),
             expectedDispatchedAction: {

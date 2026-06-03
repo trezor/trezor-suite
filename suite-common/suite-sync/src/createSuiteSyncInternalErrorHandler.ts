@@ -1,55 +1,18 @@
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { DeviceError, isTrezorDeviceWithState } from '@suite-common/device';
-import {
-    type AllocateOwnerQuotaDep,
-    type AllocateOwnerQuotaErr,
-} from '@suite-common/suite-sync-quota-manager';
-import {
-    type EnsureWalletSuiteSyncOnErrors,
-    type Errors,
-    type SuiteSyncInternalErrorHandler,
-    type SuiteSyncOtherError,
-} from '@suite-common/suite-sync-types';
-import {
-    type TrezorDevice,
-    type TrezorDeviceWithState,
-    asDelegatedIdentityKey,
-} from '@suite-common/suite-types';
+import { type AllocateOwnerQuotaDep } from '@suite-common/suite-sync-quota-manager';
+import { type Errors, type SuiteSyncInternalErrorHandler } from '@suite-common/suite-sync-types';
+import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-/**
- * Those are all errors that may happen asynchronously during the SuiteSync lifecycle,
- * typically in response to some websocket message.
- */
-export type SuiteSyncAsyncError =
-    | AllocateOwnerQuotaErr
-    | EnsureWalletSuiteSyncOnErrors
-    | SuiteSyncOtherError;
-
-/**
- * This is External error handler. The caller of the SuiteSync (Desktop, Web, Native, ...)
- * should provide this handler and handle those errors (or delegate to end-user).
- */
-export type SuiteSyncAsyncErrorHandlerParams = {
-    error: SuiteSyncAsyncError;
-    device: TrezorDeviceWithState | null;
-};
-
-export type SuiteSyncAsyncErrorHandler = ({
-    error,
-    device,
-}: SuiteSyncAsyncErrorHandlerParams) => void;
-
-export type SuiteSyncAsyncErrorHandlerDep = {
-    suiteSyncAsyncErrorHandler: SuiteSyncAsyncErrorHandler;
-};
+import { type SuiteSyncUncontrolledErrorHandlerDep } from './suiteSyncUncontrolledErrorHandler';
 
 type GetSelectedDevice = () => TrezorDevice | undefined;
 
 export type CreateSuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
     EnsureDelegatedIdentityKeyDep &
-    SuiteSyncAsyncErrorHandlerDep &
+    SuiteSyncUncontrolledErrorHandlerDep &
     // Todo: temporary, see: https://github.com/trezor/trezor-suite/issues/27049
     { getSelectedDevice: GetSelectedDevice };
 
@@ -70,7 +33,7 @@ export const createSuiteSyncInternalErrorHandler =
 
         if (!device || !isTrezorDeviceWithState(device)) {
             // Temporary, no better error
-            deps.suiteSyncAsyncErrorHandler({
+            deps.suiteSyncUncontrolledErrorHandler({
                 error: DeviceError('Device not found during handling SuiteSync internal error'),
                 device: null,
             });
@@ -85,7 +48,7 @@ export const createSuiteSyncInternalErrorHandler =
                 const delegatedKey = await deps.ensureDelegatedIdentityKey({ device });
 
                 if (!delegatedKey.success) {
-                    deps.suiteSyncAsyncErrorHandler({ error: delegatedKey.error, device });
+                    deps.suiteSyncUncontrolledErrorHandler({ error: delegatedKey.error, device });
 
                     return;
                 }
@@ -102,14 +65,14 @@ export const createSuiteSyncInternalErrorHandler =
                 });
 
                 if (!result.success) {
-                    deps.suiteSyncAsyncErrorHandler({ error: result.error, device });
+                    deps.suiteSyncUncontrolledErrorHandler({ error: result.error, device });
                 }
 
                 return;
             }
 
             case 'RelayOther':
-                deps.suiteSyncAsyncErrorHandler({ error, device });
+                deps.suiteSyncUncontrolledErrorHandler({ error, device });
 
                 return;
 

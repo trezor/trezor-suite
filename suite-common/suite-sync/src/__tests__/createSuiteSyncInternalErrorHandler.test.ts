@@ -35,7 +35,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
-            suiteSyncAsyncErrorHandler: () => undefined,
+            suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => undefined,
         });
 
@@ -43,7 +43,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
 
         await handleError({ type: 'RelayQuotaExceeded', ownerId });
 
-        expect(deps.suiteSyncAsyncErrorHandler).toHaveBeenCalledWith({
+        expect(deps.suiteSyncUncontrolledErrorHandler).toHaveBeenCalledWith({
             error: DeviceError('Device not found during handling SuiteSync internal error'),
             device: null,
         });
@@ -57,7 +57,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
             allocateOwnerQuota: () => Promise.resolve(ok()),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
-            suiteSyncAsyncErrorHandler: () => undefined,
+            suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => device,
         });
 
@@ -73,7 +73,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
             walletDescriptor,
             isWriteMode: true,
         });
-        expect(deps.suiteSyncAsyncErrorHandler).not.toHaveBeenCalled();
+        expect(deps.suiteSyncUncontrolledErrorHandler).not.toHaveBeenCalled();
     });
 
     it('propagates delegated key retrieval failures', async () => {
@@ -82,7 +82,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: () => Promise.resolve(err(deviceError)),
-            suiteSyncAsyncErrorHandler: () => undefined,
+            suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => device,
         });
 
@@ -91,7 +91,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         await handleError({ type: 'RelayQuotaExceeded', ownerId });
 
         expect(deps.allocateOwnerQuota).not.toHaveBeenCalled();
-        expect(deps.suiteSyncAsyncErrorHandler).toHaveBeenCalledWith({
+        expect(deps.suiteSyncUncontrolledErrorHandler).toHaveBeenCalledWith({
             error: deviceError,
             device,
         });
@@ -108,7 +108,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
             allocateOwnerQuota: () => Promise.resolve(err(allocationError)),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
-            suiteSyncAsyncErrorHandler: () => undefined,
+            suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => device,
         });
 
@@ -116,7 +116,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
 
         await handleError({ type: 'RelayQuotaExceeded', ownerId });
 
-        expect(deps.suiteSyncAsyncErrorHandler).toHaveBeenCalledWith({
+        expect(deps.suiteSyncUncontrolledErrorHandler).toHaveBeenCalledWith({
             error: allocationError,
             device,
         });
@@ -129,7 +129,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
-            suiteSyncAsyncErrorHandler: () => undefined,
+            suiteSyncUncontrolledErrorHandler: () => undefined,
             getSelectedDevice: () => device,
         });
 
@@ -137,7 +137,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
 
         await handleError(relayError);
 
-        expect(deps.suiteSyncAsyncErrorHandler).toHaveBeenCalledWith({
+        expect(deps.suiteSyncUncontrolledErrorHandler).toHaveBeenCalledWith({
             error: relayError,
             device,
         });

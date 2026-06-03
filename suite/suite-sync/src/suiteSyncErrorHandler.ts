@@ -1,7 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { messages } from '@suite/intl';
-import { type SuiteSyncAsyncError } from '@suite-common/suite-sync';
+import { type SuiteSyncUncontrolledError } from '@suite-common/suite-sync';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -12,7 +12,7 @@ import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyM
 import { updateShowEnableSuiteSyncModal } from './suiteSyncSlice';
 
 type SuiteSyncErrorHandler = {
-    error: SuiteSyncAsyncError | EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
+    error: SuiteSyncUncontrolledError | EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
     dispatch: Dispatch;
     deviceStaticSessionId: StaticSessionId | null;
 };
@@ -45,7 +45,6 @@ export const suiteSyncErrorHandler = ({
 
     switch (type) {
         case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-        case 'SuiteSyncUnavailableOnDeviceError':
             dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId }));
 
             return;
@@ -66,6 +65,11 @@ export const suiteSyncErrorHandler = ({
                 }),
             );
 
+            return;
+
+        case 'SuiteSyncUnavailableOnDeviceError':
+            // An unsupported device is an expected condition. Suite Sync stays enabled
+            // and user is notified about it in the UI via declarative banner.
             return;
 
         case 'DeviceNotConnectedError':
