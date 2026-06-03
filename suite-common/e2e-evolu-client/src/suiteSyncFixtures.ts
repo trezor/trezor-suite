@@ -6,9 +6,9 @@ import {
 } from '@suite-common/suite-sync-evolu';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { type WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
+import { type WalletDescriptor, asWalletDescriptor } from '@trezor/device-utils';
 
 import {
     createAccountRowId,

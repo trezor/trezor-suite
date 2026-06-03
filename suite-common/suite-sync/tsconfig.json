@@ -19,7 +19,6 @@
         { "path": "../toast-notifications" },
         { "path": "../transaction-search" },
         { "path": "../validators" },
-        { "path": "../wallet" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },

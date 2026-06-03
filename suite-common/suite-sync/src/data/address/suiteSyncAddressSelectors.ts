@@ -1,9 +1,9 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import type { WalletDescriptor } from '@suite-common/wallet';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import type { WalletDescriptor } from '@trezor/device-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { selectAllAddressesForWallet } from '../wallet/suiteSyncWalletSelectors';
@@ -37,7 +37,7 @@ export const selectSuiteSyncAccountAddressesByAccount = createMemoizedSelector(
 export const selectSuiteSyncAddressLabel = createMemoizedSelector(
     [
         (state: SuiteSyncDataRootState, deviceStaticId: StaticSessionId) => {
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticId);
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticId);
 
             return selectAllAddressesForWallet(state, walletDescriptor);
         },
@@ -52,7 +52,7 @@ export const selectSuiteSyncAddressLabels = (
     state: SuiteSyncDataRootState,
     deviceStaticId: StaticSessionId,
 ) => {
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticId);
 
     return selectAllAddressesForWallet(state, walletDescriptor);
 };

@@ -26,7 +26,7 @@ describe('staticSessionIdUtils', () => {
             ['multiple @', 'a@b@c:0'],
             ['no :', 'mzPx@c4d10fab'],
             ['multiple :', 'mzPx@c4d10fab:0:1'],
-            ['empty firstTestnetAddress', '@c4d10fab:0'],
+            ['empty walletDescriptor', '@c4d10fab:0'],
             ['empty deviceId', 'mzPx@:0'],
             ['negative instance', 'mzPx@c4d10fab:-1'],
             ['non-numeric instance', 'mzPx@c4d10fab:abc'],
@@ -46,7 +46,7 @@ describe('staticSessionIdUtils', () => {
             const id = 'mzPxTvm6F1n4ZeTBrCQU3iXrPF6yyyc4d10fab@c4d10fab:2' as StaticSessionId;
 
             expect(parseStaticSessionId(id)).toEqual({
-                firstTestnetAddress: 'mzPxTvm6F1n4ZeTBrCQU3iXrPF6yyyc4d10fab',
+                walletDescriptor: 'mzPxTvm6F1n4ZeTBrCQU3iXrPF6yyyc4d10fab',
                 deviceId: 'c4d10fab',
                 instance: 2,
             });
@@ -63,7 +63,7 @@ describe('staticSessionIdUtils', () => {
         it('joins the three parts', () => {
             expect(
                 createStaticSessionId({
-                    firstTestnetAddress: 'mzPx',
+                    walletDescriptor: 'mzPx',
                     deviceId: 'c4d10fab',
                     instance: 3,
                 }),
@@ -77,18 +77,15 @@ describe('staticSessionIdUtils', () => {
         });
 
         it.each([
-            ['empty firstTestnetAddress', { firstTestnetAddress: '', deviceId: 'd', instance: 0 }],
-            ['empty deviceId', { firstTestnetAddress: 'a', deviceId: '', instance: 0 }],
-            ['negative instance', { firstTestnetAddress: 'a', deviceId: 'd', instance: -1 }],
-            ['NaN instance', { firstTestnetAddress: 'a', deviceId: 'd', instance: NaN }],
-            ['Infinity instance', { firstTestnetAddress: 'a', deviceId: 'd', instance: Infinity }],
-            ['decimal instance', { firstTestnetAddress: 'a', deviceId: 'd', instance: 1.5 }],
-            [
-                '@ in firstTestnetAddress',
-                { firstTestnetAddress: 'a@b', deviceId: 'd', instance: 0 },
-            ],
-            ['@ in deviceId', { firstTestnetAddress: 'a', deviceId: 'd@e', instance: 0 }],
-            [': in deviceId', { firstTestnetAddress: 'a', deviceId: 'd:e', instance: 0 }],
+            ['empty walletDescriptor', { walletDescriptor: '', deviceId: 'd', instance: 0 }],
+            ['empty deviceId', { walletDescriptor: 'a', deviceId: '', instance: 0 }],
+            ['negative instance', { walletDescriptor: 'a', deviceId: 'd', instance: -1 }],
+            ['NaN instance', { walletDescriptor: 'a', deviceId: 'd', instance: NaN }],
+            ['Infinity instance', { walletDescriptor: 'a', deviceId: 'd', instance: Infinity }],
+            ['decimal instance', { walletDescriptor: 'a', deviceId: 'd', instance: 1.5 }],
+            ['@ in walletDescriptor', { walletDescriptor: 'a@b', deviceId: 'd', instance: 0 }],
+            ['@ in deviceId', { walletDescriptor: 'a', deviceId: 'd@e', instance: 0 }],
+            [': in deviceId', { walletDescriptor: 'a', deviceId: 'd:e', instance: 0 }],
         ])('throws on invalid parts (%s)', (_label, parts) => {
             expect(() => createStaticSessionId(parts)).toThrow(/Invalid StaticSessionId parts/);
         });

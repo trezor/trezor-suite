@@ -4,6 +4,7 @@
     "compilerOptions": { "outDir": "./lib" },
     "references": [
         { "path": "../protobuf" },
+        { "path": "../type-utils" },
         { "path": "../utils" }
     ]
 }

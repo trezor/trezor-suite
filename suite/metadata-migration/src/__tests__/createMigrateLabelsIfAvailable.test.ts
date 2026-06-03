@@ -6,8 +6,8 @@ import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type MetadataProvider } from '@suite-common/metadata-types';
 import { createSuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import type { StaticSessionId } from '@trezor/connect';
+import { asWalletDescriptor } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { createDeferred } from '@trezor/utils';
 

@@ -14,8 +14,8 @@ import {
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import type { AccountDescriptor, AccountKey } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 type SelectAccountLabelParams = {
     accountDescriptor: AccountDescriptor;
@@ -42,7 +42,7 @@ export const selectAccountLabel = createMemoizedSelector(
             state: SelectAccountLabelState,
             { deviceStaticId, accountDescriptor, networkSymbol }: SelectAccountLabelParams,
         ) => {
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticId);
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticId);
 
             return selectSuiteSyncAccountLabel(
                 state,

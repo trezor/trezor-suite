@@ -17,7 +17,7 @@ const getStaticSessionId = (device: WorkflowContext['device']) =>
         })
         .then(({ message }) =>
             createStaticSessionId({
-                firstTestnetAddress: message.address,
+                walletDescriptor: message.address,
                 deviceId: device.features.device_id!,
                 instance: device.getInstance(),
             }),
@@ -33,7 +33,7 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
     }
 };
 
-// Treat two states as "unexpected" if they describe different (firstTestnetAddress, deviceId)
+// Treat two states as "unexpected" if they describe different (walletDescriptor, deviceId)
 // pairs. Instance is intentionally ignored — the same wallet can be referenced through
 // different host-side instance numbers across reconnects.
 const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
@@ -42,7 +42,7 @@ const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId
     const parsedCurrent = parseStaticSessionId(current);
 
     return (
-        parsedExpected.firstTestnetAddress !== parsedCurrent.firstTestnetAddress ||
+        parsedExpected.walletDescriptor !== parsedCurrent.walletDescriptor ||
         parsedExpected.deviceId !== parsedCurrent.deviceId
     );
 };

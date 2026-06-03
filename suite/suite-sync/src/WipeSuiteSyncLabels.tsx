@@ -8,9 +8,9 @@ import {
     type EnsureWalletSuiteSyncOnErrors,
     selectDangerouslyWipeAllLabelsFromWalletDep,
 } from '@suite-common/suite-sync-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type TimerId, exhaustive } from '@trezor/type-utils';
 
@@ -117,7 +117,7 @@ export const WipeSuiteSyncLabels = ({ onError }: WipeSuiteSyncLabelsProps) => {
                 setStep('wipingLoading');
 
                 if (selectedDeviceStaticSessionId !== undefined) {
-                    const { walletDescriptor } = parseDeviceStaticSessionId(
+                    const { walletDescriptor } = parseStaticSessionId(
                         selectedDeviceStaticSessionId,
                     );
                     const result = await dangerouslyWipeAllLabelsFromWallet({

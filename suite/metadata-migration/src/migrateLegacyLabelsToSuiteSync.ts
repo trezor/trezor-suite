@@ -1,5 +1,5 @@
 import type { TrezorDeviceWithState } from '@suite-common/suite-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 import type { Result } from '@trezor/type-utils';
 
@@ -39,7 +39,7 @@ export const createMigrateLegacyLabelsToSuiteSync =
         let skipped = 0;
 
         const deviceStaticSessionId = selectedDevice.state.staticSessionId;
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+        const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
         const walletLabelsParams: MigrateWalletLabelsParams = {
             deviceStaticSessionId,
             walletDescriptor,

@@ -7,8 +7,8 @@ import {
     type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
 import { type DelegatedIdentityKey } from '@suite-common/suite-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 import { type AllocateOwnerQuotaDep } from './createAllocateOwnerQuota';
@@ -46,7 +46,7 @@ export type EnsureOwnerHasAllocatedQuotaDep = {
 export const createEnsureOwnerHasAllocatedQuota =
     (deps: EnsureOwnerHasAllocatedQuotaDeps): EnsureOwnerHasAllocatedQuota =>
     async ({ ownerId, deviceStaticSessionId, delegatedKey, isWriteMode }) => {
-        const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(deviceStaticSessionId);
+        const { walletDescriptor, deviceId } = parseStaticSessionId(deviceStaticSessionId);
 
         const hasOwnerStorage = await deps.checkStorageByOwnerIdFetch({ ownerId });
 

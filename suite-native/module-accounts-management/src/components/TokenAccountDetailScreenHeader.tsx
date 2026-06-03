@@ -14,11 +14,12 @@ import {
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseAccountKey } from '@suite-common/wallet-utils';
 import { Badge, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { type RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { selectAssetTabOfAccountToken } from '../selectors';
 import { TokenScreenHeaderSettings } from './TokenScreenHeaderSettings';
@@ -33,7 +34,7 @@ export const TokenAccountDetailScreenHeader = ({
     tokenContract,
 }: TokenAccountDetailScreenHeaderProps) => {
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

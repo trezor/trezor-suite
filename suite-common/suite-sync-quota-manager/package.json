@@ -22,8 +22,6 @@
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/wallet": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/device-utils": "workspace:*",

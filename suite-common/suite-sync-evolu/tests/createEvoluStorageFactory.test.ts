@@ -10,8 +10,8 @@ import {
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-sync-storage';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@trezor/device-utils';
 import { createDeferred } from '@trezor/utils';
 
 import { testCreateRunWithEvoluDeps } from '../mocks/testCreateRunWithEvoluDeps';

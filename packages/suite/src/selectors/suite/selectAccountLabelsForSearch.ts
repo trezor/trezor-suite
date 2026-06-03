@@ -9,7 +9,7 @@ import {
     selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
 import { type Account } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { type AppState } from 'src/types/suite';
 
@@ -20,7 +20,7 @@ export const selectAccountLabelsForSearch = createMemoizedSelector(
         selectIsSuiteSyncEnabled,
         (state: AppState, account: Account) =>
             selectAllLabelsForAccount(state, {
-                walletDescriptor: parseDeviceStaticSessionId(account.deviceState).walletDescriptor,
+                walletDescriptor: parseStaticSessionId(account.deviceState).walletDescriptor,
                 accountDescriptor: account.descriptor,
                 networkSymbol: account.symbol,
             }),

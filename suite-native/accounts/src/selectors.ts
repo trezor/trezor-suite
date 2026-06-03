@@ -50,12 +50,12 @@ import {
     isCardanoStakingActive,
     isErc4626,
     isStakingSymbol,
-    parseDeviceStaticSessionId,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { type AccountListSection, type GroupedByTypeAccounts } from './types';
 import {
@@ -84,7 +84,7 @@ export const selectAccountLabel = (
 ) => {
     const isLabellingAllowed = selectIsLabellingAllowed(state);
 
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 
     const syncedLabel = selectSuiteSyncAccountLabel(
         state,

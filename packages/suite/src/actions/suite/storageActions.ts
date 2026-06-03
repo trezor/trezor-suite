@@ -23,10 +23,10 @@ import type {
 import {
     getFormDraftKey,
     isAccountSuccessful,
-    parseDeviceStaticSessionId,
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -266,7 +266,7 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
 
     // forget device metadata stuff
     const { metadata } = getState();
-    const { walletDescriptor } = parseDeviceStaticSessionId(staticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(staticSessionId);
 
     const hasLegacyLabelsMigrated = cloneObject(metadata.hasLegacyLabelsMigrated);
     delete hasLegacyLabelsMigrated[walletDescriptor];

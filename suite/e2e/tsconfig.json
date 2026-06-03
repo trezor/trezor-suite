@@ -36,7 +36,6 @@
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/trading" },
-        { "path": "../../suite-common/wallet" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -61,6 +60,7 @@
         },
         { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect-web" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/e2e-utils" },
         { "path": "../../packages/eslint" },
         { "path": "../../packages/protobuf" },

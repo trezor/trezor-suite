@@ -8,12 +8,13 @@ import {
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseAccountKey } from '@suite-common/wallet-utils';
 import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenReceiveCardProps = {
@@ -36,7 +37,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     const { applyStyle } = useNativeStyles();
 
     const { accountDescriptor, networkSymbol, deviceStaticSessionId } = parseAccountKey(accountKey);
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

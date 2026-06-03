@@ -1,7 +1,7 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type SuiteSyncAccount } from '@suite-common/suite-sync-storage';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { typedObjectValues } from '@trezor/utils';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
@@ -19,7 +19,7 @@ export const selectSuiteSyncAccounts = createMemoizedSelector(
             deviceStaticSessionId
                 ? selectWalletById(
                       state,
-                      parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
+                      parseStaticSessionId(deviceStaticSessionId).walletDescriptor,
                   )
                 : null,
     ],

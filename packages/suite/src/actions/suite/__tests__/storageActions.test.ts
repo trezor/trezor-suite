@@ -11,7 +11,6 @@ import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import {
     changeCoinVisibility,
     prepareDiscoveryReducer,
@@ -22,7 +21,7 @@ import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';

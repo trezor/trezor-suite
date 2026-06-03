@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type WalletDescriptor } from '@suite-common/wallet';
+import { type WalletDescriptor } from '@trezor/device-utils';
 
 export const QUOTA_MANAGER_PREFIX = '@suite/quota-manager';
 

@@ -40,15 +40,13 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../analytics" },
         { "path": "../firmware-upgrade" },
         { "path": "../intl" },
         { "path": "../router" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/product-components"
         },

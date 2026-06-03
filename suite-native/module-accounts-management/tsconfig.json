@@ -64,6 +64,7 @@
         { "path": "../tokens" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/styles-native"
         },

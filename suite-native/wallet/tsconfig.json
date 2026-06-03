@@ -5,10 +5,8 @@
         {
             "path": "../../suite-common/suite-sync"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../labeling" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" }
     ]
 }

@@ -7,13 +7,13 @@
         },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-types" },
-        { "path": "../wallet" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" }
     ]
 }
