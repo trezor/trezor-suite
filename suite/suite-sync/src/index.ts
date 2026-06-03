@@ -10,8 +10,10 @@ export { TurnOnSuiteSyncModals } from './TurnOnSuiteSyncModals';
 export { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
 export { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
 export {
+    dismissUnsupportedDeviceBanner,
     initialSuiteSyncDesktopState,
     selectDesktopSuiteSyncInteraction,
+    selectIsUnsupportedDeviceBannerDismissed,
     selectShowEnableSuiteSyncModal,
     suiteSyncSlice,
     updateShowEnableSuiteSyncModal,

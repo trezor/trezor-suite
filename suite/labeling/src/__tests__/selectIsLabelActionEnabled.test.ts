@@ -39,6 +39,7 @@ const SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID = 'test-toggle-suite-sync';
 
 const initialSuiteSyncDesktopState = {
     ...initialSuiteSyncState,
+    isUnsupportedDeviceBannerDismissed: false,
     showEnableSuiteSyncModal: null,
 };
 

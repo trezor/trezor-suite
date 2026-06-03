@@ -161,7 +161,8 @@ export interface SuiteDBSchema extends DBSchema {
     };
     suiteSyncSettings: {
         key: 'suiteSyncSettings';
-        value: DesktopSuiteSyncState['settings'];
+        value: DesktopSuiteSyncState['settings'] &
+            Pick<DesktopSuiteSyncState, 'isUnsupportedDeviceBannerDismissed'>;
     };
     suiteSyncOwners: {
         key: StaticSessionId;
