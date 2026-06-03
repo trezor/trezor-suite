@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 
-import { selectModalRequestId } from '@suite/modal';
+import {
+    MODAL_CONTEXT_DEVICE,
+    MODAL_CONTEXT_DEVICE_CONFIRMATION,
+    selectModalRequestId,
+} from '@suite/modal';
 import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -24,7 +28,11 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
     const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
-
+    const isDeviceInteractionModalActive = useSelector(
+        state =>
+            state.modal.context === MODAL_CONTEXT_DEVICE ||
+            state.modal.context === MODAL_CONTEXT_DEVICE_CONFIRMATION,
+    );
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
             if (!discovery) return;
@@ -81,6 +89,8 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const offerPassphraseOnDevice = useSelector(selectHasDevicePassphraseEntryCapability);
 
     if (!device || !discovery?.isAddingHiddenWallet) return null;
+
+    if (isDeviceInteractionModalActive) return null;
 
     switch (discovery.status) {
         case 'progress':
