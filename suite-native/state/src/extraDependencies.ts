@@ -73,8 +73,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
-        // Todo: we need to reuse useSuiteSyncErrorHandler somehow, but we do not have showAlert here.
-        suiteSyncUncontrolledErrorHandler: () => {},
     });
 
     return {

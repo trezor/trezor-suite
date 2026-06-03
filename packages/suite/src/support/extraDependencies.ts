@@ -24,7 +24,7 @@ import {
     selectInvityServerEnvironment,
     selectLanguage,
 } from '@suite/settings';
-import { createSuiteSyncDesktopCompositionRoot, suiteSyncErrorHandler } from '@suite/suite-sync';
+import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
@@ -116,12 +116,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
-        suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
-            suiteSyncErrorHandler({
-                error,
-                dispatch: deps.dispatch,
-                deviceStaticSessionId: device?.state?.staticSessionId ?? null,
-            }),
     });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
