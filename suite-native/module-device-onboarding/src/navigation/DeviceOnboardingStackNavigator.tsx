@@ -6,6 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { useReportOnboardingStepViewedAnalytics } from '../hooks/useReportOnboardingStepViewedAnalytics';
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
 import { CongratulationsScreen } from '../screens/CongratulationsScreen';
 import { CreateOrRecoverCrossroadsScreen } from '../screens/CreateOrRecoverCrossroadsScreen';
@@ -34,122 +35,129 @@ import { WalletRecoveryScreen } from '../screens/WalletRecoveryScreen';
 
 export const DeviceOnboardingStack = createNativeStackNavigator<DeviceOnboardingStackParamList>();
 
-export const DeviceOnboardingStackNavigator = () => (
-    <DeviceOnboardingStack.Navigator
-        initialRouteName={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
-        screenOptions={stackNavigationOptionsConfig}
-    >
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.DeviceDisconnected}
-            component={DeviceDisconnectedScreen}
-            options={{
-                gestureEnabled: false,
-                animation: 'slide_from_bottom',
-            }}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
-            component={UninitializedDeviceLandingScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.SuspiciousDevice}
-            component={SuspiciousDeviceScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.SecurityCheck}
-            component={SecurityCheckScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.FirmwareInfo}
-            component={FirmwareInfoScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate}
-            component={ConfirmFirmwareUpdateScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.FirmwareInstallation}
-            component={FirmwareInstallationScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ThpPairingInfo}
-            component={ThpPairingInfoScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ThpConfirmation}
-            component={ThpConfirmationScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ThpCodeEntry}
-            component={ThpCodeEntryScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.ThpPairingSuccess}
-            component={ThpPairingSuccessScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.DeviceAuthenticity}
-            component={DeviceAuthenticityScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess}
-            component={DeviceAuthenticitySuccessScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.DeviceTutorial}
-            component={DeviceTutorialScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads}
-            component={CreateOrRecoverCrossroadsScreen}
-        />
+export const DeviceOnboardingStackNavigator = () => {
+    const reportStepViewed = useReportOnboardingStepViewedAnalytics();
 
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.CreateWalletLoading}
-            component={CreateWalletLoadingScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.WalletBackupTutorial}
-            component={WalletBackupTutorialScreen}
-        />
+    return (
+        <DeviceOnboardingStack.Navigator
+            initialRouteName={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
+            screenOptions={stackNavigationOptionsConfig}
+            screenListeners={({ route }) => ({
+                focus: () => reportStepViewed(route.name as DeviceOnboardingStackRoutes),
+            })}
+        >
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.DeviceDisconnected}
+                component={DeviceDisconnectedScreen}
+                options={{
+                    gestureEnabled: false,
+                    animation: 'slide_from_bottom',
+                }}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
+                component={UninitializedDeviceLandingScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.SuspiciousDevice}
+                component={SuspiciousDeviceScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.SecurityCheck}
+                component={SecurityCheckScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.FirmwareInfo}
+                component={FirmwareInfoScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate}
+                component={ConfirmFirmwareUpdateScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.FirmwareInstallation}
+                component={FirmwareInstallationScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.ThpPairingInfo}
+                component={ThpPairingInfoScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.ThpConfirmation}
+                component={ThpConfirmationScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.ThpCodeEntry}
+                component={ThpCodeEntryScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.ThpPairingSuccess}
+                component={ThpPairingSuccessScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.DeviceAuthenticity}
+                component={DeviceAuthenticityScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess}
+                component={DeviceAuthenticitySuccessScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.DeviceTutorial}
+                component={DeviceTutorialScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads}
+                component={CreateOrRecoverCrossroadsScreen}
+            />
 
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.WalletCreation}
-            component={WalletCreationScreen}
-            options={{
-                animation: 'fade',
-            }}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.WalletCreatedSuccess}
-            component={WalletCreatedSuccessScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.WalletBackupRecap}
-            component={WalletBackupRecapScreen}
-            options={{
-                animation: 'fade',
-            }}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.RecoveryInstructions}
-            component={RecoveryInstructionsScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.WalletRecovery}
-            component={WalletRecoveryScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.WalletRecoveryRecap}
-            component={WalletRecoveryRecapScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.CreatePin}
-            component={CreatePinScreen}
-        />
-        <DeviceOnboardingStack.Screen
-            name={DeviceOnboardingStackRoutes.Congratulations}
-            component={CongratulationsScreen}
-        />
-    </DeviceOnboardingStack.Navigator>
-);
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.CreateWalletLoading}
+                component={CreateWalletLoadingScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.WalletBackupTutorial}
+                component={WalletBackupTutorialScreen}
+            />
+
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.WalletCreation}
+                component={WalletCreationScreen}
+                options={{
+                    animation: 'fade',
+                }}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.WalletCreatedSuccess}
+                component={WalletCreatedSuccessScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.WalletBackupRecap}
+                component={WalletBackupRecapScreen}
+                options={{
+                    animation: 'fade',
+                }}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.RecoveryInstructions}
+                component={RecoveryInstructionsScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.WalletRecovery}
+                component={WalletRecoveryScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.WalletRecoveryRecap}
+                component={WalletRecoveryRecapScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.CreatePin}
+                component={CreatePinScreen}
+            />
+            <DeviceOnboardingStack.Screen
+                name={DeviceOnboardingStackRoutes.Congratulations}
+                component={CongratulationsScreen}
+            />
+        </DeviceOnboardingStack.Navigator>
+    );
+};
