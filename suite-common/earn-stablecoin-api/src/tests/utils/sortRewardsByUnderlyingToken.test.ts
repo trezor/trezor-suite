@@ -34,7 +34,7 @@ const reward = (
 
 describe('sortRewardsByUnderlyingToken', () => {
     it('puts the underlying-asset reward first', () => {
-        const underlying = reward(USDC, 'lending_interest', 0.04);
+        const underlying = reward(USDC, 'lending', 0.04);
         const incentive = reward(MORPHO, 'protocol_incentive', 0.1);
 
         expect(sortRewardsByUnderlyingToken([incentive, underlying], USDC)).toEqual([
@@ -45,7 +45,7 @@ describe('sortRewardsByUnderlyingToken', () => {
 
     it('matches underlying token by address case-insensitively', () => {
         const underlyingToken: TokenDto = { ...USDC, address: USDC.address!.toUpperCase() };
-        const underlying = reward(USDC, 'lending_interest', 0.04);
+        const underlying = reward(USDC, 'lending', 0.04);
         const incentive = reward(MORPHO, 'protocol_incentive', 0.5);
 
         const [first] = sortRewardsByUnderlyingToken([incentive, underlying], underlyingToken);
@@ -54,7 +54,7 @@ describe('sortRewardsByUnderlyingToken', () => {
     });
 
     it('sorts non-underlying rewards by rate descending', () => {
-        const underlying = reward(USDC, 'lending_interest', 0.04);
+        const underlying = reward(USDC, 'lending', 0.04);
         const incentiveHigh = reward(MORPHO, 'protocol_incentive', 0.2);
         const incentiveLow = reward(ARB, 'protocol_incentive', 0.01);
 
@@ -77,7 +77,7 @@ describe('sortRewardsByUnderlyingToken', () => {
     });
 
     it('falls back to rate-only sort when underlyingToken is undefined', () => {
-        const lending = reward(USDC, 'lending_interest', 0.04);
+        const lending = reward(USDC, 'lending', 0.04);
         const incentive = reward(MORPHO, 'protocol_incentive', 0.2);
 
         expect(sortRewardsByUnderlyingToken([lending, incentive], undefined)).toEqual([
