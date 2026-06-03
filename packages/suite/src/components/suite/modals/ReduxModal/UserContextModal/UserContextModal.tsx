@@ -9,6 +9,7 @@ import {
     EarnInANutshellModal,
     EarnProviderConsentModal,
     StakeModal,
+    TronStakeInANutshellModal,
     UnstakeModal,
 } from 'src/components/earn';
 import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
@@ -151,6 +152,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <UnecoCoinjoinModal />;
         case 'earn-in-a-nutshell':
             return <EarnInANutshellModal {...payload} onCancel={onCancel} />;
+        case 'tron-stake-in-a-nutshell':
+            return <TronStakeInANutshellModal {...payload} onCancel={onCancel} />;
         case 'earn-provider-consent':
             return <EarnProviderConsentModal {...payload} onCancel={onCancel} />;
         case 'stake':

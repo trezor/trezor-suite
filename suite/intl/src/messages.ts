@@ -10115,6 +10115,34 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING_IN_A_NUTSHELL',
         defaultMessage: 'How staking works',
     },
+    TR_EARN_TRON_STAKING_IN_A_NUTSHELL: {
+        id: 'TR_EARN_TRON_STAKING_IN_A_NUTSHELL',
+        defaultMessage: 'Staking in a nutshell',
+    },
+    TR_EARN_TRON_NUTSHELL_RESOURCES: {
+        id: 'TR_EARN_TRON_NUTSHELL_RESOURCES',
+        defaultMessage: 'Get additional energy or bandwidth for your transactions.',
+    },
+    TR_EARN_TRON_NUTSHELL_FREEZE_VOTE: {
+        id: 'TR_EARN_TRON_NUTSHELL_FREEZE_VOTE',
+        defaultMessage: 'Freeze and vote to start earning yield.',
+    },
+    TR_EARN_TRON_NUTSHELL_UNSTAKE: {
+        id: 'TR_EARN_TRON_NUTSHELL_UNSTAKE',
+        defaultMessage: 'Unstake anytime. You can withdraw your funds after 14 days.',
+    },
+    TR_EARN_TRON_FREEZE_TRANSACTION: {
+        id: 'TR_EARN_TRON_FREEZE_TRANSACTION',
+        defaultMessage: 'Freeze TRX transaction',
+    },
+    TR_EARN_TRON_VOTE_TRANSACTION: {
+        id: 'TR_EARN_TRON_VOTE_TRANSACTION',
+        defaultMessage: 'Vote transaction',
+    },
+    TR_EARN_TRON_EARN_REWARDS: {
+        id: 'TR_EARN_TRON_EARN_REWARDS',
+        defaultMessage: 'Earn rewards',
+    },
     TR_EARN_SUPPLYING_IN_A_NUTSHELL: {
         id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
         defaultMessage: 'How stablecoin yield works',
