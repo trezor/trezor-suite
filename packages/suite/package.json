@@ -95,6 +95,7 @@
         "@suite/fee": "workspace:*",
         "@suite/firmware-upgrade": "workspace:*",
         "@suite/flags": "workspace:*",
+        "@suite/formatters": "workspace:*",
         "@suite/github": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
         "@suite/intl": "workspace:*",

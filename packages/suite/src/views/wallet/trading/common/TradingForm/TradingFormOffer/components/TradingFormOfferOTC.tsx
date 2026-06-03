@@ -1,5 +1,6 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
+import { useFiatFromCryptoValue } from '@suite/formatters';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
@@ -15,7 +16,6 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     isTradingBuyContext,

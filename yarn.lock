@@ -14610,6 +14610,7 @@ __metadata:
   resolution: "@suite/fee@workspace:suite/fee"
   dependencies:
     "@suite-common/fee": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/external-links": "workspace:*"
@@ -14621,6 +14622,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
+    react-redux: "npm:9.2.0"
     styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
@@ -14656,6 +14658,18 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/formatters@workspace:*, @suite/formatters@workspace:suite/formatters":
+  version: 0.0.0-use.local
+  resolution: "@suite/formatters@workspace:suite/formatters"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -16693,6 +16707,7 @@ __metadata:
     "@suite/fee": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/formatters": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"

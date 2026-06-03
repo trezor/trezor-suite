@@ -171,14 +171,15 @@
         { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
-        { "path": "../../suite/fee" },
         {
             "path": "../../suite/feature-feedback"
         },
+        { "path": "../../suite/fee" },
         {
             "path": "../../suite/firmware-upgrade"
         },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/formatters" },
         { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"

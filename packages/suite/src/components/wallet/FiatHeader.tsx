@@ -1,3 +1,4 @@
+import { useFiatFromCryptoValue } from '@suite/formatters';
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -7,7 +8,6 @@ import { BigNumber } from '@trezor/utils';
 import { HiddenPlaceholder } from 'src/components/suite';
 
 import { BigAmountValue } from './BigAmountValue';
-import { useFiatFromCryptoValue } from '../../hooks/suite/useFiatFromCryptoValue';
 
 type UseFiatAmountProps = {
     amount: string | AmountUnit; // Todo: `string` only for back compatibility
