@@ -6,6 +6,7 @@ export * from './hooks/useYieldOpportunity';
 export * from './hooks/useGetYieldOpportunities';
 export * from './hooks/useEnterYieldOpportunity';
 export * from './hooks/useExitYieldOpportunity';
+export * from './hooks/useGetVaultByAddress';
 export * from './hooks/merkl-rewards';
 export * from './utils/sortRewardsByUnderlyingToken';
 

@@ -38,7 +38,6 @@ export const STABLECOIN_YIELD_PREFIX = '@suite-common/wallet-core/stablecoin-yie
 export type StablecoinYieldTxReviewState = {
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: FormState;
-    vaultName?: string;
     availableRewards?: YieldClaimReward[];
     serializedTx?: StablecoinYieldSerializedTx;
     accountKey?: AccountKey;
@@ -118,7 +117,6 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
 export const initialStablecoinYieldTxReviewState: StablecoinYieldTxReviewState = {
     precomposedTx: undefined,
     precomposedForm: undefined,
-    vaultName: undefined,
     availableRewards: undefined,
     serializedTx: undefined,
     accountKey: undefined,
@@ -457,14 +455,12 @@ export const stablecoinYieldSlice = createSlice({
             action: PayloadAction<{
                 precomposedTx: PrecomposedTransactionFinal;
                 precomposedForm: FormState;
-                vaultName?: string;
                 availableRewards?: YieldClaimReward[];
                 accountKey: AccountKey;
             }>,
         ) {
             state.txReview.precomposedTx = action.payload.precomposedTx;
             state.txReview.precomposedForm = action.payload.precomposedForm;
-            state.txReview.vaultName = action.payload.vaultName;
             state.txReview.availableRewards = action.payload.availableRewards;
             state.txReview.accountKey = action.payload.accountKey;
             state.txReview.serializedTx = undefined;
@@ -478,7 +474,6 @@ export const stablecoinYieldSlice = createSlice({
         discardTransaction(state) {
             state.txReview.precomposedTx = undefined;
             state.txReview.precomposedForm = undefined;
-            state.txReview.vaultName = undefined;
             state.txReview.availableRewards = undefined;
             state.txReview.serializedTx = undefined;
             state.txReview.accountKey = undefined;
