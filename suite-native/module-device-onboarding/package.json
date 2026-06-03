@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest:native",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
@@ -17,6 +18,7 @@
         "@react-navigation/native-stack": "7.12.0",
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/react-native-skia": "2.5.1",
+        "@suite-common/analytics": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -61,6 +63,7 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite-native/test-utils-store": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }
 }

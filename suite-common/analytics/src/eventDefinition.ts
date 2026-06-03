@@ -1,5 +1,7 @@
 export type AppVersion = `${number}.${number}.${number}` | '?';
 
+export type AnalyticsPlatform = 'desktop' | 'mobile';
+
 export type BaseData = {
     changelog: Array<{ version: AppVersion; notes: string }>;
     description?: string;

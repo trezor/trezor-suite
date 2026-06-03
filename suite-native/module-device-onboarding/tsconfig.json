@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics"
+        },
+        {
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
@@ -49,6 +52,7 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
