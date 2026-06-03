@@ -5,10 +5,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import {
-    type SuiteSyncUncontrolledErrorHandlerDep,
-    createSuiteSyncCompositionRoot,
-} from '@suite-common/suite-sync';
+import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
     createEvoluErrorHandler,
     createEvoluInstanceFactory,
@@ -20,6 +17,7 @@ import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
 import { createOnSharedWorkerUnsupported } from './createOnSharedWorkerUnsupported';
+import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
 type SuiteSyncDesktopCompositionRootDeps = {
@@ -29,8 +27,7 @@ type SuiteSyncDesktopCompositionRootDeps = {
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
     DesktopAnalyticsDep &
-    FetchDep &
-    SuiteSyncUncontrolledErrorHandlerDep;
+    FetchDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
@@ -57,12 +54,17 @@ export const createSuiteSyncDesktopCompositionRoot = (
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         analytics: deps.analytics,
-        subscribeError: suiteSyncErrorHandler => {
+        subscribeError: suiteSyncInternalErrorHandler => {
             evoluDeps.evoluError.subscribe(
-                createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncErrorHandler),
+                createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncInternalErrorHandler),
             );
         },
-        suiteSyncUncontrolledErrorHandler: deps.suiteSyncUncontrolledErrorHandler,
+        suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
+            suiteSyncErrorHandler({
+                error,
+                dispatch: deps.dispatch,
+                deviceStaticSessionId: device?.state?.staticSessionId ?? null,
+            }),
     });
 
     return {

@@ -7,7 +7,6 @@ import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-iden
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type SuiteSyncAnalyticsDep,
-    type SuiteSyncUncontrolledErrorHandlerDep,
     createSuiteSyncCompositionRoot,
 } from '@suite-common/suite-sync';
 import {
@@ -27,8 +26,7 @@ type SuiteSyncNativeCompositionRootDeps = {
 } & SuiteSyncAnalyticsDep &
     PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
-    FetchDep &
-    SuiteSyncUncontrolledErrorHandlerDep;
+    FetchDep;
 
 export const createSuiteSyncNativeCompositionRoot = (
     deps: SuiteSyncNativeCompositionRootDeps,
@@ -52,6 +50,7 @@ export const createSuiteSyncNativeCompositionRoot = (
                 createEvoluErrorHandler(evoluDeps.evoluError, errorHandler),
             );
         },
-        suiteSyncUncontrolledErrorHandler: deps.suiteSyncUncontrolledErrorHandler,
+        // Todo: we need to reuse useSuiteSyncErrorHandler somehow, but we do not have showAlert here.
+        suiteSyncUncontrolledErrorHandler: () => {},
     });
 };
