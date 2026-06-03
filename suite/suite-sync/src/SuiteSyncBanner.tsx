@@ -16,6 +16,10 @@ import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
+import {
+    dismissUnsupportedDeviceBanner,
+    selectIsUnsupportedDeviceBannerDismissed,
+} from './suiteSyncSlice';
 
 type SuiteSyncBannerProps = {
     deviceStaticSessionId: StaticSessionId;
@@ -32,6 +36,9 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
     const suiteSyncInteraction = useSelector(
         (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
             selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    );
+    const isUnsupportedDeviceBannerDismissed = useSelector(
+        selectIsUnsupportedDeviceBannerDismissed,
     );
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
@@ -116,10 +123,22 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
             );
 
         case 'unsupported':
+            if (isUnsupportedDeviceBannerDismissed) {
+                return null;
+            }
+
             return (
                 <Banner
                     icon
                     intent="info"
+                    rightContent={
+                        <Banner.IconButton
+                            icon="x"
+                            onClick={() => dispatch(dismissUnsupportedDeviceBanner())}
+                            data-testid="@notification/suite-sync-unsupported-device/dismiss"
+                            tooltip={{ content: <Translation id="TR_DISMISS" /> }}
+                        />
+                    }
                     data-testid="@notification/suite-sync-unsupported-device"
                     description={<Translation id="TR_SUITE_SYNC_UNSUPPORTED_DEVICE_BANNER" />}
                 />

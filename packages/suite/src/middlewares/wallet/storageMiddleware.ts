@@ -5,6 +5,7 @@ import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/featur
 import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
 import { suiteSettingsActions } from '@suite/settings';
+import { dismissUnsupportedDeviceBanner } from '@suite/suite-sync';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
@@ -217,6 +218,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     updateSuiteSyncDebugEnabled,
                     updateSuiteSyncEnabled,
+                    dismissUnsupportedDeviceBanner,
                     setSuiteSyncRelayUrl,
                 )(action)
             ) {
