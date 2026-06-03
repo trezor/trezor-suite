@@ -50,6 +50,12 @@ export const buildEarnComposeFormState = (
     feeLimit: '',
 });
 
+export const isUserCancelledSignError = (
+    payload: { errorCode?: string; message?: string } | undefined,
+) =>
+    payload?.message === 'tx-cancelled' ||
+    (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
+
 type HandleEarnReviewErrorProps = {
     payload: { error?: string; errorCode?: string; message?: string } | undefined;
     navigation: { pop: () => void };
@@ -57,12 +63,6 @@ type HandleEarnReviewErrorProps = {
     showPendingTransactionConflictAlert: () => void;
     showDeviceDisconnectedAlert: () => void;
 };
-
-export const isUserCancelledSignError = (
-    payload: { errorCode?: string; message?: string } | undefined,
-) =>
-    payload?.message === 'tx-cancelled' ||
-    (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
 
 export const handleEarnReviewError = ({
     payload,

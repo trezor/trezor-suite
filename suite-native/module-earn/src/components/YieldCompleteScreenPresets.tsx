@@ -78,3 +78,79 @@ export const getYieldDepositCompleteRows = ({
         ),
     },
 ];
+
+type GetYieldWithdrawCompleteRowsParams = {
+    accountSymbol: NetworkSymbol;
+    apyValue: ReactNode;
+    receivedAmount: string;
+    receivedTokenContract?: string;
+    withdrawalAmount?: string;
+    withdrawalTokenContract?: string;
+};
+
+export const getYieldWithdrawCompleteRows = ({
+    accountSymbol,
+    apyValue,
+    receivedAmount,
+    receivedTokenContract,
+    withdrawalAmount,
+    withdrawalTokenContract,
+}: GetYieldWithdrawCompleteRowsParams): YieldCompleteSummaryRow[] => [
+    {
+        key: 'status',
+        label: <Translation id="earn.yieldCompleteScreen.status" />,
+        value: (
+            <HStack spacing="sp4" alignItems="center">
+                <Icon name="checkCircle" size="mediumLarge" color="contentBrand" />
+                <Text variant="body-md" color="contentBrand">
+                    <Translation id="earn.yieldCompleteScreen.completed" />
+                </Text>
+            </HStack>
+        ),
+    },
+    {
+        key: 'apy',
+        label: <Translation id="earn.yieldCompleteScreen.apy" />,
+        value: (
+            <Text variant="body-md" color="contentPrimary">
+                {apyValue}
+            </Text>
+        ),
+    },
+    ...(withdrawalAmount
+        ? [
+              {
+                  key: 'withdrawal-amount',
+                  label: <Translation id="earn.yieldCompleteScreen.withdrawalAmount" />,
+                  value: (
+                      <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+                          <CryptoIcon
+                              symbol={accountSymbol}
+                              contractAddress={withdrawalTokenContract}
+                              size="extraSmall"
+                          />
+                          <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
+                              {withdrawalAmount}
+                          </Text>
+                      </HStack>
+                  ),
+              },
+          ]
+        : []),
+    {
+        key: 'received',
+        label: <Translation id="earn.yieldCompleteScreen.received" />,
+        value: (
+            <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+                <CryptoIcon
+                    symbol={accountSymbol}
+                    contractAddress={receivedTokenContract}
+                    size="extraSmall"
+                />
+                <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
+                    {receivedAmount}
+                </Text>
+            </HStack>
+        ),
+    },
+];

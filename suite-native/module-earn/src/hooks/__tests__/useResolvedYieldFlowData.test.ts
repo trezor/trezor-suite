@@ -104,6 +104,7 @@ describe('resolveYieldFlowData', () => {
         expect(result.receiptToken.symbol).toBe('trSHUSDCp');
         expect(result.receiptToken.contractAddress).toBe(receiptTokenAddress);
         expect(result.flowData.token.symbol).toBe('USDC');
+        expect(result.suppliedSharesAmount).toBe('1.5');
     });
 
     it('keeps receipt token data for the existing output-token overview entry', () => {
@@ -117,9 +118,11 @@ describe('resolveYieldFlowData', () => {
             throw new Error('Expected resolved yield flow data.');
         }
 
-        expect(result.token.symbol).toBe('trSHUSDCp');
-        expect(result.token.decimals).toBe(18);
-        expect(result.token.balance).toBe('1.5');
+        expect(result.token.symbol).toBe('USDC');
+        expect(result.token.decimals).toBe(6);
+        expect(result.token.balance).toBe('25');
+        expect(result.receiptToken.symbol).toBe('trSHUSDCp');
+        expect(result.suppliedSharesAmount).toBe('1.5');
         expect(result.flowKey).toContain(receiptTokenAddress);
     });
 });

@@ -112,16 +112,23 @@ export type YieldDepositRevokeReviewParams = YieldFlowParams & {
     isAmountUnlimited: boolean;
 };
 
+export type YieldWithdrawParams = YieldFlowParams & {
+    withdrawInputUnit?: 'asset' | 'shares';
+};
+
 export type YieldStackParamList = {
     [YieldStackRoutes.HowYieldWorks]: YieldFlowParams;
     [YieldStackRoutes.YieldConsents]: YieldFlowParams;
     [YieldStackRoutes.YieldDepositApproval]: YieldFlowParams;
     [YieldStackRoutes.YieldDeposit]: YieldFlowParams;
     [YieldStackRoutes.YieldDepositRevoke]: YieldDepositRevokeParams;
+    [YieldStackRoutes.YieldWithdraw]: YieldWithdrawParams;
     [YieldStackRoutes.YieldDepositApprovalReview]: YieldDepositApprovalReviewParams;
     [YieldStackRoutes.YieldDepositRevokeReview]: YieldDepositRevokeReviewParams;
     [YieldStackRoutes.YieldDepositReview]: YieldFlowParams;
+    [YieldStackRoutes.YieldWithdrawReview]: YieldWithdrawParams;
     [YieldStackRoutes.YieldDepositComplete]: YieldFlowParams;
+    [YieldStackRoutes.YieldWithdrawComplete]: YieldWithdrawParams;
 };
 
 export type HomeStackParamList = {

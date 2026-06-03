@@ -24,7 +24,7 @@ import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useResolvedYieldFlowData, useWorkInProgressAlert } from '@suite-native/module-earn';
+import { useResolvedYieldFlowData } from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -45,16 +45,16 @@ export const StablecoinYieldTokenOverview = ({
     accountKey,
     tokenContract,
 }: StablecoinYieldTokenOverviewProps) => {
-    const handleShowWithdrawWorkInProgressAlert = useWorkInProgressAlert();
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
-    const { account, apy, resolutionStatus, token, vault } = useResolvedYieldFlowData({
-        accountKey,
-        tokenContract,
-        displayError: false,
-    });
+    const { account, apy, resolutionStatus, suppliedSharesAmount, vault } =
+        useResolvedYieldFlowData({
+            accountKey,
+            tokenContract,
+            displayError: false,
+        });
     const apyValueText = apy !== null ? `~${apy.toFixed(2)}%` : null;
 
     const handleOpenApyAlert = useCallback(() => {
@@ -100,18 +100,28 @@ export const StablecoinYieldTokenOverview = ({
         });
     }, [accountKey, navigation, vault]);
 
+    const handleWithdrawPress = useCallback(() => {
+        navigation.navigate(RootStackRoutes.YieldNavigator, {
+            screen: YieldStackRoutes.YieldWithdraw,
+            params: {
+                accountKey,
+                tokenContract,
+            },
+        });
+    }, [accountKey, navigation, tokenContract]);
+
     if (resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 
     const apyColor = apyValueText === null ? 'contentSecondary' : 'contentPrimary';
     const apyValue = apyValueText ?? <Translation id="earn.notAvailable" />;
     const depositedPosition =
-        account && token?.balance !== undefined
+        account && suppliedSharesAmount !== null
             ? {
                   balance: getConvertedOutputTokenBalanceToInputTokenAmount({
                       networkSymbol: account.symbol,
                       token: vault.token,
                       outputToken: vault.outputToken,
-                      outputTokenBalance: token.balance,
+                      outputTokenBalance: suppliedSharesAmount,
                       pricePerShareState: vault.state?.pricePerShareState,
                   }),
                   contractAddress: toTokenAddress(vault.token.address),
@@ -192,8 +202,7 @@ export const StablecoinYieldTokenOverview = ({
                             </Box>
                             <Box flex={1}>
                                 <Button
-                                    // TODO: Remove once the stablecoin yield withdraw flow is implemented.
-                                    onPress={handleShowWithdrawWorkInProgressAlert}
+                                    onPress={handleWithdrawPress}
                                     intent="brand"
                                     priority="secondary"
                                     size="medium"

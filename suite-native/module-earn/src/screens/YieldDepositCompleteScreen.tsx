@@ -19,6 +19,7 @@ import {
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
 
+import { ApyValue } from '../components/ApyValue';
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
@@ -86,12 +87,10 @@ export const YieldDepositCompleteScreen = () => {
             isEllipsisAppended: false,
             maxDisplayedDecimals: 8,
         });
-        const apyValue =
-            apy === null ? <Translation id="earn.notAvailableShort" /> : `${apy.toFixed(2)}%`;
 
         return getYieldDepositCompleteRows({
             accountSymbol: account.symbol,
-            apyValue,
+            apyValue: <ApyValue apy={apy} />,
             receivedAmount,
             receivedTokenContract: flowData.receiptToken.contractAddress ?? undefined,
             sentAmount,

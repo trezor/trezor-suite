@@ -35,6 +35,7 @@ type UnresolvedYieldFlowData = {
     receiptToken: YieldFlowDisplayToken | null;
     resolutionStatus: Exclude<YieldFlowResolutionStatus, 'resolved'>;
     flowData: YieldFlowResolvedData | null;
+    suppliedSharesAmount: string | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
     vault: YieldDto | null;
@@ -49,6 +50,7 @@ type YieldFlowDataResolved = {
     receiptToken: YieldFlowDisplayToken;
     flowData: YieldFlowResolvedData;
     resolutionStatus: 'resolved';
+    suppliedSharesAmount: string;
     token: YieldFlowToken;
     tokenSymbol: TokenSymbol;
     vault: YieldDto;
@@ -78,6 +80,7 @@ const defaultFlowData: ResolvedYieldFlowData = {
     providerName: null,
     receiptToken: null,
     resolutionStatus: 'missing-vault',
+    suppliedSharesAmount: null,
     token: null,
     flowData: null,
     tokenSymbol: null,
@@ -121,7 +124,7 @@ export const resolveYieldFlowData = ({
                   ) === normalizedContract,
           );
 
-    if (!vault?.outputToken) {
+    if (!vault?.outputToken?.address) {
         return defaultFlowData;
     }
 
@@ -144,16 +147,23 @@ export const resolveYieldFlowData = ({
             resolutionStatus: 'missing-network',
         };
     }
-    const flowTokenContract =
-        yieldId && vault.token.address
-            ? getContractAddressForNetworkSymbol(account.symbol, vault.token.address)
-            : normalizedContract;
+    const underlyingTokenContract = vault.token.address
+        ? getContractAddressForNetworkSymbol(account.symbol, vault.token.address)
+        : normalizedContract;
+    const outputTokenContract = getContractAddressForNetworkSymbol(
+        account.symbol,
+        vault.outputToken.address,
+    );
     const token = getMatchingToken({
         account,
-        tokenContract: flowTokenContract,
+        tokenContract: underlyingTokenContract,
+    });
+    const outputToken = getMatchingToken({
+        account,
+        tokenContract: outputTokenContract,
     });
 
-    if (!token && !yieldId) {
+    if (!outputToken && !yieldId) {
         return {
             ...defaultFlowData,
             account,
@@ -163,14 +173,15 @@ export const resolveYieldFlowData = ({
     }
 
     const receiptToken = {
-        symbol: vault.outputToken.symbol,
-        decimals: vault.outputToken.decimals,
-        contractAddress: vault.outputToken.address,
+        symbol: outputToken?.symbol ?? vault.outputToken.symbol,
+        decimals: outputToken?.decimals ?? vault.outputToken.decimals,
+        contractAddress: outputToken?.contract ?? vault.outputToken.address,
         coingeckoId: vault.outputToken.coinGeckoId ?? vault.token.coinGeckoId,
     };
+
     const tokenSymbol = toTokenSymbol((token?.symbol ?? vault.token.symbol).toUpperCase());
     const flowKey = getStablecoinYieldFlowKey({
-        tokenContract: flowTokenContract,
+        tokenContract: yieldId ? underlyingTokenContract : normalizedContract,
         accountKey: account.key,
         yieldId: vault.id,
     });
@@ -180,7 +191,7 @@ export const resolveYieldFlowData = ({
         account,
         token: {
             balance: token?.balance ?? '0',
-            contractAddress: token?.contract ?? flowTokenContract,
+            contractAddress: token?.contract ?? underlyingTokenContract,
             decimals: token?.decimals ?? vault.token.decimals,
             networkSymbol: account.symbol,
             symbol: token?.symbol ?? tokenSymbol,
@@ -199,6 +210,7 @@ export const resolveYieldFlowData = ({
         flowData,
         flowKey,
         resolutionStatus: 'resolved',
+        suppliedSharesAmount: outputToken?.balance ?? '0',
         tokenSymbol,
     };
 };
