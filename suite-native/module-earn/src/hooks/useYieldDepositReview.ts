@@ -16,22 +16,25 @@ import type {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { USER_CANCELLED_ERROR_CODES } from '../constants';
-import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
+import { useYieldDepositReviewBackNavigation } from './useYieldDepositReviewBackNavigation';
+import { type YieldDepositReviewStatus, type YieldReviewSigningResult } from '../types';
+import { isUserCancelledSignError } from '../utils';
+import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
 
 type UseYieldDepositReviewParams = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
+    onReviewLeave?: () => void;
 };
 
 type YieldDepositReviewActionStatus = 'idle' | 'signing' | 'sending';
-type YieldDepositReviewStatus = YieldDepositReviewActionStatus | 'signed';
 
 type UseYieldDepositReviewResult = {
     depositStatus: YieldDepositReviewStatus;
-    handleSubmitDepositReview: () => Promise<void>;
     handleDepositSubmitted: () => Promise<void>;
+    leaveReviewFromDeviceCancel: () => void;
+    startDepositReview: () => Promise<YieldReviewSigningResult>;
 };
 
 type NavigationProps = StackNavigationProps<
@@ -39,13 +42,10 @@ type NavigationProps = StackNavigationProps<
     YieldStackRoutes.YieldDepositReview
 >;
 
-const isUserCancelledSignError = (payload: { errorCode?: string; message?: string } | undefined) =>
-    payload?.message === 'tx-cancelled' ||
-    (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
-
 export const useYieldDepositReview = ({
     flowData,
     flowKey,
+    onReviewLeave,
 }: UseYieldDepositReviewParams): UseYieldDepositReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
@@ -62,10 +62,23 @@ export const useYieldDepositReview = ({
     const isDepositSigned = txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
     const depositStatus: YieldDepositReviewStatus =
         depositActionStatus === 'idle' && isDepositSigned ? 'signed' : depositActionStatus;
+    const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
+        useYieldDepositReviewBackNavigation({
+            depositStatus,
+            onReviewLeave,
+        });
 
-    const handleSubmitDepositReview = useCallback(async () => {
+    const startDepositReview = useCallback(async (): Promise<YieldReviewSigningResult> => {
+        if (depositStatus === 'signed') {
+            return 'signed';
+        }
+
+        if (depositStatus === 'signing' || depositStatus === 'sending') {
+            return 'already-running';
+        }
+
         if (depositStatus !== 'idle') {
-            return;
+            return 'not-ready';
         }
 
         setDepositActionStatus('signing');
@@ -85,15 +98,23 @@ export const useYieldDepositReview = ({
         if (!deviceAccessResponse.success) {
             showSignTransactionFailedAlert();
 
-            return;
+            return 'failed';
         }
 
         const signResponse = deviceAccessResponse.payload;
         const isSignRejected = isRejected(signResponse);
 
-        if (isSignRejected && !isUserCancelledSignError(signResponse.payload)) {
-            showSignTransactionFailedAlert();
+        if (isSignRejected && isUserCancelledSignError(signResponse.payload)) {
+            return 'cancelled';
         }
+
+        if (isSignRejected) {
+            showSignTransactionFailedAlert();
+
+            return 'failed';
+        }
+
+        return 'signed';
     }, [depositStatus, dispatch, flowData, flowKey, showSignTransactionFailedAlert]);
 
     const handleDepositSubmitted = useCallback(async () => {
@@ -126,12 +147,14 @@ export const useYieldDepositReview = ({
             return;
         }
 
+        markReviewNavigationSuccess();
         navigation.goBack();
     }, [
         depositStatus,
         dispatch,
         flowData,
         flowKey,
+        markReviewNavigationSuccess,
         navigation,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
@@ -139,7 +162,8 @@ export const useYieldDepositReview = ({
 
     return {
         depositStatus,
-        handleSubmitDepositReview,
         handleDepositSubmitted,
+        leaveReviewFromDeviceCancel,
+        startDepositReview,
     };
 };

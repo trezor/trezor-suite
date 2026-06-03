@@ -2802,28 +2802,14 @@ export const messages = {
             backToOverview: 'Back to overview',
         },
         yieldReview: {
-            approvalCard: {
-                title: 'Approve',
-            },
             depositCard: {
                 title: 'Deposit',
-            },
-            revokeCard: {
-                title: 'Revoke',
             },
             receiveCard: {
                 title: 'Receive',
             },
-            approvalDetailsCard: {
-                title: 'Approval details',
-                approvalLimit: 'Approval limit',
-            },
             transactionDetailsCard: {
                 title: 'Transaction details',
-            },
-            revokeDetailsCard: {
-                title: 'Revoke details',
-                limit: 'Limit',
             },
             alerts: {
                 primaryButton: 'Go to homepage',

@@ -27,8 +27,8 @@ import {
 import { useDebounce } from '@trezor/react-utils';
 
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
+import { type YieldAllowanceFormDraftTransactionType } from '../types';
 import {
-    type YieldAllowanceFormDraftTransactionType,
     getYieldAllowanceFormDraftKey,
     updateYieldAllowanceSelectedFeeLevelThunk,
 } from '../yieldApprovalThunks';

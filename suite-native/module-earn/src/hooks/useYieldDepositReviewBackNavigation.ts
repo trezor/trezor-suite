@@ -3,51 +3,37 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    cancelSignSendFormTransactionThunk,
-    handleYieldApproveCancelThunk,
-    sendFormActions,
-} from '@suite-common/wallet-core';
-import { useDisableIOSGesture } from '@suite-native/navigation';
+import { stablecoinYieldActions } from '@suite-common/wallet-core';
+import TrezorConnect from '@trezor/connect';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
-import { type YieldAllowanceFormDraftTransactionType } from '../types';
+import { type YieldDepositReviewStatus } from '../types';
 
-type UseYieldApprovalReviewNavigationParams = {
-    flowKey: string;
+type UseYieldDepositReviewBackNavigationParams = {
+    depositStatus: YieldDepositReviewStatus;
     onReviewLeave?: () => void;
-    shouldConfirmCancellation: boolean;
-    transactionType: YieldAllowanceFormDraftTransactionType;
 };
 
-export const useYieldApprovalReviewNavigation = ({
-    flowKey,
+export const useYieldDepositReviewBackNavigation = ({
+    depositStatus,
     onReviewLeave,
-    shouldConfirmCancellation,
-    transactionType,
-}: UseYieldApprovalReviewNavigationParams) => {
+}: UseYieldDepositReviewBackNavigationParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
     const isCleanupHandledRef = useRef(false);
 
-    useDisableIOSGesture();
+    const discardDepositReview = useCallback(() => {
+        dispatch(stablecoinYieldActions.discardTransaction());
+    }, [dispatch]);
 
-    const cleanupReview = useCallback(() => {
-        dispatch(sendFormActions.discardTransaction());
-
-        if (transactionType === 'approve') {
-            dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
+    const cleanupCanceledDepositReview = useCallback(() => {
+        if (depositStatus === 'signing') {
+            TrezorConnect.cancel({ reason: 'tx-cancelled' });
         }
-    }, [dispatch, flowKey, transactionType]);
 
-    const cleanupCanceledReview = useCallback(() => {
-        dispatch(cancelSignSendFormTransactionThunk());
-
-        if (transactionType === 'approve') {
-            dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
-        }
-    }, [dispatch, flowKey, transactionType]);
+        discardDepositReview();
+    }, [depositStatus, discardDepositReview]);
 
     const markReviewNavigationSuccess = useCallback(() => {
         isCleanupHandledRef.current = true;
@@ -55,12 +41,17 @@ export const useYieldApprovalReviewNavigation = ({
 
     const leaveReviewFromDeviceCancel = useCallback(() => {
         onReviewLeave?.();
-        cleanupCanceledReview();
+        cleanupCanceledDepositReview();
         isCleanupHandledRef.current = true;
         navigation.goBack();
-    }, [cleanupCanceledReview, navigation, onReviewLeave]);
+    }, [cleanupCanceledDepositReview, navigation, onReviewLeave]);
 
     useEffect(() => {
+        const shouldConfirmCancellation =
+            depositStatus === 'signing' ||
+            depositStatus === 'signed' ||
+            depositStatus === 'sending';
+
         const unsubscribe = navigation.addListener('beforeRemove', event => {
             if (isCleanupHandledRef.current) {
                 return;
@@ -71,7 +62,7 @@ export const useYieldApprovalReviewNavigation = ({
                 showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
                     if (wasReviewCanceled) {
                         onReviewLeave?.();
-                        cleanupCanceledReview();
+                        cleanupCanceledDepositReview();
                         isCleanupHandledRef.current = true;
                         unsubscribe();
                         navigation.dispatch(event.data.action);
@@ -83,22 +74,22 @@ export const useYieldApprovalReviewNavigation = ({
 
             if (event.data.action.type === 'GO_BACK') {
                 onReviewLeave?.();
-                cleanupReview();
+                discardDepositReview();
 
                 return;
             }
 
             onReviewLeave?.();
-            cleanupReview();
+            discardDepositReview();
         });
 
         return unsubscribe;
     }, [
-        cleanupCanceledReview,
-        cleanupReview,
+        cleanupCanceledDepositReview,
+        depositStatus,
+        discardDepositReview,
         navigation,
         onReviewLeave,
-        shouldConfirmCancellation,
         showReviewCancellationAlert,
     ]);
 

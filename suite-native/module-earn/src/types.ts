@@ -11,6 +11,17 @@ export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
 export type YieldApprovalLimitType = 'per-deposit' | 'unlimited';
 
+export type YieldAllowanceFormDraftTransactionType = 'approve' | 'revoke';
+
+export type YieldDepositReviewStatus = 'idle' | 'signing' | 'sending' | 'signed';
+
+export type YieldReviewSigningResult =
+    | 'signed'
+    | 'cancelled'
+    | 'failed'
+    | 'not-ready'
+    | 'already-running';
+
 export type StakingEarnItem = {
     id: string;
     type: 'staking';
