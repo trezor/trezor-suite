@@ -167,6 +167,10 @@ export type UserContextPayload =
           yieldContext?: EarnYieldContext;
       }
     | {
+          type: 'tron-stake-in-a-nutshell';
+          actionType?: EarnModalAction;
+      }
+    | {
           type: 'stake';
           flow: StakeModalFlow;
           account: Account;

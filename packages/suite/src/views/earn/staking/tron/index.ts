@@ -1,0 +1,1 @@
+export { EarnStakingTron } from './EarnStakingTron';

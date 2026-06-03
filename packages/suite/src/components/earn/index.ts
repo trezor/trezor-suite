@@ -2,6 +2,7 @@ export { EarnInANutshellModal } from './modals/EarnInANutshell/EarnInANutshellMo
 export { StakingEarnInANutshellModal } from './modals/EarnInANutshell/StakingEarnInANutshellModal';
 export { YieldEarnInANutshellModal } from './modals/EarnInANutshell/YieldEarnInANutshellModal';
 export { UpdateEarnInANutshellModal } from './modals/EarnInANutshell/UpdateEarnInANutshellModal';
+export { TronStakeInANutshellModal } from './modals/EarnInANutshell/TronStakeInANutshellModal';
 export { EarnClaimModal } from './modals/EarnClaimModal/EarnClaimModal';
 export { EarnProviderConsentModal } from './modals/EarnProviderConsent/EarnProviderConsentModal';
 export { StakingEarnProviderConsentModal } from './modals/EarnProviderConsent/StakingEarnProviderConsentModal';
@@ -16,6 +17,8 @@ export { EarnException } from './yield/common/EarnException';
 
 export { YieldClaim } from './yield/claim/YieldClaim';
 export { YieldClaimPageHeader } from './yield/claim/YieldClaimPageHeader';
+export { TronStakePageHeader } from './staking/tron/TronStakePageHeader';
+export { TronStake } from './staking/tron/TronStake';
 export { YieldSupply } from './yield/supply/YieldSupply';
 export { YieldWithdraw } from './yield/withdraw/YieldWithdraw';
 export { EarnSupplyingInfo } from './modals/EarnInANutshell/components/EarnSupplyingInfo';
