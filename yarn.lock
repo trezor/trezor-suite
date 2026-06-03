@@ -10471,6 +10471,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/fee@workspace:suite-common/fee":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/fee@workspace:suite-common/fee"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/feedback@workspace:*, @suite-common/feedback@workspace:suite-common/feedback":
   version: 0.0.0-use.local
   resolution: "@suite-common/feedback@workspace:suite-common/feedback"
@@ -14589,6 +14595,12 @@ __metadata:
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
     styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
+"@suite/fee@workspace:suite/fee":
+  version: 0.0.0-use.local
+  resolution: "@suite/fee@workspace:suite/fee"
   languageName: unknown
   linkType: soft
 
