@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/fee" },
         {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
             "path": "../../suite-common/wallet-types"
         },
         {

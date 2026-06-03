@@ -1,4 +1,4 @@
-import { FeeCard, FeeCardsWrapper, feeLevelTranslationMap } from '@suite/fee';
+import { DustPreventionNotice, FeeCard, FeeCardsWrapper, feeLevelTranslationMap } from '@suite/fee';
 import { Translation } from '@suite/intl';
 import { type FeeOptionType, useFeesContext } from '@suite-common/fee';
 import { formatDurationStrict } from '@suite-common/suite-utils';
@@ -8,8 +8,6 @@ import { FeeRate } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useLocales, useSelector } from 'src/hooks/suite';
-
-import { DustPreventionNotice } from '../../DustPreventionNotice';
 
 type BitcoinFeeCardsProps = {
     feeOptions: FeeOptionType[];
