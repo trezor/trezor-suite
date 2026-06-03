@@ -1,17 +1,9 @@
 import { type Meta, type StoryObj } from '@storybook/react';
-import styled from 'styled-components';
 
-import { isNetworkIconSymbol, networkIconSymbolMap } from '@suite-common/icons';
-import { Column, H2, Paragraph, StoryColumn } from '@trezor/components';
+import { isNetworkIconSymbol, networkIconSymbolMap } from '@suite-common/icons/src/iconUtils';
+import { Column, Grid, Paragraph } from '@trezor/components';
 
-import { NetworkIcon } from './NetworkIcon';
-
-const WrapperIcons = styled.div`
-    display: grid;
-    width: 100%;
-    gap: 5px;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-`;
+import { NetworkIcon, allowedNetworkIconSizes } from './NetworkIcon';
 
 const meta: Meta<typeof NetworkIcon> = {
     title: 'NetworkIcon',
@@ -21,33 +13,35 @@ export default meta;
 
 export const All: StoryObj = {
     render: () => (
-        <StoryColumn minWidth={700}>
-            <H2 margin={{ bottom: 2 }}>Network Icons</H2>
-            <Paragraph>All available network SVG icons</Paragraph>
-            <WrapperIcons>
-                {Object.keys(networkIconSymbolMap).map(networkSymbol => (
-                    <Column
-                        key={networkSymbol}
-                        minHeight={100}
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                        <Paragraph margin={{ bottom: 8 }} intent="neutral" priority="secondary">
-                            {networkSymbol}
-                        </Paragraph>
-                        {isNetworkIconSymbol(networkSymbol) && (
-                            <NetworkIcon networkSymbol={networkSymbol} size={32} />
-                        )}
-                    </Column>
-                ))}
-            </WrapperIcons>
-        </StoryColumn>
+        <Grid
+            columns="repeat(auto-fit, minmax(120px, 1fr))"
+            columnGap={16}
+            rowGap={48}
+            padding={{ vertical: 32 }}
+        >
+            {Object.keys(networkIconSymbolMap).map(networkSymbol => (
+                <Column key={networkSymbol} justifyContent="center" alignItems="center" gap={12}>
+                    {isNetworkIconSymbol(networkSymbol) && (
+                        <NetworkIcon networkSymbol={networkSymbol} size={40} />
+                    )}
+                    <Paragraph intent="neutral" priority="secondary" isMonospaced>
+                        {networkSymbol}
+                    </Paragraph>
+                </Column>
+            ))}
+        </Grid>
     ),
 };
 
 export const Single: StoryObj<typeof NetworkIcon> = {
     args: {
         networkSymbol: 'btc',
-        size: 32,
+        size: 64,
+    },
+    argTypes: {
+        size: {
+            options: allowedNetworkIconSizes,
+            control: { type: 'select' },
+        },
     },
 };

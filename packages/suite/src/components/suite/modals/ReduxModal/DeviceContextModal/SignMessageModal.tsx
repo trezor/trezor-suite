@@ -109,7 +109,7 @@ export const SignMessageModal = ({
                     >
                         {network && (
                             <Row gap={spacings.xxs}>
-                                <CoinLogo size={14} symbol={network.symbol} />
+                                <CoinLogo size={16} symbol={network.symbol} />
                                 {account ? (
                                     <AccountLabel
                                         account={account}

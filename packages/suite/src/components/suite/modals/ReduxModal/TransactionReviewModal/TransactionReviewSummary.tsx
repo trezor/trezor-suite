@@ -87,7 +87,7 @@ export const TransactionReviewSummary = ({
             <Row justifyContent="space-between">
                 <Row columnGap={spacings.md} rowGap={spacings.xxs} flexWrap="wrap">
                     <Row gap={spacings.xxs}>
-                        <CoinLogo size={14} symbol={symbol} />
+                        <CoinLogo size={16} symbol={symbol} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge

@@ -12,7 +12,7 @@ export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceIm
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export { CoinLogo, type CoinLogoType } from './components/CoinLogo/CoinLogo';
-export { isCoinSymbol } from './constants/coins';
+export { isCryptoIconSymbol as isCoinSymbol } from '@suite-common/icons/src/iconUtils';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';
 export * from './components/NetworkIconSet/NetworkIconSet';
@@ -40,7 +40,7 @@ export {
     allowedAssetLogoSizes,
 } from './components/AssetLogo/AssetLogoWithId';
 export { shouldShowNetworkIcon } from './components/AssetLogo/assetLogoUtils';
-export { isNetworkIconSymbol as isNetworkSymbolWithIcon } from '@suite-common/icons';
+export { isNetworkIconSymbol as isNetworkSymbolWithIcon } from '@suite-common/icons/src/iconUtils';
 export * from './components/TopAssets/TopAssets';
 export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
 export { TransactionNotification } from './components/Notifications/TransactionNotification';

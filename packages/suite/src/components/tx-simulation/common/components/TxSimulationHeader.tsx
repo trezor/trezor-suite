@@ -21,7 +21,7 @@ export function TxSimulationHeader({ account, children }: TxSimulationHeaderProp
         >
             {account && (
                 <Row gap={spacings.xxs}>
-                    <CoinLogo size={14} symbol={account.symbol} />
+                    <CoinLogo size={16} symbol={account.symbol} />
                     <AccountLabel
                         account={account}
                         showAccountTypeBadge

@@ -1,4 +1,4 @@
-import { isNetworkIconSymbol } from '@suite-common/icons';
+import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
 import {
     type NetworkSymbolExtended,
     getNetwork,

@@ -25,6 +25,7 @@ export const cryptoIcons = {
     pol: require('../cryptoAssets/cryptoIcons/pol.svg'),
     regtest: require('../cryptoAssets/cryptoIcons/regtest.svg'),
     sol: require('../cryptoAssets/cryptoIcons/sol.svg'),
+    tada: require('../cryptoAssets/cryptoIcons/tada.svg'),
     test: require('../cryptoAssets/cryptoIcons/test.svg'),
     teth: require('../cryptoAssets/cryptoIcons/teth.svg'),
     thod: require('../cryptoAssets/cryptoIcons/thod.svg'),
@@ -35,7 +36,9 @@ export const cryptoIcons = {
     txrp: require('../cryptoAssets/cryptoIcons/txrp.svg'),
     vtc: require('../cryptoAssets/cryptoIcons/vtc.svg'),
     xlm: require('../cryptoAssets/cryptoIcons/xlm.svg'),
+    xmr: require('../cryptoAssets/cryptoIcons/xmr.svg'),
     xrp: require('../cryptoAssets/cryptoIcons/xrp.svg'),
+    xtz: require('../cryptoAssets/cryptoIcons/xtz.svg'),
     zec: require('../cryptoAssets/cryptoIcons/zec.svg'),
 } as const;
 export type CryptoIconName = keyof typeof cryptoIcons;

@@ -2,8 +2,6 @@ export type ImageType = keyof typeof IMAGES;
 
 export const IMAGES = {
     APP_STORE: 'app-store.svg',
-    CONFIRM_EVM_EXPLANATION_ETH: 'confirm-evm-explanation-eth.svg',
-    CONFIRM_EVM_EXPLANATION_OTHER: 'confirm-evm-explanation-other.svg',
     CONFIRM_FW_INSTALLATION_SCREEN_T1B1: 'confirm-fw-installation-screen-t1b1.png',
     CONNECTOR: 'connector.webp',
     CONNECT_DEVICE: 'connect-device.svg',

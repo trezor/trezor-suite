@@ -61,6 +61,12 @@ const svgoConfig = {
             name: 'removeViewBox',
             active: false,
         },
+        {
+            name: 'addAttributesToSVGElement',
+            params: {
+                attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }],
+            },
+        },
         'prefixIds',
         // it's necessary to remove all dimension tags to allow resizing
         'removeDimensions',

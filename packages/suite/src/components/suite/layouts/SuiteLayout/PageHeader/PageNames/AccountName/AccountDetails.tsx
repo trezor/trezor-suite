@@ -103,7 +103,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     return (
         <DetailsContainer initial={false} animate={controls}>
             <Row gap={4} overflow="hidden">
-                <CoinLogo size={36} symbol={symbol} type="token" />
+                <CoinLogo size={40} symbol={symbol} type="token" />
                 <Column
                     overflow="hidden"
                     // To accommodate the labeling component

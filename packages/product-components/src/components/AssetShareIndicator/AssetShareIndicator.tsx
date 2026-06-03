@@ -22,6 +22,7 @@ const Container = styled.div`
 export interface AssetShareIndicatorProps extends CoinLogoProps {
     symbol: NetworkSymbol;
     percentageShare?: number;
+    index?: number;
 }
 
 interface ProgressCircleProps extends Pick<

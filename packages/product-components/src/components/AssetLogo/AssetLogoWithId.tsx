@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { isNetworkIconSymbol } from '@suite-common/icons';
+import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
 import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
@@ -229,8 +229,8 @@ export const AssetLogoWithId = ({
         resolvedLogoCache.set(cacheKey, current);
     };
 
-    return (
-        <Container $size={size} {...frameProps}>
+    const logo = (
+        <>
             {showPlaceholder && (
                 <AssetInitials size={size} withTooltip={placeholderWithTooltip}>
                     {placeholder}
@@ -252,9 +252,17 @@ export const AssetLogoWithId = ({
                     />
                 </ElevationUp>
             )}
+        </>
+    );
 
-            {showNetworkIcon && symbol && isNetworkIconSymbol(symbol) && (
-                <NetworkIconBadge networkSymbol={symbol} parentSize={size} />
+    return (
+        <Container $size={size} {...frameProps}>
+            {showNetworkIcon && symbol && isNetworkIconSymbol(symbol) ? (
+                <NetworkIconBadge networkSymbol={symbol} parentSize={size}>
+                    {logo}
+                </NetworkIconBadge>
+            ) : (
+                logo
             )}
         </Container>
     );

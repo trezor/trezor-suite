@@ -138,7 +138,7 @@ export const ConfirmValueModal = ({
                 description={
                     account && (
                         <Row gap={spacings.xxs}>
-                            <CoinLogo size={14} symbol={account.symbol} />
+                            <CoinLogo size={16} symbol={account.symbol} />
                             <AccountLabel
                                 account={account}
                                 accountTypeBadgeSize="small"
