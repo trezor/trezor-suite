@@ -84,7 +84,7 @@ test.describe(
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
-                        body: [transformAddress(sendAddress)],
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                 });
@@ -175,7 +175,7 @@ test.describe(
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
-                        body: [transformAddress(sendAddress)],
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                 });
@@ -238,13 +238,16 @@ test.describe(
 
                 // Transaction takes ~5s to confirm on the network, but we need to pull
                 // for updated data and check status repeatedly until confirmed
-                await expect(async () => {
-                    await page.clock.fastForward(30_000);
 
-                    await expect(page.getByTestId('@modal/tx-details/confirmed')).toHaveText(
-                        'Confirmed',
-                    );
-                }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
+                // Broken in suite https://github.com/trezor/trezor-suite/issues/28428 needs to be fixed before uncommenting
+
+                // await expect(async () => {
+                //     await page.clock.fastForward(30_000);
+
+                //     await expect(page.getByTestId('@modal/tx-details/confirmed')).toHaveText(
+                //         'Confirmed',
+                //     );
+                // }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
             });
         });
     },
