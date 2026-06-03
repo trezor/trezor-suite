@@ -38,6 +38,10 @@ const vault = {
         description: '',
         underMaintenance: false,
         deprecated: false,
+        logoURI: '',
+        documentation: '',
+        supportedStandards: [],
+        supportsCampaigns: false,
     },
     token: {
         address: underlyingTokenAddress,
@@ -65,7 +69,7 @@ const vault = {
         enter: true,
         exit: true,
     },
-} satisfies YieldDto;
+} satisfies Omit<YieldDto, 'tokens' | 'mechanics'> as unknown as YieldDto;
 
 const resolve = ({
     tokenContract,

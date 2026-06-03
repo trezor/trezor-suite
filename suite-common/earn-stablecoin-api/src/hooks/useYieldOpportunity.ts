@@ -1,9 +1,7 @@
-import { useMemo } from 'react';
-
 import { type YieldDto } from '@suite-common/earn-stablecoin-defs';
-import { useFreshRef } from '@trezor/react-utils';
+import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
-import { useAllYieldOpportunities } from './useAllYieldOpportunities';
+import { getYield } from '../services';
 
 interface UseYieldOpportunityProps<T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto> {
     select?: (yieldOpportunity: YieldDto) => T;
@@ -13,24 +11,20 @@ const defaultSelect = <T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto>
     yieldOpportunity: YieldDto,
 ): T => yieldOpportunity as T;
 
-// TODO: add new endpoint for this
 export function useYieldOpportunity<T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto>(
     vaultId: string | undefined,
     { select = defaultSelect }: UseYieldOpportunityProps<T> = {},
 ) {
-    const { data: yieldOpportunities, ...queryResult } = useAllYieldOpportunities({
+    return useQuery({
         enabled: Boolean(vaultId),
+        queryKey: commonQueryKeys.yieldOpportunities(vaultId),
+        async queryFn({ signal }) {
+            const yieldOpportunity = await getYield({
+                routeParams: { vaultId: vaultId! },
+                signal,
+            });
+
+            return select(yieldOpportunity);
+        },
     });
-    const selectRef = useFreshRef(select);
-
-    const data = useMemo<T | undefined>(() => {
-        const yieldOpportunity = yieldOpportunities.find(vault => vault.id === vaultId);
-
-        return yieldOpportunity ? selectRef.current(yieldOpportunity) : undefined;
-    }, [yieldOpportunities, vaultId, selectRef]);
-
-    return {
-        ...queryResult,
-        data,
-    };
 }

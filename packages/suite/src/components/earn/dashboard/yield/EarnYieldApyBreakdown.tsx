@@ -21,7 +21,6 @@ type EarnYieldApyBreakdownProps = {
 const getYieldSourceDescriptionId = (yieldSource: RewardDtoYieldSource): TranslationKey | null => {
     switch (yieldSource) {
         case 'lending':
-        case 'lending_interest':
             return 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST';
         case 'protocol_incentive':
         case 'campaign_incentive':
