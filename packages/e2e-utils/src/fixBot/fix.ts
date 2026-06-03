@@ -1,10 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
 import { processAgentOutput, runClaude } from './common';
-import { AnalysisReportSchema } from './schemas';
+import { AnalysisReportSchema, FixResultJsonSchema, FixResultSchema } from './schemas';
 
 function main(): void {
     const reportPath = process.env.REPORT_PATH;
@@ -50,6 +51,8 @@ function main(): void {
             '--verbose',
             '--output-format',
             'json',
+            '--json-schema',
+            JSON.stringify(FixResultJsonSchema),
             '--settings',
             join(fixAgentDir, 'settings.json'),
         ],
@@ -58,12 +61,34 @@ function main(): void {
     });
 
     const { model } = JSON.parse(readFileSync(join(fixAgentDir, 'settings.json'), 'utf-8'));
-    processAgentOutput(output, 'nightlyFixer', model);
+    const agentResult = processAgentOutput(output, 'nightlyFixer', model);
 
     if (spawnError) {
         error(`Failed to run claude: ${spawnError.message}`);
         process.exit(1);
     }
+
+    if (!agentResult) {
+        error('Could not parse Claude result envelope from fix agent output.');
+        process.exit(1);
+    }
+
+    if (agentResult.subtype === 'error_max_structured_output_retries') {
+        error(
+            `Fix agent could not produce schema-conformant output after retries. Raw envelope:\n${output}`,
+        );
+        process.exit(1);
+    }
+
+    const fixResult = FixResultSchema.safeParse(agentResult.structured_output);
+    if (!fixResult.success) {
+        error(
+            `structured output failed schema validation: ${prettifyError(fixResult.error)} \nRaw structured output:\n${JSON.stringify(agentResult.structured_output, null, 2)}`,
+        );
+        process.exit(1);
+    }
+
+    writeFileSync(join(root, 'fix-result.json'), `${JSON.stringify(fixResult.data, null, 2)}\n`);
 
     log('Agent done.');
     process.exit(status);

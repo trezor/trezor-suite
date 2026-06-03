@@ -79,7 +79,7 @@ touch /tmp/preflight-marker
 Exit code 0 = already passing in pre-flight.
 Non-zero = failing — read the trace before deciding anything further (see below).
 
-**If all validations already pass in pre-flight:** write the status block (Step 4) with `result: "not_duplicated"` and stop — do not enter the fix loop.
+**If all validations already pass in pre-flight:** return the status block (Step 4) with `result: "not_duplicated"` and stop — do not enter the fix loop.
 
 ### Reading traces after pre-flight and any test run
 
@@ -99,7 +99,7 @@ ls /tmp/trace-preflight/resources/page@*.jpeg | sort | tail -10
 After reading the trace: if the test fails due to an infrastructure or environment error
 (emulator crash, transport failure, bridge error, process startup issue) rather than the
 test assertion described in `diagnosis` — retry once. If the retry shows the same
-infrastructure or environment error, write the result files (Step 4) with `result: "fail"` and
+infrastructure or environment error, return the result (Step 4) with `result: "fail"` and
 `iterations: 0`, and stop. Do not enter the fix loop.
 
 ---
@@ -156,11 +156,15 @@ Then use `git commit --fixup $FIRST_SHA` for all subsequent iterations.
 
 ---
 
-## Step 4 — Write result files
+## Step 4 — Write the PR description and return the result
 
-Write two files to the repo root (current directory) using the Write tool.
+**`pr-description.md`** — write this file to the repo root (current directory) using the
+Write tool (see the section below for its contents).
 
-**`fix-result.json`** — machine-readable status for the caller:
+**Machine-readable status** — do **not** write `fix-result.json` to disk; the harness
+captures it for you. Your **final response** must be a single JSON object matching the
+structure below (the run is configured with a JSON Schema that validates this output).
+Emit only the JSON object as your final answer, with no surrounding prose or code fence:
 
 ```json
 {
