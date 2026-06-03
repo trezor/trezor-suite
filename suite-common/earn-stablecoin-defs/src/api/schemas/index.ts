@@ -9,28 +9,201 @@ import * as zod from 'zod';
 /**
  * @summary List yield opportunities (paginated)
  */
-export const getYieldsQueryLimitDefault = 20;
-export const getYieldsQueryLimitExclusiveMin = 0;
-export const getYieldsQueryLimitMax = 100;
-
+/* eslint-disable no-useless-escape */
 export const getYieldsQueryOffsetDefault = 0;
 export const getYieldsQueryOffsetMin = 0;
-export const getYieldsQueryOffsetMax = 1000000;
+
+export const getYieldsQueryLimitDefault = 20;
+export const getYieldsQueryLimitMax = 100;
+
+export const getYieldsQueryYieldIdMax = 200;
+
+export const getYieldsQueryYieldIdsMax = 200;
 
 export const getYieldsQueryParams = zod.object({
-    limit: zod
-        .number()
-        .gt(getYieldsQueryLimitExclusiveMin)
-        .max(getYieldsQueryLimitMax)
-        .default(getYieldsQueryLimitDefault)
-        .describe('Max 100 (default 20).'),
     offset: zod
         .number()
         .min(getYieldsQueryOffsetMin)
-        .max(getYieldsQueryOffsetMax)
         .nullish()
         .default(getYieldsQueryOffsetDefault)
-        .describe('Max 1000000 (default 0).'),
+        .describe('Offset for pagination'),
+    limit: zod
+        .number()
+        .min(1)
+        .max(getYieldsQueryLimitMax)
+        .default(getYieldsQueryLimitDefault)
+        .describe('Number of items per page'),
+    network: zod
+        .enum([
+            'ethereum',
+            'ethereum-goerli',
+            'ethereum-holesky',
+            'ethereum-sepolia',
+            'ethereum-hoodi',
+            'arbitrum',
+            'base',
+            'base-sepolia',
+            'gnosis',
+            'optimism',
+            'polygon',
+            'polygon-amoy',
+            'starknet',
+            'zksync',
+            'linea',
+            'unichain',
+            'monad-testnet',
+            'monad',
+            'robinhood-testnet',
+            'avalanche-c',
+            'avalanche-c-atomic',
+            'avalanche-p',
+            'binance',
+            'celo',
+            'fantom',
+            'harmony',
+            'moonriver',
+            'okc',
+            'viction',
+            'core',
+            'sonic',
+            'plasma',
+            'katana',
+            'hyperevm',
+            'agoric',
+            'akash',
+            'axelar',
+            'band-protocol',
+            'bitsong',
+            'canto',
+            'chihuahua',
+            'comdex',
+            'coreum',
+            'cosmos',
+            'crescent',
+            'cronos',
+            'cudos',
+            'desmos',
+            'dydx',
+            'evmos',
+            'fetch-ai',
+            'gravity-bridge',
+            'injective',
+            'irisnet',
+            'juno',
+            'kava',
+            'ki-network',
+            'mars-protocol',
+            'nym',
+            'okex-chain',
+            'onomy',
+            'osmosis',
+            'persistence',
+            'quicksilver',
+            'regen',
+            'secret',
+            'sentinel',
+            'sommelier',
+            'stafi',
+            'stargaze',
+            'stride',
+            'teritori',
+            'tgrade',
+            'umee',
+            'sei',
+            'mantra',
+            'celestia',
+            'saga',
+            'zetachain',
+            'dymension',
+            'humansai',
+            'neutron',
+            'polkadot',
+            'kusama',
+            'westend',
+            'bittensor',
+            'aptos',
+            'binancebeacon',
+            'cardano',
+            'near',
+            'solana',
+            'solana-devnet',
+            'stellar',
+            'stellar-testnet',
+            'sui',
+            'tezos',
+            'tron',
+            'ton',
+            'ton-testnet',
+            'hyperliquid',
+        ])
+        .optional()
+        .describe('Filter by network'),
+    chainId: zod.string().nullish().describe('Filter by EVM chain ID (Ethereum: 1, Polygon: 137)'),
+    networks: zod.string().nullish().describe('Filter by multiple networks (comma separated)'),
+    yieldId: zod.string().max(getYieldsQueryYieldIdMax).nullish(),
+    yieldIds: zod.array(zod.string().nullable()).max(getYieldsQueryYieldIdsMax).optional(),
+    type: zod
+        .enum([
+            'staking',
+            'restaking',
+            'lending',
+            'vault',
+            'fixed_yield',
+            'real_world_asset',
+            'concentrated_liquidity_pool',
+            'liquidity_pool',
+        ])
+        .optional()
+        .describe('Filter by yield type'),
+    types: zod
+        .union([
+            zod
+                .enum([
+                    'staking',
+                    'restaking',
+                    'lending',
+                    'vault',
+                    'fixed_yield',
+                    'real_world_asset',
+                    'concentrated_liquidity_pool',
+                    'liquidity_pool',
+                ])
+                .describe('Filter by yield type'),
+            zod
+                .array(
+                    zod.enum([
+                        'staking',
+                        'restaking',
+                        'lending',
+                        'vault',
+                        'fixed_yield',
+                        'real_world_asset',
+                        'concentrated_liquidity_pool',
+                        'liquidity_pool',
+                    ]),
+                )
+                .describe('Filter by multiple yield types (comma separated)'),
+        ])
+        .optional(),
+    hasCooldownPeriod: zod.boolean().nullish().describe('Filter by cooldown period'),
+    hasWarmupPeriod: zod.boolean().nullish().describe('Filter by warmup period'),
+    token: zod.string().nullish().describe('Filter by token symbol or address'),
+    inputToken: zod.string().nullish().describe('Filter by input token symbol or address'),
+    inputTokens: zod
+        .array(zod.string().nullable())
+        .optional()
+        .describe('Filter by multiple input token symbol or address (comma separated)'),
+    provider: zod.string().nullish().describe('Filter by provider ID'),
+    providers: zod
+        .union([
+            zod.string().nullable().describe('Filter by provider ID'),
+            zod
+                .array(zod.string().nullable())
+                .describe('Filter by multiple provider IDs (comma separated)'),
+            zod.null(),
+        ])
+        .optional(),
+    search: zod.string().nullish().describe('Search by yield name'),
     sort: zod
         .enum([
             'statusEnterAsc',
@@ -42,24 +215,6 @@ export const getYieldsQueryParams = zod.object({
         ])
         .optional()
         .describe('Sort by yield status or reward rate'),
-    providers: zod.union([zod.array(zod.string()), zod.string()]).optional(),
-    types: zod
-        .union([
-            zod.array(
-                zod.enum([
-                    'staking',
-                    'restaking',
-                    'lending',
-                    'vault',
-                    'fixed_yield',
-                    'real_world_asset',
-                    'concentrated_liquidity_pool',
-                    'liquidity_pool',
-                ]),
-            ),
-            zod.string(),
-        ])
-        .optional(),
 });
 
 export const getYieldsHeaderXSuiteVersionRegExp = new RegExp('^(\\d+)\\.(\\d+)\\.(\\d+)$');
@@ -71,372 +226,18 @@ export const getYieldsHeader = zod.object({
         .describe('Caller suite semver (e.g. 25.10.0). Used to scope vault allow-list.'),
 });
 
-export const getYieldsResponseItemsItemTokenDecimalsMin = 0;
-
-export const getYieldsResponseItemsItemOutputTokenDecimalsMin = 0;
-
-export const getYieldsResponseItemsItemInputTokensItemDecimalsMin = 0;
-
-export const getYieldsResponseItemsItemRewardRateComponentsItemTokenDecimalsMin = 0;
-
-export const getYieldsResponseItemsItemStatePricePerShareStateShareTokenDecimalsMin = 0;
-
-export const getYieldsResponseItemsItemStatePricePerShareStateQuoteTokenDecimalsMin = 0;
-
-export const getYieldsResponseTotalMin = 0;
-
-export const getYieldsResponseOffsetMin = 0;
-
-export const getYieldsResponseLimitExclusiveMin = 0;
-
-export const getYieldsResponse = zod.object({
-    items: zod.array(
+export const getYieldsResponse = zod
+    .object({
+        total: zod.number().describe('Total number of items available'),
+        offset: zod.number().describe('Offset of the current page'),
+        limit: zod.number().describe('Limit of the current page'),
+    })
+    .and(
         zod.object({
-            id: zod.string().describe('Unique identifier for this yield opportunity'),
-            providerId: zod.string().describe('Yield provider identifier, e.g. morpho.'),
-            network: zod
-                .enum([
-                    'ethereum',
-                    'ethereum-goerli',
-                    'ethereum-holesky',
-                    'ethereum-sepolia',
-                    'ethereum-hoodi',
-                    'arbitrum',
-                    'base',
-                    'base-sepolia',
-                    'gnosis',
-                    'optimism',
-                    'polygon',
-                    'polygon-amoy',
-                    'starknet',
-                    'zksync',
-                    'linea',
-                    'unichain',
-                    'monad-testnet',
-                    'monad',
-                    'avalanche-c',
-                    'avalanche-c-atomic',
-                    'avalanche-p',
-                    'binance',
-                    'celo',
-                    'fantom',
-                    'harmony',
-                    'moonriver',
-                    'okc',
-                    'viction',
-                    'core',
-                    'sonic',
-                    'plasma',
-                    'katana',
-                    'hyperevm',
-                    'agoric',
-                    'akash',
-                    'axelar',
-                    'band-protocol',
-                    'bitsong',
-                    'canto',
-                    'chihuahua',
-                    'comdex',
-                    'coreum',
-                    'cosmos',
-                    'crescent',
-                    'cronos',
-                    'cudos',
-                    'desmos',
-                    'dydx',
-                    'evmos',
-                    'fetch-ai',
-                    'gravity-bridge',
-                    'injective',
-                    'irisnet',
-                    'juno',
-                    'kava',
-                    'ki-network',
-                    'mars-protocol',
-                    'nym',
-                    'okex-chain',
-                    'onomy',
-                    'osmosis',
-                    'persistence',
-                    'quicksilver',
-                    'regen',
-                    'secret',
-                    'sentinel',
-                    'sommelier',
-                    'stafi',
-                    'stargaze',
-                    'stride',
-                    'teritori',
-                    'tgrade',
-                    'umee',
-                    'sei',
-                    'mantra',
-                    'celestia',
-                    'saga',
-                    'zetachain',
-                    'dymension',
-                    'humansai',
-                    'neutron',
-                    'polkadot',
-                    'kusama',
-                    'westend',
-                    'bittensor',
-                    'aptos',
-                    'binancebeacon',
-                    'cardano',
-                    'near',
-                    'solana',
-                    'solana-devnet',
-                    'stellar',
-                    'stellar-testnet',
-                    'sui',
-                    'tezos',
-                    'tron',
-                    'ton',
-                    'ton-testnet',
-                    'hyperliquid',
-                ])
-                .describe('The network identifier'),
-            chainId: zod.number().describe('EVM chain id this yield lives on'),
-            token: zod.object({
-                symbol: zod.string().describe('Token symbol'),
-                name: zod.string().describe('Token name'),
-                decimals: zod
-                    .number()
-                    .min(getYieldsResponseItemsItemTokenDecimalsMin)
-                    .describe('Token decimal places'),
-                network: zod
-                    .enum([
-                        'ethereum',
-                        'ethereum-goerli',
-                        'ethereum-holesky',
-                        'ethereum-sepolia',
-                        'ethereum-hoodi',
-                        'arbitrum',
-                        'base',
-                        'base-sepolia',
-                        'gnosis',
-                        'optimism',
-                        'polygon',
-                        'polygon-amoy',
-                        'starknet',
-                        'zksync',
-                        'linea',
-                        'unichain',
-                        'monad-testnet',
-                        'monad',
-                        'avalanche-c',
-                        'avalanche-c-atomic',
-                        'avalanche-p',
-                        'binance',
-                        'celo',
-                        'fantom',
-                        'harmony',
-                        'moonriver',
-                        'okc',
-                        'viction',
-                        'core',
-                        'sonic',
-                        'plasma',
-                        'katana',
-                        'hyperevm',
-                        'agoric',
-                        'akash',
-                        'axelar',
-                        'band-protocol',
-                        'bitsong',
-                        'canto',
-                        'chihuahua',
-                        'comdex',
-                        'coreum',
-                        'cosmos',
-                        'crescent',
-                        'cronos',
-                        'cudos',
-                        'desmos',
-                        'dydx',
-                        'evmos',
-                        'fetch-ai',
-                        'gravity-bridge',
-                        'injective',
-                        'irisnet',
-                        'juno',
-                        'kava',
-                        'ki-network',
-                        'mars-protocol',
-                        'nym',
-                        'okex-chain',
-                        'onomy',
-                        'osmosis',
-                        'persistence',
-                        'quicksilver',
-                        'regen',
-                        'secret',
-                        'sentinel',
-                        'sommelier',
-                        'stafi',
-                        'stargaze',
-                        'stride',
-                        'teritori',
-                        'tgrade',
-                        'umee',
-                        'sei',
-                        'mantra',
-                        'celestia',
-                        'saga',
-                        'zetachain',
-                        'dymension',
-                        'humansai',
-                        'neutron',
-                        'polkadot',
-                        'kusama',
-                        'westend',
-                        'bittensor',
-                        'aptos',
-                        'binancebeacon',
-                        'cardano',
-                        'near',
-                        'solana',
-                        'solana-devnet',
-                        'stellar',
-                        'stellar-testnet',
-                        'sui',
-                        'tezos',
-                        'tron',
-                        'ton',
-                        'ton-testnet',
-                        'hyperliquid',
-                    ])
-                    .describe('The network identifier'),
-                address: zod.string().optional().describe('Token address (if applicable)'),
-                logoURI: zod.string().optional().describe('Token logo URI'),
-                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
-            }),
-            outputToken: zod
-                .object({
-                    symbol: zod.string().describe('Token symbol'),
-                    name: zod.string().describe('Token name'),
-                    decimals: zod
-                        .number()
-                        .min(getYieldsResponseItemsItemOutputTokenDecimalsMin)
-                        .describe('Token decimal places'),
-                    network: zod
-                        .enum([
-                            'ethereum',
-                            'ethereum-goerli',
-                            'ethereum-holesky',
-                            'ethereum-sepolia',
-                            'ethereum-hoodi',
-                            'arbitrum',
-                            'base',
-                            'base-sepolia',
-                            'gnosis',
-                            'optimism',
-                            'polygon',
-                            'polygon-amoy',
-                            'starknet',
-                            'zksync',
-                            'linea',
-                            'unichain',
-                            'monad-testnet',
-                            'monad',
-                            'avalanche-c',
-                            'avalanche-c-atomic',
-                            'avalanche-p',
-                            'binance',
-                            'celo',
-                            'fantom',
-                            'harmony',
-                            'moonriver',
-                            'okc',
-                            'viction',
-                            'core',
-                            'sonic',
-                            'plasma',
-                            'katana',
-                            'hyperevm',
-                            'agoric',
-                            'akash',
-                            'axelar',
-                            'band-protocol',
-                            'bitsong',
-                            'canto',
-                            'chihuahua',
-                            'comdex',
-                            'coreum',
-                            'cosmos',
-                            'crescent',
-                            'cronos',
-                            'cudos',
-                            'desmos',
-                            'dydx',
-                            'evmos',
-                            'fetch-ai',
-                            'gravity-bridge',
-                            'injective',
-                            'irisnet',
-                            'juno',
-                            'kava',
-                            'ki-network',
-                            'mars-protocol',
-                            'nym',
-                            'okex-chain',
-                            'onomy',
-                            'osmosis',
-                            'persistence',
-                            'quicksilver',
-                            'regen',
-                            'secret',
-                            'sentinel',
-                            'sommelier',
-                            'stafi',
-                            'stargaze',
-                            'stride',
-                            'teritori',
-                            'tgrade',
-                            'umee',
-                            'sei',
-                            'mantra',
-                            'celestia',
-                            'saga',
-                            'zetachain',
-                            'dymension',
-                            'humansai',
-                            'neutron',
-                            'polkadot',
-                            'kusama',
-                            'westend',
-                            'bittensor',
-                            'aptos',
-                            'binancebeacon',
-                            'cardano',
-                            'near',
-                            'solana',
-                            'solana-devnet',
-                            'stellar',
-                            'stellar-testnet',
-                            'sui',
-                            'tezos',
-                            'tron',
-                            'ton',
-                            'ton-testnet',
-                            'hyperliquid',
-                        ])
-                        .describe('The network identifier'),
-                    address: zod.string().optional().describe('Token address (if applicable)'),
-                    logoURI: zod.string().optional().describe('Token logo URI'),
-                    coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
-                })
-                .optional(),
-            inputTokens: zod
+            items: zod
                 .array(
                     zod.object({
-                        symbol: zod.string().describe('Token symbol'),
-                        name: zod.string().describe('Token name'),
-                        decimals: zod
-                            .number()
-                            .min(getYieldsResponseItemsItemInputTokensItemDecimalsMin)
-                            .describe('Token decimal places'),
+                        id: zod.string().describe('Unique identifier for this yield opportunity'),
                         network: zod
                             .enum([
                                 'ethereum',
@@ -457,6 +258,7 @@ export const getYieldsResponse = zod.object({
                                 'unichain',
                                 'monad-testnet',
                                 'monad',
+                                'robinhood-testnet',
                                 'avalanche-c',
                                 'avalanche-c-atomic',
                                 'avalanche-p',
@@ -539,449 +341,4525 @@ export const getYieldsResponse = zod.object({
                                 'ton-testnet',
                                 'hyperliquid',
                             ])
-                            .describe('The network identifier'),
-                        address: zod.string().optional().describe('Token address (if applicable)'),
-                        logoURI: zod.string().optional().describe('Token logo URI'),
-                        coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                            .describe('Network this yield opportunity is on'),
+                        chainId: zod
+                            .number()
+                            .nullish()
+                            .describe('EVM chain ID for this network (only for EVM networks)'),
+                        inputTokens: zod
+                            .array(
+                                zod.object({
+                                    symbol: zod.string().describe('Token symbol'),
+                                    name: zod.string().describe('Token name'),
+                                    decimals: zod.number().describe('Token decimal places'),
+                                    network: zod
+                                        .enum([
+                                            'ethereum',
+                                            'ethereum-goerli',
+                                            'ethereum-holesky',
+                                            'ethereum-sepolia',
+                                            'ethereum-hoodi',
+                                            'arbitrum',
+                                            'base',
+                                            'base-sepolia',
+                                            'gnosis',
+                                            'optimism',
+                                            'polygon',
+                                            'polygon-amoy',
+                                            'starknet',
+                                            'zksync',
+                                            'linea',
+                                            'unichain',
+                                            'monad-testnet',
+                                            'monad',
+                                            'robinhood-testnet',
+                                            'avalanche-c',
+                                            'avalanche-c-atomic',
+                                            'avalanche-p',
+                                            'binance',
+                                            'celo',
+                                            'fantom',
+                                            'harmony',
+                                            'moonriver',
+                                            'okc',
+                                            'viction',
+                                            'core',
+                                            'sonic',
+                                            'plasma',
+                                            'katana',
+                                            'hyperevm',
+                                            'agoric',
+                                            'akash',
+                                            'axelar',
+                                            'band-protocol',
+                                            'bitsong',
+                                            'canto',
+                                            'chihuahua',
+                                            'comdex',
+                                            'coreum',
+                                            'cosmos',
+                                            'crescent',
+                                            'cronos',
+                                            'cudos',
+                                            'desmos',
+                                            'dydx',
+                                            'evmos',
+                                            'fetch-ai',
+                                            'gravity-bridge',
+                                            'injective',
+                                            'irisnet',
+                                            'juno',
+                                            'kava',
+                                            'ki-network',
+                                            'mars-protocol',
+                                            'nym',
+                                            'okex-chain',
+                                            'onomy',
+                                            'osmosis',
+                                            'persistence',
+                                            'quicksilver',
+                                            'regen',
+                                            'secret',
+                                            'sentinel',
+                                            'sommelier',
+                                            'stafi',
+                                            'stargaze',
+                                            'stride',
+                                            'teritori',
+                                            'tgrade',
+                                            'umee',
+                                            'sei',
+                                            'mantra',
+                                            'celestia',
+                                            'saga',
+                                            'zetachain',
+                                            'dymension',
+                                            'humansai',
+                                            'neutron',
+                                            'polkadot',
+                                            'kusama',
+                                            'westend',
+                                            'bittensor',
+                                            'aptos',
+                                            'binancebeacon',
+                                            'cardano',
+                                            'near',
+                                            'solana',
+                                            'solana-devnet',
+                                            'stellar',
+                                            'stellar-testnet',
+                                            'sui',
+                                            'tezos',
+                                            'tron',
+                                            'ton',
+                                            'ton-testnet',
+                                            'hyperliquid',
+                                        ])
+                                        .describe('Token network'),
+                                    address: zod
+                                        .string()
+                                        .optional()
+                                        .describe('Token address (if applicable)'),
+                                    logoURI: zod.string().optional().describe('Token logo URI'),
+                                    isPoints: zod.boolean().optional().describe('Token is points'),
+                                    coinGeckoId: zod
+                                        .string()
+                                        .optional()
+                                        .describe('Token CoinGecko ID'),
+                                }),
+                            )
+                            .describe('Accepted input tokens (auto-converted as needed)'),
+                        outputToken: zod
+                            .object({
+                                symbol: zod.string().describe('Token symbol'),
+                                name: zod.string().describe('Token name'),
+                                decimals: zod.number().describe('Token decimal places'),
+                                network: zod
+                                    .enum([
+                                        'ethereum',
+                                        'ethereum-goerli',
+                                        'ethereum-holesky',
+                                        'ethereum-sepolia',
+                                        'ethereum-hoodi',
+                                        'arbitrum',
+                                        'base',
+                                        'base-sepolia',
+                                        'gnosis',
+                                        'optimism',
+                                        'polygon',
+                                        'polygon-amoy',
+                                        'starknet',
+                                        'zksync',
+                                        'linea',
+                                        'unichain',
+                                        'monad-testnet',
+                                        'monad',
+                                        'robinhood-testnet',
+                                        'avalanche-c',
+                                        'avalanche-c-atomic',
+                                        'avalanche-p',
+                                        'binance',
+                                        'celo',
+                                        'fantom',
+                                        'harmony',
+                                        'moonriver',
+                                        'okc',
+                                        'viction',
+                                        'core',
+                                        'sonic',
+                                        'plasma',
+                                        'katana',
+                                        'hyperevm',
+                                        'agoric',
+                                        'akash',
+                                        'axelar',
+                                        'band-protocol',
+                                        'bitsong',
+                                        'canto',
+                                        'chihuahua',
+                                        'comdex',
+                                        'coreum',
+                                        'cosmos',
+                                        'crescent',
+                                        'cronos',
+                                        'cudos',
+                                        'desmos',
+                                        'dydx',
+                                        'evmos',
+                                        'fetch-ai',
+                                        'gravity-bridge',
+                                        'injective',
+                                        'irisnet',
+                                        'juno',
+                                        'kava',
+                                        'ki-network',
+                                        'mars-protocol',
+                                        'nym',
+                                        'okex-chain',
+                                        'onomy',
+                                        'osmosis',
+                                        'persistence',
+                                        'quicksilver',
+                                        'regen',
+                                        'secret',
+                                        'sentinel',
+                                        'sommelier',
+                                        'stafi',
+                                        'stargaze',
+                                        'stride',
+                                        'teritori',
+                                        'tgrade',
+                                        'umee',
+                                        'sei',
+                                        'mantra',
+                                        'celestia',
+                                        'saga',
+                                        'zetachain',
+                                        'dymension',
+                                        'humansai',
+                                        'neutron',
+                                        'polkadot',
+                                        'kusama',
+                                        'westend',
+                                        'bittensor',
+                                        'aptos',
+                                        'binancebeacon',
+                                        'cardano',
+                                        'near',
+                                        'solana',
+                                        'solana-devnet',
+                                        'stellar',
+                                        'stellar-testnet',
+                                        'sui',
+                                        'tezos',
+                                        'tron',
+                                        'ton',
+                                        'ton-testnet',
+                                        'hyperliquid',
+                                    ])
+                                    .describe('Token network'),
+                                address: zod
+                                    .string()
+                                    .optional()
+                                    .describe('Token address (if applicable)'),
+                                logoURI: zod.string().optional().describe('Token logo URI'),
+                                isPoints: zod.boolean().optional().describe('Token is points'),
+                                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                            })
+                            .optional()
+                            .describe('Token received from the protocol'),
+                        token: zod
+                            .object({
+                                symbol: zod.string().describe('Token symbol'),
+                                name: zod.string().describe('Token name'),
+                                decimals: zod.number().describe('Token decimal places'),
+                                network: zod
+                                    .enum([
+                                        'ethereum',
+                                        'ethereum-goerli',
+                                        'ethereum-holesky',
+                                        'ethereum-sepolia',
+                                        'ethereum-hoodi',
+                                        'arbitrum',
+                                        'base',
+                                        'base-sepolia',
+                                        'gnosis',
+                                        'optimism',
+                                        'polygon',
+                                        'polygon-amoy',
+                                        'starknet',
+                                        'zksync',
+                                        'linea',
+                                        'unichain',
+                                        'monad-testnet',
+                                        'monad',
+                                        'robinhood-testnet',
+                                        'avalanche-c',
+                                        'avalanche-c-atomic',
+                                        'avalanche-p',
+                                        'binance',
+                                        'celo',
+                                        'fantom',
+                                        'harmony',
+                                        'moonriver',
+                                        'okc',
+                                        'viction',
+                                        'core',
+                                        'sonic',
+                                        'plasma',
+                                        'katana',
+                                        'hyperevm',
+                                        'agoric',
+                                        'akash',
+                                        'axelar',
+                                        'band-protocol',
+                                        'bitsong',
+                                        'canto',
+                                        'chihuahua',
+                                        'comdex',
+                                        'coreum',
+                                        'cosmos',
+                                        'crescent',
+                                        'cronos',
+                                        'cudos',
+                                        'desmos',
+                                        'dydx',
+                                        'evmos',
+                                        'fetch-ai',
+                                        'gravity-bridge',
+                                        'injective',
+                                        'irisnet',
+                                        'juno',
+                                        'kava',
+                                        'ki-network',
+                                        'mars-protocol',
+                                        'nym',
+                                        'okex-chain',
+                                        'onomy',
+                                        'osmosis',
+                                        'persistence',
+                                        'quicksilver',
+                                        'regen',
+                                        'secret',
+                                        'sentinel',
+                                        'sommelier',
+                                        'stafi',
+                                        'stargaze',
+                                        'stride',
+                                        'teritori',
+                                        'tgrade',
+                                        'umee',
+                                        'sei',
+                                        'mantra',
+                                        'celestia',
+                                        'saga',
+                                        'zetachain',
+                                        'dymension',
+                                        'humansai',
+                                        'neutron',
+                                        'polkadot',
+                                        'kusama',
+                                        'westend',
+                                        'bittensor',
+                                        'aptos',
+                                        'binancebeacon',
+                                        'cardano',
+                                        'near',
+                                        'solana',
+                                        'solana-devnet',
+                                        'stellar',
+                                        'stellar-testnet',
+                                        'sui',
+                                        'tezos',
+                                        'tron',
+                                        'ton',
+                                        'ton-testnet',
+                                        'hyperliquid',
+                                    ])
+                                    .describe('Token network'),
+                                address: zod
+                                    .string()
+                                    .optional()
+                                    .describe('Token address (if applicable)'),
+                                logoURI: zod.string().optional().describe('Token logo URI'),
+                                isPoints: zod.boolean().optional().describe('Token is points'),
+                                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                            })
+                            .describe('Canonical deposit token - used for balances'),
+                        tokens: zod
+                            .array(
+                                zod.object({
+                                    symbol: zod.string().describe('Token symbol'),
+                                    name: zod.string().describe('Token name'),
+                                    decimals: zod.number().describe('Token decimal places'),
+                                    network: zod
+                                        .enum([
+                                            'ethereum',
+                                            'ethereum-goerli',
+                                            'ethereum-holesky',
+                                            'ethereum-sepolia',
+                                            'ethereum-hoodi',
+                                            'arbitrum',
+                                            'base',
+                                            'base-sepolia',
+                                            'gnosis',
+                                            'optimism',
+                                            'polygon',
+                                            'polygon-amoy',
+                                            'starknet',
+                                            'zksync',
+                                            'linea',
+                                            'unichain',
+                                            'monad-testnet',
+                                            'monad',
+                                            'robinhood-testnet',
+                                            'avalanche-c',
+                                            'avalanche-c-atomic',
+                                            'avalanche-p',
+                                            'binance',
+                                            'celo',
+                                            'fantom',
+                                            'harmony',
+                                            'moonriver',
+                                            'okc',
+                                            'viction',
+                                            'core',
+                                            'sonic',
+                                            'plasma',
+                                            'katana',
+                                            'hyperevm',
+                                            'agoric',
+                                            'akash',
+                                            'axelar',
+                                            'band-protocol',
+                                            'bitsong',
+                                            'canto',
+                                            'chihuahua',
+                                            'comdex',
+                                            'coreum',
+                                            'cosmos',
+                                            'crescent',
+                                            'cronos',
+                                            'cudos',
+                                            'desmos',
+                                            'dydx',
+                                            'evmos',
+                                            'fetch-ai',
+                                            'gravity-bridge',
+                                            'injective',
+                                            'irisnet',
+                                            'juno',
+                                            'kava',
+                                            'ki-network',
+                                            'mars-protocol',
+                                            'nym',
+                                            'okex-chain',
+                                            'onomy',
+                                            'osmosis',
+                                            'persistence',
+                                            'quicksilver',
+                                            'regen',
+                                            'secret',
+                                            'sentinel',
+                                            'sommelier',
+                                            'stafi',
+                                            'stargaze',
+                                            'stride',
+                                            'teritori',
+                                            'tgrade',
+                                            'umee',
+                                            'sei',
+                                            'mantra',
+                                            'celestia',
+                                            'saga',
+                                            'zetachain',
+                                            'dymension',
+                                            'humansai',
+                                            'neutron',
+                                            'polkadot',
+                                            'kusama',
+                                            'westend',
+                                            'bittensor',
+                                            'aptos',
+                                            'binancebeacon',
+                                            'cardano',
+                                            'near',
+                                            'solana',
+                                            'solana-devnet',
+                                            'stellar',
+                                            'stellar-testnet',
+                                            'sui',
+                                            'tezos',
+                                            'tron',
+                                            'ton',
+                                            'ton-testnet',
+                                            'hyperliquid',
+                                        ])
+                                        .describe('Token network'),
+                                    address: zod
+                                        .string()
+                                        .optional()
+                                        .describe('Token address (if applicable)'),
+                                    logoURI: zod.string().optional().describe('Token logo URI'),
+                                    isPoints: zod.boolean().optional().describe('Token is points'),
+                                    coinGeckoId: zod
+                                        .string()
+                                        .optional()
+                                        .describe('Token CoinGecko ID'),
+                                }),
+                            )
+                            .describe('Canonical deposit tokens - used for balances'),
+                        rewardRate: zod
+                            .object({
+                                total: zod
+                                    .number()
+                                    .describe(
+                                        'Estimated reward rate across all sources (e.g. staking, points)',
+                                    ),
+                                rateType: zod
+                                    .string()
+                                    .describe('Whether this reward rate is APR or APY'),
+                                components: zod
+                                    .array(
+                                        zod.object({
+                                            rate: zod
+                                                .number()
+                                                .describe(
+                                                    'Reward rate as a decimal (e.g. 0.04 = 4%)',
+                                                ),
+                                            rateType: zod
+                                                .string()
+                                                .describe('Whether this rate is APR or APY'),
+                                            token: zod
+                                                .object({
+                                                    symbol: zod.string().describe('Token symbol'),
+                                                    name: zod.string().describe('Token name'),
+                                                    decimals: zod
+                                                        .number()
+                                                        .describe('Token decimal places'),
+                                                    network: zod
+                                                        .enum([
+                                                            'ethereum',
+                                                            'ethereum-goerli',
+                                                            'ethereum-holesky',
+                                                            'ethereum-sepolia',
+                                                            'ethereum-hoodi',
+                                                            'arbitrum',
+                                                            'base',
+                                                            'base-sepolia',
+                                                            'gnosis',
+                                                            'optimism',
+                                                            'polygon',
+                                                            'polygon-amoy',
+                                                            'starknet',
+                                                            'zksync',
+                                                            'linea',
+                                                            'unichain',
+                                                            'monad-testnet',
+                                                            'monad',
+                                                            'robinhood-testnet',
+                                                            'avalanche-c',
+                                                            'avalanche-c-atomic',
+                                                            'avalanche-p',
+                                                            'binance',
+                                                            'celo',
+                                                            'fantom',
+                                                            'harmony',
+                                                            'moonriver',
+                                                            'okc',
+                                                            'viction',
+                                                            'core',
+                                                            'sonic',
+                                                            'plasma',
+                                                            'katana',
+                                                            'hyperevm',
+                                                            'agoric',
+                                                            'akash',
+                                                            'axelar',
+                                                            'band-protocol',
+                                                            'bitsong',
+                                                            'canto',
+                                                            'chihuahua',
+                                                            'comdex',
+                                                            'coreum',
+                                                            'cosmos',
+                                                            'crescent',
+                                                            'cronos',
+                                                            'cudos',
+                                                            'desmos',
+                                                            'dydx',
+                                                            'evmos',
+                                                            'fetch-ai',
+                                                            'gravity-bridge',
+                                                            'injective',
+                                                            'irisnet',
+                                                            'juno',
+                                                            'kava',
+                                                            'ki-network',
+                                                            'mars-protocol',
+                                                            'nym',
+                                                            'okex-chain',
+                                                            'onomy',
+                                                            'osmosis',
+                                                            'persistence',
+                                                            'quicksilver',
+                                                            'regen',
+                                                            'secret',
+                                                            'sentinel',
+                                                            'sommelier',
+                                                            'stafi',
+                                                            'stargaze',
+                                                            'stride',
+                                                            'teritori',
+                                                            'tgrade',
+                                                            'umee',
+                                                            'sei',
+                                                            'mantra',
+                                                            'celestia',
+                                                            'saga',
+                                                            'zetachain',
+                                                            'dymension',
+                                                            'humansai',
+                                                            'neutron',
+                                                            'polkadot',
+                                                            'kusama',
+                                                            'westend',
+                                                            'bittensor',
+                                                            'aptos',
+                                                            'binancebeacon',
+                                                            'cardano',
+                                                            'near',
+                                                            'solana',
+                                                            'solana-devnet',
+                                                            'stellar',
+                                                            'stellar-testnet',
+                                                            'sui',
+                                                            'tezos',
+                                                            'tron',
+                                                            'ton',
+                                                            'ton-testnet',
+                                                            'hyperliquid',
+                                                        ])
+                                                        .describe('Token network'),
+                                                    address: zod
+                                                        .string()
+                                                        .optional()
+                                                        .describe('Token address (if applicable)'),
+                                                    logoURI: zod
+                                                        .string()
+                                                        .optional()
+                                                        .describe('Token logo URI'),
+                                                    isPoints: zod
+                                                        .boolean()
+                                                        .optional()
+                                                        .describe('Token is points'),
+                                                    coinGeckoId: zod
+                                                        .string()
+                                                        .optional()
+                                                        .describe('Token CoinGecko ID'),
+                                                })
+                                                .describe('Token received as reward'),
+                                            yieldSource: zod
+                                                .enum([
+                                                    'staking',
+                                                    'restaking',
+                                                    'protocol_incentive',
+                                                    'campaign_incentive',
+                                                    'points',
+                                                    'lending',
+                                                    'mev',
+                                                    'real_world_asset_yield',
+                                                    'vault',
+                                                ])
+                                                .describe(
+                                                    'Structured source of yield (e.g. staking, protocol incentive)',
+                                                ),
+                                            description: zod
+                                                .string()
+                                                .optional()
+                                                .describe(
+                                                    'Optional human-readable description of this reward',
+                                                ),
+                                        }),
+                                    )
+                                    .describe('Breakdown of reward rates by source'),
+                            })
+                            .describe('Total effective yield broken down by source and token.'),
+                        statistics: zod
+                            .object({
+                                tvlUsd: zod
+                                    .string()
+                                    .nullish()
+                                    .describe('Total value locked in USD'),
+                                tvl: zod
+                                    .string()
+                                    .nullish()
+                                    .describe('Total value locked in primary underlying token'),
+                                tvlRaw: zod
+                                    .string()
+                                    .nullish()
+                                    .describe('Raw total value locked (full precision)'),
+                                uniqueUsers: zod
+                                    .number()
+                                    .nullish()
+                                    .describe('Number of users with active positions in the yield'),
+                                averagePositionSizeUsd: zod
+                                    .string()
+                                    .nullish()
+                                    .describe('Average position size in USD'),
+                                averagePositionSize: zod
+                                    .string()
+                                    .nullish()
+                                    .describe('Average position size in primary underlying token'),
+                            })
+                            .optional()
+                            .describe('Key statistics and analytics for this yield opportunity'),
+                        risk: zod
+                            .object({
+                                ratings: zod
+                                    .array(
+                                        zod.object({
+                                            rating: zod
+                                                .string()
+                                                .describe('Provider top-level rating value'),
+                                            source: zod
+                                                .enum(['credora', 'stakingRewards'])
+                                                .describe('Provider source label'),
+                                        }),
+                                    )
+                                    .describe('Top-level rating entries by provider'),
+                            })
+                            .optional()
+                            .describe('Top-level provider risk ratings for this yield.'),
+                        status: zod
+                            .object({
+                                enter: zod
+                                    .boolean()
+                                    .describe('Whether the user can currently enter this yield'),
+                                exit: zod
+                                    .boolean()
+                                    .describe('Whether the user can currently exit this yield'),
+                            })
+                            .describe(
+                                'Current availability of user actions like enter, exit, claim',
+                            ),
+                        metadata: zod
+                            .object({
+                                name: zod
+                                    .string()
+                                    .describe('Display name of the yield opportunity'),
+                                logoURI: zod.string().describe('Yield opportunity logo URI'),
+                                description: zod
+                                    .string()
+                                    .describe(
+                                        'Markdown-supported short description of this yield opportunity, including where rewards come from.',
+                                    ),
+                                documentation: zod
+                                    .string()
+                                    .describe('Link to documentation or integration guide'),
+                                underMaintenance: zod
+                                    .boolean()
+                                    .describe('Whether this yield is currently under maintenance'),
+                                deprecated: zod
+                                    .boolean()
+                                    .describe(
+                                        'Whether this yield is deprecated and will be discontinued',
+                                    ),
+                                supportedStandards: zod.array(
+                                    zod
+                                        .enum(['ERC20', 'ERC4626', 'ERC721', 'ERC1155'])
+                                        .describe('Supported standards for this yield'),
+                                ),
+                                supportsCampaigns: zod
+                                    .boolean()
+                                    .describe('Whether this yield supports campaign creation'),
+                            })
+                            .describe(
+                                'Descriptive metadata including name, logo, description, and documentation',
+                            ),
+                        mechanics: zod
+                            .object({
+                                type: zod
+                                    .enum([
+                                        'staking',
+                                        'restaking',
+                                        'lending',
+                                        'vault',
+                                        'fixed_yield',
+                                        'real_world_asset',
+                                        'concentrated_liquidity_pool',
+                                        'liquidity_pool',
+                                    ])
+                                    .describe(
+                                        'Type of yield mechanism (staking, restaking, LP, vault, etc.)',
+                                    ),
+                                requiresValidatorSelection: zod
+                                    .boolean()
+                                    .optional()
+                                    .describe(
+                                        'Indicates whether this yield requires validator selection',
+                                    ),
+                                rewardSchedule: zod
+                                    .enum([
+                                        'block',
+                                        'hour',
+                                        'day',
+                                        'week',
+                                        'month',
+                                        'era',
+                                        'epoch',
+                                        'campaign',
+                                    ])
+                                    .describe(
+                                        'How often rewards are distributed (e.g. continuously, epoch-based)',
+                                    ),
+                                rewardClaiming: zod
+                                    .enum(['auto', 'manual'])
+                                    .describe('How rewards are claimed: auto, manual, or mixed'),
+                                gasFeeToken: zod
+                                    .object({
+                                        symbol: zod.string().describe('Token symbol'),
+                                        name: zod.string().describe('Token name'),
+                                        decimals: zod.number().describe('Token decimal places'),
+                                        network: zod
+                                            .enum([
+                                                'ethereum',
+                                                'ethereum-goerli',
+                                                'ethereum-holesky',
+                                                'ethereum-sepolia',
+                                                'ethereum-hoodi',
+                                                'arbitrum',
+                                                'base',
+                                                'base-sepolia',
+                                                'gnosis',
+                                                'optimism',
+                                                'polygon',
+                                                'polygon-amoy',
+                                                'starknet',
+                                                'zksync',
+                                                'linea',
+                                                'unichain',
+                                                'monad-testnet',
+                                                'monad',
+                                                'robinhood-testnet',
+                                                'avalanche-c',
+                                                'avalanche-c-atomic',
+                                                'avalanche-p',
+                                                'binance',
+                                                'celo',
+                                                'fantom',
+                                                'harmony',
+                                                'moonriver',
+                                                'okc',
+                                                'viction',
+                                                'core',
+                                                'sonic',
+                                                'plasma',
+                                                'katana',
+                                                'hyperevm',
+                                                'agoric',
+                                                'akash',
+                                                'axelar',
+                                                'band-protocol',
+                                                'bitsong',
+                                                'canto',
+                                                'chihuahua',
+                                                'comdex',
+                                                'coreum',
+                                                'cosmos',
+                                                'crescent',
+                                                'cronos',
+                                                'cudos',
+                                                'desmos',
+                                                'dydx',
+                                                'evmos',
+                                                'fetch-ai',
+                                                'gravity-bridge',
+                                                'injective',
+                                                'irisnet',
+                                                'juno',
+                                                'kava',
+                                                'ki-network',
+                                                'mars-protocol',
+                                                'nym',
+                                                'okex-chain',
+                                                'onomy',
+                                                'osmosis',
+                                                'persistence',
+                                                'quicksilver',
+                                                'regen',
+                                                'secret',
+                                                'sentinel',
+                                                'sommelier',
+                                                'stafi',
+                                                'stargaze',
+                                                'stride',
+                                                'teritori',
+                                                'tgrade',
+                                                'umee',
+                                                'sei',
+                                                'mantra',
+                                                'celestia',
+                                                'saga',
+                                                'zetachain',
+                                                'dymension',
+                                                'humansai',
+                                                'neutron',
+                                                'polkadot',
+                                                'kusama',
+                                                'westend',
+                                                'bittensor',
+                                                'aptos',
+                                                'binancebeacon',
+                                                'cardano',
+                                                'near',
+                                                'solana',
+                                                'solana-devnet',
+                                                'stellar',
+                                                'stellar-testnet',
+                                                'sui',
+                                                'tezos',
+                                                'tron',
+                                                'ton',
+                                                'ton-testnet',
+                                                'hyperliquid',
+                                            ])
+                                            .describe('Token network'),
+                                        address: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Token address (if applicable)'),
+                                        logoURI: zod.string().optional().describe('Token logo URI'),
+                                        isPoints: zod
+                                            .boolean()
+                                            .optional()
+                                            .describe('Token is points'),
+                                        coinGeckoId: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Token CoinGecko ID'),
+                                    })
+                                    .describe('Token used for gas fees (typically native)'),
+                                lockupPeriod: zod
+                                    .object({
+                                        seconds: zod.number().describe('Duration in seconds'),
+                                    })
+                                    .optional()
+                                    .describe(
+                                        'Lockup period - minimum time before exit can be initiated',
+                                    ),
+                                cooldownPeriod: zod
+                                    .object({
+                                        seconds: zod.number().describe('Duration in seconds'),
+                                    })
+                                    .optional()
+                                    .describe('Cooldown period required before exit is allowed'),
+                                warmupPeriod: zod
+                                    .object({
+                                        seconds: zod.number().describe('Duration in seconds'),
+                                    })
+                                    .optional()
+                                    .describe('Warmup period before rewards start accruing'),
+                                fee: zod
+                                    .object({
+                                        deposit: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Deposit fee percentage'),
+                                        withdrawal: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Withdrawal fee percentage'),
+                                        management: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Management fee percentage (annual)'),
+                                        performance: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Performance fee percentage'),
+                                    })
+                                    .optional()
+                                    .describe(
+                                        'Fees charged to the user for this yield (e.g., deposit, management, performance).',
+                                    ),
+                                entryLimits: zod
+                                    .object({
+                                        minimum: zod
+                                            .string()
+                                            .nullable()
+                                            .describe(
+                                                'Minimum amount required to enter this yield in token units (null if no minimum)',
+                                            ),
+                                        maximum: zod
+                                            .string()
+                                            .nullable()
+                                            .describe(
+                                                'Maximum amount allowed to enter this yield in token units (null if no limit)',
+                                            ),
+                                    })
+                                    .optional()
+                                    .describe('Entry amount limits for this yield'),
+                                requirements: zod
+                                    .object({
+                                        kycRequired: zod
+                                            .boolean()
+                                            .describe(
+                                                'Whether off-chain KYC is required before transacting',
+                                            ),
+                                        kycUrl: zod
+                                            .string()
+                                            .optional()
+                                            .describe("Issuer's KYC portal URL"),
+                                    })
+                                    .optional()
+                                    .describe('Access requirements (e.g. KYC) for this yield'),
+                                supportsLedgerWalletApi: zod
+                                    .boolean()
+                                    .optional()
+                                    .describe(
+                                        'Supports Ledger Wallet API (connect via Ledger Live)',
+                                    ),
+                                extraTransactionFormatsSupported: zod
+                                    .array(zod.enum(['raw', 'default']))
+                                    .optional()
+                                    .describe(
+                                        'Additional transaction formats supported (e.g. safe, batch)',
+                                    ),
+                                arguments: zod
+                                    .object({
+                                        enter: zod
+                                            .object({
+                                                fields: zod
+                                                    .array(
+                                                        zod.object({
+                                                            name: zod
+                                                                .enum([
+                                                                    'amount',
+                                                                    'amounts',
+                                                                    'validatorAddress',
+                                                                    'validatorAddresses',
+                                                                    'receiverAddress',
+                                                                    'providerId',
+                                                                    'duration',
+                                                                    'inputToken',
+                                                                    'inputTokenNetwork',
+                                                                    'outputToken',
+                                                                    'outputTokenNetwork',
+                                                                    'subnetId',
+                                                                    'tronResource',
+                                                                    'feeConfigurationId',
+                                                                    'cosmosPubKey',
+                                                                    'tezosPubKey',
+                                                                    'cAddressBech',
+                                                                    'pAddressBech',
+                                                                    'executionMode',
+                                                                    'ledgerWalletApiCompatible',
+                                                                    'useMaxAmount',
+                                                                    'useInstantExecution',
+                                                                    'rangeMin',
+                                                                    'rangeMax',
+                                                                    'percentage',
+                                                                    'tokenId',
+                                                                    'skipPrechecks',
+                                                                    'useMaxAllowance',
+                                                                    'feePayerAddress',
+                                                                ])
+                                                                .describe('Field name'),
+                                                            type: zod
+                                                                .enum([
+                                                                    'string',
+                                                                    'number',
+                                                                    'address',
+                                                                    'enum',
+                                                                    'boolean',
+                                                                ])
+                                                                .describe('Field type'),
+                                                            label: zod
+                                                                .string()
+                                                                .describe('Field label'),
+                                                            description: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe('Field description'),
+                                                            required: zod
+                                                                .boolean()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Whether the field is required',
+                                                                ),
+                                                            options: zod
+                                                                .array(zod.string())
+                                                                .optional()
+                                                                .describe(
+                                                                    'Options for enum fields',
+                                                                ),
+                                                            optionsRef: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Reference to API endpoint that provides options dynamically',
+                                                                ),
+                                                            default: zod
+                                                                .record(zod.string(), zod.unknown())
+                                                                .optional()
+                                                                .describe(
+                                                                    'Default value for the field',
+                                                                ),
+                                                            placeholder: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Placeholder text for the field',
+                                                                ),
+                                                            minimum: zod
+                                                                .string()
+                                                                .nullish()
+                                                                .describe(
+                                                                    'Minimum allowed value for number fields (null if no minimum)',
+                                                                ),
+                                                            maximum: zod
+                                                                .string()
+                                                                .nullish()
+                                                                .describe(
+                                                                    'Maximum allowed value for number fields (null if no maximum)',
+                                                                ),
+                                                            isArray: zod
+                                                                .boolean()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Whether the field is an array',
+                                                                ),
+                                                        }),
+                                                    )
+                                                    .describe('List of argument fields'),
+                                                notes: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe(
+                                                        'Notes or instructions for these arguments',
+                                                    ),
+                                            })
+                                            .optional(),
+                                        exit: zod
+                                            .object({
+                                                fields: zod
+                                                    .array(
+                                                        zod.object({
+                                                            name: zod
+                                                                .enum([
+                                                                    'amount',
+                                                                    'amounts',
+                                                                    'validatorAddress',
+                                                                    'validatorAddresses',
+                                                                    'receiverAddress',
+                                                                    'providerId',
+                                                                    'duration',
+                                                                    'inputToken',
+                                                                    'inputTokenNetwork',
+                                                                    'outputToken',
+                                                                    'outputTokenNetwork',
+                                                                    'subnetId',
+                                                                    'tronResource',
+                                                                    'feeConfigurationId',
+                                                                    'cosmosPubKey',
+                                                                    'tezosPubKey',
+                                                                    'cAddressBech',
+                                                                    'pAddressBech',
+                                                                    'executionMode',
+                                                                    'ledgerWalletApiCompatible',
+                                                                    'useMaxAmount',
+                                                                    'useInstantExecution',
+                                                                    'rangeMin',
+                                                                    'rangeMax',
+                                                                    'percentage',
+                                                                    'tokenId',
+                                                                    'skipPrechecks',
+                                                                    'useMaxAllowance',
+                                                                    'feePayerAddress',
+                                                                ])
+                                                                .describe('Field name'),
+                                                            type: zod
+                                                                .enum([
+                                                                    'string',
+                                                                    'number',
+                                                                    'address',
+                                                                    'enum',
+                                                                    'boolean',
+                                                                ])
+                                                                .describe('Field type'),
+                                                            label: zod
+                                                                .string()
+                                                                .describe('Field label'),
+                                                            description: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe('Field description'),
+                                                            required: zod
+                                                                .boolean()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Whether the field is required',
+                                                                ),
+                                                            options: zod
+                                                                .array(zod.string())
+                                                                .optional()
+                                                                .describe(
+                                                                    'Options for enum fields',
+                                                                ),
+                                                            optionsRef: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Reference to API endpoint that provides options dynamically',
+                                                                ),
+                                                            default: zod
+                                                                .record(zod.string(), zod.unknown())
+                                                                .optional()
+                                                                .describe(
+                                                                    'Default value for the field',
+                                                                ),
+                                                            placeholder: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Placeholder text for the field',
+                                                                ),
+                                                            minimum: zod
+                                                                .string()
+                                                                .nullish()
+                                                                .describe(
+                                                                    'Minimum allowed value for number fields (null if no minimum)',
+                                                                ),
+                                                            maximum: zod
+                                                                .string()
+                                                                .nullish()
+                                                                .describe(
+                                                                    'Maximum allowed value for number fields (null if no maximum)',
+                                                                ),
+                                                            isArray: zod
+                                                                .boolean()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Whether the field is an array',
+                                                                ),
+                                                        }),
+                                                    )
+                                                    .describe('List of argument fields'),
+                                                notes: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe(
+                                                        'Notes or instructions for these arguments',
+                                                    ),
+                                            })
+                                            .optional(),
+                                        manage: zod
+                                            .record(
+                                                zod.string(),
+                                                zod.object({
+                                                    fields: zod
+                                                        .array(
+                                                            zod.object({
+                                                                name: zod
+                                                                    .enum([
+                                                                        'amount',
+                                                                        'amounts',
+                                                                        'validatorAddress',
+                                                                        'validatorAddresses',
+                                                                        'receiverAddress',
+                                                                        'providerId',
+                                                                        'duration',
+                                                                        'inputToken',
+                                                                        'inputTokenNetwork',
+                                                                        'outputToken',
+                                                                        'outputTokenNetwork',
+                                                                        'subnetId',
+                                                                        'tronResource',
+                                                                        'feeConfigurationId',
+                                                                        'cosmosPubKey',
+                                                                        'tezosPubKey',
+                                                                        'cAddressBech',
+                                                                        'pAddressBech',
+                                                                        'executionMode',
+                                                                        'ledgerWalletApiCompatible',
+                                                                        'useMaxAmount',
+                                                                        'useInstantExecution',
+                                                                        'rangeMin',
+                                                                        'rangeMax',
+                                                                        'percentage',
+                                                                        'tokenId',
+                                                                        'skipPrechecks',
+                                                                        'useMaxAllowance',
+                                                                        'feePayerAddress',
+                                                                    ])
+                                                                    .describe('Field name'),
+                                                                type: zod
+                                                                    .enum([
+                                                                        'string',
+                                                                        'number',
+                                                                        'address',
+                                                                        'enum',
+                                                                        'boolean',
+                                                                    ])
+                                                                    .describe('Field type'),
+                                                                label: zod
+                                                                    .string()
+                                                                    .describe('Field label'),
+                                                                description: zod
+                                                                    .string()
+                                                                    .optional()
+                                                                    .describe('Field description'),
+                                                                required: zod
+                                                                    .boolean()
+                                                                    .optional()
+                                                                    .describe(
+                                                                        'Whether the field is required',
+                                                                    ),
+                                                                options: zod
+                                                                    .array(zod.string())
+                                                                    .optional()
+                                                                    .describe(
+                                                                        'Options for enum fields',
+                                                                    ),
+                                                                optionsRef: zod
+                                                                    .string()
+                                                                    .optional()
+                                                                    .describe(
+                                                                        'Reference to API endpoint that provides options dynamically',
+                                                                    ),
+                                                                default: zod
+                                                                    .record(
+                                                                        zod.string(),
+                                                                        zod.unknown(),
+                                                                    )
+                                                                    .optional()
+                                                                    .describe(
+                                                                        'Default value for the field',
+                                                                    ),
+                                                                placeholder: zod
+                                                                    .string()
+                                                                    .optional()
+                                                                    .describe(
+                                                                        'Placeholder text for the field',
+                                                                    ),
+                                                                minimum: zod
+                                                                    .string()
+                                                                    .nullish()
+                                                                    .describe(
+                                                                        'Minimum allowed value for number fields (null if no minimum)',
+                                                                    ),
+                                                                maximum: zod
+                                                                    .string()
+                                                                    .nullish()
+                                                                    .describe(
+                                                                        'Maximum allowed value for number fields (null if no maximum)',
+                                                                    ),
+                                                                isArray: zod
+                                                                    .boolean()
+                                                                    .optional()
+                                                                    .describe(
+                                                                        'Whether the field is an array',
+                                                                    ),
+                                                            }),
+                                                        )
+                                                        .describe('List of argument fields'),
+                                                    notes: zod
+                                                        .string()
+                                                        .optional()
+                                                        .describe(
+                                                            'Notes or instructions for these arguments',
+                                                        ),
+                                                }),
+                                            )
+                                            .optional()
+                                            .describe(
+                                                'Manage action schemas. Each yield supports different ActionTypes (CLAIM_UNSTAKED, CLAIM_REWARDS, etc.). Keys are ActionTypes enum values.',
+                                            ),
+                                        balance: zod
+                                            .object({
+                                                fields: zod
+                                                    .array(
+                                                        zod.object({
+                                                            name: zod
+                                                                .enum([
+                                                                    'amount',
+                                                                    'amounts',
+                                                                    'validatorAddress',
+                                                                    'validatorAddresses',
+                                                                    'receiverAddress',
+                                                                    'providerId',
+                                                                    'duration',
+                                                                    'inputToken',
+                                                                    'inputTokenNetwork',
+                                                                    'outputToken',
+                                                                    'outputTokenNetwork',
+                                                                    'subnetId',
+                                                                    'tronResource',
+                                                                    'feeConfigurationId',
+                                                                    'cosmosPubKey',
+                                                                    'tezosPubKey',
+                                                                    'cAddressBech',
+                                                                    'pAddressBech',
+                                                                    'executionMode',
+                                                                    'ledgerWalletApiCompatible',
+                                                                    'useMaxAmount',
+                                                                    'useInstantExecution',
+                                                                    'rangeMin',
+                                                                    'rangeMax',
+                                                                    'percentage',
+                                                                    'tokenId',
+                                                                    'skipPrechecks',
+                                                                    'useMaxAllowance',
+                                                                    'feePayerAddress',
+                                                                ])
+                                                                .describe('Field name'),
+                                                            type: zod
+                                                                .enum([
+                                                                    'string',
+                                                                    'number',
+                                                                    'address',
+                                                                    'enum',
+                                                                    'boolean',
+                                                                ])
+                                                                .describe('Field type'),
+                                                            label: zod
+                                                                .string()
+                                                                .describe('Field label'),
+                                                            description: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe('Field description'),
+                                                            required: zod
+                                                                .boolean()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Whether the field is required',
+                                                                ),
+                                                            options: zod
+                                                                .array(zod.string())
+                                                                .optional()
+                                                                .describe(
+                                                                    'Options for enum fields',
+                                                                ),
+                                                            optionsRef: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Reference to API endpoint that provides options dynamically',
+                                                                ),
+                                                            default: zod
+                                                                .record(zod.string(), zod.unknown())
+                                                                .optional()
+                                                                .describe(
+                                                                    'Default value for the field',
+                                                                ),
+                                                            placeholder: zod
+                                                                .string()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Placeholder text for the field',
+                                                                ),
+                                                            minimum: zod
+                                                                .string()
+                                                                .nullish()
+                                                                .describe(
+                                                                    'Minimum allowed value for number fields (null if no minimum)',
+                                                                ),
+                                                            maximum: zod
+                                                                .string()
+                                                                .nullish()
+                                                                .describe(
+                                                                    'Maximum allowed value for number fields (null if no maximum)',
+                                                                ),
+                                                            isArray: zod
+                                                                .boolean()
+                                                                .optional()
+                                                                .describe(
+                                                                    'Whether the field is an array',
+                                                                ),
+                                                        }),
+                                                    )
+                                                    .describe('List of argument fields'),
+                                                notes: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe(
+                                                        'Notes or instructions for these arguments',
+                                                    ),
+                                            })
+                                            .optional()
+                                            .describe(
+                                                'Arguments for the balances endpoint (e.g., alternative addresses, chain-specific fields)',
+                                            ),
+                                    })
+                                    .optional()
+                                    .describe(
+                                        'Arguments required for each action (enter, exit, manage, etc.)',
+                                    ),
+                                possibleFeeTakingMechanisms: zod
+                                    .object({
+                                        depositFee: zod
+                                            .boolean()
+                                            .describe('User can take (earn) a deposit fee'),
+                                        managementFee: zod
+                                            .boolean()
+                                            .describe('User can take (earn) a management fee'),
+                                        performanceFee: zod
+                                            .boolean()
+                                            .describe('User can take (earn) a performance fee'),
+                                        validatorRebates: zod
+                                            .boolean()
+                                            .describe('User can take (earn) validator rebates'),
+                                    })
+                                    .optional()
+                                    .describe(
+                                        'Possible fee-taking mechanisms for the user or integrator (i.e., what fees the user\/integrator can potentially earn from this yield).',
+                                    ),
+                            })
+                            .describe(
+                                'Operational mechanics including constraints, fees, and capabilities',
+                            ),
+                        providerId: zod.string().describe('The provider ID this yield belongs to'),
+                        curator: zod
+                            .object({
+                                name: zod
+                                    .record(zod.string(), zod.unknown())
+                                    .nullish()
+                                    .describe('Curator name'),
+                                description: zod
+                                    .record(zod.string(), zod.unknown())
+                                    .nullish()
+                                    .describe('Curator description'),
+                                logoURI: zod
+                                    .record(zod.string(), zod.unknown())
+                                    .nullish()
+                                    .describe('Curator logo URI'),
+                            })
+                            .optional()
+                            .describe('Curator information for the yield (if applicable)'),
+                        tags: zod
+                            .array(zod.string())
+                            .optional()
+                            .describe('Optional tags for filtering or categorization'),
+                        state: zod
+                            .object({
+                                pricePerShareState: zod
+                                    .object({
+                                        price: zod
+                                            .string()
+                                            .describe(
+                                                'Price per share for the yield (e.g., LP token price, vault share price)',
+                                            ),
+                                        shareToken: zod
+                                            .object({
+                                                symbol: zod.string().describe('Token symbol'),
+                                                name: zod.string().describe('Token name'),
+                                                decimals: zod
+                                                    .number()
+                                                    .describe('Token decimal places'),
+                                                network: zod
+                                                    .enum([
+                                                        'ethereum',
+                                                        'ethereum-goerli',
+                                                        'ethereum-holesky',
+                                                        'ethereum-sepolia',
+                                                        'ethereum-hoodi',
+                                                        'arbitrum',
+                                                        'base',
+                                                        'base-sepolia',
+                                                        'gnosis',
+                                                        'optimism',
+                                                        'polygon',
+                                                        'polygon-amoy',
+                                                        'starknet',
+                                                        'zksync',
+                                                        'linea',
+                                                        'unichain',
+                                                        'monad-testnet',
+                                                        'monad',
+                                                        'robinhood-testnet',
+                                                        'avalanche-c',
+                                                        'avalanche-c-atomic',
+                                                        'avalanche-p',
+                                                        'binance',
+                                                        'celo',
+                                                        'fantom',
+                                                        'harmony',
+                                                        'moonriver',
+                                                        'okc',
+                                                        'viction',
+                                                        'core',
+                                                        'sonic',
+                                                        'plasma',
+                                                        'katana',
+                                                        'hyperevm',
+                                                        'agoric',
+                                                        'akash',
+                                                        'axelar',
+                                                        'band-protocol',
+                                                        'bitsong',
+                                                        'canto',
+                                                        'chihuahua',
+                                                        'comdex',
+                                                        'coreum',
+                                                        'cosmos',
+                                                        'crescent',
+                                                        'cronos',
+                                                        'cudos',
+                                                        'desmos',
+                                                        'dydx',
+                                                        'evmos',
+                                                        'fetch-ai',
+                                                        'gravity-bridge',
+                                                        'injective',
+                                                        'irisnet',
+                                                        'juno',
+                                                        'kava',
+                                                        'ki-network',
+                                                        'mars-protocol',
+                                                        'nym',
+                                                        'okex-chain',
+                                                        'onomy',
+                                                        'osmosis',
+                                                        'persistence',
+                                                        'quicksilver',
+                                                        'regen',
+                                                        'secret',
+                                                        'sentinel',
+                                                        'sommelier',
+                                                        'stafi',
+                                                        'stargaze',
+                                                        'stride',
+                                                        'teritori',
+                                                        'tgrade',
+                                                        'umee',
+                                                        'sei',
+                                                        'mantra',
+                                                        'celestia',
+                                                        'saga',
+                                                        'zetachain',
+                                                        'dymension',
+                                                        'humansai',
+                                                        'neutron',
+                                                        'polkadot',
+                                                        'kusama',
+                                                        'westend',
+                                                        'bittensor',
+                                                        'aptos',
+                                                        'binancebeacon',
+                                                        'cardano',
+                                                        'near',
+                                                        'solana',
+                                                        'solana-devnet',
+                                                        'stellar',
+                                                        'stellar-testnet',
+                                                        'sui',
+                                                        'tezos',
+                                                        'tron',
+                                                        'ton',
+                                                        'ton-testnet',
+                                                        'hyperliquid',
+                                                    ])
+                                                    .describe('Token network'),
+                                                address: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token address (if applicable)'),
+                                                logoURI: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token logo URI'),
+                                                isPoints: zod
+                                                    .boolean()
+                                                    .optional()
+                                                    .describe('Token is points'),
+                                                coinGeckoId: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token CoinGecko ID'),
+                                            })
+                                            .describe('Share token (the token you own shares of)'),
+                                        quoteToken: zod
+                                            .object({
+                                                symbol: zod.string().describe('Token symbol'),
+                                                name: zod.string().describe('Token name'),
+                                                decimals: zod
+                                                    .number()
+                                                    .describe('Token decimal places'),
+                                                network: zod
+                                                    .enum([
+                                                        'ethereum',
+                                                        'ethereum-goerli',
+                                                        'ethereum-holesky',
+                                                        'ethereum-sepolia',
+                                                        'ethereum-hoodi',
+                                                        'arbitrum',
+                                                        'base',
+                                                        'base-sepolia',
+                                                        'gnosis',
+                                                        'optimism',
+                                                        'polygon',
+                                                        'polygon-amoy',
+                                                        'starknet',
+                                                        'zksync',
+                                                        'linea',
+                                                        'unichain',
+                                                        'monad-testnet',
+                                                        'monad',
+                                                        'robinhood-testnet',
+                                                        'avalanche-c',
+                                                        'avalanche-c-atomic',
+                                                        'avalanche-p',
+                                                        'binance',
+                                                        'celo',
+                                                        'fantom',
+                                                        'harmony',
+                                                        'moonriver',
+                                                        'okc',
+                                                        'viction',
+                                                        'core',
+                                                        'sonic',
+                                                        'plasma',
+                                                        'katana',
+                                                        'hyperevm',
+                                                        'agoric',
+                                                        'akash',
+                                                        'axelar',
+                                                        'band-protocol',
+                                                        'bitsong',
+                                                        'canto',
+                                                        'chihuahua',
+                                                        'comdex',
+                                                        'coreum',
+                                                        'cosmos',
+                                                        'crescent',
+                                                        'cronos',
+                                                        'cudos',
+                                                        'desmos',
+                                                        'dydx',
+                                                        'evmos',
+                                                        'fetch-ai',
+                                                        'gravity-bridge',
+                                                        'injective',
+                                                        'irisnet',
+                                                        'juno',
+                                                        'kava',
+                                                        'ki-network',
+                                                        'mars-protocol',
+                                                        'nym',
+                                                        'okex-chain',
+                                                        'onomy',
+                                                        'osmosis',
+                                                        'persistence',
+                                                        'quicksilver',
+                                                        'regen',
+                                                        'secret',
+                                                        'sentinel',
+                                                        'sommelier',
+                                                        'stafi',
+                                                        'stargaze',
+                                                        'stride',
+                                                        'teritori',
+                                                        'tgrade',
+                                                        'umee',
+                                                        'sei',
+                                                        'mantra',
+                                                        'celestia',
+                                                        'saga',
+                                                        'zetachain',
+                                                        'dymension',
+                                                        'humansai',
+                                                        'neutron',
+                                                        'polkadot',
+                                                        'kusama',
+                                                        'westend',
+                                                        'bittensor',
+                                                        'aptos',
+                                                        'binancebeacon',
+                                                        'cardano',
+                                                        'near',
+                                                        'solana',
+                                                        'solana-devnet',
+                                                        'stellar',
+                                                        'stellar-testnet',
+                                                        'sui',
+                                                        'tezos',
+                                                        'tron',
+                                                        'ton',
+                                                        'ton-testnet',
+                                                        'hyperliquid',
+                                                    ])
+                                                    .describe('Token network'),
+                                                address: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token address (if applicable)'),
+                                                logoURI: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token logo URI'),
+                                                isPoints: zod
+                                                    .boolean()
+                                                    .optional()
+                                                    .describe('Token is points'),
+                                                coinGeckoId: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token CoinGecko ID'),
+                                            })
+                                            .describe(
+                                                'Quote token (the token the price is denominated in)',
+                                            ),
+                                    })
+                                    .optional(),
+                                concentratedLiquidityPoolState: zod
+                                    .object({
+                                        baseApr: zod
+                                            .number()
+                                            .describe('Full-range trading APR (24h or rolling)'),
+                                        price: zod
+                                            .number()
+                                            .describe(
+                                                'Current mid-price from the AMM (token1 per token0)',
+                                            ),
+                                        tickSpacing: zod
+                                            .number()
+                                            .describe(
+                                                'Tick spacing required so UI can snap ranges',
+                                            ),
+                                        minTick: zod
+                                            .number()
+                                            .describe('Minimum tick bound for the pool'),
+                                        maxTick: zod
+                                            .number()
+                                            .describe('Maximum tick bound for the pool'),
+                                        volume24hUsd: zod
+                                            .number()
+                                            .nullable()
+                                            .describe('24-hour trading volume in USD'),
+                                        fee24hUsd: zod
+                                            .number()
+                                            .nullable()
+                                            .describe('24-hour fees earned by LPs in USD'),
+                                        tvlUsd: zod
+                                            .number()
+                                            .nullable()
+                                            .describe('Total value locked in USD'),
+                                        feeTier: zod
+                                            .number()
+                                            .describe(
+                                                'Pool fee tier as a decimal (e.g., 0.0005 for 0.05%)',
+                                            ),
+                                        baseToken: zod
+                                            .object({
+                                                symbol: zod.string().describe('Token symbol'),
+                                                name: zod.string().describe('Token name'),
+                                                decimals: zod
+                                                    .number()
+                                                    .describe('Token decimal places'),
+                                                network: zod
+                                                    .enum([
+                                                        'ethereum',
+                                                        'ethereum-goerli',
+                                                        'ethereum-holesky',
+                                                        'ethereum-sepolia',
+                                                        'ethereum-hoodi',
+                                                        'arbitrum',
+                                                        'base',
+                                                        'base-sepolia',
+                                                        'gnosis',
+                                                        'optimism',
+                                                        'polygon',
+                                                        'polygon-amoy',
+                                                        'starknet',
+                                                        'zksync',
+                                                        'linea',
+                                                        'unichain',
+                                                        'monad-testnet',
+                                                        'monad',
+                                                        'robinhood-testnet',
+                                                        'avalanche-c',
+                                                        'avalanche-c-atomic',
+                                                        'avalanche-p',
+                                                        'binance',
+                                                        'celo',
+                                                        'fantom',
+                                                        'harmony',
+                                                        'moonriver',
+                                                        'okc',
+                                                        'viction',
+                                                        'core',
+                                                        'sonic',
+                                                        'plasma',
+                                                        'katana',
+                                                        'hyperevm',
+                                                        'agoric',
+                                                        'akash',
+                                                        'axelar',
+                                                        'band-protocol',
+                                                        'bitsong',
+                                                        'canto',
+                                                        'chihuahua',
+                                                        'comdex',
+                                                        'coreum',
+                                                        'cosmos',
+                                                        'crescent',
+                                                        'cronos',
+                                                        'cudos',
+                                                        'desmos',
+                                                        'dydx',
+                                                        'evmos',
+                                                        'fetch-ai',
+                                                        'gravity-bridge',
+                                                        'injective',
+                                                        'irisnet',
+                                                        'juno',
+                                                        'kava',
+                                                        'ki-network',
+                                                        'mars-protocol',
+                                                        'nym',
+                                                        'okex-chain',
+                                                        'onomy',
+                                                        'osmosis',
+                                                        'persistence',
+                                                        'quicksilver',
+                                                        'regen',
+                                                        'secret',
+                                                        'sentinel',
+                                                        'sommelier',
+                                                        'stafi',
+                                                        'stargaze',
+                                                        'stride',
+                                                        'teritori',
+                                                        'tgrade',
+                                                        'umee',
+                                                        'sei',
+                                                        'mantra',
+                                                        'celestia',
+                                                        'saga',
+                                                        'zetachain',
+                                                        'dymension',
+                                                        'humansai',
+                                                        'neutron',
+                                                        'polkadot',
+                                                        'kusama',
+                                                        'westend',
+                                                        'bittensor',
+                                                        'aptos',
+                                                        'binancebeacon',
+                                                        'cardano',
+                                                        'near',
+                                                        'solana',
+                                                        'solana-devnet',
+                                                        'stellar',
+                                                        'stellar-testnet',
+                                                        'sui',
+                                                        'tezos',
+                                                        'tron',
+                                                        'ton',
+                                                        'ton-testnet',
+                                                        'hyperliquid',
+                                                    ])
+                                                    .describe('Token network'),
+                                                address: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token address (if applicable)'),
+                                                logoURI: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token logo URI'),
+                                                isPoints: zod
+                                                    .boolean()
+                                                    .optional()
+                                                    .describe('Token is points'),
+                                                coinGeckoId: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token CoinGecko ID'),
+                                            })
+                                            .describe('Base token (token0)'),
+                                        quoteToken: zod
+                                            .object({
+                                                symbol: zod.string().describe('Token symbol'),
+                                                name: zod.string().describe('Token name'),
+                                                decimals: zod
+                                                    .number()
+                                                    .describe('Token decimal places'),
+                                                network: zod
+                                                    .enum([
+                                                        'ethereum',
+                                                        'ethereum-goerli',
+                                                        'ethereum-holesky',
+                                                        'ethereum-sepolia',
+                                                        'ethereum-hoodi',
+                                                        'arbitrum',
+                                                        'base',
+                                                        'base-sepolia',
+                                                        'gnosis',
+                                                        'optimism',
+                                                        'polygon',
+                                                        'polygon-amoy',
+                                                        'starknet',
+                                                        'zksync',
+                                                        'linea',
+                                                        'unichain',
+                                                        'monad-testnet',
+                                                        'monad',
+                                                        'robinhood-testnet',
+                                                        'avalanche-c',
+                                                        'avalanche-c-atomic',
+                                                        'avalanche-p',
+                                                        'binance',
+                                                        'celo',
+                                                        'fantom',
+                                                        'harmony',
+                                                        'moonriver',
+                                                        'okc',
+                                                        'viction',
+                                                        'core',
+                                                        'sonic',
+                                                        'plasma',
+                                                        'katana',
+                                                        'hyperevm',
+                                                        'agoric',
+                                                        'akash',
+                                                        'axelar',
+                                                        'band-protocol',
+                                                        'bitsong',
+                                                        'canto',
+                                                        'chihuahua',
+                                                        'comdex',
+                                                        'coreum',
+                                                        'cosmos',
+                                                        'crescent',
+                                                        'cronos',
+                                                        'cudos',
+                                                        'desmos',
+                                                        'dydx',
+                                                        'evmos',
+                                                        'fetch-ai',
+                                                        'gravity-bridge',
+                                                        'injective',
+                                                        'irisnet',
+                                                        'juno',
+                                                        'kava',
+                                                        'ki-network',
+                                                        'mars-protocol',
+                                                        'nym',
+                                                        'okex-chain',
+                                                        'onomy',
+                                                        'osmosis',
+                                                        'persistence',
+                                                        'quicksilver',
+                                                        'regen',
+                                                        'secret',
+                                                        'sentinel',
+                                                        'sommelier',
+                                                        'stafi',
+                                                        'stargaze',
+                                                        'stride',
+                                                        'teritori',
+                                                        'tgrade',
+                                                        'umee',
+                                                        'sei',
+                                                        'mantra',
+                                                        'celestia',
+                                                        'saga',
+                                                        'zetachain',
+                                                        'dymension',
+                                                        'humansai',
+                                                        'neutron',
+                                                        'polkadot',
+                                                        'kusama',
+                                                        'westend',
+                                                        'bittensor',
+                                                        'aptos',
+                                                        'binancebeacon',
+                                                        'cardano',
+                                                        'near',
+                                                        'solana',
+                                                        'solana-devnet',
+                                                        'stellar',
+                                                        'stellar-testnet',
+                                                        'sui',
+                                                        'tezos',
+                                                        'tron',
+                                                        'ton',
+                                                        'ton-testnet',
+                                                        'hyperliquid',
+                                                    ])
+                                                    .describe('Token network'),
+                                                address: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token address (if applicable)'),
+                                                logoURI: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token logo URI'),
+                                                isPoints: zod
+                                                    .boolean()
+                                                    .optional()
+                                                    .describe('Token is points'),
+                                                coinGeckoId: zod
+                                                    .string()
+                                                    .optional()
+                                                    .describe('Token CoinGecko ID'),
+                                            })
+                                            .describe('Quote token (token1)'),
+                                    })
+                                    .optional()
+                                    .describe('Concentrated liquidity pool state metadata'),
+                                capacityState: zod
+                                    .object({
+                                        current: zod
+                                            .string()
+                                            .describe('Current total assets in the yield'),
+                                        max: zod
+                                            .string()
+                                            .nullish()
+                                            .describe('Maximum capacity of the yield'),
+                                        remaining: zod
+                                            .string()
+                                            .nullish()
+                                            .describe('Remaining capacity available for deposits'),
+                                    })
+                                    .optional()
+                                    .describe('Capacity state metadata'),
+                                liquidityState: zod
+                                    .object({
+                                        liquidity: zod
+                                            .record(zod.string(), zod.unknown())
+                                            .nullish()
+                                            .describe(
+                                                'Available liquidity in underlying token units',
+                                            ),
+                                        utilization: zod
+                                            .record(zod.string(), zod.unknown())
+                                            .nullish()
+                                            .describe(
+                                                'Utilization rate as a decimal (e.g., 0.8 = 80%)',
+                                            ),
+                                    })
+                                    .optional()
+                                    .describe(
+                                        'Liquidity state (available liquidity, utilization rate)',
+                                    ),
+                                allocations: zod
+                                    .array(
+                                        zod.object({
+                                            address: zod
+                                                .string()
+                                                .describe(
+                                                    'Contract address of the underlying strategy',
+                                                ),
+                                            network: zod
+                                                .enum([
+                                                    'ethereum',
+                                                    'ethereum-goerli',
+                                                    'ethereum-holesky',
+                                                    'ethereum-sepolia',
+                                                    'ethereum-hoodi',
+                                                    'arbitrum',
+                                                    'base',
+                                                    'base-sepolia',
+                                                    'gnosis',
+                                                    'optimism',
+                                                    'polygon',
+                                                    'polygon-amoy',
+                                                    'starknet',
+                                                    'zksync',
+                                                    'linea',
+                                                    'unichain',
+                                                    'monad-testnet',
+                                                    'monad',
+                                                    'robinhood-testnet',
+                                                    'avalanche-c',
+                                                    'avalanche-c-atomic',
+                                                    'avalanche-p',
+                                                    'binance',
+                                                    'celo',
+                                                    'fantom',
+                                                    'harmony',
+                                                    'moonriver',
+                                                    'okc',
+                                                    'viction',
+                                                    'core',
+                                                    'sonic',
+                                                    'plasma',
+                                                    'katana',
+                                                    'hyperevm',
+                                                    'agoric',
+                                                    'akash',
+                                                    'axelar',
+                                                    'band-protocol',
+                                                    'bitsong',
+                                                    'canto',
+                                                    'chihuahua',
+                                                    'comdex',
+                                                    'coreum',
+                                                    'cosmos',
+                                                    'crescent',
+                                                    'cronos',
+                                                    'cudos',
+                                                    'desmos',
+                                                    'dydx',
+                                                    'evmos',
+                                                    'fetch-ai',
+                                                    'gravity-bridge',
+                                                    'injective',
+                                                    'irisnet',
+                                                    'juno',
+                                                    'kava',
+                                                    'ki-network',
+                                                    'mars-protocol',
+                                                    'nym',
+                                                    'okex-chain',
+                                                    'onomy',
+                                                    'osmosis',
+                                                    'persistence',
+                                                    'quicksilver',
+                                                    'regen',
+                                                    'secret',
+                                                    'sentinel',
+                                                    'sommelier',
+                                                    'stafi',
+                                                    'stargaze',
+                                                    'stride',
+                                                    'teritori',
+                                                    'tgrade',
+                                                    'umee',
+                                                    'sei',
+                                                    'mantra',
+                                                    'celestia',
+                                                    'saga',
+                                                    'zetachain',
+                                                    'dymension',
+                                                    'humansai',
+                                                    'neutron',
+                                                    'polkadot',
+                                                    'kusama',
+                                                    'westend',
+                                                    'bittensor',
+                                                    'aptos',
+                                                    'binancebeacon',
+                                                    'cardano',
+                                                    'near',
+                                                    'solana',
+                                                    'solana-devnet',
+                                                    'stellar',
+                                                    'stellar-testnet',
+                                                    'sui',
+                                                    'tezos',
+                                                    'tron',
+                                                    'ton',
+                                                    'ton-testnet',
+                                                    'hyperliquid',
+                                                ])
+                                                .describe('Network the underlying strategy is on'),
+                                            name: zod
+                                                .string()
+                                                .describe(
+                                                    'Display name of the underlying strategy',
+                                                ),
+                                            yieldId: zod
+                                                .string()
+                                                .optional()
+                                                .describe(
+                                                    'Yield ID if this strategy is supported as a separate yield opportunity',
+                                                ),
+                                            providerId: zod
+                                                .string()
+                                                .optional()
+                                                .describe(
+                                                    'Provider ID for this strategy (e.g., morpho, aave, lido)',
+                                                ),
+                                            allocation: zod
+                                                .string()
+                                                .describe(
+                                                    'Amount allocated to this strategy in input token units',
+                                                ),
+                                            allocationUsd: zod
+                                                .string()
+                                                .nullable()
+                                                .describe('USD value of the allocation'),
+                                            weight: zod
+                                                .number()
+                                                .describe(
+                                                    'Current weight of this strategy as a percentage (0-100)',
+                                                ),
+                                            targetWeight: zod
+                                                .number()
+                                                .describe(
+                                                    'Target weight of this strategy as a percentage (0-100)',
+                                                ),
+                                            rewardRate: zod
+                                                .object({
+                                                    total: zod
+                                                        .number()
+                                                        .describe('Total reward rate'),
+                                                    rateType: zod
+                                                        .string()
+                                                        .describe(
+                                                            'Whether this rate is APR or APY',
+                                                        ),
+                                                })
+                                                .nullable()
+                                                .describe('Reward rate of the underlying strategy'),
+                                            tvl: zod
+                                                .string()
+                                                .nullable()
+                                                .describe(
+                                                    'Total value locked in the underlying strategy in input token units',
+                                                ),
+                                            tvlUsd: zod
+                                                .string()
+                                                .nullable()
+                                                .describe(
+                                                    'Total value locked in USD for the underlying strategy',
+                                                ),
+                                            maxCapacity: zod
+                                                .string()
+                                                .nullable()
+                                                .describe(
+                                                    'Maximum capacity of the underlying strategy',
+                                                ),
+                                            remainingCapacity: zod
+                                                .string()
+                                                .nullable()
+                                                .describe(
+                                                    'Remaining capacity in the underlying strategy',
+                                                ),
+                                        }),
+                                    )
+                                    .optional()
+                                    .describe(
+                                        'Allocations to underlying strategies for vault yields (e.g., OAV, Morpho). Includes allocation, APY, TVL, and capacity per strategy.',
+                                    ),
+                            })
+                            .optional(),
+                        executionContracts: zod
+                            .object({
+                                enter: zod
+                                    .array(zod.string())
+                                    .optional()
+                                    .describe(
+                                        'Contract addresses that may appear as tx.to for enter transactions',
+                                    ),
+                                exit: zod
+                                    .array(zod.string())
+                                    .optional()
+                                    .describe(
+                                        'Contract addresses that may appear as tx.to for exit transactions',
+                                    ),
+                            })
+                            .optional()
+                            .describe(
+                                'Per-action set of on-chain contract addresses that transactions may target (tx.to). Used by policy-enforced custody providers to whitelist execution destinations.',
+                            ),
                     }),
                 )
-                .describe('Accepted input tokens (auto-converted as needed)'),
-            rewardRate: zod.object({
-                total: zod
-                    .number()
-                    .describe('Estimated reward rate across all sources (e.g. staking, points)'),
-                rateType: zod.string().describe('Whether this reward rate is APR or APY'),
-                components: zod
-                    .array(
-                        zod.object({
-                            rate: zod
-                                .number()
-                                .describe('Reward rate as a decimal (e.g. 0.04 = 4%)'),
-                            rateType: zod.string().describe('Whether this rate is APR or APY'),
-                            token: zod.object({
-                                symbol: zod.string().describe('Token symbol'),
-                                name: zod.string().describe('Token name'),
-                                decimals: zod
-                                    .number()
-                                    .min(
-                                        getYieldsResponseItemsItemRewardRateComponentsItemTokenDecimalsMin,
-                                    )
-                                    .describe('Token decimal places'),
-                                network: zod
-                                    .enum([
-                                        'ethereum',
-                                        'ethereum-goerli',
-                                        'ethereum-holesky',
-                                        'ethereum-sepolia',
-                                        'ethereum-hoodi',
-                                        'arbitrum',
-                                        'base',
-                                        'base-sepolia',
-                                        'gnosis',
-                                        'optimism',
-                                        'polygon',
-                                        'polygon-amoy',
-                                        'starknet',
-                                        'zksync',
-                                        'linea',
-                                        'unichain',
-                                        'monad-testnet',
-                                        'monad',
-                                        'avalanche-c',
-                                        'avalanche-c-atomic',
-                                        'avalanche-p',
-                                        'binance',
-                                        'celo',
-                                        'fantom',
-                                        'harmony',
-                                        'moonriver',
-                                        'okc',
-                                        'viction',
-                                        'core',
-                                        'sonic',
-                                        'plasma',
-                                        'katana',
-                                        'hyperevm',
-                                        'agoric',
-                                        'akash',
-                                        'axelar',
-                                        'band-protocol',
-                                        'bitsong',
-                                        'canto',
-                                        'chihuahua',
-                                        'comdex',
-                                        'coreum',
-                                        'cosmos',
-                                        'crescent',
-                                        'cronos',
-                                        'cudos',
-                                        'desmos',
-                                        'dydx',
-                                        'evmos',
-                                        'fetch-ai',
-                                        'gravity-bridge',
-                                        'injective',
-                                        'irisnet',
-                                        'juno',
-                                        'kava',
-                                        'ki-network',
-                                        'mars-protocol',
-                                        'nym',
-                                        'okex-chain',
-                                        'onomy',
-                                        'osmosis',
-                                        'persistence',
-                                        'quicksilver',
-                                        'regen',
-                                        'secret',
-                                        'sentinel',
-                                        'sommelier',
-                                        'stafi',
-                                        'stargaze',
-                                        'stride',
-                                        'teritori',
-                                        'tgrade',
-                                        'umee',
-                                        'sei',
-                                        'mantra',
-                                        'celestia',
-                                        'saga',
-                                        'zetachain',
-                                        'dymension',
-                                        'humansai',
-                                        'neutron',
-                                        'polkadot',
-                                        'kusama',
-                                        'westend',
-                                        'bittensor',
-                                        'aptos',
-                                        'binancebeacon',
-                                        'cardano',
-                                        'near',
-                                        'solana',
-                                        'solana-devnet',
-                                        'stellar',
-                                        'stellar-testnet',
-                                        'sui',
-                                        'tezos',
-                                        'tron',
-                                        'ton',
-                                        'ton-testnet',
-                                        'hyperliquid',
-                                    ])
-                                    .describe('The network identifier'),
-                                address: zod
-                                    .string()
-                                    .optional()
-                                    .describe('Token address (if applicable)'),
-                                logoURI: zod.string().optional().describe('Token logo URI'),
-                                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
-                            }),
-                            yieldSource: zod
-                                .enum([
-                                    'staking',
-                                    'restaking',
-                                    'protocol_incentive',
-                                    'campaign_incentive',
-                                    'points',
-                                    'lending',
-                                    'mev',
-                                    'real_world_asset_yield',
-                                    'vault',
-                                    'lending_interest',
-                                ])
-                                .describe(
-                                    'Structured source of yield (e.g. staking, protocol incentive).',
-                                ),
-                            description: zod
-                                .string()
-                                .optional()
-                                .describe('Optional human-readable description of this reward'),
-                        }),
-                    )
-                    .describe('Breakdown of reward rates by source'),
-            }),
-            status: zod.object({
-                enter: zod.boolean().describe('Whether the user can currently enter this yield'),
-                exit: zod.boolean().describe('Whether the user can currently exit this yield'),
-            }),
-            metadata: zod.object({
-                name: zod.string().describe('Display name of the yield opportunity'),
-                description: zod
-                    .string()
-                    .describe('Markdown-supported short description of this yield opportunity.'),
-                underMaintenance: zod
-                    .boolean()
-                    .describe('Whether this yield is currently under maintenance'),
-                deprecated: zod
-                    .boolean()
-                    .describe('Whether this yield is deprecated and will be discontinued'),
-                logoURI: zod.string().optional().describe('Yield opportunity logo URI'),
-            }),
-            state: zod
-                .object({
-                    pricePerShareState: zod
-                        .object({
-                            price: zod
-                                .string()
-                                .describe(
-                                    'Yield-token to underlying-token price ratio (decimal string).',
-                                ),
-                            shareToken: zod.object({
-                                symbol: zod.string().describe('Token symbol'),
-                                name: zod.string().describe('Token name'),
-                                decimals: zod
-                                    .number()
-                                    .min(
-                                        getYieldsResponseItemsItemStatePricePerShareStateShareTokenDecimalsMin,
-                                    )
-                                    .describe('Token decimal places'),
-                                network: zod
-                                    .enum([
-                                        'ethereum',
-                                        'ethereum-goerli',
-                                        'ethereum-holesky',
-                                        'ethereum-sepolia',
-                                        'ethereum-hoodi',
-                                        'arbitrum',
-                                        'base',
-                                        'base-sepolia',
-                                        'gnosis',
-                                        'optimism',
-                                        'polygon',
-                                        'polygon-amoy',
-                                        'starknet',
-                                        'zksync',
-                                        'linea',
-                                        'unichain',
-                                        'monad-testnet',
-                                        'monad',
-                                        'avalanche-c',
-                                        'avalanche-c-atomic',
-                                        'avalanche-p',
-                                        'binance',
-                                        'celo',
-                                        'fantom',
-                                        'harmony',
-                                        'moonriver',
-                                        'okc',
-                                        'viction',
-                                        'core',
-                                        'sonic',
-                                        'plasma',
-                                        'katana',
-                                        'hyperevm',
-                                        'agoric',
-                                        'akash',
-                                        'axelar',
-                                        'band-protocol',
-                                        'bitsong',
-                                        'canto',
-                                        'chihuahua',
-                                        'comdex',
-                                        'coreum',
-                                        'cosmos',
-                                        'crescent',
-                                        'cronos',
-                                        'cudos',
-                                        'desmos',
-                                        'dydx',
-                                        'evmos',
-                                        'fetch-ai',
-                                        'gravity-bridge',
-                                        'injective',
-                                        'irisnet',
-                                        'juno',
-                                        'kava',
-                                        'ki-network',
-                                        'mars-protocol',
-                                        'nym',
-                                        'okex-chain',
-                                        'onomy',
-                                        'osmosis',
-                                        'persistence',
-                                        'quicksilver',
-                                        'regen',
-                                        'secret',
-                                        'sentinel',
-                                        'sommelier',
-                                        'stafi',
-                                        'stargaze',
-                                        'stride',
-                                        'teritori',
-                                        'tgrade',
-                                        'umee',
-                                        'sei',
-                                        'mantra',
-                                        'celestia',
-                                        'saga',
-                                        'zetachain',
-                                        'dymension',
-                                        'humansai',
-                                        'neutron',
-                                        'polkadot',
-                                        'kusama',
-                                        'westend',
-                                        'bittensor',
-                                        'aptos',
-                                        'binancebeacon',
-                                        'cardano',
-                                        'near',
-                                        'solana',
-                                        'solana-devnet',
-                                        'stellar',
-                                        'stellar-testnet',
-                                        'sui',
-                                        'tezos',
-                                        'tron',
-                                        'ton',
-                                        'ton-testnet',
-                                        'hyperliquid',
-                                    ])
-                                    .describe('The network identifier'),
-                                address: zod
-                                    .string()
-                                    .optional()
-                                    .describe('Token address (if applicable)'),
-                                logoURI: zod.string().optional().describe('Token logo URI'),
-                                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
-                            }),
-                            quoteToken: zod.object({
-                                symbol: zod.string().describe('Token symbol'),
-                                name: zod.string().describe('Token name'),
-                                decimals: zod
-                                    .number()
-                                    .min(
-                                        getYieldsResponseItemsItemStatePricePerShareStateQuoteTokenDecimalsMin,
-                                    )
-                                    .describe('Token decimal places'),
-                                network: zod
-                                    .enum([
-                                        'ethereum',
-                                        'ethereum-goerli',
-                                        'ethereum-holesky',
-                                        'ethereum-sepolia',
-                                        'ethereum-hoodi',
-                                        'arbitrum',
-                                        'base',
-                                        'base-sepolia',
-                                        'gnosis',
-                                        'optimism',
-                                        'polygon',
-                                        'polygon-amoy',
-                                        'starknet',
-                                        'zksync',
-                                        'linea',
-                                        'unichain',
-                                        'monad-testnet',
-                                        'monad',
-                                        'avalanche-c',
-                                        'avalanche-c-atomic',
-                                        'avalanche-p',
-                                        'binance',
-                                        'celo',
-                                        'fantom',
-                                        'harmony',
-                                        'moonriver',
-                                        'okc',
-                                        'viction',
-                                        'core',
-                                        'sonic',
-                                        'plasma',
-                                        'katana',
-                                        'hyperevm',
-                                        'agoric',
-                                        'akash',
-                                        'axelar',
-                                        'band-protocol',
-                                        'bitsong',
-                                        'canto',
-                                        'chihuahua',
-                                        'comdex',
-                                        'coreum',
-                                        'cosmos',
-                                        'crescent',
-                                        'cronos',
-                                        'cudos',
-                                        'desmos',
-                                        'dydx',
-                                        'evmos',
-                                        'fetch-ai',
-                                        'gravity-bridge',
-                                        'injective',
-                                        'irisnet',
-                                        'juno',
-                                        'kava',
-                                        'ki-network',
-                                        'mars-protocol',
-                                        'nym',
-                                        'okex-chain',
-                                        'onomy',
-                                        'osmosis',
-                                        'persistence',
-                                        'quicksilver',
-                                        'regen',
-                                        'secret',
-                                        'sentinel',
-                                        'sommelier',
-                                        'stafi',
-                                        'stargaze',
-                                        'stride',
-                                        'teritori',
-                                        'tgrade',
-                                        'umee',
-                                        'sei',
-                                        'mantra',
-                                        'celestia',
-                                        'saga',
-                                        'zetachain',
-                                        'dymension',
-                                        'humansai',
-                                        'neutron',
-                                        'polkadot',
-                                        'kusama',
-                                        'westend',
-                                        'bittensor',
-                                        'aptos',
-                                        'binancebeacon',
-                                        'cardano',
-                                        'near',
-                                        'solana',
-                                        'solana-devnet',
-                                        'stellar',
-                                        'stellar-testnet',
-                                        'sui',
-                                        'tezos',
-                                        'tron',
-                                        'ton',
-                                        'ton-testnet',
-                                        'hyperliquid',
-                                    ])
-                                    .describe('The network identifier'),
-                                address: zod
-                                    .string()
-                                    .optional()
-                                    .describe('Token address (if applicable)'),
-                                logoURI: zod.string().optional().describe('Token logo URI'),
-                                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
-                            }),
-                        })
-                        .optional(),
-                })
                 .optional(),
         }),
-    ),
-    total: zod.number().min(getYieldsResponseTotalMin).describe('Total number of items available'),
-    offset: zod.number().min(getYieldsResponseOffsetMin).describe('Offset of the current page'),
-    limit: zod
+    );
+
+/**
+ * @summary Get a single yield opportunity by ID
+ */
+/* eslint-disable no-useless-escape */
+export const getYieldParams = zod.object({
+    yieldId: zod.string().describe('The unique identifier of the yield'),
+});
+
+export const getYieldHeaderXSuiteVersionRegExp = new RegExp('^(\\d+)\\.(\\d+)\\.(\\d+)$');
+
+export const getYieldHeader = zod.object({
+    'x-suite-version': zod
+        .string()
+        .regex(getYieldHeaderXSuiteVersionRegExp)
+        .describe('Caller suite semver (e.g. 25.10.0). Used to scope vault allow-list.'),
+});
+
+export const getYieldResponse = zod.object({
+    id: zod.string().describe('Unique identifier for this yield opportunity'),
+    network: zod
+        .enum([
+            'ethereum',
+            'ethereum-goerli',
+            'ethereum-holesky',
+            'ethereum-sepolia',
+            'ethereum-hoodi',
+            'arbitrum',
+            'base',
+            'base-sepolia',
+            'gnosis',
+            'optimism',
+            'polygon',
+            'polygon-amoy',
+            'starknet',
+            'zksync',
+            'linea',
+            'unichain',
+            'monad-testnet',
+            'monad',
+            'robinhood-testnet',
+            'avalanche-c',
+            'avalanche-c-atomic',
+            'avalanche-p',
+            'binance',
+            'celo',
+            'fantom',
+            'harmony',
+            'moonriver',
+            'okc',
+            'viction',
+            'core',
+            'sonic',
+            'plasma',
+            'katana',
+            'hyperevm',
+            'agoric',
+            'akash',
+            'axelar',
+            'band-protocol',
+            'bitsong',
+            'canto',
+            'chihuahua',
+            'comdex',
+            'coreum',
+            'cosmos',
+            'crescent',
+            'cronos',
+            'cudos',
+            'desmos',
+            'dydx',
+            'evmos',
+            'fetch-ai',
+            'gravity-bridge',
+            'injective',
+            'irisnet',
+            'juno',
+            'kava',
+            'ki-network',
+            'mars-protocol',
+            'nym',
+            'okex-chain',
+            'onomy',
+            'osmosis',
+            'persistence',
+            'quicksilver',
+            'regen',
+            'secret',
+            'sentinel',
+            'sommelier',
+            'stafi',
+            'stargaze',
+            'stride',
+            'teritori',
+            'tgrade',
+            'umee',
+            'sei',
+            'mantra',
+            'celestia',
+            'saga',
+            'zetachain',
+            'dymension',
+            'humansai',
+            'neutron',
+            'polkadot',
+            'kusama',
+            'westend',
+            'bittensor',
+            'aptos',
+            'binancebeacon',
+            'cardano',
+            'near',
+            'solana',
+            'solana-devnet',
+            'stellar',
+            'stellar-testnet',
+            'sui',
+            'tezos',
+            'tron',
+            'ton',
+            'ton-testnet',
+            'hyperliquid',
+        ])
+        .describe('Network this yield opportunity is on'),
+    chainId: zod
         .number()
-        .gt(getYieldsResponseLimitExclusiveMin)
-        .describe('Limit of the current page'),
+        .nullish()
+        .describe('EVM chain ID for this network (only for EVM networks)'),
+    inputTokens: zod
+        .array(
+            zod.object({
+                symbol: zod.string().describe('Token symbol'),
+                name: zod.string().describe('Token name'),
+                decimals: zod.number().describe('Token decimal places'),
+                network: zod
+                    .enum([
+                        'ethereum',
+                        'ethereum-goerli',
+                        'ethereum-holesky',
+                        'ethereum-sepolia',
+                        'ethereum-hoodi',
+                        'arbitrum',
+                        'base',
+                        'base-sepolia',
+                        'gnosis',
+                        'optimism',
+                        'polygon',
+                        'polygon-amoy',
+                        'starknet',
+                        'zksync',
+                        'linea',
+                        'unichain',
+                        'monad-testnet',
+                        'monad',
+                        'robinhood-testnet',
+                        'avalanche-c',
+                        'avalanche-c-atomic',
+                        'avalanche-p',
+                        'binance',
+                        'celo',
+                        'fantom',
+                        'harmony',
+                        'moonriver',
+                        'okc',
+                        'viction',
+                        'core',
+                        'sonic',
+                        'plasma',
+                        'katana',
+                        'hyperevm',
+                        'agoric',
+                        'akash',
+                        'axelar',
+                        'band-protocol',
+                        'bitsong',
+                        'canto',
+                        'chihuahua',
+                        'comdex',
+                        'coreum',
+                        'cosmos',
+                        'crescent',
+                        'cronos',
+                        'cudos',
+                        'desmos',
+                        'dydx',
+                        'evmos',
+                        'fetch-ai',
+                        'gravity-bridge',
+                        'injective',
+                        'irisnet',
+                        'juno',
+                        'kava',
+                        'ki-network',
+                        'mars-protocol',
+                        'nym',
+                        'okex-chain',
+                        'onomy',
+                        'osmosis',
+                        'persistence',
+                        'quicksilver',
+                        'regen',
+                        'secret',
+                        'sentinel',
+                        'sommelier',
+                        'stafi',
+                        'stargaze',
+                        'stride',
+                        'teritori',
+                        'tgrade',
+                        'umee',
+                        'sei',
+                        'mantra',
+                        'celestia',
+                        'saga',
+                        'zetachain',
+                        'dymension',
+                        'humansai',
+                        'neutron',
+                        'polkadot',
+                        'kusama',
+                        'westend',
+                        'bittensor',
+                        'aptos',
+                        'binancebeacon',
+                        'cardano',
+                        'near',
+                        'solana',
+                        'solana-devnet',
+                        'stellar',
+                        'stellar-testnet',
+                        'sui',
+                        'tezos',
+                        'tron',
+                        'ton',
+                        'ton-testnet',
+                        'hyperliquid',
+                    ])
+                    .describe('Token network'),
+                address: zod.string().optional().describe('Token address (if applicable)'),
+                logoURI: zod.string().optional().describe('Token logo URI'),
+                isPoints: zod.boolean().optional().describe('Token is points'),
+                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+            }),
+        )
+        .describe('Accepted input tokens (auto-converted as needed)'),
+    outputToken: zod
+        .object({
+            symbol: zod.string().describe('Token symbol'),
+            name: zod.string().describe('Token name'),
+            decimals: zod.number().describe('Token decimal places'),
+            network: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .describe('Token network'),
+            address: zod.string().optional().describe('Token address (if applicable)'),
+            logoURI: zod.string().optional().describe('Token logo URI'),
+            isPoints: zod.boolean().optional().describe('Token is points'),
+            coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+        })
+        .optional()
+        .describe('Token received from the protocol'),
+    token: zod
+        .object({
+            symbol: zod.string().describe('Token symbol'),
+            name: zod.string().describe('Token name'),
+            decimals: zod.number().describe('Token decimal places'),
+            network: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .describe('Token network'),
+            address: zod.string().optional().describe('Token address (if applicable)'),
+            logoURI: zod.string().optional().describe('Token logo URI'),
+            isPoints: zod.boolean().optional().describe('Token is points'),
+            coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+        })
+        .describe('Canonical deposit token - used for balances'),
+    tokens: zod
+        .array(
+            zod.object({
+                symbol: zod.string().describe('Token symbol'),
+                name: zod.string().describe('Token name'),
+                decimals: zod.number().describe('Token decimal places'),
+                network: zod
+                    .enum([
+                        'ethereum',
+                        'ethereum-goerli',
+                        'ethereum-holesky',
+                        'ethereum-sepolia',
+                        'ethereum-hoodi',
+                        'arbitrum',
+                        'base',
+                        'base-sepolia',
+                        'gnosis',
+                        'optimism',
+                        'polygon',
+                        'polygon-amoy',
+                        'starknet',
+                        'zksync',
+                        'linea',
+                        'unichain',
+                        'monad-testnet',
+                        'monad',
+                        'robinhood-testnet',
+                        'avalanche-c',
+                        'avalanche-c-atomic',
+                        'avalanche-p',
+                        'binance',
+                        'celo',
+                        'fantom',
+                        'harmony',
+                        'moonriver',
+                        'okc',
+                        'viction',
+                        'core',
+                        'sonic',
+                        'plasma',
+                        'katana',
+                        'hyperevm',
+                        'agoric',
+                        'akash',
+                        'axelar',
+                        'band-protocol',
+                        'bitsong',
+                        'canto',
+                        'chihuahua',
+                        'comdex',
+                        'coreum',
+                        'cosmos',
+                        'crescent',
+                        'cronos',
+                        'cudos',
+                        'desmos',
+                        'dydx',
+                        'evmos',
+                        'fetch-ai',
+                        'gravity-bridge',
+                        'injective',
+                        'irisnet',
+                        'juno',
+                        'kava',
+                        'ki-network',
+                        'mars-protocol',
+                        'nym',
+                        'okex-chain',
+                        'onomy',
+                        'osmosis',
+                        'persistence',
+                        'quicksilver',
+                        'regen',
+                        'secret',
+                        'sentinel',
+                        'sommelier',
+                        'stafi',
+                        'stargaze',
+                        'stride',
+                        'teritori',
+                        'tgrade',
+                        'umee',
+                        'sei',
+                        'mantra',
+                        'celestia',
+                        'saga',
+                        'zetachain',
+                        'dymension',
+                        'humansai',
+                        'neutron',
+                        'polkadot',
+                        'kusama',
+                        'westend',
+                        'bittensor',
+                        'aptos',
+                        'binancebeacon',
+                        'cardano',
+                        'near',
+                        'solana',
+                        'solana-devnet',
+                        'stellar',
+                        'stellar-testnet',
+                        'sui',
+                        'tezos',
+                        'tron',
+                        'ton',
+                        'ton-testnet',
+                        'hyperliquid',
+                    ])
+                    .describe('Token network'),
+                address: zod.string().optional().describe('Token address (if applicable)'),
+                logoURI: zod.string().optional().describe('Token logo URI'),
+                isPoints: zod.boolean().optional().describe('Token is points'),
+                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+            }),
+        )
+        .describe('Canonical deposit tokens - used for balances'),
+    rewardRate: zod
+        .object({
+            total: zod
+                .number()
+                .describe('Estimated reward rate across all sources (e.g. staking, points)'),
+            rateType: zod.string().describe('Whether this reward rate is APR or APY'),
+            components: zod
+                .array(
+                    zod.object({
+                        rate: zod.number().describe('Reward rate as a decimal (e.g. 0.04 = 4%)'),
+                        rateType: zod.string().describe('Whether this rate is APR or APY'),
+                        token: zod
+                            .object({
+                                symbol: zod.string().describe('Token symbol'),
+                                name: zod.string().describe('Token name'),
+                                decimals: zod.number().describe('Token decimal places'),
+                                network: zod
+                                    .enum([
+                                        'ethereum',
+                                        'ethereum-goerli',
+                                        'ethereum-holesky',
+                                        'ethereum-sepolia',
+                                        'ethereum-hoodi',
+                                        'arbitrum',
+                                        'base',
+                                        'base-sepolia',
+                                        'gnosis',
+                                        'optimism',
+                                        'polygon',
+                                        'polygon-amoy',
+                                        'starknet',
+                                        'zksync',
+                                        'linea',
+                                        'unichain',
+                                        'monad-testnet',
+                                        'monad',
+                                        'robinhood-testnet',
+                                        'avalanche-c',
+                                        'avalanche-c-atomic',
+                                        'avalanche-p',
+                                        'binance',
+                                        'celo',
+                                        'fantom',
+                                        'harmony',
+                                        'moonriver',
+                                        'okc',
+                                        'viction',
+                                        'core',
+                                        'sonic',
+                                        'plasma',
+                                        'katana',
+                                        'hyperevm',
+                                        'agoric',
+                                        'akash',
+                                        'axelar',
+                                        'band-protocol',
+                                        'bitsong',
+                                        'canto',
+                                        'chihuahua',
+                                        'comdex',
+                                        'coreum',
+                                        'cosmos',
+                                        'crescent',
+                                        'cronos',
+                                        'cudos',
+                                        'desmos',
+                                        'dydx',
+                                        'evmos',
+                                        'fetch-ai',
+                                        'gravity-bridge',
+                                        'injective',
+                                        'irisnet',
+                                        'juno',
+                                        'kava',
+                                        'ki-network',
+                                        'mars-protocol',
+                                        'nym',
+                                        'okex-chain',
+                                        'onomy',
+                                        'osmosis',
+                                        'persistence',
+                                        'quicksilver',
+                                        'regen',
+                                        'secret',
+                                        'sentinel',
+                                        'sommelier',
+                                        'stafi',
+                                        'stargaze',
+                                        'stride',
+                                        'teritori',
+                                        'tgrade',
+                                        'umee',
+                                        'sei',
+                                        'mantra',
+                                        'celestia',
+                                        'saga',
+                                        'zetachain',
+                                        'dymension',
+                                        'humansai',
+                                        'neutron',
+                                        'polkadot',
+                                        'kusama',
+                                        'westend',
+                                        'bittensor',
+                                        'aptos',
+                                        'binancebeacon',
+                                        'cardano',
+                                        'near',
+                                        'solana',
+                                        'solana-devnet',
+                                        'stellar',
+                                        'stellar-testnet',
+                                        'sui',
+                                        'tezos',
+                                        'tron',
+                                        'ton',
+                                        'ton-testnet',
+                                        'hyperliquid',
+                                    ])
+                                    .describe('Token network'),
+                                address: zod
+                                    .string()
+                                    .optional()
+                                    .describe('Token address (if applicable)'),
+                                logoURI: zod.string().optional().describe('Token logo URI'),
+                                isPoints: zod.boolean().optional().describe('Token is points'),
+                                coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                            })
+                            .describe('Token received as reward'),
+                        yieldSource: zod
+                            .enum([
+                                'staking',
+                                'restaking',
+                                'protocol_incentive',
+                                'campaign_incentive',
+                                'points',
+                                'lending',
+                                'mev',
+                                'real_world_asset_yield',
+                                'vault',
+                            ])
+                            .describe(
+                                'Structured source of yield (e.g. staking, protocol incentive)',
+                            ),
+                        description: zod
+                            .string()
+                            .optional()
+                            .describe('Optional human-readable description of this reward'),
+                    }),
+                )
+                .describe('Breakdown of reward rates by source'),
+        })
+        .describe('Total effective yield broken down by source and token.'),
+    statistics: zod
+        .object({
+            tvlUsd: zod.string().nullish().describe('Total value locked in USD'),
+            tvl: zod.string().nullish().describe('Total value locked in primary underlying token'),
+            tvlRaw: zod.string().nullish().describe('Raw total value locked (full precision)'),
+            uniqueUsers: zod
+                .number()
+                .nullish()
+                .describe('Number of users with active positions in the yield'),
+            averagePositionSizeUsd: zod.string().nullish().describe('Average position size in USD'),
+            averagePositionSize: zod
+                .string()
+                .nullish()
+                .describe('Average position size in primary underlying token'),
+        })
+        .optional()
+        .describe('Key statistics and analytics for this yield opportunity'),
+    risk: zod
+        .object({
+            ratings: zod
+                .array(
+                    zod.object({
+                        rating: zod.string().describe('Provider top-level rating value'),
+                        source: zod
+                            .enum(['credora', 'stakingRewards'])
+                            .describe('Provider source label'),
+                    }),
+                )
+                .describe('Top-level rating entries by provider'),
+        })
+        .optional()
+        .describe('Top-level provider risk ratings for this yield.'),
+    status: zod
+        .object({
+            enter: zod.boolean().describe('Whether the user can currently enter this yield'),
+            exit: zod.boolean().describe('Whether the user can currently exit this yield'),
+        })
+        .describe('Current availability of user actions like enter, exit, claim'),
+    metadata: zod
+        .object({
+            name: zod.string().describe('Display name of the yield opportunity'),
+            logoURI: zod.string().describe('Yield opportunity logo URI'),
+            description: zod
+                .string()
+                .describe(
+                    'Markdown-supported short description of this yield opportunity, including where rewards come from.',
+                ),
+            documentation: zod.string().describe('Link to documentation or integration guide'),
+            underMaintenance: zod
+                .boolean()
+                .describe('Whether this yield is currently under maintenance'),
+            deprecated: zod
+                .boolean()
+                .describe('Whether this yield is deprecated and will be discontinued'),
+            supportedStandards: zod.array(
+                zod
+                    .enum(['ERC20', 'ERC4626', 'ERC721', 'ERC1155'])
+                    .describe('Supported standards for this yield'),
+            ),
+            supportsCampaigns: zod
+                .boolean()
+                .describe('Whether this yield supports campaign creation'),
+        })
+        .describe('Descriptive metadata including name, logo, description, and documentation'),
+    mechanics: zod
+        .object({
+            type: zod
+                .enum([
+                    'staking',
+                    'restaking',
+                    'lending',
+                    'vault',
+                    'fixed_yield',
+                    'real_world_asset',
+                    'concentrated_liquidity_pool',
+                    'liquidity_pool',
+                ])
+                .describe('Type of yield mechanism (staking, restaking, LP, vault, etc.)'),
+            requiresValidatorSelection: zod
+                .boolean()
+                .optional()
+                .describe('Indicates whether this yield requires validator selection'),
+            rewardSchedule: zod
+                .enum(['block', 'hour', 'day', 'week', 'month', 'era', 'epoch', 'campaign'])
+                .describe('How often rewards are distributed (e.g. continuously, epoch-based)'),
+            rewardClaiming: zod
+                .enum(['auto', 'manual'])
+                .describe('How rewards are claimed: auto, manual, or mixed'),
+            gasFeeToken: zod
+                .object({
+                    symbol: zod.string().describe('Token symbol'),
+                    name: zod.string().describe('Token name'),
+                    decimals: zod.number().describe('Token decimal places'),
+                    network: zod
+                        .enum([
+                            'ethereum',
+                            'ethereum-goerli',
+                            'ethereum-holesky',
+                            'ethereum-sepolia',
+                            'ethereum-hoodi',
+                            'arbitrum',
+                            'base',
+                            'base-sepolia',
+                            'gnosis',
+                            'optimism',
+                            'polygon',
+                            'polygon-amoy',
+                            'starknet',
+                            'zksync',
+                            'linea',
+                            'unichain',
+                            'monad-testnet',
+                            'monad',
+                            'robinhood-testnet',
+                            'avalanche-c',
+                            'avalanche-c-atomic',
+                            'avalanche-p',
+                            'binance',
+                            'celo',
+                            'fantom',
+                            'harmony',
+                            'moonriver',
+                            'okc',
+                            'viction',
+                            'core',
+                            'sonic',
+                            'plasma',
+                            'katana',
+                            'hyperevm',
+                            'agoric',
+                            'akash',
+                            'axelar',
+                            'band-protocol',
+                            'bitsong',
+                            'canto',
+                            'chihuahua',
+                            'comdex',
+                            'coreum',
+                            'cosmos',
+                            'crescent',
+                            'cronos',
+                            'cudos',
+                            'desmos',
+                            'dydx',
+                            'evmos',
+                            'fetch-ai',
+                            'gravity-bridge',
+                            'injective',
+                            'irisnet',
+                            'juno',
+                            'kava',
+                            'ki-network',
+                            'mars-protocol',
+                            'nym',
+                            'okex-chain',
+                            'onomy',
+                            'osmosis',
+                            'persistence',
+                            'quicksilver',
+                            'regen',
+                            'secret',
+                            'sentinel',
+                            'sommelier',
+                            'stafi',
+                            'stargaze',
+                            'stride',
+                            'teritori',
+                            'tgrade',
+                            'umee',
+                            'sei',
+                            'mantra',
+                            'celestia',
+                            'saga',
+                            'zetachain',
+                            'dymension',
+                            'humansai',
+                            'neutron',
+                            'polkadot',
+                            'kusama',
+                            'westend',
+                            'bittensor',
+                            'aptos',
+                            'binancebeacon',
+                            'cardano',
+                            'near',
+                            'solana',
+                            'solana-devnet',
+                            'stellar',
+                            'stellar-testnet',
+                            'sui',
+                            'tezos',
+                            'tron',
+                            'ton',
+                            'ton-testnet',
+                            'hyperliquid',
+                        ])
+                        .describe('Token network'),
+                    address: zod.string().optional().describe('Token address (if applicable)'),
+                    logoURI: zod.string().optional().describe('Token logo URI'),
+                    isPoints: zod.boolean().optional().describe('Token is points'),
+                    coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                })
+                .describe('Token used for gas fees (typically native)'),
+            lockupPeriod: zod
+                .object({
+                    seconds: zod.number().describe('Duration in seconds'),
+                })
+                .optional()
+                .describe('Lockup period - minimum time before exit can be initiated'),
+            cooldownPeriod: zod
+                .object({
+                    seconds: zod.number().describe('Duration in seconds'),
+                })
+                .optional()
+                .describe('Cooldown period required before exit is allowed'),
+            warmupPeriod: zod
+                .object({
+                    seconds: zod.number().describe('Duration in seconds'),
+                })
+                .optional()
+                .describe('Warmup period before rewards start accruing'),
+            fee: zod
+                .object({
+                    deposit: zod.string().optional().describe('Deposit fee percentage'),
+                    withdrawal: zod.string().optional().describe('Withdrawal fee percentage'),
+                    management: zod
+                        .string()
+                        .optional()
+                        .describe('Management fee percentage (annual)'),
+                    performance: zod.string().optional().describe('Performance fee percentage'),
+                })
+                .optional()
+                .describe(
+                    'Fees charged to the user for this yield (e.g., deposit, management, performance).',
+                ),
+            entryLimits: zod
+                .object({
+                    minimum: zod
+                        .string()
+                        .nullable()
+                        .describe(
+                            'Minimum amount required to enter this yield in token units (null if no minimum)',
+                        ),
+                    maximum: zod
+                        .string()
+                        .nullable()
+                        .describe(
+                            'Maximum amount allowed to enter this yield in token units (null if no limit)',
+                        ),
+                })
+                .optional()
+                .describe('Entry amount limits for this yield'),
+            requirements: zod
+                .object({
+                    kycRequired: zod
+                        .boolean()
+                        .describe('Whether off-chain KYC is required before transacting'),
+                    kycUrl: zod.string().optional().describe("Issuer's KYC portal URL"),
+                })
+                .optional()
+                .describe('Access requirements (e.g. KYC) for this yield'),
+            supportsLedgerWalletApi: zod
+                .boolean()
+                .optional()
+                .describe('Supports Ledger Wallet API (connect via Ledger Live)'),
+            extraTransactionFormatsSupported: zod
+                .array(zod.enum(['raw', 'default']))
+                .optional()
+                .describe('Additional transaction formats supported (e.g. safe, batch)'),
+            arguments: zod
+                .object({
+                    enter: zod
+                        .object({
+                            fields: zod
+                                .array(
+                                    zod.object({
+                                        name: zod
+                                            .enum([
+                                                'amount',
+                                                'amounts',
+                                                'validatorAddress',
+                                                'validatorAddresses',
+                                                'receiverAddress',
+                                                'providerId',
+                                                'duration',
+                                                'inputToken',
+                                                'inputTokenNetwork',
+                                                'outputToken',
+                                                'outputTokenNetwork',
+                                                'subnetId',
+                                                'tronResource',
+                                                'feeConfigurationId',
+                                                'cosmosPubKey',
+                                                'tezosPubKey',
+                                                'cAddressBech',
+                                                'pAddressBech',
+                                                'executionMode',
+                                                'ledgerWalletApiCompatible',
+                                                'useMaxAmount',
+                                                'useInstantExecution',
+                                                'rangeMin',
+                                                'rangeMax',
+                                                'percentage',
+                                                'tokenId',
+                                                'skipPrechecks',
+                                                'useMaxAllowance',
+                                                'feePayerAddress',
+                                            ])
+                                            .describe('Field name'),
+                                        type: zod
+                                            .enum([
+                                                'string',
+                                                'number',
+                                                'address',
+                                                'enum',
+                                                'boolean',
+                                            ])
+                                            .describe('Field type'),
+                                        label: zod.string().describe('Field label'),
+                                        description: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Field description'),
+                                        required: zod
+                                            .boolean()
+                                            .optional()
+                                            .describe('Whether the field is required'),
+                                        options: zod
+                                            .array(zod.string())
+                                            .optional()
+                                            .describe('Options for enum fields'),
+                                        optionsRef: zod
+                                            .string()
+                                            .optional()
+                                            .describe(
+                                                'Reference to API endpoint that provides options dynamically',
+                                            ),
+                                        default: zod
+                                            .record(zod.string(), zod.unknown())
+                                            .optional()
+                                            .describe('Default value for the field'),
+                                        placeholder: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Placeholder text for the field'),
+                                        minimum: zod
+                                            .string()
+                                            .nullish()
+                                            .describe(
+                                                'Minimum allowed value for number fields (null if no minimum)',
+                                            ),
+                                        maximum: zod
+                                            .string()
+                                            .nullish()
+                                            .describe(
+                                                'Maximum allowed value for number fields (null if no maximum)',
+                                            ),
+                                        isArray: zod
+                                            .boolean()
+                                            .optional()
+                                            .describe('Whether the field is an array'),
+                                    }),
+                                )
+                                .describe('List of argument fields'),
+                            notes: zod
+                                .string()
+                                .optional()
+                                .describe('Notes or instructions for these arguments'),
+                        })
+                        .optional(),
+                    exit: zod
+                        .object({
+                            fields: zod
+                                .array(
+                                    zod.object({
+                                        name: zod
+                                            .enum([
+                                                'amount',
+                                                'amounts',
+                                                'validatorAddress',
+                                                'validatorAddresses',
+                                                'receiverAddress',
+                                                'providerId',
+                                                'duration',
+                                                'inputToken',
+                                                'inputTokenNetwork',
+                                                'outputToken',
+                                                'outputTokenNetwork',
+                                                'subnetId',
+                                                'tronResource',
+                                                'feeConfigurationId',
+                                                'cosmosPubKey',
+                                                'tezosPubKey',
+                                                'cAddressBech',
+                                                'pAddressBech',
+                                                'executionMode',
+                                                'ledgerWalletApiCompatible',
+                                                'useMaxAmount',
+                                                'useInstantExecution',
+                                                'rangeMin',
+                                                'rangeMax',
+                                                'percentage',
+                                                'tokenId',
+                                                'skipPrechecks',
+                                                'useMaxAllowance',
+                                                'feePayerAddress',
+                                            ])
+                                            .describe('Field name'),
+                                        type: zod
+                                            .enum([
+                                                'string',
+                                                'number',
+                                                'address',
+                                                'enum',
+                                                'boolean',
+                                            ])
+                                            .describe('Field type'),
+                                        label: zod.string().describe('Field label'),
+                                        description: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Field description'),
+                                        required: zod
+                                            .boolean()
+                                            .optional()
+                                            .describe('Whether the field is required'),
+                                        options: zod
+                                            .array(zod.string())
+                                            .optional()
+                                            .describe('Options for enum fields'),
+                                        optionsRef: zod
+                                            .string()
+                                            .optional()
+                                            .describe(
+                                                'Reference to API endpoint that provides options dynamically',
+                                            ),
+                                        default: zod
+                                            .record(zod.string(), zod.unknown())
+                                            .optional()
+                                            .describe('Default value for the field'),
+                                        placeholder: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Placeholder text for the field'),
+                                        minimum: zod
+                                            .string()
+                                            .nullish()
+                                            .describe(
+                                                'Minimum allowed value for number fields (null if no minimum)',
+                                            ),
+                                        maximum: zod
+                                            .string()
+                                            .nullish()
+                                            .describe(
+                                                'Maximum allowed value for number fields (null if no maximum)',
+                                            ),
+                                        isArray: zod
+                                            .boolean()
+                                            .optional()
+                                            .describe('Whether the field is an array'),
+                                    }),
+                                )
+                                .describe('List of argument fields'),
+                            notes: zod
+                                .string()
+                                .optional()
+                                .describe('Notes or instructions for these arguments'),
+                        })
+                        .optional(),
+                    manage: zod
+                        .record(
+                            zod.string(),
+                            zod.object({
+                                fields: zod
+                                    .array(
+                                        zod.object({
+                                            name: zod
+                                                .enum([
+                                                    'amount',
+                                                    'amounts',
+                                                    'validatorAddress',
+                                                    'validatorAddresses',
+                                                    'receiverAddress',
+                                                    'providerId',
+                                                    'duration',
+                                                    'inputToken',
+                                                    'inputTokenNetwork',
+                                                    'outputToken',
+                                                    'outputTokenNetwork',
+                                                    'subnetId',
+                                                    'tronResource',
+                                                    'feeConfigurationId',
+                                                    'cosmosPubKey',
+                                                    'tezosPubKey',
+                                                    'cAddressBech',
+                                                    'pAddressBech',
+                                                    'executionMode',
+                                                    'ledgerWalletApiCompatible',
+                                                    'useMaxAmount',
+                                                    'useInstantExecution',
+                                                    'rangeMin',
+                                                    'rangeMax',
+                                                    'percentage',
+                                                    'tokenId',
+                                                    'skipPrechecks',
+                                                    'useMaxAllowance',
+                                                    'feePayerAddress',
+                                                ])
+                                                .describe('Field name'),
+                                            type: zod
+                                                .enum([
+                                                    'string',
+                                                    'number',
+                                                    'address',
+                                                    'enum',
+                                                    'boolean',
+                                                ])
+                                                .describe('Field type'),
+                                            label: zod.string().describe('Field label'),
+                                            description: zod
+                                                .string()
+                                                .optional()
+                                                .describe('Field description'),
+                                            required: zod
+                                                .boolean()
+                                                .optional()
+                                                .describe('Whether the field is required'),
+                                            options: zod
+                                                .array(zod.string())
+                                                .optional()
+                                                .describe('Options for enum fields'),
+                                            optionsRef: zod
+                                                .string()
+                                                .optional()
+                                                .describe(
+                                                    'Reference to API endpoint that provides options dynamically',
+                                                ),
+                                            default: zod
+                                                .record(zod.string(), zod.unknown())
+                                                .optional()
+                                                .describe('Default value for the field'),
+                                            placeholder: zod
+                                                .string()
+                                                .optional()
+                                                .describe('Placeholder text for the field'),
+                                            minimum: zod
+                                                .string()
+                                                .nullish()
+                                                .describe(
+                                                    'Minimum allowed value for number fields (null if no minimum)',
+                                                ),
+                                            maximum: zod
+                                                .string()
+                                                .nullish()
+                                                .describe(
+                                                    'Maximum allowed value for number fields (null if no maximum)',
+                                                ),
+                                            isArray: zod
+                                                .boolean()
+                                                .optional()
+                                                .describe('Whether the field is an array'),
+                                        }),
+                                    )
+                                    .describe('List of argument fields'),
+                                notes: zod
+                                    .string()
+                                    .optional()
+                                    .describe('Notes or instructions for these arguments'),
+                            }),
+                        )
+                        .optional()
+                        .describe(
+                            'Manage action schemas. Each yield supports different ActionTypes (CLAIM_UNSTAKED, CLAIM_REWARDS, etc.). Keys are ActionTypes enum values.',
+                        ),
+                    balance: zod
+                        .object({
+                            fields: zod
+                                .array(
+                                    zod.object({
+                                        name: zod
+                                            .enum([
+                                                'amount',
+                                                'amounts',
+                                                'validatorAddress',
+                                                'validatorAddresses',
+                                                'receiverAddress',
+                                                'providerId',
+                                                'duration',
+                                                'inputToken',
+                                                'inputTokenNetwork',
+                                                'outputToken',
+                                                'outputTokenNetwork',
+                                                'subnetId',
+                                                'tronResource',
+                                                'feeConfigurationId',
+                                                'cosmosPubKey',
+                                                'tezosPubKey',
+                                                'cAddressBech',
+                                                'pAddressBech',
+                                                'executionMode',
+                                                'ledgerWalletApiCompatible',
+                                                'useMaxAmount',
+                                                'useInstantExecution',
+                                                'rangeMin',
+                                                'rangeMax',
+                                                'percentage',
+                                                'tokenId',
+                                                'skipPrechecks',
+                                                'useMaxAllowance',
+                                                'feePayerAddress',
+                                            ])
+                                            .describe('Field name'),
+                                        type: zod
+                                            .enum([
+                                                'string',
+                                                'number',
+                                                'address',
+                                                'enum',
+                                                'boolean',
+                                            ])
+                                            .describe('Field type'),
+                                        label: zod.string().describe('Field label'),
+                                        description: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Field description'),
+                                        required: zod
+                                            .boolean()
+                                            .optional()
+                                            .describe('Whether the field is required'),
+                                        options: zod
+                                            .array(zod.string())
+                                            .optional()
+                                            .describe('Options for enum fields'),
+                                        optionsRef: zod
+                                            .string()
+                                            .optional()
+                                            .describe(
+                                                'Reference to API endpoint that provides options dynamically',
+                                            ),
+                                        default: zod
+                                            .record(zod.string(), zod.unknown())
+                                            .optional()
+                                            .describe('Default value for the field'),
+                                        placeholder: zod
+                                            .string()
+                                            .optional()
+                                            .describe('Placeholder text for the field'),
+                                        minimum: zod
+                                            .string()
+                                            .nullish()
+                                            .describe(
+                                                'Minimum allowed value for number fields (null if no minimum)',
+                                            ),
+                                        maximum: zod
+                                            .string()
+                                            .nullish()
+                                            .describe(
+                                                'Maximum allowed value for number fields (null if no maximum)',
+                                            ),
+                                        isArray: zod
+                                            .boolean()
+                                            .optional()
+                                            .describe('Whether the field is an array'),
+                                    }),
+                                )
+                                .describe('List of argument fields'),
+                            notes: zod
+                                .string()
+                                .optional()
+                                .describe('Notes or instructions for these arguments'),
+                        })
+                        .optional()
+                        .describe(
+                            'Arguments for the balances endpoint (e.g., alternative addresses, chain-specific fields)',
+                        ),
+                })
+                .optional()
+                .describe('Arguments required for each action (enter, exit, manage, etc.)'),
+            possibleFeeTakingMechanisms: zod
+                .object({
+                    depositFee: zod.boolean().describe('User can take (earn) a deposit fee'),
+                    managementFee: zod.boolean().describe('User can take (earn) a management fee'),
+                    performanceFee: zod
+                        .boolean()
+                        .describe('User can take (earn) a performance fee'),
+                    validatorRebates: zod
+                        .boolean()
+                        .describe('User can take (earn) validator rebates'),
+                })
+                .optional()
+                .describe(
+                    'Possible fee-taking mechanisms for the user or integrator (i.e., what fees the user\/integrator can potentially earn from this yield).',
+                ),
+        })
+        .describe('Operational mechanics including constraints, fees, and capabilities'),
+    providerId: zod.string().describe('The provider ID this yield belongs to'),
+    curator: zod
+        .object({
+            name: zod.record(zod.string(), zod.unknown()).nullish().describe('Curator name'),
+            description: zod
+                .record(zod.string(), zod.unknown())
+                .nullish()
+                .describe('Curator description'),
+            logoURI: zod.record(zod.string(), zod.unknown()).nullish().describe('Curator logo URI'),
+        })
+        .optional()
+        .describe('Curator information for the yield (if applicable)'),
+    tags: zod
+        .array(zod.string())
+        .optional()
+        .describe('Optional tags for filtering or categorization'),
+    state: zod
+        .object({
+            pricePerShareState: zod
+                .object({
+                    price: zod
+                        .string()
+                        .describe(
+                            'Price per share for the yield (e.g., LP token price, vault share price)',
+                        ),
+                    shareToken: zod
+                        .object({
+                            symbol: zod.string().describe('Token symbol'),
+                            name: zod.string().describe('Token name'),
+                            decimals: zod.number().describe('Token decimal places'),
+                            network: zod
+                                .enum([
+                                    'ethereum',
+                                    'ethereum-goerli',
+                                    'ethereum-holesky',
+                                    'ethereum-sepolia',
+                                    'ethereum-hoodi',
+                                    'arbitrum',
+                                    'base',
+                                    'base-sepolia',
+                                    'gnosis',
+                                    'optimism',
+                                    'polygon',
+                                    'polygon-amoy',
+                                    'starknet',
+                                    'zksync',
+                                    'linea',
+                                    'unichain',
+                                    'monad-testnet',
+                                    'monad',
+                                    'robinhood-testnet',
+                                    'avalanche-c',
+                                    'avalanche-c-atomic',
+                                    'avalanche-p',
+                                    'binance',
+                                    'celo',
+                                    'fantom',
+                                    'harmony',
+                                    'moonriver',
+                                    'okc',
+                                    'viction',
+                                    'core',
+                                    'sonic',
+                                    'plasma',
+                                    'katana',
+                                    'hyperevm',
+                                    'agoric',
+                                    'akash',
+                                    'axelar',
+                                    'band-protocol',
+                                    'bitsong',
+                                    'canto',
+                                    'chihuahua',
+                                    'comdex',
+                                    'coreum',
+                                    'cosmos',
+                                    'crescent',
+                                    'cronos',
+                                    'cudos',
+                                    'desmos',
+                                    'dydx',
+                                    'evmos',
+                                    'fetch-ai',
+                                    'gravity-bridge',
+                                    'injective',
+                                    'irisnet',
+                                    'juno',
+                                    'kava',
+                                    'ki-network',
+                                    'mars-protocol',
+                                    'nym',
+                                    'okex-chain',
+                                    'onomy',
+                                    'osmosis',
+                                    'persistence',
+                                    'quicksilver',
+                                    'regen',
+                                    'secret',
+                                    'sentinel',
+                                    'sommelier',
+                                    'stafi',
+                                    'stargaze',
+                                    'stride',
+                                    'teritori',
+                                    'tgrade',
+                                    'umee',
+                                    'sei',
+                                    'mantra',
+                                    'celestia',
+                                    'saga',
+                                    'zetachain',
+                                    'dymension',
+                                    'humansai',
+                                    'neutron',
+                                    'polkadot',
+                                    'kusama',
+                                    'westend',
+                                    'bittensor',
+                                    'aptos',
+                                    'binancebeacon',
+                                    'cardano',
+                                    'near',
+                                    'solana',
+                                    'solana-devnet',
+                                    'stellar',
+                                    'stellar-testnet',
+                                    'sui',
+                                    'tezos',
+                                    'tron',
+                                    'ton',
+                                    'ton-testnet',
+                                    'hyperliquid',
+                                ])
+                                .describe('Token network'),
+                            address: zod
+                                .string()
+                                .optional()
+                                .describe('Token address (if applicable)'),
+                            logoURI: zod.string().optional().describe('Token logo URI'),
+                            isPoints: zod.boolean().optional().describe('Token is points'),
+                            coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                        })
+                        .describe('Share token (the token you own shares of)'),
+                    quoteToken: zod
+                        .object({
+                            symbol: zod.string().describe('Token symbol'),
+                            name: zod.string().describe('Token name'),
+                            decimals: zod.number().describe('Token decimal places'),
+                            network: zod
+                                .enum([
+                                    'ethereum',
+                                    'ethereum-goerli',
+                                    'ethereum-holesky',
+                                    'ethereum-sepolia',
+                                    'ethereum-hoodi',
+                                    'arbitrum',
+                                    'base',
+                                    'base-sepolia',
+                                    'gnosis',
+                                    'optimism',
+                                    'polygon',
+                                    'polygon-amoy',
+                                    'starknet',
+                                    'zksync',
+                                    'linea',
+                                    'unichain',
+                                    'monad-testnet',
+                                    'monad',
+                                    'robinhood-testnet',
+                                    'avalanche-c',
+                                    'avalanche-c-atomic',
+                                    'avalanche-p',
+                                    'binance',
+                                    'celo',
+                                    'fantom',
+                                    'harmony',
+                                    'moonriver',
+                                    'okc',
+                                    'viction',
+                                    'core',
+                                    'sonic',
+                                    'plasma',
+                                    'katana',
+                                    'hyperevm',
+                                    'agoric',
+                                    'akash',
+                                    'axelar',
+                                    'band-protocol',
+                                    'bitsong',
+                                    'canto',
+                                    'chihuahua',
+                                    'comdex',
+                                    'coreum',
+                                    'cosmos',
+                                    'crescent',
+                                    'cronos',
+                                    'cudos',
+                                    'desmos',
+                                    'dydx',
+                                    'evmos',
+                                    'fetch-ai',
+                                    'gravity-bridge',
+                                    'injective',
+                                    'irisnet',
+                                    'juno',
+                                    'kava',
+                                    'ki-network',
+                                    'mars-protocol',
+                                    'nym',
+                                    'okex-chain',
+                                    'onomy',
+                                    'osmosis',
+                                    'persistence',
+                                    'quicksilver',
+                                    'regen',
+                                    'secret',
+                                    'sentinel',
+                                    'sommelier',
+                                    'stafi',
+                                    'stargaze',
+                                    'stride',
+                                    'teritori',
+                                    'tgrade',
+                                    'umee',
+                                    'sei',
+                                    'mantra',
+                                    'celestia',
+                                    'saga',
+                                    'zetachain',
+                                    'dymension',
+                                    'humansai',
+                                    'neutron',
+                                    'polkadot',
+                                    'kusama',
+                                    'westend',
+                                    'bittensor',
+                                    'aptos',
+                                    'binancebeacon',
+                                    'cardano',
+                                    'near',
+                                    'solana',
+                                    'solana-devnet',
+                                    'stellar',
+                                    'stellar-testnet',
+                                    'sui',
+                                    'tezos',
+                                    'tron',
+                                    'ton',
+                                    'ton-testnet',
+                                    'hyperliquid',
+                                ])
+                                .describe('Token network'),
+                            address: zod
+                                .string()
+                                .optional()
+                                .describe('Token address (if applicable)'),
+                            logoURI: zod.string().optional().describe('Token logo URI'),
+                            isPoints: zod.boolean().optional().describe('Token is points'),
+                            coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                        })
+                        .describe('Quote token (the token the price is denominated in)'),
+                })
+                .optional(),
+            concentratedLiquidityPoolState: zod
+                .object({
+                    baseApr: zod.number().describe('Full-range trading APR (24h or rolling)'),
+                    price: zod
+                        .number()
+                        .describe('Current mid-price from the AMM (token1 per token0)'),
+                    tickSpacing: zod
+                        .number()
+                        .describe('Tick spacing required so UI can snap ranges'),
+                    minTick: zod.number().describe('Minimum tick bound for the pool'),
+                    maxTick: zod.number().describe('Maximum tick bound for the pool'),
+                    volume24hUsd: zod.number().nullable().describe('24-hour trading volume in USD'),
+                    fee24hUsd: zod
+                        .number()
+                        .nullable()
+                        .describe('24-hour fees earned by LPs in USD'),
+                    tvlUsd: zod.number().nullable().describe('Total value locked in USD'),
+                    feeTier: zod
+                        .number()
+                        .describe('Pool fee tier as a decimal (e.g., 0.0005 for 0.05%)'),
+                    baseToken: zod
+                        .object({
+                            symbol: zod.string().describe('Token symbol'),
+                            name: zod.string().describe('Token name'),
+                            decimals: zod.number().describe('Token decimal places'),
+                            network: zod
+                                .enum([
+                                    'ethereum',
+                                    'ethereum-goerli',
+                                    'ethereum-holesky',
+                                    'ethereum-sepolia',
+                                    'ethereum-hoodi',
+                                    'arbitrum',
+                                    'base',
+                                    'base-sepolia',
+                                    'gnosis',
+                                    'optimism',
+                                    'polygon',
+                                    'polygon-amoy',
+                                    'starknet',
+                                    'zksync',
+                                    'linea',
+                                    'unichain',
+                                    'monad-testnet',
+                                    'monad',
+                                    'robinhood-testnet',
+                                    'avalanche-c',
+                                    'avalanche-c-atomic',
+                                    'avalanche-p',
+                                    'binance',
+                                    'celo',
+                                    'fantom',
+                                    'harmony',
+                                    'moonriver',
+                                    'okc',
+                                    'viction',
+                                    'core',
+                                    'sonic',
+                                    'plasma',
+                                    'katana',
+                                    'hyperevm',
+                                    'agoric',
+                                    'akash',
+                                    'axelar',
+                                    'band-protocol',
+                                    'bitsong',
+                                    'canto',
+                                    'chihuahua',
+                                    'comdex',
+                                    'coreum',
+                                    'cosmos',
+                                    'crescent',
+                                    'cronos',
+                                    'cudos',
+                                    'desmos',
+                                    'dydx',
+                                    'evmos',
+                                    'fetch-ai',
+                                    'gravity-bridge',
+                                    'injective',
+                                    'irisnet',
+                                    'juno',
+                                    'kava',
+                                    'ki-network',
+                                    'mars-protocol',
+                                    'nym',
+                                    'okex-chain',
+                                    'onomy',
+                                    'osmosis',
+                                    'persistence',
+                                    'quicksilver',
+                                    'regen',
+                                    'secret',
+                                    'sentinel',
+                                    'sommelier',
+                                    'stafi',
+                                    'stargaze',
+                                    'stride',
+                                    'teritori',
+                                    'tgrade',
+                                    'umee',
+                                    'sei',
+                                    'mantra',
+                                    'celestia',
+                                    'saga',
+                                    'zetachain',
+                                    'dymension',
+                                    'humansai',
+                                    'neutron',
+                                    'polkadot',
+                                    'kusama',
+                                    'westend',
+                                    'bittensor',
+                                    'aptos',
+                                    'binancebeacon',
+                                    'cardano',
+                                    'near',
+                                    'solana',
+                                    'solana-devnet',
+                                    'stellar',
+                                    'stellar-testnet',
+                                    'sui',
+                                    'tezos',
+                                    'tron',
+                                    'ton',
+                                    'ton-testnet',
+                                    'hyperliquid',
+                                ])
+                                .describe('Token network'),
+                            address: zod
+                                .string()
+                                .optional()
+                                .describe('Token address (if applicable)'),
+                            logoURI: zod.string().optional().describe('Token logo URI'),
+                            isPoints: zod.boolean().optional().describe('Token is points'),
+                            coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                        })
+                        .describe('Base token (token0)'),
+                    quoteToken: zod
+                        .object({
+                            symbol: zod.string().describe('Token symbol'),
+                            name: zod.string().describe('Token name'),
+                            decimals: zod.number().describe('Token decimal places'),
+                            network: zod
+                                .enum([
+                                    'ethereum',
+                                    'ethereum-goerli',
+                                    'ethereum-holesky',
+                                    'ethereum-sepolia',
+                                    'ethereum-hoodi',
+                                    'arbitrum',
+                                    'base',
+                                    'base-sepolia',
+                                    'gnosis',
+                                    'optimism',
+                                    'polygon',
+                                    'polygon-amoy',
+                                    'starknet',
+                                    'zksync',
+                                    'linea',
+                                    'unichain',
+                                    'monad-testnet',
+                                    'monad',
+                                    'robinhood-testnet',
+                                    'avalanche-c',
+                                    'avalanche-c-atomic',
+                                    'avalanche-p',
+                                    'binance',
+                                    'celo',
+                                    'fantom',
+                                    'harmony',
+                                    'moonriver',
+                                    'okc',
+                                    'viction',
+                                    'core',
+                                    'sonic',
+                                    'plasma',
+                                    'katana',
+                                    'hyperevm',
+                                    'agoric',
+                                    'akash',
+                                    'axelar',
+                                    'band-protocol',
+                                    'bitsong',
+                                    'canto',
+                                    'chihuahua',
+                                    'comdex',
+                                    'coreum',
+                                    'cosmos',
+                                    'crescent',
+                                    'cronos',
+                                    'cudos',
+                                    'desmos',
+                                    'dydx',
+                                    'evmos',
+                                    'fetch-ai',
+                                    'gravity-bridge',
+                                    'injective',
+                                    'irisnet',
+                                    'juno',
+                                    'kava',
+                                    'ki-network',
+                                    'mars-protocol',
+                                    'nym',
+                                    'okex-chain',
+                                    'onomy',
+                                    'osmosis',
+                                    'persistence',
+                                    'quicksilver',
+                                    'regen',
+                                    'secret',
+                                    'sentinel',
+                                    'sommelier',
+                                    'stafi',
+                                    'stargaze',
+                                    'stride',
+                                    'teritori',
+                                    'tgrade',
+                                    'umee',
+                                    'sei',
+                                    'mantra',
+                                    'celestia',
+                                    'saga',
+                                    'zetachain',
+                                    'dymension',
+                                    'humansai',
+                                    'neutron',
+                                    'polkadot',
+                                    'kusama',
+                                    'westend',
+                                    'bittensor',
+                                    'aptos',
+                                    'binancebeacon',
+                                    'cardano',
+                                    'near',
+                                    'solana',
+                                    'solana-devnet',
+                                    'stellar',
+                                    'stellar-testnet',
+                                    'sui',
+                                    'tezos',
+                                    'tron',
+                                    'ton',
+                                    'ton-testnet',
+                                    'hyperliquid',
+                                ])
+                                .describe('Token network'),
+                            address: zod
+                                .string()
+                                .optional()
+                                .describe('Token address (if applicable)'),
+                            logoURI: zod.string().optional().describe('Token logo URI'),
+                            isPoints: zod.boolean().optional().describe('Token is points'),
+                            coinGeckoId: zod.string().optional().describe('Token CoinGecko ID'),
+                        })
+                        .describe('Quote token (token1)'),
+                })
+                .optional()
+                .describe('Concentrated liquidity pool state metadata'),
+            capacityState: zod
+                .object({
+                    current: zod.string().describe('Current total assets in the yield'),
+                    max: zod.string().nullish().describe('Maximum capacity of the yield'),
+                    remaining: zod
+                        .string()
+                        .nullish()
+                        .describe('Remaining capacity available for deposits'),
+                })
+                .optional()
+                .describe('Capacity state metadata'),
+            liquidityState: zod
+                .object({
+                    liquidity: zod
+                        .record(zod.string(), zod.unknown())
+                        .nullish()
+                        .describe('Available liquidity in underlying token units'),
+                    utilization: zod
+                        .record(zod.string(), zod.unknown())
+                        .nullish()
+                        .describe('Utilization rate as a decimal (e.g., 0.8 = 80%)'),
+                })
+                .optional()
+                .describe('Liquidity state (available liquidity, utilization rate)'),
+            allocations: zod
+                .array(
+                    zod.object({
+                        address: zod
+                            .string()
+                            .describe('Contract address of the underlying strategy'),
+                        network: zod
+                            .enum([
+                                'ethereum',
+                                'ethereum-goerli',
+                                'ethereum-holesky',
+                                'ethereum-sepolia',
+                                'ethereum-hoodi',
+                                'arbitrum',
+                                'base',
+                                'base-sepolia',
+                                'gnosis',
+                                'optimism',
+                                'polygon',
+                                'polygon-amoy',
+                                'starknet',
+                                'zksync',
+                                'linea',
+                                'unichain',
+                                'monad-testnet',
+                                'monad',
+                                'robinhood-testnet',
+                                'avalanche-c',
+                                'avalanche-c-atomic',
+                                'avalanche-p',
+                                'binance',
+                                'celo',
+                                'fantom',
+                                'harmony',
+                                'moonriver',
+                                'okc',
+                                'viction',
+                                'core',
+                                'sonic',
+                                'plasma',
+                                'katana',
+                                'hyperevm',
+                                'agoric',
+                                'akash',
+                                'axelar',
+                                'band-protocol',
+                                'bitsong',
+                                'canto',
+                                'chihuahua',
+                                'comdex',
+                                'coreum',
+                                'cosmos',
+                                'crescent',
+                                'cronos',
+                                'cudos',
+                                'desmos',
+                                'dydx',
+                                'evmos',
+                                'fetch-ai',
+                                'gravity-bridge',
+                                'injective',
+                                'irisnet',
+                                'juno',
+                                'kava',
+                                'ki-network',
+                                'mars-protocol',
+                                'nym',
+                                'okex-chain',
+                                'onomy',
+                                'osmosis',
+                                'persistence',
+                                'quicksilver',
+                                'regen',
+                                'secret',
+                                'sentinel',
+                                'sommelier',
+                                'stafi',
+                                'stargaze',
+                                'stride',
+                                'teritori',
+                                'tgrade',
+                                'umee',
+                                'sei',
+                                'mantra',
+                                'celestia',
+                                'saga',
+                                'zetachain',
+                                'dymension',
+                                'humansai',
+                                'neutron',
+                                'polkadot',
+                                'kusama',
+                                'westend',
+                                'bittensor',
+                                'aptos',
+                                'binancebeacon',
+                                'cardano',
+                                'near',
+                                'solana',
+                                'solana-devnet',
+                                'stellar',
+                                'stellar-testnet',
+                                'sui',
+                                'tezos',
+                                'tron',
+                                'ton',
+                                'ton-testnet',
+                                'hyperliquid',
+                            ])
+                            .describe('Network the underlying strategy is on'),
+                        name: zod.string().describe('Display name of the underlying strategy'),
+                        yieldId: zod
+                            .string()
+                            .optional()
+                            .describe(
+                                'Yield ID if this strategy is supported as a separate yield opportunity',
+                            ),
+                        providerId: zod
+                            .string()
+                            .optional()
+                            .describe('Provider ID for this strategy (e.g., morpho, aave, lido)'),
+                        allocation: zod
+                            .string()
+                            .describe('Amount allocated to this strategy in input token units'),
+                        allocationUsd: zod
+                            .string()
+                            .nullable()
+                            .describe('USD value of the allocation'),
+                        weight: zod
+                            .number()
+                            .describe('Current weight of this strategy as a percentage (0-100)'),
+                        targetWeight: zod
+                            .number()
+                            .describe('Target weight of this strategy as a percentage (0-100)'),
+                        rewardRate: zod
+                            .object({
+                                total: zod.number().describe('Total reward rate'),
+                                rateType: zod.string().describe('Whether this rate is APR or APY'),
+                            })
+                            .nullable()
+                            .describe('Reward rate of the underlying strategy'),
+                        tvl: zod
+                            .string()
+                            .nullable()
+                            .describe(
+                                'Total value locked in the underlying strategy in input token units',
+                            ),
+                        tvlUsd: zod
+                            .string()
+                            .nullable()
+                            .describe('Total value locked in USD for the underlying strategy'),
+                        maxCapacity: zod
+                            .string()
+                            .nullable()
+                            .describe('Maximum capacity of the underlying strategy'),
+                        remainingCapacity: zod
+                            .string()
+                            .nullable()
+                            .describe('Remaining capacity in the underlying strategy'),
+                    }),
+                )
+                .optional()
+                .describe(
+                    'Allocations to underlying strategies for vault yields (e.g., OAV, Morpho). Includes allocation, APY, TVL, and capacity per strategy.',
+                ),
+        })
+        .optional(),
+    executionContracts: zod
+        .object({
+            enter: zod
+                .array(zod.string())
+                .optional()
+                .describe('Contract addresses that may appear as tx.to for enter transactions'),
+            exit: zod
+                .array(zod.string())
+                .optional()
+                .describe('Contract addresses that may appear as tx.to for exit transactions'),
+        })
+        .optional()
+        .describe(
+            'Per-action set of on-chain contract addresses that transactions may target (tx.to). Used by policy-enforced custody providers to whitelist execution destinations.',
+        ),
 });
 
 /**
  * @summary Generate transactions to enter a yield position
  */
+/* eslint-disable no-useless-escape */
 export const enterYieldHeaderXSuiteVersionRegExp = new RegExp('^(\\d+)\\.(\\d+)\\.(\\d+)$');
 
 export const enterYieldHeader = zod.object({
@@ -991,297 +4869,982 @@ export const enterYieldHeader = zod.object({
         .describe('Caller suite semver (e.g. 25.10.0). Used to scope vault allow-list.'),
 });
 
+export const enterYieldBodyArgumentsPercentageMin = 0;
+export const enterYieldBodyArgumentsPercentageMax = 100;
+
 export const enterYieldBody = zod.object({
-    yieldId: zod.string().min(1).describe('Yield ID to perform the action on'),
-    address: zod.string().min(1).describe('User wallet address'),
+    yieldId: zod.string().describe('Yield ID to perform the action on'),
+    address: zod.string().describe('User wallet address'),
     arguments: zod
         .object({
             amount: zod
                 .string()
-                .min(1)
+                .optional()
                 .describe(
-                    'Amount in human-readable token units (1.5 means 1.5 USDC), not the smallest denomination.',
+                    'Amount in human-readable token units, not the smallest denomination. For example, \"1.500000\" for 1.5 USDC (6 decimals) or \"0.01\" for 0.01 ETH (18 decimals). Precision up to the token\'s decimal places is supported.',
+                ),
+            amounts: zod
+                .array(zod.string())
+                .optional()
+                .describe(
+                    "Amounts in human-readable token units, not the smallest denomination. Precision up to the token's decimal places is supported.",
+                ),
+            validatorAddress: zod
+                .string()
+                .optional()
+                .describe('Validator address for single validator selection'),
+            validatorAddresses: zod
+                .array(zod.string())
+                .optional()
+                .describe('Multiple validator addresses'),
+            providerId: zod.string().optional().describe('Provider ID for Ethereum native staking'),
+            duration: zod
+                .number()
+                .optional()
+                .describe('Duration for Avalanche native staking (in seconds)'),
+            inputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for deposits. Use \"0x\" for native token or provide the token address. For cross-chain deposits, also provide inputTokenNetwork.',
+                ),
+            inputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the input token. Required for cross-chain deposits when the token is on a different network than the vault.',
+                ),
+            outputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for withdrawals. Use \"0x\" for native token or provide the token address. For cross-chain withdrawals, also provide outputTokenNetwork.',
+                ),
+            outputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the output token. Required for cross-chain withdrawals when the destination is on a different network than the vault.',
+                ),
+            subnetId: zod.number().optional().describe('Subnet ID for Bittensor staking'),
+            tronResource: zod
+                .enum(['BANDWIDTH', 'ENERGY'])
+                .optional()
+                .describe('Tron resource type for Tron staking'),
+            feeConfigurationId: zod
+                .string()
+                .optional()
+                .describe('Fee configuration ID for custom fee settings'),
+            cosmosPubKey: zod.string().optional().describe('Cosmos public key for Cosmos staking'),
+            tezosPubKey: zod.string().optional().describe('Tezos public key for Tezos staking'),
+            cAddressBech: zod.string().optional().describe('Avalanche C-chain address'),
+            pAddressBech: zod.string().optional().describe('Avalanche P-chain address'),
+            executionMode: zod
+                .enum(['individual', 'batched'])
+                .optional()
+                .describe('Transaction execution mode'),
+            ledgerWalletApiCompatible: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'Transactions should have Ledger wallet API compatibility for hardware wallet users',
+                ),
+            useMaxAmount: zod.boolean().optional().describe('Use max amount for ERC4626 withdraw'),
+            useInstantExecution: zod
+                .boolean()
+                .optional()
+                .describe('Use instant execution for exit (faster but may have fees)'),
+            skipPrechecks: zod
+                .boolean()
+                .optional()
+                .describe('Skip pre-flight balance and rent checks'),
+            useMaxAllowance: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'When true, ERC20 approval transactions use the maximum allowance (uint256.max) instead of the exact deposit amount. Useful to avoid repeated approval transactions on subsequent deposits.',
+                ),
+            feePayerAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Fee payer address for gas-sponsored wallets (Solana). When provided, this address is used as the payer for account creation instructions and as the transaction-level fee payer.',
+                ),
+            receiverAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Receiver wallet address: ERC4626 vault flows, or on Solana the address for tokens after an optional post-exit swap',
+                ),
+            rangeMin: zod
+                .string()
+                .optional()
+                .describe(
+                    'Minimum price bound for concentrated liquidity pools (as decimal string). Must be non-negative (can be 0) and less than rangeMax.',
+                ),
+            rangeMax: zod
+                .string()
+                .optional()
+                .describe(
+                    'Maximum price bound for concentrated liquidity pools (as decimal string). Must be positive and greater than rangeMin.',
+                ),
+            percentage: zod
+                .number()
+                .min(enterYieldBodyArgumentsPercentageMin)
+                .max(enterYieldBodyArgumentsPercentageMax)
+                .optional()
+                .describe(
+                    'Percentage of liquidity to exit (0-100). Required for partial exits from liquidity positions.',
+                ),
+            tokenId: zod
+                .string()
+                .optional()
+                .describe(
+                    'NFT token ID for concentrated liquidity positions. Required for exiting specific positions.',
                 ),
         })
+        .optional()
         .describe('Arguments for the action'),
 });
 
-export const enterYieldResponseOneTransactionsItemStepIndexMin = 0;
+export const enterYieldResponseRawArgumentsPercentageMin = 0;
+export const enterYieldResponseRawArgumentsPercentageMax = 100;
 
-export const enterYieldResponse = zod
-    .object({
-        id: zod.string().describe('Unique action identifier'),
-        yieldId: zod.string().describe('Yield ID this action belongs to'),
-        address: zod.string().describe('User wallet address'),
-        intent: zod.enum(['enter', 'manage', 'exit']).describe('High-level action intent'),
-        type: zod
-            .enum([
-                'STAKE',
-                'UNSTAKE',
-                'CLAIM_REWARDS',
-                'AUTO_SWEEP_UNSTAKE_REWARDS',
-                'AUTO_SWEEP_WITHDRAW_REWARDS',
-                'RESTAKE_REWARDS',
-                'WITHDRAW',
-                'WITHDRAW_ALL',
-                'RESTAKE',
-                'CLAIM_UNSTAKED',
-                'UNLOCK_LOCKED',
-                'STAKE_LOCKED',
-                'VOTE',
-                'REVOKE',
-                'VOTE_LOCKED',
-                'REVOTE',
-                'REBOND',
-                'MIGRATE',
-                'VERIFY_WITHDRAW_CREDENTIALS',
-                'DELEGATE',
-            ])
-            .describe('Specific action type'),
-        amount: zod
-            .string()
-            .nullable()
-            .describe(
-                'Amount involved in the action, in human-readable token units (not the smallest denomination).',
-            ),
-        amountRaw: zod
-            .string()
-            .nullable()
-            .describe('Raw smallest-denomination amount (full precision)'),
-        amountUsd: zod.string().nullable().describe('USD value of the amount'),
-        transactions: zod
-            .array(
-                zod.object({
-                    id: zod.string().describe('Unique transaction identifier'),
-                    network: zod
-                        .enum([
-                            'ethereum',
-                            'ethereum-goerli',
-                            'ethereum-holesky',
-                            'ethereum-sepolia',
-                            'ethereum-hoodi',
-                            'arbitrum',
-                            'base',
-                            'base-sepolia',
-                            'gnosis',
-                            'optimism',
-                            'polygon',
-                            'polygon-amoy',
-                            'starknet',
-                            'zksync',
-                            'linea',
-                            'unichain',
-                            'monad-testnet',
-                            'monad',
-                            'avalanche-c',
-                            'avalanche-c-atomic',
-                            'avalanche-p',
-                            'binance',
-                            'celo',
-                            'fantom',
-                            'harmony',
-                            'moonriver',
-                            'okc',
-                            'viction',
-                            'core',
-                            'sonic',
-                            'plasma',
-                            'katana',
-                            'hyperevm',
-                            'agoric',
-                            'akash',
-                            'axelar',
-                            'band-protocol',
-                            'bitsong',
-                            'canto',
-                            'chihuahua',
-                            'comdex',
-                            'coreum',
-                            'cosmos',
-                            'crescent',
-                            'cronos',
-                            'cudos',
-                            'desmos',
-                            'dydx',
-                            'evmos',
-                            'fetch-ai',
-                            'gravity-bridge',
-                            'injective',
-                            'irisnet',
-                            'juno',
-                            'kava',
-                            'ki-network',
-                            'mars-protocol',
-                            'nym',
-                            'okex-chain',
-                            'onomy',
-                            'osmosis',
-                            'persistence',
-                            'quicksilver',
-                            'regen',
-                            'secret',
-                            'sentinel',
-                            'sommelier',
-                            'stafi',
-                            'stargaze',
-                            'stride',
-                            'teritori',
-                            'tgrade',
-                            'umee',
-                            'sei',
-                            'mantra',
-                            'celestia',
-                            'saga',
-                            'zetachain',
-                            'dymension',
-                            'humansai',
-                            'neutron',
-                            'polkadot',
-                            'kusama',
-                            'westend',
-                            'bittensor',
-                            'aptos',
-                            'binancebeacon',
-                            'cardano',
-                            'near',
-                            'solana',
-                            'solana-devnet',
-                            'stellar',
-                            'stellar-testnet',
-                            'sui',
-                            'tezos',
-                            'tron',
-                            'ton',
-                            'ton-testnet',
-                            'hyperliquid',
-                        ])
-                        .describe('The network identifier'),
-                    status: zod
-                        .enum([
-                            'NOT_FOUND',
-                            'CREATED',
-                            'BLOCKED',
-                            'WAITING_FOR_SIGNATURE',
-                            'SIGNED',
-                            'BROADCASTED',
-                            'PENDING',
-                            'CONFIRMED',
-                            'FAILED',
-                            'SKIPPED',
-                        ])
-                        .describe('Current status of the transaction'),
-                    type: zod
-                        .enum([
-                            'SWAP',
-                            'DEPOSIT',
-                            'APPROVAL',
-                            'STAKE',
-                            'CLAIM_UNSTAKED',
-                            'CLAIM_REWARDS',
-                            'RESTAKE_REWARDS',
-                            'UNSTAKE',
-                            'SPLIT',
-                            'MERGE',
-                            'LOCK',
-                            'UNLOCK',
-                            'SUPPLY',
-                            'ADD_LIQUIDITY',
-                            'REMOVE_LIQUIDITY',
-                            'BRIDGE',
-                            'VOTE',
-                            'REVOKE',
-                            'RESTAKE',
-                            'REBOND',
-                            'WITHDRAW',
-                            'WITHDRAW_ALL',
-                            'CREATE_ACCOUNT',
-                            'REVEAL',
-                            'MIGRATE',
-                            'DELEGATE',
-                            'UNDELEGATE',
-                            'UTXO_P_TO_C_IMPORT',
-                            'UTXO_C_TO_P_IMPORT',
-                            'WRAP',
-                            'UNWRAP',
-                            'UNFREEZE_LEGACY',
-                            'UNFREEZE_LEGACY_BANDWIDTH',
-                            'UNFREEZE_LEGACY_ENERGY',
-                            'UNFREEZE_BANDWIDTH',
-                            'UNFREEZE_ENERGY',
-                            'FREEZE_BANDWIDTH',
-                            'FREEZE_ENERGY',
-                            'UNDELEGATE_BANDWIDTH',
-                            'UNDELEGATE_ENERGY',
-                            'P2P_NODE_REQUEST',
-                            'CREATE_EIGENPOD',
-                            'VERIFY_WITHDRAW_CREDENTIALS',
-                            'START_CHECKPOINT',
-                            'VERIFY_CHECKPOINT_PROOFS',
-                            'QUEUE_WITHDRAWALS',
-                            'COMPLETE_QUEUED_WITHDRAWALS',
-                            'LZ_DEPOSIT',
-                            'LZ_WITHDRAW',
-                            'LUGANODES_PROVISION',
-                            'LUGANODES_EXIT_REQUEST',
-                            'INFSTONES_PROVISION',
-                            'INFSTONES_EXIT_REQUEST',
-                            'INFSTONES_CLAIM_REQUEST',
-                            'BATCH',
-                        ])
-                        .describe('Type of transaction operation'),
-                    hash: zod
-                        .string()
-                        .nullable()
-                        .describe('Transaction hash (available after broadcast)'),
-                    unsignedTransaction: zod
-                        .union([zod.string(), zod.record(zod.string(), zod.unknown()), zod.null()])
-                        .describe('The unsigned transaction data to be signed by the wallet'),
-                    signedTransaction: zod
-                        .string()
-                        .nullish()
-                        .describe('Signed transaction data (ready for broadcast)'),
-                    stepIndex: zod
-                        .number()
-                        .min(enterYieldResponseOneTransactionsItemStepIndexMin)
-                        .optional()
-                        .describe('Zero-based index of the step in the action flow'),
-                    isMessage: zod
-                        .boolean()
-                        .optional()
-                        .describe(
-                            'Whether this transaction is a message rather than a value transfer',
-                        ),
-                }),
-            )
-            .describe('Array of transactions for this action'),
-        executionPattern: zod
-            .enum(['synchronous', 'asynchronous', 'batch'])
-            .describe(
-                'Transaction execution pattern - synchronous (submit one by one, wait for each), asynchronous (submit all at once), or batch.',
-            ),
-        createdAt: zod.string().describe('When the action was created'),
-        completedAt: zod.string().nullable().describe('When the action was completed'),
-        status: zod
-            .enum([
-                'CANCELED',
-                'CREATED',
-                'WAITING_FOR_NEXT',
-                'PROCESSING',
-                'FAILED',
-                'SUCCESS',
-                'STALE',
-            ])
-            .describe('Current status of the action'),
-    })
-    .and(
-        zod.object({
-            vaultAddress: zod.string(),
-        }),
-    );
+export const enterYieldResponse = zod.object({
+    id: zod.string().describe('Unique action identifier'),
+    intent: zod.enum(['enter', 'manage', 'exit']).describe('High-level action intent'),
+    type: zod
+        .enum([
+            'STAKE',
+            'UNSTAKE',
+            'CLAIM_REWARDS',
+            'AUTO_SWEEP_UNSTAKE_REWARDS',
+            'AUTO_SWEEP_WITHDRAW_REWARDS',
+            'RESTAKE_REWARDS',
+            'WITHDRAW',
+            'WITHDRAW_ALL',
+            'RESTAKE',
+            'CLAIM_UNSTAKED',
+            'UNLOCK_LOCKED',
+            'STAKE_LOCKED',
+            'VOTE',
+            'REVOKE',
+            'VOTE_LOCKED',
+            'REVOTE',
+            'REBOND',
+            'MIGRATE',
+            'VERIFY_WITHDRAW_CREDENTIALS',
+            'DELEGATE',
+        ])
+        .describe('Specific action type'),
+    yieldId: zod.string().describe('Yield ID this action belongs to'),
+    address: zod.string().describe('User wallet address'),
+    amount: zod
+        .string()
+        .nullable()
+        .describe(
+            'Amount involved in the action, in human-readable token units (not the smallest denomination).',
+        ),
+    amountRaw: zod
+        .string()
+        .nullable()
+        .describe('Raw smallest-denomination amount (full precision)'),
+    amountUsd: zod.string().nullable().describe('USD value of the amount'),
+    transactions: zod
+        .array(
+            zod.object({
+                id: zod.string().describe('Unique transaction identifier'),
+                title: zod.string().describe('Display title for the transaction'),
+                network: zod
+                    .enum([
+                        'ethereum',
+                        'ethereum-goerli',
+                        'ethereum-holesky',
+                        'ethereum-sepolia',
+                        'ethereum-hoodi',
+                        'arbitrum',
+                        'base',
+                        'base-sepolia',
+                        'gnosis',
+                        'optimism',
+                        'polygon',
+                        'polygon-amoy',
+                        'starknet',
+                        'zksync',
+                        'linea',
+                        'unichain',
+                        'monad-testnet',
+                        'monad',
+                        'robinhood-testnet',
+                        'avalanche-c',
+                        'avalanche-c-atomic',
+                        'avalanche-p',
+                        'binance',
+                        'celo',
+                        'fantom',
+                        'harmony',
+                        'moonriver',
+                        'okc',
+                        'viction',
+                        'core',
+                        'sonic',
+                        'plasma',
+                        'katana',
+                        'hyperevm',
+                        'agoric',
+                        'akash',
+                        'axelar',
+                        'band-protocol',
+                        'bitsong',
+                        'canto',
+                        'chihuahua',
+                        'comdex',
+                        'coreum',
+                        'cosmos',
+                        'crescent',
+                        'cronos',
+                        'cudos',
+                        'desmos',
+                        'dydx',
+                        'evmos',
+                        'fetch-ai',
+                        'gravity-bridge',
+                        'injective',
+                        'irisnet',
+                        'juno',
+                        'kava',
+                        'ki-network',
+                        'mars-protocol',
+                        'nym',
+                        'okex-chain',
+                        'onomy',
+                        'osmosis',
+                        'persistence',
+                        'quicksilver',
+                        'regen',
+                        'secret',
+                        'sentinel',
+                        'sommelier',
+                        'stafi',
+                        'stargaze',
+                        'stride',
+                        'teritori',
+                        'tgrade',
+                        'umee',
+                        'sei',
+                        'mantra',
+                        'celestia',
+                        'saga',
+                        'zetachain',
+                        'dymension',
+                        'humansai',
+                        'neutron',
+                        'polkadot',
+                        'kusama',
+                        'westend',
+                        'bittensor',
+                        'aptos',
+                        'binancebeacon',
+                        'cardano',
+                        'near',
+                        'solana',
+                        'solana-devnet',
+                        'stellar',
+                        'stellar-testnet',
+                        'sui',
+                        'tezos',
+                        'tron',
+                        'ton',
+                        'ton-testnet',
+                        'hyperliquid',
+                    ])
+                    .describe('Network this transaction is for'),
+                status: zod
+                    .enum([
+                        'NOT_FOUND',
+                        'CREATED',
+                        'BLOCKED',
+                        'WAITING_FOR_SIGNATURE',
+                        'SIGNED',
+                        'BROADCASTED',
+                        'PENDING',
+                        'CONFIRMED',
+                        'FAILED',
+                        'SKIPPED',
+                    ])
+                    .describe('Current status of the transaction'),
+                type: zod
+                    .enum([
+                        'SWAP',
+                        'DEPOSIT',
+                        'APPROVAL',
+                        'STAKE',
+                        'CLAIM_UNSTAKED',
+                        'CLAIM_REWARDS',
+                        'RESTAKE_REWARDS',
+                        'UNSTAKE',
+                        'SPLIT',
+                        'MERGE',
+                        'LOCK',
+                        'UNLOCK',
+                        'SUPPLY',
+                        'ADD_LIQUIDITY',
+                        'REMOVE_LIQUIDITY',
+                        'BRIDGE',
+                        'VOTE',
+                        'REVOKE',
+                        'RESTAKE',
+                        'REBOND',
+                        'WITHDRAW',
+                        'WITHDRAW_ALL',
+                        'CREATE_ACCOUNT',
+                        'REVEAL',
+                        'MIGRATE',
+                        'DELEGATE',
+                        'UNDELEGATE',
+                        'UTXO_P_TO_C_IMPORT',
+                        'UTXO_C_TO_P_IMPORT',
+                        'WRAP',
+                        'UNWRAP',
+                        'UNFREEZE_LEGACY',
+                        'UNFREEZE_LEGACY_BANDWIDTH',
+                        'UNFREEZE_LEGACY_ENERGY',
+                        'UNFREEZE_BANDWIDTH',
+                        'UNFREEZE_ENERGY',
+                        'FREEZE_BANDWIDTH',
+                        'FREEZE_ENERGY',
+                        'UNDELEGATE_BANDWIDTH',
+                        'UNDELEGATE_ENERGY',
+                        'P2P_NODE_REQUEST',
+                        'CREATE_EIGENPOD',
+                        'VERIFY_WITHDRAW_CREDENTIALS',
+                        'START_CHECKPOINT',
+                        'VERIFY_CHECKPOINT_PROOFS',
+                        'QUEUE_WITHDRAWALS',
+                        'COMPLETE_QUEUED_WITHDRAWALS',
+                        'LZ_DEPOSIT',
+                        'LZ_WITHDRAW',
+                        'LUGANODES_PROVISION',
+                        'LUGANODES_EXIT_REQUEST',
+                        'INFSTONES_PROVISION',
+                        'INFSTONES_EXIT_REQUEST',
+                        'INFSTONES_CLAIM_REQUEST',
+                        'BATCH',
+                    ])
+                    .describe('Type of transaction operation'),
+                hash: zod
+                    .string()
+                    .nullable()
+                    .describe('Transaction hash (available after broadcast)'),
+                createdAt: zod.iso.datetime({}).describe('When the transaction was created'),
+                broadcastedAt: zod.iso
+                    .datetime({})
+                    .nullable()
+                    .describe('When the transaction was broadcasted to the network'),
+                signedTransaction: zod
+                    .string()
+                    .nullable()
+                    .describe('Signed transaction data (ready for broadcast)'),
+                unsignedTransaction: zod
+                    .union([
+                        zod.string().describe('Serialized transaction data'),
+                        zod
+                            .record(zod.string(), zod.unknown())
+                            .describe('Transaction object (for non-EVM chains)'),
+                        zod.null(),
+                    ])
+                    .describe('The unsigned transaction data to be signed by the wallet'),
+                annotatedTransaction: zod
+                    .record(zod.string(), zod.unknown())
+                    .nullish()
+                    .describe('Human-readable breakdown of the transaction for display purposes'),
+                structuredTransaction: zod
+                    .record(zod.string(), zod.unknown())
+                    .nullish()
+                    .describe('Detailed transaction data for client-side validation or simulation'),
+                stepIndex: zod
+                    .number()
+                    .optional()
+                    .describe('Zero-based index of the step in the action flow'),
+                description: zod
+                    .string()
+                    .optional()
+                    .describe('User-friendly description of what this transaction does'),
+                error: zod.string().nullish().describe('Error message if the transaction failed'),
+                gasEstimate: zod
+                    .string()
+                    .optional()
+                    .describe('Estimated gas cost for the transaction'),
+                explorerUrl: zod
+                    .string()
+                    .nullish()
+                    .describe('Link to the blockchain explorer for this transaction'),
+                isMessage: zod
+                    .boolean()
+                    .optional()
+                    .describe('Whether this transaction is a message rather than a value transfer'),
+            }),
+        )
+        .describe('Array of transactions for this action'),
+    executionPattern: zod
+        .enum(['synchronous', 'asynchronous', 'batch'])
+        .describe(
+            'Transaction execution pattern - synchronous (submit one by one, wait for each), asynchronous (submit all at once), or batch (single transaction with multiple operations)',
+        ),
+    rawArguments: zod
+        .object({
+            amount: zod
+                .string()
+                .optional()
+                .describe(
+                    'Amount in human-readable token units, not the smallest denomination. For example, \"1.500000\" for 1.5 USDC (6 decimals) or \"0.01\" for 0.01 ETH (18 decimals). Precision up to the token\'s decimal places is supported.',
+                ),
+            amounts: zod
+                .array(zod.string())
+                .optional()
+                .describe(
+                    "Amounts in human-readable token units, not the smallest denomination. Precision up to the token's decimal places is supported.",
+                ),
+            validatorAddress: zod
+                .string()
+                .optional()
+                .describe('Validator address for single validator selection'),
+            validatorAddresses: zod
+                .array(zod.string())
+                .optional()
+                .describe('Multiple validator addresses'),
+            providerId: zod.string().optional().describe('Provider ID for Ethereum native staking'),
+            duration: zod
+                .number()
+                .optional()
+                .describe('Duration for Avalanche native staking (in seconds)'),
+            inputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for deposits. Use \"0x\" for native token or provide the token address. For cross-chain deposits, also provide inputTokenNetwork.',
+                ),
+            inputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the input token. Required for cross-chain deposits when the token is on a different network than the vault.',
+                ),
+            outputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for withdrawals. Use \"0x\" for native token or provide the token address. For cross-chain withdrawals, also provide outputTokenNetwork.',
+                ),
+            outputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the output token. Required for cross-chain withdrawals when the destination is on a different network than the vault.',
+                ),
+            subnetId: zod.number().optional().describe('Subnet ID for Bittensor staking'),
+            tronResource: zod
+                .enum(['BANDWIDTH', 'ENERGY'])
+                .optional()
+                .describe('Tron resource type for Tron staking'),
+            feeConfigurationId: zod
+                .string()
+                .optional()
+                .describe('Fee configuration ID for custom fee settings'),
+            cosmosPubKey: zod.string().optional().describe('Cosmos public key for Cosmos staking'),
+            tezosPubKey: zod.string().optional().describe('Tezos public key for Tezos staking'),
+            cAddressBech: zod.string().optional().describe('Avalanche C-chain address'),
+            pAddressBech: zod.string().optional().describe('Avalanche P-chain address'),
+            executionMode: zod
+                .enum(['individual', 'batched'])
+                .optional()
+                .describe('Transaction execution mode'),
+            ledgerWalletApiCompatible: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'Transactions should have Ledger wallet API compatibility for hardware wallet users',
+                ),
+            useMaxAmount: zod.boolean().optional().describe('Use max amount for ERC4626 withdraw'),
+            useInstantExecution: zod
+                .boolean()
+                .optional()
+                .describe('Use instant execution for exit (faster but may have fees)'),
+            skipPrechecks: zod
+                .boolean()
+                .optional()
+                .describe('Skip pre-flight balance and rent checks'),
+            useMaxAllowance: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'When true, ERC20 approval transactions use the maximum allowance (uint256.max) instead of the exact deposit amount. Useful to avoid repeated approval transactions on subsequent deposits.',
+                ),
+            feePayerAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Fee payer address for gas-sponsored wallets (Solana). When provided, this address is used as the payer for account creation instructions and as the transaction-level fee payer.',
+                ),
+            receiverAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Receiver wallet address: ERC4626 vault flows, or on Solana the address for tokens after an optional post-exit swap',
+                ),
+            rangeMin: zod
+                .string()
+                .optional()
+                .describe(
+                    'Minimum price bound for concentrated liquidity pools (as decimal string). Must be non-negative (can be 0) and less than rangeMax.',
+                ),
+            rangeMax: zod
+                .string()
+                .optional()
+                .describe(
+                    'Maximum price bound for concentrated liquidity pools (as decimal string). Must be positive and greater than rangeMin.',
+                ),
+            percentage: zod
+                .number()
+                .min(enterYieldResponseRawArgumentsPercentageMin)
+                .max(enterYieldResponseRawArgumentsPercentageMax)
+                .optional()
+                .describe(
+                    'Percentage of liquidity to exit (0-100). Required for partial exits from liquidity positions.',
+                ),
+            tokenId: zod
+                .string()
+                .optional()
+                .describe(
+                    'NFT token ID for concentrated liquidity positions. Required for exiting specific positions.',
+                ),
+        })
+        .nullable()
+        .describe('Raw arguments exactly as submitted by the user for this action'),
+    createdAt: zod.iso.datetime({}).describe('When the action was created'),
+    completedAt: zod.iso.datetime({}).nullable().describe('When the action was completed'),
+    status: zod
+        .enum([
+            'CANCELED',
+            'CREATED',
+            'WAITING_FOR_NEXT',
+            'PROCESSING',
+            'FAILED',
+            'SUCCESS',
+            'STALE',
+        ])
+        .describe('Current status of the action'),
+    vaultAddress: zod.string(),
+});
 
 /**
  * @summary Generate transactions to exit a yield position
  */
+/* eslint-disable no-useless-escape */
 export const exitYieldHeaderXSuiteVersionRegExp = new RegExp('^(\\d+)\\.(\\d+)\\.(\\d+)$');
 
 export const exitYieldHeader = zod.object({
@@ -1291,297 +5854,982 @@ export const exitYieldHeader = zod.object({
         .describe('Caller suite semver (e.g. 25.10.0). Used to scope vault allow-list.'),
 });
 
+export const exitYieldBodyArgumentsPercentageMin = 0;
+export const exitYieldBodyArgumentsPercentageMax = 100;
+
 export const exitYieldBody = zod.object({
-    yieldId: zod.string().min(1).describe('Yield ID to perform the action on'),
-    address: zod.string().min(1).describe('User wallet address'),
+    yieldId: zod.string().describe('Yield ID to perform the action on'),
+    address: zod.string().describe('User wallet address'),
     arguments: zod
         .object({
             amount: zod
                 .string()
-                .min(1)
+                .optional()
                 .describe(
-                    'Amount in human-readable token units (1.5 means 1.5 USDC), not the smallest denomination.',
+                    'Amount in human-readable token units, not the smallest denomination. For example, \"1.500000\" for 1.5 USDC (6 decimals) or \"0.01\" for 0.01 ETH (18 decimals). Precision up to the token\'s decimal places is supported.',
+                ),
+            amounts: zod
+                .array(zod.string())
+                .optional()
+                .describe(
+                    "Amounts in human-readable token units, not the smallest denomination. Precision up to the token's decimal places is supported.",
+                ),
+            validatorAddress: zod
+                .string()
+                .optional()
+                .describe('Validator address for single validator selection'),
+            validatorAddresses: zod
+                .array(zod.string())
+                .optional()
+                .describe('Multiple validator addresses'),
+            providerId: zod.string().optional().describe('Provider ID for Ethereum native staking'),
+            duration: zod
+                .number()
+                .optional()
+                .describe('Duration for Avalanche native staking (in seconds)'),
+            inputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for deposits. Use \"0x\" for native token or provide the token address. For cross-chain deposits, also provide inputTokenNetwork.',
+                ),
+            inputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the input token. Required for cross-chain deposits when the token is on a different network than the vault.',
+                ),
+            outputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for withdrawals. Use \"0x\" for native token or provide the token address. For cross-chain withdrawals, also provide outputTokenNetwork.',
+                ),
+            outputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the output token. Required for cross-chain withdrawals when the destination is on a different network than the vault.',
+                ),
+            subnetId: zod.number().optional().describe('Subnet ID for Bittensor staking'),
+            tronResource: zod
+                .enum(['BANDWIDTH', 'ENERGY'])
+                .optional()
+                .describe('Tron resource type for Tron staking'),
+            feeConfigurationId: zod
+                .string()
+                .optional()
+                .describe('Fee configuration ID for custom fee settings'),
+            cosmosPubKey: zod.string().optional().describe('Cosmos public key for Cosmos staking'),
+            tezosPubKey: zod.string().optional().describe('Tezos public key for Tezos staking'),
+            cAddressBech: zod.string().optional().describe('Avalanche C-chain address'),
+            pAddressBech: zod.string().optional().describe('Avalanche P-chain address'),
+            executionMode: zod
+                .enum(['individual', 'batched'])
+                .optional()
+                .describe('Transaction execution mode'),
+            ledgerWalletApiCompatible: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'Transactions should have Ledger wallet API compatibility for hardware wallet users',
+                ),
+            useMaxAmount: zod.boolean().optional().describe('Use max amount for ERC4626 withdraw'),
+            useInstantExecution: zod
+                .boolean()
+                .optional()
+                .describe('Use instant execution for exit (faster but may have fees)'),
+            skipPrechecks: zod
+                .boolean()
+                .optional()
+                .describe('Skip pre-flight balance and rent checks'),
+            useMaxAllowance: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'When true, ERC20 approval transactions use the maximum allowance (uint256.max) instead of the exact deposit amount. Useful to avoid repeated approval transactions on subsequent deposits.',
+                ),
+            feePayerAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Fee payer address for gas-sponsored wallets (Solana). When provided, this address is used as the payer for account creation instructions and as the transaction-level fee payer.',
+                ),
+            receiverAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Receiver wallet address: ERC4626 vault flows, or on Solana the address for tokens after an optional post-exit swap',
+                ),
+            rangeMin: zod
+                .string()
+                .optional()
+                .describe(
+                    'Minimum price bound for concentrated liquidity pools (as decimal string). Must be non-negative (can be 0) and less than rangeMax.',
+                ),
+            rangeMax: zod
+                .string()
+                .optional()
+                .describe(
+                    'Maximum price bound for concentrated liquidity pools (as decimal string). Must be positive and greater than rangeMin.',
+                ),
+            percentage: zod
+                .number()
+                .min(exitYieldBodyArgumentsPercentageMin)
+                .max(exitYieldBodyArgumentsPercentageMax)
+                .optional()
+                .describe(
+                    'Percentage of liquidity to exit (0-100). Required for partial exits from liquidity positions.',
+                ),
+            tokenId: zod
+                .string()
+                .optional()
+                .describe(
+                    'NFT token ID for concentrated liquidity positions. Required for exiting specific positions.',
                 ),
         })
+        .optional()
         .describe('Arguments for the action'),
 });
 
-export const exitYieldResponseOneTransactionsItemStepIndexMin = 0;
+export const exitYieldResponseRawArgumentsPercentageMin = 0;
+export const exitYieldResponseRawArgumentsPercentageMax = 100;
 
-export const exitYieldResponse = zod
-    .object({
-        id: zod.string().describe('Unique action identifier'),
-        yieldId: zod.string().describe('Yield ID this action belongs to'),
-        address: zod.string().describe('User wallet address'),
-        intent: zod.enum(['enter', 'manage', 'exit']).describe('High-level action intent'),
-        type: zod
-            .enum([
-                'STAKE',
-                'UNSTAKE',
-                'CLAIM_REWARDS',
-                'AUTO_SWEEP_UNSTAKE_REWARDS',
-                'AUTO_SWEEP_WITHDRAW_REWARDS',
-                'RESTAKE_REWARDS',
-                'WITHDRAW',
-                'WITHDRAW_ALL',
-                'RESTAKE',
-                'CLAIM_UNSTAKED',
-                'UNLOCK_LOCKED',
-                'STAKE_LOCKED',
-                'VOTE',
-                'REVOKE',
-                'VOTE_LOCKED',
-                'REVOTE',
-                'REBOND',
-                'MIGRATE',
-                'VERIFY_WITHDRAW_CREDENTIALS',
-                'DELEGATE',
-            ])
-            .describe('Specific action type'),
-        amount: zod
-            .string()
-            .nullable()
-            .describe(
-                'Amount involved in the action, in human-readable token units (not the smallest denomination).',
-            ),
-        amountRaw: zod
-            .string()
-            .nullable()
-            .describe('Raw smallest-denomination amount (full precision)'),
-        amountUsd: zod.string().nullable().describe('USD value of the amount'),
-        transactions: zod
-            .array(
-                zod.object({
-                    id: zod.string().describe('Unique transaction identifier'),
-                    network: zod
-                        .enum([
-                            'ethereum',
-                            'ethereum-goerli',
-                            'ethereum-holesky',
-                            'ethereum-sepolia',
-                            'ethereum-hoodi',
-                            'arbitrum',
-                            'base',
-                            'base-sepolia',
-                            'gnosis',
-                            'optimism',
-                            'polygon',
-                            'polygon-amoy',
-                            'starknet',
-                            'zksync',
-                            'linea',
-                            'unichain',
-                            'monad-testnet',
-                            'monad',
-                            'avalanche-c',
-                            'avalanche-c-atomic',
-                            'avalanche-p',
-                            'binance',
-                            'celo',
-                            'fantom',
-                            'harmony',
-                            'moonriver',
-                            'okc',
-                            'viction',
-                            'core',
-                            'sonic',
-                            'plasma',
-                            'katana',
-                            'hyperevm',
-                            'agoric',
-                            'akash',
-                            'axelar',
-                            'band-protocol',
-                            'bitsong',
-                            'canto',
-                            'chihuahua',
-                            'comdex',
-                            'coreum',
-                            'cosmos',
-                            'crescent',
-                            'cronos',
-                            'cudos',
-                            'desmos',
-                            'dydx',
-                            'evmos',
-                            'fetch-ai',
-                            'gravity-bridge',
-                            'injective',
-                            'irisnet',
-                            'juno',
-                            'kava',
-                            'ki-network',
-                            'mars-protocol',
-                            'nym',
-                            'okex-chain',
-                            'onomy',
-                            'osmosis',
-                            'persistence',
-                            'quicksilver',
-                            'regen',
-                            'secret',
-                            'sentinel',
-                            'sommelier',
-                            'stafi',
-                            'stargaze',
-                            'stride',
-                            'teritori',
-                            'tgrade',
-                            'umee',
-                            'sei',
-                            'mantra',
-                            'celestia',
-                            'saga',
-                            'zetachain',
-                            'dymension',
-                            'humansai',
-                            'neutron',
-                            'polkadot',
-                            'kusama',
-                            'westend',
-                            'bittensor',
-                            'aptos',
-                            'binancebeacon',
-                            'cardano',
-                            'near',
-                            'solana',
-                            'solana-devnet',
-                            'stellar',
-                            'stellar-testnet',
-                            'sui',
-                            'tezos',
-                            'tron',
-                            'ton',
-                            'ton-testnet',
-                            'hyperliquid',
-                        ])
-                        .describe('The network identifier'),
-                    status: zod
-                        .enum([
-                            'NOT_FOUND',
-                            'CREATED',
-                            'BLOCKED',
-                            'WAITING_FOR_SIGNATURE',
-                            'SIGNED',
-                            'BROADCASTED',
-                            'PENDING',
-                            'CONFIRMED',
-                            'FAILED',
-                            'SKIPPED',
-                        ])
-                        .describe('Current status of the transaction'),
-                    type: zod
-                        .enum([
-                            'SWAP',
-                            'DEPOSIT',
-                            'APPROVAL',
-                            'STAKE',
-                            'CLAIM_UNSTAKED',
-                            'CLAIM_REWARDS',
-                            'RESTAKE_REWARDS',
-                            'UNSTAKE',
-                            'SPLIT',
-                            'MERGE',
-                            'LOCK',
-                            'UNLOCK',
-                            'SUPPLY',
-                            'ADD_LIQUIDITY',
-                            'REMOVE_LIQUIDITY',
-                            'BRIDGE',
-                            'VOTE',
-                            'REVOKE',
-                            'RESTAKE',
-                            'REBOND',
-                            'WITHDRAW',
-                            'WITHDRAW_ALL',
-                            'CREATE_ACCOUNT',
-                            'REVEAL',
-                            'MIGRATE',
-                            'DELEGATE',
-                            'UNDELEGATE',
-                            'UTXO_P_TO_C_IMPORT',
-                            'UTXO_C_TO_P_IMPORT',
-                            'WRAP',
-                            'UNWRAP',
-                            'UNFREEZE_LEGACY',
-                            'UNFREEZE_LEGACY_BANDWIDTH',
-                            'UNFREEZE_LEGACY_ENERGY',
-                            'UNFREEZE_BANDWIDTH',
-                            'UNFREEZE_ENERGY',
-                            'FREEZE_BANDWIDTH',
-                            'FREEZE_ENERGY',
-                            'UNDELEGATE_BANDWIDTH',
-                            'UNDELEGATE_ENERGY',
-                            'P2P_NODE_REQUEST',
-                            'CREATE_EIGENPOD',
-                            'VERIFY_WITHDRAW_CREDENTIALS',
-                            'START_CHECKPOINT',
-                            'VERIFY_CHECKPOINT_PROOFS',
-                            'QUEUE_WITHDRAWALS',
-                            'COMPLETE_QUEUED_WITHDRAWALS',
-                            'LZ_DEPOSIT',
-                            'LZ_WITHDRAW',
-                            'LUGANODES_PROVISION',
-                            'LUGANODES_EXIT_REQUEST',
-                            'INFSTONES_PROVISION',
-                            'INFSTONES_EXIT_REQUEST',
-                            'INFSTONES_CLAIM_REQUEST',
-                            'BATCH',
-                        ])
-                        .describe('Type of transaction operation'),
-                    hash: zod
-                        .string()
-                        .nullable()
-                        .describe('Transaction hash (available after broadcast)'),
-                    unsignedTransaction: zod
-                        .union([zod.string(), zod.record(zod.string(), zod.unknown()), zod.null()])
-                        .describe('The unsigned transaction data to be signed by the wallet'),
-                    signedTransaction: zod
-                        .string()
-                        .nullish()
-                        .describe('Signed transaction data (ready for broadcast)'),
-                    stepIndex: zod
-                        .number()
-                        .min(exitYieldResponseOneTransactionsItemStepIndexMin)
-                        .optional()
-                        .describe('Zero-based index of the step in the action flow'),
-                    isMessage: zod
-                        .boolean()
-                        .optional()
-                        .describe(
-                            'Whether this transaction is a message rather than a value transfer',
-                        ),
-                }),
-            )
-            .describe('Array of transactions for this action'),
-        executionPattern: zod
-            .enum(['synchronous', 'asynchronous', 'batch'])
-            .describe(
-                'Transaction execution pattern - synchronous (submit one by one, wait for each), asynchronous (submit all at once), or batch.',
-            ),
-        createdAt: zod.string().describe('When the action was created'),
-        completedAt: zod.string().nullable().describe('When the action was completed'),
-        status: zod
-            .enum([
-                'CANCELED',
-                'CREATED',
-                'WAITING_FOR_NEXT',
-                'PROCESSING',
-                'FAILED',
-                'SUCCESS',
-                'STALE',
-            ])
-            .describe('Current status of the action'),
-    })
-    .and(
-        zod.object({
-            vaultAddress: zod.string(),
-        }),
-    );
+export const exitYieldResponse = zod.object({
+    id: zod.string().describe('Unique action identifier'),
+    intent: zod.enum(['enter', 'manage', 'exit']).describe('High-level action intent'),
+    type: zod
+        .enum([
+            'STAKE',
+            'UNSTAKE',
+            'CLAIM_REWARDS',
+            'AUTO_SWEEP_UNSTAKE_REWARDS',
+            'AUTO_SWEEP_WITHDRAW_REWARDS',
+            'RESTAKE_REWARDS',
+            'WITHDRAW',
+            'WITHDRAW_ALL',
+            'RESTAKE',
+            'CLAIM_UNSTAKED',
+            'UNLOCK_LOCKED',
+            'STAKE_LOCKED',
+            'VOTE',
+            'REVOKE',
+            'VOTE_LOCKED',
+            'REVOTE',
+            'REBOND',
+            'MIGRATE',
+            'VERIFY_WITHDRAW_CREDENTIALS',
+            'DELEGATE',
+        ])
+        .describe('Specific action type'),
+    yieldId: zod.string().describe('Yield ID this action belongs to'),
+    address: zod.string().describe('User wallet address'),
+    amount: zod
+        .string()
+        .nullable()
+        .describe(
+            'Amount involved in the action, in human-readable token units (not the smallest denomination).',
+        ),
+    amountRaw: zod
+        .string()
+        .nullable()
+        .describe('Raw smallest-denomination amount (full precision)'),
+    amountUsd: zod.string().nullable().describe('USD value of the amount'),
+    transactions: zod
+        .array(
+            zod.object({
+                id: zod.string().describe('Unique transaction identifier'),
+                title: zod.string().describe('Display title for the transaction'),
+                network: zod
+                    .enum([
+                        'ethereum',
+                        'ethereum-goerli',
+                        'ethereum-holesky',
+                        'ethereum-sepolia',
+                        'ethereum-hoodi',
+                        'arbitrum',
+                        'base',
+                        'base-sepolia',
+                        'gnosis',
+                        'optimism',
+                        'polygon',
+                        'polygon-amoy',
+                        'starknet',
+                        'zksync',
+                        'linea',
+                        'unichain',
+                        'monad-testnet',
+                        'monad',
+                        'robinhood-testnet',
+                        'avalanche-c',
+                        'avalanche-c-atomic',
+                        'avalanche-p',
+                        'binance',
+                        'celo',
+                        'fantom',
+                        'harmony',
+                        'moonriver',
+                        'okc',
+                        'viction',
+                        'core',
+                        'sonic',
+                        'plasma',
+                        'katana',
+                        'hyperevm',
+                        'agoric',
+                        'akash',
+                        'axelar',
+                        'band-protocol',
+                        'bitsong',
+                        'canto',
+                        'chihuahua',
+                        'comdex',
+                        'coreum',
+                        'cosmos',
+                        'crescent',
+                        'cronos',
+                        'cudos',
+                        'desmos',
+                        'dydx',
+                        'evmos',
+                        'fetch-ai',
+                        'gravity-bridge',
+                        'injective',
+                        'irisnet',
+                        'juno',
+                        'kava',
+                        'ki-network',
+                        'mars-protocol',
+                        'nym',
+                        'okex-chain',
+                        'onomy',
+                        'osmosis',
+                        'persistence',
+                        'quicksilver',
+                        'regen',
+                        'secret',
+                        'sentinel',
+                        'sommelier',
+                        'stafi',
+                        'stargaze',
+                        'stride',
+                        'teritori',
+                        'tgrade',
+                        'umee',
+                        'sei',
+                        'mantra',
+                        'celestia',
+                        'saga',
+                        'zetachain',
+                        'dymension',
+                        'humansai',
+                        'neutron',
+                        'polkadot',
+                        'kusama',
+                        'westend',
+                        'bittensor',
+                        'aptos',
+                        'binancebeacon',
+                        'cardano',
+                        'near',
+                        'solana',
+                        'solana-devnet',
+                        'stellar',
+                        'stellar-testnet',
+                        'sui',
+                        'tezos',
+                        'tron',
+                        'ton',
+                        'ton-testnet',
+                        'hyperliquid',
+                    ])
+                    .describe('Network this transaction is for'),
+                status: zod
+                    .enum([
+                        'NOT_FOUND',
+                        'CREATED',
+                        'BLOCKED',
+                        'WAITING_FOR_SIGNATURE',
+                        'SIGNED',
+                        'BROADCASTED',
+                        'PENDING',
+                        'CONFIRMED',
+                        'FAILED',
+                        'SKIPPED',
+                    ])
+                    .describe('Current status of the transaction'),
+                type: zod
+                    .enum([
+                        'SWAP',
+                        'DEPOSIT',
+                        'APPROVAL',
+                        'STAKE',
+                        'CLAIM_UNSTAKED',
+                        'CLAIM_REWARDS',
+                        'RESTAKE_REWARDS',
+                        'UNSTAKE',
+                        'SPLIT',
+                        'MERGE',
+                        'LOCK',
+                        'UNLOCK',
+                        'SUPPLY',
+                        'ADD_LIQUIDITY',
+                        'REMOVE_LIQUIDITY',
+                        'BRIDGE',
+                        'VOTE',
+                        'REVOKE',
+                        'RESTAKE',
+                        'REBOND',
+                        'WITHDRAW',
+                        'WITHDRAW_ALL',
+                        'CREATE_ACCOUNT',
+                        'REVEAL',
+                        'MIGRATE',
+                        'DELEGATE',
+                        'UNDELEGATE',
+                        'UTXO_P_TO_C_IMPORT',
+                        'UTXO_C_TO_P_IMPORT',
+                        'WRAP',
+                        'UNWRAP',
+                        'UNFREEZE_LEGACY',
+                        'UNFREEZE_LEGACY_BANDWIDTH',
+                        'UNFREEZE_LEGACY_ENERGY',
+                        'UNFREEZE_BANDWIDTH',
+                        'UNFREEZE_ENERGY',
+                        'FREEZE_BANDWIDTH',
+                        'FREEZE_ENERGY',
+                        'UNDELEGATE_BANDWIDTH',
+                        'UNDELEGATE_ENERGY',
+                        'P2P_NODE_REQUEST',
+                        'CREATE_EIGENPOD',
+                        'VERIFY_WITHDRAW_CREDENTIALS',
+                        'START_CHECKPOINT',
+                        'VERIFY_CHECKPOINT_PROOFS',
+                        'QUEUE_WITHDRAWALS',
+                        'COMPLETE_QUEUED_WITHDRAWALS',
+                        'LZ_DEPOSIT',
+                        'LZ_WITHDRAW',
+                        'LUGANODES_PROVISION',
+                        'LUGANODES_EXIT_REQUEST',
+                        'INFSTONES_PROVISION',
+                        'INFSTONES_EXIT_REQUEST',
+                        'INFSTONES_CLAIM_REQUEST',
+                        'BATCH',
+                    ])
+                    .describe('Type of transaction operation'),
+                hash: zod
+                    .string()
+                    .nullable()
+                    .describe('Transaction hash (available after broadcast)'),
+                createdAt: zod.iso.datetime({}).describe('When the transaction was created'),
+                broadcastedAt: zod.iso
+                    .datetime({})
+                    .nullable()
+                    .describe('When the transaction was broadcasted to the network'),
+                signedTransaction: zod
+                    .string()
+                    .nullable()
+                    .describe('Signed transaction data (ready for broadcast)'),
+                unsignedTransaction: zod
+                    .union([
+                        zod.string().describe('Serialized transaction data'),
+                        zod
+                            .record(zod.string(), zod.unknown())
+                            .describe('Transaction object (for non-EVM chains)'),
+                        zod.null(),
+                    ])
+                    .describe('The unsigned transaction data to be signed by the wallet'),
+                annotatedTransaction: zod
+                    .record(zod.string(), zod.unknown())
+                    .nullish()
+                    .describe('Human-readable breakdown of the transaction for display purposes'),
+                structuredTransaction: zod
+                    .record(zod.string(), zod.unknown())
+                    .nullish()
+                    .describe('Detailed transaction data for client-side validation or simulation'),
+                stepIndex: zod
+                    .number()
+                    .optional()
+                    .describe('Zero-based index of the step in the action flow'),
+                description: zod
+                    .string()
+                    .optional()
+                    .describe('User-friendly description of what this transaction does'),
+                error: zod.string().nullish().describe('Error message if the transaction failed'),
+                gasEstimate: zod
+                    .string()
+                    .optional()
+                    .describe('Estimated gas cost for the transaction'),
+                explorerUrl: zod
+                    .string()
+                    .nullish()
+                    .describe('Link to the blockchain explorer for this transaction'),
+                isMessage: zod
+                    .boolean()
+                    .optional()
+                    .describe('Whether this transaction is a message rather than a value transfer'),
+            }),
+        )
+        .describe('Array of transactions for this action'),
+    executionPattern: zod
+        .enum(['synchronous', 'asynchronous', 'batch'])
+        .describe(
+            'Transaction execution pattern - synchronous (submit one by one, wait for each), asynchronous (submit all at once), or batch (single transaction with multiple operations)',
+        ),
+    rawArguments: zod
+        .object({
+            amount: zod
+                .string()
+                .optional()
+                .describe(
+                    'Amount in human-readable token units, not the smallest denomination. For example, \"1.500000\" for 1.5 USDC (6 decimals) or \"0.01\" for 0.01 ETH (18 decimals). Precision up to the token\'s decimal places is supported.',
+                ),
+            amounts: zod
+                .array(zod.string())
+                .optional()
+                .describe(
+                    "Amounts in human-readable token units, not the smallest denomination. Precision up to the token's decimal places is supported.",
+                ),
+            validatorAddress: zod
+                .string()
+                .optional()
+                .describe('Validator address for single validator selection'),
+            validatorAddresses: zod
+                .array(zod.string())
+                .optional()
+                .describe('Multiple validator addresses'),
+            providerId: zod.string().optional().describe('Provider ID for Ethereum native staking'),
+            duration: zod
+                .number()
+                .optional()
+                .describe('Duration for Avalanche native staking (in seconds)'),
+            inputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for deposits. Use \"0x\" for native token or provide the token address. For cross-chain deposits, also provide inputTokenNetwork.',
+                ),
+            inputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the input token. Required for cross-chain deposits when the token is on a different network than the vault.',
+                ),
+            outputToken: zod
+                .string()
+                .optional()
+                .describe(
+                    'Token for withdrawals. Use \"0x\" for native token or provide the token address. For cross-chain withdrawals, also provide outputTokenNetwork.',
+                ),
+            outputTokenNetwork: zod
+                .enum([
+                    'ethereum',
+                    'ethereum-goerli',
+                    'ethereum-holesky',
+                    'ethereum-sepolia',
+                    'ethereum-hoodi',
+                    'arbitrum',
+                    'base',
+                    'base-sepolia',
+                    'gnosis',
+                    'optimism',
+                    'polygon',
+                    'polygon-amoy',
+                    'starknet',
+                    'zksync',
+                    'linea',
+                    'unichain',
+                    'monad-testnet',
+                    'monad',
+                    'robinhood-testnet',
+                    'avalanche-c',
+                    'avalanche-c-atomic',
+                    'avalanche-p',
+                    'binance',
+                    'celo',
+                    'fantom',
+                    'harmony',
+                    'moonriver',
+                    'okc',
+                    'viction',
+                    'core',
+                    'sonic',
+                    'plasma',
+                    'katana',
+                    'hyperevm',
+                    'agoric',
+                    'akash',
+                    'axelar',
+                    'band-protocol',
+                    'bitsong',
+                    'canto',
+                    'chihuahua',
+                    'comdex',
+                    'coreum',
+                    'cosmos',
+                    'crescent',
+                    'cronos',
+                    'cudos',
+                    'desmos',
+                    'dydx',
+                    'evmos',
+                    'fetch-ai',
+                    'gravity-bridge',
+                    'injective',
+                    'irisnet',
+                    'juno',
+                    'kava',
+                    'ki-network',
+                    'mars-protocol',
+                    'nym',
+                    'okex-chain',
+                    'onomy',
+                    'osmosis',
+                    'persistence',
+                    'quicksilver',
+                    'regen',
+                    'secret',
+                    'sentinel',
+                    'sommelier',
+                    'stafi',
+                    'stargaze',
+                    'stride',
+                    'teritori',
+                    'tgrade',
+                    'umee',
+                    'sei',
+                    'mantra',
+                    'celestia',
+                    'saga',
+                    'zetachain',
+                    'dymension',
+                    'humansai',
+                    'neutron',
+                    'polkadot',
+                    'kusama',
+                    'westend',
+                    'bittensor',
+                    'aptos',
+                    'binancebeacon',
+                    'cardano',
+                    'near',
+                    'solana',
+                    'solana-devnet',
+                    'stellar',
+                    'stellar-testnet',
+                    'sui',
+                    'tezos',
+                    'tron',
+                    'ton',
+                    'ton-testnet',
+                    'hyperliquid',
+                ])
+                .optional()
+                .describe(
+                    'Network for the output token. Required for cross-chain withdrawals when the destination is on a different network than the vault.',
+                ),
+            subnetId: zod.number().optional().describe('Subnet ID for Bittensor staking'),
+            tronResource: zod
+                .enum(['BANDWIDTH', 'ENERGY'])
+                .optional()
+                .describe('Tron resource type for Tron staking'),
+            feeConfigurationId: zod
+                .string()
+                .optional()
+                .describe('Fee configuration ID for custom fee settings'),
+            cosmosPubKey: zod.string().optional().describe('Cosmos public key for Cosmos staking'),
+            tezosPubKey: zod.string().optional().describe('Tezos public key for Tezos staking'),
+            cAddressBech: zod.string().optional().describe('Avalanche C-chain address'),
+            pAddressBech: zod.string().optional().describe('Avalanche P-chain address'),
+            executionMode: zod
+                .enum(['individual', 'batched'])
+                .optional()
+                .describe('Transaction execution mode'),
+            ledgerWalletApiCompatible: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'Transactions should have Ledger wallet API compatibility for hardware wallet users',
+                ),
+            useMaxAmount: zod.boolean().optional().describe('Use max amount for ERC4626 withdraw'),
+            useInstantExecution: zod
+                .boolean()
+                .optional()
+                .describe('Use instant execution for exit (faster but may have fees)'),
+            skipPrechecks: zod
+                .boolean()
+                .optional()
+                .describe('Skip pre-flight balance and rent checks'),
+            useMaxAllowance: zod
+                .boolean()
+                .optional()
+                .describe(
+                    'When true, ERC20 approval transactions use the maximum allowance (uint256.max) instead of the exact deposit amount. Useful to avoid repeated approval transactions on subsequent deposits.',
+                ),
+            feePayerAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Fee payer address for gas-sponsored wallets (Solana). When provided, this address is used as the payer for account creation instructions and as the transaction-level fee payer.',
+                ),
+            receiverAddress: zod
+                .string()
+                .optional()
+                .describe(
+                    'Receiver wallet address: ERC4626 vault flows, or on Solana the address for tokens after an optional post-exit swap',
+                ),
+            rangeMin: zod
+                .string()
+                .optional()
+                .describe(
+                    'Minimum price bound for concentrated liquidity pools (as decimal string). Must be non-negative (can be 0) and less than rangeMax.',
+                ),
+            rangeMax: zod
+                .string()
+                .optional()
+                .describe(
+                    'Maximum price bound for concentrated liquidity pools (as decimal string). Must be positive and greater than rangeMin.',
+                ),
+            percentage: zod
+                .number()
+                .min(exitYieldResponseRawArgumentsPercentageMin)
+                .max(exitYieldResponseRawArgumentsPercentageMax)
+                .optional()
+                .describe(
+                    'Percentage of liquidity to exit (0-100). Required for partial exits from liquidity positions.',
+                ),
+            tokenId: zod
+                .string()
+                .optional()
+                .describe(
+                    'NFT token ID for concentrated liquidity positions. Required for exiting specific positions.',
+                ),
+        })
+        .nullable()
+        .describe('Raw arguments exactly as submitted by the user for this action'),
+    createdAt: zod.iso.datetime({}).describe('When the action was created'),
+    completedAt: zod.iso.datetime({}).nullable().describe('When the action was completed'),
+    status: zod
+        .enum([
+            'CANCELED',
+            'CREATED',
+            'WAITING_FOR_NEXT',
+            'PROCESSING',
+            'FAILED',
+            'SUCCESS',
+            'STALE',
+        ])
+        .describe('Current status of the action'),
+    vaultAddress: zod.string(),
+});
 
 /**
  * @summary List claimable Merkl rewards for a user (per chain)
  */
+
 export const getMerklUserRewardsPathAddressRegExp = new RegExp('^0x[a-fA-F0-9]{40}$');
 
 export const getMerklUserRewardsParams = zod.object({
@@ -1637,6 +6885,7 @@ export const getMerklUserRewardsResponse = zod.array(getMerklUserRewardsResponse
 /**
  * @summary List claimable Merkl rewards for multiple users across chains
  */
+
 export const getMerklUsersRewardsBodyAddressRegExp = new RegExp('^0x[a-fA-F0-9]{40}$');
 
 export const getMerklUsersRewardsBodyItem = zod.object({
@@ -1696,6 +6945,7 @@ export const getMerklUsersRewardsResponse = zod.array(getMerklUsersRewardsRespon
 /**
  * @summary List allow-listed yield vaults per network
  */
+
 export const getYieldVaultsHeaderXSuiteVersionOneRegExp = new RegExp('^(\\d+)\\.(\\d+)\\.(\\d+)$');
 
 export const getYieldVaultsHeader = zod.object({
@@ -1747,6 +6997,7 @@ export const getYieldVaultsResponse = zod.object({
 /**
  * @summary Get details of a specific vault by its ID and network symbol
  */
+
 export const getYieldVaultParams = zod.object({
     networkSymbol: zod.enum(['eth', 'op', 'arb', 'base']),
     vaultId: zod.string(),

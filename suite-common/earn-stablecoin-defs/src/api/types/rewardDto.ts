@@ -4,15 +4,17 @@
  * Trezor Earn Yield API
  * OpenAPI spec version: 0.1.0
  */
+import type { RewardDtoToken } from './rewardDtoToken';
 import type { RewardDtoYieldSource } from './rewardDtoYieldSource';
-import type { TokenDto } from './tokenDto';
 
 export type RewardDto = {
     /** Reward rate as a decimal (e.g. 0.04 = 4%) */
     rate: number;
     /** Whether this rate is APR or APY */
     rateType: string;
-    token: TokenDto;
+    /** Token received as reward */
+    token: RewardDtoToken;
+    /** Structured source of yield (e.g. staking, protocol incentive) */
     yieldSource: RewardDtoYieldSource;
     /** Optional human-readable description of this reward */
     description?: string;

@@ -4,11 +4,14 @@
  * Trezor Earn Yield API
  * OpenAPI spec version: 0.1.0
  */
-import type { TokenDto } from './tokenDto';
+import type { YieldDtoStatePricePerShareStateQuoteToken } from './yieldDtoStatePricePerShareStateQuoteToken';
+import type { YieldDtoStatePricePerShareStateShareToken } from './yieldDtoStatePricePerShareStateShareToken';
 
 export type YieldDtoStatePricePerShareState = {
-    /** Yield-token to underlying-token price ratio (decimal string). */
+    /** Price per share for the yield (e.g., LP token price, vault share price) */
     price: string;
-    shareToken: TokenDto;
-    quoteToken: TokenDto;
+    /** Share token (the token you own shares of) */
+    shareToken: YieldDtoStatePricePerShareStateShareToken;
+    /** Quote token (the token the price is denominated in) */
+    quoteToken: YieldDtoStatePricePerShareStateQuoteToken;
 };

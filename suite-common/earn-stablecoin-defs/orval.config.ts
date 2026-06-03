@@ -3,6 +3,8 @@ import { resolve } from 'path';
 
 import { YIELD_BASE_URL } from './src/constants';
 
+const ESLINT_DISABLE_HEADER = '/* eslint-disable no-useless-escape */';
+
 const camelCase = (value: string) => value.replace(/^[A-Z]/, char => char.toLowerCase());
 
 function renameAllExportsToCamelCase(implementation: string): string {
@@ -51,7 +53,7 @@ export default defineConfig({
 
                         return {
                             ...result,
-                            implementation: renameAllExportsToCamelCase(result.implementation),
+                            implementation: `${ESLINT_DISABLE_HEADER}\n${renameAllExportsToCamelCase(result.implementation)}`,
                         };
                     },
                 } satisfies ClientGeneratorsBuilder;
@@ -63,6 +65,11 @@ export default defineConfig({
             override: {
                 useTypeOverInterfaces: true,
                 enumGenerationType: 'const',
+                zod: {
+                    // TODO: once it's possible to upgrade to orval 8.13.0 in several days (>=14d old), enable following options to improve the output and mainly inferred types
+                    // generateReusableSchemas: true,
+                    // generateMeta: true,
+                },
             },
         },
     },

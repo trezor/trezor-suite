@@ -1,11 +1,11 @@
-import { type ActionDto, type ActionRequestDto } from '@suite-common/earn-stablecoin-defs';
+import { type ActionDto, type CreateActionDto } from '@suite-common/earn-stablecoin-defs';
 import { desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
 import { exitYield } from '../services';
 import { verifyExitTransactions } from '../verification/exit';
 import { type VerificationStatus } from '../verification/shared';
 
-type ExitYieldOpportunityVariables = Pick<ActionRequestDto, 'yieldId' | 'address'> & {
+type ExitYieldOpportunityVariables = Pick<CreateActionDto, 'yieldId' | 'address'> & {
     amount: string;
 };
 
