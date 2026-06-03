@@ -59,7 +59,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                     await expect
                         .soft(stakingSection.cryptoInputBottomText)
                         .toHaveTranslation('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
-                            values: { minimum: '0.1 ETH' },
+                            values: { minimum: '0.01 ETH' },
                             timeout: 15_000,
                         });
                 });
