@@ -13,17 +13,13 @@ type UseWalletLabelParams = {
 export const useWalletLabel = ({ device, shouldUseDeviceLabel }: UseWalletLabelParams) => {
     const { translationString } = useTranslation();
 
-    let defaultLabel: string | undefined;
-
-    if (device.state?.staticSessionId) {
-        if (device.useEmptyPassphrase) {
-            defaultLabel = translationString('TR_NO_PASSPHRASE_WALLET');
-        } else if (device.walletNumber) {
-            defaultLabel = translationString('TR_PASSPHRASE_WALLET', {
-                id: device.walletNumber,
-            });
-        }
-    }
+    // NOTE: we know for certain that in order to create a passphrase wallet the useEmptyPassphrase === false
+    const defaultLabel: string =
+        device.useEmptyPassphrase === false
+            ? translationString('TR_PASSPHRASE_WALLET', {
+                  id: device.walletNumber,
+              })
+            : translationString('TR_NO_PASSPHRASE_WALLET');
 
     const label =
         useSelector((state: SelectWalletLabelState) =>
