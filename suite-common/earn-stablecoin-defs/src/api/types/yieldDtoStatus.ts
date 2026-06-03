@@ -5,6 +5,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
+/**
+ * Current availability of user actions like enter, exit, claim
+ */
 export type YieldDtoStatus = {
     /** Whether the user can currently enter this yield */
     enter: boolean;

@@ -1,4 +1,4 @@
-import { type NetworkDtoId } from '@suite-common/earn-stablecoin-defs';
+import { type YieldDtoNetwork } from '@suite-common/earn-stablecoin-defs';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { type RequiredKey } from '@trezor/type-utils';
 
@@ -146,7 +146,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
      * Network ID used by Yield.xyz
      * @url https://yield.xyz
      */
-    yieldXyzId: NetworkDtoId | null;
+    yieldXyzId: YieldDtoNetwork | null;
 };
 export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 

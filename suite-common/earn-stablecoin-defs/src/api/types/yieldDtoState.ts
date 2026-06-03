@@ -4,8 +4,20 @@
  * Trezor Earn Yield API
  * OpenAPI spec version: 0.1.0
  */
+import type { AllocationDto } from './allocationDto';
+import type { YieldDtoStateCapacityState } from './yieldDtoStateCapacityState';
+import type { YieldDtoStateConcentratedLiquidityPoolState } from './yieldDtoStateConcentratedLiquidityPoolState';
+import type { YieldDtoStateLiquidityState } from './yieldDtoStateLiquidityState';
 import type { YieldDtoStatePricePerShareState } from './yieldDtoStatePricePerShareState';
 
 export type YieldDtoState = {
     pricePerShareState?: YieldDtoStatePricePerShareState;
+    /** Concentrated liquidity pool state metadata */
+    concentratedLiquidityPoolState?: YieldDtoStateConcentratedLiquidityPoolState;
+    /** Capacity state metadata */
+    capacityState?: YieldDtoStateCapacityState;
+    /** Liquidity state (available liquidity, utilization rate) */
+    liquidityState?: YieldDtoStateLiquidityState;
+    /** Allocations to underlying strategies for vault yields (e.g., OAV, Morpho). Includes allocation, APY, TVL, and capacity per strategy. */
+    allocations?: AllocationDto[];
 };

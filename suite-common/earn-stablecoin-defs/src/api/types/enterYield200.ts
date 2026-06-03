@@ -4,8 +4,56 @@
  * Trezor Earn Yield API
  * OpenAPI spec version: 0.1.0
  */
-import type { ActionDto } from './actionDto';
+import type { EnterYield200ExecutionPattern } from './enterYield200ExecutionPattern';
+import type { EnterYield200Intent } from './enterYield200Intent';
+import type { EnterYield200RawArguments } from './enterYield200RawArguments';
+import type { EnterYield200Status } from './enterYield200Status';
+import type { EnterYield200Type } from './enterYield200Type';
+import type { TransactionDto } from './transactionDto';
 
-export type EnterYield200 = ActionDto & {
+export type EnterYield200 = {
+    /** Unique action identifier */
+    id: string;
+    /** High-level action intent */
+    intent: EnterYield200Intent;
+    /** Specific action type */
+    type: EnterYield200Type;
+    /** Yield ID this action belongs to */
+    yieldId: string;
+    /** User wallet address */
+    address: string;
+    /**
+     * Amount involved in the action, in human-readable token units (not the smallest denomination).
+     * @nullable
+     */
+    amount: string | null;
+    /**
+     * Raw smallest-denomination amount (full precision)
+     * @nullable
+     */
+    amountRaw: string | null;
+    /**
+     * USD value of the amount
+     * @nullable
+     */
+    amountUsd: string | null;
+    /** Array of transactions for this action */
+    transactions: TransactionDto[];
+    /** Transaction execution pattern - synchronous (submit one by one, wait for each), asynchronous (submit all at once), or batch (single transaction with multiple operations) */
+    executionPattern: EnterYield200ExecutionPattern;
+    /**
+     * Raw arguments exactly as submitted by the user for this action
+     * @nullable
+     */
+    rawArguments: EnterYield200RawArguments;
+    /** When the action was created */
+    createdAt: string;
+    /**
+     * When the action was completed
+     * @nullable
+     */
+    completedAt: string | null;
+    /** Current status of the action */
+    status: EnterYield200Status;
     vaultAddress: string;
 };

@@ -4,28 +4,59 @@
  * Trezor Earn Yield API
  * OpenAPI spec version: 0.1.0
  */
+import type { GetYieldsNetwork } from './getYieldsNetwork';
 import type { GetYieldsSort } from './getYieldsSort';
+import type { GetYieldsType } from './getYieldsType';
 
 export type GetYieldsParams = {
     /**
-     * Max 100 (default 20).
-     * @maximum 100
-     * @exclusiveMinimum 0
-     */
-    limit?: number;
-    /**
-     * Max 1000000 (default 0).
+     * Offset for pagination
      * @minimum 0
-     * @maximum 1000000
      * @nullable
      */
     offset?: number | null;
     /**
-     * Sort by yield status or reward rate
+     * Number of items per page
+     * @minimum 1
+     * @maximum 100
      */
-    sort?: GetYieldsSort;
-    providers?: string[] | string;
+    limit?: number;
+    /**
+     * Filter by network
+     */
+    network?: GetYieldsNetwork;
+    /**
+     * Filter by EVM chain ID (Ethereum: 1, Polygon: 137)
+     * @nullable
+     */
+    chainId?: string | null;
+    /**
+     * Filter by multiple networks (comma separated)
+     * @nullable
+     */
+    networks?: string | null;
+    /**
+     * @maxLength 200
+     * @nullable
+     */
+    yieldId?: string | null;
+    /**
+     * @maxItems 200
+     */
+    yieldIds?: (string | null)[];
+    /**
+     * Filter by yield type
+     */
+    type?: GetYieldsType;
     types?:
+        | 'staking'
+        | 'restaking'
+        | 'lending'
+        | 'vault'
+        | 'fixed_yield'
+        | 'real_world_asset'
+        | 'concentrated_liquidity_pool'
+        | 'liquidity_pool'
         | (
               | 'staking'
               | 'restaking'
@@ -35,6 +66,44 @@ export type GetYieldsParams = {
               | 'real_world_asset'
               | 'concentrated_liquidity_pool'
               | 'liquidity_pool'
-          )[]
-        | string;
+          )[];
+    /**
+     * Filter by cooldown period
+     * @nullable
+     */
+    hasCooldownPeriod?: boolean | null;
+    /**
+     * Filter by warmup period
+     * @nullable
+     */
+    hasWarmupPeriod?: boolean | null;
+    /**
+     * Filter by token symbol or address
+     * @nullable
+     */
+    token?: string | null;
+    /**
+     * Filter by input token symbol or address
+     * @nullable
+     */
+    inputToken?: string | null;
+    /**
+     * Filter by multiple input token symbol or address (comma separated)
+     */
+    inputTokens?: (string | null)[];
+    /**
+     * Filter by provider ID
+     * @nullable
+     */
+    provider?: string | null;
+    providers?: string | null | (string | null)[];
+    /**
+     * Search by yield name
+     * @nullable
+     */
+    search?: string | null;
+    /**
+     * Sort by yield status or reward rate
+     */
+    sort?: GetYieldsSort;
 };
