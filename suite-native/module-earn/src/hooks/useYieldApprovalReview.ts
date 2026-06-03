@@ -13,6 +13,7 @@ import {
     pushSendFormTransactionThunk,
     selectIsMevProtectionEnabled,
     selectStablecoinYieldSession,
+    sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -28,29 +29,30 @@ import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceD
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
-import { type YieldApprovalLimitType } from '../types';
-import { handleEarnReviewError } from '../utils';
 import {
     type YieldAllowanceFormDraftTransactionType,
-    getYieldAllowanceFormDraftKey,
-} from '../yieldApprovalThunks';
+    type YieldApprovalLimitType,
+    type YieldReviewSigningResult,
+} from '../types';
+import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
+import { getYieldAllowanceFormDraftKey } from '../yieldApprovalThunks';
 
 type UseYieldApprovalReviewParams = {
     approvalLimitType?: YieldApprovalLimitType;
     flowData: YieldFlowResolvedData;
     flowKey: string;
+    onReviewLeave?: () => void;
     transactionType: YieldAllowanceFormDraftTransactionType;
 };
 
 type UseYieldApprovalReviewResult = {
-    fee: string;
     handleApprovalSubmitted: () => Promise<void>;
-    handleSubmitApprovalReview: () => Promise<void>;
     isApprovalSigned: boolean;
-    isPreparingApproval: boolean;
+    isApprovalReviewReady: boolean;
     isSendingApproval: boolean;
     isSigningApproval: boolean;
-    isSubmitDisabled: boolean;
+    leaveReviewFromDeviceCancel: () => void;
+    startApprovalReview: () => Promise<YieldReviewSigningResult>;
 };
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -63,6 +65,7 @@ export const useYieldApprovalReview = ({
     approvalLimitType,
     flowData,
     flowKey,
+    onReviewLeave,
     transactionType,
 }: UseYieldApprovalReviewParams): UseYieldApprovalReviewResult => {
     const dispatch = useDispatch();
@@ -91,18 +94,29 @@ export const useYieldApprovalReview = ({
     });
 
     const isPreparingApproval = approval.isSubmitting || !reviewTransaction;
-    const isSubmitDisabled = isPreparingApproval || isApprovalSigned;
+    const isApprovalReviewReady = !isPreparingApproval && !isApprovalSigned;
     const shouldConfirmApprovalCancellation =
         isSigningApproval || isApprovalSigned || isSendingApproval;
 
-    useYieldApprovalReviewNavigation({
-        flowKey,
-        shouldConfirmCancellation: shouldConfirmApprovalCancellation,
-    });
+    const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
+        useYieldApprovalReviewNavigation({
+            flowKey,
+            onReviewLeave,
+            shouldConfirmCancellation: shouldConfirmApprovalCancellation,
+            transactionType,
+        });
 
-    const handleSubmitApprovalReview = useCallback(async () => {
-        if (!reviewTransaction || isSigningApproval) {
-            return;
+    const startApprovalReview = useCallback(async (): Promise<YieldReviewSigningResult> => {
+        if (isApprovalSigned) {
+            return 'signed';
+        }
+
+        if (isSigningApproval) {
+            return 'already-running';
+        }
+
+        if (!reviewTransaction) {
+            return 'not-ready';
         }
 
         const { formState, precomposedTransaction } = reviewTransaction;
@@ -132,13 +146,18 @@ export const useYieldApprovalReview = ({
                 showDeviceDisconnectedAlert,
             });
 
-            return;
+            return 'failed';
         }
 
         const signTransactionResponse = deviceAccessResponse.payload;
 
         if (isRejected(signTransactionResponse)) {
             setIsSigningApproval(false);
+
+            if (isUserCancelledSignError(signTransactionResponse.payload)) {
+                return 'cancelled';
+            }
+
             handleEarnReviewError({
                 payload: signTransactionResponse.payload,
                 navigation,
@@ -147,13 +166,16 @@ export const useYieldApprovalReview = ({
                 showDeviceDisconnectedAlert,
             });
 
-            return;
+            return 'failed';
         }
 
         setIsSigningApproval(false);
+
+        return 'signed';
     }, [
         dispatch,
         flowData.account,
+        isApprovalSigned,
         isSigningApproval,
         navigation,
         reviewTransaction,
@@ -205,7 +227,9 @@ export const useYieldApprovalReview = ({
             }),
         );
         dispatch(formDraftActions.removeDraft({ key: formDraftKey }));
+        dispatch(sendFormActions.discardTransaction());
         setIsSendingApproval(false);
+        markReviewNavigationSuccess();
         navigation.dispatch(StackActions.pop(1));
     }, [
         approvalLimitType,
@@ -217,6 +241,7 @@ export const useYieldApprovalReview = ({
         isMevProtectionEnabled,
         isMevProtectionFeatureEnabled,
         isSendingApproval,
+        markReviewNavigationSuccess,
         navigation,
         reviewTransaction?.precomposedTransaction.fee,
         showDeviceDisconnectedAlert,
@@ -226,13 +251,12 @@ export const useYieldApprovalReview = ({
     ]);
 
     return {
-        fee: reviewTransaction?.precomposedTransaction.fee ?? '0',
         handleApprovalSubmitted,
-        handleSubmitApprovalReview,
         isApprovalSigned,
-        isPreparingApproval,
+        isApprovalReviewReady,
         isSendingApproval,
         isSigningApproval,
-        isSubmitDisabled,
+        leaveReviewFromDeviceCancel,
+        startApprovalReview,
     };
 };

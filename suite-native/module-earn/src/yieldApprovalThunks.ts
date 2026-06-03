@@ -20,14 +20,12 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from './constants';
-import { type YieldApprovalLimitType } from './types';
+import { type YieldAllowanceFormDraftTransactionType, type YieldApprovalLimitType } from './types';
 import {
     buildYieldAllowanceFormState,
     getYieldAllowanceFeeState,
     getYieldApprovalAllowanceAmount,
 } from './yieldApprovalUtils';
-
-export type YieldAllowanceFormDraftTransactionType = 'approve' | 'revoke';
 
 const yieldAllowanceFormDraftPrefixes: Record<YieldAllowanceFormDraftTransactionType, string> = {
     approve: 'yield-approval',
