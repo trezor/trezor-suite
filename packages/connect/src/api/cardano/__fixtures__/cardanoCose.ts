@@ -6,6 +6,7 @@
 //
 // The expected coseSignature/coseKey hex was generated and verified against EMURGO's official
 // CIP-0008 reference implementation — see the reference-only generator in the sibling PR
+// https://github.com/trezor/trezor-suite/pull/28105
 // (scripts/cardano/generate-cose-reference-vectors.ts) which asserts byte-for-byte parity.
 
 export const createCoseFixtures = [
