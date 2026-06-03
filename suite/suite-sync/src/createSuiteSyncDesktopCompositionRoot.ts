@@ -6,7 +6,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
-    type SuiteSyncAsyncErrorHandlerDep,
+    type SuiteSyncUncontrolledErrorHandlerDep,
     createSuiteSyncCompositionRoot,
 } from '@suite-common/suite-sync';
 import {
@@ -30,7 +30,7 @@ type SuiteSyncDesktopCompositionRootDeps = {
     EnsureDelegatedIdentityKeyDep &
     DesktopAnalyticsDep &
     FetchDep &
-    SuiteSyncAsyncErrorHandlerDep;
+    SuiteSyncUncontrolledErrorHandlerDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
@@ -62,7 +62,7 @@ export const createSuiteSyncDesktopCompositionRoot = (
                 createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncErrorHandler),
             );
         },
-        suiteSyncAsyncErrorHandler: deps.suiteSyncAsyncErrorHandler,
+        suiteSyncUncontrolledErrorHandler: deps.suiteSyncUncontrolledErrorHandler,
     });
 
     return {

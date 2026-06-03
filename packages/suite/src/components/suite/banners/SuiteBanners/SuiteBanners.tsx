@@ -6,6 +6,7 @@ import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
 } from '@suite/authenticity-checks';
+import { SuiteSyncBanner } from '@suite/suite-sync';
 import {
     selectDeviceStaticSessionId,
     selectIsDeviceBackupRequired,
@@ -32,7 +33,6 @@ import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
-import { SuiteSyncBanner } from './SuiteSyncBanner';
 
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;

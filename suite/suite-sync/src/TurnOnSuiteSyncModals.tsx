@@ -11,7 +11,6 @@ import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
-import { SuiteSyncTurnOnUnsupportedModal } from './SuiteSyncTurnOnUnsupportedModal';
 
 type TurnOnSuiteSyncModalsProps = {
     onClose: () => void;
@@ -39,7 +38,7 @@ export const TurnOnSuiteSyncModals = ({
             return null;
 
         case 'unsupported':
-            return <SuiteSyncTurnOnUnsupportedModal onClose={onClose} />;
+            return null;
 
         case 'suite-sync-off':
             return (

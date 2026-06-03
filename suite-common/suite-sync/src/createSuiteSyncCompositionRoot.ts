@@ -30,10 +30,7 @@ import { type Analytics } from '@trezor/analytics-uploader';
 import type TrezorConnect from '@trezor/connect';
 
 import { createEnsureSuiteSyncKeys } from './createEnsureSuiteSyncKeys';
-import {
-    type SuiteSyncAsyncErrorHandlerDep,
-    createSuiteSyncInternalErrorHandler,
-} from './createSuiteSyncInternalErrorHandler';
+import { createSuiteSyncInternalErrorHandler } from './createSuiteSyncInternalErrorHandler';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
@@ -58,7 +55,7 @@ import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
 import { isUsingTrezorServer } from './relay/isUsingTrezorServer';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
-import { createEnsureWalletSuiteSyncOnAsync } from './storage/createEnsureWalletSuiteSyncOnAsync';
+import { createEnsureWalletSuiteSyncOnUncontrolled } from './storage/createEnsureWalletSuiteSyncOnUncontrolled';
 import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './storage/createEnsureWalletSuiteSyncOnWithErrorHandler';
 import { createSubscriptionStorage } from './storage/createSubscriptionStorage';
 import { createSuiteSyncStorageRepository } from './storage/createSuiteSyncStorageRepository';
@@ -69,6 +66,7 @@ import {
     selectSuiteSyncOwnerForDeviceStaticId,
     selectSuiteSyncRelayUrl,
 } from './suiteSyncSelectors';
+import { type SuiteSyncUncontrolledErrorHandlerDep } from './suiteSyncUncontrolledErrorHandler';
 
 export type SuiteSyncAnalytics = Pick<Analytics<AnalyticsSharedEvents>, 'report'>;
 
@@ -97,7 +95,7 @@ type CreateSuiteSyncCompositionRootDeps = {
     CreateSuiteSyncOwnerDep &
     PlatformEncryptionDep &
     FetchDep &
-    SuiteSyncAsyncErrorHandlerDep;
+    SuiteSyncUncontrolledErrorHandlerDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -149,7 +147,7 @@ export const createSuiteSyncCompositionRoot = (
         getSelectedDevice: toGetter(deps.getState, selectSelectedDevice),
         allocateOwnerQuota,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
-        suiteSyncAsyncErrorHandler: deps.suiteSyncAsyncErrorHandler,
+        suiteSyncUncontrolledErrorHandler: deps.suiteSyncUncontrolledErrorHandler,
     });
 
     deps.subscribeError(suiteSyncInternalErrorHandler);
@@ -191,10 +189,10 @@ export const createSuiteSyncCompositionRoot = (
         }),
     });
 
-    const ensureWalletSuiteSyncOnAsync = createEnsureWalletSuiteSyncOnAsync({
+    const ensureWalletSuiteSyncOnUncontrolled = createEnsureWalletSuiteSyncOnUncontrolled({
         ensureWalletSuiteSyncOn,
         getDeviceForStaticSessionId,
-        suiteSyncAsyncErrorHandler: deps.suiteSyncAsyncErrorHandler,
+        suiteSyncUncontrolledErrorHandler: deps.suiteSyncUncontrolledErrorHandler,
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
@@ -228,7 +226,7 @@ export const createSuiteSyncCompositionRoot = (
             dispatch: deps.dispatch,
         }),
         onWalletSuiteSyncOnEnsured,
-        ensureWalletSuiteSyncOnAsync,
+        ensureWalletSuiteSyncOnUncontrolled,
         ensureWalletSuiteSyncOn,
         turnOffSuiteSyncForWallet,
         turnOffSuiteSync: createTurnOffSuiteSync({

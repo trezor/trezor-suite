@@ -60,16 +60,18 @@ export const selectEnsureWalletSuiteSyncOnDep = (services: any): EnsureWalletSui
     ensureWalletSuiteSyncOn: services.suiteSync.ensureWalletSuiteSyncOn,
 });
 
-export type EnsureWalletSuiteSyncOnAsync = (params: EnsureWalletSuiteSyncOnParams) => Promise<void>;
+export type EnsureWalletSuiteSyncOnUncontrolled = (
+    params: EnsureWalletSuiteSyncOnParams,
+) => Promise<void>;
 
-export type EnsureWalletSuiteSyncOnAsyncDep = {
-    ensureWalletSuiteSyncOnAsync: EnsureWalletSuiteSyncOnAsync;
+export type EnsureWalletSuiteSyncOnUncontrolledDep = {
+    ensureWalletSuiteSyncOnUncontrolled: EnsureWalletSuiteSyncOnUncontrolled;
 };
 
-export const selectEnsureWalletSuiteSyncOnAsyncDep = (
+export const selectEnsureWalletSuiteSyncOnUncontrolledDep = (
     services: any,
-): EnsureWalletSuiteSyncOnAsyncDep => ({
-    ensureWalletSuiteSyncOnAsync: services.suiteSync.ensureWalletSuiteSyncOnAsync,
+): EnsureWalletSuiteSyncOnUncontrolledDep => ({
+    ensureWalletSuiteSyncOnUncontrolled: services.suiteSync.ensureWalletSuiteSyncOnUncontrolled,
 });
 
 export type SuiteSyncUserFacingErrorType =
