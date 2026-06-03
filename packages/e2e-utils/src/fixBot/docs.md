@@ -35,12 +35,12 @@ After completing its work, the fix agent writes two files to the **worktree root
 - **`fix-result.json`** — machine-readable result for the caller:
     ```json
     {
-        "task_id": "fix-001",
+        "taskId": "fix-001",
         "result": "pass | partial | fail | not_duplicated",
         "iterations": 2,
         "passed": ["web/T3W1/suite/e2e/tests/wallet/send.ts"],
         "failed": [],
-        "pr_title": "Nightly fix 26-05-19 - send-button locator"
+        "prTitle": "Nightly fix 26-05-19 - send-button locator"
     }
     ```
 - **`pr-description.md`** — ready-to-post PR body, passed directly to `gh pr create --body-file`
@@ -80,17 +80,17 @@ The only allowed product change is adding or modifying `data-testid` attributes.
 | `PRODUCT_BUG` / `INFRA` | 0 — not attempted |
 
 `{
-  "run_date": "2026-04-23",
-  "web_run_id": "...",
-  "desktop_run_id": "...",
-  "fix_tasks": [
+  "runDate": "2026-04-23",
+  "webRunId": "...",
+  "desktopRunId": "...",
+  "fixTasks": [
     {
       "id": "fix-001",
       "branch": "fix/nightly-2026-04-23-send-button-locator",
-      "root_cause": "send-button data-testid renamed in SendForm component",
-      "fix_scope": "LOCATOR_ADD",
+      "rootCause": "send-button data-testid renamed in SendForm component",
+      "fixScope": "LOCATOR_ADD",
       "confidence": "HIGH",
-      "fix_description": "Add data-testid='send-button' to submit button in SendForm.tsx, update page object",
+      "fixDescription": "Add data-testid='send-button' to submit button in SendForm.tsx, update page object",
       "diagnosis": "<MD prose for the tests in this fix task — error messages, stack traces, visual evidence, root cause reasoning>",
       "validations": [
         { "platform": "web",     "group": "T3W1", "spec": "suite/e2e/tests/wallet/send.ts" },
@@ -103,9 +103,9 @@ The only allowed product change is adding or modifying `data-testid` attributes.
   ],
   "skipped": [
     {
-      "root_cause": "...",
+      "rootCause": "...",
       "reason": "PRODUCT_BUG — requires human review",
-      "affected_tests": ["suite/e2e/tests/firmware/update.ts"]
+      "affectedTests": ["suite/e2e/tests/firmware/update.ts"]
     }
   ]
 }`

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { error, log } from '../logger';
 import { processAgentOutput, runClaude } from './common';
-import { ReportSchema } from './schemas';
+import { AnalysisReportSchema } from './schemas';
 
 function main(): void {
     const reportPath = process.env.REPORT_PATH;
@@ -25,8 +25,8 @@ function main(): void {
     }).trim();
     const fixAgentDir = join(root, 'packages/e2e-utils/src/fixBot');
 
-    const report = ReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
-    const task = report.fix_tasks.find(t => t.id === taskId);
+    const report = AnalysisReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
+    const task = report.fixTasks.find(t => t.id === taskId);
 
     if (!task) {
         error(`Task '${taskId}' not found in ${reportPath}`);
@@ -37,7 +37,7 @@ function main(): void {
     const desktopCount = task.validations.filter(v => v.platform === 'desktop').length;
 
     log(`━━━ Task ${task.id} ━━━`);
-    log(`Scope:   ${task.fix_scope}`);
+    log(`Scope:   ${task.fixScope}`);
     log(`Branch:  ${task.branch}`);
     log(`Web:     ${webCount}  Desktop: ${desktopCount}`);
 

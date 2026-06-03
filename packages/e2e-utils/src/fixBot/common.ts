@@ -59,14 +59,14 @@ export function processAgentOutput(
     rawOutput: string,
     agent: 'nightlyAnalyzer' | 'nightlyFixer',
     model: string,
-): void {
+): ClaudeResult | null {
     let result: ClaudeResult;
     try {
         result = parseClaudeOutput(rawOutput);
     } catch {
         process.stderr.write(`[${agent}] agent output unparsable (${rawOutput.length} bytes)\n`);
 
-        return;
+        return null;
     }
 
     const subtype = result.subtype ?? '?';
@@ -88,4 +88,6 @@ export function processAgentOutput(
         output_tokens: result.usage?.output_tokens ?? null,
         total_cost_usd: result.total_cost_usd,
     });
+
+    return result;
 }

@@ -87,7 +87,7 @@ jobs:
 
       - name: Validate report
         run: |
-          if ! jq -e 'all(.fix_tasks[]; (.id | type == "string" and test("^fix-[0-9]{3}$") and (test("[\\r\\n]") | not)) and (.branch | type == "string" and test("^fix/nightly-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]{1,40}$") and (test("[\\r\\n]") | not)))' report-download/report.json >/dev/null; then
+          if ! jq -e 'all(.fixTasks[]; (.id | type == "string" and test("^fix-[0-9]{3}$") and (test("[\\r\\n]") | not)) and (.branch | type == "string" and test("^fix/nightly-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]{1,40}$") and (test("[\\r\\n]") | not)))' report-download/report.json >/dev/null; then
             echo "INVALID task id or branch found"
             exit 1
           fi
@@ -97,8 +97,8 @@ jobs:
         id: set-matrix
         run: |
           REPORT_FILE=report-download/report.json
-          MATRIX=$(jq -c '[.fix_tasks[].id]' "$REPORT_FILE")
-          HAS_TASKS=$(jq -r 'if (.fix_tasks | length) > 0 then "true" else "false" end' "$REPORT_FILE")
+          MATRIX=$(jq -c '[.fixTasks[].id]' "$REPORT_FILE")
+          HAS_TASKS=$(jq -r 'if (.fixTasks | length) > 0 then "true" else "false" end' "$REPORT_FILE")
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
           echo "has-tasks=$HAS_TASKS" >> $GITHUB_OUTPUT
 
@@ -246,7 +246,7 @@ jobs:
           TASK_ID: ${{ matrix.task-id }}
         run: |
           BRANCH=$(jq -r --arg id "$TASK_ID" \
-            'first(.fix_tasks[] | select(.id == $id) | .branch) // empty' "report-download/report.json")
+            'first(.fixTasks[] | select(.id == $id) | .branch) // empty' "report-download/report.json")
           if [ -z "$BRANCH" ]; then echo "Branch not found for task id: $TASK_ID" && exit 1; fi
           git checkout -b "$BRANCH"
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"

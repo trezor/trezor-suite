@@ -36,7 +36,7 @@ function publishPR(): void {
         return;
     }
 
-    const { result, passed, failed, iterations, pr_title } = FixResultSchema.parse(
+    const { result, passed, failed, iterations, prTitle } = FixResultSchema.parse(
         JSON.parse(readFileSync(resultFile, 'utf-8')),
     );
 
@@ -44,14 +44,12 @@ function publishPR(): void {
         `Result: ${ICONS[result] ?? '?'} ${result}  passed=${passed.length}  failed=${failed.length}  iterations=${iterations}`,
     );
 
-    if (result === 'fail') {
-        log('  → No branch pushed (zero validations pass).');
-
-        return;
-    }
-
-    if (result === 'not_duplicated') {
-        log('  → No branch pushed (failure not reproduced in pre-flight).');
+    if (result === 'fail' || result === 'not_duplicated') {
+        log(
+            result === 'fail'
+                ? '  → No branch pushed (zero validations pass).'
+                : '  → No branch pushed (failure not reproduced in pre-flight).',
+        );
 
         return;
     }
@@ -61,7 +59,7 @@ function publishPR(): void {
     execFileSync('git', ['push', '--', GIT_REMOTE, branch], { stdio: 'inherit' });
 
     const prDescriptionFile = join(root, 'pr-description.md');
-    const prArgs = ['pr', 'create', '--title', pr_title, '--head', branch, '--base', BASE_BRANCH];
+    const prArgs = ['pr', 'create', '--title', prTitle, '--head', branch, '--base', BASE_BRANCH];
 
     if (existsSync(prDescriptionFile)) prArgs.push('--body-file', prDescriptionFile);
 
@@ -70,12 +68,16 @@ function publishPR(): void {
     const prUrl = execFileSync('gh', prArgs, { encoding: 'utf-8' }).trim();
     log(`PR: ${prUrl}`);
 
-    execFileSync(
-        'gh',
-        ['project', 'item-add', String(QA_PROJECT_NUMBER), '--owner', 'trezor', '--url', prUrl],
-        { stdio: 'inherit' },
-    );
-    log(`Assigned PR to QA and Test Automation project (#${QA_PROJECT_NUMBER})`);
+    try {
+        execFileSync(
+            'gh',
+            ['project', 'item-add', String(QA_PROJECT_NUMBER), '--owner', 'trezor', '--url', prUrl],
+            { stdio: 'inherit' },
+        );
+        log(`Assigned PR to QA and Test Automation project (#${QA_PROJECT_NUMBER})`);
+    } catch (err) {
+        error(`Failed to assign PR to QA and Test Automation project: ${err}`);
+    }
 }
 
 publishPR();
