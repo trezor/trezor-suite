@@ -37,9 +37,9 @@ runs:
 
           const START_MARKER = '<!-- LLM-TEST-SELECTOR:START -->';
           const END_MARKER   = '<!-- LLM-TEST-SELECTOR:END -->';
-          const HEADING_START = '<!-- LLM-TEST-SELECTOR:HEADING:START -->';
-          const HEADING_END   = '<!-- LLM-TEST-SELECTOR:HEADING:END -->';
-          const headingBlock  = `${HEADING_START}\n## 🤖 LLM Test Recommendations\n${HEADING_END}`;
+          const DETAILS_START = '<!-- LLM-TEST-SELECTOR:DETAILS:START -->';
+          const DETAILS_END   = '<!-- LLM-TEST-SELECTOR:DETAILS:END -->';
+          const TITLE_SUMMARY = '<summary><h3>🤖 LLM Test Recommendations</h3></summary>';
 
           const lines = [];
 
@@ -84,7 +84,17 @@ runs:
 
           lines.push(`_Updated: ${new Date().toISOString()}_`);
 
-          const newSection = START_MARKER + '\n' + lines.join('\n') + '\n' + END_MARKER;
+          const newSection = [
+            DETAILS_START,
+            '<details>',
+            TITLE_SUMMARY,
+            '',
+            START_MARKER,
+            lines.join('\n'),
+            END_MARKER,
+            '</details>',
+            DETAILS_END,
+          ].join('\n');
 
           const pr = await github.rest.pulls.get({
             owner: context.repo.owner,
@@ -94,21 +104,14 @@ runs:
 
           let body = pr.data.body || '';
 
-          // Ensure the heading block exists (written only once).
-          if (!body.includes(HEADING_START)) {
-            const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
-            body = body + sep + headingBlock;
-          }
-
-          // Update the section in-place or insert it right after the heading block.
           let newBody;
-          if (body.includes(START_MARKER) && body.includes(END_MARKER)) {
-            const before = body.slice(0, body.indexOf(START_MARKER));
-            const after  = body.slice(body.indexOf(END_MARKER) + END_MARKER.length);
+          if (body.includes(DETAILS_START) && body.includes(DETAILS_END)) {
+            const before = body.slice(0, body.indexOf(DETAILS_START));
+            const after  = body.slice(body.indexOf(DETAILS_END) + DETAILS_END.length);
             newBody = before + newSection + after;
           } else {
-            const insertAt = body.indexOf(HEADING_END) + HEADING_END.length;
-            newBody = body.slice(0, insertAt) + '\n\n' + newSection + body.slice(insertAt);
+            const sep = body.endsWith('\n\n') ? '' : body.endsWith('\n') ? '\n' : '\n\n';
+            newBody = body + sep + newSection;
           }
 
           await github.rest.pulls.update({
