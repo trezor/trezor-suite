@@ -23,7 +23,6 @@ export type SendYieldTransactionParams = {
     amount: string;
     token: YieldFlowDisplayToken;
     unsignedTransaction: string;
-    vaultName: string;
     dispatch: Dispatch;
     getState: () => AppState;
     selectedFee: EvmSelectedFee | null;
@@ -34,7 +33,6 @@ export const sendYieldTransaction = async ({
     amount,
     token,
     unsignedTransaction,
-    vaultName,
     dispatch,
     getState,
     selectedFee,
@@ -64,7 +62,6 @@ export const sendYieldTransaction = async ({
         stablecoinYieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
             precomposedForm: formState,
-            vaultName,
             accountKey: account.key,
         }),
     );

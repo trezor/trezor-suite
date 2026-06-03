@@ -81,7 +81,6 @@ export const submitYieldWithdrawThunk = createThunk(
                 amount,
                 token: reviewToken,
                 unsignedTransaction,
-                vaultName: flowData.vault.metadata.name,
                 dispatch,
                 getState,
                 selectedFee,

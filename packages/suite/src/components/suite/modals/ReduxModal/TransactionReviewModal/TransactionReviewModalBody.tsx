@@ -6,7 +6,7 @@ import { preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useYieldVaultNameForAllowance } from '@suite-common/earn-stablecoin/src/allowance';
+import { useYieldVaultName } from '@suite-common/earn-stablecoin/src/allowance';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { selectStablecoinYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -49,8 +49,8 @@ export const TransactionReviewModalBody = ({
     const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
 
-    const isYield = Boolean(yieldTxReview.precomposedTx);
-    const vaultName = useYieldVaultNameForAllowance({ account, precomposedForm });
+    const isYield = Boolean(yieldTxReview);
+    const vaultName = useYieldVaultName({ enabled: isYield, account, precomposedForm });
     const availableRewards = isYield ? yieldTxReview.availableRewards : undefined;
     const [isSending, setIsSending] = useState(false);
     const { precomposedTx, serializedTx } = txInfoState;

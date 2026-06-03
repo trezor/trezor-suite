@@ -1,1 +1,1 @@
-export * from './hooks/useYieldVaultNameForAllowance';
+export * from './hooks/useYieldVaultName';
