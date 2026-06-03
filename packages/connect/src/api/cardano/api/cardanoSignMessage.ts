@@ -38,10 +38,14 @@ export default class CardanoSignMessage extends AbstractMethod<
 
         Assert(CardanoSignMessageSchema, payload);
 
-        if (!isHexString(payload.payload) || hasHexPrefix(payload.payload)) {
+        if (
+            !isHexString(payload.payload) ||
+            hasHexPrefix(payload.payload) ||
+            payload.payload.length % 2 !== 0
+        ) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
-                'Message payload must be a hexadecimal string without a "0x" prefix.',
+                'Message payload must be a byte-aligned hexadecimal string (even number of characters) without a "0x" prefix.',
             );
         }
 
