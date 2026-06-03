@@ -116,7 +116,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
-        suiteSyncAsyncErrorHandler: ({ device, error }) =>
+        suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
             suiteSyncErrorHandler({
                 error,
                 dispatch: deps.dispatch,

@@ -3378,6 +3378,11 @@ export const messages = defineMessages({
             'Connect your Trezor and allow Suite Sync to view and edit your labels, wallet names, and account names.',
         id: 'TR_SUITE_SYNC_KEYS_NEEDED_CONNECT_DEVICE_BANNER',
     },
+    TR_SUITE_SYNC_UNSUPPORTED_DEVICE_BANNER: {
+        defaultMessage:
+            'Switch back to legacy labeling to access old labels. Suite Sync is not supported on Trezor T or Trezor One.',
+        id: 'TR_SUITE_SYNC_UNSUPPORTED_DEVICE_BANNER',
+    },
     TR_SUITE_SYNC_OUT_OF_QUOTA_BANNER_DESCRIPTION: {
         defaultMessage:
             'Suite Sync storage is full. New labels will be saved locally on this computer, but not synced to your other devices.',
@@ -6626,10 +6631,6 @@ export const messages = defineMessages({
     FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC: {
         id: 'FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC',
         defaultMessage: "Upgrade your Trezor's firmware to use Suite Sync.",
-    },
-    TR_UNSUPPORTED_DEVICE_SUITE_SYNC_HEADING: {
-        id: 'TR_UNSUPPORTED_DEVICE_SUITE_SYNC_HEADING',
-        defaultMessage: "This Trezor isn't compatible with Suite Sync",
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
