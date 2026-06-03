@@ -19,6 +19,7 @@ export function useGetMerklRewards<Address extends string>(
     const queryResult = useQuery({
         queryKey: commonQueryKeys.merklRewards(queryEntries),
         staleTime: queriesStaleTime.getMerklRewards,
+        enabled: queryEntries.length > 0,
         queryFn({ signal }) {
             return getMerklUsersRewards({ body: queryEntries, signal });
         },

@@ -1,8 +1,4 @@
-import {
-    type GetYieldsParams,
-    type GetYieldsSort,
-    type YieldsResponse,
-} from '@suite-common/earn-stablecoin-defs';
+import { type GetYieldsSort, type YieldsResponse } from '@suite-common/earn-stablecoin-defs';
 import { type MutationOptions, desktopMutationKeys, useMutation } from '@suite-common/react-query';
 
 import { getYields } from '../services';
@@ -14,10 +10,6 @@ interface GetYieldOpportunitiesVariables {
 }
 
 export interface UseGetYieldOpportunitiesProps {
-    providers?: NonNullable<GetYieldsParams['providers']>;
-
-    types?: NonNullable<GetYieldsParams['types']>;
-
     onSuccess?: MutationOptions<YieldsResponse, Error, GetYieldOpportunitiesVariables>['onSuccess'];
     onError?: MutationOptions<YieldsResponse, Error, GetYieldOpportunitiesVariables>['onError'];
 }
@@ -25,23 +17,12 @@ export interface UseGetYieldOpportunitiesProps {
 /**
  * Paginated list of Yield opportunities
  */
-export function useGetYieldOpportunities({
-    providers = ['morpho'],
-    types = ['vault'],
-    onError,
-    onSuccess,
-}: UseGetYieldOpportunitiesProps) {
+export function useGetYieldOpportunities({ onError, onSuccess }: UseGetYieldOpportunitiesProps) {
     return useMutation<YieldsResponse, Error, GetYieldOpportunitiesVariables>({
         mutationKey: desktopMutationKeys.getYieldOpportunities,
         mutationFn: ({ offset = 0, limit = 20, sort = 'statusEnterDesc' }) =>
             getYields({
-                params: {
-                    offset,
-                    limit,
-                    providers,
-                    types,
-                    sort,
-                },
+                params: { offset, limit, sort },
             }),
         onError,
         onSuccess: (data, variables, onMutateResult, context) =>

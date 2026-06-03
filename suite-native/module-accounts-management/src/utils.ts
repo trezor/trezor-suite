@@ -7,7 +7,6 @@ export const getApyBreakdownDescriptionKey = (
     switch (yieldSource) {
         case 'protocol_incentive':
             return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.manualCompound';
-        case 'lending_interest':
         default:
             return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.autoCompounded';
     }
