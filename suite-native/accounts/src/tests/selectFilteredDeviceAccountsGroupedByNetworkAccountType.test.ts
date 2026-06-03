@@ -1,11 +1,10 @@
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
 import {
     type NativeAccountsRootState,

@@ -17,8 +17,8 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { type AnyAction, type ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { selectMetadataMigrationDep } from './createMetadataMigrationCompositionRoot';
 import type { MigrationError } from './legacyLabelsMigration';
@@ -99,9 +99,7 @@ export const LegacyLabelingMigrationModal = ({
         const result = await migrateLegacyLabelsToSuiteSync(selectedDevice);
 
         if (result.success) {
-            const { walletDescriptor } = parseDeviceStaticSessionId(
-                selectedDevice.state.staticSessionId,
-            );
+            const { walletDescriptor } = parseStaticSessionId(selectedDevice.state.staticSessionId);
 
             dispatch(metadataActions.setLegacyLabelsMigrationForWallet(walletDescriptor));
             dispatch(

@@ -28,6 +28,7 @@
     },
     "devDependencies": {
         "@trezor/protobuf": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

@@ -10,9 +10,9 @@ import {
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';

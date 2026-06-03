@@ -2,10 +2,10 @@ import {
     type EnsureWalletSuiteSyncOnDep,
     type UpdateAccountLabel,
 } from '@suite-common/suite-sync-types';
-import { type WalletDescriptor } from '@suite-common/wallet';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
-import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseAccountKey } from '@suite-common/wallet-utils';
+import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
 
 import {
     type SuiteSyncAnalyticsDep,
@@ -28,7 +28,7 @@ export type UpdateAccountLabelDeps = EnsureWalletSuiteSyncOnDep &
 export const createUpdateAccountLabel =
     (deps: UpdateAccountLabelDeps): UpdateAccountLabel =>
     async ({ deviceStaticSessionId, accountKey, label }) => {
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+        const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
         const previousLabel = deps.getAccountLabel(
             walletDescriptor,

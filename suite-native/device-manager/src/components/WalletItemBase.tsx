@@ -8,13 +8,13 @@ import {
 } from '@suite-common/suite-sync';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { HStack, Radio, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { selectIsLabellingAllowed } from '@suite-native/labeling';
 import { WalletLabel } from '@suite-native/wallet';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
@@ -81,7 +81,7 @@ const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
         return null;
     }
 
-    const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor, deviceId } = parseStaticSessionId(deviceStaticSessionId);
 
     const descriptorPrefix = walletDescriptor.split('@')[0] ?? '';
     const evoluDebug =

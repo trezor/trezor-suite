@@ -42,7 +42,6 @@
         {
             "path": "../../suite-common/transaction-search"
         },
-        { "path": "../../suite-common/wallet" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -52,15 +51,13 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../analytics" },
         { "path": "../device" },
         { "path": "../intl" },
         { "path": "../settings" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },
         {

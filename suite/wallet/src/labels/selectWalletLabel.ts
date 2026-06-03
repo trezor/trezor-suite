@@ -11,8 +11,8 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 type SelectWalletLabelParams = {
     deviceStaticId: StaticSessionId | null;
@@ -36,7 +36,7 @@ export const selectWalletLabel = createMemoizedSelector(
                 return null;
             }
 
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticId);
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticId);
 
             return selectSuiteSyncWalletLabel(state, walletDescriptor);
         },

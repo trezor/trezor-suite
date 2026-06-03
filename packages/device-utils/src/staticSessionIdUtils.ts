@@ -10,12 +10,26 @@
 // This module is the single source of truth for parsing, validating, and
 // formatting that string. Other packages must build on top of these helpers
 // rather than re-implementing the split locally.
+import { type Branded } from '@trezor/type-utils';
+
 export type StaticSessionId = `${string}@${string}:${number}`;
 
-export type ParsedStaticSessionId = {
-    firstTestnetAddress: string;
+// First BIP44 testnet address (44'/1'/0'/0/0). See
+// `packages/connect/src/device/workflow/validateState.ts` where it is retrieved.
+export type WalletDescriptor = string & Branded<'WalletDescriptor'>;
+
+export const asWalletDescriptor = (value: string) => value as WalletDescriptor;
+
+// Input to `createStaticSessionId`: `walletDescriptor` is a plain string the caller
+// is still assembling, unlike the branded one a parse returns.
+export type StaticSessionIdParts = {
+    walletDescriptor: string;
     deviceId: string;
     instance: number;
+};
+
+export type ParsedStaticSessionId = StaticSessionIdParts & {
+    walletDescriptor: WalletDescriptor;
 };
 
 // Strict non-negative integer: no leading zeros (except "0" itself), no signs,
@@ -40,6 +54,8 @@ export const isStaticSessionId = (input: unknown): input is StaticSessionId => {
     return atFirst.length > 0 && colonFirst.length > 0 && isNonNegativeIntegerString(colonSecond);
 };
 
+// The `StaticSessionId` brand already guarantees validity, so a plain `string`
+// caller must narrow via `isStaticSessionId` before parsing.
 export const parseStaticSessionId = (input: StaticSessionId): ParsedStaticSessionId => {
     const [firstTestnetAddressRaw, restRaw] = input.split('@');
     // @ts-expect-error - noUncheckedIndexAccess: split('@') on a validated StaticSessionId always yields two parts
@@ -53,14 +69,14 @@ export const parseStaticSessionId = (input: StaticSessionId): ParsedStaticSessio
     const instanceStr: string = instanceStrRaw;
 
     return {
-        firstTestnetAddress,
+        walletDescriptor: asWalletDescriptor(firstTestnetAddress),
         deviceId,
         instance: Number.parseInt(instanceStr, 10),
     };
 };
 
-export const createStaticSessionId = (parts: ParsedStaticSessionId): StaticSessionId => {
-    const result = `${parts.firstTestnetAddress}@${parts.deviceId}:${parts.instance}`;
+export const createStaticSessionId = (parts: StaticSessionIdParts): StaticSessionId => {
+    const result = `${parts.walletDescriptor}@${parts.deviceId}:${parts.instance}`;
     // Round-trip the result through the validator so a malformed `parts` (negative or
     // non-integer instance, empty/separator-bearing segments) cannot mint a branded
     // `StaticSessionId` that `isStaticSessionId` would later reject.

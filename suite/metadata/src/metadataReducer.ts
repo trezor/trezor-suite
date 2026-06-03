@@ -18,11 +18,10 @@ import {
 } from '@suite-common/metadata-types';
 import { type AnyAction } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type WalletDescriptor } from '@suite-common/wallet';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
+import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
 
 import * as METADATA from './metadataConstants';
 import { DEFAULT_ACCOUNT_METADATA, DEFAULT_WALLET_METADATA } from './metadataLabelingConstants';
@@ -133,7 +132,7 @@ export const metadataReducer = (
             case deviceActions.forgetDevice.type:
                 if (action.payload.device.state?.staticSessionId) {
                     const { staticSessionId } = action.payload.device.state;
-                    const { walletDescriptor } = parseDeviceStaticSessionId(staticSessionId);
+                    const { walletDescriptor } = parseStaticSessionId(staticSessionId);
 
                     delete draft.error?.[staticSessionId];
                     delete draft.hasLegacyLabelsMigrated[walletDescriptor];

@@ -2,8 +2,7 @@ import {
     type EnsureWalletSuiteSyncOnDep,
     type UpdateWalletLabel,
 } from '@suite-common/suite-sync-types';
-import { type WalletDescriptor } from '@suite-common/wallet';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
 
 import {
     type SuiteSyncAnalyticsDep,
@@ -22,7 +21,7 @@ export type UpdateWalletLabelDeps = EnsureWalletSuiteSyncOnDep &
 export const createUpdateWalletLabel =
     (deps: UpdateWalletLabelDeps): UpdateWalletLabel =>
     async ({ deviceStaticSessionId, label }) => {
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+        const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
         const previousLabel = deps.getWalletLabel(walletDescriptor);
 
         const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({

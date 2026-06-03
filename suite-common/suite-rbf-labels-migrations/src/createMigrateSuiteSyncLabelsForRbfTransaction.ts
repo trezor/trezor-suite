@@ -10,8 +10,8 @@ import {
     type SetLabelsForSuiteSyncDep,
 } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 export const createSetLabelsForSuiteSync =
@@ -64,7 +64,7 @@ const moveLabelsForSuiteSyncRbf =
         const transactionsToCopy = labelsToBeMoved.flatMap(data =>
             deps
                 .getOutputs(
-                    parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
+                    parseStaticSessionId(deviceStaticSessionId).walletDescriptor,
                     data.toBeMoved.descriptor,
                     data.toBeMoved.symbol,
                 )
@@ -85,7 +85,7 @@ const moveLabelsForSuiteSyncRbf =
         const transactionOutputsToDelete = labelsToBeMoved.flatMap(data =>
             deps
                 .getOutputs(
-                    parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
+                    parseStaticSessionId(deviceStaticSessionId).walletDescriptor,
                     data.toBeMoved.descriptor,
                     data.toBeMoved.symbol,
                 )

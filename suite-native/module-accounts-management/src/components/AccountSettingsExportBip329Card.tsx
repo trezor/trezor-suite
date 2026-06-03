@@ -8,13 +8,13 @@ import { suiteSyncToBip329 } from '@suite-common/bip329';
 import { type AllLabelsForAccount, selectAllLabelsForAccount } from '@suite-common/suite-sync';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { Button, CardWithIconLayout, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import { useToast } from '@suite-native/toasts';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 type AccountSettingsExportBip329CardProps = {
@@ -78,7 +78,7 @@ export const AccountSettingsExportBip329Card = ({
     const accountLabel = useSelector((state: CombinedLabelingState) =>
         selectAccountLabel(state, deviceStaticSessionId, accountDescriptor, networkSymbol),
     );
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
     const labels = useSelector((state: CombinedLabelingState) =>
         selectAllLabelsForAccount(state, {
             walletDescriptor,

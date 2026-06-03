@@ -5,8 +5,8 @@ import {
     mnemonic12Fixtures,
 } from '@suite-common/e2e-evolu-client';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@trezor/device-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';

@@ -10,10 +10,9 @@ import {
     type UpdateOutputLabelDep,
     type UpdateWalletLabelDep,
 } from '@suite-common/suite-sync-types';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import {

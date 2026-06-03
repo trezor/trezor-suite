@@ -1,7 +1,7 @@
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { createMockDeps } from '@suite-common/dependency-injection';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
-import { type WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet';
+import { type WalletDescriptor, asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import { DEFAULT_ACCOUNT_SIZE_QUOTA } from '../../constants';

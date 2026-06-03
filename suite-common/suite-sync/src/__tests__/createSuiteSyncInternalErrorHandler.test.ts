@@ -8,8 +8,8 @@ import {
     asDelegatedIdentityKey,
 } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import { type StaticSessionId } from '@trezor/connect';
+import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import {

@@ -1,4 +1,4 @@
-import type { WalletDescriptor } from '@suite-common/wallet';
+import type { WalletDescriptor } from '@trezor/device-utils';
 
 export interface LabelableEntityKeys {
     fileName: string; // file name in data provider
