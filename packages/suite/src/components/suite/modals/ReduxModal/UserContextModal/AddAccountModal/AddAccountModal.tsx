@@ -1,8 +1,10 @@
 import { useState } from 'react';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
 import { selectHasExperimentalFeature, selectIsDebugModeActive } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -63,6 +65,7 @@ export const AddAccountModal = ({
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
         useNetworkSupport();
@@ -226,6 +229,16 @@ export const AddAccountModal = ({
         onConfirm?.();
 
         onAddAccount?.(account);
+
+        analytics.report({
+            type: events.accountsNewAccountEvent.name,
+            payload: {
+                type: account.accountType,
+                symbol: account.symbol,
+                path: account.path,
+            },
+        });
+
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             dispatch(
@@ -273,6 +286,16 @@ export const AddAccountModal = ({
 
         onCancel();
         dispatch(accountsActions.createAccount(newAccount));
+
+        analytics.report({
+            type: events.accountsNewAccountEvent.name,
+            payload: {
+                type: newAccount.accountType,
+                symbol: newAccount.symbol,
+                path: newAccount.path,
+            },
+        });
+
         dispatch(reportWalletBalanceThunk());
         onConfirm?.();
     }

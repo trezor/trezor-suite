@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, type NetworkAccount } from '@suite-common/wallet-config';
 import { type UnavailableCapability } from '@trezor/connect';
@@ -71,7 +69,6 @@ const AddDefaultAccountButton = ({
 }: AddAccountButtonProps) => {
     const defaultAccount = scopedAccounts.at(-1);
     const device = useSelector(selectSelectedDevice);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
@@ -84,15 +81,6 @@ const AddDefaultAccountButton = ({
                 // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
                 setCoinFilter([]);
             }
-
-            analytics.report({
-                type: events.accountsNewAccountEvent.name,
-                payload: {
-                    type: defaultAccount.accountType,
-                    path: defaultAccount.path,
-                    symbol: defaultAccount.symbol,
-                },
-            });
         } else {
             onAddNewAccount();
         }
@@ -101,7 +89,6 @@ const AddDefaultAccountButton = ({
         onEnableAccount,
         setSearchString,
         coinFilter,
-        analytics,
         setCoinFilter,
         onAddNewAccount,
     ]);
