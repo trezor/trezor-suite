@@ -65,5 +65,7 @@ export const ClaudeResultSchema = z.object({
 });
 
 export type FixResult = z.infer<typeof FixResultSchema>;
+export type ClaudeResult = z.infer<typeof ClaudeResultSchema>;
 
 export const AnalysisReportJsonSchema = z.toJSONSchema(AnalysisReportSchema);
+export const FixResultJsonSchema = z.toJSONSchema(FixResultSchema);
