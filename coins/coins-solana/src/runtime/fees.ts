@@ -17,9 +17,9 @@ import {
 import { getTokenSize as _getTokenSize } from '@solana-program/token';
 import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 
-import { BigNumber, safeBigIntStringify, throwError } from '@trezor/utils';
+import { BigNumber, safeBigIntStringify } from '@trezor/utils';
 
-import { COMPUTE_BUDGET_PROGRAM_ID, STAKE_ACCOUNT_V2_SIZE } from '../constants';
+import { COMPUTE_BUDGET_PROGRAM_ID, SOL_BASE_FEE, STAKE_ACCOUNT_V2_SIZE } from '../constants';
 import type {
     Address,
     Base64EncodedWireTransaction,
@@ -81,7 +81,7 @@ const getBaseFee = async (api: Rpc<GetFeeForMessageApi>, message: CompiledTransa
 
     // The result can be null, for example if the transaction blockhash is invalid.
     // In this case, we should fall back to the default fee.
-    return result.value ?? throwError('Could not estimate fee for transaction.');
+    return result.value ?? SOL_BASE_FEE * BigInt(message.header.numSignerAccounts);
 };
 
 // More about Solana priority fees here:
