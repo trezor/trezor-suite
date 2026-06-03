@@ -23,7 +23,7 @@ Your fix task is embedded at the bottom of this prompt. Read it before doing any
 
 ## Fix Constraints
 
-Allowed changes depend on the fix task's `fix_scope`:
+Allowed changes depend on the fix task's `fixScope`:
 
 - `TEST_CODE` — only files inside `suite/e2e/`
 - `LOCATOR_ADD` — files inside `suite/e2e/` AND `data-testid` attributes in product source files. No other product code changes.
@@ -112,7 +112,7 @@ Track your current iteration number starting at 1. Stop when budget is exhausted
 
 ### Per iteration
 
-**1. Make changes** according to `fix_scope`. For `LOCATOR_ADD`: only add or modify `data-testid`
+**1. Make changes** according to `fixScope`. For `LOCATOR_ADD`: only add or modify `data-testid`
 attributes — no logic changes in product code.
 
 **2. Run all validations that are still failing:**
@@ -164,16 +164,16 @@ Write two files to the repo root (current directory) using the Write tool.
 
 ```json
 {
-  "task_id": "<id from fix task>",
+  "taskId": "<id from fix task>",
   "result": "<pass | partial | fail | not_duplicated>",
   "iterations": <number of fix iterations performed, 0 if none needed>,
   "passed": ["<platform>/<group>/<spec>"],
   "failed": ["<platform>/<group>/<spec>"],
-  "pr_title": "<string up to 100 chars>"
+  "prTitle": "<string up to 100 chars>"
 }
 ```
 
-`pr_title` must be the full PR title including the `Nightly fix <YY-MM-DD> - ` prefix. Base it on the fix you just made.
+`prTitle` must be the full PR title including the `Nightly fix <YY-MM-DD> - ` prefix. Base it on the fix you just made.
 `pass` — all validations pass after fixes.
 `partial` — at least one passes, at least one fails.
 `fail` — zero validations pass after fixes.
@@ -186,8 +186,8 @@ Use `<platform>/<group>/<spec>` format with the `spec` value as-is (repo-root-re
 
 1. `## Nightly fix — <YYYY-MM-DD>`
 2. `**Task:**`, `**Scope:**`, `**Result:**` (✅ pass / ⚠️ partial / ❌ fail)
-3. `### Root cause` — `root_cause` from the fix task
-4. `### Fix` — `fix_description` from the fix task
+3. `### Root cause` — `rootCause` from the fix task
+4. `### Fix` — `fixDescription` from the fix task
 5. `### Validations` — markdown table with Status (✅/❌), Platform, Group, Spec for every validation
 6. `### Commits` — output of `git log --oneline origin/develop..HEAD`
 7. `### Prompt gaps` — one bullet per ambiguity or missing instruction you encountered,

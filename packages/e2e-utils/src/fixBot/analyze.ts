@@ -1,11 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
 import { processAgentOutput, runClaude } from './common';
-import { ReportSchema } from './schemas';
+import { AnalysisReportJsonSchema, AnalysisReportSchema } from './schemas';
 
 function main(): void {
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
@@ -35,6 +35,8 @@ function main(): void {
             '--verbose',
             '--output-format',
             'json',
+            '--json-schema',
+            JSON.stringify(AnalysisReportJsonSchema),
             '--settings',
             join(botDir, 'settings.json'),
             '--mcp-config',
@@ -46,34 +48,43 @@ function main(): void {
     });
 
     const { model } = JSON.parse(readFileSync(join(botDir, 'settings.json'), 'utf-8'));
-    processAgentOutput(claudeOutput, 'nightlyAnalyzer', model);
+    const agentResult = processAgentOutput(claudeOutput, 'nightlyAnalyzer', model);
 
     if (spawnError) {
         error(`Failed to run claude: ${spawnError.message}`);
         process.exit(1);
     }
 
-    const reportMd = join(reportDir, 'report.md');
-    const reportJson = join(reportDir, 'report.json');
-
-    const missing = [reportMd, reportJson].filter(f => !existsSync(f));
-
-    if (missing.length > 0) {
-        missing.forEach(f => error(`Expected output not found: ${f}`));
+    if (!agentResult) {
+        error('Could not parse Claude result envelope from analysis agent output.');
         process.exit(1);
     }
 
-    const unsafeParse = JSON.parse(readFileSync(reportJson, 'utf-8'));
-    const report = ReportSchema.safeParse(unsafeParse);
+    if (agentResult.subtype === 'error_max_structured_output_retries') {
+        // Persist the raw CLI envelope for troubleshooting
+        const envelopePath = join(reportDir, 'analyze-envelope.json');
+        writeFileSync(envelopePath, claudeOutput);
+        error(
+            `Analysis agent could not produce schema-conformant output after retries. Raw envelope saved to ${envelopePath}.`,
+        );
+        process.exit(1);
+    }
+
+    const reportJsonPath = join(reportDir, 'report.json');
+    const report = AnalysisReportSchema.safeParse(agentResult.structured_output);
     if (!report.success) {
-        error(`report.json failed schema validation: ${prettifyError(report.error)}`);
+        // Persist the raw structured output anyway for troubleshooting
+        writeFileSync(
+            reportJsonPath,
+            `${JSON.stringify(agentResult.structured_output, null, 2)}\n`,
+        );
+        error(`structured output failed schema validation: ${prettifyError(report.error)}`);
         process.exit(1);
     }
 
-    log('');
-    log(`Report saved to ${reportMd}`);
-    log(`Fix tasks saved to ${reportJson}`);
-    log('');
+    writeFileSync(reportJsonPath, `${JSON.stringify(report.data, null, 2)}\n`);
+
+    log('Agent done.');
 
     process.exit(status);
 }

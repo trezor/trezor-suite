@@ -158,10 +158,10 @@ For each fix task assign:
 - **`branch`** — `"fix/nightly-<YYYY-MM-DD>-<slug>"` where `<slug>` is a short kebab-case
   summary of the root cause (e.g. `send-button-locator`, `receive-address-timeout`).
   Use today's date. Keep the slug under 40 characters.
-- **`root_cause`** — one sentence describing the underlying problem
-- **`fix_scope`** — one of: `TEST_CODE`, `LOCATOR_ADD`, `PRODUCT_BUG`, `INFRA`
+- **`rootCause`** — one sentence describing the underlying problem
+- **`fixScope`** — one of: `TEST_CODE`, `LOCATOR_ADD`, `PRODUCT_BUG`, `INFRA`
 - **`confidence`** — `HIGH`, `MEDIUM`, or `LOW`
-- **`fix_description`** — concrete description of what needs to change and where
+- **`fixDescription`** — concrete description of what needs to change and where
 - **`diagnosis`** — the full MD prose from Step 6 for every test that belongs to this fix
   task: error messages, stack traces, visual evidence descriptions, and root cause reasoning.
   Copy it verbatim from the diagnosis report. This is the only context the fix agent
@@ -176,25 +176,24 @@ For each fix task assign:
     - If the test carries `@webOnly`, do **not** add a `platform: "desktop"` entry for the same reason.
     - Only include a platform in `validations` if that platform actually ran the test.
 
-Tasks with `fix_scope` of `PRODUCT_BUG` or `INFRA` go into `skipped` instead of `fix_tasks`.
+## Step 8 — Return the structured report
 
-## Step 8 — Write report.json
-
-Write the following JSON structure to `packages/e2e-utils/src/fixBot/reports/report.json`.
+Do **not** write `report.json` to disk — the harness captures your final answer and writes
+it. Return a JSON object (validated against a matching JSON Schema) with:
 
 ```json
 {
-    "run_date": "<YYYY-MM-DD>",
-    "web_run_id": "<runId or null>",
-    "desktop_run_id": "<runId or null>",
-    "fix_tasks": [
+    "runDate": "<YYYY-MM-DD>",
+    "webRunId": "<runId or null>",
+    "desktopRunId": "<runId or null>",
+    "fixTasks": [
         {
             "id": "fix-001",
             "branch": "fix/nightly-<YYYY-MM-DD>-<slug>",
-            "root_cause": "<one sentence>",
-            "fix_scope": "TEST_CODE | LOCATOR_ADD",
+            "rootCause": "<one sentence>",
+            "fixScope": "TEST_CODE | LOCATOR_ADD",
             "confidence": "HIGH | MEDIUM | LOW",
-            "fix_description": "<what to change and where>",
+            "fixDescription": "<what to change and where>",
             "validations": [
                 {
                     "platform": "web | desktop",
@@ -206,9 +205,9 @@ Write the following JSON structure to `packages/e2e-utils/src/fixBot/reports/rep
     ],
     "skipped": [
         {
-            "root_cause": "<one sentence>",
-            "reason": "<fix_scope> — <brief explanation>",
-            "affected_tests": ["suite/e2e/tests/..."]
+            "rootCause": "<one sentence>",
+            "reason": "<fixScope> — <brief explanation>",
+            "affectedTests": ["suite/e2e/tests/..."]
         }
     ]
 }
