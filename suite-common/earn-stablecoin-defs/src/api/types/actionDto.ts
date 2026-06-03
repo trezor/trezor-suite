@@ -6,6 +6,7 @@
  */
 import type { ActionDtoExecutionPattern } from './actionDtoExecutionPattern';
 import type { ActionDtoIntent } from './actionDtoIntent';
+import type { ActionDtoRawArguments } from './actionDtoRawArguments';
 import type { ActionDtoStatus } from './actionDtoStatus';
 import type { ActionDtoType } from './actionDtoType';
 import type { TransactionDto } from './transactionDto';
@@ -13,14 +14,14 @@ import type { TransactionDto } from './transactionDto';
 export type ActionDto = {
     /** Unique action identifier */
     id: string;
-    /** Yield ID this action belongs to */
-    yieldId: string;
-    /** User wallet address */
-    address: string;
     /** High-level action intent */
     intent: ActionDtoIntent;
     /** Specific action type */
     type: ActionDtoType;
+    /** Yield ID this action belongs to */
+    yieldId: string;
+    /** User wallet address */
+    address: string;
     /**
      * Amount involved in the action, in human-readable token units (not the smallest denomination).
      * @nullable
@@ -38,8 +39,13 @@ export type ActionDto = {
     amountUsd: string | null;
     /** Array of transactions for this action */
     transactions: TransactionDto[];
-    /** Transaction execution pattern - synchronous (submit one by one, wait for each), asynchronous (submit all at once), or batch. */
+    /** Transaction execution pattern - synchronous (submit one by one, wait for each), asynchronous (submit all at once), or batch (single transaction with multiple operations) */
     executionPattern: ActionDtoExecutionPattern;
+    /**
+     * Raw arguments exactly as submitted by the user for this action
+     * @nullable
+     */
+    rawArguments: ActionDtoRawArguments;
     /** When the action was created */
     createdAt: string;
     /**
@@ -49,4 +55,5 @@ export type ActionDto = {
     completedAt: string | null;
     /** Current status of the action */
     status: ActionDtoStatus;
+    vaultAddress: string;
 };

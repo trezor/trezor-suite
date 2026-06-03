@@ -6,11 +6,12 @@
  */
 
 /**
- * The network identifier
+ * Token network
  */
-export type NetworkDtoId = (typeof NetworkDtoId)[keyof typeof NetworkDtoId];
+export type YieldsResponseItemsItemStatePricePerShareStateShareTokenNetwork =
+    (typeof YieldsResponseItemsItemStatePricePerShareStateShareTokenNetwork)[keyof typeof YieldsResponseItemsItemStatePricePerShareStateShareTokenNetwork];
 
-export const NetworkDtoId = {
+export const YieldsResponseItemsItemStatePricePerShareStateShareTokenNetwork = {
     ethereum: 'ethereum',
     'ethereum-goerli': 'ethereum-goerli',
     'ethereum-holesky': 'ethereum-holesky',
@@ -29,6 +30,7 @@ export const NetworkDtoId = {
     unichain: 'unichain',
     'monad-testnet': 'monad-testnet',
     monad: 'monad',
+    'robinhood-testnet': 'robinhood-testnet',
     'avalanche-c': 'avalanche-c',
     'avalanche-c-atomic': 'avalanche-c-atomic',
     'avalanche-p': 'avalanche-p',

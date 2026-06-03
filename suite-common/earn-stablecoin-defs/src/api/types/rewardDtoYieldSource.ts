@@ -6,7 +6,7 @@
  */
 
 /**
- * Structured source of yield (e.g. staking, protocol incentive).
+ * Structured source of yield (e.g. staking, protocol incentive)
  */
 export type RewardDtoYieldSource = (typeof RewardDtoYieldSource)[keyof typeof RewardDtoYieldSource];
 
@@ -20,5 +20,4 @@ export const RewardDtoYieldSource = {
     mev: 'mev',
     real_world_asset_yield: 'real_world_asset_yield',
     vault: 'vault',
-    lending_interest: 'lending_interest',
 } as const;

@@ -4,23 +4,9 @@
  * Trezor Earn Yield API
  * OpenAPI spec version: 0.1.0
  */
-import type { YieldDto } from './yieldDto';
+import type { PaginatedResponseDto } from './paginatedResponseDto';
+import type { YieldsResponseItemsItem } from './yieldsResponseItemsItem';
 
-export type YieldsResponse = {
-    items: YieldDto[];
-    /**
-     * Total number of items available
-     * @minimum 0
-     */
-    total: number;
-    /**
-     * Offset of the current page
-     * @minimum 0
-     */
-    offset: number;
-    /**
-     * Limit of the current page
-     * @exclusiveMinimum 0
-     */
-    limit: number;
+export type YieldsResponse = PaginatedResponseDto & {
+    items?: YieldsResponseItemsItem[];
 };

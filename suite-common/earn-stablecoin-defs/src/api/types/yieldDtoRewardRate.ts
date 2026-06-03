@@ -6,7 +6,10 @@
  */
 import type { RewardDto } from './rewardDto';
 
-export type RewardRateDto = {
+/**
+ * Total effective yield broken down by source and token.
+ */
+export type YieldDtoRewardRate = {
     /** Estimated reward rate across all sources (e.g. staking, points) */
     total: number;
     /** Whether this reward rate is APR or APY */
