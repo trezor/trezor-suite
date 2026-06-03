@@ -1,4 +1,4 @@
-import { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { type ApprovalStatus, getApprovalStatus } from '@suite-common/trading';
 import { AnimatedBox, Button, VStack } from '@suite-native/atoms';
@@ -44,11 +44,11 @@ export const ExchangeConfirmation = () => {
                 activateButtonElement
             ) : (
                 <VStack spacing="sp16">
-                    <AnimatedBox entering={FadeIn} exiting={FadeOut}>
+                    <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
                         <Button
                             onPress={selectQuote}
                             testID={CONFIRMATION_TEST_ID}
-                            isDisabled={isLoading || !canProceed}
+                            isDisabled={!canProceed}
                             isLoading={isLoading}
                         >
                             {!isLoading && (
@@ -57,7 +57,7 @@ export const ExchangeConfirmation = () => {
                         </Button>
                     </AnimatedBox>
                     {canRevoke && (
-                        <AnimatedBox entering={FadeIn} exiting={FadeOut}>
+                        <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
                             <Button
                                 onPress={selectQuoteForRevoke}
                                 testID={REVOKE_TEST_ID}

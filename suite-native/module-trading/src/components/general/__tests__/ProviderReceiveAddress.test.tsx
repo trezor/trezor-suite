@@ -133,6 +133,24 @@ describe('ProviderReceiveAddress', () => {
         expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeOnTheScreen();
     });
 
+    it('should display address from dexTx when sendAddress is not available', () => {
+        const dexTrade: ExchangeTrade = {
+            ...mockExchangeTrade,
+            isDex: true,
+            sendAddress: undefined,
+            dexTx: {
+                to: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+                from: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+                data: '0x',
+                value: '0',
+            },
+        };
+        const { getByText } = renderProviderReceiveAddress(dexTrade, 'exchange');
+
+        expect(getByText(contractAddressLabel('Mercuryo'))).toBeOnTheScreen();
+        expect(getByText('1A1z P1eP 5QGe fi2D MPTf TL5S Lmv7 Divf Na')).toBeOnTheScreen();
+    });
+
     it('should render skeleton when receive address is missing for exchange trade', () => {
         const tradeWithoutAddress = { ...mockExchangeTrade, sendAddress: undefined };
 

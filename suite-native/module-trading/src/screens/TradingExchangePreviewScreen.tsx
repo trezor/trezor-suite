@@ -188,7 +188,7 @@ const TradingExchangePreviewScreenContent = ({
                 />
             }
         >
-            <VStack spacing="sp16">
+            <VStack spacing="sp16" flex={1}>
                 <ExchangePreviewView
                     quote={quote}
                     txnErrorString={errorString}

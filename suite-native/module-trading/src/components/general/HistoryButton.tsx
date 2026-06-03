@@ -1,5 +1,5 @@
-import { Pressable } from 'react-native';
-import { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
+import { Platform, Pressable } from 'react-native';
+import { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -41,6 +41,8 @@ const buttonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
+const isAndroid = Platform.OS === 'android';
+
 export const HistoryButton = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
@@ -58,8 +60,8 @@ export const HistoryButton = () => {
 
     return (
         <AnimatedBox
-            entering={FadeInDown}
-            exiting={FadeOutDown}
+            key={isAndroid ? activeTradingType : undefined}
+            entering={isMountedRecently && isAndroid ? undefined : FadeInDown}
             layout={isMountedRecently ? undefined : LinearTransition}
         >
             <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
