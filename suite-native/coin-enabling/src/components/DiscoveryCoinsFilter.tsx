@@ -2,18 +2,18 @@ import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Text, VStack } from '@suite-native/atoms';
+import { Switch, Text, VStack } from '@suite-native/atoms';
 import { selectDiscoveryNetworkGroups } from '@suite-native/discovery';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
-import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
+import { NetworkListItem } from './NetworkListItem';
 
 type NetworkGroupProps = {
     networks: Network[];
     enabledSymbols: NetworkSymbol[];
-    handleToggle: (symbol: NetworkSymbol, isEnabled: boolean) => void;
+    handleToggle: (symbol: NetworkSymbol) => void;
     showTestnetsLabel?: boolean;
 };
 
@@ -34,11 +34,18 @@ const NetworkGroup = ({
             </Text>
         )}
         {networks.map(({ symbol }) => (
-            <NetworkSymbolSwitchItem
+            <NetworkListItem
                 key={symbol}
                 symbol={symbol}
-                isEnabled={enabledSymbols.includes(symbol)}
-                onToggle={isEnabled => handleToggle(symbol, isEnabled)}
+                accessory={
+                    <Switch
+                        isChecked={enabledSymbols.includes(symbol)}
+                        onChange={() => handleToggle(symbol)}
+                    />
+                }
+                onPress={() => handleToggle(symbol)}
+                accessibilityRole="togglebutton"
+                testID={`@coin-enabling/toggle-${symbol}`}
             />
         ))}
     </VStack>
@@ -53,7 +60,9 @@ export const DiscoveryCoinsFilter = ({ onDisablingLastCoin }: DiscoveryCoinsFilt
     const { setValue, watch } = useFormContext();
     const enabledSymbols: NetworkSymbol[] = watch('enabledCoins');
 
-    const handleToggle = (symbol: NetworkSymbol, isEnabled: boolean) => {
+    const handleToggle = (symbol: NetworkSymbol) => {
+        const isEnabled = !enabledSymbols.includes(symbol);
+
         if (
             !isEnabled &&
             onDisablingLastCoin &&
