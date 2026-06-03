@@ -4,7 +4,7 @@ import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
 
-import { AccountLabeling } from 'src/components/suite';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 
 import { useReceiveAddressModalControls } from './useReceiveAddressModalControls';
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';
