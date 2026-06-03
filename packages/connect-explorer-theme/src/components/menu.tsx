@@ -176,7 +176,7 @@ export function Menu({
                     formatOptionLabel={option => (
                         <Option>
                             {coinSymbols[option.value] && (
-                                <CoinLogo size={18} symbol={coinSymbols[option.value]} />
+                                <CoinLogo size={20} symbol={coinSymbols[option.value]} />
                             )}
                             <Label>{option.label}</Label>
                         </Option>

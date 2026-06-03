@@ -1,3 +1,4 @@
+import { type NetworkIconSymbol, legacyIconSymbols, networkSymbols } from './iconSymbols';
 import { type NetworkIconName } from './networkIcons';
 
 export const networkIconSymbolMap = {
@@ -35,9 +36,7 @@ export const networkIconSymbolMap = {
     xrp: 'xrp',
     xtz: 'xtz',
     zec: 'zec',
-} as const satisfies Record<string, NetworkIconName>;
-
-export type NetworkIconSymbol = keyof typeof networkIconSymbolMap;
+} as const satisfies Record<NetworkIconSymbol, NetworkIconName>;
 
 export const testnetNetworkIconSymbols = [
     'test',
@@ -57,6 +56,8 @@ const testnetNetworkIconSymbolSet: ReadonlySet<NetworkIconSymbol> = new Set(
     testnetNetworkIconSymbols,
 );
 
+const cryptoIconSymbolSet: ReadonlySet<string> = new Set([...networkSymbols, ...legacyIconSymbols]);
+
 export const getNetworkIconName = (networkSymbol: NetworkIconSymbol): NetworkIconName =>
     networkIconSymbolMap[networkSymbol];
 
@@ -66,3 +67,7 @@ export const isNetworkIconSymbol = (networkSymbol: string): networkSymbol is Net
 export const isTestnetNetworkIconSymbol = (
     networkSymbol: NetworkIconSymbol,
 ): networkSymbol is TestnetNetworkIconSymbol => testnetNetworkIconSymbolSet.has(networkSymbol);
+
+/** Symbol has a bundled coin disc SVG (listed in the network icon map and present in cryptoIcons). */
+export const isCryptoIconSymbol = (symbol: string): symbol is NetworkIconSymbol =>
+    cryptoIconSymbolSet.has(symbol);

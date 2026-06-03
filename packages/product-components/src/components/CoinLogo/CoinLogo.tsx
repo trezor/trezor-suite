@@ -1,88 +1,99 @@
-import { type ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { isNetworkIconSymbol } from '@suite-common/icons';
-import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+import { cryptoIcons } from '@suite-common/icons/src/cryptoIcons';
+import { type NetworkIconSymbol } from '@suite-common/icons/src/iconSymbols';
+import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
+import { getNetworkOptional } from '@suite-common/wallet-config';
 
-import { COINS, type LegacyNetworkSymbol } from '../../constants/coins';
 import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
+
+export const allowedCoinLogoSizes = [16, 20, 24, 32, 40, 48, 64] as const;
+export type CoinLogoSize = (typeof allowedCoinLogoSizes)[number];
 
 export const COIN_LOGO_TYPE = ['token', 'network', 'tokenWithNetwork'] as const;
 export type CoinLogoType = (typeof COIN_LOGO_TYPE)[number];
 
-const DEFAULT_SIZE = 32;
-
-export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
-    symbol: NetworkSymbol | LegacyNetworkSymbol;
+export type CoinLogoProps = {
+    symbol: NetworkIconSymbol;
     type?: CoinLogoType;
-    size?: number;
-    index?: number;
-}
+    size?: CoinLogoSize;
+    'data-testid'?: string;
+};
 
-const SvgWrapper = styled.div<{ $size: number }>`
-    position: relative;
-    display: inline-block;
+const SvgContainer = styled.div<{ $size: CoinLogoSize }>`
+    display: flex;
+    flex-shrink: 0;
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
 `;
 
-const SvgContainer = styled.div<{ $size: number }>`
-    width: ${({ $size }) => $size}px;
-    height: ${({ $size }) => $size}px;
-    line-height: ${({ $size }) => $size}px;
+const StyledReactSVG = styled(ReactSVG)`
+    display: flex;
+    width: 100%;
+    height: 100%;
 
-    > div {
+    div {
+        display: flex;
         width: 100%;
         height: 100%;
-        line-height: inherit;
     }
-`;
+
+    svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+` as typeof ReactSVG;
+
+type CoinSvgProps = {
+    src: string;
+    size: CoinLogoSize;
+    'data-testid'?: string;
+};
+
+const CoinSvg = ({ src, size, 'data-testid': dataTestId }: CoinSvgProps) => (
+    <SvgContainer $size={size} data-testid={dataTestId}>
+        <StyledReactSVG
+            src={src}
+            beforeInjection={svg => {
+                svg.setAttribute('width', `${size}px`);
+                svg.setAttribute('height', `${size}px`);
+            }}
+            loading={() => <span className="loading" />}
+        />
+    </SvgContainer>
+);
 
 export const CoinLogo = ({
     symbol,
     type = 'token',
-    size = DEFAULT_SIZE,
-    ...rest
+    size = 32,
+    'data-testid': dataTestId,
 }: CoinLogoProps) => {
-    let symbolSrc;
-    let shouldShowNetworkBadge = false;
-
-    if (type === 'token') {
-        symbolSrc = COINS[symbol];
-    } else if (type === 'network') {
-        if (isNetworkIconSymbol(symbol)) {
-            return (
-                <SvgWrapper $size={size} {...rest}>
-                    <NetworkIcon networkSymbol={symbol} size={size} />
-                </SvgWrapper>
-            );
-        }
-    } else {
-        const network = getNetworkOptional(symbol);
-        const networkSymbol = network?.settlementLayer ?? symbol;
-
-        shouldShowNetworkBadge = networkSymbol !== symbol && isNetworkIconSymbol(symbol);
-        symbolSrc = COINS[networkSymbol !== symbol ? networkSymbol : symbol];
+    if (type === 'network' && isNetworkIconSymbol(symbol)) {
+        return <NetworkIcon networkSymbol={symbol} size={size} data-testid={dataTestId} />;
     }
 
-    return (
-        <SvgWrapper $size={size} {...rest}>
-            <SvgContainer $size={size}>
-                <ReactSVG
-                    src={symbolSrc ?? COINS[symbol]}
-                    beforeInjection={svg => {
-                        svg.setAttribute('width', `${size}px`);
-                        svg.setAttribute('height', `${size}px`);
-                    }}
-                    loading={() => <span className="loading" />}
-                />
-            </SvgContainer>
-            {shouldShowNetworkBadge && (
-                <NetworkIconBadge networkSymbol={symbol} parentSize={size} />
-            )}
-        </SvgWrapper>
-    );
+    if (type === 'tokenWithNetwork') {
+        const network = getNetworkOptional(symbol);
+        const networkSymbol = network?.settlementLayer ?? symbol;
+        const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
+        const src = cryptoIcons[displaySymbol];
+        const coin = <CoinSvg src={src} size={size} data-testid={dataTestId} />;
+
+        if (networkSymbol !== symbol && isNetworkIconSymbol(symbol)) {
+            return (
+                <NetworkIconBadge networkSymbol={symbol} parentSize={size} data-testid={dataTestId}>
+                    {coin}
+                </NetworkIconBadge>
+            );
+        }
+
+        return coin;
+    }
+
+    return <CoinSvg src={cryptoIcons[symbol]} size={size} data-testid={dataTestId} />;
 };

@@ -2,12 +2,12 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { isCryptoIconSymbol } from '@suite-common/icons/src/iconUtils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { type AssetOptionBaseProps } from './types';
-import { isCoinSymbol } from '../../constants/coins';
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
@@ -49,7 +49,7 @@ export const AssetItem = ({
     'data-testid': dataTestId,
 }: AssetItemProps) => {
     const getCoinLogo = () =>
-        isCoinSymbol(symbol) ? (
+        isCryptoIconSymbol(symbol) ? (
             <CoinLogo size={24} symbol={symbol} type="tokenWithNetwork" />
         ) : null;
     const displaySymbol = getDisplaySymbol(ticker, contractAddress);
