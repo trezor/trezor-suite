@@ -1,7 +1,8 @@
-import { View } from 'react-native';
+import { type ReactNode } from 'react';
+import { type AccessibilityRole, View } from 'react-native';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Card, HStack, PressableOpacity, Switch, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
@@ -9,10 +10,12 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NetworkBackendsButton } from './NetworkBackendsButton';
 
-type NetworkSymbolSwitchItemProps = {
+type NetworkListItemProps = {
     symbol: NetworkSymbol;
-    isEnabled: boolean;
-    onToggle: (isEnabled: boolean) => void;
+    accessory: ReactNode;
+    onPress: () => void;
+    accessibilityRole: AccessibilityRole;
+    testID: string;
 };
 
 const wrapperStyle = prepareNativeStyle(utils => ({
@@ -27,11 +30,13 @@ const iconWrapperStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp8,
 }));
 
-export const NetworkSymbolSwitchItem = ({
+export const NetworkListItem = ({
     symbol,
-    isEnabled,
-    onToggle,
-}: NetworkSymbolSwitchItemProps) => {
+    accessory,
+    onPress,
+    accessibilityRole,
+    testID,
+}: NetworkListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { name } = getNetwork(symbol);
@@ -39,9 +44,9 @@ export const NetworkSymbolSwitchItem = ({
     return (
         <Card noPadding>
             <PressableOpacity
-                onPress={() => onToggle(!isEnabled)}
-                accessibilityRole="togglebutton"
-                testID={`@coin-enabling/toggle-${symbol}`}
+                onPress={onPress}
+                accessibilityRole={accessibilityRole}
+                testID={testID}
             >
                 <HStack style={applyStyle(wrapperStyle)}>
                     <View style={applyStyle(iconWrapperStyle)}>
@@ -63,7 +68,7 @@ export const NetworkSymbolSwitchItem = ({
                         </VStack>
                         <HStack spacing="sp16" alignItems="center">
                             {symbol === 'btc' && <NetworkBackendsButton symbol={symbol} />}
-                            <Switch onChange={onToggle} isChecked={isEnabled} />
+                            {accessory}
                         </HStack>
                     </HStack>
                 </HStack>
