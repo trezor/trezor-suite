@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/dependency-injection"
         },

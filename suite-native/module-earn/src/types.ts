@@ -13,7 +13,11 @@ export type YieldApprovalLimitType = 'per-deposit' | 'unlimited';
 
 export type YieldAllowanceFormDraftTransactionType = 'approve' | 'revoke';
 
-export type YieldDepositReviewStatus = 'idle' | 'signing' | 'sending' | 'signed';
+export type YieldReviewActionStatus = 'idle' | 'signing' | 'sending';
+
+export type YieldReviewStatus = YieldReviewActionStatus | 'signed';
+
+export type YieldDepositReviewStatus = YieldReviewStatus;
 
 export type YieldReviewSigningResult =
     | 'signed'

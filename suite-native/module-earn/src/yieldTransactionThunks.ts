@@ -2,6 +2,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldFlowType,
     selectAddressDisplayType,
@@ -10,7 +11,7 @@ import {
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type EvmSelectedFee } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
@@ -22,6 +23,8 @@ type YieldActionReviewThunkPayload = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
     flowType: Extract<YieldFlowType, 'deposit' | 'withdraw'>;
+    reviewToken?: YieldFlowDisplayToken;
+    selectedFee?: EvmSelectedFee | null;
 };
 
 type YieldSignTransactionError = {
@@ -46,7 +49,10 @@ export const signYieldActionReviewThunk = createThunk<
     { rejectValue: YieldSignTransactionError }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
-    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
+    async (
+        { flowData, flowKey, flowType, reviewToken, selectedFee },
+        { dispatch, getState, rejectWithValue },
+    ) => {
         const session = selectStablecoinYieldSession(getState(), flowType, flowKey);
         const {
             action: { review },
@@ -65,9 +71,9 @@ export const signYieldActionReviewThunk = createThunk<
         try {
             transactionReview = buildStablecoinYieldTransactionReview({
                 amount: review.amount,
-                selectedFee: null,
+                selectedFee: selectedFee ?? null,
                 symbol: flowData.account.symbol,
-                token: flowData.token,
+                token: reviewToken ?? flowData.token,
                 unsignedTransaction: review.unsignedTransaction,
             });
         } catch (error) {

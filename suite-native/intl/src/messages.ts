@@ -2777,6 +2777,19 @@ export const messages = {
             limit: 'Limit',
             pendingTitle: 'Confirming revoke',
         },
+        yieldWithdrawFlowScreen: {
+            title: 'Withdraw',
+            withdrawalAmount: 'Withdrawal amount',
+            withdrawMax: 'Withdraw max',
+            supplied: 'Supplied:',
+            withdrawPendingTitle: 'Confirming withdrawal',
+            amountToWithdraw: 'Amount to withdraw',
+            maximumFee: 'Maximum fee',
+            feeToBeCalculated: 'To be calculated',
+            amountExceedsSupplied: 'The amount exceeds your supplied balance.',
+            networkFeeWarning:
+                'Network fees may exceed this amount. Your balance may decrease. Enter higher amount.',
+        },
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',
             successMessage: "You're all set.",
@@ -2790,9 +2803,18 @@ export const messages = {
             successMessage: "You're all set.",
             submitButton: 'Deposit now',
         },
+        yieldWithdrawReviewScreen: {
+            title: 'Review with Trezor',
+            successMessage: "You're all set.",
+            submitButton: 'Withdraw now',
+        },
         yieldDepositCompleteScreen: {
             title: 'Deposit complete',
             subtitle: 'Your deposit is now earning yield in the vault.',
+        },
+        yieldWithdrawCompleteScreen: {
+            title: 'Withdrawal complete',
+            subtitle: 'Your funds have been withdrawn from the vault.',
         },
         yieldCompleteScreen: {
             status: 'Status',
@@ -2800,11 +2822,15 @@ export const messages = {
             apy: 'APY',
             received: 'Received',
             sent: 'Sent',
+            withdrawalAmount: 'Withdrawal amount',
             backToOverview: 'Back to overview',
         },
         yieldReview: {
             depositCard: {
                 title: 'Deposit',
+            },
+            withdrawCard: {
+                title: 'Withdraw',
             },
             receiveCard: {
                 title: 'Receive',
@@ -2850,6 +2876,22 @@ export const messages = {
                     },
                     pendingTransactionConflict: {
                         title: 'Deposit was not submitted',
+                        description:
+                            'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                    },
+                },
+                withdraw: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
+                    pushTransactionFailed: {
+                        title: 'Withdraw was not submitted',
+                        description:
+                            'The withdraw transaction was signed but could not be submitted to the network.',
+                    },
+                    pendingTransactionConflict: {
+                        title: 'Withdraw was not submitted',
                         description:
                             'There is already a pending transaction for this account. Wait for it to finish before trying again.',
                     },

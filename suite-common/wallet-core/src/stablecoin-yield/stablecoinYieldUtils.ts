@@ -1,4 +1,6 @@
-import { Calldata } from '@suite-common/calldata';
+import { numberToHex, toWei } from 'web3-utils';
+
+import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import {
     type TransactionDto,
     TransactionDtoStatus,
@@ -7,14 +9,20 @@ import {
     parseUnsignedEvmTransaction,
 } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
+import {
+    asAmountUnit,
+    getContractAddressForNetworkSymbol,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import type {
+    YieldFlowDisplayToken,
     YieldFlowResolvedData,
     YieldFlowType,
     YieldPendingTransactionState,
+    YieldWithdrawInputUnit,
 } from './stablecoinYieldTypes';
 
 type TokenLike = {
@@ -60,12 +68,166 @@ type GetStablecoinYieldFlowKeyParams = {
     yieldId: string;
 };
 
+type EvmFeeLevel = {
+    baseFeePerGas?: string;
+    feePerUnit: string;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+};
+
+type BuildYieldWithdrawCalldataParams = {
+    amount: string;
+    flowData: YieldFlowResolvedData;
+    ownerAddress: EvmAddress;
+    receiverAddress: EvmAddress;
+    withdrawInputUnit: YieldWithdrawInputUnit;
+};
+
+type BuildYieldWithdrawUnsignedTransactionParams = {
+    chainId: number;
+    data: string;
+    feeLevel: EvmFeeLevel;
+    from: string;
+    gasLimit: string;
+    nonce: number;
+    to: string;
+};
+
+type BuildEvmFeeFieldsParams = {
+    feeLevel: EvmFeeLevel;
+    gasLimit: string;
+};
+
 export const getStablecoinYieldFlowKey = ({
     accountKey,
     tokenContract,
     yieldId,
 }: GetStablecoinYieldFlowKeyParams) =>
     `${accountKey}:${yieldId}:${tokenContract?.toLowerCase() ?? ''}`;
+
+export const getYieldWithdrawInputToken = ({
+    flowData,
+    withdrawInputUnit,
+}: {
+    flowData: YieldFlowResolvedData;
+    withdrawInputUnit: YieldWithdrawInputUnit;
+}): YieldFlowDisplayToken =>
+    withdrawInputUnit === 'shares' ? flowData.receiptToken : flowData.token;
+
+export const buildYieldWithdrawCalldata = ({
+    amount,
+    flowData,
+    ownerAddress,
+    receiverAddress,
+    withdrawInputUnit,
+}: BuildYieldWithdrawCalldataParams) => {
+    const isSharesInput = withdrawInputUnit === 'shares';
+    const inputToken = getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
+    const amountSubunits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(amount)),
+        decimals: inputToken.decimals,
+    });
+
+    const builderResult = isSharesInput
+        ? Calldata.evm.erc4626.redeem.encode(
+              {
+                  shares: amountSubunits,
+                  receiver: receiverAddress,
+                  owner: ownerAddress,
+              },
+              { sender: ownerAddress },
+          )
+        : Calldata.evm.erc4626.withdraw.encode(
+              {
+                  assets: amountSubunits,
+                  receiver: receiverAddress,
+                  owner: ownerAddress,
+              },
+              { sender: ownerAddress },
+          );
+
+    if (!builderResult.isValid || !builderResult.data) {
+        const issues = builderResult.errors.map(issue => issue.code).join(', ');
+
+        throw new Error(`Failed to encode withdraw calldata${issues ? `: ${issues}` : '.'}`);
+    }
+
+    return builderResult.data;
+};
+
+export const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
+    const commonFields = {
+        gasLimit: numberToHex(gasLimit),
+    };
+
+    if (feeLevel.maxFeePerGas && feeLevel.maxPriorityFeePerGas) {
+        return {
+            ...commonFields,
+            maxFeePerGas: numberToHex(toWei(feeLevel.maxFeePerGas, 'gwei')),
+            maxPriorityFeePerGas: numberToHex(toWei(feeLevel.maxPriorityFeePerGas, 'gwei')),
+        };
+    }
+
+    return {
+        ...commonFields,
+        gasPrice: numberToHex(toWei(feeLevel.feePerUnit, 'gwei')),
+    };
+};
+
+export const buildEvmSelectedFee = ({
+    feeLevel,
+    gasLimit,
+}: BuildEvmFeeFieldsParams): EvmSelectedFee => {
+    const feeFields = buildEvmFeeFields({ feeLevel, gasLimit });
+
+    if ('maxFeePerGas' in feeFields && 'maxPriorityFeePerGas' in feeFields) {
+        return {
+            type: 'eip1559',
+            ...feeFields,
+            baseFeePerGas: numberToHex(toWei(feeLevel.baseFeePerGas ?? '0', 'gwei')),
+        };
+    }
+
+    return {
+        type: 'legacy',
+        ...feeFields,
+    };
+};
+
+export const buildYieldWithdrawUnsignedTransaction = ({
+    chainId,
+    data,
+    feeLevel,
+    from,
+    gasLimit,
+    nonce,
+    to,
+}: BuildYieldWithdrawUnsignedTransactionParams) => {
+    const feeFields = buildEvmFeeFields({ feeLevel, gasLimit });
+    const commonFields = {
+        from,
+        to,
+        data,
+        value: '0x0',
+        nonce,
+        chainId,
+        gasLimit: feeFields.gasLimit,
+    };
+
+    if ('maxFeePerGas' in feeFields && 'maxPriorityFeePerGas' in feeFields) {
+        return {
+            ...commonFields,
+            type: 2,
+            maxFeePerGas: feeFields.maxFeePerGas,
+            maxPriorityFeePerGas: feeFields.maxPriorityFeePerGas,
+        };
+    }
+
+    return {
+        ...commonFields,
+        gasPrice: feeFields.gasPrice,
+    };
+};
 
 export const splitYieldPendingTransaction = (
     pendingTransaction: YieldPendingTransactionState | null,

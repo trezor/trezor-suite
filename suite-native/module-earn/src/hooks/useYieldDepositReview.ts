@@ -16,11 +16,15 @@ import type {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
-import { useYieldDepositReviewBackNavigation } from './useYieldDepositReviewBackNavigation';
-import { type YieldDepositReviewStatus, type YieldReviewSigningResult } from '../types';
+import {
+    type YieldReviewActionStatus,
+    type YieldReviewSigningResult,
+    type YieldReviewStatus,
+} from '../types';
 import { isUserCancelledSignError } from '../utils';
 import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
+import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
+import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
 
 type UseYieldDepositReviewParams = {
     flowData: YieldFlowResolvedData;
@@ -28,10 +32,8 @@ type UseYieldDepositReviewParams = {
     onReviewLeave?: () => void;
 };
 
-type YieldDepositReviewActionStatus = 'idle' | 'signing' | 'sending';
-
 type UseYieldDepositReviewResult = {
-    depositStatus: YieldDepositReviewStatus;
+    depositStatus: YieldReviewStatus;
     handleDepositSubmitted: () => Promise<void>;
     leaveReviewFromDeviceCancel: () => void;
     startDepositReview: () => Promise<YieldReviewSigningResult>;
@@ -54,18 +56,17 @@ export const useYieldDepositReview = ({
         showPushTransactionFailedAlert,
         showSignTransactionFailedAlert,
     } = useShowPushTransactionFailedDuringReviewAlert('yield-deposit');
-    const [depositActionStatus, setDepositActionStatus] =
-        useState<YieldDepositReviewActionStatus>('idle');
+    const [depositActionStatus, setDepositActionStatus] = useState<YieldReviewActionStatus>('idle');
     const txReview = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldTxReview(state),
     );
     const isDepositSigned = txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
-    const depositStatus: YieldDepositReviewStatus =
+    const depositStatus: YieldReviewStatus =
         depositActionStatus === 'idle' && isDepositSigned ? 'signed' : depositActionStatus;
     const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
-        useYieldDepositReviewBackNavigation({
-            depositStatus,
+        useYieldActionReviewBackNavigation({
             onReviewLeave,
+            reviewStatus: depositStatus,
         });
 
     const startDepositReview = useCallback(async (): Promise<YieldReviewSigningResult> => {
