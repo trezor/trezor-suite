@@ -45,10 +45,10 @@ const TradingScreenContent = () => {
     }
 
     return (
-        <VStack spacing="sp16" style={{ flex: 1 }}>
+        <VStack spacing="sp16" flex={1}>
             <TradingEnvironmentWarning />
             <Header />
-            <VStack spacing="sp16" paddingHorizontal="sp16" style={{ flex: 1 }}>
+            <VStack spacing="sp16" paddingHorizontal="sp16" flex={1}>
                 <TradingTabContent />
                 <HistoryButton />
                 <Footer />

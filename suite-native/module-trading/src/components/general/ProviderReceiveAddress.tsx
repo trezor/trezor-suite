@@ -16,6 +16,9 @@ import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { SkeletonSmall, TradeInfoRow } from '@suite-native/trading-atoms';
 
+const SKELETON_RECEIVE_ADDRESS_HEIGHT = 14;
+const SKELETON_RECEIVE_ADDRESS_SPACING = 12;
+
 export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellFiatTrade }) => {
     const { translate } = useTranslate();
     const tradeType = isExchangeTrade(trade) ? 'exchange' : 'sell';
@@ -64,7 +67,14 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
                 <VStack spacing="sp4">
                     <Text variant="body-sm">{addressTitle}</Text>
                     {receiveAddress ? (
-                        <AnimatedBox entering={FadeIn}>
+                        <AnimatedBox
+                            entering={FadeIn}
+                            style={{
+                                height:
+                                    SKELETON_RECEIVE_ADDRESS_HEIGHT * 2 +
+                                    SKELETON_RECEIVE_ADDRESS_SPACING,
+                            }}
+                        >
                             <AddressFormatter
                                 value={receiveAddress}
                                 format="full"
@@ -74,8 +84,14 @@ export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellF
                         </AnimatedBox>
                     ) : (
                         <VStack spacing="sp12" testID="@trading/provider-receive-address-skeleton">
-                            <SkeletonSmall widthPercentage={0.8} height={14} />
-                            <SkeletonSmall widthPercentage={0.3} height={14} />
+                            <SkeletonSmall
+                                widthPercentage={0.8}
+                                height={SKELETON_RECEIVE_ADDRESS_HEIGHT}
+                            />
+                            <SkeletonSmall
+                                widthPercentage={0.3}
+                                height={SKELETON_RECEIVE_ADDRESS_HEIGHT}
+                            />
                         </VStack>
                     )}
                 </VStack>

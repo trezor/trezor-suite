@@ -7,12 +7,14 @@ export type SkeletonRowProps = {
     rightWidthPercentage: number;
 };
 
+const CONTENT_HEIGHT = 46;
+
 export const SkeletonLargeRow = ({
     leftWidthPercentage,
     rightWidthPercentage,
 }: SkeletonRowProps) => (
     <HStack justifyContent="space-between" alignItems="center">
-        <SkeletonLarge widthPercentage={leftWidthPercentage} height={46} />
-        <SkeletonLarge widthPercentage={rightWidthPercentage} height={46} />
+        <SkeletonLarge widthPercentage={leftWidthPercentage} height={CONTENT_HEIGHT} />
+        <SkeletonLarge widthPercentage={rightWidthPercentage} height={CONTENT_HEIGHT} />
     </HStack>
 );
