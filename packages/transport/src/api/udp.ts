@@ -29,6 +29,7 @@ export class UdpApi extends AbstractApi {
     });
     private debugLink?: boolean;
     private readBuffer: ReturnType<typeof readMessageBuffer>;
+    private openedDevices = new Set<string>();
 
     constructor({
         logger,
@@ -44,7 +45,9 @@ export class UdpApi extends AbstractApi {
             }
 
             const id = `${info.address}:${info.port}`;
-            this.readBuffer.onMessage(id, message);
+            if (this.openedDevices.has(id)) {
+                this.readBuffer.onMessage(id, message);
+            }
             this.logger?.debug('udp: globalOnMessage log:', message.toString('hex'));
         };
         this.interface.addListener('message', onMessage);
@@ -200,7 +203,10 @@ export class UdpApi extends AbstractApi {
             this.devices,
             device => !devices.some(d => d.path === device.path),
         );
-        disconnected.forEach(d => this.readBuffer.cancelRead(d.path));
+        disconnected.forEach(({ path }) => {
+            this.openedDevices.delete(path);
+            this.readBuffer.cancelRead(path);
+        });
 
         if (known.length !== this.devices.length || unknown.length > 0) {
             this.devices = devices;
@@ -210,12 +216,15 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public openDevice(...[_path]: AbstractApiArgs<'openDevice'>) {
+    public openDevice(...[path]: AbstractApiArgs<'openDevice'>) {
         // todo: maybe ping?
+        this.openedDevices.add(path);
+
         return Promise.resolve(success(undefined));
     }
 
     public closeDevice(...[path]: AbstractApiArgs<'closeDevice'>) {
+        this.openedDevices.delete(path);
         this.readBuffer.cancelRead(path);
 
         return Promise.resolve(success(undefined));
