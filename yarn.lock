@@ -10471,9 +10471,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/fee@workspace:suite-common/fee":
+"@suite-common/fee@workspace:*, @suite-common/fee@workspace:suite-common/fee":
   version: 0.0.0-use.local
   resolution: "@suite-common/fee@workspace:suite-common/fee"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
   languageName: unknown
   linkType: soft
 
@@ -14598,9 +14605,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/fee@workspace:suite/fee":
+"@suite/fee@workspace:*, @suite/fee@workspace:suite/fee":
   version: 0.0.0-use.local
   resolution: "@suite/fee@workspace:suite/fee"
+  dependencies:
+    "@suite-common/fee": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/external-links": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-hook-form: "npm:^7.71.2"
+    styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
 
@@ -16615,6 +16636,7 @@ __metadata:
     "@suite-common/earn-stablecoin": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/fee": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -16668,6 +16690,7 @@ __metadata:
     "@suite/experimental": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/feature-feedback": "workspace:*"
+    "@suite/fee": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/github": "workspace:*"

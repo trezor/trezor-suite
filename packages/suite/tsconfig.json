@@ -56,6 +56,7 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        { "path": "../../suite-common/fee" },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"
@@ -170,6 +171,7 @@
         { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
+        { "path": "../../suite/fee" },
         {
             "path": "../../suite/feature-feedback"
         },

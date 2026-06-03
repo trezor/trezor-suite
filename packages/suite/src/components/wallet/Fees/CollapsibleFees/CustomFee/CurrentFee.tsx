@@ -1,11 +1,10 @@
 import { Translation } from '@suite/intl';
+import { useFeesContext } from '@suite-common/fee';
 import { type FeeInfo } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-
-import { useFeesContext } from '../../context/FeesContext';
 
 const getCurrentFeeRate = (feeInfo: FeeInfo) => {
     const { levels } = feeInfo;

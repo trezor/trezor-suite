@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
+import { FeeCard, FeeCardsWrapper, feeLevelTranslationMap } from '@suite/fee';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
+import { type FeeOptionType, useFeesContext } from '@suite-common/fee';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -14,12 +16,6 @@ import { spacings } from '@trezor/theme';
 import { BaseCurrencyValue } from 'src/components/suite';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useLocales, useSelector } from 'src/hooks/suite';
-
-import { FeeCard } from './FeeCard';
-import { FeeCardsWrapper } from './StandardFee.styles';
-import { feeLevelTranslationMap } from './constants';
-import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
-import { useFeesContext } from '../../context/FeesContext';
 
 type EthereumFeeCardsProps = {
     feeOptions: FeeOptionType[];

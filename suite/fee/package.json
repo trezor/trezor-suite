@@ -10,5 +10,20 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/fee": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite/external-links": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react": "19.2.4",
+        "react-hook-form": "^7.71.2",
+        "styled-components": "^6.3.9"
     }
 }

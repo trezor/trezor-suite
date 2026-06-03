@@ -1,16 +1,12 @@
+import { FeeCard, FeeCardsWrapper, feeLevelTranslationMap } from '@suite/fee';
 import { Translation } from '@suite/intl';
+import { type FeeOptionType, useFeesContext } from '@suite-common/fee';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-
-import { FeeCard } from './FeeCard';
-import { FeeCardsWrapper } from './StandardFee.styles';
-import { feeLevelTranslationMap } from './constants';
-import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
-import { useFeesContext } from '../../context/FeesContext';
 
 type MiscFeeCardsProps = {
     feeOptions: FeeOptionType[];

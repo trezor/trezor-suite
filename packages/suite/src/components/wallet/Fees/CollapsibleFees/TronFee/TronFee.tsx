@@ -1,5 +1,6 @@
 import { useWatch } from 'react-hook-form';
 
+import { useFeesContext } from '@suite-common/fee';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
@@ -10,7 +11,6 @@ import { BigNumber } from '@trezor/utils';
 import { useSelector } from 'src/hooks/suite';
 
 import { TronFeeContent } from './TronFeeContent';
-import { useFeesContext } from '../../context/FeesContext';
 
 type TronFeeProps = {
     typographyStyle: TypographyStyle;

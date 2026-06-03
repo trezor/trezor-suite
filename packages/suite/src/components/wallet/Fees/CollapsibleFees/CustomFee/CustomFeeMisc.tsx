@@ -1,7 +1,9 @@
 import { type FieldPath, useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import { type CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from '@suite/fee';
 import { selectLanguage } from '@suite/settings';
+import { useFeesContext } from '@suite-common/fee';
 import { type FormState } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
@@ -9,10 +11,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
-import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
 import { DustPreventionNotice } from '../../DustPreventionNotice';
-import { useFeesContext } from '../../context/FeesContext';
 
 export const CustomFeeMisc = ({
     composedFeePerByte,

@@ -1,10 +1,10 @@
+import { FieldErrorBanner } from '@suite/fee';
 import { Column } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';
 
 import { CollapsibleFees, type CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
 import { useFetchFees } from './CollapsibleFees/hooks/useFetchFees';
-import { FieldErrorBanner } from './FieldErrorBanner';
 
 export type FeesProps = {
     account: Pick<Account, 'symbol' | 'networkType' | 'misc'>;

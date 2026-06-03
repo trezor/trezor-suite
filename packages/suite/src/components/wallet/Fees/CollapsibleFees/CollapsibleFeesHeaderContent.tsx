@@ -1,12 +1,11 @@
 import { type TranslationKey } from '@suite/intl';
+import { useFeesContext, type useTransactionMaxFee } from '@suite-common/fee';
 import { Collapsible, Row } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { CollapsibleFeesHeader } from './CollapsibleFeesHeader';
 import { MaximumFee } from './MaximumFee';
 import { TronFee } from './TronFee/TronFee';
-import { useFeesContext } from '../context/FeesContext';
-import { type useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesHeaderContentProps = {
     label?: TranslationKey;
