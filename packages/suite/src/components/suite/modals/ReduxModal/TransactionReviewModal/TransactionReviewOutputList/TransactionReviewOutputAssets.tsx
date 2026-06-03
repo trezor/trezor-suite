@@ -4,7 +4,6 @@ import { type CryptoId } from 'invity-api';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
-import { selectLanguage } from '@suite/settings';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -44,10 +43,9 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
     type,
 }: TransactionReviewOutputAssetsCryptoCurrencyProps) => {
     const { symbol, contractAddress, amount } = cryptoCurrency;
-    const locale = useSelector(selectLanguage);
     const network = getNetwork(symbol);
     const isTokenAmount = !!cryptoCurrency.contractAddress;
-    const formattedAmount = localizeNumber(amount, locale);
+    const formattedAmount = localizeNumber(amount, 'en-US');
 
     const cryptoId = contractAddress
         ? toTokenCryptoId(symbol, contractAddress)
@@ -58,25 +56,30 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             : network.displaySymbol,
     );
 
-    const getCoinLogo = () =>
-        isCoinSymbol(symbol) ? (
-            <CoinLogo size={20} symbol={symbol} type="tokenWithNetwork" />
-        ) : null;
+    const renderAssetLogo = () => {
+        if (contractAddress) {
+            return (
+                <AssetLogo
+                    size={20}
+                    symbol={symbol}
+                    contractAddress={contractAddress}
+                    placeholder={displaySymbol ?? ''}
+                />
+            );
+        }
+
+        if (isCoinSymbol(symbol)) {
+            return <CoinLogo size={20} symbol={symbol} type="tokenWithNetwork" />;
+        }
+
+        return null;
+    };
 
     return (
         <InfoItem
             label={
                 <Row alignItems="center" gap={12} margin={{ left: 32 }}>
-                    {network.coingeckoId ? (
-                        <AssetLogo
-                            size={20}
-                            symbol={symbol}
-                            contractAddress={contractAddress}
-                            placeholder={displaySymbol ?? ''}
-                        />
-                    ) : (
-                        getCoinLogo()
-                    )}
+                    {renderAssetLogo()}
                     <Text
                         intent={type === 'receive' ? 'brand' : 'critical'}
                         data-testid={`@modal/assets/${type}/crypto`}
@@ -118,7 +121,7 @@ const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAss
                         intent="brand"
                         data-testid="@modal/assets/receive/label"
                     >
-                        + {receive.amount} {receive.fiatCurrency}
+                        + {localizeNumber(receive.amount, 'en-US')} {receive.fiatCurrency}
                     </Text>
                 }
                 data-testid="@modal/assets/receive"
