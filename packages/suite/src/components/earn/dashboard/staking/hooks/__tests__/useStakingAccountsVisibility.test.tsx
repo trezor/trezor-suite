@@ -59,7 +59,7 @@ describe('useStakingAccountsVisibility', () => {
                         createMockAccount({
                             key: 'eth-0' as Account['key'],
                             symbol: 'eth',
-                            formattedBalance: '0.01',
+                            formattedBalance: '0.005',
                         }),
                         createMockAccount({
                             key: 'sol-0' as Account['key'],
