@@ -12,6 +12,7 @@ on:
   pull_request:
     branches:
       - develop
+      - test/e2e-workflow-staging # temporary: remove before merging to develop
     paths-ignore:
       - "suite-native/**"
       - "packages/react-native-usb/**"
