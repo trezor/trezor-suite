@@ -49,7 +49,7 @@ const config: webpack.Configuration = {
         fallback: {
             // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
             crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
-            stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
+            stream: require.resolve('stream-browserify'), // required by jws (@trezor/connect firmware-signature verification) and the crypto-browserify chain (cipher-base, hash-base)
             vm: require.resolve('vm-browserify'), // ignore "vm" imports in "asn1.js@4.10.1" > crypto-browserify"
             util: require.resolve('util'), // required by "xrpl.js"
             assert: require.resolve('assert'), // required by multiple dependencies
