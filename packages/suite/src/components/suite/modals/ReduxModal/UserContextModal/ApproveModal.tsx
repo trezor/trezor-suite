@@ -29,7 +29,7 @@ import { CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
-import { AccountLabeling } from 'src/components/suite/labeling';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

@@ -9,7 +9,7 @@ import { Button, Column, Spinner, Text } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { AccountLabeling } from 'src/components/suite';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';

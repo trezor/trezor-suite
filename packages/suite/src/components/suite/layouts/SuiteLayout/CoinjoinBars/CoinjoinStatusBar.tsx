@@ -9,7 +9,7 @@ import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { WalletLabeling } from 'src/components/suite/labeling';
+import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';

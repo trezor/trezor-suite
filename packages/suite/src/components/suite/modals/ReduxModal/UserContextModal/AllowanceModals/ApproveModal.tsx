@@ -11,7 +11,7 @@ import { CoinLogo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { borders } from '@trezor/theme';
 
-import { AccountLabeling } from 'src/components/suite/labeling';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 

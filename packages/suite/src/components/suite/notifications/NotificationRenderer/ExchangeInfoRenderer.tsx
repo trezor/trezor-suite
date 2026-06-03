@@ -8,7 +8,7 @@ import type { NotificationRendererProps } from 'src/components/suite/notificatio
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
-import { AccountLabeling } from '../../labeling';
+import { AccountLabeling } from '../../labeling/AccountLabeling';
 
 type ExchangeInfoRendererProps = Omit<NotificationViewProps, 'messageValues'> &
     NotificationRendererProps<'tx-exchange'>;

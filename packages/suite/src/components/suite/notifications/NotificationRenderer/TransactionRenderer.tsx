@@ -24,7 +24,7 @@ import {
 } from '@trezor/product-components';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { AccountLabeling } from 'src/components/suite/labeling';
+import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useDispatch, useSelector } from 'src/hooks/suite';
