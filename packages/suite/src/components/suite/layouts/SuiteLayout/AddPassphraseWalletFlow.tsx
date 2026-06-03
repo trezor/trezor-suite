@@ -17,6 +17,10 @@ export const AddPassphraseWalletFlow = () => {
         device?.path ? selectDiscoveryByDevicePath(state, device.path) : undefined,
     );
 
+    // `isAddingHiddenWallet` is the discovery-state flag that marks this run as an
+    // add-passphrase-wallet flow (set in startDiscovery), as opposed to a standard or
+    // background discovery. Together with `useScopedCallIds` it's how we know to mount
+    // the passphrase modal for *this* run only.
     const isActive =
         !!device &&
         discovery?.useScopedCallIds === true &&
