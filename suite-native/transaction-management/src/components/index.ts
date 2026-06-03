@@ -7,3 +7,4 @@ export * from './SlidingFooterOverlay';
 export * from './SignSuccessMessage';
 export * from './TxValidityTimer';
 export * from './fees';
+export type { ReviewOutputItemContentDataProps } from './ReviewOutputItemList/ReviewOutputItemContent';
