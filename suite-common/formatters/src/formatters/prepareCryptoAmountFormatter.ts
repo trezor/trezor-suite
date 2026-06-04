@@ -1,5 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import {
     type NetworkSymbol,
@@ -12,7 +13,6 @@ import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     localizeNumber,
-    redactNumericalSubstring,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 

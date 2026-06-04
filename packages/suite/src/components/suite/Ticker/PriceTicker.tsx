@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TokenAddress } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 import { LastUpdateTooltip } from './LastUpdateTooltip';
 import { NoRatesTooltip } from './NoRatesTooltip';

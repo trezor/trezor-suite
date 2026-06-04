@@ -1,4 +1,4 @@
-import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 

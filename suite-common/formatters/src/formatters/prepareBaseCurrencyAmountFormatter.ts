@@ -2,13 +2,9 @@ import { type IntlShape } from 'react-intl';
 
 import { type FormatNumberOptions } from '@formatjs/intl';
 
+import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import {
-    asAmountUnit,
-    isBaseCurrencyWithSats,
-    redactNumericalSubstring,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
+import { asAmountUnit, isBaseCurrencyWithSats, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';

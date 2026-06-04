@@ -1,5 +1,5 @@
 import { useTranslation } from '@suite/intl';
-import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/discreet-mode';
 import { QuickActionButton } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

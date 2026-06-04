@@ -1,8 +1,7 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
-
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 type YieldRewardItemProps = {
     formattedAmount: string;

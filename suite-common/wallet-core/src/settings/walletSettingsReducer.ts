@@ -1,5 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
+import { type SetDiscreetModeAction } from '@suite-common/discreet-mode';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
@@ -67,7 +68,7 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
         );
         builder.addCase(
             WALLET_SETTINGS.SET_HIDE_BALANCE,
-            (state, action: walletSettingsActions.SetHideBalanceAction) => {
+            (state, action: SetDiscreetModeAction) => {
                 state.discreetMode = action.toggled;
             },
         );
@@ -120,8 +121,6 @@ export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
     returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
 export const selectBaseCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
-export const selectIsDiscreteModeActive = (state: WalletSettingsRootState) =>
-    state.wallet.settings.discreetMode;
 export const selectIsHideSuspiciousTransactions = (state: WalletSettingsRootState) =>
     state.wallet.settings.hideSuspiciousTransactions;
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>

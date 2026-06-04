@@ -3,6 +3,7 @@ import { type JSX, type ReactElement } from 'react';
 import type { FormatNumberOptions } from '@formatjs/intl';
 import styled from 'styled-components';
 
+import { HiddenPlaceholder, type HiddenPlaceholderProps } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
@@ -14,12 +15,9 @@ import {
 import { SkeletonRectangle } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-
-import { type HiddenPlaceholderProps } from './HiddenPlaceholder';
 
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
 const SameWidthNums = styled.span<HiddenPlaceholderProps>`

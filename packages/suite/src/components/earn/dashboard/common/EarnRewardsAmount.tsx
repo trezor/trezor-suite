@@ -1,10 +1,9 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { H4, type TextProps } from '@trezor/components';
-
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 type EarnRewardsAmountProps = {
     symbol: NetworkSymbol | TokenSymbol;

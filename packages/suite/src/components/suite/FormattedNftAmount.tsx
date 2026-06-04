@@ -1,3 +1,4 @@
+import { RedactNumericalValue } from '@suite/discreet-mode';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { type SignValue } from '@suite-common/suite-types';
@@ -11,8 +12,6 @@ import { type TypographyStyle, spacings } from '@trezor/theme';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
-
-import { RedactNumericalValue } from './RedactNumericalValue';
 
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
