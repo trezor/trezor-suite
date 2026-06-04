@@ -8,5 +8,5 @@ export const formatApyValue = (apy?: number | null) => {
         return <Translation id="TR_EARN_APY_N_A" />;
     }
 
-    return `${apy}`;
+    return `${Math.round(apy * 100) / 100}`;
 };
