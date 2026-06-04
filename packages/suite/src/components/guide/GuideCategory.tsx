@@ -61,6 +61,7 @@ export const GuideCategory = () => {
                         key={subcategory.id}
                         node={subcategory}
                         label={getNodeTitle(subcategory, language)}
+                        variant="cardList"
                     />
                 ))}
             </GuideContent>

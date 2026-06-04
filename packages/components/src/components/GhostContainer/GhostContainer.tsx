@@ -1,5 +1,7 @@
 import { type HTMLProps } from 'react';
 
+import { type Color } from '@trezor/theme';
+
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -34,6 +36,7 @@ type GhostContainerProps = AllowedGhostContainerFrameProps &
         children: React.ReactNode;
         isDisabled?: boolean;
         isActive?: boolean;
+        backgroundColorOnInteraction?: Color;
         as?: React.ElementType;
         'data-testid'?: string;
     };
@@ -41,6 +44,7 @@ type GhostContainerProps = AllowedGhostContainerFrameProps &
 export const GhostContainer = ({
     isDisabled,
     isActive,
+    backgroundColorOnInteraction = 'elementFillGhostHovered',
     onClick,
     children,
     'data-testid': dataTestId,
@@ -57,7 +61,7 @@ export const GhostContainer = ({
             onClick={isDisabled ? undefined : onClick}
             backgroundColor={isActive ? 'elementFillElevated' : 'transparent'}
             backgroundColorOnInteraction={
-                isActive || isDisabled ? undefined : 'elementFillGhostHovered'
+                isActive || isDisabled ? undefined : backgroundColorOnInteraction
             }
             as={as}
             data-testid={dataTestId}

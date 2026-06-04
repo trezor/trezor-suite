@@ -46,7 +46,7 @@ export const Guide = () => {
                         <GuideItem
                             onClick={handleFeedbackButtonClick}
                             data-testid="@guide/button-feedback"
-                            icon={<IconCircle name="lifebuoy" size={40} intent="neutral" />}
+                            icon={<IconCircle name="lifebuoy" size={32} intent="neutral" />}
                         >
                             <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                         </GuideItem>

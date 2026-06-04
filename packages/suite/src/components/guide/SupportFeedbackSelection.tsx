@@ -75,7 +75,7 @@ export const SupportFeedbackSelection = () => {
                         <GuideItem
                             onClick={handleBugButtonClick}
                             data-testid="@guide/feedback/bug"
-                            icon={<IconCircle name="lifebuoy" size={40} intent="neutral" />}
+                            icon={<IconCircle name="lifebuoy" size={32} intent="neutral" />}
                         >
                             <Column gap={4} justifyContent="space-between">
                                 <Translation id="TR_BUG" />
@@ -91,7 +91,7 @@ export const SupportFeedbackSelection = () => {
                         <GuideItem
                             onClick={handleFeedbackButtonClick}
                             data-testid="@guide/feedback/suggestion"
-                            icon={<IconCircle name="megaphone" size={40} intent="neutral" />}
+                            icon={<IconCircle name="megaphone" size={32} intent="neutral" />}
                         >
                             <Column gap={4} justifyContent="space-between">
                                 <Translation id="TR_SUGGESTION" />
