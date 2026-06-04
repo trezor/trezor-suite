@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
+import {
+    type AccountsRootState,
+    createTargets,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -50,6 +56,9 @@ export const TransactionDetailScreen = ({
     });
 
     useFetchMissingTransactionFiatRates({ accountKey, isEnabled: !!transaction });
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
 
     useEffect(() => {
         if (transaction) {
@@ -85,6 +94,8 @@ export const TransactionDetailScreen = ({
         });
         openInBlockchain();
     };
+
+    const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
     return (
         <Screen
@@ -131,6 +142,7 @@ export const TransactionDetailScreen = ({
                     <TransactionDetailHeader
                         transaction={transaction}
                         tokenTransfer={tokenTransfer}
+                        allOutputs={allOutputs}
                     />
                     {isUnstakeTransaction && (
                         <InstantStakeBanner accountKey={accountKey} transaction={transaction} />

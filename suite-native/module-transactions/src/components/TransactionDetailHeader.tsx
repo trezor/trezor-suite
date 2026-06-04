@@ -1,6 +1,11 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import {
+    type FiatRatesRootState,
+    type Target,
+    type WalletSettingsRootState,
+} from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
 import {
@@ -15,14 +20,15 @@ import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-n
 import {
     TransactionIcon,
     getTransactionValueSign,
-    getUnstakeTxAmount,
     selectTransactionFiatRate,
 } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { BigNumber } from '@trezor/utils';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
     tokenTransfer?: TypedTokenTransfer;
+    allOutputs: Target[];
 };
 
 const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
@@ -41,6 +47,7 @@ const fiatValueStyle = prepareNativeStyle(utils => ({
 export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
+    allOutputs,
 }: TransactionDetailHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
@@ -55,7 +62,22 @@ export const TransactionDetailHeader = ({
     const isTokenOnlyTransaction = transaction.amount === '0' && transaction.tokens.length !== 0;
     const firstToken = transaction.tokens[0];
     const txType = isTokenOnlyTransaction && firstToken ? firstToken.type : type;
-    const isUnstakeTx = getUnstakeTxAmount(transaction) !== undefined;
+    const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
+
+    const totalOutputAmount = useMemo(() => {
+        let sum = new BigNumber(0);
+
+        for (const target of allOutputs) {
+            if (isSolanaUnstakeTx) continue;
+            if (target.type === 'target') {
+                sum = sum.plus(new BigNumber(transaction.amount));
+            } else if (['internal', 'token'].includes(target.type)) {
+                sum = sum.plus(new BigNumber(target.payload.amount));
+            }
+        }
+
+        return sum.toString();
+    }, [allOutputs, isSolanaUnstakeTx, transaction.amount]);
 
     return (
         <DiscreetTextTrigger>
@@ -77,7 +99,7 @@ export const TransactionDetailHeader = ({
                         )
                     )}
 
-                    {!isUnstakeTx && (
+                    {!isSolanaUnstakeTx && (
                         <Box flexDirection="row">
                             {!isFailedTx && (
                                 <SignValueFormatter
@@ -100,7 +122,7 @@ export const TransactionDetailHeader = ({
                                 />
                             ) : (
                                 <CryptoAmountFormatter
-                                    value={transaction.amount}
+                                    value={totalOutputAmount}
                                     symbol={transaction.symbol}
                                     isBalance={false}
                                     variant="headline-md"
@@ -114,7 +136,7 @@ export const TransactionDetailHeader = ({
                     )}
                 </VStack>
 
-                {!isUnstakeTx && historicRate !== undefined && historicRate !== 0 && (
+                {!isSolanaUnstakeTx && historicRate !== undefined && historicRate !== 0 && (
                     <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
                         <Text color="contentSecondary">≈ </Text>
                         {tokenTransfer ? (
@@ -130,7 +152,7 @@ export const TransactionDetailHeader = ({
                             />
                         ) : (
                             <CryptoToFiatAmountFormatter
-                                value={transaction.amount}
+                                value={totalOutputAmount}
                                 symbol={transaction.symbol}
                                 historicRate={historicRate}
                                 color="contentSecondary"
