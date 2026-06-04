@@ -1,6 +1,7 @@
-import type { Analytics, Event as AnalyticsEvent } from '../src';
+import type { Analytics } from '../src/analytics';
+import { Event } from '../src/types';
 
-export const mockAnalytics = <T extends AnalyticsEvent>(
+export const mockAnalytics = <T extends Event>(
     report: Analytics<T>['report'] = () => {},
 ): Analytics<T> => ({
     init: () => {},
