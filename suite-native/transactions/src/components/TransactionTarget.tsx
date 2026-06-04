@@ -24,13 +24,14 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { selectTransactionFiatRate } from '../selectors';
+import { getTransactionValueSign } from '../utils';
 
 type TransactionListItemValuesProps = {
     accountKey: AccountKey;
     transaction: WalletAccountTransaction;
     isPhishingTransaction: boolean;
     amount: string;
-    operation: SignOperator | null;
+    operation?: SignOperator | null;
 };
 
 const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
@@ -42,7 +43,7 @@ const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailed
     },
 }));
 
-const TransactionListItemValues = ({
+export const TransactionListItemValues = ({
     accountKey,
     transaction,
     isPhishingTransaction,
@@ -59,6 +60,7 @@ const TransactionListItemValues = ({
         selectTransactionFiatRate(state, transaction),
     );
     const isFailedTx = transaction.type === 'failed';
+    const sign = operation || getTransactionValueSign(transaction.type);
 
     return (
         <VStack spacing="sp4" alignItems="flex-end">
@@ -66,9 +68,7 @@ const TransactionListItemValues = ({
                 <EmptyAmountText />
             ) : (
                 <Box flexDirection="row">
-                    {!isFailedTx && !isPhishingTransaction && (
-                        <SignValueFormatter value={operation} />
-                    )}
+                    {!isFailedTx && !isPhishingTransaction && <SignValueFormatter value={sign} />}
                     <CryptoToFiatAmountFormatter
                         value={amount}
                         symbol={transaction.symbol}

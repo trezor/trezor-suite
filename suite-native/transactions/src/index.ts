@@ -8,6 +8,7 @@ export * from './components/TokenTransferListItem';
 export * from './components/TransactionListItem';
 export * from './components/TransactionListItemContainer';
 export * from './hooks/useFetchMissingTransactionFiatRates';
+export * from './components/TransactionTarget';
 export * from './selectors';
 export type * from './types';
 export * from './utils';

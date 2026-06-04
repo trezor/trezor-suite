@@ -19,6 +19,7 @@ type TransactionDetailIncludedCoinsProps = {
     accountKey: AccountKey;
     transaction: WalletAccountTransaction;
     tokenTransfer?: TypedTokenTransfer;
+    isPhishingTransaction: boolean;
 };
 
 const isSameTokenTransfer = (
@@ -56,6 +57,7 @@ export const TransactionDetailIncludedCoins = ({
     accountKey,
     transaction,
     tokenTransfer,
+    isPhishingTransaction,
 }: TransactionDetailIncludedCoinsProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
@@ -95,9 +97,11 @@ export const TransactionDetailIncludedCoins = ({
                         onPress={closeModal}
                         accountKey={accountKey}
                         transaction={transaction}
+                        isPhishingTransaction={isPhishingTransaction}
                         isFirst
                     />
                 )}
+
                 {includedTokens.map((token, index) => (
                     <TransactionDetailListItem
                         onPress={closeModal}
@@ -105,6 +109,7 @@ export const TransactionDetailIncludedCoins = ({
                         accountKey={accountKey}
                         transaction={transaction}
                         tokenTransfer={token}
+                        isPhishingTransaction={isPhishingTransaction}
                         isFirst={!isEthereumCoinDisplayed && index === 0}
                         isLast={index === includedTokens.length - 1}
                     />

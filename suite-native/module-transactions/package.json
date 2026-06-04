@@ -40,6 +40,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-reanimated": "4.3.1",
