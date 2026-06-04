@@ -42,6 +42,7 @@ describe('useMaxSpendableAmount', () => {
         accountKey,
         tokenContract,
         formState,
+        symbol,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
         renderHookWithStoreProvider(
             () =>
@@ -49,6 +50,7 @@ describe('useMaxSpendableAmount', () => {
                     accountKey,
                     tokenContract,
                     formState,
+                    symbol,
                 }),
             {
                 preloadedState: {
@@ -79,7 +81,7 @@ describe('useMaxSpendableAmount', () => {
     });
 
     it('should keep max spendable amount undefined without account key', () => {
-        const { result } = renderUseMaxSpendableAmount({});
+        const { result } = renderUseMaxSpendableAmount({ symbol: null });
 
         expect(result.current.maxSpendableAmount).toBeUndefined();
         expect(mockCalculateFeeLevelsMaxAmountThunk).not.toHaveBeenCalled();
@@ -89,6 +91,7 @@ describe('useMaxSpendableAmount', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: ethAccountKey,
             tokenContract: usdcTokenContract,
+            symbol: 'etc',
         });
 
         await waitFor(() => {
@@ -102,6 +105,7 @@ describe('useMaxSpendableAmount', () => {
         mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
+            symbol: 'btc',
         });
 
         await waitFor(() => {
@@ -115,6 +119,7 @@ describe('useMaxSpendableAmount', () => {
         renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             formState: customFormState,
+            symbol: 'btc',
         });
 
         await waitFor(() => {
@@ -133,6 +138,7 @@ describe('useMaxSpendableAmount', () => {
 
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
+            symbol: 'btc',
         });
 
         await waitFor(() => {
@@ -143,6 +149,7 @@ describe('useMaxSpendableAmount', () => {
     it('should skip native asset calculation when calculation is disabled', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
+            symbol: 'btc',
             enabled: false,
         });
 

@@ -25,11 +25,12 @@ import { SendMaxSwitch } from './SendMaxSwitch';
 
 type AmountInputProps = {
     index: number;
+    maxSpendableAmount?: string;
 };
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendOutputs>['route'];
 
-export const AmountInputs = ({ index }: AmountInputProps) => {
+export const AmountInputs = ({ index, maxSpendableAmount }: AmountInputProps) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
@@ -61,6 +62,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                     outputIndex={index}
                     accountKey={accountKey}
                     tokenContract={tokenContract}
+                    maxSpendableAmount={maxSpendableAmount}
                 />
             </HStack>
             {shallDisplayBaseCurrency ? (

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Keyboard } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -16,22 +15,24 @@ import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useMaxSpendableAmount } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
 
-import { useUtxoSelection } from '../hooks/useUtxoSelection';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
-import { constructFormDraft, getOutputFieldName } from '../utils';
+import { getOutputFieldName } from '../utils';
 
 type SendMaxSwitchProps = {
     outputIndex: number;
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    maxSpendableAmount?: string;
 };
 
-export const SendMaxSwitch = ({ outputIndex, accountKey, tokenContract }: SendMaxSwitchProps) => {
-    const { selectedUtxos } = useUtxoSelection(accountKey);
-
+export const SendMaxSwitch = ({
+    outputIndex,
+    accountKey,
+    tokenContract,
+    maxSpendableAmount,
+}: SendMaxSwitchProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -49,42 +50,24 @@ export const SendMaxSwitch = ({ outputIndex, accountKey, tokenContract }: SendMa
 
     const [outputs, setMaxOutputId] = watch(['outputs', 'setMaxOutputId']);
 
-    const formState = useMemo(
-        () =>
-            constructFormDraft({
-                formValues: {
-                    outputs,
-                    setMaxOutputId,
-                },
-                selectedUtxos,
-            }),
-        [selectedUtxos, outputs, setMaxOutputId],
-    );
-
     const isMainnetSendMaxAvailable = !tokenContract && outputs.length === 1;
     const isSendMaxAvailable = tokenContract || isMainnetSendMaxAvailable;
 
     const isSendMaxEnabled = setMaxOutputId === outputIndex;
 
-    const { maxSpendableAmount: maxAmountValue } = useMaxSpendableAmount({
-        accountKey,
-        tokenContract,
-        formState,
-        enabled: !!isSendMaxAvailable,
-    });
-    const isSendMaxVisible = isSendMaxAvailable && !!maxAmountValue;
+    const isSendMaxVisible = isSendMaxAvailable && !!maxSpendableAmount;
 
     const enableSendMax = () => {
-        if (!maxAmountValue) return;
+        if (!maxSpendableAmount) return;
 
         setValue('setMaxOutputId', outputIndex);
 
-        setValue(getOutputFieldName(outputIndex, 'amount'), maxAmountValue, {
+        setValue(getOutputFieldName(outputIndex, 'amount'), maxSpendableAmount, {
             shouldValidate: true,
             shouldTouch: true,
         });
 
-        const fiatValue = converters?.convertCryptoToFiat(new BigNumber(maxAmountValue));
+        const fiatValue = converters?.convertCryptoToFiat(new BigNumber(maxSpendableAmount));
         if (fiatValue && decimals !== null) {
             setValue(
                 getOutputFieldName(outputIndex, 'fiat'),
