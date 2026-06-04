@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Animated, { LinearTransition, SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -7,15 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import {
-    AnimatedBox,
-    AnimatedInlineAlertBox,
-    Box,
-    Button,
-    ScreenFooterGradient,
-    VStack,
-} from '@suite-native/atoms';
-import { Form, type UseFormReturn, useForm, useWatch } from '@suite-native/forms';
+import { AnimatedBox, AnimatedInlineAlertBox, VStack } from '@suite-native/atoms';
+import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     type AuthorizeDeviceStackParamList,
@@ -30,40 +23,18 @@ import {
 
 import {
     type CoinEnablingFormValues,
-    coinEnablingFormValidationSchema,
     getNetworkSymbolsFromEnabledCoins,
-} from '../coinEnablingSchema';
+} from '../coinEnablingFormUtils';
+import { coinEnablingFormValidationSchema } from '../coinEnablingSchema';
+import { CoinEnablingInitFooter } from '../components/CoinEnablingInitFooter';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
+import { useHasEnabledCoin } from '../hooks/useHasEnabledCoin';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes.CoinEnablingInit,
     RootStackParamList
 >;
-
-type CoinEnablingInitFooterProps = {
-    onSubmit: () => void;
-};
-
-const useHasEnabledCoin = (control: UseFormReturn<CoinEnablingFormValues>['control']) =>
-    useWatch({
-        control,
-        name: 'enabledCoins',
-        defaultValue: {},
-        compute: (enabledCoins: CoinEnablingFormValues['enabledCoins']) =>
-            Object.values(enabledCoins ?? {}).some(Boolean),
-    });
-
-const CoinEnablingInitFooter = ({ onSubmit }: CoinEnablingInitFooterProps) => (
-    <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
-        <ScreenFooterGradient />
-        <Box marginHorizontal="sp16" marginBottom="sp16">
-            <Button onPress={onSubmit} testID="@coin-enabling/button-save">
-                <Translation id="generic.buttons.confirm" />
-            </Button>
-        </Box>
-    </Animated.View>
-);
 
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();

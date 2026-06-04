@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Switch, Text, VStack } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import { selectDiscoveryNetworkGroups } from '@suite-native/discovery';
-import { useFormContext, useWatch } from '@suite-native/forms';
+import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
@@ -13,27 +13,9 @@ import {
     type CoinEnablingFormValues,
     getEnabledCoinFieldName,
     getNetworkSymbolsFromEnabledCoins,
-} from '../coinEnablingSchema';
+} from '../coinEnablingFormUtils';
 import { NetworkListItem } from './NetworkListItem';
-
-type NetworkSymbolSwitchProps = {
-    symbol: NetworkSymbol;
-    onToggle: (symbol: NetworkSymbol, isEnabled: boolean) => void;
-};
-
-const NetworkSymbolSwitch = memo(({ symbol, onToggle }: NetworkSymbolSwitchProps) => {
-    const { control } = useFormContext<CoinEnablingFormValues>();
-    const isEnabled = !!useWatch({
-        control,
-        name: getEnabledCoinFieldName(symbol),
-    });
-    const handleToggle = useCallback(
-        (nextIsEnabled: boolean) => onToggle(symbol, nextIsEnabled),
-        [onToggle, symbol],
-    );
-
-    return <Switch onChange={handleToggle} isChecked={isEnabled} />;
-});
+import { NetworkSymbolSwitch } from './NetworkSymbolSwitch';
 
 type NetworkGroupProps = {
     networks: Network[];
