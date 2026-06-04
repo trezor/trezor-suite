@@ -1,3 +1,4 @@
+import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
 import {
     type EncryptableBranded,
@@ -18,7 +19,7 @@ import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { type SelectedAccountLoaded, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type Analytics } from '@trezor/analytics-uploader';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { err, ok } from '@trezor/type-utils';
 
 const suiteSyncMock: SuiteSync = {
@@ -52,15 +53,7 @@ const platformEncryptionMock: PlatformEncryption = {
         Promise.resolve(ok(value as unknown as T)),
 };
 
-export const analyticsMock: Analytics<any> = {
-    report: () => {},
-    isEnabled: () => true,
-    disable: () => {},
-    enable: () => {},
-    setUrl: () => {},
-    setLoggerEnabled: () => {},
-    init: () => {},
-};
+export const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
 
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
