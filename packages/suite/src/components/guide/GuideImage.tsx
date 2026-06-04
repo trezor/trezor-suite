@@ -57,7 +57,7 @@ export const GuideImage = ({ src, alt }: GuideImageProps) => {
             <ThumbnailImage src={resolvedSrc} alt={alt} onClick={() => setIsOpen(true)} />
             {isOpen &&
                 createPortal(
-                    <Modal.Backdrop onClick={close} zIndex={zIndices.guide}>
+                    <Modal.Backdrop onClick={close} zIndex={zIndices.modalGuide}>
                         <FullSizeImage src={resolvedSrc} alt={alt} onClick={close} />
                         <CloseButtonWrapper>
                             <Button
