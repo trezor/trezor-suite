@@ -21,7 +21,9 @@ const HTTP_CLIENT_DEFAULTS = {
     reject: response => !response.ok && response.status !== 0,
 } as const satisfies Partial<DefaultOptions<FetchLike, unknown, unknown>>;
 
-type HttpClientDefaults = typeof HTTP_CLIENT_DEFAULTS;
+type HttpClientOptions = Omit<DefaultOptions<FetchLike, any, any>, 'baseUrl'> & {
+    baseUrl?: string | (() => string | Promise<string>);
+};
 
 /**
  * @url https://github.com/L-Blondy/up-fetch
@@ -29,17 +31,15 @@ type HttpClientDefaults = typeof HTTP_CLIENT_DEFAULTS;
  * Wraps `up` with shared defaults. `TOptions` is inferred from the argument and forwarded into
  * `UpFetch` so default `parseResponse` / `serializeBody` types flow to each request.
  */
-export function createHttpClient<
-    const TOptions extends DefaultOptions<FetchLike, any, any> = DefaultOptions<
-        FetchLike,
-        any,
-        any
-    >,
->(defaultFetcherOptions: TOptions) {
-    const fetcher = up<FetchLike, HttpClientDefaults & TOptions>(globalThis.fetch, () => ({
-        ...HTTP_CLIENT_DEFAULTS,
-        ...defaultFetcherOptions,
-    }));
+export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClientOptions) {
+    const fetcher = up<FetchLike, DefaultOptions<FetchLike, any, any>>(
+        globalThis.fetch,
+        async () => ({
+            ...HTTP_CLIENT_DEFAULTS,
+            ...defaultFetcherOptions,
+            baseUrl: typeof baseUrl === 'function' ? await baseUrl() : baseUrl,
+        }),
+    );
 
     type Fetch = typeof fetch;
 
