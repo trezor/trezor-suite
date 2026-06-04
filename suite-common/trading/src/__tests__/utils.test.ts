@@ -165,7 +165,9 @@ describe('getTradingPaymentMethods', () => {
     });
 
     it('should sort payment methods by receive amount in descending order', () => {
-        const amounts = paymentMethods.map(method => new BigNumber(method.receiveAmount || '0'));
+        const amounts = paymentMethods.map(
+            method => new BigNumber(method.tradeOperationData?.toValue || '0'),
+        );
         const sortedAmounts = [...amounts].sort((a, b) => b.minus(a).toNumber());
 
         expect(amounts.map(amount => amount.toString())).toEqual(
@@ -179,7 +181,7 @@ describe('getTradingPaymentMethods', () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const minMaxQuote: (typeof MIN_MAX_QUOTES_OK)[number] = MIN_MAX_QUOTES_OK[1];
 
-        expect(applePayMethod?.receiveAmount).toBe(minMaxQuote.receiveStringAmount);
+        expect(applePayMethod?.tradeOperationData?.toValue).toBe(minMaxQuote.receiveStringAmount);
     });
 });
 

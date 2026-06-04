@@ -111,11 +111,52 @@ export type TradingFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
 export type TradingBuyPaymentMethodProps = BuyCryptoPaymentMethod | '';
 export type TradingSellPaymentMethodProps = SellCryptoPaymentMethod | '';
 export type TradingPaymentMethodProps = TradingPaymentMethodType | '';
+type UndefinedTradeOperation = {
+    fromValue: undefined;
+    fromCurrency: undefined;
+    toValue: undefined;
+    toCurrency: undefined;
+    isFromCrypto: undefined;
+    isToCrypto: undefined;
+};
+
+type FiatToCryptoOperation = {
+    fromValue: string | undefined;
+    fromCurrency: string | undefined;
+    toValue: string | undefined;
+    toCurrency: CryptoId | undefined;
+    isFromCrypto: false;
+    isToCrypto: true;
+};
+
+type CryptoToFiatOperation = {
+    fromValue: string | undefined;
+    fromCurrency: CryptoId | undefined;
+    toValue: string | undefined;
+    toCurrency: string | undefined;
+    isFromCrypto: true;
+    isToCrypto: false;
+};
+
+type CryptoToCryptoOperation = {
+    fromValue: string | undefined;
+    fromCurrency: CryptoId | undefined;
+    toValue: string | undefined;
+    toCurrency: CryptoId | undefined;
+    isFromCrypto: true;
+    isToCrypto: true;
+};
+
+export type TradeOperationData =
+    | UndefinedTradeOperation
+    | FiatToCryptoOperation
+    | CryptoToFiatOperation
+    | CryptoToCryptoOperation;
+
 export type TradingPaymentMethodListProps = {
     value: TradingPaymentMethodProps;
     label: string;
-    receiveAmount?: string;
-    symbol?: string;
+    tradeOperationData?: TradeOperationData;
 };
 
 type TradingCommonTransaction = {

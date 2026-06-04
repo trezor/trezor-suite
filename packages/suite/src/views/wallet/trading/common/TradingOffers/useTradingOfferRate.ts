@@ -2,6 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
+    type TradeOperationData,
     type TradingTradeType,
     formatExchangeRate,
     getTradeOperationData,
@@ -13,12 +14,9 @@ import { BigNumber } from '@trezor/utils';
 
 const DEFAULT_TOKEN_DECIMALS_LENGTH = 18;
 
-export const useTradingOfferRate = (trade: TradingTradeType | undefined): string | undefined => {
+const useRateFormatters = () => {
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const { cryptoIdToCoinSymbol } = useTradingUtils();
-
-    const { fromValue, fromCurrency, toValue, toCurrency, isFromCrypto, isToCrypto } =
-        getTradeOperationData(trade);
 
     const formatCryptoValue = (
         value: string | undefined,
@@ -53,6 +51,58 @@ export const useTradingOfferRate = (trade: TradingTradeType | undefined): string
             }) ?? undefined
         );
     };
+
+    return { cryptoIdToCoinSymbol, formatCryptoValue, formatFiatValue };
+};
+
+export const useTradingRateFromOperationData = (
+    operationData: TradeOperationData | undefined,
+): string | undefined => {
+    const { cryptoIdToCoinSymbol, formatCryptoValue } = useRateFormatters();
+
+    if (!operationData) return undefined;
+    const { fromValue, fromCurrency, toValue, toCurrency, isFromCrypto, isToCrypto } =
+        operationData;
+
+    if (!fromValue || !toValue || !fromCurrency || !toCurrency) return undefined;
+
+    const fromBigNumber = new BigNumber(fromValue);
+    const toBigNumber = new BigNumber(toValue);
+
+    if (fromBigNumber.isNaN() || toBigNumber.isNaN()) return undefined;
+
+    // Buy/sell: always orient as <crypto> / 1 <fiat>. Exchange (crypto-to-crypto):
+    // orient as <sendCoin> / 1 <receiveCoin> (keep the from/to direction).
+    const isBuySell = isFromCrypto !== isToCrypto;
+    const cryptoValue = isBuySell && !isFromCrypto ? toValue : fromValue;
+    const cryptoCurrency = isBuySell && !isFromCrypto ? toCurrency : fromCurrency;
+    const counterValue = isBuySell && !isFromCrypto ? fromValue : toValue;
+    const counterCurrency = isBuySell && !isFromCrypto ? fromCurrency : toCurrency;
+    const isCounterCrypto = isBuySell ? false : isToCrypto;
+
+    const counterBigNumber = new BigNumber(counterValue);
+    if (counterBigNumber.isZero()) return undefined;
+    const rate = new BigNumber(cryptoValue).div(counterBigNumber);
+
+    const cryptoSymbol = (
+        cryptoIdToCoinSymbol(cryptoCurrency as CryptoId) ?? cryptoCurrency
+    ).toUpperCase();
+    const rateFormatted = `${formatExchangeRate(rate)} ${cryptoSymbol}`;
+
+    const targetCurrencyFormatted = isCounterCrypto
+        ? formatCryptoValue('1', counterCurrency as CryptoId, false)
+        : `1 ${counterCurrency.toUpperCase()}`;
+
+    if (!targetCurrencyFormatted) return undefined;
+
+    return `${rateFormatted} / ${targetCurrencyFormatted}`;
+};
+
+export const useTradingOfferRate = (trade: TradingTradeType | undefined): string | undefined => {
+    const { cryptoIdToCoinSymbol, formatCryptoValue, formatFiatValue } = useRateFormatters();
+
+    const { fromValue, fromCurrency, toValue, toCurrency, isFromCrypto, isToCrypto } =
+        getTradeOperationData(trade);
 
     if (!fromValue || !toValue || !fromCurrency || !toCurrency) return undefined;
 

@@ -8,18 +8,54 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingPaymentMethodListProps,
 } from '@suite-common/trading';
-import { Modal, Row, Text } from '@trezor/components';
+import { Column, Modal, Row, Text } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+
+import { useTradingRateFromOperationData } from '../../../TradingOffers/useTradingOfferRate';
 
 interface PaymentMethodModalProps {
     onClose: () => void;
     heading?: TranslationKey;
 }
+
+interface PaymentMethodModalItemProps {
+    item: TradingPaymentMethodListProps;
+    onSelect: (paymentMethod: TradingPaymentMethodListProps) => void;
+}
+
+const PaymentMethodModalItem = ({ item, onSelect }: PaymentMethodModalItemProps) => {
+    const formattedRate = useTradingRateFromOperationData(item.tradeOperationData);
+
+    return (
+        <CardList.Item
+            onClick={() => onSelect(item)}
+            data-testid={`@trading/form/payment-method-select/option/${item.value}`}
+        >
+            <Row gap={4} width="100%" justifyContent="space-between">
+                <Row gap={12} alignItems="start">
+                    <PaymentMethodIcon paymentMethod={item.value} />
+                    <Column>
+                        <Text typographyStyle="body-md">{item.label}</Text>
+                        <Text typographyStyle="body-sm" color="contentSecondary">
+                            <Translation id="TR_TRADING_RATE" />
+                        </Text>
+                    </Column>
+                </Row>
+                {formattedRate && (
+                    <Row gap={4} justifyContent="space-between">
+                        <Text typographyStyle="body-sm" color="contentSecondary">
+                            {formattedRate}
+                        </Text>
+                    </Row>
+                )}
+            </Row>
+        </CardList.Item>
+    );
+};
 
 export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps) => {
     const { paymentMethods, setValue } = useTradingFormContext<TradingTradeBuySellType>();
@@ -43,27 +79,11 @@ export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps
         >
             <CardList>
                 {paymentMethods.map(item => (
-                    <CardList.Item
+                    <PaymentMethodModalItem
                         key={item.value}
-                        onClick={() => selectPaymentMethod(item)}
-                        data-testid={`@trading/form/payment-method-select/option/${item.value}`}
-                    >
-                        <Row gap={12} alignItems="center">
-                            <PaymentMethodIcon paymentMethod={item.value} />
-                            {item.label}
-                        </Row>
-                        {item.receiveAmount && item.symbol && (
-                            <Row>
-                                <Text typographyStyle="body-sm">
-                                    {'≈ '}
-                                    <FormattedCryptoAmount
-                                        value={item.receiveAmount}
-                                        symbol={item.symbol}
-                                    />
-                                </Text>
-                            </Row>
-                        )}
-                    </CardList.Item>
+                        item={item}
+                        onSelect={selectPaymentMethod}
+                    />
                 ))}
             </CardList>
         </Modal>

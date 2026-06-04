@@ -49,6 +49,7 @@ import {
     type TradingType,
 } from './types';
 import { getCountrySubdivisionByCode } from './utils/countryUtils';
+import { getTradeOperationData } from './utils/tradeOperationUtils';
 
 type NetworkAndContractAddress = {
     network: Network | undefined;
@@ -82,15 +83,6 @@ export const isFinalStatus = (
     tradingType: TradingType,
     tradeStatus: TradingTradeStatusType | undefined,
 ) => (tradeStatus ? tradeFinalStatuses[tradingType].includes(tradeStatus) : false);
-
-export const isBuyTrade = (quote: TradingTradeType): quote is BuyTrade =>
-    'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
-
-export const isSellFiatTrade = (quote: TradingTradeType): quote is SellFiatTrade =>
-    'cryptoStringAmount' in quote && 'fiatStringAmount' in quote;
-
-export const isExchangeTrade = (quote: TradingTradeType): quote is ExchangeTrade =>
-    'sendStringAmount' in quote && 'receiveStringAmount' in quote;
 
 export const isExchangeProvider = (provider: TradingProviderInfo) =>
     provider && 'kycPolicyType' in provider;
@@ -280,20 +272,16 @@ export const getTradingPaymentMethods = (
     quotes.forEach(quote => {
         if (!quote.paymentMethod) return;
         if (uniqueMethods.has(quote.paymentMethod)) return;
-        const amount = isBuyTrade(quote) ? quote.receiveStringAmount : quote.fiatStringAmount;
         uniqueMethods.set(quote.paymentMethod, {
             value: quote.paymentMethod,
             label: quote.paymentMethodName ?? quote.paymentMethod,
-            receiveAmount: amount,
-            symbol: isBuyTrade(quote)
-                ? cryptoIdToSymbol(quote.receiveCurrency)
-                : (quote as SellFiatTrade).fiatCurrency,
+            tradeOperationData: getTradeOperationData(quote),
         });
     });
 
     const sortedMethods = Array.from(uniqueMethods.values()).sort((a, b) => {
-        const aAmount = new BigNumber(a.receiveAmount || '0');
-        const bAmount = new BigNumber(b.receiveAmount || '0');
+        const aAmount = new BigNumber(a.tradeOperationData?.toValue || '0');
+        const bAmount = new BigNumber(b.tradeOperationData?.toValue || '0');
 
         return bAmount.minus(aAmount).toNumber();
     });

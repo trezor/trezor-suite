@@ -42,7 +42,6 @@ import {
 import {
     cryptoIdToNetwork,
     getTradingQuotesByPaymentMethod,
-    isBuyTrade,
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
@@ -53,6 +52,7 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
+import { isBuyTrade } from '../utils/typeGuards';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
 

@@ -10,67 +10,11 @@ import {
     getErrorStrFromThunkRejectedValue,
     getFormDraftKeyPrefixFromTradingType,
     getRandomAccountDescriptor,
-    getTradeOperationData,
     getTradeStatusStep,
     getTradeTitle,
 } from '../utils';
 
 describe('utils', () => {
-    describe('getTradeOperationData', () => {
-        it('should return correct data for buy trade', () => {
-            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-            const result = getTradeOperationData(buyTrade.data);
-
-            expect(result).toEqual({
-                fromValue: '1234',
-                fromCurrency: 'USD',
-                toValue: '0.462586',
-                toCurrency: 'ethereum',
-                isFromCrypto: false,
-                isToCrypto: true,
-            });
-        });
-
-        it('should return correct data for exchange trade', () => {
-            const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
-            const result = getTradeOperationData(exchangeTrade.data);
-
-            expect(result).toEqual({
-                fromValue: '10.1232',
-                fromCurrency: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
-                toValue: '0.462586',
-                toCurrency: 'solana',
-                isFromCrypto: true,
-                isToCrypto: true,
-            });
-        });
-
-        it('should return correct data for sell trade', () => {
-            const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
-            const result = getTradeOperationData(sellTrade.data);
-
-            expect(result).toEqual({
-                fromValue: '1.22',
-                fromCurrency: 'bitcoin',
-                toValue: '100',
-                toCurrency: 'USD',
-                isFromCrypto: true,
-                isToCrypto: false,
-            });
-        });
-
-        it('should return undefined values for undefined transaction', () => {
-            const result = getTradeOperationData(undefined);
-
-            expect(result).toEqual({
-                fromValue: undefined,
-                fromCurrency: undefined,
-                toValue: undefined,
-                toCurrency: undefined,
-            });
-        });
-    });
-
     describe('getTradeStatusStep', () => {
         it.each([
             ['SUBMITTED', 'waiting'],
