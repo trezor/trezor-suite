@@ -1,4 +1,4 @@
-import { Text as MockText } from '@suite-native/atoms';
+import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { within } from '@suite-native/test-utils';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -15,9 +15,9 @@ jest.mock('../ReviewOutputItemValues', () => ({
         translationKey: string;
         value: string;
     }) => (
-        <MockText>
+        <Text>
             ReviewOutputItemValues: [{translationKey}]-[{value}]
-        </MockText>
+        </Text>
     ),
 }));
 
@@ -698,6 +698,46 @@ describe('ReviewOutputItem', () => {
                     getTranslation('transactionManagement.review.outputs.chainLabel'),
                 ),
             ).toBeNull();
+        });
+    });
+
+    describe('contentBuilder prop', () => {
+        it('renders content returned by contentBuilder instead of default', () => {
+            const contentBuilder = jest.fn().mockReturnValue(<Text>Custom Content</Text>);
+
+            const { getByText } = renderReviewOutputItem({ contentBuilder });
+
+            expect(getByText('Custom Content')).toBeOnTheScreen();
+            expect(() => getByText('mockvalue')).toThrow();
+        });
+
+        it('passes all data props to contentBuilder', () => {
+            const contentBuilder = jest.fn().mockReturnValue(undefined);
+
+            renderReviewOutputItem({
+                contentBuilder,
+                reviewOutput: { type: 'note', value: 'some value', state: 'active' },
+            });
+
+            expect(contentBuilder).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    outputType: 'note',
+                    value: 'some value',
+                }),
+            );
+        });
+
+        it('falls back to default rendering when contentBuilder returns undefined', () => {
+            const contentBuilder = jest.fn().mockReturnValue(undefined);
+
+            const { getByTestId } = renderReviewOutputItem({
+                contentBuilder,
+                reviewOutput: { type: 'note', value: 'fallback note text', state: 'active' },
+            });
+
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                'fallback note text',
+            );
         });
     });
 

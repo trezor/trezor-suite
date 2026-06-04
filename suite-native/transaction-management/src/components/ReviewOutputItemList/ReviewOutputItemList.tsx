@@ -10,7 +10,7 @@ import { ErrorMessage, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import type { ExchangeFlowType } from '@suite-native/navigation';
 
-import { ReviewOutputItem } from './ReviewOutputItem';
+import { ReviewOutputItem, type ReviewOutputItemProps } from './ReviewOutputItem';
 import { ReviewOutputSummaryItem } from './ReviewOutputSummaryItem';
 import { LIST_VERTICAL_SPACING, useActiveStepOffset } from '../../hooks';
 import {
@@ -27,6 +27,7 @@ export type ReviewOutputItemListProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     flowType?: ExchangeFlowType;
+    contentBuilder?: ReviewOutputItemProps['contentBuilder'];
 };
 
 export const ReviewOutputItemList = ({
@@ -34,6 +35,7 @@ export const ReviewOutputItemList = ({
     accountKey,
     tokenContract,
     flowType,
+    contentBuilder,
 }: ReviewOutputItemListProps) => {
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useSelector((state: TransactionReviewOutputsState) =>
@@ -77,6 +79,7 @@ export const ReviewOutputItemList = ({
                             onLayout={event => handleReadListItemHeight(event, index)}
                             tokenContract={tokenContract}
                             flowType={flowType}
+                            contentBuilder={contentBuilder}
                         />
                     ))}
                     {!isTron && (
