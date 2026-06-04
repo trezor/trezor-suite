@@ -27,7 +27,6 @@ import {
     type GroupedTradingExchangeQuotes,
     groupTradingExchangeQuotesProjection,
 } from './utils/groupTradingExchangeQuotesProjection';
-import { paymentMethodsFromQuotesProjection } from './utils/paymentMethodsFromQuotesProjection';
 import { bestQuotePerPaymentMethodProjection } from './utils/quotePerPaymentMethodProjection';
 import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
 import { type ExchangeInfo, type TradingExchangeState } from '../reducers/exchangeReducer';
@@ -678,23 +677,31 @@ export const selectValidTradingSellQuotes = createMemoizedSelector(
     },
 );
 
+export const selectTradingBuyQuotesPerPaymentMethod = createMemoizedSelector(
+    [selectValidTradingBuyQuotes],
+    bestBuyQuotePerPaymentMethodProjection,
+);
+
+export const selectTradingSellQuotesPerPaymentMethod = createMemoizedSelector(
+    [selectValidTradingSellQuotes],
+    bestSellQuotePerPaymentMethodProjection,
+);
+
 export const selectTradingBuyPaymentMethods = createMemoizedSelector(
-    [selectValidTradingBuyQuotes, selectTradingCoins],
-    (quotes, coins) =>
-        paymentMethodsFromQuotesProjection(quotes, quote => ({
-            receiveAmount: quote.receiveStringAmount,
-            symbol: quote.receiveCurrency
-                ? getTradingCoinSymbolByCryptoId(coins ?? {}, quote.receiveCurrency)
-                : undefined,
+    [selectTradingBuyQuotesPerPaymentMethod],
+    quotes =>
+        quotes.map(quote => ({
+            value: quote.paymentMethod as TradingBuyPaymentMethodProps,
+            label: quote.paymentMethodName ?? '',
         })),
 );
 
 export const selectTradingSellPaymentMethods = createMemoizedSelector(
-    [selectValidTradingSellQuotes],
+    [selectTradingSellQuotesPerPaymentMethod],
     quotes =>
-        paymentMethodsFromQuotesProjection(quotes, quote => ({
-            receiveAmount: quote.fiatStringAmount,
-            symbol: quote.fiatCurrency,
+        quotes.map(quote => ({
+            value: quote.paymentMethod as TradingSellPaymentMethodProps,
+            label: quote.paymentMethodName ?? '',
         })),
 );
 

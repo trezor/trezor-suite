@@ -114,8 +114,6 @@ export type TradingPaymentMethodProps = TradingPaymentMethodType | '';
 export type TradingPaymentMethodListProps = {
     value: TradingPaymentMethodProps;
     label: string;
-    receiveAmount?: string;
-    symbol?: string;
 };
 
 type TradingCommonTransaction = {
