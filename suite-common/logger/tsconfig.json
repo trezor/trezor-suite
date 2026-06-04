@@ -3,8 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics-redux" },
-        { "path": "../discreet-mode" },
         { "path": "../device" },
+        { "path": "../discreet-mode" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },

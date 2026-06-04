@@ -1,5 +1,4 @@
 const SET_BASE_CURRENCY = '@wallet-settings/set-base-currency';
-const SET_HIDE_BALANCE = '@wallet-settings/hide-balance';
 const CHANGE_NETWORKS = '@wallet-settings/change-networks';
 const FROM_STORAGE = '@wallet-settings/from-storage';
 const SET_BITCOIN_AMOUNT_UNITS = '@suite/set-bitcoin-amount-units';
@@ -12,7 +11,6 @@ const SET_ADDRESS_DISPLAY_TYPE = '@wallet-settings/set-address-display-type';
 
 export const WALLET_SETTINGS = {
     SET_BASE_CURRENCY,
-    SET_HIDE_BALANCE,
     CHANGE_NETWORKS,
     FROM_STORAGE,
     SET_BITCOIN_AMOUNT_UNITS,

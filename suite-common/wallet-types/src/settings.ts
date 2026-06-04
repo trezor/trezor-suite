@@ -19,7 +19,6 @@ export type WalletType = (typeof WalletType)[keyof typeof WalletType];
 
 export interface WalletSettings {
     localCurrency: BaseCurrencyCode;
-    discreetMode: boolean;
     enabledNetworks: NetworkSymbol[];
     hideSuspiciousTransactions: boolean;
     bitcoinAmountUnit: PROTO.AmountUnit;

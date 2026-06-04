@@ -8,6 +8,7 @@ import { suiteSettingsActions } from '@suite/settings';
 import { torActions } from '@suite/tor';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
+import { discreetModeActions } from '@suite-common/discreet-mode';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -37,7 +38,7 @@ const breadcrumbActions = new Set<Action['type']>([
     WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE,
     suiteSettingsActions.setAutodetect.type,
     setBaseCurrency.type,
-    WALLET_SETTINGS.SET_HIDE_BALANCE,
+    discreetModeActions.setDiscreetMode.type,
     METADATA.ENABLE,
     METADATA.DISABLE,
     suiteSettingsActions.setOnionLinks.type,

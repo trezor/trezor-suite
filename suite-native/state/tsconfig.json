@@ -18,6 +18,9 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/geolocation"

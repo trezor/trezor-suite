@@ -1,5 +1,3 @@
-import { setDiscreetMode } from '@suite-common/discreet-mode';
-
 import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
 import { changeCoinVisibility } from '../../src/settings/walletSettingsThunks';
 
@@ -26,22 +24,6 @@ export const walletSettingsFixtures = [
         action: () => changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: false }),
         result: {
             enabledNetworks: ['btc'],
-        },
-    },
-    {
-        description: 'Set hide balance true',
-        initialState: { discreetMode: false },
-        action: () => setDiscreetMode(true),
-        result: {
-            discreetMode: true,
-        },
-    },
-    {
-        description: 'Set hide balance false',
-        initialState: { discreetMode: true },
-        action: () => setDiscreetMode(false),
-        result: {
-            discreetMode: false,
         },
     },
     {

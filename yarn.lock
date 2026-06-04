@@ -10368,6 +10368,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/discreet-mode@workspace:suite-common/discreet-mode"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -11169,7 +11170,6 @@ __metadata:
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/device": "workspace:*"
-    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
@@ -13637,6 +13637,7 @@ __metadata:
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/logger": "workspace:*"

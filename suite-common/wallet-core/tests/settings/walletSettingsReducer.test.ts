@@ -2,7 +2,6 @@ import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { initialWalletSettingsState, prepareWalletSettingsReducer } from '../../src';
 import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
-import { WALLET_SETTINGS } from '../../src/settings/walletSettingsConstants';
 
 const initialState = initialWalletSettingsState;
 
@@ -37,18 +36,6 @@ describe('settings reducer', () => {
         ).toEqual({
             ...initialState,
             localCurrency: 'czk',
-        });
-    });
-
-    it('SET_HIDE_BALANCE', () => {
-        expect(
-            reducer(undefined, {
-                type: WALLET_SETTINGS.SET_HIDE_BALANCE,
-                toggled: true,
-            }),
-        ).toEqual({
-            ...initialState,
-            discreetMode: true,
         });
     });
 

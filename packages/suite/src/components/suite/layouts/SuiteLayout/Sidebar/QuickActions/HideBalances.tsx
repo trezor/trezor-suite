@@ -1,5 +1,5 @@
 import { useTranslation } from '@suite/intl';
-import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/discreet-mode';
+import { discreetModeActions, selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { QuickActionButton } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -10,7 +10,8 @@ export const HideBalances = () => {
     const isDiscreetModeActive = useSelector(selectIsDiscreteModeActive);
     const translationLabel = isDiscreetModeActive ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
 
-    const handleDiscreetModeClick = () => dispatch(setDiscreetMode(!isDiscreetModeActive));
+    const handleDiscreetModeClick = () =>
+        dispatch(discreetModeActions.setDiscreetMode(!isDiscreetModeActive));
 
     return (
         <QuickActionButton

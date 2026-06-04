@@ -75,7 +75,7 @@ export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyP
             .filter(symbol => state.wallet.settings.enabledNetworks.includes(symbol)),
         localCurrency: state.wallet.settings.localCurrency,
         bitcoinUnit: UNIT_ABBREVIATIONS[state.wallet.settings.bitcoinAmountUnit],
-        discreetMode: state.wallet.settings.discreetMode,
+        discreetMode: state.discreetMode.isActive,
         screenWidth: getScreenWidth(),
         screenHeight: getScreenHeight(),
         platformLanguages: getPlatformLanguages().join(','),
