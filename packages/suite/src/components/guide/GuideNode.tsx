@@ -13,18 +13,21 @@ import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
+import { GuideItem } from './GuideItem';
+
 const CategoryImage = styled.img`
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
 `;
 
 type GuideNodeProps = {
     node: GuideNodeType;
     description?: ReactNode;
+    itemVariant?: 'default' | 'cardList';
 };
 
-export const GuideNode = ({ node, description }: GuideNodeProps) => {
+export const GuideNode = ({ node, description, itemVariant = 'cardList' }: GuideNodeProps) => {
     const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -75,10 +78,22 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     if (node.type === 'category') {
         const categoryIcon = node.icon ? (
-            <IconCircle name={node.icon as IconName} size={40} intent="neutral" />
+            <IconCircle name={node.icon as IconName} size={32} intent="neutral" />
         ) : (
             node.image && <CategoryImage src={resolveStaticPath(node.image)} />
         );
+
+        if (itemVariant === 'default') {
+            return (
+                <GuideItem
+                    onClick={navigateToNode}
+                    data-testid={`@guide/category${node.id}`}
+                    icon={categoryIcon}
+                >
+                    {getNodeTitle(node, language)}
+                </GuideItem>
+            );
+        }
 
         return (
             <CardList.Item onClick={navigateToNode} data-testid={`@guide/category${node.id}`}>

@@ -56,8 +56,8 @@ export const mapSizeToIconSize = (size: IconCircleSize): IconSize => {
     const iconSizeMap: Record<IconCircleSize, IconSize> = {
         16: 8,
         24: 12,
-        32: 16,
-        40: 20,
+        32: 20,
+        40: 24,
         64: 32,
         96: 40,
         112: 48,
