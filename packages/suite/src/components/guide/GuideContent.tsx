@@ -1,16 +1,13 @@
 import { type ReactNode } from 'react';
 
-import styled from 'styled-components';
-
-import { spacingsPx } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    padding: ${spacingsPx.md} ${spacingsPx.lg} 0;
-    flex: 1;
-`;
+import { Box } from '@trezor/components';
 
 type GuideContentProps = {
     children: ReactNode;
 };
 
-export const GuideContent = ({ children }: GuideContentProps) => <Wrapper>{children}</Wrapper>;
+export const GuideContent = ({ children }: GuideContentProps) => (
+    <Box flex="1" padding={{ top: 16, right: 20, left: 20 }}>
+        {children}
+    </Box>
+);

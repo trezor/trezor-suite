@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { typography } from '@trezor/theme';
+import { Column, Paragraph } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -21,18 +21,6 @@ const Section = styled.div`
     &:not(:last-of-type) {
         margin-bottom: 100px;
     }
-`;
-
-const SectionHeading = styled.h3`
-    ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.contentSecondary};
-    padding: 8px 0 18px;
-`;
-
-const Nodes = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
 `;
 
 export const GuideCategory = () => {
@@ -60,14 +48,18 @@ export const GuideCategory = () => {
             <GuideContent>
                 {pages.length ? (
                     <Section>
-                        <SectionHeading>
+                        <Paragraph
+                            as="h3"
+                            typographyStyle="body-sm-strong"
+                            padding={{ bottom: 16 }}
+                        >
                             <Translation id="TR_GUIDE_ARTICLES" />
-                        </SectionHeading>
-                        <Nodes data-testid="@guide/nodes">
+                        </Paragraph>
+                        <Column gap={12} data-testid="@guide/nodes">
                             {pages.map(page => (
                                 <GuideNode key={page.id} node={page} />
                             ))}
-                        </Nodes>
+                        </Column>
                     </Section>
                 ) : null}
                 {subcategories.length

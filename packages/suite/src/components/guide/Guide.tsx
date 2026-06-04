@@ -1,12 +1,9 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { Button, Column, Divider } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Box, Button, Column, Divider } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -17,10 +14,6 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const FeedbackLinkWrapper = styled.div`
-    padding: ${spacingsPx.md};
-`;
 
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
@@ -46,7 +39,7 @@ export const Guide = () => {
 
                 <div>
                     <Divider margin={{ bottom: 0, top: 0 }} />
-                    <FeedbackLinkWrapper>
+                    <Box padding={16}>
                         <Button
                             data-testid="@guide/button-feedback"
                             onClick={handleFeedbackButtonClick}
@@ -57,7 +50,7 @@ export const Guide = () => {
                         >
                             <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                         </Button>
-                    </FeedbackLinkWrapper>
+                    </Box>
                 </div>
             </Column>
         </GuideViewWrapper>
