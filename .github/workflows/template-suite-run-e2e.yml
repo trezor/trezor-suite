@@ -235,8 +235,30 @@ jobs:
           if [[ -n "${{ inputs.spec-list }}" ]]; then
             # Strip suite/e2e/ prefix (pwc-p CWD is suite/e2e/ via yarn workspace)
             # then convert comma-separated list to space-separated positional args
-            SPEC_ARGS=$(echo "${{ inputs.spec-list }}" | tr ',' '\n' | sed 's|^suite/e2e/||' | tr '\n' ' ')
+            RESOLVED_SPECS=$(echo "${{ inputs.spec-list }}" | tr ',' '\n' | sed 's|^suite/e2e/||')
+            SPEC_ARGS=$(echo "$RESOLVED_SPECS" | tr '\n' ' ')
             echo "Running focused spec list: $SPEC_ARGS"
+
+            # Guard: verify at least one resolved path exists before enabling --pass-with-no-tests.
+            # If every path is missing (deleted, mistyped, or bad normalisation), fail fast
+            # rather than silently running zero tests and exiting 0.
+            FOUND_ANY=0
+            while IFS= read -r spec; do
+              [[ -z "$spec" ]] && continue
+              if [[ -f "suite/e2e/$spec" ]]; then
+                FOUND_ANY=1
+                break
+              fi
+            done <<< "$RESOLVED_SPECS"
+
+            if [[ "$FOUND_ANY" -eq 0 ]]; then
+              echo "ERROR: spec-list was provided but none of the resolved paths exist on disk."
+              echo "  spec-list: ${{ inputs.spec-list }}"
+              echo "  Resolved:  $SPEC_ARGS"
+              echo "Check for deleted files, typos, or normalisation issues in the upstream selector."
+              exit 1
+            fi
+
             # A focused spec list may not match every Playwright project's grep filter,
             # so allow projects that find zero tests to exit cleanly instead of failing.
             PASS_WITH_NO_TESTS="--pass-with-no-tests"
