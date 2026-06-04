@@ -12,6 +12,15 @@ jest.mock('../../thunks', () => ({
         mockCalculateFeeLevelsMaxAmountThunk(...args),
 }));
 
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    updateFeeInfoThunk: (payload: unknown) => ({
+        type: 'updateFeeInfoThunkMock',
+        payload,
+        unwrap: () => Promise.resolve(undefined),
+    }),
+}));
+
 describe('useMaxSpendableAmount', () => {
     const btcAccountKey = 'btc-account-1' as AccountKey;
     const ethAccountKey = 'eth-account-1' as AccountKey;
@@ -116,7 +125,7 @@ describe('useMaxSpendableAmount', () => {
     it('should calculate max spendable amount with provided form state', async () => {
         mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
 
-        renderUseMaxSpendableAmount({
+        const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             formState: customFormState,
             symbol: 'btc',
@@ -130,6 +139,7 @@ describe('useMaxSpendableAmount', () => {
                 },
                 expect.objectContaining({ signal: expect.any(AbortSignal) }),
             );
+            expect(result.current.maxSpendableAmount).toBe('0.009');
         });
     });
 

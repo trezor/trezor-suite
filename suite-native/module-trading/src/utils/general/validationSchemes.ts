@@ -128,7 +128,7 @@ export const sendCryptoAmountValidationSchema = yup
 
         const convertedValue = convertNumberToBaseUnit(value, sendSymbol.toLowerCase());
 
-        if (convertedValue === undefined || balance === undefined) {
+        if (convertedValue === undefined || convertedValue === 0 || balance === undefined) {
             return true;
         }
 
@@ -146,7 +146,7 @@ export const sendCryptoAmountValidationSchema = yup
             });
         }
 
-        if (convertedValue > parseFloat(maxSpendableAmount)) {
+        if (maxSpendableAmount && convertedValue > parseFloat(maxSpendableAmount)) {
             return testContext.createError({
                 type: 'network-reserve',
                 message: translate('moduleTrading.validators.networkReserve', {

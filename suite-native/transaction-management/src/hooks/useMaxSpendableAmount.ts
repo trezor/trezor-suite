@@ -5,7 +5,6 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
-import { useDebounce } from '@trezor/react-utils';
 
 import { calculateFeeLevelsMaxAmountThunk } from '../thunks';
 
@@ -46,7 +45,6 @@ export const useMaxSpendableAmount = ({
     symbol,
 }: UseMaxSpendableAmountProps) => {
     const dispatch = useDispatch();
-    const debounce = useDebounce();
 
     const [maxSpendableAmount, setMaxSpendableAmount] = useState<string | undefined>(undefined);
 
@@ -71,7 +69,7 @@ export const useMaxSpendableAmount = ({
 
         const calculateMaxAmount = async () => {
             try {
-                await dispatch(updateFeeInfoThunk({ networkSymbol: symbol }));
+                await dispatch(updateFeeInfoThunk({ networkSymbol: symbol })).unwrap();
 
                 const { normal, economy, low, high } = await dispatch(
                     calculateFeeLevelsMaxAmountThunk(
@@ -97,7 +95,7 @@ export const useMaxSpendableAmount = ({
         return () => {
             controller.abort();
         };
-    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, debounce, enabled, symbol]);
+    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, enabled, symbol]);
 
     return { maxSpendableAmount };
 };

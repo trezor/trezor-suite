@@ -41,6 +41,30 @@ const services: NativeAnalyticsDep = {
 };
 type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
 
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    useMaxSpendableAmount: jest.fn(({ accountKey, symbol, tokenContract }) => {
+        if (!accountKey || !symbol) {
+            return { maxSpendableAmount: undefined };
+        }
+
+        if (tokenContract) {
+            const maxSpendableAmountByTokenContract: Record<string, string | undefined> = {
+                '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '1',
+                '0xdac17f958d2ee523a2206206994597c13d831ec7': '1',
+            };
+
+            return { maxSpendableAmount: maxSpendableAmountByTokenContract[tokenContract] };
+        }
+
+        if (symbol === 'btc') {
+            return { maxSpendableAmount: '0.01' };
+        }
+
+        return { maxSpendableAmount: undefined };
+    }),
+}));
+
 const createPrefetchDexQuoteApprovalThunkMock = (
     arg: Parameters<PrefetchDexQuoteApprovalThunk>[0],
 ): ReturnType<PrefetchDexQuoteApprovalThunk> => {
