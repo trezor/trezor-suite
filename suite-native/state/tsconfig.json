@@ -62,7 +62,6 @@
         { "path": "../biometrics" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../device-onboarding" },
