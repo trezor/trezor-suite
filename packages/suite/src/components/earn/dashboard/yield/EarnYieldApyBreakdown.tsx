@@ -53,14 +53,25 @@ export const EarnYieldApyBreakdown = ({
                         isBordered={false}
                     />
                     <Column flex="1">
-                        <Text typographyStyle="body-sm">{reward.token.symbol}</Text>
+                        <Text
+                            data-testid="@earn/dashboard/apy-breakdown/symbol"
+                            typographyStyle="body-sm"
+                        >
+                            {reward.token.symbol}
+                        </Text>
                         {descriptionId && (
-                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <Text
+                                data-testid="@earn/dashboard/apy-breakdown/description"
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                            >
                                 <Translation id={descriptionId} />
                             </Text>
                         )}
                     </Column>
                     <Text
+                        data-testid="@earn/dashboard/apy-breakdown/rate-percent"
                         typographyStyle="body-sm"
                         intent={hasRatePercent ? 'brand' : 'neutral'}
                         priority={hasRatePercent ? 'primary' : 'secondary'}
