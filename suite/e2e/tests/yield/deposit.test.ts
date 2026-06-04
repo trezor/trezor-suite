@@ -8,10 +8,18 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
-    });
+    test.beforeEach(
+        async ({ onboardingPage, settingsPage, blockbookMock, dashboardPage, page }) => {
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coinsTab.enableNetwork('eth');
+            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
+            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
+            await dashboardPage.dashboardMenuButton.click();
+            await page.discoveryShouldFinish();
+        },
+    );
 
     test('yield deposit', async ({
         page,
