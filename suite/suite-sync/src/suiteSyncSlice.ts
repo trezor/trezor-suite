@@ -5,6 +5,7 @@ import {
     type SuiteSyncState,
     type WithSuiteSyncAndDeviceState,
     initialSuiteSyncState as commonInitialState,
+    selectHasDeviceSuiteSyncError,
     selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncInteraction,
     suiteSyncReducer,
@@ -89,6 +90,23 @@ export const selectShowEnableSuiteSyncModal = (
 export const selectIsUnsupportedDeviceBannerDismissed = (
     state: DesktopSuiteSyncRootState,
 ): boolean => state.suiteSync.isUnsupportedDeviceBannerDismissed ?? false;
+
+export const selectIsSuiteSyncBannerVisible = (
+    state: DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState & MessageSystemRootState,
+    deviceStaticSessionId: StaticSessionId | null,
+): boolean => {
+    const hasSuiteSyncError = selectHasDeviceSuiteSyncError(state, deviceStaticSessionId);
+    const suiteSyncInteraction = selectSuiteSyncInteraction(state, deviceStaticSessionId);
+    const isUnsupportedDeviceBannerDismissed = selectIsUnsupportedDeviceBannerDismissed(state);
+
+    return (
+        deviceStaticSessionId !== null &&
+        hasSuiteSyncError &&
+        suiteSyncInteraction !== null &&
+        suiteSyncInteraction !== 'suite-sync-off' &&
+        (suiteSyncInteraction !== 'unsupported' || !isUnsupportedDeviceBannerDismissed)
+    );
+};
 
 export const selectDesktopSuiteSyncInteraction = (
     state: DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState & MessageSystemRootState,
