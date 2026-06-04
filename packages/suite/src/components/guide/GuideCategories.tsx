@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { type GuideCategory } from '@suite-common/suite-types';
-import { Box, Column } from '@trezor/components';
+import { Box, CardList } from '@trezor/components';
 
 import { GuideNode } from './GuideNode';
 import { GuideSectionHeadline } from './GuideSectionHeadline';
@@ -19,11 +19,11 @@ export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
     return (
         <Box as="section" padding={{ bottom: 20 }}>
             {label && <GuideSectionHeadline>{label}</GuideSectionHeadline>}
-            <Column gap={12} data-testid="@guide/nodes">
+            <CardList data-testid="@guide/nodes">
                 {node.children.map(child => (
                     <GuideNode key={child.id} node={child} />
                 ))}
-            </Column>
+            </CardList>
         </Box>
     );
 };

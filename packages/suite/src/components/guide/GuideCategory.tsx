@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { Column, Paragraph } from '@trezor/components';
+import { CardList } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -10,6 +9,7 @@ import {
     GuideContent,
     GuideHeader,
     GuideNode,
+    GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -48,31 +48,21 @@ export const GuideCategory = () => {
             <GuideContent>
                 {pages.length ? (
                     <Section>
-                        <Paragraph
-                            as="h3"
-                            typographyStyle="body-sm-strong"
-                            padding={{ bottom: 16 }}
-                        >
-                            <Translation id="TR_GUIDE_ARTICLES" />
-                        </Paragraph>
-                        <Column gap={12} data-testid="@guide/nodes">
+                        <GuideSectionHeadline id="TR_GUIDE_ARTICLES" />
+                        <CardList data-testid="@guide/nodes">
                             {pages.map(page => (
                                 <GuideNode key={page.id} node={page} />
                             ))}
-                        </Column>
+                        </CardList>
                     </Section>
                 ) : null}
-                {subcategories.length
-                    ? subcategories.map(subcategory =>
-                          subcategory.type === 'category' ? (
-                              <GuideCategories
-                                  key={subcategory.id}
-                                  node={subcategory}
-                                  label={getNodeTitle(subcategory, language)}
-                              />
-                          ) : null,
-                      )
-                    : null}
+                {subcategories.map(subcategory => (
+                    <GuideCategories
+                        key={subcategory.id}
+                        node={subcategory}
+                        label={getNodeTitle(subcategory, language)}
+                    />
+                ))}
             </GuideContent>
         </GuideViewWrapper>
     );

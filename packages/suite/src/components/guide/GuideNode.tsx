@@ -6,25 +6,12 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
-import { IconCircle, type IconName } from '@trezor/components';
+import { CardList, Column, Icon, IconCircle, type IconName, Row, Text } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { typography } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getNodeTitle } from 'src/utils/suite/guide';
-
-import { GuideItem } from './GuideItem';
-
-const Label = styled.div<{ $isBold: boolean }>`
-    width: 100%;
-    ${({ $isBold }) => ($isBold ? typography['body-sm'] : typography['body-sm-strong'])};
-    color: ${({ theme }) => theme.contentPrimary};
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`;
 
 const CategoryImage = styled.img`
     width: 28px;
@@ -53,36 +40,56 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
         });
     };
 
-    const label = (
-        <Label $isBold={!description}>
-            {getNodeTitle(node, language)}
-            {description}
-        </Label>
-    );
-
     if (node.type === 'page') {
         return (
-            <GuideItem onClick={navigateToNode} data-testid={`@guide/node${node.id}`}>
-                {label}
-            </GuideItem>
+            <CardList.Item onClick={navigateToNode} data-testid={`@guide/node${node.id}`}>
+                <Column
+                    flex="1"
+                    gap={description ? 4 : 0}
+                    overflow="hidden"
+                    alignItems="flex-start"
+                >
+                    <Text
+                        typographyStyle={description ? 'body-sm-strong' : 'body-md'}
+                        as="div"
+                        maxWidth="100%"
+                    >
+                        {getNodeTitle(node, language)}
+                    </Text>
+                    {description && (
+                        <Text
+                            typographyStyle="body-sm"
+                            intent="neutral"
+                            priority="secondary"
+                            as="div"
+                            maxWidth="100%"
+                        >
+                            {description}
+                        </Text>
+                    )}
+                </Column>
+                <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+            </CardList.Item>
         );
     }
 
     if (node.type === 'category') {
+        const categoryIcon = node.icon ? (
+            <IconCircle name={node.icon as IconName} size={40} intent="neutral" />
+        ) : (
+            node.image && <CategoryImage src={resolveStaticPath(node.image)} />
+        );
+
         return (
-            <GuideItem
-                onClick={navigateToNode}
-                data-testid={`@guide/category${node.id}`}
-                icon={
-                    node.icon ? (
-                        <IconCircle name={node.icon as IconName} size={40} intent="neutral" />
-                    ) : (
-                        node.image && <CategoryImage src={resolveStaticPath(node.image)} />
-                    )
-                }
-            >
-                {getNodeTitle(node, language)}
-            </GuideItem>
+            <CardList.Item onClick={navigateToNode} data-testid={`@guide/category${node.id}`}>
+                <Row gap={12} alignItems="center" flex="1" overflow="hidden">
+                    {categoryIcon}
+                    <Text typographyStyle="body-md" as="div" maxWidth="100%">
+                        {getNodeTitle(node, language)}
+                    </Text>
+                </Row>
+                <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+            </CardList.Item>
         );
     }
 };
