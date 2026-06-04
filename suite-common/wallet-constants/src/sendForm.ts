@@ -39,6 +39,26 @@ export const DEFAULT_OPRETURN = {
     dataHex: '',
 } as const;
 
+// Default for a Namecoin name-operation output. The user picks the kind
+// (name_new / name_firstupdate / name_update) inside the composer, so the
+// initial state is name_new with empty fields. `address` is filled by the
+// composer with the user's Namecoin receive address (where the name's
+// inner script is sent), `amount` defaults to the protocol-level name
+// fee which is shown on the device for confirmation.
+export const DEFAULT_NAME_OP_OUTPUT = {
+    address: '',
+    amount: '',
+    fiat: '',
+    currency: { value: 'usd', label: 'USD' },
+    type: 'name-op',
+    nameOpKind: 'name_new',
+    nameOpName: '',
+    nameOpValue: '',
+    nameOpCommitmentHash: '',
+    nameOpRand: '',
+    token: null,
+} as const;
+
 export const DEFAULT_VALUES = {
     setMaxOutputId: undefined,
     selectedFee: undefined,

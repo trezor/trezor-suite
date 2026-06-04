@@ -1117,7 +1117,14 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 52) {
-        // Deprecate Vertcoin (VTC) and other networks
+        // Deprecate Vertcoin (VTC) and other networks.
+        //
+        // NOTE: 'nmc' is re-introduced as a supported network in a later Suite
+        // release. This migration is intentionally NOT reverted -- reverting it
+        // would be a no-op for users who already upgraded past v52, and would
+        // re-attach stale account/tx data for users who have since added other
+        // wallets. Users who held NMC accounts before this purge ran will need
+        // to re-add them manually after upgrading.
         const deprecatedNetworks = ['vtc', 'btg', 'nmc', 'dgb', 'dash'];
 
         // Remove transactions related to deprecated networks

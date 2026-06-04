@@ -13,6 +13,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
 import { CardanoMinAmountInfo } from './CardanoMinAmountInfo';
+import { NameOp } from './NameOp';
 import { OpReturn } from './OpReturn';
 import { TokenSelect } from './TokenSelect/TokenSelect';
 import { TronNewAccountInfo } from './TronNewAccountInfo';
@@ -89,6 +90,8 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 <Card>
                                     {output.type === 'opreturn' ? (
                                         <OpReturn outputId={index} />
+                                    ) : output.type === 'name-op' ? (
+                                        <NameOp outputId={index} />
                                     ) : (
                                         <Column gap={spacings.md}>
                                             <Address

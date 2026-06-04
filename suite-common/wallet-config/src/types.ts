@@ -10,6 +10,7 @@ export type NetworkSymbol =
     | 'xrp'
     | 'bch'
     | 'doge'
+    | 'nmc'
     | 'zec'
     | 'ada'
     | 'sol'

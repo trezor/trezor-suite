@@ -54,6 +54,13 @@ export enum Enum_OutputScriptType {
     PAYTOWITNESS = 4,
     PAYTOP2SHWITNESS = 5,
     PAYTOTAPROOT = 6,
+    // Namecoin name operations. Companion to trezor/trezor-firmware#7010.
+    // TODO(namecoin): this file is normally generated from
+    // common/protob/messages-bitcoin.proto via the protoc plugin in
+    // packages/protobuf. The proto file must be updated upstream and the TS
+    // regenerated; this entry is added by hand for the draft so the Suite UI
+    // can compile against the new literal.
+    PAYTONAMECOINOP = 7,
 }
 
 export type EnumEnum_OutputScriptType = Static<typeof EnumEnum_OutputScriptType>;
@@ -135,6 +142,44 @@ export const MultisigRedeemScriptType = Type.Object(
         pubkeys_order: Type.Optional(EnumMultisigPubkeysOrder),
     },
     { $id: 'MultisigRedeemScriptType' },
+);
+
+// Namecoin name-operation kinds. Mirrors NameOpKind in messages-bitcoin.proto
+// proposed by trezor/trezor-firmware#7010.
+export enum Enum_NamecoinNameOpKind {
+    NAME_NEW = 0,
+    NAME_FIRSTUPDATE = 1,
+    NAME_UPDATE = 2,
+}
+
+export type EnumEnum_NamecoinNameOpKind = Static<typeof EnumEnum_NamecoinNameOpKind>;
+export const EnumEnum_NamecoinNameOpKind = Type.Enum(Enum_NamecoinNameOpKind);
+
+export type NamecoinNameOpKind = Static<typeof NamecoinNameOpKind>;
+export const NamecoinNameOpKind = Type.KeyOfEnum(Enum_NamecoinNameOpKind, {
+    $id: 'NamecoinNameOpKind',
+});
+
+// Namecoin name-operation payload. The on-the-wire shape is:
+//   message NamecoinOp {
+//       required NameOpKind kind = 1;
+//       optional bytes commitment_hash = 2;
+//       optional bytes name = 3;
+//       optional bytes value = 4;
+//       optional bytes rand = 5;
+//   }
+// All `bytes` fields are represented here as hex strings to match the
+// surrounding TxOutputType conventions (e.g. `op_return_data`).
+export type NamecoinOp = Static<typeof NamecoinOp>;
+export const NamecoinOp = Type.Object(
+    {
+        kind: NamecoinNameOpKind,
+        commitment_hash: Type.Optional(Type.String()),
+        name: Type.Optional(Type.String()),
+        value: Type.Optional(Type.String()),
+        rand: Type.Optional(Type.String()),
+    },
+    { $id: 'NamecoinOp' },
 );
 
 export type GetAddress = Static<typeof GetAddress>;
@@ -364,7 +409,7 @@ export const TxOutputBinType = Type.Object(
 export type ChangeOutputScriptType = Static<typeof ChangeOutputScriptType>;
 export const ChangeOutputScriptType = Type.Exclude(
     OutputScriptType,
-    Type.Literal('PAYTOOPRETURN'),
+    Type.Union([Type.Literal('PAYTOOPRETURN'), Type.Literal('PAYTONAMECOINOP')]),
     { $id: 'ChangeOutputScriptType' },
 );
 
@@ -397,6 +442,21 @@ export const TxOutputType = Type.Union(
             amount: Type.Union([Type.Literal('0'), Type.Literal(0)]),
             op_return_data: Type.String(),
             script_type: Type.Literal('PAYTOOPRETURN'),
+            orig_hash: Type.Optional(Type.String()),
+            orig_index: Type.Optional(Type.Number()),
+            payment_req_index: Type.Optional(Type.Number()),
+        }),
+        // Namecoin name-operation output. Carries a `NamecoinOp` payload via
+        // the `namecoin_op` field (proto field 13). The `address` field is
+        // populated with the user's Namecoin receive address (where the name's
+        // inner script script is sent) and `amount` is the dust-level name
+        // fee shown on the device for confirmation.
+        Type.Object({
+            address: Type.String(),
+            address_n: Type.Optional(Type.Never()),
+            amount: Type.Uint(),
+            namecoin_op: NamecoinOp,
+            script_type: Type.Literal('PAYTONAMECOINOP'),
             orig_hash: Type.Optional(Type.String()),
             orig_index: Type.Optional(Type.Number()),
             payment_req_index: Type.Optional(Type.Number()),

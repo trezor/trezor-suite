@@ -1,5 +1,13 @@
 # Storage changelog
 
+## Unreleased
+
+- Namecoin (`nmc`) re-enabled in Suite. Storage migration 52 (which purged
+  existing NMC accounts, transactions, wallet-settings and backend-settings on
+  upgrade) is intentionally **not** reverted. Users who upgraded past v26.x
+  before this release will need to re-add their NMC accounts manually; re-adding
+  the account creates fresh storage entries naturally.
+
 ## 26.6.0
 
 - purge desktop trading form draft keys (`trading-buy/*`, `trading-sell/`, `trading-exchange/`) from `formDrafts`

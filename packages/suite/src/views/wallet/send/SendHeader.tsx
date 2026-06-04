@@ -21,14 +21,30 @@ export const SendHeader = () => {
     const {
         outputs,
         control,
-        account: { networkType },
+        account: { networkType, symbol },
         formState: { isDirty },
         toggleOption,
 
         addOpReturn,
+        addNameOp,
         resetContext,
         loadTransaction,
     } = useSendFormContext();
+
+    // Capability probe for Namecoin name operations.
+    //
+    // Once trezor/trezor-firmware#7010 lands and ships in a release we should
+    // flip this gate to a real check (either a hard-coded firmware version
+    // floor against `device.features.major_version`/`minor_version`/`patch_version`
+    // or, preferably, a runtime probe of @trezor/connect's known
+    // OutputScriptType enum for the PAYTONAMECOINOP literal).
+    //
+    // Until then the gate is hard-coded `false` so the menu item stays hidden
+    // by default and reviewers can flip it in one place.
+    //
+    // TODO(namecoin): replace with a proper capability check once firmware
+    // version with #7010 is known.
+    const hasNameOpSupport = false;
 
     const enabledFormOptions = useWatch({
         name: 'options',
@@ -37,6 +53,7 @@ export const SendHeader = () => {
     });
 
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
+    const nameOpOutput = (outputs || []).find(o => o.type === 'name-op');
     const locktimeEnabled = enabledFormOptions.includes('bitcoinLocktime');
     const broadcastEnabled = enabledFormOptions.includes('broadcast');
     const options: Array<DropdownMenuItemProps> = [
@@ -54,6 +71,16 @@ export const SendHeader = () => {
             label: <Translation id="OP_RETURN_ADD" />,
             isDisabled: !!opreturnOutput,
             isHidden: networkType !== 'bitcoin',
+        },
+        {
+            'data-testid': '@send/header-dropdown/name-op',
+            onClick: addNameOp,
+            label: <Translation id="NAME_OP_ADD" />,
+            isDisabled: !!nameOpOutput,
+            // Only show for Namecoin AND when the connected device firmware
+            // advertises PAYTONAMECOINOP support. The latter gate is hard-coded
+            // false today; see hasNameOpSupport above.
+            isHidden: symbol !== 'nmc' || !hasNameOpSupport,
         },
         {
             'data-testid': '@send/header-dropdown/locktime',

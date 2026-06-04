@@ -527,6 +527,27 @@ export const networks = {
         tradeCryptoId: 'zcash',
         yieldXyzId: null,
     },
+    nmc: {
+        symbol: 'nmc',
+        displaySymbol: 'NMC',
+        name: 'Namecoin',
+        networkType: 'bitcoin',
+        bip43Path: "m/44'/7'/i'",
+        decimals: 8,
+        testnet: false,
+        // The previous `https://nmc1.trezor.io` blockbook backend is offline. Until
+        // a maintained blockbook is available, users must configure a custom
+        // backend under Settings -> Coins -> Namecoin -> Backends to get account
+        // discovery and balances. The block explorer falls back to a community
+        // service (https://www.namebrow.se) so links keep working out of the box.
+        explorer: getExplorerUrls('https://www.namebrow.se', 'bitcoin'),
+        features: ['sign-verify'],
+        backendTypes: ['blockbook'],
+        accountTypes: {},
+        coingeckoId: 'namecoin',
+        tradeCryptoId: 'namecoin',
+        yieldXyzId: null,
+    },
     // testnets
     test: {
         symbol: 'test',
