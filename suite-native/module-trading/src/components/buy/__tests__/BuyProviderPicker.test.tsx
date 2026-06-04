@@ -1,4 +1,5 @@
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { act, fireEvent, screen } from '@suite-native/test-utils-store';
 import {
@@ -9,7 +10,6 @@ import {
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow, mergeDeepObject } from '@trezor/utils';
 
 import {
@@ -22,8 +22,8 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
 const reportMock = jest.fn();
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 describe('BuyProviderPicker', () => {

@@ -17,6 +17,7 @@
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/services": "workspace:*",
         "@testing-library/react-native": "13.3.3",

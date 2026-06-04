@@ -4,7 +4,8 @@ import { deviceInitialState } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { tradingBuyActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation, localeInitialState } from '@suite-native/intl';
 import {
@@ -25,7 +26,6 @@ import {
 } from '@suite-native/trading-fixtures';
 import { tradingSlice } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
@@ -35,8 +35,8 @@ const reportMock = jest.fn();
 const creditCardPaymentMethodTranslation = getTranslation(
     'moduleTrading.paymentMethods.creditCard',
 );
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 describe('BuyPaymentMethodPicker', () => {

@@ -1,14 +1,14 @@
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 import { act, renderHook } from '@suite-native/test-utils-store';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useReportOnboardingStepViewedAnalytics } from '../useReportOnboardingStepViewedAnalytics';
 
 const renderUseReportStepViewed = () => {
     const services: NativeAnalyticsDep = {
-        analytics: mockAnalytics(jest.fn()),
+        analytics: mockNativeAnalytics(jest.fn()),
     };
 
     const view = renderHook(() => useReportOnboardingStepViewedAnalytics(), {

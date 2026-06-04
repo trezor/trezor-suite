@@ -1,4 +1,5 @@
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { act, screen } from '@suite-native/test-utils-store';
 import {
@@ -9,7 +10,6 @@ import {
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import {
     type PreloadedStatePartial,
@@ -29,8 +29,8 @@ jest.mock('../../concierge/ConciergeAlert', () => ({
 }));
 
 const reportMock = jest.fn();
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 describe('SellForm', () => {

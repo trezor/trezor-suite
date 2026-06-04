@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import { events } from '@suite-native/analytics';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 
 import { biometricsSlice, biometricsSliceInitialState } from '../biometricsSlice';
 import {
@@ -51,7 +51,7 @@ const createBiometricsStore = (
                 thunk: {
                     extraArgument: {
                         services: {
-                            analytics: mockAnalytics(analyticsReport),
+                            analytics: mockNativeAnalytics(analyticsReport),
                         },
                     },
                 },
