@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -40,6 +40,9 @@ const mapSuiteUpdateStatusToCallToActionTranslation: Record<UpdateStatus, Transl
     'update-downloaded-manual': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
 };
 
+const ENTRANCE_ANIMATION_SEQUENCE = ['drop', 'shake'] as const;
+let hasUpdateNotificationEntranceAnimated = false;
+
 export const UpdateNotificationBanner = () => {
     const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
@@ -54,6 +57,13 @@ export const UpdateNotificationBanner = () => {
     } = useSelector(selectUpdateStatus);
 
     const { updateStatus, updateStatusDevice, updateStatusSuite } = updateStatusData;
+    const shouldAnimateEntrance = !hasUpdateNotificationEntranceAnimated;
+
+    useEffect(() => {
+        if (shouldAnimateEntrance) {
+            hasUpdateNotificationEntranceAnimated = true;
+        }
+    }, [shouldAnimateEntrance]);
 
     const isUpdateAvailable =
         (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
@@ -104,7 +114,7 @@ export const UpdateNotificationBanner = () => {
 
     return (
         <SidebarBanner
-            animate={['drop', 'shake']}
+            animate={shouldAnimateEntrance ? ENTRANCE_ANIMATION_SEQUENCE : 'drop'}
             ctaLabel={<Translation id={translationCallToAction} />}
             closeLabel={<Translation id="TR_DISMISS" />}
             heading={<Translation id={translationHeader} />}
