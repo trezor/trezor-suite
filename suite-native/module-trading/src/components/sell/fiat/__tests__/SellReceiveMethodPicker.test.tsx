@@ -10,6 +10,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { banxaBankTransferSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import {
@@ -25,9 +26,7 @@ const creditCardPaymentMethodTranslation = getTranslation(
     'moduleTrading.paymentMethods.creditCard',
 );
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('SellReceiveMethodPicker', () => {

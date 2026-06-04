@@ -18,6 +18,7 @@ import {
     usdtAsset,
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormValues, type ReceiveAccount } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
@@ -26,9 +27,7 @@ import { useExchangeQuotes } from '../useExchangeQuotes';
 
 const mockReport = jest.fn();
 const services = {
-    analytics: {
-        report: mockReport,
-    },
+    analytics: mockAnalytics(mockReport),
 };
 
 jest.mock('@trezor/react-utils', () => {

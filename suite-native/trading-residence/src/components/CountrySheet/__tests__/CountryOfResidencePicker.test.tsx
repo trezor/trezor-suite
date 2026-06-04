@@ -13,6 +13,7 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
 import { type TradingLocationFormValues } from '../../../types/tradingLocationForm';
@@ -26,9 +27,7 @@ let mockUseCountryFilteredData: jest.Mock;
 
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 jest.mock('@suite-common/trading', () => ({

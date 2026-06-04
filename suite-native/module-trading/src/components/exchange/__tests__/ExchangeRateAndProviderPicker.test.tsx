@@ -4,6 +4,7 @@ import { Form } from '@suite-native/forms';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import {
@@ -17,9 +18,7 @@ import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker'
 
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('ExchangeRateAndProviderPicker', () => {

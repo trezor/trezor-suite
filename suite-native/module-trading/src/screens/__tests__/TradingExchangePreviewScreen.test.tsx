@@ -18,6 +18,7 @@ import {
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import {
@@ -130,9 +131,7 @@ describe('TradingExchangePreviewScreen', () => {
         const testStore = customStore ?? store;
         const reportMock = jest.fn();
         const services = {
-            analytics: {
-                report: reportMock,
-            },
+            analytics: mockAnalytics(reportMock),
         };
         jest.clearAllMocks();
 

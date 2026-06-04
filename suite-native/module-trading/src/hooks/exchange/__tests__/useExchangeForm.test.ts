@@ -29,6 +29,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
@@ -36,9 +37,7 @@ import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm'
 
 const mockReport = jest.fn();
 const services = {
-    analytics: {
-        report: mockReport,
-    },
+    analytics: mockAnalytics(mockReport),
 };
 type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
 

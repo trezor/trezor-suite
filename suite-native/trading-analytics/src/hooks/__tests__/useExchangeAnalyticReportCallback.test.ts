@@ -11,14 +11,13 @@ import {
     invityDexQuote,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
 
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('useExchangeAnalyticReportCallback', () => {

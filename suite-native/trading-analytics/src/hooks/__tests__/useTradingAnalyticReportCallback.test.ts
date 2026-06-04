@@ -11,14 +11,13 @@ import {
     getWalletState,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';
 
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('useTradingAnalyticReportCallback', () => {

@@ -9,6 +9,7 @@ import {
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow, mergeDeepObject } from '@trezor/utils';
 
 import {
@@ -22,9 +23,7 @@ import { BuyProviderPicker } from '../BuyProviderPicker';
 
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('BuyProviderPicker', () => {

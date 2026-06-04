@@ -14,15 +14,14 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
 
 const mockNavigationGoBack = jest.fn();
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 jest.mock('@react-navigation/native', () => ({

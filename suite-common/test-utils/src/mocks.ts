@@ -14,6 +14,7 @@ import {
     type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { AccountUtxo, Device, Features, TrezorConnect } from '@trezor/connect';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
@@ -174,9 +175,7 @@ const getAnalytics = () => {
     return {
         __esModule: true, // this property makes it work
         ...originalModule,
-        analytics: {
-            report: jest.fn(),
-        },
+        analytics: mockAnalytics(jest.fn()),
     };
 };
 

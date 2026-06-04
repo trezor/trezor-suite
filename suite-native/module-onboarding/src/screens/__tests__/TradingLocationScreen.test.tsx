@@ -3,15 +3,14 @@ import { type RouteProp } from '@react-navigation/native';
 import { events } from '@suite-native/analytics';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils-store';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
 
 const mockExitOnboardingFlow = jest.fn();
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 jest.mock('@react-navigation/native', () => ({

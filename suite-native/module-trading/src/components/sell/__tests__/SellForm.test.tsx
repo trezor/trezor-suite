@@ -9,6 +9,7 @@ import {
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import {
     type PreloadedStatePartial,
@@ -29,9 +30,7 @@ jest.mock('../../concierge/ConciergeAlert', () => ({
 
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('SellForm', () => {

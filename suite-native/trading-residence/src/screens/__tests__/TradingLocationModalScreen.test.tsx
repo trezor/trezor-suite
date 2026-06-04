@@ -14,6 +14,7 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import {
     TradingLocationModalScreen,
@@ -23,9 +24,7 @@ import {
 const mockNavigationDispatch = jest.fn();
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 const mockRoute: TradingLocationModalScreenProps['route'] = {
