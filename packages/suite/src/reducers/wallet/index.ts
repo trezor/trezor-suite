@@ -16,6 +16,7 @@ import {
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     stablecoinYieldReducer,
+    tronStakeReducer,
 } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -57,6 +58,7 @@ const WalletReducers = combineReducers({
     stake: stakeReducer,
     settings: walletSettingsReducer,
     stablecoinYield: stablecoinYieldReducer,
+    tronStake: tronStakeReducer,
 });
 
 export default WalletReducers;
