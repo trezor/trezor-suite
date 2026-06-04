@@ -6,7 +6,7 @@ import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
 } from '@suite/authenticity-checks';
-import { SuiteSyncBanner, selectIsUnsupportedDeviceBannerDismissed } from '@suite/suite-sync';
+import { SuiteSyncBanner, selectIsSuiteSyncBannerVisible } from '@suite/suite-sync';
 import {
     selectDeviceStaticSessionId,
     selectIsDeviceBackupRequired,
@@ -14,10 +14,6 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectBannerMessage } from '@suite-common/message-system';
-import {
-    selectHasDeviceSuiteSyncError,
-    selectSuiteSyncInteraction,
-} from '@suite-common/suite-sync';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
@@ -65,21 +61,9 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
-    const hasSuiteSyncError = useSelector(state =>
-        selectHasDeviceSuiteSyncError(state, deviceStaticSessionId),
+    const isSuiteSyncBannerVisible = useSelector(state =>
+        selectIsSuiteSyncBannerVisible(state, deviceStaticSessionId),
     );
-    const suiteSyncInteraction = useSelector(state =>
-        selectSuiteSyncInteraction(state, deviceStaticSessionId),
-    );
-    const isUnsupportedDeviceBannerDismissed = useSelector(
-        selectIsUnsupportedDeviceBannerDismissed,
-    );
-    const isSuiteSyncBannerVisible =
-        deviceStaticSessionId !== null &&
-        hasSuiteSyncError &&
-        suiteSyncInteraction !== null &&
-        suiteSyncInteraction !== 'suite-sync-off' &&
-        (suiteSyncInteraction !== 'unsupported' || !isUnsupportedDeviceBannerDismissed);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
