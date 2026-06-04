@@ -2,16 +2,15 @@ import { useState } from 'react';
 
 import { File } from 'expo-file-system';
 
-import { selectBip329Dep } from '@suite-common/bip329-types';
+import { bip329LabelSchema, selectBip329Dep } from '@suite-common/bip329-types';
 import { useServices } from '@suite-common/dependency-injection';
+import { parseJsonl } from '@suite-common/jsonl';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 import { useToast } from '@suite-native/toasts';
 import { type StaticSessionId } from '@trezor/device-utils';
-
-import { parseJsonlBip329Labels } from './parseJsonlBip329Labels';
 
 type Bip329ImportButtonProps = {
     accountDescriptor: AccountDescriptor;
@@ -29,76 +28,66 @@ export const Bip329ImportButton = ({
 
     const handleImport = async () => {
         setIsImporting(true);
+
+        let content: string;
         try {
-            let picked: File | File[];
-            try {
-                picked = await File.pickFileAsync();
-            } catch {
-                showToast({
-                    intent: 'critical',
-                    message: (
-                        <Translation id="moduleAccounts.accountSettingsBip329.import.importFailedToast" />
-                    ),
-                });
-
-                return;
-            }
-
+            const picked = await File.pickFileAsync();
             const file = Array.isArray(picked) ? picked[0] : picked;
 
             if (!file) {
-                return;
-            }
-
-            let content: string;
-            try {
-                content = await file.text();
-            } catch {
-                showToast({
-                    intent: 'critical',
-                    message: (
-                        <Translation id="moduleAccounts.accountSettingsBip329.import.importFailedToast" />
-                    ),
-                });
+                setIsImporting(false);
 
                 return;
             }
 
-            const parsed = parseJsonlBip329Labels(content);
-
-            if (!parsed.success) {
-                showToast({
-                    intent: 'critical',
-                    message: (
-                        <Translation id="moduleAccounts.accountSettingsBip329.import.invalidFileToast" />
-                    ),
-                });
-
-                return;
-            }
-
-            const result = await bip329.import({
-                deviceStaticSessionId,
-                accountDescriptor,
-                bip329Labels: parsed.payload,
-            });
-
-            if (!result.success) {
-                handleSuiteSyncError(result.error);
-
-                return;
-            }
-
+            content = await file.text();
+        } catch {
             showToast({
-                intent: 'neutral',
-                icon: 'copy',
+                intent: 'critical',
                 message: (
-                    <Translation id="moduleAccounts.accountSettingsBip329.import.importSuccessfulToast" />
+                    <Translation id="moduleAccounts.accountSettingsBip329.import.importFailedToast" />
                 ),
             });
-        } finally {
             setIsImporting(false);
+
+            return;
         }
+
+        const parsed = parseJsonl(content, bip329LabelSchema);
+
+        if (!parsed.success) {
+            showToast({
+                intent: 'critical',
+                message: (
+                    <Translation id="moduleAccounts.accountSettingsBip329.import.invalidFileToast" />
+                ),
+            });
+            setIsImporting(false);
+
+            return;
+        }
+
+        const result = await bip329.import({
+            deviceStaticSessionId,
+            accountDescriptor,
+            bip329Labels: parsed.payload,
+        });
+
+        if (!result.success) {
+            handleSuiteSyncError(result.error);
+            setIsImporting(false);
+
+            return;
+        }
+
+        showToast({
+            intent: 'neutral',
+            icon: 'copy',
+            message: (
+                <Translation id="moduleAccounts.accountSettingsBip329.import.importSuccessfulToast" />
+            ),
+        });
+        setIsImporting(false);
     };
 
     return (
