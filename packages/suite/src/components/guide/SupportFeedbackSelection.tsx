@@ -6,77 +6,26 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Icon, Paragraph } from '@trezor/components';
+import { Column, Icon, IconCircle, Paragraph, Row } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
-import { borders, transitions, typography } from '@trezor/theme';
 import { TREZOR_FORUM_URL } from '@trezor/urls';
 
 import { setView } from 'src/actions/suite/guideActions';
-import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
+import {
+    GuideContent,
+    GuideHeader,
+    GuideSectionHeadline,
+    GuideViewWrapper,
+} from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+import { GuideItem } from './GuideItem';
 
 const Section = styled.div`
     & + & {
         margin-top: 50px;
-    }
-`;
-
-const SectionHeader = styled.h3`
-    ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.contentSecondary};
-    padding: 0 0 18px;
-`;
-
-const SectionButton = styled.button<{ $hasBackground?: boolean }>`
-    cursor: pointer;
-    border-radius: ${borders.radii.sm};
-    width: 100%;
-    margin: 0 0 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 13px;
-    background: ${({ $hasBackground, theme }) =>
-        $hasBackground ? theme.elementFillElevated : 'none'};
-    border: 0;
-
-    transition: background ${transitions.speed.normal} ${transitions.type};
-
-    &:hover {
-        background: ${({ theme }) => theme.elementFillElevatedHovered};
-    }
-`;
-
-const Details = styled.div`
-    padding: 10px 0 0;
-    ${typography['body-xs']}
-    color: ${({ theme }) => theme.contentSecondary};
-    display: flex;
-    justify-content: space-around;
-`;
-
-const DetailItem = styled.div`
-    display: inline-flex;
-    align-items: center;
-`;
-
-const Label = styled.div`
-    padding: 0 0 0 5px;
-    text-align: left;
-    flex-grow: 1;
-`;
-
-const LabelHeadline = styled.strong`
-    ${typography['body-md']}
-    color: ${({ theme }) => theme.contentPrimary};
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    &:not(:only-child) {
-        margin-bottom: 5px;
     }
 `;
 
@@ -121,88 +70,79 @@ export const SupportFeedbackSelection = () => {
             />
             <GuideContent>
                 <Section>
-                    <SectionHeader>
-                        <Translation id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />
-                    </SectionHeader>
-                    <SectionButton
-                        onClick={handleBugButtonClick}
-                        $hasBackground
-                        data-testid="@guide/feedback/bug"
-                    >
-                        <Icon name="lifebuoy" size={40} />
-                        <Label>
-                            <LabelHeadline>
+                    <GuideSectionHeadline id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />
+                    <Column gap={12}>
+                        <GuideItem
+                            onClick={handleBugButtonClick}
+                            data-testid="@guide/feedback/bug"
+                            icon={<IconCircle name="lifebuoy" size={40} intent="neutral" />}
+                        >
+                            <Column gap={4} justifyContent="space-between">
                                 <Translation id="TR_BUG" />
-                            </LabelHeadline>
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation id="TR_GUIDE_BUG_LABEL" />
-                            </Paragraph>
-                        </Label>
-                    </SectionButton>
-                    <SectionButton
-                        onClick={handleFeedbackButtonClick}
-                        $hasBackground
-                        data-testid="@guide/feedback/suggestion"
-                    >
-                        <Icon name="megaphone" size={40} />
-                        <Label>
-                            <LabelHeadline>
+                                <Paragraph
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <Translation id="TR_GUIDE_BUG_LABEL" />
+                                </Paragraph>
+                            </Column>
+                        </GuideItem>
+                        <GuideItem
+                            onClick={handleFeedbackButtonClick}
+                            data-testid="@guide/feedback/suggestion"
+                            icon={<IconCircle name="megaphone" size={40} intent="neutral" />}
+                        >
+                            <Column gap={4} justifyContent="space-between">
                                 <Translation id="TR_SUGGESTION" />
-                            </LabelHeadline>
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation id="TR_GUIDE_SUGGESTION_LABEL" />
-                            </Paragraph>
-                        </Label>
-                    </SectionButton>
+                                <Paragraph
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <Translation id="TR_GUIDE_SUGGESTION_LABEL" />
+                                </Paragraph>
+                            </Column>
+                        </GuideItem>
+                    </Column>
                 </Section>
 
                 <Section>
-                    <SectionHeader>
-                        <Translation id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
-                    </SectionHeader>
-
-                    <SupportConsentPopover>
-                        <SectionButton $hasBackground data-testid="@guide/support">
-                            <Label>
-                                <LabelHeadline>
+                    <GuideSectionHeadline id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
+                    <Column gap={12}>
+                        <SupportConsentPopover>
+                            <GuideItem onClick={() => {}} data-testid="@guide/support">
+                                <Row gap={8} justifyContent="space-between">
                                     <Translation id="TR_GUIDE_SUPPORT" />
-                                    <Icon size={20} name="arrowLineUpRight" />
-                                </LabelHeadline>
-                            </Label>
-                        </SectionButton>
-                    </SupportConsentPopover>
+                                    <Icon name="arrowLineUpRight" size={20} />
+                                </Row>
+                            </GuideItem>
+                        </SupportConsentPopover>
 
-                    <SectionButton
-                        $hasBackground
-                        data-testid="@guide/forum"
-                        onClick={() => window.open(TREZOR_FORUM_URL, '_blank')}
-                    >
-                        <Label>
-                            <LabelHeadline>
+                        <GuideItem
+                            onClick={() => window.open(TREZOR_FORUM_URL, '_blank')}
+                            data-testid="@guide/forum"
+                        >
+                            <Row gap={8} justifyContent="space-between">
                                 <Translation id="TR_GUIDE_FORUM" />
-                                <Icon size={20} name="arrowLineUpRight" />
-                            </LabelHeadline>
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation id="TR_GUIDE_FORUM_LABEL" />
-                            </Paragraph>
-                        </Label>
-                    </SectionButton>
+                                <Icon name="arrowLineUpRight" size={20} />
+                            </Row>
+                        </GuideItem>
+                    </Column>
                 </Section>
 
-                <Details>
-                    <DetailItem data-testid="@guide/support/version">
+                <Row
+                    gap={16}
+                    margin={{ top: 20 }}
+                    alignItems="center"
+                    justifyContent="space-around"
+                >
+                    <Paragraph
+                        data-testid="@guide/support/version"
+                        typographyStyle="body-xs"
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         <Translation id="TR_APP" />
                         :&nbsp;
                         {!isDevEnv && appUpToDate ? (
@@ -222,8 +162,13 @@ export const SupportFeedbackSelection = () => {
                                 {isDevEnv && '-dev'}
                             </>
                         )}
-                    </DetailItem>
-                    <DetailItem>
+                    </Paragraph>
+                    <Paragraph
+                        data-testid="@guide/support/firmware"
+                        typographyStyle="body-xs"
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         <Translation id="TR_FIRMWARE" />
                         :&nbsp;
                         {firmwareUpToDate ? (
@@ -240,8 +185,8 @@ export const SupportFeedbackSelection = () => {
                         ) : (
                             firmwareVersion
                         )}
-                    </DetailItem>
-                </Details>
+                    </Paragraph>
+                </Row>
             </GuideContent>
         </GuideViewWrapper>
     );

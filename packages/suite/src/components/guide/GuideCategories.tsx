@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
 
 import { type GuideCategory } from '@suite-common/suite-types';
-import { Box, Column, Paragraph } from '@trezor/components';
+import { Box, Column } from '@trezor/components';
 
-import { GuideNode } from 'src/components/guide';
+import { GuideNode } from './GuideNode';
+import { GuideSectionHeadline } from './GuideSectionHeadline';
 
 type GuideCategoriesProps = {
     node: GuideCategory | null;
@@ -17,11 +18,7 @@ export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
 
     return (
         <Box as="section" padding={{ bottom: 20 }}>
-            {label && (
-                <Paragraph as="h3" typographyStyle="body-sm-strong" padding={{ bottom: 16 }}>
-                    {label}
-                </Paragraph>
-            )}
+            {label && <GuideSectionHeadline>{label}</GuideSectionHeadline>}
             <Column gap={12} data-testid="@guide/nodes">
                 {node.children.map(child => (
                     <GuideNode key={child.id} node={child} />
