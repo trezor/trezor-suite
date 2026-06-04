@@ -1,0 +1,1 @@
+export { mockAnalytics } from './mockAnalytics';
