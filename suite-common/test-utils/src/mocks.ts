@@ -1,6 +1,5 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import {
     type Action,
     type GuideArticle,
@@ -15,7 +14,6 @@ import {
     type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { AccountUtxo, Device, Features, TrezorConnect } from '@trezor/connect';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
@@ -168,17 +166,6 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
     },
     ...t,
 });
-
-// Mocked @suite-common/analytics-redux package used in various tests
-const getAnalytics = () => {
-    const originalModule = jest.requireActual('@suite-common/analytics-redux');
-
-    return {
-        __esModule: true, // this property makes it work
-        ...originalModule,
-        analytics: mockAnalytics<AnalyticsSharedEvents>(jest.fn()),
-    };
-};
 
 const getMessageSystemConfig = (
     root?: Partial<MessageSystem>,
@@ -525,7 +512,6 @@ export const testMocks = {
     getFirmwareReleaseConfigInfo,
     getDeviceFeatures,
     getWalletTransaction,
-    getAnalytics,
     getMessageSystemConfig,
     getGuideNode,
     getUtxo,
