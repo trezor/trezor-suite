@@ -73,7 +73,15 @@ export class TradingReceiveAccount {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
-        await this.receiveAccountModalSuiteOption.nth(index).click();
+        const selectedOption = this.receiveAccountModalSuiteOption.nth(index);
+        // Capture the option's account name (not the balance/address)
+        const selectedAccountName =
+            (
+                await selectedOption
+                    .getByTestId('@trading/receive-account-modal/option/suite/name')
+                    .textContent()
+            )?.trim() ?? '';
+        await selectedOption.click();
 
         if (symbol === 'btc') {
             await expect(this.bitcoinReceiveAddressModal).toBeVisible();
@@ -82,6 +90,10 @@ export class TradingReceiveAccount {
         }
 
         await expect(this.receiveAccountModal).toBeHidden();
+
+        // Verify the picker now reflects the account we just selected
+        await expect(this.selectedReceiveAccount).not.toBeEmpty();
+        await expect(this.selectedReceiveAccount).toContainText(selectedAccountName);
     }
 
     @step()
