@@ -41,8 +41,6 @@ export const TextInputField = forwardRef<InputType, FieldProps>(
             name,
             defaultValue,
             valueTransformer,
-            // Accessing `label` from destructured props does break the `RequireOneOrNone` validation of `Input` props.
-            label: otherProps.label,
         });
         const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field;
 

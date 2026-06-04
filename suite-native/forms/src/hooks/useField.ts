@@ -8,14 +8,12 @@ import { type FieldName } from '../types';
 
 interface UseFieldArgs {
     name: FieldName;
-    label?: string;
     defaultValue?: unknown;
     valueTransformer?: (value: string) => string;
 }
 
 export const useField = ({
     name,
-    label,
     defaultValue,
     valueTransformer = value => value,
 }: UseFieldArgs) => {
@@ -39,8 +37,7 @@ export const useField = ({
     // Allows to parse/transform the value before it's set to the input.
     const transformedValue = G.isString(value) ? valueTransformer(value) : '';
 
-    // TODO: proper error message resolution using intl
-    const errorMessage = label ? error?.message?.replace(name, label) : error?.message;
+    const errorMessage = error?.message;
     const hasError = !!error;
 
     return {

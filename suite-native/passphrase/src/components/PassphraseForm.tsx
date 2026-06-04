@@ -59,7 +59,7 @@ export const PassphraseForm = ({
 
     const form = useForm<PassphraseFormValues>({
         validation: passphraseFormSchema,
-        reValidateMode: 'onSubmit',
+        mode: 'onSubmit',
         defaultValues: {
             passphrase: '',
         },
@@ -101,7 +101,7 @@ export const PassphraseForm = ({
                             onBlur={() => setIsInputFocused(false)}
                             testID="@passphrase/passphraseInput"
                         />
-                        {isDirty && (
+                        {isInputFocused && (
                             <Animated.View entering={FadeIn} exiting={FadeOut}>
                                 <Button
                                     accessibilityRole="button"
@@ -109,7 +109,7 @@ export const PassphraseForm = ({
                                     onPress={handleCreateHiddenWallet}
                                     testID="@passphrase/confirmButton"
                                 >
-                                    <Translation id="modulePassphrase.form.enterWallet" />
+                                    <Translation id="generic.buttons.confirm" />
                                 </Button>
                             </Animated.View>
                         )}
