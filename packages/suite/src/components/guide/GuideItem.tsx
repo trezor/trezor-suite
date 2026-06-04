@@ -3,10 +3,10 @@ import { type ReactNode } from 'react';
 import { Card, Paragraph, Row } from '@trezor/components';
 
 type GuideItemProps = {
-    onClick: () => void;
+    onClick?: () => void;
     'data-testid': string;
     icon?: ReactNode;
-    children: string;
+    children: ReactNode;
 };
 
 export const GuideItem = ({

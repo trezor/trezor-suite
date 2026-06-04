@@ -42,12 +42,15 @@ export const GuideArticle = () => {
 
     const title = currentNode ? getNodeTitle(currentNode, language) : undefined;
 
+    // Title is rendered in the header, so strip the leading `# Title` from the markdown.
+    const articleBody = markdown?.replace(/^\s*#\s.*\r?\n+/, '');
+
     return (
         <GuideViewWrapper>
             <GuideHeader back={goBack} label={title} />
             <GuideContent>
                 <ArticleWrapper>
-                    <GuideMarkdown markdown={markdown} />
+                    <GuideMarkdown markdown={articleBody} />
                 </ArticleWrapper>
                 {hasError && <Translation id="TR_GENERIC_ERROR_TITLE" />}
             </GuideContent>

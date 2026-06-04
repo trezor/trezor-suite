@@ -54,7 +54,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     }, [query, searchResult, setSearchActive, loading]);
 
     return (
-        <Box margin={{ bottom: 8 }}>
+        <Box margin={{ bottom: 12 }}>
             <Input
                 placeholder={translationString('TR_SEARCH')}
                 value={query}

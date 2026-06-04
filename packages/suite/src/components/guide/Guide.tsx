@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { Box, Button, Column, Divider } from '@trezor/components';
+import { Box, Column, Divider, IconCircle } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -14,6 +14,8 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+import { GuideItem } from './GuideItem';
 
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
@@ -39,17 +41,15 @@ export const Guide = () => {
 
                 <div>
                     <Divider margin={{ bottom: 0, top: 0 }} />
+
                     <Box padding={16}>
-                        <Button
-                            data-testid="@guide/button-feedback"
+                        <GuideItem
                             onClick={handleFeedbackButtonClick}
-                            iconLeft="lifebuoy"
-                            intent="neutral"
-                            priority="secondary"
-                            width="100%"
+                            data-testid="@guide/button-feedback"
+                            icon={<IconCircle name="lifebuoy" size={40} intent="neutral" />}
                         >
                             <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                        </Button>
+                        </GuideItem>
                     </Box>
                 </div>
             </Column>
