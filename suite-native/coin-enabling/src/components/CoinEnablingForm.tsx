@@ -14,10 +14,10 @@ import { Translation } from '@suite-native/intl';
 
 import {
     type CoinEnablingFormValues,
-    coinEnablingFormValidationSchema,
     getEnabledCoinsFromNetworkSymbols,
     getNetworkSymbolsFromEnabledCoins,
-} from '../coinEnablingSchema';
+} from '../coinEnablingFormUtils';
+import { coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 
 export const CoinEnablingForm = () => {
