@@ -13,6 +13,7 @@ export {
     dismissUnsupportedDeviceBanner,
     initialSuiteSyncDesktopState,
     selectDesktopSuiteSyncInteraction,
+    selectIsSuiteSyncBannerVisible,
     selectIsUnsupportedDeviceBannerDismissed,
     selectShowEnableSuiteSyncModal,
     suiteSyncSlice,
