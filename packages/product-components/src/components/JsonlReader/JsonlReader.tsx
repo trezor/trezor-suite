@@ -3,6 +3,7 @@ import { type ChangeEvent, type ReactNode, useId, useRef, useState } from 'react
 import styled from 'styled-components';
 import type { ObjectSchema } from 'yup';
 
+import { type ParseJsonlError, parseJsonl } from '@suite-common/jsonl';
 import {
     Button,
     type ButtonProps,
@@ -14,8 +15,6 @@ import {
     pickFormCellProps,
 } from '@trezor/components';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
-
-import { type ParseJsonlError, parseJsonl } from './parseJsonl';
 
 export const allowedJsonlReaderFrameProps = [
     'margin',

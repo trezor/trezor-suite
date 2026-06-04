@@ -1909,18 +1909,18 @@ export const messages = {
         accountSettingsBip329: {
             title: 'Transaction labels',
             description:
-                ‘Import or export transaction labels for this account. Compatible with other wallet applications that support the BIP-329 format.’,
-            importButton: ‘Import’,
-            exportButton: ‘Export’,
+                'Import or export transaction labels for this account. Compatible with other wallet applications that support the BIP-329 format.',
+            importButton: 'Import',
+            exportButton: 'Export',
             export: {
-                exportSuccessfulToast: ‘Labels exported successfully’,
-                exportFailedToast: ‘Labels export failed’,
-                fileSavingNotSupported: "File saving isn’t supported on this platform.",
+                exportSuccessfulToast: 'Labels exported successfully',
+                exportFailedToast: 'Labels export failed',
+                fileSavingNotSupported: 'File saving isn’t supported on this platform.',
             },
             import: {
-                importSuccessfulToast: ‘Labels imported successfully’,
-                importFailedToast: ‘Labels import failed’,
-                invalidFileToast: ‘The selected file is not a valid BIP-329 labels file.’,
+                importSuccessfulToast: 'Labels imported successfully',
+                importFailedToast: 'Labels import failed',
+                invalidFileToast: 'The selected file is not a valid BIP-329 labels file.',
             },
         },
     },
