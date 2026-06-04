@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { redactNumericalSubstring } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack, useDiscreetMode } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';

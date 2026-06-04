@@ -10364,6 +10364,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/discreet-mode@workspace:*, @suite-common/discreet-mode@workspace:suite-common/discreet-mode":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/discreet-mode@workspace:suite-common/discreet-mode"
+  dependencies:
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/e2e-evolu-client@workspace:*, @suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client":
   version: 0.0.0-use.local
   resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
@@ -10521,6 +10530,7 @@ __metadata:
   dependencies:
     "@formatjs/intl": "npm:4.1.2"
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10606,6 +10616,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11158,6 +11169,7 @@ __metadata:
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
@@ -11696,6 +11708,7 @@ __metadata:
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.5.1"
     "@storybook/react-native": "npm:^10.2.1"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -13326,6 +13339,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -14269,6 +14283,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
@@ -14496,6 +14511,17 @@ __metadata:
     react-redux: "npm:9.2.0"
     redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite/discreet-mode@workspace:*, @suite/discreet-mode@workspace:suite/discreet-mode":
+  version: 0.0.0-use.local
+  resolution: "@suite/discreet-mode@workspace:suite/discreet-mode"
+  dependencies:
+    "@suite-common/discreet-mode": "workspace:*"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+    styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
 
@@ -16527,6 +16553,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
@@ -16579,6 +16606,7 @@ __metadata:
     "@suite/backup": "workspace:*"
     "@suite/desktop-update": "workspace:*"
     "@suite/device": "workspace:*"
+    "@suite/discreet-mode": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/feature-feedback": "workspace:*"

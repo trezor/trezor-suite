@@ -1,4 +1,4 @@
-import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
 
 type RedactNumbersProps = {
     value: string | number;

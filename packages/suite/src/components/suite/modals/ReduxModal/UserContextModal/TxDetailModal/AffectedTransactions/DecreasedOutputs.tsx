@@ -1,4 +1,5 @@
 import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type FormState } from '@suite-common/wallet-types';
@@ -18,7 +19,6 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { type RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 type AmountRowProps = {

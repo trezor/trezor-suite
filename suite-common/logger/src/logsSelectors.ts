@@ -12,6 +12,7 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
+import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type BlockchainRootState,
@@ -19,7 +20,6 @@ import {
     selectBaseCurrency,
     selectEnabledCustomBackends,
     selectEnabledNetworks,
-    selectIsDiscreteModeActive,
 } from '@suite-common/wallet-core';
 import { type DeviceState } from '@trezor/connect';
 import {

@@ -1,11 +1,11 @@
 import { type JSX } from 'react';
 
+import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAreSatsAmountUnit,
     selectBaseCurrency,
-    selectIsDiscreteModeActive,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';

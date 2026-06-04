@@ -8,7 +8,7 @@ export * from './calculateChainedTransactionsFeeForRbf';
 export * from './cardanoUtils';
 export * from './csvParserUtils';
 export * from './deviceUtils';
-export * from './discreetModeUtils';
+
 export * from './ethUtils';
 export * from './ethereumStakingUtils';
 export * from './fiatConverterUtils';

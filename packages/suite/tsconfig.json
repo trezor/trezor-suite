@@ -53,6 +53,9 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"
@@ -163,6 +166,7 @@
         },
         { "path": "../../suite/backup" },
         { "path": "../../suite/desktop-update" },
+        { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/device" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },

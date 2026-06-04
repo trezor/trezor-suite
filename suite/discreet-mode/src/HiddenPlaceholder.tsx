@@ -1,11 +1,9 @@
 import { type MouseEventHandler, type ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
-import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
-import { RedactNumbersContext } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
+import { RedactNumbersContext, selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 
 type MouseCoords = { clientX: number; clientY: number };
 

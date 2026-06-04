@@ -17,6 +17,7 @@
         "@reduxjs/toolkit": "2.11.2",
         "@shopify/flash-list": "2.3.0",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/staking": "workspace:*",
