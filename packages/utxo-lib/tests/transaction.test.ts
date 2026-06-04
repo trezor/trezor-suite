@@ -8,7 +8,6 @@ import fixturesDecred from './__fixtures__/transaction/decred';
 import fixturesDoge from './__fixtures__/transaction/doge';
 import fixturesKomodo from './__fixtures__/transaction/komodo';
 import fixturesLitecoin from './__fixtures__/transaction/litecoin';
-import fixturesPeercoin from './__fixtures__/transaction/peercoin';
 import fixturesZcash from './__fixtures__/transaction/zcash';
 
 describe('Transaction', () => {
@@ -42,8 +41,6 @@ describe('Transaction', () => {
         fixturesDoge.valid.forEach(importExport);
 
         fixturesKomodo.valid.forEach(importExport);
-
-        fixturesPeercoin.valid.forEach(importExport);
 
         fixturesZcash.valid.forEach(importExport);
 
@@ -170,14 +167,6 @@ describe('Transaction', () => {
             });
         });
 
-        fixturesPeercoin.valid.forEach(f => {
-            it(`Peercoin: exports ${f.description} (${f.hash})`, () => {
-                const actual = utils.fromRaw(f.raw, { network: NETWORKS.peercoin });
-                actual.timestamp = f.raw.timestamp;
-                expect(actual.toHex()).toEqual(f.hex);
-            });
-        });
-
         fixturesLitecoin.valid.forEach(f => {
             it(`Litecoin: exports ${f.description} (${f.hash})`, () => {
                 const actual = utils.fromRaw(f.raw, { network: NETWORKS.litecoin });
@@ -232,7 +221,6 @@ describe('Transaction', () => {
             ...fixturesDash.valid,
             ...fixturesDoge.valid,
             ...fixturesDecred.valid,
-            ...fixturesPeercoin.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
             ...fixturesLitecoin.valid,
@@ -254,7 +242,6 @@ describe('Transaction', () => {
             ...fixturesDash.valid,
             ...fixturesDoge.valid,
             ...fixturesDecred.valid,
-            ...fixturesPeercoin.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
             ...fixturesLitecoin.valid,
@@ -276,7 +263,6 @@ describe('Transaction', () => {
             ...fixturesDash.valid,
             ...fixturesDoge.valid,
             ...fixturesDecred.valid,
-            ...fixturesPeercoin.valid,
             ...fixturesKomodo.valid,
             ...fixturesZcash.valid,
         ].forEach((f: utils.Fixture) => {

@@ -34,12 +34,6 @@ describe('isNetworkType', () => {
     });
 
     defs.forEach(name => {
-        const isPeercoin = name === 'peercoin' || name === 'peercoinTest';
-        it(`${name} ${isPeercoin ? 'is' : 'is not'} peercoin type`, () => {
-            expect(isNetworkType('peercoin', networks[name])).toBe(isPeercoin);
-        });
-    });
-    defs.forEach(name => {
         const isZcash = name === 'zcash' || name === 'zcashTest' || name === 'komodo';
         it(`${name} ${isZcash ? 'is' : 'is not'} zcash type`, () => {
             expect(isNetworkType('zcash', networks[name])).toBe(isZcash);
