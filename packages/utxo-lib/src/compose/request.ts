@@ -239,7 +239,6 @@ export function validateAndParseRequest(request: Request): CoinSelectRequest | C
         longTermFeeRate,
         dustThreshold: request.dustThreshold,
         baseFee: request.baseFee,
-        floorBaseFee: request.floorBaseFee,
         sortingStrategy: request.sortingStrategy,
     };
 }

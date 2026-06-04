@@ -822,12 +822,11 @@ export default [
         description: 'DOGE: 2 inputs, not enough to cover fee',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: ['200000000', '20000000'],
         outputs: ['120000001'],
         expected: {
-            fee: 100000000,
+            fee: 134000000,
         },
         dustThreshold: 100000000,
     },
@@ -835,7 +834,6 @@ export default [
         description: 'DOGE: 2 inputs, not enough to cover fee (tx size)',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             '200000000',
@@ -848,7 +846,7 @@ export default [
         ],
         outputs: ['110000000'],
         expected: {
-            fee: 200000000,
+            fee: 223200000,
         },
         dustThreshold: 100000000,
     },
@@ -856,12 +854,11 @@ export default [
         description: 'DOGE: 1 input, not enough to cover fee (output-dust)',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: ['200000000'],
         outputs: ['10000000'],
         expected: {
-            fee: 200000000,
+            fee: 219200000,
         },
         dustThreshold: 100000000,
     },
@@ -869,7 +866,6 @@ export default [
         description: 'DOGE: 1 input, 1 output, expect change',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: ['500000111'],
         outputs: ['100000000'],
@@ -885,10 +881,10 @@ export default [
                     value: '100000000',
                 },
                 {
-                    value: '300000111',
+                    value: '277400111',
                 },
             ],
-            fee: 100000000,
+            fee: 122600000,
         },
         dustThreshold: 100000000,
     },
@@ -896,7 +892,6 @@ export default [
         description: 'DOGE: 2 outputs, no change (spend dust)',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: ['400000000'],
         outputs: ['100000000', '5'],
@@ -923,14 +918,13 @@ export default [
         description: 'DOGE: 1 output, no change (tx size)',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
                 script: {
                     length: 1000,
                 },
-                value: '300000000',
+                value: '400000000',
             },
         ],
         outputs: ['100000000'],
@@ -941,7 +935,7 @@ export default [
                     script: {
                         length: 1000,
                     },
-                    value: '300000000',
+                    value: '400000000',
                 },
             ],
             outputs: [
@@ -949,7 +943,7 @@ export default [
                     value: '100000000',
                 },
             ],
-            fee: 200000000,
+            fee: 300000000,
         },
         dustThreshold: 100000000,
     },
@@ -957,7 +951,6 @@ export default [
         description: 'DOGE: 1 outputs, no change (increased fee rate)',
         feeRate: 150000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
@@ -965,7 +958,7 @@ export default [
                 script: {
                     length: 700,
                 },
-                value: '300000000',
+                value: '400000000',
             },
         ],
         outputs: ['100000000'],
@@ -976,7 +969,7 @@ export default [
                     script: {
                         length: 700,
                     },
-                    value: '300000000',
+                    value: '400000000',
                 },
             ],
             outputs: [
@@ -984,7 +977,7 @@ export default [
                     value: '100000000',
                 },
             ],
-            fee: 200000000,
+            fee: 300000000,
         },
         dustThreshold: 100000000,
     },

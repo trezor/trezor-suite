@@ -97,7 +97,6 @@ export type ComposeRequest<
     changeAddress: Change;
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE or RBF base fee
-    floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
     skipUtxoSelection?: boolean; // use custom utxo selection, without algorithm
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };

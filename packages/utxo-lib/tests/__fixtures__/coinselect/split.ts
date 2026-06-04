@@ -263,23 +263,22 @@ export default [
         description: 'DOGE: 1 to 1',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
-        inputs: ['200000011'],
+        inputs: ['220000011'],
         outputs: [{}],
         expected: {
             inputs: [
                 {
                     i: 0,
-                    value: '200000011',
+                    value: '220000011',
                 },
             ],
             outputs: [
                 {
-                    value: '100000011',
+                    value: '100800011',
                 },
             ],
-            fee: 100000000,
+            fee: 119200000,
         },
         dustThreshold: 100000000,
     },
@@ -287,15 +286,14 @@ export default [
         description: 'DOGE: 1 to 3',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
-        inputs: ['400000000'],
+        inputs: ['426000002'],
         outputs: [{}, {}, {}],
         expected: {
             inputs: [
                 {
                     i: 0,
-                    value: '400000000',
+                    value: '426000002',
                 },
             ],
             outputs: [
@@ -309,7 +307,7 @@ export default [
                     value: '100000000',
                 },
             ],
-            fee: 100000000,
+            fee: 126000002,
         },
         dustThreshold: 100000000,
     },
@@ -317,7 +315,6 @@ export default [
         description: 'DOGE: 1 to 1 with tx size',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
@@ -341,10 +338,10 @@ export default [
             ],
             outputs: [
                 {
-                    value: '200000011',
+                    value: '191600011',
                 },
             ],
-            fee: 200000000,
+            fee: 208400000,
         },
         dustThreshold: 100000000,
     },
@@ -352,7 +349,6 @@ export default [
         description: 'DOGE: 1 to 1 with increased feeRate',
         feeRate: 150000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
@@ -376,10 +372,10 @@ export default [
             ],
             outputs: [
                 {
-                    value: '200000011',
+                    value: '182400011',
                 },
             ],
-            fee: 200000000,
+            fee: 217600000,
         },
         dustThreshold: 100000000,
     },
@@ -387,7 +383,6 @@ export default [
         description: 'DOGE: 1 to 2 with dust output',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
@@ -405,13 +400,13 @@ export default [
             ],
             outputs: [
                 {
-                    value: '200000010',
+                    value: '177400010',
                 },
                 {
                     value: '1',
                 },
             ],
-            fee: 200000000,
+            fee: 222600000,
         },
         dustThreshold: 100000000,
     },
@@ -419,7 +414,6 @@ export default [
         description: 'DOGE: 1 to 1, not enough funds (feeRate)',
         feeRate: 700000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
@@ -429,7 +423,7 @@ export default [
         ],
         outputs: [{}],
         expected: {
-            fee: 200000000,
+            fee: 234400000,
         },
         dustThreshold: 100000000,
     },
@@ -437,7 +431,6 @@ export default [
         description: 'DOGE: 1 to 1, not enough funds (dust output)',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
@@ -447,7 +440,7 @@ export default [
         ],
         outputs: [{}],
         expected: {
-            fee: 100000000,
+            fee: 119200000,
         },
         dustThreshold: 100000000,
     },
@@ -455,7 +448,6 @@ export default [
         description: 'DOGE: 1 to 2, not enough funds (dust defined output)',
         feeRate: 100000,
         baseFee: 100000000,
-        floorBaseFee: true,
         feePolicy: 'doge',
         inputs: [
             {
@@ -465,7 +457,7 @@ export default [
         ],
         outputs: [{}, { value: '1' }],
         expected: {
-            fee: 200000000,
+            fee: 222600000,
         },
         dustThreshold: 100000000,
     },
