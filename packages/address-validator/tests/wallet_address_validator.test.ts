@@ -368,6 +368,22 @@ describe('WAValidator.validate()', function () {
             );
         });
 
+        it('should return true for a correct Cardano stake address when network type is stake', function () {
+            valid(
+                'stake1uya87zwnmax0v6nnn8ptqkl6ydx4522kpsc3l3wmf3yswygwx45el',
+                'cardano',
+                'stake',
+            );
+        });
+
+        it('should return false for a mainnet bech32 Cardano address when network type is testnet', function () {
+            invalid(
+                'addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvk',
+                'cardano',
+                'testnet',
+            );
+        });
+
         it('should match the expected Cardano address type - mainnet', function () {
             isValidAddressType(
                 'Ae2tdPwUPEYxYNJw1He1esdZYvjmr4NtPzUsGTiqL9zd8ohjZYQcwu6kom7',
@@ -556,8 +572,26 @@ describe('WAValidator.validate()', function () {
                 'addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvl',
                 'cardano',
             );
+        });
+
+        it('should return false for a Cardano address that decodes to a CBOR non-array primitive', function () {
+            invalid('2', 'cardano');
+        });
+
+        it('should return false for a Cardano address whose CBOR-decoded second element is not a number', function () {
+            invalid('kkVd', 'cardano');
+        });
+
+        it('should return false for a Cardano address whose CBOR-decoded array has an unexpected length', function () {
             invalid('5yWKF5vph3', 'cardano');
+        });
+
+        it('should return false for a Cardano address whose CBOR-decoded tag is missing a value', function () {
             invalid('kzKq', 'cardano');
+        });
+
+        it('should return undefined as the Cardano address type for a string that fails both legacy and bech32 decoding', function () {
+            isValidAddressType('notacardanoaddress', 'cardano', 'prod', undefined);
         });
 
         it('should return true for correct tron addresses', function () {
