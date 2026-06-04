@@ -1090,7 +1090,7 @@
     "modulePassphrase.alertCard.paragraphWarning3": "No one can recover it, not even Trezor support.",
     "modulePassphrase.alertCard.button": "How passphrase works",
     "modulePassphrase.form.enterWallet": "Enter passphrase",
-    "modulePassphrase.form.createWalletInputLabel": "Enter your passphrase",
+    "modulePassphrase.form.createWalletInputLabel": "Enter passphrase",
     "modulePassphrase.form.verifyPassphraseInputLabel": "Re-enter your passphrase",
     "modulePassphrase.enterPassphraseOnTrezor.button": "Enter passphrase on Trezor",
     "modulePassphrase.enterPassphraseOnTrezor.title": "Continue on Trezor",

@@ -2100,8 +2100,8 @@ export const messages = {
         },
         form: {
             enterWallet: 'Enter passphrase',
-            createWalletInputLabel: 'Enter your passphrase',
-            verifyPassphraseInputLabel: 'Re-enter your passphrase',
+            createWalletInputLabel: 'Enter passphrase',
+            verifyPassphraseInputLabel: 'Re-enter passphrase',
         },
         enterPassphraseOnTrezor: {
             button: 'Enter passphrase on Trezor',
