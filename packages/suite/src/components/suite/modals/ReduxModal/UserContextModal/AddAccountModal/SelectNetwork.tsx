@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, Column, H4 } from '@trezor/components';
+import { Button, Column, H4, Tooltip } from '@trezor/components';
 
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 
@@ -9,6 +9,7 @@ type SelectNetworkProps = {
     networks: Network[];
     handleNetworkSelection?: (symbol?: NetworkSymbol) => void;
     onSettings?: (symbol: NetworkSymbol) => void;
+    getAddDisabledMessage?: (network: Network) => React.ReactNode;
     dataTestId?: string;
 };
 
@@ -17,6 +18,7 @@ export const SelectNetwork = ({
     networks,
     handleNetworkSelection,
     onSettings,
+    getAddDisabledMessage,
     dataTestId,
 }: SelectNetworkProps) => {
     if (!networks.length) {
@@ -35,16 +37,23 @@ export const SelectNetwork = ({
                 onSettings={onSettings}
                 renderRightContent={
                     handleNetworkSelection
-                        ? ({ network }) => (
-                              <Button
-                                  size="small"
-                                  intent="brand"
-                                  data-testid={`@settings/wallet/network/${network.symbol}/add-button`}
-                                  onClick={() => handleNetworkSelection(network.symbol)}
-                              >
-                                  <Translation id="TR_ADD" />
-                              </Button>
-                          )
+                        ? ({ network }) => {
+                              const disabledMessage = getAddDisabledMessage?.(network);
+
+                              return (
+                                  <Tooltip tooltipMaxWidth={285} content={disabledMessage}>
+                                      <Button
+                                          size="small"
+                                          intent="brand"
+                                          isDisabled={!!disabledMessage}
+                                          data-testid={`@settings/wallet/network/${network.symbol}/add-button`}
+                                          onClick={() => handleNetworkSelection(network.symbol)}
+                                      >
+                                          <Translation id="TR_ADD" />
+                                      </Button>
+                                  </Tooltip>
+                              );
+                          }
                         : undefined
                 }
             />
