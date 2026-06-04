@@ -556,6 +556,8 @@ describe('WAValidator.validate()', function () {
                 'addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvl',
                 'cardano',
             );
+            invalid('5yWKF5vph3', 'cardano');
+            invalid('kzKq', 'cardano');
         });
 
         it('should return true for correct tron addresses', function () {
