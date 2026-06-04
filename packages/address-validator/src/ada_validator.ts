@@ -20,17 +20,22 @@ function getDecoded(address: string): any {
 
 function isValidLegacyAddress(address: string): boolean {
     const decoded = getDecoded(address);
-    if (!decoded || (!Array.isArray(decoded) && decoded.length !== 2)) {
+    if (!decoded || !Array.isArray(decoded) || decoded.length !== 2) {
         return false;
     }
 
     const tagged = decoded[0];
+    const taggedValue = tagged?.value;
     const validCrc = decoded[1];
-    if (typeof validCrc !== 'number') {
+    if (
+        taggedValue === null ||
+        typeof taggedValue === 'undefined' ||
+        typeof validCrc !== 'number'
+    ) {
         return false;
     }
-    // crc/calculators/crc32 returns a signed 32-bit int; coerce to unsigned to match the CBOR-decoded checksum
-    const crc = crc32(tagged.value) >>> 0;
+    // Coerce signed crc32 output to unsigned to match the CBOR-decoded checksum.
+    const crc = crc32(taggedValue) >>> 0;
 
     return crc === validCrc;
 }
