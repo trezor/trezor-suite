@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation, useTranslation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
-import { Box, Column, Icon, Input, Paragraph, Spinner } from '@trezor/components';
+import { Box, CardList, Icon, Input, Paragraph, Spinner } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
@@ -83,12 +83,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             />
 
             {searchResult.length ? (
-                <Column
-                    gap={12}
-                    flexWrap="wrap"
-                    margin={{ top: 8 }}
-                    data-testid="@guide/search/results"
-                >
+                <CardList margin={{ top: 8 }} data-testid="@guide/search/results">
                     {searchResult.map(({ page, preview }) => (
                         <GuideNode
                             key={page.id}
@@ -96,7 +91,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                             description={preview && <Preview {...preview} />}
                         />
                     ))}
-                </Column>
+                </CardList>
             ) : (
                 query &&
                 !loading && (
