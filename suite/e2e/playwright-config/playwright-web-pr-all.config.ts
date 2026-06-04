@@ -12,7 +12,7 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  * Web PR All config
  * This config is used when the LLM test selector provides a specific spec list.
  * Unlike playwright-web-pr.config.ts, tests are not filtered to @webOnly — the spec list
- * itself scopes the run, so all device models run their full (non-nightly) test set.
+ * itself scopes the run, so all device models run their full test set.
  */
 const target = PlaywrightTarget.Web;
 const definition: PlaywrightProjectDefinition[] = [
