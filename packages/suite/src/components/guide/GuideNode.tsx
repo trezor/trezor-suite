@@ -6,35 +6,15 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
-import { Card, Icon, IconCircle, type IconName, Paragraph, Row } from '@trezor/components';
+import { IconCircle, type IconName } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { borders, spacings, transitions, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
-const NodeButton = styled.button`
-    display: flex;
-    align-items: center;
-    border-radius: ${borders.radii.xs};
-    border: 0;
-    width: 100%;
-    background: ${({ theme }) => theme.elementFillElevated};
-    padding: 10px;
-    cursor: pointer;
-    line-height: 1.57;
-    transition: background ${transitions.speed.normal} ${transitions.type};
-
-    &:hover,
-    &:focus {
-        background: ${({ theme }) => theme.elementFillElevatedHovered};
-    }
-`;
-
-const PageNodeButton = styled(NodeButton)`
-    text-align: left;
-`;
+import { GuideItem } from './GuideItem';
 
 const Label = styled.div<{ $isBold: boolean }>`
     width: 100%;
@@ -82,39 +62,27 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     if (node.type === 'page') {
         return (
-            <PageNodeButton data-testid={`@guide/node${node.id}`} onClick={navigateToNode}>
-                <Icon
-                    name="article"
-                    size={20}
-                    intent="neutral"
-                    priority="secondary"
-                    margin={{ right: spacings.md }}
-                />
+            <GuideItem onClick={navigateToNode} data-testid={`@guide/node${node.id}`}>
                 {label}
-            </PageNodeButton>
+            </GuideItem>
         );
     }
 
     if (node.type === 'category') {
         return (
-            <Card
-                data-testid={`@guide/category${node.id}`}
+            <GuideItem
                 onClick={navigateToNode}
-                paddingType="small"
-            >
-                <Row gap={16}>
-                    {node.icon ? (
+                data-testid={`@guide/category${node.id}`}
+                icon={
+                    node.icon ? (
                         <IconCircle name={node.icon as IconName} size={40} intent="neutral" />
                     ) : (
                         node.image && <CategoryImage src={resolveStaticPath(node.image)} />
-                    )}
-                    <Paragraph typographyStyle="body-md" flex="1">
-                        {getNodeTitle(node, language)}
-                    </Paragraph>
-                </Row>
-            </Card>
+                    )
+                }
+            >
+                {getNodeTitle(node, language)}
+            </GuideItem>
         );
     }
-
-    return null;
 };
