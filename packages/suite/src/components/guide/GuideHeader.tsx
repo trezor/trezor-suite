@@ -9,7 +9,7 @@ import { H3, IconButton, Paragraph, useElevation } from '@trezor/components';
 import { type Elevation, mapElevationToBorder, zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
-import { ContentScrolledContext, HeaderBreadcrumb } from 'src/components/guide';
+import { ContentScrolledContext } from 'src/components/guide';
 import { useDispatch } from 'src/hooks/suite';
 
 const HeaderWrapper = styled.div<{
@@ -46,10 +46,9 @@ const HeaderWrapper = styled.div<{
 interface GuideHeaderProps {
     back?: () => void;
     label?: string | JSX.Element;
-    useBreadcrumb?: boolean;
 }
 
-export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) => {
+export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { elevation } = useElevation();
     const dispatch = useDispatch();
@@ -76,7 +75,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
 
     return (
         <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled} $elevation={elevation}>
-            {!useBreadcrumb && back && (
+            {back && (
                 <>
                     <IconButton
                         icon="arrowLeft"
@@ -101,13 +100,11 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                     )}
                 </>
             )}
-            {!useBreadcrumb && !back && label && (
+            {!back && label && (
                 <H3 flex="1" ellipsisLineCount={1} margin={{ right: 8 }}>
                     {label}
                 </H3>
             )}
-
-            {useBreadcrumb && <HeaderBreadcrumb />}
 
             <IconButton
                 icon="x"

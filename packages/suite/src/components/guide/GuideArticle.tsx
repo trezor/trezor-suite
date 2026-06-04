@@ -2,11 +2,14 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import type { GuideCategory } from '@suite-common/suite-types';
 import { spacingsPx } from '@trezor/theme';
 
+import { openNode, setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
 import { useGuideLoadArticle } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 const ArticleWrapper = styled.div`
     padding-bottom: ${spacingsPx.xxl};
@@ -14,13 +17,34 @@ const ArticleWrapper = styled.div`
 
 export const GuideArticle = () => {
     const currentNode = useSelector(state => state.guide.currentNode);
+    const indexNode = useSelector(state => state.guide.indexNode);
     const language = useSelector(selectLanguage);
+    const dispatch = useDispatch();
 
     const { markdown, hasError } = useGuideLoadArticle(currentNode, language);
 
+    const parentCategory =
+        currentNode && indexNode
+            ? (
+                  findAncestorNodes(currentNode, indexNode).filter(
+                      node => node.type === 'category',
+                  ) as GuideCategory[]
+              ).pop()
+            : undefined;
+
+    const goBack = () => {
+        if (parentCategory) {
+            dispatch(openNode(parentCategory));
+        } else {
+            dispatch(setView('GUIDE_DEFAULT'));
+        }
+    };
+
+    const title = currentNode ? getNodeTitle(currentNode, language) : undefined;
+
     return (
         <GuideViewWrapper>
-            <GuideHeader useBreadcrumb />
+            <GuideHeader back={goBack} label={title} />
             <GuideContent>
                 <ArticleWrapper>
                     <GuideMarkdown markdown={markdown} />

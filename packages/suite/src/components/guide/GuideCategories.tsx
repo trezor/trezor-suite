@@ -22,7 +22,7 @@ export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
                     {label}
                 </Paragraph>
             )}
-            <Column gap={16} data-testid="@guide/nodes">
+            <Column gap={12} data-testid="@guide/nodes">
                 {node.children.map(child => (
                     <GuideNode key={child.id} node={child} />
                 ))}
