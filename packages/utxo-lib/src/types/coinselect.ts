@@ -18,11 +18,6 @@ export interface CoinSelectOptions {
      * for the chained transaction, as well as for its own bandwidth (see BIP-125 rules).
      */
     baseFee?: number;
-
-    /**
-     * Only for DOGE
-     */
-    floorBaseFee?: boolean;
     sortingStrategy: TransactionInputOutputSortingStrategy;
     feePolicy?: ComposeFeePolicy;
 }

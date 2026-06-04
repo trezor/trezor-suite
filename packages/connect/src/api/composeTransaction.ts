@@ -53,7 +53,6 @@ type Params = {
     account?: PrecomposeParams['account'];
     feeLevels?: PrecomposeParams['feeLevels'];
     baseFee?: PrecomposeParams['baseFee'];
-    floorBaseFee?: PrecomposeParams['floorBaseFee'];
     sequence?: PrecomposeParams['sequence'];
     total: BigNumber;
     sortingStrategy?: TransactionInputOutputSortingStrategy;
@@ -71,7 +70,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             { name: 'account', type: 'object' },
             { name: 'feeLevels', type: 'array' },
             { name: 'baseFee', type: 'number' },
-            { name: 'floorBaseFee', type: 'boolean' },
             { name: 'sequence', type: 'number' },
             { name: 'sortingStrategy', type: 'string' },
         ]);
@@ -112,7 +110,6 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             account: payload.account,
             feeLevels: payload.feeLevels,
             baseFee: payload.baseFee,
-            floorBaseFee: payload.floorBaseFee,
             sequence: payload.sequence,
             sortingStrategy: payload.sortingStrategy,
             push: typeof payload.push === 'boolean' ? payload.push : false,

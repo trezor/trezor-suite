@@ -30,12 +30,7 @@ describe('coinselectUtils', () => {
         expect(getFee([], [{ script: { length: 37 } }], 1.33)).toEqual(75);
         expect(getFee([], [{ script: { length: 81 } }], 1)).toEqual(100);
         expect(getFee([], [{ script: { length: 181 } }], 1)).toEqual(200);
-        // without floor
         expect(getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000 })).toEqual(1200);
-        // with floor
-        expect(
-            getFee([], [{ script: { length: 181 } }], 1, { baseFee: 1000, floorBaseFee: true }),
-        ).toEqual(1000);
     });
 
     it('sumOrNaN short-circuits subsequent items once accumulator becomes undefined', () => {
@@ -67,7 +62,7 @@ describe('coinselectUtils', () => {
                     { value: 7n, script: { length: 472 } },
                 ],
                 2,
-                { feePolicy: 'doge', baseFee: 1000, dustThreshold: 1000, floorBaseFee: true },
+                { feePolicy: 'doge', baseFee: 1000, dustThreshold: 1000 },
             ),
         ).toEqual(5000);
     });

@@ -14,7 +14,6 @@ describe('coinselect split', () => {
                 txType: f.txType || 'p2pkh',
                 dustThreshold: f.dustThreshold,
                 baseFee: f.baseFee,
-                floorBaseFee: f.floorBaseFee,
                 feePolicy: f.feePolicy,
             } as CoinSelectOptions;
 
