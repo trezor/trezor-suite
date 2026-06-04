@@ -1,34 +1,23 @@
-import { ServicesProvider, createMockDeps } from '@suite-common/dependency-injection';
+import { ServicesProvider } from '@suite-common/dependency-injection';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 import { act, renderHook } from '@suite-native/test-utils-store';
-import { type Analytics } from '@trezor/analytics-uploader';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useReportOnboardingStepViewedAnalytics } from '../useReportOnboardingStepViewedAnalytics';
 
-// `Analytics` is an interface; map it to a type alias so it satisfies the
-// index-signature constraint of createMockDeps' `RecursiveDeps`.
-type AnalyticsService = { [K in keyof Analytics<any>]: Analytics<any>[K] };
-
-// Only `report` is expected to be called; every other Analytics method is left
-// unmocked (null), so createMockDeps makes it throw if the hook touches it.
 const renderUseReportStepViewed = () => {
-    const analytics = createMockDeps<AnalyticsService>({
-        report: jest.fn(),
-        init: null,
-        enable: null,
-        disable: null,
-        isEnabled: () => true,
-        setUrl: null,
-        setLoggerEnabled: null,
-    });
+    const services: NativeAnalyticsDep = {
+        analytics: mockAnalytics(jest.fn()),
+    };
 
     const view = renderHook(() => useReportOnboardingStepViewedAnalytics(), {
         wrapper: ({ children }) => (
-            <ServicesProvider services={{ analytics }}>{children}</ServicesProvider>
+            <ServicesProvider services={services}>{children}</ServicesProvider>
         ),
     });
 
-    return { ...view, analytics };
+    return { ...view, analytics: services.analytics };
 };
 
 describe('useReportOnboardingStepViewedAnalytics', () => {
