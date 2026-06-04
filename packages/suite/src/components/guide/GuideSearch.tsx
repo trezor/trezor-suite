@@ -4,18 +4,11 @@ import styled from 'styled-components';
 
 import { Translation, useTranslation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
-import { Box, Icon, Input, Paragraph, Spinner } from '@trezor/components';
+import { Box, Column, Icon, Input, Paragraph, Spinner } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
 import { useGuideSearch } from 'src/hooks/guide';
-
-const PageFoundList = styled.div`
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-`;
 
 const PreviewContent = styled.div`
     white-space: nowrap;
@@ -90,7 +83,12 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             />
 
             {searchResult.length ? (
-                <PageFoundList data-testid="@guide/search/results">
+                <Column
+                    gap={12}
+                    flexWrap="wrap"
+                    margin={{ top: 8 }}
+                    data-testid="@guide/search/results"
+                >
                     {searchResult.map(({ page, preview }) => (
                         <GuideNode
                             key={page.id}
@@ -98,7 +96,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                             description={preview && <Preview {...preview} />}
                         />
                     ))}
-                </PageFoundList>
+                </Column>
             ) : (
                 query &&
                 !loading && (

@@ -51,5 +51,5 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
         return child;
     });
 
-    return <Banner icon intent={intent} description={clonedChildren} />;
+    return <Banner icon intent={intent} description={clonedChildren} margin={{ bottom: 16 }} />;
 };
