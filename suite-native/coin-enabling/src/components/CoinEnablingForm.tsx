@@ -15,6 +15,8 @@ import { Translation } from '@suite-native/intl';
 import {
     type CoinEnablingFormValues,
     coinEnablingFormValidationSchema,
+    getEnabledCoinsFromNetworkSymbols,
+    getNetworkSymbolsFromEnabledCoins,
 } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 
@@ -41,21 +43,21 @@ export const CoinEnablingForm = () => {
 
     const form = useForm<CoinEnablingFormValues>({
         defaultValues: {
-            enabledCoins: enabledNetworkSymbols,
+            enabledCoins: getEnabledCoinsFromNetworkSymbols(enabledNetworkSymbols),
         },
         validation: coinEnablingFormValidationSchema,
     });
 
-    const handleSubmit = form.handleSubmit(values => {
+    const handleSubmit = form.handleSubmit((values: CoinEnablingFormValues) => {
+        const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
         const changedCoins = networkSymbolCollection.filter(
-            symbol =>
-                enabledNetworkSymbols.includes(symbol) !== values.enabledCoins.includes(symbol),
+            symbol => enabledNetworkSymbols.includes(symbol) !== enabledCoins.includes(symbol),
         );
 
         if (changedCoins.length === 0) return;
 
         changedCoins.forEach(symbol => {
-            const isEnabled = values.enabledCoins.includes(symbol);
+            const isEnabled = enabledCoins.includes(symbol);
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isEnabled }));
 
             analytics.report({
