@@ -9,6 +9,7 @@ import {
 } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import {
@@ -21,9 +22,7 @@ import { SellProviderPicker } from '../SellProviderPicker';
 
 const reportMock = jest.fn();
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('SellProviderPicker', () => {

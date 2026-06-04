@@ -6,6 +6,7 @@ import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
 import { type UseExchangeFlowProps, useExchangeFlow } from '../useExchangeFlow';
@@ -81,9 +82,7 @@ describe('useExchangeFlow', () => {
     }) => {
         const reportMock = jest.fn();
         const services = {
-            analytics: {
-                report: reportMock,
-            },
+            analytics: mockAnalytics(reportMock),
         };
 
         return {

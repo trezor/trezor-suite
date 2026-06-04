@@ -25,6 +25,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { tradingSlice } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
@@ -35,9 +36,7 @@ const creditCardPaymentMethodTranslation = getTranslation(
     'moduleTrading.paymentMethods.creditCard',
 );
 const services = {
-    analytics: {
-        report: reportMock,
-    },
+    analytics: mockAnalytics(reportMock),
 };
 
 describe('BuyPaymentMethodPicker', () => {

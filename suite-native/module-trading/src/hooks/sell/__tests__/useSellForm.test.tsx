@@ -23,6 +23,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { selectTradingResidenceCountry, sellActions } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
@@ -30,9 +31,7 @@ import { useSellForm } from '../useSellForm';
 
 const mockReport = jest.fn();
 const services = {
-    analytics: {
-        report: mockReport,
-    },
+    analytics: mockAnalytics(mockReport),
 };
 
 const btc1account = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
