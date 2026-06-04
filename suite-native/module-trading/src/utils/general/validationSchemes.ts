@@ -132,8 +132,6 @@ export const sendCryptoAmountValidationSchema = yup
             return true;
         }
 
-        const maxAvailableAmount = maxSpendableAmount ?? balance;
-
         if (convertedValue > parseFloat(balance)) {
             return testContext.createError({
                 type: 'insufficient-balance',
@@ -141,7 +139,14 @@ export const sendCryptoAmountValidationSchema = yup
             });
         }
 
-        if (convertedValue > parseFloat(maxAvailableAmount)) {
+        if (maxSpendableAmount === undefined) {
+            return testContext.createError({
+                type: 'dust-limit',
+                message: translate('moduleTrading.validators.dustLimit'),
+            });
+        }
+
+        if (convertedValue > parseFloat(maxSpendableAmount)) {
             return testContext.createError({
                 type: 'network-reserve',
                 message: translate('moduleTrading.validators.networkReserve', {
