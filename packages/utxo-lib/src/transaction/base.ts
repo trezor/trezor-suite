@@ -65,7 +65,7 @@ export class TransactionBase<S = undefined> {
 
     network: Network;
     type: number | undefined; // Dash, Decred, Zcash
-    timestamp: number | undefined; // Peercoin
+    timestamp: number | undefined; // Verge
     expiry: number | undefined; // Decred, Zcash. Block height after which this transactions will expire, or 0 to disable expiry
 
     constructor(options: TransactionOptions & { txSpecific?: S }) {
