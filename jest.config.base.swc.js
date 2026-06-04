@@ -33,5 +33,9 @@ module.exports = {
         '^bcrypto/lib/(.*)$': 'bcrypto/lib/$1-browser',
         '^uint8array-tools$': require.resolve('uint8array-tools'),
         '^usb$': '<rootDir>../../packages/transport/mocks/usb.js',
+        // cborg is pure ESM and its `exports` map only declares an `import` condition, so Jest's
+        // CJS resolver cannot resolve the bare specifier (used transitively via @trezor/address-validator).
+        // Map it straight to its entry file; @swc/jest then transpiles the ESM source.
+        '^cborg$': path.resolve(__dirname, 'node_modules/cborg/cborg.js'),
     },
 };
