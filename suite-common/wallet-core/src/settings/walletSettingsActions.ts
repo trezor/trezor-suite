@@ -1,6 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type SetDiscreetModeAction } from '@suite-common/discreet-mode';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AddressDisplayOptions } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -72,7 +71,6 @@ export type WalletSettingsAction =
     | ReturnType<typeof setNetworkReserve>
     | ReturnType<typeof setAddressDisplayType>
     | ChangeCoinVisibilityAction
-    | SetDiscreetModeAction
     | SetBitcoinAmountUnitsAction;
 
 export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): SetBitcoinAmountUnitsAction => ({

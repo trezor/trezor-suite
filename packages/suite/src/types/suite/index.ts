@@ -16,6 +16,7 @@ import { type torActions } from '@suite/tor';
 import { type analyticsActions } from '@suite-common/analytics-redux';
 import { type bluetoothActions } from '@suite-common/bluetooth';
 import { type deviceActions } from '@suite-common/device';
+import { type discreetModeActions } from '@suite-common/discreet-mode';
 import { type firmwareActions } from '@suite-common/firmware';
 import { type geolocationActions } from '@suite-common/geolocation';
 import { type addLog } from '@suite-common/logger';
@@ -129,6 +130,9 @@ type SuiteSettingsAction = ReturnType<
 >;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
+type DiscreetModeAction = ReturnType<
+    (typeof discreetModeActions)[keyof typeof discreetModeActions]
+>;
 type TorAction = ReturnType<(typeof torActions)[keyof typeof torActions]>;
 type DesktopUpdateAction = ReturnType<
     (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
@@ -138,6 +142,7 @@ type DesktopUpdateAction = ReturnType<
 export type Action =
     | AnalyticsAction
     | BackupAction
+    | DiscreetModeAction
     | BioAuthAction
     | BluetoothAction
     | BluetoothActionDesktop

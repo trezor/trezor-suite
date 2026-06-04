@@ -45,6 +45,9 @@
             "path": "../../suite-common/device-authenticity"
         },
         {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
             "path": "../../suite-common/earn-stablecoin"
         },
         {
@@ -52,9 +55,6 @@
         },
         {
             "path": "../../suite-common/earn-staking-api"
-        },
-        {
-            "path": "../../suite-common/discreet-mode"
         },
         { "path": "../../suite-common/feedback" },
         {
@@ -166,8 +166,8 @@
         },
         { "path": "../../suite/backup" },
         { "path": "../../suite/desktop-update" },
-        { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/device" },
+        { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
         {

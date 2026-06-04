@@ -1,10 +1,4 @@
-export type DiscreetModeRootState = {
-    wallet: {
-        settings: {
-            discreetMode: boolean;
-        };
-    };
-};
+import { type DiscreetModeRootState } from './discreetModeSlice';
 
 export const selectIsDiscreteModeActive = (state: DiscreetModeRootState) =>
-    state.wallet.settings.discreetMode;
+    state.discreetMode.isActive;

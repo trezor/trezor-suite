@@ -23,6 +23,9 @@ import type WalletReducers from 'src/reducers/wallet';
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
+    discreetMode: {
+        isActive: false,
+    },
     tor: {
         torStatus: TorStatus.Disabled,
         torBootstrap: null,

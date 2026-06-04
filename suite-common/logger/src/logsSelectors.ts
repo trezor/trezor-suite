@@ -12,7 +12,10 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
-import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
+import {
+    type DiscreetModeRootState,
+    selectIsDiscreteModeActive,
+} from '@suite-common/discreet-mode';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type BlockchainRootState,
@@ -33,6 +36,7 @@ import { type LogsSliceRootState } from './logsSlice';
 import { REDACTED_REPLACEMENT, redactAction } from './utils';
 
 export type LogsApplicationInfoRootState = LogsSliceRootState &
+    DiscreetModeRootState &
     WalletSettingsRootState &
     AnalyticsRootState &
     DeviceRootState &

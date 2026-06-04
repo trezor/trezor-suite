@@ -1,6 +1,5 @@
 import { A } from '@mobily/ts-belt';
 
-import { type SetDiscreetModeAction } from '@suite-common/discreet-mode';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
@@ -32,7 +31,6 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSett
 
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
-    discreetMode: false,
     enabledNetworks: [],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
@@ -45,7 +43,6 @@ export const initialWalletSettingsState: WalletSettingsState = initialState;
 
 export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> = [
     'localCurrency',
-    'discreetMode',
     'enabledNetworks',
     'hideSuspiciousTransactions',
     'bitcoinAmountUnit',
@@ -64,12 +61,6 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
             (state, action: ReturnType<typeof walletSettingsActions.setBaseCurrency>) => {
                 const { localCurrency } = action.payload;
                 state.localCurrency = localCurrency;
-            },
-        );
-        builder.addCase(
-            WALLET_SETTINGS.SET_HIDE_BALANCE,
-            (state, action: SetDiscreetModeAction) => {
-                state.discreetMode = action.toggled;
             },
         );
         builder.addCase(

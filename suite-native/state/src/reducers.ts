@@ -4,6 +4,7 @@ import { getStoredState } from 'redux-persist';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareDeviceReducer } from '@suite-common/device';
+import { discreetModePersistedWhitelist, discreetModeReducer } from '@suite-common/discreet-mode';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { logsSlice } from '@suite-common/logger';
@@ -148,6 +149,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 };
             },
         },
+        storage: deps.mmkvStorage,
+    });
+
+    const discreetModePersistedReducer = preparePersistReducer({
+        reducer: discreetModeReducer,
+        persistedKeys: discreetModePersistedWhitelist,
+        key: 'discreetMode',
+        version: 1,
         storage: deps.mmkvStorage,
     });
 
@@ -387,6 +396,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             bluetooth: bluetoothPersistedReducer,
             featureFeedback: featureFeedbackPersistedReducer,
             connectPopup: connectPopupPersistedReducer,
+            discreetMode: discreetModePersistedReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,
             deviceOnboarding: deviceOnboardingReducer,
