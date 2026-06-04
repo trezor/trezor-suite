@@ -10405,7 +10405,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin-defs@workspace:suite-common/earn-stablecoin-defs"
   dependencies:
-    "@trezor/env-utils": "workspace:*"
     orval: "npm:8.8.0"
     prettier: "npm:^3.8.3"
     zod: "npm:4.3.6"

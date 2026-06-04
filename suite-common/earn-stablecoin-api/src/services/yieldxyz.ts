@@ -1,5 +1,4 @@
 import {
-    YIELD_XYZ_BASE_URL,
     enterYieldResponse,
     exitYieldResponse,
     getYieldResponse,
@@ -8,8 +7,14 @@ import {
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
 
+import { earnYieldWorkerBaseUrl } from '../context';
+
 export const yieldXyzApi = createHttpClient({
-    baseUrl: YIELD_XYZ_BASE_URL,
+    async baseUrl() {
+        const baseUrl = await earnYieldWorkerBaseUrl.get();
+
+        return `${baseUrl}/yieldxyz/v1`;
+    },
     headers: { 'X-Suite-Version': getSuiteVersion() },
 });
 

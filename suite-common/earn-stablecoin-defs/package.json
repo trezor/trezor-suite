@@ -19,7 +19,6 @@
         "prettier": "^3.8.3"
     },
     "dependencies": {
-        "@trezor/env-utils": "workspace:*",
         "zod": "4.3.6"
     }
 }
