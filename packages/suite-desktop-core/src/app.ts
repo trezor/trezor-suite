@@ -414,9 +414,16 @@ const init = async () => {
         // load and wait for handshake message from renderer
 
         // Refresh if it failed to load
-        mainWindow.webContents.on('did-fail-load', () => {
-            loadIndex(mainWindow);
-        });
+        mainWindow.webContents.on(
+            'did-fail-load',
+            (_event, errorCode, _desc, _url, isMainFrame) => {
+                // ERR_ABORTED (-3) fires when a new load cancels an in-progress one — ignore it to avoid an infinite loop.
+                // https://source.chromium.org/chromium/chromium/src/+/main:net/base/net_error_list.h
+                if (!isMainFrame || errorCode === -3) return;
+                // Delay retry to avoid a busy loop if the failure persists.
+                setTimeout(() => loadIndex(mainWindow), 1000);
+            },
+        );
 
         const { handshake, cleanup } = handshakeAndHangDetect({ mainWindow, statePatch });
         mainWindowProxy.once('destroy', cleanup);
