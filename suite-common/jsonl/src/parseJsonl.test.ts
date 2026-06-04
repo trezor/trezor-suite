@@ -1,12 +1,12 @@
 import * as yup from 'yup';
 
-import { parseJsonl } from '../parseJsonl';
+import { parseJsonl } from './parseJsonl';
 
 const testSchema = yup.object({
     label: yup.string().required(),
 });
 
-describe('parseJsonl', () => {
+describe(parseJsonl.name, () => {
     it('parses JSONL records', () => {
         expect(parseJsonl('{"label":"First"}\n{"label":"Second"}', testSchema)).toEqual({
             success: true,
