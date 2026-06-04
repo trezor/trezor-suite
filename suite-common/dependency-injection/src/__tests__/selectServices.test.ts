@@ -1,36 +1,28 @@
 import { selectServices } from '../useServices';
 
 const services = {
-    analytics: {
-        report: jest.fn(),
-    },
-    suiteSync: {
-        turnOffSuiteSync: jest.fn(),
-    },
+    a: jest.fn(),
+    b: jest.fn(),
 };
 
 type SelectedServices = {
-    analytics: typeof services.analytics;
-    turnOffSuiteSync: typeof services.suiteSync.turnOffSuiteSync;
+    a: typeof services.a;
+    b: typeof services.b;
 };
 
-const selectAnalyticsDep = (currentServices: any) => ({
-    analytics: currentServices.analytics,
+const selectADep = (currentServices: any) => ({
+    a: currentServices.a,
 });
 
-const selectTurnOffSuiteSyncDep = (currentServices: any) => ({
-    turnOffSuiteSync: currentServices.suiteSync.turnOffSuiteSync,
+const selectBDep = (currentServices: any) => ({
+    b: currentServices.suiteSync.b,
 });
 
 describe(selectServices.name, () => {
     it('selects and merges a subset of nested services', () => {
-        const selectedServices: SelectedServices = selectServices(
-            services,
-            selectAnalyticsDep,
-            selectTurnOffSuiteSyncDep,
-        );
+        const selectedServices: SelectedServices = selectServices(services, selectADep, selectBDep);
 
-        expect(selectedServices.analytics).toBe(services.analytics);
-        expect(selectedServices.turnOffSuiteSync).toBe(services.suiteSync.turnOffSuiteSync);
+        expect(selectedServices.a).toBe(services.a);
+        expect(selectedServices.b).toBe(services.b);
     });
 });
