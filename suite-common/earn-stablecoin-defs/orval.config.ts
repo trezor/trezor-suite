@@ -1,8 +1,6 @@
 import { ClientGeneratorsBuilder, defineConfig } from 'orval';
 import { resolve } from 'path';
 
-import { YIELD_BASE_URL } from './src/constants';
-
 const ESLINT_DISABLE_HEADER = '/* eslint-disable no-useless-escape */';
 
 const camelCase = (value: string) => value.replace(/^[A-Z]/, char => char.toLowerCase());
@@ -27,6 +25,7 @@ function renameAllExportsToCamelCase(implementation: string): string {
 }
 
 const API_DIR = resolve(import.meta.dirname, './src/api');
+const YIELD_BASE_URL = 'https://dev-earn.suite.sldev.cz/yield';
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
