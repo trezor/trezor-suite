@@ -2,7 +2,8 @@ import { type RouteProp } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import {
@@ -18,7 +19,6 @@ import {
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import {
@@ -130,8 +130,8 @@ describe('TradingExchangePreviewScreen', () => {
     ) => {
         const testStore = customStore ?? store;
         const reportMock = jest.fn();
-        const services = {
-            analytics: mockAnalytics(reportMock),
+        const services: NativeAnalyticsDep = {
+            analytics: mockNativeAnalytics(reportMock),
         };
         jest.clearAllMocks();
 

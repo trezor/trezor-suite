@@ -2,7 +2,8 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form, useField } from '@suite-native/forms';
 import {
     type TestStore,
@@ -23,15 +24,14 @@ import {
 } from '@suite-native/trading-fixtures';
 import { selectTradingResidenceCountry, sellActions } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
 
 const mockReport = jest.fn();
-const services = {
-    analytics: mockAnalytics(mockReport),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(mockReport),
 };
 
 const btc1account = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`

@@ -1,4 +1,5 @@
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -10,7 +11,6 @@ import {
 } from '@suite-native/test-utils-store';
 import { banxaBankTransferSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import {
@@ -25,8 +25,8 @@ const reportMock = jest.fn();
 const creditCardPaymentMethodTranslation = getTranslation(
     'moduleTrading.paymentMethods.creditCard',
 );
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 describe('SellReceiveMethodPicker', () => {

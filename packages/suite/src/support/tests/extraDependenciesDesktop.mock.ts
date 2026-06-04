@@ -1,5 +1,6 @@
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
-import { analyticsMock, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { ok } from '@trezor/type-utils';
 
 import { type SuiteServices } from '../extraDependencies';
@@ -10,7 +11,7 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     ...extraDependenciesCommonMock,
     services: {
         ...extraDependenciesCommonMock.services,
-        analytics: analyticsMock, // To satisfy Suite specific type as ExtraDependenciesStatic tightness it
+        analytics: mockDesktopAnalytics(),
         suiteRouterHistory: {
             getLocation: () => ({
                 pathname: '/mocked_path',

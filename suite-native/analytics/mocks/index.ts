@@ -1,0 +1,1 @@
+export { mockNativeAnalytics } from './mockNativeAnalytics';

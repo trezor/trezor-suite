@@ -5,7 +5,8 @@ import {
     selectTradingProviderMetadata,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     type TestStore,
     act,
@@ -29,15 +30,14 @@ import {
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 const mockReport = jest.fn();
-const services = {
-    analytics: mockAnalytics(mockReport),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(mockReport),
 };
 type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
 

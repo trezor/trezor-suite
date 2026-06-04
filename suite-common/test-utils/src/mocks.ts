@@ -1,5 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import {
     type Action,
     type GuideArticle,
@@ -175,7 +176,7 @@ const getAnalytics = () => {
     return {
         __esModule: true, // this property makes it work
         ...originalModule,
-        analytics: mockAnalytics(jest.fn()),
+        analytics: mockAnalytics<AnalyticsSharedEvents>(jest.fn()),
     };
 };
 

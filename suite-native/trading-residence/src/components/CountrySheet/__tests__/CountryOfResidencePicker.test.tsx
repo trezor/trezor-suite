@@ -2,6 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { useCountryFilteredData } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form, useForm } from '@suite-native/forms';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
@@ -13,7 +15,6 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 import { residenceReducer } from '@suite-native/trading-state';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
 import { type TradingLocationFormValues } from '../../../types/tradingLocationForm';
@@ -26,8 +27,8 @@ import {
 let mockUseCountryFilteredData: jest.Mock;
 
 const reportMock = jest.fn();
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 jest.mock('@suite-common/trading', () => ({

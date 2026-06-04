@@ -1,4 +1,5 @@
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -9,7 +10,6 @@ import {
 } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, sellQuotes } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import {
@@ -21,8 +21,8 @@ import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellProviderPicker } from '../SellProviderPicker';
 
 const reportMock = jest.fn();
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 describe('SellProviderPicker', () => {

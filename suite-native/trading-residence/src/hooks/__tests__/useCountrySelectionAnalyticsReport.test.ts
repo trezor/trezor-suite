@@ -1,13 +1,13 @@
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useCountrySelectionAnalyticsReport } from '../useCountrySelectionAnalyticsReport';
 
 describe('useCountrySelectionAnalyticsReport', () => {
     const reportMock = jest.fn();
-    const services = {
-        analytics: mockAnalytics(reportMock),
+    const services: NativeAnalyticsDep = {
+        analytics: mockNativeAnalytics(reportMock),
     };
 
     const renderUseCountrySelectionAnalyticsReport = () =>

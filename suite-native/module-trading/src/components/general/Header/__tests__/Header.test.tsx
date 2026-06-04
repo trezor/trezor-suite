@@ -1,8 +1,8 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import {
     type PreloadedStatePartial,
@@ -22,8 +22,8 @@ describe('Header', () => {
 
     const setupReportMock = () => {
         const reportMock = jest.fn();
-        const services = {
-            analytics: mockAnalytics(reportMock),
+        const services: NativeAnalyticsDep = {
+            analytics: mockNativeAnalytics(reportMock),
         };
 
         return { reportMock, services };

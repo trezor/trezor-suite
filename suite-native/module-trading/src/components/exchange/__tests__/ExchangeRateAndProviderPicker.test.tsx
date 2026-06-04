@@ -1,10 +1,10 @@
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import {
@@ -17,8 +17,8 @@ import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker';
 
 const reportMock = jest.fn();
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 describe('ExchangeRateAndProviderPicker', () => {

@@ -1,6 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
-import { events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     type PreloadedStatePartial,
     mergePreloadedState,
@@ -11,13 +12,12 @@ import {
     invityDexQuote,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
 
 const reportMock = jest.fn();
-const services = {
-    analytics: mockAnalytics(reportMock),
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
 };
 
 describe('useExchangeAnalyticReportCallback', () => {
