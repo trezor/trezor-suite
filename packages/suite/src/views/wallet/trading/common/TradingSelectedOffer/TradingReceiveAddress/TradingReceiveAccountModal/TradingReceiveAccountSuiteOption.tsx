@@ -65,7 +65,11 @@ export const TradingReceiveAccountSuiteOption = ({
                 <CoinLogo size={24} symbol={account.symbol} />
 
                 <Column>
-                    <Text maxWidth={200} as="div">
+                    <Text
+                        maxWidth={200}
+                        as="div"
+                        data-testid="@trading/receive-account-modal/option/suite/name"
+                    >
                         <AccountLabeling
                             account={account}
                             accountTypeBadgeSize="small"

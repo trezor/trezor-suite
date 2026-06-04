@@ -9,6 +9,7 @@ export class TradingQuotesSection {
     readonly providerOfQuote = (provider: string) =>
         this.page.getByTestId(`@trading/offers/quote-${provider}`);
     readonly selectedProvider: Locator;
+    readonly selectedProviderName: Locator;
     readonly loadingSpinner: Locator;
     readonly bestOfferAmount: Locator;
 
@@ -16,6 +17,9 @@ export class TradingQuotesSection {
         this.list = this.page.getByTestId('@trading/offers/quote');
         this.provider = this.page.getByTestId('@trading/offers/quote/provider');
         this.selectedProvider = this.page.getByTestId('@trading/selected-offer-provider');
+        this.selectedProviderName = this.selectedProvider.getByTestId(
+            '@trading/offers/quote/provider',
+        );
         this.loadingSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.bestOfferAmount = this.page.getByTestId('@trading/best-offer/amount');
     }
@@ -30,5 +34,44 @@ export class TradingQuotesSection {
     @step()
     async selectQuoteByProvider(provider: string) {
         await this.provider.filter({ hasText: provider }).click();
+    }
+
+    //  When `provider` is given, that specific provider is selected(must be
+    //  present in the list) Otherwise a random provider different from the currently
+    //  selected one is picked. When only a single provider is available it re-selects it
+
+    @step()
+    async chooseDifferentOfferIfAvailable(provider?: string): Promise<void> {
+        const initialProvider = (await this.selectedProviderName.textContent())?.trim();
+        if (!initialProvider) {
+            throw new Error('Cannot get text content from the initial provider.');
+        }
+
+        await this.selectedProvider.click();
+        await expect(this.list.first()).toBeVisible();
+
+        const offerProviderNames = (
+            await this.list.getByTestId('@trading/offers/quote/provider').allTextContents()
+        ).map(name => name.trim());
+
+        let differentProvider: string | undefined;
+        if (provider) {
+            differentProvider = offerProviderNames.find(name => name === provider);
+            if (!differentProvider) {
+                throw new Error(
+                    `Provider "${provider}" not found in offers. Available: ${offerProviderNames.join(', ')}`,
+                );
+            }
+        } else {
+            const candidates = offerProviderNames.filter(name => name && name !== initialProvider);
+            differentProvider = candidates[Math.floor(Math.random() * candidates.length)];
+        }
+
+        const providerToSelect = differentProvider ?? initialProvider;
+        await this.list
+            .filter({ has: this.provider.filter({ hasText: providerToSelect }) })
+            .first()
+            .click();
+        await expect(this.selectedProviderName).toHaveText(providerToSelect);
     }
 }

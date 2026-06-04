@@ -2,6 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { BigNumber } from '@trezor/utils';
 
 import { calculatePercentageOfBalance, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -25,6 +26,7 @@ export class TradingFormInputs {
     readonly fiatCryptoSwitchButton: Locator;
     readonly fractionButtons: Locator;
     readonly bottomText: Locator;
+    readonly fiatBottomText: Locator;
     readonly countrySelect: Locator;
     readonly countryValue: Locator;
     readonly countryOption = (countryCode: TradingCountryCode) =>
@@ -42,6 +44,7 @@ export class TradingFormInputs {
         this.fiatCryptoSwitchButton = this.page.getByTestId('@trading/form/switch-crypto-fiat');
         this.fractionButtons = this.page.getByTestId('@trading/form/fraction-buttons');
         this.bottomText = this.page.getByTestId('@trading/form/crypto-input/bottom-text');
+        this.fiatBottomText = this.page.getByTestId('@trading/form/fiat-input/bottom-text');
         this.countrySelect = this.page.getByTestId('@trading/form/country-select');
         this.countryValue = this.page.getByTestId('@trading/form/country-select/value');
         this.paymentMethodSelect = this.page.getByTestId('@trading/form/payment-method-select');
@@ -112,5 +115,41 @@ export class TradingFormInputs {
     async expectInputToBe(params: PercentageOfBalanceParams) {
         const expectedValue = calculatePercentageOfBalance(params);
         await expect.soft(this.cryptoAmount).toHaveValue(expectedValue);
+    }
+
+    @step()
+    async verifyFractionButtons(balance: string, decimals: number) {
+        for (const percentage of [10, 25, 50]) {
+            await this.fractionButtons.getByRole('button', { name: `${percentage}%` }).click();
+            const expectedValue = new BigNumber(balance)
+                .times(percentage / 100)
+                .decimalPlaces(decimals)
+                .toString();
+            await expect(this.cryptoAmount).toHaveValue(expectedValue);
+        }
+    }
+
+    @step()
+    async verifyCryptoAmountExceedsBalance(amount: string) {
+        await this.cryptoAmount.fill(amount);
+        await expect(this.bottomText).toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', {
+            timeout: 15_000,
+        });
+        await this.cryptoAmount.clear();
+        await expect(this.bottomText).toBeHidden();
+    }
+
+    @step()
+    async verifyFiatAmountExceedsBalance(amount: string) {
+        await this.fiatCryptoSwitchButton.click();
+        await expect(this.fractionButtons).toBeHidden();
+        await this.fiatAmount.fill(amount);
+        await expect(this.fiatBottomText).toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', {
+            timeout: 15_000,
+        });
+        await this.fiatAmount.clear();
+        await expect(this.fiatBottomText).toBeHidden();
+        await this.fiatCryptoSwitchButton.click();
+        await expect(this.fractionButtons).toBeVisible();
     }
 }
