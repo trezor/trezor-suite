@@ -7,6 +7,7 @@ import {
     stakingSolanaRewardsHistoryResponse,
     stakingSolanaRewardsTotalResponse,
     stakingStatsResponse,
+    stakingTrxStatsResponse,
 } from '../../api/schemas';
 import { EARN_API_BASE_URL } from '../../constants';
 
@@ -22,6 +23,11 @@ export const getStakingBatch = earnHttpClient('/', {
 export const getStakingStats = earnHttpClient('/:networkSymbol/stats', {
     method: 'GET',
     schema: stakingStatsResponse,
+});
+
+export const getTronStakingStats = earnHttpClient('/trx/stats', {
+    method: 'GET',
+    schema: stakingTrxStatsResponse,
 });
 
 export const getEthereumValidatorsQueue = earnHttpClient('/eth/validators-queue', {
