@@ -209,6 +209,7 @@ export const TransactionDetailData = ({
                     accountKey={accountKey}
                     transaction={transaction}
                     tokenTransfer={tokenTransfer}
+                    isPhishingTransaction={isPhishingTransaction}
                 />
             )}
 

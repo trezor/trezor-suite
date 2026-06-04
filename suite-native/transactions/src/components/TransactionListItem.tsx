@@ -7,23 +7,13 @@ import {
     type FiatRatesRootState,
     type PhishingRootState,
     type TransactionsRootState,
-    type WalletSettingsRootState,
     createTargets,
     selectAccountByKey,
     selectIsPhishingTransaction,
-    selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTxStakeType } from '@suite-common/wallet-utils';
-import { Box, VStack } from '@suite-native/atoms';
-import {
-    CryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-    EmptyAmountText,
-    SignValueFormatter,
-} from '@suite-native/formatters';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign, groupTargetOutputs } from '../utils';
@@ -36,77 +26,6 @@ type TransactionListItemProps = {
     accountKey: AccountKey;
     isFirst?: boolean;
     isLast?: boolean;
-};
-
-const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
-    extend: {
-        condition: isFailedTx,
-        style: {
-            textDecorationLine: 'line-through',
-        },
-    },
-}));
-
-type TransactionListItemValuesProps = {
-    accountKey: AccountKey;
-    transaction: WalletAccountTransaction;
-};
-
-export const TransactionListItemValues = ({
-    accountKey,
-    transaction,
-}: TransactionListItemValuesProps) => {
-    const isTestnetAccount = useSelector((state: AccountsRootState) =>
-        selectIsTestnetAccount(state, accountKey),
-    );
-
-    const { isPhishing: isPhishingTransaction } = useSelector(
-        (
-            state: TokenDefinitionsRootState &
-                TransactionsRootState &
-                FiatRatesRootState &
-                PhishingRootState,
-        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
-    );
-
-    const { applyStyle } = useNativeStyles();
-
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction),
-    );
-    const isFailedTx = transaction.type === 'failed';
-    const sign = getTransactionValueSign(transaction.type);
-
-    return (
-        <VStack spacing="sp4" alignItems="flex-end">
-            {isTestnetAccount ? (
-                <EmptyAmountText />
-            ) : (
-                <Box flexDirection="row">
-                    {!isFailedTx && !isPhishingTransaction && <SignValueFormatter value={sign} />}
-                    <CryptoToFiatAmountFormatter
-                        value={transaction.amount}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                        isForcedDiscreetMode={isPhishingTransaction}
-                        style={applyStyle(failedTxStyle, { isFailedTx })}
-                    />
-                </Box>
-            )}
-
-            <CryptoAmountFormatter
-                value={transaction.amount}
-                symbol={transaction.symbol}
-                isBalance={false}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                isForcedDiscreetMode={isPhishingTransaction}
-                variant="body-sm"
-                color="contentSecondary"
-            />
-        </VStack>
-    );
 };
 
 export const TransactionListItem = ({

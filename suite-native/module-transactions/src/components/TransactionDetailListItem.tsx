@@ -25,6 +25,7 @@ type TransactionDetailListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
     onPress: () => void;
+    isPhishingTransaction: boolean;
 };
 
 type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
@@ -42,6 +43,7 @@ export const TransactionDetailListItem = ({
     transaction,
     tokenTransfer,
     onPress,
+    isPhishingTransaction,
     isFirst = false,
     isLast = false,
 }: TransactionDetailListItemProps) => {
@@ -84,7 +86,12 @@ export const TransactionDetailListItem = ({
                         transaction={transaction}
                     />
                 ) : (
-                    <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
+                    <TransactionListItemValues
+                        accountKey={accountKey}
+                        transaction={transaction}
+                        amount={transaction.amount}
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
                 )}
             </Box>
         </PressableOpacity>
