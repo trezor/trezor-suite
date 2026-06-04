@@ -1,2 +1,2 @@
-export * from './selectWalletLabel';
-export * from './useWalletLabel';
+export * from './labels/selectWalletLabel';
+export * from './labels/useWalletLabel';
