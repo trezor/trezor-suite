@@ -2,19 +2,25 @@ import { useCallback } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { PaymentMethodIcon } from '@suite/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
-    type TradingPaymentMethodListProps,
+    selectTradingBuyQuotesPerPaymentMethod,
+    selectTradingSellQuotesPerPaymentMethod,
 } from '@suite-common/trading';
-import { Modal, Row, Text } from '@trezor/components';
+import { Modal } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
+import { exhaustive } from '@trezor/type-utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import {
+    type TradingTradeBuySellType,
+    type TradingTradeDetailBuySellType,
+} from 'src/types/trading/trading';
 import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+
+import { PaymentMethodModalItem } from './PaymentMethodModalItem';
 
 interface PaymentMethodModalProps {
     onClose: () => void;
@@ -22,13 +28,27 @@ interface PaymentMethodModalProps {
 }
 
 export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps) => {
-    const { paymentMethods, setValue } = useTradingFormContext<TradingTradeBuySellType>();
+    const { type, setValue } = useTradingFormContext<TradingTradeBuySellType>();
+
+    const quotes: TradingTradeDetailBuySellType[] = useSelector(state => {
+        switch (type) {
+            case 'buy':
+                return selectTradingBuyQuotesPerPaymentMethod(state);
+            case 'sell':
+                return selectTradingSellQuotesPerPaymentMethod(state);
+            default:
+                return exhaustive(type, 'Unexpected trade type');
+        }
+    });
 
     const selectPaymentMethod = useCallback(
-        (paymentMethod: TradingPaymentMethodListProps) => {
+        (quote: TradingTradeDetailBuySellType) => {
             // setValue is a union type that cannot be called directly, so we need to assert it
             const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
-            setValueTyped(TRADING_FORM_PAYMENT_METHOD_SELECT, paymentMethod);
+            setValueTyped(TRADING_FORM_PAYMENT_METHOD_SELECT, {
+                value: quote.paymentMethod ?? '',
+                label: quote.paymentMethodName ?? '',
+            });
             setValueTyped(TRADING_FORM_PROVIDER_SELECT, undefined);
             onClose();
         },
@@ -42,28 +62,12 @@ export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps
             heading={heading ? <Translation id={heading} /> : undefined}
         >
             <CardList>
-                {paymentMethods.map(item => (
-                    <CardList.Item
-                        key={item.value}
-                        onClick={() => selectPaymentMethod(item)}
-                        data-testid={`@trading/form/payment-method-select/option/${item.value}`}
-                    >
-                        <Row gap={12} alignItems="center">
-                            <PaymentMethodIcon paymentMethod={item.value} />
-                            {item.label}
-                        </Row>
-                        {item.receiveAmount && item.symbol && (
-                            <Row>
-                                <Text typographyStyle="body-sm">
-                                    {'≈ '}
-                                    <FormattedCryptoAmount
-                                        value={item.receiveAmount}
-                                        symbol={item.symbol}
-                                    />
-                                </Text>
-                            </Row>
-                        )}
-                    </CardList.Item>
+                {quotes.map(quote => (
+                    <PaymentMethodModalItem
+                        key={quote.paymentMethod}
+                        quote={quote}
+                        onSelect={selectPaymentMethod}
+                    />
                 ))}
             </CardList>
         </Modal>
