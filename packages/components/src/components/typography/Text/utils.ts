@@ -3,18 +3,15 @@ import { type DefaultTheme } from 'styled-components';
 import { type CSSColor, type Color } from '@trezor/theme';
 
 import { type TextIntent, type TextPriority } from './types';
+import { addAlphaToHex } from '../../../utils/utils';
 
-const colorMap: Record<Exclude<TextIntent, 'neutral'>, Color> = {
+const colorMap: Record<TextIntent, Color> = {
     brand: 'contentBrand',
+    neutral: 'contentPrimary',
     info: 'contentInfo',
     warning: 'contentWarning',
     critical: 'contentCritical',
     accentViolet: 'contentAccentViolet',
-};
-
-const neutralColorMap: Record<TextPriority, Color> = {
-    primary: 'contentPrimary',
-    secondary: 'contentSecondary',
 };
 
 export const mapIntentToCSS = (
@@ -27,7 +24,7 @@ export const mapIntentToCSS = (
         return theme.contentDisabled;
     }
 
-    const token = intent === 'neutral' ? neutralColorMap[priority] : colorMap[intent];
+    const token = theme[colorMap[intent]];
 
-    return theme[token];
+    return priority === 'primary' ? token : addAlphaToHex(token, 0.74);
 };
