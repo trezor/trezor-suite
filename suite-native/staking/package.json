@@ -31,8 +31,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-redux": "9.2.0",
-        "web3-utils": "^4.3.3"
+        "react-redux": "9.2.0"
     },
     "devDependencies": {
         "@suite-common/message-system": "workspace:*",

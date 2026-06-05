@@ -10793,7 +10793,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.48.1"
-    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -11224,7 +11223,6 @@ __metadata:
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -12236,7 +12234,6 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -13646,7 +13643,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
@@ -14365,7 +14361,6 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    web3-utils: "npm:^4.3.3"
   languageName: unknown
   linkType: soft
 
