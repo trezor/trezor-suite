@@ -68,6 +68,8 @@ describe('filter receive accounts', () => {
         expect(isDebugOnlyAccountType('ledger', 'eth')).toBe(true);
         expect(isDebugOnlyAccountType('ledger', 'trx')).toBe(true);
         expect(isDebugOnlyAccountType('normal', 'regtest')).toBe(false);
+        expect(isDebugOnlyAccountType('legacy', 'tsep')).toBe(true);
+        expect(isDebugOnlyAccountType('legacy', 'thod')).toBe(true);
     });
 
     it('returns no results when given an empty accounts array', () => {
