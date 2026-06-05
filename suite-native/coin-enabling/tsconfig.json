@@ -24,7 +24,6 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../toasts" },
-        { "path": "../tokens" },
         { "path": "../../packages/styles-native" }
     ]
 }

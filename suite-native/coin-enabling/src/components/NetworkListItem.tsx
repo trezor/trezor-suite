@@ -5,7 +5,6 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NetworkBackendsButton } from './NetworkBackendsButton';
@@ -39,7 +38,9 @@ export const NetworkListItem = ({
 }: NetworkListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const { name } = getNetwork(symbol);
+    const { name, features } = getNetwork(symbol);
+    const isTokensFeatureSupported = features.includes('tokens');
+    const isStakingFeatureSupported = features.includes('staking');
 
     return (
         <Card noPadding>
@@ -60,9 +61,15 @@ export const NetworkListItem = ({
                     >
                         <VStack spacing={0}>
                             <Text variant="body-sm-strong">{name}</Text>
-                            {isNetworkWithTokens(symbol) && (
+                            {isTokensFeatureSupported && (
                                 <Text variant="body-sm" color="contentSecondary">
-                                    <Translation id="generic.tokens" />
+                                    <Translation
+                                        id={
+                                            isStakingFeatureSupported
+                                                ? 'moduleSettings.coinEnabling.labels.tokensAndStaking'
+                                                : 'moduleSettings.coinEnabling.labels.tokens'
+                                        }
+                                    />
                                 </Text>
                             )}
                         </VStack>
