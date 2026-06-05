@@ -39,7 +39,7 @@ on:
         required: true
         type: string
       currents-ci-build-id:
-        description: "Custom CI build ID for Currents reporting, default is pr-run-RUN_ID-RUN_ATTEMPT"
+        description: "Custom CI build ID for Currents reporting, default is pr-run-TARGET-RUN_ID-RUN_ATTEMPT"
         required: false
         type: string
         default: "" # Will handle default logic in steps if empty, or just pass it explicitly from caller
@@ -207,7 +207,7 @@ jobs:
 
           # Handle default for CURRENTS_CI_BUILD_ID if empty
           if [[ -z "${{ inputs.currents-ci-build-id }}" ]]; then
-             export CURRENTS_CI_BUILD_ID="pr-run-${{ github.run_id }}-${{ github.run_attempt }}"
+             export CURRENTS_CI_BUILD_ID="pr-run-${{ inputs.target }}-${{ github.run_id }}-${{ github.run_attempt }}"
           fi
 
           if [[ "${{ inputs.run-reporter }}" == "true" ]]; then
