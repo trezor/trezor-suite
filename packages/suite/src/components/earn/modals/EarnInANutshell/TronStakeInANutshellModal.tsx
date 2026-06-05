@@ -24,8 +24,7 @@ export const TronStakeInANutshellModal = ({
     onCancel,
     actionType = 'close',
 }: TronStakeInANutshellModalProps) => {
-    const { data } = useTronStakingStats();
-    const apy = data?.length ? Math.max(...data.map(({ apr }) => apr)) : null;
+    const { maxApr } = useTronStakingStats();
 
     const networkFeeBadge = { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true };
 
@@ -49,7 +48,7 @@ export const TronStakeInANutshellModal = ({
                             text: (
                                 <Translation
                                     id="TR_EARN_APY_APPROX"
-                                    values={{ apyPercent: formatApyValue(apy) }}
+                                    values={{ apyPercent: formatApyValue(maxApr) }}
                                 />
                             ),
                         }}

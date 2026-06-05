@@ -7,10 +7,14 @@ import { getTronStakingStats } from '../services';
 export function useTronStakingStats(
     queryOptions?: Partial<UseQueryOptions<TrxStats, ResponseError | ResponseValidationError>>,
 ) {
-    return useQuery({
+    const stats = useQuery({
         staleTime: 5 * 60 * 1000, // 5 minutes
         ...queryOptions,
         queryKey: commonQueryKeys.tronStakingStats(),
         queryFn: getTronStakingStats,
     });
+
+    const maxApr = stats.data?.length ? Math.max(...stats.data.map(({ apr }) => apr)) : null;
+
+    return { stats, maxApr };
 }

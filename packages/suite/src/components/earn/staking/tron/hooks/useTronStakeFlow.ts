@@ -12,10 +12,10 @@ interface UseTronStakeFlowProps {
 }
 
 export const useTronStakeFlow = ({ account }: UseTronStakeFlowProps): TronStakeContextValues => {
-    const representatives = useTronStakingStats();
+    const { stats } = useTronStakingStats();
 
     return {
         account,
-        representatives,
+        representatives: stats,
     };
 };
