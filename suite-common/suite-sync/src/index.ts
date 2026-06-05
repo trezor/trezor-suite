@@ -77,6 +77,11 @@ export {
     fromSuiteSyncToSearchOutputLabels,
 } from './data/labeling/fromSuiteSyncToSearchAccountLabels';
 export {
+    createSuiteSyncWriteLabels,
+    type SuiteSyncWriteLabels,
+    type CreateSuiteSyncWriteLabelsDeps,
+} from './data/labeling/createSuiteSyncWriteLabels';
+export {
     isSuiteSyncSupportedByDevice,
     isFwUpgradeNeededForSuiteSync,
     getIsSuiteSyncLabelingActionEnabled,

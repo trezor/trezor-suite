@@ -38,6 +38,7 @@ import {
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
+    createSuiteSyncWriteLabels,
     selectAllLabelsForAccount,
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
@@ -108,18 +109,12 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     const analytics = createAnalytics();
 
-    const suiteSync = createSuiteSyncDesktopCompositionRoot({
-        dispatch: deps.dispatch,
-        getState: deps.getState,
-        platformEncryption: deps.platformEncryption,
-        trezorConnect: TrezorConnect,
-        ensureDelegatedIdentityKey,
-        analytics,
-        fetch: globalThis.fetch.bind(globalThis),
-    });
-
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
     const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
+
+    // Label writers that take storage as a param, used by the migration. They never call
+    // `ensureWalletSuiteSyncOn`, so the migration listener can be built before suiteSync.
+    const writeLabels = createSuiteSyncWriteLabels({ getState: deps.getState, analytics });
 
     const { migrateLabelsIfAvailable, migrateLegacyLabelsToSuiteSync } =
         createMetadataMigrationCompositionRoot({
@@ -129,10 +124,19 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             getCurrentWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
             getCurrentAccountLabels,
             getDeviceByStaticSessionId: toGetter(deps.getState, selectDeviceByStaticSessionId),
-            labeling: suiteSync.labeling,
+            ...writeLabels,
         });
 
-    suiteSync.onWalletSuiteSyncOnEnsured(migrateLabelsIfAvailable);
+    const suiteSync = createSuiteSyncDesktopCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        platformEncryption: deps.platformEncryption,
+        trezorConnect: TrezorConnect,
+        ensureDelegatedIdentityKey,
+        analytics,
+        fetch: globalThis.fetch.bind(globalThis),
+        onStorageEnsured: migrateLabelsIfAvailable,
+    });
 
     const { bip329 } = createBip329CompositionRoot({
         getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),

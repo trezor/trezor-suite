@@ -52,5 +52,6 @@ export const createSuiteSyncNativeCompositionRoot = (
         },
         // Todo: we need to reuse useSuiteSyncErrorHandler somehow, but we do not have showAlert here.
         suiteSyncUncontrolledErrorHandler: () => {},
+        onStorageEnsured: () => {},
     });
 };

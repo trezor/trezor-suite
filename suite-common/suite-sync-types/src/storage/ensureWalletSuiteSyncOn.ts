@@ -40,18 +40,18 @@ export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,
 ) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
 
-export type WalletSuiteSyncOnEnsuredParams = EnsureWalletSuiteSyncOnParams & {
+export type OnStorageEnsuredParams = EnsureWalletSuiteSyncOnParams & {
     storage: SuiteSyncStorage;
 };
 
-export type WalletSuiteSyncOnEnsuredListener = (
-    params: WalletSuiteSyncOnEnsuredParams,
-) => Promise<void> | void;
+/**
+ * Invoked after Suite Sync storage is ensured for a wallet (e.g. to run the legacy-labels
+ * migration). Defaults to a no-op when a platform does not need it (e.g. native).
+ */
+export type OnStorageEnsured = (params: OnStorageEnsuredParams) => Promise<void> | void;
 
-export type OnWalletSuiteSyncOnEnsured = (listener: WalletSuiteSyncOnEnsuredListener) => void;
-
-export type OnWalletSuiteSyncOnEnsuredDep = {
-    onWalletSuiteSyncOnEnsured: OnWalletSuiteSyncOnEnsured;
+export type OnStorageEnsuredDep = {
+    onStorageEnsured: OnStorageEnsured;
 };
 
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };

@@ -1,4 +1,5 @@
-import { type UpdateWalletLabelDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type WriteWalletLabelDep } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
 import type { WalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
@@ -15,11 +16,12 @@ import { normalizeLabel } from '../migrationUtils';
 export type MigrateWalletLabelsDeps = {
     getLegacyWalletLabels: GetLegacyWalletLabels;
     getCurrentWalletLabel: GetCurrentWalletLabel;
-} & UpdateWalletLabelDep;
+} & WriteWalletLabelDep;
 
 export type MigrateWalletLabelsParams = {
     deviceStaticSessionId: StaticSessionId;
     walletDescriptor: WalletDescriptor;
+    storage: SuiteSyncStorage;
 };
 
 export type MigrateWalletLabels = (
@@ -32,7 +34,7 @@ export type MigrateWalletLabelsDep = {
 
 export const createMigrateWalletLabels =
     (deps: MigrateWalletLabelsDeps): MigrateWalletLabels =>
-    async ({ deviceStaticSessionId, walletDescriptor }) => {
+    async ({ deviceStaticSessionId, walletDescriptor, storage }) => {
         const legacyWalletLabel = normalizeLabel(
             deps.getLegacyWalletLabels(deviceStaticSessionId).walletLabel,
         );
@@ -47,9 +49,9 @@ export const createMigrateWalletLabels =
             return ok({ changed: 0, skipped: 1 });
         }
 
-        const updateWalletLabelResult = await deps.updateWalletLabel({
-            deviceStaticSessionId,
-            label: legacyWalletLabel,
+        const updateWalletLabelResult = await deps.writeWalletLabel({
+            storage,
+            data: { deviceStaticSessionId, label: legacyWalletLabel },
         });
 
         if (!updateWalletLabelResult.success) {

@@ -5,6 +5,7 @@ import { createMockDeps } from '@suite-common/dependency-injection';
 import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type MetadataProvider } from '@suite-common/metadata-types';
 import { createSuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
@@ -51,13 +52,15 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         });
         const listener = createMigrateLabelsIfAvailable(deps);
 
+        const storage = mockSuiteSyncStorage();
+
         await listener({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
             isWriteMode: false,
-            storage: {} as any,
+            storage,
         });
 
-        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(device);
+        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(device, storage);
         expect(deps.dispatch).toHaveBeenNthCalledWith(
             1,
             metadataActions.setLegacyLabelsMigrationForWallet(WALLET_DESCRIPTOR),
@@ -90,7 +93,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         await listener({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
             isWriteMode: false,
-            storage: {} as any,
+            storage: mockSuiteSyncStorage(),
         });
 
         expect(deps.migrateLegacyLabelsToSuiteSync).not.toHaveBeenCalled();
@@ -114,13 +117,13 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         const firstMigration = listener({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
             isWriteMode: false,
-            storage: {} as any,
+            storage: mockSuiteSyncStorage(),
         });
 
         await listener({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
             isWriteMode: false,
-            storage: {} as any,
+            storage: mockSuiteSyncStorage(),
         });
 
         expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledTimes(1);
@@ -169,17 +172,23 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         const firstListenerResult = listener({
             deviceStaticSessionId: firstDeviceStaticSessionId,
             isWriteMode: false,
-            storage: {} as any,
+            storage: mockSuiteSyncStorage(),
         });
         const secondListenerResult = listener({
             deviceStaticSessionId: secondDeviceStaticSessionId,
             isWriteMode: false,
-            storage: {} as any,
+            storage: mockSuiteSyncStorage(),
         });
 
         expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledTimes(2);
-        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(firstDevice);
-        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(secondDevice);
+        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(
+            firstDevice,
+            expect.anything(),
+        );
+        expect(deps.migrateLegacyLabelsToSuiteSync).toHaveBeenCalledWith(
+            secondDevice,
+            expect.anything(),
+        );
 
         firstMigration.resolve(ok({ changed: 0, skipped: 0 }));
         secondMigration.resolve(ok({ changed: 0, skipped: 0 }));
@@ -208,7 +217,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         await listener({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
             isWriteMode: false,
-            storage: {} as any,
+            storage: mockSuiteSyncStorage(),
         });
 
         expect(deps.dispatch).toHaveBeenCalledTimes(1);
@@ -242,7 +251,7 @@ describe(createMigrateLabelsIfAvailable.name, () => {
         await listener({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID,
             isWriteMode: false,
-            storage: {} as any,
+            storage: mockSuiteSyncStorage(),
         });
 
         expect(deps.dispatch).toHaveBeenCalledTimes(1);

@@ -1,6 +1,7 @@
 import type { AccountLabels } from '@suite-common/metadata-types';
 import type { AllLabelsForAccount } from '@suite-common/suite-sync';
-import { type UpdateAddressLabelDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type WriteAddressLabelDep } from '@suite-common/suite-sync-types';
 import type { Account } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 import type { Result } from '@trezor/type-utils';
@@ -9,12 +10,13 @@ import { typedObjectEntries } from '@trezor/utils';
 import type { MigrationCounts, MigrationError } from '../legacyLabelsMigration';
 import { normalizeLabel } from '../migrationUtils';
 
-export type MigrateAddressLabelsDeps = UpdateAddressLabelDep;
+export type MigrateAddressLabelsDeps = WriteAddressLabelDep;
 
 export type MigrateAddressLabelsParams = {
     account: Account;
     legacyAccountLabels: AccountLabels;
     currentAccountLabels: AllLabelsForAccount;
+    storage: SuiteSyncStorage;
 };
 
 export type MigrateAddressLabels = (
@@ -27,7 +29,7 @@ export type MigrateAddressLabelsDep = {
 
 export const createMigrateAddressLabels =
     (deps: MigrateAddressLabelsDeps): MigrateAddressLabels =>
-    async ({ account, legacyAccountLabels, currentAccountLabels }) => {
+    async ({ account, legacyAccountLabels, currentAccountLabels, storage }) => {
         let changed = 0;
         let skipped = 0;
 
@@ -50,12 +52,15 @@ export const createMigrateAddressLabels =
                 continue;
             }
 
-            const updateAddressLabelResult = await deps.updateAddressLabel({
-                deviceStaticSessionId: account.deviceState,
-                address,
-                label: normalizedAddressLabel,
-                accountDescriptor: account.descriptor,
-                networkSymbol: account.symbol,
+            const updateAddressLabelResult = await deps.writeAddressLabel({
+                storage,
+                data: {
+                    deviceStaticSessionId: account.deviceState,
+                    address,
+                    label: normalizedAddressLabel,
+                    accountDescriptor: account.descriptor,
+                    networkSymbol: account.symbol,
+                },
             });
 
             if (!updateAddressLabelResult.success) {

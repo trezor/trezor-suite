@@ -1,6 +1,7 @@
 import type { AccountLabels } from '@suite-common/metadata-types';
 import type { AllLabelsForAccount } from '@suite-common/suite-sync';
-import { type UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type WriteOutputLabelDep } from '@suite-common/suite-sync-types';
 import type { Account } from '@suite-common/wallet-types';
 import { asTxTargetId } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
@@ -10,12 +11,13 @@ import { typedObjectEntries } from '@trezor/utils';
 import type { MigrationCounts, MigrationError } from '../legacyLabelsMigration';
 import { normalizeLabel } from '../migrationUtils';
 
-export type MigrateOutputLabelsDeps = UpdateOutputLabelDep;
+export type MigrateOutputLabelsDeps = WriteOutputLabelDep;
 
 export type MigrateOutputLabelsParams = {
     account: Account;
     legacyAccountLabels: AccountLabels;
     currentAccountLabels: AllLabelsForAccount;
+    storage: SuiteSyncStorage;
 };
 
 export type MigrateOutputLabels = (
@@ -28,7 +30,7 @@ export type MigrateOutputLabelsDep = {
 
 export const createMigrateOutputLabels =
     (deps: MigrateOutputLabelsDeps): MigrateOutputLabels =>
-    async ({ account, legacyAccountLabels, currentAccountLabels }) => {
+    async ({ account, legacyAccountLabels, currentAccountLabels, storage }) => {
         let changed = 0;
         let skipped = 0;
 
@@ -50,13 +52,16 @@ export const createMigrateOutputLabels =
                     continue;
                 }
 
-                const updateOutputLabelResult = await deps.updateOutputLabel({
-                    deviceStaticSessionId: account.deviceState,
-                    txId,
-                    txTargetId: asTxTargetId(String(txTargetId)),
-                    label: normalizedOutputLabel,
-                    accountDescriptor: account.descriptor,
-                    networkSymbol: account.symbol,
+                const updateOutputLabelResult = await deps.writeOutputLabel({
+                    storage,
+                    data: {
+                        deviceStaticSessionId: account.deviceState,
+                        txId,
+                        txTargetId: asTxTargetId(String(txTargetId)),
+                        label: normalizedOutputLabel,
+                        accountDescriptor: account.descriptor,
+                        networkSymbol: account.symbol,
+                    },
                 });
 
                 if (!updateOutputLabelResult.success) {

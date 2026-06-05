@@ -1,7 +1,4 @@
-import {
-    type EnsureWalletSuiteSyncOnDep,
-    type UpdateAccountLabel,
-} from '@suite-common/suite-sync-types';
+import { type WriteAccountLabel } from '@suite-common/suite-sync-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
@@ -11,7 +8,7 @@ import {
     type SuiteSyncAnalyticsDep,
     getLabelAction,
     reportLabelEvent,
-} from '../../suiteSyncAnalytics';
+} from '../../../suiteSyncAnalytics';
 
 type GetAccountLabelDep = {
     getAccountLabel: (
@@ -21,13 +18,11 @@ type GetAccountLabelDep = {
     ) => string | null;
 };
 
-export type UpdateAccountLabelDeps = EnsureWalletSuiteSyncOnDep &
-    SuiteSyncAnalyticsDep &
-    GetAccountLabelDep;
+export type WriteAccountLabelDeps = SuiteSyncAnalyticsDep & GetAccountLabelDep;
 
-export const createUpdateAccountLabel =
-    (deps: UpdateAccountLabelDeps): UpdateAccountLabel =>
-    async ({ deviceStaticSessionId, accountKey, label }) => {
+export const createWriteAccountLabel =
+    (deps: WriteAccountLabelDeps): WriteAccountLabel =>
+    ({ storage, data: { deviceStaticSessionId, accountKey, label } }) => {
         const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
         const previousLabel = deps.getAccountLabel(
@@ -36,16 +31,7 @@ export const createUpdateAccountLabel =
             networkSymbol,
         );
 
-        const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({
-            deviceStaticSessionId,
-            isWriteMode: true,
-        });
-
-        if (!ensureWalletOnResult.success) {
-            return ensureWalletOnResult;
-        }
-
-        const result = await ensureWalletOnResult.payload.data.accounts.update({
+        const result = storage.data.accounts.update({
             accountDescriptor,
             networkSymbol,
             label,
