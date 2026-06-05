@@ -155,11 +155,43 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
-                state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
-                state.permissions.push(payload);
+                const existing = state.permissions.find(p => p.origin === payload.origin);
+                if (!existing) {
+                    state.permissions.push(payload);
+
+                    return;
+                }
+
+                const newPermissions = payload.allowedPermissions.filter(
+                    next =>
+                        !existing.allowedPermissions.some(
+                            prev => prev.permission === next.permission && prev.coin === next.coin,
+                        ),
+                );
+                existing.allowedPermissions.push(...newPermissions);
+                existing.silentMode = payload.silentMode;
             })
             .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
                 state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+            })
+            .addCase(connectPopupActions.forgetAppPermission, (state, { payload }) => {
+                const app = state.permissions.find(p => p.origin === payload.origin);
+                if (!app) {
+                    return;
+                }
+
+                app.allowedPermissions = app.allowedPermissions.filter(
+                    granted =>
+                        !(
+                            granted.permission === payload.permission.permission &&
+                            granted.coin === payload.permission.coin
+                        ),
+                );
+
+                // Drop the whole app entry once its last permission is removed.
+                if (app.allowedPermissions.length === 0) {
+                    state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+                }
             })
             .addCase(connectPopupActions.setAppSilentMode, (state, { payload }) => {
                 const permission = state.permissions.find(p => p.origin === payload.origin);

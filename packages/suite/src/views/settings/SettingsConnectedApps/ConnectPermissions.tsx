@@ -2,25 +2,43 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
-import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
-import { Card, Column, Dropdown, H3, Row, Text, Tooltip } from '@trezor/components';
+import {
+    connectPopupActions,
+    groupPermissionsByCoin,
+    selectConnectAppPermissions,
+} from '@suite-common/connect-popup';
+import { Card, Column, Dropdown, H3, IconButton, Row, Text, Tooltip } from '@trezor/components';
+import { type MethodPermission, type PermissionRequest } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { getCoinLabel } from 'src/utils/suite/connectPermissions';
 
 const PermissionsList = styled.ul`
     list-style: disc;
     margin-left: 16px;
 `;
 
-export const getPermissionText = (permissionType: string) => {
+export const getPermissionText = (permissionType: MethodPermission | string) => {
     switch (permissionType) {
-        case 'read':
-            return <Translation id="TR_PERMISSION_READ" />;
-        case 'write':
-            return <Translation id="TR_PERMISSION_WRITE" />;
+        case 'read_address':
+            return <Translation id="TR_PERMISSION_READ_ADDRESS" />;
+        case 'read_xpub':
+            return <Translation id="TR_PERMISSION_READ_XPUB" />;
+        case 'read_account_info':
+            return <Translation id="TR_PERMISSION_READ_ACCOUNT_INFO" />;
+        case 'read_settings':
+            return <Translation id="TR_PERMISSION_READ_SETTINGS" />;
+        case 'read_features':
+            return <Translation id="TR_PERMISSION_READ_FEATURES" />;
+        case 'sign':
+            return <Translation id="TR_PERMISSION_SIGN" />;
+        case 'sign_message':
+            return <Translation id="TR_PERMISSION_SIGN_MESSAGE" />;
+        case 'verify_message':
+            return <Translation id="TR_PERMISSION_VERIFY_MESSAGE" />;
         case 'management':
             return <Translation id="TR_PERMISSION_MANAGEMENT" />;
         case 'push_tx':
@@ -31,6 +49,52 @@ export const getPermissionText = (permissionType: string) => {
             return '';
     }
 };
+
+type GroupedPermissionsListProps = {
+    permissions: PermissionRequest[];
+    onRemovePermission?: (permission: PermissionRequest) => void;
+};
+
+export const GroupedPermissionsList = ({
+    permissions,
+    onRemovePermission,
+}: GroupedPermissionsListProps) => (
+    <PermissionsList>
+        {groupPermissionsByCoin(permissions).map(group => (
+            <li key={group.coin ?? '__device__'}>
+                <Text>
+                    {group.coin ? getCoinLabel(group.coin) : <Translation id="TR_DEVICE" />}
+                </Text>
+                <PermissionsList>
+                    {group.permissions.map(permission => (
+                        <li key={permission}>
+                            {onRemovePermission ? (
+                                <Row gap={spacings.xs} alignItems="center">
+                                    <Text>{getPermissionText(permission)}</Text>
+                                    <IconButton
+                                        icon="xCircle"
+                                        size="small"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        tooltip={{
+                                            content: <Translation id="TR_FORGET_PERMISSION" />,
+                                            placement: 'left',
+                                        }}
+                                        onClick={() =>
+                                            onRemovePermission({ permission, coin: group.coin })
+                                        }
+                                    />
+                                </Row>
+                            ) : (
+                                getPermissionText(permission)
+                            )}
+                        </li>
+                    ))}
+                </PermissionsList>
+            </li>
+        ))}
+    </PermissionsList>
+);
 
 export const ConnectPermissions = () => {
     const dispatch = useDispatch();
@@ -83,11 +147,17 @@ export const ConnectPermissions = () => {
                                 {app.process && <ConnectProcessLabel process={app.process} />}
                             </Row>
                             <Text intent="neutral" priority="secondary">
-                                <PermissionsList>
-                                    {app.types.map(permission => (
-                                        <li key={permission}>{getPermissionText(permission)}</li>
-                                    ))}
-                                </PermissionsList>
+                                <GroupedPermissionsList
+                                    permissions={app.allowedPermissions}
+                                    onRemovePermission={permission => {
+                                        dispatch(
+                                            connectPopupActions.forgetAppPermission({
+                                                origin: app.origin,
+                                                permission,
+                                            }),
+                                        );
+                                    }}
+                                />
                             </Text>
                         </Column>
 
@@ -131,7 +201,7 @@ export const ConnectPermissions = () => {
                                     : []),
                                 {
                                     icon: 'xCircle',
-                                    label: <Translation id="TR_FORGET" />,
+                                    label: <Translation id="TR_FORGET_ALL_PERMISSIONS" />,
                                     onClick: () => {
                                         dispatch(connectPopupActions.forgetAppPermissions(app));
                                     },

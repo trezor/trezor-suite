@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { type PermissionRequest } from '@trezor/connect';
+
 import {
     type AppRememberedPermission,
     type ConnectPopupCall,
@@ -77,6 +79,13 @@ const forgetAppPermissions = createAction(
     }),
 );
 
+const forgetAppPermission = createAction(
+    `${ACTION_PREFIX}/forgetAppPermission`,
+    (payload: { origin: string; permission: PermissionRequest }) => ({
+        payload,
+    }),
+);
+
 const setAppSilentMode = createAction(
     `${ACTION_PREFIX}/setAppSilentMode`,
     (payload: { origin: string; silentMode: boolean }) => ({
@@ -112,6 +121,7 @@ export const connectPopupActions = {
     setError,
     rememberAppPermissions,
     forgetAppPermissions,
+    forgetAppPermission,
     setAppSilentMode,
     txSimulation,
     setSelectedFee,

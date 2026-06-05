@@ -7,7 +7,7 @@ import { events } from '@suite-common/analytics';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { useServices } from '@suite-common/dependency-injection';
-import { Card, Checkbox, Column, Icon, List, Modal, Row, Text, Tooltip } from '@trezor/components';
+import { Card, Checkbox, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { spacings } from '@trezor/theme';
 
@@ -15,7 +15,7 @@ import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
+import { GroupedPermissionsList } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -30,7 +30,7 @@ export const ConnectPermissionsModal = () => {
     const { confirmLabel, permissionTypes } = methodInfo;
 
     const rememberPayload = {
-        types: permissionTypes,
+        allowedPermissions: permissionTypes,
         ...source,
         silentMode: isSilentMode,
     };
@@ -135,16 +135,7 @@ export const ConnectPermissionsModal = () => {
                     </Text>
 
                     <Card>
-                        <List>
-                            {permissionTypes.map(permission => (
-                                <List.Item
-                                    key={permission}
-                                    bulletComponent={<Icon name="checkCircle" intent="brand" />}
-                                >
-                                    {getPermissionText(permission)}
-                                </List.Item>
-                            ))}
-                        </List>
+                        <GroupedPermissionsList permissions={permissionTypes} />
                     </Card>
                     {source.type !== CALL_SOURCE_WALLETCONNECT && (
                         <>

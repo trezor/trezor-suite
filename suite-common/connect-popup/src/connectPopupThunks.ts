@@ -10,7 +10,6 @@ import TrezorConnect, {
     type CallMethodParams,
     type CallMethodPayload,
     type MethodInfo,
-    type MethodPermission,
 } from '@trezor/connect';
 import { connectCallableMethods } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
@@ -26,6 +25,7 @@ import {
     type ConnectCallSource,
 } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
+import { permissionsAreCovered } from './permissionsGrouping';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
@@ -57,11 +57,13 @@ export const connectPopupCallThunkInner = createThunk<
                 throw methodInfo.error;
             }
             const methodInfoPayload = methodInfo.payload as MethodInfo;
+            const requestedPermissions = methodInfoPayload.requiredPermissions;
+            const hasPermission = (name: string) =>
+                requestedPermissions.some(p => p.permission === name);
             if (
-                methodInfoPayload.requiredPermissions.includes('management') ||
-                methodInfoPayload.requiredPermissions.includes('internal') ||
-                (methodInfoPayload.requiredPermissions.includes('push_tx') &&
-                    source.type === CALL_SOURCE_DEEPLINK)
+                hasPermission('management') ||
+                hasPermission('internal') ||
+                (hasPermission('push_tx') && source.type === CALL_SOURCE_DEEPLINK)
             ) {
                 throw TypedError('Method_NotAllowed');
             }
@@ -81,15 +83,14 @@ export const connectPopupCallThunkInner = createThunk<
                 }),
             );
 
-            // Check if permission remembered
+            // Check if permission remembered (permission, coin).
             const rememberedApps = selectConnectAppPermissions(getState());
+
             const isRemembered = rememberedApps.some(
                 app =>
                     app.origin === source.origin &&
                     app.process?.fullPath === source.process?.fullPath &&
-                    methodInfoPayload.requiredPermissions.every((permission: MethodPermission) =>
-                        app.types.includes(permission),
-                    ),
+                    permissionsAreCovered(requestedPermissions, app.allowedPermissions),
             );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
