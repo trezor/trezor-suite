@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/earn-stablecoin-defs"
+        },
+        {
             "path": "../../suite-common/metadata-types"
         },
         {

@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/earn-stablecoin-defs"
+        },
         { "path": "../config" },
         { "path": "../../packages/connect" }
     ]

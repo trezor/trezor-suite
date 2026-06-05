@@ -7,6 +7,7 @@ import { AnalyticsLogging } from '../components/AnalyticsLogging';
 import { ComponentDemoCard } from '../components/ComponentDemoCard';
 import { DangerZoneCard } from '../components/DangerZoneCard';
 import { DebuggingCard } from '../components/DebuggingCard';
+import { EarnCard } from '../components/EarnCard';
 import { FeatureFlagsCard } from '../components/FeatureFlagsCard';
 import { FirmwareSourceCard } from '../components/FirmwareSourceCard';
 import { InfoCard } from '../components/InfoCard';
@@ -30,6 +31,7 @@ export const DevUtilsScreen = () => (
             <FeatureFlagsCard />
             <AnalyticsLogging />
             <TradingCard />
+            <EarnCard />
             <MessageSystemCard />
             <FirmwareSourceCard />
             <SuiteSyncRelaySettings />

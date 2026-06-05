@@ -22,6 +22,7 @@ import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
+import { EarnApi } from './EarnApi';
 import { FirmwareUpdateEnvironmentSelect } from './FirmwareUpdateEnvironmentSelect';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
@@ -80,6 +81,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Trade">
                 <TradeApi />
+            </SettingsSection>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Earn">
+                <EarnApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="OAuth">
                 <OAuthApi />

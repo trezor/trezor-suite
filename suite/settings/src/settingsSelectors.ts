@@ -25,6 +25,8 @@ export const selectShowConnectLogs = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showConnectLogs;
 export const selectInvityServerEnvironment = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.invityServerEnvironment;
+export const selectEarnYieldWorkerBaseUrl = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.earnYieldWorkerBaseUrl;
 export const selectOAuthServerEnvironment = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.oauthServerEnvironment;
 export const selectExperimentalFeatures = (state: SuiteSettingsRootState) =>
