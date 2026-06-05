@@ -4,16 +4,14 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    buildClaimWithdrawRequestData,
-    getEthereumStakingAddressByType,
-} from '@suite-common/staking';
+import { buildClaimWithdrawRequestData, getStakingContractAddress } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     asAmountSubunit,
     getStakingLimitsByNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { AccountDetailsCard } from '@suite-native/accounts';
@@ -52,10 +50,10 @@ export const ClaimReviewScreen = () => {
     const claimableAmount = useSelector((state: NativeStakingRootState) =>
         selectClaimableAmountByAccountKey(state, accountKey),
     );
-    const availableBalance = useSelector(
-        (state: AccountsRootState) =>
-            selectAccountByKey(state, accountKey)?.availableBalance ?? '0',
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
+    const availableBalance = account?.availableBalance ?? '0';
 
     const feeBuffer = getStakingLimitsByNetworkSymbol(symbol)?.MIN_BALANCE_FOR_FEE_BUFFER;
     const availableBalanceInUnits = subunitsToUnits({
@@ -65,15 +63,22 @@ export const ClaimReviewScreen = () => {
     const isInsufficientFeeBalance = !!feeBuffer && availableBalanceInUnits.lt(feeBuffer);
     const formattedAvailableBalance = `${availableBalanceInUnits.toString()} ${displaySymbol}`;
 
-    const claimFormState = useMemo(
-        () =>
-            buildEarnComposeFormState(
-                getEthereumStakingAddressByType(symbol, 'claim'),
-                '0',
-                buildClaimWithdrawRequestData(),
-            ),
-        [symbol],
-    );
+    const claimFormState = useMemo(() => {
+        if (!account) return undefined;
+
+        const contractAddress = getStakingContractAddress(account, 'claim');
+
+        // Ethereum claims via calldata, Solana via the claimable amount.
+        if (account.networkType === 'ethereum') {
+            return buildEarnComposeFormState(contractAddress, '0', buildClaimWithdrawRequestData());
+        }
+
+        if (account.networkType === 'solana') {
+            return buildEarnComposeFormState(contractAddress, claimableAmount ?? '0', '');
+        }
+
+        return buildEarnComposeFormState(contractAddress, '0', '');
+    }, [account, claimableAmount]);
 
     const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
         useComposeEarnFees({
@@ -125,10 +130,14 @@ export const ClaimReviewScreen = () => {
                     <Button
                         onPress={handleReviewAndSign}
                         isDisabled={
+                            !claimFormState ||
                             isInsufficientFeeBalance ||
                             isFeeUnavailable ||
                             isPrecomposeError ||
-                            !isSupportedEthStakingNetworkSymbol(symbol)
+                            !(
+                                isSupportedEthStakingNetworkSymbol(symbol) ||
+                                isSupportedSolStakingNetworkSymbol(symbol)
+                            )
                         }
                     >
                         <Translation id="earn.claimReviewScreen.reviewAndSignButton" />

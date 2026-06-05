@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
@@ -65,7 +65,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const { applyStyle } = useNativeStyles();
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
-    const isSupportedStaking = isStakingItem && isSupportedEthStakingNetworkSymbol(item.symbol);
+    const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const apy = useStakingSelector(state =>

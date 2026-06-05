@@ -67,13 +67,10 @@ const buildSolanaStakeFormState = (
     stakeType,
 });
 
-// Resolves the Solana staking account (mainnet + devnet) and the backend URL needed to  build the transaction.
-// Solana stake and unstake are supported on mobile
 const resolveSolanaStakingContext = (
     state: Parameters<typeof selectAccountByKey>[0] &
         Parameters<typeof selectNetworkBlockchainInfo>[0],
     accountKey: AccountKey,
-    stakeType: StakeNativeType,
 ):
     | { success: true; account: SolanaAccount; blockchainUrl: string }
     | { success: false; error: string; message?: string } => {
@@ -92,14 +89,6 @@ const resolveSolanaStakingContext = (
             success: false,
             error: 'sign-transaction-failed',
             message: `Staking is not supported for Solana network: ${account.symbol}`,
-        };
-    }
-
-    if (stakeType === 'claim') {
-        return {
-            success: false,
-            error: 'not-implemented',
-            message: `Solana ${stakeType} is not supported on mobile.`,
         };
     }
 
@@ -124,7 +113,7 @@ export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
     async ({ accountKey, stakeType, amount }, { getState, rejectWithValue }) => {
         if (!amount || amount === '0') return undefined;
 
-        const resolved = resolveSolanaStakingContext(getState(), accountKey, stakeType);
+        const resolved = resolveSolanaStakingContext(getState(), accountKey);
         if (!resolved.success) {
             return rejectWithValue({ error: resolved.error, message: resolved.message });
         }
@@ -162,7 +151,7 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
         { dispatch, getState, rejectWithValue },
     ) => {
         try {
-            const resolved = resolveSolanaStakingContext(getState(), accountKey, stakeType);
+            const resolved = resolveSolanaStakingContext(getState(), accountKey);
             if (!resolved.success) {
                 console.error(`${SIGN_LOG_PREFIX}: ${resolved.message}`);
 
@@ -174,18 +163,19 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
 
             const { account, blockchainUrl } = resolved;
 
-            const composedAmount = precomposedTransaction.outputs?.[0]?.amount;
-            if (!composedAmount || new BigNumber(composedAmount).isLessThanOrEqualTo(0)) {
-                const message = 'Compose result for stake is missing the amount.';
-                console.error(`${SIGN_LOG_PREFIX}: ${message}`);
+            let amount = '0';
 
-                return rejectWithValue({ error: 'sign-transaction-failed', message });
+            if (stakeType !== 'claim') {
+                const composedAmount = precomposedTransaction.outputs?.[0]?.amount;
+                if (!composedAmount || new BigNumber(composedAmount).isLessThanOrEqualTo(0)) {
+                    const message = `Compose result for ${stakeType} is missing the amount.`;
+                    console.error(`${SIGN_LOG_PREFIX}: ${message}`);
+
+                    return rejectWithValue({ error: 'sign-transaction-failed', message });
+                }
+
+                amount = formatNetworkAmount(String(composedAmount), account.symbol);
             }
-            // precomposedTransaction.outputs[0].amount is in lamports (compose runs the form
-            // amount through getExternalComposeOutput → convertAmountUnitsToSubunits). The
-            // staking runtime expects decimal SOL because prepareStakeSolTx calls toLamports
-            // internally, so convert back here to avoid a 10^9× device amount.
-            const amount = formatNetworkAmount(String(composedAmount), account.symbol);
 
             const estimatedFee: Fee = {
                 feePerTx:

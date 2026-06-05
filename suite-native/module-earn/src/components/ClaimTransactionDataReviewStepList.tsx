@@ -6,6 +6,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { getNetworkDecimals } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
@@ -25,6 +26,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { ClaimOutputItem } from './ClaimOutputItem';
 import { ClaimSummaryOutputItem } from './ClaimSummaryOutputItem';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { useHandleOnClaimTransactionReview } from '../hooks/useHandleOnClaimTransactionReview';
 
 const NUMBER_OF_STEPS = 2;
@@ -57,6 +59,8 @@ export const ClaimTransactionDataReviewStepList = ({
         selectClaimableAmountByAccountKey(state, accountKey),
     );
 
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
+
     const [stepIndex, setStepIndex] = useState(0);
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
@@ -77,9 +81,18 @@ export const ClaimTransactionDataReviewStepList = ({
     };
 
     const networkDecimals = accountSymbol ? (getNetworkDecimals(accountSymbol) ?? 18) : 18;
-    const claimableAmountInWei = new BigNumber(claimableAmount || '0')
-        .times(new BigNumber(10).pow(networkDecimals))
-        .toFixed(0);
+    const isSolanaClaim = !!accountSymbol && isSupportedSolStakingNetworkSymbol(accountSymbol);
+
+    // Solana: show composed lamports (totalSpent − fee)
+    // Ethereum: show claimable amount (calldata-only)
+    const claimableAmountInWei =
+        isSolanaClaim && precomposedTransaction
+            ? new BigNumber(precomposedTransaction.totalSpent)
+                  .minus(precomposedTransaction.fee)
+                  .toFixed(0)
+            : new BigNumber(claimableAmount || '0')
+                  .times(new BigNumber(10).pow(networkDecimals))
+                  .toFixed(0);
 
     return (
         <View>

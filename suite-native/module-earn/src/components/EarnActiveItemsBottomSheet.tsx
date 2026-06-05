@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -25,6 +26,7 @@ type EarnActiveItemsBottomSheetProps = {
     type: EarnDepositsCardActiveItem['type'];
     items: EarnDepositsCardActiveItem[];
     onClose: () => void;
+    onSolanaClaimPress?: () => void;
 };
 
 export const EarnActiveItemsBottomSheet = ({
@@ -32,6 +34,7 @@ export const EarnActiveItemsBottomSheet = ({
     type,
     items,
     onClose,
+    onSolanaClaimPress,
 }: EarnActiveItemsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
@@ -80,13 +83,22 @@ export const EarnActiveItemsBottomSheet = ({
         (item: EarnDepositsCardActiveItem) => {
             if (item.type !== 'staking') return;
 
+            // Temporary: claiming Solana rewards is not yet available in the mobile app,
+            // so we point users to Trezor Suite desktop instead of opening the claim flow.
+            if (isSupportedSolStakingNetworkSymbol(item.symbol)) {
+                onClose();
+                onSolanaClaimPress?.();
+
+                return;
+            }
+
             onClose();
             navigation.navigate(RootStackRoutes.ClaimReview, {
                 accountKey: item.accountKey,
                 symbol: item.symbol,
             });
         },
-        [navigation, onClose],
+        [navigation, onClose, onSolanaClaimPress],
     );
 
     const renderItem = useCallback(
