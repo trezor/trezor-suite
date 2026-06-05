@@ -12,6 +12,7 @@ import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
 import { processStatePatch, removeElectronAppData, restartApp } from './libs/app-utils';
+import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './libs/auto-start';
 import { APP_NAME } from './libs/constants';
 import { createElectronSessionInterceptor } from './libs/create-electron-session-interceptor';
 import { getBuildInfo, getComputerInfo } from './libs/info';
@@ -24,7 +25,6 @@ import { initSentry } from './libs/sentry';
 import { Store, type WinBoundsCoords } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
-import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
 // todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
 import { mainThreadEmitter } from './modules/module';
