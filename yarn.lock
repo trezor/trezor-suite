@@ -11446,6 +11446,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/connect-init": "workspace:*"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -12735,6 +12736,7 @@ __metadata:
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -12753,6 +12755,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/services": "workspace:*"
+    "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
@@ -13565,6 +13568,7 @@ __metadata:
   resolution: "@suite-native/settings@workspace:suite-native/settings"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/connect": "workspace:*"
     react: "npm:19.2.4"
@@ -14793,6 +14797,7 @@ __metadata:
   resolution: "@suite/settings@workspace:suite/settings"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

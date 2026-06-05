@@ -9,6 +9,9 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/message-system"
@@ -37,6 +40,7 @@
         { "path": "../navigation" },
         { "path": "../sentry" },
         { "path": "../services" },
+        { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../trading-state" },

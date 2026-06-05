@@ -6,6 +6,9 @@
             "path": "../../suite-common/connect-init"
         },
         {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {
