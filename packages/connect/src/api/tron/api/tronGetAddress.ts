@@ -1,4 +1,5 @@
 import type { MethodMessage } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { AbstractMiscGetAddress } from '../../common/AbstractMiscGetAddress';
 import type { MiscGetAddressParams } from '../../common/AbstractMiscGetAddress';
 
@@ -6,6 +7,7 @@ export default class TronGetAddress extends AbstractMiscGetAddress<'tronGetAddre
     constructor(message: MethodMessage<'tronGetAddress'>) {
         super(message, 2);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
+        this.requiredFirmwareCoins = [getMiscNetwork('Tron')];
     }
 
     get info() {

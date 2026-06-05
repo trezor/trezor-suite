@@ -8,6 +8,7 @@ import type {
     FirmwareCapability,
     MethodInfo,
     MethodPermission,
+    PermissionRequest,
     PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
@@ -133,7 +134,39 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public useEmptyPassphrase: boolean;
 
-    abstract get requiredPermissions(): MethodPermission[];
+    abstract get requiredPermissions(): PermissionRequest[];
+
+    // Build a `PermissionRequest` for a single coin (or coin-less when `coin`
+    // is undefined). The coin key is `coinInfo.shortcut`.
+    protected coinPerm(permission: MethodPermission, coin?: CoinInfo): PermissionRequest {
+        return coin ? { permission, coin: coin.shortcut } : { permission };
+    }
+
+    // Build a list of `PermissionRequest` entries from a list of coins,
+    // deduplicating by `coinInfo.shortcut`. Undefined coins collapse to a
+    // single coin-less entry.
+    protected coinPerms(
+        permission: MethodPermission,
+        coins: (CoinInfo | undefined)[],
+    ): PermissionRequest[] {
+        const seen = new Set<string>();
+        const out: PermissionRequest[] = [];
+        let hasCoinless = false;
+        for (const c of coins) {
+            if (!c) {
+                if (!hasCoinless) {
+                    hasCoinless = true;
+                    out.push({ permission });
+                }
+                continue;
+            }
+            if (seen.has(c.shortcut)) continue;
+            seen.add(c.shortcut);
+            out.push({ permission, coin: c.shortcut });
+        }
+
+        return out;
+    }
 
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_REQUEST.INITIALIZED)
 

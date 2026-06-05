@@ -2,7 +2,7 @@
 
 import {
     ChangeLanguage as ChangeLanguageSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
 } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
@@ -23,8 +23,8 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get confirmation() {

@@ -1,7 +1,7 @@
 import {
     Bundle,
     GetOwnershipId as GetOwnershipIdSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -48,8 +48,8 @@ export default class GetOwnershipId extends AbstractMethod<
     }
     hasBundle?: boolean;
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
     get info() {

@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetPublicKey.js
 
-import type { BitcoinNetworkInfo, MethodPermission } from '@trezor/connect-common';
+import type { BitcoinNetworkInfo, PermissionRequest } from '@trezor/connect-common';
 import {
     Bundle,
     GetPublicKey as GetPublicKeySchema,
@@ -76,8 +76,8 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
 
     hasBundle?: boolean;
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     get info() {

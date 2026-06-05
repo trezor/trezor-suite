@@ -1,6 +1,6 @@
 import {
     CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema,
-    type MethodPermission,
+    type PermissionRequest,
 } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
@@ -18,8 +18,8 @@ export default class CancelCoinjoinAuthorization extends AbstractMethod<'cancelC
             typeof payload.preauthorized === 'boolean' ? payload.preauthorized : true;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get info() {

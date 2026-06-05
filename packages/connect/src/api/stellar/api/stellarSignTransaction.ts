@@ -2,7 +2,7 @@
 
 import stellar from '@trezor/coins-stellar/runtime';
 import { StellarSignTransaction as StellarSignTransactionSchema } from '@trezor/connect-common';
-import type { MethodPermission, StellarOperation } from '@trezor/connect-common';
+import type { PermissionRequest, StellarOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
@@ -49,8 +49,8 @@ export default class StellarSignTransaction extends AbstractMethod<
         this.requiredFirmwareCoins = [getMiscNetwork('Stellar')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {

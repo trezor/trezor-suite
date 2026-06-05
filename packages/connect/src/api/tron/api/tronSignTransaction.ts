@@ -2,8 +2,8 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
 import type {
-    MethodPermission,
     PROTO,
+    PermissionRequest,
     TronContractInput,
     TronContracts,
     TronContractsTypes,
@@ -13,6 +13,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { encodeTronContractRawData } from '../tronEncode';
 import { encodeBroadcastTransaction } from '../tronProtobuf';
@@ -125,10 +126,11 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
 
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
+        this.requiredFirmwareCoins = [getMiscNetwork('Tron')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {

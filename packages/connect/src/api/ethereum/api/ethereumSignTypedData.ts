@@ -5,7 +5,7 @@ import {
     EthereumSignTypedData as EthereumSignTypedDataParams,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
 } from '@trezor/connect-common';
-import type { EthereumSignTypedDataTypes, MethodPermission, PROTO } from '@trezor/connect-common';
+import type { EthereumSignTypedDataTypes, PROTO, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { MessagesSchema } from '@trezor/protobuf';
@@ -130,8 +130,8 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         }
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async initAsync() {

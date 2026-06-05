@@ -1,7 +1,7 @@
 import {
     Bundle,
     GetAddress as GetAddressSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -59,8 +59,8 @@ export abstract class AbstractMiscGetAddress<
         this.confirmMissingBackup = true;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     protected getInfo(coinName: string, showAccountInInfo: boolean) {

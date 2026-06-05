@@ -2,7 +2,7 @@
 
 import {
     CipherKeyValue as CipherKeyValueSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -42,8 +42,8 @@ export default class CipherKeyValue extends AbstractMethod<
         super(message, params);
         this.hasBundle = hasBundle;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'sign' }];
     }
 
     get info() {

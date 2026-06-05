@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetSettings.js
 
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -12,8 +12,8 @@ export default class GetSettings extends AbstractMethod<'getSettings'> {
         this.useDevice = false;
         this.useUi = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['internal'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'internal' }];
     }
 
     run() {
