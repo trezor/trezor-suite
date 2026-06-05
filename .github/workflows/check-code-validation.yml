@@ -120,8 +120,8 @@ jobs:
     needs: setup-and-cache
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         test-task: [suite, native, "native:trading"]
     steps:
