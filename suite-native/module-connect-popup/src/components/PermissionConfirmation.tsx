@@ -16,19 +16,10 @@ import {
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
-import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { type MethodPermission } from '@trezor/connect';
+import { Translation } from '@suite-native/intl';
 
+import { GroupedPermissionsList } from './GroupedPermissionsList';
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
-
-const permissionTranslationKeysMap = {
-    read: 'moduleConnectPopup.permissions.read',
-    write: 'moduleConnectPopup.permissions.write',
-    management: 'moduleConnectPopup.permissions.management',
-    push_tx: 'moduleConnectPopup.permissions.push_tx',
-    internal: 'moduleConnectPopup.permissions.internal',
-} as const satisfies Record<MethodPermission, TxKeyPath>;
 
 export const PermissionConfirmation = () => {
     const dispatch = useDispatch();
@@ -51,7 +42,7 @@ export const PermissionConfirmation = () => {
         if (isRemembered) {
             dispatch(
                 connectPopupActions.rememberAppPermissions({
-                    types: popupCall.methodInfo.permissionTypes,
+                    allowedPermissions: popupCall.methodInfo.permissionTypes,
                     ...popupCall.source,
                 }),
             );
@@ -88,16 +79,7 @@ export const PermissionConfirmation = () => {
 
                 <TextDivider title="moduleConnectPopup.permissions.title" />
 
-                <VStack spacing="sp8" padding="sp8">
-                    {popupCall.methodInfo.permissionTypes.map(permission => (
-                        <HStack key={permission} alignItems="center" spacing="sp8">
-                            <Icon name="checkCircle" color="contentBrand" />
-                            <Text color="contentSecondary" variant="body-sm" style={{ flex: 1 }}>
-                                <Translation id={permissionTranslationKeysMap[permission]} />
-                            </Text>
-                        </HStack>
-                    ))}
-                </VStack>
+                <GroupedPermissionsList permissions={popupCall.methodInfo.permissionTypes} />
 
                 <TextDivider title="moduleConnectPopup.optional" />
 
