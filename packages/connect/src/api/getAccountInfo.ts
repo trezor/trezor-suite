@@ -8,7 +8,7 @@ import type {
     DerivationPath,
     DiscoveryAccount,
     GetAccountInfo as GetAccountInfoParams,
-    MethodPermission,
+    PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
@@ -104,8 +104,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
     get info() {

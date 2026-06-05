@@ -3,7 +3,7 @@
 import {
     Bundle,
     CardanoGetAddress as CardanoGetAddressSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -66,8 +66,8 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     get info() {

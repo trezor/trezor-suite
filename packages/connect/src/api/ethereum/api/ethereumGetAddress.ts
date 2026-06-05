@@ -8,8 +8,8 @@ import {
 } from '@trezor/connect-common';
 import type {
     EthereumNetworkInfoDefinitionValues,
-    MethodPermission,
     PROTO,
+    PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
@@ -65,8 +65,8 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     async initAsync(): Promise<void> {

@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetNativeScriptHash.js
 
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 import type { CardanoNativeScript } from '@trezor/connect-common/src/types/api/cardano';
 import { CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema } from '@trezor/connect-common/src/types/api/cardano';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -65,8 +65,8 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
         this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     get info() {

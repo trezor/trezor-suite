@@ -1,6 +1,6 @@
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
 import solana from '@trezor/coins-solana/runtime';
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
@@ -38,7 +38,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 

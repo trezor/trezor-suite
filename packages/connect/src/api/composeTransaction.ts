@@ -7,7 +7,7 @@ import {
     DEFAULT_SORTING_STRATEGY,
     type DiscoveryAccount,
     ERRORS,
-    type MethodPermission,
+    type PermissionRequest,
     type PrecomposeParams,
     type PrecomposedResult,
     type RefTransaction,
@@ -127,10 +127,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
     discovery?: Discovery;
 
-    get requiredPermissions(): MethodPermission[] {
-        const permissions: MethodPermission[] = ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
         if (this.params.push) {
-            permissions.push('push_tx');
+            permissions.push(this.coinPerm('push_tx', this.params.coinInfo));
         }
 
         return permissions;

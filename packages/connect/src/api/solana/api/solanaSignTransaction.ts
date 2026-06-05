@@ -3,7 +3,7 @@ import {
     SolanaSignTransaction as SolanaSignTransactionSchema,
     SolanaTxAdditionalInfo,
 } from '@trezor/connect-common';
-import type { MethodPermission, PROTO, TokenInfo } from '@trezor/connect-common';
+import type { PROTO, PermissionRequest, TokenInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
@@ -71,8 +71,8 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async initAsync(): Promise<void> {

@@ -1,6 +1,6 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 import { TronComposeTransaction as TronComposeTransactionSchema } from '@trezor/connect-common/src/types/api/tron';
 import { Assert } from '@trezor/schema-utils';
 
@@ -22,7 +22,7 @@ export default class TronComposeTransaction extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
     get info() {

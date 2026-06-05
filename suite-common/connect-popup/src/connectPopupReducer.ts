@@ -21,8 +21,8 @@ export type ConnectPopupStateRootState = {
 };
 
 type StorageActionPayload = {
-    connect: {
-        permissions: AppRememberedPermission[];
+    connect?: {
+        permissions?: AppRememberedPermission[] | null;
     };
 };
 
@@ -38,7 +38,24 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(
                 extra.actionTypes.storageLoad,
                 (state, { payload }: PayloadAction<StorageActionPayload>) => {
-                    if (payload.connect) state.permissions = payload.connect.permissions;
+                    if (payload.connect) {
+                        const permissions = Array.isArray(payload.connect.permissions)
+                            ? payload.connect.permissions
+                            : [];
+
+                        state.permissions = permissions.filter(
+                            (permission): permission is AppRememberedPermission =>
+                                permission !== null &&
+                                typeof permission === 'object' &&
+                                'allowedPermissions' in permission &&
+                                Array.isArray(permission.allowedPermissions) &&
+                                // Drop entries that do not have the expected format.
+                                permission.allowedPermissions.every(
+                                    (t: unknown) =>
+                                        t !== null && typeof t === 'object' && 'permission' in t,
+                                ),
+                        );
+                    }
                 },
             )
             .addCase(connectPopupActions.initiateCall, (state, { payload }) => {

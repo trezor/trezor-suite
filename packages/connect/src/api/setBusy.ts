@@ -1,4 +1,4 @@
-import { DEVICE, type MethodPermission, createDeviceMessage } from '@trezor/connect-common';
+import { DEVICE, type PermissionRequest, createDeviceMessage } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
@@ -15,8 +15,8 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
         this.skipFinalReload = false;
         this.overridePreviousCall = true;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async run({ sendCoreMessage }: MethodContext) {

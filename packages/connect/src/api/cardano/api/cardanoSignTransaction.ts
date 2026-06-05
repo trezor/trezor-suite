@@ -9,7 +9,7 @@ import {
     CardanoSignTransaction as CardanoSignTransactionSchema,
     type CardanoSignedTxData,
     type CardanoSignedTxWitness,
-    type MethodPermission,
+    type PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -236,8 +236,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
         this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {

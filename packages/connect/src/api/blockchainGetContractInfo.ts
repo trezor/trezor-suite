@@ -1,4 +1,4 @@
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
@@ -50,7 +50,7 @@ export default class BlockchainGetContractInfo extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 

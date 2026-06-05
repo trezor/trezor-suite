@@ -3,7 +3,7 @@
 import {
     Bundle,
     GetPublicKey as GetPublicKeySchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -46,8 +46,8 @@ export default class TezosGetPublicKey extends AbstractMethod<
         this.requiredFirmwareCoins = [getMiscNetwork('Tezos')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     init() {}

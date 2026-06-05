@@ -2,9 +2,9 @@ import { keccak_256 } from '@noble/hashes/sha3.js';
 import { hexToBytes } from '@noble/hashes/utils.js';
 
 import type {
-    MethodPermission,
     MoneroExportedKeyImage,
     MoneroKeyImageSyncResult,
+    PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
@@ -118,8 +118,8 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
     get info() {

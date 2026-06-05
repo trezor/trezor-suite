@@ -1,5 +1,5 @@
 // Monero GetAddress implementation
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { Address } from '@trezor/connect-common/src/types/params';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
@@ -60,8 +60,8 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     get info() {

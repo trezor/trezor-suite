@@ -5,7 +5,7 @@ import type {
     EthereumNetworkInfoDefinitionValues,
     EthereumTransaction,
     EthereumTransactionEIP1559,
-    MethodPermission,
+    PermissionRequest,
     TokenInfo,
 } from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
@@ -108,8 +108,8 @@ export default class EthereumSignTransaction extends AbstractMethod<
         }
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async initAsync(): Promise<void> {

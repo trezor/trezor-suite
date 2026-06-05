@@ -1,4 +1,4 @@
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -19,8 +19,8 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
 
         super(message, params);
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'read_xpub' }];
     }
 
     get info() {

@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainSetCustomBackend.js
 
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { MethodMessage } from '../core/AbstractMethod';
@@ -46,8 +46,8 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['internal'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'internal' }];
     }
 
     get info() {

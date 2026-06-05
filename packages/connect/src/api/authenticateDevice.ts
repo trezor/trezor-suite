@@ -1,5 +1,5 @@
 import { UI_REQUEST } from '@trezor/connect-common';
-import type { MethodPermission } from '@trezor/connect-common';
+import type { PermissionRequest } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
     AuthenticateDeviceParams,
@@ -37,8 +37,8 @@ export default class AuthenticateDevice extends AbstractMethod<
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async streamAuthenticityProofs(challenge: Buffer) {

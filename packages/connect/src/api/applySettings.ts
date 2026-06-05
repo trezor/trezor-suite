@@ -2,7 +2,7 @@
 
 import {
     ApplySettings as ApplySettingsSchema,
-    type MethodPermission,
+    type PermissionRequest,
 } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -26,8 +26,8 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
         this.skipFinalReload = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     init() {}
