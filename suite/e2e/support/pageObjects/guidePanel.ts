@@ -26,7 +26,6 @@ export class GuidePanel {
         this.page.locator(`[data-testid^="@guide/node"]`, { hasText: text });
     readonly toastNotifications: Locator;
     readonly feedbackSuccessToast: Locator;
-    readonly articleHeader: Locator;
     readonly guideNodes: Locator;
     readonly guideLabel: Locator;
     readonly searchNoResults: Locator;
@@ -48,7 +47,6 @@ export class GuidePanel {
         this.searchResults = this.page.getByTestId('@guide/search/results');
         this.toastNotifications = this.page.locator('[data-testid-alt="@toast"]');
         this.feedbackSuccessToast = this.page.getByTestId('@toast/user-feedback-send-success');
-        this.articleHeader = this.page.getByTestId('@guide/article').locator('h1');
         this.guideNodes = this.page.getByTestId('@guide/nodes');
         this.guideLabel = this.page.getByTestId('@guide/label');
         this.searchNoResults = this.page.getByTestId('@guide/search/no-results');
