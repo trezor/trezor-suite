@@ -100,6 +100,7 @@ describe('ExchangeSendAssetPicker', () => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         store = createLightStore({
             reducer: {
+                discreetMode: createStaticReducer({ isActive: false }),
                 locale: localeReducer,
                 device: createStaticReducer(deviceInitialState),
                 featureFlags: createStaticReducer(featureFlagsInitialState),

@@ -1,7 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { setFlag } from '@suite/flags';
 import {
     anchorChange,
     routerLocationChange,
@@ -9,7 +8,6 @@ import {
     selectRouterUrl,
 } from '@suite/router';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
-import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
@@ -67,18 +65,6 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
         const state: AppState = getState();
         const { analytics } = extra.services;
-
-        if (discreetModeActions.setDiscreetMode.match(action)) {
-            if (!state.flags.discreetModeCompleted) {
-                dispatch(setFlag({ key: 'discreetModeCompleted', value: true }));
-            }
-            asTypedDesktopAnalytics(analytics).report({
-                type: events.menuToggleDiscreetEvent.name,
-                payload: { value: action.payload },
-            });
-
-            return result;
-        }
 
         if (isAnyOf(firmwareUpdate.fulfilled, firmwareUpdate.rejected)(action)) {
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};

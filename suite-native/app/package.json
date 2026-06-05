@@ -42,6 +42,7 @@
         "@storybook/react-native": "^10.2.1",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/react-query": "workspace:^",

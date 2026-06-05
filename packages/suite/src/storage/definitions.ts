@@ -8,6 +8,7 @@ import type { SuiteSettingsState } from '@suite/settings';
 import { type DesktopSuiteSyncState } from '@suite/suite-sync';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import type { DiscreetModeState } from '@suite-common/discreet-mode';
 import { type FeatureFeedbackState } from '@suite-common/feedback';
 import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
@@ -205,5 +206,9 @@ export interface SuiteDBSchema extends DBSchema {
     featureFeedback: {
         key: 'featureFeedback';
         value: FeatureFeedbackState;
+    };
+    discreetMode: {
+        key: 'discreetMode';
+        value: DiscreetModeState;
     };
 }

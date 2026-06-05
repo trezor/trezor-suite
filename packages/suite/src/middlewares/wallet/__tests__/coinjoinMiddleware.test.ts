@@ -31,6 +31,7 @@ const rootReducer = combineReducers({
     router: routerReducer,
     suite: suiteReducer,
     tor: torReducer,
+    discreetMode: createReducer({ isActive: false }, () => {}),
     wallet: combineReducers({
         accounts: accountsReducer,
         coinjoin: coinjoinReducer,

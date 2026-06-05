@@ -20,6 +20,7 @@
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/mev": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",

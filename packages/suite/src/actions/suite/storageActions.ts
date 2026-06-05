@@ -403,6 +403,11 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
     );
 };
 
+export const saveDiscreetMode = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+    await db.addItem('discreetMode', getState().discreetMode, 'discreetMode', true);
+};
+
 export const saveBackend =
     (symbol: NetworkSymbol) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return;

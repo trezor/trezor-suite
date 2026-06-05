@@ -1,4 +1,4 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type AnyAction, type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export type DiscreetModeState = {
     isActive: boolean;
@@ -16,6 +16,17 @@ export const discreetModeSlice = createSlice({
             state.isActive = payload;
         },
     },
+    extraReducers: builder => {
+        // hack: to prevent dependency
+        builder.addCase('@storage/load', (state, action) => {
+            const { payload } = action as AnyAction;
+            if (payload?.discreetMode) {
+                return { ...state, ...payload.discreetMode };
+            }
+
+            return state;
+        });
+    },
 });
 
 export type DiscreetModeRootState = {
@@ -25,4 +36,5 @@ export type DiscreetModeRootState = {
 export const discreetModeActions = discreetModeSlice.actions;
 export const discreetModeReducer = discreetModeSlice.reducer;
 
-export const discreetModePersistedWhitelist: Array<keyof DiscreetModeState> = ['isActive'];
+export const selectIsDiscreteModeActive = (state: DiscreetModeRootState) =>
+    state.discreetMode.isActive;

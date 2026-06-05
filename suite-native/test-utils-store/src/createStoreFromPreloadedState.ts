@@ -15,6 +15,7 @@ import { createStaticReducer } from './createStaticReducer';
  */
 export const createStoreFromPreloadedState = (preloadedState: Record<string, unknown> = {}) => {
     const defaultState: Record<string, unknown> = {
+        discreetMode: { isActive: false },
         wallet: {
             settings: { localCurrency: 'usd', bitcoinAmountUnit: 0, addressDisplayType: 'chunked' },
         },

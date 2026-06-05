@@ -56,6 +56,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     bluetooth: bluetoothInitialState,
     connectPopup: connectPopupInitialState,
     device: deviceInitialState,
+    discreetMode: { isActive: false },
     deviceAuthorization: deviceAuthorizationInitialState,
     deviceOnboarding: deviceOnboardingSliceInitialState,
     featureFlags: featureFlagsInitialState,

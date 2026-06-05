@@ -17,6 +17,7 @@ import {
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import {
@@ -350,6 +351,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 api.dispatch(storageActions.savePersistentDeviceData());
+            }
+
+            if (discreetModeActions.setDiscreetMode.match(action)) {
+                api.dispatch(storageActions.saveDiscreetMode());
             }
 
             switch (action.type) {

@@ -12,6 +12,9 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
         { "path": "../../suite-common/logger" },
         { "path": "../../suite-common/mev" },
         {
