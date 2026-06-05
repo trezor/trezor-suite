@@ -4,6 +4,7 @@ import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-ty
 import type { StaticSessionId } from '@trezor/connect';
 import { type Result } from '@trezor/type-utils';
 
+import { type WithSuiteSyncStorage } from './withSuiteSyncStorage';
 import { type EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
 
 export type UpdateOutputLabelParams = {
@@ -24,3 +25,11 @@ export type UpdateOutputLabelDep = { updateOutputLabel: UpdateOutputLabel };
 export const selectUpdateOutputLabelDep = (services: any): UpdateOutputLabelDep => ({
     updateOutputLabel: services.suiteSync.labeling.updateOutputLabel,
 });
+
+export type WriteOutputLabelParams = WithSuiteSyncStorage<UpdateOutputLabelParams>;
+
+export type WriteOutputLabel = (
+    params: WriteOutputLabelParams,
+) => Result<void, SuiteSyncUpdateError>;
+
+export type WriteOutputLabelDep = { writeOutputLabel: WriteOutputLabel };

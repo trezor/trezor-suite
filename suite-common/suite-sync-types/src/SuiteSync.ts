@@ -1,13 +1,12 @@
 import { type DangerouslyWipeAllLabelsFromWalletDep } from './data/dangerouslyWipeAllLabelsFromWallet';
-import { type UpdateAccountLabelDep } from './data/updateAccountLabel';
-import { type UpdateAddressLabelDep } from './data/updateAddressLabel';
-import { type UpdateOutputLabelDep } from './data/updateOutputLabel';
-import { type UpdateWalletLabelDep } from './data/updateWalletLabel';
+import { type UpdateAccountLabelDep, type WriteAccountLabelDep } from './data/updateAccountLabel';
+import { type UpdateAddressLabelDep, type WriteAddressLabelDep } from './data/updateAddressLabel';
+import { type UpdateOutputLabelDep, type WriteOutputLabelDep } from './data/updateOutputLabel';
+import { type UpdateWalletLabelDep, type WriteWalletLabelDep } from './data/updateWalletLabel';
 import { type ChangeRelayUrlDep } from './relay/changeRelayUrl';
 import {
     type EnsureWalletSuiteSyncOnDep,
     type EnsureWalletSuiteSyncOnUncontrolledDep,
-    type OnWalletSuiteSyncOnEnsuredDep,
 } from './storage/ensureWalletSuiteSyncOn';
 import { type TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
 import { type TurnOffSuiteSyncDep } from './turnOffSuiteSync';
@@ -20,12 +19,16 @@ export type LabelingDep = {
         UpdateOutputLabelDep;
 };
 
+export type WriteLabelsDep = WriteWalletLabelDep &
+    WriteAccountLabelDep &
+    WriteAddressLabelDep &
+    WriteOutputLabelDep;
+
 export type SuiteSync = ChangeRelayUrlDep &
     TurnOnSuiteSyncDep &
     TurnOffSuiteSyncDep &
     EnsureWalletSuiteSyncOnDep &
     EnsureWalletSuiteSyncOnUncontrolledDep &
-    OnWalletSuiteSyncOnEnsuredDep &
     DangerouslyWipeAllLabelsFromWalletDep &
     TurnOffSuiteSyncForWalletDep &
     LabelingDep;

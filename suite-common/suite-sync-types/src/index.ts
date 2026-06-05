@@ -1,5 +1,6 @@
 export {
     type LabelingDep,
+    type WriteLabelsDep,
     type SuiteSync,
     type SuiteSyncDep,
     selectSuiteSyncDep,
@@ -63,12 +64,11 @@ export {
     type EnsureWalletSuiteSyncOnErrors,
     type EnsureWalletSuiteSyncOnDep,
     type EnsureWalletSuiteSyncOnParams,
-    type OnWalletSuiteSyncOnEnsured,
-    type OnWalletSuiteSyncOnEnsuredDep,
     type SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
     type SuiteSyncUserFacingErrorType,
-    type WalletSuiteSyncOnEnsuredListener,
-    type WalletSuiteSyncOnEnsuredParams,
+    type OnStorageEnsured,
+    type OnStorageEnsuredDep,
+    type OnStorageEnsuredParams,
     selectEnsureWalletSuiteSyncOnUncontrolledDep,
     selectEnsureWalletSuiteSyncOnDep,
 } from './storage/ensureWalletSuiteSyncOn';
@@ -82,28 +82,41 @@ export type {
 } from './data/ensureSubscribedStorage';
 
 // Labeling
+export { type WithSuiteSyncStorage } from './data/withSuiteSyncStorage';
 export {
     type UpdateAccountLabel,
     type UpdateAccountLabelDep,
     type UpdateAccountLabelParams,
+    type WriteAccountLabel,
+    type WriteAccountLabelDep,
+    type WriteAccountLabelParams,
     selectUpdateAccountLabelDep,
 } from './data/updateAccountLabel';
 export {
     type UpdateAddressLabel,
     type UpdateAddressLabelDep,
     type UpdateAddressLabelParams,
+    type WriteAddressLabel,
+    type WriteAddressLabelDep,
+    type WriteAddressLabelParams,
     selectUpdateAddressLabelDep,
 } from './data/updateAddressLabel';
 export {
     type UpdateOutputLabelDep,
     type UpdateOutputLabel,
     type UpdateOutputLabelParams,
+    type WriteOutputLabel,
+    type WriteOutputLabelDep,
+    type WriteOutputLabelParams,
     selectUpdateOutputLabelDep,
 } from './data/updateOutputLabel';
 export {
     type UpdateWalletLabel,
     type UpdateWalletLabelDep,
     type UpdateWalletLabelParams,
+    type WriteWalletLabel,
+    type WriteWalletLabelDep,
+    type WriteWalletLabelParams,
     selectUpdateWalletLabelDep,
 } from './data/updateWalletLabel';
 
