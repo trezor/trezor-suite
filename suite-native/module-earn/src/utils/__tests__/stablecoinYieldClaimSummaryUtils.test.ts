@@ -1,0 +1,190 @@
+import { type ChainRewardsWithFiat } from '@suite-common/earn-stablecoin-api';
+import {
+    type Account,
+    asAccountDescriptor,
+    asBaseCurrencyAmount,
+    toTokenAddress,
+    toTokenSymbol,
+} from '@suite-common/wallet-types';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { BigNumber } from '@trezor/utils';
+
+import { type StablecoinYieldEarnItem } from '../../types';
+import {
+    buildStablecoinYieldClaimSummaries,
+    getActiveStablecoinYieldClaimAccounts,
+} from '../stablecoinYieldClaimSummaryUtils';
+
+const underlyingTokenContract = toTokenAddress('0x0000000000000000000000000000000000000001');
+const receiptTokenContract = toTokenAddress('0x0000000000000000000000000000000000000002');
+
+const ethereumAccount = mockWalletAccount({
+    symbol: 'eth',
+    descriptor: asAccountDescriptor('0xff6845f200000000000000000000000013fb4863'),
+    accountLabel: 'Ethereum #1',
+    tokens: [
+        mockAccountToken({
+            contract: receiptTokenContract,
+            balance: '42',
+            decimals: 6,
+            symbol: 'USDC',
+        }),
+    ],
+});
+
+const anotherEthereumAccount = mockWalletAccount({
+    symbol: 'eth',
+    descriptor: asAccountDescriptor('0xaa6845f200000000000000000000000013fb4863'),
+    accountLabel: 'Ethereum #2',
+    tokens: [
+        mockAccountToken({
+            contract: receiptTokenContract,
+            balance: '0',
+            decimals: 6,
+            symbol: 'USDC',
+        }),
+    ],
+});
+
+const createStablecoinYieldEarnItem = ({
+    account,
+    id,
+    tokenBalance,
+}: {
+    account: Account;
+    id: string;
+    tokenBalance: string | null;
+}): StablecoinYieldEarnItem => ({
+    id,
+    type: 'stablecoin-yield',
+    yieldId: id,
+    vaultName: 'Steakhouse USDC',
+    tokenSymbol: toTokenSymbol('USDC'),
+    networkSymbol: account.symbol,
+    underlyingTokenContract,
+    receiptTokenContract,
+    contractAddress: receiptTokenContract,
+    tokenContractAddress: underlyingTokenContract,
+    accountKey: account.key,
+    accountLabel: account.accountLabel,
+    tokenBalance,
+    apy: 3.2,
+});
+
+const createReward = ({
+    claimable,
+    fiatClaimable,
+}: {
+    claimable: string;
+    fiatClaimable: string | null;
+}): ChainRewardsWithFiat['rewards'][number] => ({
+    root: '0xroot',
+    amount: claimable,
+    claimed: '0',
+    pending: '0',
+    token: {
+        address: '0x0000000000000000000000000000000000000001',
+        chainId: 1,
+        symbol: 'USDC',
+        decimals: 6,
+    },
+    proofs: [],
+    claimable: asBaseCurrencyAmount(new BigNumber(claimable)),
+    fiat: {
+        amount: null,
+        claimed: null,
+        pending: null,
+        claimable:
+            fiatClaimable === null ? null : asBaseCurrencyAmount(new BigNumber(fiatClaimable)),
+    },
+});
+
+const createChainRewards = ({
+    account,
+    rewards,
+}: {
+    account: Account;
+    rewards: ChainRewardsWithFiat['rewards'];
+}): ChainRewardsWithFiat => ({
+    chainId: 1,
+    address: account.descriptor,
+    totalClaimable: rewards
+        .reduce((total, reward) => total.plus(reward.claimable), new BigNumber(0))
+        .toFixed(),
+    rewards,
+});
+
+describe('stablecoinYieldClaimSummaryUtils', () => {
+    it('returns unique active accounts using account receipt-token balances', () => {
+        const activeAccounts = getActiveStablecoinYieldClaimAccounts({
+            activeItems: [
+                createStablecoinYieldEarnItem({
+                    account: ethereumAccount,
+                    id: 'steakhouse-usdc-eth',
+                    tokenBalance: '0',
+                }),
+                createStablecoinYieldEarnItem({
+                    account: ethereumAccount,
+                    id: 'moonwell-usdc-eth',
+                    tokenBalance: null,
+                }),
+                createStablecoinYieldEarnItem({
+                    account: anotherEthereumAccount,
+                    id: 'empty-usdc-eth',
+                    tokenBalance: '8',
+                }),
+            ],
+            accounts: [ethereumAccount, anotherEthereumAccount],
+        });
+
+        expect(activeAccounts).toEqual([ethereumAccount]);
+    });
+
+    it('keeps claimable summaries when fiat values are missing and ignores zero raw claimables', () => {
+        const summaries = buildStablecoinYieldClaimSummaries({
+            activeAccounts: [ethereumAccount, anotherEthereumAccount],
+            chainsRewardsWithFiat: [
+                createChainRewards({
+                    account: ethereumAccount,
+                    rewards: [createReward({ claimable: '1000000', fiatClaimable: null })],
+                }),
+                createChainRewards({
+                    account: anotherEthereumAccount,
+                    rewards: [createReward({ claimable: '0', fiatClaimable: '0' })],
+                }),
+            ],
+        });
+
+        expect(summaries).toEqual([
+            {
+                type: 'stablecoin-yield',
+                accountKey: ethereumAccount.key,
+                accountLabel: ethereumAccount.accountLabel,
+                accountDescriptor: ethereumAccount.descriptor,
+                networkSymbol: ethereumAccount.symbol,
+                claimableRewardsCount: 1,
+                fiatClaimableAmount: null,
+                isFiatClaimableAmountComplete: false,
+            },
+        ]);
+    });
+
+    it('sums fiat values only when all claimable rewards have fiat values', () => {
+        const summaries = buildStablecoinYieldClaimSummaries({
+            activeAccounts: [ethereumAccount],
+            chainsRewardsWithFiat: [
+                createChainRewards({
+                    account: ethereumAccount,
+                    rewards: [
+                        createReward({ claimable: '1000000', fiatClaimable: '1.25' }),
+                        createReward({ claimable: '2000000', fiatClaimable: '2.5' }),
+                    ],
+                }),
+            ],
+        });
+
+        expect(summaries[0]?.claimableRewardsCount).toBe(2);
+        expect(summaries[0]?.fiatClaimableAmount?.toString()).toBe('3.75');
+        expect(summaries[0]?.isFiatClaimableAmountComplete).toBe(true);
+    });
+});
