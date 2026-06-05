@@ -266,7 +266,7 @@ describe('handleSellTradeThunk', () => {
                 data: mockResponse.trade,
                 key: mockResponse.trade.orderId,
                 date: dateISO,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(mockProcessResponseData).not.toHaveBeenCalled();
@@ -314,7 +314,7 @@ describe('handleSellTradeThunk', () => {
                 data: mockResponse.trade,
                 key: mockResponse.trade.orderId,
                 date: dateISO,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);

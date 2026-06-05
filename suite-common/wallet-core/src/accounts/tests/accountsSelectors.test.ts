@@ -2,7 +2,8 @@ import type { DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { networks } from '@suite-common/wallet-config';
-import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { type AccountsRootState } from '../accountsReducer';
 import {
@@ -27,7 +28,11 @@ const mockState: AccountsRootState & DeviceRootState = {
                 misc: undefined,
                 marker: undefined,
                 stellarCursor: undefined,
-                key: 'key' as AccountKey, // Todo: unify key, use `createAccountKey`,
+                key: mockAccountKey({
+                    descriptor: '1BitcoinAddress',
+                    symbol: 'btc',
+                    deviceStaticSessionId: BTC_DEVICE_SSID,
+                }),
                 accountType: 'normal',
                 empty: false,
                 visible: true,
@@ -84,7 +89,11 @@ const mockState: AccountsRootState & DeviceRootState = {
                 networkType: 'ethereum',
                 descriptor: asAccountDescriptor('0xEthereumAddress'),
                 deviceState: ETH_DEVICE_SSID,
-                key: '0xEthereumAddress-eth-deviceState' as AccountKey, // Todo: unify key, use `createAccountKey`
+                key: mockAccountKey({
+                    descriptor: '0xEthereumAddress',
+                    symbol: 'eth',
+                    deviceStaticSessionId: ETH_DEVICE_SSID,
+                }),
                 accountType: 'normal',
                 index: 0,
                 path: "m/44'/60'/0'/0",
@@ -205,13 +214,21 @@ describe('accountsSelectors', () => {
 
     describe('selectVisibleDeviceAccountsMap', () => {
         it('should return map of accounts for selected device only', () => {
+            const btcAccount = mockState.wallet.accounts[0];
+
+            if (!btcAccount) {
+                throw new Error('Expected first BTC account in mockState.wallet.accounts');
+            }
+
             const result = selectVisibleDeviceAccountsMap(
                 getStateWithSelectedDevice(mockState, BTC_DEVICE),
             );
 
             expect(result).toBeInstanceOf(Map);
             expect(result.size).toBe(1);
-            expect(result.get('key')).toEqual(expect.objectContaining({ key: 'key' }));
+            expect(result.get(btcAccount.key)).toEqual(
+                expect.objectContaining({ key: btcAccount.key }),
+            );
         });
     });
 });

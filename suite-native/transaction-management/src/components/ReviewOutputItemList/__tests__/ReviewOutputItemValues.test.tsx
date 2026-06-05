@@ -1,7 +1,7 @@
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../__fixtures__/walletState';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
 import {
     ReviewOutputItemValues,
     type ReviewOutputItemValuesProps,
@@ -16,9 +16,7 @@ describe('ReviewOutputItemValues', () => {
     ) =>
         renderWithStoreProvider(
             <ReviewOutputItemValues
-                accountKey={
-                    'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
-                }
+                accountKey={ETH_ACCOUNT_KEY}
                 value={oneUsdc}
                 translationKey="transactionManagement.review.outputs.summary.totalAmount"
                 {...props}

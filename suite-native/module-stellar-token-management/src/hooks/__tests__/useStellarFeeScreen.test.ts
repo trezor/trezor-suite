@@ -1,4 +1,5 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackRoutes,
@@ -32,7 +33,7 @@ const triggerFocusEffect = () => {
     focusEffectCallback?.();
 };
 
-const accountKey = 'stellar-1' as AccountKey;
+const accountKey = mockAccountKey({ symbol: 'xlm', descriptor: 'stellar1' });
 
 const mockAccount = {
     key: accountKey,

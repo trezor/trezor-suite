@@ -1,4 +1,5 @@
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form } from '@suite-native/forms';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
@@ -140,11 +141,12 @@ describe('SellSendAmountInput', () => {
     });
 
     it('should limit value to decimals based on useAmountInputDecimals return value', async () => {
+        const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'accountKey' });
         const form = renderUseTradingSellForm();
         act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendAccount', {
-                key: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`,
+                key: accountKey,
                 symbol: 'eth',
             } as Account);
         });
@@ -154,7 +156,7 @@ describe('SellSendAmountInput', () => {
 
         expect(form.getValues('cryptoStringAmount')).toEqual('1.01234567');
         expect(mockUseAmountInputDecimals).toHaveBeenLastCalledWith(
-            { key: 'account-key', symbol: 'eth' },
+            { key: accountKey, symbol: 'eth' },
             '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         );
     });

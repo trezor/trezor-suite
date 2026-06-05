@@ -1,5 +1,6 @@
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 export const accountSpendingCoins: Account = {
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
@@ -8,7 +9,12 @@ export const accountSpendingCoins: Account = {
     descriptor: asAccountDescriptor(
         '(accountSpendingCoins:descriptor)vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
     ),
-    key: '(accountSpendingCoins:key)vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b-regtest-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: mockAccountKey({
+        descriptor:
+            '(accountSpendingCoins:descriptor)vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
+        symbol: 'regtest',
+        deviceStaticSessionId: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
+    }),
     accountType: 'normal',
     symbol: 'regtest',
     empty: false,
@@ -403,7 +409,12 @@ export const accountReceivingCoins: Account = {
     descriptor: asAccountDescriptor(
         '(accountReceivingCoins:descriptor)vpub5YX1yJFY8E238aESifzcpXQHLzNDYJC22yLWqCwJ5pN85E27ku5wUXdhnh3HSMs3HibDQzeWmVeH52bAAa9LvkK4L1V9XfZbmHxGDuZSJks',
     ),
-    key: '(accountReceivingCoins:key)vpub5YX1yJFY8E238aESifzcpXQHLzNDYJC22yLWqCwJ5pN85E27ku5wUXdhnh3HSMs3HibDQzeWmVeH52bAAa9LvkK4L1V9XfZbmHxGDuZSJks-regtest-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: mockAccountKey({
+        descriptor:
+            '(accountReceivingCoins:descriptor)vpub5YX1yJFY8E238aESifzcpXQHLzNDYJC22yLWqCwJ5pN85E27ku5wUXdhnh3HSMs3HibDQzeWmVeH52bAAa9LvkK4L1V9XfZbmHxGDuZSJks',
+        symbol: 'regtest',
+        deviceStaticSessionId: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
+    }),
     accountType: 'normal',
     symbol: 'regtest',
     empty: false,

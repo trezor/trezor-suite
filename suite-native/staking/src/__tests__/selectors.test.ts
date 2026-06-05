@@ -1,5 +1,6 @@
 import { type StakeDataState } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import {
     selectApy,
@@ -7,11 +8,17 @@ import {
     selectClaimableAmountByAccountKey,
 } from '../selectors';
 
+const eth1Key = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
+const sol1Key = mockAccountKey({ symbol: 'sol', descriptor: 'sol1' });
+const etc1Key = mockAccountKey({ descriptor: 'etc1' });
+const ada1Key = mockAccountKey({ symbol: 'ada', descriptor: 'ada1' });
+const nonExistentKey = mockAccountKey({ descriptor: 'nonExistent' });
+
 const ethAccountWithClaimableStake: Account = {
     symbol: 'eth',
     accountLabel: 'ETH Account #1',
     deviceState: 'device@state:1',
-    key: 'eth1',
+    key: eth1Key,
     visible: true,
     networkType: 'ethereum',
     misc: {
@@ -35,7 +42,7 @@ const solAccountWithStaking: Account = {
     symbol: 'sol',
     accountLabel: 'SOL Account #1',
     deviceState: 'device@state:1',
-    key: 'sol1',
+    key: sol1Key,
     visible: true,
     networkType: 'solana',
     misc: {
@@ -54,7 +61,7 @@ const etcAccount: Account = {
     symbol: 'etc',
     accountLabel: 'ETC Account #1',
     deviceState: 'device@state:1',
-    key: 'etc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: etc1Key,
     visible: true,
     networkType: 'ethereum',
 } as unknown as Account;
@@ -121,10 +128,7 @@ describe('main staking selectors', () => {
         it('should return claimable amount for ETH account with claimable stake', () => {
             const testState = getTestState([ethAccountWithClaimableStake]);
 
-            const result = selectClaimableAmountByAccountKey(
-                testState as any,
-                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectClaimableAmountByAccountKey(testState as any, eth1Key);
 
             expect(result).toBe('0.5');
         });
@@ -132,10 +136,7 @@ describe('main staking selectors', () => {
         it('should return "0" for SOL account without claimable stake', () => {
             const testState = getTestState([solAccountWithStaking]);
 
-            const result = selectClaimableAmountByAccountKey(
-                testState as any,
-                'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectClaimableAmountByAccountKey(testState as any, sol1Key);
 
             expect(result).toBe('0');
         });
@@ -143,10 +144,7 @@ describe('main staking selectors', () => {
         it('should return "0" for unsupported network', () => {
             const testState = getTestState([etcAccount]);
 
-            const result = selectClaimableAmountByAccountKey(
-                testState as any,
-                'etc1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectClaimableAmountByAccountKey(testState as any, etc1Key);
 
             expect(result).toBe('0');
         });
@@ -154,10 +152,7 @@ describe('main staking selectors', () => {
         it('should return "0" for non-existent account', () => {
             const testState = getTestState([ethAccountWithClaimableStake]);
 
-            const result = selectClaimableAmountByAccountKey(
-                testState as any,
-                'non-existent' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectClaimableAmountByAccountKey(testState as any, nonExistentKey);
 
             expect(result).toBe('0');
         });
@@ -167,10 +162,7 @@ describe('main staking selectors', () => {
         it('should return true for ETH account with claimable stake', () => {
             const testState = getTestState([ethAccountWithClaimableStake]);
 
-            const result = selectCanClaimByAccountKey(
-                testState as any,
-                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectCanClaimByAccountKey(testState as any, eth1Key);
 
             expect(result).toBe(true);
         });
@@ -178,10 +170,7 @@ describe('main staking selectors', () => {
         it('should return false for SOL account without claimable stake', () => {
             const testState = getTestState([solAccountWithStaking]);
 
-            const result = selectCanClaimByAccountKey(
-                testState as any,
-                'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectCanClaimByAccountKey(testState as any, sol1Key);
 
             expect(result).toBe(false);
         });
@@ -189,10 +178,7 @@ describe('main staking selectors', () => {
         it('should return false for unsupported network', () => {
             const testState = getTestState([etcAccount]);
 
-            const result = selectCanClaimByAccountKey(
-                testState as any,
-                'etc1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectCanClaimByAccountKey(testState as any, etc1Key);
 
             expect(result).toBe(false);
         });
@@ -200,10 +186,7 @@ describe('main staking selectors', () => {
         it('should return false for non-existent account', () => {
             const testState = getTestState([ethAccountWithClaimableStake]);
 
-            const result = selectCanClaimByAccountKey(
-                testState as any,
-                'non-existent' as AccountKey, // Todo: create properly via `createAccountKey()`
-            );
+            const result = selectCanClaimByAccountKey(testState as any, nonExistentKey);
 
             expect(result).toBe(false);
         });
@@ -213,7 +196,7 @@ describe('main staking selectors', () => {
         it('should return ETH APY by accountKey', () => {
             const testState = getTestState([ethAccountWithClaimableStake]);
 
-            const result = selectApy(testState as any, { accountKey: 'eth1' as AccountKey });
+            const result = selectApy(testState as any, { accountKey: eth1Key });
 
             expect(result).toBe(3.08);
         });
@@ -229,7 +212,7 @@ describe('main staking selectors', () => {
         it('should return SOL APY by accountKey', () => {
             const testState = getTestState([solAccountWithStaking]);
 
-            const result = selectApy(testState as any, { accountKey: 'sol1' as AccountKey });
+            const result = selectApy(testState as any, { accountKey: sol1Key });
 
             expect(result).toBe(6.24);
         });
@@ -255,7 +238,7 @@ describe('main staking selectors', () => {
                 symbol: 'ada',
                 accountLabel: 'ADA Account #1',
                 deviceState: 'device@state:1',
-                key: 'ada1',
+                key: ada1Key,
                 visible: true,
                 networkType: 'cardano',
                 misc: {
@@ -266,7 +249,7 @@ describe('main staking selectors', () => {
             } as unknown as Account;
             const testState = getTestState([adaAccount]);
 
-            const result = selectApy(testState as any, { accountKey: 'ada1' as AccountKey });
+            const result = selectApy(testState as any, { accountKey: ada1Key });
 
             expect(result).toBe(2.43);
         });
@@ -276,7 +259,7 @@ describe('main staking selectors', () => {
                 symbol: 'ada',
                 accountLabel: 'ADA Account #1',
                 deviceState: 'device@state:1',
-                key: 'ada1',
+                key: ada1Key,
                 visible: true,
                 networkType: 'cardano',
                 misc: {
@@ -287,7 +270,7 @@ describe('main staking selectors', () => {
             } as unknown as Account;
             const testState = getTestState([adaAccount]);
 
-            const result = selectApy(testState as any, { accountKey: 'ada1' as AccountKey });
+            const result = selectApy(testState as any, { accountKey: ada1Key });
 
             expect(result).toBe(5.8);
         });
@@ -304,7 +287,7 @@ describe('main staking selectors', () => {
             const testState = getTestState([ethAccountWithClaimableStake]);
 
             const result = selectApy(testState as any, {
-                accountKey: 'non-existent' as AccountKey,
+                accountKey: nonExistentKey,
             });
 
             expect(result).toBeNull();
@@ -313,7 +296,7 @@ describe('main staking selectors', () => {
         it('should return null for unsupported network', () => {
             const testState = getTestState([etcAccount]);
 
-            const result = selectApy(testState as any, { accountKey: 'etc1' as AccountKey });
+            const result = selectApy(testState as any, { accountKey: etc1Key });
 
             expect(result).toBeNull();
         });

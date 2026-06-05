@@ -1,4 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form } from '@suite-native/forms';
 import {
     renderHookWithStoreProvider,
@@ -6,14 +7,18 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../../__fixtures__/walletState';
+import {
+    BTC_ACCOUNT_KEY,
+    ETH_ACCOUNT_KEY,
+    getWalletState,
+} from '../../../../__fixtures__/walletState';
 import { type FeesFormType } from '../../../../feesFormSchema';
 import { useFeesForm } from '../../../../hooks';
 import { CustomFeeCard, type CustomFeeCardProps } from '../CustomFeeCard';
 
 describe('CustomFeeCard', () => {
     const defaultProps = {
-        accountKey: 'eth-account-1' as AccountKey,
+        accountKey: ETH_ACCOUNT_KEY,
         onEdit: jest.fn(),
         onCancel: jest.fn(),
     };
@@ -22,9 +27,7 @@ describe('CustomFeeCard', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (
-        accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-    ) => {
+    const renderUseFeesForm = (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
@@ -89,7 +92,7 @@ describe('CustomFeeCard', () => {
         });
 
         it('should not render if using wrong accountKey', () => {
-            const accountKey = 'wrong-key' as AccountKey;
+            const accountKey = mockAccountKey({ descriptor: 'wrongKey' });
             const form = renderUseFeesForm(accountKey);
             const { toJSON } = renderCustomFeeCard({
                 form,
@@ -127,7 +130,7 @@ describe('CustomFeeCard', () => {
     });
 
     it('should render for bitcoin network', () => {
-        const accountKey = 'btc-account-1' as AccountKey;
+        const accountKey = BTC_ACCOUNT_KEY;
         const form = renderUseFeesForm(accountKey);
         const { getByText } = renderCustomFeeCard({
             form,

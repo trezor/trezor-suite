@@ -1,8 +1,10 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { useUtxoSelection } from '../../../hooks/useUtxoSelection';
 import { SendUtxoScreenHeader } from '../SendUtxoScreenHeader';
+
+const accountKey = mockAccountKey({ descriptor: 'testAccKey' });
 
 jest.mock('../../../hooks/useUtxoSelection', () => ({
     useUtxoSelection: jest.fn(),
@@ -26,11 +28,7 @@ describe('SendUtxosScreenHeader', () => {
         });
 
         const { getByTestId } = renderWithBasicProvider(
-            <SendUtxoScreenHeader
-                accountKey={
-                    'testAccKey' as AccountKey // Todo: create properly via `createAccountKey()`
-                }
-            />,
+            <SendUtxoScreenHeader accountKey={accountKey} />,
         );
 
         expect(getByTestId('coin-control-delete-button')).toBeTruthy();
@@ -43,11 +41,7 @@ describe('SendUtxosScreenHeader', () => {
         });
 
         const { queryByTestId } = renderWithBasicProvider(
-            <SendUtxoScreenHeader
-                accountKey={
-                    'testAccKey' as AccountKey // Todo: create properly via `createAccountKey()`
-                }
-            />,
+            <SendUtxoScreenHeader accountKey={accountKey} />,
         );
 
         expect(queryByTestId('coin-control-delete-button')).toBeNull();

@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
@@ -86,7 +86,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             () =>
                 useTradingOutputsReviewScreenControls({
                     orderId: 'orderId',
-                    accountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    accountKey: mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
                     signAndSendTransaction: mockSignAndSendTransaction,
                     reportToAnalytics: mockReportToAnalytics,
                 }),

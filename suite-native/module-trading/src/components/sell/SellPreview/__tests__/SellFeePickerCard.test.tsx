@@ -1,4 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
@@ -58,7 +59,7 @@ describe('SellFeePickerCard', () => {
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderSellFeePickerCard(
             { quote: banxaCreditCardSellQuote },
-            'unknown-account-key' as AccountKey,
+            mockAccountKey({ descriptor: 'unknownAccountKey' }),
         );
 
         expect(toJSON()).toBeNull();

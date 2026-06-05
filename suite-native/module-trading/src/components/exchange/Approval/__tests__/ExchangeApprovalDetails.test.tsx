@@ -1,4 +1,4 @@
-import type { AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
@@ -66,7 +66,7 @@ describe('ExchangeApprovalDetails', () => {
             wallet: {
                 trading: {
                     exchange: {
-                        tradingAccountKey: 'unknown-account-key' as AccountKey,
+                        tradingAccountKey: mockAccountKey({ descriptor: 'unknownAccountKey' }),
                         selectedQuote: mercuryoFixedWorstQuote,
                     },
                 },

@@ -1,4 +1,5 @@
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useRequestDelayedNavigationToOutputsReview } from '../useRequestDelayedNavigationToOutputsReview';
@@ -18,11 +19,13 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
+const accountKey = mockAccountKey({ descriptor: 'accountKey' });
+
 describe('useRequestDelayedNavigationToOutputsReview', () => {
     const renderUseRequestDelayedNavigationToOutputsReview = () =>
         renderHookWithStoreProvider(() =>
             useRequestDelayedNavigationToOutputsReview({
-                accountKey: 'accountKey' as AccountKey,
+                accountKey,
                 tokenContract: 'tokenContract' as TokenAddress,
             }),
         );
@@ -45,7 +48,7 @@ describe('useRequestDelayedNavigationToOutputsReview', () => {
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('SendOutputsReview', {
-            accountKey: 'accountKey',
+            accountKey,
             tokenContract: 'tokenContract',
         });
     });

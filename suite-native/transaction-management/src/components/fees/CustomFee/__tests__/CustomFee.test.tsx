@@ -8,7 +8,11 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../../../__fixtures__/walletState';
+import {
+    BTC_ACCOUNT_KEY,
+    ETH_ACCOUNT_KEY,
+    getWalletState,
+} from '../../../../__fixtures__/walletState';
 import { type FeesFormType } from '../../../../feesFormSchema';
 import { type CustomFeeParams, useFeesForm } from '../../../../hooks';
 import { useCustomFee } from '../../../../hooks/fees/useCustomFee';
@@ -30,7 +34,7 @@ type CustomFeeProps = {
 
 describe('CustomFee', () => {
     const defaultProps: CustomFeeProps = {
-        accountKey: 'eth-account-1' as AccountKey,
+        accountKey: ETH_ACCOUNT_KEY,
         symbol: 'eth' as NetworkSymbol,
         formDraft: null,
         onCustomFeeSet: jest.fn(),
@@ -40,9 +44,7 @@ describe('CustomFee', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (
-        accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-    ) => {
+    const renderUseFeesForm = (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
@@ -173,7 +175,7 @@ describe('CustomFee', () => {
 
         // Verify that useCustomFee was called for Ethereum
         expect(mockUseCustomFee).toHaveBeenCalledWith({
-            accountKey: 'eth-account-1',
+            accountKey: ETH_ACCOUNT_KEY,
             formState: expect.any(Object),
         });
     });
@@ -220,13 +222,11 @@ describe('CustomFee', () => {
     });
 
     it('should handle different account keys', () => {
-        const form = renderUseFeesForm(
-            'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        );
+        const form = renderUseFeesForm(BTC_ACCOUNT_KEY);
         const { getByTestId } = renderCustomFee({
             form,
             props: {
-                accountKey: 'btc-account-1' as AccountKey,
+                accountKey: BTC_ACCOUNT_KEY,
             },
         });
 

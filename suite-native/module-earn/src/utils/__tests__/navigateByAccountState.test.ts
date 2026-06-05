@@ -1,4 +1,5 @@
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     formatNetworkAmount,
     getAccountTotalStakingBalance,
@@ -33,7 +34,7 @@ const mockLimits = {
 
 const createMockAccount = (overrides: Partial<Account> = {}): Account =>
     ({
-        key: 'test-account-key' as AccountKey,
+        key: mockAccountKey({ descriptor: 'testAccountKey' }),
         symbol: 'eth',
         availableBalance: '1000000000000000000',
         formattedBalance: '1.0',

@@ -1,12 +1,12 @@
 import { useAtom } from 'jotai';
 
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHook } from '@suite-native/test-utils';
 
 import { type SelectedUtxos } from '../../types';
 import { useUtxoSelection } from '../useUtxoSelection';
 
-const accountKey = 'testAccKey' as AccountKey; // Todo: create properly via `createAccountKey()`
+const accountKey = mockAccountKey({ descriptor: 'testAccKey' });
 
 jest.mock('jotai', () => ({
     useAtom: jest.fn(() => [[], jest.fn()]),

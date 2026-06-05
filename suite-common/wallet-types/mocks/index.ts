@@ -1,3 +1,4 @@
+export { mockAccountKey } from './mockAccountKey';
 export {
     mockWalletAccount,
     networkSpecificDefaultRipple,

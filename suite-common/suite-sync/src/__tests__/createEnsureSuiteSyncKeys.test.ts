@@ -45,7 +45,7 @@ const createDevice = (
                           path: 'test-path',
                           instance: 1,
                       },
-                      staticSessionId: 'test-session-id',
+                      staticSessionId: 'testWallet@testDevice:0',
                       ...deviceStateOverrides,
                   },
               }

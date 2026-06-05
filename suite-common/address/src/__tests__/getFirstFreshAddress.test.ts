@@ -8,7 +8,7 @@ describe(getFirstFreshAddress.name, () => {
         const account = mockWalletAccount({
             symbol: 'test',
             path: "m/84'/1'/0'",
-            descriptor: asAccountDescriptor('descriptor-test'),
+            descriptor: asAccountDescriptor('descriptorTest'),
             history: { total: 13, tokens: 0, unconfirmed: 0 },
             addresses: {
                 used: [],
@@ -71,7 +71,7 @@ describe(getFirstFreshAddress.name, () => {
         const account = mockWalletAccount({
             symbol: 'test',
             path: "m/84'/1'/0'",
-            descriptor: asAccountDescriptor('descriptor-test'),
+            descriptor: asAccountDescriptor('descriptorTest'),
             history: { total: 13, tokens: 0, unconfirmed: 0 },
             addresses: {
                 used: [],
@@ -140,7 +140,7 @@ describe(getFirstFreshAddress.name, () => {
         const account = mockWalletAccount({
             symbol: 'test',
             path: "m/84'/1'/0'",
-            descriptor: asAccountDescriptor('descriptor-test'),
+            descriptor: asAccountDescriptor('descriptorTest'),
             history: { total: 13, tokens: 0, unconfirmed: 0 },
             addresses: {
                 used: [],

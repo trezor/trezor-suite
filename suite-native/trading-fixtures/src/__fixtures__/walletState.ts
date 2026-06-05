@@ -2,12 +2,12 @@ import { type TradingType } from '@suite-common/trading';
 import { type FiatRatesState, type SendState } from '@suite-common/wallet-core';
 import {
     type Account,
-    type AccountKey,
     type RatesByKey,
     type WalletSettings,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { type StaticSessionId } from '@trezor/connect';
 import { PROTO } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 import { getBaseAccount, getBtcAccount, getEthAccount, getSolAccount } from './account';
 import { btc1NormalAccount, eth1NormalAccount, eth2legacyAccount } from './accounts';
@@ -58,11 +58,11 @@ export const getWalletState = ({
             lastWeek: {},
         } as FiatRatesState,
         accounts: [
-            getBtcAccount('btc-account-1' as AccountKey, accountOverrides),
-            getBtcAccount('btc-account-2' as AccountKey, accountOverrides),
-            getEthAccount(undefined, accountOverrides),
-            getBaseAccount(undefined, accountOverrides),
-            getSolAccount(undefined, accountOverrides),
+            getBtcAccount({ ...accountOverrides, descriptor: asAccountDescriptor('btc1normal') }),
+            getBtcAccount({ ...accountOverrides, descriptor: asAccountDescriptor('btc2legacy') }),
+            getEthAccount(accountOverrides),
+            getBaseAccount(accountOverrides),
+            getSolAccount(accountOverrides),
             btc1NormalAccount,
             eth1NormalAccount,
             eth2legacyAccount,

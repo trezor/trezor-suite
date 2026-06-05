@@ -1,4 +1,4 @@
-import type { AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
@@ -40,7 +40,7 @@ describe('ExchangeFromAccountTradePreviewCard', () => {
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderExchangeFromAccountTradePreviewCard(
             { quote: mercuryoFixedWorstQuote },
-            'unknown-account-key' as AccountKey,
+            mockAccountKey({ descriptor: 'unknownAccountKey' }),
         );
 
         expect(toJSON()).toBeNull();

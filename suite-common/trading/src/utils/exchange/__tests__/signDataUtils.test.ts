@@ -53,6 +53,6 @@ describe('getSignerAddress', () => {
     });
 
     it('returns the unused address for an ethereum account', () => {
-        expect(getSignerAddress(accountEth as unknown as Account)).toBe('eth-descriptor');
+        expect(getSignerAddress(accountEth as unknown as Account)).toBe('ethDescriptor');
     });
 });

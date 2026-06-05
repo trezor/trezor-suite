@@ -1,13 +1,13 @@
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { exchangeInvity, sellInvity } from '@suite-native/trading-fixtures';
 
 import { createFormStateForSendForm } from '../tradingFormUtils';
 
 describe('createFormStateForSendForm', () => {
     describe('createTradingFormState', () => {
-        const sendAccountKey = 'send-account-key' as AccountKey;
+        const sendAccountKey = mockAccountKey({ descriptor: 'sendAccountKey' });
         it('should create FormState for exchange quote (swap)', () => {
             const exchangeQuote: ExchangeTrade = {
                 exchange: 'sideshiftfr',

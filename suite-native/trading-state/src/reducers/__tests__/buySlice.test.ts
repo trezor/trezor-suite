@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { type TradingBuyState } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import {
     btc1NormalAccount,
@@ -17,7 +17,7 @@ describe('buySlice', () => {
         it('should clear buy state', () => {
             const prevState: TradingBuyState = {
                 ...tradingInitialState.buy,
-                tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                tradingAccountKey: mockAccountKey({ descriptor: 'accountKey' }),
                 receiveAddress: 'bc1qxyz',
                 quotesRequest: {
                     wantCrypto: true,
@@ -68,8 +68,8 @@ describe('buySlice', () => {
         it('should clear tradingAccountKey, receiveAccountKey and receiveAddress', () => {
             const prevState: TradingBuyState = {
                 ...tradingInitialState.buy,
-                tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
-                receiveAccountKey: 'account-key' as AccountKey,
+                tradingAccountKey: mockAccountKey({ descriptor: 'accountKey' }),
+                receiveAccountKey: mockAccountKey({ descriptor: 'accountKey' }),
                 receiveAddress: 'bc1qxyz',
             };
 

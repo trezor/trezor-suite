@@ -6,11 +6,12 @@ import {
     renderHookWithStoreProvider,
     testMocks,
 } from '@suite-common/test-utils';
-import type { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useAllowanceTxTracking } from '../useAllowanceTxTracking';
 
-const ACCOUNT_KEY = 'test-account-key' as AccountKey;
+const ACCOUNT_KEY = mockAccountKey({ descriptor: 'testAccountKey' });
 const TXID = 'test-txid-abc123';
 
 const createPreloadedState = (transactions: WalletAccountTransaction[] = []) => ({

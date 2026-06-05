@@ -1,4 +1,3 @@
-import { type AccountKey } from '@suite-common/wallet-types';
 import {
     btc1NormalAccount,
     cexdirectFloatingQuote,
@@ -33,8 +32,8 @@ describe('ExchangePreviewView', () => {
                                 },
                             },
                             exchange: {
-                                tradingAccountKey: btc1NormalAccount.key as AccountKey,
-                                receiveAccountKey: eth1NormalAccount.key as AccountKey,
+                                tradingAccountKey: btc1NormalAccount.key,
+                                receiveAccountKey: eth1NormalAccount.key,
                                 lastErrorMessage: 'ERROR_MESSAGE',
                             },
                         },

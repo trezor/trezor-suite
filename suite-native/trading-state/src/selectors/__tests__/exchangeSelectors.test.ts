@@ -1,7 +1,8 @@
 import type { CryptoId } from 'invity-api';
 
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
@@ -63,7 +64,9 @@ describe('exchangeSelectors', () => {
         });
 
         it('should return undefined when no account with given key exists', () => {
-            state.wallet.trading.exchange.tradingAccountKey = 'unknown_account_key' as AccountKey; // Todo: create properly via `createAccountKey()`
+            state.wallet.trading.exchange.tradingAccountKey = mockAccountKey({
+                descriptor: 'unknownAccountKey',
+            });
 
             expect(selectExchangeSelectedSendAccount(state)).toBeUndefined();
         });
@@ -98,7 +101,9 @@ describe('exchangeSelectors', () => {
         });
 
         it('should return undefined no account with given key exists', () => {
-            state.wallet.trading.exchange.receiveAccountKey = 'unknown_account_key' as AccountKey; // Todo: create properly via `createAccountKey()`
+            state.wallet.trading.exchange.receiveAccountKey = mockAccountKey({
+                descriptor: 'unknownAccountKey',
+            });
 
             expect(selectExchangeSelectedReceiveAccount(state)).toBeUndefined();
         });

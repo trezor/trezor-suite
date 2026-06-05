@@ -7,7 +7,7 @@ const btcUnusedAddress = 'bc1qfcjv620stvtzjeelg26ncgww8ks49zy8lracjz';
 
 const btcAccount = mockWalletAccount({
     symbol: 'btc',
-    descriptor: asAccountDescriptor('btc-descriptor'),
+    descriptor: asAccountDescriptor('btcDescriptor'),
     addresses: {
         change: [],
         used: [],
@@ -39,7 +39,7 @@ describe('getReceiveAccountPreselection', () => {
     it('returns the send account key when send account has the receive symbol', () => {
         const sendAccount = mockWalletAccount({
             symbol: 'eth',
-            descriptor: asAccountDescriptor('eth-send-descriptor'),
+            descriptor: asAccountDescriptor('ethSendDescriptor'),
         });
 
         expect(

@@ -21,6 +21,7 @@ import {
 } from '@suite-common/trading';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddlewareFixtures } from 'src/middlewares/wallet/__fixtures__/tradingMiddleware';
@@ -131,15 +132,24 @@ describe('tradingMiddleware', () => {
         jest.clearAllMocks();
     });
 
-    it.each<[string, AccountKey | CryptoId | undefined, LocationChangePayload]>([
+    const mockedModalAccountKey = mockAccountKey({ descriptor: 'mockedKey' });
+    const mockedModalCryptoId = 'bitcoin' as CryptoId;
+
+    it.each<
+        [
+            string,
+            { accountKey: AccountKey | undefined; cryptoId: CryptoId | undefined },
+            LocationChangePayload,
+        ]
+    >([
         [
             'should stay modalAccountKey stable and modalCryptoId stable',
-            'mocked-key' as AccountKey,
+            { accountKey: mockedModalAccountKey, cryptoId: mockedModalCryptoId },
             tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
         ],
         [
             'should clean modalAccountKey and modalCryptoId when trading is abandoned',
-            undefined,
+            { accountKey: undefined, cryptoId: undefined },
             {
                 ...tradingMiddlewareFixtures.DEFAULT_ROUTE,
                 pathname: '/start',
@@ -152,8 +162,8 @@ describe('tradingMiddleware', () => {
             getInitialState({
                 trading: {
                     ...initialState,
-                    modalAccountKey: 'mocked-key' as AccountKey, // Todo: create properly via `createAccountKey()`
-                    modalCryptoId: 'mocked-key' as CryptoId,
+                    modalAccountKey: mockedModalAccountKey,
+                    modalCryptoId: mockedModalCryptoId,
                 },
                 router: routerReducer(tradingMiddlewareFixtures.TRADING_SELL_ROUTE, {
                     type: 'init',
@@ -164,8 +174,8 @@ describe('tradingMiddleware', () => {
         // go away from trading
         store.dispatch(routerLocationChange({ ...routeChange }));
 
-        expect(store.getState().wallet.trading.modalCryptoId).toEqual(result);
-        expect(store.getState().wallet.trading.modalAccountKey).toEqual(result);
+        expect(store.getState().wallet.trading.modalCryptoId).toEqual(result.cryptoId);
+        expect(store.getState().wallet.trading.modalAccountKey).toEqual(result.accountKey);
     });
 
     type TradingRouterTestFixture = [

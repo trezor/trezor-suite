@@ -1,7 +1,8 @@
 import type { SellFiatTrade } from 'invity-api';
 
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     banxaCreditCardSellQuote,
     getBtcAccount,
@@ -287,7 +288,9 @@ describe('sellSelectors', () => {
         });
 
         it('should return undefined when no account with given key exists', () => {
-            state.wallet.trading.sell.tradingAccountKey = 'unknown_account_key' as AccountKey; // Todo: create properly via `createAccountKey()`
+            state.wallet.trading.sell.tradingAccountKey = mockAccountKey({
+                descriptor: 'unknownAccountKey',
+            });
 
             expect(selectSellSelectedSendAccount(state)).toBeUndefined();
         });

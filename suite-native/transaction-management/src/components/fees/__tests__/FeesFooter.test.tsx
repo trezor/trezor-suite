@@ -1,6 +1,7 @@
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form, useForm } from '@suite-native/forms';
 import {
     type TestStore,
@@ -56,7 +57,7 @@ describe('FeesFooter', () => {
     let mockOnSubmit: jest.Mock;
 
     const defaultProps = {
-        accountKey: 'test-account-key' as AccountKey,
+        accountKey: mockAccountKey({ descriptor: 'testAccountKey' }),
         isSubmittable: true,
         onSubmit: jest.fn(),
         symbol: 'btc' as NetworkSymbol,

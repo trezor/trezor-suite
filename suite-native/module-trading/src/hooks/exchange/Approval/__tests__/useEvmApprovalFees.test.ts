@@ -1,5 +1,6 @@
 import { tradingActions } from '@suite-common/trading';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -56,7 +57,7 @@ describe('useEvmApprovalFees', () => {
         wallet: {
             trading: {
                 exchange: {
-                    tradingAccountKey: 'eth-account-1' as AccountKey,
+                    tradingAccountKey: mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' }),
                     selectedQuote: dexQuoteWithApprovalData as any,
                 },
             },

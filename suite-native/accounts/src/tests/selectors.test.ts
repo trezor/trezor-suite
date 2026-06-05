@@ -1,10 +1,10 @@
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
     type Account,
-    type AccountKey,
     type TokenInfoBranded,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { getAccountListSections, selectFreshAccountAddress } from '../selectors';
 import {
@@ -130,7 +130,7 @@ describe('sortAccountsByNetworksAndAccountTypes', () => {
 describe('selectFreshAccountAddress', () => {
     const mockAccount = {
         symbol: 'btc',
-        key: 'btc-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
+        key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
         addresses: {
             unused: [
                 {
@@ -212,7 +212,7 @@ describe('selectFreshAccountAddress', () => {
     it('should return null when account is not provided', () => {
         const result = selectFreshAccountAddress(
             mockState,
-            'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+            mockAccountKey({ descriptor: 'nonExistentKey' }),
         );
         expect(result).toBeNull();
     });

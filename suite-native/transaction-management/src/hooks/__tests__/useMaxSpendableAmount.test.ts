@@ -1,7 +1,7 @@
-import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 
-import { getWalletState } from '../../__fixtures__/walletState';
+import { BTC_ACCOUNT_KEY, ETH_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 import { useMaxSpendableAmount } from '../useMaxSpendableAmount';
 
 const mockCalculateFeeLevelsMaxAmountThunk = jest.fn();
@@ -13,8 +13,8 @@ jest.mock('../../thunks', () => ({
 }));
 
 describe('useMaxSpendableAmount', () => {
-    const btcAccountKey = 'btc-account-1' as AccountKey;
-    const ethAccountKey = 'eth-account-1' as AccountKey;
+    const btcAccountKey = BTC_ACCOUNT_KEY;
+    const ethAccountKey = ETH_ACCOUNT_KEY;
     const usdcTokenContract = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 
     const customFormState: FormState = {

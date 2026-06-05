@@ -36,6 +36,7 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react-native": "0.83.2"

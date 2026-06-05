@@ -19,9 +19,10 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
@@ -239,17 +240,19 @@ describe('Storage actions', () => {
         let store = mockStore(getInitialState());
         updateStore(store);
 
-        // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'a' }, 'account-key');
-        store.dispatch(await preloadStore());
-        expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'a' } });
+        const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 
         // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'b' }, 'account-key');
+        await storageActions.saveDraft({ address: 'a' }, accountKey);
         store.dispatch(await preloadStore());
-        expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'b' } });
+        expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'a' } });
 
-        await storageActions.removeDraft('account-key' as AccountKey); // Todo: create properly via `createAccountKey()`
+        // @ts-expect-error partial params
+        await storageActions.saveDraft({ address: 'b' }, accountKey);
+        store.dispatch(await preloadStore());
+        expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'b' } });
+
+        await storageActions.removeDraft(accountKey);
         store = mockStore(getInitialState());
         updateStore(store);
         store.dispatch(await preloadStore());
@@ -507,7 +510,7 @@ describe('Storage actions', () => {
     });
 
     it('should remove legacy labels migration flag on forgetDevice', async () => {
-        const forgottenDeviceStaticSessionId = 'forgotten-wallet@device_a_id:0';
+        const forgottenDeviceStaticSessionId: StaticSessionId = 'forgotten-wallet@device_a_id:0';
         const forgottenWalletDescriptor = asWalletDescriptor('forgotten-wallet');
         const keptWalletDescriptor = asWalletDescriptor('kept-wallet');
 

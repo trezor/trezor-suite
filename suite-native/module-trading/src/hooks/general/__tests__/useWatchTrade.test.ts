@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type TestStore } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
@@ -50,7 +51,7 @@ const useWatchTradeWithReportSpy = (props: {
     return spyRef.current!;
 };
 
-const btc1AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
 
 describe('useWatchTrade', () => {
     beforeEach(() => {
@@ -78,10 +79,11 @@ describe('useWatchTrade', () => {
                             ? accounts
                             : [
                                   {
-                                      key: 'btc1',
+                                      key: btc1AccountKey,
                                       symbol: 'btc',
-                                      deviceState: 'device1@test:123',
-                                      descriptor: 'btc-descriptor',
+                                      deviceState:
+                                          'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
+                                      descriptor: 'btc1',
                                       addresses: { unused: [{ address: 'btc-address' }] },
                                       visible: true,
                                   },
@@ -89,7 +91,10 @@ describe('useWatchTrade', () => {
                 },
                 device: {
                     selectedDevice: {
-                        state: { staticSessionId: 'device1@test:123' },
+                        state: {
+                            staticSessionId:
+                                'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
+                        },
                     },
                 },
             },
@@ -121,7 +126,7 @@ describe('useWatchTrade', () => {
             });
 
             renderUseWatchTrade(store, {
-                accountKey: 'non-existent-account' as AccountKey, // Todo: create properly via `createAccountKey()`
+                accountKey: mockAccountKey({ descriptor: 'nonExistentAccount' }),
                 orderId: buyTrade.data.orderId,
             });
 
@@ -135,12 +140,12 @@ describe('useWatchTrade', () => {
             });
 
             renderUseWatchTrade(store, {
-                accountKey: btc1AccountKey as AccountKey, // Todo: create properly via `createAccountKey()`
+                accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
             });
 
             expect(mockWatchTradeThunk).toHaveBeenCalledWith({
-                account: expect.objectContaining({ key: 'btc1' }),
+                account: expect.objectContaining({ key: btc1AccountKey }),
                 trade: buyTrade,
                 refreshCount: 0,
             });
@@ -166,7 +171,7 @@ describe('useWatchTrade', () => {
             });
 
             expect(mockWatchTradeThunk).toHaveBeenCalledWith({
-                account: expect.objectContaining({ key: 'btc1' }),
+                account: expect.objectContaining({ key: btc1AccountKey }),
                 trade: buyTrade,
                 refreshCount: 1,
             });

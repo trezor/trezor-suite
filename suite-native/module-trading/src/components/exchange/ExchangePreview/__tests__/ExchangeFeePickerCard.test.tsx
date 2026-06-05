@@ -1,4 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
@@ -41,7 +42,7 @@ describe('ExchangeFeePickerCard', () => {
     it('should render nothing when account is not found', () => {
         const { toJSON } = renderExchangeFeePickerCard(
             { quote: mercuryoFixedWorstQuote },
-            'unknown-account-key' as AccountKey,
+            mockAccountKey({ descriptor: 'unknownAccountKey' }),
         );
 
         expect(toJSON()).toBeNull();

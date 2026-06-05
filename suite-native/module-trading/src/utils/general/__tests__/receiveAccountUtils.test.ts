@@ -61,7 +61,7 @@ describe('receiveAccountUtils', () => {
                 getReceiveAccountAddressText({
                     account: eth1NormalAccount,
                 }),
-            ).toBe('eth1-normal');
+            ).toBe('eth1normal');
         });
 
         it('should ignore specified address for ETH', () => {
@@ -70,7 +70,7 @@ describe('receiveAccountUtils', () => {
                     account: eth1NormalAccount,
                     address: { address: 'should_be_ignored' } as Address,
                 }),
-            ).toBe('eth1-normal');
+            ).toBe('eth1normal');
         });
     });
 });

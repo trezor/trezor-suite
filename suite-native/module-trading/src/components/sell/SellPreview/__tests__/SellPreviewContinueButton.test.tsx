@@ -1,4 +1,4 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { userEvent } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, createPrecomposedTxFinal } from '@suite-native/trading-fixtures';
 import { mergeDeepObject } from '@trezor/utils';
@@ -22,10 +22,12 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
+const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+
 describe('SellPreviewContinueButton', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         wallet: {
-            trading: { sell: { tradingAccountKey: 'eth-account-1' as AccountKey } },
+            trading: { sell: { tradingAccountKey: ethAccountKey } },
             send: {
                 precomposedTx: createPrecomposedTxFinal({
                     totalSpent: '1100',
@@ -104,7 +106,11 @@ describe('SellPreviewContinueButton', () => {
             { onSignTransactionNavigation: mockOnSignTransactionNavigation },
             {
                 wallet: {
-                    trading: { sell: { tradingAccountKey: 'non-existing-key' as AccountKey } },
+                    trading: {
+                        sell: {
+                            tradingAccountKey: mockAccountKey({ descriptor: 'nonExistingKey' }),
+                        },
+                    },
                 },
             },
         );
@@ -130,7 +136,7 @@ describe('SellPreviewContinueButton', () => {
 
         expect(consoleWarnSpy).not.toHaveBeenCalled();
         expect(mockNavigate).toHaveBeenCalledWith('TradingSellOutputsReview', {
-            accountKey: 'eth-account-1',
+            accountKey: ethAccountKey,
             orderId: banxaCreditCardSellQuote.orderId,
             tokenContract: undefined,
         });

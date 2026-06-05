@@ -1,4 +1,5 @@
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { type TokensRootState } from '@suite-native/tokens';
 
@@ -38,7 +39,7 @@ describe('useAmountInputDecimals', () => {
 
     it('should limit value to decimals based on network.decimals value for networks', () => {
         const account = {
-            key: 'account_key' as AccountKey, // Todo: create properly via `createAccountKey()`
+            key: mockAccountKey({ symbol: 'eth', descriptor: 'accountKey' }),
             symbol: 'eth',
         } as Account;
         const { result } = renderUseAmountInputDecimals(account, undefined);
@@ -48,7 +49,7 @@ describe('useAmountInputDecimals', () => {
 
     it('should limit value to decimals based on selectAccountTokenDecimals return value', () => {
         const account = {
-            key: 'account_key' as AccountKey, // Todo: create properly via `createAccountKey()`
+            key: mockAccountKey({ symbol: 'eth', descriptor: 'accountKey' }),
             symbol: 'eth',
         } as Account;
         const contractAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
@@ -60,7 +61,7 @@ describe('useAmountInputDecimals', () => {
     it('should return undefined when selectAccountTokenDecimals returns nullish value', () => {
         mockSelectAccountTokenDecimals.mockReturnValue(null);
         const account = {
-            key: 'account_key' as AccountKey, // Todo: create properly via `createAccountKey()`
+            key: mockAccountKey({ symbol: 'eth', descriptor: 'accountKey' }),
             symbol: 'eth',
         } as Account;
         const contractAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;

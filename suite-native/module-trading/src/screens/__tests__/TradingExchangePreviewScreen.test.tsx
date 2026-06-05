@@ -1,7 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import { type AccountKey } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -16,6 +16,7 @@ import {
     createPrecomposedTxFinal,
     exchangeQuotes,
     getBtcAccount,
+    getEthAccount,
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
@@ -25,6 +26,9 @@ import {
     TradingExchangePreviewScreen,
     type TradingExchangePreviewScreenProps,
 } from '../TradingExchangePreviewScreen';
+
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
+const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
 
 // useDebounce adds a 300ms real setTimeout before calling the function. Mocking it to be
 // immediate makes tests deterministic and avoids flaky failures in slow CI environments.
@@ -92,9 +96,9 @@ const createStore = (quote?: ExchangeTrade) =>
                 trading: {
                     exchange: {
                         quotes: exchangeQuotes,
-                        tradingAccountKey: 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                        receiveAccountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                        receiveAddress: getBtcAccount().addresses?.used[0]?.address,
+                        tradingAccountKey: eth1Account.key,
+                        receiveAccountKey: btc1Account.key,
+                        receiveAddress: btc1Account.addresses?.used[0]?.address,
                         selectedQuote: quote ?? mercuryoFixedWorstQuote,
                     },
                 },

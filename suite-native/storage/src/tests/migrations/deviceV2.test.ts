@@ -17,7 +17,7 @@ describe('migrateDeviceState', () => {
     it('should migrate old devices with string state, without _state to new format', () => {
         const oldDevices = [
             {
-                state: 'staticSessionId',
+                state: 'testWallet@testDevice:0',
                 otherKey: 'otherValue',
             },
         ];
@@ -27,7 +27,7 @@ describe('migrateDeviceState', () => {
         const newDevices = [
             {
                 state: {
-                    staticSessionId: 'staticSessionId',
+                    staticSessionId: 'testWallet@testDevice:0',
                 },
                 otherKey: 'otherValue',
             },
@@ -38,9 +38,9 @@ describe('migrateDeviceState', () => {
     it('should migrate old devices with string state and with _state to new format', () => {
         const oldDevices = [
             {
-                state: 'staticSessionId',
+                state: 'testWallet@testDevice:0',
                 _state: {
-                    staticSessionId: 'staticSessionId',
+                    staticSessionId: 'testWallet@testDevice:0',
                     deriveCardano: true,
                 },
                 otherKey: 'otherValue',
@@ -52,7 +52,7 @@ describe('migrateDeviceState', () => {
         const newDevices = [
             {
                 state: {
-                    staticSessionId: 'staticSessionId',
+                    staticSessionId: 'testWallet@testDevice:0',
                     deriveCardano: true,
                 },
                 otherKey: 'otherValue',

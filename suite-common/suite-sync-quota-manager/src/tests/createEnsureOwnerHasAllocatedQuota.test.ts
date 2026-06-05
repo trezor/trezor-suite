@@ -13,7 +13,7 @@ import { createEnsureOwnerHasAllocatedQuota } from '../owner/createEnsureOwnerHa
 const ownerId = asSuiteSyncOwnerId('owner-id');
 const walletDescriptor: WalletDescriptor = asWalletDescriptor('descriptor');
 const deviceId = 'device-123';
-const deviceStaticSessionId = `${walletDescriptor}@${deviceId}` as StaticSessionId;
+const deviceStaticSessionId: StaticSessionId = `${walletDescriptor}@${deviceId}:0`;
 
 describe(createEnsureOwnerHasAllocatedQuota.name, () => {
     it('dispatches owner fetched when storage already exists', async () => {

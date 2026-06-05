@@ -28,6 +28,7 @@
             "path": "../../packages/analytics-uploader"
         },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

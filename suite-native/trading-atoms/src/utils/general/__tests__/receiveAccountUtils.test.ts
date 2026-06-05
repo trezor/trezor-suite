@@ -1,4 +1,4 @@
-import type { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 
 import { getReceiveAccountFromAccountAndAddressString } from '../receiveAccountUtils';
@@ -8,51 +8,49 @@ describe('receiveAccountUtils', () => {
         let account: Account;
 
         beforeEach(() => {
-            account = getBtcAccount(
-                'btc-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
-                {
-                    addresses: {
-                        used: [
-                            {
-                                address: 'USED1',
-                                path: 'm/84/0/0',
-                                transfers: 0,
-                                balance: '0',
-                                sent: '0',
-                                received: '0',
-                            },
-                        ],
-                        change: [
-                            {
-                                address: 'CHANGE',
-                                path: 'm/84/0/3',
-                                transfers: 0,
-                                balance: '0',
-                                sent: '0',
-                                received: '0',
-                            },
-                        ],
-                        unused: [
-                            {
-                                address: 'UNUSED1',
-                                path: 'm/84/0/1',
-                                transfers: 0,
-                                balance: '0',
-                                sent: '0',
-                                received: '0',
-                            },
-                            {
-                                address: 'UNUSED2',
-                                path: 'm/84/0/2',
-                                transfers: 0,
-                                balance: '0',
-                                sent: '0',
-                                received: '0',
-                            },
-                        ],
-                    },
+            account = getBtcAccount({
+                descriptor: asAccountDescriptor('btcAccount2'),
+                addresses: {
+                    used: [
+                        {
+                            address: 'USED1',
+                            path: 'm/84/0/0',
+                            transfers: 0,
+                            balance: '0',
+                            sent: '0',
+                            received: '0',
+                        },
+                    ],
+                    change: [
+                        {
+                            address: 'CHANGE',
+                            path: 'm/84/0/3',
+                            transfers: 0,
+                            balance: '0',
+                            sent: '0',
+                            received: '0',
+                        },
+                    ],
+                    unused: [
+                        {
+                            address: 'UNUSED1',
+                            path: 'm/84/0/1',
+                            transfers: 0,
+                            balance: '0',
+                            sent: '0',
+                            received: '0',
+                        },
+                        {
+                            address: 'UNUSED2',
+                            path: 'm/84/0/2',
+                            transfers: 0,
+                            balance: '0',
+                            sent: '0',
+                            received: '0',
+                        },
+                    ],
                 },
-            );
+            });
         });
 
         it('should return account when no address is specified', () => {

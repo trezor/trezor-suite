@@ -4,7 +4,8 @@ import { type SellFiatTrade } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
@@ -81,7 +82,7 @@ describe('sendSellTransactionThunk', () => {
             date: new Date().toISOString(),
             key: getQuote().orderId,
             data: getQuote(),
-            sendAccountKey: 'xxx' as AccountKey, // Todo: create properly via `createAccountKey()`
+            sendAccountKey: mockAccountKey({ descriptor: 'xxx' }),
         };
         const mockNextStep = jest.fn();
         const formValues = {
@@ -273,7 +274,7 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(tradingState.sell.transactionId).toBe('orderId');
@@ -318,7 +319,7 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(tradingState.sell.transactionId).toBe('orderId');
@@ -378,7 +379,7 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(tradingState.sell.transactionId).toBe('orderId');
@@ -433,7 +434,7 @@ describe('sendSellTransactionThunk', () => {
                     ...responseData,
                 },
                 key: responseData.orderId,
-                sendAccountKey: 'btc-descriptor-btc',
+                sendAccountKey: accountBtc.key,
             },
         ]);
         expect(tradingState.sell.transactionId).toBe('orderId');

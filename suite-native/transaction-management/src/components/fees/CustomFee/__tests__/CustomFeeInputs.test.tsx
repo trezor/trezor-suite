@@ -9,7 +9,7 @@ import {
 } from '@suite-native/test-utils-store';
 
 import { type FeesFormType } from '../../../..';
-import { getWalletState } from '../../../../__fixtures__/walletState';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../../hooks';
 import { CustomFeeInputs, type CustomFeeInputsProps } from '../CustomFeeInputs';
 
@@ -33,9 +33,7 @@ describe('CustomFeeInputs', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = (
-        accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
-    ) => {
+    const renderUseFeesForm = (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({

@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
@@ -56,22 +56,17 @@ describe('useReceiveAccountChangeEffect', () => {
     });
 
     it('should set receiveAccount on change', () => {
+        const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
         renderUseReceiveAccountChangeEffect();
 
         setValue.mockClear();
         act(() => {
-            store.dispatch(
-                tradingExchangeActions.setReceiveAccountKey(
-                    'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                ),
-            );
+            store.dispatch(tradingExchangeActions.setReceiveAccountKey(btc1Account.key));
         });
 
         expect(setValue).toHaveBeenCalledTimes(1);
         expect(setValue).toHaveBeenCalledWith('receiveAccount', {
-            account: getBtcAccount(
-                'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-            ),
+            account: btc1Account,
             address: undefined,
         });
     });

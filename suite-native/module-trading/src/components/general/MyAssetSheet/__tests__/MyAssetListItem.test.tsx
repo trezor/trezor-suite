@@ -200,7 +200,7 @@ describe('MyAssetListItem', () => {
                     cryptoId: 'bitcoin',
                 }),
                 expect.objectContaining({
-                    key: 'btc-account-1',
+                    key: getBtcAccount().key,
                 }),
             );
         });

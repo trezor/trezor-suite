@@ -1,4 +1,5 @@
-import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 
@@ -62,7 +63,7 @@ describe(AccountListAddressItem.name, () => {
     it('should call onPress callback when pressed', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -86,7 +87,7 @@ describe(AccountListAddressItem.name, () => {
     it('should not display caret for address addresses', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -110,7 +111,7 @@ describe(AccountListAddressItem.name, () => {
     it('should display address', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -137,7 +138,7 @@ describe(AccountListAddressItem.name, () => {
     it('should display zero balance', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -160,7 +161,7 @@ describe(AccountListAddressItem.name, () => {
     it('should render nothing when no address is specified', () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
