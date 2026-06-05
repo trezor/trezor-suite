@@ -1,5 +1,5 @@
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
-import { type CallMethodKeys, type MethodPermission } from '@trezor/connect';
+import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 
 export type ManifestPartial = {
@@ -77,7 +77,7 @@ type ConnectPopupCallLoaded = {
     methodInfo: {
         methodTitle: string;
         confirmLabel?: string;
-        permissionTypes: MethodPermission[];
+        permissionTypes: PermissionRequest[];
         useUi: boolean;
     };
     source: ConnectCallSource;
@@ -144,6 +144,6 @@ export type ConnectPopupCallWithState<
 > = Extract<ConnectPopupCallLoaded, { state: CallState; method: Method }>;
 
 export type AppRememberedPermission = {
-    types: MethodPermission[];
+    allowedPermissions: PermissionRequest[];
     silentMode?: boolean;
 } & ConnectCallSource;
