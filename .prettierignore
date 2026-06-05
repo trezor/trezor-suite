@@ -52,7 +52,6 @@ __pycache__/
 # build outputs
 lib
 libDev
-libESM
 dist
 public
 coverage
