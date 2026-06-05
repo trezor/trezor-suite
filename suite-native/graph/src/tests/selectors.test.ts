@@ -148,7 +148,7 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
     it('should return portfolio graph account items when discovery is not running', () => {
         const account = mockWalletAccount({
             symbol: 'btc',
-            descriptor: asAccountDescriptor('descriptor-1'),
+            descriptor: asAccountDescriptor('descriptor1'),
         });
 
         mockSelectDeviceMainnetAccounts.mockReturnValue([account]);
@@ -158,7 +158,7 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
         expect(result).toEqual([
             {
                 symbol: 'btc',
-                descriptor: 'descriptor-1',
+                descriptor: 'descriptor1',
                 identity: undefined,
                 accountKey: account.key,
                 tokensFilter: [],
