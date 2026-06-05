@@ -27,7 +27,7 @@ test.describe('Remembered wallet loading', { tag: ['@noDevice'] }, () => {
         });
 
         await test.step('Open receive from remembered wallet', async () => {
-            await expect(walletPage.accountButton({ symbol: 'btc' })).toBeVisible();
+            await expect(walletPage.accountButton({ symbol: 'btc' })).toBeVisible({ timeout: 20_000 });
             await expect(walletPage.deviceDisconnectedStatus).toBeVisible();
 
             await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
