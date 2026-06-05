@@ -58,6 +58,12 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
 
     const apyValue = apy ?? <Translation id="earn.notAvailableShort" />;
     const displaySymbol = networkSymbol ? getNetworkDisplaySymbol(networkSymbol) : '';
+
+    // Staking with 5 Binaries earns almost nothing, so the heading urges migration. Staking with
+    // any other provider is fine, so it just promotes the new provider (matching desktop).
+    const titleTranslationId = isStakedWithFiveBinaries
+        ? 'earn.infoBanner.updateProviderTitle'
+        : 'earn.infoBanner.newProviderTitle';
     const descriptionTranslationId = isStakedWithFiveBinaries
         ? 'earn.infoBanner.providerReducingRewards'
         : 'earn.infoBanner.updateToNewProvider';
@@ -73,7 +79,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
 
                 <VStack spacing="sp2" flex={1}>
                     <Text variant="body-md">
-                        <Translation id="earn.infoBanner.updateProviderTitle" />
+                        <Translation id={titleTranslationId} values={{ apy: apyValue }} />
                     </Text>
                     <Text variant="body-sm" color="contentSecondary">
                         <Translation

@@ -2838,6 +2838,7 @@ export const messages = {
         adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
             updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
+            newProviderTitle: 'Earn ~{apy}% APY with our new provider',
             updateProviderButton: 'Update provider',
             providerReducingRewards:
                 "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",

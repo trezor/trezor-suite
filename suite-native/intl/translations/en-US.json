@@ -1428,6 +1428,7 @@
     "earn.trezorDesktop": "Trezor Suite for desktop or web.",
     "earn.adaStaysFullyAccessuble": "Your ADA stays fully accessible while earning rewards.",
     "earn.infoBanner.updateProviderTitle": "Save your ADA rewards by updating your staking provider",
+    "earn.infoBanner.newProviderTitle": "Earn ~{apy}% APY with our new provider",
     "earn.infoBanner.updateProviderButton": "Update provider",
     "earn.infoBanner.providerReducingRewards": "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
     "earn.infoBanner.updateToNewProvider": "Update to our new provider, Everstake, and earn ~{apy}% APY. Your {symbol} with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.",
