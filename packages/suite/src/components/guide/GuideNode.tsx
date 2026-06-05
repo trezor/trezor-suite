@@ -78,7 +78,7 @@ export const GuideNode = ({ node, description, itemVariant = 'cardList' }: Guide
     }
 
     if (node.type === 'category') {
-        const hasValidIcon = node.icon && node.icon in icons;
+        const hasValidIcon = typeof node.icon === 'string' && Object.hasOwn(icons, node.icon);
         const categoryIcon = hasValidIcon ? (
             <IconCircle name={node.icon as IconName} size={32} intent="neutral" />
         ) : (

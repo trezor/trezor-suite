@@ -30,7 +30,7 @@ test.describe('Suite Guide', { tag: ['@noDevice'] }, () => {
         const article = 'Install firmware';
         await guidePanel.openPanel();
         await guidePanel.lookupArticle(article);
-        await expect(guidePanel.articleHeader).toHaveText(article);
+        await expect(guidePanel.guideLabel).toHaveText(article);
         await guidePanel.closeGuide();
     });
 });
