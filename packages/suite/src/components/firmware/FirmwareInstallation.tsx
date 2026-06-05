@@ -5,7 +5,9 @@ import TrezorConnect from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
 import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
 
-import { FirmwareOffer, ReconnectDevicePrompt, RotatingPhrases } from 'src/components/firmware';
+import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
+import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
+import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 

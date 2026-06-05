@@ -14,7 +14,7 @@ import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FirmwareInstallationProgressCheck } from 'src/components/firmware';
+import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 

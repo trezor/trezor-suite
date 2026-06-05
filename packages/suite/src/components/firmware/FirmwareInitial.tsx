@@ -10,7 +10,7 @@ import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { FirmwareOffer } from 'src/components/firmware';
+import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 
 type GetDescriptionProps = {
     required: boolean;
