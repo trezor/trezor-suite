@@ -22,8 +22,6 @@ export type BottomSheetFlashListProps<TItem> = {
     flashListKey?: string;
 } & FlashListProps<TItem>;
 
-const DEFAULT_INSET_BOTTOM = 25;
-
 const bottomSheetStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillPage,
 
@@ -34,7 +32,7 @@ const bottomSheetStyle = prepareNativeStyle(utils => ({
 const sheetContentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
 }>((utils, { insetBottom }) => ({
-    paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
+    paddingBottom: insetBottom + utils.spacings.sp16,
     paddingHorizontal: utils.spacings.sp16,
 }));
 
@@ -57,7 +55,7 @@ export const BottomSheetFlashList = <TItem,>({
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
-    const insets = useSafeAreaInsets();
+    const { bottom: insetBottom } = useSafeAreaInsets();
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -68,8 +66,6 @@ export const BottomSheetFlashList = <TItem,>({
     const handleDismiss = useCallback(() => {
         onClose(false);
     }, [onClose]);
-
-    const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
 
     const maxHeight = Dimensions.get('window').height * 0.9;
     const minHeight = Math.max(Dimensions.get('window').height * 0.4, estimatedListHeight);
