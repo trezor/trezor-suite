@@ -23,6 +23,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
+import { GroupedPermissionsList } from '../components/GroupedPermissionsList';
 
 const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
     const dispatch = useDispatch();
@@ -66,6 +67,7 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                 <AccordionContent isOpened={isExpanded}>
                     <VStack spacing="sp16" paddingTop="sp16">
                         <CardDivider />
+                        <GroupedPermissionsList permissions={app.allowedPermissions} />
                         <Button onPress={handleDisconnect} intent="neutral" priority="secondary">
                             <Translation id="moduleConnectPopup.trezorConnect.forget" />
                         </Button>
