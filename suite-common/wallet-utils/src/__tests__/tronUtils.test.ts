@@ -33,6 +33,10 @@ const makeTronResources = (
     totalFreeBandwidth: 300,
     availableEnergy: 0,
     totalEnergy: 0,
+    totalEnergyLimit: 0,
+    totalEnergyWeight: 0,
+    totalBandwidthLimit: 0,
+    totalBandwidthWeight: 0,
     ...overrides,
 });
 
