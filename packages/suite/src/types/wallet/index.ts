@@ -17,6 +17,7 @@ import {
     type sendFormActions,
     type stablecoinYieldActions,
     type stakeActions,
+    type tronStakeActions,
 } from '@suite-common/wallet-core';
 
 import { type CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
@@ -77,6 +78,7 @@ type AccountSearchAction = ReturnType<
 type StablecoinYieldAction = ReturnType<
     (typeof stablecoinYieldActions)[keyof typeof stablecoinYieldActions]
 >;
+type TronStakeAction = ReturnType<(typeof tronStakeActions)[keyof typeof tronStakeActions]>;
 type ReceiveAction = ReturnType<(typeof receiveActions)[keyof typeof receiveActions]>;
 
 export type WalletAction =
@@ -100,4 +102,5 @@ export type WalletAction =
     | StakeAction
     | ConnectPopupAction
     | WalletSettingsAction
-    | StablecoinYieldAction;
+    | StablecoinYieldAction
+    | TronStakeAction;
