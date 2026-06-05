@@ -48,6 +48,10 @@ export const EarnStakingAccountRow = ({
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowMobile } = useLayoutSize();
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    // Promoted (best) pool APY, shown when suggesting a switch to a new provider.
+    const newProviderApy = useSelector(state =>
+        selectPoolStatsApy(state, { networkSymbol: account.symbol }),
+    );
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
@@ -251,7 +255,7 @@ export const EarnStakingAccountRow = ({
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
 
                     {stakingStatus === 'staking-outdated-provider' && (
-                        <EarnStakingOutdatedProvider apy={apy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} />
                     )}
 
                     {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') &&
@@ -405,7 +409,7 @@ export const EarnStakingAccountRow = ({
             {stakingStatus === 'staking-outdated-provider' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <EarnStakingOutdatedProvider apy={apy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} />
                     </Table.Cell>
                     <Table.Cell align="end">
                         <EarnStakingActionButtons {...actionButtonsProps} />

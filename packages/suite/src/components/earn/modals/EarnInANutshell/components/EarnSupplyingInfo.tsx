@@ -165,7 +165,7 @@ const CardanoSupplyingRows = ({ flow, apy }: EarnSupplyingRowsProps) => (
 export const EarnSupplyingInfo = ({ account, flow }: EarnSupplyingInfoProps) => {
     const validatorsQueue = useSelector(selectEthValidatorsQueue);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);

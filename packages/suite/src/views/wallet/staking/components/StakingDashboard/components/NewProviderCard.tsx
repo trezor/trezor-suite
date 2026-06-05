@@ -20,7 +20,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
 

@@ -88,7 +88,7 @@ export const HowStakeWorksScreen = () => {
     );
 
     const apy = useSelector((state: NativeStakingRootState) =>
-        selectApy(state, { accountKey: resolvedAccountKey, networkSymbol: symbol }),
+        selectApy(state, { networkSymbol: symbol }),
     );
 
     const { CryptoAmountFormatter } = useFormatters();

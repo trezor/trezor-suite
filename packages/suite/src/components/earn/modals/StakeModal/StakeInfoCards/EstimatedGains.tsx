@@ -33,7 +33,7 @@ export const EstimatedGains = () => {
         return '0';
     }, [hasInvalidFormState, value, account]);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const gains = [
         {
@@ -72,16 +72,16 @@ export const EstimatedGains = () => {
                 <Image image="GAINS_GRAPH" width="100%" />
             </Column>
             <Column gap={12} hasDivider>
-                {gains.map(({ label, value }, index) => (
+                {gains.map(({ label, value: gainValue }, index) => (
                     <Grid key={index} columns={3}>
                         <Paragraph intent="neutral" priority="secondary">
                             {label}
                         </Paragraph>
                         <Text intent="brand">
-                            <FormattedCryptoAmount value={value} symbol={account.symbol} />
+                            <FormattedCryptoAmount value={gainValue} symbol={account.symbol} />
                         </Text>
                         <Paragraph align="end">
-                            <BaseCurrencyValue amount={value} symbol={account.symbol} />
+                            <BaseCurrencyValue amount={gainValue} symbol={account.symbol} />
                         </Paragraph>
                     </Grid>
                 ))}

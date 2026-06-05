@@ -32,7 +32,7 @@ export const useEarnInANutshell = ({
     yieldContext,
 }: UseEarnInANutshellProps) => {
     const validatorsQueueData = useSelector(selectEthValidatorsQueue);
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
     const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
 
     const dispatch = useDispatch();
