@@ -1,7 +1,8 @@
 import { type RouterState, routerLocationChange } from '@suite/router';
 import { TorStatus, torActions } from '@suite/tor';
 import { accountsActions } from '@suite-common/wallet-core';
-import { type AccountKey, type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, type StaticSessionId } from '@trezor/connect';
 
@@ -26,12 +27,23 @@ const DEVICE_B = {
     state: { staticSessionId: '1stTestnet@device_B_id:0' },
 };
 
+const ACCOUNT_A_KEY = mockAccountKey({
+    descriptor: 'accountAKey',
+    symbol: 'btc',
+    deviceStaticSessionId: '1stTestnet@device_A_id:0',
+});
+const ACCOUNT_B_KEY = mockAccountKey({
+    descriptor: 'accountBKey',
+    symbol: 'btc',
+    deviceStaticSessionId: '1stTestnet@device_B_id:0',
+});
+
 const ACCOUNT_A = {
     accountType: 'coinjoin',
     backendType: 'coinjoin',
     deviceState: '1stTestnet@device_A_id:0' as StaticSessionId,
     history: {},
-    key: 'account-A-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: ACCOUNT_A_KEY,
     status: 'ready',
     symbol: 'btc',
     utxo: [{ address: 'address', amount: '10000', vout: 1 }],
@@ -44,11 +56,11 @@ const ACCOUNT_A = {
 const ACCOUNT_B = {
     ...ACCOUNT_A,
     deviceState: '1stTestnet@device_B_id:0' as StaticSessionId,
-    key: 'account-B-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: ACCOUNT_B_KEY,
 };
 
 const COINJOIN_ACCOUNT_A = {
-    key: 'account-A-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: ACCOUNT_A_KEY,
     session: { signedRounds: [] as string[] },
     setup: {
         targetAnonymity: 2,
@@ -56,7 +68,7 @@ const COINJOIN_ACCOUNT_A = {
 } as CoinjoinAccount;
 const COINJOIN_ACCOUNT_B = {
     ...COINJOIN_ACCOUNT_A,
-    key: 'account-B-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: ACCOUNT_B_KEY,
 };
 
 const DEFAULT_STATE = {
@@ -108,13 +120,13 @@ const PAUSE_ALL_INTERRUPTED_SESSIONS_ACTIONS = [
     {
         type: COINJOIN.SESSION_PAUSE,
         payload: {
-            accountKey: 'account-A-key',
+            accountKey: ACCOUNT_A_KEY,
         },
     },
     {
         type: COINJOIN.SESSION_PAUSE,
         payload: {
-            accountKey: 'account-B-key',
+            accountKey: ACCOUNT_B_KEY,
         },
     },
 ];
@@ -123,20 +135,20 @@ const RESTORE_SESSION_B_ACTIONS = [
     {
         type: COINJOIN.SESSION_STARTING,
         payload: {
-            accountKey: 'account-B-key',
+            accountKey: ACCOUNT_B_KEY,
             isStarting: true,
         },
     },
     {
         type: COINJOIN.SESSION_RESTORE,
         payload: {
-            accountKey: 'account-B-key',
+            accountKey: ACCOUNT_B_KEY,
         },
     },
     {
         type: COINJOIN.SESSION_STARTING,
         payload: {
-            accountKey: 'account-B-key',
+            accountKey: ACCOUNT_B_KEY,
             isStarting: false,
         },
     },
@@ -157,7 +169,7 @@ export const fixtures = [
             {
                 type: COINJOIN.ACCOUNT_UNREGISTER,
                 payload: {
-                    accountKey: 'account-A-key',
+                    accountKey: ACCOUNT_A_KEY,
                 },
             },
         ],
@@ -193,7 +205,7 @@ export const fixtures = [
             {
                 type: COINJOIN.SESSION_PAUSE,
                 payload: {
-                    accountKey: 'account-B-key',
+                    accountKey: ACCOUNT_B_KEY,
                 },
             },
         ],
@@ -231,7 +243,7 @@ export const fixtures = [
             {
                 type: COINJOIN.SESSION_PAUSE,
                 payload: {
-                    accountKey: 'account-B-key',
+                    accountKey: ACCOUNT_B_KEY,
                 },
             },
         ],

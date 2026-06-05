@@ -5,18 +5,37 @@ import {
     type RatesByKey,
     type WalletSettings,
 } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { createFeeLevels } from './feeLevels';
 
+const ETH_ACCOUNT_DESCRIPTOR = '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8';
+const BTC_ACCOUNT_DESCRIPTOR =
+    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy';
+const SOL_ACCOUNT_DESCRIPTOR = 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF';
+
+export const ETH_ACCOUNT_KEY = mockAccountKey({
+    symbol: 'eth',
+    descriptor: ETH_ACCOUNT_DESCRIPTOR,
+});
+export const BTC_ACCOUNT_KEY = mockAccountKey({
+    symbol: 'btc',
+    descriptor: BTC_ACCOUNT_DESCRIPTOR,
+});
+export const SOL_ACCOUNT_KEY = mockAccountKey({
+    symbol: 'sol',
+    descriptor: SOL_ACCOUNT_DESCRIPTOR,
+});
+
 export const getEthAccount = () =>
     ({
-        key: 'eth-account-1',
+        key: ETH_ACCOUNT_KEY,
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountLabel: 'Ethereum #1',
         index: 0,
         path: "m/44'/60'/0'/0/0",
-        descriptor: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+        descriptor: ETH_ACCOUNT_DESCRIPTOR,
         accountType: 'normal',
         symbol: 'eth',
         empty: false,
@@ -42,7 +61,7 @@ export const getEthAccount = () =>
             tokens: 7,
         },
         metadata: {
-            key: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+            key: ETH_ACCOUNT_DESCRIPTOR,
         },
         ts: 1750315198255,
         networkType: 'ethereum',
@@ -80,13 +99,12 @@ export const getEthAccount = () =>
 
 export const getBtcAccount = () =>
     ({
-        key: 'btc-account-1',
+        key: BTC_ACCOUNT_KEY,
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountLabel: 'Bitcoin #1',
         index: 0,
         path: "m/84'/0'/0'",
-        descriptor:
-            'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
+        descriptor: BTC_ACCOUNT_DESCRIPTOR,
         accountType: 'normal',
         symbol: 'btc',
         empty: false,
@@ -159,7 +177,7 @@ export const getBtcAccount = () =>
             addrTxCount: 551,
         },
         metadata: {
-            key: 'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
+            key: BTC_ACCOUNT_DESCRIPTOR,
         },
         ts: 1750315199039,
         networkType: 'bitcoin',
@@ -172,12 +190,12 @@ export const getBtcAccount = () =>
 
 export const getSolAccount = () =>
     ({
-        key: 'sol-account-1',
+        key: SOL_ACCOUNT_KEY,
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountLabel: 'Solana #1',
         index: 0,
         path: "m/44'/501'/0'/0'",
-        descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+        descriptor: SOL_ACCOUNT_DESCRIPTOR,
         accountType: 'normal',
         symbol: 'sol',
         empty: false,
@@ -193,7 +211,7 @@ export const getSolAccount = () =>
             unconfirmed: 0,
         },
         metadata: {
-            key: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+            key: SOL_ACCOUNT_DESCRIPTOR,
         },
         ts: 1750315199039,
         networkType: 'solana',

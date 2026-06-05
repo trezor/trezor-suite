@@ -8,8 +8,9 @@ import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import '@suite-common/test-utils/src/globalOverrides';
-import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/device-utils';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
@@ -388,26 +389,28 @@ describe('coinjoinClientActions', () => {
     // for coverage: edge cases, missing data etc...
     it('pauseCoinjoinSession without related account', () => {
         const store = initStore();
-        store.dispatch(pauseCoinjoinSession('account-Z' as AccountKey));
+        store.dispatch(pauseCoinjoinSession(mockAccountKey({ descriptor: 'accountZ' })));
     });
 
     it('stopCoinjoinSession without connected device', async () => {
+        const accountAKey = mockAccountKey({ descriptor: 'accountA' });
         const store = initStore({
-            accounts: [{ key: 'account-A', symbol: 'btc' }],
+            accounts: [{ key: accountAKey, symbol: 'btc' }],
         } as any);
 
         testMocks.setTrezorConnectFixtures([{ success: false }]);
 
         await store.dispatch(initCoinjoinService('btc'));
 
-        store.dispatch(stopCoinjoinSession('account-A' as AccountKey));
+        store.dispatch(stopCoinjoinSession(accountAKey));
     });
 
     it('stopCoinjoinSession with error from Trezor', async () => {
+        const accountAKey = mockAccountKey({ descriptor: 'accountA' });
         const store = initStore({
             accounts: [
                 {
-                    key: 'account-A',
+                    key: accountAKey,
                     symbol: 'btc',
                     deviceState: '1stTestnetAddress@device_id:0',
                 },
@@ -420,44 +423,50 @@ describe('coinjoinClientActions', () => {
 
         await store.dispatch(initCoinjoinService('btc'));
 
-        store.dispatch(stopCoinjoinSession('account-A' as AccountKey));
+        store.dispatch(stopCoinjoinSession(accountAKey));
 
         expect(TrezorConnect.cancelCoinjoinAuthorization).toHaveBeenCalledTimes(1);
     });
 
     it('stopCoinjoinSession but not cancel authorization', async () => {
+        const deviceBStaticSessionId: StaticSessionId = '1stTestnetAddress@device_b_id:0';
+        const accountAKey = mockAccountKey({ descriptor: 'accountA' });
+        const accountBKey = mockAccountKey({
+            descriptor: 'accountB',
+            deviceStaticSessionId: deviceBStaticSessionId,
+        });
         const store = initStore({
             device: {
                 devices: [
                     fixtures.DEVICE,
-                    { ...fixtures.DEVICE, state: { staticSessionId: 'device-state-2' } },
+                    { ...fixtures.DEVICE, state: { staticSessionId: deviceBStaticSessionId } },
                 ],
             },
             accounts: [
                 {
-                    key: 'account-A',
+                    key: accountAKey,
                     accountType: 'coinjoin',
                     symbol: 'btc',
                     deviceState: '1stTestnetAddress@device_id:0',
                 },
                 {
-                    key: 'account-B',
+                    key: accountBKey,
                     accountType: 'coinjoin',
                     symbol: 'btc',
-                    deviceState: 'device-state-2',
+                    deviceState: deviceBStaticSessionId,
                 },
             ],
             coinjoin: {
                 accounts: [
-                    { key: 'account-A', session: {} },
-                    { key: 'account-B', session: {} },
+                    { key: accountAKey, session: {} },
+                    { key: accountBKey, session: {} },
                 ],
             },
         } as any);
 
         await store.dispatch(initCoinjoinService('btc'));
 
-        store.dispatch(stopCoinjoinSession('account-A' as AccountKey));
+        store.dispatch(stopCoinjoinSession(accountAKey));
 
         expect(TrezorConnect.cancelCoinjoinAuthorization).toHaveBeenCalledTimes(0);
     });

@@ -86,7 +86,7 @@ const getCurrentAccountLabels: GetCurrentAccountLabels = () => createCurrentAcco
 const createSuiteSyncAddressLabel = (
     address: string,
     label: string,
-    accountDescriptor = asAccountDescriptor('descriptor-1'),
+    accountDescriptor = asAccountDescriptor('descriptor1'),
     networkSymbol: NetworkSymbol = 'btc',
 ): SuiteSyncAddress => ({
     id: createSuiteSyncAddressId(address, networkSymbol),
@@ -100,7 +100,7 @@ const createSuiteSyncOutputLabel = (
     txId: string,
     txTargetId: string,
     label: string,
-    accountDescriptor = asAccountDescriptor('descriptor-1'),
+    accountDescriptor = asAccountDescriptor('descriptor1'),
     networkSymbol: NetworkSymbol = 'btc',
 ): SuiteSyncOutput => {
     const targetId = asTxTargetId(txTargetId);
@@ -174,7 +174,7 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
         const migrateLegacyLabelsToSuiteSync = createMigrate({
             getAccountsByDeviceState: () => [
                 createAccount({
-                    descriptor: 'descriptor-1',
+                    descriptor: 'descriptor1',
                     symbol: 'btc',
                     deviceState: 'device@wallet:1',
                 }),
@@ -205,7 +205,7 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
         const migrateLegacyLabelsToSuiteSync = createMigrate({
             getAccountsByDeviceState: () => [
                 createAccount({
-                    descriptor: 'descriptor-1',
+                    descriptor: 'descriptor1',
                     symbol: 'btc',
                     deviceState: 'device@wallet:1',
                 }),

@@ -14,7 +14,7 @@ import {
 } from '@suite-native/test-utils-store';
 
 import { createFeeLevel, createFeeLevels } from '../../../../__fixtures__/feeLevels';
-import { getWalletState } from '../../../../__fixtures__/walletState';
+import { ETH_ACCOUNT_KEY, getWalletState } from '../../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../../hooks/fees/useFeesForm';
 import { FeeOptionsList, type FeeOptionsListProps } from '../FeeOptionsList';
 
@@ -73,7 +73,7 @@ describe('FeeOptionsList', () => {
 
     const renderUseFeesForm = (
         store: ReturnType<typeof createFeeOptionsStore>,
-        accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
+        accountKey: AccountKey = ETH_ACCOUNT_KEY,
         defaultFeePerUnit?: string,
     ) => {
         const { result } = renderHookWithStoreProvider(

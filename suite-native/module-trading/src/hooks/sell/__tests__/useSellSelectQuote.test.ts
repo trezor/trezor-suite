@@ -1,5 +1,5 @@
 import { tradingSellActions } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
@@ -53,7 +53,7 @@ describe('useSellSelectQuote', () => {
             act(() => {
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
-                        'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
                     ),
                 );
                 sellForm.setValue('quote', banxaCreditCardSellQuote);
@@ -73,7 +73,7 @@ describe('useSellSelectQuote', () => {
                 sellForm.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
-                        'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
                     ),
                 );
             });

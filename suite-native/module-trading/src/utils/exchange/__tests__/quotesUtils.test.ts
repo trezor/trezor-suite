@@ -87,7 +87,7 @@ describe('quotesUtils', () => {
                 sendCryptoSelect: { id: 'ethereum' as CryptoId },
                 receiveCryptoSelect: { id: 'bitcoin' as CryptoId },
                 outputs: [{ amount: '1' }],
-                fromAddress: 'eth1-normal',
+                fromAddress: 'eth1normal',
             } satisfies MinimalExchangeFormProps);
         });
 

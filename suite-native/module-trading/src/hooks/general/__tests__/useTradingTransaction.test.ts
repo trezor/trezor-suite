@@ -1,4 +1,4 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type TestStore, act } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
@@ -60,22 +60,18 @@ jest.mock('@suite-common/wallet-core', () => ({
     }),
 }));
 
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1') });
+const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2') });
+
 describe('useTradingTransaction', () => {
-    const getMockAccounts = () => [
-        getBtcAccount(
-            'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
-        ),
-        getBtcAccount(
-            'btc2' as AccountKey, // Todo: create properly via `createAccountKey()`
-        ),
-    ];
+    const getMockAccounts = () => [btc1Account, btc2Account];
 
     const getInitializedStore = () => {
         const tradingState = getInitializedTradingStateWithQuotes();
 
         // Add the required account keys to the exchange state
-        tradingState.exchange.tradingAccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
-        tradingState.exchange.receiveAccountKey = 'btc2' as AccountKey; // Todo: create properly via `createAccountKey()`
+        tradingState.exchange.tradingAccountKey = btc1Account.key;
+        tradingState.exchange.receiveAccountKey = btc2Account.key;
         // Set a selected quote so the hook can access selectedQuote.send
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
@@ -159,7 +155,7 @@ describe('useTradingTransaction', () => {
                 payload: {
                     tradeType: 'exchange',
                     account: expect.objectContaining({
-                        key: 'btc1',
+                        key: btc1Account.key,
                     }),
                     network: expect.any(Object),
                     feeInfo: mockNetworkFeeInfo,
@@ -198,7 +194,7 @@ describe('useTradingTransaction', () => {
                 payload: {
                     tradeType: 'exchange',
                     account: expect.objectContaining({
-                        key: 'btc1',
+                        key: btc1Account.key,
                     }),
                     network: expect.any(Object),
                     feeInfo: mockNetworkFeeInfo,
@@ -259,7 +255,7 @@ describe('useTradingTransaction', () => {
                 payload: {
                     tradeType: 'exchange',
                     account: expect.objectContaining({
-                        key: 'btc1',
+                        key: btc1Account.key,
                     }),
                     network: expect.any(Object),
                     feeInfo: mockNetworkFeeInfo,
@@ -314,7 +310,7 @@ describe('useTradingTransaction', () => {
                 payload: {
                     tradeType: 'exchange',
                     account: expect.objectContaining({
-                        key: 'btc1',
+                        key: btc1Account.key,
                     }),
                     network: expect.any(Object),
                     feeInfo: mockNetworkFeeInfo,
@@ -345,7 +341,7 @@ describe('useTradingTransaction', () => {
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: 'sendTransactionThunkMock',
                 payload: {
-                    account: expect.objectContaining({ key: 'btc1' }),
+                    account: expect.objectContaining({ key: btc1Account.key }),
                     trade: expect.any(Object),
                     returnUrl: '',
                     setMaxOutputId: undefined,

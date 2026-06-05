@@ -1,11 +1,13 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { type UseFeesFormProps, useFeesForm } from '../useFeesForm';
 
+const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
+
 describe('useFeesForm', () => {
     const mockProps: UseFeesFormProps = {
-        accountKey: 'eth-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+        accountKey: ETH_ACCOUNT_KEY,
         defaultFeeLevel: 'normal',
         defaultFeePerUnit: '20000000000', // 20 gwei
     };
@@ -53,7 +55,7 @@ describe('useFeesForm', () => {
                         {
                             symbol: 'eth',
                             networkType: 'ethereum',
-                            key: 'eth-1',
+                            key: ETH_ACCOUNT_KEY,
                             path: "m/44'/60'/0'/0/0",
                             balance: '1000000000000000000',
                             availableBalance: '1000000000000000000',
@@ -119,7 +121,7 @@ describe('useFeesForm', () => {
                         {
                             symbol: 'eth',
                             networkType: 'ethereum',
-                            key: 'eth-1',
+                            key: ETH_ACCOUNT_KEY,
                             path: "m/44'/60'/0'/0/0",
                             balance: '1000000000000000000',
                             availableBalance: '1000000000000000000',
@@ -139,7 +141,7 @@ describe('useFeesForm', () => {
 
     it('should initialize with custom default values', () => {
         const customProps: UseFeesFormProps = {
-            accountKey: 'eth-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            accountKey: ETH_ACCOUNT_KEY,
             defaultFeeLevel: 'high',
             defaultFeePerUnit: '15000000000',
         };

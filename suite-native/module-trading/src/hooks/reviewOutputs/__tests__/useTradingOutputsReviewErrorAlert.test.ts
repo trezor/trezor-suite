@@ -1,4 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type TestStore, act } from '@suite-native/test-utils-store';
 
@@ -33,7 +34,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
         const { result } = renderUseTradingOutputsReviewErrorAlert(
-            'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
         );
 
         act(() => {
@@ -58,7 +59,10 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
         const { result } = renderUseTradingOutputsReviewErrorAlert(
-            'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            mockAccountKey({
+                symbol: 'sol',
+                descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+            }),
         );
 
         act(() => {

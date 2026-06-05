@@ -3,6 +3,7 @@ import React from 'react';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -40,7 +41,7 @@ describe('ProviderReceiveAddress', () => {
     const renderProviderReceiveAddress = (
         trade: ExchangeTrade | SellFiatTrade,
         tradeType: 'exchange' | 'sell' = 'exchange',
-        accountKey: AccountKey = 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+        accountKey: AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
     ) => {
         const walletState = getWalletState({ tradeType });
 
@@ -85,7 +86,10 @@ describe('ProviderReceiveAddress', () => {
     it('should display placeholder provider label and address when exchange provider info is missing', () => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         walletState.trading.exchange.exchangeInfo!.providerInfos = {};
-        walletState.trading.exchange.tradingAccountKey = 'btc-account-1' as AccountKey;
+        walletState.trading.exchange.tradingAccountKey = mockAccountKey({
+            symbol: 'btc',
+            descriptor: 'btc1normal',
+        });
 
         const placeholder = getTranslation(
             'moduleTrading.tradingExchangePreviewScreen.providerNamePlaceholder',
@@ -103,7 +107,10 @@ describe('ProviderReceiveAddress', () => {
     it('should display placeholder provider label and destination address when sell provider info is missing', () => {
         const walletState = getWalletState({ tradeType: 'sell' });
         walletState.trading.sell.sellInfo!.providerInfos = {};
-        walletState.trading.sell.tradingAccountKey = 'btc-account-1' as AccountKey;
+        walletState.trading.sell.tradingAccountKey = mockAccountKey({
+            symbol: 'btc',
+            descriptor: 'btc1normal',
+        });
 
         const placeholder = getTranslation(
             'moduleTrading.tradingExchangePreviewScreen.providerNamePlaceholder',
@@ -148,7 +155,7 @@ describe('ProviderReceiveAddress', () => {
         const { getByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
-            'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' }),
         );
 
         // For non-Solana addresses, the address should be displayed with chunking
@@ -159,7 +166,7 @@ describe('ProviderReceiveAddress', () => {
         const { getByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
-            'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
         );
 
         // For non-Solana addresses, the address should be displayed with chunking
@@ -170,7 +177,7 @@ describe('ProviderReceiveAddress', () => {
         const { queryByText } = renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
-            'unknown-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            mockAccountKey({ descriptor: 'unknownAccount1' }),
         );
 
         // Should not render anything when network symbol is undefined

@@ -20,6 +20,7 @@
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {

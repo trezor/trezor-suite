@@ -7,12 +7,13 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,
-    type AccountKey,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 import { signStakeTransactionNativeThunk } from '../stakeNativeThunks';
 
@@ -82,9 +83,17 @@ jest.mock('@suite-native/device-mutex', () => ({
     }),
 }));
 
-const STATIC_SESSION_ID = '1stTestnetAddress@device_id:0';
-const ETH_ACCOUNT_KEY = 'eth1' as AccountKey;
-const SOL_ACCOUNT_KEY = 'sol1' as AccountKey;
+const STATIC_SESSION_ID: StaticSessionId = '1stTestnetAddress@device_id:0';
+const ETH_ACCOUNT_KEY = mockAccountKey({
+    symbol: 'eth',
+    descriptor: 'eth1',
+    deviceStaticSessionId: STATIC_SESSION_ID,
+});
+const SOL_ACCOUNT_KEY = mockAccountKey({
+    symbol: 'sol',
+    descriptor: 'sol1',
+    deviceStaticSessionId: STATIC_SESSION_ID,
+});
 const POOL_ADDRESS = '0xD523794C879D9eC028960a231F866758e405bE34';
 
 const ethAccount: Account = {
@@ -303,16 +312,17 @@ describe('signStakeTransactionNativeThunk', () => {
 
     it('rejects for unsupported networkType (cardano)', async () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const ada1Key = mockAccountKey({ symbol: 'ada', descriptor: 'ada1' });
         const cardanoAccount = {
             ...solAccount,
             symbol: 'ada',
             networkType: 'cardano',
-            key: 'ada1' as AccountKey,
+            key: ada1Key,
         } as unknown as Account;
         const store = buildStore({ accounts: [cardanoAccount] });
 
         const result = await dispatchDispatcher(store, {
-            accountKey: 'ada1' as AccountKey,
+            accountKey: ada1Key,
             stakeType: 'stake',
             precomposedTransaction: buildPrecomposedTransaction(),
         });

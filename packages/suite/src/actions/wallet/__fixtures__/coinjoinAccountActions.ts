@@ -1,17 +1,19 @@
 import { goto } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { type Account } from 'src/types/wallet';
+
+const ACCOUNT_KEY_12345 = mockAccountKey({ descriptor: '12345' });
 
 const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',
     backendType: 'coinjoin',
     symbol: 'btc',
     deviceState: '1stTestnetAddress@device_id:0',
-    key: '12345' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: ACCOUNT_KEY_12345,
 };
 
 const CJ_ACCOUNT = {
@@ -222,7 +224,7 @@ export const stopCoinjoinSession = [
                 accounts: [{ key: ACCOUNT.key }],
             },
         },
-        param: '000' as AccountKey,
+        param: mockAccountKey({ descriptor: '000' }),
         result: {
             actions: [],
         },
@@ -236,7 +238,7 @@ export const stopCoinjoinSession = [
                 accounts: [{ key: ACCOUNT.key }],
             },
         },
-        param: '12345' as AccountKey, // Todo: create properly via `createAccountKey()`
+        param: ACCOUNT_KEY_12345,
         result: {
             actions: ['@coinjoin/account-unregister'],
         },
@@ -285,7 +287,7 @@ export const restoreCoinjoinSession = [
                 accounts: [{ ...CJ_ACCOUNT, session: { ...SESSION, paused: true } }],
             },
         },
-        param: '12345' as AccountKey, // Todo: create properly via `createAccountKey()`
+        param: ACCOUNT_KEY_12345,
         result: {
             actions: [
                 COINJOIN.SESSION_STARTING,

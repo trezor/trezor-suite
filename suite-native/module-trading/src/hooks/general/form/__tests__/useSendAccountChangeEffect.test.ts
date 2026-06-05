@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
@@ -17,8 +17,8 @@ import { selectExchangeSelectedSendAccount, tradingSlice } from '@suite-native/t
 
 import { useSendAccountChangeEffect } from '../useSendAccountChangeEffect';
 
-const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc2AccountKey = 'btc-account-2' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
+const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2legacy') });
 
 describe('useSendAccountChangeEffect', () => {
     let store: TestStore;
@@ -66,17 +66,17 @@ describe('useSendAccountChangeEffect', () => {
 
         setValue.mockClear();
         act(() => {
-            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
+            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
         });
 
         expect(setValue).toHaveBeenCalledTimes(1);
-        expect(setValue).toHaveBeenCalledWith('sendAccount', getBtcAccount(btc1AccountKey));
+        expect(setValue).toHaveBeenCalledWith('sendAccount', btc1Account);
     });
 
     it('should set sendAsset to undefined when no trading account is selected', () => {
         renderUseSendAccountChangeEffect();
         act(() => {
-            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
+            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
         });
 
         setValue.mockClear();
@@ -92,15 +92,15 @@ describe('useSendAccountChangeEffect', () => {
     it('should not change sendAsset when trading account key changed', () => {
         renderUseSendAccountChangeEffect();
         act(() => {
-            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
+            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
         });
 
         setValue.mockClear();
         act(() => {
-            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2AccountKey));
+            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2Account.key));
         });
 
         expect(setValue).toHaveBeenCalledTimes(1);
-        expect(setValue).toHaveBeenCalledWith('sendAccount', getBtcAccount(btc2AccountKey));
+        expect(setValue).toHaveBeenCalledWith('sendAccount', btc2Account);
     });
 });

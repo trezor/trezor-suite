@@ -13,6 +13,7 @@ import {
 import { asWalletDescriptor } from '@suite-common/wallet';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import {
@@ -20,13 +21,13 @@ import {
     createDangerouslyWipeAllLabelsFromWallet,
 } from '../createDangerouslyWipeAllLabelsFromWallet';
 
-const walletDescriptor = asWalletDescriptor('wallet-1');
-const deviceStaticSessionId = 'wallet-1@device:0';
+const walletDescriptor = asWalletDescriptor('wallet1');
+const deviceStaticSessionId: StaticSessionId = 'wallet1@device:0';
 
 const account = mockWalletAccount({
     symbol: 'btc',
     deviceState: deviceStaticSessionId,
-    descriptor: asAccountDescriptor('account-1'),
+    descriptor: asAccountDescriptor('account1'),
 });
 
 const createDeps = ({
@@ -40,8 +41,8 @@ const createDeps = ({
     UpdateOutputLabelDep): DangerouslyWipeAllLabelsFromWalletDeps => {
     const otherWalletAccount = mockWalletAccount({
         symbol: 'btc',
-        deviceState: 'wallet-2@device:0',
-        descriptor: asAccountDescriptor('account-2'),
+        deviceState: 'wallet2@device:0',
+        descriptor: asAccountDescriptor('account2'),
     });
 
     return createMockDeps<DangerouslyWipeAllLabelsFromWalletDeps>({

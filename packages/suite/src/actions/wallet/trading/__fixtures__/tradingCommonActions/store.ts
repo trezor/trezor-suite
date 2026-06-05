@@ -1,15 +1,20 @@
-import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { type Account } from 'src/types/wallet';
 
 export const ACCOUNT: Account = {
     networkType: 'bitcoin',
     symbol: 'btc' as Account['symbol'],
-    descriptor: asAccountDescriptor('btc-descriptor'),
+    descriptor: asAccountDescriptor('btcDescriptor'),
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
-    key: 'descriptor-btc-1stTestnetAddress@device_id:0' as AccountKey, // Todo: create properly via `createAccountKey()`
+    key: mockAccountKey({
+        descriptor: 'btcDescriptor',
+        symbol: 'btc',
+        deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+    }),
     accountType: 'normal',
     empty: true,
     visible: true,

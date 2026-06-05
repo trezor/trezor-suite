@@ -190,7 +190,7 @@ describe('useReceiveAccountsListData', () => {
                         {
                             symbol: 'eth',
                             accountLabel: 'ETH Account #1',
-                            deviceState: 'staticSessionId',
+                            deviceState: 'testWallet@testDevice:0',
                             addresses: undefined,
                             key: eth1NormalAccount.key,
                             visible: false,

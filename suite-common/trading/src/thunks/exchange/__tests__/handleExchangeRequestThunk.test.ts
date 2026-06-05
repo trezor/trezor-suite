@@ -5,6 +5,7 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { getNetwork } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { cloneObject, mergeDeepObject } from '@trezor/utils';
 
 import { exchangeThunks } from '../';
@@ -105,7 +106,7 @@ describe('handleExchangeRequestThunk', () => {
                 displaySymbol: 'BTC',
                 networkName: 'Bitcoin',
                 networkSymbol: 'btc',
-                accountKey: 'descriptor-btc-123' as AccountKey, // Todo: create properly via `createAccountKey()`,
+                accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: 'btc' }),
             } satisfies TradingAssetSellOption,
             receiveCryptoSelect: {
                 id: 'ethereum' as CryptoId,

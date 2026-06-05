@@ -1,4 +1,5 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { RootStackRoutes } from '@suite-native/navigation';
@@ -38,16 +39,16 @@ jest.mock('@suite-common/trading', () => ({
     },
 }));
 
-const btc1AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
-const btc2AccountKey = 'btc2' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1') });
+const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2') });
 
 describe('useExchangeFlow', () => {
-    const getMockAccounts = () => [getBtcAccount(btc1AccountKey), getBtcAccount(btc2AccountKey)];
+    const getMockAccounts = () => [btc1Account, btc2Account];
 
     const getInitializedStore = ({ withDevice = false }: { withDevice?: boolean } = {}) => {
         const tradingState = getInitializedTradingStateWithQuotes();
-        tradingState.exchange.tradingAccountKey = btc1AccountKey;
-        tradingState.exchange.receiveAccountKey = btc2AccountKey;
+        tradingState.exchange.tradingAccountKey = btc1Account.key;
+        tradingState.exchange.receiveAccountKey = btc2Account.key;
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
         return createTradingTestStore({
@@ -139,7 +140,7 @@ describe('useExchangeFlow', () => {
                     returnUrl: expect.any(String),
                     receiveAddress: 'test-address',
                     account: expect.objectContaining({
-                        key: 'btc1',
+                        key: btc1Account.key,
                         symbol: 'btc',
                     }),
                     extraField: undefined,
@@ -204,8 +205,11 @@ describe('useExchangeFlow', () => {
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
             const tradingState = getInitializedTradingStateWithQuotes();
-            tradingState.exchange.tradingAccountKey = 'invalid-account-key' as AccountKey; // Todo: create properly via `createAccountKey()`
-            tradingState.exchange.receiveAccountKey = btc2AccountKey;
+            tradingState.exchange.tradingAccountKey = mockAccountKey({
+                symbol: 'btc',
+                descriptor: 'unknownAccount',
+            });
+            tradingState.exchange.receiveAccountKey = btc2Account.key;
             tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
             const store = createTradingTestStore({
@@ -261,7 +265,7 @@ describe('useExchangeFlow', () => {
                     type: 'signDataAndConfirmThunkMock',
                     payload: {
                         account: expect.objectContaining({
-                            key: 'btc1',
+                            key: btc1Account.key,
                             symbol: 'btc',
                         }),
                         device: expect.objectContaining({
@@ -365,8 +369,8 @@ describe('useExchangeFlow', () => {
     describe('navigation', () => {
         it('should navigate to TradingConfirming with flowType approve when quoteStatus is APPROVAL_PENDING', () => {
             const tradingState = getInitializedTradingStateWithQuotes();
-            tradingState.exchange.tradingAccountKey = btc1AccountKey;
-            tradingState.exchange.receiveAccountKey = btc2AccountKey;
+            tradingState.exchange.tradingAccountKey = btc1Account.key;
+            tradingState.exchange.receiveAccountKey = btc2Account.key;
             tradingState.exchange.selectedQuote = {
                 ...tradingState.exchange.quotes[0],
                 status: 'APPROVAL_PENDING',
@@ -391,8 +395,8 @@ describe('useExchangeFlow', () => {
 
         it('should navigate with flowType revoke when quoteStatus is APPROVAL_PENDING and flowType is revoke', () => {
             const tradingState = getInitializedTradingStateWithQuotes();
-            tradingState.exchange.tradingAccountKey = btc1AccountKey;
-            tradingState.exchange.receiveAccountKey = btc2AccountKey;
+            tradingState.exchange.tradingAccountKey = btc1Account.key;
+            tradingState.exchange.receiveAccountKey = btc2Account.key;
             tradingState.exchange.selectedQuote = {
                 ...tradingState.exchange.quotes[0],
                 status: 'APPROVAL_PENDING',
@@ -417,8 +421,8 @@ describe('useExchangeFlow', () => {
 
         it('should navigate with flowType revoke-and-approve when quoteStatus is APPROVAL_PENDING and flowType is revoke-and-approve', () => {
             const tradingState = getInitializedTradingStateWithQuotes();
-            tradingState.exchange.tradingAccountKey = btc1AccountKey;
-            tradingState.exchange.receiveAccountKey = btc2AccountKey;
+            tradingState.exchange.tradingAccountKey = btc1Account.key;
+            tradingState.exchange.receiveAccountKey = btc2Account.key;
             tradingState.exchange.selectedQuote = {
                 ...tradingState.exchange.quotes[0],
                 status: 'APPROVAL_PENDING',

@@ -38,7 +38,7 @@ export const onCoinjoinRoundChanged = [
         description: 'Phase 1. (critical) TrezorConnect.setBusy not called. Device not found',
         connect: undefined,
         state: {
-            accounts: [{ key: 'a', deviceState: 'device-state-2' }],
+            accounts: [{ key: 'a', deviceState: '2ndTestnetAddress@device_id:0' }],
             selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [{ key: 'a', session: SESSION }],
@@ -61,7 +61,7 @@ export const onCoinjoinRoundChanged = [
         state: {
             accounts: [
                 { key: 'a', deviceState: '1stTestnetAddress@device_id:0' },
-                { key: 'b', deviceState: 'device-state-2' },
+                { key: 'b', deviceState: '2ndTestnetAddress@device_id:0' },
             ],
             selectedAccount: { key: 'a' },
             coinjoin: {
@@ -102,12 +102,16 @@ export const onCoinjoinRoundChanged = [
             device: {
                 devices: [
                     DEVICE,
-                    { ...DEVICE, state: { staticSessionId: 'device-state-2' }, id: '2' },
+                    {
+                        ...DEVICE,
+                        state: { staticSessionId: '2ndTestnetAddress@device_id:0' },
+                        id: '2',
+                    },
                 ],
             },
             accounts: [
                 { key: 'a', deviceState: '1stTestnetAddress@device_id:0' },
-                { key: 'b', deviceState: 'device-state-2' },
+                { key: 'b', deviceState: '2ndTestnetAddress@device_id:0' },
             ],
             selectedAccount: { key: 'a' },
             coinjoin: {
@@ -348,8 +352,12 @@ export const getOwnershipProof = [
             device: {
                 devices: [
                     DEVICE,
-                    { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
-                    { ...DEVICE, state: { staticSessionId: 'device-2-state' }, id: '2' },
+                    { ...DEVICE, state: { staticSessionId: '2ndTestnetAddress@device_id:0' } },
+                    {
+                        ...DEVICE,
+                        state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
+                        id: '2',
+                    },
                 ],
             },
             accounts: [
@@ -358,8 +366,8 @@ export const getOwnershipProof = [
                     deviceState: '1stTestnetAddress@device_id:0',
                     utxo: [],
                 },
-                { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
-                { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
+                { key: 'account-B', deviceState: '2ndTestnetAddress@device_id:0', utxo: [] },
+                { key: 'account-C', deviceState: '1stTestnetAddress@device_2_id:0', utxo: [] },
             ],
             coinjoin: {
                 clients: {},
@@ -419,7 +427,10 @@ export const getOwnershipProof = [
         ],
         state: {
             device: {
-                devices: [DEVICE, { ...DEVICE, state: { staticSessionId: 'device-state-2' } }],
+                devices: [
+                    DEVICE,
+                    { ...DEVICE, state: { staticSessionId: '2ndTestnetAddress@device_id:0' } },
+                ],
             },
             accounts: [
                 {
@@ -427,7 +438,7 @@ export const getOwnershipProof = [
                     deviceState: '1stTestnetAddress@device_id:0',
                     utxo: [],
                 },
-                { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
+                { key: 'account-B', deviceState: '2ndTestnetAddress@device_id:0', utxo: [] },
             ],
             coinjoin: {
                 clients: {},
@@ -468,14 +479,18 @@ export const getOwnershipProof = [
             locks: { device: 1 },
             devices: [
                 DEVICE,
-                { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
+                { ...DEVICE, state: { staticSessionId: '2ndTestnetAddress@device_id:0' } },
                 {
                     ...DEVICE,
-                    state: { staticSessionId: 'device-2-state' },
+                    state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
                     id: '2',
                     connected: false,
                 },
-                { ...DEVICE, state: { staticSessionId: 'device-3-state' }, id: '3' },
+                {
+                    ...DEVICE,
+                    state: { staticSessionId: '1stTestnetAddress@device_3_id:0' },
+                    id: '3',
+                },
             ],
             accounts: [
                 {
@@ -483,8 +498,8 @@ export const getOwnershipProof = [
                     deviceState: '1stTestnetAddress@device_id:0',
                     utxo: [],
                 },
-                { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
-                { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
+                { key: 'account-B', deviceState: '2ndTestnetAddress@device_id:0', utxo: [] },
+                { key: 'account-C', deviceState: '1stTestnetAddress@device_2_id:0', utxo: [] },
             ],
             coinjoin: {
                 clients: {},
@@ -529,21 +544,21 @@ export const signCoinjoinTx = [
     {
         description: 'signCoinjoinTx success with 3 accounts, 2 passphrases, 2 physical devices',
         connect: [
-            // connect responses order, first physical device id: 2, device-2-state
+            // connect responses order, first physical device id: 2, 1stTestnetAddress@device_2_id:0
             {
                 success: true,
                 payload: {
                     signatures: ['', '', '05'], // account-A
                 },
             },
-            // then physical device id: 1, device-state
+            // then physical device id: 1, 1stTestnetAddress@device_id:0
             {
                 success: true,
                 payload: {
                     signatures: ['01', '', ''], // account-B
                 },
             },
-            // then physical device id: 1, device-state-2
+            // then physical device id: 1, 2ndTestnetAddress@device_id:0
             {
                 success: true,
                 payload: {
@@ -555,8 +570,12 @@ export const signCoinjoinTx = [
             device: {
                 devices: [
                     DEVICE,
-                    { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
-                    { ...DEVICE, state: { staticSessionId: 'device-2-state' }, id: '2' },
+                    { ...DEVICE, state: { staticSessionId: '2ndTestnetAddress@device_id:0' } },
+                    {
+                        ...DEVICE,
+                        state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
+                        id: '2',
+                    },
                 ],
             },
             accounts: [
@@ -575,7 +594,7 @@ export const signCoinjoinTx = [
                 },
                 {
                     key: 'account-B',
-                    deviceState: 'device-state-2',
+                    deviceState: '2ndTestnetAddress@device_id:0',
                     utxo: [
                         {
                             txid: '123400000000000000000000000000000000000000000000000000000000dbca',
@@ -588,7 +607,7 @@ export const signCoinjoinTx = [
                 },
                 {
                     key: 'account-C',
-                    deviceState: 'device-2-state',
+                    deviceState: '1stTestnetAddress@device_2_id:0',
                     utxo: [
                         {
                             txid: '123400000000000000000000000000000000000000000000000000000000dbca',
@@ -863,10 +882,10 @@ export const signCoinjoinTx = [
             device: {
                 devices: [
                     DEVICE,
-                    { ...DEVICE, state: { staticSessionId: 'device-state-2' } },
+                    { ...DEVICE, state: { staticSessionId: '2ndTestnetAddress@device_id:0' } },
                     {
                         ...DEVICE,
-                        state: { staticSessionId: 'device-2-state' },
+                        state: { staticSessionId: '1stTestnetAddress@device_2_id:0' },
                         id: '2',
                         connected: false,
                     },
@@ -888,7 +907,7 @@ export const signCoinjoinTx = [
                 },
                 {
                     key: 'account-B',
-                    deviceState: 'device-state-2',
+                    deviceState: '2ndTestnetAddress@device_id:0',
                     utxo: [
                         {
                             txid: '123400000000000000000000000000000000000000000000000000000000dbca',
@@ -901,7 +920,7 @@ export const signCoinjoinTx = [
                 },
                 {
                     key: 'account-C',
-                    deviceState: 'device-2-state',
+                    deviceState: '1stTestnetAddress@device_2_id:0',
                     utxo: [
                         {
                             txid: '123400000000000000000000000000000000000000000000000000000000dbca',
@@ -977,7 +996,7 @@ export const signCoinjoinTx = [
             trezorConnectCalledWith: [
                 {
                     device: {
-                        state: { staticSessionId: 'device-state-2' },
+                        state: { staticSessionId: '2ndTestnetAddress@device_id:0' },
                     },
                     inputs: [
                         { script_type: 'EXTERNAL' }, // account-A

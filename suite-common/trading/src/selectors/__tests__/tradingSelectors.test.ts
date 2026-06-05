@@ -9,6 +9,7 @@ import {
 } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
@@ -339,7 +340,8 @@ describe('tradingSelectors', () => {
             device: {
                 selectedDevice: {
                     state: {
-                        staticSessionId: 'staticSessionId' as StaticSessionId,
+                        staticSessionId:
+                            'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0' as StaticSessionId,
                     },
                 },
             },
@@ -386,7 +388,7 @@ describe('tradingSelectors', () => {
                 'base--0x0000000000000000000000000000000000000000',
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ]);
-            expectedState.tradingAccountKey = 'eth-descriptor-eth';
+            expectedState.tradingAccountKey = accountEth.key;
 
             expect(selectTradingExchange(state)).toEqual(expectedState);
         });
@@ -545,7 +547,7 @@ describe('tradingSelectors', () => {
                 'base--0x0000000000000000000000000000000000000000',
                 'ethereum--0xWithoutObjectInCoinsInfo',
             ]);
-            trading.exchange.tradingAccountKey = 'eth-descriptor-eth';
+            trading.exchange.tradingAccountKey = accountEth.key;
 
             expect(selectTrading(state)).toEqual(trading);
         });
@@ -1206,7 +1208,7 @@ describe('tradingSelectors', () => {
     });
 
     it('selectTradingSellAccountKey should return the correct account key when set', () => {
-        const testAccountKey: AccountKey = 'test-account-key-123' as AccountKey; // Todo: create properly via `createAccountKey()`
+        const testAccountKey: AccountKey = mockAccountKey({ descriptor: 'testAccountKey123' });
 
         (state as TradingRootState).wallet.trading.sell.tradingAccountKey = testAccountKey;
 
@@ -1819,17 +1821,17 @@ describe('tradingSelectors', () => {
     describe(selectTradingAccountKeyByTradeType.name, () => {
         it('should return exchange account key for exchange trade type', () => {
             const result = selectTradingAccountKeyByTradeType(state, 'exchange');
-            expect(result).toBe('eth-descriptor-eth');
+            expect(result).toBe(accountEth.key);
         });
 
         it('should return sell account key for sell trade type', () => {
             const result = selectTradingAccountKeyByTradeType(state, 'sell');
-            expect(result).toBe('btc-descriptor-btc');
+            expect(result).toBe(accountBtc.key);
         });
 
         it('should return buy account key for buy trade type', () => {
             const result = selectTradingAccountKeyByTradeType(state, 'buy');
-            expect(result).toBe('btc-descriptor-btc');
+            expect(result).toBe(accountBtc.key);
         });
 
         it('should return undefined when exchange account key is not set', () => {

@@ -1,4 +1,5 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { oneInchFusionPlusWithEip712SignDataQuote } from '@suite-native/trading-fixtures';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
@@ -33,9 +34,7 @@ describe('ReviewOutputsContent', () => {
         renderWithTradingProvider(
             <ReviewOutputsContent
                 orderId="ORDER_ID"
-                accountKey={
-                    'ACCOUNT_KEY' as AccountKey // Todo: create properly via `createAccountKey()`
-                }
+                accountKey={mockAccountKey({ descriptor: 'accountKey' })}
                 reportToAnalytics={jest.fn()}
                 tradingType="exchange"
                 isTransactionSendConsentRequested={true}

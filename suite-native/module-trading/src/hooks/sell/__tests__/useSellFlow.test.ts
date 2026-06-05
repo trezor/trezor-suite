@@ -2,9 +2,13 @@ import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import type { sellThunks } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
-import { banxaCreditCardSellQuote, verifiedBankAccount } from '@suite-native/trading-fixtures';
+import {
+    banxaCreditCardSellQuote,
+    getBtcAccount,
+    verifiedBankAccount,
+} from '@suite-native/trading-fixtures';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellFlow } from '../useSellFlow';
@@ -60,7 +64,8 @@ jest.mock('../../general/useTradingTransaction', () => ({
     }),
 }));
 
-const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
+const btc1AccountKey = btc1Account.key;
 
 describe('useSellFlow', () => {
     let store: TestStore;

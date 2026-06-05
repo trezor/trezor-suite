@@ -3,12 +3,13 @@ import {
     tradingActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
     bnbAsset,
     getBtcAccount,
+    getEthAccount,
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
@@ -19,6 +20,9 @@ import { useSellForm } from '../useSellForm';
 import { useSellQuotes } from '../useSellQuotes';
 
 const mockDebounce = (fn: () => unknown) => fn();
+
+const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
+const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -45,7 +49,7 @@ describe('useSellQuotes', () => {
             tradeType: 'sell',
             overrides: {
                 wallet: {
-                    trading: { sell: { tradingAccountKey: 'btc-account-1' } },
+                    trading: { sell: { tradingAccountKey: btc1Account.key } },
                 },
             },
         });
@@ -153,12 +157,7 @@ describe('useSellQuotes', () => {
     it.each([
         ['fiatStringAmount', '1000'],
         ['country', 'CZ'],
-        [
-            'sendAccount',
-            getBtcAccount(
-                'btc-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
-            ),
-        ],
+        ['sendAccount', getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2') })],
     ] as [keyof SellFormValues, SellFormValues[keyof SellFormValues]][])(
         'should re-fetch quotes on %s value change',
         async (field, value) => {
@@ -290,11 +289,7 @@ describe('useSellQuotes', () => {
         const { result } = renderUseSellQuotes(store);
 
         act(() => {
-            store.dispatch(
-                tradingSellActions.setTradingAccountKey(
-                    'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
-                ),
-            );
+            store.dispatch(tradingSellActions.setTradingAccountKey(eth1Account.key));
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', false);

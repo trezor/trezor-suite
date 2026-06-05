@@ -1,11 +1,13 @@
 import React from 'react';
 
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { FeePickerCard } from '../FeePickerCard';
+
+const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
 const mockFeeSelectorProps = jest.fn();
@@ -21,7 +23,7 @@ jest.mock('@suite-native/transaction-management', () => ({
 describe('FeePickerCard', () => {
     const defaultProps = {
         trade: undefined,
-        accountKey: 'btc1' as AccountKey,
+        accountKey: btc1AccountKey,
         tradingType: 'exchange' as TradingExchangeType | TradingSellType,
     };
 
@@ -48,7 +50,7 @@ describe('FeePickerCard', () => {
 
         expect(mockFeeSelectorProps).toHaveBeenCalledWith(
             expect.objectContaining({
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey,
                 formDraftKey: expect.any(String),
             }),
         );

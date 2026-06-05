@@ -12,7 +12,7 @@ import {
 } from '../../../__tests__/tradingTestUtils';
 import { SignDataMessageReview } from '../SignDataMessageReview';
 
-const ethAccount = getEthAccount('eth-account-key' as AccountKey);
+const ethAccount = getEthAccount();
 
 const signDataPayload = {
     type: 'eip712-typed-data' as const,

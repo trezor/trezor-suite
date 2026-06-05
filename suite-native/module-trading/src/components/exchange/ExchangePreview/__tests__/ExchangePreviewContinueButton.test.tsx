@@ -1,4 +1,4 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { userEvent } from '@suite-native/test-utils-store';
 import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { mergeDeepObject } from '@trezor/utils';
@@ -22,13 +22,16 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
+const btcAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' });
+const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+
 describe('ExchangePreviewContinueButton', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         wallet: {
             trading: {
                 exchange: {
-                    tradingAccountKey: 'btc-account-1' as AccountKey,
-                    receiveAccountKey: 'eth-account-1' as AccountKey,
+                    tradingAccountKey: btcAccountKey,
+                    receiveAccountKey: ethAccountKey,
                     selectedQuote: mercuryoFixedWorstQuote,
                 },
             },
@@ -151,7 +154,9 @@ describe('ExchangePreviewContinueButton', () => {
             {
                 wallet: {
                     trading: {
-                        exchange: { tradingAccountKey: 'non-existing-key' as AccountKey },
+                        exchange: {
+                            tradingAccountKey: mockAccountKey({ descriptor: 'nonExistingKey' }),
+                        },
                     },
                 },
             },
@@ -178,7 +183,7 @@ describe('ExchangePreviewContinueButton', () => {
 
         expect(consoleWarnSpy).not.toHaveBeenCalled();
         expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
-            accountKey: 'btc-account-1',
+            accountKey: btcAccountKey,
             orderId: mercuryoFixedWorstQuote.orderId,
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             flowType: 'swap',
@@ -204,7 +209,7 @@ describe('ExchangePreviewContinueButton', () => {
         await userEvent.press(getByText('Continue'));
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
-            accountKey: 'btc-account-1',
+            accountKey: btcAccountKey,
             orderId: mercuryoFixedWorstQuote.orderId,
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             flowType: 'sign-data',

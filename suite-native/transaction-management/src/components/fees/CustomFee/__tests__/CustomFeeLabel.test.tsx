@@ -1,5 +1,5 @@
 import { type NetworkType as NetworkTypeConfig } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -21,7 +21,7 @@ describe('CustomFeeLabel', () => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
-                    accountKey: 'test-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`,
+                    accountKey: mockAccountKey({ descriptor: 'testAccountKey' }),
                     defaultFeePerUnit: '1',
                 }),
             {

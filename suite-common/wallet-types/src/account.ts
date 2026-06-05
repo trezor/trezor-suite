@@ -12,7 +12,8 @@ import type {
     StakingPool,
     TronAccountExtraData,
 } from '@trezor/blockchain-link-types';
-import type { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
+import type { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/device-utils';
 import { type Branded } from '@trezor/type-utils';
 
 export type MetadataItem = string;
@@ -148,8 +149,25 @@ export const createAccountKey = ({
     accountDescriptor,
     networkSymbol,
     deviceStaticSessionId,
-}: CreateAccountKeyParams): AccountKey =>
-    `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}` as AccountKey;
+}: CreateAccountKeyParams): AccountKey => {
+    if (accountDescriptor.includes('-')) {
+        throw new Error(
+            `accountDescriptor must not contain '-' (got: '${accountDescriptor}'); '-' is the AccountKey separator and would break parseAccountKey.`,
+        );
+    }
+    if (networkSymbol.includes('-')) {
+        throw new Error(
+            `networkSymbol must not contain '-' (got: '${networkSymbol}'); '-' is the AccountKey separator and would break parseAccountKey.`,
+        );
+    }
+    if (deviceStaticSessionId.includes('-')) {
+        throw new Error(
+            `deviceStaticSessionId must not contain '-' (got: '${deviceStaticSessionId}'); '-' is the AccountKey separator and would break parseAccountKey.`,
+        );
+    }
+
+    return `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}` as AccountKey;
+};
 
 /**
  * Descriptor or xpub/zpub/..

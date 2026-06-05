@@ -5,16 +5,17 @@ import { asWalletDescriptor } from '@suite-common/wallet';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type NativeAccountsRootState,
     selectFilteredDeviceAccountsGroupedByNetworkAccountType,
 } from '../selectors';
 
-const SELECTED_WALLET_DESCRIPTOR = asWalletDescriptor('selected-wallet');
-const SELECTED_DEVICE_STATIC_SESSION_ID = 'selected-wallet@device-id:0';
-const OTHER_WALLET_DESCRIPTOR = asWalletDescriptor('other-wallet');
-const OTHER_DEVICE_STATIC_SESSION_ID = 'other-wallet@device-id:0';
+const SELECTED_WALLET_DESCRIPTOR = asWalletDescriptor('selectedWallet');
+const SELECTED_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';
+const OTHER_WALLET_DESCRIPTOR = asWalletDescriptor('otherWallet');
+const OTHER_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'otherWallet@deviceId:0';
 
 const selectedDevice = mockSuiteDevice({
     id: 'selected-device',
@@ -26,7 +27,7 @@ const selectedDevice = mockSuiteDevice({
 
 const btcDefaultAccount = mockWalletAccount({
     symbol: 'btc',
-    descriptor: asAccountDescriptor('btc-default'),
+    descriptor: asAccountDescriptor('btcdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
     index: 0,
@@ -35,7 +36,7 @@ const btcDefaultAccount = mockWalletAccount({
 
 const btcTaprootAccount = mockWalletAccount({
     symbol: 'btc',
-    descriptor: asAccountDescriptor('btc-taproot'),
+    descriptor: asAccountDescriptor('btctaproot'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'taproot',
     index: 1,
@@ -44,7 +45,7 @@ const btcTaprootAccount = mockWalletAccount({
 
 const ethAccount = mockWalletAccount({
     symbol: 'eth',
-    descriptor: asAccountDescriptor('eth-default'),
+    descriptor: asAccountDescriptor('ethdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
     index: 0,
@@ -54,7 +55,7 @@ const ethAccount = mockWalletAccount({
 const adaAccount = mockWalletAccount(
     {
         symbol: 'ada',
-        descriptor: asAccountDescriptor('ada-default'),
+        descriptor: asAccountDescriptor('adadefault'),
         deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
         accountType: 'normal',
         index: 0,
@@ -65,7 +66,7 @@ const adaAccount = mockWalletAccount(
 
 const hiddenLtcAccount = mockWalletAccount({
     symbol: 'ltc',
-    descriptor: asAccountDescriptor('ltc-hidden'),
+    descriptor: asAccountDescriptor('ltchidden'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
     index: 0,
@@ -75,7 +76,7 @@ const hiddenLtcAccount = mockWalletAccount({
 
 const otherDeviceBtcAccount = mockWalletAccount({
     symbol: 'btc',
-    descriptor: asAccountDescriptor('btc-other-device'),
+    descriptor: asAccountDescriptor('btcotherdevice'),
     deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
     index: 0,

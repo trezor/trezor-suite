@@ -42,6 +42,7 @@
         { "path": "../tokens" },
         { "path": "../trading-atoms" },
         { "path": "../trading-consts" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {

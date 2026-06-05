@@ -1,9 +1,9 @@
-import { type AccountKey } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { within } from '@suite-native/test-utils';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
+import { ETH_ACCOUNT_KEY } from '../../../__fixtures__/walletState';
 import { type StatefulReviewOutput } from '../../../types';
 import { ReviewOutputItem, type ReviewOutputItemProps } from '../ReviewOutputItem';
 
@@ -25,9 +25,7 @@ describe('ReviewOutputItem', () => {
     const renderReviewOutputItem = (props: Partial<ReviewOutputItemProps>) =>
         renderWithStoreProvider(
             <ReviewOutputItem
-                accountKey={
-                    'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
-                }
+                accountKey={ETH_ACCOUNT_KEY}
                 onLayout={jest.fn()}
                 reviewOutput={{
                     type: 'address',

@@ -7,7 +7,7 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import {
     banxaCreditCardSellQuote,
@@ -76,7 +76,7 @@ describe('tradingSlice', () => {
                 ...tradingInitialState,
                 buy: {
                     ...tradingInitialState.buy,
-                    tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    tradingAccountKey: mockAccountKey({ descriptor: 'accountKey' }),
                     receiveAddress: 'bc1qxyz',
                     quotesRequest: {
                         wantCrypto: true,
@@ -108,7 +108,7 @@ describe('tradingSlice', () => {
                 sell: {
                     ...tradingInitialState.sell,
                     quotes: sellQuotes,
-                    tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    tradingAccountKey: mockAccountKey({ descriptor: 'accountKey' }),
                     quotesRequest: {
                         amountInCrypto: true,
                         cryptoCurrency: 'bitcoin' as CryptoId,
@@ -298,9 +298,11 @@ describe('tradingSlice', () => {
         it('should clear buy.tradingAccountKey and buy.receiveAccountKey', () => {
             const actions = [
                 tradingBuyActions.setTradingAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
-                tradingBuyActions.setReceiveAccountKey('account-key' as AccountKey),
+                tradingBuyActions.setReceiveAccountKey(
+                    mockAccountKey({ descriptor: 'accountKey' }),
+                ),
                 tradingActions.clearSelectedAccounts(),
             ];
 
@@ -312,10 +314,10 @@ describe('tradingSlice', () => {
         it('should clear exchange.receiveAccountKey and exchange.tradingAccountKey', () => {
             const actions = [
                 tradingExchangeActions.setReceiveAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
                 tradingExchangeActions.setTradingAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
                 tradingActions.clearSelectedAccounts(),
             ];
@@ -328,7 +330,7 @@ describe('tradingSlice', () => {
         it('should clear sell.tradingAccountKey', () => {
             const actions = [
                 tradingSellActions.setTradingAccountKey(
-                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    mockAccountKey({ descriptor: 'accountKey' }),
                 ),
                 tradingActions.clearSelectedAccounts(),
             ];

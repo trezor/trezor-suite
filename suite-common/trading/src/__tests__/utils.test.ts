@@ -6,7 +6,8 @@ import {
 } from 'invity-api';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import type { Account, AccountKey } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
 import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
@@ -31,8 +32,8 @@ import {
     toTokenCryptoId,
 } from '../utils';
 
-const sendAccountKey = 'send-account-key' as AccountKey;
-const receiveAccountKey = 'receive-account-key' as AccountKey;
+const sendAccountKey = mockAccountKey({ descriptor: 'sendAccountKey' });
+const receiveAccountKey = mockAccountKey({ descriptor: 'receiveAccountKey' });
 
 describe('getUnusedAddressFromAccount', () => {
     it('should return unused value from the passed account', () => {
@@ -42,7 +43,7 @@ describe('getUnusedAddressFromAccount', () => {
         });
 
         expect(getUnusedAddressFromAccount(accountEth as Account)).toStrictEqual({
-            address: 'eth-descriptor',
+            address: 'ethDescriptor',
             path: "m/44'/60'/0'/0/1",
         });
     });

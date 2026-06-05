@@ -1,4 +1,4 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     BasicProviderForTests,
     renderHook,
@@ -14,7 +14,7 @@ jest.mock('../../../hooks/useUtxoSelection', () => ({
     useUtxoSelection: jest.fn(),
 }));
 
-const accountKey = 'account-key' as AccountKey; // Todo: create properly via `createAccountKey()`
+const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 
 describe('renders button with correct color scheme', () => {
     let colors: NativeStyleUtils['colors'];

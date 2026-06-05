@@ -121,6 +121,36 @@ describe('account utils', () => {
         ).toEqual('descriptor-btc-1stTestnetAddress@device_id:0');
     });
 
+    it('createAccountKey throws when accountDescriptor contains "-"', () => {
+        expect(() =>
+            createAccountKey({
+                accountDescriptor: asAccountDescriptor('btc-with-hyphen'),
+                networkSymbol: 'btc',
+                deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+            }),
+        ).toThrow(/accountDescriptor must not contain '-'/);
+    });
+
+    it('createAccountKey throws when networkSymbol contains "-"', () => {
+        expect(() =>
+            createAccountKey({
+                accountDescriptor: asAccountDescriptor('descriptor'),
+                networkSymbol: 'btc-bogus' as 'btc',
+                deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+            }),
+        ).toThrow(/networkSymbol must not contain '-'/);
+    });
+
+    it('createAccountKey throws when deviceStaticSessionId contains "-"', () => {
+        expect(() =>
+            createAccountKey({
+                accountDescriptor: asAccountDescriptor('descriptor'),
+                networkSymbol: 'btc',
+                deviceStaticSessionId: 'session-with-hyphen@device:0',
+            }),
+        ).toThrow(/deviceStaticSessionId must not contain '-'/);
+    });
+
     it('isTestnet', () => {
         expect(isTestnet('test')).toEqual(true);
         expect(isTestnet('tsep')).toEqual(true);

@@ -1,11 +1,11 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 export const accountBtc = {
     index: 1,
     accountType: 'segwit',
     networkType: 'bitcoin',
-    descriptor: 'btc-descriptor',
-    key: 'btc-descriptor-btc' as AccountKey, // Todo: create properly via `createAccountKey()`,
+    descriptor: 'btcDescriptor',
+    key: mockAccountKey({ descriptor: 'btcDescriptor', symbol: 'btc' }),
     symbol: 'btc',
     addresses: {
         unused: [
@@ -16,7 +16,7 @@ export const accountBtc = {
             },
         ],
     },
-    deviceState: 'staticSessionId',
+    deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
 };
 
 export const accountEth = {
@@ -24,10 +24,10 @@ export const accountEth = {
     accountType: 'normal',
     networkType: 'ethereum',
     symbol: 'eth',
-    descriptor: 'eth-descriptor',
-    key: 'eth-descriptor-eth' as AccountKey, // Todo: create properly via `createAccountKey()`,
+    descriptor: 'ethDescriptor',
+    key: mockAccountKey({ descriptor: 'ethDescriptor', symbol: 'eth' }),
     path: "m/44'/60'/0'/0/1",
-    deviceState: 'staticSessionId',
+    deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
     tokens: [
         {
             standard: 'ERC20',

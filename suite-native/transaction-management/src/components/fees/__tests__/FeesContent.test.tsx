@@ -1,5 +1,6 @@
 import { yup } from '@suite-common/validators';
-import { type AccountKey, type FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form, useForm } from '@suite-native/forms';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -29,7 +30,7 @@ const TestFormWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 describe('FeesContent', () => {
-    const mockAccountKey: AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
+    const accountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
     const mockOnSelectedFeeLevel = jest.fn();
     const mockOnCustomFeeSet = jest.fn();
 
@@ -45,7 +46,7 @@ describe('FeesContent', () => {
         feeLevels: createMockFeeLevels(),
         symbol: 'btc',
         networkType: 'bitcoin',
-        accountKey: mockAccountKey,
+        accountKey,
         areFeesLoading: false,
         onSelectedFeeLevel: mockOnSelectedFeeLevel,
         onCustomFeeSet: mockOnCustomFeeSet,
