@@ -39,15 +39,27 @@ interface ContainerProps {
     cta: CTA | CTA[];
     dataTestBase: string;
     image?: React.ReactNode;
+    'data-testid'?: string;
 }
 
 // Common wrapper for all views
-const Container = ({ title, description, cta, dataTestBase, image }: ContainerProps) => {
+const Container = ({
+    title,
+    description,
+    cta,
+    dataTestBase,
+    image,
+    'data-testid': dataTestId,
+}: ContainerProps) => {
     const { isLocked } = useDevice();
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
-        <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
+        <Column
+            gap={spacings.xxs}
+            data-testid={dataTestId ?? `@exception/${dataTestBase}`}
+            alignItems="center"
+        >
             {image ? image : <IconCircle name="warning" size={96} intent="warning" />}
             <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
@@ -165,6 +177,7 @@ export const PortfolioCardException = ({
                         },
                     ]}
                     dataTestBase={exception.type}
+                    data-testid="@dashboard/wallet-ready"
                 />
             );
         case 'discovery-failed':
