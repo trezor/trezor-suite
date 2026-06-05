@@ -20,7 +20,7 @@ export const CardListItem = ({ children, paddingType = 'normal', ...rest }: Card
         as="div"
         borderRadius={0}
         padding={paddingMap[paddingType]}
-        backgroundColorOnInteraction="elementFillElevatedHovered"
+        backgroundColorOnInteraction={rest.onClick ? 'elementFillElevatedHovered' : undefined}
         {...rest}
     >
         <Row justifyContent="space-between" gap={12} overflow="hidden">

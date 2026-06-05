@@ -2,10 +2,10 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectLanguage } from '@suite/settings';
 import { CardList, Column, Icon, IconCircle, type IconName, Row, Text } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 
