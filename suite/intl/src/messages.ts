@@ -10155,6 +10155,35 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_EARN_REWARDS',
         defaultMessage: 'Earn rewards',
     },
+    TR_EARN_TRON_RESOURCE_TO_EARN: {
+        id: 'TR_EARN_TRON_RESOURCE_TO_EARN',
+        defaultMessage: 'Resource to earn',
+    },
+    TR_EARN_TRON_RESOURCE_TO_EARN_TOOLTIP: {
+        id: 'TR_EARN_TRON_RESOURCE_TO_EARN_TOOLTIP',
+        defaultMessage:
+            'Bandwidth is used for all transactions. Smart contract actions also require Energy. If resources run out, TRX is burned as a fee. Both refill automatically (~24 hours).',
+    },
+    TR_EARN_TRON_BANDWIDTH: {
+        id: 'TR_EARN_TRON_BANDWIDTH',
+        defaultMessage: '{count, plural, =0 {Bandwidth} other {+# bandwidth}}',
+    },
+    TR_EARN_TRON_ENERGY: {
+        id: 'TR_EARN_TRON_ENERGY',
+        defaultMessage: '{count, plural, =0 {Energy} other {+# energy}}',
+    },
+    TR_EARN_TRON_FREEZE_STEP_TITLE: {
+        id: 'TR_EARN_TRON_FREEZE_STEP_TITLE',
+        defaultMessage: 'Freeze your funds',
+    },
+    TR_EARN_TRON_VOTE_STEP_TITLE: {
+        id: 'TR_EARN_TRON_VOTE_STEP_TITLE',
+        defaultMessage: 'Vote for representative',
+    },
+    TR_EARN_TRON_EARN_STEP_TITLE: {
+        id: 'TR_EARN_TRON_EARN_STEP_TITLE',
+        defaultMessage: 'Earn rewards',
+    },
     TR_EARN_SUPPLYING_IN_A_NUTSHELL: {
         id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
         defaultMessage: 'How stablecoin yield works',
