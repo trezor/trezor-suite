@@ -8,6 +8,7 @@ import { AnimatedBox, Text, VStack, useBottomSheetModal } from '@suite-native/at
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { HowTradingWorksSheet } from './HowTradingWorksSheet';
 
@@ -53,7 +54,12 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
     );
 };
 
+const linkStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingVertical: spacings.sp10,
+}));
+
 export const Footer = ({ isFormMountedRecently }: FooterProps) => {
+    const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const shouldHideFooter = useSelector(selectIsAmountInputActive);
@@ -70,18 +76,18 @@ export const Footer = ({ isFormMountedRecently }: FooterProps) => {
                 exiting={FadeOutDown}
                 layout={LinearTransition}
             >
-                <VStack alignItems="center">
+                <VStack alignItems="center" paddingBottom="sp12">
                     <FooterProviderContent provider={providerInfo} />
-
                     <Link
                         label={
                             <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.title" />
                         }
-                        onPress={openModal}
                         textVariant="body-sm"
                         textColor="contentSecondary"
                         textPressedColor="contentDisabled"
                         isUnderlined
+                        onPress={openModal}
+                        style={applyStyle(linkStyle)}
                     />
                 </VStack>
             </AnimatedBox>
