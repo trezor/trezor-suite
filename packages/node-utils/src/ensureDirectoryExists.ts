@@ -1,13 +1,9 @@
-import fs from 'fs';
-import { promisify } from 'util';
-
-const exists = promisify(fs.exists);
-const mkdir = promisify(fs.mkdir);
+import { promises as fs } from 'fs';
 
 export const ensureDirectoryExists = async (dir: string) => {
-    if (!(await exists(dir))) {
-        await mkdir(dir, { recursive: true });
-    }
+    // With `recursive: true`, mkdir creates missing directories and does not
+    // throw when the target already exists as a directory.
+    await fs.mkdir(dir, { recursive: true });
 
     return dir;
 };

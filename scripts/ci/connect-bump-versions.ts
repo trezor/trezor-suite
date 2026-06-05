@@ -12,7 +12,6 @@ import {
 } from './helpers';
 
 const readFile = promisify(fs.readFile);
-const existsDirectory = promisify(fs.exists);
 const writeFile = promisify(fs.writeFile);
 
 const args = process.argv.slice(2);
@@ -185,7 +184,7 @@ const bumpConnect = async () => {
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
             if (newCommits.length && deploymentType === 'stable') {
                 const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
-                if (!(await existsDirectory(CHANGELOG_PATH))) {
+                if (!fs.existsSync(CHANGELOG_PATH)) {
                     await writeFile(CHANGELOG_PATH, '');
                 }
 

@@ -7,7 +7,6 @@ import util from 'node:util';
 import { exec, getPackageDependencies, getTrezorPackageDir } from './helpers';
 
 const mkdir = util.promisify(fs.mkdir);
-const existsDirectory = util.promisify(fs.exists);
 const removeDir = util.promisify(fs.rm);
 const writeFile = util.promisify(fs.writeFile);
 
@@ -127,7 +126,7 @@ const buildAllPackages = async () => {
         ]),
     ];
 
-    if (await existsDirectory(OUTPUT_DIR)) {
+    if (fs.existsSync(OUTPUT_DIR)) {
         await removeDir(OUTPUT_DIR, { recursive: true });
     }
     await mkdir(OUTPUT_DIR, { recursive: true });
@@ -142,7 +141,7 @@ const buildAllPackages = async () => {
     for (const pkg of PACKAGES) {
         const pkgDir = getTrezorPackageDir(pkg);
 
-        if (!(await existsDirectory(pkgDir))) {
+        if (!fs.existsSync(pkgDir)) {
             console.error(`Package not found: ${pkg}`);
             results.failed.push({ pkg, error: 'Package directory not found' });
             continue;
