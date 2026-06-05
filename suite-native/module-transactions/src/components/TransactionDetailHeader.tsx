@@ -79,6 +79,8 @@ export const TransactionDetailHeader = ({
         return sum.toString();
     }, [allOutputs, isSolanaUnstakeTx, transaction.amount]);
 
+    const amountIsZero = totalOutputAmount === '0';
+
     return (
         <DiscreetTextTrigger>
             <Box alignItems="center">
@@ -99,7 +101,7 @@ export const TransactionDetailHeader = ({
                         )
                     )}
 
-                    {!isSolanaUnstakeTx && (
+                    {!isSolanaUnstakeTx && !amountIsZero && (
                         <Box flexDirection="row">
                             {!isFailedTx && (
                                 <SignValueFormatter
@@ -136,32 +138,35 @@ export const TransactionDetailHeader = ({
                     )}
                 </VStack>
 
-                {!isSolanaUnstakeTx && historicRate !== undefined && historicRate !== 0 && (
-                    <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
-                        <Text color="contentSecondary">≈ </Text>
-                        {tokenTransfer ? (
-                            <TokenToFiatAmountFormatter
-                                symbol={transaction.symbol}
-                                contract={tokenTransfer.contract}
-                                value={tokenTransfer.amount}
-                                decimals={tokenTransfer.decimals}
-                                historicRate={historicRate}
-                                color="contentSecondary"
-                                useHistoricRate
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        ) : (
-                            <CryptoToFiatAmountFormatter
-                                value={totalOutputAmount}
-                                symbol={transaction.symbol}
-                                historicRate={historicRate}
-                                color="contentSecondary"
-                                useHistoricRate
-                                style={applyStyle(failedTxStyle, { isFailedTx })}
-                            />
-                        )}
-                    </Box>
-                )}
+                {!isSolanaUnstakeTx &&
+                    !amountIsZero &&
+                    historicRate !== undefined &&
+                    historicRate !== 0 && (
+                        <Box flexDirection="row" style={applyStyle(fiatValueStyle)}>
+                            <Text color="contentSecondary">≈ </Text>
+                            {tokenTransfer ? (
+                                <TokenToFiatAmountFormatter
+                                    symbol={transaction.symbol}
+                                    contract={tokenTransfer.contract}
+                                    value={tokenTransfer.amount}
+                                    decimals={tokenTransfer.decimals}
+                                    historicRate={historicRate}
+                                    color="contentSecondary"
+                                    useHistoricRate
+                                    style={applyStyle(failedTxStyle, { isFailedTx })}
+                                />
+                            ) : (
+                                <CryptoToFiatAmountFormatter
+                                    value={totalOutputAmount}
+                                    symbol={transaction.symbol}
+                                    historicRate={historicRate}
+                                    color="contentSecondary"
+                                    useHistoricRate
+                                    style={applyStyle(failedTxStyle, { isFailedTx })}
+                                />
+                            )}
+                        </Box>
+                    )}
             </Box>
         </DiscreetTextTrigger>
     );
