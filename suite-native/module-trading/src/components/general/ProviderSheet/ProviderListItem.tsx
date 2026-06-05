@@ -19,6 +19,7 @@ export type ProviderListItemProps<T extends TradingTradeType> = {
     isSelected: boolean;
     onPress: (quote: T) => void;
     quote: T;
+    shouldShowExchangeType: boolean;
     tradingType: TradingType;
 };
 
@@ -30,6 +31,7 @@ export const ProviderListItem = <T extends TradingTradeType>({
     isSelected,
     onPress,
     quote,
+    shouldShowExchangeType,
     tradingType,
 }: ProviderListItemProps<T>) => {
     const { applyStyle } = useNativeStyles();
@@ -63,7 +65,11 @@ export const ProviderListItem = <T extends TradingTradeType>({
                             isChecked={isSelected}
                         />
                     </HStack>
-                    <ProviderListItemInfo provider={provider} quote={quote} />
+                    <ProviderListItemInfo
+                        provider={provider}
+                        quote={quote}
+                        shouldShowExchangeType={shouldShowExchangeType}
+                    />
                     <CardDivider />
                     <ProviderListItemValueRow quote={quote} />
                 </VStack>

@@ -32,6 +32,7 @@ describe('ProviderListItem', () => {
                 isSelected={false}
                 onPress={jest.fn()}
                 quote={quote}
+                shouldShowExchangeType={false}
                 tradingType="buy"
                 {...props}
             />,
@@ -45,10 +46,19 @@ describe('ProviderListItem', () => {
     });
 
     it('should render trading information with formatted strings', () => {
-        const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
+        const { getByText, queryByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
+
+        expect(queryByText('Centralized exchange')).toBeNull();
+        expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
+    });
+
+    it('should render centralized exchange information for CEX providers when enabled', () => {
+        const { getByText } = renderProviderListItem(cexdirectFloatingQuote, {
+            shouldShowExchangeType: true,
+            tradingType: 'exchange',
+        });
 
         expect(getByText('Centralized exchange')).toBeOnTheScreen();
-        expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
     });
 
     it('should render KYC information when provider has KYC policy', () => {
@@ -61,6 +71,7 @@ describe('ProviderListItem', () => {
 
     it('should render anonymous information for DEX providers', () => {
         const { getByText } = renderProviderListItem(invityDexQuote, {
+            shouldShowExchangeType: true,
             tradingType: 'exchange',
         });
 

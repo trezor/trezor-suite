@@ -39,6 +39,7 @@ export const ProviderSheet = <
     tradingType,
 }: ProviderSheetProps<K, T>) => {
     const shouldShowFilters = tradingType === 'exchange';
+    const shouldShowExchangeType = tradingType === 'exchange';
 
     const { filterItems, filteredSections, selectedFilter, setSelectedFilter } = useProviderFilters(
         quotes,
@@ -59,6 +60,7 @@ export const ProviderSheet = <
                     onPress={onQuoteSelectCallback}
                     isSelected={item.orderId === selectedQuote?.orderId}
                     quote={item}
+                    shouldShowExchangeType={shouldShowExchangeType}
                     tradingType={tradingType}
                 />
             )}

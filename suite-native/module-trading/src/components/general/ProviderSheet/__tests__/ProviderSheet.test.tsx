@@ -4,7 +4,7 @@ import {
     type TradingType,
 } from '@suite-common/trading';
 import { screen } from '@suite-native/test-utils-store';
-import { mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
+import { cexdirectFloatingQuote, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
 import {
     type PreloadedStatePartial,
@@ -65,6 +65,16 @@ describe('ProviderSheet', () => {
         });
 
         expect(queryByText('No offers available.')).toBeNull();
+        expect(queryByText('Centralized exchange')).toBeNull();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
+    });
+
+    it('should render exchange type information for exchange quotes', () => {
+        const { getByText } = renderProviderSheet({
+            quotes: { fixed: [cexdirectFloatingQuote] },
+            tradingType: 'exchange',
+        });
+
+        expect(getByText('Centralized exchange')).toBeOnTheScreen();
     });
 });

@@ -12,11 +12,13 @@ import { getKycPolicyWarningTranslation } from '../../../utils/general/kycUtils'
 export type ProviderListItemInfoProps<T extends TradingTradeType> = {
     quote: T;
     provider: TradingProviderInfo;
+    shouldShowExchangeType: boolean;
 };
 
 export const ProviderListItemInfo = <T extends TradingTradeType>({
     quote,
     provider,
+    shouldShowExchangeType,
 }: ProviderListItemInfoProps<T>) => {
     let isDex = false;
     let isAnonymous = false;
@@ -35,16 +37,18 @@ export const ProviderListItemInfo = <T extends TradingTradeType>({
 
     return (
         <>
-            <InfoLineItem
-                iconName="info"
-                text={
-                    isDex ? (
-                        <Translation id="moduleTrading.providerListItem.decentralizedExchange" />
-                    ) : (
-                        <Translation id="moduleTrading.providerListItem.centralizedExchange" />
-                    )
-                }
-            />
+            {shouldShowExchangeType && (
+                <InfoLineItem
+                    iconName="info"
+                    text={
+                        isDex ? (
+                            <Translation id="moduleTrading.providerListItem.decentralizedExchange" />
+                        ) : (
+                            <Translation id="moduleTrading.providerListItem.centralizedExchange" />
+                        )
+                    }
+                />
+            )}
             {isAnonymous && (
                 <InfoLineItem
                     iconName="info"
