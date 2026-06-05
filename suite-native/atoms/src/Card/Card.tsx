@@ -189,6 +189,3 @@ export const AnimatedContainerCard = ({
         <Card {...cardProps}>{children}</Card>
     </Animated.View>
 );
-
-// Use when animated styles target the inner card container (e.g. borderColor, borderWidth).
-export const AnimatedBorderCard = Animated.createAnimatedComponent(Card);
