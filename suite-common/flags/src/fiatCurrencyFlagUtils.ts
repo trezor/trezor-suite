@@ -67,6 +67,13 @@ const fiatCurrencyToFlagMap = {
     UYU: 'UY',
     VND: 'VN',
     ZAR: 'ZA',
+    BWP: 'BW',
+    UZS: 'UZ',
+    TMT: 'TM',
+    TJS: 'TJ',
+    NAD: 'NA',
+    MZN: 'MZ',
+    LSL: 'LS',
 } as const satisfies Record<string, FlagType>;
 
 type FiatCurrencyWithFlag = keyof typeof fiatCurrencyToFlagMap;
