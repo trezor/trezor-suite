@@ -62,21 +62,20 @@ export const isCardanoStakedWithEverstake = (
     const accountPoolId = getCardanoAccountPoolId(account);
     if (!accountPoolId) return false;
 
-    if (!cardanoStakingPools?.length) return EVERSTAKE_POOLS.includes(accountPoolId);
+    // EVERSTAKE_POOLS is the definitive list — migration should only be offered to users
+    // outside the Everstake ecosystem entirely, not between Everstake pools.
+    if (EVERSTAKE_POOLS.includes(accountPoolId)) return true;
 
-    return cardanoStakingPools.some(pool => pool.id === accountPoolId);
+    return cardanoStakingPools?.some(pool => pool.id === accountPoolId) ?? false;
 };
 
 export const isCardanoStakedOutsideEverstake = (
     account: Account,
     cardanoStakingPools: AdaPools['pools'],
 ) => {
-    const accountPoolId = getCardanoAccountPoolId(account);
-    if (!accountPoolId) return false;
+    if (!getCardanoAccountPoolId(account)) return false;
 
-    if (!cardanoStakingPools?.length) return EVERSTAKE_POOLS.includes(accountPoolId) === false;
-
-    return cardanoStakingPools.every(pool => pool.id !== accountPoolId);
+    return !isCardanoStakedWithEverstake(account, cardanoStakingPools);
 };
 
 export const isCardanoStakedWithFiveBinaries = (account: Account) => {
