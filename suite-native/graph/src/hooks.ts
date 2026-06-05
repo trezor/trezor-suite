@@ -26,7 +26,7 @@ import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
-import { selectPortfolioGraphAccountItems } from './selectors';
+import { selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning } from './selectors';
 import {
     type GraphSliceRootState,
     selectAccountGraphTimeframe,
@@ -157,8 +157,10 @@ export const useGraphForSingleAccount = ({
 
 export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGraphParams) => {
     const dispatch = useDispatch();
-    // if we memoize selectPortfolioGraphAccountItems, it will randomly break so we need to use deep comparison instead to prevent unnecessary rerenders
-    const accountItems = useSelectorDeepComparison(selectPortfolioGraphAccountItems);
+    // Use deep comparison because account items are rebuilt from account data.
+    const accountItems = useSelectorDeepComparison(
+        selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning,
+    );
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, 'btc'),
