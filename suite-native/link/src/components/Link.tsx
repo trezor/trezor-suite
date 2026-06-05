@@ -22,6 +22,7 @@ type LinkProps = RequireAtLeastOne<
         textColor?: Color;
         textPressedColor?: Color;
         textVariant?: TypographyStyle;
+        style?: TextProps['style'];
     },
     'href' | 'onPress'
 > &
@@ -56,6 +57,7 @@ export const Link = ({
     textPressedColor = 'contentBrandPressed',
     textVariant = 'body-md',
     onPress,
+    style,
     ...textProps
 }: LinkProps) => {
     const { utils, applyStyle } = useNativeStyles();
@@ -91,7 +93,11 @@ export const Link = ({
             onPressIn={handlePressIn}
             onPress={noop} // If the handling is defined in onPress, the very short taps are sometimes ignored
             onPressOut={handlePressOut}
-            style={[applyStyle(textStyle, { isUnderlined, textVariant }), animatedTextColorStyle]}
+            style={[
+                applyStyle(textStyle, { isUnderlined, textVariant }),
+                animatedTextColorStyle,
+                style,
+            ]}
             suppressHighlighting
         >
             {label}
