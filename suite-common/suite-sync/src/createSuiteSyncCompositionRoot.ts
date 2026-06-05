@@ -20,10 +20,10 @@ import {
     type CreateSuiteSyncOwnerDep,
 } from '@suite-common/suite-sync-storage';
 import {
-    type OnWalletSuiteSyncOnEnsured,
+    type OnStorageEnsured,
+    type OnStorageEnsuredDep,
     type SuiteSync,
     type SuiteSyncInternalErrorHandler,
-    type WalletSuiteSyncOnEnsuredListener,
 } from '@suite-common/suite-sync-types';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Analytics } from '@trezor/analytics-uploader';
@@ -33,17 +33,15 @@ import { createEnsureSuiteSyncKeys } from './createEnsureSuiteSyncKeys';
 import { createSuiteSyncInternalErrorHandler } from './createSuiteSyncInternalErrorHandler';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
-import { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
-import { selectSuiteSyncAddressLabel } from './data/address/suiteSyncAddressSelectors';
 import { createEnsureSubscribedStorage } from './data/createEnsureSubscribedStorage';
 import { createSuiteSyncListener } from './data/createSuiteSyncListener';
+import { createUpdateAccountLabel } from './data/labeling/account/createUpdateAccountLabel';
+import { createUpdateAddressLabel } from './data/labeling/address/createUpdateAddressLabel';
 import { createDangerouslyWipeAllLabelsFromWallet } from './data/labeling/createDangerouslyWipeAllLabelsFromWallet';
-import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
-import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
-import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
-import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
+import { createSuiteSyncWriteLabels } from './data/labeling/createSuiteSyncWriteLabels';
+import { createUpdateOutputLabel } from './data/labeling/output/createUpdateOutputLabel';
 import { selectAllLabelsForAccount } from './data/labeling/selectAllLabelsForAccount';
-import { selectSuiteSyncOutputLabel } from './data/output/suiteSyncOutputSelectors';
+import { createUpdateWalletLabel } from './data/labeling/wallet/createUpdateWalletLabel';
 import { type SuiteSyncDataRootState } from './data/suiteSyncDataReducer';
 import { selectSuiteSyncWalletLabel } from './data/wallet/suiteSyncWalletSelectors';
 import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
@@ -89,7 +87,8 @@ type CreateSuiteSyncCompositionRootDeps = {
     dispatch: Dispatch;
     subscribeError: SubscribeSuiteSyncInternalErrorHandler;
     trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode' | 'evoluSignRegistrationRequest'>;
-} & SuiteSyncAnalyticsDep &
+} & OnStorageEnsuredDep &
+    SuiteSyncAnalyticsDep &
     EnsureDelegatedIdentityKeyDep &
     CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
@@ -172,11 +171,7 @@ export const createSuiteSyncCompositionRoot = (
         suiteSyncListener,
     });
 
-    const walletSuiteSyncOnEnsuredListeners: WalletSuiteSyncOnEnsuredListener[] = [];
-
-    const onWalletSuiteSyncOnEnsured: OnWalletSuiteSyncOnEnsured = listener => {
-        walletSuiteSyncOnEnsuredListeners.push(listener);
-    };
+    const onStorageEnsured: OnStorageEnsured = deps.onStorageEnsured ?? (() => {});
 
     const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOnWithErrorHandler({
         dispatch: deps.dispatch,
@@ -185,7 +180,7 @@ export const createSuiteSyncCompositionRoot = (
             ensureSuiteSyncKeys,
             ensureSubscribedStorage,
             subscriptionStorage,
-            getWalletSuiteSyncOnEnsuredListeners: () => walletSuiteSyncOnEnsuredListeners,
+            onStorageEnsured,
         }),
     });
 
@@ -205,19 +200,27 @@ export const createSuiteSyncCompositionRoot = (
     const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
     const getAccounts = toGetter(deps.getState, selectAccounts);
 
-    const labelingDeps = {
-        ensureWalletSuiteSyncOn,
+    const writeLabels = createSuiteSyncWriteLabels({
+        getState: deps.getState,
         analytics: deps.analytics,
-        getWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
-        getAccountLabel: toGetter(deps.getState, selectSuiteSyncAccountLabel),
-        getAddressLabel: toGetter(deps.getState, selectSuiteSyncAddressLabel),
-        getOutputLabel: toGetter(deps.getState, selectSuiteSyncOutputLabel),
-    };
+    });
 
-    const updateWalletLabel = createUpdateWalletLabel(labelingDeps);
-    const updateAccountLabel = createUpdateAccountLabel(labelingDeps);
-    const updateOutputLabel = createUpdateOutputLabel(labelingDeps);
-    const updateAddressLabel = createUpdateAddressLabel(labelingDeps);
+    const updateWalletLabel = createUpdateWalletLabel({
+        ensureWalletSuiteSyncOn,
+        writeWalletLabel: writeLabels.writeWalletLabel,
+    });
+    const updateAccountLabel = createUpdateAccountLabel({
+        ensureWalletSuiteSyncOn,
+        writeAccountLabel: writeLabels.writeAccountLabel,
+    });
+    const updateOutputLabel = createUpdateOutputLabel({
+        ensureWalletSuiteSyncOn,
+        writeOutputLabel: writeLabels.writeOutputLabel,
+    });
+    const updateAddressLabel = createUpdateAddressLabel({
+        ensureWalletSuiteSyncOn,
+        writeAddressLabel: writeLabels.writeAddressLabel,
+    });
 
     return {
         changeRelayUrl: createChangeRelayUrl({
@@ -225,7 +228,6 @@ export const createSuiteSyncCompositionRoot = (
             getAllDeviceSessionIds,
             dispatch: deps.dispatch,
         }),
-        onWalletSuiteSyncOnEnsured,
         ensureWalletSuiteSyncOnUncontrolled,
         ensureWalletSuiteSyncOn,
         turnOffSuiteSyncForWallet,
@@ -242,7 +244,7 @@ export const createSuiteSyncCompositionRoot = (
             getDeviceForStaticSessionId,
         }),
         dangerouslyWipeAllLabelsFromWallet: createDangerouslyWipeAllLabelsFromWallet({
-            getWalletLabel: labelingDeps.getWalletLabel,
+            getWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
             getAccounts,
             getAllLabelsForAccount: toGetter(deps.getState, selectAllLabelsForAccount),
             updateWalletLabel,

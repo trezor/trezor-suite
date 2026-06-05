@@ -4,6 +4,7 @@ import { type AccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { type Result } from '@trezor/type-utils';
 
+import { type WithSuiteSyncStorage } from './withSuiteSyncStorage';
 import { type EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
 
 export type UpdateAddressLabelParams = {
@@ -23,3 +24,11 @@ export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
 export const selectUpdateAddressLabelDep = (services: any): UpdateAddressLabelDep => ({
     updateAddressLabel: services.suiteSync.labeling.updateAddressLabel,
 });
+
+export type WriteAddressLabelParams = WithSuiteSyncStorage<UpdateAddressLabelParams>;
+
+export type WriteAddressLabel = (
+    params: WriteAddressLabelParams,
+) => Result<void, SuiteSyncUpdateError>;
+
+export type WriteAddressLabelDep = { writeAddressLabel: WriteAddressLabel };

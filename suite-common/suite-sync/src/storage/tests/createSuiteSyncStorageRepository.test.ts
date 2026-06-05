@@ -1,20 +1,14 @@
 import { mockNotExpected } from '@suite-common/dependency-injection';
-import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
 import { asStorageId, createSuiteSyncStorageRepository } from '../createSuiteSyncStorageRepository';
 
 const storageId1 = asStorageId('1');
-const storage: SuiteSyncStorage = {
-    data: {
-        accounts: {} as any,
-        addresses: {} as any,
-        outputs: {} as any,
-        wallets: {} as any,
-    },
+const storage = mockSuiteSyncStorage({
     dispose: jest.fn(),
     updateRelayUrl: mockNotExpected('updateRelayUrl'),
-};
+});
 
 describe(createSuiteSyncStorageRepository.name, () => {
     it('sets, gets and deletes the storage', async () => {

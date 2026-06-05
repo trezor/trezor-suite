@@ -1,6 +1,7 @@
 import type { AccountLabels } from '@suite-common/metadata-types';
 import type { AllLabelsForAccount } from '@suite-common/suite-sync';
-import { type UpdateAccountLabelDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type WriteAccountLabelDep } from '@suite-common/suite-sync-types';
 import type { Account } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 import type { Result } from '@trezor/type-utils';
@@ -8,12 +9,13 @@ import type { Result } from '@trezor/type-utils';
 import type { MigrationCounts, MigrationError } from '../legacyLabelsMigration';
 import { normalizeLabel } from '../migrationUtils';
 
-export type MigrateAccountLabelsDeps = UpdateAccountLabelDep;
+export type MigrateAccountLabelsDeps = WriteAccountLabelDep;
 
 export type MigrateAccountLabelsParams = {
     account: Account;
     legacyAccountLabels: AccountLabels;
     currentAccountLabels: AllLabelsForAccount;
+    storage: SuiteSyncStorage;
 };
 
 export type MigrateAccountLabels = (
@@ -26,7 +28,7 @@ export type MigrateAccountLabelsDep = {
 
 export const createMigrateAccountLabels =
     (deps: MigrateAccountLabelsDeps): MigrateAccountLabels =>
-    async ({ account, legacyAccountLabels, currentAccountLabels }) => {
+    async ({ account, legacyAccountLabels, currentAccountLabels, storage }) => {
         const legacyAccountLabel = normalizeLabel(legacyAccountLabels.accountLabel);
 
         if (legacyAccountLabel === null) {
@@ -37,10 +39,13 @@ export const createMigrateAccountLabels =
             return ok({ changed: 0, skipped: 1 });
         }
 
-        const updateAccountLabelResult = await deps.updateAccountLabel({
-            deviceStaticSessionId: account.deviceState,
-            accountKey: account.key,
-            label: legacyAccountLabel,
+        const updateAccountLabelResult = await deps.writeAccountLabel({
+            storage,
+            data: {
+                deviceStaticSessionId: account.deviceState,
+                accountKey: account.key,
+                label: legacyAccountLabel,
+            },
         });
 
         if (!updateAccountLabelResult.success) {

@@ -1,3 +1,4 @@
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import type { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
@@ -21,6 +22,7 @@ import { createAccountLabelsParams } from './migrationUtils';
 
 export type MigrateLegacyLabelsToSuiteSync = (
     selectedDevice: TrezorDeviceWithState,
+    storage: SuiteSyncStorage,
 ) => Promise<Result<MigrationCounts, MigrationError>>;
 
 export type MigrateLegacyLabelsToSuiteSyncDeps = {
@@ -34,7 +36,7 @@ export type MigrateLegacyLabelsToSuiteSyncDeps = {
 
 export const createMigrateLegacyLabelsToSuiteSync =
     (deps: MigrateLegacyLabelsToSuiteSyncDeps): MigrateLegacyLabelsToSuiteSync =>
-    async selectedDevice => {
+    async (selectedDevice, storage) => {
         let changed = 0;
         let skipped = 0;
 
@@ -43,6 +45,7 @@ export const createMigrateLegacyLabelsToSuiteSync =
         const walletLabelsParams: MigrateWalletLabelsParams = {
             deviceStaticSessionId,
             walletDescriptor,
+            storage,
         };
         const walletLabelsResult = await deps.migrateWalletLabels(walletLabelsParams);
 
@@ -68,6 +71,7 @@ export const createMigrateLegacyLabelsToSuiteSync =
                 account,
                 legacyAccountLabels,
                 currentAccountLabels,
+                storage,
             });
 
             if (!accountLabelsResult.success) {
@@ -84,6 +88,7 @@ export const createMigrateLegacyLabelsToSuiteSync =
                 account,
                 legacyAccountLabels,
                 currentAccountLabels,
+                storage,
             });
 
             if (!addressLabelsResult.success) {
@@ -100,6 +105,7 @@ export const createMigrateLegacyLabelsToSuiteSync =
                 account,
                 legacyAccountLabels,
                 currentAccountLabels,
+                storage,
             });
 
             if (!outputLabelsResult.success) {

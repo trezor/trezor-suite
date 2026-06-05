@@ -7,8 +7,8 @@ import {
     type EnsureSubscribedStorageDep,
     type EnsureSuiteSyncKeysDep,
     type EnsureWalletSuiteSyncOn,
+    type OnStorageEnsuredDep,
     type SubscriptionStorageDep,
-    type WalletSuiteSyncOnEnsuredListener,
 } from '@suite-common/suite-sync-types';
 import { err } from '@trezor/type-utils';
 
@@ -16,10 +16,10 @@ import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../
 
 export type EnsureWalletSuiteSyncOnDeps = {
     getState: () => DeviceRootState;
-    getWalletSuiteSyncOnEnsuredListeners: () => WalletSuiteSyncOnEnsuredListener[];
 } & EnsureSubscribedStorageDep &
     EnsureSuiteSyncKeysDep &
-    SubscriptionStorageDep;
+    SubscriptionStorageDep &
+    OnStorageEnsuredDep;
 
 /**
  * Responsibility:
@@ -47,13 +47,11 @@ export const createEnsureWalletSuiteSyncOn =
             return result;
         }
 
-        for (const listener of deps.getWalletSuiteSyncOnEnsuredListeners()) {
-            await listener({
-                deviceStaticSessionId,
-                isWriteMode,
-                storage: result.payload,
-            });
-        }
+        await deps.onStorageEnsured({
+            deviceStaticSessionId,
+            isWriteMode,
+            storage: result.payload,
+        });
 
         return result;
     };

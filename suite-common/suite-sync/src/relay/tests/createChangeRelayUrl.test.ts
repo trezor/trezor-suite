@@ -1,7 +1,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { mockNotExpected } from '@suite-common/dependency-injection';
-import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { setSuiteSyncRelayUrl } from '../../suiteSyncSlice';
@@ -13,16 +13,10 @@ describe(createChangeRelayUrl.name, () => {
     it('changes url', () => {
         const actions: UnknownAction[] = [];
 
-        const mockStorage: SuiteSyncStorage = {
-            data: {
-                accounts: {} as any,
-                addresses: {} as any,
-                outputs: {} as any,
-                wallets: {} as any,
-            },
+        const mockStorage = mockSuiteSyncStorage({
             dispose: mockNotExpected('dispose'),
             updateRelayUrl: jest.fn(),
-        };
+        });
 
         const deps: ChangeRelayUrlDeps = {
             getAllDeviceSessionIds: () => [deviceStaticSessionId],
