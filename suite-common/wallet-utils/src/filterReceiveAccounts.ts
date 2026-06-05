@@ -36,7 +36,7 @@ export const filterReceiveAccounts = ({
     const shouldDisplayDebugOnly = (account: Account) =>
         isDebug ||
         !isDebugOnlyAccountType(account.accountType, account.symbol) ||
-        isNotEmptyAccount;
+        isNotEmptyAccount(account);
     const isVisibleAccount = (account: Account) => account.visible;
     const isFirstNormalAccount = (account: Account) =>
         account.accountType === 'normal' && account.index === 0;
