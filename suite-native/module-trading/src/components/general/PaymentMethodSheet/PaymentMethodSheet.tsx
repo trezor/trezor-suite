@@ -1,3 +1,5 @@
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
 import { BottomSheetFlashList } from '@suite-native/atoms';
@@ -21,8 +23,11 @@ export type PaymentMethodsSheetProps<T extends BuyTrade | SellFiatTrade> = {
 const EXTRA_LIST_PADDING = 20;
 
 const keyExtractor = (item: BuyTrade | SellFiatTrade) => item.orderId ?? '';
-const getEstimatedListHeight = (itemsCount: number) =>
-    itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
+const getEstimatedListHeight = (itemsCount: number, insetBottom: number) =>
+    itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT +
+    ESTIMATED_HEADER_HEIGHT +
+    EXTRA_LIST_PADDING +
+    insetBottom;
 
 export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
     quotes,
@@ -32,6 +37,8 @@ export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
     selectedQuote,
     title,
 }: PaymentMethodsSheetProps<T>) => {
+    const { bottom: insetBottom } = useSafeAreaInsets();
+
     const onQuoteSelectCallback = (quote: T) => {
         onQuoteSelect(quote);
         onClose();
@@ -51,7 +58,7 @@ export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
             )}
             handleComponent={() => <SimpleSheetHeader onClose={onClose} title={title} />}
             data={quotes}
-            estimatedListHeight={getEstimatedListHeight(quotes.length)}
+            estimatedListHeight={getEstimatedListHeight(quotes.length, insetBottom)}
             keyExtractor={keyExtractor}
             extraData={selectedQuote?.orderId}
         />
