@@ -618,6 +618,7 @@ export const networks = {
             legacy: {
                 accountType: 'legacy',
                 bip43Path: "m/44'/1'/0'/0/i",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
@@ -640,6 +641,7 @@ export const networks = {
             legacy: {
                 accountType: 'legacy',
                 bip43Path: "m/44'/1'/0'/0/i",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
