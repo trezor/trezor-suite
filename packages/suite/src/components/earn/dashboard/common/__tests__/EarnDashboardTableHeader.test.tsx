@@ -2,6 +2,8 @@ import { type ComponentProps } from 'react';
 
 import { render, screen } from '@testing-library/react';
 
+import { ThemeProvider } from 'src/support/suite/ThemeProvider';
+
 import { EarnDashboardTableHeader } from '../EarnDashboardTableHeader';
 
 jest.mock('@suite/intl', () => ({
@@ -14,12 +16,14 @@ const renderHeader = ({
     showRewardsColumns,
 }: Partial<ComponentProps<typeof EarnDashboardTableHeader>> = {}) =>
     render(
-        <table>
-            <EarnDashboardTableHeader
-                accountColumnTranslationId={accountColumnTranslationId}
-                showRewardsColumns={showRewardsColumns}
-            />
-        </table>,
+        <ThemeProvider>
+            <table>
+                <EarnDashboardTableHeader
+                    accountColumnTranslationId={accountColumnTranslationId}
+                    showRewardsColumns={showRewardsColumns}
+                />
+            </table>
+        </ThemeProvider>,
     );
 
 describe('EarnDashboardTableHeader', () => {
