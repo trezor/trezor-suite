@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
-import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
+import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TransportError } from '@trezor/connect-common/src/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -40,8 +40,8 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get info() {

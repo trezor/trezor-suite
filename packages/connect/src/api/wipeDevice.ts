@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/WipeDevice.js
 
-import { DEVICE, type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
+import { DEVICE, type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -14,8 +14,8 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     get confirmation() {

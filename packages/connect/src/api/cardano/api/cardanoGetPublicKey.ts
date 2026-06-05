@@ -3,7 +3,7 @@
 import {
     Bundle,
     CardanoGetPublicKey as CardanoGetPublicKeySchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -54,8 +54,8 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
         this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     get info() {

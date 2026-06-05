@@ -11,8 +11,8 @@ import {
     ERRORS,
     type EntropyCheckResult,
     type FirmwareRange,
-    type MethodPermission,
     PAGING,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
@@ -153,8 +153,11 @@ export default class DiscoverAccounts extends AbstractMethod<
         this.useDeviceState = true;
         this.useUi = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms(
+            'read_account_info',
+            this.params.coins.map(c => c.coinInfo),
+        );
     }
 
     private progress: Partial<{ [key in ReturnType<typeof getAccountTypeKey>]: number }> = {};

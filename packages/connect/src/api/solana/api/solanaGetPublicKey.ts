@@ -6,7 +6,7 @@ import {
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
-import type { MethodPermission, PROTO } from '@trezor/connect-common';
+import type { PROTO, PermissionRequest } from '@trezor/connect-common';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { Assert } from '@trezor/schema-utils';
 
@@ -45,8 +45,8 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     get info() {

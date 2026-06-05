@@ -1,5 +1,5 @@
 // Monero GetWatchKey implementation
-import type { MethodPermission, MoneroWatchKey } from '@trezor/connect-common';
+import type { MoneroWatchKey, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -39,8 +39,8 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
         this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     get info() {

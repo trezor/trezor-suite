@@ -1,4 +1,4 @@
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -16,8 +16,8 @@ export default class TelemetryGet extends AbstractMethod<'telemetryGet', PROTO.T
         super(message, params);
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async run() {

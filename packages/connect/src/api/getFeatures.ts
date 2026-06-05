@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetFeatures.js
 
-import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
+import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -19,8 +19,8 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
         this.useEmptyPassphrase = true;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'read_features' }];
     }
 
     checkFirmwareRange() {
