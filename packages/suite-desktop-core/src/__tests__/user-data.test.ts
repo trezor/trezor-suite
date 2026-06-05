@@ -1,4 +1,6 @@
-import { open, read, readDir, rename, save } from '../libs/user-data';
+import fs from 'fs';
+
+import { clearAppData, open, read, readDir, rename, save } from '../libs/user-data';
 
 jest.mock('electron', () => ({
     app: {
@@ -16,6 +18,10 @@ describe('user-data path traversal protection', () => {
         global.logger = {
             error: jest.fn(),
         } as any;
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     it('rejects file path traversal in save()', async () => {
@@ -75,6 +81,24 @@ describe('user-data path traversal protection', () => {
         expect(result).toStrictEqual({
             success: false,
             error: 'Path traversal attempt detected, directory: "../../OtherApp"',
+        });
+    });
+});
+
+describe('clearAppData', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('removes user data directory', async () => {
+        const rmSpy = jest.spyOn(fs.promises, 'rm').mockResolvedValue();
+
+        const result = await clearAppData();
+
+        expect(result).toStrictEqual({ success: true });
+        expect(rmSpy).toHaveBeenCalledWith('/tmp/user-data', {
+            recursive: true,
+            force: true,
         });
     });
 });
