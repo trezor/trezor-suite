@@ -1,4 +1,5 @@
-import { useAccountsSelector } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -33,7 +34,6 @@ type CardanoStakingInfoBannerProps = {
 export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBannerProps) => {
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
-    const apy = useNativeStakingSelector(state => selectApy(state, { accountKey }));
 
     const isStakedWithFiveBinaries = useAccountsSelector(state =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
@@ -43,11 +43,21 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
         selectIsCardanoStakedOutsideEverstake(state, accountKey),
     );
 
+    const networkSymbol = useAccountsSelector(state =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+
+    // Promoted (best) pool APY to switch to, not the account's own APY.
+    const apy = useNativeStakingSelector(state =>
+        selectApy(state, { networkSymbol: networkSymbol ?? undefined }),
+    );
+
     if (!isStakedWithFiveBinaries && !isStakedOutsideEverstake) {
         return null;
     }
 
     const apyValue = apy ?? <Translation id="earn.notAvailableShort" />;
+    const displaySymbol = networkSymbol ? getNetworkDisplaySymbol(networkSymbol) : '';
     const descriptionTranslationId = isStakedWithFiveBinaries
         ? 'earn.infoBanner.providerReducingRewards'
         : 'earn.infoBanner.updateToNewProvider';
@@ -66,7 +76,10 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
                         <Translation id="earn.infoBanner.updateProviderTitle" />
                     </Text>
                     <Text variant="body-sm" color="contentSecondary">
-                        <Translation id={descriptionTranslationId} values={{ apy: apyValue }} />
+                        <Translation
+                            id={descriptionTranslationId}
+                            values={{ apy: apyValue, symbol: displaySymbol }}
+                        />
                     </Text>
                 </VStack>
             </HStack>
