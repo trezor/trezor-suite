@@ -90,7 +90,12 @@ export const EarnYieldApyBreakdown = ({
         })}
         <Row gap={4} alignItems="center" margin={{ top: 4 }}>
             <Icon name="chartLine" size={14} intent="neutral" priority="secondary" />
-            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+            <Text
+                data-testid="@earn/dashboard/apy-breakdown/footer"
+                typographyStyle="body-sm"
+                intent="neutral"
+                priority="secondary"
+            >
                 <Translation id="TR_EARN_YIELD_APY_TOOLTIP_FOOTER" />
             </Text>
         </Row>

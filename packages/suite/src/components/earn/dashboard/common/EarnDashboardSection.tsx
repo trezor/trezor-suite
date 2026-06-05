@@ -10,6 +10,7 @@ import { type EarnProviderId } from '../../providers/providerMetadata';
 
 type EarnDashboardSectionProps = {
     titleId: TranslationKey;
+    titleTestId?: string;
     subheadingId: TranslationKey;
     provider?: EarnProviderId;
     statusBadge?: {
@@ -22,6 +23,7 @@ type EarnDashboardSectionProps = {
 
 export const EarnDashboardSection = ({
     titleId,
+    titleTestId,
     subheadingId,
     provider,
     statusBadge,
@@ -34,7 +36,9 @@ export const EarnDashboardSection = ({
         <DashboardSection
             heading={
                 <>
-                    <Translation id={titleId} />
+                    <span data-testid={titleTestId}>
+                        <Translation id={titleId} />
+                    </span>
                     {statusBadge && (
                         <Badge intent={statusBadge.intent} margin={{ left: 12 }}>
                             <Translation id={statusBadge.labelId} />

@@ -8,6 +8,7 @@ import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/tradingMock';
+import { YieldMock } from './mocks/yieldMock';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
@@ -24,6 +25,9 @@ import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
 import { WalletPage } from './pageObjects/walletPage';
+import { YieldConsentModal } from './pageObjects/yield/yieldConsentModal';
+import { YieldNutshellModal } from './pageObjects/yield/yieldNutshellModal';
+import { YieldSection } from './pageObjects/yield/yieldSection';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
 import { TradingStoreFixture } from './tradingStore';
 
@@ -51,6 +55,10 @@ type Fixtures = {
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
     stakingSection: StakingSection;
+    yieldSection: YieldSection;
+    yieldNutshellModal: YieldNutshellModal;
+    yieldConsentModal: YieldConsentModal;
+    yieldMock: YieldMock;
     paginationControl: PaginationControl;
     evoluClient: EvoluClient;
 };
@@ -128,6 +136,18 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
+    },
+    yieldSection: async ({ page }, use) => {
+        await use(new YieldSection(page));
+    },
+    yieldNutshellModal: async ({ page }, use) => {
+        await use(new YieldNutshellModal(page));
+    },
+    yieldConsentModal: async ({ page }, use) => {
+        await use(new YieldConsentModal(page));
+    },
+    yieldMock: async ({ page }, use) => {
+        await use(new YieldMock(page));
     },
     paginationControl: async ({ page }, use) => {
         await use(new PaginationControl(page));

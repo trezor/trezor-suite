@@ -149,6 +149,7 @@ export const EarnYieldTable = () => {
             <OutlineHighlight shouldHighlight={shouldHighlight}>
                 <EarnDashboardSection
                     titleId="TR_EARN_STABLECOIN_YIELD_TITLE"
+                    titleTestId="@earn/dashboard/yield-title"
                     subheadingId="TR_EARN_YIELD_DASHBOARD_TEXT"
                     provider="morpho"
                     statusBadge={badge}

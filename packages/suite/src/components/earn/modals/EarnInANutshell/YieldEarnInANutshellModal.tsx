@@ -63,6 +63,7 @@ export const YieldEarnInANutshellModal = ({
     const processes: EarnInANutshellProcess[] = [
         {
             processType: 'deposit',
+            testId: '@modal/earn-in-a-nutshell/deposit-process',
             heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
@@ -77,6 +78,7 @@ export const YieldEarnInANutshellModal = ({
         },
         {
             processType: 'withdraw',
+            testId: '@modal/earn-in-a-nutshell/withdraw-process',
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
             content: <YieldWithdrawingInfo supplySymbol={supplySymbol} />,
@@ -85,6 +87,7 @@ export const YieldEarnInANutshellModal = ({
             ? [
                   {
                       processType: 'claim' as const,
+                      testId: '@modal/earn-in-a-nutshell/claim-process',
                       heading: <Translation id="TR_EARN_CLAIMING_PROCESS" />,
                       badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
                       content: <YieldClaimingInfo rewardsSymbols={rewardsSymbols} />,

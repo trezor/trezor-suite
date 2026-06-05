@@ -26,7 +26,28 @@ export const ETH_MOCKED_ACCOUNT = {
         },
     ],
     nonce: '1',
-    tokens: [],
+    tokens: [
+        {
+            type: 'ERC20',
+            standard: 'ERC20',
+            name: 'Tether USD',
+            contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+            decimals: 6,
+            balance: '1000000000',
+            transfers: 1,
+        },
+        {
+            type: 'ERC20',
+            standard: 'ERC20',
+            name: 'USD Coin',
+            contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+            decimals: 6,
+            balance: '1000000000',
+            transfers: 1,
+        },
+    ],
     addressAliases: {},
 };
 
@@ -103,7 +124,7 @@ export const fixtures = [
             data: {
                 ts: 1752167345,
                 rates: {
-                    usd: 0.5,
+                    usd: 1,
                 },
             },
         },
