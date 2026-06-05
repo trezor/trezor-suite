@@ -7,7 +7,6 @@ import { TorControlPort, createHmacSignature, getCookieString } from '../src/tor
 import type { TorConnectionOptions } from '../src/types';
 
 const writeFile = util.promisify(fs.writeFile);
-const existsDirectory = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
 const unlinkFile = util.promisify(fs.unlink);
 
@@ -22,7 +21,7 @@ const controlPort = 9999;
 // TODO: Skipping this for now, since I want to get the most critical tests to run in CI.
 describe.skip('TorControlPort', () => {
     beforeAll(async () => {
-        if (!(await existsDirectory(torDataDir))) {
+        if (!fs.existsSync(torDataDir)) {
             // Make sure there is `torDataDir` directory.
             mkdir(torDataDir);
         }
