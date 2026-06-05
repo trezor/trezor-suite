@@ -31,7 +31,7 @@ const NetworkGroup = ({ networks, handleToggle, showTestnetsLabel }: NetworkGrou
     <VStack spacing="sp12">
         {showTestnetsLabel && (
             <Text variant="body-sm">
-                <Translation id="moduleSettings.coinEnabling.testnetsLabel" />
+                <Translation id="moduleSettings.coinEnabling.labels.testnets" />
             </Text>
         )}
         {networks.map(({ symbol }) => (
