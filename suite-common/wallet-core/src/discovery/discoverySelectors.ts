@@ -13,6 +13,10 @@ export const selectDiscoveryForSelectedDevice = (state: DiscoveryRootState & Dev
     return selectDiscoveryByDevicePath(state, selectedDevice?.path);
 };
 
+export const selectDiscoveryStartTimestampForSelectedDevice = (
+    state: DiscoveryRootState & DeviceRootState,
+) => selectDiscoveryForSelectedDevice(state)?.startTimestamp;
+
 export function isDiscoveryInProgress(
     discovery?: DiscoveryStatus,
 ): discovery is Exclude<
