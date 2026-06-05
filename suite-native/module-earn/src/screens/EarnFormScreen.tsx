@@ -89,7 +89,6 @@ export const EarnFormScreen = () => {
             header={<EarnFormScreenHeader accountKey={accountKey} />}
             footer={
                 <EarnFormScreenFooter
-                    accountKey={accountKey}
                     symbol={account.symbol}
                     amountValue={amountValue}
                     isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}

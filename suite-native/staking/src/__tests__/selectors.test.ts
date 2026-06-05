@@ -254,7 +254,7 @@ describe('main staking selectors', () => {
             expect(result).toBe(2.43);
         });
 
-        it('should return best pool APY for ADA account with unrecognized poolId', () => {
+        it('should return null for ADA account staked outside known pools', () => {
             const adaAccount = {
                 symbol: 'ada',
                 accountLabel: 'ADA Account #1',
@@ -272,7 +272,7 @@ describe('main staking selectors', () => {
 
             const result = selectApy(testState as any, { accountKey: ada1Key });
 
-            expect(result).toBe(5.8);
+            expect(result).toBeNull();
         });
 
         it('should return null when neither accountKey nor networkSymbol is provided', () => {

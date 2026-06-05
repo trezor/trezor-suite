@@ -15,7 +15,7 @@ type StakeInfoCardsProps = {
 };
 
 export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const cards = [
         {

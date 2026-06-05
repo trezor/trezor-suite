@@ -8,7 +8,6 @@ import Animated, {
 
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { calculateRewards } from '@suite-common/wallet-utils';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -36,7 +35,6 @@ const continueButtonStyle = prepareNativeStyle(utils => ({
 }));
 
 type EarnFormScreenFooterProps = {
-    accountKey: AccountKey;
     symbol: NetworkSymbol;
     amountValue: string;
     isDisabled: boolean;
@@ -45,7 +43,6 @@ type EarnFormScreenFooterProps = {
 };
 
 export const EarnFormScreenFooter = ({
-    accountKey,
     symbol,
     amountValue,
     isDisabled,
@@ -56,7 +53,7 @@ export const EarnFormScreenFooter = ({
     const { translate } = useTranslate();
     const { CryptoAmountFormatter } = useFormatters();
 
-    const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol: symbol }));
+    const apy = useSelector(state => selectApy(state, { networkSymbol: symbol }));
 
     const estimatedRewards = useMemo(() => {
         if (!amountValue) return null;

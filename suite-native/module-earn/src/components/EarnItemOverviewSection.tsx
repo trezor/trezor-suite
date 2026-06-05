@@ -9,7 +9,11 @@ import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { selectApy, useSelector as useNativeStakingSelector } from '@suite-native/staking';
+import {
+    selectApy,
+    selectIsCardanoStakedOutsideEverstake,
+    useSelector as useNativeStakingSelector,
+} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnPromoItem } from '../types';
@@ -79,6 +83,10 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
+    const isAdaStakedOutsideEverstake = useNativeStakingSelector(state =>
+        accountKey ? selectIsCardanoStakedOutsideEverstake(state, accountKey) : false,
+    );
+
     const apyValue = item.type === 'staking' ? apy : item.apy;
 
     const iconProps =
@@ -118,12 +126,16 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                 <BoxSkeleton width={70} height={20} />
             ) : (
                 <Box style={applyStyle(valuesContainerStyle)}>
-                    {apyValue != null && (
+                    {(isAdaStakedOutsideEverstake || apyValue != null) && (
                         <Text
                             variant={accountKey ? 'body-sm' : 'body-md'}
                             color={accountKey ? 'contentSecondary' : 'contentPrimary'}
                         >
-                            <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                            {isAdaStakedOutsideEverstake ? (
+                                <Translation id="earn.notAvailableShort" />
+                            ) : (
+                                <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                            )}
                         </Text>
                     )}
                 </Box>

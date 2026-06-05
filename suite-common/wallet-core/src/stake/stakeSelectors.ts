@@ -1,7 +1,11 @@
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { secondsToDays, selectBestCardanoPool } from '@suite-common/wallet-utils';
+import {
+    getCardanoAccountPoolId,
+    secondsToDays,
+    selectBestCardanoPool,
+} from '@suite-common/wallet-utils';
 
 import type { VotingDelegationOption } from './stakeActions';
 import type { StakeRootState } from './stakeReducerTypes';
@@ -47,17 +51,17 @@ export const selectPoolStatsApy = (
 
         case 'ada': {
             const poolStats = data.ada?.pools ?? [];
+            const accountPoolId = getCardanoAccountPoolId(account);
 
-            if (account?.networkType === 'cardano') {
-                const poolFromAccount = poolStats.find(
-                    pool => pool.id === account.misc.staking.poolId,
-                );
+            if (accountPoolId) {
+                // The account's own APY, or null when staked outside Everstake (no pool stats).
+                // For the promoted APY, query by networkSymbol instead.
+                const poolFromAccount = poolStats.find(pool => pool.id === accountPoolId);
 
-                if (poolFromAccount) {
-                    return poolFromAccount.apy;
-                }
+                return poolFromAccount?.apy ?? null;
             }
 
+            // No active delegation (not staking yet, or queried by network) → promote best pool.
             const bestPoolId = selectBestCardanoPool(poolStats).bech32;
             const bestPool = bestPoolId
                 ? poolStats.find(pool => pool.id === bestPoolId)

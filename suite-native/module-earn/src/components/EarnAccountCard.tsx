@@ -11,6 +11,7 @@ import {
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
+    selectIsCardanoStakedOutsideEverstake,
     useSelector as useStakingSelector,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -74,6 +75,11 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     );
 
     const apyValue = isStakingItem ? apy : item.apy;
+
+    const isAdaStakedOutsideEverstake = useStakingSelector(state =>
+        selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
+    );
+
     const canClaim = useStakingSelector(state =>
         isSupportedStaking ? selectCanClaimByAccountKey(state, item.accountKey) : false,
     );
@@ -116,9 +122,13 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
 
                 <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
                     <Text variant="body-md">{formatActiveItemBalance(item)}</Text>
-                    {apyValue != null && (
+                    {(isAdaStakedOutsideEverstake || apyValue != null) && (
                         <Text variant="body-sm" color="contentSecondary">
-                            <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                            {isAdaStakedOutsideEverstake ? (
+                                <Translation id="earn.notAvailableShort" />
+                            ) : (
+                                <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                            )}
                         </Text>
                     )}
                 </VStack>
