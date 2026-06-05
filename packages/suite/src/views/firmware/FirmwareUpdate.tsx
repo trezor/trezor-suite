@@ -2,7 +2,7 @@ import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { FirmwareType } from '@trezor/connect';
 
-import { FirmwareInitial } from 'src/components/firmware';
+import { FirmwareInitial } from 'src/components/firmware/FirmwareInitial';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 
 import { FirmwareModal } from './FirmwareModal';
