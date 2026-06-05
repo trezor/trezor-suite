@@ -70,6 +70,7 @@ export * from './stablecoin-yield/stablecoinYieldUtils';
 export * from './stake/tron/tronStakeReducer';
 export * from './stake/tron/tronStakeSelectors';
 export * from './stake/tron/tronStakeTypes';
+export * from './stake/tron/tronStakeUtils';
 export * from './token/stellarTokenThunks';
 export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
