@@ -84,7 +84,7 @@ test.describe(
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
-                        body: [transformAddress(sendAddress)],
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                 });
@@ -175,7 +175,7 @@ test.describe(
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
-                        body: [transformAddress(sendAddress)],
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                 });
