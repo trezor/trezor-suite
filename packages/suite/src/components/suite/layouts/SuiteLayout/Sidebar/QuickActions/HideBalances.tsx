@@ -1,24 +1,30 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
-import { discreetModeActions, selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
+import { useServices } from '@suite-common/dependency-injection';
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { QuickActionButton } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
 export const HideBalances = () => {
-    const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
-    const isDiscreetModeActive = useSelector(selectIsDiscreteModeActive);
-    const translationLabel = isDiscreetModeActive ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
+    const translationLabel = isDiscreetMode ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
 
-    const handleDiscreetModeClick = () =>
-        dispatch(discreetModeActions.setDiscreetMode(!isDiscreetModeActive));
+    const handleDiscreetModeClick = () => {
+        const newValue = !isDiscreetMode;
+        setIsDiscreetMode(newValue);
+        analytics.report({
+            type: events.menuToggleDiscreetEvent.name,
+            payload: { value: newValue },
+        });
+    };
 
     return (
         <QuickActionButton
             tooltip={{ content: translationString(translationLabel) }}
             onClick={handleDiscreetModeClick}
             data-testid="@quickActions/hideBalances"
-            iconName={isDiscreetModeActive ? 'eyeSlash' : 'eye'}
+            iconName={isDiscreetMode ? 'eyeSlash' : 'eye'}
         />
     );
 };

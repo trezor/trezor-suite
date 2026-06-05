@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectIsDiscreteModeActive } from './discreetModeSelectors';
-import { discreetModeActions } from './discreetModeSlice';
+import { discreetModeActions, selectIsDiscreteModeActive } from './discreetModeSlice';
 
 export const useDiscreetMode = () => {
     const isDiscreetMode = useSelector(selectIsDiscreteModeActive);

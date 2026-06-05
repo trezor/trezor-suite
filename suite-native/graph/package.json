@@ -19,6 +19,7 @@
         "@shopify/react-native-skia": "2.5.1",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/graph": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",

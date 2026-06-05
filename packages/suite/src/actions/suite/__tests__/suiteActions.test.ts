@@ -76,6 +76,7 @@ const getInitialState = (
         ...suite,
     },
     tor: torReducer(undefined, { type: 'foo' } as any),
+    discreetMode: { isActive: false },
     flags: flagsInitialState,
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),

@@ -90,6 +90,7 @@ describe('AccountList', () => {
     const createTestStore = (preloadedState = defaultPreloadedState) =>
         createLightStore({
             reducer: {
+                discreetMode: createStaticReducer({ isActive: false }),
                 locale: localeReducer,
                 device: createStaticReducer(preloadedState.device),
                 messageSystem: createStaticReducer(messageSystemInitialState),

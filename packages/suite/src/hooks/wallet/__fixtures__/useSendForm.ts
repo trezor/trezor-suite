@@ -284,6 +284,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             () => ({}),
         ),
         suiteSettings: createReducer(suiteSettingsInitialState, state => state),
+        discreetMode: createReducer({ isActive: false }, () => {}),
         tor: torReducer,
         locks: locksReducer,
         flags: createReducer(

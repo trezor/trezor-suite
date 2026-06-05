@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
@@ -10,7 +11,6 @@ import {
     TouchableSwitchRow,
     TouchableSwitchRowDescription,
     VStack,
-    useDiscreetMode,
 } from '@suite-native/atoms';
 import { selectIsBiometricsEnabled, useBiometricsSettings } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';

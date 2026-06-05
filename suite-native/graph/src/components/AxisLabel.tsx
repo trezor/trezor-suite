@@ -3,8 +3,8 @@ import { Dimensions, View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { useDiscreetMode } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
