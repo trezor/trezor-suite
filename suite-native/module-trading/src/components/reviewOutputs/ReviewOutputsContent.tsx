@@ -6,12 +6,10 @@ import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType, ScreenHeader } from '@suite-native/navigation';
 import { getFormDraftKeyPrefixFromTradingType } from '@suite-native/trading-quote-utils';
-import { ReviewOutputItemList } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ReviewOutputsBody } from './ReviewOutputsBody';
 import { ReviewOutputsFooter } from './ReviewOutputsFooter';
-import { ReviewOutputsSkeleton } from './ReviewOutputsSkeleton';
-import { SignDataMessageReview } from './SignDataMessageReview';
 import type { UseTradingTransactionReturnProps } from '../../hooks/general/useTradingTransaction';
 import { useDelayedReviewOutputListDisplayFlag } from '../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
 import {
@@ -65,24 +63,6 @@ export const ReviewOutputsContent = memo(
         const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
 
         const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
-        const renderReviewContent = () => {
-            if (exchangeFlowType === 'sign-data') {
-                return <SignDataMessageReview />;
-            }
-
-            if (shouldDisplayReviewList) {
-                return (
-                    <ReviewOutputItemList
-                        prefix={prefix}
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                        flowType={exchangeFlowType}
-                    />
-                );
-            }
-
-            return <ReviewOutputsSkeleton />;
-        };
 
         return (
             <ConfirmOnTrezorWrapper
@@ -101,7 +81,13 @@ export const ReviewOutputsContent = memo(
                     justifyContent="space-between"
                     testID="@trading/outputs-review"
                 >
-                    {renderReviewContent()}
+                    <ReviewOutputsBody
+                        prefix={prefix}
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                        exchangeFlowType={exchangeFlowType}
+                        shouldDisplayReviewList={shouldDisplayReviewList}
+                    />
                     {isTransactionAlreadySigned ? (
                         <ReviewOutputsFooter
                             isConsentRequested={isTransactionSendConsentRequested}
