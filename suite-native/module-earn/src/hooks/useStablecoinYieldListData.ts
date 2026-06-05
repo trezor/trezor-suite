@@ -15,6 +15,10 @@ import {
     type SkeletonLoaderItem,
     type StablecoinYieldEarnItem,
 } from '../types';
+import {
+    type StablecoinYieldClaimSummariesState,
+    useStablecoinYieldClaimSummaries,
+} from './useStablecoinYieldClaimSummaries';
 
 export const MORPHO_PROVIDER_LIST_ITEM = {
     id: 'morpho-provider',
@@ -32,14 +36,14 @@ type UseStablecoinYieldListDataReturn = {
     activeItems: StablecoinYieldEarnItem[];
     promoListData: EarnPromoListDataItem[];
     isLoading: boolean;
-};
+} & StablecoinYieldClaimSummariesState;
 
 export const useStablecoinYieldListData = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
     const { data: yieldOpportunities, isLoading } = useAllYieldOpportunities();
 
-    return useMemo<UseStablecoinYieldListDataReturn>(() => {
+    const listData = useMemo(() => {
         if (isLoading) {
             const promoListData: EarnPromoListDataItem[] = [
                 'stablecoin-yield',
@@ -142,4 +146,19 @@ export const useStablecoinYieldListData = () => {
 
         return { activeItems, promoListData, isLoading };
     }, [accounts, yieldOpportunities, isLoading]);
+
+    const stablecoinYieldClaimSummariesState = useStablecoinYieldClaimSummaries({
+        activeItems: listData.activeItems,
+        accounts,
+    });
+
+    return useMemo<UseStablecoinYieldListDataReturn>(
+        () => ({
+            ...listData,
+            ...stablecoinYieldClaimSummariesState,
+            isClaimSummariesLoading:
+                listData.isLoading || stablecoinYieldClaimSummariesState.isClaimSummariesLoading,
+        }),
+        [listData, stablecoinYieldClaimSummariesState],
+    );
 };

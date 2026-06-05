@@ -1,6 +1,7 @@
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
+    type AccountDescriptor,
     type AccountKey,
     type BaseCurrencyAmount,
     type TokenAddress,
@@ -50,6 +51,17 @@ export type StablecoinYieldEarnItem = {
     accountLabel?: Account['accountLabel'];
     tokenBalance: string | null;
     apy: number | null;
+};
+
+export type StablecoinYieldClaimSummary = {
+    type: 'stablecoin-yield';
+    accountKey: AccountKey;
+    accountLabel?: Account['accountLabel'];
+    accountDescriptor: AccountDescriptor;
+    networkSymbol: NetworkSymbol;
+    claimableRewardsCount: number;
+    fiatClaimableAmount: BaseCurrencyAmount | null;
+    isFiatClaimableAmountComplete: boolean;
 };
 
 export type StablecoinYieldNavigationItem = Pick<

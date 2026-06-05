@@ -37,6 +37,7 @@ export * from './fiat-rates/fiatRatesMiddleware';
 export * from './fiat-rates/fiatRatesReducer';
 export * from './fiat-rates/fiatRatesSelectors';
 export * from './fiat-rates/fiatRatesThunks';
+export * from './fiat-rates/useMissingRateTickersQuery';
 export type * from './fiat-rates/fiatRatesTypes';
 export * from './formDrafts';
 export * from './selectors';
