@@ -17,6 +17,7 @@ export type MethodPermission =
     | 'read_settings'
     | 'read_features'
     | 'sign'
+    | 'sign_message'
     | 'verify_message'
     | 'management'
     | 'internal'
