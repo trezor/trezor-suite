@@ -64,7 +64,7 @@ describe('useChangeStringsExtractor', () => {
             toValue: '0.462586',
             isFromCrypto: true,
             isToCrypto: true,
-            formattedRate: '21.883930771791622 JTO / 1 SOL',
+            formattedRate: '21.8839307717916236 JTO / 1 SOL',
         });
     });
 
