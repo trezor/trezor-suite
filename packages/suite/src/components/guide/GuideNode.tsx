@@ -2,11 +2,12 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
-import { CardList, Column, Icon, IconCircle, type IconName, Row, Text } from '@trezor/components';
+import { useServices } from '@suite-common/dependency-injection';
+import { type IconName, icons } from '@suite-common/icons/src/icons';
+import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
+import { CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 
 import { openNode } from 'src/actions/suite/guideActions';
@@ -77,7 +78,8 @@ export const GuideNode = ({ node, description, itemVariant = 'cardList' }: Guide
     }
 
     if (node.type === 'category') {
-        const categoryIcon = node.icon ? (
+        const hasValidIcon = node.icon && node.icon in icons;
+        const categoryIcon = hasValidIcon ? (
             <IconCircle name={node.icon as IconName} size={32} intent="neutral" />
         ) : (
             node.image && <CategoryImage src={resolveStaticPath(node.image)} />
