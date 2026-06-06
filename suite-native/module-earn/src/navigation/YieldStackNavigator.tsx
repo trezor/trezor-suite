@@ -8,6 +8,7 @@ import {
 } from '@suite-native/navigation';
 
 import { HowYieldWorksScreen } from '../screens/HowYieldWorksScreen';
+import { YieldClaimScreen } from '../screens/YieldClaimScreen';
 import { YieldConsentsScreen } from '../screens/YieldConsentsScreen';
 import { YieldDepositApprovalScreen } from '../screens/YieldDepositApprovalScreen';
 import { YieldDepositApprovalTransactionDataReviewScreen } from '../screens/YieldDepositApprovalTransactionDataReviewScreen';
@@ -38,6 +39,11 @@ export const YieldStackNavigator = () => {
                 options={{ title: YieldStackRoutes.YieldConsents }}
                 name={YieldStackRoutes.YieldConsents}
                 component={YieldConsentsScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldClaim }}
+                name={YieldStackRoutes.YieldClaim}
+                component={YieldClaimScreen}
             />
             <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldDepositApproval }}

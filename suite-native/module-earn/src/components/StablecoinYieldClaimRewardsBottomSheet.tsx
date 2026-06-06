@@ -1,7 +1,5 @@
 import { useCallback } from 'react';
 
-import { FlashList } from '@shopify/flash-list';
-
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { BottomSheetModal, type BottomSheetModalRef, Box, HStack } from '@suite-native/atoms';
@@ -10,20 +8,6 @@ import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { type StablecoinYieldClaimSummary } from '../types';
-
-type ClaimRewardsAmountProps = {
-    claimReward: StablecoinYieldClaimSummary;
-};
-
-const ClaimRewardsAmount = ({ claimReward }: ClaimRewardsAmountProps) => (
-    <BaseCurrencyAmountFormatter
-        value={claimReward.fiatClaimableAmount}
-        variant="body-md"
-        isDiscreetText={false}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-    />
-);
 
 type StablecoinYieldClaimRewardsItemProps = {
     claimReward: StablecoinYieldClaimSummary;
@@ -40,9 +24,6 @@ const StablecoinYieldClaimRewardsItem = ({
 
     return (
         <AccountsListItemBase
-            hasBackground
-            isFirst
-            isLast
             icon={<CryptoIcon symbol={claimReward.networkSymbol} />}
             title={
                 claimReward.accountLabel ?? getNetworkDisplaySymbolName(claimReward.networkSymbol)
@@ -58,7 +39,13 @@ const StablecoinYieldClaimRewardsItem = ({
             }
             mainValue={
                 <HStack alignItems="center" spacing="sp8">
-                    <ClaimRewardsAmount claimReward={claimReward} />
+                    <BaseCurrencyAmountFormatter
+                        value={claimReward.fiatClaimableAmount}
+                        variant="body-md"
+                        isDiscreetText={false}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    />
                     <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
                 </HStack>
             }
@@ -71,31 +58,22 @@ const StablecoinYieldClaimRewardsItem = ({
 type StablecoinYieldClaimRewardsBottomSheetProps = {
     ref: BottomSheetModalRef;
     claimRewards: StablecoinYieldClaimSummary[];
+    onClaimRewardPress: (claimReward: StablecoinYieldClaimSummary) => void;
     onClose: () => void;
 };
 
 export const StablecoinYieldClaimRewardsBottomSheet = ({
     ref,
     claimRewards,
+    onClaimRewardPress,
     onClose,
 }: StablecoinYieldClaimRewardsBottomSheetProps) => {
     const handleClaimRewardsSelect = useCallback(
-        ({ accountKey }: StablecoinYieldClaimSummary) => {
+        (claimReward: StablecoinYieldClaimSummary) => {
             onClose();
-            // TODO: Navigate to YieldClaim once the Stablecoin Yield claim screen is implemented.
-            void accountKey;
+            onClaimRewardPress(claimReward);
         },
-        [onClose],
-    );
-
-    const renderItem = useCallback(
-        ({ item }: { item: StablecoinYieldClaimSummary }) => (
-            <StablecoinYieldClaimRewardsItem
-                claimReward={item}
-                onPress={handleClaimRewardsSelect}
-            />
-        ),
-        [handleClaimRewardsSelect],
+        [onClaimRewardPress, onClose],
     );
 
     return (
@@ -106,11 +84,13 @@ export const StablecoinYieldClaimRewardsBottomSheet = ({
             onClose={onClose}
         >
             <Box paddingTop="sp16">
-                <FlashList
-                    data={claimRewards}
-                    keyExtractor={item => item.accountKey}
-                    renderItem={renderItem}
-                />
+                {claimRewards.map(claimReward => (
+                    <StablecoinYieldClaimRewardsItem
+                        key={claimReward.accountKey}
+                        claimReward={claimReward}
+                        onPress={handleClaimRewardsSelect}
+                    />
+                ))}
             </Box>
         </BottomSheetModal>
     );

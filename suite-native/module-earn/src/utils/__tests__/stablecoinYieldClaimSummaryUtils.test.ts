@@ -13,6 +13,7 @@ import { type StablecoinYieldEarnItem } from '../../types';
 import {
     buildStablecoinYieldClaimSummaries,
     getActiveStablecoinYieldClaimAccounts,
+    getStablecoinYieldAccountRewards,
     getTotalFiatClaimableAmount,
 } from '../stablecoinYieldClaimSummaryUtils';
 
@@ -171,21 +172,28 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
     });
 
     it('sums fiat values only when all claimable rewards have fiat values', () => {
+        const chainsRewardsWithFiat = [
+            createChainRewards({
+                account: ethereumAccount,
+                rewards: [
+                    createReward({ claimable: '1000000', fiatClaimable: '1.25' }),
+                    createReward({ claimable: '2000000', fiatClaimable: '2.5' }),
+                ],
+            }),
+        ];
         const summaries = buildStablecoinYieldClaimSummaries({
             activeAccounts: [ethereumAccount],
-            chainsRewardsWithFiat: [
-                createChainRewards({
-                    account: ethereumAccount,
-                    rewards: [
-                        createReward({ claimable: '1000000', fiatClaimable: '1.25' }),
-                        createReward({ claimable: '2000000', fiatClaimable: '2.5' }),
-                    ],
-                }),
-            ],
+            chainsRewardsWithFiat,
+        });
+        const accountRewards = getStablecoinYieldAccountRewards({
+            account: ethereumAccount,
+            chainsRewardsWithFiat,
         });
 
         expect(summaries[0]?.claimableRewardsCount).toBe(2);
         expect(summaries[0]?.fiatClaimableAmount?.toString()).toBe('3.75');
+        expect(accountRewards?.totalFiatClaimableAmount?.toString()).toBe('3.75');
+        expect(accountRewards?.rewards).toHaveLength(2);
         expect(getTotalFiatClaimableAmount(summaries)?.toString()).toBe('3.75');
     });
 });

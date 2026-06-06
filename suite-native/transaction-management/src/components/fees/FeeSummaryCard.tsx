@@ -55,14 +55,21 @@ export const FeeSummaryCard = ({
                                 isDiscreetText={false}
                                 testID="@transactionManagement/fee-crypto-amount"
                             />
-                            <CryptoToFiatAmountFormatter
-                                variant="body-sm"
-                                color="contentSecondary"
-                                value={fee}
-                                symbol={symbol}
-                                isLoading={areFeesLoading}
-                                isDiscreetText={false}
-                            />
+                            <HStack spacing="sp2" alignItems="center" justifyContent="flex-end">
+                                {!areFeesLoading && (
+                                    <Text variant="body-sm" color="contentSecondary">
+                                        ≈
+                                    </Text>
+                                )}
+                                <CryptoToFiatAmountFormatter
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                    value={fee}
+                                    symbol={symbol}
+                                    isLoading={areFeesLoading}
+                                    isDiscreetText={false}
+                                />
+                            </HStack>
                         </VStack>
                         {!!withCaret && (
                             <Icon name="caretDown" size="medium" color="contentSecondary" />

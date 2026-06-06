@@ -3,7 +3,11 @@ import {
     type MerklRewardsParams,
 } from '@suite-common/earn-stablecoin-api';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type BaseCurrencyAmount,
+    asBaseCurrencyAmount,
+} from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { type StablecoinYieldClaimSummary, type StablecoinYieldEarnItem } from '../types';
@@ -17,6 +21,12 @@ type GetActiveStablecoinYieldClaimAccountsParams = {
 type BuildStablecoinYieldClaimSummariesParams = {
     activeAccounts: Account[];
     chainsRewardsWithFiat: ChainRewardsWithFiat[];
+};
+
+export type StablecoinYieldAccountRewards = {
+    account: Account;
+    rewards: ChainRewardsWithFiat['rewards'];
+    totalFiatClaimableAmount: BaseCurrencyAmount | null;
 };
 
 const getChainAddressKey = ({ chainId, address }: MerklRewardsParams<string>) =>
@@ -37,6 +47,67 @@ const getAccountChainAddressKey = (account: Account) => {
         chainId: network.chainId,
         address: account.descriptor,
     });
+};
+
+const getChainsRewardsByAccountKey = (chainsRewardsWithFiat: ChainRewardsWithFiat[]) =>
+    new Map(
+        chainsRewardsWithFiat.map(chainRewards => [
+            getChainAddressKey({
+                chainId: chainRewards.chainId,
+                address: chainRewards.address,
+            }),
+            chainRewards,
+        ]),
+    );
+
+const getTotalFiatAmountFromClaimableRewards = (
+    claimableRewards: ChainRewardsWithFiat['rewards'],
+) => {
+    const fiatClaimableAmounts = claimableRewards.flatMap(reward =>
+        reward.fiat.claimable === null ? [] : [reward.fiat.claimable],
+    );
+
+    if (fiatClaimableAmounts.length !== claimableRewards.length) {
+        return null;
+    }
+
+    return asBaseCurrencyAmount(
+        fiatClaimableAmounts.reduce(
+            (total, fiatClaimable) => total.plus(fiatClaimable),
+            new BigNumber(0),
+        ),
+    );
+};
+
+const getStablecoinYieldAccountRewardsFromMap = (
+    account: Account,
+    chainsRewardsByAccountKey: Map<string, ChainRewardsWithFiat>,
+): StablecoinYieldAccountRewards | null => {
+    const accountChainAddressKey = getAccountChainAddressKey(account);
+
+    if (accountChainAddressKey === null) {
+        return null;
+    }
+
+    const chainRewards = chainsRewardsByAccountKey.get(accountChainAddressKey);
+
+    if (!chainRewards) {
+        return null;
+    }
+
+    const claimableRewards = chainRewards.rewards.filter(reward =>
+        new BigNumber(reward.claimable).gt(0),
+    );
+
+    if (claimableRewards.length === 0) {
+        return null;
+    }
+
+    return {
+        account,
+        rewards: claimableRewards,
+        totalFiatClaimableAmount: getTotalFiatAmountFromClaimableRewards(claimableRewards),
+    };
 };
 
 export const getActiveStablecoinYieldClaimAccounts = ({
@@ -67,54 +138,33 @@ export const getActiveStablecoinYieldClaimAccounts = ({
     return Array.from(activeAccountsByKey.values());
 };
 
+export const getStablecoinYieldAccountRewards = ({
+    account,
+    chainsRewardsWithFiat,
+}: {
+    account: Account;
+    chainsRewardsWithFiat: ChainRewardsWithFiat[];
+}): StablecoinYieldAccountRewards | null =>
+    getStablecoinYieldAccountRewardsFromMap(
+        account,
+        getChainsRewardsByAccountKey(chainsRewardsWithFiat),
+    );
+
 export const buildStablecoinYieldClaimSummaries = ({
     activeAccounts,
     chainsRewardsWithFiat,
 }: BuildStablecoinYieldClaimSummariesParams): StablecoinYieldClaimSummary[] => {
-    const chainsRewardsByAccountKey = new Map(
-        chainsRewardsWithFiat.map(chainRewards => [
-            getChainAddressKey({
-                chainId: chainRewards.chainId,
-                address: chainRewards.address,
-            }),
-            chainRewards,
-        ]),
-    );
+    const chainsRewardsByAccountKey = getChainsRewardsByAccountKey(chainsRewardsWithFiat);
 
     return activeAccounts.flatMap(account => {
-        const accountChainAddressKey = getAccountChainAddressKey(account);
-
-        if (accountChainAddressKey === null) {
-            return [];
-        }
-
-        const chainRewards = chainsRewardsByAccountKey.get(accountChainAddressKey);
-
-        if (!chainRewards) {
-            return [];
-        }
-
-        const claimableRewards = chainRewards.rewards.filter(reward =>
-            new BigNumber(reward.claimable).gt(0),
+        const accountRewards = getStablecoinYieldAccountRewardsFromMap(
+            account,
+            chainsRewardsByAccountKey,
         );
 
-        if (claimableRewards.length === 0) {
+        if (!accountRewards) {
             return [];
         }
-
-        const fiatClaimableAmounts = claimableRewards.flatMap(reward =>
-            reward.fiat.claimable === null ? [] : [reward.fiat.claimable],
-        );
-
-        const fiatClaimableAmount =
-            fiatClaimableAmounts.length === claimableRewards.length
-                ? asBaseCurrencyAmount(
-                      fiatClaimableAmounts.reduce(
-                          (total, fiatClaimable) => total.plus(fiatClaimable),
-                          new BigNumber(0),
-                      ),
-                  )
-                : null;
 
         return [
             {
@@ -123,8 +173,8 @@ export const buildStablecoinYieldClaimSummaries = ({
                 accountLabel: account.accountLabel,
                 accountDescriptor: account.descriptor,
                 networkSymbol: account.symbol,
-                claimableRewardsCount: claimableRewards.length,
-                fiatClaimableAmount,
+                claimableRewardsCount: accountRewards.rewards.length,
+                fiatClaimableAmount: accountRewards.totalFiatClaimableAmount,
             },
         ];
     });
