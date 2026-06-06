@@ -1871,6 +1871,7 @@ export const messages = {
             subtitle: 'Connect your Trezor or sync coins to view and track assets.',
             addSubtitle: 'Start adding coins you want to use.',
             receiveSubtitle: 'Connect your Trezor or sync coins to view and receive assets.',
+            searchTitle: 'No results found',
             searchAgain: 'Search again',
         },
         viewOnlyAddAccountAlert: {
