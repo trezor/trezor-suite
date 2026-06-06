@@ -11193,6 +11193,7 @@ __metadata:
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
