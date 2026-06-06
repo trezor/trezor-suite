@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { View } from 'react-native';
 import Animated, {
     type EntryExitAnimationFunction,
@@ -19,7 +19,6 @@ import { FilterCountBadge } from './FilterCountBadge';
 type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
-    searchValue?: string;
     flowType?: AddCoinFlowType;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
@@ -38,7 +37,6 @@ const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
 export const SearchableAccountsListHeader = ({
     title,
     onSearchInputChange,
-    searchValue,
     flowType,
     closeActionType,
     closeAction,
@@ -49,12 +47,6 @@ export const SearchableAccountsListHeader = ({
     const { applyStyle } = useNativeStyles();
 
     const [isSearchActive, setIsSearchActive] = useState(false);
-
-    useEffect(() => {
-        if (searchValue === '') {
-            setIsSearchActive(false);
-        }
-    }, [searchValue]);
 
     const handleHideFilter = () => {
         setIsSearchActive(false);

@@ -59,7 +59,6 @@ export const AccountsListWithFilter = ({
 
     const handleClearFilters = () => {
         setFilteredNetworks([]);
-        setSearchValue('');
     };
 
     return (
@@ -67,7 +66,6 @@ export const AccountsListWithFilter = ({
             <SearchableAccountsListHeader
                 title={title}
                 onSearchInputChange={setSearchValue}
-                searchValue={searchValue}
                 flowType={flowType}
                 closeActionType={closeActionType}
                 closeAction={closeAction}
@@ -82,7 +80,7 @@ export const AccountsListWithFilter = ({
                     networkFilter={filteredNetworks}
                     isSendFlow={isSendFlow}
                 />
-                {(filteredNetworks.length > 0 || searchValue.length > 0) && (
+                {filteredNetworks.length > 0 && (
                     <Box alignItems="center">
                         <Button
                             size="medium"
