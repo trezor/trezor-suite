@@ -40,6 +40,26 @@ export type YieldFlowCompleteValue = {
     amount: string;
 };
 
+type StablecoinYieldClaimUnsignedTransactionFee =
+    | {
+          gasPrice: string;
+          maxFeePerGas?: never;
+          maxPriorityFeePerGas?: never;
+      }
+    | {
+          gasPrice?: never;
+          maxFeePerGas: string;
+          maxPriorityFeePerGas: string;
+      };
+
+export type StablecoinYieldClaimUnsignedTransaction = {
+    to: string;
+    data: string;
+    chainId: number;
+    gasLimit: string;
+    nonce: string;
+} & StablecoinYieldClaimUnsignedTransactionFee;
+
 export type YieldApproveModalState = {
     amount: string;
     contractAddress: string;

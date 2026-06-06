@@ -18,15 +18,27 @@ export type ClaimReward = {
     };
 };
 
-export type UnsignedClaimTransaction = {
+type UnsignedClaimTransactionBase = {
     to: EvmHexString;
     data: EvmHexString;
     chainId: number;
     gasLimit: string;
     nonce: string;
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
 };
+
+type UnsignedClaimTransactionFee =
+    | {
+          gasPrice: string;
+          maxFeePerGas?: never;
+          maxPriorityFeePerGas?: never;
+      }
+    | {
+          gasPrice?: never;
+          maxFeePerGas: string;
+          maxPriorityFeePerGas: string;
+      };
+
+export type UnsignedClaimTransaction = UnsignedClaimTransactionBase & UnsignedClaimTransactionFee;
 
 type BuildClaimCalldataParams = {
     senderAddress: string;
@@ -39,9 +51,7 @@ type BuildUnsignedClaimTransactionParams = {
     chainId: number;
     fee: {
         gasLimit: string;
-        maxFeePerGas?: string;
-        maxPriorityFeePerGas?: string;
-    };
+    } & UnsignedClaimTransactionFee;
     nonce: string | number;
 };
 
@@ -153,6 +163,13 @@ export const buildUnsignedClaimTransaction = ({
             ...commonFields,
             maxFeePerGas: fee.maxFeePerGas,
             maxPriorityFeePerGas: fee.maxPriorityFeePerGas,
+        };
+    }
+
+    if (fee.gasPrice) {
+        return {
+            ...commonFields,
+            gasPrice: fee.gasPrice,
         };
     }
 

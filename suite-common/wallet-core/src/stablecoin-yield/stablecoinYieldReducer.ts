@@ -10,7 +10,10 @@ import {
 import { isSafeObjectKey } from '@trezor/utils';
 
 import type {
+    StablecoinYieldClaimUnsignedTransaction,
+    YieldActionFlowType,
     YieldApproveModalState,
+    YieldFlowCompleteRewardItem,
     YieldFlowStepId,
     YieldFlowType,
     YieldPendingTransactionState,
@@ -24,11 +27,31 @@ type StablecoinYieldSerializedTx = {
     symbol: NetworkSymbol;
 };
 
-type StablecoinYieldActionReviewState = {
-    amount: string;
-    receiptAmount: string;
-    unsignedTransaction: string;
-};
+export type StablecoinYieldActionReviewState =
+    | {
+          type: YieldActionFlowType;
+          amount: string;
+          receiptAmount: string;
+          unsignedTransaction: string;
+      }
+    | {
+          type: 'claim';
+          rewards: YieldFlowCompleteRewardItem[];
+          unsignedTransaction: StablecoinYieldClaimUnsignedTransaction;
+      };
+
+type StablecoinYieldStoreActionReviewDataPayload =
+    | (StablecoinYieldSessionActionPayload & {
+          flowType: YieldActionFlowType;
+          amount: string;
+          receiptAmount: string;
+          unsignedTransaction: string;
+      })
+    | (StablecoinYieldSessionActionPayload & {
+          flowType: 'claim';
+          rewards: YieldFlowCompleteRewardItem[];
+          unsignedTransaction: StablecoinYieldClaimUnsignedTransaction;
+      });
 
 export type YieldAllowanceStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
@@ -65,6 +88,7 @@ export type StablecoinYieldSessionState = {
     result: {
         completedAmount: string;
         completedReceiptAmount: string;
+        completedRewards: YieldFlowCompleteRewardItem[];
     };
 };
 
@@ -106,6 +130,7 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
     result: {
         completedAmount: '0',
         completedReceiptAmount: '0',
+        completedRewards: [],
     },
 };
 
@@ -128,7 +153,10 @@ const createInitialStablecoinYieldSessionState = (): StablecoinYieldSessionState
     ...initialStablecoinYieldSessionState,
     approval: { ...initialStablecoinYieldSessionState.approval },
     action: { ...initialStablecoinYieldSessionState.action },
-    result: { ...initialStablecoinYieldSessionState.result },
+    result: {
+        ...initialStablecoinYieldSessionState.result,
+        completedRewards: [...initialStablecoinYieldSessionState.result.completedRewards],
+    },
 });
 
 export const getStablecoinYieldSessionKey = (flowKey: string) => `yield-session:${flowKey}`;
@@ -358,13 +386,22 @@ export const stablecoinYieldSlice = createSlice({
         },
         storeActionReviewData(
             state,
-            action: PayloadAction<
-                StablecoinYieldSessionActionPayload & StablecoinYieldActionReviewState
-            >,
+            action: PayloadAction<StablecoinYieldStoreActionReviewDataPayload>,
         ) {
             withSession(state, action.payload, session => {
+                if (action.payload.flowType === 'claim') {
+                    session.action.review = {
+                        type: 'claim',
+                        rewards: action.payload.rewards,
+                        unsignedTransaction: action.payload.unsignedTransaction,
+                    };
+
+                    return;
+                }
+
                 session.action.amount = action.payload.amount;
                 session.action.review = {
+                    type: action.payload.flowType,
                     amount: action.payload.amount,
                     receiptAmount: action.payload.receiptAmount,
                     unsignedTransaction: action.payload.unsignedTransaction,
@@ -399,8 +436,13 @@ export const stablecoinYieldSlice = createSlice({
             >,
         ) {
             withSession(state, action.payload, session => {
-                session.result.completedAmount = action.payload.amount;
-                session.result.completedReceiptAmount = session.action.pendingReceiptAmount;
+                if (session.action.review?.type === 'claim') {
+                    session.result.completedRewards = session.action.review.rewards;
+                } else {
+                    session.result.completedAmount = action.payload.amount;
+                    session.result.completedReceiptAmount = session.action.pendingReceiptAmount;
+                }
+
                 session.action.pendingTransaction = null;
                 session.action.review = null;
                 session.step = 'complete';
