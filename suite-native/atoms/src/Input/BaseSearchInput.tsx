@@ -13,6 +13,7 @@ import { useSearchInputCallbacks } from './useSearchInputCallbacks';
 export type BaseSearchInputProps = {
     onChange: (value: string) => void;
     placeholder?: string;
+    autoFocus?: boolean;
     isDisabled?: boolean;
     maxLength?: number;
     elevation?: SurfaceElevation;
@@ -21,7 +22,16 @@ export type BaseSearchInputProps = {
 };
 export const BaseSearchInput = forwardRef<TextInput, BaseSearchInputProps>(
     (
-        { onChange, placeholder, maxLength, isDisabled = false, elevation = '0', onFocus, onBlur },
+        {
+            onChange,
+            placeholder,
+            maxLength,
+            autoFocus,
+            isDisabled = false,
+            elevation = '0',
+            onFocus,
+            onBlur,
+        },
         ref,
     ) => {
         const { applyStyle, utils } = useNativeStyles();
@@ -45,6 +55,8 @@ export const BaseSearchInput = forwardRef<TextInput, BaseSearchInputProps>(
                         onChangeText={handleOnChangeText}
                         placeholder={placeholder}
                         placeholderTextColor={utils.colors.contentSecondary}
+                        // eslint-disable-next-line jsx-a11y/no-autofocus
+                        autoFocus={autoFocus}
                         editable={!isDisabled}
                         onFocus={() => {
                             setIsFocused(true);

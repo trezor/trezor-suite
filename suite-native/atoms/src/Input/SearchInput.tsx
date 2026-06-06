@@ -7,8 +7,9 @@ import { BaseSearchInput } from './BaseSearchInput';
 export type SearchInputProps = {
     onChange: (value: string) => void;
     placeholder?: string;
-    isDisabled?: boolean;
     maxLength?: number;
+    autoFocus?: boolean;
+    isDisabled?: boolean;
     elevation?: SurfaceElevation;
     onFocus?: () => void;
     onBlur?: () => void;
@@ -18,6 +19,7 @@ export const SearchInput = ({
     onChange,
     placeholder,
     maxLength,
+    autoFocus,
     isDisabled = false,
     elevation = '0',
     onFocus,
@@ -30,6 +32,8 @@ export const SearchInput = ({
             onChange={onChange}
             placeholder={placeholder}
             maxLength={maxLength}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus={autoFocus}
             isDisabled={isDisabled}
             elevation={elevation}
             onFocus={onFocus}

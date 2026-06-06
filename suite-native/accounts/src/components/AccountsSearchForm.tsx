@@ -48,7 +48,7 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
             )}
             exiting={FadeOut.duration(SEARCH_INPUT_ANIMATION_DURATION)}
         >
-            <HStack marginHorizontal="sp16" spacing="sp16" justifyContent="space-between">
+            <HStack marginRight="sp16" spacing="sp16" justifyContent="space-between">
                 <Animated.View
                     entering={SlideInLeft.duration(SEARCH_INPUT_ANIMATION_DURATION).delay(
                         SEARCH_INPUT_ANIMATION_DELAY,
@@ -60,6 +60,8 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
                         placeholder={translate('accounts.searchForm.placeholder')}
                         onChange={setInputText}
                         maxLength={MAX_SEARCH_VALUE_LENGTH}
+                        //  eslint-disable-next-line jsx-a11y/no-autofocus
+                        autoFocus
                     />
                 </Animated.View>
 
