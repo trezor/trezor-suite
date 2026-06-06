@@ -24,6 +24,8 @@ const unsignedTransaction = {
     data: '0xabc',
     chainId: 1,
     gasLimit: '21000',
+    maxFeePerGas: '2000000000',
+    maxPriorityFeePerGas: '1000000000',
     nonce: '10',
 } as const;
 
@@ -66,6 +68,28 @@ describe('claimSigningUtils', () => {
             gasLimit: '21000',
             maxFeePerGas: '2000000000',
             maxPriorityFeePerGas: '1000000000',
+            nonce: '7',
+        });
+    });
+
+    it('builds an unsigned legacy claim transaction for simulation', () => {
+        expect(
+            buildUnsignedClaimTransaction({
+                contractAddress: CLAIM_CONTRACT,
+                data: '0x1234',
+                chainId: 1,
+                fee: {
+                    gasLimit: '21000',
+                    gasPrice: '1000000000',
+                },
+                nonce: '7',
+            }),
+        ).toEqual({
+            to: CLAIM_CONTRACT,
+            data: '0x1234',
+            chainId: 1,
+            gasLimit: '21000',
+            gasPrice: '1000000000',
             nonce: '7',
         });
     });

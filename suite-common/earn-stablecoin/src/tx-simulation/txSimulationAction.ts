@@ -18,6 +18,14 @@ const partialAccount = z.object({
     path: z.string(),
 });
 
+const claimUnsignedTxBase = {
+    to: evmHexString,
+    data: evmHexString,
+    chainId: z.number(),
+    gasLimit: z.string(),
+    nonce: z.union([z.number(), z.string()]).transform(value => value.toString()),
+};
+
 const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
     z.strictObject({
         flow: z.union([z.literal('deposit'), z.literal('withdraw')]),
@@ -27,15 +35,17 @@ const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
     z.strictObject({
         flow: z.literal('claim'),
         account: partialAccount,
-        unsignedTx: z.object({
-            to: evmHexString,
-            data: evmHexString,
-            chainId: z.number(),
-            gasLimit: z.string(),
-            maxFeePerGas: z.string().optional(),
-            maxPriorityFeePerGas: z.string().optional(),
-            nonce: z.union([z.number(), z.string()]).transform(value => value.toString()),
-        }),
+        unsignedTx: z.union([
+            z.strictObject({
+                ...claimUnsignedTxBase,
+                maxFeePerGas: z.string(),
+                maxPriorityFeePerGas: z.string(),
+            }),
+            z.strictObject({
+                ...claimUnsignedTxBase,
+                gasPrice: z.string(),
+            }),
+        ]),
     }),
 ]);
 
@@ -71,15 +81,14 @@ function composeUnsignedEvmTx(
         }
 
         case 'claim': {
-            const {
-                to,
-                data,
-                chainId,
-                gasLimit,
-                maxFeePerGas = '0x0',
-                maxPriorityFeePerGas = '0x0',
-                nonce,
-            } = params.unsignedTx;
+            const { to, data, chainId, gasLimit, nonce } = params.unsignedTx;
+            const feeFields =
+                'gasPrice' in params.unsignedTx
+                    ? { gasPrice: params.unsignedTx.gasPrice }
+                    : {
+                          maxFeePerGas: params.unsignedTx.maxFeePerGas,
+                          maxPriorityFeePerGas: params.unsignedTx.maxPriorityFeePerGas,
+                      };
 
             return {
                 to,
@@ -87,8 +96,7 @@ function composeUnsignedEvmTx(
                 data,
                 chainId,
                 gasLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
+                ...feeFields,
                 nonce,
             };
         }

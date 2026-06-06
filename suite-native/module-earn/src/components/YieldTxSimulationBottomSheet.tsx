@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
 
-import { composeStablecoinYieldTxSimulationAction } from '@suite-common/earn-stablecoin/src/tx-simulation';
+import {
+    type StablecoinYieldTxSimulationParams,
+    composeStablecoinYieldTxSimulationAction,
+} from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { type Account } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
@@ -13,34 +16,44 @@ import { EvmTxSimulationReviewContent } from '@suite-native/tx-simulation';
 
 import { STABLECOIN_YIELD_NATIVE_SOURCE_ORIGIN } from '../constants';
 import { YieldDepositTxSimulationHeader } from './YieldDepositTxSimulationHeader';
-import { type PreparedYieldDepositAction } from '../hooks/useYieldDepositFees';
 
-type YieldDepositTxSimulationBottomSheetProps = {
+type ClaimTxSimulationParams = Extract<StablecoinYieldTxSimulationParams, { flow: 'claim' }>;
+
+type YieldTxSimulationBottomSheetProps = {
     account: Account;
     onCancel: () => void;
     onConfirm: () => void;
-    preparedAction: PreparedYieldDepositAction;
     ref: BottomSheetModalRef;
-};
+} & (
+    | {
+          flow: 'deposit' | 'withdraw';
+          unsignedTx: string;
+      }
+    | {
+          flow: 'claim';
+          unsignedTx: ClaimTxSimulationParams['unsignedTx'];
+      }
+);
 
-export const YieldDepositTxSimulationBottomSheet = ({
+export const YieldTxSimulationBottomSheet = ({
     account,
+    flow,
     onCancel,
     onConfirm,
-    preparedAction,
     ref,
-}: YieldDepositTxSimulationBottomSheetProps) => {
+    unsignedTx,
+}: YieldTxSimulationBottomSheetProps) => {
     const parsedData = useMemo(
         () =>
             composeStablecoinYieldTxSimulationAction(
                 {
-                    flow: 'deposit',
+                    flow,
                     account,
-                    unsignedTx: preparedAction.unsignedTransaction,
+                    unsignedTx,
                 },
                 STABLECOIN_YIELD_NATIVE_SOURCE_ORIGIN,
             ),
-        [account, preparedAction.unsignedTransaction],
+        [account, flow, unsignedTx],
     );
 
     return (

@@ -142,7 +142,7 @@ export const YieldDepositReviewScreen = () => {
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
-    const review = session?.action.review;
+    const review = session?.action.review?.type === 'deposit' ? session.action.review : null;
     const feePreview = useMemo(
         () => (review ? buildYieldDepositFeePreview(review.unsignedTransaction) : null),
         [review],

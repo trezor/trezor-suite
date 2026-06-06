@@ -14,6 +14,7 @@ import {
     buildStablecoinYieldClaimSummaries,
     getActiveStablecoinYieldClaimAccounts,
     getStablecoinYieldAccountRewards,
+    getStablecoinYieldClaimRewardsSnapshot,
     getTotalFiatClaimableAmount,
 } from '../stablecoinYieldClaimSummaryUtils';
 
@@ -195,5 +196,34 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
         expect(accountRewards?.totalFiatClaimableAmount?.toString()).toBe('3.75');
         expect(accountRewards?.rewards).toHaveLength(2);
         expect(getTotalFiatClaimableAmount(summaries)?.toString()).toBe('3.75');
+    });
+
+    it('builds stable claim reward snapshots with token and fiat values', () => {
+        const accountRewards = getStablecoinYieldAccountRewards({
+            account: ethereumAccount,
+            chainsRewardsWithFiat: [
+                createChainRewards({
+                    account: ethereumAccount,
+                    rewards: [createReward({ claimable: '1000000', fiatClaimable: '1.25' })],
+                }),
+            ],
+        });
+
+        if (!accountRewards) {
+            throw new Error('Expected claimable account rewards.');
+        }
+
+        expect(getStablecoinYieldClaimRewardsSnapshot(accountRewards)).toEqual([
+            {
+                token: {
+                    networkSymbol: 'eth',
+                    symbol: 'USDC',
+                    decimals: 6,
+                    contractAddress: '0x0000000000000000000000000000000000000001',
+                },
+                value: '1',
+                fiatValue: '1.25',
+            },
+        ]);
     });
 });
