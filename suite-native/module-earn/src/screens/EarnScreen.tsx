@@ -48,7 +48,10 @@ const EarnScreenContent = () => {
     const {
         promoListData: stablecoinYieldPromoItems,
         activeItems: stablecoinYieldActiveItems,
+        stablecoinYieldClaimSummaries,
+        totalFiatClaimableAmount: stablecoinYieldTotalFiatClaimableAmount,
         isLoading: isYieldLoading,
+        isClaimSummariesLoading,
     } = useStablecoinYieldListData();
 
     const staking = useStakingPromoNavigation();
@@ -142,9 +145,14 @@ const EarnScreenContent = () => {
                     ListHeaderComponent={
                         <EarnScreenListHeader
                             isStablecoinYieldLoading={isYieldLoading}
+                            isStablecoinYieldClaimSummariesLoading={isClaimSummariesLoading}
                             cardanoStakingAccountKey={accountStakedWithFiveBinaries?.key}
                             stakingActiveItems={stakingActiveItems}
                             stablecoinYieldActiveItems={stablecoinYieldActiveItems}
+                            stablecoinYieldClaimSummaries={stablecoinYieldClaimSummaries}
+                            stablecoinYieldTotalFiatClaimableAmount={
+                                stablecoinYieldTotalFiatClaimableAmount
+                            }
                         />
                     }
                     keyExtractor={getEarnListItemKey}

@@ -106,17 +106,15 @@ export const buildStablecoinYieldClaimSummaries = ({
             reward.fiat.claimable === null ? [] : [reward.fiat.claimable],
         );
 
-        const isFiatClaimableAmountComplete =
-            fiatClaimableAmounts.length === claimableRewards.length;
-
-        const fiatClaimableAmount = isFiatClaimableAmountComplete
-            ? asBaseCurrencyAmount(
-                  fiatClaimableAmounts.reduce(
-                      (total, fiatClaimable) => total.plus(fiatClaimable),
-                      new BigNumber(0),
-                  ),
-              )
-            : null;
+        const fiatClaimableAmount =
+            fiatClaimableAmounts.length === claimableRewards.length
+                ? asBaseCurrencyAmount(
+                      fiatClaimableAmounts.reduce(
+                          (total, fiatClaimable) => total.plus(fiatClaimable),
+                          new BigNumber(0),
+                      ),
+                  )
+                : null;
 
         return [
             {
@@ -127,8 +125,30 @@ export const buildStablecoinYieldClaimSummaries = ({
                 networkSymbol: account.symbol,
                 claimableRewardsCount: claimableRewards.length,
                 fiatClaimableAmount,
-                isFiatClaimableAmountComplete,
             },
         ];
     });
+};
+
+export const getTotalFiatClaimableAmount = (
+    stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[],
+) => {
+    if (stablecoinYieldClaimSummaries.length === 0) {
+        return null;
+    }
+
+    const fiatClaimableAmounts = stablecoinYieldClaimSummaries.flatMap(claimSummary =>
+        claimSummary.fiatClaimableAmount === null ? [] : [claimSummary.fiatClaimableAmount],
+    );
+
+    if (fiatClaimableAmounts.length !== stablecoinYieldClaimSummaries.length) {
+        return null;
+    }
+
+    return asBaseCurrencyAmount(
+        fiatClaimableAmounts.reduce(
+            (total, fiatAmount) => total.plus(fiatAmount),
+            new BigNumber(0),
+        ),
+    );
 };

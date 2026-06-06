@@ -2589,10 +2589,15 @@ export const messages = {
             depositsCard: {
                 title: 'Your deposits',
                 networkStaking: '{networkName} staking',
+                availableRewards: 'Available rewards',
+                claimRewardsButton: 'Claim rewards',
             },
             activeSheet: {
                 stakingTitle: 'Your stakes',
                 stablecoinYieldTitle: 'Your yields',
+            },
+            claimRewards: {
+                title: 'Claim rewards from an account',
             },
             chooseAccountSheet: {
                 title: 'Choose account',
