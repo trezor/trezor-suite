@@ -27,6 +27,11 @@ const BLOCK = {
     coin: { shortcut: 'btc' },
 };
 
+// Non-UTXO block used to exercise the block-mined sync throttle (bitcoin-family is exempt).
+const ETH_BLOCK = {
+    coin: { shortcut: 'eth' },
+};
+
 const parseTx = (data: any) => ({
     targets: [],
     tokens: [],
@@ -346,22 +351,55 @@ export const onBlock = analyzeTransactions
             result: [blockchainActions.synced.type],
         },
         {
-            // Throttle path: when lastSyncMs is recent, onBlockMinedThunk must short-circuit
-            // before dispatching anything (no getAccountInfo, no synced action).
-            description: 'Throttled: recent lastSyncMs suppresses block-triggered sync',
+            // Throttle path: a non-bitcoin (fast-block) network with a recent lastSyncMs must
+            // short-circuit before dispatching anything (no getAccountInfo, no synced action).
+            description: 'Throttled: recent lastSyncMs suppresses block-triggered sync (non-bitcoin)',
             connect: {
                 history: { total: 0 },
             },
-            block: BLOCK,
+            block: ETH_BLOCK,
             state: {
-                accounts: [DEFAULT_ACCOUNT],
+                accounts: [
+                    {
+                        ...DEFAULT_ACCOUNT,
+                        symbol: 'eth',
+                        networkType: 'ethereum',
+                        key: 'xpub-eth-deviceState',
+                    },
+                ],
                 blockchain: {
                     // Fixed far-future timestamp keeps the throttle window engaged deterministically
                     // (independent of wall clock / fake timers). 4_102_444_800_000 ≈ year 2100.
-                    btc: { lastSyncMs: 4_102_444_800_000 },
+                    eth: { lastSyncMs: 4_102_444_800_000 },
                 },
             },
             result: undefined,
+        },
+        {
+            // Bitcoin-family (UTXO) blocks bypass the throttle: their block interval far exceeds
+            // the window, so every block must refresh accounts even with a recent lastSyncMs.
+            description: 'Not throttled: bitcoin syncs on every block despite recent lastSyncMs',
+            connect: {
+                history: { total: 1, unconfirmed: 0 },
+            },
+            block: BLOCK,
+            state: {
+                accounts: [{ ...DEFAULT_ACCOUNT, history: { total: 0, unconfirmed: 0 } }],
+                blockchain: {
+                    // Full default entry (the harness shallow-merges per symbol) plus a recent
+                    // lastSyncMs, so the sync still has the fields it needs while proving the
+                    // throttle is bypassed for bitcoin.
+                    btc: {
+                        connected: false,
+                        blockHash: '0',
+                        blockHeight: 0,
+                        version: '0',
+                        backends: {},
+                        lastSyncMs: 4_102_444_800_000,
+                    },
+                },
+            },
+            result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
         },
     ] as any);
 

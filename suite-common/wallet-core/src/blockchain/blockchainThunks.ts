@@ -310,11 +310,16 @@ export const onBlockMinedThunk = createThunk(
             return;
         }
 
-        // Throttle block-mined-triggered sync per symbol (see BLOCK_TRIGGERED_SYNC_THROTTLE_MS).
-        const blockchain = selectBlockchainState(getState());
-        const lastSyncMs = blockchain[symbol]?.lastSyncMs ?? 0;
-        if (Date.now() - lastSyncMs < BLOCK_TRIGGERED_SYNC_THROTTLE_MS) {
-            return;
+        // Throttle block-mined-triggered sync per symbol, but only for fast-block (non-UTXO)
+        // chains. Bitcoin-family block intervals far exceed the throttle window, so throttling
+        // them yields no benefit and only delays the post-block account refresh (e.g. regtest,
+        // which mines on demand). See BLOCK_TRIGGERED_SYNC_THROTTLE_MS.
+        if (network?.networkType !== 'bitcoin') {
+            const blockchain = selectBlockchainState(getState());
+            const lastSyncMs = blockchain[symbol]?.lastSyncMs ?? 0;
+            if (Date.now() - lastSyncMs < BLOCK_TRIGGERED_SYNC_THROTTLE_MS) {
+                return;
+            }
         }
 
         return dispatch(syncAccountsWithBlockchainThunk(symbol));
