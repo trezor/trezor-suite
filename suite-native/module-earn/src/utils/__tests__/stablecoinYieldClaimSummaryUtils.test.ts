@@ -13,6 +13,7 @@ import { type StablecoinYieldEarnItem } from '../../types';
 import {
     buildStablecoinYieldClaimSummaries,
     getActiveStablecoinYieldClaimAccounts,
+    getTotalFiatClaimableAmount,
 } from '../stablecoinYieldClaimSummaryUtils';
 
 const underlyingTokenContract = toTokenAddress('0x0000000000000000000000000000000000000001');
@@ -164,9 +165,9 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                 networkSymbol: ethereumAccount.symbol,
                 claimableRewardsCount: 1,
                 fiatClaimableAmount: null,
-                isFiatClaimableAmountComplete: false,
             },
         ]);
+        expect(getTotalFiatClaimableAmount(summaries)).toBeNull();
     });
 
     it('sums fiat values only when all claimable rewards have fiat values', () => {
@@ -185,6 +186,6 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
 
         expect(summaries[0]?.claimableRewardsCount).toBe(2);
         expect(summaries[0]?.fiatClaimableAmount?.toString()).toBe('3.75');
-        expect(summaries[0]?.isFiatClaimableAmountComplete).toBe(true);
+        expect(getTotalFiatClaimableAmount(summaries)?.toString()).toBe('3.75');
     });
 });

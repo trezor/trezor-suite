@@ -11,16 +11,18 @@ import {
     selectCurrentFiatRates,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { type StablecoinYieldClaimSummary, type StablecoinYieldEarnItem } from '../types';
 import {
     buildStablecoinYieldClaimSummaries,
     getActiveStablecoinYieldClaimAccounts,
+    getTotalFiatClaimableAmount,
 } from '../utils/stablecoinYieldClaimSummaryUtils';
 
 export type StablecoinYieldClaimSummariesState = {
     stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
+    totalFiatClaimableAmount: BaseCurrencyAmount | null;
     isClaimSummariesLoading: boolean;
     isClaimSummariesFiatLoading: boolean;
     isClaimSummariesError: boolean;
@@ -78,10 +80,15 @@ export const useStablecoinYieldClaimSummaries = ({
             }),
         [activeClaimAccounts, chainsRewardsWithFiat],
     );
+    const totalFiatClaimableAmount = useMemo(
+        () => getTotalFiatClaimableAmount(stablecoinYieldClaimSummaries),
+        [stablecoinYieldClaimSummaries],
+    );
 
     return useMemo(
         () => ({
             stablecoinYieldClaimSummaries,
+            totalFiatClaimableAmount,
             isClaimSummariesLoading: merklRewardsQueryEntries.length > 0 && isMerklRewardsLoading,
             isClaimSummariesFiatLoading: missingRateTickersQuery.isLoading,
             isClaimSummariesError: isMerklRewardsError,
@@ -94,6 +101,7 @@ export const useStablecoinYieldClaimSummaries = ({
             merklRewardsQueryEntries.length,
             missingRateTickersQuery.isLoading,
             stablecoinYieldClaimSummaries,
+            totalFiatClaimableAmount,
         ],
     );
 };
