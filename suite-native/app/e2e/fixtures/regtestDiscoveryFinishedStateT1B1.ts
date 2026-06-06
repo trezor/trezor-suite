@@ -158,7 +158,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                     release: {
                         required: false,
                         version: [1, 13, 1],
-                        min_bridge_version: [2, 0, 25],
                         min_bootloader_version: [1, 12, 0],
                         min_firmware_version: [1, 12, 0],
                         bootloader_version: [1, 12, 1],
