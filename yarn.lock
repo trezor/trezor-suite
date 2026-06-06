@@ -10718,7 +10718,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/schemas@workspace:^, @suite-common/schemas@workspace:suite-common/schemas":
+"@suite-common/schemas@workspace:*, @suite-common/schemas@workspace:^, @suite-common/schemas@workspace:suite-common/schemas":
   version: 0.0.0-use.local
   resolution: "@suite-common/schemas@workspace:suite-common/schemas"
   dependencies:
@@ -12877,6 +12877,7 @@ __metadata:
     "@suite-common/mev": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/schemas": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

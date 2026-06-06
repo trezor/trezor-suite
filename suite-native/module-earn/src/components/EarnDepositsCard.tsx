@@ -1,3 +1,7 @@
+import { useCallback } from 'react';
+
+import { useNavigation } from '@react-navigation/native';
+
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     Box,
@@ -9,6 +13,12 @@ import {
 } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+    YieldStackRoutes,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
@@ -26,6 +36,8 @@ import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRe
 const cardHeaderStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
 }));
+
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>;
 
 type EarnDepositsCardProps = {
     stakingActiveItems: StakingEarnItem[];
@@ -45,6 +57,7 @@ export const EarnDepositsCard = ({
     isStablecoinYieldClaimSummariesLoading,
 }: EarnDepositsCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation = useNavigation<NavigationProp>();
     const { stakingRow, stablecoinYieldRow, totalDepositedFiatAmount } = useEarnDepositsCardData({
         stakingActiveItems,
         stablecoinYieldActiveItems,
@@ -68,6 +81,34 @@ export const EarnDepositsCard = ({
         openModal: openStablecoinYieldClaimRewardsSheet,
     } = useBottomSheetModal();
 
+    const handleStablecoinYieldClaimRewardPress = useCallback(
+        ({ accountKey }: StablecoinYieldClaimSummary) => {
+            navigation.navigate(RootStackRoutes.YieldNavigator, {
+                screen: YieldStackRoutes.YieldClaim,
+                params: { accountKey },
+            });
+        },
+        [navigation],
+    );
+
+    const handleStablecoinYieldClaimRewardsPress = useCallback(() => {
+        if (stablecoinYieldClaimSummaries.length === 1) {
+            const claimReward = stablecoinYieldClaimSummaries[0];
+
+            if (claimReward) {
+                handleStablecoinYieldClaimRewardPress(claimReward);
+            }
+
+            return;
+        }
+
+        openStablecoinYieldClaimRewardsSheet();
+    }, [
+        handleStablecoinYieldClaimRewardPress,
+        openStablecoinYieldClaimRewardsSheet,
+        stablecoinYieldClaimSummaries,
+    ]);
+
     return (
         <>
             <Box marginBottom="sp32">
@@ -89,7 +130,7 @@ export const EarnDepositsCard = ({
                                 claimRewards={stablecoinYieldClaimSummaries}
                                 totalFiatClaimableAmount={stablecoinYieldTotalFiatClaimableAmount}
                                 isLoading={isStablecoinYieldClaimSummariesLoading}
-                                onPress={openStablecoinYieldClaimRewardsSheet}
+                                onPress={handleStablecoinYieldClaimRewardsPress}
                             />
                         </VStack>
                     </Box>
@@ -131,6 +172,7 @@ export const EarnDepositsCard = ({
             <StablecoinYieldClaimRewardsBottomSheet
                 ref={stablecoinYieldClaimRewardsSheetRef}
                 claimRewards={stablecoinYieldClaimSummaries}
+                onClaimRewardPress={handleStablecoinYieldClaimRewardPress}
                 onClose={closeStablecoinYieldClaimRewardsSheet}
             />
         </>

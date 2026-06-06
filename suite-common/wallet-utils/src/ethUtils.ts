@@ -1,3 +1,5 @@
+import { fromWei, toWei } from 'web3-utils';
+
 import { Calldata } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { type EvmTransactionPurpose } from '@suite-common/wallet-types';
@@ -32,6 +34,27 @@ export const strip = (str: string): string => {
 
     return padLeftEven(str);
 };
+
+export const evmHexToBigNumber = (hex: `0x${string}`) => new BigNumber(strip(hex) || '0', 16);
+
+export const evmHexWeiToGwei = (hex: `0x${string}`) =>
+    fromWei(evmHexToBigNumber(hex).toFixed(0), 'gwei');
+
+export const evmNumberToHex = (value: string | number): `0x${string}` => {
+    if (typeof value === 'string' && value.startsWith('0x')) {
+        return value as `0x${string}`;
+    }
+
+    const number = new BigNumber(value);
+
+    if (number.isNaN() || !number.isFinite()) {
+        throw new Error('EVM number is invalid.');
+    }
+
+    return `0x${number.toString(16)}`;
+};
+
+export const gweiToWei = (value: string) => toWei(value, 'gwei');
 
 export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
     if (!data) return '';
