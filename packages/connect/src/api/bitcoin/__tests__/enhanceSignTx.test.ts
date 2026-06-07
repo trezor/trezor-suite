@@ -60,6 +60,19 @@ describe('api/bitcoin/enhanceSignTx', () => {
         });
     });
 
+    it('zcash branch_id from backend takes precedence over fallback', async () => {
+        const coinInfo: any = { shortcut: 'ZEC', blockchainLink: { type: 'blockbook', url: [] } };
+        await initBlockchain(coinInfo, () => {});
+        // backend consensusBranchId (1001) must override the hardcoded fallback
+        expect(enhanceSignTx({}, coinInfo).branch_id).toBe(1001);
+    });
+
+    it('zcash branch_id explicit option takes precedence over backend', async () => {
+        const coinInfo: any = { shortcut: 'ZEC', blockchainLink: { type: 'blockbook', url: [] } };
+        await initBlockchain(coinInfo, () => {});
+        expect(enhanceSignTx({ branch_id: 42 }, coinInfo).branch_id).toBe(42);
+    });
+
     it('unrecognized coinInfo', () => {
         expect(enhanceSignTx({ expiry: 1 }, {} as any)).toEqual({ expiry: 1 });
     });
