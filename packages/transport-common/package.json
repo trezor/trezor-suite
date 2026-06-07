@@ -45,11 +45,13 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "test:unit": "jest",
+        "test:fuzz": "jest -c jest.config.fuzz.cjs",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "@types/node": "22.13.10",
+        "fast-check": "3.23.2",
         "jest": "29.7.0"
     },
     "dependencies": {

@@ -19,6 +19,7 @@ babel-jest
 detox
 dotenv
 eslint-plugin-playwright
+fast-check
 jest
 jest-canvas-mock
 jest-diff
