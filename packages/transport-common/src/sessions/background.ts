@@ -184,10 +184,16 @@ export class SessionsBackground
             return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
 
+        // Snapshot the session value before yielding: `previous` is a live
+        // reference to the descriptor, so comparing previous.session after the
+        // await would compare the post-await value against itself and let two
+        // concurrent acquires of a free device both pass the guard below.
+        const previousSession = previous.session;
+
         await this.waitInQueue();
 
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
-        if (previous.session !== this.descriptors[pathInternal]?.session) {
+        if (previousSession !== this.descriptors[pathInternal]?.session) {
             this.clearLock();
 
             return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
@@ -227,6 +233,15 @@ export class SessionsBackground
         const { path } = pathResult.payload;
 
         await this.waitInQueue();
+
+        // Re-check ownership after the lock: the session may have been stolen
+        // while we waited. Without this, releaseDone (which clears the session
+        // unconditionally) would destroy the new owner's session.
+        if (this.descriptors[path]?.session !== payload.session) {
+            this.clearLock();
+
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
 
         return success({ path });
     }
