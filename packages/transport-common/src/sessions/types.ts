@@ -37,6 +37,11 @@ export type AcquireIntentResponse = BackgroundResponseWithError<
 export type AcquireDoneRequest = {
     path: PathPublic;
     sessionOwner?: string;
+    /**
+     * Set when openDevice failed after acquireIntent already reserved the session:
+     * release the held lock without committing a (phantom) session.
+     */
+    abort?: boolean;
 };
 
 export type AcquireDoneResponse = BackgroundResponseWithError<
