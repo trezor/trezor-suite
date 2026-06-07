@@ -166,6 +166,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: openDevice: result: ${JSON.stringify(openDeviceResult)}`);
 
         if (!openDeviceResult.success) {
+            // release the lock taken by acquireIntent without committing a session,
+            // otherwise the device is locked forever and every later acquire deadlocks
+            await sessionsClient.acquireDone({ path: acquireInput.path, abort: true });
+
             return openDeviceResult;
         }
         await sessionsClient.acquireDone({
@@ -177,23 +181,25 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     };
 
     const release = async ({ session }: Omit<ReleaseInput, 'path'>) => {
-        await sessionsClient.releaseIntent({ session });
+        const releaseIntentResult = await sessionsClient.releaseIntent({ session });
 
-        const sessionsResult = await sessionsClient.getPathBySession({
-            session,
-        });
-
-        if (!sessionsResult.success) {
-            return sessionsResult;
+        // on failure releaseIntent already freed the lock (or never took it); use
+        // the path it returned instead of a second getPathBySession lookup, which
+        // could race and leak the held lock when it fails.
+        if (!releaseIntentResult.success) {
+            return releaseIntentResult;
         }
 
-        const closeRes = await api.closeDevice(sessionsResult.payload.path);
+        const { path } = releaseIntentResult.payload;
+
+        const closeRes = await api.closeDevice(path);
 
         if (!closeRes.success) {
             logger?.error(`core: release: api.closeDevice error: ${closeRes.error}`);
         }
 
-        return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
+        // always reached, even when closeDevice failed, so the lock is freed
+        return sessionsClient.releaseDone({ path });
     };
 
     const getProtocol = (protocolName: BridgeProtocolMessage['protocol']) => {

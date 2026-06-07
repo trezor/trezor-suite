@@ -132,10 +132,14 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 );
 
                 if (!openDeviceResult.success) {
+                    // release the lock taken by acquireIntent without committing a
+                    // session, otherwise the device deadlocks on the next acquire
+                    await this.sessionsClient.acquireDone({ path, abort: true });
+
                     return openDeviceResult;
                 }
 
-                this.sessionsClient.acquireDone({ path, sessionOwner: this.id });
+                await this.sessionsClient.acquireDone({ path, sessionOwner: this.id });
 
                 return success(acquireIntentResponse.payload.session);
             },
