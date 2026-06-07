@@ -38,7 +38,6 @@ function main(): void {
     const desktopCount = task.validations.filter(v => v.platform === 'desktop').length;
 
     log(`━━━ Task ${task.id} ━━━`);
-    log(`Scope:   ${task.fixScope}`);
     log(`Branch:  ${task.branch}`);
     log(`Web:     ${webCount}  Desktop: ${desktopCount}`);
 

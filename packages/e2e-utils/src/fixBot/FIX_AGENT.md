@@ -23,16 +23,17 @@ Your fix task is embedded at the bottom of this prompt. Read it before doing any
 
 ## Fix Constraints
 
-Allowed changes depend on the fix task's `fixScope`:
+Allowed changes are:
 
-- `TEST_CODE` — only files inside `suite/e2e/`
-- `LOCATOR_ADD` — files inside `suite/e2e/` AND `data-testid` attributes in product source files. No other product code changes.
+- Any file inside `suite/e2e/`
+- `data-testid` attributes in product source files. No other product code changes!
 
 ## Environment
 
 **Web build:** `packages/suite-web/build` is pre-built and served as a static bundle via vite
-preview on `http://localhost:8000`. There is no hot reload — for `LOCATOR_ADD` fixes that modify
-a product component, kill the server, rebuild, and restart before running web tests:
+preview on `http://localhost:8000`. There is no hot reload — if an iteration changed a product
+source file (e.g. you added a `data-testid`), kill the server, rebuild, and restart before
+running web tests.
 
 ```bash
 pkill -f "vite preview" || true
@@ -42,8 +43,8 @@ curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://loca
 ```
 
 **Desktop build:** `packages/suite-desktop/dist` and `packages/suite-desktop/build` are present.
-For `LOCATOR_ADD` fixes that modify a product component, remove them and rebuild before running
-desktop tests:
+If an iteration changed a product source file (e.g. you added a `data-testid`), remove them and
+rebuild before running desktop tests. A test-only change needs no rebuild.
 
 ```bash
 TEST_BUILD=true yarn workspace @trezor/suite-desktop build:ui
@@ -54,11 +55,14 @@ yarn workspace @trezor/suite-desktop build:app
 
 ## Step 1 — Read context
 
-Read the `diagnosis` field from the fix task. It contains the full analysis from the analyst agent:
-error messages, stack traces, visual evidence, and root cause reasoning.
+Read the `diagnosis` field from the fix task. It contains the full analysis from the analyst
+agent: error messages, stack traces, visual evidence, and root cause reasoning.
+Treat it as a starting hypothesis, not a fix prescription.
 
 Then read the source files mentioned in the diagnosis — spec files, page objects, helpers, and
-(for `LOCATOR_ADD`) the product component containing the element to tag.
+(if a locator is involved) the product component that renders the target element. **Expand the
+diagnosis with your own product-code analysis and the preflight results (Step 2)** before
+deciding the fix.
 
 ---
 
@@ -102,6 +106,12 @@ test assertion described in `diagnosis` — retry once. If the retry shows the s
 infrastructure or environment error, return the result (Step 4) with `result: "fail"` and
 `iterations: 0`, and stop. Do not enter the fix loop.
 
+**Bail when it is not yours to fix.** If at preflight — or during any later iteration — your
+analysis concludes the root cause is a **product bug** (logic/behavior/markup must change, not
+just a `data-testid`) do not continue in the fix loop. Instead, return the result (Step 4) with
+`result: "fail"`, the iteration count reached, and explain the reclassification in the
+`pr-description.md`.
+
 ---
 
 ## Step 3 — Fix loop
@@ -112,8 +122,12 @@ Track your current iteration number starting at 1. Stop when budget is exhausted
 
 ### Per iteration
 
-**1. Make changes** according to `fixScope`. For `LOCATOR_ADD`: only add or modify `data-testid`
-attributes — no logic changes in product code.
+**1. Make changes** within the allowed surface (see Fix Constraints).
+
+**Missing / mismatched locator.** When a locator the test uses is not found, do not reflexively
+add it to the product. First inspect the product element the test targets. If it already exposes
+a `data-testid` (possibly renamed from what the test expects), point the test/page-object at the
+current one. Add a new `data-testid` only if the element genuinely has none.
 
 **2. Run all validations that are still failing:**
 
@@ -189,9 +203,9 @@ Use `<platform>/<group>/<spec>` format with the `spec` value as-is (repo-root-re
 **`pr-description.md`** — PR body for GitHub. Include these sections in order:
 
 1. `## Nightly fix — <YYYY-MM-DD>`
-2. `**Task:**`, `**Scope:**`, `**Result:**` (✅ pass / ⚠️ partial / ❌ fail)
+2. `**Task:**`, `**Result:**` (✅ pass / ⚠️ partial / ❌ fail)
 3. `### Root cause` — `rootCause` from the fix task
-4. `### Fix` — `fixDescription` from the fix task
+4. `### Fix` — describe the fix you applied
 5. `### Validations` — markdown table with Status (✅/❌), Platform, Group, Spec for every validation
 6. `### Commits` — output of `git log --oneline origin/develop..HEAD`
 7. `### Prompt gaps` — one bullet per ambiguity or missing instruction you encountered,
