@@ -218,8 +218,13 @@ export class SessionsBackground
         if (!pathInternal || !this.descriptors[pathInternal]) {
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
-        this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
-        this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
+
+        // abort: openDevice failed after acquireIntent reserved the session. The
+        // lock is already released above; do not commit a phantom session.
+        if (!payload.abort) {
+            this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
+            this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
+        }
 
         return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
