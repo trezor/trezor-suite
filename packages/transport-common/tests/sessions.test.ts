@@ -199,6 +199,42 @@ describe('sessions', () => {
         });
     });
 
+    test('acquireDone with abort releases the lock without committing a session', async () => {
+        const client1 = new SessionsClient(background);
+        await client1.handshake();
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
+        });
+
+        const acquireIntent = await client1.acquireIntent({
+            path: PathPublic('1'),
+            previous: null,
+        });
+        expect(acquireIntent).toMatchObject({ success: true });
+
+        // openDevice failed after the intent reserved the session: abort must
+        // release the lock without committing a phantom session.
+        await client1.acquireDone({ path: PathPublic('1'), abort: true });
+
+        // session stays null (no phantom commit)
+        const sessions = await client1.getSessions();
+        expect(sessions).toMatchObject({
+            success: true,
+            payload: { descriptors: [{ path: '1', session: null }] },
+        });
+
+        // and the lock is free: a fresh acquire from null succeeds
+        const acquireAgain = await client1.acquireIntent({
+            path: PathPublic('1'),
+            previous: null,
+        });
+        expect(acquireAgain).toMatchObject({ success: true });
+
+        // cleanup: release the lock acquireAgain just took, otherwise it stays
+        // held with the 4s safety-net timer pending after the test ends
+        await client1.acquireDone({ path: PathPublic('1'), abort: true });
+    });
+
     // CURRENTLY LEAKS — see PR #27978 for the fix.
     //
     // SessionsClient subscribes to 'descriptors' and 'releaseRequest' on the background in
