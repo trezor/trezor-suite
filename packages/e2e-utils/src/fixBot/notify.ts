@@ -56,12 +56,6 @@ function readAnalysisCost(costFile: string | undefined): number | null {
     }
 }
 
-function extractReasonType(reason: string): string {
-    const idx = reason.indexOf(' — ');
-
-    return idx !== -1 ? reason.slice(0, idx) : reason;
-}
-
 function formatFixTestRef(validations: AnalysisReport['fixTasks'][number]['validations']): string {
     const first = validations[0];
     if (!first) return 'Test reference not available';
@@ -113,7 +107,7 @@ function buildMessage(
                 // Job was cancelled before publish.ts wrote the summary
                 lines.push(`❓ *${task.rootCause}*`);
                 lines.push(formatFixTestRef(task.validations));
-                lines.push(`    ${task.id} · ${task.fixScope} · job did not complete`);
+                lines.push(`    ${task.id} · job did not complete`);
                 continue;
             }
 
@@ -128,14 +122,10 @@ function buildMessage(
             lines.push(formatFixTestRef(task.validations));
 
             if (result === 'not_duplicated') {
-                lines.push(
-                    `    ${task.id} · ${task.fixScope} · preflight passed — not flaky · ${costPart}`,
-                );
+                lines.push(`    ${task.id} · preflight passed — not flaky · ${costPart}`);
             } else {
                 const prPart = prUrl ? `<${prUrl}|PR link>` : 'no PR';
-                lines.push(
-                    `    ${task.id} · ${task.fixScope} · ${prPart} · ${iterStr} · ${countStr} · ${costPart}`,
-                );
+                lines.push(`    ${task.id} · ${prPart} · ${iterStr} · ${countStr} · ${costPart}`);
             }
         }
     }
@@ -147,7 +137,7 @@ function buildMessage(
 
         for (const skip of report.skipped) {
             lines.push('');
-            lines.push(`⛔ *${extractReasonType(skip.reason)}* — ${skip.rootCause}`);
+            lines.push(`⛔ *${skip.reason}* — ${skip.rootCause}`);
             const testRef = formatSkippedTestRef(skip.affectedTests);
             if (testRef) lines.push(testRef);
         }

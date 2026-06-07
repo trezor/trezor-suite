@@ -16,16 +16,15 @@ export const FixTaskSchema = z.object({
         .regex(/^fix\/nightly-\d{4}-\d{2}-\d{2}-[a-z0-9-]{1,40}$/)
         .refine(v => !/[\r\n]/.test(v), 'branch must not contain newlines'),
     rootCause: z.string(),
-    fixScope: z.enum(['TEST_CODE', 'LOCATOR_ADD']),
     confidence: z.enum(['HIGH', 'MEDIUM', 'LOW']),
-    fixDescription: z.string(),
     diagnosis: z.string(),
     validations: z.array(TestToValidateSchema),
 });
 
 export const SkippedTaskSchema = z.object({
     rootCause: z.string(),
-    reason: z.string(),
+    reason: z.enum(['PRODUCT_BUG', 'INFRASTRUCTURE']),
+    analysis: z.string(),
     affectedTests: z.array(z.string()),
 });
 
