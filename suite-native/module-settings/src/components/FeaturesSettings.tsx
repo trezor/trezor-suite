@@ -38,7 +38,7 @@ export const FeaturesSettings = () => {
                 />
             )}
             <AppSettingsCardWithIconLayout
-                icon="bookmarkSimple"
+                icon="eject"
                 title={<Translation id="moduleSettings.items.features.ejectWallets.title" />}
                 subtitle={<Translation id="moduleSettings.items.features.ejectWallets.subtitle" />}
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsViewOnly)}
