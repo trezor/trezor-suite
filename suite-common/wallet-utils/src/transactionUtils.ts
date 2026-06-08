@@ -662,12 +662,12 @@ export const getTxIcon = (
     }
 };
 
-export const getTargetAmount = (
+export const getTargetAmountRaw = (
     target: WalletAccountTransaction['targets'][number] | undefined,
     transaction: WalletAccountTransaction,
 ) => {
-    const txAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
-    const validTxAmount = txAmount && txAmount !== '0';
+    const txAmount = new BigNumber(transaction.amount ?? '0');
+    const validTxAmount = txAmount?.gt(0);
     if (!target) {
         return validTxAmount ? txAmount : null;
     }
@@ -675,8 +675,8 @@ export const getTargetAmount = (
     const sentToSelfTarget =
         (transaction.type === 'sent' || transaction.type === 'self') && target.isAccountTarget;
 
-    const amount = target.amount && formatNetworkAmount(target.amount, transaction.symbol);
-    const validTargetAmount = amount && amount !== '0';
+    const amount = target.amount && new BigNumber(target.amount);
+    const validTargetAmount = amount && amount.gt(0);
     if (!sentToSelfTarget && validTargetAmount) {
         // show target amount for all non "sent to myself" targets
         return amount;
@@ -693,6 +693,15 @@ export const getTargetAmount = (
 
     // "sent to self" target while other non-self targets are also present
     return null;
+};
+
+export const getTargetAmount = (
+    target: WalletAccountTransaction['targets'][number] | undefined,
+    transaction: WalletAccountTransaction,
+) => {
+    const value = getTargetAmountRaw(target, transaction);
+
+    return value ? String(value) : null;
 };
 
 export const getFeeRate = (tx: AccountTransaction) =>
