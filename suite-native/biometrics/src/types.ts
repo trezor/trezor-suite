@@ -9,6 +9,7 @@ export type BiometricsSliceState = {
     biometricsError: AuthenticateError | null;
     isTogglingBiometricsSettingsOption: boolean;
     isAuthenticatingUser: boolean;
+    // This property is crucial for bypassing authentication when returning to the app.
     goneToBackgroundAtTimestamp: number | null;
 };
 
