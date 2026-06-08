@@ -3,8 +3,8 @@ import { TRON_STAKE_FLOW_STEPS, type TronStakeStepId } from '@suite-common/walle
 import { type Account } from '@suite-common/wallet-types';
 import { BulletList, type BulletListItemState, Column } from '@trezor/components';
 
-import { TronFreezeStep } from './TronFreezeStep';
 import { TronStakeContext } from './TronStakeContext';
+import { TronFreezeStep } from './freeze/TronFreezeStep';
 import { useTronStakeFlow } from './hooks/useTronStakeFlow';
 
 interface TronStakeProps {
@@ -13,7 +13,7 @@ interface TronStakeProps {
 
 export const TronStake = ({ account }: TronStakeProps) => {
     const context = useTronStakeFlow({ account });
-    const { step } = context;
+    const { step } = context.actions;
 
     const currentStepIndex = TRON_STAKE_FLOW_STEPS.indexOf(step);
     const getStepState = (stepId: TronStakeStepId): BulletListItemState => {

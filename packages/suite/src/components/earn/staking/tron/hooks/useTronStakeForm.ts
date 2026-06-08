@@ -4,6 +4,7 @@ import { useTranslation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type TronResourceType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
 
 import {
     validateDecimals,
@@ -14,6 +15,7 @@ import {
 export type TronStakeFormValues = {
     amount: string;
     resourceType: TronResourceType;
+    selectedFee: FeeLevel['label'];
 };
 
 interface UseTronStakeFormProps {
@@ -28,6 +30,7 @@ export const useTronStakeForm = ({ account }: UseTronStakeFormProps) => {
         defaultValues: {
             amount: '',
             resourceType: 'bandwidth',
+            selectedFee: 'normal',
         },
     });
 
