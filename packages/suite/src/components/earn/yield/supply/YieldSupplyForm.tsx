@@ -51,11 +51,7 @@ export const YieldSupplyForm = () => {
         flow,
     } = useYieldSupplyContext();
 
-    const {
-        approve: approveStepState,
-        action: actionStepState,
-        complete: completeStepState,
-    } = flow.stepStates;
+    const { approve: approveStepState, action: actionStepState } = flow.stepStates;
 
     const { approvalPendingTransaction, actionPendingTransaction: supplyPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
@@ -190,27 +186,51 @@ export const YieldSupplyForm = () => {
                                 />
                             )}
 
-                            <BulletList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
+                            <BulletList
+                                isOrdered
+                                bulletSize="large"
+                                bulletGap={12}
+                                gap={24}
+                                titleGap={16}
+                            >
                                 <BulletList.Item
                                     state={approveStepState}
                                     title={
-                                        <Row
-                                            justifyContent="space-between"
-                                            alignItems="center"
-                                            width="100%"
-                                        >
-                                            <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />
-                                            {approveStepState === 'done' && (
-                                                <Button
-                                                    size="small"
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    onClick={handleOnModify}
-                                                >
-                                                    <Translation id="TR_MODIFY" />
-                                                </Button>
-                                            )}
-                                        </Row>
+                                        <Column gap={8} width="100%">
+                                            <Text
+                                                typographyStyle="body-xs"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                case="uppercase"
+                                            >
+                                                <Translation
+                                                    id="TR_STEP_OF_TOTAL"
+                                                    values={{
+                                                        index: 1,
+                                                        total: 2,
+                                                    }}
+                                                />
+                                            </Text>
+
+                                            <Row
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                                width="100%"
+                                                gap={16}
+                                            >
+                                                <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />
+                                                {approveStepState === 'done' && (
+                                                    <Button
+                                                        size="small"
+                                                        intent="neutral"
+                                                        priority="secondary"
+                                                        onClick={handleOnModify}
+                                                    >
+                                                        <Translation id="TR_MODIFY" />
+                                                    </Button>
+                                                )}
+                                            </Row>
+                                        </Column>
                                     }
                                 >
                                     <YieldApproveStep
@@ -252,7 +272,33 @@ export const YieldSupplyForm = () => {
 
                                 <BulletList.Item
                                     state={actionStepState}
-                                    title={<Translation id="TR_EARN_YIELD_SUPPLY" />}
+                                    title={
+                                        <Column gap={8} width="100%">
+                                            <Text
+                                                typographyStyle="body-xs"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                case="uppercase"
+                                            >
+                                                <Translation
+                                                    id="TR_STEP_OF_TOTAL"
+                                                    values={{
+                                                        index: 2,
+                                                        total: 2,
+                                                    }}
+                                                />
+                                            </Text>
+
+                                            <Row
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                                width="100%"
+                                                gap={16}
+                                            >
+                                                <Translation id="TR_EARN_YIELD_SUPPLY" />
+                                            </Row>
+                                        </Column>
+                                    }
                                 >
                                     {actionStepState === 'active' && (
                                         <YieldActionStep
@@ -291,11 +337,6 @@ export const YieldSupplyForm = () => {
                                         />
                                     )}
                                 </BulletList.Item>
-
-                                <BulletList.Item
-                                    state={completeStepState}
-                                    title={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE" />}
-                                />
                             </BulletList>
                         </>
                     )}
