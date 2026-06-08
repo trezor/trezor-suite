@@ -237,9 +237,12 @@ import {
     SolanaAddress,
     SolanaGetAddress,
     SolanaGetPublicKey,
+    SolanaMessageSignature,
     SolanaPublicKey,
+    SolanaSignMessage,
     SolanaSignTx,
     SolanaTxSignature,
+    SolanaVerifyMessage,
 } from './messages-solana';
 import {
     StellarAccountMergeOp,
@@ -553,6 +556,9 @@ export const MessageType = Type.Object(
         SolanaAddress,
         SolanaSignTx,
         SolanaTxSignature,
+        SolanaSignMessage,
+        SolanaMessageSignature,
+        SolanaVerifyMessage,
         StellarGetAddress,
         StellarAddress,
         StellarSignTx,
@@ -732,6 +738,8 @@ export type WireInMessage =
     | 'SolanaGetPublicKey'
     | 'SolanaGetAddress'
     | 'SolanaSignTx'
+    | 'SolanaSignMessage'
+    | 'SolanaVerifyMessage'
     | 'StellarGetAddress'
     | 'StellarSignTx'
     | 'StellarPaymentOp'
@@ -860,6 +868,7 @@ export type WireOutMessage =
     | 'SolanaPublicKey'
     | 'SolanaAddress'
     | 'SolanaTxSignature'
+    | 'SolanaMessageSignature'
     | 'StellarAddress'
     | 'StellarTxOpRequest'
     | 'StellarSignedTx'
