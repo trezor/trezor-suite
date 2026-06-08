@@ -21,6 +21,7 @@ describe(createTurnOffSuiteSyncForWallet.name, () => {
             suiteSyncStorageRepository: {
                 get: null,
                 delete: () => Promise.resolve(),
+                deleteLocalData: null,
                 set: null,
             },
         });

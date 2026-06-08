@@ -11,6 +11,11 @@ export type {
     SuiteSyncStorageRepository,
     StorageId,
 } from './storage/suiteSyncStorageRepository';
+export {
+    type DeleteSuiteSyncLocalData,
+    type DeleteSuiteSyncLocalDataDep,
+    selectDeleteSuiteSyncLocalDataDep,
+} from './storage/deleteSuiteSyncLocalData';
 
 export type {
     EnsureSuiteSyncKeys,

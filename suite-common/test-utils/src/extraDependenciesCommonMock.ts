@@ -23,6 +23,7 @@ import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { err, ok } from '@trezor/type-utils';
 
 const suiteSyncMock: SuiteSync = {
+    deleteSuiteSyncLocalData: () => Promise.resolve(ok()),
     changeRelayUrl: () => Promise.resolve(),
     ensureWalletSuiteSyncOn: () =>
         Promise.resolve(err({ type: 'SuiteSyncUnavailableOnDeviceError' })),

@@ -41,8 +41,8 @@ export const WipeData = () => {
                 title="Wipe app data"
                 description={
                     <span>
-                        Clicking this button restarts your application and wipes all your data
-                        including locally saved labels. Your local folder is:{' '}
+                        Clicking this button restarts your application and wipes all your local
+                        application data. Your local folder is:{' '}
                         <UserDataLink onClick={openUserDataDir}>{userDataDir}</UserDataLink>
                     </span>
                 }

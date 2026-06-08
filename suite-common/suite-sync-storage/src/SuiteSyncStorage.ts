@@ -1,6 +1,23 @@
+import { type Result } from '@trezor/type-utils';
+
 import { type SuiteSyncTable } from './SuiteSyncTable';
 import { type SuiteSyncSchema } from './data/SuiteSyncSchema';
 import { type SuiteSyncOwner } from './owner/suiteSyncOwner';
+
+export type SuiteSyncDeleteLocalDataError = {
+    type: 'SuiteSyncDeleteLocalDataError';
+    message: string;
+    cause: unknown;
+};
+
+export const createSuiteSyncDeleteLocalDataError = (
+    message: string,
+    cause: unknown,
+): SuiteSyncDeleteLocalDataError => ({
+    type: 'SuiteSyncDeleteLocalDataError',
+    message,
+    cause,
+});
 
 type SuiteSyncStorageData = {
     [K in keyof SuiteSyncSchema]: SuiteSyncTable<SuiteSyncSchema[K]>;
@@ -15,6 +32,7 @@ export type SuiteSyncStorage = {
     data: SuiteSyncStorageData;
 
     updateRelayUrl(url: string): Promise<void>;
+    deleteLocalData(): Promise<Result<void, SuiteSyncDeleteLocalDataError>>;
     dispose(): Promise<void>;
 };
 

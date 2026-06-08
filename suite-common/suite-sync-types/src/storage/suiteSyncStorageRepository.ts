@@ -1,11 +1,15 @@
-import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { type Branded } from '@trezor/type-utils';
+import {
+    type SuiteSyncDeleteLocalDataError,
+    type SuiteSyncStorage,
+} from '@suite-common/suite-sync-storage';
+import { type Branded, type Result } from '@trezor/type-utils';
 
 export type StorageId = string & Branded<'StorageId'>;
 
 export type SuiteSyncStorageRepository = {
     get: (storageId: StorageId) => SuiteSyncStorage | null;
     delete: (storageId: StorageId) => Promise<void>;
+    deleteLocalData: () => Promise<Result<void, SuiteSyncDeleteLocalDataError>>;
     set: (storageId: StorageId, storage: SuiteSyncStorage) => void;
 };
 
