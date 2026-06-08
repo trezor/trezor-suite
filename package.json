@@ -154,14 +154,14 @@
         "jest-environment-node": "^29.7.0",
         "jest-expo": "~55.0.9",
         "node-gyp": "12.2.0",
-        "nx": "^22.7.0",
+        "nx": "^22.7.4",
         "prettier": "^3.8.3",
         "rimraf": "^6.1.2",
         "ts-node": "^10.9.2",
         "tslib": "^2.6.2",
         "tsx": "^4.21.0",
         "typescript": "5.9.3",
-        "typescript-eslint": "^8.59.0",
+        "typescript-eslint": "^8.60.0",
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
