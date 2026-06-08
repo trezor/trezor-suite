@@ -103,7 +103,7 @@ const inputs = [
     },
     {
         key: 'transport',
-        value: ['node-bridge'],
+        value: ['node-bridge', 'local-suite-node-bridge'],
     },
     {
         key: 'groups',
