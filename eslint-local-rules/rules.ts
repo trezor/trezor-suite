@@ -91,15 +91,6 @@ const getSuggestedImportPath = (
         return `${packageImportPath}/mocks`;
     }
 
-    // Allow @scope/pkg/testUtils as a valid entry point
-    if (sourcePathParts[2] === 'testUtils') {
-        if (sourcePathParts.length === 3) {
-            return null;
-        }
-
-        return `${packageImportPath}/testUtils`;
-    }
-
     return packageImportPath;
 };
 
