@@ -1,5 +1,11 @@
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    pushSendFormTransactionThunk,
+    selectAccountByKey,
+    selectIsMevProtectionEnabled,
+} from '@suite-common/wallet-core';
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { STAKE_NATIVE_MODULE_PREFIX } from './constants';
@@ -8,9 +14,10 @@ import { signSolanaStakingTransactionNativeThunk } from './stakeFormSolanaNative
 import { type SignStakeNativeRejectValue, type StakeNativeType } from './stakeNativeTypes';
 
 const LOG_PREFIX = 'signStakeTransactionNativeThunk';
+const PUSH_LOG_PREFIX = 'pushStakeTransactionNativeThunk';
 
 export const signStakeTransactionNativeThunk = createThunk<
-    { txid: string },
+    void,
     {
         accountKey: AccountKey;
         stakeType: StakeNativeType;
@@ -56,4 +63,41 @@ export const signStakeTransactionNativeThunk = createThunk<
         error: 'sign-transaction-failed',
         message: `Staking is not supported for network type: ${account.networkType}`,
     });
+});
+
+export const pushStakeTransactionNativeThunk = createThunk<
+    { txid: string },
+    { accountKey: AccountKey },
+    { rejectValue: SignStakeNativeRejectValue }
+>(`${STAKE_NATIVE_MODULE_PREFIX}/${PUSH_LOG_PREFIX}`, async ({ accountKey }, thunkApi) => {
+    const { dispatch, getState, rejectWithValue } = thunkApi;
+    const account = selectAccountByKey(getState() as AccountsRootState, accountKey);
+
+    if (!account) {
+        console.error(`${PUSH_LOG_PREFIX}: Account not found for key ${accountKey}`);
+
+        return rejectWithValue({
+            error: 'sign-transaction-failed',
+            message: 'Account not found.',
+        });
+    }
+
+    const isMevProtectionEnabled =
+        account.networkType === 'ethereum'
+            ? selectIsMevProtectionEnabled(getState()) &&
+              selectIsMevProtectionFeatureEnabled(getState())
+            : false;
+
+    const pushAction = await dispatch(
+        pushSendFormTransactionThunk({ selectedAccount: account, isMevProtectionEnabled }),
+    );
+
+    if (pushSendFormTransactionThunk.rejected.match(pushAction)) {
+        const message = pushAction.payload?.metadata.error.message;
+        console.error(`${PUSH_LOG_PREFIX}: Push transaction failed: ${message}`);
+
+        return rejectWithValue(pushAction.payload);
+    }
+
+    return { txid: pushAction.payload.payload.txid };
 });

@@ -27,18 +27,17 @@ import { BigNumber } from '@trezor/utils';
 import { ClaimOutputItem } from './ClaimOutputItem';
 import { ClaimSummaryOutputItem } from './ClaimSummaryOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
-import { useHandleOnClaimTransactionReview } from '../hooks/useHandleOnClaimTransactionReview';
 
 const NUMBER_OF_STEPS = 2;
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.ClaimTransactionDataReview>;
 
 type ClaimTransactionDataReviewStepListProps = {
-    onTransactionSubmitted: (txid: string) => void;
+    onSign: () => Promise<boolean>;
 };
 
 export const ClaimTransactionDataReviewStepList = ({
-    onTransactionSubmitted,
+    onSign,
 }: ClaimTransactionDataReviewStepListProps) => {
     const route = useRoute<RouteProps>();
     const { accountKey } = route.params;
@@ -65,19 +64,19 @@ export const ClaimTransactionDataReviewStepList = ({
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
 
-    const handleOnClaimTransactionReview = useHandleOnClaimTransactionReview({
-        accountKey,
-        onTransactionSubmitted,
-    });
+    const isLastStep = stepIndex === NUMBER_OF_STEPS - 1;
+    const areAllStepsDone = isLastStep || isTransactionReviewInProgress;
 
-    const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1 || isTransactionReviewInProgress;
-
-    const handleNextStep = () => {
-        setStepIndex(prevStepIndex => prevStepIndex + 1);
-
+    const handleNextStep = async () => {
         if (stepIndex === NUMBER_OF_STEPS - 2) {
-            handleOnClaimTransactionReview();
+            const didSign = await onSign();
+
+            if (!didSign) {
+                return;
+            }
         }
+
+        setStepIndex(prevStepIndex => prevStepIndex + 1);
     };
 
     const networkDecimals = accountSymbol ? (getNetworkDecimals(accountSymbol) ?? 18) : 18;
@@ -109,8 +108,8 @@ export const ClaimTransactionDataReviewStepList = ({
                     <ClaimSummaryOutputItem
                         accountKey={accountKey}
                         claimableAmountInWei={claimableAmountInWei}
-                        fee={summaryOutput?.fee ?? '0'}
-                        outputState={summaryOutput?.state}
+                        fee={summaryOutput?.fee ?? precomposedTransaction?.fee ?? '0'}
+                        outputState={summaryOutput?.state ?? (isLastStep ? 'active' : undefined)}
                         onLayout={event => handleReadListItemHeight(event, 1)}
                     />
                 )}

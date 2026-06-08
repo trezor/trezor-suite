@@ -4,12 +4,7 @@ import { useSelector } from 'react-redux';
 import { CommonActions } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAccountByKey,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
@@ -34,6 +29,7 @@ import {
 } from '@suite-native/transaction-management';
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
+import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { getEarnPostSignParentRoute } from '../utils';
 
 const navigateToUnstakedTransactionAction = ({
@@ -75,7 +71,7 @@ export const UnstakeTransactionDataReviewScreen = ({
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const [txid, setTxid] = useState<string>('');
+    const [isPushing, setIsPushing] = useState(false);
 
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, 'unstake', accountKey),
@@ -87,11 +83,12 @@ export const UnstakeTransactionDataReviewScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    );
+    const { handleSign, handlePush } = useHandleOnEarnTransactionReview({
+        accountKey,
+        stakeType: 'unstake',
+    });
 
-    const showSignSuccessMessage = isTransactionAlreadySigned && !!account;
+    const isReadyToUnstake = isTransactionAlreadySigned && !!account;
 
     useEffect(() => {
         if (isTransactionReviewInProgress) {
@@ -100,17 +97,26 @@ export const UnstakeTransactionDataReviewScreen = ({
     }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
 
     useEffect(() => {
-        if (showSignSuccessMessage) {
+        if (isTransactionAlreadySigned) {
             closeSheet();
         }
-    }, [closeSheet, showSignSuccessMessage]);
+    }, [closeSheet, isTransactionAlreadySigned]);
 
-    const handleViewTransaction = useCallback(() => {
-        if (!account) return;
-        navigation.dispatch(
-            navigateToUnstakedTransactionAction({ accountKey, symbol: account.symbol, txid }),
-        );
-    }, [account, accountKey, navigation, txid]);
+    const handleUnstakeNow = useCallback(async () => {
+        setIsPushing(true);
+
+        const txid = await handlePush();
+
+        if (txid && account) {
+            navigation.dispatch(
+                navigateToUnstakedTransactionAction({ accountKey, symbol: account.symbol, txid }),
+            );
+
+            return;
+        }
+
+        setIsPushing(false);
+    }, [handlePush, account, accountKey, navigation]);
 
     return (
         <ConfirmOnTrezorWrapper
@@ -131,9 +137,9 @@ export const UnstakeTransactionDataReviewScreen = ({
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
-                    <UnstakeTransactionDataReviewStepList onTransactionSubmitted={setTxid} />
+                    <UnstakeTransactionDataReviewStepList onSign={handleSign} />
                 </VStack>
-                {txid && (
+                {isReadyToUnstake && (
                     <Card>
                         <VStack
                             paddingTop="sp8"
@@ -148,8 +154,9 @@ export const UnstakeTransactionDataReviewScreen = ({
                             </Text>
                         </VStack>
                         <Button
-                            isLoading={!isTransactionProcessedByBackend}
-                            onPress={handleViewTransaction}
+                            isLoading={isPushing}
+                            onPress={handleUnstakeNow}
+                            testID="@earn/unstake-now"
                         >
                             <Translation id="earn.unstakeTransactionDataReviewScreen.viewTransactionButton" />
                         </Button>

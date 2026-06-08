@@ -19,7 +19,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { EarnStakeOutputItem } from './EarnStakeOutputItem';
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
-import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 
 const NUMBER_OF_STEPS = 2;
 
@@ -27,14 +27,14 @@ type EarnTransactionDataReviewStepListProps = {
     accountKey: AccountKey;
     amount: string;
     accountSymbol: NetworkSymbol;
-    onTransactionSubmitted: (txid: string) => void;
+    onSign: () => Promise<boolean>;
 };
 
 export const EarnTransactionDataReviewStepList = ({
     accountKey,
     amount,
     accountSymbol,
-    onTransactionSubmitted,
+    onSign,
 }: EarnTransactionDataReviewStepListProps) => {
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, 'stake', accountKey),
@@ -44,22 +44,25 @@ export const EarnTransactionDataReviewStepList = ({
         selectReviewSummaryOutput(state, 'stake', accountKey),
     );
 
+    const selectedPrecomposed = useEarnSelectedPrecomposedTransaction('stake', accountKey);
+
     const [stepIndex, setStepIndex] = useState(0);
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
-    const handleOnEarnTransactionReview = useHandleOnEarnTransactionReview({
-        accountKey,
-        onTransactionSubmitted,
-    });
 
-    const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1 || isTransactionReviewInProgress;
+    const isLastStep = stepIndex === NUMBER_OF_STEPS - 1;
+    const areAllStepsDone = isLastStep || isTransactionReviewInProgress;
 
-    const handleNextStep = () => {
-        setStepIndex(prevStepIndex => prevStepIndex + 1);
-
+    const handleNextStep = async () => {
         if (stepIndex === NUMBER_OF_STEPS - 2) {
-            handleOnEarnTransactionReview();
+            const didSign = await onSign();
+
+            if (!didSign) {
+                return;
+            }
         }
+
+        setStepIndex(prevStepIndex => prevStepIndex + 1);
     };
 
     const amountInBaseUnits = unitsToSubunits({
@@ -79,8 +82,8 @@ export const EarnTransactionDataReviewStepList = ({
                 <EarnSummaryOutputItem
                     accountKey={accountKey}
                     amount={amountInBaseUnits}
-                    fee={summaryOutput?.fee ?? '0'}
-                    outputState={summaryOutput?.state}
+                    fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
+                    outputState={summaryOutput?.state ?? (isLastStep ? 'active' : undefined)}
                     onLayout={event => handleReadListItemHeight(event, 1)}
                 />
             </VStack>

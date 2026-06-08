@@ -155,7 +155,7 @@ const dispatchFlow = async (
 ) => {
     const action = await store.dispatch(signEthereumStakingTransactionNativeThunk(args) as any);
 
-    if (isFulfilled(action)) return { ok: true as const, txid: action.payload.txid };
+    if (isFulfilled(action)) return { ok: true as const };
     if (isRejected(action)) return { ok: false as const, error: action.payload };
 
     throw new Error('Unexpected dispatch outcome');
@@ -188,7 +188,8 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
             precomposedTransaction: buildPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(result).toEqual({ ok: true });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
 
         const signCall = ethereumSignTransactionMock.mock.calls[0][0];
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
@@ -213,7 +214,8 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
             precomposedTransaction: buildPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(result).toEqual({ ok: true });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
 
         const signCall = ethereumSignTransactionMock.mock.calls[0][0];
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
@@ -236,7 +238,8 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
             precomposedTransaction: buildPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(result).toEqual({ ok: true });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
 
         const signCall = ethereumSignTransactionMock.mock.calls[0][0];
         expect(signCall.transaction.to).toBe(ACCOUNTING_ADDRESS);
@@ -313,34 +316,6 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
             },
         });
         expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
-        errorSpy.mockRestore();
-    });
-
-    it('returns push-transaction-pending-conflict when push fails with a replacement message', async () => {
-        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        pushTransactionMock.mockResolvedValue({
-            success: false,
-            error: { message: 'could not replace existing tx' },
-        });
-        const store = buildStore({
-            formDrafts: {
-                [getFormDraftKey('stake', ETH_ACCOUNT_KEY)]: buildComposeFormDraft('stake', '1'),
-            },
-        });
-
-        const result = await dispatchFlow(store, {
-            accountKey: ETH_ACCOUNT_KEY,
-            stakeType: 'stake',
-            precomposedTransaction: buildPrecomposedTransaction(),
-        });
-
-        expect(result).toMatchObject({
-            ok: false,
-            error: {
-                error: 'push-transaction-pending-conflict',
-                metadata: { error: { message: 'could not replace existing tx' } },
-            },
-        });
         errorSpy.mockRestore();
     });
 });

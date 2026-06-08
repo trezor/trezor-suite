@@ -13,68 +13,56 @@ import {
     type RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { signStakeTransactionNativeThunk } from '@suite-native/staking';
+import {
+    pushStakeTransactionNativeThunk,
+    signStakeTransactionNativeThunk,
+} from '@suite-native/staking';
 
+import { type EarnFormDraftPrefix } from '../types';
 import { handleEarnReviewError } from '../utils';
 import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
 import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 
-type NavigationProps = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.EarnTransactionDataReview
->;
+type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
 type HandleOnEarnTransactionReviewProps = {
     accountKey: AccountKey;
-    onTransactionSubmitted: (txid: string) => void;
+    stakeType: EarnFormDraftPrefix;
 };
 
 export const useHandleOnEarnTransactionReview = ({
     accountKey,
-    onTransactionSubmitted,
+    stakeType,
 }: HandleOnEarnTransactionReviewProps) => {
-    useEarnReviewBackNavigation('stake', accountKey);
+    useEarnReviewBackNavigation(stakeType, accountKey);
 
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const { showPushTransactionFailedAlert, showPendingTransactionConflictAlert } =
-        useShowPushTransactionFailedDuringReviewAlert('stake');
-    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('stake', accountKey);
+        useShowPushTransactionFailedDuringReviewAlert(stakeType);
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
-    const handleOnEarnTransactionReview = useCallback(async () => {
-        if (!precomposedTransaction) return;
+    const handleSign = useCallback(async (): Promise<boolean> => {
+        if (!precomposedTransaction) return false;
 
         const response = await dispatch(
             signStakeTransactionNativeThunk({
                 accountKey,
-                stakeType: 'stake',
+                stakeType,
                 precomposedTransaction,
             }),
         );
 
-        if (isFulfilled(response)) {
-            analytics.report({
-                type: events.stakingConfirmEvent.name,
-                payload: {
-                    action: 'stake',
-                    networkSymbol: networkSymbol ?? undefined,
-                },
-            });
-            onTransactionSubmitted(response.payload.txid);
-
-            return;
-        }
-
         if (!isRejected(response)) {
-            return;
+            return true;
         }
 
         handleEarnReviewError({
@@ -84,18 +72,56 @@ export const useHandleOnEarnTransactionReview = ({
             showPendingTransactionConflictAlert,
             showDeviceDisconnectedAlert,
         });
+
+        return false;
+    }, [
+        accountKey,
+        dispatch,
+        navigation,
+        precomposedTransaction,
+        showDeviceDisconnectedAlert,
+        showPendingTransactionConflictAlert,
+        showPushTransactionFailedAlert,
+        stakeType,
+    ]);
+
+    const handlePush = useCallback(async (): Promise<string | undefined> => {
+        const response = await dispatch(pushStakeTransactionNativeThunk({ accountKey }));
+
+        if (isFulfilled(response)) {
+            analytics.report({
+                type: events.stakingConfirmEvent.name,
+                payload: {
+                    action: stakeType,
+                    networkSymbol: networkSymbol ?? undefined,
+                },
+            });
+
+            return response.payload.txid;
+        }
+
+        if (isRejected(response)) {
+            handleEarnReviewError({
+                payload: response.payload,
+                navigation,
+                showPushTransactionFailedAlert,
+                showPendingTransactionConflictAlert,
+                showDeviceDisconnectedAlert,
+            });
+        }
+
+        return undefined;
     }, [
         accountKey,
         analytics,
         dispatch,
         navigation,
         networkSymbol,
-        onTransactionSubmitted,
-        precomposedTransaction,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
+        stakeType,
     ]);
 
-    return handleOnEarnTransactionReview;
+    return { handleSign, handlePush };
 };

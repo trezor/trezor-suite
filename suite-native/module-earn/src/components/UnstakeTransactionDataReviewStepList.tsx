@@ -22,18 +22,17 @@ import { BigNumber } from '@trezor/utils';
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { UnstakeOutputItem } from './UnstakeOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
-import { useHandleOnUnstakeTransactionReview } from '../hooks/useHandleOnUnstakeTransactionReview';
 
 const NUMBER_OF_STEPS = 2;
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.UnstakeTransactionDataReview>;
 
 type UnstakeTransactionDataReviewStepListProps = {
-    onTransactionSubmitted: (txid: string) => void;
+    onSign: () => Promise<boolean>;
 };
 
 export const UnstakeTransactionDataReviewStepList = ({
-    onTransactionSubmitted,
+    onSign,
 }: UnstakeTransactionDataReviewStepListProps) => {
     const route = useRoute<RouteProps>();
     const { accountKey, amount } = route.params;
@@ -55,23 +54,24 @@ export const UnstakeTransactionDataReviewStepList = ({
     const [stepIndex, setStepIndex] = useState(0);
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
-    const handleOnUnstakeTransactionReview = useHandleOnUnstakeTransactionReview({
-        accountKey,
-        onTransactionSubmitted,
-    });
 
     if (!accountSymbol) {
         return null;
     }
 
-    const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1 || isTransactionReviewInProgress;
+    const isLastStep = stepIndex === NUMBER_OF_STEPS - 1;
+    const areAllStepsDone = isLastStep || isTransactionReviewInProgress;
 
-    const handleNextStep = () => {
-        setStepIndex(prevStepIndex => prevStepIndex + 1);
-
+    const handleNextStep = async () => {
         if (stepIndex === NUMBER_OF_STEPS - 2) {
-            handleOnUnstakeTransactionReview();
+            const didSign = await onSign();
+
+            if (!didSign) {
+                return;
+            }
         }
+
+        setStepIndex(prevStepIndex => prevStepIndex + 1);
     };
 
     const amountInBaseUnits = unitsToSubunits({
@@ -92,7 +92,7 @@ export const UnstakeTransactionDataReviewStepList = ({
                     accountKey={accountKey}
                     amount={amountInBaseUnits}
                     fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
-                    outputState={summaryOutput?.state}
+                    outputState={summaryOutput?.state ?? (isLastStep ? 'active' : undefined)}
                     onLayout={event => handleReadListItemHeight(event, 1)}
                 />
             </VStack>

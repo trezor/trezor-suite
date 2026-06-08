@@ -4,12 +4,7 @@ import { useSelector } from 'react-redux';
 import { CommonActions } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAccountByKey,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
@@ -34,6 +29,7 @@ import {
 } from '@suite-native/transaction-management';
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
+import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { getEarnPostSignParentRoute } from '../utils';
 
 const navigateToClaimedTransactionAction = ({
@@ -75,7 +71,7 @@ export const ClaimTransactionDataReviewScreen = ({
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const [txid, setTxid] = useState<string>('');
+    const [isPushing, setIsPushing] = useState(false);
 
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, 'claim', accountKey),
@@ -87,11 +83,13 @@ export const ClaimTransactionDataReviewScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    );
+    const { handleSign, handlePush } = useHandleOnEarnTransactionReview({
+        accountKey,
+        stakeType: 'claim',
+    });
 
-    const showSignSuccessMessage = isTransactionAlreadySigned && !!account;
+    // Once signed, the user reviews the summary and taps "Claim now" to broadcast the transaction.
+    const isReadyToClaim = isTransactionAlreadySigned && !!account;
 
     useEffect(() => {
         if (isTransactionReviewInProgress) {
@@ -100,17 +98,26 @@ export const ClaimTransactionDataReviewScreen = ({
     }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
 
     useEffect(() => {
-        if (showSignSuccessMessage) {
+        if (isTransactionAlreadySigned) {
             closeSheet();
         }
-    }, [closeSheet, showSignSuccessMessage]);
+    }, [closeSheet, isTransactionAlreadySigned]);
 
-    const handleViewTransaction = useCallback(() => {
-        if (!account) return;
-        navigation.dispatch(
-            navigateToClaimedTransactionAction({ accountKey, symbol: account.symbol, txid }),
-        );
-    }, [account, accountKey, navigation, txid]);
+    const handleClaimNow = useCallback(async () => {
+        setIsPushing(true);
+
+        const txid = await handlePush();
+
+        if (txid && account) {
+            navigation.dispatch(
+                navigateToClaimedTransactionAction({ accountKey, symbol: account.symbol, txid }),
+            );
+
+            return;
+        }
+
+        setIsPushing(false);
+    }, [handlePush, account, accountKey, navigation]);
 
     return (
         <ConfirmOnTrezorWrapper
@@ -131,9 +138,9 @@ export const ClaimTransactionDataReviewScreen = ({
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
-                    <ClaimTransactionDataReviewStepList onTransactionSubmitted={setTxid} />
+                    <ClaimTransactionDataReviewStepList onSign={handleSign} />
                 </VStack>
-                {txid && (
+                {isReadyToClaim && (
                     <Card>
                         <VStack
                             paddingTop="sp8"
@@ -148,8 +155,9 @@ export const ClaimTransactionDataReviewScreen = ({
                             </Text>
                         </VStack>
                         <Button
-                            isLoading={!isTransactionProcessedByBackend}
-                            onPress={handleViewTransaction}
+                            isLoading={isPushing}
+                            onPress={handleClaimNow}
+                            testID="@earn/claim-now"
                         >
                             <Translation id="earn.claimTransactionDataReviewScreen.viewTransactionButton" />
                         </Button>

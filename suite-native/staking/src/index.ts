@@ -5,7 +5,10 @@
 
 export * from './utils';
 export * from './selectors';
-export { signStakeTransactionNativeThunk } from './stakeNativeThunks';
+export {
+    pushStakeTransactionNativeThunk,
+    signStakeTransactionNativeThunk,
+} from './stakeNativeThunks';
 export {
     composeSolanaStakingTransactionFeeLevelsNativeThunk,
     signSolanaStakingTransactionNativeThunk,
