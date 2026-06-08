@@ -120,7 +120,8 @@ describe('BuyPaymentMethodPicker', () => {
         });
 
         it('should allow to select payment method', () => {
-            const { getByText, getByLabelText } = renderPaymentMethodPicker(withQuotes);
+            const { getByText, getByLabelText, getByTestId } =
+                renderPaymentMethodPicker(withQuotes);
 
             fireEvent.press(getByText('Payment method'));
             fireEvent.press(getByText(creditCardPaymentMethodTranslation));
@@ -128,6 +129,7 @@ describe('BuyPaymentMethodPicker', () => {
             expect(getByLabelText('Selected payment method')).toHaveTextContent(
                 creditCardPaymentMethodTranslation,
             );
+            expect(getByTestId('@icons/payment-method-icon/creditCard')).toBeOnTheScreen();
         });
 
         it('should display loader while quotes are fetched', () => {

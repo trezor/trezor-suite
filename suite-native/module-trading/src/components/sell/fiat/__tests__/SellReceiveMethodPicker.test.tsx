@@ -89,9 +89,10 @@ describe('SellReceiveMethodPicker', () => {
         });
 
         it('should render selected receive method', () => {
-            const { getByLabelText } = renderSellReceiveMethodPicker(withQuotes);
+            const { getByLabelText, getByTestId } = renderSellReceiveMethodPicker(withQuotes);
 
             expect(getByLabelText('Selected receive method')).toHaveTextContent('Bank Transfer');
+            expect(getByTestId('@icons/payment-method-icon/bank')).toBeOnTheScreen();
         });
 
         it('should render loading skeleton when quotes are loaded and new quotes are loading', () => {

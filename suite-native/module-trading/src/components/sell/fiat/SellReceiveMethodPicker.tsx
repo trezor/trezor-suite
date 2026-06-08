@@ -8,16 +8,13 @@ import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    OverviewRow,
-    OverviewValueSkeleton,
-    PaymentMethodTranslation,
-} from '@suite-native/trading-atoms';
+import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
+import { PaymentMethodPickerValue } from '../../general/PaymentMethodPickerValue';
 import { PaymentMethodSheet } from '../../general/PaymentMethodSheet/PaymentMethodSheet';
 
 const RECEIVE_METHOD_PICKER_TEST_ID = '@trading/sell/receive-method-picker';
@@ -44,17 +41,12 @@ const SellReceiveMethodPickerRight = ({
 
     if (selectedValue) {
         return (
-            <Text
-                color="contentPrimary"
-                variant="body-sm"
+            <PaymentMethodPickerValue
+                paymentMethod={selectedValue.paymentMethod}
+                paymentMethodName={selectedValue.paymentMethodName}
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedReceiveMethod')}
                 testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}
-            >
-                <PaymentMethodTranslation
-                    paymentMethod={selectedValue.paymentMethod}
-                    paymentMethodName={selectedValue.paymentMethodName}
-                />
-            </Text>
+            />
         );
     }
 
