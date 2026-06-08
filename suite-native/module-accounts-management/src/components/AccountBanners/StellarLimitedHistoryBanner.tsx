@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FullAlertBox } from '@suite-native/atoms';
 import {
     selectIsStellarLimitedHistoryBannerClosed,
-    setStellarLimitedHistoryBannerClosed,
+    setIsStellarLimitedHistoryBannerClosed,
 } from '@suite-native/banner-flags';
 import { useTranslate } from '@suite-native/intl';
 
@@ -14,7 +14,7 @@ export const StellarLimitedHistoryBanner = () => {
 
     const dispatch = useDispatch();
     const handleClose = () => {
-        dispatch(setStellarLimitedHistoryBannerClosed());
+        dispatch(setIsStellarLimitedHistoryBannerClosed());
     };
 
     if (isClosed) {

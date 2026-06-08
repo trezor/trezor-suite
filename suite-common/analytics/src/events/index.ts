@@ -22,3 +22,7 @@ export {
 } from './onboardingStepViewedEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
 export { walletBalanceEvent } from './walletBalanceEvent';
+export {
+    promoNoDeviceEshopCtaEvent,
+    type NoDeviceEshopCtaOrigin,
+} from './promoNoDeviceEshopCtaEvent';
