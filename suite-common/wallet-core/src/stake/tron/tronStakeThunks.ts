@@ -19,6 +19,7 @@ import { BigNumber } from '@trezor/utils';
 import { signTronContract } from './signTronContract';
 import { buildFreezeBalanceV2Contract } from './tronStakeContracts';
 import { type TronResourceType, type TronStakeError } from './tronStakeTypes';
+import { addFakePendingTronTxThunk } from '../../transactions/transactionsThunks';
 
 const TRON_STAKE_MODULE = '@common/wallet-core/tron-stake';
 
@@ -112,7 +113,7 @@ export const submitTronFreezeThunk = createThunk<
     { rejectValue: TronStakeError }
 >(
     `${TRON_STAKE_MODULE}/submitTronFreezeThunk`,
-    async ({ account, device, amount, resourceType }, { rejectWithValue }) => {
+    async ({ account, device, amount, resourceType }, { dispatch, rejectWithValue }) => {
         if (account.networkType !== 'tron') {
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
         }
@@ -139,6 +140,41 @@ export const submitTronFreezeThunk = createThunk<
             return rejectWithValue({ kind: 'broadcast-failed', message: pushResult.error.message });
         }
 
-        return { txid: pushResult.payload.txid };
+        const { txid } = pushResult.payload;
+
+        const stakeAmount = unitsToSubunits({
+            value: asAmountUnit(new BigNumber(amount)),
+            decimals: getNetwork(account.symbol).decimals,
+        }).toString();
+
+        const composed = await dispatch(
+            composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }),
+        )
+            .unwrap()
+            .catch(() => undefined);
+        const composedTx = composed?.normal?.type === 'final' ? composed.normal : undefined;
+
+        dispatch(
+            addFakePendingTronTxThunk({
+                account,
+                txid,
+                amount: '0',
+                fee: composedTx?.fee ?? '0',
+                type: 'self',
+                target: { addresses: [account.descriptor], amount: stakeAmount },
+                tronSpecific: {
+                    contractType: 'FreezeBalanceV2Contract',
+                    operation: 'freeze',
+                    resource: resourceType === 'energy' ? 'ENERGY' : 'BANDWIDTH',
+                    stakeAmount,
+                    bandwidthUsage:
+                        composedTx && new BigNumber(composedTx.fee).isZero()
+                            ? String(composedTx.bytes)
+                            : undefined,
+                },
+            }),
+        );
+
+        return { txid };
     },
 );
