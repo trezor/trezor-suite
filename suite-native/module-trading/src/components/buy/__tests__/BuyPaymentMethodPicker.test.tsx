@@ -17,6 +17,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     screen,
+    within,
 } from '@suite-native/test-utils-store';
 import {
     buyQuotes,
@@ -129,7 +130,12 @@ describe('BuyPaymentMethodPicker', () => {
             expect(getByLabelText('Selected payment method')).toHaveTextContent(
                 creditCardPaymentMethodTranslation,
             );
-            expect(getByTestId('@icons/payment-method-icon/creditCard')).toBeOnTheScreen();
+
+            const picker = getByTestId('@trading/buy/payment-method-picker');
+
+            expect(
+                within(picker).getByTestId('@icons/payment-method-icon/creditCard'),
+            ).toBeTruthy();
         });
 
         it('should display loader while quotes are fetched', () => {
