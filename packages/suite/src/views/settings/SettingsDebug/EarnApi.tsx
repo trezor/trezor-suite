@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
 import {
     type EarnYieldWorkerBaseUrl,
-    defaultEarnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
@@ -23,12 +22,15 @@ export const EarnApi = () => {
         [],
     );
 
-    const selectedValue =
-        options.find(option => option.value === storedValue) ?? defaultEarnYieldWorkerBaseUrl;
+    const selectedValue = options.find(option => option.value === storedValue);
 
     const handleChange = (item: { value: EarnYieldWorkerBaseUrl; label: string }) => {
         dispatch(suiteSettingsActions.setDebugMode({ earnYieldWorkerBaseUrl: item.value }));
         earnYieldWorkerBaseUrl.set(item.value);
+
+        // We need somehow to invalidate current Yield API state so it re-fetches with the new base URL.
+        // Since this is debug setting, the easiest way is to just reload the app.
+        globalThis.location.reload();
     };
 
     return (
