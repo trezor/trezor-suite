@@ -1,6 +1,6 @@
 import type { types } from '@fivebinaries/coin-selection';
 import { coinSelection } from '@fivebinaries/coin-selection';
-import * as cbor from 'cbor';
+import { encode as cborEncode } from 'cborg';
 
 import type { AccountUtxo, CardanoCertificate } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -130,19 +130,18 @@ export const hexStringByteLength = (s: string) => s.length / 2;
 // See https://cips.cardano.org/cips/cip8. The byte layout is consumed by CIP-30 verifiers,
 // so the encoding must stay deterministic.
 export const createCose = (payload: string, signature: string, address: string, pubKey: string) => {
-    const coseSignature = cbor.encode([
-        Buffer.from(
-            cbor.encode(
-                new Map()
-                    .set(1, -8) // alg: EdDSA
-                    .set('address', Buffer.from(address, 'hex')),
-            ),
-        ),
+    const protectedHeaders = cborEncode(
+        new Map()
+            .set(1, -8) // alg: EdDSA
+            .set('address', Buffer.from(address, 'hex')),
+    );
+    const coseSignature = cborEncode([
+        protectedHeaders,
         new Map().set('hashed', false),
         Buffer.from(payload, 'hex'),
         Buffer.from(signature, 'hex'),
     ]);
-    const coseKey = cbor.encode(
+    const coseKey = cborEncode(
         new Map()
             .set(1, 1) // kty: OKP
             .set(3, -8) // alg: EdDSA

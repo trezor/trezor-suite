@@ -15428,7 +15428,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@trezor/eslint": "workspace:*"
-    cbor: "npm:^10.0.12"
+    cborg: "npm:^5.1.1"
     crc: "npm:^3.8.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -15902,7 +15902,7 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/w3c-web-usb": "npm:^1.0.14"
     "@vitest/browser-playwright": "npm:^4.1.6"
-    cbor: "npm:^10.0.12"
+    cborg: "npm:^5.1.1"
     cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.1"
     jest: "npm:29.7.0"
@@ -21585,12 +21585,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cbor@npm:^10.0.12":
-  version: 10.0.12
-  resolution: "cbor@npm:10.0.12"
-  dependencies:
-    nofilter: "npm:^3.0.2"
-  checksum: 10/296b6564c60e856aa13500ddeaf95aa979b05a80b543e85f6a2992d335e049ce2fd750a724a5d99095a9fee1c2bfcb934437683f2c19d8db4e129ea57813fb22
+"cborg@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "cborg@npm:5.1.1"
+  bin:
+    cborg: lib/bin.js
+  checksum: 10/e8be4314ab7cc9bba8be86089e195735d7df8ef32d07f64f7084cc9a9627628aea873648da0392cd84064eb6148f72927607b8ca062bafe660577ac62cdabda2
   languageName: node
   linkType: hard
 
@@ -36843,13 +36843,6 @@ __metadata:
   version: 1.15.0
   resolution: "node-stream-zip@npm:1.15.0"
   checksum: 10/3fb56144d23456e1b42fe9d24656999e4ef6aeccce3cae43fc97ba6c341ee448aeceb4dc8fb57ee78eab1a6da49dd46c9650fdb2f16b137630a335df9560c647
-  languageName: node
-  linkType: hard
-
-"nofilter@npm:^3.0.2":
-  version: 3.1.0
-  resolution: "nofilter@npm:3.1.0"
-  checksum: 10/f63d87231dfda4b783db17d75b15aac948f78e65f4f1043096ef441147f6667ff74cd4b3f57ada5dbe240be282d3e9838558ac863a66cb04ef25fff7b2b4be4e
   languageName: node
   linkType: hard
 

@@ -1,5 +1,5 @@
 import { bech32 } from '@scure/base';
-import * as cbor from 'cbor';
+import { type TagDecoder, decode as cborDecode } from 'cborg';
 import CRC from 'crc';
 
 import * as base58 from './crypto/base58';
@@ -8,11 +8,17 @@ import type { Currency, NetworkEnvironment } from './currency-types';
 
 const DEFAULT_NETWORK: NetworkEnvironment = 'prod';
 
+// Byron addresses wrap their hash in CBOR tag 24 (encoded-CBOR data item). We need the raw
+// inner bytes for CRC32 verification (not the decoded inner CBOR), so this handler captures
+// them under `.value` to mirror the legacy `cbor.Tagged` shape.
+const TAGS: TagDecoder[] = [];
+TAGS[24] = decode => ({ value: decode() }) as unknown as ReturnType<TagDecoder>;
+
 function getDecoded(address: string): any {
     try {
         const decoded = base58.decode(address);
 
-        return cbor.decode(new Uint8Array(decoded).buffer as ArrayBuffer);
+        return cborDecode(new Uint8Array(decoded), { tags: TAGS });
     } catch {
         return null;
     }
