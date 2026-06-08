@@ -62,7 +62,7 @@
         "html-webpack-plugin": "5.6.7",
         "rimraf": "^6.1.2",
         "typescript-styled-plugin": "^0.18.3",
-        "webpack": "5.106.2",
+        "webpack": "5.107.2",
         "webpack-cli": "^7.0.2"
     }
 }
