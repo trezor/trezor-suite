@@ -14803,6 +14803,7 @@ __metadata:
   resolution: "@suite/settings@workspace:suite/settings"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"

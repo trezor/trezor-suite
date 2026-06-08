@@ -5,10 +5,7 @@ import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { initialRedirection, routerInit } from '@suite/router';
 import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
 import * as trezorConnectActions from '@suite-common/connect-init';
-import {
-    defaultEarnYieldWorkerBaseUrl,
-    earnYieldWorkerBaseUrl,
-} from '@suite-common/earn-stablecoin-api';
+import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
@@ -48,9 +45,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: SUITE.INIT });
 
     // apply the earn yield worker base url from debug settings (or the default for this build)
-    earnYieldWorkerBaseUrl.set(
-        selectEarnYieldWorkerBaseUrl(getState()) ?? defaultEarnYieldWorkerBaseUrl,
-    );
+    earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
 
     await dispatch(initDevices());
 
