@@ -1,0 +1,73 @@
+name: "[Test] connect custom e2e setup"
+
+on:
+  workflow_dispatch:
+    inputs:
+      testEnv:
+        description: "Build environment"
+        type: choice
+        default: "node"
+        options:
+          - node
+          - web
+      transport:
+        description: "Bridge version"
+        type: choice
+        default: "node-bridge"
+        options:
+          - node-bridge
+          - local-suite-node-bridge
+      deviceModel:
+        description: "Device model"
+        type: choice
+        default: "T3W1"
+        options:
+          - T3W1
+          - T3T1
+          - T3B1
+          - T2T1
+          - T2B1
+          - T1B1
+      deviceVersion:
+        description: "Firmware version (e.g. 2-latest, 1-latest, 2-main, 2.11.0...)"
+        type: string
+        default: "2-latest"
+      groups:
+        description: "Test groups (e.g. api,init,thp)"
+        type: string
+        default: "all"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.testEnv }}-${{ inputs.deviceModel }}-${{ inputs.deviceVersion }}-${{ inputs.transport }}-${{ inputs.groups }}
+  cancel-in-progress: true
+
+jobs:
+  set-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      matrix: ${{ steps.generate.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Generate matrix
+        id: generate
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=${{ inputs.deviceModel }} --firmware=${{ inputs.deviceVersion }} --env=${{ inputs.testEnv }} --groups=${{ inputs.groups }} --transport=${{ inputs.transport }} --disable_cache_tx=false)" >> $GITHUB_OUTPUT
+
+  custom-check:
+    needs: [set-matrix]
+    name: custom ${{ matrix.env }}-${{ matrix.model }}-${{ matrix.firmware }}-${{ matrix.groups.name }}-${{ matrix.transport }}
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.groups.pattern }}
+      includeFilter: ${{ matrix.groups.includeFilter }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
+      testGroup: custom-check
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
