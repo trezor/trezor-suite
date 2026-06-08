@@ -100,7 +100,7 @@ const TokenRowBasicActions = ({
 
     const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
     const canSwapToken =
-        (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
+        !!tokenTradingOptions && tokenTradingOptions.exchange && token.balance !== '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
 
