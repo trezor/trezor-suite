@@ -57,7 +57,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn workspaces focus @suite-native/app
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @suite-native/app
 
       - name: Check runtimeVersion builds
         run: |

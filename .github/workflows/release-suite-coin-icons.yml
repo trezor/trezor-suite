@@ -36,7 +36,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Download crypto icons
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn install
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
           cd suite-common/icons
           yarn download-crypto-icons
 

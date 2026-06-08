@@ -49,7 +49,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn workspaces focus @suite-native/app
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @suite-native/app
       - name: Build on EAS iOS
         run: eas build
           --platform ios
@@ -85,7 +85,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn workspaces focus @suite-native/app
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @suite-native/app
       - name: Build on EAS Android
         run: eas build
           --platform android
@@ -127,7 +127,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn workspaces focus @suite-native/app
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @suite-native/app
 
       - name: Get Suite version
         id: get_version

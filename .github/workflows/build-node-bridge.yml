@@ -40,7 +40,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn install --immutable
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
 
       - name: Build bin.js file
         run: |
