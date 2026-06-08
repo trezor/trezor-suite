@@ -51,7 +51,17 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Generate matrix
         id: generate
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=${{ inputs.deviceModel }} --firmware=${{ inputs.deviceVersion }} --env=${{ inputs.testEnv }} --groups=${{ inputs.groups }} --transport=${{ inputs.transport }} --disable_cache_tx=false)" >> $GITHUB_OUTPUT
+        env:
+          DEVICE_VERSION: ${{ inputs.deviceVersion }}
+          TEST_GROUPS: ${{ inputs.groups }}
+        run: |
+          echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js \
+            --model=${{ inputs.deviceModel }} \
+            --firmware="$DEVICE_VERSION" \
+            --env=${{ inputs.testEnv }} \
+            --groups="$TEST_GROUPS" \
+            --transport=${{ inputs.transport }} \
+            --disable_cache_tx=false)" >> "$GITHUB_OUTPUT"
 
   custom-check:
     needs: [set-matrix]
