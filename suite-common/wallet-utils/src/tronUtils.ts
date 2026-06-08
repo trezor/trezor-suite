@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
-import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
+import { type ResponseTypes, type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { tronUtils } from '@trezor/blockchain-link-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -8,6 +8,26 @@ import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
 
 export const TRON_MEMO_FEE_SUN = 1_000_000;
+
+export type TronFeeLevel = ResponseTypes.EstimateFee['payload'][number];
+
+export const computeBandwidthFeeLevel = ({
+    availableStakedBandwidth,
+    availableFreeBandwidth,
+    bytes,
+}: {
+    availableStakedBandwidth: number;
+    availableFreeBandwidth: number;
+    bytes: number;
+}): TronFeeLevel => {
+    const availableBandwidth = Math.max(availableStakedBandwidth, availableFreeBandwidth);
+    const feeInSun = availableBandwidth < bytes ? bytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE : 0;
+
+    return {
+        feePerTx: String(feeInSun),
+        feePerUnit: String(tronUtils.TRON_BANDWIDTH_SUN_PRICE),
+    };
+};
 
 export type TronFeeBreakdown = {
     trxBurned: BigNumber;
