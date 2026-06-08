@@ -20,13 +20,15 @@ runs:
       run: |
         set -euo pipefail
 
-        # Use the PR base SHA from GitHub context — the exact commit on develop where
-        # this branch diverged. Fetching just that one commit is enough for the diff;
-        # no merge-base computation or deep history needed.
+        # Fetch the base branch so git can walk its ancestry and find the merge-base.
+        # Fetching only BASE_SHA (even with --depth=1) leaves it parentless, making
+        # three-dot diff impossible. Fetching the full ref gives the connected history.
+        # The calling workflow must use fetch-depth: 0 on the PR head so the merge-base
+        # is reachable from both sides.
         BASE_SHA="${{ github.event.pull_request.base.sha }}"
-        git fetch origin "$BASE_SHA" --depth=1
+        git fetch origin "${{ github.base_ref }}"
 
-        CHANGED=$(git diff "$BASE_SHA" HEAD --name-only)
+        CHANGED=$(git diff "$BASE_SHA"...HEAD --name-only)
         echo "Changed files:"
         echo "$CHANGED"
 
