@@ -41,11 +41,11 @@ export const firmwareFirmwareUpdateFinishedEvent: EventDef<
             description: 'Target firmware version (e.g., 1.2.3)',
         },
         fromFwType: {
-            description: 'The firmware type before update (e.g., `bitcoin-only`, `regular`, `universal`, or `none`)',
+            description: 'The firmware type before update: `bitcoin-only`, `universal`, or `none`',
             changelog: [{ version: '25.5.1', notes: 'added' }],
         },
         toFwType: {
-            description: 'The target firmware type (e.g., `bitcoin-only`, `regular`, `universal`)',
+            description: 'The target firmware type: `bitcoin-only` or `universal`',
             changelog: [{ version: '25.5.1', notes: 'added' }],
         },
         location: {

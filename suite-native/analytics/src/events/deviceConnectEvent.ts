@@ -17,7 +17,8 @@ type Attributes = {
 
 export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> = {
     name: EventType.DeviceConnect,
-    descriptionTrigger: 'A Trezor device is successfully connected to the application and authorized for use',
+    descriptionTrigger:
+        'A Trezor device is successfully connected to the application and authorized for use',
     changelog: [
         { version: '25.5.1', notes: 'Added attribute: mode' },
         { version: '25.10.1', notes: 'Added attribute: connectionType' },
@@ -26,15 +27,18 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
     attributes: {
         mode: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The device mode: `normal` for regular operation, `bootloader` for firmware updates, null if unknown',
+            description:
+                'The device mode (e.g., `normal`, `bootloader`, `initialize`, `seedless`), or null if unknown',
         },
         firmwareVersion: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The firmware version installed on the device as a version array, or null if not available',
+            description:
+                'The firmware version installed on the device as a version array, or null if not available',
         },
         pinProtection: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Whether PIN protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
+            description:
+                'Whether PIN protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
         },
         deviceModel: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -54,7 +58,8 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
         },
         connectionType: {
             changelog: [{ version: '25.10.1', notes: 'added' }],
-            description: 'The connection type used: `cable` for USB/wired connection, `bluetooth` for wireless connection',
+            description:
+                'The connection type used: `cable` for USB/wired connection, `bluetooth` for wireless connection',
         },
     },
 };

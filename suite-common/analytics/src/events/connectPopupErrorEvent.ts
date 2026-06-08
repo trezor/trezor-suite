@@ -47,7 +47,8 @@ export const connectPopupErrorEvent: EventDef<Attributes, EventType.ConnectPopup
         },
         connectionType: {
             changelog: [{ version: '26.2.0', notes: 'added' }],
-            description: 'Connection type (WebSocket, WalletConnect, web popup, deeplink)',
+            description:
+                'Source of the call: `desktop-ws`, `mcp`, `walletconnect`, `web`, or `deeplink`',
         },
     },
 };

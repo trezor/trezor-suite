@@ -22,7 +22,8 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
     EventType.FirmwareFirmwareUpdateStucked
 > = {
     name: EventType.FirmwareFirmwareUpdateStucked,
-    descriptionTrigger: 'User encounters a stuck firmware update and clicks the `Stucked` button to view recovery instructions or troubleshooting help',
+    descriptionTrigger:
+        'User encounters a stuck firmware update and clicks the `Stucked` button to view recovery instructions or troubleshooting help',
     changelog: [{ version: '25.1.2', notes: 'Added' }],
     attributes: {
         model: {
@@ -43,19 +44,20 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
         },
         fromFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The firmware type before update (e.g., `bitcoin-only`, `regular`, `universal`, or `none`)',
+            description: 'The firmware type before update: `bitcoin-only`, `universal`, or `none`',
         },
         toFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'The target firmware type (e.g., `bitcoin-only`, `regular`, `universal`)',
+            description: 'The target firmware type: `bitcoin-only` or `universal`',
         },
         location: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Where the firmware update was initiated: `settings`, `onboarding`, or `null`',
+            description:
+                'Where the firmware update was initiated: `settings`, `onboarding`, or `null`',
         },
         duration: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'How long the firmware update process was stuck, in milliseconds',
+            description: 'How long the firmware update process was stuck, in seconds',
         },
         stuckedType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],

@@ -38,7 +38,8 @@ type Attributes = {
 
 export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
     name: EventType.SuiteReady,
-    descriptionTrigger: 'Application finishes initialization and is ready for user interaction (either after startup or after onboarding completion)',
+    descriptionTrigger:
+        'Application finishes initialization and is ready for user interaction (either after startup or after onboarding completion)',
     changelog: [
         { version: '1.0.0', notes: 'added' },
         { version: '25.9.0', notes: 'updated' },
@@ -58,7 +59,8 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
             description: 'Available suite currencies e.g. `usd`',
         },
         discreetMode: {
-            description: 'Whether discreet mode is enabled (hides sensitive information like amounts)',
+            description:
+                'Whether discreet mode is enabled (hides sensitive information like amounts)',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         screenWidth: {
@@ -78,16 +80,18 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
             changelog: [{ version: '1.2.0', notes: 'added' }],
         },
         rememberedStandardWallets: {
-            description: 'Number of standard (non-hidden) wallets that the user has set to be remembered',
+            description:
+                'Number of standard (non-hidden) wallets that the user has set to be remembered',
             changelog: [{ version: '1.4.0', notes: 'added' }],
         },
         rememberedHiddenWallets: {
-            description: 'Number of hidden wallets (created with passphrases) that the user has set to be remembered',
+            description:
+                'Number of hidden wallets (created with passphrases) that the user has set to be remembered',
             changelog: [{ version: '1.4.0', notes: 'added' }],
         },
         theme: {
             changelog: [{ version: '1.5.0', notes: 'added' }],
-            description: 'dark, light, custom',
+            description: 'dark, light, debug',
         },
         suiteVersion: {
             description: 'The version of Suite that is running',
@@ -107,11 +111,11 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
         },
         osName: {
             changelog: [{ version: '1.8.0', notes: 'added' }],
-            description: 'windows, macos, linux, android, chromeos',
+            description: 'windows, macos, linux, android, chromeos, ios',
         },
         osCpuArch: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'amd64, arm64',
+            description: 'CPU architecture (e.g., `amd64`, `arm64`)',
         },
         browserVersion: {
             changelog: [{ version: '1.8.0', notes: 'added' }],
@@ -134,16 +138,17 @@ export const suiteReadyEvent: EventDef<Attributes, EventType.SuiteReady> = {
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         autodetectTheme: {
-            description: 'Whether automatic theme detection from system settings (light/dark mode) is enabled',
+            description:
+                'Whether automatic theme detection from system settings (light/dark mode) is enabled',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         labeling: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: `'dropbox' | 'google' | 'fileSystem' | 'suite-sync' | 'dropbox' | 'missing-provider' | 'off' - labeling provider used for fetching transaction labels (if any)`,
+            description: `'dropbox' | 'google' | 'fileSystem' | 'inMemoryTest' | 'suite-sync' | 'missing-provider' | 'off' - labeling provider used for fetching transaction labels (if any)`,
         },
         bitcoinUnit: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: `'BTC' | 'sat'`,
+            description: `Bitcoin unit abbreviation (e.g., 'BTC', 'mBTC', 'μBTC', 'sat')`,
         },
         experimentalFeatures: {
             changelog: [{ version: '24.8.0', notes: 'added' }],

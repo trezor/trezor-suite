@@ -14,7 +14,8 @@ export const selectWalletTypeEvent: EventDef<Attributes, EventType.SelectWalletT
 
     attributes: {
         type: {
-            description: 'The wallet type selected: `standard` for normal wallet, `passphrase` for hidden wallet (created with passphrase)',
+            description:
+                'The wallet type selected: `standard` for normal wallet, `hidden` for passphrase-protected wallet',
             changelog: [{ version: '1.5.0', notes: 'added' }],
         },
     },

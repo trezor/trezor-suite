@@ -23,7 +23,7 @@ export const settingsToggleExperimentalFeatureEvent: EventDef<
         },
         value: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: '`true` if the experimental feature was enabled (user opted into beta functionality), `false` if disabled (sticking to stable features)',
+            description: '`true` if the experimental feature was enabled, `false` if disabled',
         },
     },
 };

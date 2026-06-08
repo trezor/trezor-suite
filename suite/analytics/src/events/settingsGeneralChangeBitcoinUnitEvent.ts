@@ -11,13 +11,15 @@ export const settingsGeneralChangeBitcoinUnitEvent: EventDef<
     EventType.SettingsGeneralChangeBitcoinUnit
 > = {
     name: EventType.SettingsGeneralChangeBitcoinUnit,
-    descriptionTrigger: 'User changes the Bitcoin unit display format via settings, wallet settings, or by clicking the amount display on dashboard/account screens',
+    descriptionTrigger:
+        'User changes the Bitcoin unit display format via settings, wallet settings, or by clicking the amount display on dashboard/account screens',
     changelog: [{ version: '1.21.0', notes: 'added' }],
 
     attributes: {
         unit: {
             changelog: [{ version: '1.21.0', notes: 'added' }],
-            description: 'The selected Bitcoin unit: `BTC` for Bitcoin, `sat` for satoshis',
+            description:
+                'The selected Bitcoin unit abbreviation (e.g., `BTC`, `mBTC`, `μBTC`, `sat`)',
         },
     },
 };

@@ -32,13 +32,15 @@ type Attributes = {
 
 export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> = {
     name: EventType.TradeExchange,
-    descriptionTrigger: 'User navigates through the exchange/swap flow, with tracking at each step of the process',
+    descriptionTrigger:
+        'User navigates through the exchange/swap flow, with tracking at each step of the process',
     changelog: [{ version: '25.5.2', notes: 'added' }],
 
     attributes: {
         action: {
             changelog: [{ version: '25.5.2', notes: 'added' }],
-            description: 'The user action in the exchange flow: `continue` to proceed, `cancel` to exit',
+            description:
+                'The user action in the exchange flow: `continue` to proceed, `cancel` to exit',
         },
         step: {
             description: `The current step in the exchange flow:
