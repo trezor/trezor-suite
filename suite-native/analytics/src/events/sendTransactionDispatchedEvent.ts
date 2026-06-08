@@ -30,7 +30,8 @@ export const sendTransactionDispatchedEvent: EventDef<
     changelog: [{ version: '24.10.1', notes: 'added' }],
     attributes: {
         symbol: {
-            description: 'The blockchain network symbol for the transaction (e.g., `btc`, `eth`, `ada`)',
+            description:
+                'The blockchain network symbol for the transaction (e.g., `btc`, `eth`, `ada`)',
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         outputsCount: {
@@ -38,7 +39,8 @@ export const sendTransactionDispatchedEvent: EventDef<
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         selectedFee: {
-            description: 'The fee level chosen for the transaction (e.g., `economy`, `normal`, `high`, `custom`)',
+            description:
+                'The fee level chosen for the transaction: `high`, `normal`, `economy`, `low`, or `custom`',
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         wasAppLeftDuringReview: {
@@ -47,11 +49,13 @@ export const sendTransactionDispatchedEvent: EventDef<
                 'Whether the user left the app during transaction review. Note: false does not mean the user confirmed the address with the source (e.g., can be done face to face or on desktop). Leaving the app does not imply address verification was skipped.',
         },
         tokenSymbols: {
-            description: 'List of token symbols included in the transaction (only for multi-token transactions)',
+            description:
+                'List of token symbols included in the transaction (only for multi-token transactions)',
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         tokenAddresses: {
-            description: 'List of contract addresses for tokens included in the transaction (only for multi-token transactions)',
+            description:
+                'List of contract addresses for tokens included in the transaction (only for multi-token transactions)',
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         hasEthereumData: {
@@ -63,7 +67,8 @@ export const sendTransactionDispatchedEvent: EventDef<
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         hasDestinationTag: {
-            description: 'Whether the transaction includes a destination tag (specific to certain networks like Ripple)',
+            description:
+                'Whether the transaction includes a destination tag (specific to certain networks like Ripple)',
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         hasBitcoinLocktime: {

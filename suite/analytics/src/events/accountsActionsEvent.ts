@@ -9,16 +9,14 @@ type Attributes = {
 
 export const accountsActionsEvent: EventDef<Attributes, EventType.AccountsActions> = {
     name: EventType.AccountsActions,
-    descriptionTrigger: 'User navigates between account page tabs and interacts with the account details page',
+    descriptionTrigger:
+        'User navigates between account page tabs and interacts with the account details page',
     changelog: [{ version: '23.12.0', notes: 'added' }],
 
     attributes: {
         action: {
-            description: `The wallet route navigated to, or \`add-token\` when the Add token button is clicked. Route values include:
+            description: `The wallet route navigated to, or \`add-token\` when the Add token button is clicked. Observed values include:
 - \`add-token\`: Add token button clicked
-- \`wallet-coinmarket-buy\`: buy crypto tab
-- \`wallet-coinmarket-exchange\`: exchange tab
-- \`wallet-coinmarket-sell\`: sell crypto tab
 - \`wallet-details\`: account details tab
 - \`wallet-index\`: account overview/index
 - \`wallet-nfts\`: NFTs tab
@@ -27,14 +25,14 @@ export const accountsActionsEvent: EventDef<Attributes, EventType.AccountsAction
 - \`wallet-sign-verify\`: sign & verify tab
 - \`wallet-staking\`: staking tab
 - \`wallet-tokens\`: tokens tab
-- \`wallet-tokens-coins\`: coins sub-tab in tokens
 - \`wallet-trading-buy\`: trading buy tab
 - \`wallet-trading-exchange\`: trading exchange tab
 - \`wallet-trading-sell\`: trading sell tab`,
             changelog: [{ version: '23.12.0', notes: 'added' }],
         },
         symbol: {
-            description: 'The blockchain network or asset symbol for the account that the action was performed on',
+            description:
+                'The blockchain network or asset symbol for the account that the action was performed on',
             changelog: [{ version: '23.12.0', notes: 'added' }],
         },
     },

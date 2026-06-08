@@ -17,7 +17,8 @@ type Attributes = {
 
 export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> = {
     name: EventType.CoinDiscovery,
-    descriptionTrigger: 'During device connection, a wallet coin/network is discovered and its accounts are scanned, including any associated tokens and staking opportunities',
+    descriptionTrigger:
+        'During device connection, a wallet coin/network is discovered and its accounts are scanned, including any associated tokens and staking opportunities',
     changelog: [
         { version: '26.3.1', notes: 'added on desktop' },
         { version: '26.2.2', notes: 'added on mobile' },
@@ -29,7 +30,8 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
                 { version: '26.3.1', notes: 'added on desktop' },
                 { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Unique identifier for the discovery process (typically device.path)',
+            description:
+                'Identifier of the device whose discovery this report belongs to (the device static session id)',
         },
         symbol: {
             changelog: [
@@ -43,7 +45,8 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
                 { version: '26.3.1', notes: 'added on desktop' },
                 { version: '26.2.2', notes: 'added on mobile' },
             ],
-            description: 'Total number of accounts found for this network during discovery',
+            description:
+                'Number of discovered accounts on this network that have some transaction history',
         },
         numberOfNonZeroAccounts: {
             changelog: [
@@ -78,7 +81,8 @@ export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> =
                 { version: '26.4.1', notes: 'added on desktop' },
                 { version: '26.4.1', notes: 'added on mobile' },
             ],
-            description: 'List of staking service providers detected for this coin (e.g., `lido`, `rocketpool`)',
+            description:
+                'List of staking service providers detected for this coin (e.g., `lido`, `rocketpool`)',
         },
     },
 };

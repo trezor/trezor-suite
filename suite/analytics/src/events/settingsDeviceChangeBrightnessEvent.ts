@@ -16,7 +16,7 @@ export const settingsDeviceChangeBrightnessEvent: EventDef<
 
     attributes: {
         value: {
-            description: 'The brightness level set by the user, typically a numeric value between 0 and 100 representing the percentage',
+            description: 'The brightness level set by the user',
             changelog: [{ version: '24.6.1', notes: 'added' }],
         },
     },

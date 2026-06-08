@@ -15,7 +15,8 @@ export const dashboardActionsEvent: EventDef<Attributes, EventType.DashboardActi
     attributes: {
         type: {
             changelog: [{ version: '24.11.0', notes: 'added' }],
-            description: 'The type of action clicked on the dashboard: `buy` for buy action, `sell` for sell action, `swap` for swap/exchange action',
+            description:
+                'The route navigated to from the dashboard header (e.g., `wallet-trading-buy`, `wallet-trading-exchange`)',
         },
     },
 };

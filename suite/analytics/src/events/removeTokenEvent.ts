@@ -14,11 +14,11 @@ export const removeTokenEvent: EventDef<Attributes, EventType.RemoveToken> = {
 
     attributes: {
         networkSymbol: {
-            description: 'The blockchain network symbol where the token exists (e.g., `eth`, `btc`)',
+            description: 'The blockchain network symbol of the account where the token exists',
             changelog: [{ version: '25.12.1', notes: 'added' }],
         },
         token: {
-            description: 'The contract address or token identifier of the token being removed',
+            description: 'The contract address of the token being removed',
             changelog: [{ version: '25.12.1', notes: 'added' }],
         },
     },

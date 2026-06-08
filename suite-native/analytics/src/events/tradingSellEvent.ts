@@ -16,13 +16,14 @@ type Attributes = {
 
 export const tradingSellEvent: EventDef<Attributes, EventType.TradingSell> = {
     name: EventType.TradingSell,
-    descriptionTrigger: 'User navigates through the cryptocurrency sell transaction flow, with tracking at each action and step',
+    descriptionTrigger:
+        'User navigates through the cryptocurrency sell transaction flow, with tracking at each action and step',
     changelog: [{ version: '25.5.1', notes: 'added' }],
 
     attributes: {
         action: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'User action: `continue` to proceed through the flow, `cancel` to exit',
+            description: 'User action: `continue`, `cancel`, `retry`, or `visit`',
         },
         step: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -30,7 +31,8 @@ export const tradingSellEvent: EventDef<Attributes, EventType.TradingSell> = {
         },
         cryptoLabel: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Display label of the cryptocurrency being sold (e.g., `BTC`, `ETH`, `SOL`)',
+            description:
+                'Display label of the cryptocurrency being sold (e.g., `BTC`, `ETH`, `SOL`)',
         },
         cryptoNetworkSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
@@ -42,11 +44,13 @@ export const tradingSellEvent: EventDef<Attributes, EventType.TradingSell> = {
         },
         receiveMethod: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The method for receiving funds from the sale (e.g., `bankTransfer`, `paypal`)',
+            description:
+                'The method for receiving funds from the sale (e.g., `bankTransfer`, `paypal`)',
         },
         countryOfResidence: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Country code of the user\'s residence for compliance and service availability',
+            description:
+                "Country code of the user's residence for compliance and service availability",
         },
         exchangeName: {
             changelog: [{ version: '25.5.1', notes: 'added' }],

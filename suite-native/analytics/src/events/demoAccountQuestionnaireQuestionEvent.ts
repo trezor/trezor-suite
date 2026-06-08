@@ -28,18 +28,12 @@ export const demoAccountQuestionnaireQuestionEvent: EventDef<
     attributes: {
         option: {
             changelog: [{ version: '25.12.1', notes: 'added' }],
-            description: `The selected option:
-- \`considering\`: thinking about buying
-- \`ad\`: saw advertisement
-- \`friend\`: recommended by friend
-- \`none\`: no specific reason
-- \`explore\`: browsing app
-- \`transaction\`: want to make transaction
-- \`hardwareWallet\`: interested in hardware wallet`,
+            description: `The selected option. For the \`reason\` question: \`considering\` (considering a hardware wallet), \`ad\` (saw an ad online), \`friend\` (a friend told them about Trezor). For the \`suiteAction\` question: \`explore\` (wanted to explore the app), \`transaction\` (wanted to try sending/receiving crypto), \`hardwareWallet\` (wanted to understand how a hardware wallet works with Suite). \`none\` is available on either question via the "None of the above" button.`,
         },
         question: {
             changelog: [{ version: '25.12.1', notes: 'added' }],
-            description: 'The question type: `reason` (why interested in Trezor), `suiteAction` (what they want to do in Suite)',
+            description:
+                'The question type: `reason` (why interested in Trezor), `suiteAction` (what they want to do in Suite)',
         },
     },
 };
