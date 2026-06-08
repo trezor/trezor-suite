@@ -70,11 +70,14 @@ jobs:
           mode: firewall-free
           job-summary: errors
           firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/connect
+      - run: echo "FOCUS_WORKSPACES=@trezor/connect" >> "$GITHUB_ENV"
       - if: ${{ inputs.testEnv == 'web' }}
-        run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/connect-web
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn && yarn build:libs
+        run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/connect-web" >> "$GITHUB_ENV"
+      - if: ${{ inputs.transport && contains(inputs.transport, 'local-suite') }}
+        run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/transport-bridge" >> "$GITHUB_ENV"
+      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus $FOCUS_WORKSPACES
+      - if: ${{ inputs.transport && contains(inputs.transport, 'local-suite') }}
+        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspace @trezor/transport-bridge build:node:bin
       - name: Install Playwright chromium
         if: ${{ inputs.testEnv == 'web' }}
         run: yarn workspace @trezor/connect-web exec playwright install --with-deps chromium
