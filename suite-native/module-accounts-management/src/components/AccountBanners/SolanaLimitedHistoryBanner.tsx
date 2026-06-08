@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FullAlertBox } from '@suite-native/atoms';
 import {
     selectIsSolanaLimitedHistoryBannerClosed,
-    setSolanaLimitedHistoryBannerClosed,
+    setIsSolanaLimitedHistoryBannerClosed,
 } from '@suite-native/banner-flags';
 import { useTranslate } from '@suite-native/intl';
 
@@ -14,7 +14,7 @@ export const SolanaLimitedHistoryBanner = () => {
 
     const dispatch = useDispatch();
     const handleClose = () => {
-        dispatch(setSolanaLimitedHistoryBannerClosed());
+        dispatch(setIsSolanaLimitedHistoryBannerClosed());
     };
 
     if (isClosed) {

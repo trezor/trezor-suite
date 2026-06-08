@@ -24,3 +24,4 @@ export * from './components/EmptyWalletSvg';
 export * from './components/TrezorDeviceSvg';
 export * from './components/DeviceInteractionScreenWrapper';
 export * from './hooks/useDeviceLowBatteryAlert';
+export * from './components/TwoSidedTS7Image';

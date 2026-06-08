@@ -152,6 +152,10 @@ export const messages = {
                 description: 'Help us shape a better experience for you.',
                 button: "I don't have a Trezor",
             },
+            getTrezorCta: {
+                title: "Don't have a Trezor yet?",
+                button: 'Get Trezor',
+            },
         },
         buttons: {
             receive: 'Receive',
@@ -994,6 +998,17 @@ export const messages = {
         },
     },
     moduleSettings: {
+        getTrezorCta: {
+            title: "Don't have a Trezor yet?",
+            subtitle:
+                'Secure your crypto offline and unlock its full potential with Trezor hardware wallets.',
+            bullets: {
+                security: 'Advanced open-source security',
+                app: 'Powerful crypto app for mobile & desktop',
+                setup: 'Easy to set up & simple to recover',
+            },
+            button: 'Get now',
+        },
         items: {
             general: {
                 title: 'General',
