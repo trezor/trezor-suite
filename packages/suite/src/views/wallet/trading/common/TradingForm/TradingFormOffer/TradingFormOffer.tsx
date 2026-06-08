@@ -36,13 +36,15 @@ export const TradingFormOffer = () => {
 
     return (
         <Column gap={12}>
-            <TradingFormOfferAmount
-                amount={receiveAmount}
-                sendAmount={sendAmount}
-                selectedAssetCryptoId={selectedAssetCryptoId ?? undefined}
-                shouldDisplayFiatAmount={shouldDisplayFiatAmount}
-                amountLabels={amountLabels}
-            />
+            {selectedAssetCryptoId && (
+                <TradingFormOfferAmount
+                    amount={receiveAmount}
+                    sendAmount={sendAmount}
+                    selectedAssetCryptoId={selectedAssetCryptoId}
+                    shouldDisplayFiatAmount={shouldDisplayFiatAmount}
+                    amountLabels={amountLabels}
+                />
+            )}
             <TradingFormOfferWarnings hasQuote={!!quote} />
             {noOffersWithTor && <TradingUtilsTorWarning tradingType={type} noOffer={!quote} />}
             {getActionsComponent(type)}
