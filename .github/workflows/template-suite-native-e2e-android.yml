@@ -66,11 +66,14 @@ jobs:
           cache: yarn
 
       - name: Load node modules cache
+        id: node-modules-cache
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          path: |
+            node_modules
+            suite-native/app/node_modules
+            .yarn/install-state.gz
+          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
@@ -79,10 +82,13 @@ jobs:
           mode: firewall-free
           job-summary: errors
           firewall-version: 1.11.0
-      - name: Install Yarn dependencies
+      - name: Disable Yarn hardened mode
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
+
+      - name: Install Yarn dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config

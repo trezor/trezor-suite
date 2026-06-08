@@ -29,11 +29,11 @@ jobs:
           cache: yarn
 
       - name: Cache node_modules
+        id: node-modules-cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
@@ -43,6 +43,7 @@ jobs:
           job-summary: errors
           firewall-version: 1.11.0
       - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         shell: bash
         run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/e2e-utils
 
