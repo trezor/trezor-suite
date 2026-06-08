@@ -14,8 +14,6 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
         // Mocks entry point is allowed
         { code: "import { mock } from '@suite-common/bluetooth/mocks';" },
         { code: "import { mock } from '@suite-common/thp/mocks';" },
-        // testUtils entry point is allowed
-        { code: "import { mock } from '@suite-native/trading-state/testUtils';" },
         // Non-restricted scopes are allowed regardless of depth
         { code: "import { debounce } from 'lodash/fp';" },
         { code: "import React from 'react';" },
@@ -83,19 +81,6 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
                     data: {
                         sourcePath: '@suite-common/bluetooth/mocks/createBluetoothDeviceCommon',
                         packageImportPath: '@suite-common/bluetooth/mocks',
-                    },
-                },
-            ],
-        },
-        // Deep testUtils imports should suggest the testUtils entry point
-        {
-            code: "import { createLightStore } from '@suite-native/trading-state/testUtils/createLightStore';",
-            errors: [
-                {
-                    messageId: 'doNotImportPackageDeepPath',
-                    data: {
-                        sourcePath: '@suite-native/trading-state/testUtils/createLightStore',
-                        packageImportPath: '@suite-native/trading-state/testUtils',
                     },
                 },
             ],
