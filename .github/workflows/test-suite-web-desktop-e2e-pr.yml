@@ -103,7 +103,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+        TEST_GROUP: ${{ fromJSON(needs.resolve-spec-list.outputs.matrix-desktop) }}
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "desktop"
@@ -206,7 +206,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       spec-list: ${{ steps.resolve.outputs.spec-list }}
+      matrix-desktop: ${{ steps.matrix.outputs.matrix-desktop }}
+      matrix-web: ${{ steps.matrix.outputs.matrix-web }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Resolve final spec list
         id: resolve
         shell: bash
@@ -225,6 +229,13 @@ jobs:
             echo "Running all tests (strategy=$STRATEGY, LLM spec empty or PR too large)."
             echo "spec-list=" >> "$GITHUB_OUTPUT"
           fi
+      - name: Resolve test matrix
+        id: matrix
+        uses: ./.github/actions/resolve-test-matrix
+        with:
+          spec-list: ${{ steps.resolve.outputs.spec-list }}
+          max-desktop: "7"
+          max-web: "5"
 
   post-suite-web-preview-link:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request'
@@ -298,7 +309,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5]
+        TEST_GROUP: ${{ fromJSON(needs.resolve-spec-list.outputs.matrix-web) }}
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "web"
