@@ -49,7 +49,7 @@
         "@trezor/connect-web": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.28.5",
+        "@babel/preset-typescript": "^7.29.7",
         "@trezor/eslint": "workspace:*",
         "@types/chrome": "^0.1.40",
         "@types/w3c-web-usb": "^1.0.14",
