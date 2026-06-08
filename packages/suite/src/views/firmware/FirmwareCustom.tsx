@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 
-import { SelectCustomFirmware } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
+import { SelectCustomFirmware } from 'src/components/firmware/SelectCustomFirmware';
 
 import { FirmwareModal } from './FirmwareModal';
 

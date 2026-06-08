@@ -66,13 +66,9 @@ export const fixtures = [
     {
         method: 'GET_ACCOUNT_INFO',
         default: true,
-        response: ({ params }: any) => {
-            if (isFirstAccount(params.descriptor)) {
-                return { data: ADA_MOCKED_ACCOUNT };
-            } else {
-                return { data: ADA_MOCKED_EMPTY_ACCOUNT };
-            }
-        },
+        response: ({ params }: any) => ({
+            data: isFirstAccount(params.descriptor) ? ADA_MOCKED_ACCOUNT : ADA_MOCKED_EMPTY_ACCOUNT,
+        }),
     },
     {
         method: 'GET_ACCOUNT_UTXO',

@@ -64,13 +64,14 @@ jobs:
 
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
           firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
-          sfw yarn install --immutable
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -192,6 +193,7 @@ jobs:
           cache: yarn
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
@@ -199,7 +201,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
       - name: Build suite-web
         env:
@@ -251,13 +253,14 @@ jobs:
 
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
           firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
-          sfw yarn install --immutable
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib

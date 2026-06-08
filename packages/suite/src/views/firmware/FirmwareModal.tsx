@@ -12,7 +12,7 @@ import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FirmwareInstallationProgressCheck } from 'src/components/firmware';
+import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';

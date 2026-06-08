@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import {
     type YieldFlowResolvedData,
     selectStablecoinYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
-import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal, toTokenSymbol } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -23,9 +23,10 @@ import {
 } from '@suite-native/navigation';
 
 import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
-import { YieldReviewList } from '../components/YieldReviewList';
+import { YieldDepositReviewOutputList } from '../components/YieldDepositReviewOutputList';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldDepositReview } from '../hooks/useYieldDepositReview';
+import { useYieldReviewAutoStart } from '../hooks/useYieldReviewAutoStart';
 import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositReview>;
@@ -54,23 +55,43 @@ const DepositReviewContent = ({
 }: DepositReviewContentProps) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
-    const { depositStatus, handleSubmitDepositReview, handleDepositSubmitted } =
-        useYieldDepositReview({
-            flowData,
-            flowKey,
-        });
-    const isSigningDeposit = depositStatus === 'signing';
+    const hasLeftReviewRef = useRef(false);
+    const markReviewLeave = useCallback(() => {
+        hasLeftReviewRef.current = true;
+    }, []);
+    const {
+        depositStatus,
+        handleDepositSubmitted,
+        leaveReviewFromDeviceCancel,
+        startDepositReview,
+    } = useYieldDepositReview({
+        flowData,
+        flowKey,
+        onReviewLeave: markReviewLeave,
+    });
     const isDepositSigned = depositStatus === 'signed' || depositStatus === 'sending';
     const isSendingDeposit = depositStatus === 'sending';
-    const isSubmitDisabled = depositStatus !== 'idle';
+    const handleReviewCancelled = useCallback(() => {
+        if (hasLeftReviewRef.current) {
+            return;
+        }
+
+        leaveReviewFromDeviceCancel();
+    }, [leaveReviewFromDeviceCancel]);
+
+    useYieldReviewAutoStart({
+        onDeviceReviewReady: revealConfirmOnTrezorSheet,
+        onReviewCancelled: handleReviewCancelled,
+        onReviewFailed: closeSheet,
+        shouldAutoStartReview: depositStatus === 'idle',
+        startReview: startDepositReview,
+    });
 
     useEffect(() => {
-        if (isSigningDeposit) {
-            revealConfirmOnTrezorSheet();
-        } else {
+        if (isDepositSigned) {
             closeSheet();
         }
-    }, [closeSheet, isSigningDeposit, revealConfirmOnTrezorSheet]);
+    }, [closeSheet, isDepositSigned]);
 
     return (
         <ConfirmOnTrezorWrapper
@@ -89,18 +110,15 @@ const DepositReviewContent = ({
             }
         >
             <VStack flex={1} justifyContent="space-between">
-                <YieldReviewList
+                <YieldDepositReviewOutputList
                     accountKey={flowData.account.key}
                     amount={review.amount}
                     fee={feePreview.fee}
-                    isFooterVisible={!isSigningDeposit && !isDepositSigned}
-                    isSubmitDisabled={isSubmitDisabled}
-                    isSubmitLoading={isSigningDeposit}
-                    onSubmit={handleSubmitDepositReview}
+                    isSigned={isDepositSigned}
+                    networkSymbol={flowData.account.symbol}
                     receiveAmount={review.receiptAmount}
-                    receiveTokenSymbol={flowData.receiptToken.symbol}
-                    tokenSymbol={tokenSymbol}
-                    variant="deposit"
+                    receiveTokenSymbol={toTokenSymbol(flowData.receiptToken.symbol)}
+                    tokenSymbol={toTokenSymbol(tokenSymbol)}
                 />
                 {isDepositSigned && (
                     <EarnReviewSubmittedCard

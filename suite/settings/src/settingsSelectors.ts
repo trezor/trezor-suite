@@ -1,4 +1,5 @@
 import { type ExperimentalFeature } from '@suite/experimental';
+import { defaultEarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 
 import { type SuiteSettingsRootState } from './settingsSlice';
 
@@ -26,7 +27,7 @@ export const selectShowConnectLogs = (state: SuiteSettingsRootState) =>
 export const selectInvityServerEnvironment = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.invityServerEnvironment;
 export const selectEarnYieldWorkerBaseUrl = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.debug.earnYieldWorkerBaseUrl;
+    state.suiteSettings.debug.earnYieldWorkerBaseUrl ?? defaultEarnYieldWorkerBaseUrl;
 export const selectOAuthServerEnvironment = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.oauthServerEnvironment;
 export const selectExperimentalFeatures = (state: SuiteSettingsRootState) =>

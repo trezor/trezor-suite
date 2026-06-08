@@ -13,9 +13,9 @@ import {
     ProviderConfirmationStatusInfo,
     ProviderStatusDevButtons,
 } from '@suite-native/trading-browser-auth';
+import { Footer } from '@suite-native/trading-provider-utils';
 
 import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
-import { Footer } from '../components/general/Footer';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import {
     SellPreviewContinueButton,

@@ -5,10 +5,11 @@ import type { ExchangeTrade } from 'invity-api';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeSideCard } from '@suite-native/trading-atoms';
+import {
+    CryptoToFiatValueBadge,
+    useChangeStringsExtractor,
+} from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
-
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
-import { CryptoToFiatValueBadge } from '../../general/CryptoToFiatValueBadge';
 
 export type ExchangeToAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;

@@ -111,6 +111,19 @@ export const signYieldActionReviewThunk = createThunk<
             });
         }
 
+        const currentTxReview = selectStablecoinYieldTxReview(getState());
+
+        if (
+            currentTxReview.accountKey !== flowData.account.key ||
+            currentTxReview.precomposedForm !== formState ||
+            currentTxReview.precomposedTx !== precomposedTransaction
+        ) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'tx-cancelled',
+            });
+        }
+
         dispatch(
             stablecoinYieldActions.storeSignedTransaction({
                 serializedTx: {

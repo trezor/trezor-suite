@@ -1,5 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    REVOKE_ALLOWANCE_AMOUNT,
     type YieldFlowResolvedData,
     formDraftActions,
     selectDeepCopyOfFormDraft,
@@ -16,67 +17,138 @@ import {
     type UpdateSelectedFeeLevelThunkParams,
     selectFeeLevels,
 } from '@suite-native/transaction-management';
+import { exhaustive } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from './constants';
-import { type YieldApprovalLimitType } from './types';
+import { type YieldAllowanceFormDraftTransactionType, type YieldApprovalLimitType } from './types';
 import {
-    buildYieldApprovalFormState,
+    buildYieldAllowanceFormState,
+    getYieldAllowanceFeeState,
     getYieldApprovalAllowanceAmount,
-    getYieldApprovalFeeState,
 } from './yieldApprovalUtils';
 
-export const getYieldApprovalFormDraftKey = (flowKey: string) => `yield-approval/${flowKey}`;
+const yieldAllowanceFormDraftPrefixes: Record<YieldAllowanceFormDraftTransactionType, string> = {
+    approve: 'yield-approval',
+    revoke: 'yield-revoke',
+};
 
-export const prepareYieldApprovalReviewTransactionThunk = createThunk(
-    `${EARN_MODULE_PREFIX}/prepareYieldApprovalReviewTransactionThunk`,
+export const getYieldAllowanceFormDraftKey = (
+    flowKey: string,
+    transactionType: YieldAllowanceFormDraftTransactionType,
+) => `${yieldAllowanceFormDraftPrefixes[transactionType]}/${flowKey}`;
+
+type PrepareYieldAllowanceReviewTransactionParams = {
+    amount?: string;
+    approvalLimitType?: YieldApprovalLimitType;
+    flowData: YieldFlowResolvedData;
+    flowKey: string;
+    transactionType: YieldAllowanceFormDraftTransactionType;
+    tokenContract: TokenAddress;
+};
+
+type GetYieldAllowanceReviewAmountParams = {
+    amount?: string;
+    approvalLimitType?: YieldApprovalLimitType;
+    flowData: YieldFlowResolvedData;
+    modalTxType: 'approve' | 'revoke' | 'revoke-only';
+    tokenContract: TokenAddress;
+};
+
+const getYieldAllowanceReviewAmount = ({
+    amount,
+    approvalLimitType,
+    flowData,
+    modalTxType,
+    tokenContract,
+}: GetYieldAllowanceReviewAmountParams) => {
+    switch (modalTxType) {
+        case 'approve':
+            if (!amount || !approvalLimitType) {
+                return null;
+            }
+
+            return getYieldApprovalAllowanceAmount({
+                amount,
+                approvalLimitType,
+                tokenContract,
+                tokenDecimals: flowData.token.decimals,
+                tokenSymbol: flowData.token.symbol,
+            });
+        case 'revoke':
+        case 'revoke-only':
+            return REVOKE_ALLOWANCE_AMOUNT;
+        default:
+            return exhaustive(modalTxType);
+    }
+};
+
+const isExpectedAllowanceModalTxType = (
+    transactionType: YieldAllowanceFormDraftTransactionType,
+    modalTxType: 'approve' | 'revoke' | 'revoke-only',
+) => {
+    if (transactionType === 'approve') {
+        return modalTxType === 'approve';
+    }
+
+    return modalTxType === 'revoke' || modalTxType === 'revoke-only';
+};
+
+export const prepareYieldAllowanceReviewTransactionThunk = createThunk(
+    `${EARN_MODULE_PREFIX}/prepareYieldAllowanceReviewTransactionThunk`,
     (
         {
             amount,
             approvalLimitType,
             flowData,
             flowKey,
+            transactionType,
             tokenContract,
-        }: {
-            amount: string;
-            approvalLimitType: YieldApprovalLimitType;
-            flowData: YieldFlowResolvedData;
-            flowKey: string;
-            tokenContract: TokenAddress;
-        },
+        }: PrepareYieldAllowanceReviewTransactionParams,
         { dispatch, getState, rejectWithValue },
     ) => {
         dispatch(sendFormActions.discardTransaction());
 
-        const formDraftKey = getYieldApprovalFormDraftKey(flowKey);
+        const formDraftKey = getYieldAllowanceFormDraftKey(flowKey, transactionType);
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
             | FormState
             | undefined;
         const { approval } = selectStablecoinYieldSession(getState(), 'deposit', flowKey);
 
-        if (!approval.modalState) {
+        const { modalState } = approval;
+
+        if (!modalState) {
             return rejectWithValue('Approval review transaction is not ready.');
         }
 
-        const { selectedFee } = getYieldApprovalFeeState(formDraft);
+        if (!isExpectedAllowanceModalTxType(transactionType, modalState.txType)) {
+            return rejectWithValue('Allowance review transaction type does not match.');
+        }
+
+        const { selectedFee } = getYieldAllowanceFeeState(formDraft);
         const selectedFeeTransaction = selectFeeLevels(getState())[selectedFee];
 
         if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
-            return rejectWithValue('Selected approval fee is not composed.');
+            return rejectWithValue('Selected allowance fee is not composed.');
         }
 
-        const allowanceAmount = getYieldApprovalAllowanceAmount({
+        const allowanceAmount = getYieldAllowanceReviewAmount({
             amount,
             approvalLimitType,
+            flowData,
+            modalTxType: modalState.txType,
             tokenContract,
-            tokenDecimals: flowData.token.decimals,
-            tokenSymbol: flowData.token.symbol,
         });
+
+        if (allowanceAmount === null) {
+            return rejectWithValue('Allowance review amount is not ready.');
+        }
+
         const data = buildApprovalTransactionData({
             amount: allowanceAmount,
-            spender: approval.modalState.spender,
+            spender: modalState.spender,
         });
-        const formState = buildYieldApprovalFormState({
-            approvalModalState: approval.modalState,
+        const formState = buildYieldAllowanceFormState({
+            approvalModalState: modalState,
             data,
             precomposedTransaction: selectedFeeTransaction,
             selectedFee,
@@ -92,8 +164,8 @@ export const prepareYieldApprovalReviewTransactionThunk = createThunk(
     },
 );
 
-export const updateYieldApprovalSelectedFeeLevelThunk = createThunk(
-    `${EARN_MODULE_PREFIX}/updateYieldApprovalSelectedFeeLevelThunk`,
+export const updateYieldAllowanceSelectedFeeLevelThunk = createThunk(
+    `${EARN_MODULE_PREFIX}/updateYieldAllowanceSelectedFeeLevelThunk`,
     (
         {
             feeLevelLabel,

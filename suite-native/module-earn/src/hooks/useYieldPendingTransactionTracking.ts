@@ -27,6 +27,7 @@ type UseYieldPendingTransactionTrackingParams = {
     flowType: YieldFlowType;
     isScreenFocused?: boolean;
     onApprovalConfirmed?: () => void;
+    onRevokeConfirmed?: () => void;
     pendingTransaction: YieldPendingTransactionState | undefined;
 };
 
@@ -43,6 +44,7 @@ export const useYieldPendingTransactionTracking = ({
     account,
     flowKey,
     onApprovalConfirmed,
+    onRevokeConfirmed,
     flowType,
     isScreenFocused,
     pendingTransaction,
@@ -99,6 +101,10 @@ export const useYieldPendingTransactionTracking = ({
             dispatch(stablecoinYieldActions.revokeSuccess(sessionParams));
             dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
 
+            if (isScreenFocused && onRevokeConfirmed) {
+                onRevokeConfirmed();
+            }
+
             return;
         }
 
@@ -134,6 +140,7 @@ export const useYieldPendingTransactionTracking = ({
         flowType,
         isScreenFocused,
         onApprovalConfirmed,
+        onRevokeConfirmed,
         pendingTransaction,
         trackedPendingTransaction,
     ]);

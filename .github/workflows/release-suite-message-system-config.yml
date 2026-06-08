@@ -33,6 +33,7 @@ jobs:
 
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
@@ -42,7 +43,7 @@ jobs:
           IS_CODESIGN_BUILD: ${{ env.RELEASE_ENV == 'production' && 'true' || 'false' }}
           JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
         run: |
-          sfw yarn install
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
           yarn message-system-sign-config
 
       - name: Upload ${{ env.RELEASE_ENV }}  message-system config file

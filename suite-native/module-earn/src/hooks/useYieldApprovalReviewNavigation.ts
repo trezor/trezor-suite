@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -9,35 +9,70 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { useDisableIOSGesture } from '@suite-native/navigation';
-import { useShowReviewCancellationAlert } from '@suite-native/transaction-management';
+
+import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
+import { type YieldAllowanceFormDraftTransactionType } from '../types';
 
 type UseYieldApprovalReviewNavigationParams = {
     flowKey: string;
+    onReviewLeave?: () => void;
     shouldConfirmCancellation: boolean;
+    transactionType: YieldAllowanceFormDraftTransactionType;
 };
 
 export const useYieldApprovalReviewNavigation = ({
     flowKey,
+    onReviewLeave,
     shouldConfirmCancellation,
+    transactionType,
 }: UseYieldApprovalReviewNavigationParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const showReviewCancellationAlert = useShowReviewCancellationAlert();
+    const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
+    const isCleanupHandledRef = useRef(false);
 
     useDisableIOSGesture();
 
-    const cleanupApprovalReview = useCallback(() => {
+    const cleanupReview = useCallback(() => {
+        dispatch(sendFormActions.discardTransaction());
+
+        if (transactionType === 'approve') {
+            dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
+        }
+    }, [dispatch, flowKey, transactionType]);
+
+    const cleanupCanceledReview = useCallback(() => {
         dispatch(cancelSignSendFormTransactionThunk());
-        dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
-    }, [dispatch, flowKey]);
+
+        if (transactionType === 'approve') {
+            dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
+        }
+    }, [dispatch, flowKey, transactionType]);
+
+    const markReviewNavigationSuccess = useCallback(() => {
+        isCleanupHandledRef.current = true;
+    }, []);
+
+    const leaveReviewFromDeviceCancel = useCallback(() => {
+        onReviewLeave?.();
+        cleanupCanceledReview();
+        isCleanupHandledRef.current = true;
+        navigation.goBack();
+    }, [cleanupCanceledReview, navigation, onReviewLeave]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', event => {
+            if (isCleanupHandledRef.current) {
+                return;
+            }
+
             if (event.data.action.type === 'GO_BACK' && shouldConfirmCancellation) {
                 event.preventDefault();
                 showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
                     if (wasReviewCanceled) {
-                        cleanupApprovalReview();
+                        onReviewLeave?.();
+                        cleanupCanceledReview();
+                        isCleanupHandledRef.current = true;
                         unsubscribe();
                         navigation.dispatch(event.data.action);
                     }
@@ -47,21 +82,28 @@ export const useYieldApprovalReviewNavigation = ({
             }
 
             if (event.data.action.type === 'GO_BACK') {
-                cleanupApprovalReview();
-                dispatch(sendFormActions.discardTransaction());
+                onReviewLeave?.();
+                cleanupReview();
 
                 return;
             }
 
-            cleanupApprovalReview();
+            onReviewLeave?.();
+            cleanupReview();
         });
 
         return unsubscribe;
     }, [
-        cleanupApprovalReview,
-        dispatch,
+        cleanupCanceledReview,
+        cleanupReview,
         navigation,
+        onReviewLeave,
         shouldConfirmCancellation,
         showReviewCancellationAlert,
     ]);
+
+    return {
+        leaveReviewFromDeviceCancel,
+        markReviewNavigationSuccess,
+    };
 };

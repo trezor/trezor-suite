@@ -2,8 +2,8 @@ import type { FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { TradeFiatSideCard } from '../../general/TradeInfo/TradeFiatSideCard';
 
 export type SellToFiatTradePreviewCardProps = {

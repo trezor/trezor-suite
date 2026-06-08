@@ -58,6 +58,7 @@ runs:
 
     - name: Install Socket Firewall
       uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      continue-on-error: true
       with:
         mode: firewall-free
         job-summary: errors
@@ -65,7 +66,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: sfw yarn install --immutable
+      run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
 
     - name: Check version
       shell: bash

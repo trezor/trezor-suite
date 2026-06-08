@@ -12,6 +12,15 @@ jest.mock('../../thunks', () => ({
         mockCalculateFeeLevelsMaxAmountThunk(...args),
 }));
 
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    updateFeeInfoThunk: (payload: unknown) => ({
+        type: 'updateFeeInfoThunkMock',
+        payload,
+        unwrap: () => Promise.resolve(undefined),
+    }),
+}));
+
 describe('useMaxSpendableAmount', () => {
     const btcAccountKey = BTC_ACCOUNT_KEY;
     const ethAccountKey = ETH_ACCOUNT_KEY;
@@ -42,6 +51,7 @@ describe('useMaxSpendableAmount', () => {
         accountKey,
         tokenContract,
         formState,
+        symbol,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
         renderHookWithStoreProvider(
             () =>
@@ -49,6 +59,7 @@ describe('useMaxSpendableAmount', () => {
                     accountKey,
                     tokenContract,
                     formState,
+                    symbol,
                 }),
             {
                 preloadedState: {
@@ -79,7 +90,7 @@ describe('useMaxSpendableAmount', () => {
     });
 
     it('should keep max spendable amount undefined without account key', () => {
-        const { result } = renderUseMaxSpendableAmount({});
+        const { result } = renderUseMaxSpendableAmount({ symbol: null });
 
         expect(result.current.maxSpendableAmount).toBeUndefined();
         expect(mockCalculateFeeLevelsMaxAmountThunk).not.toHaveBeenCalled();
@@ -89,6 +100,7 @@ describe('useMaxSpendableAmount', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: ethAccountKey,
             tokenContract: usdcTokenContract,
+            symbol: 'etc',
         });
 
         await waitFor(() => {
@@ -102,6 +114,7 @@ describe('useMaxSpendableAmount', () => {
         mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
+            symbol: 'btc',
         });
 
         await waitFor(() => {
@@ -112,9 +125,10 @@ describe('useMaxSpendableAmount', () => {
     it('should calculate max spendable amount with provided form state', async () => {
         mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
 
-        renderUseMaxSpendableAmount({
+        const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             formState: customFormState,
+            symbol: 'btc',
         });
 
         await waitFor(() => {
@@ -125,6 +139,7 @@ describe('useMaxSpendableAmount', () => {
                 },
                 expect.objectContaining({ signal: expect.any(AbortSignal) }),
             );
+            expect(result.current.maxSpendableAmount).toBe('0.009');
         });
     });
 
@@ -133,6 +148,7 @@ describe('useMaxSpendableAmount', () => {
 
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
+            symbol: 'btc',
         });
 
         await waitFor(() => {
@@ -143,6 +159,7 @@ describe('useMaxSpendableAmount', () => {
     it('should skip native asset calculation when calculation is disabled', () => {
         const { result } = renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
+            symbol: 'btc',
             enabled: false,
         });
 

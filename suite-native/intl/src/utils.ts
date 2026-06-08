@@ -39,6 +39,29 @@ export const unflatten = (obj: Record<string, any>) => {
     return result;
 };
 
+// Detects translation keys whose path is a string (leaf) on one side but an object (ancestor) on
+// the other. Crowdin re-interprets dot-joined keys as a nested tree, so such collisions break Crowdin sync.
+export const findTranslationStructureCollisions = (
+    messagesFlatKeys: string[],
+    baselineFlatKeys: string[],
+): Array<{ current: string; baseline: string }> => {
+    const keySet = new Set([...messagesFlatKeys, ...baselineFlatKeys]);
+    const collisions: Array<{ current: string; baseline: string }> = [];
+
+    for (const key of keySet) {
+        let dotIndex = key.lastIndexOf('.');
+        while (dotIndex !== -1) {
+            const ancestor = key.slice(0, dotIndex);
+            if (keySet.has(ancestor)) {
+                collisions.push({ current: ancestor, baseline: key });
+            }
+            dotIndex = ancestor.lastIndexOf('.');
+        }
+    }
+
+    return collisions;
+};
+
 export const findClosestOfficiallySupportedLanguageLocale = (
     locale: string,
 ): SupportedLocaleCode => {

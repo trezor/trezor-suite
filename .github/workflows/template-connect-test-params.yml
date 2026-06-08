@@ -65,15 +65,16 @@ jobs:
           cache: yarn
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
           firewall-version: 1.11.0
-      - run: sfw yarn workspaces focus @trezor/connect
+      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/connect
       - if: ${{ inputs.testEnv == 'web' }}
         run: |
-          sfw yarn workspaces focus @trezor/connect-web
-          sfw yarn && yarn build:libs
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/connect-web
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn && yarn build:libs
       - name: Install Playwright chromium
         if: ${{ inputs.testEnv == 'web' }}
         run: yarn workspace @trezor/connect-web exec playwright install --with-deps chromium

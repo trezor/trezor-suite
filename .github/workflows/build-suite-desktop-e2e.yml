@@ -28,6 +28,7 @@ jobs:
 
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
@@ -35,7 +36,7 @@ jobs:
       - name: Install dependencies, build libs
         shell: bash
         run: |
-          sfw yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-build @trezor/suite @trezor/suite-data @trezor/transport-bridge @suite-common/message-system @trezor/suite-desktop-ui
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-build @trezor/suite @trezor/suite-data @trezor/transport-bridge @suite-common/message-system @trezor/suite-desktop-ui
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib

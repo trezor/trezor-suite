@@ -10,18 +10,17 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { getAllowanceAmount, isAllowanceUnlimited } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { type YieldApprovalLimitType } from './types';
 
-type BuildYieldApprovalFormStateParams = {
+type BuildYieldAllowanceFormStateParams = {
     approvalModalState: YieldApproveModalState;
     data: string;
     precomposedTransaction: PrecomposedTransactionFinal;
     selectedFee: FeeLevelLabel;
 };
 
-type YieldApprovalFeeState = {
+type YieldAllowanceFeeState = {
     customFee:
         | {
               feeLimit: string;
@@ -46,16 +45,12 @@ type IsYieldApprovalAllowanceUnlimitedParams = {
     token: YieldFlowToken | null | undefined;
 };
 
-type IsYieldApprovalAllowanceEnoughParams = IsYieldApprovalAllowanceUnlimitedParams & {
-    amount: string | undefined;
-};
-
-export const buildYieldApprovalFormState = ({
+export const buildYieldAllowanceFormState = ({
     approvalModalState,
     data,
     precomposedTransaction,
     selectedFee,
-}: BuildYieldApprovalFormStateParams): FormState => ({
+}: BuildYieldAllowanceFormStateParams): FormState => ({
     outputs: [
         {
             type: 'payment',
@@ -81,9 +76,9 @@ export const buildYieldApprovalFormState = ({
 export const getYieldApprovalType = (approvalLimitType: YieldApprovalLimitType) =>
     approvalLimitType === 'unlimited' ? 'INFINITE' : 'MINIMAL';
 
-export const getYieldApprovalFeeState = (
+export const getYieldAllowanceFeeState = (
     formDraft: FormState | null | undefined,
-): YieldApprovalFeeState => {
+): YieldAllowanceFeeState => {
     const selectedFee: FeeLevelLabel =
         formDraft?.selectedFee === 'custom' && (!formDraft.feeLimit || !formDraft.feePerUnit)
             ? 'normal'
@@ -136,22 +131,4 @@ export const isYieldApprovalAllowanceUnlimited = ({
     }
 
     return isAllowanceUnlimited(allowanceAmount, token.decimals);
-};
-
-export const isYieldApprovalAllowanceEnough = ({
-    amount,
-    session,
-    token,
-}: IsYieldApprovalAllowanceEnoughParams): boolean => {
-    const { allowanceAmount, allowanceStatus } = session?.approval ?? {};
-
-    if (allowanceStatus !== 'loaded' || !amount || !allowanceAmount) {
-        return false;
-    }
-
-    if (token?.decimals !== undefined && isAllowanceUnlimited(allowanceAmount, token.decimals)) {
-        return true;
-    }
-
-    return new BigNumber(allowanceAmount).gte(amount);
 };

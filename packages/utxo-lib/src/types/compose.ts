@@ -80,6 +80,8 @@ export type TransactionInputOutputSortingStrategy =
     // This is useful for RBF transactions where the order of inputs and outputs must be preserved.
     | 'none';
 
+export type ComposeFeePolicy = 'bitcoin' | 'doge' | 'zcash';
+
 export type ComposeRequest<
     Input extends ComposeInput,
     Output extends ComposeOutput,
@@ -89,12 +91,12 @@ export type ComposeRequest<
     utxos: Input[]; // all inputs
     outputs: Output[]; // all outputs
     feeRate: string | number; // in sat/byte, virtual size
+    feePolicy?: ComposeFeePolicy; // explicit fee policy
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
     network: Network;
     changeAddress: Change;
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE or RBF base fee
-    floorBaseFee?: boolean; // DOGE floor base fee to the nearest integer
     skipUtxoSelection?: boolean; // use custom utxo selection, without algorithm
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };

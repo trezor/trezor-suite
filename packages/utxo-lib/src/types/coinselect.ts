@@ -1,4 +1,4 @@
-import { type TransactionInputOutputSortingStrategy } from './compose';
+import type { ComposeFeePolicy, TransactionInputOutputSortingStrategy } from './compose';
 
 export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2wsh';
 
@@ -18,13 +18,8 @@ export interface CoinSelectOptions {
      * for the chained transaction, as well as for its own bandwidth (see BIP-125 rules).
      */
     baseFee?: number;
-
-    /**
-     * Only for DOGE
-     */
-    floorBaseFee?: boolean;
     sortingStrategy: TransactionInputOutputSortingStrategy;
-    feePolicy?: 'bitcoin' | 'doge' | 'zcash';
+    feePolicy?: ComposeFeePolicy;
 }
 
 export interface CoinSelectInput {

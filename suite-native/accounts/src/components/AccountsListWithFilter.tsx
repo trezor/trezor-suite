@@ -44,6 +44,7 @@ export const AccountsListWithFilter = ({
     const networkFilterOptions = useSelector((state: NativeAccountsRootState) =>
         selectNetworkFilterOptions(state, isSendFlow),
     );
+    const isNetworkFilterVisible = networkFilterOptions.length > 1;
 
     useEffect(() => {
         setFilteredNetworks(networksFilter);
@@ -59,7 +60,6 @@ export const AccountsListWithFilter = ({
 
     const handleClearFilters = () => {
         setFilteredNetworks([]);
-        setSearchValue('');
     };
 
     return (
@@ -67,11 +67,10 @@ export const AccountsListWithFilter = ({
             <SearchableAccountsListHeader
                 title={title}
                 onSearchInputChange={setSearchValue}
-                searchValue={searchValue}
                 flowType={flowType}
                 closeActionType={closeActionType}
                 closeAction={closeAction}
-                onFilterPress={handleFilterPress}
+                onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
                 activeFilterCount={filteredNetworks.length}
             />
             {children}
@@ -82,7 +81,7 @@ export const AccountsListWithFilter = ({
                     networkFilter={filteredNetworks}
                     isSendFlow={isSendFlow}
                 />
-                {(filteredNetworks.length > 0 || searchValue.length > 0) && (
+                {isNetworkFilterVisible && filteredNetworks.length > 0 && (
                     <Box alignItems="center">
                         <Button
                             size="medium"

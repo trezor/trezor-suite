@@ -1871,6 +1871,7 @@ export const messages = {
             subtitle: 'Connect your Trezor or sync coins to view and track assets.',
             addSubtitle: 'Start adding coins you want to use.',
             receiveSubtitle: 'Connect your Trezor or sync coins to view and receive assets.',
+            searchTitle: 'No results found',
             searchAgain: 'Search again',
         },
         viewOnlyAddAccountAlert: {
@@ -2711,6 +2712,7 @@ export const messages = {
             approvedAmount: 'Approved amount',
             approvalLimit: 'Approval limit',
             increaseApprovalLimit: 'Increase approval limit',
+            revokeApproval: 'Revoke approval',
             perDeposit: 'Per deposit',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             approvalLimitSheet: {
@@ -2741,14 +2743,22 @@ export const messages = {
                     description:
                         'Approval review could not be prepared. Check the selected fee and try again.',
                 },
+                revokeReviewUnavailable: {
+                    title: 'Revoke review unavailable',
+                    description:
+                        'Revoke review could not be prepared. Check the selected fee and try again.',
+                },
+                revokeUnavailable: {
+                    title: 'Revoke unavailable',
+                    description: 'Revoke could not be prepared. Check the approval and try again.',
+                },
                 depositUnavailable: {
                     title: 'Deposit unavailable',
                     description: 'Deposit could not be prepared. Check the amount and try again.',
                 },
-                approvalResetNotSupported: {
-                    title: 'Approval reset not supported',
-                    description:
-                        'This deposit needs an approval reset first. Revoke is not supported on mobile yet.',
+                approvalTooLow: {
+                    title: 'Approval is too low. Change approval or lower amount.',
+                    primaryButton: 'Change approval',
                 },
                 transactionFailed: {
                     title: 'Transaction failed',
@@ -2757,9 +2767,23 @@ export const messages = {
                 },
             },
         },
+        yieldDepositRevokeScreen: {
+            title: 'Revoke {tokenSymbol} spending',
+            subtitle: 'Revoke provider to spend your {tokenSymbol}.',
+            lowLimitInfoAlert:
+                'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
+            account: 'Account',
+            provider: 'Provider',
+            limit: 'Limit',
+            pendingTitle: 'Confirming revoke',
+        },
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',
             successMessage: "You're all set.",
+        },
+        yieldDepositRevokeReviewScreen: {
+            title: 'Review with Trezor',
+            successMessage: 'Revoke transaction signed.',
         },
         yieldDepositReviewScreen: {
             title: 'Review with Trezor',
@@ -2779,18 +2803,11 @@ export const messages = {
             backToOverview: 'Back to overview',
         },
         yieldReview: {
-            approvalCard: {
-                title: 'Approve',
-            },
             depositCard: {
                 title: 'Deposit',
             },
             receiveCard: {
                 title: 'Receive',
-            },
-            approvalDetailsCard: {
-                title: 'Approval details',
-                approvalLimit: 'Approval limit',
             },
             transactionDetailsCard: {
                 title: 'Transaction details',
@@ -2805,6 +2822,18 @@ export const messages = {
                     },
                     pendingTransactionConflict: {
                         title: 'Approval was not submitted',
+                        description:
+                            'There is already a pending transaction for this account. Wait for it to finish before trying again.',
+                    },
+                },
+                revoke: {
+                    pushTransactionFailed: {
+                        title: 'Revoke was not submitted',
+                        description:
+                            'The revoke transaction was signed but could not be submitted to the network.',
+                    },
+                    pendingTransactionConflict: {
+                        title: 'Revoke was not submitted',
                         description:
                             'There is already a pending transaction for this account. Wait for it to finish before trying again.',
                     },
@@ -3077,6 +3106,7 @@ export const messages = {
             max: 'Maximum is {max}',
             noQuotes: 'No offers available for your request. Change amount or currency.',
             insufficientBalance: 'Insufficient balance',
+            dustLimit: 'The value is lower than the dust limit',
             networkReserve: 'Not enough {displaySymbol} after network fees',
         },
         tradingExchangePreviewScreen: {

@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
             "path": "../../suite-common/earn-stablecoin-defs"
         },
         {

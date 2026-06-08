@@ -35,13 +35,14 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
           firewall-version: 1.11.0
       - name: Install libs
         run: |
-          sfw yarn workspaces focus @suite-native/app
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @suite-native/app
       - name: Build on EAS Android
         run: eas build
           --platform android

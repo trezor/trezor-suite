@@ -1,0 +1,43 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/formatters"
+        },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../atoms" },
+        { "path": "../clipboard" },
+        { "path": "../device" },
+        { "path": "../icons" },
+        { "path": "../intl" },
+        { "path": "../labeling" },
+        { "path": "../link" },
+        { "path": "../trading-atoms" },
+        { "path": "../trading-browser-auth" },
+        { "path": "../trading-provider-utils" },
+        { "path": "../trading-quote-utils" },
+        { "path": "../trading-state" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        { "path": "../feature-flags" },
+        { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
+        { "path": "../trading-fixtures" }
+    ]
+}

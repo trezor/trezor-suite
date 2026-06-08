@@ -5,10 +5,9 @@ import type { BuyTrade, SellFiatTrade } from 'invity-api';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { PaymentMethodIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { PaymentMethodTranslation } from '@suite-native/trading-atoms';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
-import { PaymentMethodTranslation } from '../PaymentMethodTranslation';
 
 export type PaymentMethodListItemProps<T extends BuyTrade | SellFiatTrade> = {
     quote: T;

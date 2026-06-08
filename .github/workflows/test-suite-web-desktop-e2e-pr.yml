@@ -20,7 +20,6 @@ on:
       - ".github/workflows/suite-native*"
       - ".github/workflows/build-desktop*"
       - ".github/workflows/release*"
-      - ".github/workflows/template*"
       - ".github/actions/release*/**"
       - "**.md"
 
@@ -183,7 +182,6 @@ jobs:
         id: check-size
         uses: ./.github/actions/check-pr-size
         with:
-          changed-files: ${{ github.event.pull_request.changed_files }}
           additions: ${{ github.event.pull_request.additions }}
           deletions: ${{ github.event.pull_request.deletions }}
       - name: Run LLM test selector

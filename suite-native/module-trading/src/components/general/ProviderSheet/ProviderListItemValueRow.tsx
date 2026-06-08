@@ -1,7 +1,6 @@
 import type { TradingTradeType } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
-
-import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 
 export type ProviderListItemValueRowProps<T extends TradingTradeType> = {
     quote: T;

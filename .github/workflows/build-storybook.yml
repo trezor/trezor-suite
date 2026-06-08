@@ -33,6 +33,7 @@ jobs:
           cache: yarn
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
@@ -40,8 +41,8 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw yarn workspaces focus @trezor/components
-          sfw yarn workspaces focus @trezor/product-components
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/components
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/product-components
 
       - name: Build storybook
         env:

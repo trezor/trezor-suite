@@ -1,4 +1,3 @@
-import { type Network, isNetworkType } from '../networks';
 import {
     type CoinSelectAlgorithm,
     type CoinSelectInput,
@@ -165,27 +164,16 @@ export function sumOrNaN(range: { value?: bigint }[], forgiving = false) {
     }, ZERO);
 }
 
-export function getFeePolicy(network?: Network) {
-    if (isNetworkType('doge', network)) return 'doge';
-    if (isNetworkType('zcash', network)) return 'zcash';
-
-    return 'bitcoin';
-}
-
 function getBitcoinFee(
     inputs: CoinSelectInput[],
     outputs: CoinSelectOutput[],
     feeRate: number,
-    { baseFee = 0, floorBaseFee }: Partial<CoinSelectOptions>,
+    { baseFee = 0 }: Partial<CoinSelectOptions>,
 ) {
     const bytes = transactionBytes(inputs, outputs);
     const defaultFee = getFeeForBytes(feeRate, bytes);
 
-    return baseFee && floorBaseFee
-        ? // increase baseFee for every started kilobyte (case only for DOGE)
-          baseFee * (1 + Math.floor(defaultFee / baseFee))
-        : // simple increase baseFee
-          baseFee + defaultFee;
+    return baseFee + defaultFee;
 }
 
 // DOGE fee policy https://github.com/dogecoin/dogecoin/blob/3a29ba6d497cd1d0a32ecb039da0d35ea43c9c85/doc/fee-recommendation.md

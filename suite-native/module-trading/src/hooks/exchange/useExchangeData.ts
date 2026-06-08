@@ -5,9 +5,8 @@ import {
     selectTradingExchangeLoadingTimestampAndStatus,
     tradingThunks,
 } from '@suite-common/trading';
+import { getRandomAccountDescriptor } from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
-
-import { getRandomAccountDescriptor } from '../../utils/general/utils';
 
 export const useExchangeData = (reloadRequestOrdinal: number) => {
     const dispatch = useDispatch();

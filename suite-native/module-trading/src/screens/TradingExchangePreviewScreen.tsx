@@ -20,6 +20,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { Footer } from '@suite-native/trading-provider-utils';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -32,7 +33,6 @@ import {
     ExchangePreviewScreenHeader,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
-import { Footer } from '../components/general/Footer';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { clearTradingStateThunk } from '../thunks';

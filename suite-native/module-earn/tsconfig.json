@@ -77,6 +77,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/requirements" }

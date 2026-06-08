@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { useFormatters } from '@suite-common/formatters';
+import { type YieldApprovalAction } from '@suite-common/wallet-core';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { calculateRewards } from '@suite-common/wallet-utils';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
@@ -25,20 +26,36 @@ const rewardsBoxStyle = prepareNativeStyle(utils => ({
 type YieldDepositFlowFooterProps = {
     amountValue: string | undefined;
     apy: number | null;
-    buttonTranslationId?: TxKeyPath;
+    approvalAction?: YieldApprovalAction;
     isDisabled: boolean;
     isLoading?: boolean;
     onPress: () => void;
+    shouldKeepEstimatedRewardsVisible?: boolean;
     tokenSymbol: TokenSymbol;
+};
+
+const getSubmitButtonTranslationId = (
+    approvalAction?: YieldDepositFlowFooterProps['approvalAction'],
+): TxKeyPath => {
+    if (approvalAction === 'revoke') {
+        return 'earn.yieldDepositFlowScreen.revokeApproval';
+    }
+
+    if (approvalAction === 'increase') {
+        return 'earn.yieldDepositFlowScreen.increaseApprovalLimit';
+    }
+
+    return 'generic.buttons.continue';
 };
 
 export const YieldDepositFlowFooter = ({
     amountValue,
     apy,
-    buttonTranslationId = 'generic.buttons.continue',
+    approvalAction,
     isDisabled,
     isLoading = false,
     onPress,
+    shouldKeepEstimatedRewardsVisible = false,
     tokenSymbol,
 }: YieldDepositFlowFooterProps) => {
     const { applyStyle } = useNativeStyles();
@@ -59,7 +76,11 @@ export const YieldDepositFlowFooter = ({
         });
     }, [amountValue, apy, CryptoAmountFormatter, tokenSymbol]);
 
-    const isEstimatedRewardsVisible = !isDisabled && estimatedRewards !== null;
+    const buttonTranslationId = getSubmitButtonTranslationId(approvalAction);
+    const isApprovalLimitAction = approvalAction === 'increase' || approvalAction === 'revoke';
+    const isEstimatedRewardsVisible =
+        (shouldKeepEstimatedRewardsVisible || (!isApprovalLimitAction && !isDisabled)) &&
+        estimatedRewards !== null;
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>

@@ -8,14 +8,17 @@ import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
+import {
+    OverviewRow,
+    OverviewValueSkeleton,
+    PaymentMethodTranslation,
+} from '@suite-native/trading-atoms';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { PaymentMethodSheet } from '../../general/PaymentMethodSheet/PaymentMethodSheet';
-import { PaymentMethodTranslation } from '../../general/PaymentMethodTranslation';
 
 const RECEIVE_METHOD_PICKER_TEST_ID = '@trading/sell/receive-method-picker';
 

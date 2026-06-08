@@ -34,6 +34,7 @@ export const useContextForTradingForm = (limits: TradingAmountLimitProps | undef
     const { maxSpendableAmount } = useMaxSpendableAmount({
         accountKey,
         tokenContract: contractAddress,
+        symbol: sendSymbol as NetworkSymbol,
     });
 
     const networkReserve = sendSymbol

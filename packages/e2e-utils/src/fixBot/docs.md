@@ -59,25 +59,26 @@ Extends the existing `AGENT.md`. The existing Steps 1–6 stay as-is. The cluste
 
 **New output:** `report.json` alongside the existing `report.md`.
 
-### Fix Scope Classification
+### Failure Classification
 
-| Value         | Meaning                                                     | Automatable       |
-| ------------- | ----------------------------------------------------------- | ----------------- |
-| `TEST_CODE`   | Only test files need to change                              | ✅                |
-| `LOCATOR_ADD` | Add/modify `data-testid` in product component + update test | ✅                |
-| `PRODUCT_BUG` | Actual product logic needs fixing                           | ❌ human required |
-| `INFRA`       | CI/environment issue                                        | ❌ human required |
+| Value            | Meaning                                                  | Routing               |
+| ---------------- | -------------------------------------------------------- | --------------------- |
+| `FIXABLE`        | Resolvable with test changes and/or adding `data-testid` | → **fix_task**        |
+| `PRODUCT_BUG`    | Product logic/behavior must change                       | → **skipped** (human) |
+| `INFRASTRUCTURE` | CI/environment issue                                     | → **skipped** (human) |
 
-The only allowed product change is adding or modifying `data-testid` attributes. No product logic changes.
+The fix agent has one allowed change surface for every task: any file under `suite/e2e/` plus
+`data-testid` attributes in product source. No other product code changes. It decides the remedy
+(e.g. update the test to an existing/renamed locator vs. add a new `data-testid`).
 
 ### Confidence → Iteration Budget
 
-| Confidence              | Max iterations    |
-| ----------------------- | ----------------- |
-| `HIGH`                  | 3                 |
-| `MEDIUM`                | 2                 |
-| `LOW`                   | 1                 |
-| `PRODUCT_BUG` / `INFRA` | 0 — not attempted |
+| Confidence                       | Max iterations |
+| -------------------------------- | -------------- |
+| `HIGH`                           | 3              |
+| `MEDIUM`                         | 2              |
+| `LOW`                            | 1              |
+| `PRODUCT_BUG` / `INFRASTRUCTURE` | 0 — skipped    |
 
 `{
   "runDate": "2026-04-23",
@@ -88,10 +89,8 @@ The only allowed product change is adding or modifying `data-testid` attributes.
       "id": "fix-001",
       "branch": "fix/nightly-2026-04-23-send-button-locator",
       "rootCause": "send-button data-testid renamed in SendForm component",
-      "fixScope": "LOCATOR_ADD",
       "confidence": "HIGH",
-      "fixDescription": "Add data-testid='send-button' to submit button in SendForm.tsx, update page object",
-      "diagnosis": "<MD prose for the tests in this fix task — error messages, stack traces, visual evidence, root cause reasoning>",
+      "diagnosis": "<MD prose for the tests in this fix task — what is broken: error messages, stack traces, visual evidence, root cause reasoning>",
       "validations": [
         { "platform": "web",     "group": "T3W1", "spec": "suite/e2e/tests/wallet/send.ts" },
         { "platform": "web",     "group": "T3T1", "spec": "suite/e2e/tests/wallet/send.ts" },
@@ -104,7 +103,8 @@ The only allowed product change is adding or modifying `data-testid` attributes.
   "skipped": [
     {
       "rootCause": "...",
-      "reason": "PRODUCT_BUG — requires human review",
+      "reason": "PRODUCT_BUG",
+      "analysis": "<prose: what is broken and why it needs a human>",
       "affectedTests": ["suite/e2e/tests/firmware/update.ts"]
     }
   ]
@@ -188,7 +188,7 @@ Each run of the system is fully stateless. There is no memory of what previous r
 
 On Day 1, four root causes fail: A, B, C, D.
 
-- A is diagnosed as unfixable (`PRODUCT_BUG` or `INFRA`) and placed in `skipped`.
+- A is diagnosed as unfixable (`PRODUCT_BUG` or `INFRASTRUCTURE`) and placed in `skipped`.
 - B, C, D are fixable. The fix agent succeeds on C and D, fails on B.
 - D's PR is merged immediately. C's PR remains open pending further review.
 - B produced no PR — the fix attempt exhausted its iteration budget without passing.

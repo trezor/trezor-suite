@@ -27,6 +27,7 @@ function renameAllExportsToCamelCase(implementation: string): string {
 }
 
 const API_DIR = resolve(import.meta.dirname, './src/api');
+// TODO: take it from `suite-common/earn-stablecoin-api/src/context` once the @suite-common/earn-stablecoin-defs gets merged with @suite-common/earn-stablecoin-api.
 const YIELD_BASE_URL: EarnYieldWorkerBaseUrl = 'https://dev-earn.suite.sldev.cz/yield';
 
 // eslint-disable-next-line import/no-default-export

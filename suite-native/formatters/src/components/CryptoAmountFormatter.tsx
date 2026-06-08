@@ -20,6 +20,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         decimals?: number;
         isForcedDiscreetMode?: boolean;
         isLoading?: boolean;
+        sign?: '+' | '-' | null;
     };
 
 export const CryptoAmountFormatter = React.memo(
@@ -31,6 +32,7 @@ export const CryptoAmountFormatter = React.memo(
         variant = 'body-sm',
         color = 'contentSecondary',
         isLoading = false,
+        sign = null,
         decimals,
         ...otherProps
     }: CryptoToFiatAmountFormatterProps) => {
@@ -52,9 +54,11 @@ export const CryptoAmountFormatter = React.memo(
             isEllipsisAppended: false,
         });
 
+        const valueWithSign = !sign ? formattedValue : `${sign}${formattedValue}`;
+
         return (
             <AmountText
-                value={formattedValue}
+                value={valueWithSign}
                 isDiscreetText={isDiscreetText}
                 variant={variant}
                 color={color}

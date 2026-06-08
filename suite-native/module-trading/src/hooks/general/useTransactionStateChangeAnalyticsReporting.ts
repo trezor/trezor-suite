@@ -3,8 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransaction } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-
-import { getTradeStatusStep } from '../../utils/general/utils';
+import { getTradeStatusStep } from '@suite-native/trading-quote-utils';
 
 export const useTransactionStateChangeAnalyticsReporting = (deviceTrades: TradingTransaction[]) => {
     // Track previous status for each trade to report analytics on status changes

@@ -1,10 +1,10 @@
 import { Translation } from '@suite-native/intl';
+import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 import { ExchangeReceiveContent } from './receive/ExchangeReceiveContent';
 import { ExchangeSendAmountBadge } from './send/ExchangeSendAmountBadge';
 import { ExchangeSendContent } from './send/ExchangeSendContent';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
-import { CryptoToFiatValueBadge } from '../general/CryptoToFiatValueBadge';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
 

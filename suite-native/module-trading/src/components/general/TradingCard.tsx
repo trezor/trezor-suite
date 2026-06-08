@@ -2,7 +2,7 @@ import { type PropsWithChildren } from 'react';
 import { Platform } from 'react-native';
 import { FadeIn, LinearTransition } from 'react-native-reanimated';
 
-import { AnimatedBorderCard, AnimatedBox } from '@suite-native/atoms';
+import { AnimatedBox, Card } from '@suite-native/atoms';
 import { useAnimatedBorderStyle } from '@suite-native/trading-atoms';
 
 export type TradingCardProps = {
@@ -24,9 +24,11 @@ export const TradingCard = ({
 
     return (
         <AnimatedBox entering={enteringAnimation} layout={LinearTransition}>
-            <AnimatedBorderCard style={[animatedStyle]} noPadding testID={testID}>
-                {children}
-            </AnimatedBorderCard>
+            <Card noPadding>
+                <AnimatedBox style={animatedStyle} testID={testID}>
+                    {children}
+                </AnimatedBox>
+            </Card>
         </AnimatedBox>
     );
 };

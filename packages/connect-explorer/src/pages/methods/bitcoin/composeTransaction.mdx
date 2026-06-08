@@ -24,7 +24,6 @@ export const PrecomposeSchema = Type.Object({
     }),
     feeLevels: Type.Array(Type.Object({ feePerUnit: Type.String() })),
     baseFee: Type.Optional(Type.Number()),
-    floorBaseFee: Type.Optional(Type.Boolean()),
     sequence: Type.Optional(Type.Number()),
     sortingStrategy: Type.Optional(
         Type.Union([Type.Literal('bip69'), Type.Literal('none'), Type.Literal('random')]),
@@ -42,8 +41,6 @@ export const paramDescriptions = {
         'Array of objects. set of requested variants, partial result of `blockchainEstimateFee method`',
     baseFee:
         'base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE',
-    floorBaseFee:
-        'decide whenever baseFee should be floored to the nearest baseFee unit, prevents from fee overpricing. used in DOGE',
     sortingStrategy: 'strategy for sorting inputs/outputs: bip69, none, random',
 };
 

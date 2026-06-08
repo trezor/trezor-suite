@@ -9,13 +9,13 @@ import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
+import { Footer } from '@suite-native/trading-provider-utils';
 import {
     selectActiveTradingType,
     selectIsTradingEnabled,
     selectTradeToBeOpened,
 } from '@suite-native/trading-state';
 
-import { Footer } from '../components/general/Footer';
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';

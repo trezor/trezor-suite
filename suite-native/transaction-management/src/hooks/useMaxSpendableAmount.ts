@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
-import { useDebounce } from '@trezor/react-utils';
 
 import { calculateFeeLevelsMaxAmountThunk } from '../thunks';
 
@@ -12,6 +13,7 @@ type UseMaxSpendableAmountProps = {
     tokenContract?: TokenAddress;
     formState?: FormState;
     enabled?: boolean;
+    symbol: NetworkSymbol | null;
 };
 
 const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({
@@ -40,9 +42,9 @@ export const useMaxSpendableAmount = ({
     tokenContract,
     formState,
     enabled = true,
+    symbol,
 }: UseMaxSpendableAmountProps) => {
     const dispatch = useDispatch();
-    const debounce = useDebounce();
 
     const [maxSpendableAmount, setMaxSpendableAmount] = useState<string | undefined>(undefined);
 
@@ -51,7 +53,7 @@ export const useMaxSpendableAmount = ({
     );
 
     useEffect(() => {
-        if (!accountKey || !enabled) {
+        if (!accountKey || !enabled || !symbol) {
             setMaxSpendableAmount(undefined);
 
             return;
@@ -67,19 +69,17 @@ export const useMaxSpendableAmount = ({
 
         const calculateMaxAmount = async () => {
             try {
-                const { normal, economy, low, high } = await debounce(
-                    async () =>
-                        await dispatch(
-                            calculateFeeLevelsMaxAmountThunk(
-                                {
-                                    formState:
-                                        formState ?? buildDefaultFormState({ tokenContract }),
-                                    accountKey,
-                                },
-                                { signal: controller.signal },
-                            ),
-                        ).unwrap(),
-                );
+                await dispatch(updateFeeInfoThunk({ networkSymbol: symbol })).unwrap();
+
+                const { normal, economy, low, high } = await dispatch(
+                    calculateFeeLevelsMaxAmountThunk(
+                        {
+                            formState: formState ?? buildDefaultFormState({ tokenContract }),
+                            accountKey,
+                        },
+                        { signal: controller.signal },
+                    ),
+                ).unwrap();
 
                 if (!controller.signal.aborted) {
                     setMaxSpendableAmount(high ?? normal ?? low ?? economy);
@@ -95,7 +95,7 @@ export const useMaxSpendableAmount = ({
         return () => {
             controller.abort();
         };
-    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, debounce, enabled]);
+    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, enabled, symbol]);
 
     return { maxSpendableAmount };
 };

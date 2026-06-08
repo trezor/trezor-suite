@@ -31,7 +31,6 @@ export type ComposeParams = {
     push?: boolean;
     sequence?: number;
     baseFee?: number;
-    floorBaseFee?: boolean;
     sortingStrategy?: TransactionInputOutputSortingStrategy;
 };
 
@@ -56,7 +55,6 @@ export type PrecomposeParams = {
     feeLevels: { feePerUnit: string }[];
     push?: undefined;
     baseFee?: number;
-    floorBaseFee?: boolean;
     sequence?: number;
     sortingStrategy?: TransactionInputOutputSortingStrategy;
 };

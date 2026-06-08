@@ -34,6 +34,7 @@ jobs:
           cache: yarn
       - name: Install Socket Firewall
         uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
         with:
           mode: firewall-free
           job-summary: errors
@@ -41,9 +42,9 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw yarn workspaces focus @trezor/trezor-user-env-link
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/trezor-user-env-link
 
       - name: Run e2e tests
         run: |
-          docker run -d --network=host ghcr.io/trezor/trezor-user-env:e97e68ce03c5c5d95ad1f6e3278d098487cb0634
+          docker run -d --network=host ghcr.io/trezor/trezor-user-env:97b797fb349737b93a1d2dbe6bda6673dcc9cafb
           yarn workspace @trezor/trezor-user-env-link test:e2e
