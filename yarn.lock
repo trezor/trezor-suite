@@ -16359,6 +16359,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/invity-api": "npm:^1.1.15"
     "@types/lodash": "npm:^4.17.16"
     "@walletconnect/sign-client": "npm:^2.23.9"
     "@walletconnect/types": "npm:^2.23.9"

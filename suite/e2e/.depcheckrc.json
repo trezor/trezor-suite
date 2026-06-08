@@ -2,7 +2,6 @@
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
         "node-loader",
-        "invity-api",
         "@playwright/browser-chromium",
         "@playwright/browser-firefox",
         "@playwright/browser-webkit"
