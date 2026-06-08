@@ -5,6 +5,7 @@ import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     asAmountUnit,
+    computeBandwidthFeeLevel,
     getAccountIdentity,
     getExternalComposeOutput,
     subunitsToUnits,
@@ -23,7 +24,7 @@ import {
 } from '../sendFormTypes';
 import { buildTransferContract, buildTriggerContract } from './buildContract';
 import { calculate } from './calculate';
-import { computeBandwidthFeeLevel, estimateContractCallFeeLevel } from './feeLevel';
+import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
 
