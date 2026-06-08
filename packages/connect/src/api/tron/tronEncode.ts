@@ -57,6 +57,23 @@ const encodeInnerContract = (contract: TronContracts): InnerContract => {
                 ),
             };
         }
+        case 'FreezeBalanceV2Contract': {
+            const { owner_address, balance, resource } = contract.parameter.value;
+            const schema = getSchema('TronFreezeBalanceV2Contract');
+
+            return {
+                type: TronRawContractType.FreezeBalanceV2Contract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        balance: BigInt(balance ?? 0),
+                        // The default BANDWIDTH (0) is omitted to match the firmware signature.
+                        resource: resource || undefined,
+                    }),
+                ),
+            };
+        }
         default:
             throw new Error(
                 `Unsupported contract type for encoding: ${(contract as { type: string }).type}`,
