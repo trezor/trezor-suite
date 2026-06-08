@@ -14,7 +14,7 @@ import type {
     ComposeOutput,
     TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
-import { composeTx, networks } from '@trezor/utxo-lib';
+import { address, composeTx, networks, payments } from '@trezor/utxo-lib';
 
 import type { Blockchain } from '../../backend/BlockchainLink';
 import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
@@ -186,7 +186,9 @@ export class TransactionComposer {
             feeRate,
             longTermFeeRate: this.feeLevels.longTermFeeRate,
             sortingStrategy: this.sortingStrategy,
-            network: coinInfo.network,
+            toOutputScript: addr => address.toOutputScript(addr, coinInfo.network),
+            toOpReturnScript: dataHex =>
+                payments.embed({ data: [Buffer.from(dataHex, 'hex')] }).output as Buffer,
             changeAddress,
             dustThreshold: coinInfo.dustLimit,
             baseFee,

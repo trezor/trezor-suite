@@ -1,6 +1,5 @@
 import { throwError } from '@trezor/utils';
 
-import { toOutputScript } from '../address';
 import {
     INPUT_SCRIPT_LENGTH,
     OUTPUT_SCRIPT_LENGTH,
@@ -8,8 +7,6 @@ import {
     outputWeight,
     parseBigInt,
 } from '../coinselect/coinselectUtils';
-import type { Network } from '../networks';
-import { p2data } from '../payments/embed';
 import type {
     CoinSelectInput,
     CoinSelectOutput,
@@ -102,13 +99,14 @@ function validateAndParseUtxos(
 function transformOutput(
     output: ComposeOutput,
     txType: CoinSelectPaymentType,
-    network: Network,
+    toOutputScript: (address: string) => { length: number },
+    toOpReturnScript: (dataHex: string) => { length: number },
 ): CoinSelectOutput {
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     if (output.type === 'payment') {
         return {
             value: parseBigInt(output.amount) ?? throwError('Invalid amount'),
-            script: toOutputScript(output.address, network),
+            script: toOutputScript(output.address),
         };
     }
     if (output.type === 'payment-noaddress') {
@@ -120,12 +118,12 @@ function transformOutput(
     if (output.type === 'opreturn') {
         return {
             value: parseBigInt('0', true),
-            script: p2data({ data: [Buffer.from(output.dataHex, 'hex')] }).output as Buffer,
+            script: toOpReturnScript(output.dataHex),
         };
     }
     if (output.type === 'send-max') {
         return {
-            script: toOutputScript(output.address, network),
+            script: toOutputScript(output.address),
         };
     }
     if (output.type === 'send-max-noaddress') {
@@ -138,7 +136,7 @@ function transformOutput(
 
 function validateAndParseOutputs(
     txType: CoinSelectPaymentType,
-    { outputs, network }: Request,
+    { outputs, toOutputScript, toOpReturnScript }: Request,
 ):
     | {
           outputs: CoinSelectOutput[];
@@ -169,7 +167,7 @@ function validateAndParseOutputs(
         }
 
         try {
-            const csOutput = transformOutput(output, txType, network);
+            const csOutput = transformOutput(output, txType, toOutputScript, toOpReturnScript);
             csOutput.weight = outputWeight(csOutput);
             result.push(csOutput);
         } catch (error) {
@@ -185,11 +183,16 @@ function validateAndParseOutputs(
 
 function validateAndParseChangeOutput(
     txType: CoinSelectPaymentType,
-    { changeAddress, network }: Request,
+    { changeAddress, toOutputScript, toOpReturnScript }: Request,
 ): CoinSelectOutput | ComposeResultError {
     // NOTE: use "send-max" to create changeOutput. we don't know the final amount yet
     try {
-        return transformOutput({ type: 'send-max', ...changeAddress }, txType, network);
+        return transformOutput(
+            { type: 'send-max', ...changeAddress },
+            txType,
+            toOutputScript,
+            toOpReturnScript,
+        );
     } catch (error) {
         return {
             type: 'error',

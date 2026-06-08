@@ -4,14 +4,22 @@ import { verifyTxBytes } from './compose.utils';
 import { composeTx } from '../src/compose';
 import { composeTxFixture } from './__fixtures__/compose';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
+import * as address from '../src/address';
 import { getErrorResult } from '../src/compose/result';
 import { bip69SortingStrategy } from '../src/compose/sorting/bip69SortingStrategy';
 import * as NETWORKS from '../src/networks';
+import { p2data } from '../src/payments/embed';
 
 jest.mock('@trezor/utils', () => ({
     ...jest.requireActual('@trezor/utils'),
     getRandomInt: jest.fn(),
 }));
+
+const scriptFnsFromNetwork = (network: NETWORKS.Network) => ({
+    toOutputScript: (addr: string) => address.toOutputScript(addr, network),
+    toOpReturnScript: (dataHex: string) =>
+        p2data({ data: [Buffer.from(dataHex, 'hex')] }).output as Buffer,
+});
 
 const mockRandomInt = (randomIntSequence: number[] | undefined) => {
     let fakeRandomIndex = 0;
@@ -27,7 +35,7 @@ const mockRandomInt = (randomIntSequence: number[] | undefined) => {
 describe(composeTx.name, () => {
     composeTxFixture.forEach(f => {
         const network = f.request.network ?? NETWORKS.bitcoin;
-        const request = { ...f.request, network };
+        const request = { ...f.request, ...scriptFnsFromNetwork(network) };
         const result = { ...f.result };
 
         it(f.description, () => {
@@ -51,7 +59,7 @@ describe('composeTx request validation errors', () => {
             utxos: [],
             outputs: [{ type: 'send-max-noaddress' }],
             feeRate: 10,
-            network: NETWORKS.bitcoin,
+            ...scriptFnsFromNetwork(NETWORKS.bitcoin),
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             sortingStrategy: 'bip69',
@@ -74,7 +82,7 @@ describe('composeTx request validation errors', () => {
             ],
             outputs: [{ type: 'send-max-noaddress' }],
             feeRate: 10,
-            network: NETWORKS.bitcoin,
+            ...scriptFnsFromNetwork(NETWORKS.bitcoin),
             changeAddress: { address: 'not-a-valid-address' },
             dustThreshold: 546,
             sortingStrategy: 'bip69',
@@ -107,7 +115,7 @@ describe('composeTx request validation errors', () => {
                 },
             ],
             feeRate: 10,
-            network: NETWORKS.bitcoin,
+            ...scriptFnsFromNetwork(NETWORKS.bitcoin),
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             sortingStrategy: 'bip69',
@@ -134,7 +142,7 @@ describe('composeTx request validation errors', () => {
             ],
             outputs: [{ type: 'send-max-noaddress' }],
             feeRate: 0,
-            network: NETWORKS.bitcoin,
+            ...scriptFnsFromNetwork(NETWORKS.bitcoin),
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,
             sortingStrategy: 'bip69',
@@ -220,7 +228,7 @@ describe('composeTx addresses cross-check', () => {
                 it(`${key} ${f.description}`, () => {
                     const tx = composeTx({
                         ...f.request,
-                        network: NETWORKS.bitcoin,
+                        ...scriptFnsFromNetwork(NETWORKS.bitcoin),
                         txType,
                         utxos: f.request.utxos.map(utxo => ({
                             ...utxo,

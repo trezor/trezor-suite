@@ -1,4 +1,4 @@
-import { bitcoincash, doge } from '../../src/networks';
+import { Network, bitcoincash, doge } from '../../src/networks';
 import {
     ComposeChangeAddress,
     ComposeInput,
@@ -24,8 +24,11 @@ type AnyComposeFinalResult = ComposeResultFinal<ComposeInput, ComposeOutput, Com
 
 type Fixture = {
     description: string;
-    request: Omit<AnyComposeRequest, 'network' | 'outputs' | 'changeAddress'> & {
-        network?: AnyComposeRequest['network'];
+    request: Omit<
+        AnyComposeRequest,
+        'toOutputScript' | 'toOpReturnScript' | 'outputs' | 'changeAddress'
+    > & {
+        network?: Network;
         outputs: Array<AnyComposeRequest['outputs'][number] & { customField?: string }>;
         changeAddress: AnyComposeRequest['changeAddress'] & { path?: number[] | string };
     };

@@ -1,4 +1,3 @@
-import type { Network } from '../networks';
 import type { CoinSelectPaymentType } from './coinselect';
 
 // UTXO == unspent transaction output = all I can spend
@@ -93,7 +92,8 @@ export type ComposeRequest<
     feeRate: string | number; // in sat/byte, virtual size
     feePolicy?: ComposeFeePolicy; // explicit fee policy
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
-    network: Network;
+    toOutputScript: (address: string) => { length: number };
+    toOpReturnScript: (dataHex: string) => { length: number };
     changeAddress: Change;
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE or RBF base fee

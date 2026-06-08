@@ -11,9 +11,7 @@ type AnyComposeRequest = ComposeRequest<ComposeInput, ComposeOutput, ComposeChan
 
 type Fixture = {
     description: string;
-    request: Omit<AnyComposeRequest, 'network'> & {
-        network?: AnyComposeRequest['network'];
-    };
+    request: Omit<AnyComposeRequest, 'toOutputScript' | 'toOpReturnScript'>;
     result: Partial<Record<`${CoinSelectPaymentType}-${CoinSelectPaymentType}`, { bytes: number }>>;
 };
 

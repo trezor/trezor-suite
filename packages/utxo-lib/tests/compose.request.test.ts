@@ -1,6 +1,7 @@
 import type { ComposeRequest } from '../src';
+import * as baddress from '../src/address';
 import { validateAndParseRequest as validate } from '../src/compose/request';
-import * as NETWORKS from '../src/networks';
+import { p2data } from '../src/payments/embed';
 
 const UTXO = {
     coinbase: false,
@@ -17,7 +18,9 @@ const REQUEST: ComposeRequest<any, any, any> = {
     utxos: [UTXO],
     outputs: [PAYMENT],
     feeRate: 1,
-    network: NETWORKS.bitcoin,
+    toOutputScript: (addr: string) => baddress.toOutputScript(addr),
+    toOpReturnScript: (dataHex: string) =>
+        p2data({ data: [Buffer.from(dataHex, 'hex')] }).output as Buffer,
     changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
     dustThreshold: 526,
     sortingStrategy: 'bip69',
