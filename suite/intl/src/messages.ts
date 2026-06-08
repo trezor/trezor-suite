@@ -10184,6 +10184,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_EARN_STEP_TITLE',
         defaultMessage: 'Earn rewards',
     },
+    TR_EARN_TRON_SUBMIT_ERROR: {
+        id: 'TR_EARN_TRON_SUBMIT_ERROR',
+        defaultMessage: 'Transaction failed. Please try again.',
+    },
+    TR_EARN_TRON_PENDING_FREEZE: {
+        id: 'TR_EARN_TRON_PENDING_FREEZE',
+        defaultMessage: 'Confirming freeze…',
+    },
     TR_EARN_SUPPLYING_IN_A_NUTSHELL: {
         id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
         defaultMessage: 'How stablecoin yield works',
