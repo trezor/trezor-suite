@@ -8,7 +8,7 @@ import type {
     ProtoWithDerivationPath,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
+import type { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-selection';
 
 import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';

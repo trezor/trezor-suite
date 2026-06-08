@@ -16,6 +16,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
         { "path": "../transport-common" },
-        { "path": "../utxo-lib" }
+        { "path": "../utxo-lib" },
+        { "path": "../utxo-selection" }
     ]
 }
