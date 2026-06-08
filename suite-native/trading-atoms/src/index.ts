@@ -37,6 +37,7 @@ export * from './hooks/useAnimatedBorderStyle';
 export * from './hooks/useBottomSheetBackButtonSubscription';
 export * from './hooks/useBottomSheetControls';
 export * from './hooks/useSectionList';
+export { useFormatCryptoValue } from './hooks/useFormatCryptoValue';
 
 export * from './utils/general/cryptoIdUtils';
 export * from './utils/general/receiveAccountUtils';
