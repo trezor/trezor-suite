@@ -1,0 +1,80 @@
+name: "[Bot] update trezor-user-env"
+
+on:
+  schedule:
+    - cron: "0 6 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  update-trezor-user-env:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: develop
+
+      - name: Get current pinned commit
+        id: current
+        run: |
+          pinned=$(grep -oP 'ghcr\.io/trezor/trezor-user-env:\K[0-9a-f]{40}' docker/docker-compose.connect-test.yml | head -1)
+          if [ -z "$pinned" ]; then
+            echo "::error::Failed to detect pinned trezor-user-env commit"
+            exit 1
+          fi
+          echo "commit=$pinned" >> $GITHUB_OUTPUT
+
+      - name: Get latest commit from trezor-user-env
+        id: latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(gh api repos/trezor/trezor-user-env/commits/main --jq '.sha')
+          if ! [[ "$latest" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Failed to fetch latest trezor-user-env commit: $latest"
+            exit 1
+          fi
+          echo "commit=$latest" >> $GITHUB_OUTPUT
+
+      - name: Check if update is needed
+        id: check
+        run: |
+          if [ "${{ steps.current.outputs.commit }}" = "${{ steps.latest.outputs.commit }}" ]; then
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+          else
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Replace pinned commit
+        if: steps.check.outputs.needs_update == 'true'
+        run: |
+          old="${{ steps.current.outputs.commit }}"
+          new="${{ steps.latest.outputs.commit }}"
+          grep -rl "ghcr.io/trezor/trezor-user-env:${old}" . --include='*.yml' --include='*.yaml' --include='*.sh' | while read -r file; do
+            sed -i "s|ghcr.io/trezor/trezor-user-env:${old}|ghcr.io/trezor/trezor-user-env:${new}|g" "$file"
+          done
+
+      - name: Generate GitHub App token
+        if: steps.check.outputs.needs_update == 'true'
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Create Pull Request
+        if: steps.check.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          token: ${{ steps.trezor-bot-token.outputs.token }}
+          commit-message: "ci: update trezor-user-env to ${{ steps.latest.outputs.commit }}"
+          branch: chore/update-trezor-user-env
+          title: "Update trezor-user-env to ${{ steps.latest.outputs.commit }}"
+          body: |
+            Updates `ghcr.io/trezor/trezor-user-env` image tag.
+
+            **Commit:** [`${{ steps.latest.outputs.commit }}`](https://github.com/trezor/trezor-user-env/commit/${{ steps.latest.outputs.commit }})
+          base: develop
+          delete-branch: true
+          labels: ci, no-project
