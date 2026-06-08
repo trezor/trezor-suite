@@ -16,7 +16,7 @@ const fiatAmount = localizeNumber(buyQuotesSolanaToken[0]?.fiatStringAmount ?? '
 const cryptoAmount = buyQuotesSolanaToken[0]?.receiveStringAmount ?? '';
 const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0]?.exchange ?? '');
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
-const formattedFiatAmount = `CZK ${fiatAmount}`;
+const formattedFiatAmount = `$${fiatAmount}`;
 
 test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
@@ -46,6 +46,9 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
             await tradingPage.fillBuyForm({
                 amount: cryptoAmount,
                 wantCrypto: isCryptoInput,
+                fiatCurrencyCode: 'usd',
+                country: 'US',
+                countrySubdivision: 'CA',
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
                 },
