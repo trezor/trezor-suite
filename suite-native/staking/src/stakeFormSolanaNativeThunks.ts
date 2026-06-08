@@ -3,7 +3,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    pushSendFormTransactionThunk,
     selectAccountByKey,
     selectAddressDisplayType,
     selectConvertedNetworkFeeInfo,
@@ -137,7 +136,7 @@ export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
 );
 
 export const signSolanaStakingTransactionNativeThunk = createThunk<
-    { txid: string },
+    void,
     {
         accountKey: AccountKey;
         stakeType: StakeNativeType;
@@ -276,22 +275,6 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
                     serializedTx: { tx: txData.txShim.serialize(), symbol: account.symbol },
                 }),
             );
-
-            const pushAction = await dispatch(
-                pushSendFormTransactionThunk({
-                    selectedAccount: account,
-                    isMevProtectionEnabled: false,
-                }),
-            );
-
-            if (pushSendFormTransactionThunk.rejected.match(pushAction)) {
-                const message = pushAction.payload?.metadata.error.message;
-                console.error(`${SIGN_LOG_PREFIX}: Push transaction failed: ${message}`);
-
-                return rejectWithValue(pushAction.payload);
-            }
-
-            return { txid: pushAction.payload.payload.txid };
         } catch (error) {
             console.error(`${SIGN_LOG_PREFIX}: Unexpected error: ${error}`);
 

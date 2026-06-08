@@ -1,14 +1,11 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { transformTx, verifyEthereumStakingCalldata } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     ethereumGetCurrentNonceThunk,
-    pushSendFormTransactionThunk,
     selectAccountByKey,
     selectFormDraft,
-    selectIsMevProtectionEnabled,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
@@ -169,7 +166,7 @@ const prepareEthereumStakingContext = (
 };
 
 export const signEthereumStakingTransactionNativeThunk = createThunk<
-    { txid: string },
+    void,
     {
         accountKey: AccountKey;
         stakeType: StakeNativeType;
@@ -266,26 +263,6 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
                     serializedTx: { tx: serializedTx, symbol: account.symbol },
                 }),
             );
-
-            const isMevProtectionEnabled =
-                selectIsMevProtectionEnabled(getState()) &&
-                selectIsMevProtectionFeatureEnabled(getState());
-
-            const pushAction = await dispatch(
-                pushSendFormTransactionThunk({
-                    selectedAccount: account,
-                    isMevProtectionEnabled,
-                }),
-            );
-
-            if (pushSendFormTransactionThunk.rejected.match(pushAction)) {
-                const message = pushAction.payload?.metadata.error.message;
-                console.error(`${LOG_PREFIX}: Push transaction failed: ${message}`);
-
-                return rejectWithValue(pushAction.payload);
-            }
-
-            return { txid: pushAction.payload.payload.txid };
         } catch (error) {
             console.error(`${LOG_PREFIX}: Unexpected error: ${error}`);
 
