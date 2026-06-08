@@ -33,7 +33,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "expo": "~55.0.3",
-        "expo-sqlite": "~55.0.11",
+        "expo-sqlite": "~55.0.16",
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-redux": "9.2.0"
