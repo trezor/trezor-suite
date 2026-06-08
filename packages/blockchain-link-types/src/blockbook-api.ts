@@ -65,6 +65,10 @@ export interface TronAccountExtraData {
     totalFreeBandwidth: number;
     availableEnergy: number;
     totalEnergy: number;
+    totalEnergyLimit: number;
+    totalEnergyWeight: number;
+    totalBandwidthLimit: number;
+    totalBandwidthWeight: number;
     stakingInfo?: TronStakingInfo;
 }
 export interface APIError {

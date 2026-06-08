@@ -4,6 +4,7 @@ import { useWatch } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
+import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { Button, Collapsible, Column, Row, TextButton } from '@trezor/components';
 
 import {
@@ -13,7 +14,7 @@ import {
 import { CustomFee } from './CustomFee/CustomFee';
 import { CustomFeeTron } from './CustomFee/CustomFeeTron';
 import { StandardFee } from './StandardFee/StandardFee';
-import { FeesContext, type FeesContextType, type TronResources } from '../context/FeesContext';
+import { FeesContext, type FeesContextType } from '../context/FeesContext';
 import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesProps = {
@@ -21,7 +22,7 @@ export type CollapsibleFeesProps = {
     networkType: NetworkType;
     rbfForm?: boolean;
     isOpen?: boolean;
-    tronResources?: TronResources;
+    tronResources?: TronAccountExtraData;
 } & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel'> &
     Omit<CollapsibleFeesHeaderContentProps, 'supportsAdjustableFees' | 'txMaxFee' | 'isOpen'>;
 
