@@ -15,7 +15,7 @@ import type { YieldApprovalAction } from '../yieldFlowUtils';
 
 const approveStepTranslationMap = {
     deposit: {
-        amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_SUPPLY',
+        amountLabelTranslationId: 'AMOUNT',
         balanceLabelTranslationId: 'TR_BALANCE',
     },
     withdraw: {
@@ -25,6 +25,7 @@ const approveStepTranslationMap = {
 } as const;
 
 type ApproveButtonTranslationId =
+    | 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON'
     | 'TR_EARN_YIELD_REVOKE_APPROVAL'
     | 'TR_EARN_YIELD_INCREASE_APPROVAL'
     | 'TR_APPROVE_DATA_TITLE'
@@ -37,6 +38,10 @@ type GetApproveButtonTranslationIdParams = {
 const getApproveButtonTranslationId = ({
     approvalAction,
 }: GetApproveButtonTranslationIdParams): ApproveButtonTranslationId => {
+    if (approvalAction === 'approve') {
+        return 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON';
+    }
+
     if (approvalAction === 'revoke') {
         return 'TR_EARN_YIELD_REVOKE_APPROVAL';
     }
@@ -136,7 +141,7 @@ export const YieldApproveStep = ({
                         isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
                         isLoading={isLoading}
                     >
-                        <Translation id={approveButtonId} />
+                        <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
                     </Button>
 
                     {approvalAction === 'revoke' && !isDisabled && (

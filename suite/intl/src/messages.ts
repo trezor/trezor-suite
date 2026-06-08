@@ -10170,6 +10170,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION',
         defaultMessage: 'Approve spending transaction',
     },
+    TR_EARN_YIELD_APPROVE_TOKEN_BUTTON: {
+        id: 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON',
+        defaultMessage: 'Approve {tokenSymbol}',
+    },
     TR_EARN_SIGN_SUPPLYING_TRANSACTION: {
         id: 'TR_EARN_SIGN_SUPPLYING_TRANSACTION',
         defaultMessage: 'Sign deposit transaction',
