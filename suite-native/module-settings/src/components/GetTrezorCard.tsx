@@ -1,13 +1,9 @@
-import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { TwoSidedTS7Image } from '@suite-native/device';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
+import { useGetTrezorEshopCta } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { ESHOP_STORE_URL } from '@trezor/urls';
 
 const FULL_CONTAINER_HEIGHT = 190;
 const FULL_IMAGE_SIZE = 170;
@@ -31,16 +27,7 @@ const bulletPointValues: Array<{ icon: IconName; textId: TxKeyPath }> = [
 
 export const GetTrezorCard = () => {
     const { applyStyle } = useNativeStyles();
-    const openLink = useOpenLink();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-
-    const handleGetTrezor = () => {
-        analytics.report({
-            type: events.promoNoDeviceEshopCtaEvent.name,
-            payload: { origin: 'settings', platform: 'mobile' },
-        });
-        openLink(ESHOP_STORE_URL);
-    };
+    const handleGetTrezor = useGetTrezorEshopCta('settings');
 
     return (
         <Card>

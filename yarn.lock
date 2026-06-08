@@ -11747,6 +11747,7 @@ __metadata:
   resolution: "@suite-native/banner-flags@workspace:suite-native/banner-flags"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
+    "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12395,6 +12396,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/link@workspace:suite-native/link"
   dependencies:
+    "@suite-common/analytics": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -13169,6 +13173,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/banner-flags": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/coin-enabling": "workspace:*"
     "@suite-native/config": "workspace:*"

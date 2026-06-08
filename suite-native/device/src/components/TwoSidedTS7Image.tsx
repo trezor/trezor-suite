@@ -6,7 +6,7 @@ type TwoSidedTS7ImageProps = {
 
 export const TwoSidedTS7Image = ({ size }: TwoSidedTS7ImageProps) => (
     <Image
-        source={require('../assets/twosidedTS7Model.png')}
+        source={require('../assets/twosidedTS7Model.webp')}
         contentFit="contain"
         width={size}
         height={size}

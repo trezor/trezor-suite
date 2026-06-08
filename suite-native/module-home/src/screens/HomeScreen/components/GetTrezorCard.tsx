@@ -8,9 +8,8 @@ import { setIsGetTrezorBannerClosed } from '@suite-native/banner-flags';
 import { TwoSidedTS7Image } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
+import { useGetTrezorEshopCta } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { ESHOP_STORE_URL } from '@trezor/urls';
 
 const CONTAINER_SIZE = 80;
 const IMAGE_SIZE = 53;

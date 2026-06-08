@@ -19,7 +19,10 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { selectIsGetTrezorBannerClosed } from '@suite-native/banner-flags';
+import {
+    selectAreGetTrezorPromoBannersDisabled,
+    selectIsGetTrezorBannerClosed,
+} from '@suite-native/banner-flags';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
@@ -79,6 +82,7 @@ export const EmptyPortfolioCrossroads = () => {
         selectIsFeatureEnabled(state, Feature.demoAccountQuestionnaire, true),
     );
     const isGetTrezorBannerClosed = useSelector(selectIsGetTrezorBannerClosed);
+    const areGetTrezorPromoBannersDisabled = useSelector(selectAreGetTrezorPromoBannersDisabled);
 
     const handleConnectDevice = () => {
         onConnectDevicePress();
@@ -142,7 +146,7 @@ export const EmptyPortfolioCrossroads = () => {
                     </VStack>
                 </Card>
             </Animated.View>
-            {!isGetTrezorBannerClosed && (
+            {!isGetTrezorBannerClosed && !areGetTrezorPromoBannersDisabled && (
                 <Animated.View exiting={FadeOut}>
                     <GetTrezorCard />
                 </Animated.View>
