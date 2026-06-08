@@ -105,6 +105,7 @@ export class TradingPage {
      * @param params.wantCrypto - Whether the amount is specified in crypto (true) or fiat (false). Default: false
      * @param params.fiatCurrencyCode - The fiat currency code (e.g., 'czk', 'eur', 'usd'). Default: 'czk'
      * @param params.country - The country code for residence (e.g., 'CZ', 'US', 'GB'). Default: 'CZ'
+     * @param params.countrySubdivision - Optional subdivision code, required for countries with subdivisions (e.g., 'CA', 'NY' for US states)
      * @param params.selectReceiveAddress - Optional async callback to select a custom receive address
      *
      * @example
@@ -131,12 +132,14 @@ export class TradingPage {
         wantCrypto = false,
         fiatCurrencyCode = 'czk',
         country = 'CZ',
+        countrySubdivision,
         selectReceiveAddress,
     }: {
         amount: string;
         wantCrypto?: boolean;
         fiatCurrencyCode?: BaseCurrencyCode;
         country?: TradingCountryCode;
+        countrySubdivision?: string;
         selectReceiveAddress?: () => Promise<void>;
     }) {
         const inputField = wantCrypto ? this.inputs.cryptoAmount : this.inputs.fiatAmount;
@@ -148,6 +151,9 @@ export class TradingPage {
         }
 
         await this.inputs.selectCountryOfResidence(country);
+        if (countrySubdivision) {
+            await this.inputs.selectCountrySubdivision(countrySubdivision);
+        }
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
 
         if (selectReceiveAddress) {

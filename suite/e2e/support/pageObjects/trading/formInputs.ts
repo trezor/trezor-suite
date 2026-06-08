@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import type { TradingCountryCode } from '@suite-common/trading';
+import { type TradingCountryCode, getCountrySubdivisionByCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -31,6 +31,10 @@ export class TradingFormInputs {
     readonly countryValue: Locator;
     readonly countryOption = (countryCode: TradingCountryCode) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
+    readonly countrySubdivisionSelect: Locator;
+    readonly countrySubdivisionValue: Locator;
+    readonly countrySubdivisionOption = (subdivisionCode: string) =>
+        this.page.getByTestId(`@trading/form/country-subdivision-select/option/${subdivisionCode}`);
     readonly paymentMethodSelect: Locator;
     readonly paymentMethodValue: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
@@ -47,6 +51,12 @@ export class TradingFormInputs {
         this.fiatBottomText = this.page.getByTestId('@trading/form/fiat-input/bottom-text');
         this.countrySelect = this.page.getByTestId('@trading/form/country-select');
         this.countryValue = this.page.getByTestId('@trading/form/country-select/value');
+        this.countrySubdivisionSelect = this.page.getByTestId(
+            '@trading/form/country-subdivision-select',
+        );
+        this.countrySubdivisionValue = this.page.getByTestId(
+            '@trading/form/country-subdivision-select/value',
+        );
         this.paymentMethodSelect = this.page.getByTestId('@trading/form/payment-method-select');
         this.paymentMethodValue = this.page.getByTestId(
             '@trading/form/payment-method-select/value',
@@ -68,6 +78,20 @@ export class TradingFormInputs {
         );
         await this.countryOption(countryCode).click();
         await expect(this.countryValue).toContainText(countryCode);
+    }
+
+    @step()
+    async selectCountrySubdivision(subdivisionCode: string) {
+        await this.countrySubdivisionSelect.click();
+        await expect(this.page.getByTestId('@modal/header')).toHaveTranslation(
+            'TR_TRADING_COUNTRY_SUBDIVISION',
+        );
+        await this.countrySubdivisionOption(subdivisionCode).click();
+        const subdivision = getCountrySubdivisionByCode(subdivisionCode);
+        if (!subdivision) {
+            throw new Error(`Unknown country subdivision code "${subdivisionCode}"`);
+        }
+        await expect(this.countrySubdivisionValue).toHaveText(subdivision.name);
     }
 
     @step()
