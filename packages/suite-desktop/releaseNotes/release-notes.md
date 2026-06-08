@@ -1,27 +1,25 @@
 ### 🚀 New features
 
-- Legacy labeling can now be migrated to Suite Sync.
-- WalletConnect now warns when account balances are insufficient before confirming transactions.
-- Trading offers can now be compared side by side.
-- A new DeFi Tokens section has been added for EVM accounts.
-- Passphrase entry now includes a Caps Lock warning.
-- Coin settings can now be opened directly from the dashboard.
-- Device authenticity verification now includes MCU MLDSA support.
-- ERC-681 links and QR codes are now supported in the send form.
-- Custom backends can now be configured without activating coins first.
-- Solana transactions now support Memo fields.
+- TRON (TRX) is now available to all users, with full account management support.
+- Your Trezor’s device name and color now sync automatically during THP pairing.
 
 ### 🎨 Improvements
 
-- A new Earn section has been added.
-- Address formatting has been improved across the app.
-- Privacy settings have been reorganized for easier access.
-- Desktop and mobile onboarding flows are now unified.
-- Asset history charts have an updated layout.
-- Bitcoin-only firmware wallets now show a cleaner interface.
+- The minimum ETH staking amount has been reduced to 0.01 ETH.
+- The UX of approval steps within the Earn stablecoin yield flow has improved.
+- Swap is now accessible directly from the main navigation.
+- Contract verification is now available across all EVM networks.
+- Coin activation has been redesigned with a faster, pill-style network selector.
+- EVM testnets now use the same derivation paths as their mainnets.
+- Bitcoin is now included in the phishing detection.
+- Currency flags are now displayed in desktop trading forms.
+- The wallet and device switcher is disabled during account discovery to prevent interruptions.
+- The Guide experience has been refined with usability improvements.
+- Bitcoin fee customization warnings have been streamlined for a cleaner send flow.
 
 ### 🔧 Bug fixes
 
-- Fixed repeated passphrase prompts when activating additional coins with Cardano enabled.
-- Fixed unsupported assets appearing in the swap form.
-- Minor bugs and usability issues have been resolved for a smoother experience.
+- Fixed a crash that could occur when retrying certain Solana swaps.
+- Fixed a crash when all wallets were ejected during an active trading session.
+- Fixed an issue preventing device wallpaper changes.
+- Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience.
