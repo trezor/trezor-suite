@@ -29,6 +29,12 @@ export const withUtmParams = (url: Url, params: UtmParams): Url => {
     return `${baseUrl}${separator}${newParams}${anchorFragment}` as Url;
 };
 
+export const withGetTrezorCtaUtm = (url: Url, utmContent: string): Url =>
+    withUtmParams(url, {
+        utm_campaign: 'suite-no-device',
+        utm_content: utmContent,
+    });
+
 const resolveUtmMedium = () => {
     try {
         if (process.env.SUITE_TYPE === 'web') {

@@ -11,6 +11,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite-common/analytics": "workspace:*",
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",

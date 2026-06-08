@@ -11,6 +11,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2"
+        "@reduxjs/toolkit": "2.11.2",
+        "@trezor/connect": "workspace:*"
     }
 }
