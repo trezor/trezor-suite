@@ -87,6 +87,8 @@ jobs:
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -r" >> "$GITHUB_ENV"
       - if: ${{ inputs.transport }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -t ${{ inputs.transport }}" >> "$GITHUB_ENV"
+      - if: ${{ inputs.testEnv == 'node' && inputs.testGroup == 'PR-nightly-t3w1' }}
+        run: echo "COLLECT_COVERAGE=true" >> "$GITHUB_ENV"
       - run: './docker/docker-connect-test.sh ${{ inputs.testEnv }} -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}
@@ -94,3 +96,11 @@ jobs:
         with:
           target: ${{ inputs.testEnv }}
           test-group: ${{ inputs.testGroup }}-${{ inputs.testDescription }}
+      - name: Upload coverage report
+        if: ${{ !cancelled() && inputs.testEnv == 'node' && inputs.testGroup == 'PR-nightly-t3w1' }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: connect-e2e-coverage-${{ github.run_attempt }}-${{ inputs.testGroup }}-${{ inputs.testDescription }}
+          path: packages/connect/e2e/coverage/coverage-final.json
+          retention-days: 3
+          if-no-files-found: warn
