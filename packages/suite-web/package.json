@@ -16,7 +16,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/browser": "10.50.0",
+        "@sentry/browser": "10.53.1",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/router": "workspace:*",
