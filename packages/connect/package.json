@@ -111,7 +111,7 @@
         "viem": "^2.48.1"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.28.5",
+        "@babel/preset-typescript": "^7.29.7",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/jws": "^3.2.11",
