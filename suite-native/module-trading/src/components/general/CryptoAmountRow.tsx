@@ -3,9 +3,8 @@ import type { CryptoId } from 'invity-api';
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { type BoxProps, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
-
-import { CryptoToFiatValueBadge } from './CryptoToFiatValueBadge';
-import { useFormatCryptoValue } from '../../hooks/general/useFormatCryptoValue';
+import { useFormatCryptoValue } from '@suite-native/trading-atoms';
+import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 export type CryptoAmountRowProps = {
     cryptoId?: CryptoId;
