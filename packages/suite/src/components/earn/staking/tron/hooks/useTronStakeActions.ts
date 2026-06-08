@@ -38,10 +38,12 @@ export const useTronStakeActions = ({
 }: UseTronStakeActionsProps): TronStakeActions => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { step, isSubmitting, error, pendingTxid } = useSelector(selectTronStakeSession);
+    const { step, isSubmitting, error, pendingTxid } = useSelector(state =>
+        selectTronStakeSession(state, account.key),
+    );
 
     const goToStep = (nextStep: TronStakeStepId) =>
-        dispatch(tronStakeActions.goToStep({ step: nextStep }));
+        dispatch(tronStakeActions.goToStep({ accountKey: account.key, step: nextStep }));
 
     const openDeviceConnectionModal = () => {
         if (device?.descriptor?.apiType === 'bluetooth') {

@@ -1,4 +1,12 @@
-import { type TronStakeRootState, type TronStakeState } from './tronStakeReducer';
+import { type AccountKey } from '@suite-common/wallet-types';
 
-export const selectTronStakeSession = (state: TronStakeRootState): TronStakeState =>
-    state.wallet.tronStake;
+import {
+    type TronStakeRootState,
+    type TronStakeState,
+    initialTronStakeSession,
+} from './tronStakeReducer';
+
+export const selectTronStakeSession = (
+    state: TronStakeRootState,
+    accountKey: AccountKey,
+): TronStakeState => state.wallet.tronStake[accountKey] ?? initialTronStakeSession;
