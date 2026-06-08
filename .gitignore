@@ -2,6 +2,7 @@ build
 build-electron
 build-renderer
 .build-storybook
+!/scripts/build
 *.cpuprofile
 
 # Dependency directory
@@ -83,6 +84,7 @@ DerivedData
 
 # Android/IntelliJ
 build/
+!/scripts/build/
 .idea
 .gradle
 local.properties

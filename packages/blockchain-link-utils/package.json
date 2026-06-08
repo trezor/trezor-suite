@@ -24,7 +24,7 @@
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "build:lib": "yarn g:tsdown",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {

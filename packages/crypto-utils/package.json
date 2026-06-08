@@ -35,7 +35,7 @@
         }
     },
     "scripts": {
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "build:lib": "yarn g:tsdown",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
