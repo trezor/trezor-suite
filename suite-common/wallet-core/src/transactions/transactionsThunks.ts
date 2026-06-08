@@ -472,6 +472,68 @@ export const addFakePendingCardanoTxThunk = createThunk(
     },
 );
 
+interface AddFakePendingTronTxThunkParams {
+    txid: string;
+    account: Account;
+    amount: string;
+    fee: string;
+    type: WalletAccountTransaction['type'];
+    target?: { addresses: string[]; amount: string };
+    tronSpecific?: WalletAccountTransaction['tronSpecific'];
+}
+
+export const addFakePendingTronTxThunk = createThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    (
+        { txid, account, amount, fee, type, target, tronSpecific }: AddFakePendingTronTxThunkParams,
+        { dispatch, getState },
+    ) => {
+        if (account.networkType !== 'tron') return;
+
+        const FAKE_TX_TTL_SECONDS = 15 * 60;
+        const blockTime = selectRawNetworkFeeInfo(getState(), account.symbol)?.blockTime ?? 0;
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+        const deadline = blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / blockTime);
+
+        const fakeTx = {
+            type,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            amount,
+            fee,
+            feeRate: undefined,
+            targets: target
+                ? [{ n: 0, addresses: target.addresses, isAddress: true, amount: target.amount }]
+                : [],
+            tokens: [],
+            internalTransfers: [],
+            tronSpecific,
+            details: {
+                vin: target
+                    ? [
+                          {
+                              n: 0,
+                              addresses: target.addresses,
+                              isAddress: true,
+                              isOwn: true,
+                              isAccountOwned: true,
+                          },
+                      ]
+                    : [],
+                vout: target
+                    ? [{ value: target.amount, n: 0, addresses: target.addresses, isAddress: true }]
+                    : [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: target?.amount ?? '0',
+            },
+            deadline,
+        };
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
 /**
  * @param noLoading - disable loading indicator
  * @param forceRefetch - force refetch of transactions even if this page is already fetched
