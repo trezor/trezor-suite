@@ -95,6 +95,7 @@ const connectCallableMethodGroups = {
         'getPublicKey',
         'getAccountInfo',
         'discoverAccounts',
+        'selectAccount',
         'signMessage',
         'verifyMessage',
         'getCoinInfo',
