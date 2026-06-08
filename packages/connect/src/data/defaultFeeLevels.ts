@@ -157,6 +157,15 @@ const STELLAR_FEE_INFO: FeeInfoWithLevels = {
     dustLimit: -1, // unknown/unused
 };
 
+const TRON_FEE_INFO: FeeInfoWithLevels = {
+    blockTime: 3,
+    defaultFees: [{ label: 'normal', feePerUnit: '-1', blocks: -1 }],
+    minFee: -1,
+    maxFee: -1,
+    minPriorityFee: -1,
+    dustLimit: -1,
+};
+
 const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
     xrp: RIPPLE_FEE_INFO,
     txrp: RIPPLE_FEE_INFO,
@@ -166,6 +175,8 @@ const MISC_FEE_LEVELS: Record<string, FeeInfoWithLevels> = {
     dsol: SOLANA_FEE_INFO,
     xlm: STELLAR_FEE_INFO,
     txlm: STELLAR_FEE_INFO,
+    trx: TRON_FEE_INFO,
+    ttrx: TRON_FEE_INFO,
 };
 
 export const getMiscFeeLevels = (data: CoinsJsonData): FeeInfoWithLevels => {
