@@ -104,6 +104,8 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../bluetooth" },
+        { "path": "../settings" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
