@@ -1,4 +1,4 @@
-import { app, shell } from 'electron';
+import { app, session, shell } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
@@ -188,6 +188,10 @@ export const rename = async (
 export const clear = async (): Promise<InvokeResult> => {
     const dir = path.normalize(app.getPath('userData'));
     try {
+        // Clear session storage data before deleting the directory.
+        // On Windows, Electron keeps DIPS and DIPS-val files locked by the storage service.
+        // Clearing storage data releases those locks so the directory can be deleted.
+        await session.defaultSession.clearStorageData();
         await fs.promises.rm(dir, { recursive: true, force: true });
 
         return { success: true };
