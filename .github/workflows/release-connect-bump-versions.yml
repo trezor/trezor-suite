@@ -51,7 +51,7 @@ jobs:
           job-summary: errors
           firewall-version: 1.11.0
       - name: Install dependencies
-        run: $(command -v sfw > /dev/null && echo sfw) yarn install
+        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
 
       # The script connect-bump-versions.ts needs to build packages so dependencies are required.
       - name: Build dependencies

@@ -49,7 +49,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install dependencies
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn workspaces focus @trezor/transport-test
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/transport-test
 
       - name: Setup containers
         run: |
@@ -94,7 +94,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn workspaces focus @trezor/transport -A
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/transport -A
 
       - name: Build transport tester
         run: |

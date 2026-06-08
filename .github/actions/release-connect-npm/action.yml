@@ -66,7 +66,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: $(command -v sfw > /dev/null && echo sfw) yarn install --immutable
+      run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
 
     - name: Check version
       shell: bash

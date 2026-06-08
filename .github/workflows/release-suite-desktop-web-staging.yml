@@ -71,7 +71,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn install --immutable
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -201,7 +201,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          $(command -v sfw > /dev/null && echo sfw) yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
       - name: Build suite-web
         env:
@@ -260,7 +260,7 @@ jobs:
           firewall-version: 1.11.0
       - name: Install deps and build libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn install --immutable
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib

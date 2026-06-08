@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          $(command -v sfw > /dev/null && echo sfw) yarn workspaces focus @trezor/analytics-docs
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/analytics-docs
 
       - name: Build analytics-docs
         env:

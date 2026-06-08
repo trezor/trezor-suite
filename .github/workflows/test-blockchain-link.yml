@@ -41,7 +41,7 @@ jobs:
           job-summary: errors
           firewall-version: 1.11.0
       - name: Install dependencies
-        run: $(command -v sfw > /dev/null && echo sfw) yarn --immutable
+        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn --immutable
 
       - name: Build dependencies
         run: yarn build:libs

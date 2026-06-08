@@ -39,4 +39,4 @@ runs:
 
     - name: Install dependencies using Yarn
       shell: bash
-      run: $(command -v sfw > /dev/null && echo sfw) yarn --immutable
+      run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn --immutable

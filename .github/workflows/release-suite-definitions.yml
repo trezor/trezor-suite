@@ -47,7 +47,7 @@ jobs:
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions
         if: ${{ github.event.inputs.environment == 'develop-definitions' && github.ref == 'refs/heads/develop' }}
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn install
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
           cd suite-common/token-definitions
 
           yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche
@@ -60,7 +60,7 @@ jobs:
           IS_CODESIGN_BUILD: "true"
           JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
         run: |
-          $(command -v sfw > /dev/null && echo sfw) yarn install
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
           cd suite-common/token-definitions
 
           yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche

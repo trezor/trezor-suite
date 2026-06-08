@@ -43,7 +43,7 @@ jobs:
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          $(command -v sfw > /dev/null && echo sfw) yarn install
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
