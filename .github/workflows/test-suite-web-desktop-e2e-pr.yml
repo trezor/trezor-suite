@@ -20,7 +20,6 @@ on:
       - ".github/workflows/suite-native*"
       - ".github/workflows/build-desktop*"
       - ".github/workflows/release*"
-      - ".github/workflows/template*"
       - ".github/actions/release*/**"
       - "**.md"
 
