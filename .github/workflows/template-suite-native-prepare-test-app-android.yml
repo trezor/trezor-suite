@@ -54,7 +54,7 @@ jobs:
       - name: Install Yarn dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          sfw yarn install
+          sfw yarn install --prefer-offline
 
       - name: Setup Java
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5

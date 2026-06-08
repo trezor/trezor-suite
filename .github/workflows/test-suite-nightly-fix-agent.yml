@@ -35,7 +35,7 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
+        run: yarn workspaces focus --prefer-offline @trezor/e2e-utils
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
@@ -139,7 +139,7 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
+        run: yarn workspaces focus --prefer-offline @trezor/suite-web @trezor/suite-data @trezor/suite-build
 
       - name: Build message system config
         run: yarn message-system-sign-config 1>/dev/null
@@ -197,7 +197,7 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web @trezor/suite-desktop
+        run: yarn workspaces focus --prefer-offline @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web @trezor/suite-desktop
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
@@ -342,7 +342,7 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
+        run: yarn workspaces focus --prefer-offline @trezor/e2e-utils
 
       - name: Download report artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8

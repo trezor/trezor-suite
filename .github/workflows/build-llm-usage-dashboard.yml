@@ -31,7 +31,7 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
+        run: yarn workspaces focus @trezor/e2e-utils --prefer-offline
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6

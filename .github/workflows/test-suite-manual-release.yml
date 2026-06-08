@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           echo "Installing Playwright dependencies"
-          sfw yarn workspaces focus @trezor/suite-e2e
+          sfw yarn workspaces focus @trezor/suite-e2e --prefer-offline
           # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
           yarn message-system-sign-config
 
