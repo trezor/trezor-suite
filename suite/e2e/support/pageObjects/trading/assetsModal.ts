@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 

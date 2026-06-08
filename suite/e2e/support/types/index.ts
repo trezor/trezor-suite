@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 import { RequireExactlyOne } from 'type-fest';
 
 import { AnalyticsDesktopEvents } from '@suite/analytics';
