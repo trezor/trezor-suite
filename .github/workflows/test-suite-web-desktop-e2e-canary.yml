@@ -43,7 +43,7 @@ jobs:
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "4ytF0E"
-      currents-ci-build-id: "nightly-canary-run-${{ github.run_id }}-${{ github.run_attempt }}"
+      currents-ci-build-id: "nightly-desktop-canary-run-${{ github.run_id }}-${{ github.run_attempt }}"
       download-artifact-name: "desktop-app-build-e2e"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
@@ -106,7 +106,7 @@ jobs:
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "Og0NOQ"
-      currents-ci-build-id: "nightly-canary-run-${{ github.run_id }}-${{ github.run_attempt }}"
+      currents-ci-build-id: "nightly-web-canary-run-${{ github.run_id }}-${{ github.run_attempt }}"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
