@@ -2,11 +2,8 @@
 name: "Check PR Size"
 description: >
   Determines whether a PR is small enough for LLM test selection.
-  Small PR = max 7 changed files and max 500 total lines changed.
+  Small PR = max 500 total lines changed.
 inputs:
-  changed-files:
-    description: "Number of changed files (github.event.pull_request.changed_files)"
-    required: true
   additions:
     description: "Number of line additions (github.event.pull_request.additions)"
     required: true
@@ -24,15 +21,14 @@ runs:
       id: check
       shell: bash
       env:
-        CHANGED_FILES: ${{ inputs.changed-files }}
         ADDITIONS: ${{ inputs.additions }}
         DELETIONS: ${{ inputs.deletions }}
       run: |
         TOTAL_CHANGES=$(( ADDITIONS + DELETIONS ))
-        if [ "$CHANGED_FILES" -le 7 ] && [ "$TOTAL_CHANGES" -le 500 ]; then
+        if [ "$TOTAL_CHANGES" -le 500 ]; then
           echo "is_small_pr=true" >> "$GITHUB_OUTPUT"
-          echo "Small PR: $CHANGED_FILES changed files, $TOTAL_CHANGES lines changed"
+          echo "Small PR: $TOTAL_CHANGES lines changed"
         else
           echo "is_small_pr=false" >> "$GITHUB_OUTPUT"
-          echo "Large PR, skipping LLM test selector: $CHANGED_FILES changed files, $TOTAL_CHANGES lines changed"
+          echo "Large PR, skipping LLM test selector: $TOTAL_CHANGES lines changed"
         fi
