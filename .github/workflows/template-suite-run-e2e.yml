@@ -88,6 +88,7 @@ on:
 jobs:
   run-e2e-tests:
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
