@@ -30,7 +30,7 @@ export const useTronStakePendingTransactionTracking = ({
     account,
 }: UseTronStakePendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
-    const { pendingTxid } = useSelector(selectTronStakeSession);
+    const { pendingTxid } = useSelector(state => selectTronStakeSession(state, account.key));
     const trackedTransaction = useSelector(state =>
         pendingTxid ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTxid) : null,
     );
@@ -58,9 +58,9 @@ export const useTronStakePendingTransactionTracking = ({
         }
 
         if (trackedTransaction.type === 'failed') {
-            dispatch(tronStakeActions.pendingTransactionFailed());
+            dispatch(tronStakeActions.pendingTransactionFailed({ accountKey: account.key }));
         } else {
-            dispatch(tronStakeActions.pendingTransactionConfirmed());
+            dispatch(tronStakeActions.pendingTransactionConfirmed({ accountKey: account.key }));
         }
-    }, [pendingTxid, trackedTransaction, dispatch]);
+    }, [account.key, pendingTxid, trackedTransaction, dispatch]);
 };
