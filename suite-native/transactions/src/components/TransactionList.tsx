@@ -10,7 +10,6 @@ import {
     type AccountsRootState,
     type TransactionsRootState,
     fetchAndUpdateAccountThunk,
-    selectAccountByKey,
     selectAreAllAccountTransactionsLoaded,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -150,9 +149,6 @@ export const TransactionList = ({
         utils: { colors },
     } = useNativeStyles();
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
     const shouldDeferEmptyState = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
             stakingOnly && !selectAreAllAccountTransactionsLoaded(state, accountKey),
@@ -224,10 +220,7 @@ export const TransactionList = ({
 
     const handleViewableItemsChanged = useCallback(
         ({ viewableItems }: { viewableItems: { index: number | null }[] }) => {
-            const max = viewableItems.reduce(
-                (m, { index }) => Math.max(m, index ?? 0),
-                0,
-            );
+            const max = viewableItems.reduce((m, { index }) => Math.max(m, index ?? 0), 0);
             if (max > lastVisibleIndexRef.current) {
                 lastVisibleIndexRef.current = max;
                 setLastVisibleIndex(max);
@@ -286,16 +279,13 @@ export const TransactionList = ({
         setTimeout(() => setIsRefreshing(false), 1500);
     }, [dispatch, accountKey, queryClient, txnsPerPage]);
 
-    const keyExtractor = useCallback(
-        (item: TransactionListItem): string => {
-            if (typeof item === 'string') return `month:${item}`;
-            if ('originalTransaction' in item) {
-                return `token:${item.originalTransaction.txid}:${item.contract}`;
-            }
-            return `tx:${item.txid}`;
-        },
-        [],
-    );
+    const keyExtractor = useCallback((item: TransactionListItem): string => {
+        if (typeof item === 'string') return `month:${item}`;
+        if ('originalTransaction' in item) {
+            return `token:${item.originalTransaction.txid}:${item.contract}`;
+        }
+        return `tx:${item.txid}`;
+    }, []);
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
