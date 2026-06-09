@@ -26,7 +26,6 @@
 autoprefixer
 babel-plugin-styled-components
 css-loader
-css-minimizer-webpack-plugin
 date-fns
 fantasticon
 fela
