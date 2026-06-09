@@ -25,7 +25,7 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - name: Check if PR is assigned to a project or an issue
+      - name: Check if PR is assigned to a project (with required fields) or an issue
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: |
@@ -57,15 +57,78 @@ jobs:
             exit 0
           fi
 
-          # Check for associated projects
-          PROJECT_COUNT=$(gh pr view ${{ github.event.pull_request.number }} --json projectItems --jq '.projectItems | length')
+          # Project fields that must be filled in once a PR is assigned to the Suite project
+          REQUIRED_FIELDS=("Platform" "Team" "Release")
+          REQUIRED_FIELDS_PROJECT="Suite"
 
-          if [ "$PROJECT_COUNT" -gt 0 ]; then
-            echo "Pass: This PR is assigned to a project."
-            exit 0
+          # Fetch associated project items together with their populated field names.
+          # In Projects v2, unset fields are simply omitted from fieldValues.nodes,
+          # so the names returned below are exactly the fields that have a value.
+          PROJECT_ITEMS=$(gh api graphql -f query='
+          query($owner: String!, $repo: String!, $number: Int!) {
+            repository(owner: $owner, name: $repo) {
+              pullRequest(number: $number) {
+                projectItems(first: 10) {
+                  nodes {
+                    project { title }
+                    fieldValues(first: 50) {
+                      nodes {
+                        ... on ProjectV2ItemFieldTextValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldDateValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldNumberValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldSingleSelectValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldIterationValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldLabelValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldMilestoneValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldPullRequestValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldRepositoryValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldReviewerValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldUserValue { field { ... on ProjectV2FieldCommon { name } } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }' -F owner=${{ github.repository_owner }} -F repo=${{ github.event.repository.name }} -F number=${{ github.event.pull_request.number }})
+
+          PROJECT_COUNT=$(echo "$PROJECT_ITEMS" | jq '.data.repository.pullRequest.projectItems.nodes | length')
+
+          if [ "$PROJECT_COUNT" -eq 0 ]; then
+            echo "Error: This PR is not assigned to any project, not linked to a valid issue, and does not have the 'no-project' label."
+            echo "Please assign the PR to a project or link it to an issue. Alternatively, add the 'no-project' label if not applicable."
+            exit 1
           fi
 
-          # If no condition passes
-          echo "Error: This PR is not assigned to any project, not linked to a valid issue, and does not have the 'no-project' label."
-          echo "Please assign the PR to a project or link it to an issue. Alternatively, add the 'no-project' label if not applicable."
-          exit 1
+          # Validate that the required fields are filled in on the Suite project item.
+          # Other projects only need to be assigned (no field validation).
+          HAS_ERROR=""
+          for i in $(seq 0 $((PROJECT_COUNT - 1))); do
+            TITLE=$(echo "$PROJECT_ITEMS" | jq -r ".data.repository.pullRequest.projectItems.nodes[$i].project.title")
+
+            if [ "$TITLE" != "$REQUIRED_FIELDS_PROJECT" ]; then
+              continue
+            fi
+
+            POPULATED=$(echo "$PROJECT_ITEMS" | jq -r ".data.repository.pullRequest.projectItems.nodes[$i].fieldValues.nodes[].field.name // empty")
+
+            MISSING=""
+            for f in "${REQUIRED_FIELDS[@]}"; do
+              if ! echo "$POPULATED" | grep -qx "$f"; then
+                MISSING="$MISSING $f"
+              fi
+            done
+
+            if [ -n "$MISSING" ]; then
+              echo "Error: Project '$TITLE' is missing required field(s):$MISSING"
+              HAS_ERROR="yes"
+            fi
+          done
+
+          if [ -n "$HAS_ERROR" ]; then
+            echo "Please fill in Platform, Team and Release in the '$REQUIRED_FIELDS_PROJECT' project before merging."
+            exit 1
+          fi
+
+          echo "Pass: PR is assigned to a project and all required fields are filled (when applicable)."
+          exit 0
