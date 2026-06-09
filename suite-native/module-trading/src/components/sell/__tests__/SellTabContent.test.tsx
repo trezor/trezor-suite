@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
@@ -34,11 +35,15 @@ describe('SellTabContent', () => {
     };
 
     const expectSellForm = () => {
-        expect(screen.getByText('You pay')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.sell.title')),
+        ).toBeOnTheScreen();
     };
 
     const expectServerOffline = () => {
-        expect(screen.getByText("It's not you, it's us.")).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('tradingAtoms.error.serverOfflineTitle')),
+        ).toBeOnTheScreen();
     };
 
     it('should render Sell skeleton when isLoading is true', () => {
@@ -104,7 +109,7 @@ describe('SellTabContent', () => {
 
         const { getByText } = renderSellTabContent();
 
-        const reloadButton = getByText('Try again');
+        const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
         await act(async () => {
             await userEvent.press(reloadButton);

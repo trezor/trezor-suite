@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     renderHookWithStoreProvider,
@@ -61,9 +62,13 @@ describe('ExchangeForm', () => {
     it('should render form', () => {
         const { getByText, queryByText } = renderExchangeForm();
 
-        expect(getByText('You get')).toBeOnTheScreen();
-        expect(queryByText('Done')).toBeNull();
-        expect(queryByText('Receive account')).toBeNull();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(queryByText(getTranslation('generic.buttons.done'))).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+        ).toBeNull();
     });
 
     describe('with receive asset selected', () => {
@@ -76,9 +81,13 @@ describe('ExchangeForm', () => {
         it('should display Receive account picker', () => {
             const { getByText, queryByText } = renderExchangeForm();
 
-            expect(getByText('You get')).toBeOnTheScreen();
-            expect(queryByText('Done')).toBeNull();
-            expect(getByText('Receive account')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            ).toBeOnTheScreen();
+            expect(queryByText(getTranslation('generic.buttons.done'))).toBeNull();
+            expect(
+                getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+            ).toBeOnTheScreen();
         });
 
         it('should display Done button when any input is active', () => {
@@ -87,9 +96,13 @@ describe('ExchangeForm', () => {
             });
             const { getByText, queryByText } = renderExchangeForm();
 
-            expect(getByText('You get')).toBeOnTheScreen();
-            expect(getByText('Done')).toBeOnTheScreen();
-            expect(queryByText('Receive account')).toBeNull();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            ).toBeOnTheScreen();
+            expect(getByText(getTranslation('generic.buttons.done'))).toBeOnTheScreen();
+            expect(
+                queryByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+            ).toBeNull();
         });
 
         describe('with quote selected', () => {
@@ -102,7 +115,9 @@ describe('ExchangeForm', () => {
             it('should display provider', () => {
                 const { getByText } = renderExchangeForm();
 
-                expect(getByText('Provider')).toBeOnTheScreen();
+                expect(
+                    getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+                ).toBeOnTheScreen();
             });
         });
     });

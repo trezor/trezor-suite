@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { FiatCurrencyButton, type FiatCurrencyButtonProps } from '../FiatCurrencyButton';
@@ -11,14 +12,16 @@ describe('FiatCurrencyButton', () => {
     it('should render fiat currency uppercase', () => {
         const { getByLabelText } = renderFiatCurrencyButton({});
 
-        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+        ).toHaveTextContent(/CZK/);
     });
 
     it('should call onPress callback when pressed', () => {
         const onPress = jest.fn();
         const { getByLabelText } = renderFiatCurrencyButton({ onPress });
 
-        fireEvent.press(getByLabelText('Select fiat currency'));
+        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')));
 
         expect(onPress).toHaveBeenCalledTimes(1);
     });

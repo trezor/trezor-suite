@@ -1,6 +1,7 @@
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act, screen } from '@suite-native/test-utils-store';
 import {
     banxaBankTransferSellQuote,
@@ -64,9 +65,17 @@ describe('SellForm', () => {
         const { result } = renderFormHook();
         const { getByText, getByLabelText } = renderSellForm({}, result.current);
 
-        expect(getByText('You pay')).toBeOnTheScreen();
-        expect(getByText('You get')).toBeOnTheScreen();
-        expect(getByLabelText('Select asset')).toHaveTextContent(/Select asset/);
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        ).toHaveTextContent(
+            new RegExp(`^${getTranslation('moduleTrading.selectCoin.buttonTitle')}.$`),
+        );
     });
 
     describe('with preloaded sell data', () => {
@@ -93,11 +102,21 @@ describe('SellForm', () => {
         it('should render with default values', () => {
             const { getByLabelText, getByText } = renderSellForm(overrides, form);
 
-            expect(getByText('You pay')).toBeOnTheScreen();
-            expect(getByLabelText('Select fiat currency')).toBeOnTheScreen();
-            expect(getByLabelText('Select asset')).toHaveTextContent(/BTC/);
-            expect(getByText('Country of residence')).toBeOnTheScreen();
-            expect(getByText('Provider')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+            ).toBeOnTheScreen();
+            expect(
+                getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+            ).toBeOnTheScreen();
+            expect(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+            ).toHaveTextContent(/BTC/);
+            expect(
+                getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+            ).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            ).toBeOnTheScreen();
         });
 
         it('should render only SellCard and Done when amount input is active', () => {
@@ -106,12 +125,20 @@ describe('SellForm', () => {
             });
             const { queryByText, getByText } = renderSellForm(overrides, form);
 
-            expect(getByText('You pay')).toBeOnTheScreen();
-            expect(getByText('You get')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+            ).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            ).toBeOnTheScreen();
 
-            expect(queryByText('Continue')).toBeNull();
-            expect(queryByText('Country of residence')).toBeNull();
-            expect(queryByText('Provider')).toBeNull();
+            expect(
+                queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+            ).toBeNull();
+            expect(
+                queryByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+            ).toBeNull();
+            expect(queryByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeNull();
         });
     });
 

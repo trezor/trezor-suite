@@ -334,7 +334,9 @@ describe('TradingExchangePreviewScreen', () => {
         const { result, reportMock } = renderTradingExchangePreviewScreen();
         reportMock.mockClear();
 
-        await userEvent.press(result.getByText('Continue'));
+        await userEvent.press(
+            result.getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        );
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({

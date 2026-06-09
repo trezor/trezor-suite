@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
@@ -20,20 +21,24 @@ describe('TradeableAssetNetworkInfo', () => {
         const { queryByHintText, queryByLabelText } = renderTradeableAssetNetworkInfo(btcAsset);
 
         expect(queryByHintText('Network Icon')).toBeNull();
-        expect(queryByLabelText('Network name')).toBeNull();
+        expect(queryByLabelText(getTranslation('moduleTrading.networkName'))).toBeNull();
     });
 
     it('should render network icon and name for l2 networks = op, arb, base and ETH as icon', () => {
         const { getByHintText, getByLabelText } = renderTradeableAssetNetworkInfo(ethOnBaseAsset);
 
         expect(getByHintText('Network Icon')).toBeTruthy();
-        expect(getByLabelText('Network name')).toHaveTextContent('Base');
+        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
+            'Base',
+        );
     });
 
     it('should render network icon and name for contracts', () => {
         const { getByHintText, getByLabelText } = renderTradeableAssetNetworkInfo(usdcAsset);
 
         expect(getByHintText('Network Icon')).toBeTruthy();
-        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
+        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
+            'Ethereum',
+        );
     });
 });

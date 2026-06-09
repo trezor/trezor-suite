@@ -28,6 +28,7 @@ export const ExchangeEIP712Info = memo(({ exchange }: ExchangeEIP712InfoProps) =
                         values={{ providerName }}
                     />
                 }
+                testID="@trading/exchange-preview/eip712-info-header"
             />
             <TradeInfoRow>
                 <VStack>

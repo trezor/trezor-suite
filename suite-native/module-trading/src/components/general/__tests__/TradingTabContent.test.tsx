@@ -1,4 +1,5 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { screen } from '@suite-native/test-utils-store';
 import { tradingInitialState } from '@suite-native/trading-state';
 
@@ -42,15 +43,21 @@ describe('TradingTabContent', () => {
         });
 
     const expectDeviceOffline = () => {
-        expect(screen.getByText('Trading is not available offline')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('tradingAtoms.error.deviceOfflineTitle')),
+        ).toBeOnTheScreen();
     };
 
     const expectTradingNotAllowedInCountry = () => {
-        expect(screen.getByText('Trading is not yet available in your country')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('tradingAtoms.error.notAvailableInCountryTitle')),
+        ).toBeOnTheScreen();
     };
 
     const expectBuyForm = () => {
-        expect(screen.getByText('You pay')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
     };
 
     beforeEach(() => {

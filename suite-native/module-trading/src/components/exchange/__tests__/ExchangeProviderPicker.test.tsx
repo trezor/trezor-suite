@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type PreloadedStatePartial } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -39,8 +40,10 @@ describe('ExchangeProviderPicker', () => {
             isLoading: true,
         });
 
-        expect(getByText('Provider')).toBeOnTheScreen();
-        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeOnTheScreen();
     });
 
     it('should render provider when quote is selected', () => {
@@ -48,7 +51,7 @@ describe('ExchangeProviderPicker', () => {
             selectedValue: mercuryoFixedWorstQuote,
         });
 
-        expect(getByText('Provider')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 });

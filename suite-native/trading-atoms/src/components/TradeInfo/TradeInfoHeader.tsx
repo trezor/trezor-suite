@@ -7,11 +7,14 @@ import { TradeInfoRow } from './TradeInfoRow';
 type TradeInfoHeaderProps = {
     title: ReactNode;
     rightContent?: ReactNode;
+    testID?: string;
 };
 
-export const TradeInfoHeader = ({ title, rightContent }: TradeInfoHeaderProps) => (
+export const TradeInfoHeader = ({ title, rightContent, testID }: TradeInfoHeaderProps) => (
     <TradeInfoRow noBorder>
-        <Text variant="body-sm">{title}</Text>
+        <Text variant="body-sm" testID={testID}>
+            {title}
+        </Text>
         {rightContent}
     </TradeInfoRow>
 );

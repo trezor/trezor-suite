@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { SellPreviewScreenHeader } from '../SellPreviewScreenHeader';
@@ -9,6 +10,8 @@ describe('SellPreviewScreenHeader', () => {
     it('should render screen header with correct title', () => {
         const { getByText } = renderSellPreviewScreenHeader();
 
-        expect(getByText('Sell')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.title')),
+        ).toBeOnTheScreen();
     });
 });

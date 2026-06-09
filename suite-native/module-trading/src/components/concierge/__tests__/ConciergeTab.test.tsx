@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { selectIsTradingConciergeEnabled } from '@suite-native/trading-state';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
@@ -18,7 +19,13 @@ describe('ConciergeTab', () => {
 
         const { getByText } = renderWithTradingProvider(<ConciergeTab />);
 
-        expect(getByText('Concierge disabled')).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation('tradingAtoms.error.tradingTypeDisabledTitle', {
+                    tradingType: 'Concierge',
+                }),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should not render disabled message when concierge is enabled', () => {
@@ -26,6 +33,12 @@ describe('ConciergeTab', () => {
 
         const { queryByText } = renderWithTradingProvider(<ConciergeTab />);
 
-        expect(queryByText('Concierge disabled')).toBeNull();
+        expect(
+            queryByText(
+                getTranslation('tradingAtoms.error.tradingTypeDisabledTitle', {
+                    tradingType: 'Concierge',
+                }),
+            ),
+        ).toBeNull();
     });
 });

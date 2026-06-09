@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     renderHookWithStoreProvider,
@@ -46,10 +47,16 @@ describe('ExchangeSendContent', () => {
         });
         const { getByText, getByLabelText } = renderExchangeSendContent();
 
-        expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
-        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
-        expect(getByLabelText('You pay')).toHaveDisplayValue('100');
-        expect(getByText('Balance:')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        ).toHaveTextContent(/USDC/);
+        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
+            'Ethereum',
+        );
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+        ).toHaveDisplayValue('100');
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
         expect(getByText('- USDC')).toBeOnTheScreen();
     });
 });

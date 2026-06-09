@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 
 import {
@@ -25,14 +26,18 @@ describe('ReviewOutputsFooter', () => {
     it('should display "Send transaction" button', () => {
         const { getByTestId } = renderReviewOutputsFooter({});
 
-        expect(getByTestId('TEST_ID/submit-button')).toHaveTextContent('Send transaction');
+        expect(getByTestId('TEST_ID/submit-button')).toHaveTextContent(
+            getTranslation('moduleTrading.tradingReviewOutputs.submitButton'),
+        );
         expect(getByTestId('TEST_ID/submit-button')).toBeEnabled();
     });
 
     it('should be disabled when isConsentRequested is false', () => {
         const { getByText } = renderReviewOutputsFooter({ isConsentRequested: false });
 
-        expect(getByText('Send transaction')).toBeDisabled();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.submitButton')),
+        ).toBeDisabled();
     });
 
     it('should display "all set" info when transaction is signed', () => {
@@ -50,7 +55,9 @@ describe('ReviewOutputsFooter', () => {
             },
         );
 
-        expect(getByText("You're all set")).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.signSuccessMessage')),
+        ).toBeOnTheScreen();
     });
 
     it('should resolveConsent on press', async () => {

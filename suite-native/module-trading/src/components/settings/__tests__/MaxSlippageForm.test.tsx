@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     act,
@@ -49,7 +49,9 @@ describe('MaxSlippageForm', () => {
 
         expect(getByTestId(SLIPPAGE_INPUT_TEST_ID)).toHaveDisplayValue('1');
         expect(queryByText('Slippage must be between 0.01 and 50')).toBeNull();
-        expect(getByText('Confirm custom slippage')).toBeEnabled();
+        expect(
+            getByText(getTranslation('moduleTrading.advancedSettings.slippage.confirm')),
+        ).toBeEnabled();
     });
 
     it('should display validation error on invalid value', async () => {
@@ -59,7 +61,9 @@ describe('MaxSlippageForm', () => {
         await userEvent.type(getByTestId(SLIPPAGE_INPUT_TEST_ID), '999');
 
         expect(getByText('Slippage must be between 0.01 and 50')).toBeOnTheScreen();
-        expect(getByText('Confirm custom slippage')).toBeDisabled();
+        expect(
+            getByText(getTranslation('moduleTrading.advancedSettings.slippage.confirm')),
+        ).toBeDisabled();
     });
 
     it('should save slippage to store and call onSubmit', async () => {
@@ -70,7 +74,9 @@ describe('MaxSlippageForm', () => {
 
         await userEvent.clear(input);
         await userEvent.type(input, '20');
-        await userEvent.press(getByText('Confirm custom slippage'));
+        await userEvent.press(
+            getByText(getTranslation('moduleTrading.advancedSettings.slippage.confirm')),
+        );
 
         expect(selectTradingMaxSlippagePercentage(store.getState())).toBe('20');
         expect(onSubmit).toHaveBeenCalled();

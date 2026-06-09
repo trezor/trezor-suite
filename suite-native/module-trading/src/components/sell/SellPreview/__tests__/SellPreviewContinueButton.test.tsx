@@ -1,4 +1,5 @@
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, createPrecomposedTxFinal } from '@suite-native/trading-fixtures';
 import { mergeDeepObject } from '@trezor/utils';
@@ -72,13 +73,17 @@ describe('SellPreviewContinueButton', () => {
     it('should render continue button', () => {
         const { getByText } = renderSellPreviewContinueButton();
 
-        expect(getByText('Continue')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        ).toBeOnTheScreen();
     });
 
     it('should render disabled button when isDisabled prop is specified', () => {
         const { getByText } = renderSellPreviewContinueButton({ isDisabled: true });
 
-        expect(getByText('Continue')).toBeDisabled();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        ).toBeDisabled();
     });
 
     it('should fire console.warn and do not navigate when quote is not specified', async () => {
@@ -89,7 +94,9 @@ describe('SellPreviewContinueButton', () => {
             onSignTransactionNavigation: mockOnSignTransactionNavigation,
         });
 
-        await userEvent.press(getByText('Continue'));
+        await userEvent.press(
+            getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        );
 
         expect(consoleWarnSpy).toHaveBeenCalledWith('quote or fromAccount is not defined', {
             hasQuote: false,
@@ -115,7 +122,9 @@ describe('SellPreviewContinueButton', () => {
             },
         );
 
-        await userEvent.press(getByText('Continue'));
+        await userEvent.press(
+            getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        );
 
         expect(consoleWarnSpy).toHaveBeenCalledWith('quote or fromAccount is not defined', {
             hasQuote: true,
@@ -132,7 +141,9 @@ describe('SellPreviewContinueButton', () => {
             onSignTransactionNavigation: mockOnSignTransactionNavigation,
         });
 
-        await userEvent.press(getByText('Continue'));
+        await userEvent.press(
+            getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        );
 
         expect(consoleWarnSpy).not.toHaveBeenCalled();
         expect(mockNavigate).toHaveBeenCalledWith('TradingSellOutputsReview', {

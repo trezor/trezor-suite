@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 
 import {
@@ -44,9 +45,13 @@ describe('ProviderSheetHandle', () => {
     it('should render component with title and filter', () => {
         const { getByText } = renderProviderSheetHandle({}, {});
 
-        expect(getByText('Providers')).toBeOnTheScreen();
-        expect(getByText('All')).toBeOnTheScreen();
-        expect(getByText('CEX')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.providerSheet.title'))).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.filters.all')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.filters.cex')),
+        ).toBeOnTheScreen();
         expect(getByText('DEX')).toBeOnTheScreen();
     });
 
@@ -56,9 +61,9 @@ describe('ProviderSheetHandle', () => {
             {},
         );
 
-        expect(getByText('Providers')).toBeOnTheScreen();
-        expect(queryByText('All')).toBeNull();
-        expect(queryByText('CEX')).toBeNull();
+        expect(getByText(getTranslation('moduleTrading.providerSheet.title'))).toBeOnTheScreen();
+        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeNull();
+        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.cex'))).toBeNull();
         expect(queryByText('DEX')).toBeNull();
     });
 
@@ -66,7 +71,7 @@ describe('ProviderSheetHandle', () => {
         const onClose = jest.fn();
         const { getByLabelText } = renderProviderSheetHandle({ onClose }, {});
 
-        fireEvent.press(getByLabelText('Close'));
+        fireEvent.press(getByLabelText(getTranslation('generic.buttons.close')));
 
         expect(onClose).toHaveBeenCalled();
     });
@@ -75,7 +80,7 @@ describe('ProviderSheetHandle', () => {
         const setSelectedFilter = jest.fn();
         const { getByText } = renderProviderSheetHandle({ setSelectedFilter }, {});
 
-        fireEvent.press(getByText('CEX'));
+        fireEvent.press(getByText(getTranslation('moduleTrading.providerSheet.filters.cex')));
 
         expect(setSelectedFilter).toHaveBeenCalledWith('cex');
     });

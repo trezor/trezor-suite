@@ -1,4 +1,5 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
@@ -48,7 +49,13 @@ describe('SellTab', () => {
             messageSystem: mockMessageSystemStateWithFeatureFlags({ 'trading.sell': false }),
         });
 
-        expect(getByText('Sell disabled')).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation('tradingAtoms.error.tradingTypeDisabledTitle', {
+                    tradingType: 'Sell',
+                }),
+            ),
+        ).toBeOnTheScreen();
     });
 
     it('should display Portfolio Tracker info with Portfolio Tracker "wallet" selected', async () => {
@@ -57,7 +64,9 @@ describe('SellTab', () => {
         mockIsDeviceInViewOnlyMode = true;
         const { getByText, queryByText } = await renderSellTab({});
 
-        expect(getByText('Portfolio Tracker')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingAtoms.error.portfolioTrackerTitle')),
+        ).toBeOnTheScreen();
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
@@ -65,12 +74,12 @@ describe('SellTab', () => {
         mockIsDeviceInViewOnlyMode = true;
         const { getByText } = await renderSellTab({});
 
-        expect(getByText('Select asset')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.selectCoin.buttonTitle'))).toBeOnTheScreen();
     });
 
     it('should display form otherwise', async () => {
         const { getByText } = await renderSellTab({});
 
-        expect(getByText('Select asset')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.selectCoin.buttonTitle'))).toBeOnTheScreen();
     });
 });

@@ -1,4 +1,5 @@
 import type { TradingTradeType } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import {
     banxaCreditCardSellQuote,
     cexdirectFloatingQuote,
@@ -48,7 +49,9 @@ describe('ProviderListItem', () => {
     it('should render trading information with formatted strings', () => {
         const { getByText, queryByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
-        expect(queryByText('Centralized exchange')).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeNull();
         expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
     });
 
@@ -58,7 +61,9 @@ describe('ProviderListItem', () => {
             tradingType: 'exchange',
         });
 
-        expect(getByText('Centralized exchange')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeOnTheScreen();
     });
 
     it('should render KYC information when provider has KYC policy', () => {
@@ -75,8 +80,12 @@ describe('ProviderListItem', () => {
             tradingType: 'exchange',
         });
 
-        expect(getByText('Anonymous')).toBeOnTheScreen();
-        expect(getByText('Decentralized exchange')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.anonymous')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.decentralizedExchange')),
+        ).toBeOnTheScreen();
     });
 
     it('should not render when quote has no orderId', () => {

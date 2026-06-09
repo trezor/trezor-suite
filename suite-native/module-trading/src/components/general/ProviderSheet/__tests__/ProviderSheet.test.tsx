@@ -3,6 +3,7 @@ import {
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import { screen } from '@suite-native/test-utils-store';
 import { cexdirectFloatingQuote, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
 
@@ -37,15 +38,21 @@ describe('ProviderSheet', () => {
     it('should render empty providers placeholder and no section header and for buy', () => {
         const { queryByText, getByText } = renderProviderSheet({}, {});
 
-        expect(getByText('No offers available.')).toBeOnTheScreen();
-        expect(queryByText('Fixed-rate CEX')).toBeNull();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.noProviders')),
+        ).toBeOnTheScreen();
+        expect(queryByText(getTranslation('moduleTrading.providerSheet.fixed.title'))).toBeNull();
     });
 
     it('should render section header and empty placeholder for exchange', () => {
         const { getByText } = renderProviderSheet({ tradingType: 'exchange' }, {});
 
-        expect(getByText('No offers available.')).toBeOnTheScreen();
-        expect(getByText('Fixed-rate CEX')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.noProviders')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.fixed.title')),
+        ).toBeOnTheScreen();
     });
 
     it('should render all section headers for exchange', () => {
@@ -54,8 +61,12 @@ describe('ProviderSheet', () => {
             quotes: EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
         });
 
-        expect(getByText('Fixed-rate CEX')).toBeOnTheScreen();
-        expect(getByText('Floating-rate CEX')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.fixed.title')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.float.title')),
+        ).toBeOnTheScreen();
         expect(getByText('DEX')).toBeOnTheScreen();
     });
 
@@ -64,8 +75,10 @@ describe('ProviderSheet', () => {
             quotes: { fixed: [mercuryoApplePayBuyQuote] },
         });
 
-        expect(queryByText('No offers available.')).toBeNull();
-        expect(queryByText('Centralized exchange')).toBeNull();
+        expect(queryByText(getTranslation('moduleTrading.providerSheet.noProviders'))).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeNull();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
@@ -75,6 +88,8 @@ describe('ProviderSheet', () => {
             tradingType: 'exchange',
         });
 
-        expect(getByText('Centralized exchange')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeOnTheScreen();
     });
 });

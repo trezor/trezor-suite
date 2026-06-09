@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { NoAccountsComponent } from '../NoAccountsComponent';
@@ -25,14 +26,22 @@ describe('NoAccountsComponent', () => {
     it('should render for not connected device', () => {
         const { queryByText } = renderNoAccountsComponent({ isConnected: false });
 
-        expect(queryByText('You need to connect your device to add new account.')).toBeTruthy();
+        expect(
+            queryByText(
+                getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.description'),
+            ),
+        ).toBeTruthy();
     });
 
     it('should render for no account but connected device', () => {
         const { queryByText } = renderNoAccountsComponent({ isConnected: true });
 
         expect(
-            queryByText('It seems that you don’t have any account matching selected asset.'),
+            queryByText(
+                getTranslation(
+                    'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.description',
+                ),
+            ),
         ).toBeTruthy();
     });
 
@@ -43,7 +52,11 @@ describe('NoAccountsComponent', () => {
         });
 
         expect(
-            queryByText('You don’t have an account for this asset imported in Portfolio Tracker.'),
+            queryByText(
+                getTranslation(
+                    'moduleTrading.accountScreen.accountEmpty.portfolioTracker.description',
+                ),
+            ),
         ).toBeTruthy();
     });
 });

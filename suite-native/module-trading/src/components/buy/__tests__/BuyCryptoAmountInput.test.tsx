@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { btcAsset } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -43,7 +44,10 @@ describe('BuyCryptoAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You get'), '100');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            '100',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('100');
     });
@@ -52,7 +56,9 @@ describe('BuyCryptoAmountInput', () => {
         const form = renderUseTradingBuyForm();
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        expect(getByLabelText('You get')).toBeDisabled();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toBeDisabled();
     });
 
     it('should call showAssetsSheet when disabled and pressed', async () => {
@@ -60,7 +66,9 @@ describe('BuyCryptoAmountInput', () => {
         const form = renderUseTradingBuyForm();
         const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
-        await userEvent.press(getByLabelText('You get'));
+        await userEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        );
 
         expect(showAssetsSheet).toHaveBeenCalledTimes(1);
     });
@@ -73,7 +81,9 @@ describe('BuyCryptoAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
-        await userEvent.press(getByLabelText('You get'));
+        await userEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        );
 
         expect(showAssetsSheet).not.toHaveBeenCalled();
     });
@@ -85,10 +95,15 @@ describe('BuyCryptoAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You get'), 'asd1.123');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            'asd1.123',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('1.123');
-        expect(getByLabelText('You get')).toHaveDisplayValue('1.123');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('1.123');
     });
 
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
@@ -101,10 +116,15 @@ describe('BuyCryptoAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
 
-        await userEvent.type(getByLabelText('You get'), 'asd1.123');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            'asd1.123',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('1123');
-        expect(getByLabelText('You get')).toHaveDisplayValue('1123');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('1123');
     });
 
     it('should always escape non-numeric characters', async () => {
@@ -117,10 +137,15 @@ describe('BuyCryptoAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
 
-        await userEvent.type(getByLabelText('You get'), 'asd');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            'asd',
+        );
 
         expect(form.getValues('cryptoValue')).toBeUndefined();
-        expect(getByLabelText('You get')).toHaveDisplayValue('');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('');
     });
 
     it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', () => {
@@ -130,7 +155,9 @@ describe('BuyCryptoAmountInput', () => {
             wallet: { trading: { buy: { isLoading: true } } },
         });
 
-        expect(getByLabelText('Searching for your best offer...')).toBeTruthy();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeTruthy();
     });
 
     it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', () => {
@@ -143,7 +170,9 @@ describe('BuyCryptoAmountInput', () => {
             wallet: { trading: { buy: { isLoading: true } } },
         });
 
-        expect(queryByLabelText('Searching for your best offer...')).toBeNull();
+        expect(
+            queryByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeNull();
     });
 
     it('should limit value to 9 decimals', async () => {
@@ -153,7 +182,10 @@ describe('BuyCryptoAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You get'), '1.0123456789');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            '1.0123456789',
+        );
 
         expect(form.getValues('cryptoValue')).toEqual('1.012345678');
     });

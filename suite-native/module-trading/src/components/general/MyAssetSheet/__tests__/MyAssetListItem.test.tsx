@@ -6,6 +6,7 @@ import {
     type TokenSymbol,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';
@@ -154,7 +155,7 @@ describe('MyAssetListItem', () => {
             preloadedState,
         );
 
-        expect(getByText('No pair')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.myAssetSheet.noPair.note'))).toBeTruthy();
     });
 
     it('should render without fiat balance when not available', () => {

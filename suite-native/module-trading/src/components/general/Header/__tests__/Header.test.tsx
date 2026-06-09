@@ -2,6 +2,7 @@ import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-sy
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { getTranslation } from '@suite-native/intl';
 import { type TestStore, fireEvent } from '@suite-native/test-utils-store';
 
 import {
@@ -67,9 +68,15 @@ describe('Header', () => {
             }),
         });
 
-        expect(renderer.getByText('Buy')).toBeOnTheScreen();
-        expect(renderer.getByText('Swap')).toBeOnTheScreen();
-        expect(renderer.getByText('Sell')).toBeOnTheScreen();
+        expect(
+            renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.buy')),
+        ).toBeOnTheScreen();
+        expect(
+            renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
+        ).toBeOnTheScreen();
+        expect(
+            renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.sell')),
+        ).toBeOnTheScreen();
     });
 
     it('should display nothing when isAmountInputActive is true', () => {
@@ -85,7 +92,9 @@ describe('Header', () => {
         const store = createTestStore();
         const { renderer } = renderHeaderWithStore(store);
 
-        fireEvent.press(renderer.getByText('Swap'));
+        fireEvent.press(
+            renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
+        );
 
         expect(store.getState().wallet.trading.activeTradingType).toBe('exchange');
     });
@@ -93,7 +102,9 @@ describe('Header', () => {
     it('should display trade settings button', () => {
         const { renderer } = renderHeader();
 
-        expect(renderer.getByLabelText('Advanced settings')).toBeOnTheScreen();
+        expect(
+            renderer.getByLabelText(getTranslation('moduleTrading.tradingScreen.tabs.settings')),
+        ).toBeOnTheScreen();
     });
 
     describe('analytics', () => {
@@ -106,7 +117,9 @@ describe('Header', () => {
         it('should report TradingNavigate event on tab change', () => {
             const { renderer, reportMock } = renderHeaderWithStore(store);
 
-            fireEvent.press(renderer.getByText('Swap'));
+            fireEvent.press(
+                renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
+            );
 
             expect(reportMock).toHaveBeenCalledWith({
                 type: events.tradingNavigateEvent.name,
@@ -121,10 +134,14 @@ describe('Header', () => {
         it('should not report TradingNavigate event when tab was not changed', () => {
             const { renderer, reportMock } = renderHeaderWithStore(store);
 
-            fireEvent.press(renderer.getByText('Swap'));
+            fireEvent.press(
+                renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
+            );
             reportMock.mockClear();
 
-            fireEvent.press(renderer.getByText('Swap'));
+            fireEvent.press(
+                renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
+            );
 
             expect(reportMock).not.toHaveBeenCalled();
         });
@@ -132,10 +149,14 @@ describe('Header', () => {
         it('should report TradingNavigate event when tab was changed to buy', () => {
             const { renderer, reportMock } = renderHeaderWithStore(store);
 
-            fireEvent.press(renderer.getByText('Swap'));
+            fireEvent.press(
+                renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.exchange')),
+            );
             reportMock.mockClear();
 
-            fireEvent.press(renderer.getByText('Buy'));
+            fireEvent.press(
+                renderer.getByText(getTranslation('moduleTrading.tradingScreen.tabs.buy')),
+            );
 
             expect(reportMock).toHaveBeenCalledWith({
                 type: events.tradingNavigateEvent.name,

@@ -67,7 +67,9 @@ describe('SellReceiveMethodPicker', () => {
             wallet: { trading: { sell: { isLoading: true } } },
         });
 
-        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeOnTheScreen();
     });
 
     it('should render "Not selected" when no quote is selected', () => {
@@ -75,7 +77,9 @@ describe('SellReceiveMethodPicker', () => {
             wallet: { trading: { sell: { quotes: sellQuotes } } },
         });
 
-        expect(getByLabelText('No receive method selected')).toHaveTextContent('Not selected');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.noReceiveMethod')),
+        ).toHaveTextContent(getTranslation('moduleTrading.notSelected'));
     });
 
     describe('with quotes loaded', () => {
@@ -92,7 +96,9 @@ describe('SellReceiveMethodPicker', () => {
         it('should render selected receive method', () => {
             const { getByLabelText, getByTestId } = renderSellReceiveMethodPicker(withQuotes);
 
-            expect(getByLabelText('Selected receive method')).toHaveTextContent('Bank Transfer');
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedReceiveMethod')),
+            ).toHaveTextContent(getTranslation('moduleTrading.paymentMethods.bankTransfer'));
 
             const picker = getByTestId('@trading/sell/receive-method-picker');
             expect(within(picker).getByTestId('@icons/payment-method-icon/bank')).toBeTruthy();
@@ -103,18 +109,20 @@ describe('SellReceiveMethodPicker', () => {
                 wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
             });
 
-            expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+            ).toBeOnTheScreen();
         });
 
         it('should allow to select receive method', () => {
             const { getByText, getByLabelText } = renderSellReceiveMethodPicker(withQuotes);
 
-            fireEvent.press(getByText('Receive method'));
+            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveMethod')));
             fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
-            expect(getByLabelText('Selected receive method')).toHaveTextContent(
-                creditCardPaymentMethodTranslation,
-            );
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedReceiveMethod')),
+            ).toHaveTextContent(creditCardPaymentMethodTranslation);
         });
 
         describe('analytics', () => {
@@ -125,7 +133,9 @@ describe('SellReceiveMethodPicker', () => {
             it('should fire analytics event on receive method select', () => {
                 const { getByText } = renderSellReceiveMethodPicker(withQuotes);
 
-                fireEvent.press(getByText('Receive method'));
+                fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.receiveMethod')),
+                );
                 fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
                 expect(reportMock).toHaveBeenCalledWith({
@@ -140,8 +150,18 @@ describe('SellReceiveMethodPicker', () => {
             it('should not fire analytics event when same receive method is selected', () => {
                 const { getAllByText } = renderSellReceiveMethodPicker(withQuotes);
 
-                fireEvent.press(getIndexOrThrow(getAllByText('Bank Transfer'), 0));
-                fireEvent.press(getIndexOrThrow(getAllByText('Bank Transfer'), 1));
+                fireEvent.press(
+                    getIndexOrThrow(
+                        getAllByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
+                        0,
+                    ),
+                );
+                fireEvent.press(
+                    getIndexOrThrow(
+                        getAllByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
+                        1,
+                    ),
+                );
 
                 expect(reportMock).toHaveBeenCalledTimes(0);
             });

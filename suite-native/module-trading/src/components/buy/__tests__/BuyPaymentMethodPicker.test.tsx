@@ -107,7 +107,9 @@ describe('BuyPaymentMethodPicker', () => {
 
         const { getByLabelText } = renderPaymentMethodPicker(preloadedState);
 
-        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeOnTheScreen();
     });
 
     describe('with quotes loaded', () => {
@@ -117,19 +119,21 @@ describe('BuyPaymentMethodPicker', () => {
 
         it('should display "Not selected" when no method is selected in form', () => {
             const { getByLabelText } = renderPaymentMethodPicker(withQuotes);
-            expect(getByLabelText('No payment method selected')).toHaveTextContent('Not selected');
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.noPaymentMethod')),
+            ).toHaveTextContent(getTranslation('moduleTrading.notSelected'));
         });
 
         it('should allow to select payment method', () => {
             const { getByText, getByLabelText, getByTestId } =
                 renderPaymentMethodPicker(withQuotes);
 
-            fireEvent.press(getByText('Payment method'));
+            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')));
             fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
-            expect(getByLabelText('Selected payment method')).toHaveTextContent(
-                creditCardPaymentMethodTranslation,
-            );
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedPaymentMethod')),
+            ).toHaveTextContent(creditCardPaymentMethodTranslation);
 
             const picker = getByTestId('@trading/buy/payment-method-picker');
 
@@ -145,7 +149,9 @@ describe('BuyPaymentMethodPicker', () => {
                 }),
             );
 
-            expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+            ).toBeOnTheScreen();
         });
 
         it('should display sheet even while quotes are fetched', () => {
@@ -161,7 +167,7 @@ describe('BuyPaymentMethodPicker', () => {
             store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
             const { getByText } = renderPaymentMethodPicker(undefined, store);
 
-            fireEvent.press(getByText('Payment method'));
+            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')));
             act(() => {
                 store.dispatch(tradingBuyActions.setIsLoading(true));
             });
@@ -177,7 +183,9 @@ describe('BuyPaymentMethodPicker', () => {
             it('should fire analytics event on payment method select', () => {
                 const { getByText } = renderPaymentMethodPicker(withQuotes);
 
-                fireEvent.press(getByText('Payment method'));
+                fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
+                );
                 fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
                 expect(reportMock).toHaveBeenCalledWith({
@@ -196,7 +204,9 @@ describe('BuyPaymentMethodPicker', () => {
                     form.setValue('quote', cexdirectCreditCardBuyQuote);
                 });
 
-                fireEvent.press(getByText('Payment method'));
+                fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
+                );
                 fireEvent.press(getByText('Apple Pay'));
 
                 expect(reportMock).toHaveBeenCalledTimes(1);
@@ -209,7 +219,9 @@ describe('BuyPaymentMethodPicker', () => {
                     form.setValue('quote', cexdirectCreditCardBuyQuote);
                 });
 
-                fireEvent.press(getByText('Payment method'));
+                fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
+                );
                 const creditCardOption = getAllByText(creditCardPaymentMethodTranslation)[1];
                 if (!creditCardOption) throw new Error('Credit Card option [1] not found');
                 fireEvent.press(creditCardOption);
