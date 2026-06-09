@@ -260,6 +260,7 @@ describe('biometricsThunks', () => {
                 handleBiometricsAppStateChangeThunk({ nextAppState: 'background' }),
             );
 
+            expect(LocalAuthentication.authenticateAsync).toHaveBeenCalled();
             // Clear the failed authentication call so the final expectation only checks the retry.
             jest.mocked(LocalAuthentication.authenticateAsync).mockClear();
 
