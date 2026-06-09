@@ -130,7 +130,7 @@ describe('BuyCryptoAmountInput', () => {
             wallet: { trading: { buy: { isLoading: true } } },
         });
 
-        expect(getByLabelText('Fetching offers...')).toBeTruthy();
+        expect(getByLabelText('Searching for your best offer...')).toBeTruthy();
     });
 
     it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', () => {
@@ -143,7 +143,7 @@ describe('BuyCryptoAmountInput', () => {
             wallet: { trading: { buy: { isLoading: true } } },
         });
 
-        expect(queryByLabelText('Fetching offers...')).toBeNull();
+        expect(queryByLabelText('Searching for your best offer...')).toBeNull();
     });
 
     it('should limit value to 9 decimals', async () => {

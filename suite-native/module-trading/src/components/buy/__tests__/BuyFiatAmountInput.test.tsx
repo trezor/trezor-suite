@@ -75,7 +75,7 @@ describe('BuyFiatAmountInput', () => {
 
         const { getByLabelText } = renderFiatAmountInput(form, withBuyLoading);
 
-        expect(getByLabelText('Fetching offers...')).toBeTruthy();
+        expect(getByLabelText('Searching for your best offer...')).toBeTruthy();
     });
 
     it('should not display loading skeleton while amountInCrypto is false and buyInfo is loading', () => {
@@ -83,7 +83,7 @@ describe('BuyFiatAmountInput', () => {
 
         const { queryByLabelText } = renderFiatAmountInput(form, withBuyLoading);
 
-        expect(queryByLabelText('Fetching offers...')).toBeNull();
+        expect(queryByLabelText('Searching for your best offer...')).toBeNull();
     });
 
     it('should limit value to 3 decimals', async () => {

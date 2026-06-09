@@ -62,7 +62,7 @@ describe('SellProviderPicker', () => {
             wallet: { trading: { sell: { isLoading: true } } },
         });
 
-        expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
     });
 
     describe('with quotes loaded', () => {
@@ -81,7 +81,7 @@ describe('SellProviderPicker', () => {
                 wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
             });
 
-            expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+            expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
         });
 
         it('should render selected payment provider', () => {

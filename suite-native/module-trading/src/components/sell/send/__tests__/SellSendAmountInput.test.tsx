@@ -171,7 +171,7 @@ describe('SellSendAmountInput', () => {
 
         const { getByLabelText } = renderCryptoAmountInput({}, form, overrides);
 
-        expect(getByLabelText('Fetching offers...')).toBeTruthy();
+        expect(getByLabelText('Searching for your best offer...')).toBeTruthy();
     });
 
     it('should not display loading skeleton when amountInCrypto is true', () => {
@@ -184,6 +184,6 @@ describe('SellSendAmountInput', () => {
 
         const { queryByLabelText } = renderCryptoAmountInput({}, form, overrides);
 
-        expect(queryByLabelText('Fetching offers...')).toBeNull();
+        expect(queryByLabelText('Searching for your best offer...')).toBeNull();
     });
 });

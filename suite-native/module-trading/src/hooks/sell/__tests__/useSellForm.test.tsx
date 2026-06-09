@@ -257,7 +257,7 @@ describe('useSellForm', () => {
             it.each([
                 ['0.00001', 'Minimum is 0.0001 BTC'],
                 ['100', 'Maximum is 50 BTC'],
-                ['1', 'Insufficient balance'],
+                ['1', 'Insufficient funds'],
             ])('should display error for crypto amount %s BTC', async (amount, expectedValue) => {
                 const { result } = renderUseSellForm();
                 act(() => {
@@ -284,7 +284,7 @@ describe('useSellForm', () => {
             it.each([
                 ['100', 'Minimum is 10,000 sat'],
                 ['10000000000', 'Maximum is 5,000,000,000 sat'],
-                ['10000000', 'Insufficient balance'],
+                ['10000000', 'Insufficient funds'],
             ])('should display error for crypto amount %s SATS', async (amount, expectedValue) => {
                 store = getInitializedStore(PROTO.AmountUnit.SATOSHI);
                 const { result } = renderUseSellForm();
@@ -352,7 +352,7 @@ describe('useSellForm', () => {
                 expect(invalid).toBe(true);
                 expect(error).toEqual(
                     expect.objectContaining({
-                        message: 'Insufficient balance',
+                        message: 'Insufficient funds',
                         type: 'insufficient-balance',
                     }),
                 );
@@ -439,7 +439,7 @@ describe('useSellForm', () => {
                 });
 
                 expect(result.current.getValues('generalAlert')).toEqual(
-                    'No offers available for your request. Change amount or currency.',
+                    'No offers found. Adjust the currency, assets, or amounts.',
                 );
             });
 

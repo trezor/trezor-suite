@@ -67,7 +67,7 @@ describe('ExchangePreviewView', () => {
             quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
-        expect(getByText(/^You are swapping with 1inch Fusion\+$/)).toBeOnTheScreen();
+        expect(getByText(/^You're swapping with 1inch Fusion+\+$/)).toBeOnTheScreen();
     });
 
     it('should not render transaction fee for quotes with EIP-712 sign data', () => {
@@ -91,7 +91,7 @@ describe('ExchangePreviewView', () => {
             quote: cexdirectFloatingQuote,
         });
 
-        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
+        expect(getByText('KYC is required.')).toBeOnTheScreen();
     });
 
     it('should not render KYC provider warning for providers with "noKYC"', () => {

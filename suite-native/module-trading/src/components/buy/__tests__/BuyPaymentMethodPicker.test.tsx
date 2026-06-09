@@ -106,7 +106,7 @@ describe('BuyPaymentMethodPicker', () => {
 
         const { getByLabelText } = renderPaymentMethodPicker(preloadedState);
 
-        expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
     });
 
     describe('with quotes loaded', () => {
@@ -137,7 +137,7 @@ describe('BuyPaymentMethodPicker', () => {
                 }),
             );
 
-            expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+            expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
         });
 
         it('should display sheet even while quotes are fetched', () => {

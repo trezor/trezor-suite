@@ -5,7 +5,7 @@ import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixt
 import { BuyConfirmation } from '../BuyConfirmation';
 
 const EXCHANGE_NAME = 'test-provider';
-const CTA_TEXT = `Buy via ${EXCHANGE_NAME}`;
+const CTA_TEXT = `Buy with ${EXCHANGE_NAME}`;
 
 jest.mock('../../../hooks/buy/useBuyFlow', () => ({
     useBuyFlow: jest.fn(),

@@ -19,7 +19,7 @@ describe('SelectableNetworkList', () => {
         );
 
         expect(getByText('Select a coin to sync')).toBeTruthy();
-        expect(getByText('Testnet coins (have no value – for testing purposes only)')).toBeTruthy();
+        expect(getByText('Testnet coins (no value–for testing purposes only)')).toBeTruthy();
     });
 
     it('should split networks into mainnet and testnet sections correctly', () => {

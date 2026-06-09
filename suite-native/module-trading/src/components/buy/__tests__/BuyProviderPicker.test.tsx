@@ -61,7 +61,7 @@ describe('BuyProviderPicker', () => {
             wallet: { trading: { buy: { isLoading: true, quotes: [] } } },
         });
 
-        expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
     });
 
     describe('with quotes loaded', () => {
@@ -107,7 +107,7 @@ describe('BuyProviderPicker', () => {
                 }),
             );
 
-            expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+            expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
         });
 
         it('should display sheet even while quotes are fetched', () => {
