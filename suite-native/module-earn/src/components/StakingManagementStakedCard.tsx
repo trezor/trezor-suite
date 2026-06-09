@@ -14,12 +14,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    selectApy,
-    selectRewardsBalanceByAccountKey,
-    selectStakedBalanceByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
+import { selectApy, selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
@@ -27,6 +22,7 @@ import { BigNumber } from '@trezor/utils';
 import { ApyValue } from './ApyValue';
 import { useEarnPortfolioTrackerGuard } from './EarnPortfolioTrackerGuard';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
+import { useStakingTotalRewards } from '../hooks/useStakingTotalRewards';
 
 type StakingManagementStakedCardProps = {
     accountKey: AccountKey;
@@ -98,9 +94,7 @@ export const StakingManagementStakedCard = ({
 
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
     const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);
-    const rewardsBalance = useSelector(state =>
-        selectRewardsBalanceByAccountKey(state, accountKey),
-    );
+    const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
     const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol }));
     const ethNextRewardPayout = useSelector(selectEthNextRewardPayout);
     const nextRewardPayout = isSolanaStaking ? SOLANA_EPOCH_DAYS : ethNextRewardPayout;
@@ -143,16 +137,18 @@ export const StakingManagementStakedCard = ({
                     />
                 </HStack>
                 <CryptoAmountFormatter
-                    value={rewardsBalance}
+                    value={totalRewards}
                     symbol={networkSymbol}
                     variant="headline-sm"
                     color="contentPrimary"
+                    isLoading={isTotalRewardsLoading}
                 />
                 <CryptoToFiatAmountFormatter
-                    value={rewardsBalance}
+                    value={totalRewards}
                     symbol={networkSymbol}
                     color="contentSecondary"
                     isBalance
+                    isLoading={isTotalRewardsLoading}
                 />
             </VStack>
             <HStack justifyContent="space-between" style={applyStyle(stakedSectionStyle)}>
