@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { SkipButton, type SkipButtonProps } from '../SkipButton';
@@ -20,14 +21,14 @@ describe('SkipButton', () => {
         const onPressMock = jest.fn();
 
         const { getByText } = renderSkipButton({ onPress: onPressMock });
-        fireEvent.press(getByText('Not now'));
+        fireEvent.press(getByText(getTranslation('tradingResidence.locationSettings.skipButton')));
 
         expect(onPressMock).toHaveBeenCalled();
     });
 
     it('should log cancel event on press', () => {
         const { getByText } = renderSkipButton({});
-        fireEvent.press(getByText('Not now'));
+        fireEvent.press(getByText(getTranslation('tradingResidence.locationSettings.skipButton')));
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         expect(mockAnalyticsReport).toHaveBeenCalledWith('cancel');

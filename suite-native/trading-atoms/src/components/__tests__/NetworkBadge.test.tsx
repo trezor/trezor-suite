@@ -1,4 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { NetworkBadge } from '../NetworkBadge';
@@ -10,6 +11,8 @@ describe('NetworkBadge', () => {
     it('should render badge with platform name', () => {
         const { getByLabelText } = renderPlatformBadge('eth');
 
-        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
+        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
+            'Ethereum',
+        );
     });
 });

@@ -1,4 +1,5 @@
 import { type TradingTransaction } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import {
     getBuyTrade,
     getExchangeTrade,
@@ -58,35 +59,47 @@ describe('TradeDetailHeader', () => {
             const buyTrade = getBuyTrade({ status: 'ERROR' });
             const { getByText } = renderHeader(buyTrade.data.orderId!, [buyTrade]);
 
-            expect(getByText('Transaction failed')).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.tradeHistory.detail.errorAlert.title')),
+            ).toBeTruthy();
         });
 
         it('should render waiting alert for buy trade submitted status', () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
             const { getByText } = renderHeader(buyTrade.data.orderId!, [buyTrade]);
 
-            expect(getByText('Waiting for your payment ...')).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.tradeHistory.detail.waitingAlert.title')),
+            ).toBeTruthy();
         });
 
         it('should render converting alert for exchange converting status', () => {
             const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
             const { getByText } = renderHeader(exchangeTrade.data.orderId!, [exchangeTrade]);
 
-            expect(getByText('Converting your crypto...')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradeHistory.detail.convertingAlert.title'),
+                ),
+            ).toBeTruthy();
         });
 
         it('should render kyc alert for exchange kyc status', () => {
             const exchangeTrade = getExchangeTrade({ status: 'KYC' });
             const { getByText } = renderHeader(exchangeTrade.data.orderId!, [exchangeTrade]);
 
-            expect(getByText('KYC is required')).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.tradeHistory.detail.kycAlert.title')),
+            ).toBeTruthy();
         });
 
         it('should render sending alert for exchange sending status', () => {
             const exchangeTrade = getExchangeTrade({ status: 'SENDING' });
             const { getByText } = renderHeader(exchangeTrade.data.orderId!, [exchangeTrade]);
 
-            expect(getByText('Sending your crypto...')).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.tradeHistory.detail.sendingAlert.title')),
+            ).toBeTruthy();
         });
     });
 });

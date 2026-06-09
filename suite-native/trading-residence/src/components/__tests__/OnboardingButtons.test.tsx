@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     createLightStore,
@@ -44,8 +44,12 @@ describe('OnboardingButtons', () => {
     it('should render correctly', () => {
         const { getByText } = renderOnboardingButtons({ afterPress: () => {} });
 
-        expect(getByText('Confirm location')).toBeOnTheScreen();
-        expect(getByText('Not now')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.skipButton')),
+        ).toBeOnTheScreen();
 
         // make sure preconditions are met
         expect(selectTradingResidenceCountry(store.getState())).toBeUndefined();
@@ -56,7 +60,9 @@ describe('OnboardingButtons', () => {
         const afterPressMock = jest.fn();
         const { getByText } = renderOnboardingButtons({ afterPress: afterPressMock });
 
-        fireEvent.press(getByText('Confirm location'));
+        fireEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
+        );
 
         // from expo-localization mock
         expect(selectTradingResidenceCountry(store.getState())).toBe('PL');
@@ -68,7 +74,7 @@ describe('OnboardingButtons', () => {
         const afterPressMock = jest.fn();
         const { getByText } = renderOnboardingButtons({ afterPress: afterPressMock });
 
-        fireEvent.press(getByText('Not now'));
+        fireEvent.press(getByText(getTranslation('tradingResidence.locationSettings.skipButton')));
 
         expect(selectTradingResidenceCountry(store.getState())).toBeUndefined();
         expect(selectWasTradingResidenceOnboardingVisited(store.getState())).toBe(true);
