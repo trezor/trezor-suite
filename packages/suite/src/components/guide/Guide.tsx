@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { Box, Column, Divider, IconCircle } from '@trezor/components';
+import { Box, Column, IconCircle } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -11,6 +11,7 @@ import {
     GuideContent,
     GuideHeader,
     GuideSearch,
+    GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -36,22 +37,25 @@ export const Guide = () => {
             <Column justifyContent="space-between" height="100%">
                 <GuideContent>
                     <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
-                    {!searchActive && <GuideCategories node={indexNode} />}
+                    {!searchActive && (
+                        <>
+                            <Box>
+                                <GuideSectionHeadline id="TR_GUIDE_HELP_TITLE" />
+                                <GuideItem
+                                    onClick={handleFeedbackButtonClick}
+                                    data-testid="@guide/button-feedback"
+                                    icon={<IconCircle name="lifebuoy" size={32} intent="neutral" />}
+                                >
+                                    <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                                </GuideItem>
+                            </Box>
+                            <Box margin={{ top: 16 }}>
+                                <GuideSectionHeadline id="TR_GUIDE_GUIDES_TITLE" />
+                                <GuideCategories node={indexNode} />
+                            </Box>
+                        </>
+                    )}
                 </GuideContent>
-
-                <div>
-                    <Divider margin={{ bottom: 0, top: 0 }} />
-
-                    <Box padding={16}>
-                        <GuideItem
-                            onClick={handleFeedbackButtonClick}
-                            data-testid="@guide/button-feedback"
-                            icon={<IconCircle name="lifebuoy" size={32} intent="neutral" />}
-                        >
-                            <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                        </GuideItem>
-                    </Box>
-                </div>
             </Column>
         </GuideViewWrapper>
     );

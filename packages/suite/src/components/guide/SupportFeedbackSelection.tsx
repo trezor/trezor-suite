@@ -1,12 +1,10 @@
-import styled from 'styled-components';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { UpdateState } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Column, Icon, IconCircle, Paragraph, Row } from '@trezor/components';
+import { Box, Column, Icon, IconCircle, Paragraph, Row } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { TREZOR_FORUM_URL } from '@trezor/urls';
@@ -22,12 +20,6 @@ import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopove
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { GuideItem } from './GuideItem';
-
-const Section = styled.div`
-    & + & {
-        margin-top: 50px;
-    }
-`;
 
 export const SupportFeedbackSelection = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -69,7 +61,7 @@ export const SupportFeedbackSelection = () => {
                 label={<Translation id="TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION" />}
             />
             <GuideContent>
-                <Section>
+                <Box margin={{ bottom: 16 }}>
                     <GuideSectionHeadline id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />
                     <Column gap={12}>
                         <GuideItem
@@ -105,9 +97,9 @@ export const SupportFeedbackSelection = () => {
                             </Column>
                         </GuideItem>
                     </Column>
-                </Section>
+                </Box>
 
-                <Section>
+                <Box>
                     <GuideSectionHeadline id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
                     <Column gap={12}>
                         <SupportConsentPopover>
@@ -129,7 +121,7 @@ export const SupportFeedbackSelection = () => {
                             </Row>
                         </GuideItem>
                     </Column>
-                </Section>
+                </Box>
 
                 <Row
                     gap={16}
