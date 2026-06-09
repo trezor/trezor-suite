@@ -1,11 +1,59 @@
 import { spawnSync } from 'node:child_process';
-import { closeSync, openSync, readFileSync, unlinkSync } from 'node:fs';
+import { closeSync, existsSync, openSync, readFileSync, readdirSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { log, warn } from '../logger';
 import { reportTokenUsage } from '../tokenUsage';
-import { type ClaudeResult, ClaudeResultSchema } from './schemas';
+import {
+    type ClaudeResult,
+    ClaudeResultSchema,
+    type Ledger,
+    LedgerSchema,
+    type SlackFixSummary,
+    SlackFixSummarySchema,
+} from './schemas';
+
+export const EMPTY_LEDGER: Ledger = { version: 1, updatedAt: '1970-01-01', entries: [] };
+
+export function loadLedger(path: string): Ledger {
+    if (!existsSync(path)) return EMPTY_LEDGER;
+
+    try {
+        const parsed = LedgerSchema.safeParse(JSON.parse(readFileSync(path, 'utf-8')));
+        if (parsed.success) {
+            return parsed.data;
+        }
+        warn(`[ledger] ${path} failed schema validation — starting from empty ledger.`);
+    } catch (e) {
+        warn(`[ledger] could not read ${path} (${(e as Error).message}) — starting from empty.`);
+    }
+
+    return EMPTY_LEDGER;
+}
+
+export function readSummaries(summariesDir: string | undefined): SlackFixSummary[] {
+    if (!summariesDir || !existsSync(summariesDir)) return [];
+
+    const parsedSummaries: SlackFixSummary[] = [];
+    const allSummariesFiles = readdirSync(summariesDir).filter(
+        n => n.startsWith('slack-fix-summary-') && n.endsWith('.json'),
+    );
+    for (const filename of allSummariesFiles) {
+        const parsed = SlackFixSummarySchema.safeParse(
+            JSON.parse(readFileSync(join(summariesDir, filename), 'utf-8')),
+        );
+
+        if (!parsed.success) {
+            warn(`[summaries] Failed to parse ${filename}: ${parsed.error.message}`);
+            continue;
+        }
+
+        parsedSummaries.push(parsed.data);
+    }
+
+    return parsedSummaries;
+}
 
 export interface ClaudeRunResult {
     output: string;

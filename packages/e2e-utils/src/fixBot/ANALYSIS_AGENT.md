@@ -150,56 +150,56 @@ After all test entries, append a **Prompt gaps** section:
 
 If nothing was unclear, write `## Prompt gaps\n\n_None._`
 
-## Step 7 — Cluster failures into fix tasks
+## Step 7 — Cluster and route each failure
 
-Group the diagnosed failures by shared root cause. Failures that require the same code change
-belong in one fix task, regardless of which platform, device group, or spec file they appear in.
-
+Group the diagnosed failures into clusters by shared root cause — failures needing the same code
+change belong together, regardless of platform, device group, or spec file.  
 Use your judgment: errors may differ in wording across platforms or tests and still point to the
 same fix. Only split into separate tasks when the required changes are genuinely independent.
 
-**First, decide where each cluster goes.**
+Route each cluster by the **first** rule that applies:
 
-- Can the fix be made entirely inside `suite/e2e/` and/or by adding `data-testid` attributes in product source? → **FIXABLE** → **fix_task**
-- Does the fix require changing product logic or behavior? → **skipped**, `reason: "PRODUCT_BUG"`
-- Does the fix require infrastructure or environment changes? → **skipped**, `reason: "INFRASTRUCTURE"`
-
-For each **fix_task** assign:
-
-- **`id`** — sequential string: `"fix-001"`, `"fix-002"`, …
-- **`branch`** — `"fix/nightly-<YYYY-MM-DD>-<slug>"` where `<slug>` is a short kebab-case
-  summary of the root cause (e.g. `send-button-locator`, `receive-address-timeout`).
-  Use today's date. Keep the slug under 40 characters.
-- **`rootCause`** — one sentence describing the underlying problem
-- **`confidence`** — `HIGH`, `MEDIUM`, or `LOW`
-- **`diagnosis`** — the full MD prose from Step 6 for every test that belongs to this fix
-  task: error messages, stack traces, visual evidence descriptions, and root cause reasoning.
-  Copy it verbatim from the diagnosis report. This is the only context the fix agent
-  receives from the analysis — do not summarize or shorten it.
-- **`validations`** — list of `{ platform, group, spec }` entries covering **all** affected
-  platform/group/spec combinations. Every group where the failure was observed must be
-  included — the fix agent will verify the fix on each one.
-
-    **Before adding a validation entry, check the test file's `describe` block tags:**
-    - If the test carries `@desktopOnly`, do **not** add a `platform: "web"` entry — the web
-      playwright config excludes it via `grepInvert` and playwright will report "No tests found".
-    - If the test carries `@webOnly`, do **not** add a `platform: "desktop"` entry for the same reason.
-    - Only include a platform in `validations` if that platform actually ran the test.
+1. **Already in the known-failures ledger** (the section at the end of this prompt) — compare each
+   cluster against every entry's `rootCause` and `validations` (platform/group/spec), not just an
+   overlapping spec path — a failure may be specific to a platform or device group (e.g. `T1B1`):
+    - **Confident match → skipped**, reusing the entry's `reason`.
+    - **Unsure → treat as new** — skip this rule, continue to rules 2–4.
+2. **Fixable** inside `suite/e2e/` and/or by adding `data-testid` attributes in product source →
+   **fix_task**.
+3. **Needs a product-logic change** → **skipped**, `reason: "PRODUCT_BUG"`.
+4. **Needs an infra/environment change** → **skipped**, `reason: "INFRASTRUCTURE"`.
 
 ## Step 8 — Return the structured report
 
-Do **not** write `report.json` to disk — the harness captures your final answer and writes
-it. Return a JSON object (validated against a matching JSON Schema) with:
+Do **not** write `report.json` to disk — the harness captures your final answer and writes it.
+Return a JSON object (validated against a matching JSON Schema) with:
 
-- **`runDate`** — today's date, `YYYY-MM-DD`
-- **`webRunId`** / **`desktopRunId`** — the `runId`s from Step 1, or `null` if that platform had no run
-- **`fixTasks`** — the fix tasks from Step 7, each with the fields listed there
-- **`skipped`** — one entry per skipped cluster:
+- **`runDate`** — today's date, `YYYY-MM-DD`.
+- **`webRunId`** / **`desktopRunId`** — the `runId`s from Step 1, or `null` if that platform had no run.
+- **`fixTasks`** — one per cluster routed to a fix task:
+    - **`id`** — sequential string: `"fix-001"`, `"fix-002"`, …
+    - **`branch`** — `"fix/nightly-<YYYY-MM-DD>-<slug>"` where `<slug>` is a short kebab-case summary of the root cause (e.g. `send-button-locator`, `receive-address-timeout`). Use today's date. Keep the slug under 40 characters.
     - **`rootCause`** — one sentence describing the underlying problem
-    - **`reason`** — `PRODUCT_BUG` or `INFRASTRUCTURE`
-    - **`analysis`** — prose explaining what is broken and why it falls outside the fix agent's
-      allowed change surface (so a human can pick it up)
-    - **`affectedTests`** — spec paths
+    - **`confidence`** — `HIGH`, `MEDIUM`, or `LOW`.
+    - **`analysis`** — the full MD prose from Step 6 for every test that belongs to this fix
+      task: error messages, stack traces, visual evidence descriptions, and root cause reasoning.
+      Copy it verbatim from the diagnosis report. This is the only context the fix agent
+      receives from the analysis — do not summarize or shorten it.
+    - **`validations`** — list of `{ platform, group, spec }` entries covering **all** affected
+      platform/group/spec combinations. Every group where the failure was observed must be
+      included — the fix agent will verify the fix on each one.
+
+        Do **not** add a `platform: "web"` entry for `@desktopOnly` tests, nor a `platform: "desktop"`
+        entry for `@webOnly` tests — the config excludes them, so playwright reports "No tests found".
+        Only include a platform that actually ran the test.
+
+- **`skipped`** — one entry per skipped cluster:
+    - **`rootCause`** — one sentence describing the underlying problem.
+    - **`reason`** — `PRODUCT_BUG`, `INFRASTRUCTURE`, `FIX_FAILED`, or `FIX_DELIVERED`; for a ledger
+      match, reuse the matched entry's `reason`.
+    - **`validations`** — list of `{ platform, group, spec }` entries for every affected
+      platform/group/spec, same shape as a fix task's `validations`. This preserves which platforms
+      and device groups the failure was actually observed on.
 
 ---
 
