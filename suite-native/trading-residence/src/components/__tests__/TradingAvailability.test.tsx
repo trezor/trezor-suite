@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { TradingAvailability } from '../TradingAvailability';
@@ -16,7 +17,9 @@ describe('TradingAvailability', () => {
 
         const { getByText } = renderTradingAvailability();
 
-        expect(getByText("Trading isn't available")).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.tradingUnavailable')),
+        ).toBeOnTheScreen();
     });
 
     it('should render positive message when selected country is whitelisted', () => {
@@ -24,6 +27,8 @@ describe('TradingAvailability', () => {
 
         const { getByText } = renderTradingAvailability();
 
-        expect(getByText('Trading is available')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.tradingAvailable')),
+        ).toBeOnTheScreen();
     });
 });

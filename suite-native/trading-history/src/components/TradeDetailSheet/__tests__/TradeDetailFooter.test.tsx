@@ -1,4 +1,5 @@
 import { type TradingTransaction } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingState, getSellTrade } from '@suite-native/trading-fixtures';
 
@@ -44,11 +45,11 @@ describe('TradeDetailFooter', () => {
             { preloadedState },
         );
 
-        fireEvent.press(getByText('Copy'));
+        fireEvent.press(getByText(getTranslation('generic.buttons.copy')));
 
         expect(mockCopyToClipboard).toHaveBeenCalledWith(
             sellTrade.data.orderId!,
-            'Saved to clipboard',
+            getTranslation('generic.savedToClipboard'),
         );
     });
 });

@@ -1,4 +1,5 @@
 import type { TradingTransaction } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
@@ -89,7 +90,9 @@ describe('TradeDetailTransactionInfo', () => {
 
         expect(getByText('$1,234.00')).toBeTruthy();
         expect(getByText('0.462586 ETH')).toBeTruthy();
-        expect(queryByText('From')).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.tradeHistory.detail.fromAccount')),
+        ).toBeNull();
     });
 
     it('should render correct account name for buy trade', () => {
@@ -148,7 +151,7 @@ describe('TradeDetailTransactionInfo', () => {
 
         const { getAllByText } = renderComponent(exchangeTrade.data.orderId!, overridesState);
 
-        expect(getAllByText('Unknown')).toHaveLength(2);
+        expect(getAllByText(getTranslation('generic.unknown'))).toHaveLength(2);
     });
 
     it('should render sell trade transaction info correctly', () => {
@@ -161,7 +164,9 @@ describe('TradeDetailTransactionInfo', () => {
 
         expect(getByText('1.22 BTC')).toBeTruthy();
         expect(getByText('$100.00')).toBeTruthy();
-        expect(queryByText('From')).toBeTruthy();
+        expect(
+            queryByText(getTranslation('moduleTrading.tradeHistory.detail.fromAccount')),
+        ).toBeTruthy();
     });
 
     it('should render correct account name for sell trade', () => {
