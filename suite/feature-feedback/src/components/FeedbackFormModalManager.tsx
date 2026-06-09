@@ -19,17 +19,24 @@ import { SidebarBanner } from '@trezor/product-components';
 import { feedbackDismissed } from '../featureFeedbackSlice';
 import { FeedbackFormModal } from './FeedbackFormModal';
 
+type FeedbackSidebarBannerRootState = FeatureFeedbackRootState<FeedbackFeatureName>;
+
+export const selectShouldShowFeedbackSidebarBanner = (state: FeedbackSidebarBannerRootState) =>
+    selectPendingFeedbackFeature(state) !== null;
+
 export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const dispatch = useDispatch();
 
     const { translationString } = useTranslation();
-    const pendingFeature = useSelector((state: FeatureFeedbackRootState<FeedbackFeatureName>) =>
+    const pendingFeature = useSelector((state: FeedbackSidebarBannerRootState) =>
         selectPendingFeedbackFeature(state),
     );
 
-    if (!pendingFeature) return null;
+    if (!pendingFeature) {
+        return null;
+    }
 
     const handleDismiss = () => {
         dispatch(feedbackDismissed(pendingFeature));

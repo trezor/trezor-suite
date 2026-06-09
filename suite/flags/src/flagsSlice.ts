@@ -1,6 +1,7 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { DEVICE } from '@trezor/connect';
 
 export interface FlagsState {
     initialRun: boolean;
@@ -27,6 +28,8 @@ export interface FlagsState {
     stellarLimitedHistoryBannerClosed: boolean;
     solanaLimitedHistoryBannerClosed: boolean;
     hasSeenDisconnectTooltip: boolean;
+    showNoDeviceEshopSidebarBanner: boolean;
+    areNoDeviceEshopBannersDisabled: boolean;
 }
 
 export type FlagsRootState = { flags: FlagsState };
@@ -56,6 +59,8 @@ export const flagsInitialState: FlagsState = {
     stellarLimitedHistoryBannerClosed: false,
     solanaLimitedHistoryBannerClosed: false,
     hasSeenDisconnectTooltip: false,
+    showNoDeviceEshopSidebarBanner: true,
+    areNoDeviceEshopBannersDisabled: false,
 };
 
 const flagsSlice = createSliceWithExtraDeps({
@@ -67,7 +72,14 @@ const flagsSlice = createSliceWithExtraDeps({
         },
     },
     extraReducers: (builder, extra) => {
-        builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFlags);
+        builder
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFlags)
+            .addCase(DEVICE.CONNECT, state => {
+                state.areNoDeviceEshopBannersDisabled = true;
+            })
+            .addCase(DEVICE.CONNECT_UNACQUIRED, state => {
+                state.areNoDeviceEshopBannersDisabled = true;
+            });
     },
 });
 
@@ -91,3 +103,7 @@ export const selectIsUnhideTokenModalShown = (state: FlagsRootState) =>
     state.flags.showUnhideTokenModal;
 export const selectIsCopyAddressModalShown = (state: FlagsRootState) =>
     state.flags.showCopyAddressModal;
+export const selectIsNoDeviceEshopSidebarBannerShown = (state: FlagsRootState) =>
+    state.flags.showNoDeviceEshopSidebarBanner;
+export const selectAreNoDeviceEshopBannersDisabled = (state: FlagsRootState) =>
+    state.flags.areNoDeviceEshopBannersDisabled;

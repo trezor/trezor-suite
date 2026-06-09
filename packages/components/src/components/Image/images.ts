@@ -63,6 +63,8 @@ export const IMAGES = {
     TREZOR_T3W1_HOLOGRAM_2x: 't3w1/t3w1-hologram@2x.webp',
     TREZOR_T3W1_LARGE: 't3w1/t3w1-large.webp',
     TREZOR_T3W1_LARGE_2x: 't3w1/t3w1-large@2x.webp',
+    TREZOR_T3W1_PACKSHOT: 't3w1/t3w1-packshot.webp',
+    TREZOR_T3W1_PACKSHOT_2x: 't3w1/t3w1-packshot@2x.webp',
     TREZOR_UNKNOWN: 'trezor-unknown.webp',
     TREZOR_UNKNOWN_2x: 'trezor-unknown@2x.webp',
     TREZOR_UNKNOWN_LARGE: 'trezor-unknown.webp',

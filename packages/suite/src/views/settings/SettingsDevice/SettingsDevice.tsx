@@ -38,6 +38,10 @@ import { ForgetDevice } from './ForgetDevice';
 import { HapticFeedback } from './HapticFeedback';
 import { Homescreen } from './Homescreen';
 import { MultiShareBackup } from './MultiShareBackup';
+import {
+    NoDeviceEshopSettingsBanner,
+    selectShouldShowNoDeviceEshopSettingsBanner,
+} from './NoDeviceEshopSettingsBanner';
 import { Passphrase } from './Passphrase';
 import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
@@ -58,6 +62,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
 export const SettingsDevice = () => {
     const dispatch = useDispatch();
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
+    const hasContentBelowLaptopWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
     const { device, isLocked } = useDevice();
     const noTransportAvailable = !useSelector(selectHasActiveTransport);
     const deviceUnavailable = !device?.features;
@@ -67,6 +72,7 @@ export const SettingsDevice = () => {
     const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = getIsDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+    const shouldShowNoDeviceEshopBanner = useSelector(selectShouldShowNoDeviceEshopSettingsBanner);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
@@ -96,6 +102,16 @@ export const SettingsDevice = () => {
                         </Banner.Button>
                     }
                 />
+                {shouldShowNoDeviceEshopBanner && (
+                    <SettingsSection
+                        title={<Translation id="TR_TREZOR_WALLET" />}
+                        hasContainer={false}
+                        icon="trezorLogo"
+                        hasVerticalLayout={hasContentBelowLaptopWidth}
+                    >
+                        <NoDeviceEshopSettingsBanner />
+                    </SettingsSection>
+                )}
             </SettingsLayout>
         );
     }

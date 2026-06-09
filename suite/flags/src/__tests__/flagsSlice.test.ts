@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { DEVICE } from '@trezor/connect';
 
 import { flagsInitialState, prepareFlagsReducer, selectFlags, setFlag } from '../flagsSlice';
 
@@ -38,5 +39,19 @@ describe('flagsSlice', () => {
         expect(state.taprootBannerClosed).toBe(true);
         expect(state.initialRun).toBe(flagsInitialState.initialRun);
         expect(state.dashboardAssetsGridMode).toBe(flagsInitialState.dashboardAssetsGridMode);
+    });
+
+    it('should disable no-device eShop banners once a device connects', () => {
+        const store = initStore();
+        store.dispatch({ type: DEVICE.CONNECT });
+
+        expect(store.getState().flags.areNoDeviceEshopBannersDisabled).toBe(true);
+    });
+
+    it('should disable no-device eShop banners once an unacquired device connects', () => {
+        const store = initStore();
+        store.dispatch({ type: DEVICE.CONNECT_UNACQUIRED });
+
+        expect(store.getState().flags.areNoDeviceEshopBannersDisabled).toBe(true);
     });
 });

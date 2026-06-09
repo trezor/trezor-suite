@@ -7,4 +7,4 @@ export {
     LegacyLabelingMigration,
     type LegacyLabelingMigrationProps,
 } from './LegacyLabelingMigration';
-export { SuiteSyncPromoBanner } from './SuiteSyncPromoBanner';
+export { SuiteSyncPromoBanner, selectShouldShowSuiteSyncPromoBanner } from './SuiteSyncPromoBanner';
