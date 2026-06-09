@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
+import { tradingExchangeActions } from '@suite-common/trading';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -262,27 +262,6 @@ describe('useExchangeSelectQuote', () => {
                         quote: expect.objectContaining({
                             quoteId: mercuryoFixedBestQuote?.quoteId,
                         }),
-                    }),
-                }),
-            );
-        });
-
-        it('should call selectQuoteThunk with correct maxSlippage value', () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            act(() => {
-                store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('1.5'));
-            });
-            const { result } = renderUseExchangeSelectQuote();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    type: 'selectQuoteThunkMock',
-                    payload: expect.objectContaining({
-                        quote: expect.objectContaining({ swapSlippage: '1.5' }),
                     }),
                 }),
             );

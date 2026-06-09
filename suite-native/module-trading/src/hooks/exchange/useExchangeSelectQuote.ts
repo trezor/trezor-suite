@@ -10,7 +10,6 @@ import {
     requiresTokenApproval,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeIsLoading,
-    selectTradingMaxSlippagePercentage,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -52,7 +51,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     );
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
-    const swapSlippage = useSelector(selectTradingMaxSlippagePercentage);
 
     const navigation = useNavigation<NavigationProps>();
 
@@ -92,7 +90,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
         await dispatch(
             exchangeThunks.selectQuoteThunk({
-                quote: { ...candidateQuote, swapSlippage },
+                quote: candidateQuote,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
                     nextStep(getApprovalStatus(candidateQuote));
