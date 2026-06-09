@@ -6,6 +6,7 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { useReceiveAmountMultiplier } from '@suite-native/trading-quote-utils';
 import { type ReviewOutputItemListProps } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -20,6 +21,7 @@ const flexStyle = prepareNativeStyle(() => ({
 export const useTradingContentBuilder = (): ContentBuilderFunction => {
     const { getState } = useStore();
     const { applyStyle } = useNativeStyles();
+    const receiveAmountMultiplier = useReceiveAmountMultiplier();
 
     return useCallback(
         ({ outputType, send, receive }) => {
@@ -42,7 +44,7 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
                         />
                         <CryptoAmountRow
                             direction="to"
-                            amount={receive.amount}
+                            amount={receiveAmountMultiplier(receive.amount)}
                             cryptoId={receive.cryptoId}
                         />
                         {!!account && (
@@ -69,6 +71,6 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
 
             return undefined;
         },
-        [getState, applyStyle],
+        [getState, applyStyle, receiveAmountMultiplier],
     );
 };

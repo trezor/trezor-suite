@@ -85,10 +85,10 @@ describe('useTradingContentBuilder', () => {
         expect(getByText('-1.22 BTC')).toBeOnTheScreen();
     });
 
-    it('renders receive amount with plus prefix', () => {
+    it('renders receive amount adjusted by slippage with plus prefix', () => {
         const { getByText } = renderContentBuilder();
 
-        expect(getByText('+0.462586 ETH')).toBeOnTheScreen();
+        expect(getByText('+0.45796014 ETH')).toBeOnTheScreen();
     });
 
     describe('recipient row', () => {
