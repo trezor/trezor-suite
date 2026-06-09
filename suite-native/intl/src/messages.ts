@@ -2439,6 +2439,16 @@ export const messages = {
             },
             solRewardsWarning:
                 'Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.',
+            rewardsList: {
+                title: 'Total rewards',
+                itemLabel: 'Reward',
+                epoch: 'Epoch number {epoch}',
+                empty: {
+                    title: 'No rewards',
+                    description:
+                        'Your rewards will appear within {days, plural, one {# day} other {# days}}.',
+                },
+            },
             claim: {
                 readyToClaim: '{amount} unstaked and ready to claim',
                 claimButton: 'Claim',

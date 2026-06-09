@@ -10,14 +10,13 @@ import {
     type TransactionsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
-    selectAccountByKey,
     selectAreAllAccountTransactionsLoaded,
     selectBaseCurrency,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { useScrollDivider } from '@suite-native/scrollview';
@@ -39,7 +38,7 @@ import { TransactionsListFooter } from './TransactionsListFooter';
 
 type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
-    accountKey: AccountKey;
+    account: Account;
     tokenContract?: TokenAddress;
     stakingOnly?: boolean;
 };
@@ -128,10 +127,11 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
 
 export const TransactionList = ({
     listHeaderComponent,
-    accountKey,
+    account,
     tokenContract,
     stakingOnly = false,
 }: AccountTransactionProps) => {
+    const accountKey = account.key;
     const dispatch = useDispatch();
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -141,9 +141,6 @@ export const TransactionList = ({
     } = useNativeStyles();
 
     const localCurrency = useSelector(selectBaseCurrency);
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
     const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
         selectIsLoadingAccountTransactions(state, accountKey),
     );
@@ -158,7 +155,7 @@ export const TransactionList = ({
             : selectAccountTransactionsWithTokenTransfers(state, accountKey),
     );
 
-    const txnsPerPage = account ? getTxsPerPage(account.networkType) : 25;
+    const txnsPerPage = getTxsPerPage(account.networkType);
 
     const isFirstPageAlreadyFetched = useSelector((state: TransactionsRootState) =>
         selectIsPageAlreadyFetched(state, accountKey, 1, txnsPerPage),
