@@ -34,6 +34,8 @@ type SubTabItem = {
 
 const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig) => {
     const [erc4626Tokens, normalTokens] = arrayPartition(tokens.shownWithBalance, isErc4626);
+    // DeFi section is relevant only for EVM networks, but there it is always available.
+    const showDefiTab = !isNft && networkType === 'ethereum';
 
     const baseConfig: SubTabItem[] = [
         {
@@ -43,7 +45,7 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig
             count: normalTokens.length,
             labelId: isNft ? 'TR_NAV_COLLECTIONS' : 'TR_NAV_TOKENS',
         },
-        ...(erc4626Tokens.length
+        ...(showDefiTab
             ? [
                   {
                       id: 'wallet-tokens-defi',
