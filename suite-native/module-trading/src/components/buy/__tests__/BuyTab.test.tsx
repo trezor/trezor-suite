@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
@@ -41,7 +42,9 @@ describe('BuyTab', () => {
     };
 
     const expectBuyForm = () => {
-        expect(screen.getByText('You pay')).toBeTruthy();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeTruthy();
     };
 
     const expectServerOffline = () => {
@@ -111,7 +114,7 @@ describe('BuyTab', () => {
 
         const { getByText } = renderBuyTab();
 
-        const reloadButton = getByText('Try again');
+        const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
         await act(async () => {
             await userEvent.press(reloadButton);
@@ -127,6 +130,12 @@ describe('BuyTab', () => {
         (selectIsTradingBuyEnabled as jest.Mock).mockReturnValue(false);
         const { getByText } = renderBuyTab();
 
-        expect(getByText('Buy disabled')).toBeOnTheScreen();
+        expect(
+            getByText(
+                getTranslation('tradingAtoms.error.tradingTypeDisabledTitle', {
+                    tradingType: 'Buy',
+                }),
+            ),
+        ).toBeOnTheScreen();
     });
 });

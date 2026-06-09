@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaBankTransferSellQuote,
@@ -55,8 +56,12 @@ describe('SellToFiatTradePreviewCard', () => {
             quote: banxaCreditCardSellQuote,
         });
 
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Credit/Debit Card')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.paymentMethods.creditCard')),
+        ).toBeOnTheScreen();
         expect(getByText('+$90.17')).toBeOnTheScreen();
     });
 
@@ -65,8 +70,12 @@ describe('SellToFiatTradePreviewCard', () => {
             quote: banxaBankTransferSellQuote,
         });
 
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Bank Transfer')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
+        ).toBeOnTheScreen();
         expect(getByText('+$100.00')).toBeOnTheScreen();
     });
 });

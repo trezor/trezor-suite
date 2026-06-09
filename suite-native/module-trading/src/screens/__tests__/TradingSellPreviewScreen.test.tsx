@@ -100,9 +100,15 @@ describe('TradingSellPreviewScreen', () => {
             wallet: { trading: { sell: { selectedQuote: banxaCreditCardSellQuote } } },
         });
 
-        expect(getByText('Sell')).toBeOnTheScreen();
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Credit/Debit Card')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.title')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.paymentMethods.creditCard')),
+        ).toBeOnTheScreen();
     });
 
     it('should call doBankAccountVerificationCheck on mount', async () => {
@@ -120,7 +126,9 @@ describe('TradingSellPreviewScreen', () => {
         });
 
         // Should render with selectedQuote
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should use trade data when available', async () => {
@@ -149,7 +157,9 @@ describe('TradingSellPreviewScreen', () => {
         });
 
         // Should render with trade data
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should render SellPreviewContinueButton with correct props', async () => {
@@ -159,7 +169,9 @@ describe('TradingSellPreviewScreen', () => {
 
         // SellPreviewContinueButton should be rendered (it's part of the screen)
         // We can verify by checking that the screen renders without errors
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should call fetchFeesAndCompose when quote has SEND_CRYPTO status on mount', async () => {

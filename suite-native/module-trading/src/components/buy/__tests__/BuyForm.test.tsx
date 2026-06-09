@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act, screen } from '@suite-native/test-utils-store';
 import { btcAsset, getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -59,15 +60,25 @@ describe('BuyForm', () => {
             result.current,
         );
 
-        expect(getByText('You pay')).toBeTruthy();
-        expect(getByLabelText('Select asset')).toHaveTextContent(/Select asset/);
-        expect(queryByText('Receive account')).toBeNull();
-        expect(queryByText('Payment method')).toBeNull();
-        expect(queryByText('Country of residence')).toBeTruthy();
-        expect(queryByText('Provider')).toBeNull();
-        expect(queryByText('Continue')).toBeNull();
+        expect(getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel'))).toBeTruthy();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        ).toHaveTextContent(
+            new RegExp(`^${getTranslation('moduleTrading.selectCoin.buttonTitle')}.$`),
+        );
+        expect(
+            queryByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+        ).toBeNull();
+        expect(queryByText(getTranslation('moduleTrading.tradingScreen.paymentMethod'))).toBeNull();
+        expect(
+            queryByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        ).toBeTruthy();
+        expect(queryByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        ).toBeNull();
         // country
-        expect(getByText('Not selected')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.notSelected'))).toBeTruthy();
     });
 
     describe('with preloaded buy data', () => {
@@ -85,18 +96,32 @@ describe('BuyForm', () => {
         it('should render with default values', () => {
             const { queryByText, getByLabelText, getByText } = renderBuyForm(overrides, form);
 
-            expect(getByText('You pay')).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+            ).toBeTruthy();
 
-            expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
-            expect(getByLabelText('Select asset')).toHaveTextContent(/Select asset/);
+            expect(
+                getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+            ).toHaveTextContent(/CZK/);
+            expect(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+            ).toHaveTextContent(
+                new RegExp(`^${getTranslation('moduleTrading.selectCoin.buttonTitle')}.$`),
+            );
 
-            expect(queryByText('Receive account')).toBeNull();
+            expect(
+                queryByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+            ).toBeNull();
 
-            expect(getByText('Country of residence')).toBeTruthy();
+            expect(
+                getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+            ).toBeTruthy();
             expect(getByText('CZE')).toBeTruthy();
 
-            expect(queryByText('Provider')).toBeNull();
-            expect(queryByText('Continue')).toBeNull();
+            expect(queryByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeNull();
+            expect(
+                queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+            ).toBeNull();
         });
 
         it('should render only BuyCard and Done when amount input is active', () => {
@@ -105,19 +130,31 @@ describe('BuyForm', () => {
             });
             const { queryByText, getByText } = renderBuyForm(overrides, form);
 
-            expect(getByText('You pay')).toBeTruthy();
-            expect(getByText('You get')).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+            ).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            ).toBeTruthy();
 
-            expect(queryByText('Country of residence')).toBeNull();
-            expect(queryByText('Payment method')).toBeNull();
-            expect(queryByText('Provider')).toBeNull();
-            expect(queryByText('Continue')).toBeNull();
+            expect(
+                queryByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+            ).toBeNull();
+            expect(
+                queryByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
+            ).toBeNull();
+            expect(queryByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeNull();
+            expect(
+                queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+            ).toBeNull();
         });
 
         it('should not render receive account when assets is not selected', () => {
             const { queryByText, getByTestId } = renderBuyForm(overrides, form);
 
-            expect(queryByText('Receive account')).toBeNull();
+            expect(
+                queryByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+            ).toBeNull();
             expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
                 borderBottomWidth: 1,
             });
@@ -132,7 +169,9 @@ describe('BuyForm', () => {
             });
             const { getByText, getByTestId } = renderBuyForm(overrides, form);
 
-            expect(getByText('Receive account')).toBeTruthy();
+            expect(
+                getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+            ).toBeTruthy();
             expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
                 borderBottomWidth: 1,
             });

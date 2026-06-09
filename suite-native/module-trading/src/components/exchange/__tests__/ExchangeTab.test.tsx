@@ -1,3 +1,5 @@
+import { getTranslation } from '@suite-native/intl';
+
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { ExchangeTab } from '../ExchangeTab';
 
@@ -40,23 +42,35 @@ describe('ExchangeTab', () => {
     it('should render exchange form', () => {
         const { getByText } = renderExchangeTab();
 
-        expect(getByText('You pay')).toBeOnTheScreen();
-        expect(getByText('You get')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toBeOnTheScreen();
     });
 
     it('should render disabled info when exchange FF is not enabled', () => {
         mockIsTradingExchangeEnabled = false;
         const { getByText, queryByText } = renderExchangeTab();
 
-        expect(getByText('Swap disabled')).toBeOnTheScreen();
-        expect(queryByText('You pay')).toBeNull();
+        expect(
+            getByText(
+                getTranslation('tradingAtoms.error.tradingTypeDisabledTitle', {
+                    tradingType: 'Swap',
+                }),
+            ),
+        ).toBeOnTheScreen();
+        expect(queryByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel'))).toBeNull();
     });
 
     it('should display BTC only firmware info with BTC only wallet connected', () => {
         mockHasBitcoinOnlyFirmware = true;
         const { getByText } = renderExchangeTab();
 
-        expect(getByText('Bitcoin-only firmware')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingAtoms.error.btcOnlyFirmwareTitle')),
+        ).toBeOnTheScreen();
     });
 
     it('should display Portfolio Tracker info with Portfolio Tracker "wallet" selected', () => {
@@ -65,7 +79,9 @@ describe('ExchangeTab', () => {
         mockIsDeviceInViewOnlyMode = true;
         const { getByText, queryByText } = renderExchangeTab();
 
-        expect(getByText('Portfolio Tracker')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingAtoms.error.portfolioTrackerTitle')),
+        ).toBeOnTheScreen();
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
@@ -73,6 +89,8 @@ describe('ExchangeTab', () => {
         mockIsDeviceInViewOnlyMode = true;
         const { getByText } = renderExchangeTab();
 
-        expect(getByText('You pay')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
     });
 });

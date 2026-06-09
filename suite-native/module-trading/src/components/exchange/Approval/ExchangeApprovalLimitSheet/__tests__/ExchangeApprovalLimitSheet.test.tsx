@@ -38,14 +38,18 @@ describe('ExchangeApprovalLimitSheet', () => {
     it('should render the sheet when visible', () => {
         const { getByText } = renderSheet();
 
-        expect(getByText('Unlimited')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
+        ).toBeTruthy();
         expect(getByText('100 USDC')).toBeTruthy();
     });
 
     it('should render unlimited approval option with correct details', () => {
         const { getByText } = renderSheet();
 
-        expect(getByText('Unlimited')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
+        ).toBeTruthy();
         expect(
             getByText(
                 getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),

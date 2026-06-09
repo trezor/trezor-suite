@@ -1,6 +1,7 @@
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     fireEvent,
@@ -62,7 +63,9 @@ describe('SellProviderPicker', () => {
             wallet: { trading: { sell: { isLoading: true } } },
         });
 
-        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeOnTheScreen();
     });
 
     describe('with quotes loaded', () => {
@@ -81,22 +84,28 @@ describe('SellProviderPicker', () => {
                 wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
             });
 
-            expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+            ).toBeOnTheScreen();
         });
 
         it('should render selected payment provider', () => {
             const { getByLabelText } = renderSellProviderPicker(withQuotes);
 
-            expect(getByLabelText('Selected provider')).toHaveTextContent('Banxa');
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedProvider')),
+            ).toHaveTextContent('Banxa');
         });
 
         it('should allow to select provider', () => {
             const { getByText, getByLabelText } = renderSellProviderPicker(withQuotes);
 
-            fireEvent.press(getByText('Provider'));
+            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
             fireEvent.press(getByText('MoonPay'));
 
-            expect(getByLabelText('Selected provider')).toHaveTextContent('MoonPay');
+            expect(
+                getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedProvider')),
+            ).toHaveTextContent('MoonPay');
         });
 
         describe('analytics', () => {
@@ -107,7 +116,7 @@ describe('SellProviderPicker', () => {
             it('should fire analytics event on provider select', () => {
                 const { getByText } = renderSellProviderPicker(withQuotes);
 
-                fireEvent.press(getByText('Provider'));
+                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
                 fireEvent.press(getByText('MoonPay'));
 
                 expect(reportMock).toHaveBeenCalledTimes(2);
@@ -146,7 +155,7 @@ describe('SellProviderPicker', () => {
                     wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
                 });
 
-                fireEvent.press(getByText('Provider'));
+                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
 
                 expect(reportMock).not.toHaveBeenCalled();
             });

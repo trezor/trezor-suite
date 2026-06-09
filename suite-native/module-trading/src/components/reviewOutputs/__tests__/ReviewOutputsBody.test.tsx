@@ -1,4 +1,5 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { oneInchFusionPlusWithEip712SignDataQuote } from '@suite-native/trading-fixtures';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
@@ -28,7 +29,13 @@ describe('ReviewOutputsBody', () => {
         const { getByText, queryByTestId } = renderReviewOutputsBody({});
 
         // invalid account id is provided, expect error
-        expect(getByText(/Account not found/)).toBeOnTheScreen();
+        expect(
+            getByText(
+                new RegExp(
+                    getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.title'),
+                ),
+            ),
+        ).toBeOnTheScreen();
         expect(queryByTestId('@trading/outputs-review/skeleton')).not.toBeOnTheScreen();
     });
 
@@ -49,8 +56,12 @@ describe('ReviewOutputsBody', () => {
             },
         );
 
-        expect(getByText('Sign EIP-712 typed data')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.heading')),
+        ).toBeOnTheScreen();
         // ReviewOutputItemList renders "Account not found" for invalid keys; sign-data skips it
-        expect(queryByText(/Account not found/)).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.title')),
+        ).toBeNull();
     });
 });

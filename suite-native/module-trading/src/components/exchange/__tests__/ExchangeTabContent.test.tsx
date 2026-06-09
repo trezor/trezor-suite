@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
@@ -31,8 +32,12 @@ describe('ExchangeTab', () => {
     };
 
     const expectExchangeForm = () => {
-        expect(screen.getByText('You pay')).toBeOnTheScreen();
-        expect(screen.getByText('You get')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toBeOnTheScreen();
     };
 
     const expectServerOffline = () => {
@@ -102,7 +107,7 @@ describe('ExchangeTab', () => {
 
         const { getByText } = renderExchangeTab();
 
-        const reloadButton = getByText('Try again');
+        const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
         await act(async () => {
             await userEvent.press(reloadButton);

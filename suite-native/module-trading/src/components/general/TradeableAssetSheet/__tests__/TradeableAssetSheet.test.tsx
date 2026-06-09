@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -64,9 +65,11 @@ describe('TradeableAssetSheet', () => {
             assets: [],
         });
 
-        expect(getByText('Coin not found')).toBeTruthy();
         expect(
-            getByText('Check the spelling or browse the list to select an option.'),
+            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.emptyTitle')),
+        ).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.fiatCurrencySheet.emptyDescription')),
         ).toBeTruthy();
     });
 });

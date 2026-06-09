@@ -2,6 +2,7 @@ import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { exchangeQuotes, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -76,7 +77,7 @@ describe('ExchangeRateAndProviderPicker', () => {
             wallet: { trading: { exchange: { isLoading: true } } },
         });
 
-        expect(getByText('Provider')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
     it('should render provider when quote is selected', () => {
@@ -86,7 +87,7 @@ describe('ExchangeRateAndProviderPicker', () => {
 
         const { getByText } = renderExchangeRateAndProviderPicker();
 
-        expect(getByText('Provider')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
@@ -105,7 +106,9 @@ describe('ExchangeRateAndProviderPicker', () => {
         it('should fire analytics event on provider select', async () => {
             const { getByText } = renderExchangeRateAndProviderPicker(withQuotes);
 
-            await userEvent.press(getByText('Provider'));
+            await userEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            );
             await userEvent.press(getByText('Cexdirect'));
 
             expect(reportMock).toHaveBeenCalledTimes(2);
@@ -127,7 +130,9 @@ describe('ExchangeRateAndProviderPicker', () => {
         it('should not fire analytics event when same provider is selected', async () => {
             const { getByText, getAllByText } = renderExchangeRateAndProviderPicker(withQuotes);
 
-            await userEvent.press(getByText('Provider'));
+            await userEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            );
             await userEvent.press(getIndexOrThrow(getAllByText('Mercuryo'), 1));
 
             expect(reportMock).toHaveBeenCalledTimes(1);

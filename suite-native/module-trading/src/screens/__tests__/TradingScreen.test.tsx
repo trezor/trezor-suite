@@ -1,4 +1,5 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { getTranslation } from '@suite-native/intl';
 
 import {
     type PreloadedStatePartial,
@@ -86,6 +87,8 @@ describe('TradingScreen', () => {
             featureFlags: createTradingFeatureFlags({}),
         });
 
-        expect(getByText('You pay')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
     });
 });

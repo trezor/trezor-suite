@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
@@ -20,7 +21,7 @@ describe('ProviderInfoRow', () => {
         const { getByText } = renderProviderInfoRow({});
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
-        expect(getByText('Provider')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
     it('should render nothing when no provider is found', () => {

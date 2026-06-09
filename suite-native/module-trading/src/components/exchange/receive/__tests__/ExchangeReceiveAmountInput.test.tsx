@@ -1,5 +1,6 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent } from '@suite-native/test-utils-store';
 import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -55,7 +56,9 @@ describe('ExchangeReceiveAmountInput', () => {
 
         const { getByLabelText } = renderExchangeReceiveAmountInput();
 
-        expect(getByLabelText('You get')).toHaveDisplayValue('0.00083554');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+        ).toHaveDisplayValue('0.00083554');
     });
 
     it('should call showAssetsSheet callback on press', () => {
@@ -64,7 +67,7 @@ describe('ExchangeReceiveAmountInput', () => {
             showAssetsSheet: showAssetsSheetMock,
         });
 
-        fireEvent.press(getByLabelText('You get'));
+        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')));
 
         expect(showAssetsSheetMock).toHaveBeenCalled();
     });
@@ -75,6 +78,8 @@ describe('ExchangeReceiveAmountInput', () => {
             { wallet: { trading: { exchange: { isLoading: true } } } },
         );
 
-        expect(getByLabelText('Searching for your best offer...')).toBeTruthy();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
+        ).toBeTruthy();
     });
 });

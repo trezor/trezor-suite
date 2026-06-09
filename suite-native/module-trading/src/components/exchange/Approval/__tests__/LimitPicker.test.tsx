@@ -71,7 +71,11 @@ describe('LimitPicker', () => {
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
 
-        await userEvent.press(within(sheet).getByText('Unlimited'));
+        await userEvent.press(
+            within(sheet).getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel'),
+            ),
+        );
 
         expect(mockOnApprovalTypeChange).toHaveBeenCalledTimes(1);
         expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('INFINITE');

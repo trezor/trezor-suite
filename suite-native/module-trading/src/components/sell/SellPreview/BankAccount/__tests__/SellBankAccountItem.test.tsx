@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
@@ -33,7 +34,9 @@ describe('SellBankAccountItem', () => {
                 bankAccount: verifiedBankAccount,
             });
 
-            expect(getByText('Verified')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.verified')),
+            ).toBeOnTheScreen();
             expect(getByTestId('check-icon')).toBeOnTheScreen();
         });
 
@@ -42,7 +45,9 @@ describe('SellBankAccountItem', () => {
                 bankAccount: unverifiedBankAccount,
             });
 
-            expect(getByText('Not verified')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.notVerified')),
+            ).toBeOnTheScreen();
             expect(queryByTestId('check-icon')).not.toBeOnTheScreen();
         });
     });

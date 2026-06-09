@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
@@ -45,7 +46,7 @@ describe('TradeableAssetAccountBalance', () => {
         (asset, expectedSymbol) => {
             const { getByText } = renderTradeableAssetAccountBalance({ asset });
 
-            expect(getByText('Balance:')).toBeDefined();
+            expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeDefined();
             expect(getByText(`- ${expectedSymbol}`)).toBeDefined();
         },
     );
@@ -63,7 +64,7 @@ describe('TradeableAssetAccountBalance', () => {
             testID: undefined,
         });
 
-        expect(getByText('Balance:')).toBeDefined();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeDefined();
         expect(getByText('- BTC')).toBeDefined();
     });
 
@@ -87,7 +88,7 @@ describe('TradeableAssetAccountBalance', () => {
                 preloadedState,
             );
 
-            expect(getByText('Balance:')).toBeDefined();
+            expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeDefined();
             expect(getByTestId('TEST_ID/value')).toHaveTextContent(expectedBalance);
         });
     });

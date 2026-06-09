@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, btcAsset } from '@suite-native/trading-fixtures';
 import {
@@ -80,7 +81,7 @@ describe('BuyReceiveAccountPicker', () => {
         setSelectedAsset(btcAsset);
         const { getByText } = renderPicker();
 
-        expect(getByText('Not selected')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.notSelected'))).toBeTruthy();
     });
 
     it('should display selected account name and address', () => {
@@ -105,7 +106,7 @@ describe('BuyReceiveAccountPicker', () => {
             }),
         );
 
-        fireEvent.press(getByText('Receive account'));
+        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')));
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {

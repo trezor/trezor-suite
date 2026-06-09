@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { adaAsset } from '@suite-native/trading-fixtures';
 
@@ -9,15 +10,18 @@ describe('SelectTradeableAssetButton', () => {
             <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={undefined} caret />,
         );
 
-        const button = getByLabelText('Select asset');
-        expect(button).toHaveTextContent(/^Select asset.$/);
+        const button = getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle'));
+
+        expect(button).toHaveTextContent(
+            new RegExp(`^${getTranslation('moduleTrading.selectCoin.buttonTitle')}.$`),
+        );
     });
 
     it('should render TradeableAssetButton when network is selected', () => {
         const { getByLabelText } = renderWithBasicProvider(
             <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} caret />,
         );
-        const button = getByLabelText('Select asset');
+        const button = getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle'));
         expect(button).toHaveTextContent(/^ADA.$/);
     });
 
@@ -25,7 +29,7 @@ describe('SelectTradeableAssetButton', () => {
         const { getByLabelText } = renderWithBasicProvider(
             <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} />,
         );
-        const button = getByLabelText('Select asset');
+        const button = getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle'));
         expect(button).toHaveTextContent('ADA');
     });
 });

@@ -1,5 +1,6 @@
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 
@@ -131,8 +132,16 @@ describe(AccountListAddressItem.name, () => {
         expect(getByText('BTC_address')).toBeTruthy();
         expect(queryByText('My BTC account')).toBeNull();
         expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
-        expect(getByLabelText('Balance in fiat')).toHaveTextContent('$5,000,000.00');
-        expect(getByLabelText('Balance in crypto')).toHaveTextContent('0.05 BTC');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.accountScreen.balanceFiat')),
+        ).toHaveTextContent('$5,000,000.00');
+        expect(
+            getByLabelText(
+                getTranslation('moduleTrading.accountScreen.balanceCrypto', {
+                    coinLabel: 'crypto',
+                }),
+            ),
+        ).toHaveTextContent('0.05 BTC');
     });
 
     it('should display zero balance', () => {
@@ -154,8 +163,16 @@ describe(AccountListAddressItem.name, () => {
         };
         const { getByLabelText } = renderAccountListAddressItem(receiveAccount);
 
-        expect(getByLabelText('Balance in fiat')).toHaveTextContent('$0.00');
-        expect(getByLabelText('Balance in crypto')).toHaveTextContent('0 BTC');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.accountScreen.balanceFiat')),
+        ).toHaveTextContent('$0.00');
+        expect(
+            getByLabelText(
+                getTranslation('moduleTrading.accountScreen.balanceCrypto', {
+                    coinLabel: 'crypto',
+                }),
+            ),
+        ).toHaveTextContent('0 BTC');
     });
 
     it('should render nothing when no address is specified', () => {

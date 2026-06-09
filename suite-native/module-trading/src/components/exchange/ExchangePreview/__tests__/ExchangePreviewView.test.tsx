@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import {
     btc1NormalAccount,
     cexdirectFloatingQuote,
@@ -47,7 +48,9 @@ describe('ExchangePreviewView', () => {
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
-        expect(getByText('Transaction fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeOnTheScreen();
         expect(getByText('ERROR_MESSAGE')).toBeOnTheScreen();
     });
 
@@ -59,15 +62,21 @@ describe('ExchangePreviewView', () => {
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('txnErrorString')).toBeOnTheScreen();
-        expect(queryByText('Transaction fee')).toBeNull();
+        expect(
+            queryByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeNull();
     });
 
     it('should render EIP-712 info with provider name when quote has EIP-712 sign data', () => {
-        const { getByText } = renderExchangePreviewView({
+        const { getByTestId } = renderExchangePreviewView({
             quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
-        expect(getByText(/^You're swapping with 1inch Fusion+\+$/)).toBeOnTheScreen();
+        expect(getByTestId('@trading/exchange-preview/eip712-info-header')).toHaveTextContent(
+            getTranslation('moduleTrading.tradingExchangePreviewScreen.eip712Info.title', {
+                providerName: '1inch Fusion+',
+            }),
+        );
     });
 
     it('should not render transaction fee for quotes with EIP-712 sign data', () => {
@@ -75,15 +84,17 @@ describe('ExchangePreviewView', () => {
             quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
-        expect(queryByText('Transaction fee')).toBeNull();
+        expect(
+            queryByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeNull();
     });
 
     it('should not render EIP-712 info when quote has no EIP-712 sign data', () => {
-        const { queryByText } = renderExchangePreviewView({
+        const { queryByTestId } = renderExchangePreviewView({
             quote: oneInchFusionPlusWithoutEip712SignDataQuote,
         });
 
-        expect(queryByText(/^You are swapping with /)).toBeNull();
+        expect(queryByTestId('@trading/exchange-preview/eip712-info-header')).toBeNull();
     });
 
     it('should render KYC warning for provider with "KYC-required"', () => {
@@ -91,7 +102,7 @@ describe('ExchangePreviewView', () => {
             quote: cexdirectFloatingQuote,
         });
 
-        expect(getByText('KYC is required.')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.kyc.kycRequired'))).toBeOnTheScreen();
     });
 
     it('should not render KYC provider warning for providers with "noKYC"', () => {
@@ -99,6 +110,6 @@ describe('ExchangePreviewView', () => {
             quote: mercuryoFixedWorstQuote,
         });
 
-        expect(queryByText('This provider requires identity verification.')).toBeNull();
+        expect(queryByText(getTranslation('moduleTrading.kyc.kycRequired'))).toBeNull();
     });
 });

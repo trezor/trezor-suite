@@ -279,7 +279,9 @@ describe('TradingConfirmingScreen', () => {
 
         const { getByText } = renderScreen();
 
-        expect(getByText('Date')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingConfirmationScreen.date')),
+        ).toBeOnTheScreen();
     });
 
     it('should clear selected quote on back navigation', () => {

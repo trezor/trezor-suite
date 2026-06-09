@@ -148,7 +148,9 @@ describe('TradingExchangeApprovalScreen', () => {
     it('should open bottom sheet when limit row is pressed', async () => {
         const { findByText } = renderScreen();
 
-        const pressableElement = await findByText('Limit');
+        const pressableElement = await findByText(
+            getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel'),
+        );
 
         fireEvent.press(pressableElement);
         expect(mockShowSheet).toHaveBeenCalledTimes(1);

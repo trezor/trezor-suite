@@ -2,6 +2,7 @@ import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act, userEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -74,7 +75,10 @@ describe('ExchangeSendAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You pay'), '100');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+            '100',
+        );
 
         expect(form.getValues('sendCryptoAmount')).toEqual('100');
     });
@@ -83,7 +87,9 @@ describe('ExchangeSendAmountInput', () => {
         const form = renderUseTradingExchangeForm();
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        expect(getByLabelText('You pay')).toBeDisabled();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+        ).toBeDisabled();
     });
 
     it('should call showAssetsSheet when disabled and pressed', async () => {
@@ -91,7 +97,9 @@ describe('ExchangeSendAmountInput', () => {
         const form = renderUseTradingExchangeForm();
         const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
-        await userEvent.press(getByLabelText('You pay'));
+        await userEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+        );
 
         expect(showAssetsSheet).toHaveBeenCalledTimes(1);
     });
@@ -104,7 +112,9 @@ describe('ExchangeSendAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
 
-        await userEvent.press(getByLabelText('You pay'));
+        await userEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+        );
 
         expect(showAssetsSheet).not.toHaveBeenCalled();
     });
@@ -116,10 +126,15 @@ describe('ExchangeSendAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You pay'), 'asd1.123');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+            'asd1.123',
+        );
 
         expect(form.getValues('sendCryptoAmount')).toEqual('1.123');
-        expect(getByLabelText('You pay')).toHaveDisplayValue('1.123');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+        ).toHaveDisplayValue('1.123');
     });
 
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
@@ -132,10 +147,15 @@ describe('ExchangeSendAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form, satoshiOverrides);
 
-        await userEvent.type(getByLabelText('You pay'), 'asd1.123');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+            'asd1.123',
+        );
 
         expect(form.getValues('sendCryptoAmount')).toEqual('1123');
-        expect(getByLabelText('You pay')).toHaveDisplayValue('1123');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+        ).toHaveDisplayValue('1123');
     });
 
     it('should always escape non-numeric characters', async () => {
@@ -148,10 +168,15 @@ describe('ExchangeSendAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form, satoshiOverrides);
 
-        await userEvent.type(getByLabelText('You pay'), 'asd');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+            'asd',
+        );
 
         expect(form.getValues('sendCryptoAmount')).toBeUndefined();
-        expect(getByLabelText('You pay')).toHaveDisplayValue('');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+        ).toHaveDisplayValue('');
     });
 
     it('should limit value to decimals based on useAmountInputDecimals return value', async () => {
@@ -166,7 +191,10 @@ describe('ExchangeSendAmountInput', () => {
         });
         const { getByLabelText } = renderCryptoAmountInput({}, form);
 
-        await userEvent.type(getByLabelText('You pay'), '1.0123456789');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+            '1.0123456789',
+        );
 
         expect(form.getValues('sendCryptoAmount')).toEqual('1.01234567');
         expect(mockUseAmountInputDecimals).toHaveBeenLastCalledWith(
