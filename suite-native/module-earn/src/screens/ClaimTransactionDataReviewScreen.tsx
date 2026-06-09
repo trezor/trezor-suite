@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions } from '@react-navigation/native';
-
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -13,12 +9,10 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
     type RootStackParamList,
-    RootStackRoutes,
+    type RootStackRoutes,
     ScreenHeader,
     type StackProps,
-    TransactionDetailStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
@@ -30,45 +24,10 @@ import {
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
-import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
-
-const navigateToClaimedTransactionAction = ({
-    accountKey,
-    symbol,
-    txid,
-}: {
-    accountKey: AccountKey;
-    symbol: NetworkSymbol;
-    txid: string;
-}) =>
-    CommonActions.reset({
-        index: 2,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: { screen: AppTabsRoutes.EarnStack },
-            },
-            {
-                name: resolveStakingTargetRoute(symbol),
-                params: { accountKey },
-            },
-            {
-                name: RootStackRoutes.TransactionDetailStack,
-                params: {
-                    screen: TransactionDetailStackRoutes.TransactionDetail,
-                    params: {
-                        accountKey,
-                        txid,
-                        closeActionType: 'close',
-                    },
-                },
-            },
-        ],
-    });
+import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 
 export const ClaimTransactionDataReviewScreen = ({
     route,
-    navigation,
 }: StackProps<RootStackParamList, RootStackRoutes.ClaimTransactionDataReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
@@ -91,6 +50,8 @@ export const ClaimTransactionDataReviewScreen = ({
         stakeType: 'claim',
     });
 
+    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
     // Once signed, the user reviews the summary and taps "Claim now" to broadcast the transaction.
     const isReadyToClaim = isTransactionAlreadySigned && !!account;
 
@@ -109,18 +70,16 @@ export const ClaimTransactionDataReviewScreen = ({
     const handleClaimNow = useCallback(async () => {
         setIsPushing(true);
 
-        const txid = await handlePush();
+        const pushedTxid = await handlePush();
 
-        if (txid && account) {
-            navigation.dispatch(
-                navigateToClaimedTransactionAction({ accountKey, symbol: account.symbol, txid }),
-            );
+        if (pushedTxid) {
+            trackPushedTransaction(pushedTxid);
 
             return;
         }
 
         setIsPushing(false);
-    }, [handlePush, account, accountKey, navigation]);
+    }, [handlePush, trackPushedTransaction]);
 
     return (
         <ConfirmOnTrezorWrapper

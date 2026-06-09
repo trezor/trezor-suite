@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions } from '@react-navigation/native';
-
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -13,12 +9,10 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
     type RootStackParamList,
-    RootStackRoutes,
+    type RootStackRoutes,
     ScreenHeader,
     type StackProps,
-    TransactionDetailStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
@@ -30,42 +24,10 @@ import {
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
-import { getEarnPostSignParentRoute } from '../utils';
-
-const navigateToStakedTransactionAction = ({
-    accountKey,
-    symbol,
-    txid,
-}: {
-    accountKey: AccountKey;
-    symbol: NetworkSymbol;
-    txid: string;
-}) =>
-    CommonActions.reset({
-        index: 2,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: { screen: AppTabsRoutes.EarnStack },
-            },
-            getEarnPostSignParentRoute(symbol, accountKey),
-            {
-                name: RootStackRoutes.TransactionDetailStack,
-                params: {
-                    screen: TransactionDetailStackRoutes.TransactionDetail,
-                    params: {
-                        accountKey,
-                        txid,
-                        closeActionType: 'close',
-                    },
-                },
-            },
-        ],
-    });
+import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 
 export const EarnTransactionDataReviewScreen = ({
     route,
-    navigation,
 }: StackProps<RootStackParamList, RootStackRoutes.EarnTransactionDataReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
@@ -88,6 +50,8 @@ export const EarnTransactionDataReviewScreen = ({
         stakeType: 'stake',
     });
 
+    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
     const isReadyToStake = isTransactionAlreadySigned && !!account;
 
     useEffect(() => {
@@ -105,18 +69,16 @@ export const EarnTransactionDataReviewScreen = ({
     const handleStakeNow = useCallback(async () => {
         setIsPushing(true);
 
-        const txid = await handlePush();
+        const pushedTxid = await handlePush();
 
-        if (txid && account) {
-            navigation.dispatch(
-                navigateToStakedTransactionAction({ accountKey, symbol: account.symbol, txid }),
-            );
+        if (pushedTxid) {
+            trackPushedTransaction(pushedTxid);
 
             return;
         }
 
         setIsPushing(false);
-    }, [handlePush, account, accountKey, navigation]);
+    }, [handlePush, trackPushedTransaction]);
 
     return (
         <ConfirmOnTrezorWrapper
