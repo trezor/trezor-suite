@@ -124,6 +124,7 @@ const getTranslationValues = (
     stakeType?: StakeType,
     evmTxType?: EvmTransactionPurpose,
     device?: TrezorDevice,
+    isTronStakeFreeze?: boolean,
 ): Record<'value' | 'label', TranslationKey> | null => {
     const isEvmApproval = isEvmApprovalTxByTextSignature(evmTxType);
 
@@ -148,6 +149,10 @@ const getTranslationValues = (
             value: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
             label: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
         };
+    }
+
+    if (isTronStakeFreeze) {
+        return { value: 'TR_ADDRESS', label: 'TR_ADDRESS' };
     }
 
     return null;
@@ -176,8 +181,15 @@ const getOutputTitle = (
     evmTxType?: EvmTransactionPurpose,
     device?: TrezorDevice,
     receiveAddress?: string,
+    isTronStakeFreeze?: boolean,
 ): ReactNode | undefined => {
-    const translation = getTranslationValues(networkType, stakeType, evmTxType, device);
+    const translation = getTranslationValues(
+        networkType,
+        stakeType,
+        evmTxType,
+        device,
+        isTronStakeFreeze,
+    );
     const contractTitle = getContractTitle(networkType, isApprovalFlowSupported(device), evmTxType);
 
     switch (type) {
@@ -562,6 +574,7 @@ export type TransactionReviewOutputProps = {
     isTrading?: boolean;
     evmTxType?: EvmTransactionPurpose;
     nativeToken?: TokenInfo;
+    isTronStakeFreeze?: boolean;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => {
@@ -580,6 +593,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         isTrading,
         evmTxType,
         nativeToken,
+        isTronStakeFreeze,
     } = props;
     const rewards = type === 'rewards' ? props.rewards : undefined;
     const receiveAddress = type === 'traded_assets' ? props.receiveAddress : undefined;
@@ -603,6 +617,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         evmTxType,
         device,
         receiveAddress,
+        isTronStakeFreeze,
     );
 
     const outputLines = getOutputLines({

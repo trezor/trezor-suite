@@ -5416,6 +5416,10 @@ export const messages = defineMessages({
         id: 'TR_TRON_ENERGY',
         defaultMessage: 'Energy',
     },
+    TR_TRON_RESOURCE: {
+        id: 'TR_TRON_RESOURCE',
+        defaultMessage: 'Resource',
+    },
     TR_TRON_BANDWIDTH_TOOLTIP: {
         id: 'TR_TRON_BANDWIDTH_TOOLTIP',
         defaultMessage:
@@ -10146,6 +10150,10 @@ export const messages = defineMessages({
     TR_EARN_TRON_FREEZE_TRANSACTION: {
         id: 'TR_EARN_TRON_FREEZE_TRANSACTION',
         defaultMessage: 'Freeze TRX transaction',
+    },
+    TR_EARN_TRON_FREEZE: {
+        id: 'TR_EARN_TRON_FREEZE',
+        defaultMessage: 'Freeze',
     },
     TR_EARN_TRON_VOTE_TRANSACTION: {
         id: 'TR_EARN_TRON_VOTE_TRANSACTION',
