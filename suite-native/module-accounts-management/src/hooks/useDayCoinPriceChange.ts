@@ -56,7 +56,9 @@ export const useDayCoinPriceChange = (
                     isCoingeckoForce,
                 );
 
-                const [weekAgo, today] = timestampedFiatRates?.tickers ?? [];
+                const tickers = timestampedFiatRates?.tickers ?? [];
+                const weekAgo = tickers.find(ticker => ticker.ts === weekAgoTimestamp);
+                const today = tickers.find(ticker => ticker.ts === currentTimestamp);
 
                 setWeekAgoValue(weekAgo?.rates[fiatCurrencyCode] ?? null);
                 const currentRate = today?.rates[fiatCurrencyCode];
