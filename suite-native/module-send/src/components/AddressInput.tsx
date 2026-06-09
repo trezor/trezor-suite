@@ -1,17 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { type AddressCorrection, autocorrectAddress, isAddressValid } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { type DeviceRootState } from '@suite-common/device';
 import { parseErc681TransferUri } from '@suite-common/suite-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, toTokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -19,6 +24,12 @@ import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    type SendStackParamList,
+    SendStackRoutes,
+    type StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';
@@ -36,11 +47,18 @@ const autocorrectMessageKeys: Record<NonNullable<AddressCorrection>['type'], TxK
     bchPrefix: 'moduleSend.outputs.recipients.autocorrect.addedBitcoincashPrefix',
 };
 
+type AddressInputNavigationProp = StackToStackCompositeNavigationProps<
+    SendStackParamList,
+    SendStackRoutes.SendOutputs,
+    RootStackParamList
+>;
+
 type AddressInputProps = {
     index: number;
     accountKey: AccountKey;
+    onQrNetworkMismatch?: (qrNetworkSymbol: NetworkSymbol | null) => void;
 };
-export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
+export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
     const amountFieldName = getOutputFieldName(index, 'amount');
@@ -53,6 +71,10 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectVisibleDeviceAccounts(state),
+    );
+    const navigation = useNavigation<AddressInputNavigationProp>();
 
     const { checkSolAssociatedTokenAddress, isSolATA } = useSolAssociatedTokenAddress();
 
@@ -103,18 +125,47 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
         const erc681 =
             account?.networkType === 'ethereum' ? parseErc681TransferUri(qrCodeData) : null;
         if (erc681) {
+            // Token amount is in subunits; convert it to display units using the holding
+            // account's decimals (the target account when switching networks, see below).
+            const toDisplayAmount = (tokenAccount: typeof account) => {
+                if (!erc681.contractAddress || erc681.tokenAmount === undefined) return undefined;
+
+                const token = tokenAccount?.tokens?.find(
+                    t => t.contract.toLowerCase() === erc681.contractAddress!.toLowerCase(),
+                );
+
+                return token
+                    ? convertAmountSubunitsToUnits(erc681.tokenAmount, token.decimals)
+                    : undefined;
+            };
+
+            if (erc681.networkSymbol && erc681.networkSymbol !== symbol) {
+                // EVM accounts share the same address across networks, so descriptor matches.
+                const matchingAccount = deviceAccounts.find(
+                    a => a.symbol === erc681.networkSymbol && a.descriptor === account?.descriptor,
+                );
+                if (matchingAccount) {
+                    navigation.replace(SendStackRoutes.SendOutputs, {
+                        accountKey: matchingAccount.key,
+                        tokenContract: erc681.contractAddress
+                            ? toTokenAddress(erc681.contractAddress)
+                            : undefined,
+                        initialAddress: erc681.recipientAddress,
+                        initialAmount: toDisplayAmount(matchingAccount),
+                    });
+
+                    return;
+                }
+                onQrNetworkMismatch?.(erc681.networkSymbol);
+            } else {
+                onQrNetworkMismatch?.(null);
+            }
             setValue(addressFieldName, erc681.recipientAddress, { shouldValidate: true });
             if (erc681.contractAddress) {
                 setValue(tokenFieldName, erc681.contractAddress, { shouldDirty: true });
-                const token = account?.tokens?.find(
-                    t => t.contract.toLowerCase() === erc681.contractAddress!.toLowerCase(),
-                );
-                if (token && erc681.tokenAmount !== undefined) {
-                    setValue(
-                        amountFieldName,
-                        convertAmountSubunitsToUnits(erc681.tokenAmount, token.decimals),
-                        { shouldValidate: true },
-                    );
+                const displayAmount = toDisplayAmount(account);
+                if (displayAmount !== undefined) {
+                    setValue(amountFieldName, displayAmount, { shouldValidate: true });
                 }
             }
             analytics.report({
@@ -125,6 +176,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
             return;
         }
 
+        onQrNetworkMismatch?.(null);
         const corrected = correctAddress(qrCodeData);
         setValue(addressFieldName, corrected, { shouldValidate: true });
         if (symbol && isAddressValid(corrected, symbol)) {
@@ -136,6 +188,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     };
 
     const handleChangeValue = (newValue: string) => {
+        onQrNetworkMismatch?.(null);
         const corrected = correctAddress(newValue);
         if (corrected !== newValue) {
             setValue(addressFieldName, corrected, { shouldValidate: true });

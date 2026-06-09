@@ -1,5 +1,5 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Card, HStack, Text } from '@suite-native/atoms';
+import { Card, HStack, InlineAlertBox, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -17,12 +17,33 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 type CorrectNetworkMessageCardProps = {
     symbol: NetworkSymbol;
+    qrNetworkSymbol?: NetworkSymbol | null;
 };
 
-export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardProps) => {
+export const CorrectNetworkMessageCard = ({
+    symbol,
+    qrNetworkSymbol,
+}: CorrectNetworkMessageCardProps) => {
     const { applyStyle } = useNativeStyles();
 
     const network = getNetwork(symbol);
+
+    if (qrNetworkSymbol) {
+        return (
+            <InlineAlertBox
+                variant="warning"
+                title={
+                    <Translation
+                        id="moduleSend.outputs.recipients.qrNetworkMismatch"
+                        values={{
+                            qrNetwork: getNetwork(qrNetworkSymbol).name,
+                            accountNetwork: network.name,
+                        }}
+                    />
+                }
+            />
+        );
+    }
 
     if (network.networkType !== 'ethereum') return null;
 

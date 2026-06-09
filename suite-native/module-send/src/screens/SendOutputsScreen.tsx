@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -26,12 +26,14 @@ import { SendOutputsScreenFooter } from '../components/SendOutputsScreenFooter';
 import { useSendForm } from '../hooks/useSendForm';
 import { useShowDeviceDisconnectedAlert } from '../hooks/useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
+import { getOutputFieldName } from '../utils';
 
 export const SendOutputsScreen = ({
     route: { params },
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
-    const { accountKey, tokenContract, postNavigationAction } = params;
+    const { accountKey, tokenContract, postNavigationAction, initialAddress, initialAmount } =
+        params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const formDraft = useSelector((state: SendRootState) =>
@@ -50,6 +52,20 @@ export const SendOutputsScreen = ({
             showDeviceDisconnectedAlert();
         }, [navigation, postNavigationAction, showDeviceDisconnectedAlert]),
     );
+
+    const initialValuesApplied = useRef(false);
+    useEffect(() => {
+        if (initialValuesApplied.current || !sendForm) return;
+        initialValuesApplied.current = true;
+        if (initialAddress)
+            sendForm.form.setValue(getOutputFieldName(0, 'address'), initialAddress, {
+                shouldValidate: true,
+            });
+        if (initialAmount)
+            sendForm.form.setValue(getOutputFieldName(0, 'amount'), initialAmount, {
+                shouldValidate: true,
+            });
+    }, [sendForm, initialAddress, initialAmount]);
 
     if (!sendForm) {
         return null;
