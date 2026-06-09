@@ -50,7 +50,7 @@ const SellProviderPickerRight = ({ isLoading, selectedValue }: SellProviderPicke
         <HStack>
             <ProviderLogo logo={logo} />
             <Text
-                color="contentSecondary"
+                color="contentPrimary"
                 variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
                 testID={PROVIDER_PICKER_TEST_ID + '/value'}

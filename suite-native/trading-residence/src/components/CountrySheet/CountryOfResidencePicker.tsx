@@ -82,7 +82,7 @@ export const CountryOfResidencePicker = ({
                     >
                         {selectedFlag && <Flag country={selectedFlag} size={20} />}
                         <Text
-                            color="contentSecondary"
+                            color="contentPrimary"
                             variant="body-md"
                             numberOfLines={1}
                             testID={valueTestID}

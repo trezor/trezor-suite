@@ -82,7 +82,7 @@ const ReceiveAccountPickerRight = ({
     if (!addressText) {
         return (
             <RightText
-                color="contentSecondary"
+                color="contentPrimary"
                 testID={testID ? `${testID}/selected-account` : undefined}
             >
                 {accountLabel}
@@ -93,7 +93,7 @@ const ReceiveAccountPickerRight = ({
     return (
         <>
             <RightText
-                color="contentSecondary"
+                color="contentPrimary"
                 testID={testID ? `${testID}/selected-account` : undefined}
             >
                 {accountLabel}

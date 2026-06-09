@@ -45,7 +45,7 @@ const SellReceiveMethodPickerRight = ({
     if (selectedValue) {
         return (
             <Text
-                color="contentSecondary"
+                color="contentPrimary"
                 variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedReceiveMethod')}
                 testID={RECEIVE_METHOD_PICKER_TEST_ID + '/value'}

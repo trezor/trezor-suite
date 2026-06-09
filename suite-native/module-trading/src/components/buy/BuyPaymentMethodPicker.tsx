@@ -38,7 +38,7 @@ const BuyPaymentMethodPickerRight = ({
     if (selectedValue) {
         return (
             <Text
-                color="contentSecondary"
+                color="contentPrimary"
                 variant="body-sm"
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedPaymentMethod')}
                 testID={PAYMENT_METHOD_PICKER_TEST_ID + '/value'}
