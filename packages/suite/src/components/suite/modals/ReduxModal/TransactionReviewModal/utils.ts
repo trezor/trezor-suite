@@ -2,10 +2,15 @@ import {
     type SendState,
     type StablecoinYieldTxReviewState,
     type StakeState,
+    type TronStakeTxReviewState,
 } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
-export type TxInfoState = SendState | StakeState | StablecoinYieldTxReviewState;
+export type TxInfoState =
+    | SendState
+    | StakeState
+    | StablecoinYieldTxReviewState
+    | TronStakeTxReviewState;
 
 export const isStakeState = (state: TxInfoState): state is StakeState => 'data' in state;
 
