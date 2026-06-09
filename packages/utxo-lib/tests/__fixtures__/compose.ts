@@ -1,11 +1,12 @@
-import { bitcoincash, doge } from '../../src/networks';
+import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from '../../src/';
 import {
     AnyComposeRequest,
     ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,
-    ComposeResult,
+    ComposeResultError,
     ComposeResultFinal,
+    ComposeResultNonFinal,
 } from '../../src/types/compose';
 
 export const UTXO: ComposeInput & { path: number[] } = {
@@ -16,17 +17,34 @@ export const UTXO: ComposeInput & { path: number[] } = {
     vout: 0,
     txid: 'b4dc0ffeee',
     amount: '102001',
+    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
 };
 
-type AnyComposeResult = ComposeResult<ComposeInput, ComposeOutput, ComposeChangeAddress>;
-type AnyComposeFinalResult = ComposeResultFinal<ComposeInput, ComposeOutput, ComposeChangeAddress>;
+export const CHANGE_ADDRESS: ComposeChangeAddress = {
+    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
+};
+
+type FixtureUtxo = ComposeInput & {
+    customField?: string;
+};
+type FixtureOutput = ComposeOutput & {
+    customField?: string;
+};
+type FixtureChangeAddress = ComposeChangeAddress & {
+    path?: number[] | string;
+};
+type AnyComposeResult =
+    | ComposeResultError
+    | ComposeResultNonFinal<FixtureUtxo>
+    | ComposeResultFinal<FixtureUtxo, FixtureOutput, FixtureChangeAddress>;
 
 type Fixture = {
     description: string;
-    request: Omit<AnyComposeRequest, 'network' | 'outputs' | 'changeAddress'> & {
-        network?: AnyComposeRequest['network'];
-        outputs: Array<AnyComposeRequest['outputs'][number] & { customField?: string }>;
-        changeAddress: AnyComposeRequest['changeAddress'] & { path?: number[] | string };
+    request: Omit<AnyComposeRequest, 'utxos' | 'outputs' | 'changeAddress'> & {
+        utxos: FixtureUtxo[];
+        outputs: FixtureOutput[];
+        changeAddress: FixtureChangeAddress;
     };
     result: AnyComposeResult;
     randomIntSequence?: number[];
@@ -36,7 +54,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a simple tx without change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -46,6 +64,7 @@ export const composeTxFixture: Fixture[] = [
                     amount: '100000',
                     type: 'payment',
                     customField: 'prove that payment output is generic',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -63,7 +82,8 @@ export const composeTxFixture: Fixture[] = [
                     amount: '100000',
                     type: 'payment',
                     customField: 'prove that payment output is generic',
-                } as AnyComposeFinalResult['outputs'][number], // hack for `customField`
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
+                },
             ],
             outputsPermutation: [0],
             type: 'final',
@@ -72,7 +92,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a simple tx without change and decimal fee',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10.33',
             sortingStrategy: 'bip69',
@@ -81,6 +101,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -97,6 +118,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [0],
@@ -106,7 +128,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds an payment tx without change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -114,6 +136,7 @@ export const composeTxFixture: Fixture[] = [
                 {
                     amount: '100000',
                     type: 'payment-noaddress',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -131,7 +154,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'errors on little funds',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -139,6 +162,7 @@ export const composeTxFixture: Fixture[] = [
                 {
                     amount: '100000',
                     type: 'payment-noaddress',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -156,7 +180,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a send-max with large input',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -164,6 +188,7 @@ export const composeTxFixture: Fixture[] = [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     type: 'send-max',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -185,6 +210,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '49999998080',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [0],
@@ -194,7 +220,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a send-max',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -202,6 +228,7 @@ export const composeTxFixture: Fixture[] = [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     type: 'send-max',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                     customField: 'prove that send-max output is generic',
                 },
             ],
@@ -219,8 +246,9 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100081',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                     customField: 'prove that send-max output is generic',
-                } as AnyComposeFinalResult['outputs'][number], // hack for `customField`
+                },
             ],
             outputsPermutation: [0],
             type: 'final',
@@ -230,7 +258,7 @@ export const composeTxFixture: Fixture[] = [
         description: 'builds a simple tx with two outputs and change',
         request: {
             changeAddress: {
-                address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                ...CHANGE_ADDRESS,
                 path: [44, 1, 1, 0],
             },
             dustThreshold: 546,
@@ -241,11 +269,13 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -262,18 +292,20 @@ export const composeTxFixture: Fixture[] = [
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    ...CHANGE_ADDRESS,
                     path: [44, 1, 1, 0],
                     amount: '49401',
                     type: 'change',
-                } as AnyComposeFinalResult['outputs'][number], // hack for `path`,
+                },
             ],
             outputsPermutation: [1, 0, 2],
             type: 'final',
@@ -283,7 +315,7 @@ export const composeTxFixture: Fixture[] = [
         description: 'builds a simple tx with two outputs and change (decimal feeRate)',
         request: {
             changeAddress: {
-                address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                ...CHANGE_ADDRESS,
                 path: "m/44'/0'/0'/1/0",
             },
             dustThreshold: 546,
@@ -294,11 +326,13 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -315,18 +349,20 @@ export const composeTxFixture: Fixture[] = [
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '20000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
+                    ...CHANGE_ADDRESS,
                     path: "m/44'/0'/0'/1/0",
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
                     amount: '49216',
                     type: 'change',
-                } as AnyComposeFinalResult['outputs'][number], // hack for `path`,,
+                },
             ],
             outputsPermutation: [1, 0, 2],
             type: 'final',
@@ -336,7 +372,10 @@ export const composeTxFixture: Fixture[] = [
         description: 'builds a simple tx with two outputs and change (p2sh/segwit)',
         request: {
             txType: 'p2sh',
-            changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
+            changeAddress: {
+                address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
+            },
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -345,11 +384,13 @@ export const composeTxFixture: Fixture[] = [
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
                 {
                     address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                     amount: '20000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             utxos: [UTXO],
@@ -366,16 +407,19 @@ export const composeTxFixture: Fixture[] = [
                     address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                     amount: '20000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '50021',
                     type: 'change',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             outputsPermutation: [1, 0, 2],
@@ -385,7 +429,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'prefers a more confirmed input',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -394,6 +438,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -421,6 +466,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [0],
@@ -430,7 +476,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'two inputs',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -439,6 +485,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '200000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -467,6 +514,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '200000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [0],
@@ -476,7 +524,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'sorts the inputs according to BIP69 when sortingStrategy=bip69',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -485,6 +533,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '150000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -510,7 +559,7 @@ export const composeTxFixture: Fixture[] = [
             ],
             outputs: [
                 {
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    ...CHANGE_ADDRESS,
                     amount: '50262',
                     type: 'change',
                 },
@@ -518,6 +567,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '150000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [1, 0],
@@ -534,7 +584,7 @@ export const composeTxFixture: Fixture[] = [
             0, // Shuffling inputs (Fisher-Yates swap second with the first)
         ],
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'random',
@@ -543,11 +593,13 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '150000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -581,9 +633,10 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    ...CHANGE_ADDRESS,
                     amount: '50443',
                     type: 'change',
                 },
@@ -591,6 +644,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '150000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [0, 2, 1],
@@ -601,7 +655,10 @@ export const composeTxFixture: Fixture[] = [
         description: 'builds a p2sh tx with two same value outputs (mixed p2sh + p2pkh) and change',
         request: {
             txType: 'p2sh',
-            changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
+            changeAddress: {
+                address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
+            },
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -610,11 +667,13 @@ export const composeTxFixture: Fixture[] = [
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
                 {
                     address: '1LetUsDestroyBitcoinTogether398Nrg',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -628,22 +687,25 @@ export const composeTxFixture: Fixture[] = [
             inputs: [UTXO],
             outputs: [
                 {
-                    address: '1LetUsDestroyBitcoinTogether398Nrg',
-                    amount: '30000',
-                    type: 'payment',
-                },
-                {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
+                },
+                {
+                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    amount: '30000',
+                    type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '40001',
                     type: 'change',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
-            outputsPermutation: [1, 0, 2],
+            outputsPermutation: [0, 1, 2],
             type: 'final',
         },
     },
@@ -651,7 +713,10 @@ export const composeTxFixture: Fixture[] = [
         description: 'explicit dust threshold stops change (ps2h/segwit)',
         request: {
             txType: 'p2sh',
-            changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
+            changeAddress: {
+                address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
+            },
             dustThreshold: 54600,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -660,6 +725,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '928960',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             utxos: [
@@ -681,6 +747,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '928960',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             outputsPermutation: [0],
@@ -690,7 +757,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a tx with 1 op-return and change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -698,6 +765,7 @@ export const composeTxFixture: Fixture[] = [
                 {
                     dataHex: 'deadbeef',
                     type: 'opreturn',
+                    script: { length: 6 },
                     customField: 'prove that opreturn output is generic',
                 },
             ],
@@ -714,10 +782,11 @@ export const composeTxFixture: Fixture[] = [
                 {
                     dataHex: 'deadbeef',
                     type: 'opreturn',
+                    script: { length: 6 },
                     customField: 'prove that opreturn output is generic',
-                } as AnyComposeFinalResult['outputs'][number], // hack for `customField`
+                },
                 {
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    ...CHANGE_ADDRESS,
                     amount: '99931',
                     type: 'change',
                 },
@@ -729,7 +798,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a tx with 2 op-returns and change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -737,10 +806,12 @@ export const composeTxFixture: Fixture[] = [
                 {
                     dataHex: 'deadbeef',
                     type: 'opreturn',
+                    script: { length: 6 },
                 },
                 {
                     dataHex: 'c0ffee',
                     type: 'opreturn',
+                    script: { length: 5 },
                 },
             ],
             utxos: [UTXO],
@@ -756,13 +827,15 @@ export const composeTxFixture: Fixture[] = [
                 {
                     dataHex: 'c0ffee',
                     type: 'opreturn',
+                    script: { length: 5 },
                 },
                 {
                     dataHex: 'deadbeef',
                     type: 'opreturn',
+                    script: { length: 6 },
                 },
                 {
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+                    ...CHANGE_ADDRESS,
                     amount: '99791',
                     type: 'change',
                 },
@@ -775,7 +848,10 @@ export const composeTxFixture: Fixture[] = [
         description: 'builds bech32/p2wpkh tx without change (drop dust)',
         request: {
             txType: 'p2wpkh',
-            changeAddress: { address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d' },
+            changeAddress: {
+                address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2wpkh },
+            },
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -784,6 +860,7 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2wpkh },
                 },
             ],
             utxos: [
@@ -805,6 +882,7 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2wpkh },
                 },
             ],
             outputsPermutation: [0],
@@ -816,7 +894,10 @@ export const composeTxFixture: Fixture[] = [
             'builds bech32/p2wpkh tx, no explicit dustThreshold (change above calculated dust)',
         request: {
             txType: 'p2wpkh',
-            changeAddress: { address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d' },
+            changeAddress: {
+                address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2wpkh },
+            },
             dustThreshold: 0,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -825,6 +906,7 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2wpkh },
                 },
             ],
             utxos: [
@@ -846,11 +928,13 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
                     amount: '490',
                     type: 'change',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2wpkh },
                 },
                 {
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2wpkh },
                 },
             ],
             outputsPermutation: [1, 0],
@@ -861,7 +945,10 @@ export const composeTxFixture: Fixture[] = [
         description: 'builds Legacy Segwit/p2sh tx without change (drop dust)',
         request: {
             txType: 'p2sh',
-            changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
+            changeAddress: {
+                address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
+            },
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -870,6 +957,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             utxos: [{ ...UTXO, amount: '101500' }],
@@ -886,6 +974,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             outputsPermutation: [0],
@@ -897,7 +986,10 @@ export const composeTxFixture: Fixture[] = [
             'builds Legacy Segwit/p2sh tx, no explicit dustThreshold (change above calculated dust)',
         request: {
             txType: 'p2sh',
-            changeAddress: { address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr' },
+            changeAddress: {
+                address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
+            },
             dustThreshold: 0,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -906,6 +998,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             utxos: [
@@ -927,11 +1020,13 @@ export const composeTxFixture: Fixture[] = [
                     address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '340',
                     type: 'change',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
                 {
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2sh },
                 },
             ],
             outputsPermutation: [1, 0],
@@ -944,6 +1039,7 @@ export const composeTxFixture: Fixture[] = [
             txType: 'p2tr',
             changeAddress: {
                 address: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2tr },
             },
             dustThreshold: 546,
             feeRate: '10',
@@ -953,12 +1049,14 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2tr },
                 },
             ],
             utxos: [
                 {
                     ...UTXO,
                     amount: '101500',
+                    script: { length: INPUT_SCRIPT_LENGTH.p2tr },
                 },
             ],
         },
@@ -968,12 +1066,13 @@ export const composeTxFixture: Fixture[] = [
             feePerByte: '13.513513513513514',
             max: undefined,
             totalSpent: '101500',
-            inputs: [{ ...UTXO, amount: '101500' }],
+            inputs: [{ ...UTXO, amount: '101500', script: { length: INPUT_SCRIPT_LENGTH.p2tr } }],
             outputs: [
                 {
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2tr },
                 },
             ],
             outputsPermutation: [0],
@@ -987,6 +1086,7 @@ export const composeTxFixture: Fixture[] = [
             txType: 'p2tr',
             changeAddress: {
                 address: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2tr },
             },
             dustThreshold: 0,
             feeRate: '10',
@@ -996,12 +1096,14 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2tr },
                 },
             ],
             utxos: [
                 {
                     ...UTXO,
                     amount: '102000',
+                    script: { length: INPUT_SCRIPT_LENGTH.p2tr },
                 },
             ],
         },
@@ -1011,17 +1113,19 @@ export const composeTxFixture: Fixture[] = [
             feePerByte: '10',
             max: undefined,
             totalSpent: '101540',
-            inputs: [{ ...UTXO, amount: '102000' }],
+            inputs: [{ ...UTXO, amount: '102000', script: { length: INPUT_SCRIPT_LENGTH.p2tr } }],
             outputs: [
                 {
                     address: 'bc1pgypgja2hmcx2l6s2ssq75k6ev68ved6nujcspt47dgvkp8euc70s6uegk6',
                     amount: '460',
                     type: 'change',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2tr },
                 },
                 {
                     address: 'bc1ptxs597p3fnpd8gwut5p467ulsydae3rp9z75hd99w8k3ljr9g9rqx6ynaw',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2tr },
                 },
             ],
             outputsPermutation: [1, 0],
@@ -1031,13 +1135,14 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a send-max-noaddress',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
             outputs: [
                 {
                     type: 'send-max-noaddress',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -1055,8 +1160,11 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'builds a simple tx without change (cashaddr)',
         request: {
-            changeAddress: { address: 'bitcoincash:qzppkat2v7xu9fr3yeuqdnggjqqltrs7pcg8swvhl0' },
-            network: bitcoincash,
+            changeAddress: {
+                address: 'bitcoincash:qzppkat2v7xu9fr3yeuqdnggjqqltrs7pcg8swvhl0',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
+            },
+
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -1065,6 +1173,7 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [UTXO],
@@ -1081,6 +1190,7 @@ export const composeTxFixture: Fixture[] = [
                     address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [0],
@@ -1090,7 +1200,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'use required (coinbase + unconfirmed) instead of more suitable utxo',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -1099,6 +1209,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -1110,6 +1221,7 @@ export const composeTxFixture: Fixture[] = [
                     confirmations: 200,
                     own: false,
                     required: true,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     vout: 0,
@@ -1118,6 +1230,7 @@ export const composeTxFixture: Fixture[] = [
                     coinbase: false,
                     confirmations: 150,
                     own: true,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     vout: 0,
@@ -1127,6 +1240,7 @@ export const composeTxFixture: Fixture[] = [
                     confirmations: 0,
                     own: false,
                     required: true,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     vout: 0,
@@ -1135,6 +1249,7 @@ export const composeTxFixture: Fixture[] = [
                     coinbase: false,
                     confirmations: 1000,
                     own: true,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
         },
@@ -1153,6 +1268,7 @@ export const composeTxFixture: Fixture[] = [
                     confirmations: 200,
                     own: false,
                     required: true,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     txid: 'b4dc0ffeee',
@@ -1162,18 +1278,20 @@ export const composeTxFixture: Fixture[] = [
                     confirmations: 0,
                     own: false,
                     required: true,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputs: [
                 {
+                    ...CHANGE_ADDRESS,
                     amount: '16842',
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
                     type: 'change',
                 },
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '100000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [1, 0],
@@ -1183,7 +1301,7 @@ export const composeTxFixture: Fixture[] = [
     {
         description: 'skip inputs/outputs permutation when sortingStrategy=none',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'none',
@@ -1192,6 +1310,7 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '70000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -1202,6 +1321,7 @@ export const composeTxFixture: Fixture[] = [
                     coinbase: false,
                     confirmations: 60,
                     own: false,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     txid: 'b4dc0ffeee',
@@ -1210,6 +1330,7 @@ export const composeTxFixture: Fixture[] = [
                     coinbase: false,
                     confirmations: 50,
                     own: false,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
         },
@@ -1227,6 +1348,7 @@ export const composeTxFixture: Fixture[] = [
                     coinbase: false,
                     confirmations: 60,
                     own: false,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     txid: 'b4dc0ffeee',
@@ -1235,6 +1357,7 @@ export const composeTxFixture: Fixture[] = [
                     coinbase: false,
                     confirmations: 50,
                     own: false,
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputs: [
@@ -1242,10 +1365,11 @@ export const composeTxFixture: Fixture[] = [
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     amount: '70000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
+                    ...CHANGE_ADDRESS,
                     amount: '46842',
-                    address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
                     type: 'change',
                 },
             ],
@@ -1257,17 +1381,20 @@ export const composeTxFixture: Fixture[] = [
         description:
             'builds a Dogecoin tx with change and both input and one of the outputs above MAX_SAFE_INTEGER',
         request: {
-            changeAddress: { address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj' },
+            changeAddress: {
+                address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
+            },
             dustThreshold: 999999,
             feeRate: '1000',
             sortingStrategy: 'bip69',
-            network: doge,
             feePolicy: 'doge',
             outputs: [
                 {
                     address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                     amount: '11556856849999734000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             utxos: [
@@ -1278,6 +1405,7 @@ export const composeTxFixture: Fixture[] = [
                     own: false,
                     txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
                     amount: '11556856856800000000',
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
         },
@@ -1295,6 +1423,7 @@ export const composeTxFixture: Fixture[] = [
                     own: false,
                     txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
                     amount: '11556856856800000000',
+                    script: { length: INPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputs: [
@@ -1302,11 +1431,13 @@ export const composeTxFixture: Fixture[] = [
                     address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
                     amount: '6800040000',
                     type: 'change',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
                 {
                     address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
                     amount: '11556856849999734000',
                     type: 'payment',
+                    script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
                 },
             ],
             outputsPermutation: [1, 0],

@@ -1,6 +1,7 @@
 import * as address from './address';
 import * as bip32 from './bip32';
 import * as bufferutils from './bufferutils';
+import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from './coinselect/coinselectUtils';
 import { composeTx } from './compose';
 import * as crypto from './crypto';
 import { deriveAddresses, getXpubOrDescriptorInfo } from './derivation';
@@ -22,6 +23,8 @@ export {
     script,
     networks,
     composeTx,
+    INPUT_SCRIPT_LENGTH,
+    OUTPUT_SCRIPT_LENGTH,
     deriveAddresses,
     getXpubOrDescriptorInfo,
     discovery,

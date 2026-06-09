@@ -10,15 +10,12 @@ import {
     ComposeInput,
     ComposeOutput,
     ComposeResultFinal,
-    Network,
 } from '../src';
-import * as baddress from '../src/address';
 import { TxWeightCalculator } from '../src/txWeightCalculator';
 
 export function verifyTxBytes(
     tx: ComposeResultFinal<ComposeInput, ComposeOutput, ComposeChangeAddress>,
     txType: Exclude<CoinSelectPaymentType, 'p2wsh'> = 'p2pkh',
-    network?: Network,
 ) {
     const calc = new TxWeightCalculator();
     tx.inputs.forEach(() => {
@@ -26,15 +23,7 @@ export function verifyTxBytes(
     });
 
     tx.outputs.forEach(out => {
-        if (out.type === 'opreturn') {
-            calc.addOutput({ length: 2 + out.dataHex.length / 2 });
-        }
-        if (out.type === 'payment') {
-            calc.addOutput({ length: baddress.toOutputScript(out.address, network).length });
-        }
-        if (out.type === 'change') {
-            calc.addOutputByKey(txType); // change output
-        }
+        calc.addOutput(out.script);
     });
 
     expect(calc.getVirtualBytes()).toEqual(tx.bytes);

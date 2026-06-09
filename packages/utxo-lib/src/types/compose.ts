@@ -1,5 +1,4 @@
-import type { Network } from '../networks';
-import type { CoinSelectPaymentType } from './coinselect';
+import type { CoinSelectPaymentType, CoinSelectScript } from './coinselect';
 
 // UTXO == unspent transaction output = all I can spend
 export interface ComposeInput {
@@ -10,6 +9,7 @@ export interface ComposeInput {
     own: boolean; // is the ORIGIN me (the same account)
     confirmations: number; // might be spent immediately (own) or after 6 conf (not own) see ./coinselect/tryConfirmed
     required?: boolean; // must be included into transaction
+    script: CoinSelectScript; // Bitcoin script
 }
 
 // Output parameter of coinselect algorithm which is either:
@@ -22,29 +22,34 @@ export interface ComposeOutputPayment {
     type: 'payment';
     address: string;
     amount: string;
+    script: CoinSelectScript;
 }
 
 export interface ComposeOutputPaymentNoAddress {
     type: 'payment-noaddress';
     amount: string;
+    script: CoinSelectScript;
 }
 
 export interface ComposeOutputSendMax {
-    type: 'send-max'; // only one in TX request
+    type: 'send-max';
     address: string;
     amount?: string;
+    script: CoinSelectScript;
 }
 
 export interface ComposeOutputSendMaxNoAddress {
     type: 'send-max-noaddress';
     amount?: never;
+    script: CoinSelectScript;
 }
 
 export interface ComposeOutputOpreturn {
-    type: 'opreturn'; // it doesn't need to have address
+    type: 'opreturn';
     dataHex: string;
     amount?: never;
     address?: never;
+    script: CoinSelectScript;
 }
 
 // NOTE: this interface **is not** accepted by ComposeRequest['utxos']
@@ -66,6 +71,7 @@ export type ComposeOutput = ComposeFinalOutput | ComposeNotFinalOutput;
 
 export interface ComposeChangeAddress {
     address: string;
+    script: CoinSelectScript;
 }
 
 export type TransactionInputOutputSortingStrategy =
@@ -93,7 +99,6 @@ export type ComposeRequest<
     feeRate: string | number; // in sat/byte, virtual size
     feePolicy?: ComposeFeePolicy; // explicit fee policy
     longTermFeeRate?: string | number; // dust output feeRate multiplier in sat/byte, virtual size
-    network: Network;
     changeAddress: Change;
     dustThreshold: number; // explicit dust threshold, in satoshi
     baseFee?: number; // DOGE or RBF base fee

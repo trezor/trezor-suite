@@ -1,11 +1,20 @@
-import { UTXO } from './compose';
+import { CHANGE_ADDRESS, UTXO } from './compose';
 import { CoinSelectPaymentType } from '../../src';
-import { AnyComposeRequest } from '../../src/types/compose';
+import {
+    AnyComposeRequest,
+    ComposeChangeAddress,
+    ComposeInput,
+    ComposeOutput,
+} from '../../src/types/compose';
+
+type OmitScript<T> = T extends { script: any } ? Omit<T, 'script'> : T;
 
 type Fixture = {
     description: string;
-    request: Omit<AnyComposeRequest, 'network'> & {
-        network?: AnyComposeRequest['network'];
+    request: Omit<AnyComposeRequest, 'utxos' | 'outputs' | 'changeAddress'> & {
+        utxos: OmitScript<ComposeInput>[];
+        outputs: OmitScript<ComposeOutput>[];
+        changeAddress: OmitScript<ComposeChangeAddress>;
     };
     result: Partial<Record<`${CoinSelectPaymentType}-${CoinSelectPaymentType}`, { bytes: number }>>;
 };
@@ -14,7 +23,7 @@ export const fixturesCrossCheck: Fixture[] = [
     {
         description: '1 input, 1 output, no change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -53,7 +62,7 @@ export const fixturesCrossCheck: Fixture[] = [
     {
         description: '1 input, 1 output, 1 change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -92,7 +101,7 @@ export const fixturesCrossCheck: Fixture[] = [
     {
         description: '2 inputs, 1 output, 1 change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
@@ -143,7 +152,7 @@ export const fixturesCrossCheck: Fixture[] = [
     {
         description: '7 inputs, all-types of outputs, 1 op_return, 1 change',
         request: {
-            changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+            changeAddress: CHANGE_ADDRESS,
             dustThreshold: 546,
             feeRate: '10',
             sortingStrategy: 'bip69',
