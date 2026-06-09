@@ -9404,9 +9404,42 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON',
         defaultMessage: 'Get started',
     },
+    TR_NO_DEVICE_ESHOP_BANNER_HEADING: {
+        id: 'TR_NO_DEVICE_ESHOP_BANNER_HEADING',
+        defaultMessage: 'Don’t have a Trezor yet?',
+    },
+    TR_NO_DEVICE_ESHOP_BANNER_DESCRIPTION: {
+        id: 'TR_NO_DEVICE_ESHOP_BANNER_DESCRIPTION',
+        defaultMessage: 'It’s the safest way to secure your crypto.',
+    },
+    TR_NO_DEVICE_ESHOP_BANNER_SETTINGS_DESCRIPTION: {
+        id: 'TR_NO_DEVICE_ESHOP_BANNER_SETTINGS_DESCRIPTION',
+        defaultMessage:
+            'Secure your crypto offline and unlock its full potential with Trezor hardware wallets.',
+    },
+    TR_NO_DEVICE_ESHOP_BANNER_CTA: {
+        id: 'TR_NO_DEVICE_ESHOP_BANNER_CTA',
+        defaultMessage: 'Get Trezor',
+    },
+    TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY: {
+        id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY',
+        defaultMessage: 'Advanced open-source security',
+    },
+    TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP: {
+        id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP',
+        defaultMessage: 'Powerful crypto app for mobile & desktop',
+    },
+    TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP: {
+        id: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP',
+        defaultMessage: 'Easy to set up & simple to recover',
+    },
     TR_ENABLE_AUTOSTOP_COINJOIN: {
         id: 'TR_ENABLE_AUTOSTOP_COINJOIN',
         defaultMessage: 'Stop coinjoin after this round',
+    },
+    TR_TREZOR_WALLET: {
+        id: 'TR_TREZOR_WALLET',
+        defaultMessage: 'Trezor wallet',
     },
     TR_TREZOR_DEVICE_TUTORIAL_HEADING: {
         id: 'TR_TREZOR_DEVICE_TUTORIAL_HEADING',

@@ -2,9 +2,16 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import {
+    type LegacyLabelingVisibleRootState,
+    selectIsLegacyLabelingVisible,
+} from '@suite/metadata';
 import { TurnOnSuiteSyncModals } from '@suite/suite-sync';
-import { selectDeviceStaticSessionId, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectDeviceStaticSessionId,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
@@ -12,31 +19,34 @@ import {
 } from '@suite-common/suite-sync';
 import { SidebarBanner } from '@trezor/product-components';
 
-export const SuiteSyncPromoBanner = () => {
-    const [isTurnOnSuiteSyncModalVisible, setIsTurnOnSuiteSyncModalVisible] = useState(false);
-    const [isDismissed, setIsDismissed] = useState(false);
+type SuiteSyncPromoBannerRootState = LegacyLabelingVisibleRootState &
+    WithSuiteSyncAndDeviceState &
+    MessageSystemRootState &
+    DeviceRootState;
 
-    const selectedDevice = useSelector(selectSelectedDevice);
-    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-    const suiteSyncInteraction = useSelector(
-        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
-            selectSuiteSyncInteraction(state, deviceStaticSessionId),
-    );
+export const selectShouldShowSuiteSyncPromoBanner = (state: SuiteSyncPromoBannerRootState) => {
+    const selectedDevice = selectSelectedDevice(state);
+    const deviceStaticSessionId = selectDeviceStaticSessionId(state);
 
-    const shouldDisplayBanner =
-        !isDismissed &&
-        isLegacyLabelingVisible &&
+    return (
+        selectIsLegacyLabelingVisible(state) &&
         selectedDevice !== undefined &&
         selectedDevice.connected &&
-        suiteSyncInteraction !== 'unsupported';
+        selectSuiteSyncInteraction(state, deviceStaticSessionId) !== 'unsupported'
+    );
+};
 
-    if (!shouldDisplayBanner) {
-        return null;
-    }
+type SuiteSyncPromoBannerProps = {
+    onDismiss: () => void;
+};
+
+export const SuiteSyncPromoBanner = ({ onDismiss }: SuiteSyncPromoBannerProps) => {
+    const [isTurnOnSuiteSyncModalVisible, setIsTurnOnSuiteSyncModalVisible] = useState(false);
+
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
     const handleTurnOn = () => setIsTurnOnSuiteSyncModalVisible(true);
-    const handleDismiss = () => setIsDismissed(true);
+    const handleDismiss = () => onDismiss();
 
     return (
         <>

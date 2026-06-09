@@ -192,15 +192,11 @@ const RightHandler = styled.div<ResizerHandlersProps>(
     `,
 );
 
-const Child = styled(Resizers)(
-    ({ $isResizing }) => `
+const Child = styled(Resizers)`
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    ${$isResizing && `overflow: hidden;`};
-`,
-);
+`;
 
 const ensureMinimalSize = (size: number): number =>
     size < MINIMAL_BOX_SIZE ? MINIMAL_BOX_SIZE : size;

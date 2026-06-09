@@ -1,10 +1,11 @@
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { type DeviceRootState } from '@suite-common/device';
+import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { SidebarBanner } from '@trezor/product-components';
 
+import { type DesktopUpdateRootState } from '../desktopUpdateReducer';
 import { selectUpdateStatus } from './selectUpdateStatus';
 import {
     type UpdateStatus,
@@ -40,13 +41,32 @@ const mapSuiteUpdateStatusToCallToActionTranslation: Record<UpdateStatus, Transl
     'update-downloaded-manual': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
 };
 
-export const UpdateNotificationBanner = () => {
-    const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
-    const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
-    const [isBannerVisible, setIsBannerVisible] = useState(true);
+type UpdateNotificationBannerRootState = DesktopUpdateRootState &
+    DeviceRootState &
+    DiscoveryRootState;
 
+export const selectShouldShowUpdateNotificationBanner = (
+    state: UpdateNotificationBannerRootState,
+) => {
+    if (selectHasRunningDiscovery(state)) {
+        return false;
+    }
+
+    const { updateStatusDevice, updateStatusSuite } = selectUpdateStatus(state);
+
+    const isUpdateAvailable =
+        updateStatusSuite !== 'up-to-date' ||
+        !['up-to-date', 'disconnected'].includes(updateStatusDevice);
+
+    return isUpdateAvailable;
+};
+
+type UpdateNotificationBannerProps = {
+    onDismiss: () => void;
+};
+
+export const UpdateNotificationBanner = ({ onDismiss }: UpdateNotificationBannerProps) => {
     const dispatch = useDispatch();
-    const discoveryInProgress = useSelector(selectHasRunningDiscovery);
     const updateStatusData: {
         updateStatus: UpdateStatus;
         updateStatusDevice: UpdateStatusDevice;
@@ -55,46 +75,29 @@ export const UpdateNotificationBanner = () => {
 
     const { updateStatus, updateStatusDevice, updateStatusSuite } = updateStatusData;
 
-    const isUpdateAvailable =
-        (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
-        (!['up-to-date', 'disconnected'].includes(updateStatusDevice) && !closedNotificationDevice);
-    const showUpdateBannerNotification = isBannerVisible && isUpdateAvailable;
+    const shouldUseSuiteUpdateStatus = updateStatusSuite !== 'up-to-date';
 
-    const translationHeader =
-        updateStatusSuite !== 'up-to-date'
-            ? mapSuiteUpdateStatusToHeaderTranslation[updateStatusSuite]
-            : mapDeviceUpdateStatusToTranslation[updateStatusDevice];
+    const translationHeader = shouldUseSuiteUpdateStatus
+        ? mapSuiteUpdateStatusToHeaderTranslation[updateStatusSuite]
+        : mapDeviceUpdateStatusToTranslation[updateStatusDevice];
 
     const translationCallToAction =
         mapSuiteUpdateStatusToCallToActionTranslation[
-            updateStatusSuite !== 'up-to-date' ? updateStatusSuite : updateStatusDevice
+            shouldUseSuiteUpdateStatus ? updateStatusSuite : updateStatusDevice
         ];
 
-    const handleClose = () => {
-        if (updateStatusSuite !== 'up-to-date') {
-            setClosedNotificationSuite(true);
-        }
-        if (updateStatusDevice !== 'up-to-date') {
-            setClosedNotificationDevice(true);
-        }
-
-        setIsBannerVisible(false);
-    };
-
-    if (
-        !showUpdateBannerNotification ||
-        translationHeader === null ||
-        translationCallToAction === null ||
-        discoveryInProgress
-    ) {
+    if (translationHeader === null || translationCallToAction === null) {
         return null;
     }
 
+    const handleClose = () => {
+        onDismiss();
+    };
+
     const handleOnClick = () => {
-        const onClick =
-            updateStatusSuite !== 'up-to-date'
-                ? mapSuiteUpdateToClick[updateStatusSuite]
-                : mapDeviceUpdateToClick[updateStatusDevice];
+        const onClick = shouldUseSuiteUpdateStatus
+            ? mapSuiteUpdateToClick[updateStatusSuite]
+            : mapDeviceUpdateToClick[updateStatusDevice];
 
         if (onClick !== null) {
             onClick({ dispatch });

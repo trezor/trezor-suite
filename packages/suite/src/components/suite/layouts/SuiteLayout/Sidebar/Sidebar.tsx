@@ -34,7 +34,6 @@ import {
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
@@ -47,6 +46,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
+
 const Content = styled.div`
     height: 100%;
     display: flex;

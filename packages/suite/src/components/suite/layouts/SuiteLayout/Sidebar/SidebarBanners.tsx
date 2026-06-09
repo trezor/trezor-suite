@@ -1,18 +1,78 @@
+import { useState } from 'react';
+
 import { AnimatePresence } from 'framer-motion';
 
-import { UpdateNotificationBanner } from '@suite/desktop-update';
-import { FeedbackFormManager } from '@suite/feature-feedback';
-import { SuiteSyncPromoBanner } from '@suite/metadata-migration';
-import { Column, ElevationContext } from '@trezor/components';
+import {
+    UpdateNotificationBanner,
+    selectShouldShowUpdateNotificationBanner,
+} from '@suite/desktop-update';
+import {
+    FeedbackFormManager,
+    selectShouldShowFeedbackSidebarBanner,
+} from '@suite/feature-feedback';
+import {
+    SuiteSyncPromoBanner,
+    selectShouldShowSuiteSyncPromoBanner,
+} from '@suite/metadata-migration';
+import { Box, ElevationContext } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
-export const SidebarBanners = () => (
-    <AnimatePresence>
-        <ElevationContext baseElevation={0}>
-            <Column gap={12} padding={12}>
-                <UpdateNotificationBanner />
-                <SuiteSyncPromoBanner />
-                <FeedbackFormManager />
-            </Column>
-        </ElevationContext>
-    </AnimatePresence>
-);
+import { useSelector } from 'src/hooks/suite';
+
+import {
+    NoDeviceEshopSidebarBanner,
+    selectShouldShowNoDeviceEshopSidebarBanner,
+} from './NoDeviceEshopSidebarBanner';
+
+export const SidebarBanners = () => {
+    const [isUpdateBannerVisible, setIsUpdateBannerVisible] = useState(true);
+    const [isSuiteSyncPromoBannerVisible, setIsSuiteSyncPromoBannerVisible] = useState(true);
+
+    const shouldShowUpdateBanner = useSelector(selectShouldShowUpdateNotificationBanner);
+    const shouldShowFeedbackBanner = useSelector(selectShouldShowFeedbackSidebarBanner);
+    const shouldShowSuiteSyncPromoBanner = useSelector(selectShouldShowSuiteSyncPromoBanner);
+    const shouldShowNoDeviceEshopBanner = useSelector(selectShouldShowNoDeviceEshopSidebarBanner);
+
+    const getActiveSidebarBanner = () => {
+        if (shouldShowUpdateBanner && isUpdateBannerVisible) {
+            return <UpdateNotificationBanner onDismiss={() => setIsUpdateBannerVisible(false)} />;
+        }
+
+        if (shouldShowSuiteSyncPromoBanner && isSuiteSyncPromoBannerVisible) {
+            return (
+                <SuiteSyncPromoBanner onDismiss={() => setIsSuiteSyncPromoBannerVisible(false)} />
+            );
+        }
+
+        if (shouldShowNoDeviceEshopBanner) {
+            return <NoDeviceEshopSidebarBanner />;
+        }
+
+        if (shouldShowFeedbackBanner) {
+            return <FeedbackFormManager />;
+        }
+
+        return null;
+    };
+
+    const banner = getActiveSidebarBanner();
+
+    if (!banner) {
+        return null;
+    }
+
+    return (
+        <AnimatePresence>
+            <ElevationContext baseElevation={0}>
+                <Box
+                    padding={12}
+                    minWidth={280}
+                    position={{ type: 'relative' }}
+                    zIndex={zIndices.popover}
+                >
+                    {banner}
+                </Box>
+            </ElevationContext>
+        </AnimatePresence>
+    );
+};
