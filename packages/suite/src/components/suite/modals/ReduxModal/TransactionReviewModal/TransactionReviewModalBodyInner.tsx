@@ -188,8 +188,10 @@ export const TransactionReviewModalBodyInner = ({
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
+    const isTronStakeFreeze = networkType === 'tron' && Boolean(precomposedForm.tronStakeResource);
     const showSummary =
-        !(isBumpFeeRbfAction && networkType === 'bitcoin') && networkType !== 'tron';
+        !(isBumpFeeRbfAction && networkType === 'bitcoin') &&
+        (networkType !== 'tron' || isTronStakeFreeze);
 
     const showTxValidityTimer = shouldShowTxValidityTimer({
         deadline,

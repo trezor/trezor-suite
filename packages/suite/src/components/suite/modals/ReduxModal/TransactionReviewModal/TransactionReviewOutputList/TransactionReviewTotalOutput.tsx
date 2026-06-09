@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
@@ -38,6 +38,8 @@ interface GetLinesParams {
     stakeType?: StakeType;
     nativeToken?: TokenInfo;
     isClearSignedTradingSwap: boolean;
+    isTronStakeFreeze: boolean;
+    tronResourceLabel: string;
 }
 
 const getLines = ({
@@ -49,6 +51,8 @@ const getLines = ({
     stakeType,
     nativeToken,
     isClearSignedTradingSwap,
+    isTronStakeFreeze,
+    tronResourceLabel,
 }: GetLinesParams): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType, stakeType);
@@ -74,6 +78,23 @@ const getLines = ({
     const amountWithoutFee = new BigNumber(precomposedTx.totalSpent)
         .minus(precomposedTx.fee)
         .toString();
+
+    if (isTronStakeFreeze) {
+        return [
+            {
+                id: 'amount',
+                label: <Translation id="AMOUNT" />,
+                value: amountWithoutFee,
+                type: 'amount',
+            },
+            {
+                id: 'resource',
+                label: <Translation id="TR_TRON_RESOURCE" />,
+                value: tronResourceLabel,
+                type: 'default',
+            },
+        ];
+    }
 
     if (precomposedForm.trading?.isSlip24Active || isClearSignedTradingSwap) {
         return [
@@ -173,12 +194,18 @@ export const TransactionReviewTotalOutput = ({
     isRbf,
 }: TransactionReviewTotalOutputProps) => {
     const device = useSelector(selectSelectedDevice);
+    const { translationString } = useTranslation();
 
     if (!device) {
         return null;
     }
 
     const { networkType } = account;
+    const isTronStakeFreeze = networkType === 'tron' && Boolean(precomposedForm.tronStakeResource);
+    const tronResourceLabel =
+        precomposedForm.tronStakeResource === 'energy'
+            ? translationString('TR_TRON_ENERGY')
+            : translationString('TR_TRON_BANDWIDTH');
     const nativeToken =
         account.accountType === 'placeholder' && 'nativeToken' in precomposedTx
             ? precomposedTx.nativeToken
@@ -200,11 +227,14 @@ export const TransactionReviewTotalOutput = ({
         stakeType,
         nativeToken,
         isClearSignedTradingSwap,
+        isTronStakeFreeze,
+        tronResourceLabel,
     });
 
     const titleId = (() => {
         if (isClearSignedTradingSwap) return 'TR_NETWORK_FEE';
         if (precomposedForm.trading?.isSlip24Active) return 'TR_SUMMARY';
+        if (isTronStakeFreeze) return 'TR_SUMMARY';
 
         return 'TR_TOTAL_INCLUDING_FEE';
     })();
