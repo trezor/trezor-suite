@@ -79,7 +79,7 @@ describe('FeesContent', () => {
 
         expect(getByText('Transaction fee')).toBeTruthy();
         expect(
-            getByText('Network fees are payments made to validators for processing transactions.'),
+            getByText('Fees are paid directly to validators for processing your transactions.'),
         ).toBeTruthy();
     });
 

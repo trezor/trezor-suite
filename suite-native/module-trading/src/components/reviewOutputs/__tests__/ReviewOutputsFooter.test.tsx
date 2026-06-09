@@ -50,9 +50,7 @@ describe('ReviewOutputsFooter', () => {
             },
         );
 
-        expect(
-            getByText('Everything is ready, you can send the transaction now.'),
-        ).toBeOnTheScreen();
+        expect(getByText("You're all set")).toBeOnTheScreen();
     });
 
     it('should resolveConsent on press', async () => {
