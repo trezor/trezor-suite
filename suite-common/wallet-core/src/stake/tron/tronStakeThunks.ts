@@ -3,6 +3,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
+    type FormState,
     type PrecomposedLevels,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
@@ -18,6 +19,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { signTronContract } from './signTronContract';
 import { buildFreezeBalanceV2Contract } from './tronStakeContracts';
+import { tronStakeActions } from './tronStakeReducer';
 import { type TronResourceType, type TronStakeError } from './tronStakeTypes';
 import { addFakePendingTronTxThunk } from '../../transactions/transactionsThunks';
 
@@ -50,6 +52,17 @@ const buildFreezeContract = (account: Account, amount: string, resourceType: Tro
         resourceType,
     });
 };
+
+const buildFreezeReviewForm = (resourceType: TronResourceType): FormState => ({
+    outputs: [],
+    feePerUnit: '0',
+    feeLimit: '',
+    options: ['broadcast'],
+    tronStakeResource: resourceType,
+    isCoinControlEnabled: false,
+    hasCoinControlBeenOpened: false,
+    selectedUtxos: [],
+});
 
 export const composeTronFreezeFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -99,82 +112,156 @@ export const composeTronFreezeFeeLevelsThunk = createThunk<
             feePerByte: feeLevel.feePerUnit ?? '0',
             bytes,
             inputs: [],
-            outputs: [],
-            outputsPermutation: [],
+            outputs: [{ address: account.descriptor, amount: amountInSun }],
+            outputsPermutation: [0],
         };
 
         return { normal: tx };
     },
 );
 
-export const submitTronFreezeThunk = createThunk<
-    { txid: string },
-    FreezeThunkArguments & { device: TrezorDevice },
-    { rejectValue: TronStakeError }
->(
+interface SubmitFreezeThunkArguments extends FreezeThunkArguments {
+    device: TrezorDevice;
+    requestPushApproval: () => Promise<boolean>;
+    onSigningStart?: () => void;
+    onSettled?: () => void;
+}
+
+export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArguments>(
     `${TRON_STAKE_MODULE}/submitTronFreezeThunk`,
-    async ({ account, device, amount, resourceType }, { dispatch, rejectWithValue }) => {
+    async (
+        { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
+        { dispatch },
+    ) => {
+        const { key: accountKey } = account;
+
         if (account.networkType !== 'tron') {
-            return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    error: { kind: 'compose-failed', message: 'Invalid network type.' },
+                }),
+            );
+
+            return;
         }
 
         const contract = buildFreezeContract(account, amount, resourceType);
 
         if (!contract) {
-            return rejectWithValue({ kind: 'compose-failed', message: 'Invalid owner address.' });
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    error: { kind: 'compose-failed', message: 'Invalid owner address.' },
+                }),
+            );
+
+            return;
         }
 
-        const signResult = await signTronContract({ account, device, contract });
+        dispatch(tronStakeActions.submitStarted({ accountKey }));
 
-        if ('error' in signResult) {
-            return rejectWithValue(signResult.error);
-        }
+        try {
+            const composed = await dispatch(
+                composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }),
+            )
+                .unwrap()
+                .catch(() => undefined);
+            const precomposedTx = composed?.normal?.type === 'final' ? composed.normal : undefined;
 
-        const pushResult = await TrezorConnect.pushTransaction({
-            tx: signResult.serializedTx,
-            coin: account.symbol,
-            identity: getAccountIdentity(account),
-        });
+            if (!precomposedTx) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        error: { kind: 'compose-failed' },
+                    }),
+                );
 
-        if (!pushResult.success) {
-            return rejectWithValue({ kind: 'broadcast-failed', message: pushResult.error.message });
-        }
+                return;
+            }
 
-        const { txid } = pushResult.payload;
+            dispatch(
+                tronStakeActions.storePrecomposedTransaction({
+                    precomposedTx,
+                    precomposedForm: buildFreezeReviewForm(resourceType),
+                    accountKey,
+                }),
+            );
 
-        const stakeAmount = unitsToSubunits({
-            value: asAmountUnit(new BigNumber(amount)),
-            decimals: getNetwork(account.symbol).decimals,
-        }).toString();
+            onSigningStart?.();
 
-        const composed = await dispatch(
-            composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }),
-        )
-            .unwrap()
-            .catch(() => undefined);
-        const composedTx = composed?.normal?.type === 'final' ? composed.normal : undefined;
+            const signResult = await signTronContract({ account, device, contract });
 
-        dispatch(
-            addFakePendingTronTxThunk({
-                account,
-                txid,
-                amount: '0',
-                fee: composedTx?.fee ?? '0',
-                type: 'self',
-                target: { addresses: [account.descriptor], amount: stakeAmount },
-                tronSpecific: {
-                    contractType: 'FreezeBalanceV2Contract',
-                    operation: 'freeze',
-                    resource: resourceType === 'energy' ? 'ENERGY' : 'BANDWIDTH',
-                    stakeAmount,
-                    bandwidthUsage:
-                        composedTx && new BigNumber(composedTx.fee).isZero()
-                            ? String(composedTx.bytes)
+            if ('error' in signResult) {
+                dispatch(tronStakeActions.submitFinished({ accountKey, error: signResult.error }));
+
+                return;
+            }
+
+            dispatch(
+                tronStakeActions.storeSignedTransaction({
+                    serializedTx: { tx: signResult.serializedTx, symbol: account.symbol },
+                }),
+            );
+
+            const isPushApproved = await requestPushApproval();
+
+            if (!isPushApproved) {
+                dispatch(
+                    tronStakeActions.submitFinished({ accountKey, error: { kind: 'cancelled' } }),
+                );
+
+                return;
+            }
+
+            const pushResult = await TrezorConnect.pushTransaction({
+                tx: signResult.serializedTx,
+                coin: account.symbol,
+                identity: getAccountIdentity(account),
+            });
+
+            if (!pushResult.success) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        error: { kind: 'broadcast-failed', message: pushResult.error.message },
+                    }),
+                );
+
+                return;
+            }
+
+            const { txid } = pushResult.payload;
+
+            const stakeAmount = unitsToSubunits({
+                value: asAmountUnit(new BigNumber(amount)),
+                decimals: getNetwork(account.symbol).decimals,
+            }).toString();
+
+            dispatch(
+                addFakePendingTronTxThunk({
+                    account,
+                    txid,
+                    amount: '0',
+                    fee: precomposedTx.fee ?? '0',
+                    type: 'self',
+                    target: { addresses: [account.descriptor], amount: stakeAmount },
+                    tronSpecific: {
+                        contractType: 'FreezeBalanceV2Contract',
+                        operation: 'freeze',
+                        resource: resourceType === 'energy' ? 'ENERGY' : 'BANDWIDTH',
+                        stakeAmount,
+                        bandwidthUsage: new BigNumber(precomposedTx.fee).isZero()
+                            ? String(precomposedTx.bytes)
                             : undefined,
-                },
-            }),
-        );
+                    },
+                }),
+            );
 
-        return { txid };
+            dispatch(tronStakeActions.submitFinished({ accountKey, txid }));
+        } finally {
+            onSettled?.();
+            dispatch(tronStakeActions.discardTransaction());
+        }
     },
 );
