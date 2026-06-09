@@ -76,8 +76,6 @@ jobs:
       - if: ${{ inputs.transport && contains(inputs.transport, 'local-suite') }}
         run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/transport-bridge" >> "$GITHUB_ENV"
       - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus $FOCUS_WORKSPACES
-      - if: ${{ inputs.testEnv == 'web' }}
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn && yarn build:libs
       - if: ${{ inputs.transport && contains(inputs.transport, 'local-suite') }}
         run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspace @trezor/transport-bridge build:node:bin
       - name: Install Playwright chromium
