@@ -1,6 +1,5 @@
 import cors, { type CorsOptions } from 'cors';
 import express, { type ErrorRequestHandler } from 'express';
-import { rateLimit } from 'express-rate-limit';
 
 const app = express();
 
@@ -22,8 +21,6 @@ const { GOOGLE_CLIENT_SECRET } = process.env; // generate testing credentials fo
 const GOOGLE_OAUTH_LOOPBACK_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
 const GOOGLE_OAUTH_LOOPBACK_PORT = '21335';
 const GOOGLE_OAUTH_LOOPBACK_PATHNAME = '/oauth';
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-const RATE_LIMIT_MAX_REQUESTS_PER_IP = 100;
 
 const checkResponse = (responseBody: object, expectedProperties: string[]) => {
     expectedProperties.forEach(property => {
@@ -99,16 +96,6 @@ app.get('/', (_req, res) => {
 app.get('/status', (_req, res) => {
     res.send({ status: 'ok' });
 });
-
-app.use(
-    rateLimit({
-        windowMs: RATE_LIMIT_WINDOW_MS,
-        limit: RATE_LIMIT_MAX_REQUESTS_PER_IP,
-        standardHeaders: true,
-        legacyHeaders: false,
-        message: 'Too many requests.',
-    }),
-);
 
 /**
  * Exchange authorization code for refresh token and access token.
