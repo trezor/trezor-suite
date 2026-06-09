@@ -6,6 +6,7 @@ import type {
     HistoricRates,
     TickerId,
     Timestamp,
+    TimestampedRates,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
@@ -21,8 +22,93 @@ import { ParallelRequestsCache } from './cache';
 import * as coingeckoService from './coingecko';
 
 const CONNECT_FETCH_TIMEOUT = 10_000;
+const SECONDS_PER_DAY = 24 * 60 * 60;
 
 const parallelRequestsCache = new ParallelRequestsCache();
+
+const isSameUTCDay = (firstTimestamp: number, secondTimestamp: number): boolean =>
+    Math.floor(firstTimestamp / SECONDS_PER_DAY) === Math.floor(secondTimestamp / SECONDS_PER_DAY);
+
+type GetAvailableTickersParams = {
+    tickers: TimestampedRates[];
+    timestamps: number[];
+    baseCurrencyCode: BaseCurrencyCode;
+};
+
+const getAvailableTickers = ({
+    tickers,
+    timestamps,
+    baseCurrencyCode,
+}: GetAvailableTickersParams): TimestampedRates[] =>
+    tickers.flatMap((ticker, index) => {
+        const timestamp = timestamps[index];
+        const rate = ticker.rates[baseCurrencyCode];
+
+        if (
+            timestamp === undefined ||
+            rate === undefined ||
+            rate < 0 ||
+            !isSameUTCDay(timestamp, ticker.ts)
+        ) {
+            return [];
+        }
+
+        return [{ ...ticker, ts: timestamp }];
+    });
+
+type GetTickersWithFallbackParams = GetAvailableTickersParams & {
+    ticker: TickerId;
+};
+
+const getTickersWithFallback = async ({
+    ticker,
+    tickers,
+    timestamps,
+    baseCurrencyCode,
+}: GetTickersWithFallbackParams): Promise<TimestampedRates[]> => {
+    const availableTickers = getAvailableTickers({
+        tickers,
+        timestamps,
+        baseCurrencyCode,
+    });
+    const availableTickersByTimestamp = new Map(
+        availableTickers.map(availableTicker => [availableTicker.ts, availableTicker]),
+    );
+    const missingTimestamps = timestamps.filter(
+        timestamp => !availableTickersByTimestamp.has(timestamp),
+    );
+
+    if (missingTimestamps.length === 0) {
+        return availableTickers;
+    }
+
+    const coingeckoResponse = await coingeckoService.getFiatRatesForTimestamps(
+        ticker,
+        missingTimestamps,
+        baseCurrencyCode,
+    );
+    const coingeckoTickersByTimestamp = new Map(
+        coingeckoResponse?.tickers.map(coingeckoTicker => [coingeckoTicker.ts, coingeckoTicker]) ??
+            [],
+    );
+
+    return timestamps.flatMap(timestamp => {
+        const availableTicker = availableTickersByTimestamp.get(timestamp);
+
+        if (availableTicker) {
+            return [availableTicker];
+        }
+
+        const coingeckoTicker = coingeckoTickersByTimestamp.get(timestamp);
+        const rate = coingeckoTicker?.rates[baseCurrencyCode];
+
+        if (!coingeckoTicker || rate === undefined || rate < 0) {
+            return [];
+        }
+
+        return [coingeckoTicker];
+    });
+};
 
 type FiatRatesParams = {
     ticker: TickerId;
@@ -234,15 +320,15 @@ export const getFiatRatesForTimestamps = (
 
                     if (!result.success) return null;
 
-                    // in case blockbook does not know fiat rate, it returns -1
-                    const validTickers = result.payload.tickers.filter(
-                        tick => tick.rates[baseCurrencyCode] && tick.rates[baseCurrencyCode] >= 0,
-                    );
-
                     return {
                         ts: new Date().getTime(),
                         symbol: ticker.symbol,
-                        tickers: validTickers,
+                        tickers: await getTickersWithFallback({
+                            ticker,
+                            tickers: result.payload.tickers,
+                            timestamps,
+                            baseCurrencyCode,
+                        }),
                     };
                 }
 
@@ -252,7 +338,17 @@ export const getFiatRatesForTimestamps = (
                     baseCurrencyCode,
                 );
 
-                if (blockbookResponse) return blockbookResponse;
+                if (blockbookResponse) {
+                    return {
+                        ...blockbookResponse,
+                        tickers: await getTickersWithFallback({
+                            ticker,
+                            tickers: blockbookResponse.tickers,
+                            timestamps,
+                            baseCurrencyCode,
+                        }),
+                    };
+                }
             }
 
             const coingeckoResponse = await coingeckoService.getFiatRatesForTimestamps(
