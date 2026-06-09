@@ -74,6 +74,24 @@ const encodeInnerContract = (contract: TronContracts): InnerContract => {
                 ),
             };
         }
+        case 'VoteWitnessContract': {
+            const { owner_address, votes } = contract.parameter.value;
+            const schema = getSchema('TronVoteWitnessContract');
+
+            return {
+                type: TronRawContractType.VoteWitnessContract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        votes: (votes ?? []).map(({ address, count }) => ({
+                            address: hexToBytes(address ?? ''),
+                            count: BigInt(count ?? 0),
+                        })),
+                    }),
+                ),
+            };
+        }
         default:
             throw new Error(
                 `Unsupported contract type for encoding: ${(contract as { type: string }).type}`,
