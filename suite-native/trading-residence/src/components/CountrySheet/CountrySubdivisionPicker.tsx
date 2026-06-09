@@ -52,7 +52,7 @@ export const CountrySubdivisionPicker = ({
             >
                 {selectedValue ? (
                     <Text
-                        color="contentSecondary"
+                        color="contentPrimary"
                         variant="body-md"
                         accessibilityLabel={translate(
                             'tradingResidence.locationSettings.selectedCountrySubdivision',
