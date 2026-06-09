@@ -54,6 +54,10 @@ const linkStyle = prepareNativeStyle(({ spacings }) => ({
     paddingVertical: spacings.sp10,
 }));
 
+const stackStyle = prepareNativeStyle(() => ({
+    marginTop: 'auto',
+}));
+
 export const Footer = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -66,7 +70,7 @@ export const Footer = () => {
     }
 
     return (
-        <VStack style={{ marginTop: 'auto' }}>
+        <VStack style={applyStyle(stackStyle)}>
             <AnimatedBox entering={FadeInDown}>
                 <VStack alignItems="center" paddingBottom="sp12">
                     <FooterProviderContent provider={providerInfo} />
