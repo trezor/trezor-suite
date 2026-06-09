@@ -16,6 +16,8 @@ export type TronStakeFormValues = {
     amount: string;
     resourceType: TronResourceType;
     selectedFee: FeeLevel['label'];
+    representative: string;
+    customRepresentativeAddress: string;
 };
 
 interface UseTronStakeFormProps {
@@ -31,6 +33,8 @@ export const useTronStakeForm = ({ account }: UseTronStakeFormProps) => {
             amount: '',
             resourceType: 'bandwidth',
             selectedFee: 'normal',
+            representative: '',
+            customRepresentativeAddress: '',
         },
     });
 

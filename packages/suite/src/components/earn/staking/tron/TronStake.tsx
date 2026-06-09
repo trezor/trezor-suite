@@ -1,11 +1,12 @@
 import { Translation } from '@suite/intl';
 import { TRON_STAKE_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { BulletList, type BulletListItemState, Column } from '@trezor/components';
+import { BulletList, type BulletListItemState, Column, Text } from '@trezor/components';
 
 import { TronStakeContext } from './TronStakeContext';
 import { TronFreezeStep } from './freeze/TronFreezeStep';
 import { useTronStakeFlow } from './hooks/useTronStakeFlow';
+import { TronVoteStep } from './vote/TronVoteStep';
 
 interface TronStakeProps {
     account: Account;
@@ -28,8 +29,11 @@ export const TronStake = ({ account }: TronStakeProps) => {
 
     return (
         <TronStakeContext.Provider value={context}>
-            <Column width="100%" alignItems="center">
+            <Column alignItems="center">
                 <Column gap={24} width="100%" maxWidth={500}>
+                    <Text typographyStyle="headline-md" as="h2">
+                        <Translation id="TR_EARN_TRON_STAKE_TITLE" />
+                    </Text>
                     <BulletList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
                         <BulletList.Item
                             state={getStepState('freeze')}
@@ -40,11 +44,9 @@ export const TronStake = ({ account }: TronStakeProps) => {
                         <BulletList.Item
                             state={getStepState('vote')}
                             title={<Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />}
-                        />
-                        <BulletList.Item
-                            state={getStepState('complete')}
-                            title={<Translation id="TR_EARN_TRON_EARN_STEP_TITLE" />}
-                        />
+                        >
+                            {step === 'vote' && <TronVoteStep />}
+                        </BulletList.Item>
                     </BulletList>
                 </Column>
             </Column>

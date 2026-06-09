@@ -107,7 +107,6 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'vote':
-            case 'complete':
                 // TBD
                 break;
             default:
