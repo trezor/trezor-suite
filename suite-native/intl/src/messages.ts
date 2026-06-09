@@ -1012,7 +1012,7 @@ export const messages = {
                 app: 'Powerful crypto app for mobile & desktop',
                 setup: 'Easy to set up & simple to recover',
             },
-            button: 'Get now',
+            button: 'Get Trezor',
         },
         items: {
             general: {
