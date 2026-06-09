@@ -678,7 +678,8 @@ export const messages = defineMessages({
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_2',
     },
     TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_3: {
-        defaultMessage: 'Your swap might be partially filled based on market conditions',
+        defaultMessage:
+            'Your swap may be completed in multiple parts, depending on market conditions',
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_3',
     },
     TR_INSTALLATION_FW_SLOW_TIP_BANNER: {
@@ -1832,7 +1833,7 @@ export const messages = defineMessages({
     },
     TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
         defaultMessage:
-            'The use of unlisted special characters may cause compatibility issues in the future.',
+            'The use of unsupported special characters may cause compatibility issues in the future.',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS_WARNING',
     },
     TR_CONFIRMED_TX: {
@@ -2819,7 +2820,7 @@ export const messages = defineMessages({
         id: 'TR_NAV_SIGN_AND_VERIFY',
     },
     TR_NAV_TRANSACTIONS: {
-        defaultMessage: 'Overview',
+        defaultMessage: 'Transaction overview',
         description: 'Title of the navigation tab that contains tx history.',
         id: 'TR_NAV_TRANSACTIONS',
     },
@@ -3247,8 +3248,7 @@ export const messages = defineMessages({
         id: 'TR_SKIP_UPDATE',
     },
     TR_SKIP_UPDATE_DESCRIPTION: {
-        defaultMessage:
-            'Updating to the latest firmware helps keep your Trezor secure and up to date.',
+        defaultMessage: 'Updating to the latest firmware helps keep your Trezor secure.',
         id: 'TR_SKIP_UPDATE_DESCRIPTION',
     },
     TR_SOLVE_ISSUE: {
@@ -4114,7 +4114,7 @@ export const messages = defineMessages({
     },
     TR_QUICK_ACTION_TOOLTIP_DEVICE_DISCONNECTED: {
         id: 'TR_QUICK_ACTION_TOOLTIP_DEVICE_DISCONNECTED',
-        defaultMessage: 'Device disconnected',
+        defaultMessage: 'Trezor disconnected',
     },
     TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
@@ -4170,7 +4170,7 @@ export const messages = defineMessages({
     },
     TR_TOR_ENABLING: {
         id: 'TR_TOR_ENABLING',
-        defaultMessage: 'Enabling',
+        defaultMessage: 'Enabling...',
     },
     TR_TOR_ERROR: {
         id: 'TR_TOR_ERROR',
@@ -4202,12 +4202,12 @@ export const messages = defineMessages({
     },
     TR_TOR_DISABLE_ONIONS_ONLY: {
         id: 'TR_TOR_DISABLE_ONIONS_ONLY',
-        defaultMessage: 'Missing non-onion custom backends',
+        defaultMessage: 'Missing non-onion custom backend',
     },
     TR_TOR_DISABLE_ONIONS_ONLY_TITLE: {
         id: 'TR_TOR_DISABLE_ONIONS_ONLY_TITLE',
         defaultMessage:
-            'Disabling Tor now will reset all Onion backends to the default Trezor servers.',
+            'Disabling Tor will reset all onion backends to the default Trezor servers.',
     },
     TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION: {
         id: 'TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION',
@@ -4228,7 +4228,7 @@ export const messages = defineMessages({
     },
     TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_TITLE: {
         id: 'TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_TITLE',
-        defaultMessage: 'Custom backends are no longer using onion addresses only.',
+        defaultMessage: 'Custom backends now support both onion and non-onion addresses.',
     },
     TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION: {
         id: 'TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION',
@@ -4265,7 +4265,7 @@ export const messages = defineMessages({
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
         defaultMessage:
-            'You used an onion address for your backends. To use onion addresses, you need to have access to the Tor network.',
+            'This backend uses an onion address. To connect to it, you need access to the Tor network.',
     },
     TR_ONION_LINKS_TITLE: {
         id: 'TR_ONION_LINKS_TITLE',
@@ -4449,11 +4449,11 @@ export const messages = defineMessages({
     },
     TR_ACTIVATED_COINS: {
         id: 'TR_ACTIVATED_COINS',
-        defaultMessage: 'Active assets',
+        defaultMessage: 'Add account to active coin',
     },
     TR_INACTIVE_COINS: {
         id: 'TR_INACTIVE_COINS',
-        defaultMessage: 'Available assets to activate',
+        defaultMessage: 'Activate coin and add account',
     },
     TR_ACTIVATION_IN_PROGRESS_BANNER: {
         id: 'TR_ACTIVATION_IN_PROGRESS_BANNER',
@@ -4785,7 +4785,7 @@ export const messages = defineMessages({
     },
     TR_FW_INSTALL_MAY_TAKE_A_WHILE: {
         id: 'TR_FW_INSTALL_MAY_TAKE_A_WHILE',
-        defaultMessage: 'Firmware installation may take some time to complete.',
+        defaultMessage: 'This firmware installation may take some time to complete.',
     },
     TR_CHARGE_BATTERY_TO_ATLEAST: {
         id: 'TR_CHARGE_BATTERY_TO_ATLEAST',
@@ -4899,7 +4899,7 @@ export const messages = defineMessages({
     TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION: {
         id: 'TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION',
         defaultMessage:
-            "If your Trezor is lost, damaged, or stolen, you won't be able to regain access to your assets without a wallet backup. Finish setting up your Trezor, then create a wallet backup in device settings.",
+            "If your Trezor is lost, stolen, or damaged, you won't be able to regain access to your assets without a wallet backup. Finish setting up your Trezor, then create a wallet backup in device settings.",
     },
     TR_CONTINUE_TO_PIN: {
         id: 'TR_CONTINUE_TO_PIN',
@@ -5102,7 +5102,7 @@ export const messages = defineMessages({
     TR_LABEL_REQUIREMENTS: {
         id: 'TR_LABEL_REQUIREMENTS',
         defaultMessage:
-            'Enter a name up to {length} characters, containing letters only from the English alphabet.',
+            'Enter a name up to {length} characters, using English letters, numbers, and supported special characters.',
         description: 'How many characters may be in device label and of what type.',
     },
     TR_LABEL_ERROR_LENGTH: {
@@ -5274,7 +5274,7 @@ export const messages = defineMessages({
     TR_ONBOARDING_BACKUP_SHAMIR_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_SHAMIR_WARNING',
         defaultMessage:
-            "This backup type allows for <strong>future upgrades</strong> but includes 20 words, which <strong>won't fit</strong> on the 12-word paper card packaged with your Trezor. <strong>Write them in numbered order on durable paper and don't store them digitally.</strong>",
+            "This backup type allows for <strong>future upgrades</strong> but includes 20 words, which <strong>won't fit</strong> on the 12-word paper card packaged with your Trezor. <strong>Write them in numbered order on durable paper and don't store them anywhere digital.</strong>",
     },
     TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE: {
         id: 'TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE',
@@ -5726,7 +5726,7 @@ export const messages = defineMessages({
     },
     TR_NFC_BACKUP_RESILIENCE: {
         id: 'TR_NFC_BACKUP_RESILIENCE',
-        defaultMessage: 'You can recover your wallet even if 1 tag is lost, damaged, or stolen.',
+        defaultMessage: 'You can recover your wallet even if 1 tag is lost, stolen, or damaged.',
     },
     TR_NFC_BACKUP_THRESHOLD_DESCRIPTION: {
         id: 'TR_NFC_BACKUP_THRESHOLD_DESCRIPTION',
@@ -6667,7 +6667,7 @@ export const messages = defineMessages({
     SETTINGS_BACKEND_SETTINGS_DESCRIPTION: {
         id: 'SETTINGS_BACKEND_SETTINGS_DESCRIPTION',
         defaultMessage:
-            'Connect to trusted servers to securely load your account data. Personalize your experience with a custom backend or another blockchain explorer.',
+            'Connect to a trusted server to securely load your account data. Personalize your experience with a custom backend or another blockchain explorer.',
     },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
@@ -6695,7 +6695,7 @@ export const messages = defineMessages({
     },
     TR_BACKENDS: {
         id: 'TR_BACKENDS',
-        defaultMessage: 'Backends',
+        defaultMessage: 'backend',
     },
     TR_CUSTOM_BACKEND_INVALID_URL: {
         id: 'TR_CUSTOM_BACKEND_INVALID_URL',
@@ -6727,7 +6727,7 @@ export const messages = defineMessages({
     },
     TR_OTHER_COINS_USE_DEFAULT_BACKEND: {
         id: 'TR_OTHER_COINS_USE_DEFAULT_BACKEND',
-        defaultMessage: 'Other coins use their default backends',
+        defaultMessage: 'Other coins use their own default backend',
     },
     TR_USE_DEFAULT_BACKENDS: {
         id: 'TR_USE_DEFAULT_BACKENDS',
@@ -6743,7 +6743,7 @@ export const messages = defineMessages({
     },
     TR_CUSTOM_FIRMWARE_VERSION: {
         id: 'TR_CUSTOM_FIRMWARE_VERSION',
-        defaultMessage: 'custom',
+        defaultMessage: 'Custom',
     },
     SETTINGS_ADV_COIN_CONN_INFO_TITLE: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_TITLE',
@@ -6751,7 +6751,7 @@ export const messages = defineMessages({
     },
     SETTINGS_ADV_COIN_CONN_INFO_URL: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_URL',
-        defaultMessage: 'Currently connected to',
+        defaultMessage: 'Connected to',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH',
@@ -6768,7 +6768,7 @@ export const messages = defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Unable to connect to the backend. Reconnect your device and check your internet connection or custom backend URL. Also, make sure the selected asset is activated in Settings.',
+            'Connection to the backend server failed. Check your internet connection, verify your custom backend address, reconnect your device, and make sure Bitcoin is enabled in Settings.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -7490,7 +7490,7 @@ export const messages = defineMessages({
     },
     TR_ANALYZE_IN_EXPLORER: {
         id: 'TR_ANALYZE_IN_EXPLORER',
-        defaultMessage: 'Analyze in blockchain explorer',
+        defaultMessage: 'Show in blockchain explorer',
     },
     TR_ANALYZE_IN_EXPLORER_DESC: {
         id: 'TR_ANALYZE_IN_EXPLORER_DESC',
@@ -7641,7 +7641,7 @@ export const messages = defineMessages({
     },
     TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER: {
         id: 'TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER',
-        defaultMessage: 'Suite Guide',
+        defaultMessage: 'Trezor Suite Guide',
     },
     TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION: {
         id: 'TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION',
@@ -7673,7 +7673,7 @@ export const messages = defineMessages({
     },
     TR_GUIDE_FEEDBACK_RATING_HEADLINE: {
         id: 'TR_GUIDE_FEEDBACK_RATING_HEADLINE',
-        defaultMessage: 'Enjoying Suite?',
+        defaultMessage: 'Enjoying Trezor Suite?',
     },
     TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE: {
         id: 'TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE',
@@ -8413,11 +8413,11 @@ export const messages = defineMessages({
     },
     TR_STAKE_REGISTERED: {
         id: 'TR_STAKE_REGISTERED',
-        defaultMessage: 'Registration of a stake address',
+        defaultMessage: 'Stake address registered',
     },
     TR_STAKE_DEREGISTERED: {
         id: 'TR_STAKE_DEREGISTERED',
-        defaultMessage: 'Deregistration of a stake address',
+        defaultMessage: 'Stake address unregistered',
     },
     TR_STAKE_REGISTRATION_DEPOSIT: {
         id: 'TR_STAKE_REGISTRATION_DEPOSIT',
@@ -8483,11 +8483,11 @@ export const messages = defineMessages({
     },
     TR_ENABLING_TOR: {
         id: 'TR_ENABLING_TOR',
-        defaultMessage: 'Enabling Tor',
+        defaultMessage: 'Enabling Tor...',
     },
     TR_ENABLING_TOR_FAILED: {
         id: 'TR_ENABLING_TOR_FAILED',
-        defaultMessage: 'Enabling Tor failed',
+        defaultMessage: 'Tor failed to enable',
     },
     TR_DISABLING_TOR: {
         id: 'TR_DISABLING_TOR',
@@ -9439,7 +9439,7 @@ export const messages = defineMessages({
     },
     TR_SEND_ADDRESS_CONFIRMATION_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_HEADING',
-        defaultMessage: 'Verify the address to avoid risking your funds',
+        defaultMessage: 'Verify the address',
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
@@ -9490,7 +9490,7 @@ export const messages = defineMessages({
     },
     TR_DISCOVERY_NEW_COINS: {
         id: 'TR_DISCOVERY_NEW_COINS',
-        defaultMessage: 'Refresh',
+        defaultMessage: 'Load coins',
     },
     TR_EVM_EXPLANATION_TITLE: {
         id: 'TR_EVM_EXPLANATION_TITLE',
@@ -10553,7 +10553,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_STAKED_AND_EARNING: {
         id: 'TR_STAKE_STAKED_AND_EARNING',
-        defaultMessage: 'Staked & receiving rewards',
+        defaultMessage: 'Staked & earning rewards',
     },
     TR_STAKE_CLAIM_AFTER_UNSTAKING: {
         id: 'TR_STAKE_CLAIM_AFTER_UNSTAKING',
@@ -11046,7 +11046,7 @@ export const messages = defineMessages({
     },
     TR_CHECK_CONNECTED_TREZORS: {
         id: 'TR_CHECK_CONNECTED_TREZORS',
-        defaultMessage: 'Checking for connected Trezors',
+        defaultMessage: 'Checking for connected Trezors...',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE',
