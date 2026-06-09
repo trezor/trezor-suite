@@ -55,13 +55,13 @@ yarn workspace @trezor/suite-desktop build:app
 
 ## Step 1 — Read context
 
-Read the `diagnosis` field from the fix task. It contains the full analysis from the analyst
+Read the `analysis` field from the fix task. It contains the full analysis from the analyst
 agent: error messages, stack traces, visual evidence, and root cause reasoning.
 Treat it as a starting hypothesis, not a fix prescription.
 
-Then read the source files mentioned in the diagnosis — spec files, page objects, helpers, and
+Then read the source files mentioned in the analysis — spec files, page objects, helpers, and
 (if a locator is involved) the product component that renders the target element. **Expand the
-diagnosis with your own product-code analysis and the preflight results (Step 2)** before
+analysis with your own product-code analysis and the preflight results (Step 2)** before
 deciding the fix.
 
 ---
@@ -98,11 +98,11 @@ unzip -q <path/to/trace.zip> -d /tmp/trace-preflight/
 ls /tmp/trace-preflight/resources/page@*.jpeg | sort | tail -10
 ```
 
-### Check the failure matches the diagnosis
+### Check the failure matches the analysis
 
 After reading the trace: if the test fails due to an infrastructure or environment error
 (emulator crash, transport failure, bridge error, process startup issue) rather than the
-test assertion described in `diagnosis` — retry once. If the retry shows the same
+test assertion described in `analysis` — retry once. If the retry shows the same
 infrastructure or environment error, return the result (Step 4) with `result: "fail"` and
 `iterations: 0`, and stop. Do not enter the fix loop.
 

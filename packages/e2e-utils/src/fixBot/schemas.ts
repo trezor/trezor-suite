@@ -6,6 +6,13 @@ export const TestToValidateSchema = z.object({
     spec: z.string(),
 });
 
+export const SkipReasonSchema = z.enum([
+    'PRODUCT_BUG',
+    'INFRASTRUCTURE',
+    'FIX_FAILED',
+    'FIX_DELIVERED',
+]);
+
 export const FixTaskSchema = z.object({
     id: z
         .string()
@@ -17,15 +24,14 @@ export const FixTaskSchema = z.object({
         .refine(v => !/[\r\n]/.test(v), 'branch must not contain newlines'),
     rootCause: z.string(),
     confidence: z.enum(['HIGH', 'MEDIUM', 'LOW']),
-    diagnosis: z.string(),
+    analysis: z.string(),
     validations: z.array(TestToValidateSchema),
 });
 
 export const SkippedTaskSchema = z.object({
     rootCause: z.string(),
-    reason: z.enum(['PRODUCT_BUG', 'INFRASTRUCTURE']),
-    analysis: z.string(),
-    affectedTests: z.array(z.string()),
+    reason: SkipReasonSchema,
+    validations: z.array(TestToValidateSchema),
 });
 
 export const AnalysisReportSchema = z.object({
@@ -68,10 +74,31 @@ export const SlackFixSummarySchema = FixResultSchema.extend({
     costUsd: z.number().nullable(),
 });
 
+// ── Cross-run ledger ─────────────────────────────────────────────────────────
+// Persistent memory of recurring failures so consecutive nightly runs don't
+// re-attempt or re-deliver the same root causes. State is "negative knowledge"
+// only — entries are pruned the moment their failure stops recurring (a passing
+// test is the sole signal of resolution; merged/closed PR state is never read).
+
+export const LedgerEntrySchema = z.object({
+    reason: SkipReasonSchema,
+    rootCause: z.string(),
+    validations: z.array(TestToValidateSchema),
+});
+
+export const LedgerSchema = z.object({
+    version: z.literal(1),
+    updatedAt: z.string(),
+    entries: z.array(LedgerEntrySchema),
+});
+
 export type AnalysisReport = z.infer<typeof AnalysisReportSchema>;
 export type FixResult = z.infer<typeof FixResultSchema>;
 export type SlackFixSummary = z.infer<typeof SlackFixSummarySchema>;
 export type ClaudeResult = z.infer<typeof ClaudeResultSchema>;
+export type SkipReason = z.infer<typeof SkipReasonSchema>;
+export type LedgerEntry = z.infer<typeof LedgerEntrySchema>;
+export type Ledger = z.infer<typeof LedgerSchema>;
 
 // Strip the top-level `$schema` which breaks Agent's attempt of JSON output
 const toCliJsonSchema = (schema: z.ZodType) => {

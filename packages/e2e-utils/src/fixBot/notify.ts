@@ -1,13 +1,8 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { error, log, warn } from '../logger';
-import {
-    type AnalysisReport,
-    AnalysisReportSchema,
-    type SlackFixSummary,
-    SlackFixSummarySchema,
-} from './schemas';
+import { readSummaries } from './common';
+import { type AnalysisReport, AnalysisReportSchema, type SlackFixSummary } from './schemas';
 
 const DIVIDER = '──────────────────────────────────────';
 
@@ -22,29 +17,6 @@ function formatCost(usd: number): string {
     return `$${usd.toFixed(2)}`;
 }
 
-function readSummaries(summariesDir: string): SlackFixSummary[] {
-    if (!existsSync(summariesDir)) return [];
-
-    const parsedSummaries: SlackFixSummary[] = [];
-    const allSummariesFiles = readdirSync(summariesDir).filter(
-        n => n.startsWith('slack-fix-summary-') && n.endsWith('.json'),
-    );
-    for (const filename of allSummariesFiles) {
-        const parsed = SlackFixSummarySchema.safeParse(
-            JSON.parse(readFileSync(join(summariesDir, filename), 'utf-8')),
-        );
-
-        if (!parsed.success) {
-            warn(`[notify] Failed to parse ${filename}: ${parsed.error.message}`);
-            continue;
-        }
-
-        parsedSummaries.push(parsed.data);
-    }
-
-    return parsedSummaries;
-}
-
 function readAnalysisCost(costFile: string | undefined): number | null {
     if (!costFile || !existsSync(costFile)) return null;
     try {
@@ -56,20 +28,12 @@ function readAnalysisCost(costFile: string | undefined): number | null {
     }
 }
 
-function formatFixTestRef(validations: AnalysisReport['fixTasks'][number]['validations']): string {
+function formatTestRef(validations: AnalysisReport['fixTasks'][number]['validations']): string {
     const first = validations[0];
     if (!first) return 'Test reference not available';
     const extrasPart = validations.length > 1 ? ` (+${validations.length - 1})` : '';
 
     return `    ${first.spec} [${first.group}]${extrasPart}`;
-}
-
-function formatSkippedTestRef(affectedTests: string[]): string {
-    const first = affectedTests[0];
-    if (!first) return 'Test reference not available';
-    const extrasPart = affectedTests.length > 1 ? ` (+${affectedTests.length - 1})` : '';
-
-    return `    ${first}${extrasPart}`;
 }
 
 function buildMessage(
@@ -106,7 +70,7 @@ function buildMessage(
             if (!summary) {
                 // Job was cancelled before publish.ts wrote the summary
                 lines.push(`❓ *${task.rootCause}*`);
-                lines.push(formatFixTestRef(task.validations));
+                lines.push(formatTestRef(task.validations));
                 lines.push(`    ${task.id} · job did not complete`);
                 continue;
             }
@@ -119,7 +83,7 @@ function buildMessage(
             const costPart = `${summary.costUsd !== null ? formatCost(summary.costUsd) : 'N/A'}`;
 
             lines.push(`${icon} *${task.rootCause}*`);
-            lines.push(formatFixTestRef(task.validations));
+            lines.push(formatTestRef(task.validations));
 
             if (result === 'not_duplicated') {
                 lines.push(`    ${task.id} · preflight passed — not flaky · ${costPart}`);
@@ -138,7 +102,7 @@ function buildMessage(
         for (const skip of report.skipped) {
             lines.push('');
             lines.push(`⛔ *${skip.reason}* — ${skip.rootCause}`);
-            const testRef = formatSkippedTestRef(skip.affectedTests);
+            const testRef = formatTestRef(skip.validations);
             if (testRef) lines.push(testRef);
         }
     }
@@ -197,7 +161,7 @@ async function main(): Promise<void> {
     }
 
     const report = AnalysisReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
-    const summaries = summariesDir ? readSummaries(summariesDir) : [];
+    const summaries = readSummaries(summariesDir);
     const analyzeCost = readAnalysisCost(analyzeCostFile);
 
     log(`[notify] ${report.fixTasks.length} fix tasks · ${summaries.length} summaries loaded`);
