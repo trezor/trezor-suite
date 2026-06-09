@@ -1,4 +1,5 @@
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import {
@@ -57,28 +58,48 @@ describe('ReviewOutputItemList', () => {
             accountKey: mockAccountKey({ symbol: 'btc', descriptor: 'btcAccount3' }),
         });
 
-        expect(getByText('Error: Account not found.')).toBeOnTheScreen();
+        expect(
+            getByText(`Error: ${getTranslation('transactionManagement.review.outputs.noAccount')}`),
+        ).toBeOnTheScreen();
     });
 
     it('should render outputs list', () => {
         const { getByText } = renderReviewOutputItemList({});
 
-        expect(getByText('Recipient address')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.addressLabel')),
+        ).toBeOnTheScreen();
         expect(getByText('abcd efgh ijkl mnop qrst uvwx')).toBeOnTheScreen();
-        expect(getByText('TimeBounds')).toBeOnTheScreen();
-        expect(getByText('No restriction')).toBeOnTheScreen();
-        expect(getByText('Amount')).toBeOnTheScreen();
-        expect(getByText('Maximum fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.timeboundsLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.timeboundsNotSet')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.amountLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.summary.maxFee')),
+        ).toBeOnTheScreen();
     });
 
     it('should render empty list when reviewOutputs are undefined', () => {
         mockSelectTransactionReviewOutputsFromDraftReturnValue = null;
         const { queryByText } = renderReviewOutputItemList({});
 
-        expect(queryByText('Recipient address')).toBeNull();
-        expect(queryByText('TimeBounds')).toBeNull();
-        expect(queryByText('Amount')).toBeNull();
-        expect(queryByText('Maximum fee')).toBeNull();
+        expect(
+            queryByText(getTranslation('transactionManagement.review.outputs.addressLabel')),
+        ).toBeNull();
+        expect(
+            queryByText(getTranslation('transactionManagement.review.outputs.timeboundsLabel')),
+        ).toBeNull();
+        expect(
+            queryByText(getTranslation('transactionManagement.review.outputs.amountLabel')),
+        ).toBeNull();
+        expect(
+            queryByText(getTranslation('transactionManagement.review.outputs.summary.maxFee')),
+        ).toBeNull();
     });
 
     describe('SlidingFooterOverlay', () => {

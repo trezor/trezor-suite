@@ -1,5 +1,6 @@
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { ETH_ACCOUNT_KEY } from '../../../__fixtures__/walletState';
@@ -48,7 +49,9 @@ describe('ReviewOutputSummaryItem', () => {
             },
         });
 
-        expect(getByText('Total including fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.summary.label')),
+        ).toBeOnTheScreen();
 
         // note that this test mocks the ReviewOutputItemValues component
         expect(
@@ -73,7 +76,9 @@ describe('ReviewOutputSummaryItem', () => {
             symbol: 'eth',
         });
 
-        expect(getByText('Total including fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.summary.label')),
+        ).toBeOnTheScreen();
 
         // note that this test mocks the ReviewOutputItemValues component
         expect(
@@ -126,7 +131,9 @@ describe('ReviewOutputSummaryItem', () => {
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 
-        expect(getByText('Total including fee')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.summary.label')),
+        ).toBeOnTheScreen();
 
         // note that this test mocks the ReviewOutputItemValues component
         expect(
