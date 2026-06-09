@@ -319,12 +319,10 @@ const getFiatRatesForNetworkInTimeFrame = async ({
     );
     if (G.isNullable(fiatRates)) return null;
 
-    const formattedFiatRates: FiatRatesItem[] = fiatRates.tickers.flatMap((ticker, index) => {
-        const time = timestamps[index];
-        if (time === undefined) return [];
-
-        return [{ time, rates: ticker.rates }];
-    });
+    const formattedFiatRates: FiatRatesItem[] = fiatRates.tickers.map(ticker => ({
+        time: ticker.ts,
+        rates: ticker.rates,
+    }));
 
     fiatRatesCache[cacheKey] = formattedFiatRates;
 
@@ -504,8 +502,8 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     );
 
     const coinsFiatRates: Record<CoinKey, FiatRatesItem[]> = D.fromPairs(
-        // Some coins might not have fiat rates, so we need to filter them out
-        pairs.filter(([, res]) => res?.[0]?.rates?.[baseCurrencyCode] !== -1),
+        // Some coins might not have fiat rates, so filter them out.
+        pairs.filter(([, fiatRates]) => fiatRates.length > 0),
     );
 
     if (A.length(accountsWithBalanceHistoryFlattened) === 1) {
