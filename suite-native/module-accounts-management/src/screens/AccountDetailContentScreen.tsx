@@ -59,7 +59,7 @@ export const AccountDetailContentScreen = ({
             noHorizontalPadding
         >
             <TransactionList
-                accountKey={account.key}
+                account={account}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}
             />
