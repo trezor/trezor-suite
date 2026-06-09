@@ -1,4 +1,5 @@
 import { useDevice } from '@suite/device';
+import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import {
     type TronStakeError,
     type TronStakeStepId,
@@ -89,7 +90,20 @@ export const useTronStakeActions = ({
         switch (step) {
             case 'freeze': {
                 const { amount, resourceType } = form.methods.getValues();
-                dispatch(submitTronFreezeThunk({ account, device, amount, resourceType }));
+                dispatch(
+                    submitTronFreezeThunk({
+                        account,
+                        device,
+                        amount,
+                        resourceType,
+                        requestPushApproval: async () =>
+                            Boolean(
+                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
+                            ),
+                        onSigningStart: () => dispatch(preserveModal()),
+                        onSettled: () => dispatch(closeModal()),
+                    }),
+                );
                 break;
             }
             case 'vote':

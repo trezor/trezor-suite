@@ -6,10 +6,11 @@ import {
     selectStablecoinYieldTxReview,
     selectStake,
     selectStakePrecomposedForm,
+    selectTronStakeTxReview,
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import {
     removeSendFormDraftThunk,
@@ -20,13 +21,14 @@ import {
     cancelSignTx as cancelSignStakingTx,
     signTransaction,
 } from 'src/actions/wallet/stakeActions';
+import { cancelSignTronFreezeTx } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { TransactionReviewModalSell } from './TransactionReviewModalSell';
-import { isStakeState } from './utils';
+import { type TxInfoState } from './utils';
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
@@ -34,35 +36,51 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const send = useSelector(state => state.wallet.send);
     const stake = useSelector(selectStake);
     const yieldTxReview = useSelector(selectStablecoinYieldTxReview);
+    const tronStakeTxReview = useSelector(selectTronStakeTxReview);
+    const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
+    const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const dispatch = useDispatch();
 
-    const isYield = Boolean(yieldTxReview.precomposedTx);
-    const isSend = !isYield && Boolean(send?.precomposedTx);
-    // Only one state should be available when the modal is open
-    // eslint-disable-next-line no-nested-ternary
-    const txInfoState = isSend ? send : isYield ? yieldTxReview : stake;
+    const getReviewSource = (): {
+        txInfoState: TxInfoState;
+        precomposedForm: FormState | undefined;
+        cancelSignTx: () => void;
+    } => {
+        if (tronStakeTxReview.precomposedTx) {
+            return {
+                txInfoState: tronStakeTxReview,
+                precomposedForm: tronStakeTxReview.precomposedForm,
+                cancelSignTx: () => dispatch(cancelSignTronFreezeTx()),
+            };
+        }
+        if (yieldTxReview.precomposedTx) {
+            return {
+                txInfoState: yieldTxReview,
+                precomposedForm: yieldTxReview.precomposedForm,
+                cancelSignTx: () => dispatch(cancelSignYieldTx()),
+            };
+        }
+        if (send?.precomposedTx) {
+            return {
+                txInfoState: send,
+                precomposedForm: sendPrecomposedForm,
+                cancelSignTx: () => dispatch(cancelSignSendFormTransactionThunk()),
+            };
+        }
 
-    const precomposedForm = useSelector(state => {
-        if (isYield) return yieldTxReview.precomposedForm;
-        if (isStakeState(txInfoState)) return selectStakePrecomposedForm(state);
+        return {
+            txInfoState: stake,
+            precomposedForm: stakePrecomposedForm,
+            cancelSignTx: () => dispatch(cancelSignStakingTx()),
+        };
+    };
 
-        return selectPrecomposedSendForm(state);
-    });
+    const { txInfoState, precomposedForm, cancelSignTx } = getReviewSource();
 
     const isRbfConfirmedError = type === 'review-transaction-rbf-previous-transaction-mined-error';
     const isExchange = precomposedForm?.trading?.activeSection === 'exchange';
     const isSell = precomposedForm?.trading?.activeSection === 'sell';
-
-    const handleCancelSignTx = () => {
-        if (isSend) {
-            dispatch(cancelSignSendFormTransactionThunk());
-        } else if (isYield) {
-            dispatch(cancelSignYieldTx());
-        } else {
-            dispatch(cancelSignStakingTx());
-        }
-    };
 
     const handleSignAndPushSendTx = async () => {
         try {
@@ -107,7 +125,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             <TransactionReviewModalExchange
                 decision={decision}
                 txInfoState={txInfoState}
-                cancelSignTx={handleCancelSignTx}
+                cancelSignTx={cancelSignTx}
                 isRbfConfirmedError={isRbfConfirmedError}
                 precomposedForm={precomposedForm}
             />
@@ -119,7 +137,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             <TransactionReviewModalSell
                 decision={decision}
                 txInfoState={txInfoState}
-                cancelSignTx={handleCancelSignTx}
+                cancelSignTx={cancelSignTx}
                 isRbfConfirmedError={isRbfConfirmedError}
                 precomposedForm={precomposedForm}
             />
@@ -131,7 +149,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             decision={decision}
             txInfoState={txInfoState}
             tryAgainSignTx={handleTryAgainSignTx}
-            cancelSignTx={handleCancelSignTx}
+            cancelSignTx={cancelSignTx}
             isRbfConfirmedError={isRbfConfirmedError}
             precomposedForm={precomposedForm}
         />
