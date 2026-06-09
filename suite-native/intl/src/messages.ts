@@ -1276,7 +1276,7 @@ export const messages = {
             labels: {
                 testnets: 'Testnet networks',
                 tokens: 'Including tokens',
-                tokensAndStaking: 'Including tokens and staking',
+                tokensAndStaking: 'Including tokens & staking',
             },
             bottomNote:
                 "Didn't find what you're looking for? Make sure the token uses one of the listed networks.",
@@ -2600,7 +2600,7 @@ export const messages = {
                     'Grow your crypto by locking it to help secure the {networkName} network—and earn rewards in return.',
                 cta: 'Enable {networkName}',
                 stablecoinYield: {
-                    title: 'Enable {networkName} to use Stablecoin Yield',
+                    title: 'Enable {networkName} to use stablecoin yield',
                     subtitle:
                         'Add the {networkName} network to deposit eligible stablecoins and earn yield.',
                     cta: 'Enable {networkName}',
@@ -2778,7 +2778,7 @@ export const messages = {
                     description: 'Deposit could not be prepared. Check the amount and try again.',
                 },
                 approvalTooLow: {
-                    title: 'Approval is too low. Change approval or lower amount.',
+                    title: 'Approval is too low. Change approval or lower amount to supply.',
                     primaryButton: 'Change approval',
                 },
                 transactionFailed: {
@@ -2795,13 +2795,13 @@ export const messages = {
         },
         yieldDepositRevokeScreen: {
             title: 'Revoke {tokenSymbol} spending',
-            subtitle: 'Revoke provider to spend your {tokenSymbol}.',
+            subtitle: 'Revoke this provider’s access to spend your {tokenSymbol}.',
             lowLimitInfoAlert:
                 'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
             account: 'Account',
             provider: 'Provider',
             limit: 'Limit',
-            pendingTitle: 'Confirming revoke',
+            pendingTitle: 'Confirming revoke...',
         },
         yieldWithdrawFlowScreen: {
             title: 'Withdraw',
@@ -2818,7 +2818,7 @@ export const messages = {
         },
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',
-            successMessage: "You're all set.",
+            successMessage: "You're all set",
         },
         yieldDepositRevokeReviewScreen: {
             title: 'Review with Trezor',
@@ -2826,7 +2826,7 @@ export const messages = {
         },
         yieldDepositReviewScreen: {
             title: 'Review with Trezor',
-            successMessage: "You're all set.",
+            successMessage: "You're all set",
             submitButton: 'Deposit now',
         },
         yieldWithdrawReviewScreen: {
@@ -3050,9 +3050,9 @@ export const messages = {
             quotesLoadingLabel: 'Searching for your best offer...',
             footer: {
                 termsOfProvider:
-                    "This service is provided and governed by {companyName}'s  <link>Terms & Conditions</link>. Trezor isn't involved.",
+                    'This service is offered by {companyName}, not Trezor. <link>Terms apply</link>',
                 termsAndConditionsGeneric:
-                    "This service is provided and governed by the provider’s Terms & Conditions. Trezor isn't involved.",
+                    'This service is offered by a third-party provider, not Trezor. Provider’s terms apply.',
                 howTradingWorksSheet: {
                     title: 'How trading works',
                     sheetTitle: 'How trading with Trezor works',
@@ -3197,10 +3197,10 @@ export const messages = {
             approvalSuccessAlert: 'Spending approval confirmed.',
             eip712Info: {
                 title: "You're swapping with {providerName}",
-                bullet1: 'Simply sign the order—no need to send transactions manually.',
-                bullet2: 'No gas fees—the smart contract covers everything automatically.',
+                bullet1: 'Simply sign the order—no need to send transactions manually',
+                bullet2: 'No gas fees—the smart contract covers everything automatically',
                 bullet3:
-                    'Your swap may be completed in multiple parts, depending on market conditions.',
+                    'Your swap may be completed in multiple parts, depending on market conditions',
             },
             fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
@@ -3405,7 +3405,7 @@ export const messages = {
         typeBitcoinOnly: 'Bitcoin-only',
         updateNotAvailable: 'Firmware update disabled',
         seedBottomSheet: {
-            title: 'Do you have your wallet backup?',
+            title: 'It’s a good practice to check your backup before updating firmware.',
             description:
                 'In the unlikely event of a firmware update issue, you may need your wallet backup to restore access. Check your wallet backup before you continue.',
             continueButton: 'Yes, I do',
@@ -3558,7 +3558,7 @@ export const messages = {
         },
         txValidityTimer: {
             countdown: '{seconds}s left to confirm',
-            confirming: 'Confirming transaction',
+            confirming: 'Confirming transaction...',
             expiredTitle: 'Transaction expired',
             expiredAlert: {
                 title: 'Transaction confirmation expired',
@@ -3577,7 +3577,7 @@ export const messages = {
                     ethereum: 'Maximum fee',
                     tron: 'Network fee',
                 },
-                body: 'Network fees are payments made to validators for processing transactions.',
+                body: 'Fees are paid directly to validators for processing your transactions.',
             },
             custom: {
                 addButton: 'Add custom fee',
@@ -3677,7 +3677,7 @@ export const messages = {
                 },
                 approveMaxAmount: 'Unlimited',
                 noAccount: 'Account not found.',
-                signSuccessMessage: 'Everything is ready, you can send the transaction now.',
+                signSuccessMessage: "You're all set",
             },
             cancelAlert: {
                 title: 'Cancel transaction?',
