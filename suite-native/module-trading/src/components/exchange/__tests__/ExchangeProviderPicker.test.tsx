@@ -40,7 +40,7 @@ describe('ExchangeProviderPicker', () => {
         });
 
         expect(getByText('Provider')).toBeOnTheScreen();
-        expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
     });
 
     it('should render provider when quote is selected', () => {

@@ -730,7 +730,7 @@ describe('useBuyForm', () => {
                 });
 
                 expect(result.current.getValues('generalAlert')).toEqual(
-                    'No offers available for your request. Change amount or currency.',
+                    'No offers found. Adjust the currency, assets, or amounts.',
                 );
             });
 

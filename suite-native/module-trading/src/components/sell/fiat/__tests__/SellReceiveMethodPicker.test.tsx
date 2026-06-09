@@ -66,7 +66,7 @@ describe('SellReceiveMethodPicker', () => {
             wallet: { trading: { sell: { isLoading: true } } },
         });
 
-        expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+        expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
     });
 
     it('should render "Not selected" when no quote is selected', () => {
@@ -99,7 +99,7 @@ describe('SellReceiveMethodPicker', () => {
                 wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
             });
 
-            expect(getByLabelText('Fetching offers...')).toBeOnTheScreen();
+            expect(getByLabelText('Searching for your best offer...')).toBeOnTheScreen();
         });
 
         it('should allow to select receive method', () => {

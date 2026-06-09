@@ -66,7 +66,7 @@ describe('ProviderListItem', () => {
             tradingType: 'exchange',
         });
 
-        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
+        expect(getByText('KYC is required.')).toBeOnTheScreen();
     });
 
     it('should render anonymous information for DEX providers', () => {
@@ -91,7 +91,7 @@ describe('ProviderListItem', () => {
     it('should render KYC warning for buy quote', () => {
         const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
-        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
+        expect(getByText('KYC is required')).toBeOnTheScreen();
     });
 
     it('should render KYC warning for sell quote', () => {
@@ -99,6 +99,6 @@ describe('ProviderListItem', () => {
             tradingType: 'sell',
         });
 
-        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
+        expect(getByText('KYC is required')).toBeOnTheScreen();
     });
 });

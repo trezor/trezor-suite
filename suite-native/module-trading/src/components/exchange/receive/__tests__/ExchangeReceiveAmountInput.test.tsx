@@ -75,6 +75,6 @@ describe('ExchangeReceiveAmountInput', () => {
             { wallet: { trading: { exchange: { isLoading: true } } } },
         );
 
-        expect(getByLabelText('Fetching offers...')).toBeTruthy();
+        expect(getByLabelText('Searching for your best offer...')).toBeTruthy();
     });
 });
