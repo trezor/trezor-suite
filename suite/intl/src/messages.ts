@@ -7695,6 +7695,14 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_FEEDBACK_ERROR',
         defaultMessage: 'A server error has occurred. Try again.',
     },
+    TR_GUIDE_HELP_TITLE: {
+        id: 'TR_GUIDE_HELP_TITLE',
+        defaultMessage: 'Help',
+    },
+    TR_GUIDE_GUIDES_TITLE: {
+        id: 'TR_GUIDE_GUIDES_TITLE',
+        defaultMessage: 'Guides',
+    },
     TR_ONBOARDING_STEP_WALLET: {
         id: 'TR_ONBOARDING_STEP_WALLET',
         defaultMessage: 'Wallet',

@@ -54,7 +54,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     }, [query, searchResult, setSearchActive, loading]);
 
     return (
-        <Box margin={{ bottom: 12 }}>
+        <Box margin={{ bottom: 16 }}>
             <Input
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
@@ -83,7 +83,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             />
 
             {searchResult.length ? (
-                <CardList margin={{ top: 8 }} data-testid="@guide/search/results">
+                <CardList margin={{ top: 16 }} data-testid="@guide/search/results">
                     {searchResult.map(({ page, preview }) => (
                         <GuideNode
                             key={page.id}
@@ -97,10 +97,10 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 !loading && (
                     <Paragraph
                         data-testid="@guide/search/no-results"
-                        typographyStyle="body-sm"
+                        typographyStyle="body-md"
                         intent="neutral"
                         priority="secondary"
-                        margin={{ top: 12 }}
+                        margin={{ top: 16 }}
                     >
                         <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
                     </Paragraph>

@@ -9,7 +9,13 @@ type GuideSectionHeadlineProps = {
 };
 
 export const GuideSectionHeadline = ({ id, children }: GuideSectionHeadlineProps) => (
-    <Paragraph as="h3" typographyStyle="body-sm-strong" padding={{ bottom: 16 }}>
+    <Paragraph
+        as="h3"
+        typographyStyle="body-md"
+        intent="neutral"
+        priority="secondary"
+        padding={{ bottom: 16 }}
+    >
         {children ?? (id && <Translation id={id} />)}
     </Paragraph>
 );
