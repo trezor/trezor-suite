@@ -83,6 +83,7 @@ export interface FormState {
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
     transactionData?: string; // used for solana serialized txn from trading api, ethereum or tron txn hex data
     destinationTag?: string; // For Ripple, Stellar, Solana, and Tron
+    tronStakeResource?: 'bandwidth' | 'energy';
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;

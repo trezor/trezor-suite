@@ -345,6 +345,7 @@ const constructNewFlow = ({
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
     const isTron = account.networkType === 'tron';
+    const isTronStakeFreeze = isTron && Boolean(precomposedForm.tronStakeResource);
     const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -548,7 +549,7 @@ const constructNewFlow = ({
                     outputs.push({ type: 'address', value: o.address });
                 }
 
-                if (!isSolana && !isUpdatedEthereumSendFlow) {
+                if (!isSolana && !isUpdatedEthereumSendFlow && !isTronStakeFreeze) {
                     outputs.push({
                         type: 'amount',
                         value: o.amount.toString(),
