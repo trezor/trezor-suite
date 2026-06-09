@@ -6,8 +6,8 @@ import { Banner, Card, Column, Divider } from '@trezor/components';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
 import { useTronStakeContext } from '../TronStakeContext';
+import { TronStakePendingTransaction } from '../TronStakePendingTransaction';
 import { TronFreezeAmount } from './TronFreezeAmount';
-import { TronFreezePendingTransaction } from './TronFreezePendingTransaction';
 import { TronFreezeResourceSelect } from './TronFreezeResourceSelect';
 import { TronFreezeSubmitButton } from './TronFreezeSubmitButton';
 import { useTronStakeFees } from '../hooks/useTronStakeFees';
@@ -48,7 +48,9 @@ export const TronFreezeStep = () => {
 
                 <TronFreezeSubmitButton />
 
-                <TronFreezePendingTransaction />
+                <TronStakePendingTransaction
+                    title={<Translation id="TR_EARN_TRON_PENDING_FREEZE" />}
+                />
             </Column>
         </FormProvider>
     );

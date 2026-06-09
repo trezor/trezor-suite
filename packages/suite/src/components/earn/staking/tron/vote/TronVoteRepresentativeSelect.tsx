@@ -1,0 +1,92 @@
+import { useWatch } from 'react-hook-form';
+
+import { Translation, useTranslation } from '@suite/intl';
+import { Column, Input, Row, Select, Text } from '@trezor/components';
+
+import { formatApyValue } from '../../../utils/earnApyUtils';
+import { useTronStakeContext } from '../TronStakeContext';
+import { CUSTOM_REPRESENTATIVE } from './constants';
+
+interface RepresentativeOption {
+    value: string;
+    name: string;
+    address?: string;
+    apr?: number;
+}
+
+type FormatContext = { context: 'menu' | 'value' };
+
+export const TronVoteRepresentativeSelect = () => {
+    const { translationString } = useTranslation();
+    const { representatives, form, actions } = useTronStakeContext();
+    const { control, setValue, register } = form.methods;
+
+    const representative = useWatch({ control, name: 'representative' });
+    const isDisabled = !!actions.pendingTxid;
+
+    const { ref: customRef, ...customField } = register('customRepresentativeAddress');
+
+    const options: RepresentativeOption[] = [
+        ...(representatives.data ?? []).map(({ address, name, apr }) => ({
+            value: address,
+            name,
+            address,
+            apr,
+        })),
+        { value: CUSTOM_REPRESENTATIVE, name: '' },
+    ];
+
+    const formatOptionLabel = (option: RepresentativeOption, { context }: FormatContext) => {
+        if (option.value === CUSTOM_REPRESENTATIVE) {
+            return <Translation id="TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE" />;
+        }
+
+        if (context === 'value') {
+            return option.name;
+        }
+
+        return (
+            <Row justifyContent="space-between" alignItems="center" gap={12}>
+                <Column gap={2}>
+                    <Text typographyStyle="body-md">{option.name}</Text>
+                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                        {option.address}
+                    </Text>
+                </Column>
+                <Text typographyStyle="body-md">
+                    <Translation
+                        id="TR_EARN_TRON_APR"
+                        values={{ apr: formatApyValue(option.apr) }}
+                    />
+                </Text>
+            </Row>
+        );
+    };
+
+    return (
+        <Column gap={12}>
+            <Select
+                options={options}
+                value={options.find(option => option.value === representative) ?? null}
+                onChange={(option: RepresentativeOption) =>
+                    setValue('representative', option.value, { shouldValidate: true })
+                }
+                placeholder={<Translation id="TR_EARN_TRON_SELECT_REPRESENTATIVE" />}
+                formatOptionLabel={formatOptionLabel}
+                isSearchable={false}
+                isClearable={false}
+                isDisabled={isDisabled}
+                isLoading={representatives.isLoading}
+            />
+
+            {representative === CUSTOM_REPRESENTATIVE && (
+                <Input
+                    innerRef={customRef}
+                    {...customField}
+                    placeholder={translationString('TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS')}
+                    isDisabled={isDisabled}
+                />
+            )}
+        </Column>
+    );
+};

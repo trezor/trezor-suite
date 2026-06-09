@@ -10169,6 +10169,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_ENERGY',
         defaultMessage: '{count, plural, =0 {Energy} other {+# energy}}',
     },
+    TR_EARN_TRON_STAKE_TITLE: {
+        id: 'TR_EARN_TRON_STAKE_TITLE',
+        defaultMessage: 'Stake',
+    },
     TR_EARN_TRON_FREEZE_STEP_TITLE: {
         id: 'TR_EARN_TRON_FREEZE_STEP_TITLE',
         defaultMessage: 'Freeze your funds',
@@ -10177,10 +10181,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_VOTE_STEP_TITLE',
         defaultMessage: 'Vote for representative',
     },
-    TR_EARN_TRON_EARN_STEP_TITLE: {
-        id: 'TR_EARN_TRON_EARN_STEP_TITLE',
-        defaultMessage: 'Earn rewards',
-    },
     TR_EARN_TRON_SUBMIT_ERROR: {
         id: 'TR_EARN_TRON_SUBMIT_ERROR',
         defaultMessage: 'Transaction failed. Please try again.',
@@ -10188,6 +10188,26 @@ export const messages = defineMessages({
     TR_EARN_TRON_PENDING_FREEZE: {
         id: 'TR_EARN_TRON_PENDING_FREEZE',
         defaultMessage: 'Confirming freeze…',
+    },
+    TR_EARN_TRON_PENDING_VOTE: {
+        id: 'TR_EARN_TRON_PENDING_VOTE',
+        defaultMessage: 'Confirming vote…',
+    },
+    TR_EARN_TRON_SELECT_REPRESENTATIVE: {
+        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVE',
+        defaultMessage: 'Select representative',
+    },
+    TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE: {
+        id: 'TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE',
+        defaultMessage: 'Enter different representative',
+    },
+    TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS: {
+        id: 'TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS',
+        defaultMessage: 'Enter representative address',
+    },
+    TR_EARN_TRON_APR: {
+        id: 'TR_EARN_TRON_APR',
+        defaultMessage: 'APR {apr}%',
     },
     TR_EARN_SUPPLYING_IN_A_NUTSHELL: {
         id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',

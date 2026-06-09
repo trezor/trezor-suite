@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -5,9 +7,13 @@ import { PendingTransactionInfo } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
 
-import { useTronStakeContext } from '../TronStakeContext';
+import { useTronStakeContext } from './TronStakeContext';
 
-export const TronFreezePendingTransaction = () => {
+interface TronStakePendingTransactionProps {
+    title: ReactNode;
+}
+
+export const TronStakePendingTransaction = ({ title }: TronStakePendingTransactionProps) => {
     const dispatch = useDispatch();
     const { account, actions } = useTronStakeContext();
     const { pendingTxid } = actions;
@@ -18,7 +24,7 @@ export const TronFreezePendingTransaction = () => {
 
     return (
         <PendingTransactionInfo
-            title={<Translation id="TR_EARN_TRON_PENDING_FREEZE" />}
+            title={title}
             txidLabel={<Translation id="TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID" />}
             txidComponent={
                 <Address
