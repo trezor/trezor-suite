@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
@@ -25,13 +26,17 @@ describe('FeeSummaryCard', () => {
     it('should render fee label for bitcoin', () => {
         const { getByText } = renderCard();
 
-        expect(getByText('Transaction fee')).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeTruthy();
     });
 
     it('should render ethereum-specific label for ethereum network', () => {
         const { getByText } = renderCard({ networkType: 'ethereum', symbol: 'eth' });
 
-        expect(getByText('Maximum fee')).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
+        ).toBeTruthy();
     });
 
     it('should render pressable card with testID', () => {
