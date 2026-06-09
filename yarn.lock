@@ -14110,6 +14110,7 @@ __metadata:
     "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
