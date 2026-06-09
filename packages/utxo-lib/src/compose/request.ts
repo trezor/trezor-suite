@@ -11,18 +11,15 @@ import {
 import type { Network } from '../networks';
 import { p2data } from '../payments/embed';
 import type {
+    AnyComposeRequest,
     CoinSelectInput,
     CoinSelectOutput,
     CoinSelectPaymentType,
     CoinSelectRequest,
-    ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,
-    ComposeRequest,
     ComposeResultError,
 } from '../types';
-
-type Request = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>;
 
 function validateAndParseFeeRate(rate: unknown) {
     const feeRate = typeof rate === 'string' ? Number(rate) : rate;
@@ -70,7 +67,7 @@ function transformInput(
 
 function validateAndParseUtxos(
     txType: CoinSelectPaymentType,
-    { utxos }: Request,
+    { utxos }: AnyComposeRequest,
 ): ComposeResultError | CoinSelectInput[] {
     if (utxos.length === 0) {
         return { type: 'error', error: 'MISSING-UTXOS' };
@@ -138,7 +135,7 @@ function transformOutput(
 
 function validateAndParseOutputs(
     txType: CoinSelectPaymentType,
-    { outputs, network }: Request,
+    { outputs, network }: AnyComposeRequest,
 ):
     | {
           outputs: CoinSelectOutput[];
@@ -185,7 +182,7 @@ function validateAndParseOutputs(
 
 function validateAndParseChangeOutput(
     txType: CoinSelectPaymentType,
-    { changeAddress, network }: Request,
+    { changeAddress, network }: AnyComposeRequest,
 ): CoinSelectOutput | ComposeResultError {
     // NOTE: use "send-max" to create changeOutput. we don't know the final amount yet
     try {
@@ -199,7 +196,9 @@ function validateAndParseChangeOutput(
     }
 }
 
-export function validateAndParseRequest(request: Request): CoinSelectRequest | ComposeResultError {
+export function validateAndParseRequest(
+    request: AnyComposeRequest,
+): CoinSelectRequest | ComposeResultError {
     const feeRate = validateAndParseFeeRate(request.feeRate);
     if (!feeRate) {
         return { type: 'error', error: 'INCORRECT-FEE-RATE' };

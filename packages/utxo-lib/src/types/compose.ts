@@ -101,6 +101,8 @@ export type ComposeRequest<
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
+export type AnyComposeRequest = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>;
+
 type ComposedTransactionOutputs<T> = T extends ComposeOutputSendMax
     ? Omit<T, 'type'> & ComposeOutputPayment // NOTE: replace ComposeOutputSendMax (no amount) with ComposeOutputPayment (with amount)
     : T extends ComposeFinalOutput

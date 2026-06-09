@@ -1,9 +1,9 @@
 import { bitcoincash, doge } from '../../src/networks';
 import {
+    AnyComposeRequest,
     ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,
-    ComposeRequest,
     ComposeResult,
     ComposeResultFinal,
 } from '../../src/types/compose';
@@ -18,7 +18,6 @@ export const UTXO: ComposeInput & { path: number[] } = {
     amount: '102001',
 };
 
-type AnyComposeRequest = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>;
 type AnyComposeResult = ComposeResult<ComposeInput, ComposeOutput, ComposeChangeAddress>;
 type AnyComposeFinalResult = ComposeResultFinal<ComposeInput, ComposeOutput, ComposeChangeAddress>;
 

@@ -1,13 +1,6 @@
 import { UTXO } from './compose';
 import { CoinSelectPaymentType } from '../../src';
-import {
-    ComposeChangeAddress,
-    ComposeInput,
-    ComposeOutput,
-    ComposeRequest,
-} from '../../src/types/compose';
-
-type AnyComposeRequest = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>;
+import { AnyComposeRequest } from '../../src/types/compose';
 
 type Fixture = {
     description: string;
