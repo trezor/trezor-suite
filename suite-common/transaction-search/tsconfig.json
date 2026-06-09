@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../reactive-collection" },
         { "path": "../test-utils" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },

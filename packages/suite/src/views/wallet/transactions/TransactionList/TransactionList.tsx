@@ -1,11 +1,9 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
-import useDebounce from 'react-use/lib/useDebounce';
-
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { advancedSearchTransactions } from '@suite-common/transaction-search';
+import { useTransactionSearch } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Column, SkeletonStack } from '@trezor/components';
 import { arrayPartition } from '@trezor/utils';
@@ -60,18 +58,11 @@ export const TransactionList = ({
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchedTransactions, setSearchedTransactions] = useState(transactions);
+    const searchedTransactions = useTransactionSearch(transactions, searchLabels, searchQuery, {
+        debounceMs: 200,
+    });
 
     const sectionRef = useRef<HTMLDivElement>(null);
-
-    useDebounce(
-        () => {
-            const results = advancedSearchTransactions(transactions, searchLabels, searchQuery);
-            setSearchedTransactions(results);
-        },
-        200,
-        [transactions, searchQuery, searchLabels],
-    );
 
     useEffect(() => {
         if (anchor && !fetchedAll) {

@@ -10701,6 +10701,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/reactive-collection@workspace:*, @suite-common/reactive-collection@workspace:suite-common/reactive-collection":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/reactive-collection@workspace:suite-common/reactive-collection"
+  dependencies:
+    "@testing-library/react": "npm:^16.3.2"
+    react: "npm:19.2.4"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/redux-utils@workspace:*, @suite-common/redux-utils@workspace:suite-common/redux-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
@@ -11091,6 +11100,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/transaction-search@workspace:suite-common/transaction-search"
   dependencies:
+    "@suite-common/reactive-collection": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
