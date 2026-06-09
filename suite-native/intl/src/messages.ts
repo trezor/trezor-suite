@@ -2245,6 +2245,8 @@ export const messages = {
                     },
                 },
                 addressQrLabel: 'Scan recipient address',
+                qrNetworkMismatch:
+                    'QR code is for {qrNetwork}, but your account is on {accountNetwork}. Make sure to switch to the right network.',
                 amountLabel: 'Amount to be sent',
                 maxButton: 'Send max',
                 destinationTag: {

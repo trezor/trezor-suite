@@ -2,6 +2,7 @@ import React from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { CardDivider, VStack } from '@suite-native/atoms';
@@ -14,11 +15,13 @@ type RecipientInputsProps = {
     index: number;
     accountKey: AccountKey;
     maxSpendableAmount?: string;
+    onQrNetworkMismatch?: (qrNetworkSymbol: NetworkSymbol | null) => void;
 };
 export const RecipientInputs = ({
     index,
     accountKey,
     maxSpendableAmount,
+    onQrNetworkMismatch,
 }: RecipientInputsProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -30,7 +33,11 @@ export const RecipientInputs = ({
 
     return (
         <VStack spacing="sp16">
-            <AddressInput index={index} accountKey={accountKey} />
+            <AddressInput
+                index={index}
+                accountKey={accountKey}
+                onQrNetworkMismatch={onQrNetworkMismatch}
+            />
             <CardDivider />
             <AmountInputs index={index} maxSpendableAmount={maxSpendableAmount} />
             {hasDestinationTag && (

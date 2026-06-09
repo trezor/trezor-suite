@@ -170,6 +170,8 @@ export type SendStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         postNavigationAction?: 'deviceDisconnectedAlert';
+        initialAddress?: string;
+        initialAmount?: string;
     };
     [SendStackRoutes.SendUtxo]: {
         accountKey: AccountKey;
