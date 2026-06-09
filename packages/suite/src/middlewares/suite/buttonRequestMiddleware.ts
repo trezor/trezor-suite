@@ -17,6 +17,7 @@ const SIGN_TX_ROUTES = [
     'earn-yield-deposit',
     'earn-yield-withdraw',
     'earn-yield-claim',
+    'earn-staking-tron',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [
@@ -31,6 +32,9 @@ const getAccountForButtonRequest = (state: AppState) => {
 
     const yieldAccountKey = state.wallet.stablecoinYield.txReview.accountKey;
     if (yieldAccountKey) return selectAccountByKey(state, yieldAccountKey);
+
+    const tronStakeAccountKey = state.wallet.tronStake.txReview.accountKey;
+    if (tronStakeAccountKey) return selectAccountByKey(state, tronStakeAccountKey);
 
     const sendAccountKey = state.wallet.send.accountKey;
     if (sendAccountKey) return selectAccountByKey(state, sendAccountKey);
