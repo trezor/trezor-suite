@@ -8,6 +8,9 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../trading-state" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../test-utils" },
