@@ -16295,10 +16295,10 @@ __metadata:
     css-minimizer-webpack-plugin: "npm:^7.0.4"
     dotenv: "npm:17.2.3"
     html-webpack-plugin: "npm:5.6.7"
+    minimizer-webpack-plugin: "npm:^5.6.0"
     raw-loader: "npm:^4.0.2"
     react-refresh: "npm:^0.18.0"
     stream-browserify: "npm:^3.0.0"
-    terser-webpack-plugin: "npm:^5.6.0"
     vite: "npm:^8.0.7"
     vite-plugin-wasm: "npm:^3.6.0"
     vm-browserify: "npm:^1.1.2"
@@ -16388,10 +16388,10 @@ __metadata:
     electron-updater: "npm:6.8.6"
     glob: "npm:^13.0.1"
     lodash: "npm:^4.18.1"
+    minimizer-webpack-plugin: "npm:^5.6.0"
     node-loader: "npm:^2.1.0"
     openpgp: "npm:^6.3.0"
     rimraf: "npm:^6.1.2"
-    terser-webpack-plugin: "npm:^5.6.0"
     webpack: "npm:5.107.2"
     ws: "npm:^8.20.0"
   languageName: unknown
@@ -35906,6 +35906,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimizer-webpack-plugin@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "minimizer-webpack-plugin@npm:5.6.0"
+  dependencies:
+    "@jridgewell/trace-mapping": "npm:^0.3.25"
+    jest-worker: "npm:^27.4.5"
+    schema-utils: "npm:^4.3.0"
+    terser: "npm:^5.31.1"
+  peerDependencies:
+    webpack: ^5.1.0
+  peerDependenciesMeta:
+    "@minify-html/node":
+      optional: true
+    "@swc/core":
+      optional: true
+    "@swc/css":
+      optional: true
+    "@swc/html":
+      optional: true
+    clean-css:
+      optional: true
+    cssnano:
+      optional: true
+    csso:
+      optional: true
+    esbuild:
+      optional: true
+    html-minifier-terser:
+      optional: true
+    lightningcss:
+      optional: true
+    postcss:
+      optional: true
+    uglify-js:
+      optional: true
+  checksum: 10/58a37cbb6898f2b35731ab3cff8d55f7dc95350485fe4aa06900acb6294c1e9ffb60692447c2481bb22fd17121821829ff2d7a7823aec0cebcd1bdbbd0828b31
+  languageName: node
+  linkType: hard
+
 "minipass-collect@npm:^2.0.1":
   version: 2.0.1
   resolution: "minipass-collect@npm:2.0.1"
@@ -44067,7 +44106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^5.3.14, terser-webpack-plugin@npm:^5.5.0, terser-webpack-plugin@npm:^5.6.0":
+"terser-webpack-plugin@npm:^5.3.14, terser-webpack-plugin@npm:^5.5.0":
   version: 5.6.0
   resolution: "terser-webpack-plugin@npm:5.6.0"
   dependencies:

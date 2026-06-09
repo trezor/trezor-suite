@@ -4,8 +4,8 @@ import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import childProcess from 'child_process';
 import fs from 'fs';
 import { sync } from 'glob';
+import TerserPlugin from 'minimizer-webpack-plugin';
 import path from 'path';
-import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
 import { suiteVersion } from '../../suite/package.json';
