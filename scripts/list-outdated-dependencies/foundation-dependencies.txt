@@ -76,7 +76,6 @@ set.prototype.union
 sort-package-json
 terser-webpack-plugin
 typescript-eslint
-uuid
 vm-browserify
 webpack
 webpack-bundle-analyzer
