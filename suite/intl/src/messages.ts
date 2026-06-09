@@ -1788,6 +1788,10 @@ export const messages = defineMessages({
         defaultMessage:
             'These tokens represent your DeFi positions. Sending or swapping them will transfer ownership of those positions.',
     },
+    TR_DEFI_TOKENS_EMPTY: {
+        id: 'TR_DEFI_TOKENS_EMPTY',
+        defaultMessage: 'No DeFi tokens',
+    },
     TR_DEFI_YIELD_TOKEN_BANNER_TITLE: {
         id: 'TR_DEFI_YIELD_TOKEN_BANNER_TITLE',
         defaultMessage: '{token} represents your position in the vault.',

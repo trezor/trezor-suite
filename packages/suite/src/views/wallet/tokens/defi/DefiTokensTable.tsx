@@ -15,6 +15,7 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
+import { NoTokens } from '../common/NoTokens';
 import { TokensTable } from '../common/TokensTable/TokensTable';
 
 interface DefiTokensTableProps {
@@ -55,20 +56,27 @@ export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTabl
         [enhancedTokens, account.symbol, coinDefinitions, searchQuery],
     );
 
+    const hasShownTokens =
+        tokens.shownWithBalance.length > 0 || tokens.shownWithoutBalance.length > 0;
+
     return (
         <Column gap={14}>
             <Banner intent="info" description={<Translation id="TR_DEFI_BANNER_TEXT" />} />
 
-            <TokensTable
-                type="defi"
-                account={account}
-                tokenStatusType={TokenManagementAction.HIDE}
-                tokensWithBalance={tokens.shownWithBalance}
-                tokensWithoutBalance={tokens.shownWithoutBalance}
-                network={network}
-                searchQuery={searchQuery}
-                yieldOpportunities={yieldOpportunities}
-            />
+            {hasShownTokens || searchQuery ? (
+                <TokensTable
+                    type="defi"
+                    account={account}
+                    tokenStatusType={TokenManagementAction.HIDE}
+                    tokensWithBalance={tokens.shownWithBalance}
+                    tokensWithoutBalance={tokens.shownWithoutBalance}
+                    network={network}
+                    searchQuery={searchQuery}
+                    yieldOpportunities={yieldOpportunities}
+                />
+            ) : (
+                <NoTokens title={<Translation id="TR_DEFI_TOKENS_EMPTY" />} />
+            )}
         </Column>
     );
 };
