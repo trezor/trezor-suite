@@ -59,6 +59,7 @@ html-webpack-plugin
 husky
 idb
 minimatch
+minimizer-webpack-plugin
 nx
 openpgp
 prettier
@@ -74,7 +75,6 @@ set.prototype.issupersetof
 set.prototype.symmetricdifference
 set.prototype.union
 sort-package-json
-terser-webpack-plugin
 typescript-eslint
 vm-browserify
 webpack

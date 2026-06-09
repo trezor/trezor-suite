@@ -1,6 +1,6 @@
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
+import TerserPlugin from 'minimizer-webpack-plugin';
 import path, { resolve } from 'path';
-import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
