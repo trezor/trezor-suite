@@ -4,8 +4,6 @@ export const commonMutationKeys = {} as const satisfies Record<string, AllowedMu
 
 export const desktopMutationKeys = {
     getYieldOpportunities: ['get-yield-opportunities'],
-    enterYieldOpportunity: ['enter-yield-opportunity'],
-    exitYieldOpportunity: ['exit-yield-opportunity'],
 } as const satisfies Record<string, AllowedMutationKey>;
 
 export const mobileMutationKeys = {} as const satisfies Record<string, AllowedMutationKey>;

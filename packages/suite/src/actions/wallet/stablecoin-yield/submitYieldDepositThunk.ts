@@ -6,14 +6,10 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     STABLECOIN_YIELD_PREFIX,
     type YieldFlowResolvedData,
-    getApprovalRequestAmount,
-    getWithdrawRequestAmount,
-    getYieldApprovalModalParams,
-    getYieldSupplyTransaction,
+    composeYieldDepositTransactionThunk,
     openYieldApproveModal,
     setYieldGenericError,
     stablecoinYieldActions,
-    submitYieldOpportunity,
 } from '@suite-common/wallet-core';
 
 import { sendYieldTransaction } from './signingHelpers';
@@ -35,42 +31,24 @@ export const submitYieldDepositThunk = createThunk(
         try {
             dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
 
-            const requestAmount = getApprovalRequestAmount({
-                flowType,
-                amount,
-                flowData,
-            });
+            const result = await dispatch(
+                composeYieldDepositTransactionThunk({ flowData, amount }),
+            ).unwrap();
 
-            if (!requestAmount) {
+            if (result.type === 'error') {
                 setYieldGenericError({ dispatch, flowType, flowKey });
 
                 return;
             }
 
-            const { response, verification } = await submitYieldOpportunity({
-                flowType,
-                flowData,
-                amount: requestAmount,
-            });
-
-            if (verification === 'failure') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
+            if (result.type === 'revoke-required') {
+                dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
+                dispatch(stablecoinYieldActions.setRevokeRequired({ flowType, flowKey }));
 
                 return;
             }
 
-            const { transactions } = response;
-            const approvalModalParams = getYieldApprovalModalParams(transactions);
-
-            if (approvalModalParams) {
-                dispatch(
-                    stablecoinYieldActions.setApprovalResponse({
-                        flowType,
-                        flowKey,
-                        approvedSpender: approvalModalParams.spender,
-                        revokeTransactions: transactions,
-                    }),
-                );
+            if (result.type === 'approval-required') {
                 dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
 
                 openYieldApproveModal({
@@ -78,24 +56,10 @@ export const submitYieldDepositThunk = createThunk(
                     flowKey,
                     flowType,
                     flowData,
-                    amount: requestAmount,
-                    spender: approvalModalParams.spender,
+                    amount,
+                    spender: result.spender,
                     txType: 'approve',
                 });
-
-                return;
-            }
-
-            const actionTransaction = getYieldSupplyTransaction(transactions);
-
-            if (!actionTransaction?.id) {
-                setYieldGenericError({ dispatch, flowType, flowKey });
-
-                return;
-            }
-
-            if (typeof actionTransaction.unsignedTransaction !== 'string') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
 
                 return;
             }
@@ -105,7 +69,7 @@ export const submitYieldDepositThunk = createThunk(
                     type: 'earn-yield-tx-simulation',
                     data: {
                         flow: flowType,
-                        unsignedTx: actionTransaction.unsignedTransaction,
+                        unsignedTx: result.unsignedTransaction,
                         account: flowData.account,
                     } satisfies StablecoinYieldTxSimulationParams,
                 }),
@@ -127,11 +91,11 @@ export const submitYieldDepositThunk = createThunk(
 
             const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
 
-            const result = await sendYieldTransaction({
+            const sendResult = await sendYieldTransaction({
                 account: flowData.account,
                 amount,
                 token: flowData.token,
-                unsignedTransaction: actionTransaction.unsignedTransaction,
+                unsignedTransaction: result.unsignedTransaction,
                 dispatch,
                 getState,
                 selectedFee,
@@ -139,7 +103,7 @@ export const submitYieldDepositThunk = createThunk(
 
             userAcceptedTxSimulation?.resolve();
 
-            if (!result) {
+            if (!sendResult) {
                 asTypedDesktopAnalytics(extra.services.analytics).report({
                     type: events.yieldDepositEvent.name,
                     payload: {
@@ -159,18 +123,9 @@ export const submitYieldDepositThunk = createThunk(
                     type: 'tx-yield-supply',
                     descriptor: flowData.account.descriptor,
                     symbol: flowData.account.symbol,
-                    txid: result.txid,
+                    txid: sendResult.txid,
                 }),
             );
-
-            const receiptAmount =
-                getWithdrawRequestAmount({
-                    networkSymbol: flowData.account.symbol,
-                    amount,
-                    token: flowData.token,
-                    receiptToken: flowData.receiptToken,
-                    pricePerShare: flowData.vault.state?.pricePerShareState?.price,
-                }) ?? amount;
 
             dispatch(
                 stablecoinYieldActions.setPendingTx({
@@ -178,10 +133,10 @@ export const submitYieldDepositThunk = createThunk(
                     flowKey,
                     tx: {
                         type: flowType,
-                        txid: result.txid,
+                        txid: sendResult.txid,
                         amount,
                     },
-                    receiptAmount,
+                    receiptAmount: result.receiptAmount,
                 }),
             );
         } catch (error) {

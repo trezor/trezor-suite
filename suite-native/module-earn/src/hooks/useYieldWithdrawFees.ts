@@ -10,8 +10,8 @@ import {
     type FormDraftRootState,
     type YieldWithdrawInputUnit,
     buildEvmSelectedFee,
+    buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
-    buildYieldWithdrawUnsignedTransaction,
     ethereumGetCurrentNonceThunk,
     formDraftActions,
     selectConvertedNetworkFeeInfo,
@@ -191,7 +191,7 @@ const composeYieldWithdrawTransaction = async ({
         throw new Error('Fee info is not available.');
     }
 
-    const unsignedTransaction = buildYieldWithdrawUnsignedTransaction({
+    const unsignedTransaction = buildYieldUnsignedTransaction({
         chainId: network.chainId,
         data: calldata,
         feeLevel,

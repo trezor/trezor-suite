@@ -10393,7 +10393,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api"
   dependencies:
-    "@suite-common/calldata": "workspace:^"
     "@suite-common/earn-stablecoin-defs": "workspace:^"
     "@suite-common/http-client": "workspace:^"
     "@suite-common/react-query": "workspace:^"

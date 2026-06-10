@@ -1,13 +1,7 @@
 import { numberToHex, toWei } from 'web3-utils';
 
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
-import {
-    type TransactionDto,
-    TransactionDtoStatus,
-    TransactionDtoType,
-    type YieldDto,
-    parseUnsignedEvmTransaction,
-} from '@suite-common/earn-stablecoin-api';
+import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
@@ -83,7 +77,14 @@ type BuildYieldWithdrawCalldataParams = {
     withdrawInputUnit: YieldWithdrawInputUnit;
 };
 
-type BuildYieldWithdrawUnsignedTransactionParams = {
+type BuildYieldDepositCalldataParams = {
+    amount: string;
+    flowData: YieldFlowResolvedData;
+    ownerAddress: EvmAddress;
+    receiverAddress: EvmAddress;
+};
+
+type BuildYieldUnsignedTransactionParams = {
     chainId: number;
     data: string;
     feeLevel: EvmFeeLevel;
@@ -155,6 +156,34 @@ export const buildYieldWithdrawCalldata = ({
     return builderResult.data;
 };
 
+export const buildYieldDepositCalldata = ({
+    amount,
+    flowData,
+    ownerAddress,
+    receiverAddress,
+}: BuildYieldDepositCalldataParams) => {
+    const amountSubunits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(amount)),
+        decimals: flowData.token.decimals,
+    });
+
+    const builderResult = Calldata.evm.erc4626.deposit.encode(
+        {
+            assets: amountSubunits,
+            receiver: receiverAddress,
+        },
+        { sender: ownerAddress },
+    );
+
+    if (!builderResult.isValid || !builderResult.data) {
+        const issues = builderResult.errors.map(issue => issue.code).join(', ');
+
+        throw new Error(`Failed to encode deposit calldata${issues ? `: ${issues}` : '.'}`);
+    }
+
+    return builderResult.data;
+};
+
 export const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
     const commonFields = {
         gasLimit: numberToHex(gasLimit),
@@ -194,7 +223,7 @@ export const buildEvmSelectedFee = ({
     };
 };
 
-export const buildYieldWithdrawUnsignedTransaction = ({
+export const buildYieldUnsignedTransaction = ({
     chainId,
     data,
     feeLevel,
@@ -202,7 +231,7 @@ export const buildYieldWithdrawUnsignedTransaction = ({
     gasLimit,
     nonce,
     to,
-}: BuildYieldWithdrawUnsignedTransactionParams) => {
+}: BuildYieldUnsignedTransactionParams) => {
     const feeFields = buildEvmFeeFields({ feeLevel, gasLimit });
     const commonFields = {
         from,
@@ -340,141 +369,6 @@ export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
         .times(pricePerShareState.price)
         .decimalPlaces(token.decimals, BigNumber.ROUND_DOWN)
         .toString();
-};
-
-export const sortYieldTransactions = (transactions: TransactionDto[]) =>
-    [...transactions].sort(
-        (firstTransaction, secondTransaction) =>
-            (firstTransaction.stepIndex ?? Number.MAX_SAFE_INTEGER) -
-            (secondTransaction.stepIndex ?? Number.MAX_SAFE_INTEGER),
-    );
-
-const SIGNABLE_TRANSACTION_STATUSES = [
-    TransactionDtoStatus.CREATED,
-    TransactionDtoStatus.WAITING_FOR_SIGNATURE,
-] as const;
-
-const isTransactionReadyForSigning = (transaction: TransactionDto) =>
-    SIGNABLE_TRANSACTION_STATUSES.includes(
-        transaction.status as (typeof SIGNABLE_TRANSACTION_STATUSES)[number],
-    ) && !!transaction.unsignedTransaction;
-
-const getApprovalTxDataType = (transaction: TransactionDto) => {
-    const parsed = parseUnsignedEvmTransaction(transaction.unsignedTransaction);
-    const approvalData = Calldata.evm.erc20.approve.decode(parsed?.data);
-    if (!approvalData) return null;
-
-    return approvalData.amount === 0n ? 'revoke' : 'approve';
-};
-
-export const getYieldRevokeTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            isTransactionReadyForSigning(transaction) &&
-            getApprovalTxDataType(transaction) === 'revoke',
-    );
-
-export const getYieldApprovalTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            isTransactionReadyForSigning(transaction) &&
-            getApprovalTxDataType(transaction) === 'approve',
-    );
-
-const SUPPLY_TRANSACTION_TYPES = [TransactionDtoType.SUPPLY, TransactionDtoType.DEPOSIT] as const;
-
-const WITHDRAW_TRANSACTION_TYPES = [
-    TransactionDtoType.WITHDRAW,
-    TransactionDtoType.WITHDRAW_ALL,
-] as const;
-
-export const getYieldSupplyTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            (SUPPLY_TRANSACTION_TYPES as readonly string[]).includes(transaction.type) &&
-            isTransactionReadyForSigning(transaction),
-    );
-
-export const getYieldWithdrawTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            (WITHDRAW_TRANSACTION_TYPES as readonly string[]).includes(transaction.type) &&
-            isTransactionReadyForSigning(transaction),
-    );
-
-export const getYieldApprovalSpender = (transaction?: TransactionDto | null): string | null => {
-    const parsedTransaction = parseUnsignedEvmTransaction(transaction?.unsignedTransaction);
-    const approvalData = Calldata.evm.erc20.approve.decode(parsedTransaction?.data);
-
-    return approvalData?.spender ?? null;
-};
-
-/**
- * Extracts the vault contract address from supply/withdraw transactions.
- * This address serves as the ERC20 spender — useful when no explicit approval
- * transaction is present (token was already approved from a previous session).
- */
-export const getYieldVaultAddressFromTransactions = (
-    transactions: TransactionDto[],
-): string | null => {
-    const ACTION_TRANSACTION_TYPES = [
-        ...SUPPLY_TRANSACTION_TYPES,
-        ...WITHDRAW_TRANSACTION_TYPES,
-    ] as readonly string[];
-
-    const actionTx = sortYieldTransactions(transactions).find(tx =>
-        ACTION_TRANSACTION_TYPES.includes(tx.type),
-    );
-
-    const parsed = parseUnsignedEvmTransaction(actionTx?.unsignedTransaction);
-
-    return parsed?.to ?? null;
-};
-
-export const getYieldSpenderFromTransactions = (transactions: TransactionDto[]) => {
-    const approvalTransaction = sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            !!getYieldApprovalSpender(transaction),
-    );
-
-    return getYieldApprovalSpender(approvalTransaction);
-};
-
-const getYieldModalParams = (transaction?: TransactionDto | null) => {
-    if (!transaction?.id) {
-        return null;
-    }
-
-    const spender = getYieldApprovalSpender(transaction);
-
-    if (!spender) {
-        return null;
-    }
-
-    return {
-        spender,
-        transactionId: transaction.id,
-    };
-};
-
-export const getYieldRevokeModalParams = (transactions: TransactionDto[]) => {
-    const revokeTransaction = getYieldRevokeTransaction(transactions);
-
-    return getYieldModalParams(revokeTransaction);
-};
-
-export const getYieldApprovalModalParams = (transactions: TransactionDto[]) => {
-    const approvalTransaction = sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            transaction.status !== TransactionDtoStatus.SKIPPED &&
-            getApprovalTxDataType(transaction) === 'approve',
-    );
-
-    return getYieldModalParams(approvalTransaction);
 };
 
 const getVaultAddressFromYieldId = (yieldId: string) =>
