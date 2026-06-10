@@ -23,7 +23,10 @@ test.describe('Remembered wallet loading', { tag: ['@noDevice'] }, () => {
 
         await test.step('Reload Suite with remembered state', async () => {
             await expect(page.getByTestId('@suite/loading')).toBeHidden({ timeout: 20_000 });
-            await expect(page.getByTestId('@suite/bundle-loader')).toBeHidden();
+            await expect(page.getByTestId('@suite/bundle-loader')).toBeHidden({
+                timeout: 20_000,
+            });
+            await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 20_000 });
         });
 
         await test.step('Open receive from remembered wallet', async () => {
