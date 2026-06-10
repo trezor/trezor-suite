@@ -191,10 +191,11 @@ export default {
     tests: [
         ...commonFixtures.tests
             .filter((test: any) => !test.experimental)
-            .flatMap(({ name, result, parameters }: any) => [
+            .flatMap(({ name, result, parameters, skip_models }: any) => [
                 {
                     name,
                     description: name,
+                    skip_models,
                     result,
                     params: {
                         path: parameters.address_n,
@@ -222,6 +223,7 @@ export default {
                 {
                     name,
                     description: `${name} (XDR)`,
+                    skip_models,
                     result,
                     params: {
                         path: parameters.address_n,
@@ -231,7 +233,8 @@ export default {
                     },
                 },
             ])
-            .map(({ name, description, params, result }: any) => ({
+            .map(({ name, description, params, result, skip_models }: any) => ({
+                skip: skip_models?.flatMap((model: string) => (model === 't1' ? '1' : [])),
                 description,
                 params,
                 result: {
