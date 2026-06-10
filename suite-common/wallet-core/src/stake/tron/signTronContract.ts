@@ -3,10 +3,15 @@ import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { type buildFreezeBalanceV2Contract } from './tronStakeContracts';
+import {
+    type buildFreezeBalanceV2Contract,
+    type buildVoteWitnessContract,
+} from './tronStakeContracts';
 import { type TronStakeError } from './tronStakeTypes';
 
-type TronStakeContract = ReturnType<typeof buildFreezeBalanceV2Contract>;
+type TronStakeContract =
+    | ReturnType<typeof buildFreezeBalanceV2Contract>
+    | ReturnType<typeof buildVoteWitnessContract>;
 
 type SignTronContractResult = { serializedTx: string } | { error: TronStakeError };
 

@@ -18,7 +18,7 @@ import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { signTronContract } from './signTronContract';
-import { buildFreezeBalanceV2Contract } from './tronStakeContracts';
+import { buildFreezeBalanceV2Contract, buildVoteWitnessContract } from './tronStakeContracts';
 import { tronStakeActions } from './tronStakeReducer';
 import { type TronResourceType, type TronStakeError } from './tronStakeTypes';
 import { addFakePendingTronTxThunk } from '../../transactions/transactionsThunks';
@@ -254,6 +254,243 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
                         bandwidthUsage: new BigNumber(precomposedTx.fee).isZero()
                             ? String(precomposedTx.bytes)
                             : undefined,
+                    },
+                }),
+            );
+
+            dispatch(tronStakeActions.submitFinished({ accountKey, txid }));
+        } finally {
+            onSettled?.();
+            dispatch(tronStakeActions.discardTransaction());
+        }
+    },
+);
+
+interface VoteThunkArguments {
+    account: Account;
+    representativeAddress: string;
+}
+
+const getTotalVotes = (account: Account): number => {
+    if (account.networkType !== 'tron') {
+        return 0;
+    }
+
+    return new BigNumber(account.misc.tronResources?.stakingInfo?.totalVotingPower ?? 0)
+        .integerValue(BigNumber.ROUND_FLOOR)
+        .toNumber();
+};
+
+const buildVoteContract = (account: Account, representativeAddress: string) => {
+    const ownerHex = tronUtils.tronAddressToHex(account.descriptor);
+    const voteHex = tronUtils.tronAddressToHex(representativeAddress);
+
+    if (!ownerHex || !voteHex) {
+        return null;
+    }
+
+    return buildVoteWitnessContract({
+        ownerHex,
+        votes: [{ addressHex: voteHex, count: getTotalVotes(account) }],
+    });
+};
+
+const buildVoteReviewForm = (votes: number): FormState => ({
+    outputs: [],
+    feePerUnit: '0',
+    feeLimit: '',
+    options: ['broadcast'],
+    tronStakeVotes: String(votes),
+    isCoinControlEnabled: false,
+    hasCoinControlBeenOpened: false,
+    selectedUtxos: [],
+});
+
+export const composeTronVoteFeeLevelsThunk = createThunk<
+    PrecomposedLevels,
+    VoteThunkArguments,
+    { rejectValue: TronStakeError }
+>(
+    `${TRON_STAKE_MODULE}/composeTronVoteFeeLevelsThunk`,
+    async ({ account, representativeAddress }, { rejectWithValue }) => {
+        if (account.networkType !== 'tron') {
+            return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
+        }
+
+        const contract = buildVoteContract(account, representativeAddress);
+
+        if (!contract) {
+            return rejectWithValue({
+                kind: 'compose-failed',
+                message: 'Invalid representative address.',
+            });
+        }
+
+        const estimate = await TrezorConnect.tronComposeTransaction({
+            contract,
+            blockHash: DUMMY_BLOCK_HASH,
+            blockHeight: DUMMY_BLOCK_HEIGHT,
+        });
+
+        if (!estimate.success) {
+            return rejectWithValue({ kind: 'compose-failed', message: estimate.error.message });
+        }
+
+        const bytes = estimate.payload.bandwidth;
+
+        const feeLevel = computeBandwidthFeeLevel({
+            availableStakedBandwidth: account.misc.tronResources?.availableStakedBandwidth ?? 0,
+            availableFreeBandwidth: account.misc.tronResources?.availableFreeBandwidth ?? 0,
+            bytes,
+        });
+
+        const feeInSun = feeLevel.feePerTx || '0';
+
+        const tx: PrecomposedTransactionFinal = {
+            type: 'final',
+            totalSpent: feeInSun,
+            fee: feeInSun,
+            feePerByte: feeLevel.feePerUnit ?? '0',
+            bytes,
+            inputs: [],
+            outputs: [{ address: representativeAddress, amount: '0' }],
+            outputsPermutation: [0],
+        };
+
+        return { normal: tx };
+    },
+);
+
+interface SubmitVoteThunkArguments extends VoteThunkArguments {
+    device: TrezorDevice;
+    requestPushApproval: () => Promise<boolean>;
+    onSigningStart?: () => void;
+    onSettled?: () => void;
+}
+
+export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
+    `${TRON_STAKE_MODULE}/submitTronVoteThunk`,
+    async (
+        { account, device, representativeAddress, requestPushApproval, onSigningStart, onSettled },
+        { dispatch },
+    ) => {
+        const { key: accountKey } = account;
+
+        if (account.networkType !== 'tron') {
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    error: { kind: 'compose-failed', message: 'Invalid network type.' },
+                }),
+            );
+
+            return;
+        }
+
+        const contract = buildVoteContract(account, representativeAddress);
+
+        if (!contract) {
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    error: { kind: 'compose-failed', message: 'Invalid representative address.' },
+                }),
+            );
+
+            return;
+        }
+
+        dispatch(tronStakeActions.submitStarted({ accountKey }));
+
+        try {
+            const composed = await dispatch(
+                composeTronVoteFeeLevelsThunk({ account, representativeAddress }),
+            )
+                .unwrap()
+                .catch(() => undefined);
+            const precomposedTx = composed?.normal?.type === 'final' ? composed.normal : undefined;
+
+            if (!precomposedTx) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        error: { kind: 'compose-failed' },
+                    }),
+                );
+
+                return;
+            }
+
+            dispatch(
+                tronStakeActions.storePrecomposedTransaction({
+                    precomposedTx,
+                    precomposedForm: buildVoteReviewForm(getTotalVotes(account)),
+                    accountKey,
+                }),
+            );
+
+            onSigningStart?.();
+
+            const signResult = await signTronContract({ account, device, contract });
+
+            if ('error' in signResult) {
+                dispatch(tronStakeActions.submitFinished({ accountKey, error: signResult.error }));
+
+                return;
+            }
+
+            dispatch(
+                tronStakeActions.storeSignedTransaction({
+                    serializedTx: { tx: signResult.serializedTx, symbol: account.symbol },
+                }),
+            );
+
+            const isPushApproved = await requestPushApproval();
+
+            if (!isPushApproved) {
+                dispatch(
+                    tronStakeActions.submitFinished({ accountKey, error: { kind: 'cancelled' } }),
+                );
+
+                return;
+            }
+
+            const pushResult = await TrezorConnect.pushTransaction({
+                tx: signResult.serializedTx,
+                coin: account.symbol,
+                identity: getAccountIdentity(account),
+            });
+
+            if (!pushResult.success) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        error: { kind: 'broadcast-failed', message: pushResult.error.message },
+                    }),
+                );
+
+                return;
+            }
+
+            const { txid } = pushResult.payload;
+
+            dispatch(
+                addFakePendingTronTxThunk({
+                    account,
+                    txid,
+                    amount: '0',
+                    fee: precomposedTx.fee ?? '0',
+                    type: 'self',
+                    target: { addresses: [representativeAddress], amount: '0' },
+                    tronSpecific: {
+                        contractType: 'VoteWitnessContract',
+                        operation: 'vote',
+                        votes: [
+                            {
+                                address: representativeAddress,
+                                count: String(getTotalVotes(account)),
+                            },
+                        ],
                     },
                 }),
             );
