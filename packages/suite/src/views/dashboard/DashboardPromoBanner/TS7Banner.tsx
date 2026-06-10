@@ -9,13 +9,11 @@ import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 import { useLayoutSize } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
-import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
+import { CloseButton } from './CommonPromoBannerComponents';
 
 type TS7BannerProps = {
     onClose: () => void;
     onCTAClick: () => void;
-    isVisible: boolean;
-    ['data-testid']?: string;
 };
 
 export const ImageContainer = styled.div`
@@ -64,41 +62,39 @@ const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLap
     );
 };
 
-export const TS7Banner = ({ onClose, onCTAClick, isVisible }: TS7BannerProps) => {
+export const TS7Banner = ({ onClose, onCTAClick }: TS7BannerProps) => {
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
 
     return (
-        <AnimatedWrapper isVisible={isVisible} flagToHide="showTS7DashboardPromoBanner">
-            <Box
-                height={isVerticalLayout ? undefined : 213}
-                padding={{ horizontal: 24, top: isVerticalLayout ? 16 : 0 }}
-                backgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+        <Box
+            height={isVerticalLayout ? undefined : 213}
+            padding={{ horizontal: 24, top: isVerticalLayout ? 16 : 0 }}
+            backgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+        >
+            <ContentFlex
+                height="100%"
+                margin={{
+                    right: isBelowDesktop ? undefined : spacings.xxxxl,
+                }}
+                justifyContent="space-between"
+                gap={spacings.xl}
+                alignItems="center"
             >
-                <ContentFlex
-                    height="100%"
-                    margin={{
-                        right: isBelowDesktop ? undefined : spacings.xxxxl,
-                    }}
-                    justifyContent="space-between"
-                    gap={spacings.xl}
-                    alignItems="center"
-                >
-                    <Column gap={isBelowDesktop ? spacings.md : spacings.xl}>
-                        <Column gap={isBelowLaptop ? spacings.xxs : spacings.xs}>
-                            <Title isVerticalLayout={isVerticalLayout} />
-                            <Description />
-                        </Column>
-
-                        <CTAButton onClick={onCTAClick} isBelowLaptop={isBelowLaptop} />
+                <Column gap={isBelowDesktop ? spacings.md : spacings.xl}>
+                    <Column gap={isBelowLaptop ? spacings.xxs : spacings.xs}>
+                        <Title isVerticalLayout={isVerticalLayout} />
+                        <Description />
                     </Column>
 
-                    <ImageContainer>
-                        <Image image="DASHBOARD_PROMO_BANNER_T3W1" maxHeight="90%" />
-                    </ImageContainer>
-                </ContentFlex>
-                <CloseButton onClose={onClose} />
-            </Box>
-        </AnimatedWrapper>
+                    <CTAButton onClick={onCTAClick} isBelowLaptop={isBelowLaptop} />
+                </Column>
+
+                <ImageContainer>
+                    <Image image="DASHBOARD_PROMO_BANNER_T3W1" maxHeight="90%" />
+                </ImageContainer>
+            </ContentFlex>
+            <CloseButton onClose={onClose} />
+        </Box>
     );
 };
