@@ -22,7 +22,9 @@ export const useFiatRatesForTransactionsQuery = ({
     return useQuery({
         queryKey: mobileQueryKeys.txFiatRates(accountKey, localCurrency, page),
         queryFn: () =>
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey })).unwrap(),
+            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey }))
+                .unwrap()
+                .then(() => null),
         enabled,
         staleTime: 10 * 60 * 1000,
     });
