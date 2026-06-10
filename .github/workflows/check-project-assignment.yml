@@ -3,7 +3,6 @@ name: "[Check] Project/Issue Assignment"
 on:
   pull_request:
     types:
-      - opened
       - ready_for_review
       - labeled
       - synchronize
@@ -14,6 +13,7 @@ concurrency:
 
 jobs:
   check-project-or-issue:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Generate GitHub App token
