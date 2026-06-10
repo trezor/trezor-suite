@@ -24,6 +24,13 @@ export const desktopQueryKeys = {
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
 } as const satisfies Record<string, AllowedQueryKey>;
 
+export const mobileQueryKeys = {
+    accountTransactions: (accountKey: string, page: number, perPage: number) =>
+        ['account-transactions', accountKey, page, perPage],
+    txFiatRates: (accountKey: string, localCurrency: string, page: number) =>
+        ['tx-fiat-rates', accountKey, localCurrency, page],
+} as const satisfies Record<string, AllowedQueryKey>;
+
 export const tradingQueryKeys = {
     otcData: () => ['trading', 'otc-data'],
 } as const satisfies Record<string, AllowedQueryKey>;

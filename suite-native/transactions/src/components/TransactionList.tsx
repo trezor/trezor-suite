@@ -1,20 +1,17 @@
-import { type JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { type JSX, useCallback, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { mobileQueryKeys, useQueryClient } from '@suite-common/react-query';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
     fetchAndUpdateAccountThunk,
-    fetchTransactionsPageThunk,
+    selectAccountByKey,
     selectAreAllAccountTransactionsLoaded,
-    selectBaseCurrency,
-    selectIsLoadingAccountTransactions,
-    selectIsPageAlreadyFetched,
-    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -29,6 +26,9 @@ import {
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
+
+import { useAccountTransactionsPageQuery } from '../hooks/useAccountTransactionsPageQuery';
+import { useFiatRatesForTransactionsQuery } from '../hooks/useFiatRatesForTransactionsQuery';
 
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
@@ -133,16 +133,17 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [page, setPage] = useState(1);
 
     const {
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
 
-    const localCurrency = useSelector(selectBaseCurrency);
-    const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
-        selectIsLoadingAccountTransactions(state, accountKey),
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
     const shouldDeferEmptyState = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
@@ -157,54 +158,42 @@ export const TransactionList = ({
 
     const txnsPerPage = getTxsPerPage(account.networkType);
 
-    const isFirstPageAlreadyFetched = useSelector((state: TransactionsRootState) =>
-        selectIsPageAlreadyFetched(state, accountKey, 1, txnsPerPage),
-    );
+    const { isLoading: isLoadingTransactions } = useAccountTransactionsPageQuery({
+        accountKey,
+        page,
+        perPage: txnsPerPage,
+    });
 
-    const initialPageNumber = Math.ceil((transactions.length || 1) / txnsPerPage);
-    const [page, setPage] = useState(initialPageNumber);
+    useFiatRatesForTransactionsQuery({
+        accountKey,
+        page,
+        enabled: transactions.length > 0,
+    });
 
     const { scrollDivider, handleScroll } = useScrollDivider();
 
-    useEffect(() => {
-        // We need to check manually if the first page was already fetched, because fetchTransactionsPageThunk will
-        // always force refetch the first page, but we want to save resources and not do that if it's not necessary.
-        if (!isFirstPageAlreadyFetched) {
-            dispatch(fetchTransactionsPageThunk({ accountKey, page: 1, perPage: txnsPerPage }));
-        }
-    }, [dispatch, accountKey, isFirstPageAlreadyFetched, txnsPerPage]);
-
-    const handleOnLoadMore = useCallback(async () => {
-        try {
-            await dispatch(
-                fetchTransactionsPageThunk({ accountKey, page: page + 1, perPage: txnsPerPage }),
-            );
-            setPage((currentPage: number) => currentPage + 1);
-        } catch {
-            // TODO handle error state (show retry button or something
-        }
-    }, [dispatch, accountKey, page, txnsPerPage]);
+    const handleOnLoadMore = useCallback(() => {
+        setPage(currentPage => currentPage + 1);
+    }, []);
 
     const handleOnRefresh = useCallback(async () => {
         try {
             setIsRefreshing(true);
+            setPage(1);
+            // Invalidate page 1 so the query re-runs. fetchTransactionsPageThunk always re-fetches
+            // page 1 from the network (no cache guard for the first page), so this is safe.
             await Promise.allSettled([
                 dispatch(fetchAndUpdateAccountThunk({ accountKey })),
-                dispatch(
-                    fetchTransactionsPageThunk({
-                        accountKey,
-                        page: 1,
-                        perPage: txnsPerPage,
-                        forceRefetch: true,
-                    }),
-                ),
+                queryClient.invalidateQueries({
+                    queryKey: mobileQueryKeys.accountTransactions(accountKey, 1, txnsPerPage),
+                }),
             ]);
         } catch {
             // Do nothing
         }
         // It's usually too fast so loading indicator only flashes for a moment, which is not nice
         setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey, txnsPerPage]);
+    }, [dispatch, accountKey, queryClient, txnsPerPage]);
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
@@ -246,12 +235,6 @@ export const TransactionList = ({
             ...(accountTransactionsByMonth[monthKey] ?? []),
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
-
-    useEffect(() => {
-        if (data.length > 0) {
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey }));
-        }
-    }, [data, dispatch, localCurrency, accountKey]);
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
