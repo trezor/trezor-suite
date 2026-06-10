@@ -346,6 +346,7 @@ const constructNewFlow = ({
     const isStellar = account.networkType === 'stellar';
     const isTron = account.networkType === 'tron';
     const isTronStakeFreeze = isTron && Boolean(precomposedForm.tronStakeResource);
+    const isTronStakeVote = isTron && precomposedForm.tronStakeVotes !== undefined;
     const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -384,6 +385,20 @@ const constructNewFlow = ({
                     value: o.amount.toString(),
                     value2: networks[symbol].name,
                     token: precomposedTx.token,
+                });
+            }
+        });
+
+        return outputs;
+    }
+
+    if (isTronStakeVote) {
+        precomposedTx.outputs.forEach(o => {
+            if ('address' in o && typeof o.address === 'string') {
+                outputs.push({
+                    type: 'tron-vote',
+                    value: o.address,
+                    value2: precomposedForm.tronStakeVotes,
                 });
             }
         });

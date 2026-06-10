@@ -10148,6 +10148,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_VOTE_TRANSACTION',
         defaultMessage: 'Vote transaction',
     },
+    TR_EARN_TRON_VOTE: {
+        id: 'TR_EARN_TRON_VOTE',
+        defaultMessage: 'Vote',
+    },
+    TR_TRON_VOTES: {
+        id: 'TR_TRON_VOTES',
+        defaultMessage: 'Votes',
+    },
     TR_EARN_TRON_EARN_REWARDS: {
         id: 'TR_EARN_TRON_EARN_REWARDS',
         defaultMessage: 'Earn rewards',
