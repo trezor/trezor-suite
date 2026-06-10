@@ -1,4 +1,13 @@
-import { Icon, IconButton, Input, Row, Select, useMediaQuery, variables } from '@trezor/components';
+import {
+    Dropdown,
+    Icon,
+    Input,
+    Row,
+    Select,
+    Switch,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { platforms, sorting } from '../constants';
@@ -59,36 +68,25 @@ export const Filter = ({
                         pointerEvents="none"
                     />
                 }
-                rightContent={
-                    isFullText ? (
-                        <IconButton
-                            icon="fileText"
-                            size="small"
-                            intent="neutral"
-                            priority="primary"
-                            onClick={() => setSearchMode('name')}
-                            aria-label="Toggle full-text search"
-                            tooltip={{
-                                content:
-                                    'Full-text search is ON — matching event name, trigger, descriptions, attributes and types. Click to search event titles only.',
-                            }}
-                        />
-                    ) : (
-                        <IconButton
-                            icon="fileText"
-                            size="small"
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={() => setSearchMode('fulltext')}
-                            aria-label="Toggle full-text search"
-                            tooltip={{
-                                content:
-                                    'Full-text search is OFF — searching event titles only. Click to search everything (trigger, descriptions, attributes and types).',
-                            }}
-                        />
-                    )
-                }
                 onClear={() => setQuery('')}
+            />
+
+            <Dropdown
+                iconName="dotsThree"
+                iconSize="small"
+                data-testid="@analytics/search-options"
+                items={[
+                    {
+                        label: (
+                            <Switch
+                                isChecked={isFullText}
+                                onChange={checked => setSearchMode(checked ? 'fulltext' : 'name')}
+                                label="Fulltext search"
+                            />
+                        ),
+                        closeOnClick: false,
+                    },
+                ]}
             />
 
             <Select
