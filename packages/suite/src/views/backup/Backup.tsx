@@ -16,7 +16,7 @@ import { BackupStep2InProgress } from './BackupStep2InProgress';
 import { BackupStep3Finished } from './BackupStep3Finished';
 import { BackupStepError } from './BackupStepError';
 
-const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
+const getEdgeCaseModalHeading = (unfinishedBackup?: boolean) => {
     if (unfinishedBackup) {
         return <Translation id="BACKUP_BACKUP_ALREADY_FAILED_HEADING" />;
     }

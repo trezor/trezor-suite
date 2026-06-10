@@ -92,15 +92,15 @@ const failFirmwareRevisionCheck = (
 export type CheckFirmwareRevisionParams = {
     firmwareVersion: VersionArray;
     internalModel: PROTO.DeviceModelInternal;
-    deviceRevision: string | null;
+    deviceRevision?: string | null;
     expectedRevision: string | undefined;
-    deviceBootloaderHash: string | null;
+    deviceBootloaderHash?: string | null;
     expectedBootloaderHash: string | undefined;
     firmwareType: FirmwareType;
 };
 
 type DoRevisionsMatchParams = {
-    deviceRevision: string | null;
+    deviceRevision?: string | null;
     expectedCommitRevision: string;
     firmwareVersion: VersionArray;
 };
@@ -110,7 +110,7 @@ const doRevisionsMatch = ({
     expectedCommitRevision,
     firmwareVersion,
 }: DoRevisionsMatchParams): boolean => {
-    if (deviceRevision === null) {
+    if (!deviceRevision) {
         return false; // defensively, device MUST provide the revision
     }
 

@@ -211,7 +211,7 @@ export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDe
     const deviceFwRevision = getFirmwareRevision(device);
     const deviceFwType = device.firmwareType;
     const deviceInternalModel = device.features.internal_model.toLowerCase();
-    const deviceVendor = device.features.vendor.toLowerCase();
+    const deviceVendor = device.features.vendor?.toLowerCase();
 
     return deviceConditions.some(deviceCondition => {
         const {
