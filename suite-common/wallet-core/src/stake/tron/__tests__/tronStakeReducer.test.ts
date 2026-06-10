@@ -112,7 +112,7 @@ describe('tronStakeReducer', () => {
         expect(state.sessions[KEY]?.step).toBe('vote');
     });
 
-    it('pendingTransactionConfirmed on the last step keeps the step', () => {
+    it('pendingTransactionConfirmed advances from vote to complete', () => {
         const atVote = tronStakeReducer(
             undefined,
             tronStakeActions.goToStep({ accountKey: KEY, step: 'vote' }),
@@ -122,7 +122,20 @@ describe('tronStakeReducer', () => {
             tronStakeActions.pendingTransactionConfirmed({ accountKey: KEY }),
         );
 
-        expect(state.sessions[KEY]?.step).toBe('vote');
+        expect(state.sessions[KEY]?.step).toBe('complete');
+    });
+
+    it('pendingTransactionConfirmed on the last step keeps the step', () => {
+        const atComplete = tronStakeReducer(
+            undefined,
+            tronStakeActions.goToStep({ accountKey: KEY, step: 'complete' }),
+        );
+        const state = tronStakeReducer(
+            atComplete,
+            tronStakeActions.pendingTransactionConfirmed({ accountKey: KEY }),
+        );
+
+        expect(state.sessions[KEY]?.step).toBe('complete');
     });
 
     it('pendingTransactionFailed clears the txid and records a confirmation error', () => {

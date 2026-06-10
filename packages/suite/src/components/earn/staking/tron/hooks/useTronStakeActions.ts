@@ -129,6 +129,8 @@ export const useTronStakeActions = ({
                 );
                 break;
             }
+            case 'complete':
+                break;
             default:
                 exhaustive(step);
         }
