@@ -28,3 +28,24 @@ export const buildFreezeBalanceV2Contract = ({
             },
         },
     }) as const;
+
+interface TronVoteAllocation {
+    addressHex: string;
+    count: number;
+}
+
+interface BuildVoteWitnessContractParams {
+    ownerHex: string;
+    votes: TronVoteAllocation[];
+}
+
+export const buildVoteWitnessContract = ({ ownerHex, votes }: BuildVoteWitnessContractParams) =>
+    ({
+        type: 'VoteWitnessContract' as const,
+        parameter: {
+            value: {
+                owner_address: ownerHex,
+                votes: votes.map(({ addressHex, count }) => ({ address: addressHex, count })),
+            },
+        },
+    }) as const;
