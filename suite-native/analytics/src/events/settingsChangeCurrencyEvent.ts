@@ -9,7 +9,8 @@ type Attributes = {
 
 export const settingsChangeCurrencyEvent: EventDef<Attributes, EventType.SettingsChangeCurrency> = {
     name: EventType.SettingsChangeCurrency,
-    descriptionTrigger: 'User selects a different fiat currency for price display in mobile app settings',
+    descriptionTrigger:
+        'User selects a different fiat currency for price display in mobile app settings',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {

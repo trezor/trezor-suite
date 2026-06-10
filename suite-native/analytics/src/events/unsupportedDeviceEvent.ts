@@ -14,7 +14,8 @@ type Attributes = {
 
 export const unsupportedDeviceEvent: EventDef<Attributes, EventType.UnsupportedDevice> = {
     name: EventType.UnsupportedDevice,
-    descriptionTrigger: 'User presses the primary CTA button in an unsupported-device error modal: "Eject" for incompatible firmware, or "Open Suite Web" for devices with no seed',
+    descriptionTrigger:
+        'User presses the primary CTA button in an unsupported-device error modal: "Eject" for incompatible firmware, or "Open Suite Web" for devices with no seed',
     changelog: [{ version: '23.11.1', notes: 'Added' }],
     attributes: {
         deviceState: {

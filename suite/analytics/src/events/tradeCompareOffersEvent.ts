@@ -15,7 +15,8 @@ export const tradeCompareOffersEvent: EventDef<Attributes, EventType.TradeCompar
 
     attributes: {
         type: {
-            description: 'The type of trading comparison: `exchange` for exchange offers, `buy` for buy offers, `sell` for sell offers',
+            description:
+                'The type of trading comparison: `exchange` for exchange offers, `buy` for buy offers, `sell` for sell offers',
             changelog: [{ version: '25.9.1', notes: 'added' }],
         },
     },

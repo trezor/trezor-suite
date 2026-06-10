@@ -12,12 +12,14 @@ export const createReceiveAddressCopyAddressEvent: EventDef<
     EventType.CreateReceiveAddressCopyAddress
 > = {
     name: EventType.CreateReceiveAddressCopyAddress,
-    descriptionTrigger: 'User copies a full receiving address to clipboard in the Receive flow (Desktop)',
+    descriptionTrigger:
+        'User copies a full receiving address to clipboard in the Receive flow (Desktop)',
     changelog: [{ version: '25.4.1', notes: 'added' }],
 
     attributes: {
         assetSymbol: {
-            description: 'The blockchain network symbol for the receiving address being copied (e.g., `btc`, `eth`)',
+            description:
+                'The blockchain network symbol for the receiving address being copied (e.g., `btc`, `eth`)',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
     },

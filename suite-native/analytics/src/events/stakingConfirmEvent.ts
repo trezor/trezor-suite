@@ -15,11 +15,13 @@ export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm>
     attributes: {
         action: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The staking action being confirmed: `stake` for depositing funds, `unstake` for withdrawing funds, `claim` for collecting rewards',
+            description:
+                'The staking action being confirmed: `stake` for depositing funds, `unstake` for withdrawing funds, `claim` for collecting rewards',
         },
         networkSymbol: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
-            description: 'The blockchain network symbol for the staking operation (e.g., `eth`, `sol`, `ada`)',
+            description:
+                'The blockchain network symbol for the staking operation (e.g., `eth`, `sol`, `ada`)',
         },
     },
 };

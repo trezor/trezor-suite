@@ -17,10 +17,17 @@ export const deviceConnectionDeviceConfirmationEvent: EventDef<
         option: {
             changelog: [
                 { version: '26.2.1', notes: 'added' },
-                { version: '26.2.2', notes: 'option values changed to `finished` | `canceled` on mobile' },
-                { version: '26.2.3', notes: 'option values changed to `finished` | `canceled` on desktop' },
+                {
+                    version: '26.2.2',
+                    notes: 'option values changed to `finished` | `canceled` on mobile',
+                },
+                {
+                    version: '26.2.3',
+                    notes: 'option values changed to `finished` | `canceled` on desktop',
+                },
             ],
-            description: 'The outcome of the confirmation: `finished` if THP connection was confirmed, `canceled` if the user cancelled it',
+            description:
+                'The outcome of the confirmation: `finished` if THP connection was confirmed, `canceled` if the user cancelled it',
         },
     },
 };

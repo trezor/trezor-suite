@@ -11,7 +11,8 @@ export const settingsDeviceChangePassphraseProtectionEvent: EventDef<
     EventType.SettingsDeviceChangePassphraseProtection
 > = {
     name: EventType.SettingsDeviceChangePassphraseProtection,
-    descriptionTrigger: 'User enables or disables passphrase protection in Settings > Device > Security > Passphrase',
+    descriptionTrigger:
+        'User enables or disables passphrase protection in Settings > Device > Security > Passphrase',
     changelog: [{ version: '1.0.0', notes: 'added' }],
 
     attributes: {

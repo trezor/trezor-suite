@@ -14,7 +14,8 @@ export const autostartModalEvent: EventDef<Attributes, EventType.AutostartModal>
 
     attributes: {
         action: {
-            description: 'User\'s choice: `background-always` to always run in background, `background-now` to keep in background this time, `quit-always` to always quit, `quit-now` to quit this time',
+            description:
+                "User's choice: `background-always` to always run in background, `background-now` to keep in background this time, `quit-always` to always quit, `quit-now` to quit this time",
             changelog: [{ version: '25.5.0', notes: 'added' }],
         },
     },

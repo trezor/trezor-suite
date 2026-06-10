@@ -13,7 +13,8 @@ export const settingsAppLogExportedEvent: EventDef<Attributes, EventType.Setting
     attributes: {
         isRedacted: {
             changelog: [{ version: '26.2.1', notes: 'added' }],
-            description: 'Whether sensitive data was redacted from the exported logs (`true`) or included (`false`)',
+            description:
+                'Whether sensitive data was redacted from the exported logs (`true`) or included (`false`)',
         },
     },
 };

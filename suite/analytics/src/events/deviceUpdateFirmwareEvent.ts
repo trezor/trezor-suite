@@ -15,7 +15,8 @@ type Attributes = {
 
 export const deviceUpdateFirmwareEvent: EventDef<Attributes, EventType.DeviceUpdateFirmware> = {
     name: EventType.DeviceUpdateFirmware,
-    descriptionTrigger: 'User completes a firmware update on their device, including custom firmware installation if applicable',
+    descriptionTrigger:
+        'User completes a firmware update on their device, including custom firmware installation if applicable',
     changelog: [{ version: '1.0.0', notes: 'added' }],
 
     attributes: {

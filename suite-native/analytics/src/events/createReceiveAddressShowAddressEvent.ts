@@ -18,7 +18,8 @@ export const createReceiveAddressShowAddressEvent: EventDef<
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The blockchain network symbol for which the address is being generated (e.g., `btc`, `eth`)',
+            description:
+                'The blockchain network symbol for which the address is being generated (e.g., `btc`, `eth`)',
         },
     },
 };

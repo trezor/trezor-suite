@@ -20,15 +20,18 @@ export const sendFlowEnteredEvent: EventDef<Attributes, EventType.SendFlowEntere
     attributes: {
         location: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Where the send flow was initiated: `dashboard` from the main dashboard, `accountDetail` from an account detail page',
+            description:
+                'Where the send flow was initiated: `dashboard` from the main dashboard, `accountDetail` from an account detail page',
         },
         assetSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The blockchain network symbol for which the transaction is being sent (e.g., `btc`, `eth`, `ada`)',
+            description:
+                'The blockchain network symbol for which the transaction is being sent (e.g., `btc`, `eth`, `ada`)',
         },
         tokenSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'The symbol of the token being sent (only for token transfers, not native assets)',
+            description:
+                'The symbol of the token being sent (only for token transfers, not native assets)',
         },
         tokenContract: {
             changelog: [{ version: '25.5.1', notes: 'added' }],

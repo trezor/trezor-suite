@@ -15,7 +15,8 @@ export const settingsChangeBtcUnitEvent: EventDef<Attributes, EventType.Settings
     attributes: {
         bitcoinUnit: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected Bitcoin unit abbreviation: `BTC` (full Bitcoin) or `sat` (satoshis)',
+            description:
+                'The selected Bitcoin unit abbreviation: `BTC` (full Bitcoin) or `sat` (satoshis)',
         },
     },
 };

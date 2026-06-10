@@ -15,12 +15,14 @@ export const settingsGeneralChangeLanguageEvent: EventDef<
     EventType.SettingsGeneralChangeLanguage
 > = {
     name: EventType.SettingsGeneralChangeLanguage,
-    descriptionTrigger: 'User changes the application language in Settings > Application > Localization > Language',
+    descriptionTrigger:
+        'User changes the application language in Settings > Application > Localization > Language',
     changelog: [{ version: '1.0.0', notes: 'added' }],
 
     attributes: {
         language: {
-            description: 'The selected language code: Available Suite languages e.g. `en`, `cs`, `de`, etc.',
+            description:
+                'The selected language code: Available Suite languages e.g. `en`, `cs`, `de`, etc.',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         previousLanguage: {
@@ -32,7 +34,8 @@ export const settingsGeneralChangeLanguageEvent: EventDef<
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         autodetectLanguage: {
-            description: 'Whether auto-detection of system language is enabled (`true`) or manual language selection is used (`false`)',
+            description:
+                'Whether auto-detection of system language is enabled (`true`) or manual language selection is used (`false`)',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         platformLanguages: {

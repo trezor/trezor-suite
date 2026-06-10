@@ -15,7 +15,8 @@ export const sendDetailOpenedEvent: EventDef<Attributes, EventType.SendDetailOpe
     attributes: {
         assetSymbol: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'The blockchain network symbol or token symbol being sent (e.g., `btc`, `eth`)',
+            description:
+                'The blockchain network symbol or token symbol being sent (e.g., `btc`, `eth`)',
         },
     },
 };

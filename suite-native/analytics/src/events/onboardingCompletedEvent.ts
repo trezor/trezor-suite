@@ -14,7 +14,8 @@ export const onboardingCompletedEvent: EventDef<Attributes, EventType.Onboarding
     attributes: {
         analyticsPermission: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Whether the user granted permission for analytics tracking (`true`) or denied it (`false`)',
+            description:
+                'Whether the user granted permission for analytics tracking (`true`) or denied it (`false`)',
         },
     },
 };

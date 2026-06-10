@@ -13,12 +13,14 @@ export const createReceiveAddressShowAddressEvent: EventDef<
     EventType.CreateReceiveAddressShowAddress
 > = {
     name: EventType.CreateReceiveAddressShowAddress,
-    descriptionTrigger: 'User requests to show the full receiving address in the receive flow (Desktop)',
+    descriptionTrigger:
+        'User requests to show the full receiving address in the receive flow (Desktop)',
     changelog: [{ version: '25.4.1', notes: 'added' }],
 
     attributes: {
         assetSymbol: {
-            description: 'The blockchain network symbol for the receiving address (e.g., `btc`, `eth`)',
+            description:
+                'The blockchain network symbol for the receiving address (e.g., `btc`, `eth`)',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
         type: {

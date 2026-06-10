@@ -17,7 +17,8 @@ export const sendAmountInputSwitchedEvent: EventDef<Attributes, EventType.SendAm
         attributes: {
             changedTo: {
                 changelog: [{ version: '24.10.1', notes: 'added' }],
-                description: 'The input type switched to: `crypto` when user switches to crypto amount input, `fiat` when switching to fiat currency input',
+                description:
+                    'The input type switched to: `crypto` when user switches to crypto amount input, `fiat` when switching to fiat currency input',
             },
         },
     };

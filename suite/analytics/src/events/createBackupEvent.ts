@@ -9,7 +9,8 @@ type Attributes = {
 
 export const createBackupEvent: EventDef<Attributes, EventType.CreateBackup> = {
     name: EventType.CreateBackup,
-    descriptionTrigger: 'User creates a backup of their device in the Settings > Device > Backup section',
+    descriptionTrigger:
+        'User creates a backup of their device in the Settings > Device > Backup section',
     possibleImprovements: 'rename to `settings/device/backup`',
     changelog: [
         {
@@ -20,7 +21,8 @@ export const createBackupEvent: EventDef<Attributes, EventType.CreateBackup> = {
 
     attributes: {
         status: {
-            description: 'The backup operation result: `finished` when backup completed successfully, `error` when backup failed',
+            description:
+                'The backup operation result: `finished` when backup completed successfully, `error` when backup failed',
             changelog: [{ version: '1.17.0', notes: 'added' }],
         },
         error: {

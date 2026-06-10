@@ -10,7 +10,8 @@ type Attributes = {
 
 export const deviceSetupStartedEvent: EventDef<Attributes, EventType.DeviceSetupStarted> = {
     name: EventType.DeviceSetupStarted,
-    descriptionTrigger: 'User initiates the device setup and onboarding flow for a new or recovered device',
+    descriptionTrigger:
+        'User initiates the device setup and onboarding flow for a new or recovered device',
     changelog: [{ version: '25.5.1', notes: 'added' }],
     attributes: {
         osName: {

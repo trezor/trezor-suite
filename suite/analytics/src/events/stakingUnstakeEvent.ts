@@ -12,7 +12,8 @@ type Attributes = {
 
 export const stakingUnstakeEvent: EventDef<Attributes, EventType.StakingUnstake> = {
     name: EventType.StakingUnstake,
-    descriptionTrigger: 'User navigates through the unstaking flow, with tracking at each step of the process',
+    descriptionTrigger:
+        'User navigates through the unstaking flow, with tracking at each step of the process',
     changelog: [{ version: '25.4.0', notes: 'added' }],
 
     attributes: {
@@ -24,11 +25,13 @@ export const stakingUnstakeEvent: EventDef<Attributes, EventType.StakingUnstake>
                     notes: 'action values changed to `continue` | `cancel` | `close`',
                 },
             ],
-            description: 'The action taken by the user: `continue` to proceed with unstaking, `cancel` to abort the process, `close` to dismiss the modal',
+            description:
+                'The action taken by the user: `continue` to proceed with unstaking, `cancel` to abort the process, `close` to dismiss the modal',
         },
         step: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The current step in the unstaking flow: `staking-dashboard` when initiated from dashboard, `unstake-form-modal` when in the unstaking form',
+            description:
+                'The current step in the unstaking flow: `staking-dashboard` when initiated from dashboard, `unstake-form-modal` when in the unstaking form',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
@@ -36,7 +39,8 @@ export const stakingUnstakeEvent: EventDef<Attributes, EventType.StakingUnstake>
         },
         currency: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
-            description: 'The currency type used for amount display: `crypto` for cryptocurrency amounts, `fiat` for fiat currency amounts',
+            description:
+                'The currency type used for amount display: `crypto` for cryptocurrency amounts, `fiat` for fiat currency amounts',
         },
     },
 };

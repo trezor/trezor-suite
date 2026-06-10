@@ -11,7 +11,8 @@ export const accountsEmptyAccountReceiveEvent: EventDef<
     EventType.AccountsEmptyAccountReceive
 > = {
     name: EventType.AccountsEmptyAccountReceive,
-    descriptionTrigger: 'User initiates a receive transaction from an account with empty transaction history',
+    descriptionTrigger:
+        'User initiates a receive transaction from an account with empty transaction history',
     changelog: [{ version: '1.9.0', notes: 'added' }],
 
     attributes: {

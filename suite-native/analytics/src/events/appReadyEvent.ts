@@ -31,7 +31,8 @@ type Attributes = {
 
 export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
     name: EventType.AppReady,
-    descriptionTrigger: 'User launches the mobile application or completes the onboarding process, making the app ready for use',
+    descriptionTrigger:
+        'User launches the mobile application or completes the onboarding process, making the app ready for use',
     changelog: [
         { version: '23.4.1', notes: 'added' },
         {
@@ -114,7 +115,8 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         },
         isBiometricsEnabled: {
             changelog: [{ version: '24.4.1', notes: 'added' }],
-            description: 'Whether biometric authentication (fingerprint/face recognition) is enabled',
+            description:
+                'Whether biometric authentication (fingerprint/face recognition) is enabled',
         },
         rememberedStandardWallets: {
             changelog: [{ version: '24.5.1', notes: 'added' }],
