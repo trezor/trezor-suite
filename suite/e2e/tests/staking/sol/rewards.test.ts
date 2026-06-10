@@ -90,13 +90,26 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     await route.fulfill({ json: totalReward.response });
                 });
                 await solanaStakingMock.advanceEpoch();
-                await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
+                // Advance the fake clock past staleTime (1h) so the rewards cache is stale
+                // when the component remounts. The mocked fetch completes after fastForward
+                // returns (during the first await in the next step), at which point
+                // Date.now() = T0+2h, so dataUpdatedAt = T0+2h. A second fastForward in the
+                // next step advances Date.now() to T0+4h so that on remount
+                // Date.now() - dataUpdatedAt = 2h > staleTime(1h) and React Query re-runs
+                // queryFn, calling onTotalCount to restore pagination state.
+                await page.clock.fastForward('02:00:00');
             });
 
             await test.step('Switch to Overview tab and back to trigger rewards update', async () => {
                 await walletPage.overviewTabButton.click();
                 // We need to give Suite time to load new tab or rewards request won't be triggered
                 await expect(tradingPage.buyButton).toBeVisible();
+                // The async rewards fetch (triggered by fastForward in the previous step) completes
+                // during the first await above, setting dataUpdatedAt = T0+2h (= fake clock at that
+                // moment). We must advance the clock a second time so that at SolStakingDashboard
+                // remount Date.now() - dataUpdatedAt > staleTime(1h), forcing React Query to re-run
+                // queryFn, which calls onTotalCount(totalCount) and restores pagination state.
+                await page.clock.fastForward('02:00:00');
                 await stakingSection.stakingTabButton.click();
             });
 
