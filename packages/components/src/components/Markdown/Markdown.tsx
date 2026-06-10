@@ -59,6 +59,16 @@ const StyledMarkdown = styled.div`
         }
     }
 
+    section[data-testid='guide-banner'] {
+        p {
+            margin: 0;
+        }
+
+        a {
+            color: inherit;
+        }
+    }
+
     img {
         max-width: 100%;
     }
