@@ -11,11 +11,22 @@ export interface RunnableProcess<TEvent = unknown, TResult = unknown> {
     toPromise(): Promise<TResult>;
 }
 
+type ProcessEvent<P> = P extends RunnableProcess<infer TEvent, any> ? TEvent : never;
+type ProcessResult<P> = P extends RunnableProcess<any, infer TResult> ? TResult : never;
+
+/** Union of every child process's event type. */
+export type MergedEvents<Ps extends readonly RunnableProcess[]> = ProcessEvent<Ps[number]>;
+
+/** Tuple of every child process's result type, in the same order as the inputs. */
+export type TupleResults<Ps extends readonly RunnableProcess[]> = {
+    -readonly [K in keyof Ps]: ProcessResult<Ps[K]>;
+};
+
 /**
- * A master process that layers child processes on top of each other. Children
- * are added with `add()`; `run()` runs them all concurrently and yields their
- * events as a single merged async stream. `cancel()` cancels every child and
- * `toPromise()` resolves once all children have completed.
+ * A dynamically-built master process: child processes are layered on with
+ * `add()`, `run()` runs them all concurrently and yields their events as a
+ * single merged async stream, `cancel()` cancels every child, and `toPromise()`
+ * resolves once all children have completed.
  */
 export interface ProcessGroup<TEvent = unknown, TResult = unknown> extends RunnableProcess<
     TEvent,
@@ -30,20 +41,30 @@ export interface ProcessGroup<TEvent = unknown, TResult = unknown> extends Runna
     readonly size: number;
 }
 
-export const createProcessGroup = <TEvent = unknown, TResult = unknown>(): ProcessGroup<
-    TEvent,
-    TResult
-> => {
-    const processes: RunnableProcess<TEvent, TResult>[] = [];
+/**
+ * A statically-typed master process built from a fixed tuple of processes: the
+ * merged event stream is the union of the children's events and `toPromise()`
+ * resolves to a tuple of their results, in input order. The set is fixed at
+ * creation, so there is no `add()`.
+ */
+export interface TypedProcessGroup<Ps extends readonly RunnableProcess[]> {
+    run(): AsyncIterableIterator<MergedEvents<Ps>>;
+    cancel(): void;
+    toPromise(): Promise<TupleResults<Ps>>;
+    readonly size: number;
+}
+
+const createGroup = (initial: readonly RunnableProcess[]) => {
+    const processes: RunnableProcess[] = [...initial];
     let started = false;
     let runCalled = false;
 
-    const group: ProcessGroup<TEvent, TResult> = {
+    const group = {
         get size() {
             return processes.length;
         },
 
-        add(process) {
+        add(process: RunnableProcess) {
             if (started) {
                 throw new Error('Cannot add a process after the group has started.');
             }
@@ -52,14 +73,14 @@ export const createProcessGroup = <TEvent = unknown, TResult = unknown>(): Proce
             return group;
         },
 
-        run(): AsyncIterableIterator<TEvent> {
+        run(): AsyncIterableIterator<unknown> {
             if (runCalled) {
                 throw new Error('ProcessGroup.run() can only be called once.');
             }
             runCalled = true;
             started = true;
 
-            const channel = new EventChannel<TEvent>();
+            const channel = new EventChannel<unknown>();
             const children = [...processes];
             let active = children.length;
 
@@ -122,3 +143,23 @@ export const createProcessGroup = <TEvent = unknown, TResult = unknown>(): Proce
 
     return group;
 };
+
+/**
+ * Create a master process that layers child processes onto each other.
+ *
+ * - Passing a tuple of processes returns a {@link TypedProcessGroup}: events are
+ *   the union of the children's event types and `toPromise()` resolves to a
+ *   tuple of their results, in order.
+ * - Calling with no argument returns a dynamic {@link ProcessGroup} you build up
+ *   with `add()`.
+ */
+export function createProcessGroup<const Ps extends readonly RunnableProcess[]>(
+    processes: Ps,
+): TypedProcessGroup<Ps>;
+export function createProcessGroup<TEvent = unknown, TResult = unknown>(): ProcessGroup<
+    TEvent,
+    TResult
+>;
+export function createProcessGroup(processes: readonly RunnableProcess[] = []): unknown {
+    return createGroup(processes);
+}

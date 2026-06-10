@@ -123,4 +123,45 @@ describe('createProcessGroup', () => {
         expect(seen).toEqual([]);
         await expect(group.toPromise()).resolves.toEqual([]);
     });
+
+    it('typed constructor-list form infers a results tuple and merged event union', async () => {
+        type EventA = { kind: 'a'; value: number };
+        type EventB = { kind: 'b'; flag: boolean };
+
+        const a: RunnableProcess<EventA, number> = {
+            async *run() {
+                yield { kind: 'a', value: 1 };
+            },
+            cancel() {},
+            toPromise: () => Promise.resolve(42),
+        };
+        const b: RunnableProcess<EventB, string> = {
+            async *run() {
+                yield { kind: 'b', flag: true };
+            },
+            cancel() {},
+            toPromise: () => Promise.resolve('done'),
+        };
+
+        const group = createProcessGroup([a, b]);
+
+        const seen: (EventA | EventB)[] = [];
+        for await (const event of group.run()) {
+            // event is statically EventA | EventB — discriminating by `kind` is type-safe
+            seen.push(event);
+        }
+        expect(seen.map(e => e.kind).sort()).toEqual(['a', 'b']);
+
+        const results = await group.toPromise();
+        // results is statically typed as [number, string]
+        const [resultA, resultB] = results;
+        expect(resultA).toBe(42);
+        expect(resultB).toBe('done');
+
+        // Compile-time assertions: tuple positions carry their own types.
+        const _checkNumber: number = results[0];
+        const _checkString: string = results[1];
+        void _checkNumber;
+        void _checkString;
+    });
 });
