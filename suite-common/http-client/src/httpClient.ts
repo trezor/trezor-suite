@@ -83,15 +83,6 @@ export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClie
     return createEndpointFetcher;
 }
 
-export function requestInitToFetcherOptions(init?: RequestInit) {
-    const { signal, ...rest } = init || {};
-
-    return {
-        ...rest,
-        ...(signal ? { signal } : {}),
-    };
-}
-
 export {
     type DefaultOptions,
     type UpFetch,
