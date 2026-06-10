@@ -1,6 +1,5 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { type TransactionDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountKey,
@@ -55,8 +54,6 @@ export type StablecoinYieldSessionState = {
         isInitializingAllowance: boolean;
         isModifyMode: boolean;
         isRevokeRequired: boolean;
-        revokeTransactions: TransactionDto[] | null;
-        approvedSpender: string | null;
     };
     action: {
         amount: string | null;
@@ -98,8 +95,6 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
         isInitializingAllowance: false,
         isModifyMode: false,
         isRevokeRequired: false,
-        revokeTransactions: null,
-        approvedSpender: null,
     },
     action: {
         amount: null,
@@ -227,37 +222,15 @@ export const stablecoinYieldSlice = createSlice({
                 session.error = null;
             });
         },
-        setApprovalResponse(
-            state,
-            action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
-                    approvedSpender: string | null;
-                    revokeTransactions: TransactionDto[] | null;
-                }
-            >,
-        ) {
-            withSession(state, action.payload, session => {
-                if (action.payload.approvedSpender !== null) {
-                    session.approval.approvedSpender = action.payload.approvedSpender;
-                }
-                session.approval.revokeTransactions = action.payload.revokeTransactions;
-            });
-        },
         setRevokeRequired(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.isRevokeRequired = true;
-            });
-        },
-        clearApprovalTransition(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
-            withSession(state, action.payload, session => {
-                session.approval.revokeTransactions = null;
             });
         },
         startSubmittingApproval(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.isSubmitting = true;
                 session.approval.modalState = null;
-                session.approval.revokeTransactions = null;
                 session.approval.isRevokeRequired = false;
                 session.error = null;
             });
@@ -338,7 +311,6 @@ export const stablecoinYieldSlice = createSlice({
                 session.approval.isPending = false;
                 session.action.pendingTransaction = null;
                 session.action.review = null;
-                session.approval.revokeTransactions = null;
                 session.step = 'action';
             });
         },
@@ -351,7 +323,6 @@ export const stablecoinYieldSlice = createSlice({
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = false;
                 session.approval.isRevokeRequired = false;
-                session.approval.revokeTransactions = null;
                 session.step = 'approve';
             });
         },

@@ -12,7 +12,6 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@suite-common/calldata": "workspace:^",
         "@suite-common/earn-stablecoin-defs": "workspace:^",
         "@suite-common/http-client": "workspace:^",
         "@suite-common/react-query": "workspace:^",

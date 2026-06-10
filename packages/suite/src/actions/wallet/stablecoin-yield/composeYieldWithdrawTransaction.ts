@@ -6,8 +6,8 @@ import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constan
 import {
     type YieldFlowResolvedData,
     type YieldWithdrawInputUnit,
+    buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
-    buildYieldWithdrawUnsignedTransaction,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
@@ -101,7 +101,7 @@ export const composeYieldWithdrawTransaction = async ({
         throw new Error(`Fee info is not available.`);
     }
 
-    const unsignedTx = buildYieldWithdrawUnsignedTransaction({
+    const unsignedTx = buildYieldUnsignedTransaction({
         chainId: network.chainId,
         data: calldata,
         feeLevel: normalLevel,

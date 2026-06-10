@@ -2,8 +2,9 @@ import { Calldata, asEvmAddress } from '@suite-common/calldata';
 
 import {
     buildEvmSelectedFee,
+    buildYieldDepositCalldata,
+    buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
-    buildYieldWithdrawUnsignedTransaction,
 } from '../stablecoinYieldUtils';
 
 const ACCOUNT_DESCRIPTOR = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
@@ -84,7 +85,34 @@ describe('stablecoinYieldUtils', () => {
         });
     });
 
-    describe('buildYieldWithdrawUnsignedTransaction', () => {
+    describe('buildYieldDepositCalldata', () => {
+        it('builds ERC4626 deposit calldata', () => {
+            const calldata = buildYieldDepositCalldata({
+                amount: '10',
+                flowData,
+                ownerAddress: ACCOUNT_DESCRIPTOR,
+                receiverAddress: ACCOUNT_DESCRIPTOR,
+            });
+
+            expect(Calldata.evm.erc4626.deposit.decode(calldata)).toEqual({
+                assets: 10_000_000n,
+                receiver: ACCOUNT_DESCRIPTOR.toLowerCase(),
+            });
+        });
+
+        it('throws when calldata cannot be encoded', () => {
+            expect(() =>
+                buildYieldDepositCalldata({
+                    amount: '0',
+                    flowData,
+                    ownerAddress: ACCOUNT_DESCRIPTOR,
+                    receiverAddress: ACCOUNT_DESCRIPTOR,
+                }),
+            ).toThrow('Failed to encode deposit calldata');
+        });
+    });
+
+    describe('buildYieldUnsignedTransaction', () => {
         const commonParams = {
             chainId: 1,
             data: '0x1234',
@@ -96,7 +124,7 @@ describe('stablecoinYieldUtils', () => {
 
         it('builds legacy fee fields', () => {
             expect(
-                buildYieldWithdrawUnsignedTransaction({
+                buildYieldUnsignedTransaction({
                     ...commonParams,
                     feeLevel: {
                         feePerUnit: '5',
@@ -116,7 +144,7 @@ describe('stablecoinYieldUtils', () => {
 
         it('builds EIP1559 fee fields', () => {
             expect(
-                buildYieldWithdrawUnsignedTransaction({
+                buildYieldUnsignedTransaction({
                     ...commonParams,
                     feeLevel: {
                         feePerUnit: '5',

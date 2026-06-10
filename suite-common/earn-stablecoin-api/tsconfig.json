@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../calldata" },
         { "path": "../earn-stablecoin-defs" },
         { "path": "../http-client" },
         { "path": "../react-query" },

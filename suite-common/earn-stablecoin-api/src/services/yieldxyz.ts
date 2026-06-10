@@ -1,9 +1,4 @@
-import {
-    enterYieldResponse,
-    exitYieldResponse,
-    getYieldResponse,
-    getYieldsResponse,
-} from '@suite-common/earn-stablecoin-defs';
+import { getYieldResponse, getYieldsResponse } from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
 
@@ -26,14 +21,4 @@ export const getYields = yieldXyzApi('/yields', {
 export const getYield = yieldXyzApi('/yields/:vaultId', {
     method: 'GET',
     schema: getYieldResponse,
-});
-
-export const enterYield = yieldXyzApi('/actions/enter', {
-    method: 'POST',
-    schema: enterYieldResponse,
-});
-
-export const exitYield = yieldXyzApi('/actions/exit', {
-    method: 'POST',
-    schema: exitYieldResponse,
 });

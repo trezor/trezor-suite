@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { prepareYieldDepositAction } from '@suite-common/wallet-core';
+import { composeYieldDepositTransactionThunk } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { useDebounce } from '@trezor/react-utils';
 
@@ -25,6 +26,7 @@ export const useYieldDepositFees = ({
     flowKey,
     isEnabled,
 }: UseYieldDepositFeesParams) => {
+    const dispatch = useDispatch();
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
     const [preparedAction, setPreparedAction] = useState<PreparedYieldDepositAction | null>(null);
@@ -52,10 +54,12 @@ export const useYieldDepositFees = ({
             requestId: number,
         ) => {
             try {
-                const result = await prepareYieldDepositAction({
-                    amount: preparedAmount,
-                    flowData: preparedFlowData,
-                });
+                const result = await dispatch(
+                    composeYieldDepositTransactionThunk({
+                        amount: preparedAmount,
+                        flowData: preparedFlowData,
+                    }),
+                ).unwrap();
 
                 if (requestId !== requestIdRef.current) {
                     return;
@@ -88,7 +92,7 @@ export const useYieldDepositFees = ({
                 }
             }
         },
-        [clearDepositFeeState],
+        [clearDepositFeeState, dispatch],
     );
 
     useEffect(() => {
