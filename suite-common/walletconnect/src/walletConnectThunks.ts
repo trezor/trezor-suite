@@ -30,7 +30,7 @@ import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
 
 let walletKit: IWalletKit;
 
-export const sessionAuthenticateThunk = createThunk<
+const sessionAuthenticateThunk = createThunk<
     void,
     {
         event: WalletKitTypes.SessionAuthenticate;
@@ -116,7 +116,7 @@ export const sessionAuthenticateThunk = createThunk<
     }
 });
 
-export const sessionProposalThunk = createThunk<
+const sessionProposalThunk = createThunk<
     void,
     {
         event: WalletKitTypes.SessionProposal;
@@ -147,7 +147,7 @@ export const sessionProposalThunk = createThunk<
     });
 });
 
-export const sessionRequestThunk = createThunk<
+const sessionRequestThunk = createThunk<
     void,
     {
         event: WalletKitTypes.SessionRequest;
