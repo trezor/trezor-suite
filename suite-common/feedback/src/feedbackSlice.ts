@@ -11,7 +11,7 @@ export type FeatureFeedbackRootState<FeatureName extends string = string> = {
     featureFeedback: FeatureFeedbackState<FeatureName>;
 };
 
-export const featureFeedbackInitialState: FeatureFeedbackState = {
+const featureFeedbackInitialState: FeatureFeedbackState = {
     usageCounts: {},
     pendingFeedbackFeatures: [],
 };

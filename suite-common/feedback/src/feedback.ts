@@ -20,11 +20,11 @@ interface BasePayload extends UserData, FeedbackExtras {
     description: string;
 }
 
-export interface BugPayload extends BasePayload {
+interface BugPayload extends BasePayload {
     category: FeedbackCategory;
 }
 
-export interface SuggestionPayload extends BasePayload {
+interface SuggestionPayload extends BasePayload {
     rating?: Rating;
     category?: FeedbackCategory;
 }
