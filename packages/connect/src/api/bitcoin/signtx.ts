@@ -36,10 +36,10 @@ const requestPrevTxInfo = ({
     txRequest: { request_type, details },
     refTxs,
 }: SignTxHelperProps) => {
-    const { tx_hash } = details;
-    if (!tx_hash) {
+    if (!details?.tx_hash) {
         throw ERRORS.TypedError('Runtime', 'requestPrevTxInfo: unknown details.tx_hash');
     }
+    const { tx_hash } = details;
     const tx = refTxs[tx_hash.toLowerCase()];
     if (!tx) {
         throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: Requested unknown tx: ${tx_hash}`);
@@ -171,11 +171,12 @@ const requestSignedTxInfo = ({
         });
     }
     if (request_type === 'TXPAYMENTREQ') {
-        const req = paymentRequests[details.request_index];
+        const request_index = details?.request_index;
+        const req = typeof request_index === 'number' ? paymentRequests[request_index] : undefined;
         if (!req) {
             throw ERRORS.TypedError(
                 'Runtime',
-                `requestPrevTxInfo: Requested unknown payment request at ${details.request_index}`,
+                `requestSignedTxInfo: Requested unknown payment request at ${request_index}`,
             );
         }
 
@@ -208,8 +209,7 @@ const requestSignedTxInfo = ({
 // requests information about a transaction
 // can be either signed transaction itself of prev transaction
 const requestTxAck = (props: SignTxHelperProps) => {
-    const { tx_hash } = props.txRequest.details;
-    if (tx_hash) {
+    if (props.txRequest.details?.tx_hash) {
         return requestPrevTxInfo(props);
     }
 

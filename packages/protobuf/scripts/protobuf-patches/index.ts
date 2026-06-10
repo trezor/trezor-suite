@@ -63,9 +63,6 @@ export const RULE_PATCH = {
     'BackupDevice.groups': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'MultisigRedeemScriptType.nodes': 'optional', // its valid to be undefined according to implementation/tests
     'MultisigRedeemScriptType.address_n': 'optional', // its valid to be undefined according to implementation/tests
-    'TxRequestDetailsType.request_index': 'required',
-    'TxRequest.request_type': 'required',
-    'TxRequest.details': 'required',
     'PaymentRequest.memos': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'CardanoPoolOwnerType.staking_key_path': 'optional',
     'CardanoPoolOwner.staking_key_path': 'optional',
