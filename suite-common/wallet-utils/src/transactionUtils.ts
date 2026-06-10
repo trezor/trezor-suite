@@ -850,7 +850,7 @@ export const getTargetAmount = (
 ) => {
     const value = getTargetAmountRaw(target, transaction);
 
-    return value ? String(value) : null;
+    return value ? formatNetworkAmount(value.toString(), transaction.symbol) : null;
 };
 
 export const getFeeRate = (tx: AccountTransaction) =>
