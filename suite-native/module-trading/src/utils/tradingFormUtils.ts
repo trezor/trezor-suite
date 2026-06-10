@@ -13,6 +13,7 @@ import {
 } from '@suite-common/trading';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type FormStateTrading } from '@suite-common/wallet-types';
+import { QuoteError } from '@suite-native/trading-quote-utils';
 import { type FeeLevel } from '@trezor/connect';
 
 interface CreateFormStateForSendFormParams {
@@ -41,7 +42,7 @@ export const createFormStateForSendForm = ({
     receiveAccountKey,
 }: CreateFormStateForSendFormParams): FormState => {
     if (!isExchangeTrade(quote) && !isSellFiatTrade(quote)) {
-        throw new Error('Invalid quote type: must be ExchangeTrade or SellFiatTrade');
+        throw new QuoteError('Invalid quote type: must be ExchangeTrade or SellFiatTrade', quote);
     }
 
     let outputAddress: string;
