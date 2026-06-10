@@ -17,4 +17,5 @@ export type LaunchArguments = {
     isStablecoinYieldEnabled?: boolean;
     isSolanaStakingEnabled?: boolean;
     isN4W1BackupEnabled?: boolean;
+    collectCoverageMap?: boolean;
 };

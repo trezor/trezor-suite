@@ -23,6 +23,11 @@ on:
         required: false
         default: e2e/trezorDetoxRunner/config/runner-android-release.config.js
         type: string
+      enable-coverage:
+        description: "Enable per-test coverage map collection. Requires the android-coverage-build artifact produced by template-suite-native-prepare-test-app-android.yml with enable-coverage: true."
+        required: false
+        default: false
+        type: boolean
     secrets:
       TREZOR_BOT_APP_ID:
         required: true
@@ -123,6 +128,19 @@ jobs:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/
 
+      - name: Download Android coverage build artifact
+        if: inputs.enable-coverage
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: android-coverage-build-${{ github.run_id }}
+          path: suite-native/app/android/app/build/outputs/apk/release/
+
+      - name: Replace app APK with instrumented coverage version
+        if: inputs.enable-coverage
+        run: |
+          mv suite-native/app/android/app/build/outputs/apk/release/app-coverage.apk \
+             suite-native/app/android/app/build/outputs/apk/release/app-release.apk
+
       - name: Enable Android emulator KVM optimalization
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -144,6 +162,8 @@ jobs:
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
+          COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage && 'true' || '' }}
+          COVERAGE_MAP_DIR: ${{ github.workspace }}/suite-native/app/coverage-map
         with:
           api-level: 34
           profile: pixel_6
@@ -199,3 +219,11 @@ jobs:
           name: android-tests-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
           retention-days: 14
+
+      - name: Upload per-test coverage map
+        if: inputs.enable-coverage && !cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: coverage-map-native-android-group-${{ matrix.TEST_GROUP }}
+          path: suite-native/app/coverage-map/
+          if-no-files-found: warn

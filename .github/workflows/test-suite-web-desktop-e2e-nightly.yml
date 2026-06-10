@@ -151,6 +151,7 @@ jobs:
 
       - name: Download per-test coverage map artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        continue-on-error: true
         with:
           pattern: coverage-map-group-*
           merge-multiple: true
@@ -158,10 +159,12 @@ jobs:
 
       - name: Build coverage map index
         run: |
-          yarn tsx packages/e2e-utils/src/testCoverage/buildCoverageMap.ts \
-            --input coverage-map \
-            --output coverage-map/index.json
+          [ -d "$GITHUB_WORKSPACE/coverage-map" ] || { echo "No coverage artifacts downloaded, skipping"; exit 0; }
+          yarn workspace @trezor/e2e-utils build-coverage-map \
+            --input $GITHUB_WORKSPACE/coverage-map \
+            --output $GITHUB_WORKSPACE/coverage-map/index.json
 
       - name: Upload coverage map to S3
         run: |
+          [ -f "$GITHUB_WORKSPACE/coverage-map/index.json" ] || { echo "No coverage map built, skipping upload"; exit 0; }
           aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"

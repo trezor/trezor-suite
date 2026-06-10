@@ -1,4 +1,8 @@
+import { expect as jestExpect } from '@jest/globals';
+
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
+import { collectCoverageMap } from './support/coverageMapFixture';
 
 const TEARDOWN_TIMEOUT = 30_000;
 
@@ -21,6 +25,13 @@ const teardownPromises = async () => {
         console.error('Error during Detox global teardown:', error);
     }
 };
+
+afterEach(async () => {
+    const { currentTestName, testPath } = jestExpect.getState();
+    if (currentTestName && testPath) {
+        await collectCoverageMap(currentTestName, testPath);
+    }
+});
 
 afterAll(async () => {
     // We don't want timed out global teardown to fail test run.

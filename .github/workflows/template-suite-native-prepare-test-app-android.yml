@@ -2,6 +2,12 @@ name: "Android E2E Test Job Template"
 
 on:
   workflow_call:
+    inputs:
+      enable-coverage:
+        description: "Build an instrumented debug APK for coverage collection. Uploads a separate coverage artifact."
+        required: false
+        default: false
+        type: boolean
     secrets:
       SENTRY_AUTH_TOKEN:
         required: true
@@ -171,4 +177,71 @@ jobs:
         with:
           name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/
+          retention-days: 1
+
+      # ── Coverage APK (instrumented + debuggable) ──────────────────────────────
+      # Reuses the release APK built above and produces a variant with:
+      #   - JS bundle compiled with INSTRUMENT_CODE=true (populates global.__coverage__)
+      #   - android:debuggable="true" so adb shell run-as works in the test runner
+      - name: Setup Android SDK for coverage APK
+        if: inputs.enable-coverage
+        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+
+      - name: Download Apktool for coverage APK
+        if: inputs.enable-coverage
+        run: |
+          wget -q https://github.com/iBotPeaches/Apktool/releases/download/v2.8.1/apktool_2.8.1.jar -O apktool.jar
+          wget -q https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool -O apktool
+          chmod +x apktool
+          sudo mv apktool.jar /usr/local/bin/apktool.jar
+          sudo mv apktool /usr/local/bin/apktool
+
+      - name: Decompile release APK for coverage
+        if: inputs.enable-coverage
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        run: apktool d app-release.apk -o unpacked-coverage
+
+      - name: Replace JS bundle with instrumented version
+        if: inputs.enable-coverage
+        working-directory: ./suite-native/app
+        env:
+          INSTRUMENT_CODE: "true"
+          JS_BUNDLE_PATH: ./android/app/build/outputs/apk/release/unpacked-coverage/assets/index.android.bundle
+          ASSETS_DEST_PATH: ./android/app/build/outputs/apk/release/unpacked-coverage/res/
+          ENTRY_FILE_PATH: ./suite-native/app/index.js
+          EXPO_PUBLIC_IS_DETOX_BUILD: true
+          EXPO_PUBLIC_FF_IS_REGTEST_ENABLED: true
+          EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED: true
+          EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED: true
+          EXPO_PUBLIC_ENVIRONMENT: debug
+        run: yarn exec react-native bundle --platform android --dev false --entry-file $ENTRY_FILE_PATH --bundle-output $JS_BUNDLE_PATH --assets-dest $ASSETS_DEST_PATH
+
+      - name: Make coverage APK debuggable
+        if: inputs.enable-coverage
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release/unpacked-coverage
+        run: |
+          sed -i 's/android:debuggable="false"/android:debuggable="true"/g' AndroidManifest.xml
+          sed -i 's/android:extractNativeLibs="false"/android:extractNativeLibs="true"/g' AndroidManifest.xml
+
+      - name: Repack coverage APK
+        if: inputs.enable-coverage
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        run: apktool b unpacked-coverage -o app-coverage.apk
+
+      - name: Sign coverage APK
+        if: inputs.enable-coverage
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        env:
+          KEYSTORE_PATH: ../../../../debug.keystore
+          KEYSTORE_PASSWORD: pass:android
+        run: |
+          $ANDROID_HOME/build-tools/35.0.0/apksigner sign --ks $KEYSTORE_PATH --ks-pass $KEYSTORE_PASSWORD --out app-coverage.apk app-coverage.apk
+          rm -rf unpacked-coverage
+
+      - name: Upload Android coverage build artifact
+        if: inputs.enable-coverage
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: android-coverage-build-${{ github.run_id }}
+          path: suite-native/app/android/app/build/outputs/apk/release/app-coverage.apk
           retention-days: 1

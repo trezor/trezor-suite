@@ -20,7 +20,8 @@
         "fix-bot:publish": "tsx src/fixBot/publish.ts",
         "fix-bot:notify": "tsx src/fixBot/notify.ts",
         "fix-bot:update-ledger": "tsx src/fixBot/ledger.ts",
-        "gh-pr-stats": "tsx ./src/ghPrStats/index.ts"
+        "gh-pr-stats": "tsx ./src/ghPrStats/index.ts",
+        "build-coverage-map": "tsx ./src/testCoverage/buildCoverageMap.ts"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.39.0",
@@ -29,6 +30,7 @@
         "@trezor/utils": "workspace:*",
         "dotenv": "17.2.3",
         "express": "^5.2.1",
+        "tsx": "^4.21.0",
         "ws": "^8.20.0",
         "zod": "4.3.6"
     },
@@ -37,7 +39,6 @@
         "@currents/mcp": "^2.3.2",
         "@currents/playwright": "^2.1.4",
         "@playwright/test": "1.60.0",
-        "@trezor/node-utils": "workspace:*",
-        "tsx": "^4.21.0"
+        "@trezor/node-utils": "workspace:*"
     }
 }
