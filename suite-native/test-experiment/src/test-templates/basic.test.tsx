@@ -4,8 +4,8 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 import { renderHook } from '@testing-library/react-native';
 
+import { ServicesProvider } from '@suite-common/dependency-injection';
 import { IntlProviderForTests } from '@suite-native/intl';
-import { NativeServicesProvider } from '@suite-native/services';
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { extraDependenciesNativeMock } from '@suite-native/test-utils/src/extraDependenciesNative.mock';
 import { StylesProvider, createRenderer } from '@trezor/styles-native';
@@ -21,9 +21,13 @@ const renderHookWithProviders = <Result, Props>(callback: (props: Props) => Resu
                 <IntlProviderForTests>
                     <StylesProvider theme={theme} renderer={renderer}>
                         <NavigationContainer>
-                            <NativeServicesProvider services={extraDependenciesNativeMock.services}>
+                            <ServicesProvider
+                                services={{
+                                    ...extraDependenciesNativeMock.services,
+                                }}
+                            >
                                 <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
-                            </NativeServicesProvider>
+                            </ServicesProvider>
                         </NavigationContainer>
                     </StylesProvider>
                 </IntlProviderForTests>
