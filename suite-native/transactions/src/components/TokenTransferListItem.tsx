@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -91,7 +92,7 @@ type TokenTransferListItemProps = {
     isLast?: boolean;
 };
 
-export const TokenTransferListItem = ({
+export const TokenTransferListItem = memo(({
     accountKey,
     transaction,
     tokenTransfer,
@@ -118,4 +119,4 @@ export const TokenTransferListItem = ({
             />
         </TransactionListItemContainer>
     );
-};
+});

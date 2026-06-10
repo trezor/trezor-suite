@@ -59,6 +59,7 @@ export const AccountDetailContentScreen = ({
                 )
             }
             noHorizontalPadding
+            isScrollable={false}
         >
             <TransactionList
                 account={account}

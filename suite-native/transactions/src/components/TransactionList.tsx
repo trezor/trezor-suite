@@ -30,6 +30,12 @@ import { arrayPartition } from '@trezor/utils';
 // Pre-fetch rates for this many data items beyond the last visible one.
 const RATE_PREFETCH_BUFFER = 30;
 
+// Stable reference — a new object on every render resets FlashList's internal viewability state.
+const VIEWABILITY_CONFIG = {
+    minimumViewTime: 200,
+    itemVisiblePercentThreshold: 50,
+};
+
 import { useAccountTransactionsPageQuery } from '../hooks/useAccountTransactionsPageQuery';
 import { useFiatRatesForTransactionsQuery } from '../hooks/useFiatRatesForTransactionsQuery';
 
@@ -334,6 +340,8 @@ export const TransactionList = ({
                 data={data}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
+                estimatedItemSize={80}
+                viewabilityConfig={VIEWABILITY_CONFIG}
                 onViewableItemsChanged={handleViewableItemsChanged}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
                 ListEmptyComponent={

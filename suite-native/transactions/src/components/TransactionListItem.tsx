@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -105,7 +106,7 @@ export const TransactionListItemValues = ({
     );
 };
 
-export const TransactionListItem = ({
+export const TransactionListItem = memo(({
     transaction,
     accountKey,
     isFirst = false,
@@ -128,7 +129,10 @@ export const TransactionListItem = ({
     const firstToken = transaction.tokens[0];
     const isTokenOnlyTransaction = transaction.amount === '0' && firstToken !== undefined;
 
-    const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
+    const allOutputs = useMemo(
+        () => (account !== null ? createTargets({ transaction, account }) : []),
+        [account, transaction],
+    );
 
     if (isTokenOnlyTransaction)
         return (
@@ -165,6 +169,6 @@ export const TransactionListItem = ({
             ))}
         </TransactionListItemContainer>
     );
-};
+});
 
 TransactionListItem.displayName = 'TransactionListItem';
