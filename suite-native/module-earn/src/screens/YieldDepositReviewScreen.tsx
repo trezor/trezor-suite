@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -9,24 +9,23 @@ import {
     selectStablecoinYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal, toTokenSymbol } from '@suite-common/wallet-types';
-import { Text, VStack } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 import {
-    ConfirmOnTrezorWrapper,
-    useConfirmOnTrezorController,
-} from '@suite-native/confirm-on-trezor';
-import { Translation } from '@suite-native/intl';
-import {
-    ScreenHeader,
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
 import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
-import { YieldDepositReviewOutputList } from '../components/YieldDepositReviewOutputList';
+import { YieldReviewList } from '../components/YieldReviewList';
+import { buildYieldDepositReviewCards } from '../components/YieldReviewListPresets';
+import { YieldReviewScreenLayout } from '../components/YieldReviewScreenLayout';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldDepositReview } from '../hooks/useYieldDepositReview';
-import { useYieldReviewAutoStart } from '../hooks/useYieldReviewAutoStart';
+import {
+    useYieldReviewScreenControls,
+    useYieldReviewSheetAutoStart,
+} from '../hooks/useYieldReviewScreenControls';
 import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositReview>;
@@ -53,12 +52,14 @@ const DepositReviewContent = ({
     review,
     tokenSymbol,
 }: DepositReviewContentProps) => {
-    const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
-        useConfirmOnTrezorController();
-    const hasLeftReviewRef = useRef(false);
-    const markReviewLeave = useCallback(() => {
-        hasLeftReviewRef.current = true;
-    }, []);
+    const { translate } = useTranslate();
+    const {
+        closeSheet,
+        confirmOnTrezorRef,
+        hasLeftReview,
+        markReviewLeave,
+        revealConfirmOnTrezorSheet,
+    } = useYieldReviewScreenControls();
     const {
         depositStatus,
         handleDepositSubmitted,
@@ -71,65 +72,48 @@ const DepositReviewContent = ({
     });
     const isDepositSigned = depositStatus === 'signed' || depositStatus === 'sending';
     const isSendingDeposit = depositStatus === 'sending';
-    const handleReviewCancelled = useCallback(() => {
-        if (hasLeftReviewRef.current) {
-            return;
-        }
 
-        leaveReviewFromDeviceCancel();
-    }, [leaveReviewFromDeviceCancel]);
-
-    useYieldReviewAutoStart({
-        onDeviceReviewReady: revealConfirmOnTrezorSheet,
-        onReviewCancelled: handleReviewCancelled,
-        onReviewFailed: closeSheet,
+    useYieldReviewSheetAutoStart({
+        closeSheet,
+        hasLeftReview,
+        isSigned: isDepositSigned,
+        leaveReviewFromDeviceCancel,
+        revealConfirmOnTrezorSheet,
         shouldAutoStartReview: depositStatus === 'idle',
         startReview: startDepositReview,
     });
 
-    useEffect(() => {
-        if (isDepositSigned) {
-            closeSheet();
-        }
-    }, [closeSheet, isDepositSigned]);
-
     return (
-        <ConfirmOnTrezorWrapper
-            isManualControlEnabled
-            controlRef={confirmOnTrezorRef}
-            closeActionType="back"
-            defaultHeader={
-                <ScreenHeader
-                    closeActionType="back"
-                    customContent={
-                        <Text variant="body-md-strong">
-                            <Translation id="earn.yieldDepositReviewScreen.title" />
-                        </Text>
-                    }
-                />
-            }
-        >
-            <VStack flex={1} justifyContent="space-between">
-                <YieldDepositReviewOutputList
-                    accountKey={flowData.account.key}
-                    amount={review.amount}
-                    fee={feePreview.fee}
-                    isSigned={isDepositSigned}
-                    networkSymbol={flowData.account.symbol}
-                    receiveAmount={review.receiptAmount}
-                    receiveTokenSymbol={toTokenSymbol(flowData.receiptToken.symbol)}
-                    tokenSymbol={toTokenSymbol(tokenSymbol)}
-                />
-                {isDepositSigned && (
+        <YieldReviewScreenLayout
+            confirmOnTrezorRef={confirmOnTrezorRef}
+            titleTranslationId="earn.yieldDepositReviewScreen.title"
+            submittedCard={
+                isDepositSigned ? (
                     <EarnReviewSubmittedCard
                         buttonTranslationId="earn.yieldDepositReviewScreen.submitButton"
                         isButtonLoading={isSendingDeposit}
                         messageTranslationId="earn.yieldDepositReviewScreen.successMessage"
                         onButtonPress={handleDepositSubmitted}
                     />
+                ) : undefined
+            }
+        >
+            <YieldReviewList
+                cards={buildYieldDepositReviewCards(
+                    {
+                        accountKey: flowData.account.key,
+                        amount: review.amount,
+                        fee: feePreview.fee,
+                        receiveAmount: review.receiptAmount,
+                        receiveTokenSymbol: toTokenSymbol(flowData.receiptToken.symbol),
+                        tokenSymbol: toTokenSymbol(tokenSymbol),
+                    },
+                    translate,
                 )}
-            </VStack>
-        </ConfirmOnTrezorWrapper>
+                isSigned={isDepositSigned}
+                networkSymbol={flowData.account.symbol}
+            />
+        </YieldReviewScreenLayout>
     );
 };
 

@@ -1,21 +1,17 @@
-import { useCallback, useEffect, useRef } from 'react';
-
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
-import { Text, VStack } from '@suite-native/atoms';
-import {
-    ConfirmOnTrezorWrapper,
-    useConfirmOnTrezorController,
-} from '@suite-native/confirm-on-trezor';
-import { Translation } from '@suite-native/intl';
-import { ScreenHeader, type YieldStackParamList, YieldStackRoutes } from '@suite-native/navigation';
+import { type YieldStackParamList, YieldStackRoutes } from '@suite-native/navigation';
 
 import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
 import { YieldAllowanceReviewOutputList } from '../components/YieldAllowanceReviewOutputList';
+import { YieldReviewScreenLayout } from '../components/YieldReviewScreenLayout';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldApprovalReview } from '../hooks/useYieldApprovalReview';
-import { useYieldReviewAutoStart } from '../hooks/useYieldReviewAutoStart';
+import {
+    useYieldReviewScreenControls,
+    useYieldReviewSheetAutoStart,
+} from '../hooks/useYieldReviewScreenControls';
 
 type ApprovalReviewRouteProps = RouteProp<
     YieldStackParamList,
@@ -35,9 +31,13 @@ type ApprovalReviewContentProps = {
 
 const ApprovalReviewContent = ({ flowData, flowKey, route }: ApprovalReviewContentProps) => {
     const isRevokeReview = route.name === YieldStackRoutes.YieldDepositRevokeReview;
-    const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
-        useConfirmOnTrezorController();
-    const hasLeftReviewRef = useRef(false);
+    const {
+        closeSheet,
+        confirmOnTrezorRef,
+        hasLeftReview,
+        markReviewLeave,
+        revealConfirmOnTrezorSheet,
+    } = useYieldReviewScreenControls();
     const transactionType = isRevokeReview ? 'revoke' : 'approve';
     const approvalLimitType = isRevokeReview ? undefined : route.params.approvalLimitType;
     const successMessageTranslationId = isRevokeReview
@@ -46,9 +46,6 @@ const ApprovalReviewContent = ({ flowData, flowKey, route }: ApprovalReviewConte
     const titleTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.title'
         : 'earn.yieldDepositApprovalReviewScreen.title';
-    const markReviewLeave = useCallback(() => {
-        hasLeftReviewRef.current = true;
-    }, []);
     const {
         handleApprovalSubmitted,
         isApprovalSigned,
@@ -64,60 +61,38 @@ const ApprovalReviewContent = ({ flowData, flowKey, route }: ApprovalReviewConte
         onReviewLeave: markReviewLeave,
         transactionType,
     });
-    const handleReviewCancelled = useCallback(() => {
-        if (hasLeftReviewRef.current) {
-            return;
-        }
 
-        leaveReviewFromDeviceCancel();
-    }, [leaveReviewFromDeviceCancel]);
-
-    useYieldReviewAutoStart({
-        onDeviceReviewReady: revealConfirmOnTrezorSheet,
-        onReviewCancelled: handleReviewCancelled,
-        onReviewFailed: closeSheet,
+    useYieldReviewSheetAutoStart({
+        closeSheet,
+        hasLeftReview,
+        isSigned: isApprovalSigned,
+        leaveReviewFromDeviceCancel,
+        revealConfirmOnTrezorSheet,
         shouldAutoStartReview: isApprovalReviewReady && !isSigningApproval,
         startReview: startApprovalReview,
     });
 
-    useEffect(() => {
-        if (isApprovalSigned) {
-            closeSheet();
-        }
-    }, [closeSheet, isApprovalSigned]);
-
     return (
-        <ConfirmOnTrezorWrapper
-            isManualControlEnabled
-            controlRef={confirmOnTrezorRef}
-            closeActionType="back"
-            defaultHeader={
-                <ScreenHeader
-                    closeActionType="back"
-                    customContent={
-                        <Text variant="body-md-strong">
-                            <Translation id={titleTranslationId} />
-                        </Text>
-                    }
-                />
-            }
-        >
-            <VStack flex={1} justifyContent="space-between">
-                <YieldAllowanceReviewOutputList
-                    accountKey={flowData.account.key}
-                    flowType={transactionType}
-                    tokenContract={route.params.tokenContract}
-                />
-                {isApprovalSigned && (
+        <YieldReviewScreenLayout
+            confirmOnTrezorRef={confirmOnTrezorRef}
+            titleTranslationId={titleTranslationId}
+            submittedCard={
+                isApprovalSigned ? (
                     <EarnReviewSubmittedCard
                         buttonTranslationId="transactions.send"
                         isButtonLoading={isSendingApproval}
                         messageTranslationId={successMessageTranslationId}
                         onButtonPress={handleApprovalSubmitted}
                     />
-                )}
-            </VStack>
-        </ConfirmOnTrezorWrapper>
+                ) : undefined
+            }
+        >
+            <YieldAllowanceReviewOutputList
+                accountKey={flowData.account.key}
+                flowType={transactionType}
+                tokenContract={route.params.tokenContract}
+            />
+        </YieldReviewScreenLayout>
     );
 };
 

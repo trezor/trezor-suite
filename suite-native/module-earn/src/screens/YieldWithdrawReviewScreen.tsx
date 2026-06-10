@@ -16,14 +16,9 @@ import {
     isFinalPrecomposedTransaction,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { Text, VStack } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
-    ConfirmOnTrezorWrapper,
-    useConfirmOnTrezorController,
-} from '@suite-native/confirm-on-trezor';
-import { Translation } from '@suite-native/intl';
-import {
-    ScreenHeader,
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
@@ -32,7 +27,10 @@ import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transac
 
 import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
 import { YieldReviewList } from '../components/YieldReviewList';
+import { buildYieldWithdrawReviewCards } from '../components/YieldReviewListPresets';
+import { YieldReviewScreenLayout } from '../components/YieldReviewScreenLayout';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldReviewScreenControls } from '../hooks/useYieldReviewScreenControls';
 import { useYieldWithdrawReview } from '../hooks/useYieldWithdrawReview';
 import {
     getYieldWithdrawFormDraftKey,
@@ -63,8 +61,9 @@ const WithdrawReviewContent = ({
     review,
     withdrawInputUnit,
 }: WithdrawReviewContentProps) => {
-    const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
-        useConfirmOnTrezorController();
+    const { translate } = useTranslate();
+    const { closeSheet, confirmOnTrezorRef, revealConfirmOnTrezorSheet } =
+        useYieldReviewScreenControls();
     const { withdrawStatus, handleSubmitWithdrawReview, handleWithdrawSubmitted } =
         useYieldWithdrawReview({
             flowData,
@@ -87,44 +86,44 @@ const WithdrawReviewContent = ({
     }, [closeSheet, isSigningWithdraw, revealConfirmOnTrezorSheet]);
 
     return (
-        <ConfirmOnTrezorWrapper
-            isManualControlEnabled
-            controlRef={confirmOnTrezorRef}
-            closeActionType="back"
-            defaultHeader={
-                <ScreenHeader
-                    closeActionType="back"
-                    customContent={
-                        <Text variant="body-md-strong">
-                            <Translation id="earn.yieldWithdrawReviewScreen.title" />
-                        </Text>
-                    }
-                />
-            }
-        >
-            <VStack flex={1} justifyContent="space-between">
-                <YieldReviewList
-                    accountKey={flowData.account.key}
-                    amount={review.amount}
-                    fee={fee}
-                    isFooterVisible={!isSigningWithdraw && !isWithdrawSigned}
-                    isSubmitDisabled={isSubmitDisabled}
-                    isSubmitLoading={isSigningWithdraw}
-                    networkSymbol={flowData.account.symbol}
-                    onSubmit={handleSubmitWithdrawReview}
-                    tokenSymbol={toTokenSymbol(reviewToken.symbol.toUpperCase())}
-                    variant="withdraw"
-                />
-                {isWithdrawSigned && (
+        <YieldReviewScreenLayout
+            confirmOnTrezorRef={confirmOnTrezorRef}
+            titleTranslationId="earn.yieldWithdrawReviewScreen.title"
+            submittedCard={
+                isWithdrawSigned ? (
                     <EarnReviewSubmittedCard
                         buttonTranslationId="earn.yieldWithdrawReviewScreen.submitButton"
                         isButtonLoading={isSendingWithdraw}
                         messageTranslationId="earn.yieldWithdrawReviewScreen.successMessage"
                         onButtonPress={handleWithdrawSubmitted}
                     />
+                ) : undefined
+            }
+        >
+            <YieldReviewList
+                cards={buildYieldWithdrawReviewCards(
+                    {
+                        accountKey: flowData.account.key,
+                        amount: review.amount,
+                        fee,
+                        tokenSymbol: toTokenSymbol(reviewToken.symbol.toUpperCase()),
+                    },
+                    translate,
                 )}
-            </VStack>
-        </ConfirmOnTrezorWrapper>
+                footer={
+                    <Button
+                        isDisabled={isSubmitDisabled}
+                        isLoading={isSigningWithdraw}
+                        onPress={handleSubmitWithdrawReview}
+                    >
+                        <Translation id="generic.buttons.continue" />
+                    </Button>
+                }
+                isFooterVisible={!isSigningWithdraw && !isWithdrawSigned}
+                isSigned={isWithdrawSigned}
+                networkSymbol={flowData.account.symbol}
+            />
+        </YieldReviewScreenLayout>
     );
 };
 
@@ -140,7 +139,7 @@ export const YieldWithdrawReviewScreen = () => {
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
-    const review = session?.action.review;
+    const review = session?.action.review?.type === 'withdraw' ? session.action.review : null;
     const feePreview = useMemo(
         () => (review ? buildYieldDepositFeePreview(review.unsignedTransaction) : null),
         [review],
