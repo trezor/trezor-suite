@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { type PendingConnectionProposal, type WalletConnectSession } from './walletConnectTypes';
 
-export const ACTION_PREFIX = '@suite-common/walletconnect';
+const ACTION_PREFIX = '@suite-common/walletconnect';
 
 const saveSession = createAction(
     `${ACTION_PREFIX}/saveSession`,
