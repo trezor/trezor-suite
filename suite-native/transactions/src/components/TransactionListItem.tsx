@@ -13,10 +13,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTxStakeType } from '@suite-common/wallet-utils';
+import { EmptyAmountText } from '@suite-native/formatters';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
 
-import { selectTransactionFiatRate } from '../selectors';
-import { getTransactionValueSign, groupTargetOutputs } from '../utils';
+import { groupTargetOutputs } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 import { TransactionTarget } from './TransactionTarget';

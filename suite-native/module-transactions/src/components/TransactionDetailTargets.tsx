@@ -1,270 +1,138 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
-import {
-    type FiatRatesRootState,
-    type Target,
-    type WalletSettingsRootState,
-} from '@suite-common/wallet-core';
+import { type Target } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getTargetAmountRaw } from '@suite-common/wallet-utils';
-import {
-    CryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-    SignValueFormatter,
-    TokenAmountFormatter,
-    TokenToFiatAmountFormatter,
-} from '@suite-native/formatters';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
-import { getTransactionValueSign, selectTransactionFiatRate } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import {
+    TransactionDetailCryptoAmount,
+    TransactionDetailCryptoFiatAmount,
+} from './TransactionDetailCryptoAmount';
 import { TransactionDetailTargetsSection } from './TransactionDetailTargetsSection';
-
-type ToRenderComponentTypes = TypedTokenTransfer | WalletAccountTransaction | Target[];
+import {
+    TransactionDetailTokenAmount,
+    TransactionDetailTokenFiatAmount,
+} from './TransactionDetailTokenAmount';
 
 type TransactionDetailTargetsProps = {
-    isPhishingTransaction?: boolean;
-    toRender: ToRenderComponentTypes;
+    targets: Target[];
+    transaction: WalletAccountTransaction;
+    selectedTokenContract?: TokenAddress;
     iconComponent: React.ReactNode;
-    transaction: WalletAccountTransaction;
-    tokenTransfer?: TypedTokenTransfer;
 };
 
-type TokenTransferProps = {
-    transaction: WalletAccountTransaction;
-    tokenTransfer: TypedTokenTransfer;
-};
-
-const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
-    extend: {
-        condition: isFailedTx,
-        style: {
-            textDecorationLine: 'line-through',
-        },
-    },
-}));
-
-const isTokenTransfer = (toRender: ToRenderComponentTypes): toRender is TypedTokenTransfer =>
-    (toRender as TypedTokenTransfer).from !== undefined;
-
-const TokenTransfer = ({ tokenTransfer, transaction }: TokenTransferProps) => {
-    const { applyStyle } = useNativeStyles();
-    const isFailedTx = transaction.type === 'failed';
-    const signValue = getTransactionValueSign(tokenTransfer?.type ?? transaction.type);
-
-    return (
-        <>
-            {!isFailedTx && (
-                <SignValueFormatter
-                    color="contentPrimary"
-                    value={signValue}
-                    variant="headline-md"
-                />
-            )}
-
-            <TokenAmountFormatter
-                value={tokenTransfer.amount}
-                tokenSymbol={tokenTransfer.symbol}
-                decimals={tokenTransfer.decimals}
-                variant="headline-md"
-                color="contentPrimary"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                style={applyStyle(failedTxStyle, { isFailedTx })}
-            />
-        </>
-    );
-};
-
-const TokenFiatTransfer = ({ tokenTransfer, transaction }: TokenTransferProps) => {
-    const { applyStyle } = useNativeStyles();
-    const isFailedTx = transaction.type === 'failed';
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
-    );
-
-    if (!historicRate || historicRate === 0) return;
-
-    return (
-        <>
-            <TokenToFiatAmountFormatter
-                symbol={transaction.symbol}
-                contract={tokenTransfer.contract}
-                value={tokenTransfer.amount}
-                decimals={tokenTransfer.decimals}
-                historicRate={historicRate}
-                color="contentSecondary"
-                useHistoricRate
-                style={applyStyle(failedTxStyle, { isFailedTx })}
-            />
-        </>
-    );
-};
-
-const hasTarget = (toRender: ToRenderComponentTypes): toRender is Target[] =>
-    Array.isArray(toRender) && toRender.every(v => (v as Target).payload !== undefined);
-
-type TargetCryptoProps = {
-    transaction: WalletAccountTransaction;
-    amount: string;
-};
-
-type TargetFiatProps = {
-    transaction: WalletAccountTransaction;
-    amount: string;
-    contract?: TokenAddress;
-};
-
-const findInternalAmountChanges = (targets: Target[]) => {
-    for (const target of targets) {
-        if (target.type === 'internal' && target.payload) {
-            return target;
-        }
-    }
-
-    return null;
-};
-
-const findTargetAmountChanges = (targets: Target[], transaction: WalletAccountTransaction) => {
-    for (const target of targets) {
-        if (target.type === 'target' && getTargetAmountRaw(target.payload, transaction)) {
-            return target;
-        }
-    }
-
-    return null;
-};
-
-const TargetCrypto = ({ transaction, amount }: TargetCryptoProps) => {
-    const { applyStyle } = useNativeStyles();
-    const isFailedTx = transaction.type === 'failed';
-    const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
-    const signValue = getTransactionValueSign(transaction.type);
-
-    if (isSolanaUnstakeTx) return;
-
-    return (
-        <>
-            {!isFailedTx && (
-                <SignValueFormatter
-                    color="contentPrimary"
-                    value={signValue}
-                    variant="headline-md"
-                />
-            )}
-
-            <CryptoAmountFormatter
-                value={amount}
-                symbol={transaction.symbol}
-                isBalance={false}
-                variant="headline-md"
-                color="contentPrimary"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                style={applyStyle(failedTxStyle, { isFailedTx })}
-            />
-        </>
-    );
-};
-
-const TargetFiat = ({ transaction, amount, contract }: TargetFiatProps) => {
-    const { applyStyle } = useNativeStyles();
-    const isFailedTx = transaction.type === 'failed';
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction, contract),
-    );
-
-    if (!historicRate || historicRate === 0) return;
-
-    return (
-        <>
-            <CryptoToFiatAmountFormatter
-                value={amount}
-                symbol={transaction.symbol}
-                historicRate={historicRate}
-                color="contentSecondary"
-                useHistoricRate
-                style={applyStyle(failedTxStyle, { isFailedTx })}
-            />
-        </>
-    );
-};
-
-export const getToRenderComponentType = (
-    toRender: ToRenderComponentTypes,
+// Pick the single target whose amount the summary should display. A selected token (the
+// token-detail view) takes precedence, then the first regular target carrying an amount,
+// then an internal transfer.
+const findRelevantTarget = (
+    targets: Target[],
     transaction: WalletAccountTransaction,
-    tokenTransfer?: TypedTokenTransfer,
+    selectedTokenContract?: TokenAddress,
 ) => {
-    const toRenderIsTokenTransfer = isTokenTransfer(toRender);
+    if (selectedTokenContract) {
+        const tokenTarget = targets.find(
+            target => target.type === 'token' && target.payload.contract === selectedTokenContract,
+        );
 
-    if (toRenderIsTokenTransfer) {
-        return {
-            topTarget: <TokenTransfer tokenTransfer={toRender} transaction={transaction} />,
-            bottomTarget: <TokenFiatTransfer tokenTransfer={toRender} transaction={transaction} />,
-        };
+        if (tokenTarget) {
+            return tokenTarget;
+        }
     }
 
-    const toRenderIsTarget = hasTarget(toRender);
+    const targetWithAmount = targets.find(
+        target => target.type === 'target' && getTargetAmountRaw(target.payload, transaction),
+    );
 
-    if (toRenderIsTarget) {
-        const target = findTargetAmountChanges(toRender, transaction);
+    if (targetWithAmount) {
+        return targetWithAmount;
+    }
 
-        if (target) {
-            const amount = getTargetAmountRaw(target.payload, transaction);
+    return targets.find(target => target.type === 'internal') ?? null;
+};
 
-            if (amount) {
-                return {
-                    topTarget: (
-                        <TargetCrypto amount={amount.toString()} transaction={transaction} />
-                    ),
-                    bottomTarget: (
-                        <TargetFiat
-                            amount={amount.toString()}
-                            contract={tokenTransfer?.contract}
-                            transaction={transaction}
-                        />
-                    ),
-                };
-            }
-        }
+const getTargetSlots = (
+    targets: Target[],
+    transaction: WalletAccountTransaction,
+    selectedTokenContract?: TokenAddress,
+) => {
+    const emptySlots = { topTarget: null, bottomTarget: null };
+    const target = findRelevantTarget(targets, transaction, selectedTokenContract);
 
-        const internalAmountChange = findInternalAmountChanges(toRender);
+    if (!target) {
+        return emptySlots;
+    }
 
-        if (internalAmountChange) {
+    switch (target.type) {
+        case 'token': {
+            const tokenTransfer = target.payload as TypedTokenTransfer;
+
             return {
                 topTarget: (
-                    <TargetCrypto
-                        amount={internalAmountChange?.payload.amount}
+                    <TransactionDetailTokenAmount
+                        tokenTransfer={tokenTransfer}
                         transaction={transaction}
                     />
                 ),
                 bottomTarget: (
-                    <TargetFiat
-                        amount={internalAmountChange?.payload.amount}
-                        contract={tokenTransfer?.contract}
+                    <TransactionDetailTokenFiatAmount
+                        tokenTransfer={tokenTransfer}
                         transaction={transaction}
                     />
                 ),
             };
         }
-    }
+        case 'target': {
+            const amount = getTargetAmountRaw(target.payload, transaction);
 
-    return {
-        topTarget: null,
-        bottomTarget: null,
-    };
+            if (!amount) {
+                return emptySlots;
+            }
+
+            return {
+                topTarget: (
+                    <TransactionDetailCryptoAmount
+                        amount={amount.toString()}
+                        transaction={transaction}
+                    />
+                ),
+                bottomTarget: (
+                    <TransactionDetailCryptoFiatAmount
+                        amount={amount.toString()}
+                        transaction={transaction}
+                    />
+                ),
+            };
+        }
+        case 'internal':
+            return {
+                topTarget: (
+                    <TransactionDetailCryptoAmount
+                        amount={target.payload.amount}
+                        transaction={transaction}
+                    />
+                ),
+                bottomTarget: (
+                    <TransactionDetailCryptoFiatAmount
+                        amount={target.payload.amount}
+                        transaction={transaction}
+                    />
+                ),
+            };
+        default:
+            return emptySlots;
+    }
 };
 
 export const TransactionDetailTargets = ({
+    targets,
     transaction,
-    tokenTransfer,
-    toRender,
+    selectedTokenContract,
     iconComponent,
 }: TransactionDetailTargetsProps) => {
     const { topTarget, bottomTarget } = useMemo(
-        () => getToRenderComponentType(toRender, transaction, tokenTransfer),
-        [toRender, transaction, tokenTransfer],
+        () => getTargetSlots(targets, transaction, selectedTokenContract),
+        [targets, transaction, selectedTokenContract],
     );
 
     return (
@@ -272,6 +140,6 @@ export const TransactionDetailTargets = ({
             topTarget={topTarget}
             bottomTarget={bottomTarget}
             icon={iconComponent}
-        ></TransactionDetailTargetsSection>
+        />
     );
 };

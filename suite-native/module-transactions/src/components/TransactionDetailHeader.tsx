@@ -52,26 +52,14 @@ export const TransactionDetailHeader = ({
         [txType, isPendingTx, isFailedTx],
     );
 
-    const toRender = useMemo(() => {
-        if (tokenTransfer) {
-            return tokenTransfer;
-        }
-
-        if (allOutputs.length) {
-            return allOutputs;
-        }
-
-        return transaction;
-    }, [tokenTransfer, allOutputs, transaction]);
-
     return (
         <DiscreetTextTrigger>
             <Box alignItems="center">
                 <TransactionDetailTargets
                     iconComponent={iconComponent}
-                    toRender={toRender}
+                    targets={allOutputs}
                     transaction={transaction}
-                    tokenTransfer={tokenTransfer}
+                    selectedTokenContract={tokenTransfer?.contract}
                 />
             </Box>
         </DiscreetTextTrigger>
