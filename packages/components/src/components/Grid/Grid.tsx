@@ -17,6 +17,8 @@ export const allowedGridFrameProps: FramePropsKeys[] = [
     'width',
     'height',
     'flex',
+    'overflow',
+    'borderRadius',
 ];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedGridFrameProps)[number]>;
 
