@@ -1,4 +1,4 @@
-import { type JSX, useCallback, useMemo, useState } from 'react';
+import { type JSX, useCallback, useMemo, useRef, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -26,6 +26,9 @@ import {
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
+
+// Pre-fetch rates for this many data items beyond the last visible one.
+const RATE_PREFETCH_BUFFER = 30;
 
 import { useAccountTransactionsPageQuery } from '../hooks/useAccountTransactionsPageQuery';
 import { useFiatRatesForTransactionsQuery } from '../hooks/useFiatRatesForTransactionsQuery';
@@ -164,37 +167,6 @@ export const TransactionList = ({
         perPage: txnsPerPage,
     });
 
-    useFiatRatesForTransactionsQuery({
-        accountKey,
-        transactions,
-        enabled: transactions.length > 0,
-    });
-
-    const { scrollDivider, handleScroll } = useScrollDivider();
-
-    const handleOnLoadMore = useCallback(() => {
-        setPage(currentPage => currentPage + 1);
-    }, []);
-
-    const handleOnRefresh = useCallback(async () => {
-        try {
-            setIsRefreshing(true);
-            setPage(1);
-            // Invalidate page 1 so the query re-runs. fetchTransactionsPageThunk always re-fetches
-            // page 1 from the network (no cache guard for the first page), so this is safe.
-            await Promise.allSettled([
-                dispatch(fetchAndUpdateAccountThunk({ accountKey })),
-                queryClient.invalidateQueries({
-                    queryKey: mobileQueryKeys.accountTransactions(accountKey, 1, txnsPerPage),
-                }),
-            ]);
-        } catch {
-            // Do nothing
-        }
-        // It's usually too fast so loading indicator only flashes for a moment, which is not nice
-        setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey, queryClient, txnsPerPage]);
-
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
         // This is here to keep the original behavior of having pending transactions in one group
@@ -235,6 +207,78 @@ export const TransactionList = ({
             ...(accountTransactionsByMonth[monthKey] ?? []),
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
+
+    // Tracks the highest data-array index that has ever been visible. Using a ref to
+    // avoid triggering re-renders on every scroll event; state is only updated when
+    // the index actually increases so the derived memo stays stable.
+    const lastVisibleIndexRef = useRef(0);
+    const [lastVisibleIndex, setLastVisibleIndex] = useState(0);
+
+    const handleViewableItemsChanged = useCallback(
+        ({ viewableItems }: { viewableItems: { index: number | null }[] }) => {
+            const max = viewableItems.reduce(
+                (m, { index }) => Math.max(m, index ?? 0),
+                0,
+            );
+            if (max > lastVisibleIndexRef.current) {
+                lastVisibleIndexRef.current = max;
+                setLastVisibleIndex(max);
+            }
+        },
+        [],
+    );
+
+    // Extract unique WalletAccountTransaction objects for items up to the current
+    // viewport + prefetch buffer. Rates for off-screen items are fetched lazily as
+    // the user scrolls toward them.
+    const transactionsForRates = useMemo(() => {
+        const visibleWindow = data.slice(0, lastVisibleIndex + RATE_PREFETCH_BUFFER + 1);
+        const seen = new Set<string>();
+        const result: WalletAccountTransaction[] = [];
+        for (const item of visibleWindow) {
+            if (typeof item === 'string') continue;
+            const tx =
+                'originalTransaction' in item
+                    ? item.originalTransaction
+                    : (item as WalletAccountTransaction);
+            if (!seen.has(tx.txid)) {
+                seen.add(tx.txid);
+                result.push(tx);
+            }
+        }
+        return result;
+    }, [data, lastVisibleIndex]);
+
+    useFiatRatesForTransactionsQuery({
+        accountKey,
+        transactions: transactionsForRates,
+        enabled: transactionsForRates.length > 0,
+    });
+
+    const { scrollDivider, handleScroll } = useScrollDivider();
+
+    const handleOnLoadMore = useCallback(() => {
+        setPage(currentPage => currentPage + 1);
+    }, []);
+
+    const handleOnRefresh = useCallback(async () => {
+        try {
+            setIsRefreshing(true);
+            setPage(1);
+            // Invalidate page 1 so the query re-runs. fetchTransactionsPageThunk always re-fetches
+            // page 1 from the network (no cache guard for the first page), so this is safe.
+            await Promise.allSettled([
+                dispatch(fetchAndUpdateAccountThunk({ accountKey })),
+                queryClient.invalidateQueries({
+                    queryKey: mobileQueryKeys.accountTransactions(accountKey, 1, txnsPerPage),
+                }),
+            ]);
+        } catch {
+            // Do nothing
+        }
+        // It's usually too fast so loading indicator only flashes for a moment, which is not nice
+        setTimeout(() => setIsRefreshing(false), 1500);
+    }, [dispatch, accountKey, queryClient, txnsPerPage]);
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
@@ -278,6 +322,7 @@ export const TransactionList = ({
             <FlashList<TransactionListItem>
                 data={data}
                 renderItem={renderItem}
+                onViewableItemsChanged={handleViewableItemsChanged}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
                 ListEmptyComponent={
                     shouldDeferEmptyState ? null : (
