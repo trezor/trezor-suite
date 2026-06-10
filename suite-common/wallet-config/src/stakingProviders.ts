@@ -1,7 +1,7 @@
 import { EVERSTAKE_POOLS, FIVE_BINARIES_POOLS } from '@suite-common/wallet-constants';
 import { EVERSTAKE_VOTER_PUBKEYS } from '@trezor/coins-solana/constants';
 
-export type StakingProviderId = 'everstake' | 'fivebinaries';
+type StakingProviderId = 'everstake' | 'fivebinaries';
 
 export type StakingProvider = {
     id: StakingProviderId;
@@ -11,7 +11,7 @@ export type StakingProvider = {
     ethereumPoolNames: string[];
 };
 
-export const EVERSTAKE_PROVIDER: StakingProvider = {
+const EVERSTAKE_PROVIDER: StakingProvider = {
     id: 'everstake',
     name: 'Everstake',
     solanaVoterPubkeys: EVERSTAKE_VOTER_PUBKEYS,
@@ -19,7 +19,7 @@ export const EVERSTAKE_PROVIDER: StakingProvider = {
     ethereumPoolNames: ['Everstake'],
 };
 
-export const FIVEBINARIES_PROVIDER: StakingProvider = {
+const FIVEBINARIES_PROVIDER: StakingProvider = {
     id: 'fivebinaries',
     name: 'FiveBinaries',
     solanaVoterPubkeys: [],
@@ -27,10 +27,7 @@ export const FIVEBINARIES_PROVIDER: StakingProvider = {
     ethereumPoolNames: [],
 };
 
-export const STAKING_PROVIDERS: readonly StakingProvider[] = [
-    EVERSTAKE_PROVIDER,
-    FIVEBINARIES_PROVIDER,
-];
+const STAKING_PROVIDERS: readonly StakingProvider[] = [EVERSTAKE_PROVIDER, FIVEBINARIES_PROVIDER];
 
 export const getStakingProviderBySolanaVoterPubkey = (
     voterPubkey: string,

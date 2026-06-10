@@ -1,6 +1,5 @@
 import { type YieldDtoNetwork } from '@suite-common/earn-stablecoin-defs';
 import { type DeviceModelInternal } from '@trezor/device-utils';
-import { type RequiredKey } from '@trezor/type-utils';
 
 export type NetworkSymbol =
     | 'btc'
@@ -61,10 +60,8 @@ export const TREZOR_CONNECT_BACKENDS = [
     'evm-rpc',
 ] as const;
 
-export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
-
 export type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];
-export type NonStandardBackendType = (typeof NON_STANDARD_BACKENDS)[number];
+type NonStandardBackendType = 'coinjoin';
 export type BackendType = TrezorConnectBackendType | NonStandardBackendType;
 
 export type NetworkFeature =
@@ -111,13 +108,12 @@ type NetworkAccountWithSpecificKey<TKey extends AccountType> = {
     isDebugOnlyAccountType?: boolean;
 };
 export type NetworkAccount = NetworkAccountWithSpecificKey<AccountType>;
-export type NormalizedNetworkAccount = RequiredKey<NetworkAccount, 'features'>;
 
-export type NetworkAccountTypes = Partial<{
+type NetworkAccountTypes = Partial<{
     [key in AccountType]: NetworkAccountWithSpecificKey<key>;
 }>;
 
-export type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
+type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 
 type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     symbol: TKey;
