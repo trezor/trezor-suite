@@ -280,6 +280,17 @@ export const TransactionList = ({
         setTimeout(() => setIsRefreshing(false), 1500);
     }, [dispatch, accountKey, queryClient, txnsPerPage]);
 
+    const keyExtractor = useCallback(
+        (item: TransactionListItem): string => {
+            if (typeof item === 'string') return `month:${item}`;
+            if ('originalTransaction' in item) {
+                return `token:${item.originalTransaction.txid}:${item.contract}`;
+            }
+            return `tx:${item.txid}`;
+        },
+        [],
+    );
+
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
             if (typeof item === 'string') {
@@ -322,6 +333,7 @@ export const TransactionList = ({
             <FlashList<TransactionListItem>
                 data={data}
                 renderItem={renderItem}
+                keyExtractor={keyExtractor}
                 onViewableItemsChanged={handleViewableItemsChanged}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
                 ListEmptyComponent={

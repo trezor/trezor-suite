@@ -1,3 +1,4 @@
+import { startTransition } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { mobileQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
@@ -19,6 +20,8 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
+
+import { writeHistoricRates } from '../historicRatesStorage';
 
 type UseFiatRatesForTransactionsQueryParams = {
     accountKey: AccountKey;
@@ -89,19 +92,33 @@ export const useFiatRatesForTransactionsQuery = ({
 
             const newRates = toRateMap(rates);
 
-            queryClient.setQueryData<RatesByTimestamps>(
+            // startTransition marks this as a non-urgent update so React can spread
+            // the subscriber re-renders across frames rather than committing all
+            // visible list items at once (avoids the FlashList "max renders" warning).
+            startTransition(() => {
+                queryClient.setQueryData<RatesByTimestamps>(
+                    mobileQueryKeys.historicRates(accountKey, localCurrency),
+                    (prev = {} as RatesByTimestamps) => {
+                        const merged = { ...prev };
+                        for (const [key, timestamps] of Object.entries(newRates) as [
+                            CryptoBaseCurrencyPair,
+                            Record<Timestamp, number>,
+                        ][]) {
+                            merged[key] = { ...(prev[key] ?? {}), ...timestamps };
+                        }
+                        return merged;
+                    },
+                );
+            });
+
+            // Persist the updated map so rates are available immediately on the
+            // next app launch without a network round-trip.
+            const persisted = queryClient.getQueryData<RatesByTimestamps>(
                 mobileQueryKeys.historicRates(accountKey, localCurrency),
-                (prev = {} as RatesByTimestamps) => {
-                    const merged = { ...prev };
-                    for (const [key, timestamps] of Object.entries(newRates) as [
-                        CryptoBaseCurrencyPair,
-                        Record<Timestamp, number>,
-                    ][]) {
-                        merged[key] = { ...(prev[key] ?? {}), ...timestamps };
-                    }
-                    return merged;
-                },
             );
+            if (persisted) {
+                writeHistoricRates(accountKey, localCurrency, persisted);
+            }
 
             return null;
         },

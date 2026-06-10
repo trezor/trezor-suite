@@ -11,6 +11,8 @@ import {
 import { getFiatRateKey, roundTimestampToNearestPastHour } from '@suite-common/wallet-utils';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
 
+import { readHistoricRates } from '../historicRatesStorage';
+
 export const useTxFiatRate = (
     accountKey: AccountKey,
     transaction: WalletAccountTransaction,
@@ -20,8 +22,10 @@ export const useTxFiatRate = (
 
     const { data } = useQuery<RatesByTimestamps, Error, number | undefined>({
         queryKey: mobileQueryKeys.historicRates(accountKey, localCurrency),
-        // Initialise empty; populated by useFiatRatesForTransactionsQuery via setQueryData.
-        queryFn: () => ({} as RatesByTimestamps),
+        // Restore persisted rates from MMKV on first mount; falls back to empty map.
+        // useFiatRatesForTransactionsQuery will merge new rates in via setQueryData.
+        queryFn: () =>
+            readHistoricRates(accountKey, localCurrency) ?? ({} as RatesByTimestamps),
         staleTime: Infinity,
         gcTime: Infinity,
         select: rates => {
