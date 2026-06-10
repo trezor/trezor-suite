@@ -538,7 +538,7 @@ export const TxAckPrevOutput = Type.Object(
 export type TxRequestDetailsType = Static<typeof TxRequestDetailsType>;
 export const TxRequestDetailsType = Type.Object(
     {
-        request_index: Type.Number(),
+        request_index: Type.Optional(Type.Number()),
         tx_hash: Type.Optional(Type.String()),
         extra_data_len: Type.Optional(Type.Number()),
         extra_data_offset: Type.Optional(Type.Number()),
@@ -559,8 +559,8 @@ export const TxRequestSerializedType = Type.Object(
 export type TxRequest = Static<typeof TxRequest>;
 export const TxRequest = Type.Object(
     {
-        request_type: RequestType,
-        details: TxRequestDetailsType,
+        request_type: Type.Optional(RequestType),
+        details: Type.Optional(TxRequestDetailsType),
         serialized: Type.Optional(TxRequestSerializedType),
     },
     { $id: 'TxRequest' },
