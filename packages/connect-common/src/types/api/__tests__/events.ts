@@ -61,7 +61,7 @@ export const events = (api: TrezorConnect) => {
             payload.status.toLowerCase();
 
             // features
-            payload.features.vendor.toLowerCase();
+            payload.features.vendor?.toLowerCase();
             // @ts-expect-error: error does not exist
             payload.error.toLowerCase();
         }

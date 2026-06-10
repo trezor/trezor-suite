@@ -121,7 +121,7 @@ export const recoverDeviceThunk = createThunk(
 // In such case, we need to call again the call that brought device into recovery mode (either proper recovery
 // or seed check). This way, communication is renewed and host starts receiving messages from device again.
 export const recoveryRerunThunk = createThunk<
-    { initialized: boolean | null },
+    { initialized: boolean | null | undefined },
     void,
     { rejectValue: string }
 >(`${actionPrefix}/recoveryRerunThunk`, async (_, { dispatch, getState, rejectWithValue }) => {
