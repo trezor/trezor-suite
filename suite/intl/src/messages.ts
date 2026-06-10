@@ -9250,25 +9250,25 @@ export const messages = defineMessages({
     TR_PHISHING_TOOLTIP_FAKE_TOKEN: {
         id: 'TR_PHISHING_TOOLTIP_FAKE_TOKEN',
         defaultMessage:
-            'This transaction may include hidden or unrecognized tokens. <a>Learn more</a>',
+            'This transaction includes tokens not found in any verified list and may be fake.',
     },
     TR_PHISHING_TOOLTIP_UNKNOWN_TX: {
         id: 'TR_PHISHING_TOOLTIP_UNKNOWN_TX',
-        defaultMessage: "This transaction couldn't be fully verified.",
+        defaultMessage: 'This transaction type is unknown and could not be decoded.',
     },
     TR_PHISHING_TOOLTIP_DUST_AMOUNT: {
         id: 'TR_PHISHING_TOOLTIP_DUST_AMOUNT',
         defaultMessage:
-            'This transaction contains dust amounts, which can be used in scams. <a>Learn more</a>',
+            'This transaction has a negligible value, which may indicate a dust attack. <a>Learn more</a>',
     },
     TR_PHISHING_TOOLTIP_ZERO_AMOUNT: {
         id: 'TR_PHISHING_TOOLTIP_ZERO_AMOUNT',
-        defaultMessage: 'This transaction has a zero amount and may be suspicious.',
+        defaultMessage:
+            'This zero-value token transfer may be an address poisoning attempt. <a>Learn more</a>',
     },
     TR_PHISHING_TOOLTIP_TRC10_TRANSFER: {
         id: 'TR_PHISHING_TOOLTIP_TRC10_TRANSFER',
-        defaultMessage:
-            'This transaction is a TRC10 transfer and may be suspicious.',
+        defaultMessage: 'This TRC10 token transfer may be a scam.',
     },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
