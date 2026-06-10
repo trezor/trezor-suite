@@ -1,5 +1,7 @@
 export { createConnect } from './connect';
 export { createConnectService } from './createConnectService';
+export { createProcessGroup } from './processGroup';
+export type { ProcessGroup, RunnableProcess } from './processGroup';
 export { createTrezorConnectMock } from './mock';
 export type { TrezorConnectMock } from './mock';
 export { UI_REQUEST, UI_RESPONSE } from './trezorConnectLike';
