@@ -23,7 +23,7 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
         from: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
             description:
-                'The staking dashboard state from which navigation occurred (e.g., `dashboard/staking-dashboard/staking-inactive`, `dashboard/staking-dashboard/staking-active`, `dashboard/staking-dashboard/staking-max`, `dashboard/staking-dashboard/insufficient-funds`, `dashboard/staking-dashboard/staked-but-insufficient-funds`)',
+                'The staking state from which navigation occurred, one of: `earn/staking-inactive`, `earn/staking-active`, `earn/staking-max`, `earn/insufficient-funds`, `earn/staked-but-insufficient-funds`',
         },
         networkSymbol: {
             changelog: [{ version: '26.4.1', notes: 'added' }],

@@ -12,7 +12,8 @@ export const walletConnectSessionRequestEvent: EventDef<
     EventType.WalletConnectSessionRequest
 > = {
     name: EventType.WalletConnectSessionRequest,
-    descriptionTrigger: 'A WalletConnect DApp makes a session request call to the device',
+    descriptionTrigger:
+        'A WalletConnect DApp session request is successfully responded to by the device. Only successful responses are reported; requests that throw an error are not.',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 
     attributes: {
@@ -26,7 +27,8 @@ export const walletConnectSessionRequestEvent: EventDef<
         },
         method: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'The WalletConnect RPC method name being requested (e.g., `eth_sign`, `eth_sendTransaction`)',
+            description:
+                'The WalletConnect RPC method name being requested (e.g., `eth_sign`, `eth_sendTransaction`)',
         },
     },
 };
