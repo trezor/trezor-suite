@@ -7,7 +7,7 @@ import {
     type ConnectSerializedError,
 } from './connectPopupTypes';
 
-export const ACTION_PREFIX = '@suite-common/connect-popup';
+const ACTION_PREFIX = '@suite-common/connect-popup';
 
 const initiateCall = createAction(
     `${ACTION_PREFIX}/initiateCall`,
