@@ -1,4 +1,4 @@
-import { useWatch } from 'react-hook-form';
+import { useFormState, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { Column, Input, Row, Select, Text } from '@trezor/components';
@@ -22,9 +22,13 @@ export const TronVoteRepresentativeSelect = () => {
     const { control, setValue, register } = form.methods;
 
     const representative = useWatch({ control, name: 'representative' });
+    const { errors } = useFormState({ control });
     const isDisabled = !!actions.pendingTxid;
 
-    const { ref: customRef, ...customField } = register('customRepresentativeAddress');
+    const { ref: customRef, ...customField } = register(
+        'customRepresentativeAddress',
+        form.customRepresentativeRules,
+    );
 
     const options: RepresentativeOption[] = [
         ...(representatives.data ?? []).map(({ address, name, apr }) => ({
@@ -85,6 +89,8 @@ export const TronVoteRepresentativeSelect = () => {
                     {...customField}
                     placeholder={translationString('TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS')}
                     isDisabled={isDisabled}
+                    hasError={!!errors.customRepresentativeAddress}
+                    bottomText={errors.customRepresentativeAddress?.message}
                 />
             )}
         </Column>
