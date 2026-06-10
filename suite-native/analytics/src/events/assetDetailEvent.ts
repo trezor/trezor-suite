@@ -26,7 +26,8 @@ export const assetDetailEvent: EventDef<Attributes, EventType.AssetDetail> = {
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The symbol of the token (only for ERC20/token assets, not for native network assets)',
+            description:
+                'The symbol of the token (only for ERC20/token assets, not for native network assets)',
         },
         tokenAddress: {
             changelog: [{ version: '24.3.1', notes: 'added' }],

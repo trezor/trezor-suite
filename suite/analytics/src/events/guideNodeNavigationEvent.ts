@@ -15,7 +15,8 @@ export const guideNodeNavigationEvent: EventDef<Attributes, EventType.GuideNodeN
     attributes: {
         type: {
             changelog: [{ version: '1.11.0', notes: 'added' }],
-            description: 'The type of navigation target: `page` for individual articles, `category` for guide categories',
+            description:
+                'The type of navigation target: `page` for individual articles, `category` for guide categories',
         },
         id: {
             changelog: [{ version: '1.11.0', notes: 'added' }],

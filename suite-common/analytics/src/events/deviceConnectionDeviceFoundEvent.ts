@@ -16,7 +16,8 @@ export const deviceConnectionDeviceFoundEvent: EventDef<
 
     attributes: {
         option: {
-            description: 'The user action: `connect` to establish connection, `close` to dismiss the screen',
+            description:
+                'The user action: `connect` to establish connection, `close` to dismiss the screen',
             changelog: [{ version: '25.11.1', notes: 'added' }],
         },
     },

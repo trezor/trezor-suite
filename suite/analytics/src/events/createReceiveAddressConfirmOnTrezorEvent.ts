@@ -12,12 +12,14 @@ export const createReceiveAddressConfirmOnTrezorEvent: EventDef<
     EventType.CreateReceiveAddressConfirmOnTrezor
 > = {
     name: EventType.CreateReceiveAddressConfirmOnTrezor,
-    descriptionTrigger: 'User confirms a receiving address directly on their Trezor device in the Receive flow',
+    descriptionTrigger:
+        'User confirms a receiving address directly on their Trezor device in the Receive flow',
     changelog: [{ version: '25.4.1', notes: 'added' }],
 
     attributes: {
         assetSymbol: {
-            description: 'The blockchain network symbol for the receiving address being confirmed on device (e.g., `btc`, `eth`)',
+            description:
+                'The blockchain network symbol for the receiving address being confirmed on device (e.g., `btc`, `eth`)',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
     },

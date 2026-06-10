@@ -18,7 +18,8 @@ export const deviceSetupSecurityCheckEvent: EventDef<
     EventType.DeviceSetupSecurityCheck
 > = {
     name: EventType.DeviceSetupSecurityCheck,
-    descriptionTrigger: 'During device onboarding, user expresses concerns about device authenticity or security during the security verification check',
+    descriptionTrigger:
+        'During device onboarding, user expresses concerns about device authenticity or security during the security verification check',
     changelog: [{ version: '25.5.1', notes: 'added' }],
     attributes: {
         location: {

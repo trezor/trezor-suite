@@ -15,7 +15,8 @@ export const createReceiveAddressEvent: EventDef<Attributes, EventType.CreateRec
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The blockchain network symbol for the account where the receive address is being created (e.g., `btc`, `eth`, `ada`)',
+            description:
+                'The blockchain network symbol for the account where the receive address is being created (e.g., `btc`, `eth`, `ada`)',
         },
     },
 };

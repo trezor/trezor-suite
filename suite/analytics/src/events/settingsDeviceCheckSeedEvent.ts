@@ -20,11 +20,13 @@ export const settingsDeviceCheckSeedEvent: EventDef<Attributes, EventType.Settin
 
         attributes: {
             status: {
-                description: 'The backup verification result: `finished` when verification completed successfully, `error` if verification failed',
+                description:
+                    'The backup verification result: `finished` when verification completed successfully, `error` if verification failed',
                 changelog: [{ version: '1.19.0', notes: 'added' }],
             },
             error: {
-                description: 'Error details if backup verification failed, undefined if verification succeeded',
+                description:
+                    'Error details if backup verification failed, undefined if verification succeeded',
                 changelog: [{ version: '1.19.0', notes: 'added' }],
             },
         },

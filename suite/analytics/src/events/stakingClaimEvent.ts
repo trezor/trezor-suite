@@ -11,12 +11,14 @@ type Attributes = {
 
 export const stakingClaimEvent: EventDef<Attributes, EventType.StakingClaim> = {
     name: EventType.StakingClaim,
-    descriptionTrigger: 'User navigates through the staking reward/claim flow, with tracking at each step of the process',
+    descriptionTrigger:
+        'User navigates through the staking reward/claim flow, with tracking at each step of the process',
     changelog: [{ version: '25.4.0', notes: 'added' }],
 
     attributes: {
         action: {
-            description: 'The user action: `continue` to proceed with claiming, `cancel` to abort, or `close` to dismiss the modal',
+            description:
+                'The user action: `continue` to proceed with claiming, `cancel` to abort, or `close` to dismiss the modal',
             changelog: [
                 { version: '25.4.0', notes: 'added' },
                 {
@@ -26,11 +28,13 @@ export const stakingClaimEvent: EventDef<Attributes, EventType.StakingClaim> = {
             ],
         },
         step: {
-            description: 'The step in the claim flow: `staking-dashboard` for main dashboard or `claim-form-modal` for claim form',
+            description:
+                'The step in the claim flow: `staking-dashboard` for main dashboard or `claim-form-modal` for claim form',
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
         networkSymbol: {
-            description: 'The blockchain network symbol for which rewards are being claimed (e.g., `eth`)',
+            description:
+                'The blockchain network symbol for which rewards are being claimed (e.g., `eth`)',
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
     },

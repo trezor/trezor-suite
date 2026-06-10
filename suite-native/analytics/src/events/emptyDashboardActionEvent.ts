@@ -16,7 +16,8 @@ export const emptyDashboardActionEvent: EventDef<Attributes, EventType.EmptyDash
     attributes: {
         action: {
             changelog: [{ version: '23.11.1', notes: 'added' }],
-            description: 'The action selected: `syncCoins` to sync available coins, `connectDevice` to connect a device',
+            description:
+                'The action selected: `syncCoins` to sync available coins, `connectDevice` to connect a device',
         },
     },
 };

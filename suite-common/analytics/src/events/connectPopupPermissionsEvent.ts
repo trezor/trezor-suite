@@ -23,7 +23,8 @@ export const connectPopupPermissionsEvent: EventDef<Attributes, EventType.Connec
             },
             approved: {
                 changelog: [{ version: '25.5.0', notes: 'added' }],
-                description: 'Whether the user approved (`true`) or denied (`false`) the requested permissions',
+                description:
+                    'Whether the user approved (`true`) or denied (`false`) the requested permissions',
             },
         },
     };

@@ -22,11 +22,13 @@ export const transactionDetailEvent: EventDef<Attributes, EventType.TransactionD
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The symbol of the token (only for token transactions, not native asset transactions)',
+            description:
+                'The symbol of the token (only for token transactions, not native asset transactions)',
         },
         tokenAddress: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The contract address of the token (only for non-native token transactions)',
+            description:
+                'The contract address of the token (only for non-native token transactions)',
         },
     },
 };

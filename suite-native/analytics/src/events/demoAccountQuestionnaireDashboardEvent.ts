@@ -9,7 +9,8 @@ export const demoAccountQuestionnaireDashboardEvent: EventDef<
     EventType.DemoAccountQuestionnaireDashboard
 > = {
     name: EventType.DemoAccountQuestionnaireDashboard,
-    descriptionTrigger: 'User clicks on `I don\'t have a Trezor` button on the dashboard to start the demo account questionnaire',
+    descriptionTrigger:
+        "User clicks on `I don't have a Trezor` button on the dashboard to start the demo account questionnaire",
     changelog: [{ version: '25.12.1', notes: 'added' }],
     attributes: {},
 };

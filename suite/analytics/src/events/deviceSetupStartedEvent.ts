@@ -14,7 +14,8 @@ export const deviceSetupStartedEvent: EventDef<Attributes, EventType.DeviceSetup
 
     attributes: {
         deviceModel: {
-            description: 'The model identifier of the device being set up (e.g., T1B1 for Trezor One, T2T1 for Trezor Model T)',
+            description:
+                'The model identifier of the device being set up (e.g., T1B1 for Trezor One, T2T1 for Trezor Model T)',
             changelog: [{ version: '25.12.1', notes: 'added' }],
         },
     },

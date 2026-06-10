@@ -16,7 +16,8 @@ export const deviceSettingsCheckBackupExitedEvent: EventDef<
     attributes: {
         location: {
             changelog: [{ version: '25.8.1', notes: 'added' }],
-            description: 'The screen or step identifier where the user exited the backup verification flow (e.g., `CheckBackup`, `CheckBackupSuccess`, `CheckBackupFail`, `CheckBackupSupport`, `CheckBackupTutorial`)',
+            description:
+                'The screen or step identifier where the user exited the backup verification flow (e.g., `CheckBackup`, `CheckBackupSuccess`, `CheckBackupFail`, `CheckBackupSupport`, `CheckBackupTutorial`)',
         },
     },
 };

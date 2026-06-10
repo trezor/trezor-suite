@@ -21,7 +21,8 @@ type Attributes = {
 
 export const settingsCoinsBackendEvent: EventDef<Attributes, EventType.SettingsCoinsBackend> = {
     name: EventType.SettingsCoinsBackend,
-    descriptionTrigger: 'User changes the blockchain backend connection settings for a cryptocurrency coin in Settings > Coins > Coin settings > Backend',
+    descriptionTrigger:
+        'User changes the blockchain backend connection settings for a cryptocurrency coin in Settings > Coins > Coin settings > Backend',
     changelog: [
         { version: '1.17.0', notes: 'added' },
         {
@@ -33,7 +34,8 @@ export const settingsCoinsBackendEvent: EventDef<Attributes, EventType.SettingsC
     attributes: {
         symbol: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'The blockchain network symbol for which the backend is being configured (e.g., `btc`, `eth`, `ltc`)',
+            description:
+                'The blockchain network symbol for which the backend is being configured (e.g., `btc`, `eth`, `ltc`)',
         },
         type: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
@@ -44,11 +46,13 @@ export const settingsCoinsBackendEvent: EventDef<Attributes, EventType.SettingsC
         },
         totalRegular: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'Number of regular (non-Tor) backend servers configured for this coin. Only meaningful for custom and electrum backends, otherwise 0.',
+            description:
+                'Number of regular (non-Tor) backend servers configured for this coin. Only meaningful for custom and electrum backends, otherwise 0.',
         },
         totalOnion: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'Number of Tor (onion) backend servers configured for this coin. Only meaningful for custom and electrum backends, otherwise 0.',
+            description:
+                'Number of Tor (onion) backend servers configured for this coin. Only meaningful for custom and electrum backends, otherwise 0.',
         },
     },
 };

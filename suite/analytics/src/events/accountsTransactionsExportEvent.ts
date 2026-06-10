@@ -12,16 +12,19 @@ export const accountsTransactionsExportEvent: EventDef<
     EventType.AccountsTransactionsExport
 > = {
     name: EventType.AccountsTransactionsExport,
-    descriptionTrigger: 'User exports account transactions in a selected format (PDF, CSV, or JSON)',
+    descriptionTrigger:
+        'User exports account transactions in a selected format (PDF, CSV, or JSON)',
     changelog: [{ version: '1.23.0', notes: 'added' }],
 
     attributes: {
         symbol: {
-            description: 'The blockchain network or asset symbol for which transactions are being exported',
+            description:
+                'The blockchain network or asset symbol for which transactions are being exported',
             changelog: [{ version: '1.23.0', notes: 'added' }],
         },
         format: {
-            description: 'The export format selected: `pdf` for PDF document, `csv` for CSV spreadsheet, `json` for JSON data',
+            description:
+                'The export format selected: `pdf` for PDF document, `csv` for CSV spreadsheet, `json` for JSON data',
             changelog: [{ version: '1.23.0', notes: 'added' }],
         },
     },

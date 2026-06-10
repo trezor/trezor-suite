@@ -18,13 +18,15 @@ type Attributes = {
 
 export const tradeBuyEvent: EventDef<Attributes, EventType.TradeBuy> = {
     name: EventType.TradeBuy,
-    descriptionTrigger: 'User navigates through the buy flow, with tracking at each step of the process',
+    descriptionTrigger:
+        'User navigates through the buy flow, with tracking at each step of the process',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 
     attributes: {
         action: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'The user action taken in the buy flow: `continue` to proceed through the flow, `cancel` to exit the flow',
+            description:
+                'The user action taken in the buy flow: `continue` to proceed through the flow, `cancel` to exit the flow',
         },
         step: {
             description: 'The current step in the buy flow: `buy-form`',

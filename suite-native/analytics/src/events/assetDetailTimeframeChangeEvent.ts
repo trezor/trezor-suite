@@ -16,13 +16,15 @@ export const assetDetailTimeframeChangeEvent: EventDef<
     EventType.AssetDetailTimeframeChange
 > = {
     name: EventType.AssetDetailTimeframeChange,
-    descriptionTrigger: 'User changes the timeframe for the asset detail chart (e.g., 1d, 1w, 1m, 6m, 1y, All)',
+    descriptionTrigger:
+        'User changes the timeframe for the asset detail chart (e.g., 1d, 1w, 1m, 6m, 1y, All)',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         timeframe: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected timeframe for the asset detail graph (e.g., `1d` for 1 day, `1w` for 1 week, `1m` for 1 month, `6m` for 6 months, `1y` for 1 year, `all` for all time)',
+            description:
+                'The selected timeframe for the asset detail graph (e.g., `1d` for 1 day, `1w` for 1 week, `1m` for 1 month, `6m` for 6 months, `1y` for 1 year, `all` for all time)',
         },
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
@@ -30,11 +32,13 @@ export const assetDetailTimeframeChangeEvent: EventDef<
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The symbol of the specific token being viewed (optional, only for token assets like ERC-20 tokens)',
+            description:
+                'The symbol of the specific token being viewed (optional, only for token assets like ERC-20 tokens)',
         },
         tokenAddress: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The contract address of the specific token being viewed (optional, only for token assets)',
+            description:
+                'The contract address of the specific token being viewed (optional, only for token assets)',
         },
     },
 };
