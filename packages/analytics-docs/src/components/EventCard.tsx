@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import {
     Badge,
@@ -174,7 +174,7 @@ type EventCardProps = {
     onEdit?: (event: EventDoc) => void;
 };
 
-export const EventCard = ({ event, onEdit }: EventCardProps) => (
+export const EventCard = memo(({ event, onEdit }: EventCardProps) => (
     <Card paddingType="small">
         <Header event={event} onEdit={onEdit} />
         <InfoItem label="Trigger" typographyStyle="body-xs">
@@ -193,4 +193,6 @@ export const EventCard = ({ event, onEdit }: EventCardProps) => (
 
         <AttributesTable attributes={event.attributes ?? {}} />
     </Card>
-);
+));
+
+EventCard.displayName = 'EventCard';

@@ -59,7 +59,13 @@ export const AnalyticsContent = ({
 
     return (
         <Column gap={40}>
-            {eventCards}
+            {hasEventCards ? (
+                eventCards
+            ) : (
+                <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                    No matches in name, trigger, or attributes.
+                </Text>
+            )}
             {onContentReady && hasEventCards && <ScrollWhenReady onReady={onContentReady} />}
             {generatedAt && (
                 <Box>

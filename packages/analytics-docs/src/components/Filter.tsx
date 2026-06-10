@@ -1,8 +1,8 @@
-import { Icon, Input, Row, Select, useMediaQuery, variables } from '@trezor/components';
+import { Icon, IconButton, Input, Row, Select, useMediaQuery, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { platforms, sorting } from '../constants';
-import type { Sort } from '../types';
+import type { SearchMode, Sort } from '../types';
 
 const menuPortalTarget = typeof document !== 'undefined' ? document.body : undefined;
 
@@ -13,10 +13,34 @@ type FilterProps = {
     setPlatform: (query: string) => void;
     setSort: (sort: Sort) => void;
     sort: string;
+    version: string;
+    setVersion: (version: string) => void;
+    versions: string[];
+    searchMode: SearchMode;
+    setSearchMode: (mode: SearchMode) => void;
 };
 
-export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }: FilterProps) => {
+export const Filter = ({
+    query,
+    setQuery,
+    setPlatform,
+    platform,
+    setSort,
+    sort,
+    version,
+    setVersion,
+    versions,
+    searchMode,
+    setSearchMode,
+}: FilterProps) => {
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
+
+    const versionOptions = [
+        { value: 'all', label: 'All versions' },
+        ...versions.map(v => ({ value: v, label: v })),
+    ];
+
+    const isFullText = searchMode === 'fulltext';
 
     return (
         <Row gap={8} flexWrap={isMobile ? 'wrap' : undefined}>
@@ -35,6 +59,35 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                         pointerEvents="none"
                     />
                 }
+                rightContent={
+                    isFullText ? (
+                        <IconButton
+                            icon="fileText"
+                            size="small"
+                            intent="neutral"
+                            priority="primary"
+                            onClick={() => setSearchMode('name')}
+                            aria-label="Toggle full-text search"
+                            tooltip={{
+                                content:
+                                    'Full-text search is ON — matching event name, trigger, descriptions, attributes and types. Click to search event titles only.',
+                            }}
+                        />
+                    ) : (
+                        <IconButton
+                            icon="fileText"
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={() => setSearchMode('fulltext')}
+                            aria-label="Toggle full-text search"
+                            tooltip={{
+                                content:
+                                    'Full-text search is OFF — searching event titles only. Click to search everything (trigger, descriptions, attributes and types).',
+                            }}
+                        />
+                    )
+                }
                 onClear={() => setQuery('')}
             />
 
@@ -47,6 +100,18 @@ export const Filter = ({ query, setQuery, setPlatform, platform, setSort, sort }
                 aria-label="Platform filter"
                 size="small"
                 options={platforms}
+                menuPortalTarget={menuPortalTarget}
+                menuPortalZIndex={zIndices.pageHeader}
+            />
+            <Select
+                placeholder="Version"
+                value={versionOptions.find(v => v.value === version) ?? versionOptions[0]}
+                onChange={option => {
+                    setVersion(option.value);
+                }}
+                aria-label="Version filter"
+                size="small"
+                options={versionOptions}
                 menuPortalTarget={menuPortalTarget}
                 menuPortalZIndex={zIndices.pageHeader}
             />

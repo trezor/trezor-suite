@@ -114,6 +114,65 @@ export const fuzzyMatchExportName = (query: string, exportName: string): boolean
     return true;
 };
 
+export const buildEventSearchHaystack = (e: EventDoc): string =>
+    [
+        e.name,
+        e.descriptionTrigger,
+        e.description,
+        ...Object.keys(e.attributes ?? {}),
+        ...Object.values(e.attributes ?? {}).flatMap(a => [a.description, a.runtimeType]),
+    ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+export const eventNameMatchesQuery = (query: string, e: EventDoc): boolean => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return true;
+
+    return (
+        fuzzyMatch(normalized, e.name) ||
+        fuzzyMatchExportName(normalized, toEventExportName(e.name))
+    );
+};
+
+export const eventMatchesFullText = (query: string, e: EventDoc): boolean => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return true;
+
+    const tokens = normalized.split(/\s+/).filter(Boolean);
+    const haystack = buildEventSearchHaystack(e);
+
+    return tokens.every(token => haystack.includes(token));
+};
+
+export const getEventVersions = (e: EventDoc): string[] => {
+    const versions = new Set<string>();
+
+    for (const entry of e.changelog?.entries ?? []) {
+        if (entry.version) versions.add(entry.version);
+    }
+    for (const attribute of Object.values(e.attributes ?? {})) {
+        for (const entry of attribute.changelog?.entries ?? []) {
+            if (entry.version) versions.add(entry.version);
+        }
+    }
+
+    return Array.from(versions);
+};
+
+export const eventHasVersion = (e: EventDoc, version: string): boolean =>
+    getEventVersions(e).includes(version);
+
+export const getAllVersions = (events: EventDoc[]): string[] => {
+    const versions = new Set<string>();
+    for (const e of events) {
+        for (const version of getEventVersions(e)) versions.add(version);
+    }
+
+    return Array.from(versions).sort(compareVersionsDesc);
+};
+
 export type VersionWithEvents = {
     version: string;
     events: EventDoc[];
