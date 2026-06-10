@@ -9,7 +9,8 @@ type Attributes = {
 
 export const removeTokenEvent: EventDef<Attributes, EventType.RemoveToken> = {
     name: EventType.RemoveToken,
-    descriptionTrigger: 'User removes a custom token or hides a token from their portfolio',
+    descriptionTrigger:
+        'User removes/hides a token from their portfolio. Currently emitted only from the Stellar token management modal.',
     changelog: [{ version: '25.12.1', notes: 'added' }],
 
     attributes: {
@@ -18,7 +19,8 @@ export const removeTokenEvent: EventDef<Attributes, EventType.RemoveToken> = {
             changelog: [{ version: '25.12.1', notes: 'added' }],
         },
         token: {
-            description: 'The contract address of the token being removed',
+            description:
+                'The identifier of the token being removed (Stellar token contract / code-issuer)',
             changelog: [{ version: '25.12.1', notes: 'added' }],
         },
     },

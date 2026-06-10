@@ -14,13 +14,15 @@ type Attributes = {
 
 export const switcherEvent: EventDef<Attributes, EventType.Switcher> = {
     name: EventType.Switcher,
-    descriptionTrigger: 'User interacts with the device switcher to select a device, access portfolio tracker, connect devices, or manage device settings',
+    descriptionTrigger:
+        'User interacts with the device switcher to select a device, access portfolio tracker, connect devices, or manage device settings',
     changelog: [{ version: '23.11.1', notes: 'added' }],
 
     attributes: {
         action: {
             changelog: [{ version: '23.11.1', notes: 'added' }],
-            description: '`deviceItem` when selecting a device, `portfolioTracker` to access portfolio overview, `connectDeviceButton` to connect a new device, `deviceSettings` to open device configuration',
+            description:
+                '`connectDeviceButton` when selecting/connecting a regular device, `portfolioTracker` when selecting the portfolio tracker, `deviceSettings` to open device configuration. (`deviceItem` exists in the type but is currently never emitted.)',
         },
     },
 };

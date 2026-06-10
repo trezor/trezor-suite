@@ -17,7 +17,7 @@ export const menuNotificationsToggleEvent: EventDef<Attributes, EventType.MenuNo
             value: {
                 changelog: [{ version: '1.9.0', notes: 'added' }],
                 description:
-                    '`true` when the notifications dropdown is being opened, `false` when it is being closed',
+                    'Inverse of the dropdown open state: `false` when the notifications dropdown is being opened, `true` when it is being closed.',
             },
         },
     };

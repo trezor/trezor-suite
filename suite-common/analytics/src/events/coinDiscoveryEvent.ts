@@ -18,7 +18,7 @@ type Attributes = {
 export const coinDiscoveryEvent: EventDef<Attributes, EventType.CoinDiscovery> = {
     name: EventType.CoinDiscovery,
     descriptionTrigger:
-        'During device connection, a wallet coin/network is discovered and its accounts are scanned, including any associated tokens and staking opportunities',
+        "Fired once per discovered network symbol when a coin discovery run completes — one event per coin, reporting that coin's aggregated account, token and staking metrics for the device. Discovery is not limited to device connection; it runs whenever accounts are (re)scanned: connecting, acquiring or switching a device, adding a standard or hidden (passphrase) wallet, finishing onboarding, enabling or disabling a coin, creating an account or changing its visibility, manually rediscovering, regaining network connectivity, navigating into the wallet, or handling a Connect popup call.",
     changelog: [
         { version: '26.3.1', notes: 'added on desktop' },
         { version: '26.2.2', notes: 'added on mobile' },
