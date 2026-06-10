@@ -73,10 +73,15 @@ export const App = ({ theme }: AppProps) => {
         setQuery,
         setSort,
         setPlatform,
+        setVersion,
+        setSearchMode,
         clearAll,
         query,
         platform,
         sort,
+        version,
+        searchMode,
+        availableVersions,
         debouncedQuery,
         allEvents,
         isFiltering,
@@ -91,7 +96,7 @@ export const App = ({ theme }: AppProps) => {
         setIsSidebarLoading,
     } = useFilteredEvents();
 
-    const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az';
+    const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az' || version !== 'all';
 
     const versionsWithEvents = useMemo(
         () => getVersionsWithEvents(filteredEvents),
@@ -346,6 +351,11 @@ export const App = ({ theme }: AppProps) => {
                                     platform={platform}
                                     setSort={setSort}
                                     sort={sort}
+                                    version={version}
+                                    setVersion={setVersion}
+                                    versions={availableVersions}
+                                    searchMode={searchMode}
+                                    setSearchMode={setSearchMode}
                                 />
                             </Row>
                         </ContentContainer>
