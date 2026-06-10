@@ -5,6 +5,7 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { selectReceiveRevealedAddresses } from '@suite/receive';
 import {
+    Box,
     Button,
     Card,
     Column,
@@ -195,17 +196,19 @@ const SignVerify = () => {
                         />
                         {isSignPage ? (
                             <>
-                                <Row gap={spacings.xxxl}>
-                                    <SignAddressInput
-                                        name="path"
-                                        label={<Translation id="TR_ADDRESS" />}
-                                        account={selectedAccount.account}
-                                        revealedAddresses={revealedAddresses}
-                                        hasError={!!formErrors.path}
-                                        bottomText={pathError || null}
-                                        data-testid="@sign-verify/sign-address"
-                                        {...pathField}
-                                    />
+                                <Row gap={spacings.xxxl} alignItems="flex-start">
+                                    <Box flex="1" minWidth={0}>
+                                        <SignAddressInput
+                                            name="path"
+                                            label={<Translation id="TR_ADDRESS" />}
+                                            account={selectedAccount.account}
+                                            revealedAddresses={revealedAddresses}
+                                            hasError={!!formErrors.path}
+                                            bottomText={pathError || null}
+                                            data-testid="@sign-verify/sign-address"
+                                            {...pathField}
+                                        />
+                                    </Box>
                                     {signFormatsDiffer && (
                                         <SelectBar
                                             label={

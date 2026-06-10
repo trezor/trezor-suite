@@ -33,7 +33,16 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
-        await expect(page.getByTestId('@sign-verify/sign-address/input')).toContainText(ADDRESS);
+        // The selected address is rendered truncated + chunked (e.g. "/3bc1q 6hr6 … jq45 0u"),
+        // so match its non-elided beginning after stripping whitespace.
+        await expect
+            .poll(async () =>
+                (await page.getByTestId('@sign-verify/sign-address/input').innerText()).replace(
+                    /\s/g,
+                    '',
+                ),
+            )
+            .toContain(ADDRESS.slice(0, 8));
         await page.getByTestId('@sign-verify/submit').click();
 
         await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
@@ -49,7 +58,16 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         await page.getByTestId('@sign-verify/message').fill(MESSAGE);
         await page.getByTestId('@sign-verify/sign-address/input').click();
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
-        await expect(page.getByTestId('@sign-verify/sign-address/input')).toContainText(ADDRESS);
+        // The selected address is rendered truncated + chunked (e.g. "/3bc1q 6hr6 … jq45 0u"),
+        // so match its non-elided beginning after stripping whitespace.
+        await expect
+            .poll(async () =>
+                (await page.getByTestId('@sign-verify/sign-address/input').innerText()).replace(
+                    /\s/g,
+                    '',
+                ),
+            )
+            .toContain(ADDRESS.slice(0, 8));
         await page.getByTestId('@sign-verify/format').click();
         await page.getByTestId('@sign-verify/format/true').click();
         await page.getByTestId('@sign-verify/submit').click();

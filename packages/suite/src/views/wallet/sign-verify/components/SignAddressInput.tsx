@@ -1,9 +1,7 @@
-import { components } from 'react-select';
-
-import styled from 'styled-components';
-
+import { Address } from '@suite/address';
 import { type ReceiveInfo } from '@suite-common/wallet-types';
-import { Select, type SelectProps } from '@trezor/components';
+import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import {
     type AddressItem,
@@ -11,42 +9,17 @@ import {
 } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 import type { Account } from 'src/types/wallet';
 
-import { HiddenAddressRow } from './HiddenAddressRow';
-
-const InputWrapper = styled.div<{ $hideCaret: boolean }>`
-    caret-color: ${({ $hideCaret }) => ($hideCaret ? 'transparent' : 'unset')};
-`;
-
-const Option = ({ data, value, isFocused, innerProps, ...rest }: any) => (
-    <components.Option
-        data={data}
-        value={value}
-        isFocused={isFocused}
-        innerProps={{
-            ...innerProps,
-            'data-testid': `@sign-verify/sign-address/option/${value}`,
-        }}
-        {...rest}
-    >
-        {data && <HiddenAddressRow item={data} isElevated={isFocused} />}
-    </components.Option>
-);
-
-const Input = ({ selectProps, ...rest }: any) => (
-    <InputWrapper $hideCaret={!!selectProps.value}>
-        <components.Input {...rest} selectProps={selectProps} />
-    </InputWrapper>
-);
-
-const SingleValue = ({ data }: any) => <HiddenAddressRow item={data} isElevated />;
-
 const optionToAddress = (option: AddressItem | null) =>
-    option
-        ? {
-              address: option.label,
-              path: option.value,
-          }
-        : null;
+    option ? { address: option.label, path: option.value } : null;
+
+const formatOptionLabel = (option: AddressItem) => (
+    <Row gap={spacings.xxs}>
+        <Box minWidth={36}>
+            <Text isDisabled>/{option.value.split('/').pop()}</Text>
+        </Box>
+        <Address value={option.label} isTruncated />
+    </Row>
+);
 
 type SignAddressInputProps = {
     account?: Account;
@@ -62,20 +35,13 @@ export const SignAddressInput = ({
 }: SignAddressInputProps) => {
     const { getValue, groupedOptions } = useSignAddressOptions(account, revealedAddresses);
 
-    const handleChange = (addr: AddressItem | null) => onChange?.(optionToAddress(addr));
-
     return (
         <Select
             value={getValue(value)}
             options={groupedOptions}
-            onChange={handleChange}
+            onChange={option => onChange?.(optionToAddress(option))}
+            formatOptionLabel={formatOptionLabel}
             isSearchable
-            placeholder=""
-            components={{
-                Option,
-                Input,
-                SingleValue,
-            }}
             {...selectProps}
         />
     );
