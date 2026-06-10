@@ -1,4 +1,4 @@
-import { useWatch } from 'react-hook-form';
+import { useFormState, useWatch } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -19,10 +19,11 @@ export const TronVoteSubmitButton = () => {
 
     const representative = useWatch({ control, name: 'representative' });
     const customRepresentativeAddress = useWatch({ control, name: 'customRepresentativeAddress' });
+    const { errors } = useFormState({ control });
 
     const isRepresentativeSelected =
         representative === CUSTOM_REPRESENTATIVE
-            ? customRepresentativeAddress.trim().length > 0
+            ? customRepresentativeAddress.trim().length > 0 && !errors.customRepresentativeAddress
             : representative.length > 0;
 
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();

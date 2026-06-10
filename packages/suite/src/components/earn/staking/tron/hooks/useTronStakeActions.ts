@@ -6,6 +6,7 @@ import {
     composeTronFreezeFeeLevelsThunk,
     selectTronStakeSession,
     submitTronFreezeThunk,
+    submitTronVoteThunk,
     tronStakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -17,6 +18,7 @@ import { setConnectionModal, setConnectionMode } from 'src/actions/device/device
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { type useTronStakeForm } from './useTronStakeForm';
+import { CUSTOM_REPRESENTATIVE } from '../vote/constants';
 
 interface UseTronStakeActionsProps {
     account: Account;
@@ -106,9 +108,27 @@ export const useTronStakeActions = ({
                 );
                 break;
             }
-            case 'vote':
-                // TBD
+            case 'vote': {
+                const { representative, customRepresentativeAddress } = form.methods.getValues();
+                const representativeAddress =
+                    representative === CUSTOM_REPRESENTATIVE
+                        ? customRepresentativeAddress.trim()
+                        : representative;
+                dispatch(
+                    submitTronVoteThunk({
+                        account,
+                        device,
+                        representativeAddress,
+                        requestPushApproval: async () =>
+                            Boolean(
+                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
+                            ),
+                        onSigningStart: () => dispatch(preserveModal()),
+                        onSettled: () => dispatch(closeModal()),
+                    }),
+                );
                 break;
+            }
             default:
                 exhaustive(step);
         }
