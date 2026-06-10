@@ -27,8 +27,10 @@ export const desktopQueryKeys = {
 export const mobileQueryKeys = {
     accountTransactions: (accountKey: string, page: number, perPage: number) =>
         ['account-transactions', accountKey, page, perPage],
-    txFiatRates: (accountKey: string, localCurrency: string, page: number) =>
-        ['tx-fiat-rates', accountKey, localCurrency, page],
+    txFiatRates: (accountKey: string, localCurrency: string, txCount: number) =>
+        ['tx-fiat-rates', accountKey, localCurrency, txCount],
+    historicRates: (accountKey: string, localCurrency: string) =>
+        ['historic-rates', accountKey, localCurrency],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const tradingQueryKeys = {

@@ -1,6 +1,7 @@
 export * from './components/InstantStakeBanner';
 export * from './hooks/useAccountTransactionsPageQuery';
 export * from './hooks/useFiatRatesForTransactionsQuery';
+export * from './hooks/useTxFiatRate';
 export * from './components/TransactionList';
 export * from './components/TransactionIcon';
 export * from './components/TransactionName';

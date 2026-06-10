@@ -5,7 +5,6 @@ import {
     type FiatRatesRootState,
     type PhishingRootState,
     type TransactionsRootState,
-    type WalletSettingsRootState,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -13,7 +12,7 @@ import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { selectTransactionFiatRate } from '../selectors';
+import { useTxFiatRate } from '../hooks/useTxFiatRate';
 import { getTransactionValueSign } from '../utils';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 
@@ -37,9 +36,7 @@ export const TokenTransferListItemValues = ({
     transaction,
     accountKey,
 }: TokenTransferListItemValuesProps) => {
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
-    );
+    const historicRate = useTxFiatRate(accountKey, transaction, tokenTransfer?.contract);
 
     const { isPhishing: isPhishingTransaction } = useSelector(
         (

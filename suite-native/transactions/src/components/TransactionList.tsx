@@ -166,7 +166,7 @@ export const TransactionList = ({
 
     useFiatRatesForTransactionsQuery({
         accountKey,
-        page,
+        transactions,
         enabled: transactions.length > 0,
     });
 
