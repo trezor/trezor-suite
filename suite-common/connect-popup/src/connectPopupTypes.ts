@@ -72,7 +72,7 @@ type TxSimulationConnectPopupCallLoaded = {
     selectedAccountKey?: AccountKey;
 } & Omit<TxSimulationAction, 'sourceOrigin'>;
 
-export type ConnectPopupCallLoaded = {
+type ConnectPopupCallLoaded = {
     // Common properties that are always present
     methodInfo: {
         methodTitle: string;
@@ -132,7 +132,7 @@ export type ConnectPopupCallLoaded = {
       }
 );
 
-export type ConnectPopupCallError = {
+type ConnectPopupCallError = {
     state: 'error';
     error: ConnectSerializedError;
 };
