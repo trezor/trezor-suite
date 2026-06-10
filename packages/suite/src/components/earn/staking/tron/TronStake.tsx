@@ -4,6 +4,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { BulletList, type BulletListItemState, Column, Text } from '@trezor/components';
 
 import { TronStakeContext } from './TronStakeContext';
+import { TronStakeComplete } from './complete/TronStakeComplete';
+import { TronStakeSummaryCard } from './complete/TronStakeSummaryCard';
 import { TronFreezeStep } from './freeze/TronFreezeStep';
 import { useTronStakeFlow } from './hooks/useTronStakeFlow';
 import { TronVoteStep } from './vote/TronVoteStep';
@@ -31,23 +33,36 @@ export const TronStake = ({ account }: TronStakeProps) => {
         <TronStakeContext.Provider value={context}>
             <Column alignItems="center">
                 <Column gap={24} width="100%" maxWidth={500}>
-                    <Text typographyStyle="headline-md" as="h2">
-                        <Translation id="TR_EARN_TRON_STAKE_TITLE" />
-                    </Text>
-                    <BulletList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
-                        <BulletList.Item
-                            state={getStepState('freeze')}
-                            title={<Translation id="TR_EARN_TRON_FREEZE_STEP_TITLE" />}
+                    {step === 'complete' ? (
+                        <TronStakeComplete
+                            heading={<Translation id="TR_EARN_TRON_STAKE_COMPLETE" />}
+                            description={
+                                <Translation id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION" />
+                            }
                         >
-                            {step === 'freeze' && <TronFreezeStep />}
-                        </BulletList.Item>
-                        <BulletList.Item
-                            state={getStepState('vote')}
-                            title={<Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />}
-                        >
-                            {step === 'vote' && <TronVoteStep />}
-                        </BulletList.Item>
-                    </BulletList>
+                            <TronStakeSummaryCard />
+                        </TronStakeComplete>
+                    ) : (
+                        <>
+                            <Text typographyStyle="headline-md">
+                                <Translation id="TR_EARN_TRON_STAKE_TITLE" />
+                            </Text>
+                            <BulletList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
+                                <BulletList.Item
+                                    state={getStepState('freeze')}
+                                    title={<Translation id="TR_EARN_TRON_FREEZE_STEP_TITLE" />}
+                                >
+                                    {step === 'freeze' && <TronFreezeStep />}
+                                </BulletList.Item>
+                                <BulletList.Item
+                                    state={getStepState('vote')}
+                                    title={<Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />}
+                                >
+                                    {step === 'vote' && <TronVoteStep />}
+                                </BulletList.Item>
+                            </BulletList>
+                        </>
+                    )}
                 </Column>
             </Column>
         </TronStakeContext.Provider>

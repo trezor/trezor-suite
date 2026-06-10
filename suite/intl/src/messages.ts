@@ -10181,6 +10181,26 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_STAKE_TITLE',
         defaultMessage: 'Stake',
     },
+    TR_EARN_TRON_STAKE_COMPLETE: {
+        id: 'TR_EARN_TRON_STAKE_COMPLETE',
+        defaultMessage: 'Stake complete',
+    },
+    TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION: {
+        id: 'TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION',
+        defaultMessage: 'Your stake is now earning rewards',
+    },
+    TR_EARN_TRON_APR_LABEL: {
+        id: 'TR_EARN_TRON_APR_LABEL',
+        defaultMessage: 'APR',
+    },
+    TR_EARN_TRON_EARNED_RESOURCE: {
+        id: 'TR_EARN_TRON_EARNED_RESOURCE',
+        defaultMessage: 'Earned resource',
+    },
+    TR_EARN_TRON_SUPPLIED: {
+        id: 'TR_EARN_TRON_SUPPLIED',
+        defaultMessage: 'Supplied',
+    },
     TR_EARN_TRON_FREEZE_STEP_TITLE: {
         id: 'TR_EARN_TRON_FREEZE_STEP_TITLE',
         defaultMessage: 'Freeze your funds',
