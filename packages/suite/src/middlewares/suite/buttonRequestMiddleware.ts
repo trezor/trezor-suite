@@ -17,7 +17,8 @@ const SIGN_TX_ROUTES = [
     'earn-yield-deposit',
     'earn-yield-withdraw',
     'earn-yield-claim',
-    'earn-staking-tron',
+    'earn-tron-stake',
+    'earn-tron-vote',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [

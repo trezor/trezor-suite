@@ -3,12 +3,12 @@ import { useEffect } from 'react';
 import { goto } from '@suite/router';
 import { selectIsDebugModeActive } from '@suite/settings';
 
-import { TronStake, TronStakePageHeader } from 'src/components/earn';
+import { TronStakePageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { AccountNotExists } from 'src/components/wallet/WalletLayout/AccountException/AccountNotExists';
 import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 
-export const EarnStakingTron = () => {
+export const EarnTronVote = () => {
     const dispatch = useDispatch();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { account } = useEarnRouteAccount();
@@ -29,5 +29,5 @@ export const EarnStakingTron = () => {
         return <AccountNotExists />;
     }
 
-    return <TronStake account={account} />;
+    return null;
 };
