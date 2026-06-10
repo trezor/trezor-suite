@@ -5,12 +5,11 @@ import { Box, Button, Column, Image, Paragraph, Row, Text } from '@trezor/compon
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
-import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
+import { CloseButton } from './CommonPromoBannerComponents';
 
 type StablecoinYieldBannerProps = {
     onClose: () => void;
     onCTAClick: () => void;
-    isVisible: boolean;
 };
 
 const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
@@ -48,11 +47,7 @@ const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLap
     </Button>
 );
 
-export const StablecoinYieldBanner = ({
-    onClose,
-    onCTAClick,
-    isVisible,
-}: StablecoinYieldBannerProps) => {
+export const StablecoinYieldBanner = ({ onClose, onCTAClick }: StablecoinYieldBannerProps) => {
     const dispatch = useDispatch();
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
@@ -63,41 +58,39 @@ export const StablecoinYieldBanner = ({
     };
 
     return (
-        <AnimatedWrapper isVisible={isVisible} flagToHide="showStablecoinYieldDashboardPromoBanner">
-            <Box
-                height={isVerticalLayout ? undefined : 213}
-                padding={{ left: 24, top: isVerticalLayout ? 16 : 0 }}
-                backgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+        <Box
+            height={isVerticalLayout ? undefined : 213}
+            padding={{ left: 24, top: isVerticalLayout ? 16 : 0 }}
+            backgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+        >
+            <ContentFlex
+                height="100%"
+                margin={{
+                    right: isBelowDesktop ? undefined : 48,
+                }}
+                justifyContent="space-between"
+                gap={24}
+                alignItems="center"
             >
-                <ContentFlex
-                    height="100%"
-                    margin={{
-                        right: isBelowDesktop ? undefined : 48,
-                    }}
-                    justifyContent="space-between"
-                    gap={24}
-                    alignItems="center"
-                >
-                    <Column gap={isBelowDesktop ? 16 : 24}>
-                        <Column gap={isBelowLaptop ? 4 : 8}>
-                            <Title isVerticalLayout={isVerticalLayout} />
-                            <Description />
-                        </Column>
-
-                        <CTAButton onClick={handleCTAClick} isBelowLaptop={isBelowLaptop} />
+                <Column gap={isBelowDesktop ? 16 : 24}>
+                    <Column gap={isBelowLaptop ? 4 : 8}>
+                        <Title isVerticalLayout={isVerticalLayout} />
+                        <Description />
                     </Column>
 
-                    <Row height="100%" alignItems="flex-end">
-                        <Image
-                            image="DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD"
-                            height="100%"
-                            objectFit="cover"
-                            objectPosition="left"
-                        />
-                    </Row>
-                </ContentFlex>
-                <CloseButton onClose={onClose} />
-            </Box>
-        </AnimatedWrapper>
+                    <CTAButton onClick={handleCTAClick} isBelowLaptop={isBelowLaptop} />
+                </Column>
+
+                <Row height="100%" alignItems="flex-end">
+                    <Image
+                        image="DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD"
+                        height="100%"
+                        objectFit="cover"
+                        objectPosition="left"
+                    />
+                </Row>
+            </ContentFlex>
+            <CloseButton onClose={onClose} />
+        </Box>
     );
 };

@@ -1,36 +1,28 @@
-import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import {
-    selectIsStablecoinYieldDashboardPromoBannerShown,
-    selectIsTEXDashboardPromoBannerShown,
-    selectIsTS7DashboardPromoBannerShown,
-} from '@suite/flags';
+import { selectFlags, setFlag } from '@suite/flags';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
-import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
-import { StablecoinYieldBanner } from './StablecoinYieldBanner';
-import { TS7Banner } from './TS7Banner';
-import { TrezorExpertBanner } from './TrezorExpertBanner';
-import { type DashboardBannerTypeWithNull, isDashboardBannerType } from './dashboardBannerTypes';
+import { BannerCarousel, type CarouselBanner } from './BannerCarousel';
+import { type DashboardBannerType, isDashboardBannerType } from './dashboardBannerTypes';
+import { DASHBOARD_BANNERS } from './dashboardBanners';
+
+const isCarouselBannerKey = (key: string): key is DashboardBannerType =>
+    isDashboardBannerType(key) && key !== null;
 
 export const DashboardPromoBanner = () => {
-    const [isVisible, setIsVisible] = useState(true);
+    const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
-    const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
-    const shouldShowTS7DashboardPromoBanner = useSelector(selectIsTS7DashboardPromoBannerShown);
-    const shouldShowStablecoinYieldDashboardPromoBanner = useSelector(
-        selectIsStablecoinYieldDashboardPromoBannerShown,
-    );
+    const flags = useSelector(selectFlags);
     const selectedDevice = useSelector(selectSelectedDevice);
 
     const allPromoBanners = useSelector(state =>
@@ -51,80 +43,72 @@ export const DashboardPromoBanner = () => {
             return acc;
         }, []);
 
-    const deviceIsNotT3W1 = getDeviceInternalModel(selectedDevice) !== DeviceModelInternal.T3W1;
+    const eligibilityContext = { selectedDevice };
 
-    const onCloseBanner = (currentBanner: DashboardBannerTypeWithNull) => {
+    const eligibleBannerTypes = deduplicatedBanners.reduce<DashboardBannerType[]>(
+        (acc, feature) => {
+            const visibleBanner = feature?.visibleBanner;
+
+            if (
+                !isDashboardBannerType(visibleBanner) ||
+                visibleBanner === null ||
+                feature?.flag !== true ||
+                acc.includes(visibleBanner)
+            ) {
+                return acc;
+            }
+
+            const banner = DASHBOARD_BANNERS[visibleBanner];
+            const isEligible =
+                flags[banner.flag] && (banner.isEligible?.(eligibilityContext) ?? true);
+
+            return isEligible ? [...acc, visibleBanner] : acc;
+        },
+        [],
+    );
+
+    const handleBannerClose = (key: string) => {
+        if (!isCarouselBannerKey(key)) return;
+
         analytics.report({
             type: events.promoDashboardBannerEvent.name,
             payload: {
                 action: 'close',
-                bannerType: currentBanner,
+                bannerType: key,
             },
         });
 
-        setIsVisible(false);
+        dispatch(setFlag({ key: DASHBOARD_BANNERS[key].flag, value: false }));
     };
 
-    const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
+    const handleBannerCTAClick = (key: string) => {
+        if (!isCarouselBannerKey(key)) return;
+
         analytics.report({
             type: events.promoDashboardBannerEvent.name,
             payload: {
                 action: 'cta',
-                bannerType: currentBanner,
+                bannerType: key,
             },
         });
     };
 
-    const promoBanner = deduplicatedBanners.find(banner => {
-        if (!banner) return null;
+    const carouselBanners: CarouselBanner[] = eligibleBannerTypes.map(bannerType => ({
+        key: bannerType,
+        render: handlers => DASHBOARD_BANNERS[bannerType].render(handlers),
+    }));
 
-        const isTS7BannerVisible =
-            banner.visibleBanner === 'ts7' && shouldShowTS7DashboardPromoBanner && deviceIsNotT3W1;
-        const isTEXBannerVisible =
-            banner.visibleBanner === 'tex' && shouldShowTEXDashboardPromoBanner;
-        const isStablecoinYieldBannerVisible =
-            banner.visibleBanner === 'stablecoin-yield' &&
-            shouldShowStablecoinYieldDashboardPromoBanner &&
-            !hasBitcoinOnlyFirmware(selectedDevice);
+    const shouldRender = !isDiscoveryEmpty && carouselBanners.length > 0;
 
-        return isDashboardBannerType(banner.visibleBanner) &&
-            (isTS7BannerVisible || isTEXBannerVisible || isStablecoinYieldBannerVisible)
-            ? banner.flag === true
-            : null;
-    });
-
-    if (!promoBanner || isDiscoveryEmpty) return null;
-    const { visibleBanner } = promoBanner;
-
-    if (visibleBanner === 'ts7')
-        return (
-            <TS7Banner
-                onClose={() => onCloseBanner(visibleBanner)}
-                onCTAClick={() => onCTAClick(visibleBanner)}
-                isVisible={isVisible}
-                data-testid="@dashboard/promo-banner"
-            />
-        );
-
-    if (visibleBanner === 'tex') {
-        return (
-            <TrezorExpertBanner
-                onClose={() => onCloseBanner(visibleBanner)}
-                onCTAClick={() => onCTAClick(visibleBanner)}
-                isVisible={isVisible}
-            />
-        );
-    }
-
-    if (visibleBanner === 'stablecoin-yield') {
-        return (
-            <StablecoinYieldBanner
-                onClose={() => onCloseBanner(visibleBanner)}
-                onCTAClick={() => onCTAClick(visibleBanner)}
-                isVisible={isVisible}
-            />
-        );
-    }
-
-    return null;
+    return (
+        <AnimatePresence>
+            {shouldRender && (
+                <BannerCarousel
+                    banners={carouselBanners}
+                    onClose={handleBannerClose}
+                    onCTAClick={handleBannerCTAClick}
+                />
+            )}
+        </AnimatePresence>
+    );
 };
