@@ -26,7 +26,7 @@ import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 export const filterThunkActionTypes = (actions: AnyAction[]) =>
     actions.filter(action => !isPending(action) && !isFulfilled(action));
 
-export type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
+type MockStoreConfig<S = any, A extends AnyAction = AnyAction> = {
     middleware?: any[];
     extra?: ExtraDependenciesPartial;
     // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
