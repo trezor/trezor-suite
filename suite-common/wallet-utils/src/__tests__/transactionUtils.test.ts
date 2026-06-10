@@ -10,6 +10,7 @@ import {
     generateTransactionMonthKey,
     getAccountTransactions,
     getRbfParams,
+    getTargetAmount,
     getTransactionWithLowestNonce,
     groupJointTransactions,
     groupTokensTransactionsByContractAddress,
@@ -396,6 +397,78 @@ describe('transaction utils', () => {
                     f.result,
                 );
             });
+        });
+    });
+
+    describe('getTargetAmount', () => {
+        type Target = WalletAccountTransaction['targets'][number];
+
+        const buildTarget = (target: Partial<Target>): Target => ({
+            addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
+            isAddress: true,
+            n: 0,
+            ...target,
+        });
+
+        it('returns null when there is no target and the transaction amount is zero', () => {
+            const transaction = getWalletTransaction({ amount: '0' });
+
+            expect(getTargetAmount(undefined, transaction)).toBeNull();
+        });
+
+        it('returns the formatted transaction amount when there is no target', () => {
+            const transaction = getWalletTransaction({ symbol: 'btc', amount: '1000' });
+
+            expect(getTargetAmount(undefined, transaction)).toBe('0.00001');
+        });
+
+        it('returns the formatted target amount for a non "sent to self" target', () => {
+            const target = buildTarget({ amount: '2000', isAccountTarget: true });
+            const transaction = getWalletTransaction({
+                symbol: 'btc',
+                type: 'recv',
+                amount: '1000',
+                targets: [target],
+            });
+
+            expect(getTargetAmount(target, transaction)).toBe('0.00002');
+        });
+
+        it('returns the formatted amount of an external target in a sent transaction', () => {
+            const externalTarget = buildTarget({ amount: '500', isAccountTarget: false });
+            const transaction = getWalletTransaction({
+                symbol: 'btc',
+                type: 'sent',
+                amount: '1000',
+                targets: [externalTarget],
+            });
+
+            expect(getTargetAmount(externalTarget, transaction)).toBe('0.000005');
+        });
+
+        it('returns the transaction amount for a "sent to self" target when there is no external target', () => {
+            const selfTarget = buildTarget({ amount: '1000', isAccountTarget: true, n: 1 });
+            const transaction = getWalletTransaction({
+                symbol: 'btc',
+                type: 'sent',
+                amount: '1000',
+                targets: [selfTarget],
+            });
+
+            expect(getTargetAmount(selfTarget, transaction)).toBe('0.00001');
+        });
+
+        it('returns null for a "sent to self" target when an external target is also present', () => {
+            const selfTarget = buildTarget({ amount: '1000', isAccountTarget: true, n: 1 });
+            const externalTarget = buildTarget({ amount: '500', isAccountTarget: false, n: 0 });
+            const transaction = getWalletTransaction({
+                symbol: 'btc',
+                type: 'sent',
+                amount: '1000',
+                targets: [selfTarget, externalTarget],
+            });
+
+            expect(getTargetAmount(selfTarget, transaction)).toBeNull();
         });
     });
 });
