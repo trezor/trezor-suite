@@ -239,6 +239,42 @@ describe('account utils', () => {
         expect(accountSearchFn(ethAcc, 'test2', { accountLabel: '' })).toBe(false);
     });
 
+    it('accountSearchFn empty tokens pepe-like', () => {
+        const ethAcc = mockWalletAccount({
+            symbol: 'eth',
+            tokens: [
+                mockAccountToken({ balance: '0.000069', name: 'test' }),
+                mockAccountToken({ balance: '0.0', name: 'pepe' }),
+            ],
+        });
+
+        expect(accountSearchFn(ethAcc, 'test', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(ethAcc, 'pepe', { accountLabel: '' })).toBe(false);
+    });
+
+    it('accountSearchFn hidden tokens excluded via shownTokens', () => {
+        const shownToken = mockAccountToken({ balance: '0.000069', name: 'shown' });
+        const hiddenToken = mockAccountToken({ balance: '1.0', name: 'hidden-spam' });
+        const ethAcc = mockWalletAccount({
+            symbol: 'eth',
+            tokens: [shownToken, hiddenToken],
+        });
+
+        expect(accountSearchFn(ethAcc, 'hidden-spam', { accountLabel: '' })).toBe(true);
+        expect(
+            accountSearchFn(ethAcc, 'hidden-spam', {
+                accountLabel: '',
+                shownTokens: [shownToken],
+            }),
+        ).toBe(false);
+        expect(
+            accountSearchFn(ethAcc, 'shown', {
+                accountLabel: '',
+                shownTokens: [shownToken],
+            }),
+        ).toBe(true);
+    });
+
     it('getNetworkAccountFeatures', () => {
         const btcAcc = mockWalletAccount({ symbol: 'btc' });
         const btcTaprootAcc = mockWalletAccount({ symbol: 'btc', accountType: 'taproot' });
