@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
+import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -15,25 +15,31 @@ import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
+    type StackNavigationProps,
     type YieldStackParamList,
-    type YieldStackRoutes,
+    YieldStackRoutes,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { YieldClaimFlowFooter } from '../components/YieldClaimFlowFooter';
 import { YieldClaimRewardsCard } from '../components/YieldClaimRewardsCard';
+import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { type PreparedYieldClaimAction, useYieldClaimFees } from '../hooks/useYieldClaimFees';
 import { useYieldClaimRewards } from '../hooks/useYieldClaimRewards';
+import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
+import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
 import { getStablecoinYieldClaimRewardsSnapshot } from '../utils/stablecoinYieldClaimSummaryUtils';
 import { shouldShowClaimFeeWarning } from '../utils/yieldClaimFeeWarningUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaim>;
+type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 
 export const YieldClaimScreen = () => {
     const route = useRoute<RouteProps>();
+    const navigation = useNavigation<NavigationProps>();
     const { accountKey } = route.params;
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
@@ -52,9 +58,23 @@ export const YieldClaimScreen = () => {
         flowKey,
         flowType: 'claim',
     });
-    const { accountRewards, isClaimRewardsFiatLoading, isClaimRewardsLoading } =
-        useYieldClaimRewards({ account });
-    const isClaimPending = !!session?.action.pendingTransaction;
+    const {
+        accountRewards,
+        isClaimRewardsFiatLoading,
+        isClaimRewardsLoading,
+        waitForMerklToResolveClaim,
+    } = useYieldClaimRewards({ account });
+    const {
+        pendingBottomSheetRef,
+        pendingModalProps,
+        pendingTransaction: claimPendingTransaction,
+    } = useYieldPendingTransaction({
+        accountKey: account?.key,
+        isFocused,
+        pendingTransaction: session?.action.pendingTransaction,
+        transactionType: 'claim',
+    });
+    const isClaimPending = claimPendingTransaction !== undefined;
     const isClaimSubmitting = session?.action.isSubmitting ?? false;
     const claimFee = useYieldClaimFees({
         accountRewards,
@@ -86,6 +106,28 @@ export const YieldClaimScreen = () => {
         isEnabled: isFocused,
     });
 
+    useYieldPendingTransactionTracking({
+        account,
+        flowKey,
+        flowType: 'claim',
+        pendingTransaction: claimPendingTransaction,
+        waitForMerklToResolveClaim,
+    });
+
+    useEffect(() => {
+        if (!flowKey || session?.step !== 'approve') {
+            return;
+        }
+
+        dispatch(stablecoinYieldActions.skipApprovalStep({ flowType: 'claim', flowKey }));
+    }, [dispatch, flowKey, session?.step]);
+
+    useEffect(() => {
+        if (session?.step === 'complete') {
+            navigation.replace(YieldStackRoutes.YieldClaimComplete, route.params);
+        }
+    }, [navigation, route.params, session?.step]);
+
     const handleContinue = useCallback(() => {
         if (isContinueDisabled || !claimFee.preparedAction) {
             return;
@@ -109,8 +151,16 @@ export const YieldClaimScreen = () => {
             }),
         );
         closeSimulationBottomSheet();
-        // TODO: Navigate to YieldClaimReview once the claim review screen is implemented.
-    }, [accountRewards, closeSimulationBottomSheet, dispatch, flowKey, simulationPreparedAction]);
+        navigation.navigate(YieldStackRoutes.YieldClaimReview, route.params);
+    }, [
+        accountRewards,
+        closeSimulationBottomSheet,
+        dispatch,
+        flowKey,
+        navigation,
+        route.params,
+        simulationPreparedAction,
+    ]);
 
     if (!account) {
         return null;
@@ -148,7 +198,7 @@ export const YieldClaimScreen = () => {
                 />
             }
         >
-            <Box paddingHorizontal="sp16">
+            <Box paddingHorizontal="sp16" pointerEvents={isClaimPending ? 'none' : 'auto'}>
                 <VStack spacing="sp20">
                     <YieldClaimRewardsCard
                         accountRewards={accountRewards}
@@ -176,6 +226,19 @@ export const YieldClaimScreen = () => {
                     )}
                 </VStack>
             </Box>
+
+            {claimPendingTransaction && pendingModalProps && (
+                <YieldPendingTransactionModal
+                    ref={pendingBottomSheetRef}
+                    accountLabel={accountLabel}
+                    accountSymbol={account.symbol}
+                    fee={pendingModalProps.fee}
+                    isExploreDisabled={pendingModalProps.isExploreDisabled}
+                    onExplorePress={pendingModalProps.onExplorePress}
+                    submittedAt={pendingModalProps.submittedAt}
+                    title={<Translation id="earn.yieldClaimFlowScreen.claimPendingTitle" />}
+                />
+            )}
 
             {simulationPreparedAction && (
                 <YieldTxSimulationBottomSheet

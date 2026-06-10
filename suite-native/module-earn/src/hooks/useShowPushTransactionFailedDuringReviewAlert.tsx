@@ -20,7 +20,8 @@ type ReviewFormType =
     | 'yield-approval'
     | 'yield-deposit'
     | 'yield-revoke'
-    | 'yield-withdraw';
+    | 'yield-withdraw'
+    | 'yield-claim';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AppTabsParamList,
@@ -144,6 +145,23 @@ const translationKeys = {
         pendingConflict: {
             title: 'earn.yieldReview.alerts.withdraw.pendingTransactionConflict.title',
             description: 'earn.yieldReview.alerts.withdraw.pendingTransactionConflict.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+    },
+    'yield-claim': {
+        signFailed: {
+            title: 'earn.yieldReview.alerts.claim.signTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.claim.signTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+        pushFailed: {
+            title: 'earn.yieldReview.alerts.claim.pushTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.claim.pushTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
+        pendingConflict: {
+            title: 'earn.yieldReview.alerts.claim.pendingTransactionConflict.title',
+            description: 'earn.yieldReview.alerts.claim.pendingTransactionConflict.description',
             primaryButton: 'earn.yieldReview.alerts.primaryButton',
         },
     },

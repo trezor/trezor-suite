@@ -12,6 +12,7 @@
         { "path": "../firmware" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
+        { "path": "../schemas" },
         { "path": "../staking" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },

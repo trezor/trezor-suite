@@ -33,12 +33,12 @@ type YieldSignTransactionError = {
     message?: string;
 };
 
-type YieldPushTransactionError = {
+export type YieldPushTransactionError = {
     error: 'push-transaction-failed' | 'push-transaction-pending-conflict';
     message?: string;
 };
 
-const getPushErrorType = (message: string): YieldPushTransactionError['error'] =>
+export const getPushErrorType = (message: string): YieldPushTransactionError['error'] =>
     message.includes('could not replace existing tx')
         ? 'push-transaction-pending-conflict'
         : 'push-transaction-failed';
