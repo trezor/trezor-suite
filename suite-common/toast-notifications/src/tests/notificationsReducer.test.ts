@@ -3,7 +3,7 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { notificationsActions } from '../notificationsActions';
 import { createNotificationsReducer } from '../notificationsReducer';
 import { selectNotifications } from '../notificationsSelectors';
-import { removeAccountEventsThunk, removeTransactionEventsThunk } from '../notificationsThunks';
+import { removeAccountEventsThunk } from '../notificationsThunks';
 import { type NotificationsRootState, type NotificationsState } from '../types';
 
 const { reducer: notificationsReducer } = createNotificationsReducer();
@@ -134,51 +134,6 @@ describe('Notifications Actions', () => {
 
         expect(selectNotifications(store.getState())).toHaveLength(1);
         expect(selectNotifications(store.getState())[0]).toMatchObject(thirdMocked);
-    });
-
-    it('removeTransactionEvents', async () => {
-        const store = initStore({
-            preloadedState: {
-                notifications: [
-                    {
-                        id: 1,
-                        context: 'toast',
-                        type: 'tx-sent',
-                        formattedAmount: '0',
-                        descriptor: 'xpub',
-                        symbol: 'btc',
-                        txid: '1',
-                    },
-                    {
-                        id: 2,
-                        context: 'event',
-                        type: 'tx-confirmed',
-                        formattedAmount: '0',
-                        descriptor: 'xpub',
-                        symbol: 'btc',
-                        txid: '2',
-                    },
-                    {
-                        id: 3,
-                        context: 'event',
-                        type: 'tx-received',
-                        formattedAmount: '0',
-                        descriptor: 'xpub',
-                        symbol: 'btc',
-                        txid: '3',
-                    },
-                    {
-                        id: 4,
-                        context: 'toast',
-                        type: 'backup-success',
-                    },
-                ],
-            },
-        });
-        await store.dispatch(removeTransactionEventsThunk([{ txid: '1' }, { txid: '2' }]));
-        expect(store.getState().notifications.length).toEqual(2);
-        await store.dispatch(removeTransactionEventsThunk([{ txid: '3' }]));
-        expect(store.getState().notifications.length).toEqual(1);
     });
 
     it('removeAccountEvents', async () => {

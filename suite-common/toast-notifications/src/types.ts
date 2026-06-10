@@ -236,7 +236,7 @@ export type ToastNotification<
     context: 'toast';
 } & CommonNotificationPayload &
     ToastPayload<TranslationKey>;
-export type EventNotification = { context: 'event' } & CommonNotificationPayload &
+type EventNotification = { context: 'event' } & CommonNotificationPayload &
     NotificationEventPayload;
 
 export type NotificationEntry<TranslationKey extends string = UnknownTranslationKey> =
