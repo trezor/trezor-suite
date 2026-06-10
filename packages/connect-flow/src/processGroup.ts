@@ -17,47 +17,106 @@ type ProcessResult<P> = P extends RunnableProcess<any, infer TResult> ? TResult 
 /** Union of every child process's event type. */
 export type MergedEvents<Ps extends readonly RunnableProcess[]> = ProcessEvent<Ps[number]>;
 
+/**
+ * Union of `[event, originating process]` tuples — each event is paired with the
+ * exact process it came from, so the process type narrows alongside the event.
+ */
+export type MergedEventsWithProcess<Ps extends readonly RunnableProcess[]> = {
+    [K in keyof Ps]: [ProcessEvent<Ps[K]>, Ps[K]];
+}[number];
+
 /** Tuple of every child process's result type, in the same order as the inputs. */
 export type TupleResults<Ps extends readonly RunnableProcess[]> = {
     -readonly [K in keyof Ps]: ProcessResult<Ps[K]>;
 };
 
 /**
- * A dynamically-built master process: child processes are layered on with
- * `add()`, `run()` runs them all concurrently and yields their events as a
- * single merged async stream, `cancel()` cancels every child, and `toPromise()`
- * resolves once all children have completed.
+ * A master process that layers child processes onto each other.
+ *
+ * Build it up with `add()` (only before it starts — the tuple type accumulates
+ * with each call, so results stay statically typed). `run()` runs all children
+ * concurrently and yields their events as a single merged stream;
+ * `runWithProcesses()` yields the same events paired with their originating
+ * process. `cancel()` cancels every child and `toPromise()` resolves to a tuple
+ * of their results, in order.
  */
-export interface ProcessGroup<TEvent = unknown, TResult = unknown> extends RunnableProcess<
-    TEvent,
-    TResult[]
-> {
+export interface ProcessGroup<Ps extends readonly RunnableProcess[] = []> {
     /**
-     * Layer another process onto the group. Returns the group for chaining.
-     * Throws if the group has already been started (run or awaited).
+     * Layer another process onto the group, returning a NEW group whose type
+     * carries the extended tuple. The original group is left untouched, so the
+     * statically-known set of processes can never be mutated out from under a
+     * consumer.
      */
-    add(process: RunnableProcess<TEvent, TResult>): ProcessGroup<TEvent, TResult>;
+    add<P extends RunnableProcess>(process: P): ProcessGroup<[...Ps, P]>;
+    /** Merged stream of every child's events. */
+    run(): AsyncIterableIterator<MergedEvents<Ps>>;
+    /** Merged stream of `[event, originating process]` tuples. */
+    runWithProcesses(): AsyncIterableIterator<MergedEventsWithProcess<Ps>>;
+    cancel(): void;
+    toPromise(): Promise<TupleResults<Ps>>;
     /** Number of child processes currently in the group. */
     readonly size: number;
 }
 
-/**
- * A statically-typed master process built from a fixed tuple of processes: the
- * merged event stream is the union of the children's events and `toPromise()`
- * resolves to a tuple of their results, in input order. The set is fixed at
- * creation, so there is no `add()`.
- */
-export interface TypedProcessGroup<Ps extends readonly RunnableProcess[]> {
-    run(): AsyncIterableIterator<MergedEvents<Ps>>;
-    cancel(): void;
-    toPromise(): Promise<TupleResults<Ps>>;
-    readonly size: number;
-}
-
-const createGroup = (initial: readonly RunnableProcess[]) => {
-    const processes: RunnableProcess[] = [...initial];
-    let started = false;
+const createGroup = (initial: readonly RunnableProcess[]): ProcessGroup<[]> => {
+    const processes: readonly RunnableProcess[] = [...initial];
     let runCalled = false;
+
+    // Runs every child concurrently, yielding [event, process] tuples. The
+    // run-once guard lives here so both run() and runWithProcesses() share it.
+    const startMerged = (): AsyncIterableIterator<[unknown, RunnableProcess]> => {
+        if (runCalled) {
+            throw new Error('ProcessGroup can only be run once.');
+        }
+        runCalled = true;
+
+        const channel = new EventChannel<[unknown, RunnableProcess]>();
+        const children = [...processes];
+        let active = children.length;
+
+        if (active === 0) {
+            channel.close();
+        }
+
+        children.forEach(process => {
+            void (async () => {
+                try {
+                    for await (const event of process.run()) {
+                        channel.push([event, process]);
+                    }
+                } finally {
+                    active -= 1;
+                    if (active === 0) {
+                        channel.close();
+                    }
+                }
+            })();
+        });
+
+        async function* iterate() {
+            let consumedAll = false;
+            try {
+                while (true) {
+                    const { value, done } = await channel.pull();
+                    if (done) {
+                        consumedAll = true;
+
+                        return;
+                    }
+                    yield value;
+                }
+            } finally {
+                // Consumer stopped early (break / throw) before the streams
+                // drained — cancel the still-running children.
+                if (!consumedAll) {
+                    children.forEach(process => process.cancel());
+                    channel.close();
+                }
+            }
+        }
+
+        return iterate();
+    };
 
     const group = {
         get size() {
@@ -65,101 +124,46 @@ const createGroup = (initial: readonly RunnableProcess[]) => {
         },
 
         add(process: RunnableProcess) {
-            if (started) {
-                throw new Error('Cannot add a process after the group has started.');
-            }
-            processes.push(process);
+            return createGroup([...processes, process]);
+        },
 
-            return group;
+        runWithProcesses(): AsyncIterableIterator<[unknown, RunnableProcess]> {
+            return startMerged();
         },
 
         run(): AsyncIterableIterator<unknown> {
-            if (runCalled) {
-                throw new Error('ProcessGroup.run() can only be called once.');
-            }
-            runCalled = true;
-            started = true;
+            const merged = startMerged();
 
-            const channel = new EventChannel<unknown>();
-            const children = [...processes];
-            let active = children.length;
-
-            if (active === 0) {
-                channel.close();
-            }
-
-            // Pump every child concurrently into the shared channel. The channel
-            // closes once the last child's stream ends.
-            children.forEach(process => {
-                void (async () => {
-                    try {
-                        for await (const event of process.run()) {
-                            channel.push(event);
-                        }
-                    } finally {
-                        active -= 1;
-                        if (active === 0) {
-                            channel.close();
-                        }
-                    }
-                })();
-            });
-
-            async function* iterate() {
-                let consumedAll = false;
-                try {
-                    while (true) {
-                        const { value, done } = await channel.pull();
-                        if (done) {
-                            consumedAll = true;
-
-                            return;
-                        }
-                        yield value;
-                    }
-                } finally {
-                    // Consumer stopped early (break / throw) before the streams
-                    // drained — cancel the still-running children.
-                    if (!consumedAll) {
-                        children.forEach(process => process.cancel());
-                        channel.close();
-                    }
+            return (async function* () {
+                for await (const [event] of merged) {
+                    yield event;
                 }
-            }
-
-            return iterate();
+            })();
         },
 
         cancel() {
             processes.forEach(process => process.cancel());
         },
 
-        toPromise() {
-            started = true;
-
+        toPromise(): Promise<unknown[]> {
             return Promise.all(processes.map(process => process.toPromise()));
         },
     };
 
-    return group;
+    return group as unknown as ProcessGroup<[]>;
 };
 
 /**
  * Create a master process that layers child processes onto each other.
  *
- * - Passing a tuple of processes returns a {@link TypedProcessGroup}: events are
- *   the union of the children's event types and `toPromise()` resolves to a
- *   tuple of their results, in order.
- * - Calling with no argument returns a dynamic {@link ProcessGroup} you build up
- *   with `add()`.
+ * - With a tuple of processes you get the fully-typed group straight away.
+ * - With no argument you get an empty group to build up with `add()`, whose
+ *   tuple type grows with each call.
  */
 export function createProcessGroup<const Ps extends readonly RunnableProcess[]>(
     processes: Ps,
-): TypedProcessGroup<Ps>;
-export function createProcessGroup<TEvent = unknown, TResult = unknown>(): ProcessGroup<
-    TEvent,
-    TResult
->;
+): ProcessGroup<Ps>;
+export function createProcessGroup(): ProcessGroup<[]>;
 export function createProcessGroup(processes: readonly RunnableProcess[] = []): unknown {
     return createGroup(processes);
 }
