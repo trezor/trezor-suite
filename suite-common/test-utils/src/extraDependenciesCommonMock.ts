@@ -53,7 +53,7 @@ const platformEncryptionMock: PlatformEncryption = {
         Promise.resolve(ok(value as unknown as T)),
 };
 
-export const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
+const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
 
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
