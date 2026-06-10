@@ -378,7 +378,14 @@ export const EditableText = ({
 
         const handleOuterClick = (e: MouseEvent) => {
             if (!containerRef?.current?.contains(e.target as Node)) {
-                if (isDirty) {
+                // Compute isDirty from current DOM state, not from stale React state.
+                // handleCancel() synchronously resets valueRef.current.textContent to
+                // savedValueRef.current, so checking the DOM here correctly handles the
+                // race where Escape cancels editing but the useEffect cleanup hasn't run yet.
+                const isCurrentlyDirty =
+                    (valueRef.current?.textContent ?? '') !== savedValueRef.current;
+
+                if (isCurrentlyDirty) {
                     handleSave();
                 } else {
                     handleCancel();
@@ -391,7 +398,7 @@ export const EditableText = ({
         return () => {
             document.removeEventListener('click', handleOuterClick);
         };
-    }, [isEditable, handleCancel, handleSave, isDirty]);
+    }, [isEditable, handleCancel, handleSave]);
 
     useShortcuts({ isEditable, isDirty, handleSave, handleCancel });
 

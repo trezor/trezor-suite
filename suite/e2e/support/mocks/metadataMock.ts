@@ -38,6 +38,29 @@ const rerouteFetch = `
     const originalFetch = window.fetch;
 
     window.fetch = async (uri, options) => {
+        // Extract URL string from Request objects (e.g. created by up-fetch library)
+        if (uri instanceof Request) {
+            const request = uri;
+            const urlString = request.url;
+
+            const dropboxOrigins = ['https://content.dropboxapi.com', 'https://api.dropboxapi.com'];
+            const googleOrigins = ['https://www.googleapis.com', 'https://oauth2.googleapis.com'];
+
+            if (dropboxOrigins.some(o => urlString.includes(o))) {
+                const parsedUrl = new URL(urlString);
+                const modifiedUrl = parsedUrl.href.replace(parsedUrl.origin, 'http://localhost:30002');
+                return originalFetch(modifiedUrl, options || request);
+            }
+
+            if (googleOrigins.some(o => urlString.includes(o))) {
+                const parsedUrl = new URL(urlString);
+                const modifiedUrl = parsedUrl.href.replace(parsedUrl.origin, 'http://localhost:30001');
+                return originalFetch(modifiedUrl, options || request);
+            }
+
+            return originalFetch(uri, options);
+        }
+
         let url;
         try {
             url = new URL(uri);
