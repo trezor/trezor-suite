@@ -63,5 +63,13 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
         return child;
     });
 
-    return <Banner icon intent={intent} title={clonedChildren} margin={{ bottom: 16 }} />;
+    return (
+        <Banner
+            data-testid="guide-banner"
+            icon
+            intent={intent}
+            description={clonedChildren}
+            margin={{ bottom: 16 }}
+        />
+    );
 };
