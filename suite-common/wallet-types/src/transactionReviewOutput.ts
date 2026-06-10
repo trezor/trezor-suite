@@ -24,6 +24,7 @@ export type ReviewOutput =
               | 'approve_data'
               | 'recipient_name'
               | 'swap_intent'
+              | 'tron-vote'
               | 'fee-limit';
           label?: string;
           value: string;

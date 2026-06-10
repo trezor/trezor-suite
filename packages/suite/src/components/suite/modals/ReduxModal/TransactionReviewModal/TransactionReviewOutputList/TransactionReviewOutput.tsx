@@ -262,6 +262,8 @@ const getOutputTitle = (
             return <Translation id="TR_SUMMARY" />;
         case 'rewards':
             return <Translation id="TR_REWARD_TOKENS" />;
+        case 'tron-vote':
+            return <Translation id="TR_SUMMARY" />;
         default:
             return exhaustive(type);
     }
@@ -561,6 +563,21 @@ const getOutputLines = ({
                 value: reward.tokenSymbol || reward.tokenAddress,
                 type: 'default' as const,
             }));
+        case 'tron-vote':
+            return [
+                {
+                    id: 'address',
+                    type: 'safe-address',
+                    label: <Translation id="TR_ADDRESS" />,
+                    value,
+                },
+                {
+                    id: 'votes',
+                    type: 'default',
+                    label: <Translation id="TR_TRON_VOTES" />,
+                    value: value2,
+                },
+            ];
         default:
             return exhaustive(type);
     }

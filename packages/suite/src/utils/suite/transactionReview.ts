@@ -114,5 +114,9 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_EARN_TRON_FREEZE' };
     }
 
+    if (precomposedForm.tronStakeVotes !== undefined) {
+        return { id: 'TR_EARN_TRON_VOTE' };
+    }
+
     return { id: 'SEND_TRANSACTION' };
 };
