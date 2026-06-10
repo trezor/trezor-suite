@@ -11,7 +11,7 @@ export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFai
     caused,
 });
 
-export type GetProofOfDelegatedIdentityParams = {
+type GetProofOfDelegatedIdentityParams = {
     delegatedKey: DelegatedIdentityKey;
     header: string;
     appendMessageBuffer?: Buffer;

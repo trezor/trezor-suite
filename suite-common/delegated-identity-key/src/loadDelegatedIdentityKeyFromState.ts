@@ -5,12 +5,12 @@ import { type EncryptedHex, type PlatformEncryptionDep } from '@suite-common/pla
 import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { exhaustive } from '@trezor/type-utils';
 
-export type LoadDelegatedIdentityKeyFromStateDeps = {
+type LoadDelegatedIdentityKeyFromStateDeps = {
     getDeviceDelegatedIdentityKey: (deviceId: string) => EncryptedHex<DelegatedIdentityKey> | null;
     dispatch: Dispatch;
 } & PlatformEncryptionDep;
 
-export type LoadDelegatedIdentityKeyFromStateParams = {
+type LoadDelegatedIdentityKeyFromStateParams = {
     deviceId: string;
 };
 
