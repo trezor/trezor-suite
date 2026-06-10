@@ -90,7 +90,12 @@ export const StakingManagementScreen = () => {
 
     return (
         <EarnPortfolioTrackerGuard>
-            <Screen header={<StakingManagementScreenHeader />} noHorizontalPadding>
+            <Screen
+                header={<StakingManagementScreenHeader />}
+                noHorizontalPadding
+                /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
+                isScrollable={false}
+            >
                 {account &&
                     (isSolanaStaking ? (
                         <SolanaStakingRewardsList
