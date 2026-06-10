@@ -5,7 +5,7 @@ import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type AccountType } from '@suite-common/wallet-config';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
+import { selectAccountsShownTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
@@ -103,6 +103,7 @@ export const AccountsList = ({
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';
+    const accountsShownTokens = useSelector(selectAccountsShownTokens);
 
     if (!device) {
         return null;
@@ -123,6 +124,7 @@ export const AccountsList = ({
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
                       accountLabel,
+                      shownTokens: accountsShownTokens[key],
                   });
               })
             : accounts;
