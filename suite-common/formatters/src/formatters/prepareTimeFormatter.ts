@@ -4,7 +4,7 @@ import { enUS } from 'date-fns/locale';
 import { makeFormatter } from '../makeFormatter';
 import { type FormatterConfig } from '../types';
 
-export const TIME_FORMAT = {
+const TIME_FORMAT = {
     HOURS_24: 'HH:mm',
     HOURS_12: 'hh:mm a',
 };
