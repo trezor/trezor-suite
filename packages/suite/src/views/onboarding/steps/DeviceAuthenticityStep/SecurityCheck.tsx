@@ -155,12 +155,15 @@ const SecurityCheckContent = ({
 
     const handleSetupButtonClick = () => {
         dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
-        analytics.report({
-            type: events.deviceSetupStartedEvent.name,
-            payload: {
-                deviceModel,
+        analytics.report(
+            {
+                type: events.deviceSetupStartedEvent.name,
+                payload: {
+                    deviceModel,
+                },
             },
-        });
+            { force: true },
+        );
 
         if (isRecoveryInProgress) {
             rerun();

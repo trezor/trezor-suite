@@ -33,12 +33,15 @@ export const DeviceInitialize = () => {
 
         const device = selectSelectedDevice(getState());
 
-        analytics.report({
-            type: events.deviceSetupStartedEvent.name,
-            payload: {
-                deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
+        analytics.report(
+            {
+                type: events.deviceSetupStartedEvent.name,
+                payload: {
+                    deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
+                },
             },
-        });
+            { force: true },
+        );
         dispatch(goto({ routeName: 'onboarding-index' }));
     };
 

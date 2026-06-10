@@ -153,18 +153,31 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
 
     dispatch(startDiscoveryThunk({ device }));
     const reportAnalytics = () => {
-        const payload = {
-            ...onboardingAnalytics,
-            duration: Date.now() - onboardingAnalytics.startTime!,
+        const { analytics } = extra.services;
+        const { startTime, ...onboardingAttributes } = onboardingAnalytics;
+        const fullPayload = {
+            ...onboardingAttributes,
+            duration: Date.now() - startTime!,
             device: device.features.internal_model,
             unitPackaging: device.features.unit_packaging ?? 0,
         };
-        delete payload.startTime;
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: events.deviceSetupCompletedEvent.name,
-            payload,
-        });
+        const hasConsent = analytics.isEnabled();
+        const payload = hasConsent
+            ? fullPayload
+            : {
+                  duration: fullPayload.duration,
+                  device: fullPayload.device,
+                  unitPackaging: fullPayload.unitPackaging,
+              };
+
+        asTypedDesktopAnalytics(analytics).report(
+            {
+                type: events.deviceSetupCompletedEvent.name,
+                payload,
+            },
+            { force: true },
+        );
     };
     reportAnalytics();
 };
