@@ -82,6 +82,7 @@ export const Filter = ({
                                 isChecked={isFullText}
                                 onChange={checked => setSearchMode(checked ? 'fulltext' : 'name')}
                                 label="Fulltext search"
+                                size="small"
                             />
                         ),
                         closeOnClick: false,
