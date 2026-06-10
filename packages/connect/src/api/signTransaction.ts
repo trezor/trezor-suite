@@ -16,7 +16,6 @@ import {
     createPendingTransaction,
     deriveOutputScript,
     enhanceSignTx,
-    enhanceTrezorInputs,
     getOrigTransactions,
     getReferencedTransactions,
     parseTransactionHexes,
@@ -292,11 +291,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             : await blockchain
                   .getTransactionHexes(refTxsIds)
                   .then(parseTransactionHexes(coinInfo.network))
-                  .then(rawTxs => {
-                      enhanceTrezorInputs(this.params.inputs, rawTxs);
-
-                      return transformReferencedTransactions(rawTxs);
-                  });
+                  .then(rawTxs => transformReferencedTransactions(rawTxs));
 
         const origTxs = !origTxsIds.length
             ? []

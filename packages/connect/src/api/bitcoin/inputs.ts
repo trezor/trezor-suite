@@ -6,7 +6,6 @@ import type {
     ProtoWithDerivationPath,
 } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
-import type { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import {
@@ -57,24 +56,6 @@ export const validateTrezorInputs = (
 
             return input;
         });
-
-// this method exist as a workaround for breaking change described in validateTrezorInputs
-// TODO: it could be removed after another major version release.
-export const enhanceTrezorInputs = (
-    inputs: PROTO.TxInputType[],
-    rawTxs: BitcoinJsTransaction[],
-) => {
-    inputs.forEach(input => {
-        if (!input.amount) {
-            console.warn('TrezorConnect.signTransaction deprecation: missing input amount.');
-            const refTx = rawTxs.find(t => t.getId() === input.prev_hash);
-            const refTxPrevIndex = refTx?.outs[input.prev_index];
-            if (refTxPrevIndex) {
-                input.amount = refTxPrevIndex.value;
-            }
-        }
-    });
-};
 
 /** *****
  * Transform from @trezor/utxo-lib/compose format to Trezor
