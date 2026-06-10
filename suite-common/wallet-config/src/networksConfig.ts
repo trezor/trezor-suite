@@ -731,7 +731,7 @@ export type NetworkConfigWithoutTestnets = Exclude<NetworkConfig, { testnet: tru
 
 export type NetworkDisplaySymbol = NetworkConfig['displaySymbol'];
 
-export type NetworkWithFeature<TFeature extends NetworkFeature> = {
+type NetworkWithFeature<TFeature extends NetworkFeature> = {
     [S in keyof NetworksConfigs]: TFeature extends NetworksConfigs[S]['features'][number]
         ? NetworksConfigs[S]
         : never;
@@ -764,5 +764,3 @@ export const [STAKING_SYMBOLS, STAKING_TYPES, PROD_STAKING_SYMBOLS] = typedObjec
     readonly StakingNetworkType[],
     readonly (StakingNetworkSymbol & NetworkConfigWithoutTestnets['symbol'])[],
 ];
-
-export type ProdStakingNetworkSymbol = (typeof PROD_STAKING_SYMBOLS)[number];
