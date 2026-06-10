@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -30,8 +30,12 @@ export const useYieldClaimRewards = ({ account }: UseYieldClaimRewardsParams) =>
         skipEmptyAccountCheck: true,
     });
 
-    const { data: chainsRewards, isLoading: isMerklRewardsLoading } =
-        useGetMerklRewards(merklRewardsQueryEntries);
+    const {
+        data: chainsRewards,
+        isLoading: isMerklRewardsLoading,
+        refetch: refetchMerklRewards,
+        waitForMerklToResolveClaim,
+    } = useGetMerklRewards(merklRewardsQueryEntries);
 
     const { chainsRewardsWithFiat, missingRateTickers } = useExtendMerklRewardsWithFiat({
         chainsRewards,
@@ -54,18 +58,27 @@ export const useYieldClaimRewards = ({ account }: UseYieldClaimRewardsParams) =>
             chainsRewardsWithFiat,
         });
     }, [account, chainsRewardsWithFiat]);
+    const waitForClaimRewardsToResolve = useCallback(async () => {
+        try {
+            await waitForMerklToResolveClaim();
+        } finally {
+            await refetchMerklRewards();
+        }
+    }, [refetchMerklRewards, waitForMerklToResolveClaim]);
 
     return useMemo(
         () => ({
             accountRewards,
             isClaimRewardsFiatLoading: missingRateTickersQuery.isLoading,
             isClaimRewardsLoading: merklRewardsQueryEntries.length > 0 && isMerklRewardsLoading,
+            waitForMerklToResolveClaim: waitForClaimRewardsToResolve,
         }),
         [
             accountRewards,
             isMerklRewardsLoading,
             merklRewardsQueryEntries.length,
             missingRateTickersQuery.isLoading,
+            waitForClaimRewardsToResolve,
         ],
     );
 };

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -27,6 +27,7 @@ type UseYieldPendingTransactionTrackingParams = {
     onApprovalConfirmed?: () => void;
     onRevokeConfirmed?: () => void;
     pendingTransaction: YieldPendingTransactionState | undefined;
+    waitForMerklToResolveClaim?: () => Promise<unknown>;
 };
 
 export const useYieldPendingTransactionTracking = ({
@@ -37,8 +38,11 @@ export const useYieldPendingTransactionTracking = ({
     flowType,
     isScreenFocused,
     pendingTransaction,
+    waitForMerklToResolveClaim,
 }: UseYieldPendingTransactionTrackingParams) => {
     const dispatch = useDispatch();
+    const pendingTxidRef = useRef(pendingTransaction?.txid);
+    const claimCompletionTxidRef = useRef<string | null>(null);
     const accountKey = account?.key;
     const accountSymbol = account?.symbol;
     const trackedPendingTransaction = useSelector((state: YieldPendingTrackingRootState) => {
@@ -56,6 +60,14 @@ export const useYieldPendingTransactionTracking = ({
         !!flowKey &&
         !!pendingTransaction &&
         (!trackedPendingTransaction || isPending(trackedPendingTransaction));
+
+    useEffect(() => {
+        pendingTxidRef.current = pendingTransaction?.txid;
+
+        if (claimCompletionTxidRef.current !== pendingTransaction?.txid) {
+            claimCompletionTxidRef.current = null;
+        }
+    }, [pendingTransaction?.txid]);
 
     useEffect(() => {
         if (!accountKey || !shouldPollPendingTransaction) {
@@ -97,6 +109,35 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
+        if (pendingTransaction.type === 'claim' && flowType === 'claim') {
+            if (claimCompletionTxidRef.current === pendingTransaction.txid) {
+                return;
+            }
+
+            claimCompletionTxidRef.current = pendingTransaction.txid;
+
+            const completeClaimAction = async () => {
+                try {
+                    await waitForMerklToResolveClaim?.();
+                } catch {
+                    // Merkl can lag after on-chain success; the claim transaction is already confirmed.
+                } finally {
+                    if (pendingTxidRef.current === pendingTransaction.txid) {
+                        dispatch(
+                            stablecoinYieldActions.completeAction({
+                                ...sessionParams,
+                                amount: pendingTransaction.amount,
+                            }),
+                        );
+                    }
+                }
+            };
+
+            void completeClaimAction();
+
+            return;
+        }
+
         if (pendingTransaction.type !== 'approve') {
             dispatch(
                 stablecoinYieldActions.completeAction({
@@ -132,5 +173,6 @@ export const useYieldPendingTransactionTracking = ({
         onRevokeConfirmed,
         pendingTransaction,
         trackedPendingTransaction,
+        waitForMerklToResolveClaim,
     ]);
 };

@@ -243,6 +243,8 @@ export enum YieldStackRoutes {
     HowYieldWorks = 'HowYieldWorks',
     YieldConsents = 'YieldConsents',
     YieldClaim = 'YieldClaim',
+    YieldClaimReview = 'YieldClaimReview',
+    YieldClaimComplete = 'YieldClaimComplete',
     YieldDepositApproval = 'YieldDepositApproval',
     YieldDeposit = 'YieldDeposit',
     YieldDepositRevoke = 'YieldDepositRevoke',

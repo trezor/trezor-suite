@@ -1,3 +1,4 @@
+import { type StablecoinYieldClaimUnsignedTransaction } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type FormState,
@@ -164,4 +165,16 @@ export const getYieldClaimFee = (feePreview: PrecomposedTransactionFinal): Yield
     }
 
     return null;
+};
+
+export const getYieldClaimUnsignedTransactionFee = (
+    unsignedTransaction: StablecoinYieldClaimUnsignedTransaction,
+) => {
+    const gasPrice = unsignedTransaction.maxFeePerGas ?? unsignedTransaction.gasPrice;
+
+    if (!gasPrice) {
+        return null;
+    }
+
+    return calculateTotalGasCost(gasPrice, unsignedTransaction.gasLimit);
 };

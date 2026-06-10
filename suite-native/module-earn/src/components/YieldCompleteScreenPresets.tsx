@@ -1,10 +1,12 @@
 import { type ReactNode } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { HStack, Text } from '@suite-native/atoms';
+import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
+import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
+import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
 import { type YieldCompleteSummaryRow } from './YieldCompleteScreenContent';
 
 type GetYieldDepositCompleteRowsParams = {
@@ -16,6 +18,19 @@ type GetYieldDepositCompleteRowsParams = {
     sentTokenContract?: string;
 };
 
+const getYieldCompleteStatusRow = (): YieldCompleteSummaryRow => ({
+    key: 'status',
+    label: <Translation id="earn.yieldCompleteScreen.status" />,
+    value: (
+        <HStack spacing="sp4" alignItems="center">
+            <Icon name="checkCircle" size="mediumLarge" color="contentBrand" />
+            <Text variant="body-md" color="contentBrand">
+                <Translation id="earn.yieldCompleteScreen.completed" />
+            </Text>
+        </HStack>
+    ),
+});
+
 export const getYieldDepositCompleteRows = ({
     accountSymbol,
     apyValue,
@@ -24,18 +39,7 @@ export const getYieldDepositCompleteRows = ({
     sentAmount,
     sentTokenContract,
 }: GetYieldDepositCompleteRowsParams): YieldCompleteSummaryRow[] => [
-    {
-        key: 'status',
-        label: <Translation id="earn.yieldCompleteScreen.status" />,
-        value: (
-            <HStack spacing="sp4" alignItems="center">
-                <Icon name="checkCircle" size="mediumLarge" color="contentBrand" />
-                <Text variant="body-md" color="contentBrand">
-                    <Translation id="earn.yieldCompleteScreen.completed" />
-                </Text>
-            </HStack>
-        ),
-    },
+    getYieldCompleteStatusRow(),
     {
         key: 'apy',
         label: <Translation id="earn.yieldCompleteScreen.apy" />,
@@ -96,18 +100,7 @@ export const getYieldWithdrawCompleteRows = ({
     withdrawalAmount,
     withdrawalTokenContract,
 }: GetYieldWithdrawCompleteRowsParams): YieldCompleteSummaryRow[] => [
-    {
-        key: 'status',
-        label: <Translation id="earn.yieldCompleteScreen.status" />,
-        value: (
-            <HStack spacing="sp4" alignItems="center">
-                <Icon name="checkCircle" size="mediumLarge" color="contentBrand" />
-                <Text variant="body-md" color="contentBrand">
-                    <Translation id="earn.yieldCompleteScreen.completed" />
-                </Text>
-            </HStack>
-        ),
-    },
+    getYieldCompleteStatusRow(),
     {
         key: 'apy',
         label: <Translation id="earn.yieldCompleteScreen.apy" />,
@@ -151,6 +144,31 @@ export const getYieldWithdrawCompleteRows = ({
                     {receivedAmount}
                 </Text>
             </HStack>
+        ),
+    },
+];
+
+export const getYieldClaimCompleteRows = (
+    rewards: YieldFlowCompleteRewardItem[],
+): YieldCompleteSummaryRow[] => [
+    getYieldCompleteStatusRow(),
+    {
+        key: 'rewards',
+        label: <Translation id="earn.yieldCompleteScreen.rewards" />,
+        content: (
+            <VStack spacing="sp12">
+                {rewards.map((reward, index) => (
+                    <YieldClaimRewardRow
+                        key={`${reward.token.contractAddress ?? reward.token.symbol}:${index}`}
+                        amount={reward.value}
+                        fiatAmount={getYieldClaimRewardFiatAmount(reward.fiatValue)}
+                        networkSymbol={reward.token.networkSymbol}
+                        tokenContractAddress={reward.token.contractAddress ?? undefined}
+                        tokenDecimals={reward.token.decimals}
+                        tokenSymbol={reward.token.symbol}
+                    />
+                ))}
+            </VStack>
         ),
     },
 ];

@@ -18,6 +18,8 @@ export type ClaimReward = {
     };
 };
 
+type ClaimReviewReward = Pick<ClaimReward, 'token'>;
+
 type UnsignedClaimTransactionBase = {
     to: EvmHexString;
     data: EvmHexString;
@@ -59,7 +61,7 @@ type BuildClaimReviewStateParams = {
     data: EvmHexString;
     contractAddress: EvmHexString;
     fee: EvmFeeHex;
-    rewards: ClaimReward[];
+    rewards: ClaimReviewReward[];
 };
 
 type BuildClaimReviewStateResult = {
@@ -76,7 +78,7 @@ type GetClaimTransactionForSigningParams = {
 type BuildClaimTransactionReviewParams = {
     unsignedTransaction: UnsignedClaimTransaction;
     selectedFee: unknown;
-    rewards: ClaimReward[];
+    rewards: ClaimReviewReward[];
 };
 
 type BuildClaimTransactionReviewResult = BuildClaimReviewStateResult & {

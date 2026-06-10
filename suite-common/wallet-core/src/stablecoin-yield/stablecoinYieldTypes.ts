@@ -1,4 +1,5 @@
 import type { YieldDto } from '@suite-common/earn-stablecoin-api';
+import type { EvmHexString } from '@suite-common/schemas/src/evm';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
@@ -53,8 +54,8 @@ type StablecoinYieldClaimUnsignedTransactionFee =
       };
 
 export type StablecoinYieldClaimUnsignedTransaction = {
-    to: string;
-    data: string;
+    to: EvmHexString;
+    data: EvmHexString;
     chainId: number;
     gasLimit: string;
     nonce: string;

@@ -1,11 +1,13 @@
 import { type ReactNode } from 'react';
 
+import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenSymbol } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { type TxKeyPath } from '@suite-native/intl';
 import { ReviewOutputItemValues } from '@suite-native/transaction-management';
 
+import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
 import { type YieldReviewCard } from './YieldReviewList';
 
 type YieldReviewCardFactoryParams = {
@@ -18,6 +20,12 @@ type YieldReviewCardFactoryParams = {
 type BuildYieldDepositReviewCardsParams = YieldReviewCardFactoryParams & {
     receiveAmount: string;
     receiveTokenSymbol: TokenSymbol;
+};
+
+type BuildYieldClaimReviewCardsParams = {
+    accountKey: AccountKey;
+    fee: string;
+    rewards: YieldFlowCompleteRewardItem[];
 };
 
 type DetailRowProps = {
@@ -56,6 +64,21 @@ const buildYieldReviewTransactionDetailsCard = (
                 translationKey="transactionManagement.review.outputs.summary.maxFee"
             />
         </VStack>
+    ),
+    key: 'details',
+    title: translate('earn.yieldReview.transactionDetailsCard.title'),
+});
+
+const buildYieldClaimReviewTransactionDetailsCard = (
+    { accountKey, fee }: Pick<BuildYieldClaimReviewCardsParams, 'accountKey' | 'fee'>,
+    translate: Translate,
+): YieldReviewCard => ({
+    content: (
+        <ReviewOutputItemValues
+            accountKey={accountKey}
+            value={fee}
+            translationKey="transactionManagement.review.outputs.summary.maxFee"
+        />
     ),
     key: 'details',
     title: translate('earn.yieldReview.transactionDetailsCard.title'),
@@ -110,4 +133,30 @@ export const buildYieldWithdrawReviewCards = (
         title: translate('earn.yieldReview.withdrawCard.title'),
     },
     buildYieldReviewTransactionDetailsCard(params, translate),
+];
+
+export const buildYieldClaimReviewCards = (
+    { rewards, ...transactionDetailsParams }: BuildYieldClaimReviewCardsParams,
+    translate: Translate,
+): YieldReviewCard[] => [
+    {
+        content: (
+            <VStack spacing="sp12">
+                {rewards.map((reward, index) => (
+                    <YieldClaimRewardRow
+                        key={`${reward.token.contractAddress ?? reward.token.symbol}:${index}`}
+                        amount={reward.value}
+                        fiatAmount={getYieldClaimRewardFiatAmount(reward.fiatValue)}
+                        networkSymbol={reward.token.networkSymbol}
+                        tokenContractAddress={reward.token.contractAddress ?? undefined}
+                        tokenDecimals={reward.token.decimals}
+                        tokenSymbol={reward.token.symbol}
+                    />
+                ))}
+            </VStack>
+        ),
+        key: 'rewards',
+        title: translate('earn.yieldReview.claimRewardsCard.title'),
+    },
+    buildYieldClaimReviewTransactionDetailsCard(transactionDetailsParams, translate),
 ];
