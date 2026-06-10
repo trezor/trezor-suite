@@ -19,26 +19,6 @@ export const FIELD_TYPES = {
     // 'bytes': 'Uint8Array | number[] | Buffer | string', // protobuf will handle conversion
 };
 
-// Types needs reordering (used before defined).
-// The Type in the Value NEEDs (depends on) the Type in the Key.
-export const ORDER = {
-    HDNodeType: 'HDNodePathType',
-    TxAck: 'TxAckInputWrapper',
-    EthereumFieldType: 'EthereumStructMember',
-    EthereumDataType: 'EthereumFieldType',
-    TextMemo: 'AmountUnit',
-    RefundMemo: 'AmountUnit',
-    CoinPurchaseMemo: 'AmountUnit',
-    TextDetailsMemo: 'AmountUnit',
-    PaymentRequestMemo: 'AmountUnit',
-    PaymentRequest: 'AmountUnit',
-    RecoveryDevice: 'Features',
-    RecoveryType: 'RecoveryDevice',
-    RecoveryDeviceInputMethod: 'RecoveryType',
-    EthereumDefinitions: 'EthereumSignTypedData',
-    TronResourceCode: 'TronFreezeBalanceV2Contract',
-};
-
 // enums used as keys (string), used as values (number) by default
 export const ENUM_KEYS = [
     'InputScriptType',
