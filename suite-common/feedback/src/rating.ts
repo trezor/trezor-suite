@@ -9,7 +9,7 @@ enum RatingEmojiEnum {
     LOVE = '😍',
 }
 
-export type RatingItem = {
+type RatingItem = {
     id: Rating;
     emoji: RatingEmojiEnum;
 };
