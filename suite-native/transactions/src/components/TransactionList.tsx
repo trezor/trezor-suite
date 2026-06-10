@@ -144,7 +144,6 @@ export const TransactionList = ({
     const dispatch = useDispatch();
     const queryClient = useQueryClient();
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [page, setPage] = useState(1);
 
     const {
         applyStyle,
@@ -167,9 +166,12 @@ export const TransactionList = ({
 
     const txnsPerPage = getTxsPerPage(account.networkType);
 
-    const { isLoading: isLoadingTransactions } = useAccountTransactionsPageQuery({
+    const {
+        isLoading: isLoadingTransactions,
+        isFetchingNextPage,
+        fetchNextPage,
+    } = useAccountTransactionsPageQuery({
         accountKey,
-        page,
         perPage: txnsPerPage,
     });
 
@@ -264,19 +266,17 @@ export const TransactionList = ({
     const { scrollDivider, handleScroll } = useScrollDivider();
 
     const handleOnLoadMore = useCallback(() => {
-        setPage(currentPage => currentPage + 1);
-    }, []);
+        fetchNextPage();
+    }, [fetchNextPage]);
 
     const handleOnRefresh = useCallback(async () => {
         try {
             setIsRefreshing(true);
-            setPage(1);
-            // Invalidate page 1 so the query re-runs. fetchTransactionsPageThunk always re-fetches
-            // page 1 from the network (no cache guard for the first page), so this is safe.
             await Promise.allSettled([
                 dispatch(fetchAndUpdateAccountThunk({ accountKey })),
-                queryClient.invalidateQueries({
-                    queryKey: mobileQueryKeys.accountTransactions(accountKey, 1, txnsPerPage),
+                // resetQueries clears all cached pages so the infinite query restarts from page 1.
+                queryClient.resetQueries({
+                    queryKey: mobileQueryKeys.accountTransactions(accountKey, txnsPerPage),
                 }),
             ]);
         } catch {
@@ -353,7 +353,7 @@ export const TransactionList = ({
                 ListFooterComponent={
                     <TransactionsListFooter
                         accountKey={accountKey}
-                        isLoading={isLoadingTransactions}
+                        isLoading={isLoadingTransactions || isFetchingNextPage}
                         onButtonPress={handleOnLoadMore}
                     />
                 }

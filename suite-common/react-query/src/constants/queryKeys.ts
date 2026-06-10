@@ -25,8 +25,8 @@ export const desktopQueryKeys = {
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const mobileQueryKeys = {
-    accountTransactions: (accountKey: string, page: number, perPage: number) =>
-        ['account-transactions', accountKey, page, perPage],
+    accountTransactions: (accountKey: string, perPage: number) =>
+        ['account-transactions', accountKey, perPage],
     txFiatRates: (accountKey: string, localCurrency: string, txCount: number) =>
         ['tx-fiat-rates', accountKey, localCurrency, txCount],
     historicRates: (accountKey: string, localCurrency: string) =>
