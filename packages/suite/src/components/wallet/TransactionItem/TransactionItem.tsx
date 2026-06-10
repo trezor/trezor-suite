@@ -116,9 +116,6 @@ export const TransactionItem = memo(
             transaction.deadline ? '/prepending' : ''
         }`;
 
-        const isZeroPhishingTransaction =
-            isPhishingTransaction && phishingDetectorId == 'DUST_AMOUNT';
-
         return (
             <Wrapper ref={anchorRef} data-testid="@wallet/transaction-item">
                 <OutlineHighlight shouldHighlight={shouldHighlight}>
@@ -129,7 +126,8 @@ export const TransactionItem = memo(
                             <TransactionHeading
                                 transaction={transaction}
                                 isPending={isPending}
-                                isZeroPhishingTransaction={isZeroPhishingTransaction}
+                                isPhishingTransaction={isPhishingTransaction}
+                                phishingDetectorId={phishingDetectorId}
                                 dataTestBase={dataTestBase}
                             />
                         }
