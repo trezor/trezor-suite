@@ -8,10 +8,9 @@ import { type TrezorConnect } from '@trezor/connect';
 export const FORMAT_VERSION = '1.0.0';
 
 // @trezor/connect params
-export const ENABLE_LABELING_PATH = "m/10015'/0'";
-export const ENABLE_LABELING_KEY = 'Enable labeling?';
-export const ENABLE_LABELING_VALUE =
-    'fedcba98765432100123456789abcdeffedcba98765432100123456789abcdef';
+const ENABLE_LABELING_PATH = "m/10015'/0'";
+const ENABLE_LABELING_KEY = 'Enable labeling?';
+const ENABLE_LABELING_VALUE = 'fedcba98765432100123456789abcdeffedcba98765432100123456789abcdef';
 export const FETCH_INTERVAL = 60_000;
 
 export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 1;
