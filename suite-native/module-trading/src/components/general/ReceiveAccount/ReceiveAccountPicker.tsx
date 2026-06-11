@@ -113,7 +113,7 @@ export const ReceiveAccountPicker = ({
     receiveAccount,
     symbol,
     tradingType,
-    noBottomBorder = true,
+    noBottomBorder = false,
     testID,
 }: ReceiveAccountPickerProps) => {
     const { translate } = useTranslate();

@@ -110,7 +110,6 @@ export const SellReceiveMethodPicker = () => {
                     onPress={showSheetConditionally}
                     testID={RECEIVE_METHOD_PICKER_TEST_ID}
                     noCaret={isLoading}
-                    noBottomBorder
                 >
                     <SellReceiveMethodPickerRight
                         isLoading={isLoading}
