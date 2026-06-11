@@ -31,7 +31,7 @@ import { BigNumber } from '@trezor/utils';
 import { calculate, composeStakingTransaction } from './stakeFormActions';
 
 // Rent-aware Solana stake fee calc for `composeStakingTransaction` / `calculate`.
-export const calculateSolanaStakeTransaction = (
+const calculateSolanaStakeTransaction = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -72,7 +72,7 @@ export const calculateSolanaStakeTransaction = (
 };
 
 // Merges solanaTxMeta (rent, fee) into each fee level for device review amounts.
-export const applySolanaTxMeta = (
+const applySolanaTxMeta = (
     composed: PrecomposedLevels,
     solanaTxMeta: SolanaTxMeta,
 ): PrecomposedLevels =>
@@ -102,7 +102,7 @@ export const applySolanaTxMeta = (
     );
 
 // Turns a prepared staking transaction into a message and asks the backend to estimate its fee.
-export const estimateSolanaStakeFee = async (
+const estimateSolanaStakeFee = async (
     symbol: NetworkSymbol,
     txData?: PrepareStakeSolTxResponse,
 ): Promise<EstimatedFee> => {
