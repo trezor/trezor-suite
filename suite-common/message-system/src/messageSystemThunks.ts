@@ -22,7 +22,7 @@ import {
 } from './messageSystemSelectors';
 import { jws as configJwsLocal } from '../files/config.v1';
 
-export const messageSystemPolling = new PollingController();
+const messageSystemPolling = new PollingController();
 
 const getConfigJws = async (forceLocalJws: boolean) => {
     if (forceLocalJws) {
