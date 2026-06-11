@@ -15843,7 +15843,6 @@ __metadata:
   resolution: "@trezor/connect-flow@workspace:packages/connect-flow"
   dependencies:
     "@trezor/connect-common": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

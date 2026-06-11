@@ -12,7 +12,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/connect-common": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/connect-common": "workspace:*"
     }
 }
