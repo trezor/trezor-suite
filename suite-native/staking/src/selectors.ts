@@ -23,7 +23,6 @@ import {
     selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
 } from './cardanoStakingSelectors';
 import {
-    selectEntryPeriodRemainingInDaysByAccountKey,
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
     selectEthereumClaimableAmountByAccountKey,
@@ -52,7 +51,7 @@ import { type NativeStakingRootState } from './types';
 // create empty array in advance so it will be always same on shallow comparison
 const EMPTY_ACCOUNT_ARRAY: Account[] = [];
 
-export const selectDeviceAccountsWithStaking = (
+const selectDeviceAccountsWithStaking = (
     state: NativeStakingRootState,
     symbol: NetworkSymbol,
 ): Account[] => {
@@ -367,4 +366,4 @@ export const selectEntryPeriodInDaysBySymbol = (
     }
 };
 
-export { selectEntryPeriodRemainingInDaysByAccountKey, selectUnstakingPeriodInDaysBySymbol };
+export { selectUnstakingPeriodInDaysBySymbol };
