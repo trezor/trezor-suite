@@ -29,7 +29,7 @@ export interface FlagsState {
     hasSeenDisconnectTooltip: boolean;
 }
 
-export type FlagsRootState = { flags: FlagsState };
+type FlagsRootState = { flags: FlagsState };
 
 export const flagsInitialState: FlagsState = {
     initialRun: true,
