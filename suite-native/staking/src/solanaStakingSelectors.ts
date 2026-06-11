@@ -16,7 +16,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { type NativeStakingRootState } from './types';
 
-export const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
 
 export const selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],
