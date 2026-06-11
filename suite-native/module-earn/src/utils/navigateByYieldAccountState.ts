@@ -1,3 +1,4 @@
+import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     type RootStackParamList,
@@ -18,6 +19,8 @@ export const navigateByYieldAccountState = (
     account: Account,
     item: StablecoinYieldNavigationItem,
     navigate: YieldNavigateFn,
+    isFirmwareSupported: (flowType: YieldFlowType) => boolean,
+    showFirmwareUpdateAlert: () => void,
 ) => {
     const { yieldId, underlyingTokenContract, receiptTokenContract } = item;
 
@@ -32,6 +35,12 @@ export const navigateByYieldAccountState = (
     }
 
     if (hasPositiveContractTokenBalance(account, underlyingTokenContract)) {
+        if (!isFirmwareSupported('deposit')) {
+            showFirmwareUpdateAlert();
+
+            return;
+        }
+
         navigate(RootStackRoutes.YieldNavigator, {
             screen: YieldStackRoutes.HowYieldWorks,
             params: {

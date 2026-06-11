@@ -18,6 +18,7 @@ import {
 
 import { useEarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { type StablecoinYieldPromoNavigationItem } from '../types';
+import { useStablecoinYieldFirmwareUpdateAlert } from './useStablecoinYieldFirmwareUpdateAlert';
 import { navigateByYieldAccountState } from '../utils/navigateByYieldAccountState';
 
 type UseStablecoinYieldPromoNavigationReturn = {
@@ -40,6 +41,8 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
+    const { isFirmwareSupported, showFirmwareUpdateAlert } =
+        useStablecoinYieldFirmwareUpdateAlert();
 
     const {
         bottomSheetRef: chooseAccountSheetRef,
@@ -70,11 +73,23 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             }
 
             closeChooseAccountModal();
-            navigateByYieldAccountState(account, chosenYieldItem, navigation.navigate);
+            navigateByYieldAccountState(
+                account,
+                chosenYieldItem,
+                navigation.navigate,
+                isFirmwareSupported,
+                showFirmwareUpdateAlert,
+            );
             setChosenAccounts([]);
             setChosenYieldItem(null);
         },
-        [chosenYieldItem, closeChooseAccountModal, navigation.navigate],
+        [
+            chosenYieldItem,
+            closeChooseAccountModal,
+            isFirmwareSupported,
+            navigation.navigate,
+            showFirmwareUpdateAlert,
+        ],
     );
 
     const handleEnableNetworkPress = useCallback(() => {
@@ -130,7 +145,13 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
 
             const singleAccount = accountsForNetwork[0];
             if (accountsForNetwork.length === 1 && singleAccount) {
-                navigateByYieldAccountState(singleAccount, item, navigation.navigate);
+                navigateByYieldAccountState(
+                    singleAccount,
+                    item,
+                    navigation.navigate,
+                    isFirmwareSupported,
+                    showFirmwareUpdateAlert,
+                );
 
                 return;
             }
@@ -141,11 +162,13 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         },
         [
             accounts,
+            isFirmwareSupported,
             isPortfolioTrackerDevice,
             navigation.navigate,
             openChooseAccountModal,
             openEnableNetworkModal,
             openPortfolioTrackerSheet,
+            showFirmwareUpdateAlert,
         ],
     );
 
