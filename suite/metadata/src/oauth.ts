@@ -45,7 +45,7 @@ const oauthResponseMessage = z
         }),
     );
 
-export type OAuthResponseMessage = z.infer<typeof oauthResponseMessage>;
+type OAuthResponseMessage = z.infer<typeof oauthResponseMessage>;
 
 const oauthResult = oauthResponseMessage.transform(value => {
     const searchOrHash = 'search' in value ? value.search : value.hash;

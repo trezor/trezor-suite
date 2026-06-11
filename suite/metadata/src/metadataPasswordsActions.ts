@@ -19,7 +19,7 @@ import { type MetadataRootState, selectSelectedProviderForPasswords } from './me
 import * as metadataUtils from './metadataUtils';
 import { type FetchIntervalTrackingId } from './metadataUtils';
 
-export const fetchPasswords =
+const fetchPasswords =
     (keys: LabelableEntityKeys) =>
     async (dispatch: Dispatch, _getState: () => MetadataRootState) => {
         const provider = dispatch(

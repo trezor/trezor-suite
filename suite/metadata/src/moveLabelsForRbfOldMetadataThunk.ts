@@ -12,7 +12,7 @@ import * as METADATA from './metadataConstants';
 import * as metadataLabelingActions from './metadataLabelingActions';
 import { selectLabelingDataForAccount } from './metadataReducer';
 
-export type DeleteAllOutputLabelsParams = {
+type DeleteAllOutputLabelsParams = {
     labels: AccountLabels['outputLabels']['labels'];
     dispatch: Dispatch;
     accountKey: AccountKey;
@@ -21,7 +21,7 @@ export type DeleteAllOutputLabelsParams = {
     txid: string;
 };
 
-export const deleteDanglingLabels = async ({
+const deleteDanglingLabels = async ({
     labels,
     dispatch,
     accountKey,
@@ -54,7 +54,7 @@ type MoveLabelToNewTransactionParams = {
     networkSymbol: NetworkSymbol;
 };
 
-export const copyLabelToNewTransaction = async ({
+const copyLabelToNewTransaction = async ({
     accountOutputLabels,
     dispatch,
     accountKey,
@@ -80,7 +80,7 @@ export const copyLabelToNewTransaction = async ({
     }
 };
 
-export type MoveLabelsForRbfOldMetadataThunkParams = {
+type MoveLabelsForRbfOldMetadataThunkParams = {
     accountKey: AccountKey;
     data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];
     newTxid: string;

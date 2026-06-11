@@ -36,7 +36,7 @@ import {
 } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
 
-export const getLabelableEntities =
+const getLabelableEntities =
     (deviceState: StaticSessionId) => (_dispatch: Dispatch, getState: () => MetadataRootState) =>
         selectLabelableEntities(getState(), deviceState);
 
