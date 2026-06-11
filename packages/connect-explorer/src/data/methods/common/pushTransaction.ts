@@ -1,4 +1,4 @@
-import { select } from './common';
+import { select } from '../bitcoin/common';
 
 export default [
     {

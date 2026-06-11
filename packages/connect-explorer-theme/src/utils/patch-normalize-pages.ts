@@ -3,6 +3,10 @@ import { type Folder, type MdxFile, type PageMapItem } from 'nextra/types';
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
+const FOLDER_TITLE_OVERRIDES: Record<string, string> = {
+    common: 'Common Methods',
+};
+
 const replaceMeta = (
     item: PageMapItem,
     mapping: (page: MdxFile | Folder<PageMapItem>) => [string, string],
@@ -38,7 +42,10 @@ export const patchedNormalizePages = (
     );
     if (methodsFolder?.kind === 'Folder') {
         // Methods folders should have capitalized names
-        replaceMeta(methodsFolder, page => [page.name, capitalize(page.name)]);
+        replaceMeta(methodsFolder, page => [
+            page.name,
+            FOLDER_TITLE_OVERRIDES[page.name] ?? capitalize(page.name),
+        ]);
         // Methods sub items should have original names
         methodsFolder?.children.forEach(folder => {
             replaceMeta(folder, page => [page.name, page.name]);

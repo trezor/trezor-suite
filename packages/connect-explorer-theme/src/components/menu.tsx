@@ -144,8 +144,13 @@ export function Menu({
             value: item.name,
         }));
     const activeCoinItems = methodsItems?.find(item => item.name === activeCoin)?.children;
+    const commonMethodsItems =
+        methodsItems?.find(item => item.kind === 'Folder' && item.name === 'common')?.children ??
+        [];
     const otherMethods = methodsItems?.filter(
-        item => item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name),
+        item =>
+            (item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name)) &&
+            item.name !== 'common',
     );
     const otherFolders = directories.filter(
         item => item.kind === 'Folder' && item.name !== 'methods',
@@ -189,6 +194,12 @@ export function Menu({
             </SelectWrapper>
             <MenuInner
                 directories={activeCoinItems ?? []}
+                anchors={anchors}
+                onlyCurrentDocs={onlyCurrentDocs}
+            />
+            <MenuCategory>Common Methods</MenuCategory>
+            <MenuInner
+                directories={commonMethodsItems}
                 anchors={anchors}
                 onlyCurrentDocs={onlyCurrentDocs}
             />
