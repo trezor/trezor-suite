@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode } from 'react';
 import { View } from 'react-native';
 import Animated, {
     type EntryExitAnimationFunction,
@@ -19,6 +19,8 @@ import { FilterCountBadge } from './FilterCountBadge';
 type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
+    isSearchActive: boolean;
+    onSearchActiveChange: (value: boolean) => void;
     flowType?: AddCoinFlowType;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
@@ -37,6 +39,8 @@ const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
 export const SearchableAccountsListHeader = ({
     title,
     onSearchInputChange,
+    isSearchActive,
+    onSearchActiveChange,
     flowType,
     closeActionType,
     closeAction,
@@ -46,10 +50,8 @@ export const SearchableAccountsListHeader = ({
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
 
-    const [isSearchActive, setIsSearchActive] = useState(false);
-
     const handleHideFilter = () => {
-        setIsSearchActive(false);
+        onSearchActiveChange(false);
         onSearchInputChange('');
     };
 
@@ -97,7 +99,7 @@ export const SearchableAccountsListHeader = ({
                             )}
                             <IconButton
                                 iconName="magnifyingGlass"
-                                onPress={() => setIsSearchActive(true)}
+                                onPress={() => onSearchActiveChange(true)}
                                 intent="neutral"
                                 priority="secondary"
                             />
