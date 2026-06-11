@@ -6,6 +6,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    ETH_SPEED_UP_TX_MULTIPLIER,
     ETH_TRANSFER_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
@@ -14,6 +15,7 @@ import {
     AddressDisplayOptions,
     type ComposeActionContext,
     type ExternalOutput,
+    type FeeInfo,
     type PrecomposedLevels,
     type PrecomposedTransaction,
     type RbfTransactionParams,
@@ -28,10 +30,12 @@ import {
     convertAmountUnitsToSubunits,
     getAccountIdentity,
     getApprovalComposeOutput,
+    getConvertedOrDefaultFeeInfo,
     getCryptoMaxAmountWithReserve,
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
+    isEip1559,
     isEvmApprovalTx,
     isPending,
     isSentTransaction,
@@ -51,6 +55,63 @@ import {
 } from './sendFormTypes';
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
+
+/**
+ * Returns fee info with levels bumped above the original transaction's gas price,
+ * so that the replacement transaction will be accepted by the mempool.
+ */
+export const getEthereumRbfFeeInfo = (
+    feeInfo: FeeInfo,
+    originalGasParams: { gasPrice?: string; maxFeePerGas?: string; maxPriorityFeePerGas?: string },
+): FeeInfo => {
+    const convertedFeeInfo = getConvertedOrDefaultFeeInfo({ networkType: 'ethereum', feeInfo });
+    const { levels } = convertedFeeInfo;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstLevel: (typeof levels)[number] = levels[0];
+
+    if (isEip1559(originalGasParams) && isEip1559(firstLevel)) {
+        const currentMaxFee = new BigNumber(originalGasParams.maxFeePerGas!);
+        const currentMaxPriorityFee = new BigNumber(originalGasParams.maxPriorityFeePerGas || '0');
+        const highLevel = levels.find(l => l.label === 'high') ?? firstLevel;
+
+        const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .toString();
+        const newMaxPriorityFeePerGas = BigNumber.maximum(
+            currentMaxPriorityFee,
+            highLevel.maxPriorityFeePerGas ?? 0,
+        )
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .toString();
+
+        return {
+            ...convertedFeeInfo,
+            levels: [
+                {
+                    ...highLevel,
+                    label: 'normal' as const,
+                    maxFeePerGas: newMaxFeePerGas,
+                    maxPriorityFeePerGas: newMaxPriorityFeePerGas,
+                },
+            ],
+        };
+    }
+
+    const currentGasPrice = new BigNumber(
+        originalGasParams.gasPrice || originalGasParams.maxFeePerGas || '0',
+    );
+    const minFeeFromNetwork = new BigNumber(firstLevel.feePerUnit);
+    const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(convertedFeeInfo.minFee));
+
+    return {
+        ...convertedFeeInfo,
+        levels: convertedFeeInfo.levels.map(level => ({
+            ...level,
+            feePerUnit: fee.toString(),
+        })),
+        minFee: currentGasPrice.plus(convertedFeeInfo.minFee).toNumber(),
+    };
+};
 
 export const calculate = (
     availableBalance: string,

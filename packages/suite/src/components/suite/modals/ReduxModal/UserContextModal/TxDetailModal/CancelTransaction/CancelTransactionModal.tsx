@@ -6,6 +6,7 @@ import {
     type ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
     composeSendFormTransactionFeeLevelsThunk,
+    getEthereumRbfFeeInfo,
     selectConvertedNetworkFeeInfo,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
@@ -100,7 +101,7 @@ export const CancelTransactionModal = ({
             dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState,
-                    composeContext: { account, network, feeInfo },
+                    composeContext: { account, network, feeInfo: getEthereumRbfFeeInfo(feeInfo, rbfParams) },
                 }),
             )
                 .unwrap()

@@ -10,6 +10,7 @@ import {
     type SignTransactionTimeoutError,
     composeSendFormTransactionFeeLevelsThunk,
     enhancePrecomposedTransactionThunk,
+    getEthereumRbfFeeInfo,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
@@ -309,10 +310,11 @@ export const cancelEvmTransactionNativeThunk = createThunk<
 
         dispatch(sendFormActions.storeDraft({ accountKey, formState }));
 
+        const rbfFeeInfo = getEthereumRbfFeeInfo(feeInfo, rbfParams);
         const response = await dispatch(
             composeSendFormTransactionFeeLevelsThunk({
                 formState,
-                composeContext: { account, network, feeInfo },
+                composeContext: { account, network, feeInfo: rbfFeeInfo },
             }),
         );
 
