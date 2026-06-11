@@ -37,7 +37,7 @@ export const graphPersistTransform = createTransform<GraphState, GraphState>(
     { whitelist: ['graph'] },
 );
 
-export const graphSlice = createSlice({
+const graphSlice = createSlice({
     name: 'graph',
     initialState: graphInitialState,
     reducers: {

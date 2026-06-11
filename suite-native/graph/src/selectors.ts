@@ -18,7 +18,7 @@ import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;
 
-export const createMemoizedSelector = createWeakMapSelector.withTypes<GraphCommonRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<GraphCommonRootState>();
 
 export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): AccountItem[] => {
     const accounts = selectDeviceMainnetAccounts(state);
