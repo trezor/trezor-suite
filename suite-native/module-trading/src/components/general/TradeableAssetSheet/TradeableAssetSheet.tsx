@@ -45,11 +45,6 @@ export const TradeableAssetSheet = memo(
         flashListKey,
         testID,
     }: TradeableAssetsSheetProps) => {
-        const onAssetSelectCallback = (asset: TradeableAsset) => {
-            onAssetSelect(asset);
-            onClose(hideKeyboardOnAssetSelect);
-        };
-
         const listData = useFavouriteAssetsSectionList(assets);
 
         const headerTestID = testID ? `${testID}/header` : undefined;
@@ -75,7 +70,12 @@ export const TradeableAssetSheet = memo(
                 handleComponent={renderHandle}
                 data={listData}
                 keyExtractor={keyExtractor}
-                renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
+                renderItem={(item, config, { closeSheet }) =>
+                    renderItem(item, config, selectedAsset => {
+                        onAssetSelect(selectedAsset);
+                        closeSheet(hideKeyboardOnAssetSelect);
+                    })
+                }
                 flashListKey={flashListKey}
                 noSingletonSectionHeader
                 testID={testID}

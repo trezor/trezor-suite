@@ -42,11 +42,6 @@ const renderItem = (
 
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
-        const onAssetSelectCallback = (asset: TradeableAsset, account: Account) => {
-            onAssetSelect(asset, account);
-            onClose(false);
-        };
-
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
             selectAccountsWithTokensToSellSectionCondensedListByTradingType(state, tradingType),
         );
@@ -82,7 +77,12 @@ export const MyAssetSheet = memo(
                 handleComponent={renderHandle}
                 data={filteredSections}
                 keyExtractor={keyExtractor}
-                renderItem={(asset, config) => renderItem(asset, config, onAssetSelectCallback)}
+                renderItem={(asset, config, { closeSheet }) =>
+                    renderItem(asset, config, (selectedAsset: TradeableAsset, account: Account) => {
+                        onAssetSelect(selectedAsset, account);
+                        closeSheet(false);
+                    })
+                }
                 renderSectionHeader={(_label, config) => {
                     const sectionIndex = filteredSections.findIndex(
                         section => section.sectionData.key === config.sectionData.key,

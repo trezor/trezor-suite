@@ -58,12 +58,6 @@ export const CountrySubdivisionSheet = memo(
             [setFilterValue, translate, searchInputTestId],
         );
 
-        const onSubdivisionSelectCallback = (subdivision: TradingCountrySubdivisionOption) => {
-            Keyboard.dismiss();
-            onSubdivisionSelect(subdivision);
-            onClose();
-        };
-
         const listData = useMemo(
             () => [
                 {
@@ -93,10 +87,14 @@ export const CountrySubdivisionSheet = memo(
                     />
                 }
                 handleComponent={renderHandle}
-                renderItem={item => (
+                renderItem={(item, _config, { closeSheet }) => (
                     <CountrySubdivisionListItem
                         {...item}
-                        onPress={() => onSubdivisionSelectCallback(item)}
+                        onPress={() => {
+                            Keyboard.dismiss();
+                            onSubdivisionSelect(item);
+                            closeSheet();
+                        }}
                     />
                 )}
                 data={listData}
