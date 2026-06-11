@@ -41,7 +41,6 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                 <BuyFiatCurrencyPicker />
             </TradingCardSection>
             <TradingCardSection
-                bottomBorder={!!asset}
                 testID={`${BUY_CARD_TEST_ID}/cryptoSection`}
                 title={<Translation id="moduleTrading.selectCoin.title" />}
                 titleAction={
