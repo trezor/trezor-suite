@@ -20,7 +20,7 @@ const ACCOUNT_TABS = [
     'wallet-staking',
 ];
 
-export const ROUTER_PREFIX = 'router';
+const ROUTER_PREFIX = 'router';
 
 export type RouterState = RouterPath & {
     loaded: boolean;
@@ -60,7 +60,7 @@ const initialState: RouterState = {
     },
 };
 
-export const routerSlice = createSlice({
+const routerSlice = createSlice({
     name: ROUTER_PREFIX,
     initialState: initialState as RouterState,
     reducers: {

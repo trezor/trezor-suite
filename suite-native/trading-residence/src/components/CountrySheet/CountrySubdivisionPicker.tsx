@@ -13,7 +13,7 @@ import { useCountrySubdivisionPickerControls } from './CountrySubdivisionPickerC
 import { CountrySubdivisionSheet } from './CountrySubdivisionSheet';
 import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
 
-export type CountrySubdivisionPickerProps = {
+type CountrySubdivisionPickerProps = {
     testID: string;
     noBottomBorder?: boolean;
 };

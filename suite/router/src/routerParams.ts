@@ -21,7 +21,7 @@ const accountTypes = [
     'ledger',
 ] as const satisfies readonly AccountType[];
 
-export const earnParamsSchema = yup.object({
+const earnParamsSchema = yup.object({
     symbol: yup.mixed<NetworkSymbol>().required(),
     accountIndex: yup.number().required(),
     accountType: yup.mixed<AccountType>().oneOf(accountTypes).required(),
@@ -39,7 +39,7 @@ export function parseEarnParams(params: unknown): EarnParams | undefined {
     }
 }
 
-export const dashboardParamsSchema = yup.object({
+const dashboardParamsSchema = yup.object({
     networkSymbol: yup.mixed<NetworkSymbol>().notRequired(),
     modal: yup.mixed<NonNullable<GlobalSendReceiveType>>().oneOf(['send', 'receive']).required(),
 });

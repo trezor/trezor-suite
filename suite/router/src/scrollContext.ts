@@ -1,6 +1,6 @@
 import { type RefObject, createContext } from 'react';
 
-export type ScrollContextPayload = {
+type ScrollContextPayload = {
     scrollRef: RefObject<HTMLDivElement | null>;
     topOffset: number;
 };

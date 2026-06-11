@@ -4,7 +4,7 @@ import type { CommonServices } from '@suite-common/redux-utils';
 
 import type { RouterPath } from './router';
 
-export type LocationPushState = Record<string, unknown>;
+type LocationPushState = Record<string, unknown>;
 
 // This is a Listener from history package
 type Listener = (_: { location: RouterPath; action: 'PUSH' | 'POP' | 'REPLACE' }) => void;

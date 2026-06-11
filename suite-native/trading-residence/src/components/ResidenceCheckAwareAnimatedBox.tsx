@@ -5,7 +5,7 @@ import { AnimatedBox, type BoxProps } from '@suite-native/atoms';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-export type ResidenceCheckAwareAnimatedBoxProps = Omit<BoxProps, 'style'>;
+type ResidenceCheckAwareAnimatedBoxProps = Omit<BoxProps, 'style'>;
 
 const pickerStyle = prepareNativeStyle<{ hasBorder: boolean }>(
     ({ borders, colors }, { hasBorder }) => ({

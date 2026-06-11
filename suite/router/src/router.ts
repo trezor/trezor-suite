@@ -16,8 +16,8 @@ import {
 } from './routes';
 
 export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
-export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
-export type HashString = '' | `#${string}`; // in format `#/alpha/beta/gamma`
+type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
+type HashString = '' | `#${string}`; // in format `#/alpha/beta/gamma`
 
 // NOTE: this is basically a bit stricter Path from history package (file://./../../../node_modules/history/index.d.ts),
 // but it is satisfied by window.location as well
