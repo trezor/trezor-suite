@@ -29,7 +29,7 @@ export const asCryptoBaseCurrencyCode = (value: string) => value as CryptoBaseCu
 export type Timestamp = number & Branded<'Timestamp'>;
 export const asTimestamp = (number: number) => number as Timestamp;
 
-export type RateType = 'current' | 'lastWeek' | 'historic';
+type RateType = 'current' | 'lastWeek' | 'historic';
 export type RateTypeWithoutHistoric = Exclude<RateType, 'historic'>;
 
 export type Rate = {

@@ -2,13 +2,10 @@ import { type AccountType } from '@suite-common/wallet-config';
 import {
     type Account,
     type Output,
-    type PoolsResponse,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalCardano,
-    type StakePool,
 } from '@suite-common/wallet-types';
-import { CARDANO, type CardanoCertificate, type CardanoOutput, PROTO } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { CARDANO, type CardanoCertificate, PROTO } from '@trezor/connect';
 
 import {
     convertAmountSubunitsToUnits,
@@ -39,9 +36,6 @@ export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
 export const getAddressType = () => PROTO.CardanoAddressType.BASE;
 
 export const getNetworkId = () => CARDANO.NETWORK_IDS.mainnet;
-
-export const getNetworkName = (accountSymbol: string): 'preview' | 'mainnet' =>
-    accountSymbol.toLowerCase() === 'ada' ? 'mainnet' : 'preview';
 
 export const getUnusedChangeAddress = (account: Pick<Account, 'addresses'>) => {
     if (!account.addresses) return;
@@ -96,22 +90,6 @@ export const getShortFingerprint = (fingerprint: string) => {
     return `${firstPart}…${lastPart}`;
 };
 
-export const parseAsset = (
-    hex: string,
-): {
-    policyId: string;
-    assetNameInHex: string;
-} => {
-    const policyIdSize = 56;
-    const policyId = hex.slice(0, policyIdSize);
-    const assetNameInHex = hex.slice(policyIdSize);
-
-    return {
-        policyId,
-        assetNameInHex,
-    };
-};
-
 export const getDelegationCertificates = (
     stakingPath: string,
     poolHex: string | undefined,
@@ -154,32 +132,11 @@ export const getVotingCertificates = (
     return result;
 };
 
-export const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =>
-    new BigNumber(pool.live_stake)
-        .plus(additionalStake ?? '0')
-        .div(pool.saturation)
-        .toNumber() > 0.8;
-
-export const getStakePoolForDelegation = (trezorPools: PoolsResponse, accountBalance: string) => {
-    let pool = trezorPools.next;
-    if (isPoolOverSaturated(pool, accountBalance)) {
-        const { pools } = trezorPools;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstPool: (typeof pools)[number] = pools[0];
-        pool = firstPool;
-    }
-
-    return pool;
-};
 // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
 export const isCardanoTx = (
     account: Account,
     _tx: PrecomposedTransactionFinalCardano | PrecomposedTransactionFinal,
 ): _tx is PrecomposedTransactionFinalCardano => account.networkType === 'cardano';
-
-export const isCardanoExternalOutput = (
-    output: CardanoOutput,
-): output is Extract<CardanoOutput, 'address'> => 'address' in output;
 
 export const formatMaxOutputAmount = (
     maxAmount: string | undefined,
