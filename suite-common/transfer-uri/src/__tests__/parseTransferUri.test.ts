@@ -3,75 +3,67 @@ import { err, ok } from '@trezor/type-utils';
 import { parseTransferUri } from '../parseTransferUri';
 
 describe(parseTransferUri.name, () => {
-    it('errors with INVALID_URI for a plain address (not a URI)', () => {
-        expect(parseTransferUri('bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq')).toEqual(
-            err({ type: 'INVALID_URI' }),
+    // --- ERC-681 dispatch ---
+
+    it('parses an ERC-681 token transfer (recipient, token, tokenAmount)', () => {
+        expect(
+            parseTransferUri(
+                'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=1000000',
+            ),
+        ).toEqual(
+            ok({
+                format: 'erc681',
+                scheme: 'ethereum',
+                networkSymbol: undefined,
+                address: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+                token: '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7',
+                tokenAmount: '1000000',
+            }),
         );
     });
 
-    it('parses a bare bitcoin URI', () => {
-        expect(parseTransferUri('bitcoin:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq')).toEqual(
+    it('parses a plain ERC-681 ETH receive, resolving scheme from the chainId', () => {
+        expect(
+            parseTransferUri('ethereum:0x8e23ee67d1332ad560396262c48ffbb01f93d052@8453'),
+        ).toEqual(
             ok({
+                format: 'erc681',
+                scheme: 'base',
+                networkSymbol: 'base',
+                address: '0x8e23ee67d1332ad560396262c48ffbb01f93d052',
+                token: undefined,
+                tokenAmount: undefined,
+            }),
+        );
+    });
+
+    // --- BIP-321 delegation ---
+
+    it('delegates BIP-321 URIs to the bip321 parser (amount, label, message)', () => {
+        expect(
+            parseTransferUri(
+                'bitcoin:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq?amount=0.0123&label=Alice',
+            ),
+        ).toEqual(
+            ok({
+                format: 'bip321',
                 scheme: 'bitcoin',
                 address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                amount: undefined,
-                label: undefined,
+                amount: '0.0123',
+                label: 'Alice',
                 message: undefined,
             }),
         );
     });
 
-    it('parses amount, label and message (BIP-321 params)', () => {
-        expect(
-            parseTransferUri(
-                'bitcoin:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq?amount=0.0123&label=Alice&message=Donation%20for%20project',
-            ),
-        ).toEqual(
-            ok({
-                scheme: 'bitcoin',
-                address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-                amount: '0.0123',
-                label: 'Alice',
-                message: 'Donation for project',
-            }),
-        );
-    });
-
-    it('keeps the amount as a string to preserve precision', () => {
-        expect(parseTransferUri('bitcoin:bc1qaddr?amount=0.00000001')).toMatchObject({
-            success: true,
-            payload: { amount: '0.00000001' },
-        });
-    });
-
-    it('ignores a zero or negative amount', () => {
-        expect(parseTransferUri('bitcoin:bc1qaddr?amount=0')).toMatchObject({
-            success: true,
-            payload: { amount: undefined },
-        });
-    });
-
-    it('parses the address from the host form (bitcoin://addr)', () => {
-        expect(parseTransferUri('bitcoin://bc1qaddr?amount=1')).toMatchObject({
-            success: true,
-            payload: { address: 'bc1qaddr', amount: '1' },
-        });
-    });
-
-    it('errors with UNKNOWN_SCHEME for an unknown scheme', () => {
+    it('errors with UNKNOWN_SCHEME for an unrecognized scheme', () => {
         expect(parseTransferUri('mailto:someone@example.com')).toEqual(
             err({ type: 'UNKNOWN_SCHEME', scheme: 'mailto' }),
         );
     });
 
-    it('errors with INVALID_URI when amount is repeated', () => {
-        expect(parseTransferUri('bitcoin:bc1qaddr?amount=1&amount=2')).toEqual(
-            err({ type: 'INVALID_URI' }),
-        );
-    });
-
-    it('errors with INVALID_URI when label is repeated', () => {
-        expect(parseTransferUri('bitcoin:bc1qaddr?label=Alice&label=Bob')).toEqual(
+    it('errors with INVALID_URI for a plain address (not a URI)', () => {
+        expect(parseTransferUri('bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq')).toEqual(
             err({ type: 'INVALID_URI' }),
         );
     });
