@@ -108,6 +108,42 @@ describe('extractUrlsFromText', () => {
         expect(urls).toEqual([]);
     });
 
+    it('should match url with a space before the dot', () => {
+        const text = 'Claim rewards at vanity-eth .net';
+
+        const { textParts, urls } = extractUrlsFromText(text);
+
+        expect(textParts).toEqual(['Claim rewards at ']);
+        expect(urls).toEqual(['vanity-eth .net']);
+    });
+
+    it('should match url with a space after the dot', () => {
+        const text = 'Claim rewards at vanity-eth. net';
+
+        const { textParts, urls } = extractUrlsFromText(text);
+
+        expect(textParts).toEqual(['Claim rewards at ']);
+        expect(urls).toEqual(['vanity-eth. net']);
+    });
+
+    it('should match url with spaces around the dot', () => {
+        const text = 'Claim rewards at vanity-eth . net';
+
+        const { textParts, urls } = extractUrlsFromText(text);
+
+        expect(textParts).toEqual(['Claim rewards at ']);
+        expect(urls).toEqual(['vanity-eth . net']);
+    });
+
+    it('should match url with a non-breaking space before the dot', () => {
+        const text = 'Claim rewards at vanity-eth\u00a0.net';
+
+        const { textParts, urls } = extractUrlsFromText(text);
+
+        expect(textParts).toEqual(['Claim rewards at ']);
+        expect(urls).toEqual(['vanity-eth\u00a0.net']);
+    });
+
     it('should match two urls next to each other', () => {
         const text = 'Visit trezor.io ledger.com';
 
