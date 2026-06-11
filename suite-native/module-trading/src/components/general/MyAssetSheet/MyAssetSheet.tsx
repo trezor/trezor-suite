@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type TradingType } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
 import {
     type CombinedSelectorsRootState,
@@ -61,16 +62,16 @@ export const MyAssetSheet = memo(
         const headerTestID = testID ? `${testID}/header` : undefined;
 
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <MyAssetSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     onFilterChange={setFilterValue}
                     onSelectedNetworkFilter={setFilterSymbol}
                     availableNetworks={availableNetworks}
                     testID={headerTestID}
                 />
             ),
-            [onClose, setFilterValue, setFilterSymbol, availableNetworks, headerTestID],
+            [setFilterValue, setFilterSymbol, availableNetworks, headerTestID],
         );
 
         return (
