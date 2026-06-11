@@ -22,6 +22,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
+import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
 import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 import {
     type StablecoinYieldClaimSummary,
@@ -63,6 +64,8 @@ export const EarnDepositsCard = ({
         stablecoinYieldActiveItems,
     });
     const { navigateToStakingDetail } = useStakingDetailNavigation();
+    const { isFirmwareSupported, showFirmwareUpdateAlert } =
+        useStablecoinYieldFirmwareUpdateAlert();
     const {
         bottomSheetRef: stakingSheetRef,
         closeModal: closeStakingSheet,
@@ -92,6 +95,12 @@ export const EarnDepositsCard = ({
     );
 
     const handleStablecoinYieldClaimRewardsPress = useCallback(() => {
+        if (!isFirmwareSupported('claim')) {
+            showFirmwareUpdateAlert();
+
+            return;
+        }
+
         if (stablecoinYieldClaimSummaries.length === 1) {
             const claimReward = stablecoinYieldClaimSummaries[0];
 
@@ -105,7 +114,9 @@ export const EarnDepositsCard = ({
         openStablecoinYieldClaimRewardsSheet();
     }, [
         handleStablecoinYieldClaimRewardPress,
+        isFirmwareSupported,
         openStablecoinYieldClaimRewardsSheet,
+        showFirmwareUpdateAlert,
         stablecoinYieldClaimSummaries,
     ]);
 

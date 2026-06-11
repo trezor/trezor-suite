@@ -1882,6 +1882,12 @@ export const messages = {
                 deposited: 'Deposited',
                 depositMore: 'Deposit more',
                 withdraw: 'Withdraw',
+                firmwareUpdateAlert: {
+                    title: 'Firmware update required',
+                    description: 'Update firmware on the device {name} to use {featureName}.',
+                    primaryButtonTitle: 'Update',
+                    secondaryButtonTitle: 'Not now',
+                },
                 apyBreakdown: {
                     apyLabel: '{apy} APY',
                     autoCompounded: 'Automatically added and compounded.',

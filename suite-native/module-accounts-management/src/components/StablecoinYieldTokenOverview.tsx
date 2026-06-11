@@ -24,7 +24,10 @@ import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useResolvedYieldFlowData } from '@suite-native/module-earn';
+import {
+    useResolvedYieldFlowData,
+    useStablecoinYieldFirmwareUpdateAlert,
+} from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -48,6 +51,8 @@ export const StablecoinYieldTokenOverview = ({
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
+    const { isFirmwareSupported, showFirmwareUpdateAlert } =
+        useStablecoinYieldFirmwareUpdateAlert();
     const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
     const { account, apy, resolutionStatus, depositedSharesAmount, vault } =
         useResolvedYieldFlowData({
@@ -88,6 +93,12 @@ export const StablecoinYieldTokenOverview = ({
             return;
         }
 
+        if (!isFirmwareSupported('deposit')) {
+            showFirmwareUpdateAlert();
+
+            return;
+        }
+
         const underlyingTokenContract = toTokenAddress(vault.token.address);
 
         navigation.navigate(RootStackRoutes.YieldNavigator, {
@@ -98,9 +109,15 @@ export const StablecoinYieldTokenOverview = ({
                 yieldId: vault.id,
             },
         });
-    }, [accountKey, navigation, vault]);
+    }, [accountKey, isFirmwareSupported, navigation, showFirmwareUpdateAlert, vault]);
 
     const handleWithdrawPress = useCallback(() => {
+        if (!isFirmwareSupported('withdraw')) {
+            showFirmwareUpdateAlert();
+
+            return;
+        }
+
         navigation.navigate(RootStackRoutes.YieldNavigator, {
             screen: YieldStackRoutes.YieldWithdraw,
             params: {
@@ -108,7 +125,7 @@ export const StablecoinYieldTokenOverview = ({
                 tokenContract,
             },
         });
-    }, [accountKey, navigation, tokenContract]);
+    }, [accountKey, isFirmwareSupported, navigation, showFirmwareUpdateAlert, tokenContract]);
 
     if (resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 
