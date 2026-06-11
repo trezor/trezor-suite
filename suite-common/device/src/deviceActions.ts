@@ -114,7 +114,7 @@ const updateSelectedDevice = createAction(
 );
 
 // Remove button requests for specific device by button request code or all button requests if no code is provided.
-export const removeButtonRequests = createAction(
+const removeButtonRequests = createAction(
     `${DEVICE_MODULE_PREFIX}/removeButtonRequests`,
     (payload: { device?: TrezorDevice; buttonRequestCode?: ButtonRequest['code'] }) => ({
         payload,

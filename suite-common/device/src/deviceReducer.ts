@@ -545,7 +545,7 @@ const removeButtonRequests = (
     );
 };
 
-export const setDeviceAuthenticity = (
+const setDeviceAuthenticity = (
     draft: DeviceReducerState,
     deviceId: TrezorDevice['id'],
     result?: StoredAuthenticateDeviceResult,
