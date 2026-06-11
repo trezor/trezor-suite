@@ -1,6 +1,8 @@
+import type { CoinSymbol } from '@trezor/connect-common';
+
 import { select } from './common';
 
-const examples = {
+const examples: Partial<Record<CoinSymbol, Array<{ amount: string; address: string }>>> = {
     btc: [
         {
             amount: '498066',
@@ -37,7 +39,7 @@ const examples = {
             address: 'XdTw4G5AWW4cogGd7ayybyBNDbuB45UpgH',
         },
     ],
-    zcash: [
+    zec: [
         {
             amount: '20000',
             address: 't1Lv2EguMkaZwvtFQW5pmbUsBw59KfTEhf4',
@@ -62,7 +64,7 @@ export default [
                 value: 'test',
                 affect: 'outputs',
                 data: select.map(v => {
-                    const example = examples[v.value as keyof typeof examples];
+                    const example = examples[v.value];
 
                     return {
                         ...v,

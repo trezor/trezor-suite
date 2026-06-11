@@ -1,3 +1,5 @@
+import type { CoinSymbol } from '@trezor/connect-common';
+
 import { select } from './common';
 
 const name = 'signTransaction';
@@ -38,7 +40,7 @@ const test = {
     ],
 };
 
-const examples = {
+const examples: Partial<Record<CoinSymbol, { inputs: unknown[]; outputs: unknown[] }>> = {
     test,
 };
 
@@ -53,7 +55,7 @@ export default [
                 value: 'test',
                 affect: ['inputs', 'outputs'],
                 data: select.map(v => {
-                    const example = examples[v.value as keyof typeof examples];
+                    const example = examples[v.value];
 
                     return {
                         ...v,
