@@ -5,7 +5,12 @@ import { type PageName } from '@suite/router';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
-import { EarnTronRedirect, EarnTronStake, EarnTronVote } from 'src/views/earn/tron';
+import {
+    EarnTronRedirect,
+    EarnTronStake,
+    EarnTronUnstake,
+    EarnTronVote,
+} from 'src/views/earn/tron';
 import { EarnClaim } from 'src/views/earn/yield/claim';
 import { EarnDeposit } from 'src/views/earn/yield/deposit';
 import { EarnWithdraw } from 'src/views/earn/yield/withdraw';
@@ -47,6 +52,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-tron': EarnTronRedirect,
     'earn-tron-stake': EarnTronStake,
     'earn-tron-vote': EarnTronVote,
+    'earn-tron-unstake': EarnTronUnstake,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 
