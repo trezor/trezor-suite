@@ -24,7 +24,7 @@ import { type CSSColor } from '@trezor/theme';
 
 import { type CryptoIconSize } from './CryptoIcon';
 
-export interface NetworkIconProps {
+interface NetworkIconProps {
     symbol: NetworkSymbol;
     size?: CryptoIconSize | number;
 }

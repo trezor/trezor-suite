@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { type PaymentMethodLogoName, paymentMethodLogos } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-export type PaymentMethodLogoProps = {
+type PaymentMethodLogoProps = {
     paymentMethodLogoName: PaymentMethodLogoName;
     size?: number;
 };
