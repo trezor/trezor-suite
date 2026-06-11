@@ -81,7 +81,7 @@ const extractErrorMessage = (result: unknown): string => {
     return 'Unknown error';
 };
 
-type Augmentation<T extends UiEvent['type']> = T extends 'ui-request_pin'
+export type Augmentation<T extends UiEvent['type']> = T extends 'ui-request_pin'
     ? { send: (pin: string) => void }
     : T extends 'ui-request_passphrase'
       ? { send: (passphrase: string, options?: { save?: boolean }) => void }
@@ -89,7 +89,7 @@ type Augmentation<T extends UiEvent['type']> = T extends 'ui-request_pin'
         ? { confirm: (value: boolean) => void }
         : unknown;
 
-type UiSubProcess = {
+export type UiSubProcess = {
     [E in UiEvent as E['type']]: E &
         Augmentation<E['type']> & {
             cancel: () => void;
@@ -102,7 +102,7 @@ type UiSubProcess = {
 
 // A subprocess is emitted only when a UI event arrives from connect. The call's
 // result/error is not a subprocess — it comes from `toPromise()`.
-type SubProcess = UiSubProcess;
+export type SubProcess = UiSubProcess;
 
 interface Process<TResult> {
     readonly id: string;

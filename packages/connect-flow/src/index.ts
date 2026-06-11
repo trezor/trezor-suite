@@ -1,4 +1,5 @@
 export { createConnect } from './connect';
+export type { SubProcess, UiSubProcess, Augmentation } from './connect';
 export { normalizeError } from './errors';
 export { createConnectService } from './createConnectService';
 export { createProcessGroup } from './processGroup';
