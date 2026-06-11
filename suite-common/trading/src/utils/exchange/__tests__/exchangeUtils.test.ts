@@ -1,10 +1,16 @@
 import { type CryptoId } from 'invity-api';
 
+import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
+
 import {
     getApprovalStatus,
+    getDexEstimationData,
     requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
 } from '../exchangeUtils';
+
+const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
+const DAI_CRYPTO_ID = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId;
 
 describe('requiresTokenApproval', () => {
     it('should return false when no quote is provided', () => {
@@ -45,7 +51,7 @@ describe('requiresTokenApproval', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
-            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            send: USDT_CRYPTO_ID,
         };
         const result = requiresTokenApproval(quote);
         expect(result).toBe(true);
@@ -55,7 +61,7 @@ describe('requiresTokenApproval', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
-            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            send: USDT_CRYPTO_ID,
             status: 'SIGN_DATA' as const,
         };
         const result = requiresTokenApproval(quote);
@@ -66,7 +72,7 @@ describe('requiresTokenApproval', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
-            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            send: USDT_CRYPTO_ID,
             status: 'SIGN_DATA' as const,
             signData: {
                 type: 'slip24',
@@ -81,7 +87,7 @@ describe('requiresTokenApproval', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
-            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            send: USDT_CRYPTO_ID,
             status: 'SIGN_DATA' as const,
             signData: {
                 type: 'eip712-typed-data' as const,
@@ -94,8 +100,6 @@ describe('requiresTokenApproval', () => {
 });
 
 describe('getApprovalStatus', () => {
-    const dexTokenSend = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId;
-
     it('should return null when no quote is provided', () => {
         const result = getApprovalStatus(undefined);
         expect(result).toBe(null);
@@ -106,7 +110,7 @@ describe('getApprovalStatus', () => {
             orderId: 'test-order',
             preapprovedStringAmount: '0.001',
             isDex: true,
-            send: dexTokenSend,
+            send: DAI_CRYPTO_ID,
             status: 'CONFIRM' as const,
         };
         const result = getApprovalStatus(quote);
@@ -118,7 +122,7 @@ describe('getApprovalStatus', () => {
             orderId: 'test-order',
             preapprovedStringAmount: '0.001',
             isDex: true,
-            send: dexTokenSend,
+            send: DAI_CRYPTO_ID,
         };
         const result = getApprovalStatus(quote);
         expect(result).toBe('approved');
@@ -129,7 +133,7 @@ describe('getApprovalStatus', () => {
             orderId: 'test-order',
             preapprovedStringAmount: '0.001',
             isDex: true,
-            send: dexTokenSend,
+            send: DAI_CRYPTO_ID,
             status: 'APPROVAL_REQ' as const,
         };
         const result = getApprovalStatus(quote);
@@ -141,7 +145,7 @@ describe('getApprovalStatus', () => {
             orderId: 'test-order',
             preapprovedStringAmount: '0.001',
             isDex: true,
-            send: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            send: USDT_CRYPTO_ID,
             status: 'APPROVAL_REQ' as const,
         };
         const result = getApprovalStatus(quote);
@@ -153,7 +157,7 @@ describe('getApprovalStatus', () => {
             orderId: 'test-order',
             preapprovedStringAmount: '0',
             isDex: true,
-            send: dexTokenSend,
+            send: DAI_CRYPTO_ID,
         };
         const result = getApprovalStatus(quote);
         expect(result).toBe('needs_approval');
@@ -164,7 +168,7 @@ describe('getApprovalStatus', () => {
             orderId: 'test-order',
             preapprovedStringAmount: undefined,
             isDex: true,
-            send: 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId,
+            send: DAI_CRYPTO_ID,
         };
         const result = getApprovalStatus(quote);
         expect(result).toBe('needs_approval');
@@ -184,7 +188,7 @@ describe('getApprovalStatus', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
-            send: dexTokenSend,
+            send: DAI_CRYPTO_ID,
             status: 'SIGN_DATA' as const,
             signData: {
                 type: 'eip712-typed-data' as const,
@@ -199,7 +203,7 @@ describe('getApprovalStatus', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
-            send: dexTokenSend,
+            send: DAI_CRYPTO_ID,
             status: 'SIGN_DATA' as const,
             signData: {
                 type: 'slip24',
@@ -214,7 +218,7 @@ describe('getApprovalStatus', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
-            send: dexTokenSend,
+            send: DAI_CRYPTO_ID,
             signData: {
                 type: 'eip712-typed-data' as const,
                 data: {},
@@ -255,5 +259,55 @@ describe('tokenSupportsIncreasingAllowance', () => {
     it('should return false for empty string', () => {
         const result = tokenSupportsIncreasingAllowance('');
         expect(result).toBe(false);
+    });
+});
+
+describe('getDexEstimationData', () => {
+    const spender = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
+    const approveData = buildApprovalTransactionData({ spender, amount: '9475047' });
+
+    const buildDexTx = (data: string) => ({
+        from: '0x9cd02a26cd336d0fe784fb7995f6e5c9e3776258',
+        to: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        data,
+        value: '0',
+    });
+
+    it('returns a zero-amount revoke calldata for a needs_revoke quote (USDT with existing allowance)', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: USDT_CRYPTO_ID,
+            preapprovedStringAmount: '0.001',
+            status: 'APPROVAL_REQ' as const,
+            dexTx: buildDexTx(approveData),
+        };
+
+        const result = getDexEstimationData(quote);
+        expect(result).toBe(buildApprovalTransactionData({ spender, amount: '0' }));
+        expect(result).not.toBe(approveData);
+    });
+
+    it('returns dexTx.data unchanged for a needs_increase quote (standard token supports increasing)', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: DAI_CRYPTO_ID,
+            preapprovedStringAmount: '0.001',
+            status: 'APPROVAL_REQ' as const,
+            dexTx: buildDexTx(approveData),
+        };
+
+        expect(getDexEstimationData(quote)).toBe(approveData);
+    });
+
+    it('returns undefined when the quote has no dexTx', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: USDT_CRYPTO_ID,
+        };
+
+        expect(getDexEstimationData(quote)).toBeUndefined();
     });
 });

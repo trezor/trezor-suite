@@ -1,7 +1,11 @@
 import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import { tokenSupportsIncreasingAllowance } from '@suite-common/wallet-utils';
+import {
+    buildApprovalTransactionData,
+    getErc20ApproveSpender,
+    tokenSupportsIncreasingAllowance,
+} from '@suite-common/wallet-utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
@@ -151,6 +155,25 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
     return 'needs_approval';
 };
 
+export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
+    if (!quote.dexTx?.data) {
+        return undefined;
+    }
+
+    if (getApprovalStatus(quote) === 'needs_revoke') {
+        const spender = getErc20ApproveSpender(quote.dexTx.data);
+        if (spender) {
+            try {
+                return buildApprovalTransactionData({ spender, amount: '0' });
+            } catch {
+                return quote.dexTx.data;
+            }
+        }
+    }
+
+    return quote.dexTx.data;
+};
+
 export const exchangeUtils = {
     getAmountLimits,
     isQuoteError,
@@ -161,4 +184,5 @@ export const exchangeUtils = {
     hasEip712SignData,
     requiresTokenApproval,
     getApprovalStatus,
+    getDexEstimationData,
 };

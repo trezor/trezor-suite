@@ -60,6 +60,9 @@ export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPur
 export const isEvmApprovalTx = (data?: string): boolean =>
     Calldata.evm.erc20.approve.decode(data) !== null;
 
+export const getErc20ApproveSpender = (data?: string): string | undefined =>
+    Calldata.evm.erc20.approve.decode(data)?.spender;
+
 export type EvmApprovalPurpose = Extract<EvmTransactionPurpose, 'approve' | 'revoke'>;
 
 export const isEvmApprovalTxByTextSignature = (
