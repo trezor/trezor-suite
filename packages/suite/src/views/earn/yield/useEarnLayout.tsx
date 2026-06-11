@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, goto } from '@suite/router';
-import { isStablecoinYieldSupported, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
-import { type YieldActionFlowType } from '@suite-common/wallet-core';
+import { type YieldActionFlowType, isStablecoinYieldSupported } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
