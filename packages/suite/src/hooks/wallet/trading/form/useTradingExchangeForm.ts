@@ -25,6 +25,7 @@ import {
     type TradingTransactionExchange,
     cryptoIdToNetwork,
     exchangeThunks,
+    getDexEstimationData,
     invityAPI,
     isSendRejectedError,
     isSendingEvmNativeToken,
@@ -601,7 +602,7 @@ export const useTradingExchangeForm = ({
 
         const { dexTx } = quote;
 
-        setValue('transactionData', dexTx.data);
+        setValue('transactionData', getDexEstimationData(quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
         // eslint-disable-next-line react-hooks/exhaustive-deps
