@@ -30,7 +30,6 @@ import {
     convertAmountUnitsToSubunits,
     getAccountIdentity,
     getApprovalComposeOutput,
-    getConvertedOrDefaultFeeInfo,
     getCryptoMaxAmountWithReserve,
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
@@ -59,13 +58,17 @@ import { selectTransactions } from '../transactions/transactionsSelectors';
 /**
  * Returns fee info with levels bumped above the original transaction's gas price,
  * so that the replacement transaction will be accepted by the mempool.
+ *
+ * Expects `feeInfo` with levels already in Gwei (i.e. from selectConvertedNetworkFeeInfo).
+ * `originalGasParams` must also be in Gwei.
  */
 export const getEthereumRbfFeeInfo = (
     feeInfo: FeeInfo,
     originalGasParams: { gasPrice?: string; maxFeePerGas?: string; maxPriorityFeePerGas?: string },
 ): FeeInfo => {
-    const convertedFeeInfo = getConvertedOrDefaultFeeInfo({ networkType: 'ethereum', feeInfo });
-    const { levels } = convertedFeeInfo;
+    // feeInfo.levels are already in Gwei — do NOT call getConvertedOrDefaultFeeInfo here,
+    // that would double-convert and produce near-zero values.
+    const { levels } = feeInfo;
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstLevel: (typeof levels)[number] = levels[0];
 
@@ -85,7 +88,7 @@ export const getEthereumRbfFeeInfo = (
             .toString();
 
         return {
-            ...convertedFeeInfo,
+            ...feeInfo,
             levels: [
                 {
                     ...highLevel,
@@ -100,16 +103,17 @@ export const getEthereumRbfFeeInfo = (
     const currentGasPrice = new BigNumber(
         originalGasParams.gasPrice || originalGasParams.maxFeePerGas || '0',
     );
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const minFeeFromNetwork = new BigNumber(firstLevel.feePerUnit);
-    const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(convertedFeeInfo.minFee));
+    const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(feeInfo.minFee));
 
     return {
-        ...convertedFeeInfo,
-        levels: convertedFeeInfo.levels.map(level => ({
+        ...feeInfo,
+        levels: feeInfo.levels.map(level => ({
             ...level,
             feePerUnit: fee.toString(),
         })),
-        minFee: currentGasPrice.plus(convertedFeeInfo.minFee).toNumber(),
+        minFee: currentGasPrice.plus(feeInfo.minFee).toNumber(),
     };
 };
 
