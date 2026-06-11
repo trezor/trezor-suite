@@ -5,7 +5,6 @@ import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
 import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
-import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
@@ -57,7 +56,6 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                     <BuyReceiveAccountCryptoBalance />
                 </HStack>
             </TradingCardSection>
-            <BuyReceiveAccountPicker />
         </TradingCard>
     );
 };

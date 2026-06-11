@@ -7,6 +7,7 @@ import { CountrySubdivisionPickerControlsContext } from '@suite-native/trading-r
 
 import { BuyPaymentMethodPicker } from './BuyPaymentMethodPicker';
 import { BuyProviderPicker } from './BuyProviderPicker';
+import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { TradingCountrySubdivisionPickerButton } from '../general/TradingCountrySubdivisionPickerButton';
 import { TradingLocationPickers } from '../general/TradingLocationPickers';
 
@@ -45,8 +46,9 @@ export const BuyPaymentCard = ({
         <CountrySubdivisionPickerControlsContext value={subdivisionPickerControls}>
             <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
                 <Card noPadding>
-                    <BuyPaymentMethodPicker />
+                    <BuyReceiveAccountPicker />
                     <TradingLocationPickers context="buy" />
+                    <BuyPaymentMethodPicker />
                     <BuyProviderPicker />
                 </Card>
             </AnimatedBox>
