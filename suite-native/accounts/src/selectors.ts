@@ -110,7 +110,7 @@ export const selectAccountLabel = (
     return account?.accountLabel ?? null;
 };
 
-export const selectVisibleAccountsWithLabel = (state: NativeAccountsRootState) =>
+const selectVisibleAccountsWithLabel = (state: NativeAccountsRootState) =>
     selectAccountsWithSuiteSyncLabel(
         state,
         selectVisibleDeviceAccounts(state),
