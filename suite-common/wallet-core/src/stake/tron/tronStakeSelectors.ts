@@ -4,13 +4,16 @@ import {
     type TronStakeRootState,
     type TronStakeState,
     type TronStakeTxReviewState,
-    initialTronStakeSession,
+    getInitialTronStakeSession,
 } from './tronStakeReducer';
+import { type TronFlow } from './tronStakeTypes';
 
 export const selectTronStakeSession = (
     state: TronStakeRootState,
     accountKey: AccountKey,
-): TronStakeState => state.wallet.tronStake.sessions[accountKey] ?? initialTronStakeSession;
+    flow: TronFlow,
+): TronStakeState =>
+    state.wallet.tronStake.sessions[accountKey]?.[flow] ?? getInitialTronStakeSession(flow);
 
 export const selectTronStakeTxReview = (state: TronStakeRootState): TronStakeTxReviewState =>
     state.wallet.tronStake.txReview;

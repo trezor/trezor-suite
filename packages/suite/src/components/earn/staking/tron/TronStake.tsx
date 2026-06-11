@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { TRON_STAKE_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
+import { TRON_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BulletList, type BulletListItemState, Column, Text } from '@trezor/components';
 
@@ -15,12 +15,13 @@ interface TronStakeProps {
 }
 
 export const TronStake = ({ account }: TronStakeProps) => {
-    const context = useTronStakeFlow({ account });
+    const context = useTronStakeFlow({ account, flow: 'stake' });
     const { step } = context.actions;
 
-    const currentStepIndex = TRON_STAKE_FLOW_STEPS.indexOf(step);
+    const stakeSteps: readonly TronStakeStepId[] = TRON_FLOW_STEPS.stake;
+    const currentStepIndex = stakeSteps.indexOf(step);
     const getStepState = (stepId: TronStakeStepId): BulletListItemState => {
-        const stepIndex = TRON_STAKE_FLOW_STEPS.indexOf(stepId);
+        const stepIndex = stakeSteps.indexOf(stepId);
 
         if (stepIndex < currentStepIndex) {
             return 'done';

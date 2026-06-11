@@ -1,6 +1,7 @@
 import { useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import {
+    type TronFlow,
     type TronStakeError,
     type TronStakeStepId,
     composeTronFreezeFeeLevelsThunk,
@@ -23,6 +24,7 @@ import { resolveVotedRepresentativeAddress } from '../voteUtils';
 interface UseTronStakeActionsProps {
     account: Account;
     form: ReturnType<typeof useTronStakeForm>;
+    flow: TronFlow;
 }
 
 export interface TronStakeActions {
@@ -38,15 +40,16 @@ export interface TronStakeActions {
 export const useTronStakeActions = ({
     account,
     form,
+    flow,
 }: UseTronStakeActionsProps): TronStakeActions => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const { step, isSubmitting, error, pendingTxid } = useSelector(state =>
-        selectTronStakeSession(state, account.key),
+        selectTronStakeSession(state, account.key, flow),
     );
 
     const goToStep = (nextStep: TronStakeStepId) =>
-        dispatch(tronStakeActions.goToStep({ accountKey: account.key, step: nextStep }));
+        dispatch(tronStakeActions.goToStep({ accountKey: account.key, flow, step: nextStep }));
 
     const openDeviceConnectionModal = () => {
         if (device?.descriptor?.apiType === 'bluetooth') {
@@ -116,6 +119,7 @@ export const useTronStakeActions = ({
                     submitTronVoteThunk({
                         account,
                         device,
+                        flow,
                         representativeAddress,
                         requestPushApproval: async () =>
                             Boolean(

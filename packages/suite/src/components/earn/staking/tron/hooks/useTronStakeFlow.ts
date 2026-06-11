@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { type TrxStats, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type UseQueryResult } from '@suite-common/react-query';
-import { tronStakeActions } from '@suite-common/wallet-core';
+import { type TronFlow, tronStakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -20,24 +20,28 @@ export interface TronStakeContextValues {
 
 interface UseTronStakeFlowProps {
     account: Account;
+    flow: TronFlow;
 }
 
-export const useTronStakeFlow = ({ account }: UseTronStakeFlowProps): TronStakeContextValues => {
+export const useTronStakeFlow = ({
+    account,
+    flow,
+}: UseTronStakeFlowProps): TronStakeContextValues => {
     const dispatch = useDispatch();
     const { stats } = useTronStakingStats();
 
     const form = useTronStakeForm({ account });
-    const actions = useTronStakeActions({ account, form });
+    const actions = useTronStakeActions({ account, form, flow });
 
-    useTronStakePendingTransactionTracking({ account });
+    useTronStakePendingTransactionTracking({ account, flow });
 
     useEffect(
         () => () => {
             if (actions.step === 'complete') {
-                dispatch(tronStakeActions.reset({ accountKey: account.key }));
+                dispatch(tronStakeActions.reset({ accountKey: account.key, flow }));
             }
         },
-        [account.key, actions.step, dispatch],
+        [account.key, flow, actions.step, dispatch],
     );
 
     return {

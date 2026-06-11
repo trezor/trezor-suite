@@ -6,7 +6,13 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 
-import { TRON_STAKE_FLOW_STEPS, type TronStakeError, type TronStakeStepId } from './tronStakeTypes';
+import {
+    TRON_FLOWS,
+    TRON_FLOW_STEPS,
+    type TronFlow,
+    type TronStakeError,
+    type TronStakeStepId,
+} from './tronStakeTypes';
 import { type SerializedTx } from '../../send/sendFormTypes';
 
 export const TRON_STAKE_PREFIX = '@suite-common/wallet-core/tron-stake';
@@ -25,7 +31,7 @@ export type TronStakeTxReviewState = {
     accountKey?: AccountKey;
 };
 
-export type TronStakeSessionsState = Record<AccountKey, TronStakeState>;
+export type TronStakeSessionsState = Record<AccountKey, Partial<Record<TronFlow, TronStakeState>>>;
 
 export type TronStakeReducerState = {
     sessions: TronStakeSessionsState;
@@ -38,12 +44,19 @@ export type TronStakeRootState = {
     };
 };
 
-export const initialTronStakeSession: TronStakeState = {
-    step: 'freeze',
+export const createTronStakeSession = (flow: TronFlow): TronStakeState => ({
+    step: TRON_FLOW_STEPS[flow][0],
     isSubmitting: false,
     error: null,
     pendingTxid: null,
-};
+});
+
+const initialTronStakeSessions = Object.fromEntries(
+    TRON_FLOWS.map(flow => [flow, Object.freeze(createTronStakeSession(flow))]),
+) as Record<TronFlow, TronStakeState>;
+
+export const getInitialTronStakeSession = (flow: TronFlow): TronStakeState =>
+    initialTronStakeSessions[flow];
 
 export const initialTronStakeTxReview: TronStakeTxReviewState = {
     precomposedTx: undefined,
@@ -57,63 +70,78 @@ const initialState: TronStakeReducerState = {
     txReview: initialTronStakeTxReview,
 };
 
-const getNextStep = (step: TronStakeStepId): TronStakeStepId => {
-    const index = TRON_STAKE_FLOW_STEPS.indexOf(step);
+const getNextStep = (flow: TronFlow, step: TronStakeStepId): TronStakeStepId => {
+    const steps: readonly TronStakeStepId[] = TRON_FLOW_STEPS[flow];
+    const index = steps.indexOf(step);
 
-    return TRON_STAKE_FLOW_STEPS[index + 1] ?? step;
+    return steps[index + 1] ?? step;
+};
+
+type SessionPayload = { accountKey: AccountKey; flow: TronFlow };
+
+const getSession = (
+    state: TronStakeReducerState,
+    accountKey: AccountKey,
+    flow: TronFlow,
+): TronStakeState => state.sessions[accountKey]?.[flow] ?? createTronStakeSession(flow);
+
+const setSession = (
+    state: TronStakeReducerState,
+    accountKey: AccountKey,
+    flow: TronFlow,
+    session: TronStakeState,
+) => {
+    state.sessions[accountKey] = { ...state.sessions[accountKey], [flow]: session };
 };
 
 export const tronStakeSlice = createSlice({
     name: TRON_STAKE_PREFIX,
     initialState,
     reducers: {
-        goToStep(state, action: PayloadAction<{ accountKey: AccountKey; step: TronStakeStepId }>) {
-            const { accountKey, step } = action.payload;
-            state.sessions[accountKey] = {
-                ...(state.sessions[accountKey] ?? initialTronStakeSession),
-                step,
-            };
+        goToStep(state, action: PayloadAction<SessionPayload & { step: TronStakeStepId }>) {
+            const { accountKey, flow, step } = action.payload;
+            setSession(state, accountKey, flow, { ...getSession(state, accountKey, flow), step });
         },
-        pendingTransactionConfirmed(state, action: PayloadAction<{ accountKey: AccountKey }>) {
-            const session = state.sessions[action.payload.accountKey] ?? initialTronStakeSession;
-            state.sessions[action.payload.accountKey] = {
+        pendingTransactionConfirmed(state, action: PayloadAction<SessionPayload>) {
+            const { accountKey, flow } = action.payload;
+            const session = getSession(state, accountKey, flow);
+            setSession(state, accountKey, flow, {
                 ...session,
                 pendingTxid: null,
-                step: getNextStep(session.step),
-            };
+                step: getNextStep(flow, session.step),
+            });
         },
-        pendingTransactionFailed(state, action: PayloadAction<{ accountKey: AccountKey }>) {
-            state.sessions[action.payload.accountKey] = {
-                ...(state.sessions[action.payload.accountKey] ?? initialTronStakeSession),
+        pendingTransactionFailed(state, action: PayloadAction<SessionPayload>) {
+            const { accountKey, flow } = action.payload;
+            setSession(state, accountKey, flow, {
+                ...getSession(state, accountKey, flow),
                 pendingTxid: null,
                 error: { kind: 'confirmation-failed' },
-            };
+            });
         },
-        reset(state, action: PayloadAction<{ accountKey: AccountKey }>) {
-            state.sessions[action.payload.accountKey] = { ...initialTronStakeSession };
+        reset(state, action: PayloadAction<SessionPayload>) {
+            const { accountKey, flow } = action.payload;
+            setSession(state, accountKey, flow, createTronStakeSession(flow));
         },
-        submitStarted(state, action: PayloadAction<{ accountKey: AccountKey }>) {
-            state.sessions[action.payload.accountKey] = {
-                ...(state.sessions[action.payload.accountKey] ?? initialTronStakeSession),
+        submitStarted(state, action: PayloadAction<SessionPayload>) {
+            const { accountKey, flow } = action.payload;
+            setSession(state, accountKey, flow, {
+                ...getSession(state, accountKey, flow),
                 isSubmitting: true,
                 error: null,
-            };
+            });
         },
         submitFinished(
             state,
-            action: PayloadAction<{
-                accountKey: AccountKey;
-                txid?: string;
-                error?: TronStakeError;
-            }>,
+            action: PayloadAction<SessionPayload & { txid?: string; error?: TronStakeError }>,
         ) {
-            const { accountKey, txid, error } = action.payload;
-            state.sessions[accountKey] = {
-                ...(state.sessions[accountKey] ?? initialTronStakeSession),
+            const { accountKey, flow, txid, error } = action.payload;
+            setSession(state, accountKey, flow, {
+                ...getSession(state, accountKey, flow),
                 isSubmitting: false,
                 pendingTxid: txid ?? null,
                 error: error && error.kind !== 'cancelled' ? error : null,
-            };
+            });
         },
         storePrecomposedTransaction(
             state,

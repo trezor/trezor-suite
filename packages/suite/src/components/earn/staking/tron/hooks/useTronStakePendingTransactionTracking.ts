@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import {
+    type TronFlow,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
     selectTransactionByAccountKeyAndTxid,
@@ -24,13 +25,15 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
 
 interface UseTronStakePendingTransactionTrackingProps {
     account: Account;
+    flow: TronFlow;
 }
 
 export const useTronStakePendingTransactionTracking = ({
     account,
+    flow,
 }: UseTronStakePendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
-    const { pendingTxid } = useSelector(state => selectTronStakeSession(state, account.key));
+    const { pendingTxid } = useSelector(state => selectTronStakeSession(state, account.key, flow));
     const trackedTransaction = useSelector(state =>
         pendingTxid ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTxid) : null,
     );
@@ -58,9 +61,11 @@ export const useTronStakePendingTransactionTracking = ({
         }
 
         if (trackedTransaction.type === 'failed') {
-            dispatch(tronStakeActions.pendingTransactionFailed({ accountKey: account.key }));
+            dispatch(tronStakeActions.pendingTransactionFailed({ accountKey: account.key, flow }));
         } else {
-            dispatch(tronStakeActions.pendingTransactionConfirmed({ accountKey: account.key }));
+            dispatch(
+                tronStakeActions.pendingTransactionConfirmed({ accountKey: account.key, flow }),
+            );
         }
-    }, [account.key, pendingTxid, trackedTransaction, dispatch]);
+    }, [account.key, flow, pendingTxid, trackedTransaction, dispatch]);
 };

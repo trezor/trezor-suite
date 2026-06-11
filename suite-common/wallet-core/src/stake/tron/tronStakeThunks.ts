@@ -20,7 +20,7 @@ import { BigNumber } from '@trezor/utils';
 import { signTronContract } from './signTronContract';
 import { buildFreezeBalanceV2Contract, buildVoteWitnessContract } from './tronStakeContracts';
 import { tronStakeActions } from './tronStakeReducer';
-import { type TronResourceType, type TronStakeError } from './tronStakeTypes';
+import { type TronFlow, type TronResourceType, type TronStakeError } from './tronStakeTypes';
 import { addFakePendingTronTxThunk } from '../../transactions/transactionsThunks';
 
 const TRON_STAKE_MODULE = '@common/wallet-core/tron-stake';
@@ -140,11 +140,13 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
         { dispatch },
     ) => {
         const { key: accountKey } = account;
+        const flow: TronFlow = 'stake';
 
         if (account.networkType !== 'tron') {
             dispatch(
                 tronStakeActions.submitFinished({
                     accountKey,
+                    flow,
                     error: { kind: 'compose-failed', message: 'Invalid network type.' },
                 }),
             );
@@ -158,6 +160,7 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
             dispatch(
                 tronStakeActions.submitFinished({
                     accountKey,
+                    flow,
                     error: { kind: 'compose-failed', message: 'Invalid owner address.' },
                 }),
             );
@@ -165,7 +168,7 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
             return;
         }
 
-        dispatch(tronStakeActions.submitStarted({ accountKey }));
+        dispatch(tronStakeActions.submitStarted({ accountKey, flow }));
 
         try {
             const composed = await dispatch(
@@ -179,6 +182,7 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
+                        flow,
                         error: { kind: 'compose-failed' },
                     }),
                 );
@@ -199,7 +203,9 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
             const signResult = await signTronContract({ account, device, contract });
 
             if ('error' in signResult) {
-                dispatch(tronStakeActions.submitFinished({ accountKey, error: signResult.error }));
+                dispatch(
+                    tronStakeActions.submitFinished({ accountKey, flow, error: signResult.error }),
+                );
 
                 return;
             }
@@ -214,7 +220,11 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
 
             if (!isPushApproved) {
                 dispatch(
-                    tronStakeActions.submitFinished({ accountKey, error: { kind: 'cancelled' } }),
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'cancelled' },
+                    }),
                 );
 
                 return;
@@ -230,6 +240,7 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
+                        flow,
                         error: { kind: 'broadcast-failed', message: pushResult.error.message },
                     }),
                 );
@@ -264,7 +275,7 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
                 }),
             );
 
-            dispatch(tronStakeActions.submitFinished({ accountKey, txid }));
+            dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();
             dispatch(tronStakeActions.discardTransaction());
@@ -369,6 +380,7 @@ export const composeTronVoteFeeLevelsThunk = createThunk<
 
 interface SubmitVoteThunkArguments extends VoteThunkArguments {
     device: TrezorDevice;
+    flow: TronFlow;
     requestPushApproval: () => Promise<boolean>;
     onSigningStart?: () => void;
     onSettled?: () => void;
@@ -377,7 +389,15 @@ interface SubmitVoteThunkArguments extends VoteThunkArguments {
 export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
     `${TRON_STAKE_MODULE}/submitTronVoteThunk`,
     async (
-        { account, device, representativeAddress, requestPushApproval, onSigningStart, onSettled },
+        {
+            account,
+            device,
+            flow,
+            representativeAddress,
+            requestPushApproval,
+            onSigningStart,
+            onSettled,
+        },
         { dispatch },
     ) => {
         const { key: accountKey } = account;
@@ -386,6 +406,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
             dispatch(
                 tronStakeActions.submitFinished({
                     accountKey,
+                    flow,
                     error: { kind: 'compose-failed', message: 'Invalid network type.' },
                 }),
             );
@@ -399,6 +420,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
             dispatch(
                 tronStakeActions.submitFinished({
                     accountKey,
+                    flow,
                     error: { kind: 'compose-failed', message: 'Invalid representative address.' },
                 }),
             );
@@ -406,7 +428,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
             return;
         }
 
-        dispatch(tronStakeActions.submitStarted({ accountKey }));
+        dispatch(tronStakeActions.submitStarted({ accountKey, flow }));
 
         try {
             const composed = await dispatch(
@@ -420,6 +442,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
+                        flow,
                         error: { kind: 'compose-failed' },
                     }),
                 );
@@ -440,7 +463,9 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
             const signResult = await signTronContract({ account, device, contract });
 
             if ('error' in signResult) {
-                dispatch(tronStakeActions.submitFinished({ accountKey, error: signResult.error }));
+                dispatch(
+                    tronStakeActions.submitFinished({ accountKey, flow, error: signResult.error }),
+                );
 
                 return;
             }
@@ -455,7 +480,11 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
 
             if (!isPushApproved) {
                 dispatch(
-                    tronStakeActions.submitFinished({ accountKey, error: { kind: 'cancelled' } }),
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'cancelled' },
+                    }),
                 );
 
                 return;
@@ -471,6 +500,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
+                        flow,
                         error: { kind: 'broadcast-failed', message: pushResult.error.message },
                     }),
                 );
@@ -501,7 +531,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
                 }),
             );
 
-            dispatch(tronStakeActions.submitFinished({ accountKey, txid }));
+            dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();
             dispatch(tronStakeActions.discardTransaction());
