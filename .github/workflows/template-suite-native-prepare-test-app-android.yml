@@ -60,7 +60,10 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        # Always run install, even on a node_modules cache hit. The cached tree can be missing
+        # platform binaries that are not reliably captured (e.g. tsx's nested @esbuild/linux-x64),
+        # and skipping install left node_modules incomplete, breaking `yarn sign-config`. With a
+        # warm cache the node-modules linker reconciles quickly and re-fetches anything missing.
         run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
 
       - name: Setup Java
