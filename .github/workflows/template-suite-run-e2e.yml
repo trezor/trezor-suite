@@ -20,11 +20,6 @@ on:
         default: "trezor-user-env-unix bitcoin-regtest electrum-regtest quota-db suite-sync"
         required: false
         type: string
-      workspace-dependencies:
-        description: "Additional workspaces to install"
-        required: false
-        default: ""
-        type: string
       test-group:
         description: "Test group for orchestration"
         required: true
@@ -160,7 +155,7 @@ jobs:
       - name: Install PW Dependencies
         shell: bash
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/suite-e2e
 
       - name: Install Playwright Browsers
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'
