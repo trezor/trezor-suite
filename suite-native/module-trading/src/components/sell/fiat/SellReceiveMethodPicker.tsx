@@ -10,7 +10,6 @@ import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
@@ -23,11 +22,6 @@ type SellReceiveMethodPickerRightProps = {
     isLoading: boolean;
     selectedValue: SellFiatTrade | undefined;
 };
-
-const pickerStyle = prepareNativeStyle(({ borders, colors }) => ({
-    borderTopWidth: borders.widths.small,
-    borderTopColor: colors.surfaceFillPage,
-}));
 
 const SellReceiveMethodPickerRight = ({
     isLoading,
@@ -65,7 +59,6 @@ const SellReceiveMethodPickerRight = ({
 export const SellReceiveMethodPicker = () => {
     const { translate } = useTranslate();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const { applyStyle } = useNativeStyles();
     const form = useSellFormContext();
     const quotes = useSelector(selectSellBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingSellIsLoading);
@@ -100,11 +93,7 @@ export const SellReceiveMethodPicker = () => {
 
     return (
         <>
-            <AnimatedBox
-                style={applyStyle(pickerStyle)}
-                entering={StretchInY}
-                exiting={StretchOutY}
-            >
+            <AnimatedBox entering={StretchInY} exiting={StretchOutY}>
                 <OverviewRow
                     title={translate('moduleTrading.tradingScreen.receiveMethod')}
                     onPress={showSheetConditionally}
