@@ -16435,7 +16435,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-desktop@workspace:packages/suite-desktop":
+"@trezor/suite-desktop@workspace:*, @trezor/suite-desktop@workspace:packages/suite-desktop":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
@@ -16486,6 +16486,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/suite-data": "workspace:*"
+    "@trezor/suite-desktop": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"

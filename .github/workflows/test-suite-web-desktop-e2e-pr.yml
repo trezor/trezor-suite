@@ -108,7 +108,6 @@ jobs:
     with:
       target: "desktop"
       pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-desktop-pr-all.config.ts' || './playwright-config/playwright-desktop-pr.config.ts' }}
-      workspace-dependencies: "@trezor/suite-desktop"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "7"
       currents-project-id: "4ytF0E"
