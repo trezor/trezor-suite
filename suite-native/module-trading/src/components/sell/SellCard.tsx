@@ -15,7 +15,6 @@ import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo'
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
-import { SellReceiveMethodPicker } from './fiat/SellReceiveMethodPicker';
 import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
 
@@ -83,7 +82,6 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
             >
                 <SellFiatCurrencyPicker />
             </TradingCardSection>
-            <SellReceiveMethodPicker />
         </TradingCard>
     );
 };

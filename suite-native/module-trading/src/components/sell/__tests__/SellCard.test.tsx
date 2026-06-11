@@ -6,7 +6,7 @@ import {
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils-store';
-import { banxaCreditCardSellQuote, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
+import { sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { createTradingPreloadedState } from '../../../__tests__/tradingTestUtils';
@@ -68,25 +68,5 @@ describe('SellCard', () => {
         ).toHaveDisplayValue('100');
         expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
         expect(getByText('- USDC')).toBeOnTheScreen();
-    });
-
-    describe('with selected quote', () => {
-        beforeEach(() => {
-            act(() => {
-                form.setValue('sendAsset', usdcAsset);
-                form.setValue('amountInCrypto', true);
-                form.setValue('cryptoStringAmount', '100');
-
-                form.setValue('quote', banxaCreditCardSellQuote);
-            });
-        });
-
-        it('should render receive method', () => {
-            const { getByText } = renderSellCard(false);
-
-            expect(
-                getByText(getTranslation('moduleTrading.tradingScreen.receiveMethod')),
-            ).toBeOnTheScreen();
-        });
     });
 });
