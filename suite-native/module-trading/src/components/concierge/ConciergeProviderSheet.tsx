@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Pressable } from 'react-native';
 
 import { type OtcProviderType } from '@suite-common/trading';
-import { Box, Text } from '@suite-native/atoms';
+import { type BottomSheetFlashListHandleProps, Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { BottomSheetSectionList, type SectionListData } from '@suite-native/trading-atoms';
 
@@ -61,9 +61,9 @@ export const ConciergeProviderSheet = ({
             estimatedListHeight={estimatedListHeight}
             isVisible={isVisible}
             onClose={onClose}
-            handleComponent={() => (
+            handleComponent={({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <SimpleSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     title={<Translation id="moduleTrading.tradingScreen.provider" />}
                 />
             )}
