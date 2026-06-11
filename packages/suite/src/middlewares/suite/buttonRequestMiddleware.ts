@@ -19,6 +19,7 @@ const SIGN_TX_ROUTES = [
     'earn-yield-claim',
     'earn-tron-stake',
     'earn-tron-vote',
+    'earn-tron-unstake',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [

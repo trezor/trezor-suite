@@ -172,6 +172,7 @@ const SECTIONS = {
         '/earn/tron',
         '/earn/tron/stake',
         '/earn/tron/vote',
+        '/earn/tron/unstake',
     ],
 } as const satisfies Record<string, string[]>;
 
