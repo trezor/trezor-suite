@@ -6,7 +6,7 @@ import { CountryOfResidencePicker } from './CountrySheet/CountryOfResidencePicke
 import { CountrySubdivisionPicker } from './CountrySheet/CountrySubdivisionPicker';
 import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 
-export type TradingLocationPickersProps = {
+type TradingLocationPickersProps = {
     context: CountryChangeContext;
     testID: string;
     hasCountrySubdivisionBottomBorder?: boolean;

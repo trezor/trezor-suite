@@ -2,7 +2,7 @@ import { type ReactNode, type RefObject } from 'react';
 
 import { useAnchor } from './useAnchor';
 
-export type AnchorRenderProps = {
+type AnchorRenderProps = {
     anchorId: string;
     anchorRef: RefObject<HTMLDivElement | null>;
     shouldHighlight: boolean;

@@ -15,7 +15,7 @@ import {
 
 import { CountrySubdivisionListItem } from './CountrySubdivisionListItem';
 
-export type CountrySubdivisionSheetProps = {
+type CountrySubdivisionSheetProps = {
     countryCode: string | undefined;
     isVisible: boolean;
     onClose: () => void;

@@ -9,7 +9,7 @@ import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/tra
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { CountryListItem } from './CountryListItem';
 
-export type CountrySheetProps = {
+type CountrySheetProps = {
     isVisible: boolean;
     onClose: () => void;
     onCountrySelect: (symbol: TradingCountryOption) => void;
