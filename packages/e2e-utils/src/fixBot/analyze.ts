@@ -7,6 +7,9 @@ import { error, log } from '../logger';
 import { loadLedger, processAgentOutput, runClaude } from './common';
 import { AnalysisReportJsonSchema, AnalysisReportSchema } from './schemas';
 
+const MAX_BUDGET_USD = '10';
+const TIMEOUT_MS = 45 * 60 * 1000;
+
 function buildLedgerPromptSection(ledgerPath: string): string {
     const ledger = loadLedger(ledgerPath);
 
@@ -56,16 +59,24 @@ function main(): void {
             '--mcp-config',
             join(botDir, 'mcp.json'),
             '--strict-mcp-config',
+            '--max-budget-usd',
+            MAX_BUDGET_USD,
         ],
         input: analysisPromptWithLedger,
         tmpPrefix: 'claude-analyze',
+        timeoutMs: TIMEOUT_MS,
     });
 
     const { model } = JSON.parse(readFileSync(join(botDir, 'settings.json'), 'utf-8'));
     const agentResult = processAgentOutput(claudeOutput, 'nightlyAnalyzer', model);
 
     if (spawnError) {
-        error(`Failed to run claude: ${spawnError.message}`);
+        const timedOut = (spawnError as NodeJS.ErrnoException).code === 'ETIMEDOUT';
+        error(
+            timedOut
+                ? `Analysis agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no report produced.`
+                : `Failed to run claude: ${spawnError.message}`,
+        );
         process.exit(1);
     }
 

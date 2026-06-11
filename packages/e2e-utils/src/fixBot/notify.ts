@@ -91,6 +91,10 @@ function buildMessage(
                 const prPart = prUrl ? `<${prUrl}|PR link>` : 'no PR';
                 lines.push(`    ${task.id} · ${prPart} · ${iterStr} · ${countStr} · ${costPart}`);
             }
+
+            if (summary.error) {
+                lines.push(`    ⚠️ publish failed: ${summary.error.split('\n')[0]}`);
+            }
         }
     }
 
@@ -102,8 +106,7 @@ function buildMessage(
         for (const skip of report.skipped) {
             lines.push('');
             lines.push(`⛔ *${skip.reason}* — ${skip.rootCause}`);
-            const testRef = formatTestRef(skip.validations);
-            if (testRef) lines.push(testRef);
+            lines.push(formatTestRef(skip.validations));
         }
     }
 
