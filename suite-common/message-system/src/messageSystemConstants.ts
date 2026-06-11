@@ -38,7 +38,7 @@ export const FETCH_CHECK_INTERVAL_IN_MS_MOBILE = 180_000; // 3 min
 // timeout for fetching remote config
 export const FETCH_TIMEOUT_IN_MS = 30_000; // 30 sec
 
-export const CONFIG_URL_REMOTE_BASE = 'https://data.trezor.io/config';
+const CONFIG_URL_REMOTE_BASE = 'https://data.trezor.io/config';
 export const CONFIG_URL_REMOTE = {
     stable: `${CONFIG_URL_REMOTE_BASE}/stable/${JWS_CONFIG_FILENAME_REMOTE}`,
     develop: `${CONFIG_URL_REMOTE_BASE}/develop/${JWS_CONFIG_FILENAME_REMOTE}`,

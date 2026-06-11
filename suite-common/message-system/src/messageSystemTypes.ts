@@ -141,7 +141,7 @@ const getEarnYieldContext = (type: YieldFlowType) => `earn.yield.${type}` as con
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;
 
-export type LegalContextKey = 'gateway';
+type LegalContextKey = 'gateway';
 const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
 
 /**
