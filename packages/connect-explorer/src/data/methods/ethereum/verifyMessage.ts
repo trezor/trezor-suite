@@ -1,17 +1,9 @@
-import { select } from './common';
-
 export default [
     {
         name: 'ethereumVerifyMessage',
         submitButton: 'Verify message',
 
         fields: [
-            {
-                name: 'coin',
-                type: 'select',
-                value: 'eth',
-                data: select,
-            },
             // note that this values are valid for the "all" seed
             {
                 name: 'address',
