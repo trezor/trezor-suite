@@ -6,10 +6,9 @@ import { CoinLogo } from '@trezor/product-components';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
-import { TronStakeInfoRow } from './TronStakeInfoRow';
-import { formatApyValue } from '../../../utils/earnApyUtils';
 import { useTronStakeContext } from '../TronStakeContext';
-import { CUSTOM_REPRESENTATIVE } from '../vote/constants';
+import { TronStakeInfoRow } from '../TronStakeInfoRow';
+import { formatApr, resolveVotedRepresentativeAddress } from '../voteUtils';
 
 const RESOURCE_LABEL: Record<TronResourceType, TranslationKey> = {
     bandwidth: 'TR_EARN_TRON_BANDWIDTH',
@@ -18,16 +17,12 @@ const RESOURCE_LABEL: Record<TronResourceType, TranslationKey> = {
 
 export const TronStakeSummaryCard = () => {
     const { account, form, representatives } = useTronStakeContext();
-    const { amount, resourceType, representative, customRepresentativeAddress } =
-        form.methods.getValues();
+    const { amount, resourceType } = form.methods.getValues();
 
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
     const gain = getResourceGain(amount, resourceType, tronResources);
 
-    const votedAddress =
-        representative === CUSTOM_REPRESENTATIVE
-            ? customRepresentativeAddress.trim()
-            : representative;
+    const votedAddress = resolveVotedRepresentativeAddress(form.methods.getValues());
     const apr = (representatives.data ?? []).find(({ address }) => address === votedAddress)?.apr;
 
     return (
@@ -45,9 +40,7 @@ export const TronStakeSummaryCard = () => {
                 <Divider color="borderNeutral" margin={0} />
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_APR_LABEL" />}>
-                    <Text typographyStyle="body-md-strong">
-                        {apr != null ? `${formatApyValue(apr)}%` : formatApyValue(apr)}
-                    </Text>
+                    <Text typographyStyle="body-md-strong">{formatApr(apr)}</Text>
                 </TronStakeInfoRow>
 
                 <Divider color="borderNeutral" margin={0} />

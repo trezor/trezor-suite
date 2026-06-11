@@ -12,7 +12,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { useTronStakeContext } from '../TronStakeContext';
-import { CUSTOM_REPRESENTATIVE } from '../vote/constants';
+import { resolveVotedRepresentativeAddress } from '../voteUtils';
 
 interface TronStakeFees {
     feeInfo: FeeInfo;
@@ -44,10 +44,10 @@ export const useTronStakeFees = (): TronStakeFees => {
                         .unwrap()
                         .catch(() => undefined);
             case 'vote': {
-                const representativeAddress =
-                    representative === CUSTOM_REPRESENTATIVE
-                        ? customRepresentativeAddress.trim()
-                        : representative;
+                const representativeAddress = resolveVotedRepresentativeAddress({
+                    representative,
+                    customRepresentativeAddress,
+                });
 
                 return () =>
                     dispatch(composeTronVoteFeeLevelsThunk({ account, representativeAddress }))
