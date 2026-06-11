@@ -84,6 +84,25 @@ export const TransactionDetailScreen = ({
         openInBlockchain();
     };
 
+    const handleCancelEvmTransaction = async () => {
+        if (!transaction) return;
+
+        const response = await dispatch(
+            cancelEvmTransactionNativeThunk({ tx: transaction, accountKey }),
+        );
+
+        if (!isFulfilled(response)) return;
+
+        navigation.navigate(RootStackRoutes.SendStack, {
+            screen: SendStackRoutes.SendAddressReview,
+            params: {
+                accountKey,
+                transaction: response.payload,
+                isCancellation: true,
+            },
+        });
+    };
+
     return (
         <Screen
             header={

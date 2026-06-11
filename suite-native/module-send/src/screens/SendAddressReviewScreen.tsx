@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { Box, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
@@ -29,7 +29,7 @@ export const SendAddressReviewScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, currentHeaderHeight } =
         useConfirmOnTrezorController();
-    const { accountKey, tokenContract } = route.params;
+    const { accountKey, tokenContract, isCancellation } = route.params;
     const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
         selectIsReceiveAddressOutputConfirmed(state, 'send', accountKey, tokenContract),
     );
@@ -69,6 +69,14 @@ export const SendAddressReviewScreen = ({
                     <Text variant="headline-sm">
                         <Translation id="moduleSend.review.address.title" />
                     </Text>
+                    {isCancellation && (
+                        <InlineAlertBox
+                            variant="warning"
+                            title={
+                                <Translation id="moduleSend.review.address.cancellationDisclaimer" />
+                            }
+                        />
+                    )}
                     <AddressReviewStepList />
                 </VStack>
             </Box>

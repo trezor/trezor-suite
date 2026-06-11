@@ -2329,6 +2329,8 @@ export const messages = {
             destinationTagTitle: 'Confirm the XRP destination tag on your Trezor',
             address: {
                 title: 'Verify the address',
+                cancellationDisclaimer:
+                    'Transaction cancellation is not guaranteed. If the original transaction is confirmed before your cancellation is processed, the cancellation will fail.',
                 step1: 'Go to the app or website where you originally got the address.',
                 step2: "Compare the original address with what's on your Trezor.",
                 step3: 'If they match exactly, confirm on your Trezor.',

@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
+    composeSendFormTransactionFeeLevelsThunk,
+    selectConvertedNetworkFeeInfo,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
 import {
     type Account,
     type ChainedTransactions,
+    type FormState,
     type PrecomposedTransactionFinalCancelRbf,
+    type RbfTransactionParamsEthereum,
     type SelectedAccountLoaded,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
@@ -53,14 +58,73 @@ export const CancelTransactionModal = ({
     const dispatch = useDispatch();
     const [composedCancelTx, setComposedCancelTx] =
         useState<PrecomposedTransactionFinalCancelRbf | null>(null);
+    const [cancelFormState, setCancelFormState] = useState<FormState | null>(null);
 
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, account.key),
     );
+    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
 
     const isTxConfirmed = confirmations > 0;
 
     useEffect(() => {
+        if (account.networkType === 'ethereum') {
+            if (!feeInfo || tx.rbfParams?.type !== 'ethereum') {
+                return;
+            }
+
+            const rbfParams = tx.rbfParams as RbfTransactionParamsEthereum;
+            const network = getNetwork(account.symbol);
+
+            const formState: FormState = {
+                outputs: [
+                    {
+                        type: 'payment',
+                        address: account.descriptor,
+                        amount: '0',
+                        fiat: '',
+                        currency: { value: '', label: '' },
+                        token: null,
+                    },
+                ],
+                selectedFee: 'normal',
+                feePerUnit: '',
+                feeLimit: '',
+                options: [],
+                isCoinControlEnabled: false,
+                hasCoinControlBeenOpened: false,
+                selectedUtxos: [],
+                rbfParams,
+            };
+
+            dispatch(
+                composeSendFormTransactionFeeLevelsThunk({
+                    formState,
+                    composeContext: { account, network, feeInfo },
+                }),
+            )
+                .unwrap()
+                .then(feeLevels => {
+                    const normalLevel = feeLevels.normal;
+                    if (!normalLevel || normalLevel.type === 'error') {
+                        setError('Unable to compose a valid cancellation fee level.');
+
+                        return;
+                    }
+                    setComposedCancelTx({
+                        ...normalLevel,
+                        rbfType: 'cancel',
+                        prevTxid: tx.txid,
+                    });
+                    setCancelFormState(formState);
+                })
+                .catch((err: unknown) =>
+                    setError(err instanceof Error ? err.message : 'Unknown error'),
+                );
+
+            return;
+        }
+
         if (tx.vsize === undefined) {
             return;
         }
@@ -75,10 +139,10 @@ export const CancelTransactionModal = ({
                 setComposedCancelTx({ ...precomposed, rbfType: 'cancel', prevTxid: tx.txid });
             })
             .catch(setError);
-    }, [account, tx, dispatch, chainedTxs]);
+    }, [account, tx, dispatch, chainedTxs, feeInfo]);
 
     return (
-        <CancelTxContext.Provider value={{ composedCancelTx }}>
+        <CancelTxContext.Provider value={{ composedCancelTx, cancelFormState }}>
             <TxDetailModalBase
                 tx={tx}
                 onCancel={onCancel}

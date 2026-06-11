@@ -16,14 +16,14 @@ export const CancelTransactionButton = ({ account }: CancelTransactionButtonProp
     const { device, isLocked } = useDevice();
 
     const dispatch = useDispatch();
-    const { composedCancelTx } = useCancelTxContext();
+    const { composedCancelTx, cancelFormState } = useCancelTxContext();
 
     const handleCancelTx = () => {
         if (composedCancelTx === null) {
             return;
         }
 
-        const formState: FormState = {
+        const formState: FormState = cancelFormState ?? {
             feeLimit: '', // Eth only
             feePerUnit: composedCancelTx.feePerByte,
             hasCoinControlBeenOpened: false,
