@@ -5,10 +5,6 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 
-export type ProtocolToNetwork = {
-    [P in Protocol]: NetworkSymbol;
-};
-
 export const getNetworkSymbolForProtocol = (protocol: Protocol): NetworkSymbol | undefined => {
     for (const symbolKey in NETWORK_TO_PROTOCOLS) {
         const symbol = symbolKey;

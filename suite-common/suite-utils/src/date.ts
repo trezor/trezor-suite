@@ -6,7 +6,6 @@ import {
     eachMonthOfInterval,
     eachQuarterOfInterval,
     format,
-    formatDistance,
     formatDistanceStrict,
     fromUnixTime,
     getUnixTime,
@@ -14,9 +13,6 @@ import {
     startOfDay,
     startOfMonth,
 } from 'date-fns';
-
-export const formatDuration = (seconds: number) =>
-    formatDistance(0, seconds * 1000, { includeSeconds: true });
 
 export const formatDurationStrict = (seconds: number, locale?: Locale) =>
     formatDistanceStrict(0, seconds * 1000, { locale });
