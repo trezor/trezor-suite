@@ -158,7 +158,6 @@ jobs:
           job-summary: errors
           firewall-version: 1.11.0
       - name: Install PW Dependencies
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
