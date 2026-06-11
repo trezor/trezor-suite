@@ -1,7 +1,10 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getTargetAmount } from '@suite-common/wallet-utils';
 
-export const getTargetAmounts = (transaction: WalletAccountTransaction) =>
-    transaction.targets.length === 0
+export const getTargetAmounts = (transaction: WalletAccountTransaction) => {
+    const targets = transaction.targets ?? [];
+
+    return targets.length === 0
         ? [formatNetworkAmount(transaction.amount, transaction.symbol)]
-        : transaction.targets.flatMap(target => getTargetAmount(target, transaction) || []);
+        : targets.flatMap(target => getTargetAmount(target, transaction) || []);
+};
