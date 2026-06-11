@@ -1,11 +1,6 @@
-import { useEffect } from 'react';
-
 import { Translation } from '@suite/intl';
-import { tronStakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { TronStakeContext } from './TronStakeContext';
 import { TronStakeComplete } from './complete/TronStakeComplete';
@@ -18,15 +13,8 @@ interface TronVoteProps {
 }
 
 export const TronVote = ({ account }: TronVoteProps) => {
-    const dispatch = useDispatch();
-    const context = useTronStakeFlow({ account });
+    const context = useTronStakeFlow({ account, flow: 'vote' });
     const { step } = context.actions;
-
-    useEffect(() => {
-        if (step === 'freeze') {
-            dispatch(tronStakeActions.goToStep({ accountKey: account.key, step: 'vote' }));
-        }
-    }, [account.key, step, dispatch]);
 
     return (
         <TronStakeContext.Provider value={context}>
