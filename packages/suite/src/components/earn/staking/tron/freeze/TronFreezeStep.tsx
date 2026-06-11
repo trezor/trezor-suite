@@ -3,19 +3,16 @@ import { FormProvider } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column, Divider } from '@trezor/components';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
-
 import { useTronStakeContext } from '../TronStakeContext';
+import { TronStakeFees } from '../TronStakeFees';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';
 import { TronFreezeAmount } from './TronFreezeAmount';
 import { TronFreezeResourceSelect } from './TronFreezeResourceSelect';
 import { TronFreezeSubmitButton } from './TronFreezeSubmitButton';
-import { useTronStakeFees } from '../hooks/useTronStakeFees';
 
 export const TronFreezeStep = () => {
-    const { account, form, actions } = useTronStakeContext();
+    const { form, actions } = useTronStakeContext();
     const { error } = actions;
-    const { feeInfo, composedLevels } = useTronStakeFees({ account });
 
     return (
         <FormProvider {...form.methods}>
@@ -28,16 +25,7 @@ export const TronFreezeStep = () => {
                     </Column>
                 </Card>
 
-                <Card paddingType="none">
-                    <Column padding={{ vertical: 16, horizontal: 20 }}>
-                        <Fees
-                            account={account}
-                            feeInfo={feeInfo}
-                            composedLevels={composedLevels}
-                            changeFeeLevel={() => {}}
-                        />
-                    </Column>
-                </Card>
+                <TronStakeFees />
 
                 {error && (
                     <Banner
