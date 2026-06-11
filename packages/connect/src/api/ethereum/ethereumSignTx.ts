@@ -76,7 +76,8 @@ async function processDefinitionRequest(
 ): Promise<TxSignature> {
     const definitions = await getEthereumDefinitions({
         chainId: request.chain_id,
-        contractAddress: request.token_address.toLowerCase(),
+        contractAddress: request.token_address,
+        functionSignature: request.func_sig,
     });
 
     const nextResponse = await typedCall(
