@@ -1,5 +1,3 @@
-import { type PropsWithChildren } from 'react';
-
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type Route, goto, selectRouteName } from '@suite/router';
 import { type TradingType, selectTradingActiveSection } from '@suite-common/trading';
@@ -67,7 +65,7 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
     );
 };
 
-export const TradingLayoutHeader = ({ children }: PropsWithChildren) => {
+export const useTradingPageHeader = () => {
     const { translationString } = useTranslation();
     const fallbackTitle: TranslationKey = 'TR_NAV_TRADE';
 
@@ -75,8 +73,4 @@ export const TradingLayoutHeader = ({ children }: PropsWithChildren) => {
     const pageTitle = `Trezor Suite | ${translatedTitle}`;
 
     useLayout(pageTitle, <TradingPageHeader fallbackTitle={fallbackTitle} />);
-
-    if (!children) return null;
-
-    return children;
 };

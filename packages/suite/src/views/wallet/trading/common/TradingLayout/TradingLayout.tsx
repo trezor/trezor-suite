@@ -9,12 +9,16 @@ import { DiscoveryEmpty } from 'src/components/wallet/WalletLayout/AccountExcept
 import { useSelector } from 'src/hooks/suite';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingLayoutNavigation } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutNavigation';
+import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
 
 export const TradingLayout = ({ children }: PropsWithChildren) => {
     const routeName = useSelector(selectRouteName);
     const selectedDevice = useSelector(selectSelectedDevice);
     const hasVisibleAccounts = useSelector(state => selectVisibleDeviceAccounts(state).length > 0);
     const isSelectedDeviceConnected = !!selectedDevice?.connected;
+
+    useTradingPageHeader();
+
     const noVisibleAccountsContent = !isSelectedDeviceConnected ? (
         <ConnectDeviceGenericPromo />
     ) : (
