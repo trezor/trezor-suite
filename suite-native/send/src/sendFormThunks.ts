@@ -1,3 +1,5 @@
+import { fromWei } from 'web3-utils';
+
 import { isRejected } from '@reduxjs/toolkit';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
@@ -282,9 +284,14 @@ export const cancelEvmTransactionNativeThunk = createThunk<
             ],
             ethereumNonce: ethereumSpecific.nonce,
             transactionData: '',
-            gasPrice: ethereumSpecific.gasPrice ?? '0',
-            maxFeePerGas: ethereumSpecific.maxFeePerGas ?? '0',
-            maxPriorityFeePerGas: ethereumSpecific.maxPriorityFeePerGas ?? '0',
+            // ethereumSpecific stores gas values in Wei; fee levels use Gwei
+            gasPrice: ethereumSpecific.gasPrice ? fromWei(ethereumSpecific.gasPrice, 'gwei') : '',
+            maxFeePerGas: ethereumSpecific.maxFeePerGas
+                ? fromWei(ethereumSpecific.maxFeePerGas, 'gwei')
+                : '',
+            maxPriorityFeePerGas: ethereumSpecific.maxPriorityFeePerGas
+                ? fromWei(ethereumSpecific.maxPriorityFeePerGas, 'gwei')
+                : '',
         };
 
         const formState: FormState = {

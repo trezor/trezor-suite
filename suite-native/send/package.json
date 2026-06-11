@@ -25,6 +25,7 @@
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "web3-utils": "^4.3.3"
     }
 }
