@@ -8,6 +8,7 @@ import { CountrySubdivisionPickerControlsContext } from '@suite-native/trading-r
 import { SellProviderPicker } from './SellProviderPicker';
 import { TradingCountrySubdivisionPickerButton } from '../../general/TradingCountrySubdivisionPickerButton';
 import { TradingLocationPickers } from '../../general/TradingLocationPickers';
+import { SellReceiveMethodPicker } from '../fiat/SellReceiveMethodPicker';
 
 export type SellPaymentCardProps = {
     isFormMountedRecently?: boolean;
@@ -45,6 +46,7 @@ export const SellPaymentCard = ({
             <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
                 <Card noPadding>
                     <TradingLocationPickers context="sell" />
+                    <SellReceiveMethodPicker />
                     <SellProviderPicker />
                 </Card>
             </AnimatedBox>
