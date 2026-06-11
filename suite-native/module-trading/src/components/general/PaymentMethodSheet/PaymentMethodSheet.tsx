@@ -2,7 +2,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
-import { BottomSheetFlashList } from '@suite-native/atoms';
+import { BottomSheetFlashList, type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 
 import {
     ESTIMATED_HEADER_HEIGHT,
@@ -39,24 +39,24 @@ export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
 }: PaymentMethodsSheetProps<T>) => {
     const { bottom: insetBottom } = useSafeAreaInsets();
 
-    const onQuoteSelectCallback = (quote: T) => {
-        onQuoteSelect(quote);
-        onClose();
-    };
-
     return (
         <BottomSheetFlashList<T>
             isVisible={isVisible}
             onClose={onClose}
-            renderItem={({ item, index }) => (
+            renderItem={({ item, index }, { closeSheet }) => (
                 <PaymentMethodListItem
                     quote={item}
-                    onPress={() => onQuoteSelectCallback(item)}
+                    onPress={() => {
+                        onQuoteSelect(item);
+                        closeSheet();
+                    }}
                     isFirst={index === 0}
                     isLast={index === quotes.length - 1}
                 />
             )}
-            handleComponent={() => <SimpleSheetHeader onClose={onClose} title={title} />}
+            handleComponent={({ closeSheet }: BottomSheetFlashListHandleProps) => (
+                <SimpleSheetHeader onClose={closeSheet} title={title} />
+            )}
             data={quotes}
             estimatedListHeight={getEstimatedListHeight(quotes.length, insetBottom)}
             keyExtractor={keyExtractor}
