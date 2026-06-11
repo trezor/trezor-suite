@@ -1,5 +1,6 @@
 import { type Protocol } from '@suite-common/suite-constants';
-import { getNetworkSymbolForProtocol, parseErc681TransferUri } from '@suite-common/suite-utils';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { parseErc681TransferUri } from '@suite-common/transfer-uri';
 
 import { parseQuery, parseUri } from './parseUri';
 

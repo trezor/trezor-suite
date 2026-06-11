@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type AddressCorrection, autocorrectAddress, isAddressValid } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { parseErc681TransferUri } from '@suite-common/suite-utils';
+import { parseErc681TransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {

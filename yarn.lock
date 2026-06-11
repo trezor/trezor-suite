@@ -11414,6 +11414,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/transfer-uri@workspace:*, @suite-common/transfer-uri@workspace:suite-common/transfer-uri":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/transfer-uri@workspace:suite-common/transfer-uri"
+  dependencies:
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/tx-simulation@workspace:*, @suite-common/tx-simulation@workspace:^, @suite-common/tx-simulation@workspace:suite-common/tx-simulation":
   version: 0.0.0-use.local
   resolution: "@suite-common/tx-simulation@workspace:suite-common/tx-simulation"
@@ -13427,9 +13438,9 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
+    "@suite-common/transfer-uri": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
@@ -17033,6 +17044,7 @@ __metadata:
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
+    "@suite-common/transfer-uri": "workspace:*"
     "@suite-common/tx-simulation": "workspace:^"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

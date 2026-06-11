@@ -72,6 +72,7 @@
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/transaction-search": "workspace:*",
+        "@suite-common/transfer-uri": "workspace:*",
         "@suite-common/tx-simulation": "workspace:^",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
