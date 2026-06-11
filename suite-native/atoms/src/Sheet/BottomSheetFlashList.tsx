@@ -4,13 +4,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
+    type BottomSheetHandleProps,
     BottomSheetModal,
-    type BottomSheetProps,
     useBottomSheetScrollableCreator,
 } from '@gorhom/bottom-sheet';
 import { FlashList, type FlashListProps } from '@shopify/flash-list';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
+    closeSheet: () => void;
+};
 
 export type BottomSheetFlashListProps<TItem> = {
     isVisible: boolean;
@@ -18,7 +22,7 @@ export type BottomSheetFlashListProps<TItem> = {
     title?: ReactNode;
     subtitle?: ReactNode;
     estimatedListHeight?: number;
-    handleComponent?: BottomSheetProps['handleComponent'];
+    handleComponent?: ((props: BottomSheetFlashListHandleProps) => ReactNode) | null;
     flashListKey?: string;
 } & FlashListProps<TItem>;
 
@@ -63,9 +67,23 @@ export const BottomSheetFlashList = <TItem,>({
         bottomSheetModalRef.current?.dismiss();
     }, []);
 
+    const closeSheet = useCallback(() => {
+        dismissSheet();
+        onClose(false);
+    }, [dismissSheet, onClose]);
+
     const handleDismiss = useCallback(() => {
         onClose(false);
     }, [onClose]);
+
+    const renderHandleComponent = useCallback(
+        (props: BottomSheetHandleProps) =>
+            handleComponent?.({
+                ...props,
+                closeSheet,
+            }) ?? undefined,
+        [closeSheet, handleComponent],
+    );
 
     const maxHeight = Dimensions.get('window').height * 0.9;
     const minHeight = Math.max(Dimensions.get('window').height * 0.4, estimatedListHeight);
@@ -101,7 +119,7 @@ export const BottomSheetFlashList = <TItem,>({
             handleIndicatorStyle={applyStyle(handleStyle)}
             // @ts-expect-error wrong type, doesn't expect children
             containerComponent={WindowOverlay}
-            handleComponent={handleComponent}
+            handleComponent={renderHandleComponent}
             keyboardBlurBehavior="restore"
             keyboardBehavior="fillParent"
         >

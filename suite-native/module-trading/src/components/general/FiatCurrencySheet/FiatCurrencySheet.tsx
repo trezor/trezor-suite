@@ -2,7 +2,7 @@ import { memo, useCallback } from 'react';
 
 import type { FiatCurrencyCode } from 'invity-api';
 
-import { Divider } from '@suite-native/atoms';
+import { type BottomSheetFlashListHandleProps, Divider } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/trading-atoms';
 import { type FiatCurrencyItem } from '@suite-native/trading-types';
@@ -35,10 +35,10 @@ export const FiatCurrencySheet = memo(
         const { translate } = useTranslate();
 
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <SearchableSheetHeader
                     key="fiat_currency"
-                    onClose={onClose}
+                    onClose={closeSheet}
                     title={<Translation id="moduleTrading.fiatCurrencySheet.title" />}
                     onFilterChange={setFilterValue}
                     searchInputPlaceholder={translate(
@@ -47,7 +47,7 @@ export const FiatCurrencySheet = memo(
                     searchInputTestId={searchInputTestId}
                 />
             ),
-            [onClose, setFilterValue, translate, searchInputTestId],
+            [setFilterValue, translate, searchInputTestId],
         );
 
         const onFiatSelectCallback = (currency: FiatCurrencyCode) => {

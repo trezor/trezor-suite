@@ -5,7 +5,7 @@ import {
     type TradingCountrySubdivisionOption,
     useCountrySubdivisionFilteredData,
 } from '@suite-common/trading';
-import { Divider } from '@suite-native/atoms';
+import { type BottomSheetFlashListHandleProps, Divider } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     BottomSheetSectionList,
@@ -44,9 +44,9 @@ export const CountrySubdivisionSheet = memo(
         const bottomSheetTestId = `${testID}/bottom-sheet`;
 
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <SearchableSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     title={<Translation id="tradingResidence.countrySubdivisionSheet.title" />}
                     onFilterChange={setFilterValue}
                     searchInputTestId={searchInputTestId}
@@ -55,7 +55,7 @@ export const CountrySubdivisionSheet = memo(
                     )}
                 />
             ),
-            [onClose, setFilterValue, translate, searchInputTestId],
+            [setFilterValue, translate, searchInputTestId],
         );
 
         const onSubdivisionSelectCallback = (subdivision: TradingCountrySubdivisionOption) => {

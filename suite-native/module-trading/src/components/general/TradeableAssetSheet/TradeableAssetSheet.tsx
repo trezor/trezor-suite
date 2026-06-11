@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 import { BottomSheetSectionList, type ItemRenderConfig } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -55,15 +56,15 @@ export const TradeableAssetSheet = memo(
 
         // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <TradeableAssetSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     onFilterChange={onFilterChange}
                     onSelectedNetworkFilter={onSelectedNetworkFilter}
                     testID={headerTestID}
                 />
             ),
-            [onClose, onFilterChange, onSelectedNetworkFilter, headerTestID],
+            [onFilterChange, onSelectedNetworkFilter, headerTestID],
         );
 
         return (
