@@ -1,3 +1,4 @@
+import { StretchInY, StretchOutY } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
@@ -11,10 +12,9 @@ import {
     selectTradingSellProviders,
 } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { HStack, Text } from '@suite-native/atoms';
+import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
-import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import {
     type TradingRootState,
     selectSellQuotesByPaymentMethod,
@@ -109,7 +109,7 @@ export const SellProviderPicker = () => {
 
     return (
         <>
-            <ResidenceCheckAwareAnimatedBox>
+            <AnimatedBox entering={StretchInY} exiting={StretchOutY}>
                 <OverviewRow
                     title={translate('moduleTrading.tradingScreen.provider')}
                     onPress={handleProviderPress}
@@ -119,7 +119,7 @@ export const SellProviderPicker = () => {
                 >
                     <SellProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
                 </OverviewRow>
-            </ResidenceCheckAwareAnimatedBox>
+            </AnimatedBox>
             <ProviderSheet
                 quotes={quotes}
                 isVisible={isSheetVisible}

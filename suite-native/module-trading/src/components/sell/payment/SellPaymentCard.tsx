@@ -1,9 +1,12 @@
 import { Platform } from 'react-native';
 import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { AnimatedBox, Card } from '@suite-native/atoms';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import { CountrySubdivisionPickerControlsContext } from '@suite-native/trading-residence';
+import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
 import { SellProviderPicker } from './SellProviderPicker';
 import { TradingCountrySubdivisionPickerButton } from '../../general/TradingCountrySubdivisionPickerButton';
@@ -41,11 +44,15 @@ export const SellPaymentCard = ({
     const enteringAnimation = getEnteringAnimation(isFormMountedRecently, shouldAnimateEntering);
     const exitingAnimation = getExitingAnimation();
 
+    const quotes = useSelector(selectSellBestQuotesForAvailablePaymentMethods);
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const noCountryBottomBorder = quotes.length === 0 && !isLoading;
+
     return (
         <CountrySubdivisionPickerControlsContext value={subdivisionPickerControls}>
             <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
                 <Card noPadding>
-                    <TradingLocationPickers context="sell" />
+                    <TradingLocationPickers context="sell" noBottomBorder={noCountryBottomBorder} />
                     <SellReceiveMethodPicker />
                     <SellProviderPicker />
                 </Card>

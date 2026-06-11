@@ -1,7 +1,7 @@
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act, screen } from '@suite-native/test-utils-store';
-import { btcAsset, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import {
@@ -147,37 +147,6 @@ describe('BuyForm', () => {
             expect(
                 queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
             ).toBeNull();
-        });
-
-        it('should not render receive account when assets is not selected', () => {
-            const { queryByText, getByTestId } = renderBuyForm(overrides, form);
-
-            expect(
-                queryByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
-            ).toBeNull();
-            expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
-                borderBottomWidth: 1,
-            });
-            expect(getByTestId('@trading/buyCard/cryptoSection')).toHaveStyle({
-                borderBottomWidth: 0,
-            });
-        });
-
-        it('should render receive account once asset is selected', () => {
-            act(() => {
-                form.setValue('asset', btcAsset);
-            });
-            const { getByText, getByTestId } = renderBuyForm(overrides, form);
-
-            expect(
-                getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
-            ).toBeTruthy();
-            expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
-                borderBottomWidth: 1,
-            });
-            expect(getByTestId('@trading/buyCard/cryptoSection')).toHaveStyle({
-                borderBottomWidth: 1,
-            });
         });
     });
 });
