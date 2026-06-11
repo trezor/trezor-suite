@@ -62,6 +62,9 @@ export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL = 'all';
 export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC = 'noKyc';
 
 export const TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT = '1';
+export const SLIPPAGE_MIN = '0.01';
+export const SLIPPAGE_MAX = '50';
+export const SLIPPAGE_PRESETS = ['0.1', '0.5', '1', '3'];
 export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
 

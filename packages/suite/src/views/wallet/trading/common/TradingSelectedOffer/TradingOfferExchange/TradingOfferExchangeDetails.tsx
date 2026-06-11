@@ -14,7 +14,6 @@ import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
@@ -88,10 +87,14 @@ export const TradingOfferExchangeDetails = ({
 
     return (
         <>
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 {dexSlippage !== undefined && (
                     <>
-                        <TradingExchangeSlippageInfoItem isEditable slippage={dexSlippage} />
+                        <TradingExchangeSlippageInfoItem
+                            isEditable
+                            slippage={dexSlippage}
+                            selectedQuote={exchangeQuote}
+                        />
                         <TradingExchangeMinimumReceivedInfoItem
                             minimumYouGetAmount={minimumYouGetAmount}
                             symbol={receiveCoinSymbol}
@@ -141,11 +144,7 @@ export const TradingOfferExchangeDetails = ({
 
             {formStep === 'SIGN_DATA' && (
                 <Card>
-                    <Text
-                        typographyStyle="body-md-strong"
-                        as="div"
-                        margin={{ bottom: spacings.xs }}
-                    >
+                    <Text typographyStyle="body-md-strong" as="div" margin={{ bottom: 8 }}>
                         <Translation
                             id="TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE"
                             values={{ provider: providerName }}

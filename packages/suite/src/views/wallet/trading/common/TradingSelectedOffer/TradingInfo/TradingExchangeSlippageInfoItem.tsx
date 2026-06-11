@@ -1,18 +1,22 @@
 import { useState } from 'react';
 
+import { type ExchangeTrade } from 'invity-api';
+
 import { Translation } from '@suite/intl';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
 
-import { TradingOfferExchangeSlippageModal } from '../TradingOfferExchange/TradingOfferExchangeSlippageModal';
+import { TradingOfferExchangeSlippageModal } from 'src/views/wallet/trading/exchange/TradingOfferExchangeSlippageModal/TradingOfferExchangeSlippageModal';
 
 type TradingExchangeSlippageInfoItemProps = {
     isEditable?: boolean;
     slippage: string;
+    selectedQuote?: ExchangeTrade;
 };
 
 export const TradingExchangeSlippageInfoItem = ({
     isEditable = false,
     slippage,
+    selectedQuote,
 }: TradingExchangeSlippageInfoItemProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -41,8 +45,11 @@ export const TradingExchangeSlippageInfoItem = ({
                 )}
             </InfoItem>
 
-            {isEditModalOpen && (
-                <TradingOfferExchangeSlippageModal onClose={() => setIsEditModalOpen(false)} />
+            {isEditModalOpen && selectedQuote && (
+                <TradingOfferExchangeSlippageModal
+                    selectedQuote={selectedQuote}
+                    onClose={() => setIsEditModalOpen(false)}
+                />
             )}
         </>
     );
