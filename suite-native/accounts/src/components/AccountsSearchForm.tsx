@@ -41,6 +41,13 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
         };
     }, [inputText, onInputChange]);
 
+    useEffect(
+        () => () => {
+            onInputChange('');
+        },
+        [onInputChange],
+    );
+
     return (
         <Animated.View
             entering={FadeIn.duration(SEARCH_INPUT_ANIMATION_DURATION).delay(
