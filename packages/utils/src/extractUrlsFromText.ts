@@ -1,5 +1,5 @@
 const URL_REGEX =
-    /\b(?:https?:\/\/|www\.)[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=%]+\b|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?=\b|\s|$|\])/gi;
+    /\b(?:https?:\/\/|www\.)[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=%]+\b|(?:[a-zA-Z0-9-]+\s?\.\s?)+[a-zA-Z]{2,}(?=\b|\s|$|\])/gi;
 
 export const extractUrlsFromText = (text: string) => {
     const urls: string[] = [];
