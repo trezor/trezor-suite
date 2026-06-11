@@ -44,12 +44,6 @@ export const CountrySheet = memo(
             [setFilterValue, translate, searchInputTestId],
         );
 
-        const onCountrySelectCallback = (country: TradingCountryOption) => {
-            Keyboard.dismiss();
-            onCountrySelect(country);
-            onClose();
-        };
-
         const listData = useMemo(
             () => [
                 {
@@ -71,8 +65,15 @@ export const CountrySheet = memo(
                 onClose={onClose}
                 ListEmptyComponent={<CountryListEmptyComponent />}
                 handleComponent={renderHandle}
-                renderItem={item => (
-                    <CountryListItem {...item} onPress={() => onCountrySelectCallback(item)} />
+                renderItem={(item, _config, { closeSheet }) => (
+                    <CountryListItem
+                        {...item}
+                        onPress={() => {
+                            Keyboard.dismiss();
+                            onCountrySelect(item);
+                            closeSheet();
+                        }}
+                    />
                 )}
                 data={listData}
                 keyExtractor={keyExtractor}

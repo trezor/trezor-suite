@@ -50,11 +50,6 @@ export const FiatCurrencySheet = memo(
             [setFilterValue, translate, searchInputTestId],
         );
 
-        const onFiatSelectCallback = (currency: FiatCurrencyCode) => {
-            onFiatSelect(currency);
-            onClose();
-        };
-
         // re-mount FLashList component when filterValue changes (resets scroll position)
         const flashListKey = 'fiat_currencies_list-' + filterValue;
 
@@ -64,11 +59,14 @@ export const FiatCurrencySheet = memo(
                 onClose={onClose}
                 ListEmptyComponent={<FiatCurrencyListEmptyComponent />}
                 handleComponent={renderHandle}
-                renderItem={({ value, ...rest }) => (
+                renderItem={({ value, ...rest }, _config, { closeSheet }) => (
                     <FiatCurrencyListItem
                         {...rest}
                         value={value}
-                        onPress={() => onFiatSelectCallback(value)}
+                        onPress={() => {
+                            onFiatSelect(value);
+                            closeSheet();
+                        }}
                     />
                 )}
                 data={filteredData}

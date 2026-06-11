@@ -12,19 +12,30 @@ import { FlashList, type FlashListProps } from '@shopify/flash-list';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+type FlashListRenderItem<TItem> = NonNullable<FlashListProps<TItem>['renderItem']>;
+type FlashListRenderItemInfo<TItem> = Parameters<FlashListRenderItem<TItem>>[0];
+
+export type BottomSheetFlashListControls = {
+    closeSheet: (shouldHideKeyboard?: boolean) => void;
+};
+
 export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
-    closeSheet: () => void;
+    closeSheet: BottomSheetFlashListControls['closeSheet'];
 };
 
 export type BottomSheetFlashListProps<TItem> = {
     isVisible: boolean;
-    onClose: (isVisible: boolean) => void;
+    onClose: (shouldHideKeyboard?: boolean) => void;
     title?: ReactNode;
     subtitle?: ReactNode;
     estimatedListHeight?: number;
     handleComponent?: ((props: BottomSheetFlashListHandleProps) => ReactNode) | null;
     flashListKey?: string;
-} & FlashListProps<TItem>;
+    renderItem: (
+        info: FlashListRenderItemInfo<TItem>,
+        sheetControls: BottomSheetFlashListControls,
+    ) => ReturnType<FlashListRenderItem<TItem>>;
+} & Omit<FlashListProps<TItem>, 'renderItem'>;
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillPage,
@@ -56,6 +67,7 @@ export const BottomSheetFlashList = <TItem,>({
     estimatedListHeight = 0,
     handleComponent,
     flashListKey,
+    renderItem,
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
@@ -67,10 +79,13 @@ export const BottomSheetFlashList = <TItem,>({
         bottomSheetModalRef.current?.dismiss();
     }, []);
 
-    const closeSheet = useCallback(() => {
-        dismissSheet();
-        onClose(false);
-    }, [dismissSheet, onClose]);
+    const closeSheet = useCallback(
+        (shouldHideKeyboard?: boolean) => {
+            dismissSheet();
+            onClose(shouldHideKeyboard);
+        },
+        [dismissSheet, onClose],
+    );
 
     const handleDismiss = useCallback(() => {
         onClose(false);
@@ -83,6 +98,11 @@ export const BottomSheetFlashList = <TItem,>({
                 closeSheet,
             }) ?? undefined,
         [closeSheet, handleComponent],
+    );
+
+    const renderFlashListItem = useCallback(
+        (info: FlashListRenderItemInfo<TItem>) => renderItem(info, { closeSheet }),
+        [renderItem, closeSheet],
     );
 
     const maxHeight = Dimensions.get('window').height * 0.9;
@@ -110,7 +130,7 @@ export const BottomSheetFlashList = <TItem,>({
             backdropComponent={props => (
                 <BottomSheetBackdrop
                     {...props}
-                    onPress={dismissSheet}
+                    onPress={closeSheet}
                     appearsOnIndex={0}
                     disappearsOnIndex={-1}
                 />
@@ -125,6 +145,7 @@ export const BottomSheetFlashList = <TItem,>({
         >
             <FlashList
                 renderScrollComponent={BottomSheetListScrollComponent}
+                renderItem={renderFlashListItem}
                 key={flashListKey}
                 {...flashListProps}
                 contentContainerStyle={applyStyle(sheetContentContainerStyle, {
