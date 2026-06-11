@@ -90,7 +90,7 @@ export const CancelTransactionModal = ({
                 selectedFee: 'normal',
                 feePerUnit: '',
                 feeLimit: '',
-                options: [],
+                options: ['broadcast'],
                 isCoinControlEnabled: false,
                 hasCoinControlBeenOpened: false,
                 selectedUtxos: [],

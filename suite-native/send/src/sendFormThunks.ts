@@ -300,7 +300,7 @@ export const cancelEvmTransactionNativeThunk = createThunk<
             selectedFee: 'normal',
             feePerUnit: '',
             feeLimit: '',
-            options: [],
+            options: ['broadcast'],
             isCoinControlEnabled: false,
             hasCoinControlBeenOpened: false,
             selectedUtxos: [],
