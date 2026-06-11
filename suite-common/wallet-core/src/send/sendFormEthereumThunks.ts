@@ -489,6 +489,26 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             payment_req: paymentRequests?.[0],
         });
 
+        console.log('[signEth] tx params (gwei):', {
+            gasPrice: precomposedTransaction.feePerByte,
+            maxFeePerGas: precomposedTransaction.maxFeePerGas,
+            maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
+            gasLimit: precomposedTransaction.feeLimit,
+            nonce,
+            to: firstSignOutput.address,
+            amount: firstSignOutput.amount,
+        });
+        console.log(
+            '[signEth] transaction (hex):',
+            JSON.stringify({
+                gasPrice: transaction.gasPrice,
+                maxFeePerGas: (transaction as any).maxFeePerGas,
+                maxPriorityFeePerGas: (transaction as any).maxPriorityFeePerGas,
+                gasLimit: transaction.gasLimit,
+                nonce: transaction.nonce,
+            }),
+        );
+
         const response = await TrezorConnect.ethereumSignTransaction({
             device: {
                 path: device.path,

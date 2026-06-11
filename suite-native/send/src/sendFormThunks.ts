@@ -318,6 +318,15 @@ export const cancelEvmTransactionNativeThunk = createThunk<
         dispatch(sendFormActions.storeDraft({ accountKey, formState }));
 
         const rbfFeeInfo = getEthereumRbfFeeInfo(feeInfo, rbfParams);
+
+        console.log('[cancelEvm] original gas (gwei):', {
+            gasPrice: rbfParams.gasPrice,
+            maxFeePerGas: rbfParams.maxFeePerGas,
+            maxPriorityFeePerGas: rbfParams.maxPriorityFeePerGas,
+            nonce: ethereumSpecific.nonce,
+        });
+        console.log('[cancelEvm] bumped feeInfo levels:', JSON.stringify(rbfFeeInfo.levels));
+
         const response = await dispatch(
             composeSendFormTransactionFeeLevelsThunk({
                 formState,
@@ -336,6 +345,17 @@ export const cancelEvmTransactionNativeThunk = createThunk<
         if (!normalLevel || normalLevel.type === 'error') {
             return rejectWithValue('Unable to compose a valid cancellation fee level.');
         }
+
+        console.log(
+            '[cancelEvm] composed normalLevel:',
+            JSON.stringify({
+                feePerByte: normalLevel.type === 'final' ? normalLevel.feePerByte : 'n/a',
+                maxFeePerGas:
+                    normalLevel.type === 'final' ? (normalLevel as any).maxFeePerGas : 'n/a',
+                feeLimit: normalLevel.type === 'final' ? normalLevel.feeLimit : 'n/a',
+                fee: normalLevel.fee,
+            }),
+        );
 
         return normalLevel as GeneralPrecomposedTransactionFinal;
     },
