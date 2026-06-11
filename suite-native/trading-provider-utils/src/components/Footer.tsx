@@ -60,7 +60,7 @@ const stackStyle = prepareNativeStyle(() => ({
 
 export const Footer = () => {
     const { applyStyle } = useNativeStyles();
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal({ isNestedSheet: true });
 
     const shouldHideFooter = useSelector(selectIsAmountInputActive);
     const providerInfo = useSelector(selectTradingProviderMetadata);
