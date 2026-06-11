@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
 import { Grid } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersionArray,
@@ -12,9 +13,8 @@ import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
-import { useDispatch } from 'src/hooks/suite';
+import { useConnect } from 'src/hooks/suite';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;
@@ -49,7 +49,7 @@ type HomescreenGalleryProps = {
 };
 
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
-    const dispatch = useDispatch();
+    const { connect, run } = useConnect();
     const { device, isLocked } = useDevice();
 
     const deviceModelInternal = device?.features?.internal_model;
@@ -63,6 +63,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
         const isOriginalImage =
             getDefaultHomeScreenImage({ deviceModelInternal, isBitcoinOnlyFirmware }) === image;
 
+        let settings: { homescreen?: string; homescreen_length?: number };
         if (isOriginalImage) {
             // Reset homescreen to factory default. Firmware >= 2.9.0 expects
             // homescreen_length: 0; older firmware (e.g. Trezor One 1.x) does
@@ -72,15 +73,13 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
             const supportsHomescreenLength =
                 fwVersion !== null && versionUtils.isNewerOrEqual(fwVersion, '2.9.0');
 
-            dispatch(
-                applySettings(
-                    supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' },
-                ),
-            );
+            settings = supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' };
         } else {
             const hex = await imagePathToHex(imagePath, deviceModelInternal);
-            dispatch(applySettings({ homescreen: hex }));
+            settings = { homescreen: hex };
         }
+
+        await run(connect(TrezorConnect.applySettings)(settings));
 
         onConfirm?.();
     };
