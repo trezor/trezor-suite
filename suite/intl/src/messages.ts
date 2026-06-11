@@ -10201,6 +10201,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_SUPPLIED',
         defaultMessage: 'Supplied',
     },
+    TR_EARN_TRON_VOTE_COMPLETE: {
+        id: 'TR_EARN_TRON_VOTE_COMPLETE',
+        defaultMessage: 'Vote complete',
+    },
+    TR_EARN_TRON_VOTE_COMPLETE_DESCRIPTION: {
+        id: 'TR_EARN_TRON_VOTE_COMPLETE_DESCRIPTION',
+        defaultMessage: 'Your voting allocation was updated',
+    },
+    TR_EARN_TRON_CHANGE_REPRESENTATIVE: {
+        id: 'TR_EARN_TRON_CHANGE_REPRESENTATIVE',
+        defaultMessage: 'Change representative',
+    },
     TR_EARN_TRON_FREEZE_STEP_TITLE: {
         id: 'TR_EARN_TRON_FREEZE_STEP_TITLE',
         defaultMessage: 'Freeze your funds',

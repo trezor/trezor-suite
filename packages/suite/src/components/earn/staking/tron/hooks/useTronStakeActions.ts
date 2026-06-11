@@ -18,7 +18,7 @@ import { setConnectionModal, setConnectionMode } from 'src/actions/device/device
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { type useTronStakeForm } from './useTronStakeForm';
-import { CUSTOM_REPRESENTATIVE } from '../vote/constants';
+import { resolveVotedRepresentativeAddress } from '../voteUtils';
 
 interface UseTronStakeActionsProps {
     account: Account;
@@ -109,11 +109,9 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'vote': {
-                const { representative, customRepresentativeAddress } = form.methods.getValues();
-                const representativeAddress =
-                    representative === CUSTOM_REPRESENTATIVE
-                        ? customRepresentativeAddress.trim()
-                        : representative;
+                const representativeAddress = resolveVotedRepresentativeAddress(
+                    form.methods.getValues(),
+                );
                 dispatch(
                     submitTronVoteThunk({
                         account,
