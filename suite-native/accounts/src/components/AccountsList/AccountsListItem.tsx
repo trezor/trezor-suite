@@ -25,7 +25,7 @@ import {
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 
-export type AccountListItemProps = {
+type AccountListItemProps = {
     account: Account;
     isNativeCoinOnly?: boolean;
     onPress?: OnSelectAccount;

@@ -6,7 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-export type SelectableAssetItemProps = {
+type SelectableAssetItemProps = {
     symbol: NetworkSymbol;
     rightIcon?: IconName;
     onPress?: (symbol: NetworkSymbol) => void;
