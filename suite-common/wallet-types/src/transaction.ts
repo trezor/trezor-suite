@@ -1,4 +1,4 @@
-import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type {
     AccountAddress,
@@ -18,11 +18,11 @@ import type {
 } from '@trezor/connect';
 import { type Branded, type ObjectValues, type RequiredKey } from '@trezor/type-utils';
 
-import { type Account, type AccountDescriptor } from './account';
+import { type AccountDescriptor } from './account';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
 
-export const COMMON_PRECOMPOSE_ERRORS = {
+const COMMON_PRECOMPOSE_ERRORS = {
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     AMOUNT_IS_NOT_ENOUGH: 'AMOUNT_IS_NOT_ENOUGH',
     AMOUNT_IS_TOO_LOW: 'AMOUNT_IS_TOO_LOW',
@@ -42,7 +42,7 @@ export const SUITE_PRECOMPOSE_ERRORS = {
     TR_GENERIC_ERROR_TITLE: 'TR_GENERIC_ERROR_TITLE',
 } as const satisfies Record<string, string>;
 
-export type SuitePrecomposeError = ObjectValues<typeof SUITE_PRECOMPOSE_ERRORS>;
+type SuitePrecomposeError = ObjectValues<typeof SUITE_PRECOMPOSE_ERRORS>;
 
 /**
  * @suite-native/* errors
@@ -52,9 +52,9 @@ export const SUITE_NATIVE_PRECOMPOSE_ERRORS = {
     TR_STAKE_NOT_ENOUGH_FUNDS: 'TR_STAKE_NOT_ENOUGH_FUNDS',
 } as const satisfies Record<string, string>;
 
-export type SuiteNativePrecomposeError = ObjectValues<typeof SUITE_NATIVE_PRECOMPOSE_ERRORS>;
+type SuiteNativePrecomposeError = ObjectValues<typeof SUITE_NATIVE_PRECOMPOSE_ERRORS>;
 
-export type PrecomposeError = SuiteNativePrecomposeError | SuitePrecomposeError;
+type PrecomposeError = SuiteNativePrecomposeError | SuitePrecomposeError;
 
 // extend errors from @trezor/connect + @trezor/utxo-lib with errors from sendForm actions
 type PrecomposedTransactionErrorExtended =
@@ -64,7 +64,7 @@ type PrecomposedTransactionErrorExtended =
           error: PrecomposeError;
       };
 
-export type PrecomposedTransactionCardanoNonFinal =
+type PrecomposedTransactionCardanoNonFinal =
     PrecomposedTransactionCardanoConnectResponseNonFinal & {
         max?: string;
         feeLimit?: string;
@@ -137,10 +137,10 @@ type ComposeError = {
 
 export type PrecomposedTransactionError = PrecomposedTransactionErrorExtended & ComposeError;
 
-export type PrecomposedTransactionCardanoError = PrecomposedTransactionCardanoConnectResponseError &
+type PrecomposedTransactionCardanoError = PrecomposedTransactionCardanoConnectResponseError &
     ComposeError;
 
-export type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFinal & {
+type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFinal & {
     max: string | undefined;
     feeLimit?: string;
     estimatedFeeLimit?: string;
@@ -297,50 +297,6 @@ export interface ChainedTransactions {
     own: WalletAccountTransaction[];
     others: WalletAccountTransaction[];
 }
-
-export interface SignTransactionData {
-    account: Account;
-    address: string;
-    amount: string;
-    network: Network;
-    destinationTag?: string;
-    transactionInfo: PrecomposedTransactionFinal | null;
-}
-
-export interface ComposeTransactionData {
-    account: Account;
-    amount: string;
-    feeInfo: FeeInfo;
-    feePerUnit: string;
-    feeLimit: string;
-    network: Network;
-    selectedFee: FeeLevel['label'];
-    isMaxActive: boolean;
-    address?: string;
-    token?: string;
-    transactionData?: string;
-    isInvity?: boolean;
-}
-
-export interface SignedTx {
-    tx: string;
-    coin: string;
-}
-
-export interface ReviewTransactionData {
-    signedTx: SignedTx | undefined;
-    transactionInfo: PrecomposedTransactionFinal;
-    extraFields?: {
-        destinationTag?: string;
-    };
-}
-
-export type TransactionFiatRateUpdatePayload = {
-    txid: string;
-    account: Account;
-    updateObject: Partial<WalletAccountTransaction>;
-    ts: number;
-};
 
 export type TransactionType = Pick<WalletAccountTransaction, 'type'>['type'];
 

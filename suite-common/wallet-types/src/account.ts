@@ -16,7 +16,6 @@ import type { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 import type { StaticSessionId } from '@trezor/device-utils';
 import { type Branded } from '@trezor/type-utils';
 
-export type MetadataItem = string;
 export type XpubAddress = string;
 
 export type TokenSymbol = string & Branded<'TokenSymbol'>;
@@ -139,7 +138,7 @@ export type AccountFailureSpecific =
 export type AccountKey = `${AccountDescriptor}-${NetworkSymbol}-${StaticSessionId}` &
     Branded<'AccountKey'>;
 
-export type CreateAccountKeyParams = {
+type CreateAccountKeyParams = {
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
     deviceStaticSessionId: StaticSessionId;
@@ -216,8 +215,6 @@ export type Account = AccountBase &
 
 export type FailedAccount = Extract<Account, { failed: true }>;
 export type SuccessfulAccount = Extract<Account, { failed?: false }>;
-
-export type UppercaseAccountType = Uppercase<AccountType>;
 
 export type WalletParams =
     | NonNullable<{

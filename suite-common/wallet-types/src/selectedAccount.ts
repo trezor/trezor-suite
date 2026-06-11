@@ -4,7 +4,7 @@ import { type Account, type WalletParams } from './account';
 
 // 100% view
 // // Account loaders
-export interface SelectedAccountLoading {
+interface SelectedAccountLoading {
     status: 'loading';
     loader:
         | 'waiting-for-device' // No selectedDevice
@@ -44,7 +44,7 @@ export type SelectedAccountException =
           params: WalletParams;
       };
 
-export type SelectedAccountNone = {
+type SelectedAccountNone = {
     status: 'none';
     loader?: undefined;
     account?: undefined;

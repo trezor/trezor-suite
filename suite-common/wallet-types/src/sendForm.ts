@@ -29,7 +29,7 @@ export type FormStateTradingFiatCurrency = {
     fiatCurrency: string;
 };
 
-export type FormStateTradingDefault = {
+type FormStateTradingDefault = {
     activeSection: 'sell' | 'exchange';
     isSlip24Active: boolean;
 };
