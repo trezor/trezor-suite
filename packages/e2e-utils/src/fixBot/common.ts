@@ -67,8 +67,9 @@ export function runClaude(opts: {
     args: string[];
     input: string;
     tmpPrefix: string;
+    timeoutMs?: number;
 }): ClaudeRunResult {
-    const { root, args, input, tmpPrefix } = opts;
+    const { root, args, input, tmpPrefix, timeoutMs } = opts;
 
     const env = { ...process.env };
     // Prevents an internal Claude Code setting from accidentally being inherited
@@ -82,6 +83,8 @@ export function runClaude(opts: {
         cwd: root,
         env,
         stdio: ['pipe', stdoutFd, 'inherit'],
+        timeout: timeoutMs,
+        killSignal: 'SIGTERM',
     });
 
     closeSync(stdoutFd);

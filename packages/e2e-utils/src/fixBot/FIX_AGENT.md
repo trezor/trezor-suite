@@ -23,10 +23,14 @@ Your fix task is embedded at the bottom of this prompt. Read it before doing any
 
 ## Fix Constraints
 
-Allowed changes are:
+Your change surface is exactly two things — nothing else, no exceptions:
 
-- Any file inside `suite/e2e/`
-- `data-testid` attributes in product source files. No other product code changes!
+1. Any file inside `suite/e2e/`.
+2. Adding a `data-testid` attribute in a product source file.
+
+Everything else in product code is off-limits.
+This holds even when a product change is the only way to make a test pass — in that case the
+failure is not yours to fix (see Step 2, "Bail when it is not yours to fix").
 
 ## Environment
 
@@ -64,6 +68,12 @@ Then read the source files mentioned in the analysis — spec files, page object
 analysis with your own product-code analysis and the preflight results (Step 2)** before
 deciding the fix.
 
+The test name and each `test.step()` label are the specification of intended behavior — read
+them as the source of truth for what the test verifies. A correct fix restores the test's
+ability to exercise that behavior; it repairs what drifted (locators, waits, selectors, flow),
+never the test's design or what it asserts. If the only way to green is to weaken an assertion
+or change what the test checks, the failure is not yours to fix — bail as in Step 2.
+
 ---
 
 ## Step 2 — Pre-flight
@@ -91,7 +101,7 @@ Non-zero = failing — read the trace before deciding anything further (see belo
 find suite/e2e/test-results -name 'trace.zip' -newer /tmp/preflight-marker
 ```
 
-Unzip and read the last 10 screenshots (closest to the failure):
+Unzip and read the screenshot closest to the failure:
 
 ```bash
 unzip -q <path/to/trace.zip> -d /tmp/trace-preflight/
@@ -107,9 +117,11 @@ infrastructure or environment error, return the result (Step 4) with `result: "f
 `iterations: 0`, and stop. Do not enter the fix loop.
 
 **Bail when it is not yours to fix.** If at preflight — or during any later iteration — your
-analysis concludes the root cause is a **product bug** (logic/behavior/markup must change, not
-just a `data-testid`) do not continue in the fix loop. Instead, return the result (Step 4) with
-`result: "fail"`, the iteration count reached, and explain the reclassification in the
+analysis concludes the root cause is a **product bug** (product logic, behavior, or markup must
+change, not just a `data-testid`), you are NOT ALLOWED to fix. Do not edit product code to make the
+test pass, even when you are confident in the fix and still have iteration budget left — a passing
+test is never justification for stepping outside the change surface. Return the result (Step 4)
+with `result: "fail"`, the iteration count reached, and explain the reclassification in the
 `pr-description.md`.
 
 ---
@@ -131,11 +143,12 @@ current one. Add a new `data-testid` only if the element genuinely has none.
 
 **2. Run all validations that are still failing:**
 
+Run each failing validation separately so you get one trace per spec.
+Select config by platform:
+
 ```bash
 touch /tmp/iter-<N>-marker
 
-# Run each failing validation separately so you get one trace per spec.
-# Select config by platform:
 (cd suite/e2e && yarn xvfb-maybe -- playwright test \
   --config=./playwright-config/playwright-<web|desktop>.config.ts \
   --project=<group> \
@@ -187,11 +200,10 @@ Emit only the JSON object as your final answer, with no surrounding prose or cod
   "iterations": <number of fix iterations performed, 0 if none needed>,
   "passed": ["<platform>/<group>/<spec>"],
   "failed": ["<platform>/<group>/<spec>"],
-  "prTitle": "<string up to 100 chars>"
+  "prTitle": "Nightly fix <YY-MM-DD> - <description of committed fix, up to 80 chars>"
 }
 ```
 
-`prTitle` must be the full PR title including the `Nightly fix <YY-MM-DD> - ` prefix. Base it on the fix you just made.
 `pass` — all validations pass after fixes.
 `partial` — at least one passes, at least one fails.
 `fail` — zero validations pass after fixes.
