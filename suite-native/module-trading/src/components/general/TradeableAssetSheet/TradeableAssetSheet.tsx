@@ -65,7 +65,7 @@ export const TradeableAssetSheet = memo(
         return (
             <BottomSheetSectionList<TradeableAsset, ListItemExtraData>
                 isVisible={isVisible}
-                onClose={onClose}
+                onClose={() => onClose(hideKeyboardOnAssetSelect)}
                 ListEmptyComponent={<TradeableAssetListEmptyComponent />}
                 handleComponent={renderHandle}
                 data={listData}
@@ -73,7 +73,7 @@ export const TradeableAssetSheet = memo(
                 renderItem={(item, config, { closeSheet }) =>
                     renderItem(item, config, selectedAsset => {
                         onAssetSelect(selectedAsset);
-                        closeSheet(hideKeyboardOnAssetSelect);
+                        closeSheet();
                     })
                 }
                 flashListKey={flashListKey}
