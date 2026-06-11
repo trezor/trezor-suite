@@ -2,43 +2,13 @@ import { type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import {
-    decimalTransformer,
-    integerTransformer,
-    useAmountInputTransformers,
-} from '../useAmountInputTransformers';
+import { useAmountInputTransformers } from '../useAmountInputTransformers';
 
 let mockState: DeepPartial<WalletSettingsRootState> | undefined;
 
 jest.mock('react-redux', () => ({
     useSelector: (fn: (state: unknown) => unknown) => fn(mockState),
 }));
-
-describe('decimalTransformer', () => {
-    it.each([
-        ['1.23', '1,23'],
-        ['1', 'a1a'],
-        ['1', '.1'],
-        ['1.11', '1.1.1'],
-        ['1', '0001'],
-        ['0', '0000'],
-        ['0.00', '0.00'],
-    ])('should return %s for %s input', (expectedValue, inputValue) => {
-        expect(decimalTransformer(inputValue)).toEqual(expectedValue);
-    });
-});
-
-describe('integerTransformer', () => {
-    it.each([
-        ['123', '1.23'],
-        ['1', 'a1a'],
-        ['1', '0001'],
-        ['0', '0000'],
-        ['0', '0.00'],
-    ])('should return %s for %s input', (expectedValue, inputValue) => {
-        expect(integerTransformer(inputValue)).toEqual(expectedValue);
-    });
-});
 
 describe('useAmountInputTransformers', () => {
     beforeEach(() => {

@@ -548,7 +548,7 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_SET_LIMIT',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED: {
-        defaultMessage: 'Swap offer amount',
+        defaultMessage: 'Swap offer',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT: {
@@ -561,7 +561,7 @@ export const messages = defineMessages({
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_INFO: {
         defaultMessage:
-            "Exchange rates can change quickly, so the final amount you receive may differ from the offer—this is called slippage. Slippage tolerance sets the maximum difference you're willing to accept. A higher tolerance means your transaction is more likely to go through but you might get less than expected. A lower tolerance gives you a better rate but may cause the transaction to fail, and you'll still pay the transaction fee.",
+            'Limit how much the rate can change before the transaction fails. Network fees always apply.',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_INFO',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM: {
@@ -579,6 +579,10 @@ export const messages = defineMessages({
     TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE: {
         defaultMessage: 'Slippage must be between 0.01% and 50%',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_ERROR: {
+        defaultMessage: 'Failed to update slippage. Please try again.',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_ERROR',
     },
     TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND: {
         defaultMessage: 'Confirm on Trezor & send',
