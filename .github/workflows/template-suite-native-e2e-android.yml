@@ -87,8 +87,7 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
+        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config

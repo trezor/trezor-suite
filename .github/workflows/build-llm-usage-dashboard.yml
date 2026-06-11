@@ -31,7 +31,6 @@ jobs:
           key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Configure AWS credentials

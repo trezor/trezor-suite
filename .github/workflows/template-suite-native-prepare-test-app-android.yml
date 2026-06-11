@@ -60,8 +60,7 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        if: steps.node-modules-cache.outputs.cache-hit != 'true'
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
+        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
 
       - name: Setup Java
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
