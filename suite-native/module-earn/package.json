@@ -58,6 +58,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/staking": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@suite-native/tx-simulation": "workspace:*",

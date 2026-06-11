@@ -76,6 +76,7 @@
         { "path": "../settings" },
         { "path": "../staking" },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },

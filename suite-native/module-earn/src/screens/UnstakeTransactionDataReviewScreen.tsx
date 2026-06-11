@@ -22,11 +22,12 @@ import {
     TxValidityTimer,
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionAlreadySigned,
-    selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
+import { useEarnReviewAutoStart } from '../hooks/useEarnReviewAutoStart';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
@@ -46,15 +47,13 @@ export const UnstakeTransactionDataReviewScreen = ({
         selectIsReceiveAddressOutputConfirmed(state, 'unstake', accountKey),
     );
 
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'unstake', accountKey),
-    );
-
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
 
     const { handleSign, handlePush } = useHandleOnEarnTransactionReview({
         accountKey,
@@ -75,6 +74,14 @@ export const UnstakeTransactionDataReviewScreen = ({
 
     const isReadyToUnstake = isTransactionAlreadySigned && !!account;
 
+    useEarnReviewAutoStart({
+        handleSign,
+        isSigned: isTransactionAlreadySigned,
+        canStart: !!precomposedTransaction,
+        onDeviceReviewReady: revealConfirmOnTrezorSheet,
+        onSignFailed: closeSheet,
+    });
+
     useFocusEffect(
         useCallback(() => {
             // Solana address outputs would redirect mid-sign, skip until the success card.
@@ -83,12 +90,6 @@ export const UnstakeTransactionDataReviewScreen = ({
             }
         }, [account, accountKey, isAddressConfirmed, navigateToStakingDetail]),
     );
-
-    useEffect(() => {
-        if (isTransactionReviewInProgress) {
-            revealConfirmOnTrezorSheet();
-        }
-    }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
 
     useEffect(() => {
         if (isTransactionAlreadySigned) {
@@ -138,7 +139,7 @@ export const UnstakeTransactionDataReviewScreen = ({
                             isRetryDisabled={isRetryDisabled}
                         />
                     )}
-                    <UnstakeTransactionDataReviewStepList onSign={handleSign} />
+                    <UnstakeTransactionDataReviewStepList />
                 </VStack>
                 {isReadyToUnstake && (
                     <Card>
