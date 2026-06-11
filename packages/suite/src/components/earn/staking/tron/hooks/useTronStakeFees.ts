@@ -2,31 +2,32 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
     composeTronFreezeFeeLevelsThunk,
+    composeTronVoteFeeLevelsThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
+import { type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { useTronStakeContext } from '../TronStakeContext';
-
-interface UseTronStakeFeesProps {
-    account: Account;
-}
+import { CUSTOM_REPRESENTATIVE } from '../vote/constants';
 
 interface TronStakeFees {
     feeInfo: FeeInfo;
     composedLevels: PrecomposedLevels | undefined;
 }
 
-export const useTronStakeFees = ({ account }: UseTronStakeFeesProps): TronStakeFees => {
+export const useTronStakeFees = (): TronStakeFees => {
     const dispatch = useDispatch();
-    const { form } = useTronStakeContext();
+    const { account, form, actions } = useTronStakeContext();
+    const { step } = actions;
 
     const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');
+    const representative = form.methods.watch('representative');
+    const customRepresentativeAddress = form.methods.watch('customRepresentativeAddress');
 
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const feeInfo = useMemo(
@@ -35,12 +36,43 @@ export const useTronStakeFees = ({ account }: UseTronStakeFeesProps): TronStakeF
         [account.networkType, rawFeeInfo],
     );
 
+    const composeLevels = useMemo(() => {
+        switch (step) {
+            case 'freeze':
+                return () =>
+                    dispatch(composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }))
+                        .unwrap()
+                        .catch(() => undefined);
+            case 'vote': {
+                const representativeAddress =
+                    representative === CUSTOM_REPRESENTATIVE
+                        ? customRepresentativeAddress.trim()
+                        : representative;
+
+                return () =>
+                    dispatch(composeTronVoteFeeLevelsThunk({ account, representativeAddress }))
+                        .unwrap()
+                        .catch(() => undefined);
+            }
+            case 'complete':
+                return undefined;
+            default:
+                return exhaustive(step);
+        }
+    }, [
+        step,
+        account,
+        amount,
+        resourceType,
+        representative,
+        customRepresentativeAddress,
+        dispatch,
+    ]);
+
     const [composedLevels, setComposedLevels] = useState<PrecomposedLevels | undefined>(undefined);
 
     useEffect(() => {
-        const amountValue = new BigNumber(amount);
-
-        if (!amountValue.isFinite() || amountValue.lte(0)) {
+        if (!composeLevels) {
             setComposedLevels(undefined);
 
             return;
@@ -48,24 +80,16 @@ export const useTronStakeFees = ({ account }: UseTronStakeFeesProps): TronStakeF
 
         let active = true;
 
-        const compose = async () => {
-            const levels = await dispatch(
-                composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }),
-            )
-                .unwrap()
-                .catch(() => undefined);
-
+        void composeLevels().then(levels => {
             if (active) {
                 setComposedLevels(levels);
             }
-        };
-
-        void compose();
+        });
 
         return () => {
             active = false;
         };
-    }, [account, amount, resourceType, dispatch]);
+    }, [composeLevels]);
 
     return { feeInfo, composedLevels };
 };

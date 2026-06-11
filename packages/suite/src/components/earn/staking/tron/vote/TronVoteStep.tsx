@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { Banner, Column } from '@trezor/components';
 
 import { useTronStakeContext } from '../TronStakeContext';
+import { TronStakeFees } from '../TronStakeFees';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';
 import { TronVoteApr } from './TronVoteApr';
 import { TronVoteRepresentativeSelect } from './TronVoteRepresentativeSelect';
@@ -19,6 +20,8 @@ export const TronVoteStep = () => {
                 <TronVoteRepresentativeSelect />
 
                 <TronVoteApr />
+
+                <TronStakeFees />
 
                 {error && (
                     <Banner

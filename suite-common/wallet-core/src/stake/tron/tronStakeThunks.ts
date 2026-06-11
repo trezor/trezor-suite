@@ -75,6 +75,12 @@ export const composeTronFreezeFeeLevelsThunk = createThunk<
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
         }
 
+        const amountValue = new BigNumber(amount);
+
+        if (!amountValue.isFinite() || amountValue.lte(0)) {
+            return rejectWithValue({ kind: 'compose-failed', message: 'Invalid amount.' });
+        }
+
         const contract = buildFreezeContract(account, amount, resourceType);
 
         if (!contract) {
