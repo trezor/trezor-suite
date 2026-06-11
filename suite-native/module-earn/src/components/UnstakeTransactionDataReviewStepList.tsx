@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -6,15 +5,13 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
-import { Button, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
     type TransactionReviewOutputsState,
     selectIsTransactionAlreadySigned,
-    selectIsTransactionReviewInProgress,
     selectReviewSummaryOutput,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
@@ -24,23 +21,13 @@ import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { UnstakeOutputItem } from './UnstakeOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 
-const NUMBER_OF_STEPS = 2;
-
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.UnstakeTransactionDataReview>;
 
-type UnstakeTransactionDataReviewStepListProps = {
-    onSign: () => Promise<boolean>;
-};
-
-export const UnstakeTransactionDataReviewStepList = ({
-    onSign,
-}: UnstakeTransactionDataReviewStepListProps) => {
+export const UnstakeTransactionDataReviewStepList = () => {
     const route = useRoute<RouteProps>();
     const { accountKey, amount } = route.params;
 
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'unstake', accountKey),
-    );
+    const isSigned = useSelector(selectIsTransactionAlreadySigned);
 
     const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
         selectReviewSummaryOutput(state, 'unstake', accountKey),
@@ -48,34 +35,20 @@ export const UnstakeTransactionDataReviewStepList = ({
 
     const selectedPrecomposed = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
 
-    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
-
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const [stepIndex, setStepIndex] = useState(0);
+    // The summary card only unlocks once every device output has been confirmed, which is exactly when
+    // selectReviewSummaryOutput exposes a state.
+    const isSummaryActive = !!summaryOutput?.state;
+    const activeStep = isSummaryActive ? 1 : 0;
 
-    const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
+    const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
     if (!accountSymbol) {
         return null;
     }
-
-    const isLastStep = stepIndex === NUMBER_OF_STEPS - 1;
-    const areAllStepsDone = isLastStep || isTransactionReviewInProgress;
-
-    const handleNextStep = async () => {
-        if (stepIndex === NUMBER_OF_STEPS - 2) {
-            const didSign = await onSign();
-
-            if (!didSign) {
-                return;
-            }
-        }
-
-        setStepIndex(prevStepIndex => prevStepIndex + 1);
-    };
 
     const amountInBaseUnits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
@@ -87,7 +60,7 @@ export const UnstakeTransactionDataReviewStepList = ({
             <VStack spacing={LIST_VERTICAL_SPACING}>
                 <UnstakeOutputItem
                     symbol={accountSymbol}
-                    outputState={isTransactionAlreadySigned ? 'success' : 'active'}
+                    outputState={isSigned || isSummaryActive ? 'success' : 'active'}
                     onLayout={event => handleReadListItemHeight(event, 0)}
                 />
 
@@ -95,17 +68,11 @@ export const UnstakeTransactionDataReviewStepList = ({
                     accountKey={accountKey}
                     amount={amountInBaseUnits}
                     fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
-                    outputState={summaryOutput?.state ?? (isLastStep ? 'active' : undefined)}
+                    outputState={summaryOutput?.state}
                     onLayout={event => handleReadListItemHeight(event, 1)}
                 />
             </VStack>
-            {!areAllStepsDone && (
-                <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset}>
-                    <Button onPress={handleNextStep} testID="@earn/unstake-review-continue">
-                        <Translation id="generic.buttons.next" />
-                    </Button>
-                </SlidingFooterOverlay>
-            )}
+            {!isSigned && <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset} />}
         </View>
     );
 };

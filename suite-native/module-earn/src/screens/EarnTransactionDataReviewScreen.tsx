@@ -16,14 +16,14 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
-    type TransactionReviewOutputsState,
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
+import { useEarnReviewAutoStart } from '../hooks/useEarnReviewAutoStart';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
@@ -37,15 +37,13 @@ export const EarnTransactionDataReviewScreen = ({
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const [isPushing, setIsPushing] = useState(false);
 
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'stake', accountKey),
-    );
-
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('stake', accountKey);
 
     const { handleSign, handlePush } = useHandleOnEarnTransactionReview({
         accountKey,
@@ -66,11 +64,13 @@ export const EarnTransactionDataReviewScreen = ({
 
     const isReadyToStake = isTransactionAlreadySigned && !!account;
 
-    useEffect(() => {
-        if (isTransactionReviewInProgress) {
-            revealConfirmOnTrezorSheet();
-        }
-    }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
+    useEarnReviewAutoStart({
+        handleSign,
+        isSigned: isTransactionAlreadySigned,
+        canStart: !!precomposedTransaction,
+        onDeviceReviewReady: revealConfirmOnTrezorSheet,
+        onSignFailed: closeSheet,
+    });
 
     useEffect(() => {
         if (isTransactionAlreadySigned) {
@@ -125,7 +125,6 @@ export const EarnTransactionDataReviewScreen = ({
                             accountKey={accountKey}
                             amount={amount}
                             accountSymbol={account.symbol}
-                            onSign={handleSign}
                         />
                     )}
                 </VStack>

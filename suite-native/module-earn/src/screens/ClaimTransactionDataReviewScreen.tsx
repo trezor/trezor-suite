@@ -16,14 +16,14 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
-    type TransactionReviewOutputsState,
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
+import { useEarnReviewAutoStart } from '../hooks/useEarnReviewAutoStart';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
@@ -37,15 +37,13 @@ export const ClaimTransactionDataReviewScreen = ({
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const [isPushing, setIsPushing] = useState(false);
 
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'claim', accountKey),
-    );
-
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
 
     const { handleSign, handlePush } = useHandleOnEarnTransactionReview({
         accountKey,
@@ -67,11 +65,13 @@ export const ClaimTransactionDataReviewScreen = ({
     // Once signed, the user reviews the summary and taps "Claim now" to broadcast the transaction.
     const isReadyToClaim = isTransactionAlreadySigned && !!account;
 
-    useEffect(() => {
-        if (isTransactionReviewInProgress) {
-            revealConfirmOnTrezorSheet();
-        }
-    }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
+    useEarnReviewAutoStart({
+        handleSign,
+        isSigned: isTransactionAlreadySigned,
+        canStart: !!precomposedTransaction,
+        onDeviceReviewReady: revealConfirmOnTrezorSheet,
+        onSignFailed: closeSheet,
+    });
 
     useEffect(() => {
         if (isTransactionAlreadySigned) {
@@ -121,7 +121,7 @@ export const ClaimTransactionDataReviewScreen = ({
                             isRetryDisabled={isRetryDisabled}
                         />
                     )}
-                    <ClaimTransactionDataReviewStepList onSign={handleSign} />
+                    <ClaimTransactionDataReviewStepList />
                 </VStack>
                 {isReadyToClaim && (
                     <Card>
