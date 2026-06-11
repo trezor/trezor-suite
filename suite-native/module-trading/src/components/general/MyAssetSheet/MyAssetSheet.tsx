@@ -80,7 +80,7 @@ export const MyAssetSheet = memo(
                 renderItem={(asset, config, { closeSheet }) =>
                     renderItem(asset, config, (selectedAsset: TradeableAsset, account: Account) => {
                         onAssetSelect(selectedAsset, account);
-                        closeSheet(false);
+                        closeSheet();
                     })
                 }
                 renderSectionHeader={(_label, config) => {

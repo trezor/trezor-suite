@@ -16,7 +16,7 @@ type FlashListRenderItem<TItem> = NonNullable<FlashListProps<TItem>['renderItem'
 type FlashListRenderItemInfo<TItem> = Parameters<FlashListRenderItem<TItem>>[0];
 
 export type BottomSheetFlashListControls = {
-    closeSheet: (shouldHideKeyboard?: boolean) => void;
+    closeSheet: () => void;
 };
 
 export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
@@ -79,14 +79,6 @@ export const BottomSheetFlashList = <TItem,>({
         bottomSheetModalRef.current?.dismiss();
     }, []);
 
-    const closeSheet = useCallback(
-        (shouldHideKeyboard?: boolean) => {
-            dismissSheet();
-            onClose(shouldHideKeyboard);
-        },
-        [dismissSheet, onClose],
-    );
-
     const handleDismiss = useCallback(() => {
         onClose(false);
     }, [onClose]);
@@ -95,14 +87,14 @@ export const BottomSheetFlashList = <TItem,>({
         (props: BottomSheetHandleProps) =>
             handleComponent?.({
                 ...props,
-                closeSheet,
+                closeSheet: dismissSheet,
             }) ?? undefined,
-        [closeSheet, handleComponent],
+        [dismissSheet, handleComponent],
     );
 
     const renderFlashListItem = useCallback(
-        (info: FlashListRenderItemInfo<TItem>) => renderItem(info, { closeSheet }),
-        [renderItem, closeSheet],
+        (info: FlashListRenderItemInfo<TItem>) => renderItem(info, { closeSheet: dismissSheet }),
+        [renderItem, dismissSheet],
     );
 
     const maxHeight = Dimensions.get('window').height * 0.9;
@@ -130,7 +122,7 @@ export const BottomSheetFlashList = <TItem,>({
             backdropComponent={props => (
                 <BottomSheetBackdrop
                     {...props}
-                    onPress={closeSheet}
+                    onPress={dismissSheet}
                     appearsOnIndex={0}
                     disappearsOnIndex={-1}
                 />
