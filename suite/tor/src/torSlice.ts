@@ -15,7 +15,7 @@ export interface TorBootstrap {
     isSlow?: boolean;
 }
 
-export type TorState = {
+type TorState = {
     torStatus: TorStatus;
     torBootstrap: TorBootstrap | null;
 };
@@ -25,7 +25,7 @@ const initialState: TorState = {
     torBootstrap: null,
 };
 
-export const torSlice = createSlice({
+const torSlice = createSlice({
     name: 'tor',
     initialState,
     reducers: {
