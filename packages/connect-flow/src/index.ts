@@ -1,4 +1,5 @@
 export { createConnect } from './connect';
+export { normalizeError } from './errors';
 export { createConnectService } from './createConnectService';
 export { createProcessGroup } from './processGroup';
 export type { ProcessGroup, RunnableProcess } from './processGroup';
@@ -21,17 +22,14 @@ export { SUBPROCESS_TYPE } from './types';
 export type {
     AddressResult,
     AnySubProcess,
-    CompleteSubProcess,
     ConnectService,
     CreateWalletOptions,
-    ErrorSubProcess,
     GetAddressOptions,
     GetAddressSubProcess,
     Process,
     RequestConfirmationSubProcess,
     RequestPassphraseSubProcess,
     RequestPinSubProcess,
-    ResultOf,
     SubProcessBase,
     SubProcessType,
     UiNotificationSubProcess,

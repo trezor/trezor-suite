@@ -94,23 +94,25 @@ type UiSubProcess = {
         Augmentation<E['type']> & {
             cancel: () => void;
             callId: string;
+            // The underlying UI event, ready to dispatch (e.g. to
+            // defaultTrezorUIEventHandlerThunk) without re-stripping our fields.
+            originalEvent: Omit<E, 'event'>;
         };
 }[UiEvent['type']];
 
-type SubProcess<TResult> =
-    | UiSubProcess
-    | { type: 'complete'; result: TResult; callId: string; cancel: () => void }
-    | { type: 'error'; error: Error; callId: string; cancel: () => void };
+// A subprocess is emitted only when a UI event arrives from connect. The call's
+// result/error is not a subprocess — it comes from `toPromise()`.
+type SubProcess = UiSubProcess;
 
 interface Process<TResult> {
     readonly id: string;
-    run(): AsyncIterableIterator<SubProcess<TResult>>;
+    run(): AsyncIterableIterator<SubProcess>;
     cancel(): void;
     toPromise(): Promise<TResult>;
 }
 
-let counter = 0;
-const nextId = () => `connect-${Date.now()}-${++counter}`;
+// TrezorConnect requires callId to be a valid UUID.
+const nextId = () => crypto.randomUUID();
 
 const createChannel = <T>() => {
     const buffer: T[] = [];
@@ -147,12 +149,13 @@ const createChannel = <T>() => {
 export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
     const { trezorConnect } = deps;
 
-    const augment = <TResult>(
+    const augment = (
         event: UiEvent,
         callId: string,
         cancel: () => void,
-    ): SubProcess<TResult> | undefined => {
-        const base = { ...event, callId, cancel };
+    ): SubProcess | undefined => {
+        const { event: _channel, ...originalEvent } = event;
+        const base = { ...event, callId, cancel, originalEvent };
         const { requestId } = event;
 
         switch (event.type) {
@@ -165,7 +168,7 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
                             payload: pin,
                             requestId,
                         }),
-                } as SubProcess<TResult>;
+                } as SubProcess;
 
             case 'ui-request_passphrase':
                 return {
@@ -180,7 +183,7 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
                             },
                             requestId,
                         }),
-                } as SubProcess<TResult>;
+                } as SubProcess;
 
             case 'ui-request_confirmation':
                 return {
@@ -191,13 +194,13 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
                             payload: value,
                             requestId,
                         }),
-                } as SubProcess<TResult>;
+                } as SubProcess;
 
             default:
                 // Non-interactive UI event — pass through with `cancel`/`callId`
                 // so the consumer can read the original payload (firmware
                 // progress, bundle progress, button request data, etc.).
-                return base as SubProcess<TResult>;
+                return base as SubProcess;
         }
     };
 
@@ -209,7 +212,7 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
         let cancelled = false;
         let runCalled = false;
 
-        const queue = createChannel<SubProcess<TResult>>();
+        const queue = createChannel<SubProcess>();
 
         let resolveResult!: (value: TResult) => void;
         let rejectResult!: (error: Error) => void;
@@ -234,7 +237,7 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
             // the augment switch exhaustive at runtime, not just at compile
             // time, so consumers can rely on `exhaustive()` there.
             if (!isLocalUiEvent(event)) return;
-            const sub = augment<TResult>(event, id, cancelFn);
+            const sub = augment(event, id, cancelFn);
             if (sub) queue.push(sub);
         };
 
@@ -248,24 +251,13 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
                 .then(result => {
                     const ok = result as { success?: boolean; payload?: unknown };
                     if (ok.success === true) {
-                        const payload = ok.payload as TResult;
-                        resolveResult(payload);
-                        queue.push({
-                            type: 'complete',
-                            result: payload,
-                            callId: id,
-                            cancel: cancelFn,
-                        });
+                        resolveResult(ok.payload as TResult);
                     } else {
-                        const error = new Error(extractErrorMessage(result));
-                        rejectResult(error);
-                        queue.push({ type: 'error', error, callId: id, cancel: cancelFn });
+                        rejectResult(new Error(extractErrorMessage(result)));
                     }
                 })
                 .catch(err => {
-                    const error = err instanceof Error ? err : new Error(String(err));
-                    rejectResult(error);
-                    queue.push({ type: 'error', error, callId: id, cancel: cancelFn });
+                    rejectResult(err instanceof Error ? err : new Error(String(err)));
                 })
                 .finally(() => {
                     trezorConnect.off('UI_EVENT', onUiEvent);
@@ -282,8 +274,11 @@ export const createConnect = (deps: { trezorConnect: ConnectDeps }) => {
 
                 for await (const sub of queue) {
                     yield sub;
-                    if (sub.type === 'complete' || sub.type === 'error') return;
                 }
+                // The loop ends when the call settles. Surface a failure by
+                // rethrowing here so a bare `for await (...)` throws; a cancel
+                // is a clean stop, not an error.
+                if (!cancelled) await resultPromise;
             },
             cancel: cancelFn,
             toPromise: () => {

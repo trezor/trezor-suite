@@ -3,13 +3,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect from '@trezor/connect';
 import {
+    type AddressResult,
+    type AnySubProcess,
     type ConnectService,
     type CreateWalletOptions,
     type GetAddressOptions,
-    type GetAddressSubProcess,
     type Process,
     type TrezorConnectLike,
-    type WalletSubProcess,
+    type WalletResult,
     createConnectService,
 } from '@trezor/connect-flow';
 
@@ -22,10 +23,10 @@ export const CONNECT_METHOD = {
 
 export type ConnectMethod = (typeof CONNECT_METHOD)[keyof typeof CONNECT_METHOD];
 
-type MethodSubProcess<M extends ConnectMethod> = M extends 'getAddress'
-    ? GetAddressSubProcess
+type MethodResult<M extends ConnectMethod> = M extends 'getAddress'
+    ? AddressResult
     : M extends 'createWallet'
-      ? WalletSubProcess
+      ? WalletResult
       : never;
 
 type MethodOptions<M extends ConnectMethod> = M extends 'getAddress'
@@ -34,16 +35,16 @@ type MethodOptions<M extends ConnectMethod> = M extends 'getAddress'
       ? Omit<CreateWalletOptions, 'devicePath'>
       : never;
 
-type MethodProcess<M extends ConnectMethod> = Process<MethodSubProcess<M>>;
+type MethodProcess<M extends ConnectMethod> = Process<MethodResult<M>>;
 
-type SubprocessCallback<M extends ConnectMethod> = (subprocess: MethodSubProcess<M>) => void;
+type SubprocessCallback = (subprocess: AnySubProcess) => void;
 
 interface UseConnectServiceResult<M extends ConnectMethod> {
     connectService: ConnectService;
     process: MethodProcess<M> | null;
-    subprocess: MethodSubProcess<M> | null;
+    subprocess: AnySubProcess | null;
     devicePath: string | undefined;
-    start: (options: MethodOptions<M>, onSubprocess?: SubprocessCallback<M>) => MethodProcess<M>;
+    start: (options: MethodOptions<M>, onSubprocess?: SubprocessCallback) => MethodProcess<M>;
     cancel: () => void;
 }
 
@@ -57,7 +58,7 @@ const createProcess = <M extends ConnectMethod>(
         return service.getAddress({
             ...(options as Omit<GetAddressOptions, 'devicePath'>),
             devicePath,
-        }) as MethodProcess<M>;
+        }) as unknown as MethodProcess<M>;
     }
     if (method === CONNECT_METHOD.CREATE_WALLET) {
         if (!devicePath) {
@@ -67,7 +68,7 @@ const createProcess = <M extends ConnectMethod>(
         return service.createWallet({
             ...(options as Omit<CreateWalletOptions, 'devicePath'>),
             devicePath,
-        }) as MethodProcess<M>;
+        }) as unknown as MethodProcess<M>;
     }
     throw new Error(`Unknown connect method: ${method}`);
 };
@@ -87,7 +88,7 @@ export const useConnectService = <M extends ConnectMethod>(
     );
 
     const [process, setProcess] = useState<MethodProcess<M> | null>(null);
-    const [subprocess, setSubprocess] = useState<MethodSubProcess<M> | null>(null);
+    const [subprocess, setSubprocess] = useState<AnySubProcess | null>(null);
     const procRef = useRef<MethodProcess<M> | null>(null);
 
     // Cancel any in-flight process when the component unmounts so we don't
@@ -99,29 +100,26 @@ export const useConnectService = <M extends ConnectMethod>(
         [],
     );
 
-    const drive = useCallback(
-        async (proc: MethodProcess<M>, onSubprocess?: SubprocessCallback<M>) => {
-            procRef.current = proc;
-            setProcess(proc);
-            setSubprocess(null);
-            try {
-                for await (const next of proc.run()) {
-                    setSubprocess(next);
-                    onSubprocess?.(next);
-                }
-            } finally {
-                if (procRef.current === proc) {
-                    procRef.current = null;
-                    setProcess(null);
-                    setSubprocess(null);
-                }
+    const drive = useCallback(async (proc: MethodProcess<M>, onSubprocess?: SubprocessCallback) => {
+        procRef.current = proc;
+        setProcess(proc);
+        setSubprocess(null);
+        try {
+            for await (const next of proc.run()) {
+                setSubprocess(next);
+                onSubprocess?.(next);
             }
-        },
-        [],
-    );
+        } finally {
+            if (procRef.current === proc) {
+                procRef.current = null;
+                setProcess(null);
+                setSubprocess(null);
+            }
+        }
+    }, []);
 
     const start = useCallback(
-        (options: MethodOptions<M>, onSubprocess?: SubprocessCallback<M>) => {
+        (options: MethodOptions<M>, onSubprocess?: SubprocessCallback) => {
             const proc = createProcess(connectService, method, options, devicePath);
             void drive(proc, onSubprocess);
 

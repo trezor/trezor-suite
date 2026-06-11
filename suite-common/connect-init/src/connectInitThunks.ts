@@ -78,10 +78,6 @@ export const connectInitThunk = createThunk<void, void, void>(
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
             if ('callId' in action && action.callId) {
-                console.warn(
-                    `[connect-init] UI_EVENT ${action.type} (callId=${action.callId}) swallowed in global scope — handled by a scoped flow.`,
-                );
-
                 return;
             }
             dispatch(defaultTrezorUIEventHandlerThunk(action));

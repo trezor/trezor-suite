@@ -16,14 +16,12 @@ import type {
     ConnectService,
     CreateWalletOptions,
     GetAddressOptions,
-    GetAddressSubProcess,
     Process,
     WalletResult,
-    WalletSubProcess,
 } from './types';
 
-let counter = 0;
-const nextCallId = () => `create-connect-service-call-${Date.now()}-${++counter}`;
+// TrezorConnect requires callId to be a valid UUID.
+const nextCallId = () => crypto.randomUUID();
 
 interface SubProcessContext {
     callId: string;
@@ -38,11 +36,11 @@ const UI_REQUEST_VALUES: ReadonlySet<string> = new Set(Object.values(UI_REQUEST)
 const isUiEvent = (event: UiEventMessage | PopupEventMessage): event is UiEvent =>
     UI_REQUEST_VALUES.has(event.type);
 
-const mapEventToSubProcess = <TResult>(
+const mapEventToSubProcess = (
     event: UiEvent,
     trezorConnect: TrezorConnectLike,
     ctx: SubProcessContext,
-): AnySubProcess<TResult> => {
+): AnySubProcess => {
     const base = { callId: ctx.callId, requestId: event.requestId, cancel: ctx.cancel };
     switch (event.type) {
         case UI_REQUEST.REQUEST_PASSPHRASE:
@@ -91,7 +89,7 @@ const mapEventToSubProcess = <TResult>(
             // Non-interactive UI event — pass through with the original event
             // payload so consumers can discriminate by `type` and read the
             // full data (e.g. `payload.code` for button requests).
-            return { ...base, ...event } as AnySubProcess<TResult>;
+            return { ...base, ...event } as AnySubProcess;
     }
 };
 
@@ -101,17 +99,17 @@ interface FlowContext<TResult> {
 
 const buildProcess = <TResult>(
     trezorConnect: TrezorConnectLike,
-    activeRef: { current: Process<AnySubProcess<unknown>> | null },
+    activeRef: { current: Process<unknown> | null },
     context: FlowContext<TResult>,
-): Process<AnySubProcess<TResult>> => {
+): Process<TResult> => {
     const callId = nextCallId();
     let runCalled = false;
     let started = false;
     let cancelled = false;
 
-    const channel = new EventChannel<AnySubProcess<TResult>>();
+    const channel = new EventChannel<AnySubProcess>();
     let listener: UiEventListener | null = null;
-    const selfRef: { proc: Process<AnySubProcess<TResult>> | null } = { proc: null };
+    const selfRef: { proc: Process<TResult> | null } = { proc: null };
 
     let resolveResult: (value: TResult) => void = () => {};
     let rejectResult: (error: Error) => void = () => {};
@@ -127,10 +125,7 @@ const buildProcess = <TResult>(
             listener = null;
         }
         channel.close();
-        if (
-            selfRef.proc &&
-            activeRef.current === (selfRef.proc as Process<AnySubProcess<unknown>>)
-        ) {
+        if (selfRef.proc && activeRef.current === (selfRef.proc as Process<unknown>)) {
             activeRef.current = null;
         }
     };
@@ -158,7 +153,7 @@ const buildProcess = <TResult>(
             // Filter by callId — TrezorConnect echoes our callId on every UI event
             // it emits during this method call.
             if (event.callId !== callId) return;
-            const sub = mapEventToSubProcess<TResult>(event, trezorConnect, subCtx);
+            const sub = mapEventToSubProcess(event, trezorConnect, subCtx);
             channel.push(sub);
         };
         trezorConnect.on('UI_EVENT', listener);
@@ -168,47 +163,37 @@ const buildProcess = <TResult>(
             .then(result => {
                 if (result.success) {
                     resolveResult(result.payload);
-                    channel.push({
-                        ...subCtx,
-                        type: SUBPROCESS_TYPE.COMPLETE,
-                        result: result.payload,
-                    });
                 } else {
-                    const error = new Error(result.payload.error);
-                    rejectResult(error);
-                    channel.push({ ...subCtx, type: SUBPROCESS_TYPE.ERROR, error });
+                    rejectResult(new Error(result.payload.error));
                 }
             })
             .catch(error => {
-                const err = error instanceof Error ? error : new Error(String(error));
-                rejectResult(err);
-                channel.push({ ...subCtx, type: SUBPROCESS_TYPE.ERROR, error: err });
+                rejectResult(error instanceof Error ? error : new Error(String(error)));
             })
             .finally(() => {
                 channel.close();
             });
     };
 
-    async function* runIterator(): AsyncIterableIterator<AnySubProcess<TResult>> {
+    async function* runIterator(): AsyncIterableIterator<AnySubProcess> {
         start();
         try {
             while (true) {
                 if (cancelled) return;
                 const next = await channel.pull();
-                if (next.done) return;
+                if (next.done) break;
                 yield next.value;
-                if (
-                    next.value.type === SUBPROCESS_TYPE.COMPLETE ||
-                    next.value.type === SUBPROCESS_TYPE.ERROR
-                )
-                    return;
             }
+            // The channel closes when the call settles. Surface a failure by
+            // rethrowing here so a bare `for await (...)` throws; a cancel is a
+            // clean stop, not an error.
+            if (!cancelled) await resultPromise;
         } finally {
             cleanup();
         }
     }
 
-    const proc: Process<AnySubProcess<TResult>> = {
+    const proc: Process<TResult> = {
         callId,
         run: () => {
             if (runCalled) {
@@ -234,24 +219,22 @@ export const createConnectService = (deps: {
     trezorConnect: TrezorConnectLike;
 }): ConnectService => {
     const { trezorConnect } = deps;
-    const activeRef: { current: Process<AnySubProcess<unknown>> | null } = { current: null };
+    const activeRef: { current: Process<unknown> | null } = { current: null };
 
-    const guard = <TResult>(
-        create: () => Process<AnySubProcess<TResult>>,
-    ): Process<AnySubProcess<TResult>> => {
+    const guard = <TResult>(create: () => Process<TResult>): Process<TResult> => {
         if (activeRef.current) {
             throw new Error(
                 'connectService is already running a process; await or cancel it before starting another',
             );
         }
         const proc = create();
-        activeRef.current = proc as Process<AnySubProcess<unknown>>;
+        activeRef.current = proc as Process<unknown>;
 
         return proc;
     };
 
     return {
-        createWallet: (options: CreateWalletOptions): Process<WalletSubProcess> =>
+        createWallet: (options: CreateWalletOptions): Process<WalletResult> =>
             guard<WalletResult>(() =>
                 buildProcess<WalletResult>(trezorConnect, activeRef, {
                     invoke: async callId => {
@@ -270,7 +253,7 @@ export const createConnectService = (deps: {
                 }),
             ),
 
-        getAddress: (options: GetAddressOptions): Process<GetAddressSubProcess> =>
+        getAddress: (options: GetAddressOptions): Process<AddressResult> =>
             guard<AddressResult>(() =>
                 buildProcess<AddressResult>(trezorConnect, activeRef, {
                     invoke: callId =>

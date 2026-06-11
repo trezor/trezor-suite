@@ -35,7 +35,7 @@ const _typeHelper = () => connect(TrezorConnect.getAddress);
 type WrappedGetAddress = ReturnType<typeof _typeHelper>;
 type GetAddressProcess = ReturnType<WrappedGetAddress>;
 type Subprocess = ReturnType<GetAddressProcess['run']> extends AsyncIterable<infer T> ? T : never;
-type AddressResult = Extract<Subprocess, { type: 'complete' }>['result'];
+type AddressResult = Awaited<ReturnType<GetAddressProcess['toPromise']>>;
 
 type LogEntry = { type: Subprocess['type']; detail?: string };
 
@@ -47,10 +47,6 @@ const formatDetail = (sub: Subprocess): string | undefined => {
             return `code=${sub.payload.code}`;
         case 'ui-request_confirmation':
             return `view=${sub.payload.view}${sub.payload.label ? ` label=${sub.payload.label}` : ''}`;
-        case 'complete':
-            return JSON.stringify(sub.result);
-        case 'error':
-            return sub.error.message;
         case 'ui-request_pin':
         case 'ui-request_passphrase':
         case 'ui-request_passphrase_on_device':
@@ -243,10 +239,6 @@ const SubprocessModal = ({ subprocess }: { subprocess: Subprocess }) => {
         case 'ui-request_passphrase':
             return <PassphraseSubprocessModal subprocess={subprocess} />;
 
-        case 'complete':
-        case 'error':
-            return null;
-
         default:
             // UiNotificationSubProcess is an open union of all UI events — only
             // the interactive/terminal ones get a dedicated modal.
@@ -292,6 +284,7 @@ export const ConnectWrapPlayground = () => {
         setCallId(proc.id);
         setRunning(true);
 
+        const resultP = proc.toPromise();
         try {
             for await (const sub of proc.run()) {
                 setSubprocess(sub);
@@ -308,10 +301,10 @@ export const ConnectWrapPlayground = () => {
                 } else {
                     dispatch(closeModal());
                 }
-
-                if (sub.type === 'complete') setResult(sub.result);
-                if (sub.type === 'error') setError(sub.error.message);
             }
+            setResult(await resultP);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
         } finally {
             if (procRef.current === proc) {
                 procRef.current = null;

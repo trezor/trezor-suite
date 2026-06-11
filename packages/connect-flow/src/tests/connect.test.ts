@@ -2,7 +2,7 @@ import { createConnect } from '../connect';
 import { createTrezorConnectMock } from '../mock';
 
 describe('createConnect', () => {
-    it('passes injected callId into the wrapped method and yields a complete subprocess', async () => {
+    it('passes injected callId into the wrapped method and resolves toPromise', async () => {
         const mock = createTrezorConnectMock();
         const connect = createConnect({ trezorConnect: mock });
 
@@ -14,8 +14,7 @@ describe('createConnect', () => {
             showOnTrezor: true,
         });
 
-        const iter = proc.run();
-        const stepP = iter.next();
+        const final = proc.toPromise();
 
         expect(mock.getAddressCalls).toEqual([
             {
@@ -33,15 +32,11 @@ describe('createConnect', () => {
             serializedPath: "m/44'/0'/0'/0/0",
         });
 
-        const first = await stepP;
-        expect(first.value.type).toBe('complete');
-        expect(first.value.callId).toBe(proc.id);
-        if (first.value.type === 'complete') {
-            expect(first.value.result.address).toBe('bc1qxyz');
-        }
-
-        const next = await iter.next();
-        expect(next.done).toBe(true);
+        await expect(final).resolves.toEqual({
+            address: 'bc1qxyz',
+            path: [44, 0, 0, 0, 0],
+            serializedPath: "m/44'/0'/0'/0/0",
+        });
     });
 
     it('yields a ui-request_pin subprocess and forwards .send() as a UiResponse', async () => {
@@ -71,15 +66,15 @@ describe('createConnect', () => {
             { type: 'ui-receive_pin', payload: '1234', requestId: 'req-1' },
         ]);
 
-        // Resolve the underlying call so the iterator finishes.
-        const p2 = iter.next();
+        // Resolving the underlying call ends the stream; the result is on toPromise().
         mock.resolveGetAddress({
             address: 'bc1qabc',
             path: [44, 0, 0, 0, 0],
             serializedPath: "m/44'/0'/0'/0/0",
         });
-        const s2 = await p2;
-        expect(s2.value.type).toBe('complete');
+        const next = await iter.next();
+        expect(next.done).toBe(true);
+        await expect(proc.toPromise()).resolves.toMatchObject({ address: 'bc1qabc' });
     });
 
     it('toPromise() resolves with the wrapped method payload', async () => {
@@ -119,7 +114,7 @@ describe('createConnect', () => {
             requestId: 'noise',
         });
 
-        // The unrelated event must not surface; resolving the call should produce 'complete' next.
+        // The unrelated event must not surface; resolving the call ends the stream.
         mock.resolveGetAddress({
             address: 'bc1qfilter',
             path: [44, 0, 0, 0, 0],
@@ -127,6 +122,7 @@ describe('createConnect', () => {
         });
 
         const next = await pending;
-        expect(next.value.type).toBe('complete');
+        expect(next.done).toBe(true);
+        await expect(proc.toPromise()).resolves.toMatchObject({ address: 'bc1qfilter' });
     });
 });

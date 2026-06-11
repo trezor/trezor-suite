@@ -2,15 +2,7 @@ import { createConnectService } from '../createConnectService';
 import { createTrezorConnectMock } from '../mock';
 import { UI_REQUEST } from '../trezorConnectLike';
 import { SUBPROCESS_TYPE } from '../types';
-import type {
-    CompleteSubProcess,
-    ErrorSubProcess,
-    RequestPassphraseSubProcess,
-    RequestPinSubProcess,
-    ResultOf,
-    WalletResult,
-    WalletSubProcess,
-} from '../types';
+import type { RequestPassphraseSubProcess, RequestPinSubProcess, WalletSubProcess } from '../types';
 
 // Compile-time only — IsExact is `true` iff A and B are structurally equal.
 type IsExact<A, B> =
@@ -22,14 +14,12 @@ type IsExact<A, B> =
 const assertType = <_T extends true>() => undefined;
 
 describe('createConnectService.createWallet', () => {
-    it('runs a no-passphrase wallet to completion, with callId+cancel on every subprocess', async () => {
+    it('runs a no-passphrase wallet, resolving toPromise with the result', async () => {
         const mock = createTrezorConnectMock();
         const service = createConnectService({ trezorConnect: mock });
 
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: false });
-        const iter = proc.run();
-
-        const firstStepP = iter.next();
+        const final = proc.toPromise();
 
         expect(mock.getDeviceStateCalls).toEqual([
             {
@@ -41,19 +31,10 @@ describe('createConnectService.createWallet', () => {
 
         mock.resolveGetDeviceState({ state: '0xstate' });
 
-        const first = await firstStepP;
-        expect(first.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
-        expect(first.value.callId).toBe(proc.callId);
-        expect(typeof first.value.cancel).toBe('function');
-        if (first.value.type === SUBPROCESS_TYPE.COMPLETE) {
-            expect(first.value.result).toEqual({ deviceState: '0xstate' });
-        }
-
-        const next = await iter.next();
-        expect(next.done).toBe(true);
+        await expect(final).resolves.toEqual({ deviceState: '0xstate' });
     });
 
-    it('drives a passphrase flow: prompt -> send -> complete', async () => {
+    it('drives a passphrase flow: prompt -> send -> result', async () => {
         const mock = createTrezorConnectMock();
         const service = createConnectService({ trezorConnect: mock });
 
@@ -84,13 +65,10 @@ describe('createConnectService.createWallet', () => {
             },
         ]);
 
-        const secondP = iter.next();
         mock.resolveGetDeviceState({ state: '0xhidden' });
-        const second = await secondP;
-        expect(second.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
-        if (second.value.type === SUBPROCESS_TYPE.COMPLETE) {
-            expect(second.value.result).toEqual({ deviceState: '0xhidden' });
-        }
+        const next = await iter.next();
+        expect(next.done).toBe(true);
+        await expect(proc.toPromise()).resolves.toEqual({ deviceState: '0xhidden' });
     });
 
     it('yields request_button (with code) and request_passphrase_on_device subprocesses', async () => {
@@ -126,7 +104,8 @@ describe('createConnectService.createWallet', () => {
         const p3 = iter.next();
         mock.resolveGetDeviceState({ state: '0xdone' });
         const s3 = await p3;
-        expect(s3.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
+        expect(s3.done).toBe(true);
+        await expect(proc.toPromise()).resolves.toEqual({ deviceState: '0xdone' });
     });
 
     it('subprocess.cancel() ends the run for the same callId', async () => {
@@ -168,11 +147,12 @@ describe('createConnectService.createWallet', () => {
         });
         mock.resolveGetDeviceState({ state: '0x1' });
 
-        const subprocess = await subprocessP;
-        expect(subprocess.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
+        const next = await subprocessP;
+        expect(next.done).toBe(true);
+        await expect(proc.toPromise()).resolves.toEqual({ deviceState: '0x1' });
     });
 
-    it('yields flow-error when the underlying call fails', async () => {
+    it('run() rethrows when the underlying call fails (no error subprocess)', async () => {
         const mock = createTrezorConnectMock();
         const service = createConnectService({ trezorConnect: mock });
 
@@ -181,15 +161,9 @@ describe('createConnectService.createWallet', () => {
 
         const subprocessP = iter.next();
         mock.rejectGetDeviceState('Device disconnected');
-        const subprocess = await subprocessP;
 
-        expect(subprocess.value.type).toBe(SUBPROCESS_TYPE.ERROR);
-        expect(subprocess.value.callId).toBe(proc.callId);
-        if (subprocess.value.type !== SUBPROCESS_TYPE.ERROR) throw new Error('unreachable');
-        expect(subprocess.value.error.message).toBe('Device disconnected');
-
-        const next = await iter.next();
-        expect(next.done).toBe(true);
+        await expect(subprocessP).rejects.toThrow('Device disconnected');
+        await expect(proc.toPromise()).rejects.toThrow('Device disconnected');
     });
 
     it('refuses concurrent processes', () => {
@@ -292,8 +266,6 @@ describe('createConnectService.createWallet', () => {
 
         const proc = service.createWallet({ devicePath: 'p1', usePassphrase: true });
 
-        assertType<IsExact<ResultOf<WalletSubProcess>, WalletResult>>();
-
         const iter = proc.run();
         type IterElement =
             Awaited<ReturnType<typeof iter.next>> extends IteratorResult<infer V> ? V : never;
@@ -343,29 +315,14 @@ describe('createConnectService.createWallet', () => {
                     );
                     break;
                 }
-                case SUBPROCESS_TYPE.COMPLETE: {
-                    const _narrow: CompleteSubProcess<WalletResult> = subprocess;
-                    void _narrow;
-                    const { result } = subprocess;
-                    seen.push(`complete:${result.deviceState}`);
-                    break;
-                }
-                case SUBPROCESS_TYPE.ERROR: {
-                    const _narrow: ErrorSubProcess = subprocess;
-                    void _narrow;
-                    const { error } = subprocess;
-                    seen.push(`error:${error.message}`);
-                    break;
-                }
                 default: {
-                    // Other non-interactive UI notifications (UiNotificationSubProcess
-                    // is an open union) are not asserted by this test.
                     break;
                 }
             }
         }
 
-        expect(seen).toEqual(['button:BR1', 'passphrase', 'complete:0xhidden']);
+        expect(seen).toEqual(['button:BR1', 'passphrase']);
+        await expect(proc.toPromise()).resolves.toEqual({ deviceState: '0xhidden' });
     });
 
     it('toPromise() and run() can be used together to drive a passphrase flow', async () => {

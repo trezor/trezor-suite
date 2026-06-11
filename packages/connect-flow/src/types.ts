@@ -6,13 +6,12 @@ import { UI_REQUEST, type UiEvent } from './trezorConnectLike';
 // intermediate string definition that could drift from the real event types.
 // Only interactive UI events get a dedicated SUBPROCESS_TYPE entry; everything
 // else flows through the umbrella `UiNotificationSubProcess` and discriminates
-// directly on the underlying `UI_REQUEST.*` value.
+// directly on the underlying `UI_REQUEST.*` value. A subprocess is emitted only
+// when a UI event arrives — the call's result/error comes from `toPromise()`.
 export const SUBPROCESS_TYPE = {
     REQUEST_PASSPHRASE: UI_REQUEST.REQUEST_PASSPHRASE,
     REQUEST_PIN: UI_REQUEST.REQUEST_PIN,
     REQUEST_CONFIRMATION: UI_REQUEST.REQUEST_CONFIRMATION,
-    COMPLETE: 'flow-complete',
-    ERROR: 'flow-error',
 } as const;
 
 export type SubProcessType = (typeof SUBPROCESS_TYPE)[keyof typeof SUBPROCESS_TYPE];
@@ -55,31 +54,19 @@ export type RequestConfirmationSubProcess = SubProcessBase & {
 export type UiNotificationSubProcess = SubProcessBase &
     Exclude<UiEvent, { type: InteractiveEventType }>;
 
-export type CompleteSubProcess<TResult> = SubProcessBase & {
-    type: typeof SUBPROCESS_TYPE.COMPLETE;
-    result: TResult;
-};
-
-export type ErrorSubProcess = SubProcessBase & {
-    type: typeof SUBPROCESS_TYPE.ERROR;
-    error: Error;
-};
-
-export type AnySubProcess<TResult> =
+// A subprocess is emitted only when a UI event arrives from connect. The call's
+// result/error is delivered via `Process.toPromise()`, not as a subprocess.
+export type AnySubProcess =
     | RequestPassphraseSubProcess
     | RequestPinSubProcess
     | RequestConfirmationSubProcess
-    | UiNotificationSubProcess
-    | CompleteSubProcess<TResult>
-    | ErrorSubProcess;
+    | UiNotificationSubProcess;
 
-export type ResultOf<T extends SubProcessBase> = T extends CompleteSubProcess<infer R> ? R : never;
-
-export interface Process<TSubProcess extends SubProcessBase> {
+export interface Process<TResult> {
     readonly callId: string;
-    run(): AsyncIterableIterator<TSubProcess>;
+    run(): AsyncIterableIterator<AnySubProcess>;
     cancel(): void;
-    toPromise(): Promise<ResultOf<TSubProcess>>;
+    toPromise(): Promise<TResult>;
 }
 
 export interface CreateWalletOptions {
@@ -91,7 +78,7 @@ export interface WalletResult {
     deviceState: string;
 }
 
-export type WalletSubProcess = AnySubProcess<WalletResult>;
+export type WalletSubProcess = AnySubProcess;
 
 export interface GetAddressOptions {
     devicePath?: string;
@@ -106,9 +93,9 @@ export interface AddressResult {
     serializedPath: string;
 }
 
-export type GetAddressSubProcess = AnySubProcess<AddressResult>;
+export type GetAddressSubProcess = AnySubProcess;
 
 export interface ConnectService {
-    createWallet(options: CreateWalletOptions): Process<WalletSubProcess>;
-    getAddress(options: GetAddressOptions): Process<GetAddressSubProcess>;
+    createWallet(options: CreateWalletOptions): Process<WalletResult>;
+    getAddress(options: GetAddressOptions): Process<AddressResult>;
 }

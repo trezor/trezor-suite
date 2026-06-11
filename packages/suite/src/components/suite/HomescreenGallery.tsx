@@ -44,11 +44,16 @@ const HomescreenImage = styled.img`
     border-radius: ${borders.radii.xs};
 `;
 
+export type HomescreenSettings = { homescreen?: string; homescreen_length?: number };
+
 type HomescreenGalleryProps = {
     onConfirm?: () => void;
+    // When provided, applies the chosen homescreen via this callback instead of
+    // dispatching the default redux applySettings action.
+    applyHomescreen?: (settings: HomescreenSettings) => void;
 };
 
-export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
+export const HomescreenGallery = ({ onConfirm, applyHomescreen }: HomescreenGalleryProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
@@ -63,6 +68,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
         const isOriginalImage =
             getDefaultHomeScreenImage({ deviceModelInternal, isBitcoinOnlyFirmware }) === image;
 
+        let settings: HomescreenSettings;
         if (isOriginalImage) {
             // Reset homescreen to factory default. Firmware >= 2.9.0 expects
             // homescreen_length: 0; older firmware (e.g. Trezor One 1.x) does
@@ -72,14 +78,16 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
             const supportsHomescreenLength =
                 fwVersion !== null && versionUtils.isNewerOrEqual(fwVersion, '2.9.0');
 
-            dispatch(
-                applySettings(
-                    supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' },
-                ),
-            );
+            settings = supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' };
         } else {
             const hex = await imagePathToHex(imagePath, deviceModelInternal);
-            dispatch(applySettings({ homescreen: hex }));
+            settings = { homescreen: hex };
+        }
+
+        if (applyHomescreen) {
+            applyHomescreen(settings);
+        } else {
+            dispatch(applySettings(settings));
         }
 
         onConfirm?.();

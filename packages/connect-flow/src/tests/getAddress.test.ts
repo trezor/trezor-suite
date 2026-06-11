@@ -1,10 +1,9 @@
 import { createConnectService } from '../createConnectService';
 import { createTrezorConnectMock } from '../mock';
 import { UI_REQUEST } from '../trezorConnectLike';
-import { SUBPROCESS_TYPE } from '../types';
 
 describe('createConnectService.getAddress', () => {
-    it('passes callId into TrezorConnect.getAddress and yields a flow-complete subprocess', async () => {
+    it('passes callId into TrezorConnect.getAddress and resolves toPromise with the result', async () => {
         const mock = createTrezorConnectMock();
         const service = createConnectService({ trezorConnect: mock });
 
@@ -14,9 +13,7 @@ describe('createConnectService.getAddress', () => {
             coin: 'btc',
             showOnTrezor: true,
         });
-        const iter = proc.run();
-
-        const stepP = iter.next();
+        const final = proc.toPromise();
 
         expect(mock.getAddressCalls).toEqual([
             {
@@ -34,15 +31,11 @@ describe('createConnectService.getAddress', () => {
             serializedPath: "m/44'/0'/0'/0/0",
         });
 
-        const first = await stepP;
-        expect(first.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
-        expect(first.value.callId).toBe(proc.callId);
-        if (first.value.type === SUBPROCESS_TYPE.COMPLETE) {
-            expect(first.value.result.address).toBe('bc1qxyz');
-        }
-
-        const next = await iter.next();
-        expect(next.done).toBe(true);
+        await expect(final).resolves.toEqual({
+            address: 'bc1qxyz',
+            path: [44, 0, 0, 0, 0],
+            serializedPath: "m/44'/0'/0'/0/0",
+        });
     });
 
     it('yields a request_button subprocess when device asks for confirmation', async () => {
@@ -67,14 +60,16 @@ describe('createConnectService.getAddress', () => {
             expect(s1.value.payload.code).toBe('ButtonRequest_Address');
         }
 
-        const p2 = iter.next();
+        // Resolving the call ends the stream (no terminal subprocess) and the
+        // result is delivered via toPromise().
         mock.resolveGetAddress({
             address: 'bc1qabc',
             path: [44, 0, 0, 0, 0],
             serializedPath: "m/44'/0'/0'/0/0",
         });
-        const s2 = await p2;
-        expect(s2.value.type).toBe(SUBPROCESS_TYPE.COMPLETE);
+        const next = await iter.next();
+        expect(next.done).toBe(true);
+        await expect(proc.toPromise()).resolves.toMatchObject({ address: 'bc1qabc' });
     });
 
     it('toPromise() resolves with the address result', async () => {
