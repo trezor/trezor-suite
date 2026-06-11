@@ -64,7 +64,7 @@ export type DeviceSuspicionCause =
     | 'securitySeal'
     | 'packaging';
 
-export type DeviceCompromisedModalFailedCheck =
+type DeviceCompromisedModalFailedCheck =
     | 'device-id'
     | 'device-invariability'
     | 'device-authenticity'
@@ -91,13 +91,13 @@ export type YieldFlowParams = {
     yieldId?: string;
 };
 
-export type YieldInsufficientBalanceParams = {
+type YieldInsufficientBalanceParams = {
     accountKey: AccountKey;
     tokenContract: TokenAddress;
     yieldId: string;
 };
 
-export type YieldDepositApprovalReviewParams = YieldFlowParams & {
+type YieldDepositApprovalReviewParams = YieldFlowParams & {
     amount: string;
     approvalLimitType: 'per-deposit' | 'unlimited';
 };
