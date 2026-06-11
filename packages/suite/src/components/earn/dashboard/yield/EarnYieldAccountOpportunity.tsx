@@ -6,7 +6,7 @@ import { useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { isStablecoinYieldSupported, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -14,7 +14,10 @@ import {
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
+import {
+    getYieldVaultContractAddress,
+    isStablecoinYieldSupported,
+} from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
