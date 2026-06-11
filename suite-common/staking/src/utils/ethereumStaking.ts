@@ -146,7 +146,7 @@ export const getEthNetworkForWalletSdk = (
     return (symbol && symbol !== 'unknown' ? ethNetworks[symbol] : null) ?? null;
 };
 
-export const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddresses | null => {
+const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddresses | null => {
     const ethNetwork = getEthNetworkForWalletSdk(symbol);
 
     return ethNetwork ? ETH_NETWORK_ADDRESSES[ethNetwork] : null;
@@ -425,7 +425,7 @@ export const transformTx = (
     return result;
 };
 
-export type PrepareStakeEthTxResponse =
+type PrepareStakeEthTxResponse =
     | {
           success: true;
           tx: EthereumTransaction | EthereumTransactionEIP1559;
@@ -561,7 +561,7 @@ export const prepareClaimEthTx = async ({
     }
 };
 
-export type GetStakeTxGasLimitResponse =
+type GetStakeTxGasLimitResponse =
     | {
           success: true;
           gasLimit: string;
