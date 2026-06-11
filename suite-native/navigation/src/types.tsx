@@ -14,7 +14,6 @@ import { type IconName } from '@suite-native/icons';
 
 import { type AppTabsRoutes } from './routes';
 
-export type TabProps<T extends ParamListBase, K extends keyof T> = BottomTabScreenProps<T, K>;
 export type TabNavigationProp<
     T extends ParamListBase,
     K extends keyof ParamListBase,
