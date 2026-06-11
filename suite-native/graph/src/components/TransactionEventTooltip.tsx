@@ -19,8 +19,7 @@ import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/toke
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-export type TransactionEventTooltipProps =
-    EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;
+type TransactionEventTooltipProps = EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;
 
 type EventTooltipRowProps = {
     title: string;
