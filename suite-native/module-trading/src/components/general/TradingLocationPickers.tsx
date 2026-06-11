@@ -6,11 +6,13 @@ import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-stat
 export type TradingLocationPickersProps = {
     context: 'buy' | 'sell' | 'concierge';
     hideSubdivisionPicker?: boolean;
+    noBottomBorder?: boolean;
 };
 
 export const TradingLocationPickers = ({
     context,
     hideSubdivisionPicker,
+    noBottomBorder,
 }: TradingLocationPickersProps) => {
     const isTradingResidenceCheckEnabled = useSelector(selectIsTradingResidenceCheckEnabled);
 
@@ -23,6 +25,7 @@ export const TradingLocationPickers = ({
             context={context}
             testID={`@trading/${context}`}
             hideSubdivisionPicker={hideSubdivisionPicker}
+            noBottomBorder={noBottomBorder}
         />
     );
 };
