@@ -3,13 +3,16 @@ import { isRejected } from '@reduxjs/toolkit';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type PushTransactionError,
     type SignTransactionError,
     type SignTransactionTimeoutError,
+    composeSendFormTransactionFeeLevelsThunk,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
+    selectConvertedNetworkFeeInfo,
     selectIsMevProtectionEnabled,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
@@ -19,8 +22,11 @@ import {
 import {
     type Account,
     type AccountKey,
+    type FormState,
     type GeneralPrecomposedTransactionFinal,
+    type RbfTransactionParamsEthereum,
     type TokenAddress,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
@@ -29,6 +35,7 @@ import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
     type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
+    transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { type Ok } from '@trezor/type-utils';
@@ -234,5 +241,93 @@ export const sendTransactionThunk = createThunk<
         }
 
         return fulfillWithValue(sendResponse.payload);
+    },
+);
+
+export const cancelEvmTransactionNativeThunk = createThunk<
+    GeneralPrecomposedTransactionFinal,
+    { tx: WalletAccountTransaction; accountKey: AccountKey },
+    { rejectValue: string }
+>(
+    `${SEND_MODULE_PREFIX}/cancelEvmTransactionNativeThunk`,
+    async ({ tx, accountKey }, { dispatch, getState, rejectWithValue }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account || account.networkType !== 'ethereum') {
+            return rejectWithValue('Account not found or not an EVM account.');
+        }
+
+        const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+        if (!feeInfo) {
+            return rejectWithValue('Fee info not found.');
+        }
+
+        const { ethereumSpecific } = tx;
+        if (!ethereumSpecific) {
+            return rejectWithValue('Transaction has no Ethereum-specific data.');
+        }
+
+        const network = getNetwork(account.symbol);
+
+        const rbfParams: RbfTransactionParamsEthereum = {
+            type: 'ethereum',
+            txid: tx.txid,
+            outputs: [
+                {
+                    type: 'payment',
+                    address: account.descriptor,
+                    amount: '0',
+                    formattedAmount: '0',
+                },
+            ],
+            ethereumNonce: ethereumSpecific.nonce,
+            transactionData: '',
+            gasPrice: ethereumSpecific.gasPrice ?? '0',
+            maxFeePerGas: ethereumSpecific.maxFeePerGas ?? '0',
+            maxPriorityFeePerGas: ethereumSpecific.maxPriorityFeePerGas ?? '0',
+        };
+
+        const formState: FormState = {
+            outputs: [
+                {
+                    type: 'payment',
+                    address: account.descriptor,
+                    amount: '0',
+                    fiat: '',
+                    currency: { value: '', label: '' },
+                    token: null,
+                },
+            ],
+            selectedFee: 'normal',
+            feePerUnit: '',
+            feeLimit: '',
+            options: [],
+            isCoinControlEnabled: false,
+            hasCoinControlBeenOpened: false,
+            selectedUtxos: [],
+            rbfParams,
+        };
+
+        dispatch(sendFormActions.storeDraft({ accountKey, formState }));
+
+        const response = await dispatch(
+            composeSendFormTransactionFeeLevelsThunk({
+                formState,
+                composeContext: { account, network, feeInfo },
+            }),
+        );
+
+        if (isRejected(response)) {
+            return rejectWithValue('Unable to compose fee levels for cancellation.');
+        }
+
+        const feeLevels = response.payload;
+        dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
+
+        const normalLevel = feeLevels.normal;
+        if (!normalLevel || normalLevel.type === 'error') {
+            return rejectWithValue('Unable to compose a valid cancellation fee level.');
+        }
+
+        return normalLevel as GeneralPrecomposedTransactionFinal;
     },
 );

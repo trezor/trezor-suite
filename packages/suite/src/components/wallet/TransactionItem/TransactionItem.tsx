@@ -87,7 +87,7 @@ export const TransactionItem = memo(
         const isTxCancellable =
             transaction.type !== 'self' &&
             transaction.type !== 'joint' &&
-            network.networkType === 'bitcoin';
+            (network.networkType === 'bitcoin' || network.networkType === 'ethereum');
 
         const isTxBumpable =
             !isActionDisabled &&

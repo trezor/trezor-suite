@@ -1947,6 +1947,7 @@ export const messages = {
         detail: {
             header: '<transactionType></transactionType> transaction',
             unstakeHeader: 'Unstake {amount}',
+            cancelEvmTransactionButton: 'Cancel transaction',
             exploreButton: 'Show in blockchain explorer',
             feeLabel: 'Fee',
             dateLabel: 'Date',

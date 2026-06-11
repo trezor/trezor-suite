@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
@@ -11,12 +13,17 @@ import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
+    RootStackRoutes,
     Screen,
     ScreenHeader,
+    SendStackRoutes,
+    type StackNavigationProps,
     type StackProps,
     type TransactionDetailStackParamList,
     type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { cancelEvmTransactionNativeThunk } from '@suite-native/send';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
 import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
@@ -28,11 +35,14 @@ import {
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
 
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.TransactionDetailStack>;
+
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
@@ -76,6 +86,13 @@ export const TransactionDetailScreen = ({
     const displayedUnstakeAmount = isDiscreetMode
         ? redactNumericalSubstring(formattedUnstakeAmount)
         : formattedUnstakeAmount;
+
+    const isCancellableEvmTx =
+        isPending &&
+        transaction.type !== 'recv' &&
+        transaction.type !== 'failed' &&
+        transaction.ethereumSpecific !== undefined &&
+        !tokenContract;
 
     const handleOpenBlockchain = () => {
         analytics.report({
@@ -158,6 +175,16 @@ export const TransactionDetailScreen = ({
                         tokenTransfer={tokenTransfer as TypedTokenTransfer}
                     />
                 </VStack>
+                {isCancellableEvmTx && (
+                    <Button
+                        iconRight="x"
+                        onPress={handleCancelEvmTransaction}
+                        intent="critical"
+                        priority="secondary"
+                    >
+                        <Translation id="transactions.detail.cancelEvmTransactionButton" />
+                    </Button>
+                )}
                 <Button
                     iconRight="arrowUpRight"
                     onPress={handleOpenBlockchain}
