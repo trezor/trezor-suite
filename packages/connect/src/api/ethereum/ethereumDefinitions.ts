@@ -13,6 +13,7 @@ interface GetEthereumDefinitions {
     chainId?: number;
     slip44?: number;
     contractAddress?: string;
+    functionSignature?: string;
 }
 
 /**
@@ -24,6 +25,7 @@ export const getEthereumDefinitions = async ({
     chainId,
     slip44,
     contractAddress,
+    functionSignature,
 }: GetEthereumDefinitions) => {
     const definitions: MessagesSchema.EthereumDefinitions = {};
 
@@ -62,6 +64,29 @@ export const getEthereumDefinitions = async ({
     } catch (err) {
         console.warn(
             `unable to download or parse ${chainId}/${contractAddress} definition. detail: ${err.message}`,
+        );
+    }
+
+    try {
+        // Clear-signing (display-format) definitions
+        if (chainId && contractAddress && functionSignature) {
+            const lowerCaseContractAddress = contractAddress.toLowerCase();
+            const lowerCaseFunctionSignature = functionSignature.toLowerCase();
+            // TODO: DEV URL, wait for prod URL to be available and update it here before release
+            const displayFormatUrl = `https://data.trezor.io/dev/firmware/dev-definitions/eth/chain-id/${chainId}/display-format/${lowerCaseContractAddress}-${lowerCaseFunctionSignature}.dat`;
+            const displayFormatDefinition = await fetch(displayFormatUrl);
+            if (displayFormatDefinition.status === 200) {
+                // encoded_display_format is a protobuf bytes field represented as a hex string.
+                const encodedDisplayFormat = await displayFormatDefinition.arrayBuffer();
+                definitions.encoded_display_format =
+                    Buffer.from(encodedDisplayFormat).toString('hex');
+            } else if (displayFormatDefinition.status !== 404) {
+                throw new Error(`unexpected status: ${displayFormatDefinition.status}`);
+            }
+        }
+    } catch (err) {
+        console.warn(
+            `unable to download or parse ${chainId}/${contractAddress}/${functionSignature} display-format definition. detail: ${err.message}`,
         );
     }
 
