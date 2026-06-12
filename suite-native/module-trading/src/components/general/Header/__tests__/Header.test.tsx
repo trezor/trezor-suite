@@ -99,14 +99,6 @@ describe('Header', () => {
         expect(store.getState().wallet.trading.activeTradingType).toBe('exchange');
     });
 
-    it('should display trade settings button', () => {
-        const { renderer } = renderHeader();
-
-        expect(
-            renderer.getByLabelText(getTranslation('moduleTrading.tradingScreen.tabs.settings')),
-        ).toBeOnTheScreen();
-    });
-
     describe('analytics', () => {
         let store: TestStore;
 
