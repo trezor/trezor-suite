@@ -1,5 +1,9 @@
 import { getContractAddressForNetworkSymbolFixtures } from '../__fixtures__/tokenUtils';
-import { getAssetLogoContractAddresses, getContractAddressForNetworkSymbol } from '../tokenUtils';
+import {
+    getAssetLogoContractAddresses,
+    getContractAddressForNetworkSymbol,
+    sortTokensByName,
+} from '../tokenUtils';
 
 describe('getContractAddressForNetworkSymbol', () => {
     getContractAddressForNetworkSymbolFixtures.forEach(
@@ -35,6 +39,34 @@ describe('getAssetLogoContractAddresses', () => {
         const contract = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
         await expect(getAssetLogoContractAddresses('eth', contract)).resolves.toEqual([
             contract.toLowerCase(),
+        ]);
+    });
+});
+
+describe('sortTokensByName', () => {
+    it('sorts tokens alphabetically by name regardless of case', () => {
+        const tokens = [
+            { name: 'Tether USD' },
+            { name: 'chainlink' },
+            { name: 'Aave' },
+            { name: 'USD Coin' },
+        ];
+
+        expect([...tokens].sort(sortTokensByName).map(token => token.name)).toEqual([
+            'Aave',
+            'chainlink',
+            'Tether USD',
+            'USD Coin',
+        ]);
+    });
+
+    it('places tokens without a name first', () => {
+        const tokens = [{ name: 'Aave' }, { name: undefined }, { name: 'chainlink' }];
+
+        expect([...tokens].sort(sortTokensByName).map(token => token.name)).toEqual([
+            undefined,
+            'Aave',
+            'chainlink',
         ]);
     });
 });

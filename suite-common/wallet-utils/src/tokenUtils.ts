@@ -136,3 +136,6 @@ export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
     token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;
 
 export const isErc4626 = (token: TokenInfo) => !!token.protocols?.includes('erc4626');
+
+export const sortTokensByName = (a: Pick<TokenInfo, 'name'>, b: Pick<TokenInfo, 'name'>) =>
+    (a.name ?? '').localeCompare(b.name ?? '');

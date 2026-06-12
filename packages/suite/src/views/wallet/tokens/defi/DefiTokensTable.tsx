@@ -5,7 +5,7 @@ import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { isErc4626 } from '@suite-common/wallet-utils';
+import { isErc4626, sortTokensByName } from '@suite-common/wallet-utils';
 import { Banner, Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -45,16 +45,17 @@ export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTabl
         return tokensWithRates.sort(sortTokensWithRates);
     }, [account.tokens, account.symbol, baseCurrencyCode, fiatRates]);
 
-    const tokens = useMemo(
-        () =>
-            getTokens({
-                tokens: enhancedTokens,
-                symbol: account.symbol,
-                tokenDefinitions: coinDefinitions,
-                searchQuery,
-            }),
-        [enhancedTokens, account.symbol, coinDefinitions, searchQuery],
-    );
+    const tokens = useMemo(() => {
+        const groupedTokens = getTokens({
+            tokens: enhancedTokens,
+            symbol: account.symbol,
+            tokenDefinitions: coinDefinitions,
+            searchQuery,
+        });
+        groupedTokens.shownWithoutBalance.sort(sortTokensByName);
+
+        return groupedTokens;
+    }, [enhancedTokens, account.symbol, coinDefinitions, searchQuery]);
 
     const hasShownTokens =
         tokens.shownWithBalance.length > 0 || tokens.shownWithoutBalance.length > 0;
