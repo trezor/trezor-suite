@@ -1,0 +1,45 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "plugins": [
+            {
+                "name": "typescript-styled-plugin",
+                "tags": ["styled", "css", "sty"]
+            }
+        ],
+        "outDir": "libDev"
+    },
+    "references": [
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-storage"
+        },
+        {
+            "path": "../../suite-common/transaction-search"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../address" },
+        { "path": "../intl" },
+        { "path": "../labeling" },
+        { "path": "../metadata" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/theme" }
+    ]
+}

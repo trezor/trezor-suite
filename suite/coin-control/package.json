@@ -1,0 +1,36 @@
+{
+    "name": "@suite/coin-control",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/transaction-search": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite/address": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/labeling": "workspace:*",
+        "@suite/metadata": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "react": "19.2.4",
+        "react-redux": "9.2.0",
+        "styled-components": "^6.3.9"
+    },
+    "devDependencies": {
+        "@types/react": "19.2.14"
+    }
+}
