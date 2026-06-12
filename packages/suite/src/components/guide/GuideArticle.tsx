@@ -23,13 +23,15 @@ export const GuideArticle = () => {
 
     const { markdown, hasError } = useGuideLoadArticle(currentNode, language);
 
+    // Level 2 categories don't have their own view — they render inside the level 1 view.
+    // Always go back to the level 1 ancestor so the user lands on the same screen they came from.
     const parentCategory =
         currentNode && indexNode
             ? (
                   findAncestorNodes(currentNode, indexNode).filter(
                       node => node.type === 'category',
                   ) as GuideCategory[]
-              ).pop()
+              )[0]
             : undefined;
 
     const goBack = () => {
