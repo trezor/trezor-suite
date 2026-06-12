@@ -4,7 +4,7 @@ describe('getEthereumFeeLevels', () => {
     const fixtures = {
         eth: {
             defaultGas: 15,
-            minFee: 0.1,
+            minFee: 0.001,
             maxFee: 10000,
             coinInfo: {
                 chain: 'eth',
@@ -20,7 +20,7 @@ describe('getEthereumFeeLevels', () => {
                         blocks: -1,
                     },
                 ],
-                minFee: 0.1,
+                minFee: 0.001,
                 maxFee: 10000,
                 minPriorityFee: 0,
                 dustLimit: -1,
@@ -28,7 +28,7 @@ describe('getEthereumFeeLevels', () => {
         },
         pol: {
             defaultGas: 200,
-            minFee: 0.1,
+            minFee: 0.001,
             maxFee: 10000000,
             coinInfo: {
                 chain: 'pol',
@@ -44,7 +44,7 @@ describe('getEthereumFeeLevels', () => {
                         blocks: -1,
                     },
                 ],
-                minFee: 0.1,
+                minFee: 0.001,
                 maxFee: 10000000,
                 minPriorityFee: 30,
                 dustLimit: -1,
