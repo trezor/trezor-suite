@@ -20,6 +20,7 @@ const SIGN_TX_ROUTES = [
     'earn-tron-stake',
     'earn-tron-vote',
     'earn-tron-unstake',
+    'earn-tron-withdraw',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [

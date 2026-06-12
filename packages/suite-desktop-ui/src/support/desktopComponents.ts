@@ -10,6 +10,7 @@ import {
     EarnTronStake,
     EarnTronUnstake,
     EarnTronVote,
+    EarnTronWithdraw,
 } from 'src/views/earn/tron';
 import { EarnClaim } from 'src/views/earn/yield/claim';
 import { EarnDeposit } from 'src/views/earn/yield/deposit';
@@ -53,6 +54,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-tron-stake': EarnTronStake,
     'earn-tron-vote': EarnTronVote,
     'earn-tron-unstake': EarnTronUnstake,
+    'earn-tron-withdraw': EarnTronWithdraw,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 
