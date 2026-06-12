@@ -51,6 +51,7 @@ module.exports = {
     reporters,
     testEnvironment: 'detox/runners/jest/testEnvironment',
     verbose: true,
+    forceExit: true,
     maxWorkers: 1,
     setupFilesAfterEnv: [
         '<rootDir>/e2e/jest.perTestFile.setup.ts',

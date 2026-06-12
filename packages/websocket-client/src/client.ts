@@ -87,9 +87,12 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
             }
         };
 
-        this.pingTimeout = this.isConnected()
-            ? setTimeout(doPing, this.options.pingTimeout || DEFAULT_PING_TIMEOUT)
-            : undefined;
+        if (this.isConnected()) {
+            this.pingTimeout = setTimeout(doPing, this.options.pingTimeout || DEFAULT_PING_TIMEOUT);
+            (this.pingTimeout as any).unref?.();
+        } else {
+            this.pingTimeout = undefined;
+        }
     }
 
     protected onPing() {
