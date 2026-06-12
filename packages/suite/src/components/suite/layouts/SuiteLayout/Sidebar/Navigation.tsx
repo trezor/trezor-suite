@@ -61,6 +61,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                                   'earn-tron-stake',
                                   'earn-tron-vote',
                                   'earn-tron-unstake',
+                                  'earn-tron-withdraw',
                               ],
                           } as NavigationItemProps,
                       ]
