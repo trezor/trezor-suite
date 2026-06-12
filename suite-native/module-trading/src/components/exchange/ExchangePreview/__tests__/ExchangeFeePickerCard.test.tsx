@@ -1,3 +1,5 @@
+import { Text } from 'react-native';
+
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -54,5 +56,14 @@ describe('ExchangeFeePickerCard', () => {
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
         ).toBeOnTheScreen();
+    });
+
+    it('should render children inside FeePickerCard', () => {
+        const { getByText } = renderExchangeFeePickerCard({
+            quote: mercuryoFixedWorstQuote,
+            children: <Text testID="test-child">child content</Text>,
+        });
+
+        expect(getByText('child content')).toBeOnTheScreen();
     });
 });

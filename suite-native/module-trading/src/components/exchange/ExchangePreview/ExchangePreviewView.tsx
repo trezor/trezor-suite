@@ -19,6 +19,7 @@ import { ExchangeFiatDeviationWarning } from './ExchangeFiatDeviationWarning';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
+import { SlippagePicker } from '../Slippage/SlippagePicker';
 
 export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
@@ -60,7 +61,9 @@ export const ExchangePreviewView = memo(
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange} />
                     ) : (
-                        <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
+                        <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError}>
+                            <SlippagePicker quote={quote} />
+                        </ExchangeFeePickerCard>
                     )}
                     {hasKycPolicyWarning(kycPolicy) && (
                         <InlineAlertBox

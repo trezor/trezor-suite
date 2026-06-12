@@ -3468,6 +3468,12 @@ export const messages = {
                     "Set the maximum difference you're willing to accept. Higher means more likely to succeed, while lower may fail but protects your price.",
                 confirm: 'Confirm custom slippage',
                 inputLabel: 'Slippage',
+                maxSlippageLabel: 'Max. slippage',
+                validation: {
+                    required: 'Slippage is required.',
+                    notNumber: 'Slippage must be a number.',
+                    outOfRange: 'Slippage must be between {min}% and {max}%.',
+                },
             },
         },
         browser: {

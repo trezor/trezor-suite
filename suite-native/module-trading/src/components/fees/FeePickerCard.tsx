@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
@@ -23,9 +24,10 @@ type FeePickerCardProps = {
     trade: ExchangeTrade | SellFiatTrade | undefined;
     accountKey: AccountKey;
     tradingType: TradingSellType | TradingExchangeType;
+    children?: ReactNode;
 };
 
-export const FeePickerCard = ({ trade, accountKey, tradingType }: FeePickerCardProps) => {
+export const FeePickerCard = ({ trade, accountKey, tradingType, children }: FeePickerCardProps) => {
     const { applyStyle } = useNativeStyles();
     const formDraftKey = getFormDraftKeyByTradeType(tradingType);
     const formDraft = useSelector((state: FormDraftRootState) =>
@@ -47,6 +49,7 @@ export const FeePickerCard = ({ trade, accountKey, tradingType }: FeePickerCardP
                 formDraft={formDraft}
                 formDraftKey={formDraftKey}
             />
+            {children}
         </Card>
     );
 };
