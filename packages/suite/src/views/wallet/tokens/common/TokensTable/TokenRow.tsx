@@ -10,7 +10,14 @@ import {
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { Column, Row, Table, Text } from '@trezor/components';
+import {
+    Column,
+    Row,
+    TOOLTIP_DELAY_LONG,
+    Table,
+    Text,
+    TruncateWithTooltip,
+} from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -73,7 +80,11 @@ export const TokenRow = ({
                             size={24}
                             shouldTryToFetch={isTokenKnown}
                         />
-                        {isTokenKnown ? token.name : <BlurUrls text={token.name} />}
+                        <Text as="div" textWrap="nowrap" maxWidth={180}>
+                            <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                                {isTokenKnown ? token.name : <BlurUrls text={token.name} />}
+                            </TruncateWithTooltip>
+                        </Text>
                     </Row>
                 </Table.Cell>
 
