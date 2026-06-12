@@ -33,7 +33,7 @@ import type { AmountLimitProps } from 'src/utils/suite/validation';
 import {
     type WithdrawalContextValues as WithdrawalContextValuesBase,
     type WithdrawalFormState,
-} from '../../components/earn/forms/SupplyFormContext';
+} from '../../components/earn/forms/StakeFormContext';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 

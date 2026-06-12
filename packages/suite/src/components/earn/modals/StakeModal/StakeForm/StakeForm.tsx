@@ -4,7 +4,7 @@ import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
+import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 
 import { CardanoStakeWarningBanner } from './CardanoStakeWarningBanner';
 import { ConfirmStakeModal } from './ConfirmStakeModal';
@@ -28,7 +28,7 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
         composedLevels,
         isStakingDisabled,
         methods,
-    } = useSupplyFormContext();
+    } = useStakeFormContext();
 
     const { formattedBalance, symbol, networkType } = account;
     const isCardanoNetwork = networkType === 'cardano';

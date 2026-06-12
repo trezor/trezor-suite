@@ -8,7 +8,7 @@ import {
     type StakingLimits,
 } from '@suite-common/wallet-types';
 
-export type SupplyContextValues = UseFormReturn<StakeFormState> &
+export type StakeContextValues = UseFormReturn<StakeFormState> &
     BaseStakeContextValues & {
         methods: UseFormReturn<StakeFormState>;
         formState: ReactHookFormState<StakeFormState>;
@@ -44,6 +44,5 @@ export type WithdrawalContextValues = UseFormReturn<WithdrawalFormState> &
         currentRate: Rate | undefined;
     };
 
-export type StakeContextValues = SupplyContextValues;
 export type UnstakeFormState = WithdrawalFormState;
 export type UnstakeContextValues = WithdrawalContextValues;

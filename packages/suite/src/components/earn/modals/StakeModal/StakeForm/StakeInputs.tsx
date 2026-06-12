@@ -12,7 +12,7 @@ import { InputWithOptions } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
+import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { validateStakingMax } from 'src/utils/suite/staking';
@@ -48,7 +48,7 @@ export const StakeInputs = () => {
         setRatioAmount,
         setMax,
         setCurrency,
-    } = useSupplyFormContext();
+    } = useStakeFormContext();
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
