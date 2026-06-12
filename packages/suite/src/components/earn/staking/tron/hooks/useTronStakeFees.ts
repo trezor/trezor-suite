@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
     composeTronFreezeFeeLevelsThunk,
+    composeTronUnstakeFeeLevelsThunk,
     composeTronVoteFeeLevelsThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
@@ -55,6 +56,10 @@ export const useTronStakeFees = (): TronStakeFees => {
                         .catch(() => undefined);
             }
             case 'unstake':
+                return () =>
+                    dispatch(composeTronUnstakeFeeLevelsThunk({ account, amount, resourceType }))
+                        .unwrap()
+                        .catch(() => undefined);
             case 'complete':
                 return undefined;
             default:
