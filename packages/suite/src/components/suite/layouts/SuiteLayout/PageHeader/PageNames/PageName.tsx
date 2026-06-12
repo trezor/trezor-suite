@@ -7,7 +7,6 @@ import {
     selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -25,16 +24,6 @@ export const PageName = () => {
     );
     const selectedAccount = useSelector(selectSelectedAccount);
     const isAccountTabPage = isAccountTabRoute(currentRoute);
-    const { params } = useSelector(state => state.wallet.selectedAccount);
-
-    const fallbackAccount = useSelector(state =>
-        selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex(
-            state,
-            params?.symbol,
-            params?.accountType,
-            params?.accountIndex,
-        ),
-    );
 
     // TODO: does not work properly with foreground apps, e.g. FW update,
     // as the `route` does not indicate the current page
@@ -57,10 +46,6 @@ export const PageName = () => {
 
     if (selectedAccount) {
         return <AccountSubpageName key={selectedAccount.key} selectedAccount={selectedAccount} />;
-    }
-
-    if (fallbackAccount) {
-        return <AccountName key={fallbackAccount.key} selectedAccount={fallbackAccount} />;
     }
 
     return (
