@@ -17,7 +17,7 @@ import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccou
 import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { type EarnLayoutState } from 'src/types/earn/earnLayout';
 
-type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
+type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;
 
 type UseEarnLayoutParams = {
     type: YieldActionFlowType;
@@ -47,7 +47,7 @@ type VaultTokenValidationParams = VaultValidationParams & {
 const getAnalyticsStep = (type: YieldActionFlowType): EarnYieldAnalyticsStep => {
     switch (type) {
         case 'deposit':
-            return 'yield-supply';
+            return 'yield-deposit';
         case 'withdraw':
             return 'yield-withdraw';
     }

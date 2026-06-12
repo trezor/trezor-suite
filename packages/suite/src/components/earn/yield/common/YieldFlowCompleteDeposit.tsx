@@ -9,7 +9,7 @@ import { EarnYieldApyTooltip } from 'src/components/earn/dashboard/yield/EarnYie
 import { YieldFlowComplete } from './YieldFlowComplete';
 import { YieldFlowTransferRow } from './YieldFlowTransferRow';
 
-type YieldFlowCompleteSupplyProps = {
+type YieldFlowCompleteDepositProps = {
     input: YieldFlowCompleteValue;
     output: YieldFlowCompleteValue;
     apy?: number | null;
@@ -17,17 +17,17 @@ type YieldFlowCompleteSupplyProps = {
     networkSymbol: NetworkSymbol;
 };
 
-export const YieldFlowCompleteSupply = ({
+export const YieldFlowCompleteDeposit = ({
     input,
     output,
     apy,
     vault,
     networkSymbol,
-}: YieldFlowCompleteSupplyProps) => (
+}: YieldFlowCompleteDepositProps) => (
     <YieldFlowComplete
         type="deposit"
-        heading={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE" />}
-        description={<Translation id="TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION" />}
+        heading={<Translation id="TR_EARN_YIELD_DEPOSIT_COMPLETE" />}
+        description={<Translation id="TR_EARN_YIELD_DEPOSIT_COMPLETE_DESCRIPTION" />}
         vaultId={vault.id}
         showFeedback
     >
@@ -49,7 +49,7 @@ export const YieldFlowCompleteSupply = ({
         </Row>
         <Divider color="borderNeutral" margin={0} />
         <YieldFlowTransferRow
-            inputLabelId="TR_EARN_YIELD_SUPPLIED"
+            inputLabelId="TR_EARN_YIELD_DEPOSITED"
             outputLabelId="TR_RECEIVED"
             input={input}
             output={output}

@@ -124,13 +124,13 @@ const transactionNotificationConfig: Record<
             },
         },
     },
-    'tx-yield-supply': {
+    'tx-yield-deposit': {
         toastIcon: 'arrowUp',
         intent: 'brand',
-        message: 'Supplied from Base #1',
+        message: 'Deposited from Base #1',
         amount: '150 USDC',
         transaction: {
-            notificationType: 'tx-yield-supply',
+            notificationType: 'tx-yield-deposit',
             symbol: 'base',
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',

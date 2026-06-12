@@ -97,7 +97,7 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (routeName === 'earn-yield-deposit') {
-        return { id: 'TR_EARN_YIELD_SUPPLY' };
+        return { id: 'TR_EARN_YIELD_DEPOSIT' };
     }
 
     if (routeName === 'earn-yield-withdraw') {

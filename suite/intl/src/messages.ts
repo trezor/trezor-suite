@@ -9620,8 +9620,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DASHBOARD_TEXT',
         defaultMessage: 'Put your stablecoins to work and earn rewards.',
     },
-    TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE: {
-        id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE',
+    TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE: {
+        id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE',
         defaultMessage: 'Deposit more',
     },
     TR_EARN_YIELD_MAXIMUM_DEPOSITED: {
@@ -9640,16 +9640,16 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_REDEEM',
         defaultMessage: 'Redeem',
     },
-    TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW: {
-        id: 'TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW',
+    TR_EARN_YIELD_DASHBOARD_DEPOSIT_NOW: {
+        id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_NOW',
         defaultMessage: 'Deposit now',
     },
     TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE: {
         id: 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE',
         defaultMessage: 'Select amount & approve',
     },
-    TR_EARN_YIELD_SUPPLY: {
-        id: 'TR_EARN_YIELD_SUPPLY',
+    TR_EARN_YIELD_DEPOSIT: {
+        id: 'TR_EARN_YIELD_DEPOSIT',
         defaultMessage: 'Deposit',
     },
     TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
@@ -9680,16 +9680,16 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_ALLOWANCE_FETCH_FAILED',
         defaultMessage: 'Failed to fetch the approved amount.',
     },
-    TR_EARN_YIELD_SUPPLY_COMPLETE: {
-        id: 'TR_EARN_YIELD_SUPPLY_COMPLETE',
+    TR_EARN_YIELD_DEPOSIT_COMPLETE: {
+        id: 'TR_EARN_YIELD_DEPOSIT_COMPLETE',
         defaultMessage: 'Deposit complete',
     },
     TR_EARN_YIELD_WITHDRAW_COMPLETE: {
         id: 'TR_EARN_YIELD_WITHDRAW_COMPLETE',
         defaultMessage: 'Withdrawal complete',
     },
-    TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION: {
-        id: 'TR_EARN_YIELD_SUPPLY_COMPLETE_DESCRIPTION',
+    TR_EARN_YIELD_DEPOSIT_COMPLETE_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_DEPOSIT_COMPLETE_DESCRIPTION',
         defaultMessage: 'Your deposit is now earning yield in the vault.',
     },
     TR_EARN_YIELD_WITHDRAW_COMPLETE_DESCRIPTION: {
@@ -9712,16 +9712,16 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_COMPLETED',
         defaultMessage: 'Completed',
     },
-    TR_EARN_YIELD_SUPPLIED: {
-        id: 'TR_EARN_YIELD_SUPPLIED',
+    TR_EARN_YIELD_DEPOSITED: {
+        id: 'TR_EARN_YIELD_DEPOSITED',
         defaultMessage: 'Deposited',
     },
     TR_EARN_YIELD_BACK_TO_OVERVIEW: {
         id: 'TR_EARN_YIELD_BACK_TO_OVERVIEW',
         defaultMessage: 'Back to overview',
     },
-    TR_EARN_YIELD_SUPPLY_DISABLED: {
-        id: 'TR_EARN_YIELD_SUPPLY_DISABLED',
+    TR_EARN_YIELD_DEPOSIT_DISABLED: {
+        id: 'TR_EARN_YIELD_DEPOSIT_DISABLED',
         defaultMessage: 'Deposit is currently disabled.',
     },
     TR_EARN_YIELD_WITHDRAW_DISABLED: {
@@ -9736,8 +9736,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
         defaultMessage: 'Stablecoin yield',
     },
-    TR_EARN_YIELD_PENDING_SUPPLY: {
-        id: 'TR_EARN_YIELD_PENDING_SUPPLY',
+    TR_EARN_YIELD_PENDING_DEPOSIT: {
+        id: 'TR_EARN_YIELD_PENDING_DEPOSIT',
         defaultMessage: 'Confirming deposit...',
     },
     TR_EARN_YIELD_PENDING_WITHDRAW: {
@@ -9773,8 +9773,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_REVOKE_APPROVAL',
         defaultMessage: 'Revoke approval',
     },
-    TR_EARN_YIELD_DASHBOARD_SUPPLIED: {
-        id: 'TR_EARN_YIELD_DASHBOARD_SUPPLIED',
+    TR_EARN_YIELD_DASHBOARD_DEPOSITED: {
+        id: 'TR_EARN_YIELD_DASHBOARD_DEPOSITED',
         defaultMessage: '{amount} {displaySymbol} deposited',
     },
     TR_EARN_YIELD_ERROR_GENERIC: {
@@ -9794,12 +9794,12 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED',
         defaultMessage: 'Transaction failed',
     },
-    TR_EARN_YIELD_REVIEW_SUPPLY_TITLE: {
-        id: 'TR_EARN_YIELD_REVIEW_SUPPLY_TITLE',
+    TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE: {
+        id: 'TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE',
         defaultMessage: 'Deposit',
     },
-    TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION: {
-        id: 'TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION',
+    TR_EARN_YIELD_REVIEW_DEPOSIT_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_REVIEW_DEPOSIT_DESCRIPTION',
         defaultMessage: 'Review details to deposit to vault.',
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE: {
@@ -9830,8 +9830,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_REDEEM_FROM',
         defaultMessage: 'Redeem from',
     },
-    TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT: {
-        id: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
+    TR_EARN_YIELD_REVIEW_DEPOSIT_AMOUNT: {
+        id: 'TR_EARN_YIELD_REVIEW_DEPOSIT_AMOUNT',
         defaultMessage: 'Deposit amount',
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT: {
@@ -10278,8 +10278,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_APR',
         defaultMessage: 'APR {apr}%',
     },
-    TR_EARN_SUPPLYING_IN_A_NUTSHELL: {
-        id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
+    TR_EARN_DEPOSITING_IN_A_NUTSHELL: {
+        id: 'TR_EARN_DEPOSITING_IN_A_NUTSHELL',
         defaultMessage: 'How stablecoin yield works',
     },
     TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT: {
@@ -10309,8 +10309,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON',
         defaultMessage: 'Approve {tokenSymbol}',
     },
-    TR_EARN_SIGN_SUPPLYING_TRANSACTION: {
-        id: 'TR_EARN_SIGN_SUPPLYING_TRANSACTION',
+    TR_EARN_SIGN_DEPOSIT_TRANSACTION: {
+        id: 'TR_EARN_SIGN_DEPOSIT_TRANSACTION',
         defaultMessage: 'Sign deposit transaction',
     },
     TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB: {
@@ -10345,30 +10345,30 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING_PROCESS',
         defaultMessage: 'Stake',
     },
-    TR_EARN_SUPPLYING_PROCESS: {
-        id: 'TR_EARN_SUPPLYING_PROCESS',
+    TR_EARN_DEPOSITING_PROCESS: {
+        id: 'TR_EARN_DEPOSITING_PROCESS',
         defaultMessage: 'Deposit',
     },
     TR_EARN_CLAIMING_PROCESS: {
         id: 'TR_EARN_CLAIMING_PROCESS',
         defaultMessage: 'Claim rewards',
     },
-    TR_EARN_SUPPLY_TOKEN: {
-        id: 'TR_EARN_SUPPLY_TOKEN',
+    TR_EARN_DEPOSIT_TOKEN: {
+        id: 'TR_EARN_DEPOSIT_TOKEN',
         defaultMessage: 'Deposit {symbol}',
     },
-    TR_EARN_SUPPLY_RECEIPT_TOKENS_INFO: {
-        id: 'TR_EARN_SUPPLY_RECEIPT_TOKENS_INFO',
+    TR_EARN_DEPOSIT_RECEIPT_TOKENS_INFO: {
+        id: 'TR_EARN_DEPOSIT_RECEIPT_TOKENS_INFO',
         defaultMessage:
             "Your tokens are transferred to the {providerName} protocol smart contracts. You receive receipt tokens representing your proportional claim on the vault's assets.",
     },
-    TR_EARN_SUPPLY_FULL_CONTROL_INFO: {
-        id: 'TR_EARN_SUPPLY_FULL_CONTROL_INFO',
+    TR_EARN_DEPOSIT_FULL_CONTROL_INFO: {
+        id: 'TR_EARN_DEPOSIT_FULL_CONTROL_INFO',
         defaultMessage:
             'You keep full control—your Trezor always remains the signer. Withdraw anytime, subject to vault liquidity.',
     },
-    TR_EARN_SUPPLY_PROTOCOL_RISKS_INFO: {
-        id: 'TR_EARN_SUPPLY_PROTOCOL_RISKS_INFO',
+    TR_EARN_DEPOSIT_PROTOCOL_RISKS_INFO: {
+        id: 'TR_EARN_DEPOSIT_PROTOCOL_RISKS_INFO',
         defaultMessage:
             'Smart contract, oracle, and curator risks apply. Yield is variable and not guaranteed.',
     },
@@ -10779,8 +10779,8 @@ export const messages = defineMessages({
         id: 'TOAST_TX_CLAIMED',
         defaultMessage: 'Claimed from {account}',
     },
-    TOAST_TX_YIELD_SUPPLY: {
-        id: 'TOAST_TX_YIELD_SUPPLY',
+    TOAST_TX_YIELD_DEPOSIT: {
+        id: 'TOAST_TX_YIELD_DEPOSIT',
         defaultMessage: 'Deposit transaction from {account} has been broadcast',
     },
     TOAST_TX_YIELD_WITHDRAW: {

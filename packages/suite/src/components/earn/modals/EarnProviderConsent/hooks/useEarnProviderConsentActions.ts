@@ -57,7 +57,7 @@ export const useEarnProviderConsentActions = ({
         });
     };
 
-    const proceedToSupply = () => {
+    const proceedToEarnFlow = () => {
         onCancel();
 
         switch (flow) {
@@ -100,7 +100,7 @@ export const useEarnProviderConsentActions = ({
     };
 
     return {
-        proceedToSupply,
+        proceedToEarnFlow,
         onCancelClick,
     };
 };

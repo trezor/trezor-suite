@@ -4,17 +4,17 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow';
 
-type UseYieldSupplyProps = {
+type UseYieldDepositProps = {
     account: Account;
     routeParams: EarnParams;
     vault: YieldDto;
 };
 
-export const useYieldSupply = ({
+export const useYieldDeposit = ({
     account,
     routeParams,
     vault,
-}: UseYieldSupplyProps): YieldFlowContextValues | null => {
+}: UseYieldDepositProps): YieldFlowContextValues | null => {
     const flowResult = useYieldFlow({
         account,
         routeParams,

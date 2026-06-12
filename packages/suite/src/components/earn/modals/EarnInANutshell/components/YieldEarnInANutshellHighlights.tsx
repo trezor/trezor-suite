@@ -8,13 +8,13 @@ import {
 } from './EarnInANutshellHighlights';
 
 interface YieldEarnInANutshellHighlightsProps {
-    supplySymbol: string;
+    depositSymbol: string;
     vaultSymbol?: string;
     rewardsSymbols?: string[];
 }
 
 export const YieldEarnInANutshellHighlights = ({
-    supplySymbol,
+    depositSymbol,
     vaultSymbol,
     rewardsSymbols,
 }: YieldEarnInANutshellHighlightsProps) => {
@@ -24,7 +24,7 @@ export const YieldEarnInANutshellHighlights = ({
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT"
-                    values={{ supplySymbol }}
+                    values={{ supplySymbol: depositSymbol }}
                 />
             ),
         },
@@ -33,7 +33,7 @@ export const YieldEarnInANutshellHighlights = ({
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST"
-                    values={{ supplySymbol }}
+                    values={{ supplySymbol: depositSymbol }}
                 />
             ),
         },
@@ -44,7 +44,7 @@ export const YieldEarnInANutshellHighlights = ({
                       content: (
                           <Translation
                               id="TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS"
-                              values={{ supplySymbol, vaultSymbol }}
+                              values={{ supplySymbol: depositSymbol, vaultSymbol }}
                           />
                       ),
                   },

@@ -20,9 +20,9 @@ export { YieldClaimPageHeader } from './yield/claim/YieldClaimPageHeader';
 export { TronStakePageHeader } from './staking/tron/TronStakePageHeader';
 export { TronStake } from './staking/tron/TronStake';
 export { TronVote } from './staking/tron/TronVote';
-export { YieldSupply } from './yield/supply/YieldSupply';
+export { YieldDeposit } from './yield/deposit/YieldDeposit';
 export { YieldWithdraw } from './yield/withdraw/YieldWithdraw';
-export { EarnSupplyingInfo } from './modals/EarnInANutshell/components/EarnSupplyingInfo';
+export { EarnStakingInfo } from './modals/EarnInANutshell/components/EarnStakingInfo';
 export { EarnWithdrawingInfo } from './modals/EarnInANutshell/components/EarnWithdrawingInfo';
 
 export { VotingDelegations } from './modals/shared/VotingDelegations/VotingDelegations';

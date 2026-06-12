@@ -26,7 +26,7 @@ export const YieldProviderConsentBanners = ({
                         intent="info"
                         description={
                             <Translation
-                                id="TR_EARN_SUPPLY_RECEIPT_TOKENS_INFO"
+                                id="TR_EARN_DEPOSIT_RECEIPT_TOKENS_INFO"
                                 values={{ providerName }}
                             />
                         }
@@ -34,12 +34,12 @@ export const YieldProviderConsentBanners = ({
                     <Banner
                         icon="shieldWarningFilled"
                         intent="info"
-                        description={<Translation id="TR_EARN_SUPPLY_FULL_CONTROL_INFO" />}
+                        description={<Translation id="TR_EARN_DEPOSIT_FULL_CONTROL_INFO" />}
                     />
                     <Banner
                         icon="warningCircleFilled"
                         intent="info"
-                        description={<Translation id="TR_EARN_SUPPLY_PROTOCOL_RISKS_INFO" />}
+                        description={<Translation id="TR_EARN_DEPOSIT_PROTOCOL_RISKS_INFO" />}
                     />
                 </>
             );

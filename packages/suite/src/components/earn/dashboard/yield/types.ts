@@ -10,10 +10,10 @@ export type YieldAccountOpportunity = {
     matchedInputToken: TokenInfoBranded | undefined;
     hasVaultPosition: boolean;
     hasRewardsData: boolean;
-    suppliedAmount: string;
-    additionalSupplyAmount: string;
-    suppliedSymbol: TokenSymbol;
-    suppliedContractAddress: string | null;
+    depositedAmount: string;
+    additionalDepositAmount: string;
+    depositedSymbol: TokenSymbol;
+    depositedContractAddress: string | null;
     apyPercentage: number | null;
 };
 
@@ -27,8 +27,8 @@ export type YieldOpportunityData = Pick<
     | 'matchedInputToken'
     | 'hasVaultPosition'
     | 'hasRewardsData'
-    | 'suppliedAmount'
-    | 'additionalSupplyAmount'
-    | 'suppliedSymbol'
-    | 'suppliedContractAddress'
+    | 'depositedAmount'
+    | 'additionalDepositAmount'
+    | 'depositedSymbol'
+    | 'depositedContractAddress'
 >;

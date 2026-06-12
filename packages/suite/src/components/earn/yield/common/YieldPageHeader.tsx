@@ -19,7 +19,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 interface YieldPageHeaderProps {
-    analyticsStep: Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
+    analyticsStep: Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;
     fallbackTitleId: TranslationKey;
     account?: Account;
     routeParams?: EarnParams;
@@ -50,7 +50,7 @@ export const YieldPageHeader = ({
                 action: 'continue',
                 from: (() => {
                     switch (analyticsStep) {
-                        case 'yield-supply':
+                        case 'yield-deposit':
                             return 'deposit-form';
                         case 'yield-withdraw':
                             return 'withdraw-form';

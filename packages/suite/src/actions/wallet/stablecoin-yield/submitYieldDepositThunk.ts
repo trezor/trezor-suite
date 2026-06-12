@@ -120,7 +120,7 @@ export const submitYieldDepositThunk = createThunk(
 
             dispatch(
                 notificationsActions.addToast({
-                    type: 'tx-yield-supply',
+                    type: 'tx-yield-deposit',
                     descriptor: flowData.account.descriptor,
                     symbol: flowData.account.symbol,
                     txid: sendResult.txid,
