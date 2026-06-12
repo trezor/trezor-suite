@@ -20,6 +20,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import {
@@ -45,7 +46,6 @@ import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
 import { DevSelfAddress } from './DevSelfAddress';
@@ -132,87 +132,100 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        const protocol = getProtocolInfo(uri);
+        const result = parseTransferUri(uri);
 
-        if (protocol) {
+        let parsedScheme: string | undefined;
+        if (result.success) {
+            parsedScheme = result.payload.scheme;
+        } else if (result.error.type === 'UNKNOWN_SCHEME') {
+            parsedScheme = result.error.scheme;
+        }
+
+        if (parsedScheme !== undefined) {
+            const isAmountPresent =
+                result.success &&
+                ((result.payload.format === 'bip321' && result.payload.amount !== undefined) ||
+                    (result.payload.format === 'erc681' &&
+                        result.payload.tokenAmount !== undefined));
+
             analytics.report({
                 type: events.sendQrScanEvent.name,
-                payload: {
-                    scheme: protocol.scheme,
-                    isAmountPresent:
-                        ('amount' in protocol && protocol.amount !== undefined) ||
-                        ('tokenAmount' in protocol && protocol.tokenAmount !== undefined),
-                    networkSymbol: symbol,
-                },
+                payload: { scheme: parsedScheme, isAmountPresent, networkSymbol: symbol },
             });
         }
 
-        if (protocol && 'error' in protocol) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'qr-unknown-scheme-protocol',
-                    scheme: protocol.scheme,
-                    error: protocol.error,
-                }),
-            );
-
-            captureSentryMessage(`QR code with unknown scheme: ${protocol.scheme}`);
-
-            return;
-        }
-
-        if (protocol && 'scheme' in protocol) {
-            const isSymbolValidProtocol = getNetworkSymbolForProtocol(protocol.scheme) === symbol; //is protocol valid for this account network
-            if (!isSymbolValidProtocol) {
+        if (!result.success) {
+            if (result.error.type === 'UNKNOWN_SCHEME') {
                 dispatch(
                     notificationsActions.addToast({
-                        type: 'qr-incorrect-coin-scheme-protocol',
-                        coin: capitalizeFirstLetter(protocol.scheme),
+                        type: 'qr-unknown-scheme-protocol',
+                        scheme: result.error.scheme,
+                        error: 'Unknown protocol',
                     }),
                 );
+
+                captureSentryMessage(`QR code with unknown scheme: ${result.error.scheme}`);
 
                 return;
             }
 
-            setValue(inputName, protocol.address, { shouldValidate: true });
+            if (isAddressValid(uri, symbol)) {
+                setValue(inputName, uri, { shouldValidate: true });
 
-            if (protocol.token) {
-                // ERC-681: set token contract address
-                setValue(`outputs.${outputId}.token`, protocol.token, {
-                    shouldDirty: true,
-                });
+                composeTransaction(inputName);
+            } else {
+                dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
             }
-
-            if (protocol.amount) {
-                setValue(amountInputName, String(protocol.amount), {
-                    shouldValidate: true,
-                });
-            } else if (protocol.tokenAmount && protocol.token) {
-                // ERC-681: convert raw uint256 amount using token decimals
-                const token = account.tokens?.find(
-                    t => t.contract.toLowerCase() === protocol.token?.toLowerCase(),
-                );
-                if (token) {
-                    setValue(
-                        amountInputName,
-                        convertAmountSubunitsToUnits(protocol.tokenAmount, token.decimals),
-                        { shouldValidate: true },
-                    );
-                }
-            }
-
-            composeTransaction(amountInputName);
 
             return;
         }
 
-        if (isAddressValid(uri, symbol)) {
-            setValue(inputName, uri, { shouldValidate: true });
+        const { scheme, address } = result.payload;
 
-            composeTransaction(inputName);
-        } else {
-            dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
+        if (getNetworkSymbolForProtocol(scheme) !== symbol) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'qr-incorrect-coin-scheme-protocol',
+                    coin: capitalizeFirstLetter(scheme),
+                }),
+            );
+
+            return;
         }
+
+        setValue(inputName, address, { shouldValidate: true });
+
+        if (result.payload.format === 'erc681') {
+            const { token, tokenAmount } = result.payload;
+
+            if (token) {
+                setValue(`outputs.${outputId}.token`, token, { shouldDirty: true });
+
+                if (tokenAmount) {
+                    const accountToken = account.tokens?.find(
+                        t => t.contract.toLowerCase() === token.toLowerCase(),
+                    );
+                    if (accountToken) {
+                        setValue(
+                            amountInputName,
+                            convertAmountSubunitsToUnits(tokenAmount, accountToken.decimals),
+                            { shouldValidate: true },
+                        );
+                    }
+                }
+            }
+        } else {
+            if (result.payload.amount) {
+                setValue(amountInputName, result.payload.amount, { shouldValidate: true });
+            }
+            if (result.payload.label) {
+                setValue(`outputs.${outputId}.label`, result.payload.label, {
+                    shouldValidate: true,
+                });
+            }
+        }
+
+        composeTransaction(amountInputName);
     }, [
         account.tokens,
         amountInputName,

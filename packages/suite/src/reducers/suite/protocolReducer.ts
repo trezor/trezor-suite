@@ -8,7 +8,7 @@ import type { Action } from 'src/types/suite';
 export interface SendFormState {
     scheme: Protocol;
     address: string;
-    amount?: number;
+    amount?: string;
     token?: string; // ERC-681: token contract address
     tokenAmount?: string; // ERC-681: amount in token's smallest unit (uint256)
 }
