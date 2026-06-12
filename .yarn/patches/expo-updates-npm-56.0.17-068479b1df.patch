@@ -1,15 +1,15 @@
 diff --git a/android/src/main/java/expo/modules/updates/UpdatesPackage.kt b/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
-index df17124d19bc734e32594237f7aff3085ea1573f..60ba816c40584bc4c158d97530b0f6ba4179a8b3 100644
+index c1b0c44fe990087cf7b40eb80e8ceed18cbf1a30..68a73a0ddb98104ff055084415822052ef017e64 100644
 --- a/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
 +++ b/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
-@@ -98,7 +98,10 @@ class UpdatesPackage : Package {
+@@ -103,7 +103,10 @@ class UpdatesPackage : Package {
      val handler = object : ApplicationLifecycleListener {
        override fun onCreate(application: Application) {
          super.onCreate(application)
 -        if (isRunningAndroidTest()) {
-+        /**
-+         * This fix is needed for running Detox tests with Android debug build.
-+         */
++       /**
++        * This fix is needed for running Detox tests with Android debug build.
++        */
 +        if (isRunningAndroidTest() && !BuildConfig.USE_DEV_CLIENT) {
            // Preload updates to prevent Detox ANR
            UpdatesController.initialize(context)

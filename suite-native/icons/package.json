@@ -26,10 +26,10 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-image": "~55.0.5",
+        "expo-image": "~56.0.9",
         "react": "19.2.4",
-        "react-native": "0.83.2",
-        "react-native-reanimated": "~4.2.1"
+        "react-native": "0.85.3",
+        "react-native-reanimated": "4.3.1"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"

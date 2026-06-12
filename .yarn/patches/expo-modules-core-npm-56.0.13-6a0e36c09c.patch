@@ -1,0 +1,78 @@
+diff --git a/src/Platform.ts b/src/Platform.ts
+index 3704012caa22010f46338d44d4d753b22fa5ca00..c261a11f7834bd7e8ea6b77eca56e7bd50337c03 100644
+--- a/src/Platform.ts
++++ b/src/Platform.ts
+@@ -1,40 +1,45 @@
+-import type { PlatformOSType } from 'react-native';
+-import { Platform as ReactNativePlatform } from 'react-native';
++import type { PlatformOSType } from 'react-native'
++import { Platform as ReactNativePlatform } from 'react-native'
+ 
+ import {
+   isDOMAvailable,
+   canUseEventListeners,
+   canUseViewport,
+   isAsyncDebugging,
+-} from './environment/browser';
++} from './environment/browser'
+ 
+-export type PlatformSelectOSType = PlatformOSType | 'native' | 'electron' | 'default';
++export type PlatformSelectOSType =
++  | PlatformOSType
++  | 'native'
++  | 'electron'
++  | 'default'
+ 
+-export type PlatformSelect = <T>(specifics: { [platform in PlatformSelectOSType]?: T }) => T;
+-
+-if (__DEV__ && typeof process.env.EXPO_OS === 'undefined') {
+-  console.warn(
+-    `The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.`
+-  );
+-}
++export type PlatformSelect = <T>(specifics: {
++  [platform in PlatformSelectOSType]?: T
++}) => T
+ 
+ const nativeSelect =
+   typeof window !== 'undefined'
+     ? ReactNativePlatform.select
+     : // process.env.EXPO_OS is injected by `babel-preset-expo` and available in both client and `react-server` environments.
+       // Opt to use the env var when possible, and fallback to the React Native Platform module when it's not (arbitrary bundlers and transformers).
+-      function select<T>(specifics: { [platform in PlatformSelectOSType]?: T }): T | undefined {
+-        if (!process.env.EXPO_OS) return undefined;
++      function select<T>(specifics: {
++        [platform in PlatformSelectOSType]?: T
++      }): T | undefined {
++        if (!process.env.EXPO_OS) return undefined
+         if (specifics.hasOwnProperty(process.env.EXPO_OS)) {
+-          return specifics[process.env.EXPO_OS as PlatformSelectOSType]!;
+-        } else if (process.env.EXPO_OS !== 'web' && specifics.hasOwnProperty('native')) {
+-          return specifics.native!;
++          return specifics[process.env.EXPO_OS as PlatformSelectOSType]!
++        } else if (
++          process.env.EXPO_OS !== 'web' &&
++          specifics.hasOwnProperty('native')
++        ) {
++          return specifics.native!
+         } else if (specifics.hasOwnProperty('default')) {
+-          return specifics.default!;
++          return specifics.default!
+         }
+         // do nothing...
+-        return undefined;
+-      };
++        return undefined
++      }
+ 
+ const Platform = {
+   /**
+@@ -73,6 +78,6 @@ const Platform = {
+    * When `true`, synchronous native invocations cannot be executed.
+    */
+   isAsyncDebugging,
+-};
++}
+ 
+-export default Platform;
++export default Platform

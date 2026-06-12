@@ -36,11 +36,11 @@
         "@trezor/connect-common": "workspace:^",
         "@trezor/styles-native": "workspace:^",
         "@trezor/urls": "workspace:*",
-        "expo-clipboard": "~55.0.8",
-        "expo-linking": "~55.0.7",
+        "expo-clipboard": "~56.0.3",
+        "expo-linking": "~56.0.12",
         "react": "19.2.4",
-        "react-native": "0.83.2",
-        "react-native-reanimated": "~4.2.1",
+        "react-native": "0.85.3",
+        "react-native-reanimated": "4.3.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

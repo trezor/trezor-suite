@@ -145,7 +145,7 @@ const getPlugins = (): ExpoPlugins => {
                     },
                 },
                 ios: {
-                    deploymentTarget: '15.1',
+                    deploymentTarget: '16.4',
                 },
             },
         ],
@@ -211,7 +211,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '48',
+        runtimeVersion: '49',
         ...(buildType === 'production'
             ? {}
             : {
