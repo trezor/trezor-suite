@@ -39,7 +39,7 @@ export const YieldPageHeader = ({
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
-    const vaultName = vault?.outputToken?.name;
+    const vaultName = vault?.metadata.name;
     const networkSymbol = account?.symbol;
     const isHowItWorksVisible = !isInvalid;
 
