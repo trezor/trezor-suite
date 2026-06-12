@@ -6,7 +6,6 @@ import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 
-import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { CollapsibleIOSection } from './CollapsibleIOSection';
 import { IOGroup } from './IOGroup';
 import { TokenSpecificBalanceDetailsRow } from './TokenSpecificBalanceDetailsRow';
@@ -92,10 +91,5 @@ export const IODetails = ({ tx }: IODetailsProps) => {
         }
     };
 
-    return (
-        <Column gap={24}>
-            <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-            <Column gap={20}>{getContent()}</Column>
-        </Column>
-    );
+    return <Column gap={20}>{getContent()}</Column>;
 };

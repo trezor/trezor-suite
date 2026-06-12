@@ -7488,18 +7488,6 @@ export const messages = defineMessages({
         id: 'TR_FINGERPRINT_ADDRESS',
         defaultMessage: 'Fingerprint:',
     },
-    TR_ANALYZE_IN_EXPLORER: {
-        id: 'TR_ANALYZE_IN_EXPLORER',
-        defaultMessage: 'Analyze in blockchain explorer',
-    },
-    TR_ANALYZE_IN_EXPLORER_DESC: {
-        id: 'TR_ANALYZE_IN_EXPLORER_DESC',
-        defaultMessage: 'The blockchain explorer makes it easier to analyze inputs and outputs.',
-    },
-    TR_ANALYZE_IN_EXPLORER_OPEN: {
-        id: 'TR_ANALYZE_IN_EXPLORER_OPEN',
-        defaultMessage: 'Open',
-    },
     TR_PAGINATION_NEWER: {
         id: 'TR_PAGINATION_NEWER',
         defaultMessage: 'Newer',
