@@ -40,6 +40,7 @@ import {
     isSentTransaction,
     prepareEthereumTransaction,
     subunitsToUnits,
+    tryGetAccountIdentity,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
@@ -416,34 +417,41 @@ export const ethereumGetCurrentNonceThunk = createThunk<
     { selectedAccount: Account & { networkType: 'ethereum' }; rbfParams?: RbfTransactionParams }
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
-    ({ selectedAccount, rbfParams }, { getState }) => {
-        // Ethereum account `misc.nonce` is not updated before pending tx is mined
-        // Calculate `pendingNonce`: greatest value in pending tx + 1
-        // This may lead to unexpected/unwanted behavior
-        // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
-        const transactions = selectTransactions(getState());
-        const pendingTxs = (transactions[selectedAccount.key] || [])
-            .filter(isPending)
-            .filter(isSentTransaction);
-        const pendingNonce = pendingTxs.reduce((value, tx) => {
-            if (!tx.ethereumSpecific) return value;
-
-            return Math.max(value, tx.ethereumSpecific.nonce + 1);
-        }, 0);
-
-        const pendingNonceBig = new BigNumber(pendingNonce);
-        const accountNonce = selectedAccount.misc?.nonce;
-
-        let nonce =
-            pendingNonceBig.gt(0) && pendingNonceBig.gt(accountNonce)
-                ? pendingNonceBig.toString()
-                : accountNonce;
-
+    async ({ selectedAccount, rbfParams }, { getState }) => {
+        // For RBF (cancel / speed-up) always use the original tx's nonce — no fetch needed.
         if (rbfParams?.type === 'ethereum' && typeof rbfParams.ethereumNonce === 'number') {
-            nonce = rbfParams.ethereumNonce.toString();
+            return { nonce: rbfParams.ethereumNonce.toString() };
         }
 
-        return { nonce };
+        // Fetch the confirmed transaction count directly from the node so we don't rely on
+        // potentially-stale Redux account state or local pending-tx counts.
+        const accountInfoResponse = await TrezorConnect.getAccountInfo({
+            coin: selectedAccount.symbol,
+            descriptor: selectedAccount.descriptor,
+            identity: tryGetAccountIdentity(selectedAccount),
+            details: 'basic',
+            suppressBackupWarning: true,
+        });
+
+        const confirmedNonce = accountInfoResponse.success
+            ? parseInt(accountInfoResponse.payload.misc?.nonce ?? '0', 10)
+            : parseInt(selectedAccount.misc?.nonce ?? '0', 10);
+
+        // Count outgoing pending txs whose nonce is at or above the confirmed nonce.
+        // Txs below confirmedNonce have already been mined and must not inflate the count.
+        const transactions = selectTransactions(getState());
+        const pendingNonce = (transactions[selectedAccount.key] ?? [])
+            .filter(isPending)
+            .filter(isSentTransaction)
+            .reduce((value, tx) => {
+                if (!tx.ethereumSpecific) return value;
+                const txNonce = tx.ethereumSpecific.nonce;
+                if (txNonce < confirmedNonce) return value;
+
+                return Math.max(value, txNonce + 1);
+            }, confirmedNonce);
+
+        return { nonce: pendingNonce.toString() };
     },
 );
 
