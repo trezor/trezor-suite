@@ -40,11 +40,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     const dispatch = useDispatch();
 
+    const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
+
     const [isTokensModalActive, setIsTokensModalActive] = useState(false);
+    const [prefillContractAddress, setPrefillContractAddress] = useState(sendFormPrefill);
 
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
-    const sendFormPrefillContractAddress = useSelector(state => state.suite.prefillFields.sendForm);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const tokenContractAddress = watch(tokenInputName);
@@ -73,18 +75,16 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
 
     useEffect(() => {
-        if (sendFormPrefillContractAddress) {
-            setValue(tokenInputName, sendFormPrefillContractAddress, {
+        if (prefillContractAddress) {
+            setValue(tokenInputName, prefillContractAddress, {
                 shouldValidate: true,
                 shouldDirty: true,
             });
             setDraftSaveRequest(true);
-
-            return () => {
-                dispatch(setSendFormPrefill({ contractAddress: undefined }));
-            };
+            setPrefillContractAddress(undefined);
+            dispatch(setSendFormPrefill({ contractAddress: undefined }));
         }
-    }, [sendFormPrefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
+    }, [prefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
     const selectedToken = useMemo(
         () => account.tokens?.find(token => token.contract === tokenContractAddress),
