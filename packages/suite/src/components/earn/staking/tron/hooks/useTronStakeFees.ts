@@ -66,6 +66,7 @@ export const useTronStakeFees = (): TronStakeFees => {
                     dispatch(composeTronWithdrawFeeLevelsThunk({ account }))
                         .unwrap()
                         .catch(() => undefined);
+            case 'claim':
             case 'complete':
                 return undefined;
             default:

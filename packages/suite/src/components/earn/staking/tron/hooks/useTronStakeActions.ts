@@ -170,6 +170,7 @@ export const useTronStakeActions = ({
                     }),
                 );
                 break;
+            case 'claim':
             case 'complete':
                 break;
             default:
