@@ -9246,6 +9246,30 @@ export const messages = defineMessages({
         defaultMessage:
             'Address poisoning alert. This transaction looks suspicious. <a>Learn more</a>',
     },
+    TR_PHISHING_TOOLTIP_FAKE_TOKEN: {
+        id: 'TR_PHISHING_TOOLTIP_FAKE_TOKEN',
+        defaultMessage:
+            'Fake token alert. This transaction includes a token that may impersonate a legitimate one. <a>Learn more</a>',
+    },
+    TR_PHISHING_TOOLTIP_UNKNOWN_TX: {
+        id: 'TR_PHISHING_TOOLTIP_UNKNOWN_TX',
+        defaultMessage:
+            "Suspicious transaction alert. This transaction couldn't be verified. <a>Learn more</a>",
+    },
+    TR_PHISHING_TOOLTIP_DUST_AMOUNT: {
+        id: 'TR_PHISHING_TOOLTIP_DUST_AMOUNT',
+        defaultMessage:
+            'Dust attack alert. This transaction moves a negligible amount, a tactic used in address poisoning. <a>Learn more</a>',
+    },
+    TR_PHISHING_TOOLTIP_ZERO_AMOUNT: {
+        id: 'TR_PHISHING_TOOLTIP_ZERO_AMOUNT',
+        defaultMessage:
+            'Address poisoning alert. This zero-amount transaction looks suspicious. <a>Learn more</a>',
+    },
+    TR_PHISHING_TOOLTIP_TRC10_TRANSFER: {
+        id: 'TR_PHISHING_TOOLTIP_TRC10_TRANSFER',
+        defaultMessage: 'Scam alert. This TRC10 transfer looks suspicious. <a>Learn more</a>',
+    },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
         defaultMessage:

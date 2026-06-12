@@ -108,8 +108,8 @@ export const TransactionItem = memo(
                 }),
             );
         };
-        const { isPhishing: isPhishingTransaction } = useSelector(state =>
-            selectIsPhishingTransaction(state, transaction.txid, accountKey),
+        const { isPhishing: isPhishingTransaction, detectorId: phishingDetectorId } = useSelector(
+            state => selectIsPhishingTransaction(state, transaction.txid, accountKey),
         );
 
         const dataTestBase = `@transaction-item/${index}${
@@ -127,6 +127,7 @@ export const TransactionItem = memo(
                                 transaction={transaction}
                                 isPending={isPending}
                                 isPhishingTransaction={isPhishingTransaction}
+                                phishingDetectorId={phishingDetectorId}
                                 dataTestBase={dataTestBase}
                             />
                         }
