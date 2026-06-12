@@ -9,6 +9,7 @@ import {
     submitTronFreezeThunk,
     submitTronUnstakeThunk,
     submitTronVoteThunk,
+    submitTronWithdrawThunk,
     tronStakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -151,6 +152,19 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'withdraw':
+                dispatch(
+                    submitTronWithdrawThunk({
+                        account,
+                        device,
+                        requestPushApproval: async () =>
+                            Boolean(
+                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
+                            ),
+                        onSigningStart: () => dispatch(preserveModal()),
+                        onSettled: () => dispatch(closeModal()),
+                    }),
+                );
+                break;
             case 'complete':
                 break;
             default:
