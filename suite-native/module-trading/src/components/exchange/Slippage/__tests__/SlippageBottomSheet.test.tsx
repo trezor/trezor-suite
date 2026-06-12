@@ -1,0 +1,107 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { getTranslation, localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    act,
+    createLightStore,
+    createStaticReducer,
+    renderWithStoreProvider,
+    userEvent,
+} from '@suite-native/test-utils-store';
+import { tradingSlice } from '@suite-native/trading-state';
+
+import { SlippageBottomSheet } from '../SlippageBottomSheet';
+
+const mockOnClose = jest.fn();
+
+describe('SlippageBottomSheet', () => {
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+        }),
+    } as const;
+
+    const renderSlippageBottomSheet = async (store: TestStore) => {
+        const result = renderWithStoreProvider(
+            <SlippageBottomSheet isVisible={false} onClose={mockOnClose} />,
+            { store },
+        );
+
+        await act(() => Promise.resolve());
+
+        return result;
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should show default slippage value initially', async () => {
+        const store = createLightStore({ reducer });
+        const { getByLabelText } = await renderSlippageBottomSheet(store);
+
+        expect(
+            getByLabelText(getTranslation('moduleTrading.advancedSettings.slippage.inputLabel')),
+        ).toHaveDisplayValue('1');
+    });
+
+    it('should show preset buttons', async () => {
+        const store = createLightStore({ reducer });
+        const { getByText } = await renderSlippageBottomSheet(store);
+
+        expect(getByText('0.1%')).toBeOnTheScreen();
+        expect(getByText('0.5%')).toBeOnTheScreen();
+        expect(getByText('1%')).toBeOnTheScreen();
+        expect(getByText('3%')).toBeOnTheScreen();
+    });
+
+    it('should update input value when preset button is pressed', async () => {
+        const store = createLightStore({ reducer });
+        const { getByLabelText, getByText } = await renderSlippageBottomSheet(store);
+
+        await userEvent.press(getByText('3%'));
+        await act(() => Promise.resolve());
+
+        expect(
+            getByLabelText(getTranslation('moduleTrading.advancedSettings.slippage.inputLabel')),
+        ).toHaveDisplayValue('3');
+    });
+
+    it('should dispatch setMaxSlippagePercentage and call onClose when confirm is pressed', async () => {
+        const store = createLightStore({ reducer });
+        const { getByText } = await renderSlippageBottomSheet(store);
+
+        await userEvent.press(getByText('3%'));
+        await act(() => Promise.resolve());
+        await userEvent.press(getByText(getTranslation('generic.buttons.confirm')));
+
+        expect(selectTradingMaxSlippagePercentage(store.getState())).toBe('3');
+        expect(mockOnClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not dispatch and call onClose when cancel is pressed', async () => {
+        const store = createLightStore({ reducer });
+        const { getByText } = await renderSlippageBottomSheet(store);
+
+        await userEvent.press(getByText('3%'));
+        await act(() => Promise.resolve());
+        await userEvent.press(getByText(getTranslation('generic.buttons.cancel')));
+
+        expect(selectTradingMaxSlippagePercentage(store.getState())).toBe('1');
+        expect(mockOnClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render confirm and cancel buttons', async () => {
+        const store = createLightStore({ reducer });
+        const { getByText } = await renderSlippageBottomSheet(store);
+
+        expect(getByText(getTranslation('generic.buttons.confirm'))).toBeOnTheScreen();
+        expect(getByText(getTranslation('generic.buttons.cancel'))).toBeOnTheScreen();
+    });
+});
