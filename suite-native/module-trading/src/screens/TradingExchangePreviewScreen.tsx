@@ -4,6 +4,7 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     type TradingRootState,
     hasEip712SignData,
@@ -56,6 +57,7 @@ const TradingExchangePreviewScreenContent = ({
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const hasRequestedTradeConfirmation = useRef(false);
 
     const reportToAnalytics = useExchangeAnalyticsStepReport('transaction-preview');
@@ -78,6 +80,10 @@ const TradingExchangePreviewScreenContent = ({
     const isFinalized = isFinalStatus('exchange', quote?.status);
 
     const handleConfirmTrade = useCallback(async () => {
+        if (!isDeviceConnected) {
+            return;
+        }
+
         const addressText = getReceiveAccountAddressText(toAccount);
 
         if (!addressText) {
@@ -106,7 +112,7 @@ const TradingExchangePreviewScreenContent = ({
 
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, debounce, fetchFeesAndCompose, store, quote, toAccount]);
+    }, [confirmTrade, debounce, fetchFeesAndCompose, store, quote, toAccount, isDeviceConnected]);
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;

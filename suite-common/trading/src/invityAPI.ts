@@ -169,6 +169,8 @@ class InvityAPI {
         };
     }
 
+    private static readonly REQUEST_TIMEOUT_MS = 15_000;
+
     private async request(
         url: string,
         body: BodyType = {},
@@ -177,7 +179,9 @@ class InvityAPI {
         signal?: SignalType,
     ): Promise<any> {
         const finalUrl = `${this.getApiServerUrl()}${url}`;
-        const opts = this.options(body, method, apiHeaderValue, signal);
+        const timeoutSignal = AbortSignal.timeout(InvityAPI.REQUEST_TIMEOUT_MS);
+        const combinedSignal = signal ? AbortSignal.any([timeoutSignal, signal]) : timeoutSignal;
+        const opts = this.options(body, method, apiHeaderValue, combinedSignal);
 
         return await fetch(finalUrl, opts).then(response => {
             if (response.ok) {
