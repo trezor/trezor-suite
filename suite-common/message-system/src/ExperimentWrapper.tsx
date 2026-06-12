@@ -1,6 +1,7 @@
 import { type ReactElement } from 'react';
 
-import { type ExperimentId, useExperiment } from '@suite-common/message-system';
+import { type ExperimentId } from './messageSystemTypes';
+import { useExperiment } from './useExperiment';
 
 interface ExperimentWrapperProps {
     id: ExperimentId;
@@ -20,10 +21,7 @@ export const ExperimentWrapper = ({
     const { experiment, activeExperimentVariant } = useExperiment(id);
     const defaultComponent = components[0];
 
-    const experimentOrVariantNotFound = !experiment || !activeExperimentVariant;
-    const experimentAndComponentsMismatch = experiment?.groups.length !== components.length;
-
-    if (experimentOrVariantNotFound || experimentAndComponentsMismatch) {
+    if (!experiment || !activeExperimentVariant) {
         return defaultComponent?.element ?? null;
     }
 
