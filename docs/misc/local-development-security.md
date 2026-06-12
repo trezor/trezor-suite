@@ -4,61 +4,18 @@ Given the emerging supply chain attacks, it is not enough to rely on CI security
 Those only safeguard CI itself, and prevent merging compromised code to `develop`.
 Additional hardening for local development is highly recommended for developers to work safely with npm packages (adding new npm packages, updating existing ones).
 
-## Socket Firewall Free
+## PMG by SafeDep
 
-`sfw` is a tool that wraps yarn, and scans packages that are being fetched from npm registry for known malicious code. <br />
-Refer to [the official documentation](https://docs.socket.dev/docs/socket-firewall-free) for more details.
+`pmg` is a tool that wraps yarn, and scans packages that are being fetched from npm registry for known malicious code. <br />
+PMG was chosen because it is fully open source, with permissible license, works well with `yarn` and can easily be built from source. <br />
+You can refer to [the official documentation](https://github.com/safedep/pmg) for more details.
 
-⚠️ Keep in mind that SFW is a **closed-source** binary made by Socket Dev,
-and that it [sends telemetry without opt-out](https://docs.socket.dev/docs/socket-firewall-free#telemetry).
-That's why it's only an optional suggestion.
+See their [Quick start README](https://github.com/safedep/pmg#quick-start) for setup instructions.<br />
+Note that building from source is a viable option.
 
-### Setup:
+You can test it by running `yarn add safedep-test-pkg@0.1.3` (PMG blocks the package as if it was malicious).
 
-```bash
-npm i -g sfw
-```
+### Alternatives
 
-Edit `~/.zshrc` or `~/.bashrc`, depending on your shell, and add:
-
-```bash
-unalias yarn 2>/dev/null
-yarn() {
-  local -a positional
-  local arg
-  positional=()
-
-  # get all positional arguments that are not flags or params
-  for arg in "$@"; do
-    case "$arg" in
-      -*) continue ;;
-      *) positional+=("$arg") ;;
-    esac
-  done
-
-  # just `yarn` itself is an alias for `yarn install`, so wrap it with SFW
-  if [ "${#positional[@]}" -eq 0 ]; then
-    sfw yarn "$@"
-    return
-  fi
-
-  # invoking a yarn command that can download packages, so wrap it with SFW
-  for arg in "${positional[@]}"; do
-    case "$arg" in
-      install|add|remove|up|upgrade|upgrade-interactive|dedupe|dlx|create|focus)
-        sfw yarn "$@"
-        return
-        ;;
-    esac
-  done
-
-  # run original yarn command with unchanged process args
-  command yarn "$@"
-}
-```
-
-### Notes
-
-To cover all cases, we need to alias `yarn` broadly, because just `yarn` itself is enough to install new packages (e.g. after modifying package.jsons with `ncu` or by agent).
-But we cannot have each and every yarn script runs through `sfw`, because some scripts crash (e.g. `electron-builder` or `nx`).
-That's why we cannot use simply `alias yarn='sfw yarn'`.
+- [SFW was explored previously](https://github.com/trezor/trezor-suite/blob/abe28a77db45dd843fbc3bf51cb052d53515ab83/docs/misc/local-development-security.md#socket-firewall-free), but rejected due to being closed source and higher setup complexity.
+- [DataDog firewall](https://github.com/DataDog/supply-chain-firewall) was rejected because it doesn't support `yarn`
