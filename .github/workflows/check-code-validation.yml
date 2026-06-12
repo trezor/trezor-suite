@@ -24,13 +24,11 @@ jobs:
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
@@ -44,7 +42,7 @@ jobs:
       # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn --immutable --mode=skip-build
+          yarn --immutable --mode=skip-build
 
   type-check:
     name: Type Checking
@@ -114,6 +112,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Check for new Circular Imports
+        # safedep/pmg covers also the `npx` running inside the shell script
         run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
   unit-tests-suite:
@@ -172,15 +171,13 @@ jobs:
         run: yarn verify-project-references
       - name: Detect unused dependencies
         run: yarn depcheck
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Yarn Dedupe check
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn dedupe --check
+        run: yarn dedupe --check
       - name: Check dependency domain lists
         run: ./scripts/ci/list-missing-dependencies.sh
       - name: Verify Workspace Resolutions
