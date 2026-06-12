@@ -1,59 +1,24 @@
-import { useMemo } from 'react';
-
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
 import {
-    selectTradingActiveSection,
+    selectDeviceTradingTradesOrderedByDate,
     selectTradingBuyProviders,
     selectTradingExchangeInfo,
     selectTradingSellInfo,
-    selectTradingTradesForSelectedDevice,
 } from '@suite-common/trading';
-import { H3, Paragraph, variables } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { Box, Column, H3, Paragraph, Text } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { TradingTransactionExchange } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionExchange';
 import { TradingTransactionBuy } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsBuy';
 import { TradingTransactionSell } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell';
 
-const Wrapper = styled.div`
-    padding: ${spacingsPx.zero} ${spacingsPx.lg};
-
-    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
-        padding: 0;
-    }
-`;
-
-const Header = styled.div`
-    padding-bottom: ${spacingsPx.xxl};
-`;
-
-const TransactionCount = styled.div`
-    margin-top: ${spacingsPx.xxxs};
-    ${typography['body-sm']}
-    color: ${({ theme }) => theme.contentSecondary};
-`;
-
 export const TradingTransactionsList = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const buyProviders = useSelector(selectTradingBuyProviders);
     const exchangeProviders = useSelector(selectTradingExchangeInfo)?.providerInfos;
     const sellProviders = useSelector(selectTradingSellInfo)?.providerInfos;
-    const activeSection = useSelector(selectTradingActiveSection);
-    const isBuyAndSell = activeSection !== 'exchange';
-    const trades = useSelector(selectTradingTradesForSelectedDevice);
-    const sortedTrades = useMemo(
-        () =>
-            [...trades].sort((a, b) => {
-                if (a.date > b.date) return -1;
-                if (a.date < b.date) return 1;
-
-                return 0;
-            }),
-        [trades],
-    );
+    const trades = useSelector(selectDeviceTradingTradesOrderedByDate);
 
     if (selectedAccount.status !== 'loaded') {
         return null;
@@ -61,86 +26,83 @@ export const TradingTransactionsList = () => {
 
     const { account } = selectedAccount;
 
-    const buyTransactions = sortedTrades.filter(tx => tx.tradeType === 'buy');
-    const exchangeTransactions = sortedTrades.filter(tx => tx.tradeType === 'exchange');
-    const sellTransactions = sortedTrades.filter(tx => tx.tradeType === 'sell');
-    const buyAndSellTransactionLength = buyTransactions.length + sellTransactions.length;
-    const isEmpty =
-        (isBuyAndSell && buyAndSellTransactionLength === 0) ||
-        (!isBuyAndSell && exchangeTransactions.length === 0);
+    const buyTransactions = trades.filter(tx => tx.tradeType === 'buy');
+    const exchangeTransactions = trades.filter(tx => tx.tradeType === 'exchange');
+    const sellTransactions = trades.filter(tx => tx.tradeType === 'sell');
+    const isEmpty = trades.length === 0;
 
     return (
-        <Wrapper data-testid="@trading/transactions/list">
-            {isEmpty && (
-                <Paragraph
-                    data-testid="@trading/transactions/no-transaction"
-                    align="center"
-                    intent="neutral"
-                    priority="secondary"
-                >
-                    <Translation id="TR_BUY_NOT_TRANSACTIONS" />
-                </Paragraph>
-            )}
-            {!isEmpty && (
-                <>
-                    <Header>
-                        <H3 data-testid="@trading/transactions/heading">
-                            <Translation id="TR_TRADING_LAST_TRANSACTIONS" />
-                        </H3>
-                        <TransactionCount data-testid="@trading/transactions/count">
-                            {isBuyAndSell ? (
+        <Column alignItems="center">
+            <Box data-testid="@trading/transactions/list" maxWidth={800}>
+                {isEmpty && (
+                    <Paragraph
+                        data-testid="@trading/transactions/no-transaction"
+                        align="center"
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        <Translation id="TR_BUY_NOT_TRANSACTIONS" />
+                    </Paragraph>
+                )}
+                {!isEmpty && (
+                    <>
+                        <Column margin={{ bottom: 32 }}>
+                            <H3 data-testid="@trading/transactions/heading">
+                                <Translation id="TR_TRADING_LAST_TRANSACTIONS" />
+                            </H3>
+                            <Text
+                                typographyStyle="body-sm"
+                                color="contentSecondary"
+                                data-testid="@trading/transactions/count"
+                            >
                                 <Translation
-                                    id="TR_TRADING_BUY_AND_SELL_COUNTER"
+                                    id="TR_TRADING_TRADE_HISTORY_COUNTER"
                                     values={{
                                         totalBuys: buyTransactions.length,
                                         totalSells: sellTransactions.length,
-                                    }}
-                                />
-                            ) : (
-                                <Translation
-                                    id="TR_TRADING_SWAP_COUNTER"
-                                    values={{
                                         totalSwaps: exchangeTransactions.length,
                                     }}
                                 />
-                            )}
-                        </TransactionCount>
-                    </Header>
-                    {sortedTrades.map(trade => {
-                        if (isBuyAndSell && trade.tradeType === 'buy') {
-                            return (
-                                <TradingTransactionBuy
-                                    account={account}
-                                    key={`${trade.tradeType}-${trade.key}`}
-                                    trade={trade}
-                                    providers={buyProviders}
-                                />
-                            );
-                        }
-                        if (isBuyAndSell && trade.tradeType === 'sell') {
-                            return (
-                                <TradingTransactionSell
-                                    account={account}
-                                    key={`${trade.tradeType}-${trade.key}`}
-                                    trade={trade}
-                                    providers={sellProviders}
-                                />
-                            );
-                        }
+                            </Text>
+                        </Column>
+                        {trades.map(trade => {
+                            const key = `${trade.tradeType}-${trade.key}`;
 
-                        if (!isBuyAndSell && trade.tradeType === 'exchange') {
-                            return (
-                                <TradingTransactionExchange
-                                    account={account}
-                                    key={`${trade.tradeType}-${trade.key}`}
-                                    trade={trade}
-                                    providers={exchangeProviders}
-                                />
-                            );
-                        }
-                    })}
-                </>
-            )}
-        </Wrapper>
+                            switch (trade.tradeType) {
+                                case 'buy':
+                                    return (
+                                        <TradingTransactionBuy
+                                            account={account}
+                                            key={key}
+                                            trade={trade}
+                                            providers={buyProviders}
+                                        />
+                                    );
+                                case 'sell':
+                                    return (
+                                        <TradingTransactionSell
+                                            account={account}
+                                            key={key}
+                                            trade={trade}
+                                            providers={sellProviders}
+                                        />
+                                    );
+                                case 'exchange':
+                                    return (
+                                        <TradingTransactionExchange
+                                            account={account}
+                                            key={key}
+                                            trade={trade}
+                                            providers={exchangeProviders}
+                                        />
+                                    );
+                                default:
+                                    return exhaustive(trade);
+                            }
+                        })}
+                    </>
+                )}
+            </Box>
+        </Column>
     );
 };
