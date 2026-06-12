@@ -3665,6 +3665,8 @@ export const messages = {
                     tron: 'Network fee',
                 },
                 body: 'Fees are paid directly to validators for processing your transactions.',
+                bodyRipple:
+                    'Fees for processing your transactions are burned (permanently destroyed), not paid to validators.',
             },
             custom: {
                 addButton: 'Add custom fee',
