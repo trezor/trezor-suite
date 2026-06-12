@@ -27,7 +27,6 @@ import { useYieldTableData } from './hooks/useYieldTableData';
 import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
-import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
 
 export const EarnYieldTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Yield);
@@ -79,12 +78,6 @@ export const EarnYieldTable = () => {
         claimMessageSystem.isDisabled ||
         !merklRewardsQuery.isSuccess ||
         accountsRewards.length === 0;
-
-    const badge = getEarnDashboardBadgeState({
-        isSectionActive: isYieldActive,
-        activeLabelId: 'TR_EARN_DASHBOARD_ACTIVE',
-        notActiveLabelId: 'TR_EARN_DASHBOARD_NOT_ACTIVE',
-    });
 
     const hasFiredReadyEventRef = useRef(false);
     const hasClaimBanner = accountsRewards.length > 0;
@@ -151,7 +144,6 @@ export const EarnYieldTable = () => {
                     titleId="TR_EARN_STABLECOIN_YIELD_TITLE"
                     subheadingId="TR_EARN_YIELD_DASHBOARD_TEXT"
                     provider="morpho"
-                    statusBadge={badge}
                     sectionRef={anchorRef}
                 >
                     <Column gap={16} alignItems="center">

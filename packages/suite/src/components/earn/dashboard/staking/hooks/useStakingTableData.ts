@@ -2,12 +2,10 @@ import { useMemo } from 'react';
 
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    selectAccountIsStakingActive,
     selectDeviceSupportedNetworks,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -23,8 +21,6 @@ type UseStakingTableDataResult = {
     isExpanded: boolean;
     toggleExpanded: () => void;
     hasAnyRewardsData: boolean;
-    isStakingActive: boolean;
-    isSectionOutdated: boolean;
 };
 
 export const useStakingTableData = (): UseStakingTableDataResult => {
@@ -49,9 +45,6 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
         account => account.symbol === 'eth' || account.symbol === 'sol' || account.symbol === 'ada',
     );
 
-    const isStakingActive = useSelector(state =>
-        stakingAccounts.some(account => selectAccountIsStakingActive(state, account.key)),
-    );
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const ethNotActivated =
@@ -75,10 +68,6 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
             adaNotActivated,
         });
 
-    const isSectionOutdated = stakingAccounts.some(account =>
-        isCardanoStakedWithFiveBinaries(account),
-    );
-
     return {
         displayedAccounts,
         ethNotActivated,
@@ -88,7 +77,5 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
         isExpanded,
         toggleExpanded,
         hasAnyRewardsData,
-        isStakingActive,
-        isSectionOutdated,
     };
 };

@@ -9817,18 +9817,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
         defaultMessage: 'Claim rewards from',
     },
-    TR_EARN_DASHBOARD_ACTIVE: {
-        id: 'TR_EARN_DASHBOARD_ACTIVE',
-        defaultMessage: 'Active',
-    },
-    TR_EARN_DASHBOARD_NOT_ACTIVE: {
-        id: 'TR_EARN_DASHBOARD_NOT_ACTIVE',
-        defaultMessage: 'Inactive',
-    },
-    TR_EARN_STAKING_DASHBOARD_OUTDATED: {
-        id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED',
-        defaultMessage: 'Outdated provider',
-    },
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
