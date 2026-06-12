@@ -74,6 +74,23 @@ const encodeInnerContract = (contract: TronContracts): InnerContract => {
                 ),
             };
         }
+        case 'UnfreezeBalanceV2Contract': {
+            const { owner_address, balance, resource } = contract.parameter.value;
+            const schema = getSchema('TronUnfreezeBalanceV2Contract');
+
+            return {
+                type: TronRawContractType.UnfreezeBalanceV2Contract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        balance: BigInt(balance ?? 0),
+                        // The default BANDWIDTH (0) is omitted to match the firmware signature.
+                        resource: resource || undefined,
+                    }),
+                ),
+            };
+        }
         case 'VoteWitnessContract': {
             const { owner_address, votes } = contract.parameter.value;
             const schema = getSchema('TronVoteWitnessContract');

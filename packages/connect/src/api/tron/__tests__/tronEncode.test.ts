@@ -53,6 +53,28 @@ const FREEZE = {
     },
 } as const;
 
+const UNFREEZE_CONTRACT: TronContracts = {
+    type: 'UnfreezeBalanceV2Contract',
+    parameter: {
+        value: {
+            owner_address: OWNER_ADDRESS,
+            balance: 1000000,
+            resource: 1,
+        },
+    },
+};
+
+const UNFREEZE = {
+    signature:
+        'a7f8602b02413e9dded0170daa5b4ada9a2679198af276be456f4faea1bc326f5070789bec5e6471de3f726f4fe0c9daced8df183e4a62804db26d5650c59a521c',
+    blockParams: {
+        ref_block_bytes: 'e942',
+        ref_block_hash: '6394747da9fee421',
+        expiration: 1752562632000,
+        timestamp: 1752562572000,
+    },
+} as const;
+
 const VOTE_CONTRACT: TronContracts = {
     type: 'VoteWitnessContract',
     parameter: {
@@ -107,6 +129,21 @@ describe('tron/encodeBroadcastTransaction', () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignature: (typeof signature)[number] = signature[0];
         expect(bytesToHex(firstSignature)).toBe(FREEZE.signature);
+    });
+
+    it('embeds rawData and signature for an unfreeze', () => {
+        const rawDataHex = bytesToHex(
+            encodeTronContractRawData(UNFREEZE_CONTRACT, UNFREEZE.blockParams),
+        );
+        const result = encodeBroadcastTransaction(rawDataHex, UNFREEZE.signature);
+
+        const decoded = decodeBroadcastTransaction(result);
+        expect(bytesToHex(decoded.rawData)).toBe(rawDataHex);
+        expect(decoded.signature).toHaveLength(1);
+        const { signature } = decoded;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignature: (typeof signature)[number] = signature[0];
+        expect(bytesToHex(firstSignature)).toBe(UNFREEZE.signature);
     });
 
     it('embeds rawData and signature for a vote', () => {
