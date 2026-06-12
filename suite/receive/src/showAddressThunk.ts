@@ -85,6 +85,12 @@ export const showAddressThunk =
             dispatch(closeModal());
             // Special case: device no-backup permissions not granted.
             if (response.error.code === 'Method_PermissionsNotGranted') return;
+            // User dismissed the dialog — no need to surface an error toast.
+            if (
+                response.error.code === 'Method_Cancel' ||
+                response.error.code === 'Failure_ActionCancelled'
+            )
+                return;
 
             dispatch(
                 notificationsActions.addToast({
