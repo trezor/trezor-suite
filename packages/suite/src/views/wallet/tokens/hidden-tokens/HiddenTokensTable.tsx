@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -21,11 +21,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
-    const sortedTokens = account.tokens
-        ? [...account.tokens].sort(
-              (a, b) => parseInt(b?.balance || '0') - parseInt(a?.balance || '0'),
-          )
-        : [];
+    const sortedTokens = account.tokens?.toSorted(sortTokensByName) ?? [];
 
     const filteredTokens = getTokens({
         tokens: sortedTokens,
