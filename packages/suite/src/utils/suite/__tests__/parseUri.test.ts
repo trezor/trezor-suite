@@ -1,4 +1,4 @@
-import { parseQuery, parseUri } from 'src/utils/suite/parseUri';
+import { parseUri } from 'src/utils/suite/parseUri';
 
 import * as fixtures from '../__fixtures__/parseUri';
 
@@ -18,14 +18,6 @@ describe('parseUri', () => {
                 pathname: url.pathname,
                 search: url.search,
             }).toEqual(f.result);
-        });
-    });
-});
-
-describe('parseQuery', () => {
-    fixtures.parseQuery.forEach(f => {
-        it(f.description, () => {
-            expect(parseQuery(f.uri as string)).toEqual(f.result);
         });
     });
 });

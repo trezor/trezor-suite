@@ -67,7 +67,7 @@ describe('Protocol middleware', () => {
                 seen: true,
                 type: 'coin-scheme-protocol',
                 address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
-                amount: 0.001,
+                amount: '0.001',
                 scheme: 'bitcoin',
                 autoClose: false,
             },
@@ -79,7 +79,7 @@ describe('Protocol middleware', () => {
             type: PROTOCOL.SAVE_COIN_PROTOCOL,
             payload: {
                 address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
-                amount: 0.001,
+                amount: '0.001',
                 scheme: 'bitcoin',
                 shouldFill: false,
             },
@@ -90,7 +90,7 @@ describe('Protocol middleware', () => {
             {
                 payload: {
                     address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
-                    amount: 0.001,
+                    amount: '0.001',
                     scheme: 'bitcoin',
                     shouldFill: false,
                 },

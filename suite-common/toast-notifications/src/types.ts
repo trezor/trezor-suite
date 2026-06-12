@@ -184,7 +184,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           type: 'coin-scheme-protocol';
           scheme: Protocol;
           address: string;
-          amount?: number;
+          amount?: string;
       }
     | {
           type: 'suite-sync-keys-error';
