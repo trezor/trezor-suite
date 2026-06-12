@@ -65,8 +65,8 @@ type ClaimedTransactionNotification = {
     type: 'tx-claimed';
 } & TransactionNotificationPayload;
 
-type YieldSupplyTransactionNotification = {
-    type: 'tx-yield-supply';
+type YieldDepositTransactionNotification = {
+    type: 'tx-yield-deposit';
 } & BaseTransactionNotificationPayload;
 
 type YieldWithdrawTransactionNotification = {
@@ -196,7 +196,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
-    | YieldSupplyTransactionNotification
+    | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
     | {
