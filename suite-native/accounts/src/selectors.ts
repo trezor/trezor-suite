@@ -50,6 +50,7 @@ import {
     isCardanoStakingActive,
     isErc4626,
     isStakingSymbol,
+    sortTokensByName,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
@@ -320,9 +321,7 @@ export const getAccountListSections = (
             sections.push({
                 type: 'zeroBalance',
                 account,
-                tokens: [...zeroBalanceTokens].sort((a, b) =>
-                    (a.name ?? '').localeCompare(b.name ?? ''),
-                ),
+                tokens: [...zeroBalanceTokens].sort(sortTokensByName),
             });
         }
     }
