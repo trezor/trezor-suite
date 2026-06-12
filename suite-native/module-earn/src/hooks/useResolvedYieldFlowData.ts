@@ -35,7 +35,7 @@ type UnresolvedYieldFlowData = {
     receiptToken: YieldFlowDisplayToken | null;
     resolutionStatus: Exclude<YieldFlowResolutionStatus, 'resolved'>;
     flowData: YieldFlowResolvedData | null;
-    suppliedSharesAmount: string | null;
+    depositedSharesAmount: string | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
     vault: YieldDto | null;
@@ -50,7 +50,7 @@ type YieldFlowDataResolved = {
     receiptToken: YieldFlowDisplayToken;
     flowData: YieldFlowResolvedData;
     resolutionStatus: 'resolved';
-    suppliedSharesAmount: string;
+    depositedSharesAmount: string;
     token: YieldFlowToken;
     tokenSymbol: TokenSymbol;
     vault: YieldDto;
@@ -80,7 +80,7 @@ const defaultFlowData: ResolvedYieldFlowData = {
     providerName: null,
     receiptToken: null,
     resolutionStatus: 'missing-vault',
-    suppliedSharesAmount: null,
+    depositedSharesAmount: null,
     token: null,
     flowData: null,
     tokenSymbol: null,
@@ -210,7 +210,7 @@ export const resolveYieldFlowData = ({
         flowData,
         flowKey,
         resolutionStatus: 'resolved',
-        suppliedSharesAmount: outputToken?.balance ?? '0',
+        depositedSharesAmount: outputToken?.balance ?? '0',
         tokenSymbol,
     };
 };

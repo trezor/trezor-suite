@@ -49,7 +49,7 @@ export const StablecoinYieldTokenOverview = ({
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
-    const { account, apy, resolutionStatus, suppliedSharesAmount, vault } =
+    const { account, apy, resolutionStatus, depositedSharesAmount, vault } =
         useResolvedYieldFlowData({
             accountKey,
             tokenContract,
@@ -115,13 +115,13 @@ export const StablecoinYieldTokenOverview = ({
     const apyColor = apyValueText === null ? 'contentSecondary' : 'contentPrimary';
     const apyValue = apyValueText ?? <Translation id="earn.notAvailable" />;
     const depositedPosition =
-        account && suppliedSharesAmount !== null
+        account && depositedSharesAmount !== null
             ? {
                   balance: getConvertedOutputTokenBalanceToInputTokenAmount({
                       networkSymbol: account.symbol,
                       token: vault.token,
                       outputToken: vault.outputToken,
-                      outputTokenBalance: suppliedSharesAmount,
+                      outputTokenBalance: depositedSharesAmount,
                       pricePerShareState: vault.state?.pricePerShareState,
                   }),
                   contractAddress: toTokenAddress(vault.token.address),
