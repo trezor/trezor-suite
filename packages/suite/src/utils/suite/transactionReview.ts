@@ -110,6 +110,10 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: source === 'heading' ? 'TR_EARN_CLAIM_REWARDS' : 'TR_EARN_YIELD_CLAIM' };
     }
 
+    if (routeName === 'earn-tron-withdraw') {
+        return { id: 'TR_EARN_TRON_WITHDRAW_TITLE' };
+    }
+
     if (precomposedForm.tronStakeResource) {
         return {
             id:
