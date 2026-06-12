@@ -10698,10 +10698,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/mev@workspace:suite-common/mev"
   dependencies:
+    "@suite-common/device": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

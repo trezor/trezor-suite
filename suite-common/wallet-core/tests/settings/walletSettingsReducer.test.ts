@@ -1,6 +1,13 @@
+import { deviceInitialState } from '@suite-common/device';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { FirmwareType } from '@trezor/device-utils';
 
-import { initialWalletSettingsState, prepareWalletSettingsReducer } from '../../src';
+import {
+    initialWalletSettingsState,
+    prepareWalletSettingsReducer,
+    selectIsNetworkReserveSettingsVisible,
+} from '../../src';
 import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
 
 const initialState = initialWalletSettingsState;
@@ -49,5 +56,24 @@ describe('settings reducer', () => {
             ...initialState,
             enabledNetworks: ['eth'],
         });
+    });
+});
+
+describe('selectIsNetworkReserveSettingsVisible', () => {
+    const getState = (firmwareType: FirmwareType) => ({
+        device: {
+            ...deviceInitialState,
+            selectedDevice: mockSuiteDevice({ firmwareType }),
+        },
+    });
+
+    it('returns true for a device with universal firmware', () => {
+        expect(selectIsNetworkReserveSettingsVisible(getState(FirmwareType.Universal))).toBe(true);
+    });
+
+    it('returns false for a device with bitcoin-only firmware', () => {
+        expect(selectIsNetworkReserveSettingsVisible(getState(FirmwareType.BitcoinOnly))).toBe(
+            false,
+        );
     });
 });
