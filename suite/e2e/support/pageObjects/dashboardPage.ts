@@ -190,6 +190,20 @@ export class DashboardPage {
         await this.passphraseSubmitButton.click();
         await expect(this.passphraseInput).toBeHidden();
 
+        // T3T1 touchscreen devices now show an intermediate "Confirm passphrase" modal
+        // (PassphraseWalletConfirmation) between the first submission and the device prompt.
+        // Wait briefly; if the input reappears, fill and submit to dismiss the modal.
+        await this.passphraseInput
+            .waitFor({ state: 'visible', timeout: 2000 })
+            .then(async () => {
+                await this.passphraseInput.fill(passphrase);
+                await this.passphraseSubmitButton.click();
+                await expect(this.passphraseInput).toBeHidden();
+            })
+            .catch(() => {
+                // No confirmation modal appeared; proceed directly to device prompt
+            });
+
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
 
@@ -198,6 +212,18 @@ export class DashboardPage {
 
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
+
+        // Same confirmation modal may appear after the second passphrase submission on T3T1
+        await this.passphraseInput
+            .waitFor({ state: 'visible', timeout: 2000 })
+            .then(async () => {
+                await this.passphraseInput.fill(passphrase);
+                await this.passphraseSubmitButton.click();
+                await expect(this.passphraseInput).toBeHidden();
+            })
+            .catch(() => {
+                // No confirmation modal appeared; proceed directly to device prompt
+            });
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
