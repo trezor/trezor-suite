@@ -237,7 +237,7 @@ export const addFakePendingTxThunk = createThunk(
     },
 );
 
-const buildFakePendingEvmTx = ({
+export const buildFakePendingEvmTx = ({
     precomposedTransaction,
     precomposedForm,
     txid,
@@ -263,6 +263,10 @@ const buildFakePendingEvmTx = ({
     const toAddress = output.address!;
     const amount = output.amount.toString();
     const isLegacyTx = !isEip1559(precomposedTransaction);
+    // Sending a token to one's own account is a self-transfer. We mirror how the backend
+    // classifies a confirmed transfer (from and to both owned) so that the pending tx hides
+    // the amount the same way (self transfers are filtered out in createTargets).
+    const isSelfTransfer = toAddress.toLowerCase() === fromAddress.toLowerCase();
 
     const blockTime = Math.floor(Date.now() / 1000);
     const common = {
@@ -311,7 +315,7 @@ const buildFakePendingEvmTx = ({
 
     if (token) {
         const tokenTransfer: TokenTransfer = {
-            type: 'sent',
+            type: isSelfTransfer ? 'self' : 'sent',
             standard: token.standard as TokenStandard,
             amount,
             from: fromAddress,

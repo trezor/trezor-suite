@@ -48,6 +48,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const displayAmount = tx.blockHash ? amount : amount.minus(fee);
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
+    // Self token transfers (e.g. an ERC20 self-send) move no value, so we hide their amount
+    // the same way the transaction list does (see createTargets).
+    const nonSelfTokenTransfers = tx.tokens.filter(transfer => transfer.type !== 'self');
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
@@ -179,7 +182,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                     </Table.Row>
                 ))}
                 {tx.type !== 'self' &&
-                    tx.tokens.map((transfer, i) => {
+                    nonSelfTokenTransfers.map((transfer, i) => {
                         const tokenFiatRateKey = getFiatRateKey(
                             tx.symbol,
                             baseCurrencyCode,
