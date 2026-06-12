@@ -90,7 +90,7 @@ export const TransactionListActions = ({
                 data-testid="@wallet/accounts/search-icon"
                 placeholder={translationString('TR_SEARCH_TRANSACTIONS')}
                 value={searchQuery}
-                onChange={event => setSearch(event.target.value)}
+                onChange={event => onSearch(event.target.value)}
                 onClear={() => setSearch('')}
                 size="small"
                 leftContent={
