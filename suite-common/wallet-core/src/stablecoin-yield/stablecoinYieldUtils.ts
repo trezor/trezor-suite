@@ -184,7 +184,7 @@ export const buildYieldDepositCalldata = ({
     return builderResult.data;
 };
 
-const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
+export const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
     const commonFields = {
         gasLimit: fromIntegerString(gasLimit).toHex(),
     };

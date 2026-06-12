@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { stablecoinYieldActions } from '@suite-common/wallet-core';
 import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -15,7 +15,7 @@ import {
     YieldStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { FeeSummaryCard } from '@suite-native/transaction-management';
+import { FeeSelector } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
 
 import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
@@ -128,7 +128,6 @@ export const YieldDepositScreen = () => {
         !isDepositPending &&
         !isActionSubmitting;
     const canPrepareDepositFee = canContinueDepositFlow && !isApprovalInsufficient;
-    const isSubmitDisabled = !canContinueDepositFlow || isApprovalInsufficient;
 
     const depositFee = useYieldDepositFees({
         amount: amountValue,
@@ -136,6 +135,9 @@ export const YieldDepositScreen = () => {
         flowKey,
         isEnabled: canPrepareDepositFee,
     });
+    const isSubmitDisabled =
+        !canContinueDepositFlow || isApprovalInsufficient || !depositFee.isDepositFeeReady;
+
     useShowYieldTransactionFailureAlert({
         error: session?.error,
         flowKey,
@@ -210,8 +212,6 @@ export const YieldDepositScreen = () => {
     ]);
     const { handleSubmitDeposit } = useYieldDepositSubmit({
         amount: amountValue,
-        flowData,
-        flowKey,
         onActionReady: handleActionReady,
         preparedAction: depositFee.preparedAction,
     });
@@ -221,7 +221,7 @@ export const YieldDepositScreen = () => {
             return;
         }
 
-        void handleSubmitDeposit();
+        handleSubmitDeposit();
     }, [handleSubmitDeposit, isSubmitDisabled]);
 
     const handleCloseInfoBottomSheet = useCallback(() => {
@@ -242,8 +242,8 @@ export const YieldDepositScreen = () => {
         return null;
     }
 
-    const networkType = getNetworkType(account.symbol);
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const shouldShowDepositFee = isValid && !!amountValue && !isApprovalInsufficient;
 
     return (
         <Screen
@@ -311,14 +311,16 @@ export const YieldDepositScreen = () => {
                         </Box>
                     )}
 
-                    {isValid && !!amountValue && !isApprovalInsufficient && (
+                    {shouldShowDepositFee && (
                         <Box paddingHorizontal="sp16">
-                            <FeeSummaryCard
-                                fee={depositFee.feePreview?.fee ?? null}
-                                symbol={account.symbol}
-                                networkType={networkType}
-                                areFeesLoading={depositFee.isPreparingDepositFee}
-                                testID="@earn/yield-deposit-fee-preview-card"
+                            <FeeSelector
+                                accountKey={account.key}
+                                tokenContract={route.params.tokenContract}
+                                updateThunk={depositFee.updateFeeLevelThunk}
+                                selectedFee={depositFee.selectedFee}
+                                selectedFeePerUnit={depositFee.formDraft?.feePerUnit}
+                                formDraft={depositFee.formDraft}
+                                formDraftKey={depositFee.formDraftKey}
                             />
                         </Box>
                     )}
