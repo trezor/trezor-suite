@@ -10274,6 +10274,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_UNSTAKE_DESCRIPTION',
         defaultMessage: 'Withdraw your TRX in 14 days',
     },
+    TR_EARN_TRON_UNSTAKE_COMPLETE: {
+        id: 'TR_EARN_TRON_UNSTAKE_COMPLETE',
+        defaultMessage: 'Unstake complete',
+    },
+    TR_EARN_TRON_UNSTAKED: {
+        id: 'TR_EARN_TRON_UNSTAKED',
+        defaultMessage: 'Unstaked',
+    },
     TR_EARN_TRON_RESOURCE_TO_UNSTAKE: {
         id: 'TR_EARN_TRON_RESOURCE_TO_UNSTAKE',
         defaultMessage: 'Resource to unstake',
