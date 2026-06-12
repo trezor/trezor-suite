@@ -28,15 +28,28 @@ export interface SelectedAccountLoaded {
 export type SelectedAccountException =
     | {
           status: 'exception';
-          loader: 'discovery-error' | 'discovery-empty'; // No network enabled in settings
+          loader: 'discovery-error'; // Account discovery failed
+          account?: Account;
+          network?: Network;
+          params?: WalletParams;
+      }
+    | {
+          status: 'exception';
+          loader: 'discovery-empty'; // No network enabled in settings
           account?: undefined;
           network?: Network;
           params?: WalletParams;
       }
     | {
           status: 'exception';
+          loader: 'account-not-loaded'; // Account discovery failed
+          account: Account;
+          network: Network;
+          params: WalletParams;
+      }
+    | {
+          status: 'exception';
           loader:
-              | 'account-not-loaded' // Account discovery failed
               | 'account-not-enabled' // Requested account network is not enabled in settings
               | 'account-not-exists'; // Requested account network is not listed in `networks` (@suite-common/wallet-config)
           account?: undefined;

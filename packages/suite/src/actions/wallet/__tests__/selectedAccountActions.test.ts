@@ -5,8 +5,24 @@ import { configureStore } from 'src/support/tests/configureStore';
 import fixtures from '../__fixtures__/selectedAccountActions';
 import { syncSelectedAccount } from '../selectedAccountActions';
 
-const getInitialState = (_settings?: any) => ({
+const getInitialState = (initialState: any = {}) => ({
+    suite: {},
+    device: {
+        selectedDevice: undefined,
+        ...initialState.device,
+    },
+    router: {
+        app: 'wallet',
+        route: { name: 'wallet-index' },
+        params: undefined,
+        ...initialState.router,
+    },
     wallet: {
+        accounts: [],
+        settings: { enabledNetworks: [] },
+        discovery: {},
+        accountSearch: { coinFilter: [] },
+        ...initialState.wallet,
         selectedAccount: {
             ...selectedAccountReducer(undefined, { type: 'foo' } as any),
         },
@@ -33,12 +49,8 @@ describe('selectedAccount Actions', () => {
         it(f.description, () => {
             const state = getInitialState(f.initialState);
             const store = initStore(state);
-            const selectedAccountState = store.dispatch(syncSelectedAccount(f.action as any));
-            if (f.result) {
-                expect(selectedAccountState).toMatchObject(f.result as any);
-            } else {
-                expect(selectedAccountState).toBe(undefined);
-            }
+            store.dispatch(syncSelectedAccount(f.action as any));
+            expect(store.getState().wallet.selectedAccount).toMatchObject(f.result as any);
         });
     });
 });
