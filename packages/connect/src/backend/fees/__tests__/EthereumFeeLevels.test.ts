@@ -82,8 +82,8 @@ describe('api/ethereum/Fees', () => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const [level]: [FeeLevel] = levels;
 
-            // 0.1 Gwei → 0.1 × 1e9 = 100 000 000 wei
-            expect(level.feePerUnit).toBe('100000000');
+            // 0.001 Gwei → 0.001 × 1e9 = 1 000 000 wei
+            expect(level.feePerUnit).toBe('1000000');
 
             backend.disconnect();
             spy.mockRestore();
@@ -129,10 +129,10 @@ describe('api/ethereum/Fees', () => {
 
             const levels = await feeLevels.load(backend, ETH_REQUEST);
 
-            // minFee for eth = 0.1 Gwei → 0.1 × 1e9 = 100 000 000 wei
-            // maxFeePerGas must be an integer wei string, never a decimal gwei string like "0.1"
+            // minFee for eth = 0.001 Gwei → 0.001 × 1e9 = 1 000 000 wei
+            // maxFeePerGas must be an integer wei string, never a decimal gwei string like "0.001"
             levels.forEach(level => {
-                expect(Number(level.maxFeePerGas)).toBeGreaterThanOrEqual(100000000);
+                expect(Number(level.maxFeePerGas)).toBeGreaterThanOrEqual(1000000);
                 expect(level.maxFeePerGas).toMatch(/^\d+$/);
             });
 
