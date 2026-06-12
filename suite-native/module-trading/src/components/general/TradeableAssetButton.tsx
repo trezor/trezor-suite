@@ -7,7 +7,7 @@ import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Box, buttonSizeToDimensionsMap } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
@@ -84,7 +84,7 @@ export const TradeableAssetButton = ({
                 accessibilityLabel={accessibilityLabel}
                 testID={testID}
             >
-                <CryptoIcon symbol={adjustedSymbol} contractAddress={contractAddress} size="tiny" />
+                <TokenIcon symbol={adjustedSymbol} contractAddress={contractAddress} size="tiny" />
                 <NetworkSymbolExtendedFormatter
                     symbol={symbol}
                     variant="body-sm-strong"

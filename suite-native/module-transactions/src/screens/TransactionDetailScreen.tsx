@@ -7,7 +7,7 @@ import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discree
 import { useFormatters } from '@suite-common/formatters';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import {
@@ -92,7 +92,7 @@ export const TransactionDetailScreen = ({
                     customContent={
                         <HStack spacing="sp8" alignItems="center" justifyContent="center">
                             {!isUnstakeTransaction && (
-                                <CryptoIconWithNetwork
+                                <TokenIconWithNetwork
                                     symbol={transaction.symbol}
                                     contractAddress={tokenTransfer?.contract}
                                 />

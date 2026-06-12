@@ -6,7 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { AccountLabel, AccountsListItemBase } from '@suite-native/accounts';
 import { Badge } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 
@@ -40,7 +40,7 @@ export const ChooseAccountItem = ({
             isLast={isLast}
             showDivider={showDivider}
             onPress={handlePress}
-            icon={<CryptoIcon symbol={account.symbol} />}
+            icon={<TokenIcon symbol={account.symbol} />}
             title={<AccountLabel account={account} />}
             badges={
                 formattedAccountType ? <Badge label={formattedAccountType} size="small" /> : null

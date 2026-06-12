@@ -8,16 +8,16 @@ import {
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CryptoIcon, type CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
 import { NetworkIcon, networkIconSizes } from './NetworkIcon';
+import { TokenIcon, type TokenIconSize, tokenIconSizes } from './TokenIcon';
 
-interface CryptoIconWithNetworkProps {
+interface TokenIconWithNetworkProps {
     symbol: NetworkSymbol;
     contractAddress?: TokenAddress;
-    size?: CryptoIconSize;
+    size?: TokenIconSize;
 }
 
-const networkWrapperStyle = prepareNativeStyle<{ size: CryptoIconSize }>((utils, { size }) => ({
+const networkWrapperStyle = prepareNativeStyle<{ size: TokenIconSize }>((utils, { size }) => ({
     position: 'absolute',
     right: 0,
     bottom: 0,
@@ -28,11 +28,11 @@ const networkWrapperStyle = prepareNativeStyle<{ size: CryptoIconSize }>((utils,
 
 // This component shows network icon for tokens
 // and for non Ethereum networks with native coin being eth (base, arbitrum, optimism)
-export const CryptoIconWithNetwork = ({
+export const TokenIconWithNetwork = ({
     symbol,
     contractAddress,
     size = 'small',
-}: CryptoIconWithNetworkProps) => {
+}: TokenIconWithNetworkProps) => {
     const { applyStyle } = useNativeStyles();
     const displaySymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
@@ -41,8 +41,8 @@ export const CryptoIconWithNetwork = ({
     const iconSymbol = contractAddress ? symbol : displaySymbol;
 
     return (
-        <View style={{ width: cryptoIconSizes[size], height: cryptoIconSizes[size] }}>
-            <CryptoIcon symbol={iconSymbol} contractAddress={contractAddress} size={size} />
+        <View style={{ width: tokenIconSizes[size], height: tokenIconSizes[size] }}>
+            <TokenIcon symbol={iconSymbol} contractAddress={contractAddress} size={size} />
             {shouldShowNetwork && (
                 <View style={applyStyle(networkWrapperStyle, { size })}>
                     <NetworkIcon symbol={symbol} size={size} />

@@ -1,7 +1,7 @@
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIconWithNetwork } from '@suite-native/icons';
 import { ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -35,7 +35,7 @@ export const YieldDepositFlowScreenHeader = ({
             closeAction={closeAction}
             customContent={
                 <HStack spacing="sp8" alignItems="center">
-                    <CryptoIconWithNetwork
+                    <TokenIconWithNetwork
                         symbol={account.symbol}
                         contractAddress={tokenContract}
                         size="small"

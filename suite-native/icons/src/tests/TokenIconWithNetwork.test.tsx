@@ -3,15 +3,15 @@ import React from 'react';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { CryptoIconWithNetwork } from '../CryptoIconWithNetwork';
+import { TokenIconWithNetwork } from '../TokenIconWithNetwork';
 
 const cryptoIconHint = 'Crypto Icon';
 const networkIconHint = 'Network Icon';
 
-describe('CryptoIconWithNetwork', () => {
+describe('TokenIconWithNetwork', () => {
     it('should render without network icon for networks that are not l2 networks = op, arb, base', () => {
         const { getByHintText, getByLabelText, queryByHintText } = renderWithBasicProvider(
-            <CryptoIconWithNetwork symbol="btc" />,
+            <TokenIconWithNetwork symbol="btc" />,
         );
 
         expect(getByHintText(cryptoIconHint)).toBeTruthy();
@@ -21,7 +21,7 @@ describe('CryptoIconWithNetwork', () => {
 
     it('should render network with network icon for l2 networks = op, arb, base and ETH as icon', () => {
         const { getByHintText, getByLabelText, queryByHintText } = renderWithBasicProvider(
-            <CryptoIconWithNetwork symbol="op" />,
+            <TokenIconWithNetwork symbol="op" />,
         );
 
         expect(getByHintText(cryptoIconHint)).toBeTruthy();
@@ -32,7 +32,7 @@ describe('CryptoIconWithNetwork', () => {
     it('should render with network icon for contracts', () => {
         const contract = '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo' as TokenAddress;
         const { getByHintText, getByLabelText } = renderWithBasicProvider(
-            <CryptoIconWithNetwork symbol="op" contractAddress={contract} />,
+            <TokenIconWithNetwork symbol="op" contractAddress={contract} />,
         );
 
         expect(getByHintText(cryptoIconHint)).toBeTruthy();

@@ -22,11 +22,11 @@ import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
-import { type CryptoIconSize } from './CryptoIcon';
+import { type TokenIconSize } from './TokenIcon';
 
 interface NetworkIconProps {
     symbol: NetworkSymbol;
-    size?: CryptoIconSize | number;
+    size?: TokenIconSize | number;
 }
 
 export const networkIconSizes = {

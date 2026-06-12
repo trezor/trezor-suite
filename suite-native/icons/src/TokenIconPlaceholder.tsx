@@ -4,7 +4,7 @@ import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@tr
 
 import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
 
-type CryptoIconPlaceholderProps = {
+type TokenIconPlaceholderProps = {
     placeholder: string;
     containerStyle: NativeStyleObject;
 };
@@ -21,10 +21,10 @@ const textStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
 }));
 
-export const CryptoIconPlaceholder = ({
+export const TokenIconPlaceholder = ({
     placeholder,
     containerStyle,
-}: CryptoIconPlaceholderProps) => {
+}: TokenIconPlaceholderProps) => {
     const { applyStyle } = useNativeStyles();
     const firstChar = placeholder[0] || 'T';
 

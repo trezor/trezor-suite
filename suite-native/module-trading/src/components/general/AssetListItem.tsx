@@ -4,7 +4,7 @@ import { Pressable } from 'react-native';
 import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIconWithNetwork } from '@suite-native/icons';
 import { NetworkBadge } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -50,7 +50,7 @@ export const AssetListItem = ({
         >
             <HStack alignItems="center" spacing="sp12">
                 <Box justifyContent="center">
-                    <CryptoIconWithNetwork
+                    <TokenIconWithNetwork
                         symbol={networkSymbol}
                         contractAddress={contractAddress}
                     />

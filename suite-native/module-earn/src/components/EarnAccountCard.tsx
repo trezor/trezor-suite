@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
+import { Icon, TokenIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     selectApy,
@@ -144,7 +144,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
                 <Box marginRight="sp12">
-                    <CryptoIconWithNetwork
+                    <TokenIconWithNetwork
                         symbol={symbol}
                         contractAddress={contractAddress}
                         size="extraSmall"

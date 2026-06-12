@@ -3,7 +3,7 @@ import { Pressable } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 
 export type ExchangeApprovalLimitCardProps = {
     title: ReactNode;
@@ -30,7 +30,7 @@ export const ExchangeApprovalLimitCard = memo(
                     <HStack alignItems="center" justifyContent="space-between">
                         <HStack alignItems="center">
                             {!!symbol && (
-                                <CryptoIcon
+                                <TokenIcon
                                     symbol={symbol}
                                     contractAddress={contractAddress}
                                     size="extraSmall"

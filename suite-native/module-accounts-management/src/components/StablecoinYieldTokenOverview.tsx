@@ -22,7 +22,7 @@ import {
 } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
+import { Icon, TokenIconWithNetwork } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     useResolvedYieldFlowData,
@@ -190,7 +190,7 @@ export const StablecoinYieldTokenOverview = ({
                         </Text>
                         {depositedPosition && (
                             <HStack alignItems="center" spacing="sp8">
-                                <CryptoIconWithNetwork
+                                <TokenIconWithNetwork
                                     symbol={depositedPosition.symbol}
                                     contractAddress={depositedPosition.contractAddress}
                                     size="extraSmall"

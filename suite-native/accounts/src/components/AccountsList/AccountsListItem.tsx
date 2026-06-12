@@ -10,7 +10,7 @@ import {
     CryptoToFiatAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
-import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon, TokenIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
@@ -95,9 +95,9 @@ export const AccountsListItem = ({
     const icon = useMemo(
         () =>
             isNativeCoinOnly ? (
-                <CryptoIconWithNetwork symbol={account.symbol} />
+                <TokenIconWithNetwork symbol={account.symbol} />
             ) : (
-                <CryptoIcon symbol={account.symbol} />
+                <TokenIcon symbol={account.symbol} />
             ),
         [account.symbol, isNativeCoinOnly],
     );

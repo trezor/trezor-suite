@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     selectApy,
@@ -111,7 +111,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <CryptoIconWithNetwork {...iconProps} />
+                    <TokenIconWithNetwork {...iconProps} />
                 </Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>

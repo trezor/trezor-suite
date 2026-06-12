@@ -14,15 +14,15 @@ import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CryptoIconPlaceholder } from './CryptoIconPlaceholder';
+import { TokenIconPlaceholder } from './TokenIconPlaceholder';
 
-export interface CryptoIconProps {
+export interface TokenIconProps {
     symbol: NetworkSymbol | NetworkDisplaySymbol;
     contractAddress?: string;
-    size?: CryptoIconSize | number;
+    size?: TokenIconSize | number;
 }
 
-export const cryptoIconSizes = {
+export const tokenIconSizes = {
     tiny: 16,
     extraSmall: 24,
     small: 32,
@@ -39,15 +39,15 @@ const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
     }),
 );
 
-export type CryptoIconSize = keyof typeof cryptoIconSizes;
+export type TokenIconSize = keyof typeof tokenIconSizes;
 
-export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIconProps) => {
+export const TokenIcon = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const [logoIndex, setLogoIndex] = useState(0);
     const [showPlaceholder, setShowPlaceholder] = useState(false);
 
-    const sizeNumber = typeof size === 'number' ? size : cryptoIconSizes[size];
+    const sizeNumber = typeof size === 'number' ? size : tokenIconSizes[size];
     const iconContainerStyle = useMemo(
         () => applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber }),
         [applyStyle, sizeNumber],
@@ -111,7 +111,7 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
 
     if (showPlaceholder) {
         return (
-            <CryptoIconPlaceholder
+            <TokenIconPlaceholder
                 placeholder={symbol.toUpperCase()}
                 containerStyle={iconContainerStyle}
             />

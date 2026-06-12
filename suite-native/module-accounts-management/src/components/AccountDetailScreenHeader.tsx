@@ -3,7 +3,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { type Account } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite-native/accounts';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import {
     type AccountsStackParamList,
     type RootStackParamList,
@@ -25,7 +25,7 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
     <HStack alignItems="center">
-        <CryptoIcon symbol={account.symbol} size="small" />
+        <TokenIcon symbol={account.symbol} size="small" />
         <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
             <AccountLabel account={account} />
         </Text>

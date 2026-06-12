@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { type BoxProps, HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { useFormatCryptoValue } from '@suite-native/trading-atoms';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
@@ -28,7 +28,7 @@ export const CryptoAmountRow = ({ cryptoId, amount, direction, style }: CryptoAm
     return (
         <HStack justifyContent="space-between" alignItems="center" flex={1} style={style}>
             <HStack alignItems="center">
-                <CryptoIcon symbol={symbol} contractAddress={contractAddress} size="extraSmall" />
+                <TokenIcon symbol={symbol} contractAddress={contractAddress} size="extraSmall" />
                 {formattedAmount && (
                     <Text variant="body-sm" color={color}>
                         {prefix + formattedAmount}

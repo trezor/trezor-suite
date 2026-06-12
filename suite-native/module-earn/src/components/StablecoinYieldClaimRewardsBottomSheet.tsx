@@ -4,7 +4,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { BottomSheetModal, type BottomSheetModalRef, Box, HStack } from '@suite-native/atoms';
 import { AddressFormatter, BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { type StablecoinYieldClaimSummary } from '../types';
@@ -24,7 +24,7 @@ const StablecoinYieldClaimRewardsItem = ({
 
     return (
         <AccountsListItemBase
-            icon={<CryptoIcon symbol={claimReward.networkSymbol} />}
+            icon={<TokenIcon symbol={claimReward.networkSymbol} />}
             title={
                 claimReward.accountLabel ?? getNetworkDisplaySymbolName(claimReward.networkSymbol)
             }

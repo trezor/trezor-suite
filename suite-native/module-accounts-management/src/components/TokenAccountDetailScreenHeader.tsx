@@ -16,7 +16,7 @@ import {
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { Badge, Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIconWithNetwork } from '@suite-native/icons';
 import { type RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
@@ -88,7 +88,7 @@ export const TokenAccountDetailScreenHeader = ({
             customContent={
                 <Box alignItems="center">
                     <HStack alignItems="center">
-                        <CryptoIconWithNetwork
+                        <TokenIconWithNetwork
                             symbol={symbol}
                             contractAddress={tokenContract}
                             size="small"

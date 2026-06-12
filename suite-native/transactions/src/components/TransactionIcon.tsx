@@ -15,7 +15,7 @@ import {
     type RoundedIconIntent,
     type RoundedIconSize,
 } from '@suite-native/atoms';
-import { CryptoIcon, type IconName } from '@suite-native/icons';
+import { type IconName, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionIconProps = {
@@ -45,7 +45,7 @@ const stakeOperationIconMap: Record<StakeType, IconName> = {
     'change-delegate': 'arrowURightDown',
 };
 
-const cryptoIconStyle = prepareNativeStyle(utils => ({
+const tokenIconStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
     right: -utils.spacings.sp2,
     bottom: -utils.spacings.sp2,
@@ -84,8 +84,8 @@ export const TransactionIcon = ({
                 <CircularSpinner size={size} color="legacyBackgroundAlertYellowBold" width={3} />
             )}
             {iconSymbol && (
-                <Box style={applyStyle(cryptoIconStyle)}>
-                    <CryptoIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
+                <Box style={applyStyle(tokenIconStyle)}>
+                    <TokenIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
                 </Box>
             )}
         </Box>
