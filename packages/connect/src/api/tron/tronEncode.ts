@@ -91,6 +91,20 @@ const encodeInnerContract = (contract: TronContracts): InnerContract => {
                 ),
             };
         }
+        case 'WithdrawExpireUnfreezeContract': {
+            const { owner_address } = contract.parameter.value;
+            const schema = getSchema('TronWithdrawUnfreeze');
+
+            return {
+                type: TronRawContractType.WithdrawExpireUnfreezeContract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                    }),
+                ),
+            };
+        }
         case 'VoteWitnessContract': {
             const { owner_address, votes } = contract.parameter.value;
             const schema = getSchema('TronVoteWitnessContract');
