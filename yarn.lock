@@ -11947,7 +11947,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/assets@workspace:suite-native/assets"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.28"
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"

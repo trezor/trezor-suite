@@ -1,5 +1,3 @@
-import { G } from '@mobily/ts-belt';
-
 import { calculateAssetsPercentage } from '@suite-common/assets';
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
@@ -11,7 +9,6 @@ import {
     type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceAccounts,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -38,8 +35,10 @@ export type AssetsRootState = AccountsRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
 
 /*
-We do not memoize most of following selectors because they are using only with `useSelectorDeepComparison` hook which is faster than memoization.
-TODO: revalidate if this is still true for reselect
+Selectors here are memoized via `createWeakMapSelector`. Where the inputs churn (e.g. during
+discovery) but the output is value-stable, attach a `resultEqualityCheck` so the selector keeps
+returning the same reference. Consumers can then use a plain `useSelector` (`===`) instead of the
+per-dispatch deep walk of `useSelectorDeepComparison`.
 */
 
 const areNetworkSymbolsEqual = (
@@ -50,19 +49,6 @@ const areNetworkSymbolsEqual = (
     previousNetworkSymbols.every(
         (networkSymbol, index) => networkSymbol === nextNetworkSymbols[index],
     );
-
-export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
-    state: AssetsRootState,
-    symbol: NetworkSymbol | null,
-) => {
-    if (G.isNull(symbol)) return [];
-
-    const accounts = selectDeviceAccounts(state).filter(
-        account => account.symbol === symbol && account.visible,
-    );
-
-    return accounts.map(account => account.key);
-};
 
 export const selectDeviceNetworkSymbolsWithAssets = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
@@ -167,9 +153,18 @@ const selectAssetsFiatValuePercentage = createMemoizedSelector(
     },
 );
 
+type AssetFiatPercentage = {
+    fiatPercentage: number;
+    fiatPercentageOffset: number;
+};
+
+const areAssetPercentagesEqual = (previous: AssetFiatPercentage, next: AssetFiatPercentage) =>
+    previous.fiatPercentage === next.fiatPercentage &&
+    previous.fiatPercentageOffset === next.fiatPercentageOffset;
+
 export const selectAssetFiatValuePercentage = createMemoizedSelector(
     [selectAssetsFiatValuePercentage, (_state, symbol: NetworkSymbol) => symbol],
-    (assetsPercentages, symbol) => {
+    (assetsPercentages, symbol): AssetFiatPercentage => {
         const asset = assetsPercentages.find(a => a.symbol === symbol);
 
         const assetPercentage = {
@@ -178,5 +173,10 @@ export const selectAssetFiatValuePercentage = createMemoizedSelector(
         };
 
         return assetPercentage;
+    },
+    {
+        memoizeOptions: {
+            resultEqualityCheck: areAssetPercentagesEqual,
+        },
     },
 );
