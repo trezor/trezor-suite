@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { selectSidebarWidth } from '@suite/settings';
 import { throwError } from '@trezor/utils';
 
 import {
+    SIDEBAR_ANIMATION_DURATION_MS,
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
@@ -44,10 +45,23 @@ export const ResponsiveContextProvider = ({ children }: { children: React.ReactN
         [forcedSidebarWidth, sidebarWidthRaw],
     );
 
-    const isSidebarCollapsed = useMemo(
-        () => effectiveWidth < SIDEBAR_COLLAPSED_WIDTH,
-        [effectiveWidth],
-    );
+    const isSidebarCollapsedTarget = effectiveWidth < SIDEBAR_COLLAPSED_WIDTH;
+
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isSidebarCollapsedTarget);
+
+    useEffect(() => {
+        if (!isSidebarCollapsedTarget) {
+            // Expanding: switch content mode immediately so labels are revealed as sidebar grows.
+            setIsSidebarCollapsed(false);
+        } else {
+            // Collapsing: delay the content mode switch so labels stay visible during the animation.
+            const timer = setTimeout(() => {
+                setIsSidebarCollapsed(true);
+            }, SIDEBAR_ANIMATION_DURATION_MS);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isSidebarCollapsedTarget]);
 
     const setSidebarWidth = (width: number) => {
         if (typeof forcedSidebarWidth === 'number' && !userResizingSidebar) return;

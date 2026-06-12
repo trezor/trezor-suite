@@ -26,6 +26,7 @@ import { Navigation } from './Navigation';
 import { QuickActions } from './QuickActions/QuickActions';
 import { SidebarBanners } from './SidebarBanners';
 import {
+    SIDEBAR_ANIMATION_DURATION_MS,
     SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MAX_WIDTH,
@@ -182,6 +183,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 minWidth={SIDEBAR_MIN_WIDTH}
                 maxWidth={maxResizableSidebarWidth}
                 zIndex={zIndices.draggableComponent}
+                widthTransitionMs={userResizingSidebar ? 0 : SIDEBAR_ANIMATION_DURATION_MS}
                 onWidthResizeEnd={handleSidebarWidthChanged}
                 onWidthResizeMove={handleSidebarWidthUpdate}
                 onResizeStart={direction => {

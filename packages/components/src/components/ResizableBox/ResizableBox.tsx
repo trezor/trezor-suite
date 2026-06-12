@@ -37,6 +37,7 @@ export type ResizableBoxProps = AllowedResizableBoxFrameProps & {
     minHeight?: number;
     maxHeight?: number;
     zIndex?: ZIndexValues;
+    widthTransitionMs?: number;
     onWidthResizeEnd?: (width: number) => void;
     onHeightResizeEnd?: (height: number) => void;
     onWidthResizeMove?: (width: number) => void;
@@ -61,6 +62,7 @@ type ResizersProps = TransientProps<AllowedResizableBoxFrameProps> &
         $minHeight?: number;
         $maxHeight?: number;
         $isResizing?: boolean;
+        $widthTransitionMs?: number;
     };
 
 const MINIMAL_BOX_SIZE = 1;
@@ -94,6 +96,11 @@ const Resizers = styled.div<ResizersProps>`
         css`
             user-select: none;
             cursor: ${$isResizing ? 'ns-resize' : 'auto'};
+        `}
+    ${({ $widthTransitionMs }) =>
+        !!$widthTransitionMs &&
+        css`
+            transition: width ${$widthTransitionMs}ms ease-in-out;
         `}
 
     ${withFrameProps}
@@ -288,6 +295,7 @@ export const ResizableBox = ({
     minHeight = 0,
     maxHeight,
     zIndex = zIndices.draggableComponent,
+    widthTransitionMs,
     onWidthResizeEnd,
     onHeightResizeEnd,
     onWidthResizeMove,
@@ -513,6 +521,7 @@ export const ResizableBox = ({
             $highlightDirection={highlightDirection}
             $isResizing={isResizing}
             $zIndex={zIndex}
+            $widthTransitionMs={isResizing ? 0 : widthTransitionMs}
             {...frameProps}
         >
             <Child $isResizing={isResizing} $highlightDirection={highlightDirection}>
