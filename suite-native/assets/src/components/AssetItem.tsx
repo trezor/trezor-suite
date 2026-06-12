@@ -1,11 +1,11 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectVisibleDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
 import { Badge, Box, Text } from '@suite-native/atoms';
@@ -32,7 +32,6 @@ import {
     selectAssetCryptoValue,
     selectAssetFiatValue,
     selectAssetFiatValuePercentage,
-    selectVisibleDeviceAccountsKeysByNetworkSymbol,
 } from '../assetsSelectors';
 
 type AssetItemProps = {
@@ -90,12 +89,14 @@ const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {
 
 export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
+    const store = useStore<AssetsRootState>();
     const { NetworkNameFormatter } = useFormatters();
-    const accountsKeysForNetworkSymbol = useSelectorDeepComparison((state: AssetsRootState) =>
-        selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
+    // Subscribe only to the count (a number, compared with `===`) so the row chrome re-renders
+    // when an account is added/removed, not on every balance tick during discovery.
+    const accountsPerAsset = useSelector(
+        (state: AssetsRootState) =>
+            selectVisibleDeviceAccountsByNetworkSymbol(state, cryptoCurrencySymbol).length,
     );
-
-    const accountCount = accountsKeysForNetworkSymbol.length;
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
@@ -104,15 +105,21 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) =
     );
 
     const handleAssetPress = () => {
-        if (accountCount > 1 || hasAnyTokens || hasAnyAccountsWithStaking) {
+        // Read the accounts lazily at press time to avoid subscribing the whole array to the store.
+        const networkAccounts = selectVisibleDeviceAccountsByNetworkSymbol(
+            store.getState(),
+            cryptoCurrencySymbol,
+        );
+
+        if (networkAccounts.length === 1 && !hasAnyTokens && !hasAnyAccountsWithStaking) {
+            navigation.navigate(RootStackRoutes.AccountDetail, {
+                accountKey: networkAccounts[0]?.key,
+                closeActionType: 'back',
+            });
+        } else {
             navigation.navigate(AppTabsRoutes.AccountsStack, {
                 screen: AccountsStackRoutes.Accounts,
                 params: { networksFilter: [cryptoCurrencySymbol] },
-            });
-        } else {
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: accountsKeysForNetworkSymbol[0],
-                closeActionType: 'back',
             });
         }
     };
@@ -128,7 +135,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) =
                         <Icon size="medium" color="contentSecondary" name="wallet" />
                     </Box>
                     <Text variant="body-sm" color="contentSecondary">
-                        {accountCount}
+                        {accountsPerAsset}
                     </Text>
                     {hasAnyAccountsWithStaking && (
                         <StakingBadge networkSymbol={cryptoCurrencySymbol} />
