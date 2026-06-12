@@ -6,7 +6,9 @@ import {
     type TronResourceType,
     getResourceGain,
 } from '@suite-common/wallet-core';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, SelectBar, Text, Tooltip } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { useTronStakeContext } from '../TronStakeContext';
 
@@ -23,8 +25,14 @@ export const TronFreezeResourceSelect = () => {
     const resourceType = useWatch({ control, name: 'resourceType' });
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
 
+    const availableBalance = subunitsToUnits({
+        value: asAmountSubunit(new BigNumber(account.availableBalance)),
+        symbol: account.symbol,
+    }).toString();
+    const cappedAmount = BigNumber.min(new BigNumber(amount || 0), availableBalance).toString();
+
     const resourceOptions = TRON_RESOURCE_TYPES.map(type => {
-        const gain = getResourceGain(amount, type, tronResources);
+        const gain = getResourceGain(cappedAmount, type, tronResources);
 
         return {
             value: type,

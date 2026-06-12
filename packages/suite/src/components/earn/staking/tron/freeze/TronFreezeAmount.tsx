@@ -39,6 +39,7 @@ export const TronFreezeAmount = () => {
                 rules={form.amountRules}
                 maxLength={formInputsMaxLength.amount}
                 isDisabled={isDisabled}
+                hasError={!!errors.amount}
                 rightContent={
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                         {getNetworkDisplaySymbol(account.symbol)}
