@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native';
 
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -54,5 +55,13 @@ describe('FeePickerCard', () => {
                 formDraftKey: expect.any(String),
             }),
         );
+    });
+
+    it('should render children', () => {
+        const { getByText } = renderFeePickerCard({
+            children: <Text>child content</Text>,
+        });
+
+        expect(getByText('child content')).toBeOnTheScreen();
     });
 });
