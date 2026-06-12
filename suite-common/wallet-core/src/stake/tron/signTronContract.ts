@@ -5,12 +5,14 @@ import TrezorConnect from '@trezor/connect';
 
 import {
     type buildFreezeBalanceV2Contract,
+    type buildUnfreezeBalanceV2Contract,
     type buildVoteWitnessContract,
 } from './tronStakeContracts';
 import { type TronStakeError } from './tronStakeTypes';
 
 type TronStakeContract =
     | ReturnType<typeof buildFreezeBalanceV2Contract>
+    | ReturnType<typeof buildUnfreezeBalanceV2Contract>
     | ReturnType<typeof buildVoteWitnessContract>;
 
 type SignTronContractResult = { serializedTx: string } | { error: TronStakeError };

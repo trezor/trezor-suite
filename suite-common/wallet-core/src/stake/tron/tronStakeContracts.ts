@@ -29,6 +29,28 @@ export const buildFreezeBalanceV2Contract = ({
         },
     }) as const;
 
+interface BuildUnfreezeBalanceV2ContractParams {
+    ownerHex: string;
+    balance: number;
+    resourceType: TronResourceType;
+}
+
+export const buildUnfreezeBalanceV2Contract = ({
+    ownerHex,
+    balance,
+    resourceType,
+}: BuildUnfreezeBalanceV2ContractParams) =>
+    ({
+        type: 'UnfreezeBalanceV2Contract' as const,
+        parameter: {
+            value: {
+                owner_address: ownerHex,
+                balance,
+                resource: tronResourceTypeToCode(resourceType),
+            },
+        },
+    }) as const;
+
 interface TronVoteAllocation {
     addressHex: string;
     count: number;
