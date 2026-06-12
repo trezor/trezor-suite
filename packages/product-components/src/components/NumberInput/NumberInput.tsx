@@ -68,6 +68,27 @@ const cleanValueString = (value: string, locale: string) => {
 
 const DECIMAL_SEPARATORS = [',', '.'];
 
+export const isExtraDecimalSeparator = (
+    enteredCharacter: string,
+    locale: string,
+    {
+        value,
+        selectionStart,
+        selectionEnd,
+    }: Pick<HTMLInputElement, 'value' | 'selectionStart' | 'selectionEnd'>,
+) => {
+    if (!DECIMAL_SEPARATORS.includes(enteredCharacter)) {
+        return false;
+    }
+
+    const { decimalSeparator } = getLocaleSeparators(locale);
+    const valueWithoutSelection =
+        value.substring(0, selectionStart ?? value.length) +
+        value.substring(selectionEnd ?? value.length);
+
+    return valueWithoutSelection.includes(decimalSeparator);
+};
+
 export type NumberInputProps<TFieldValues extends FieldValues> = Omit<
     InputProps,
     'defaultValue' | 'name' | 'onChange'
@@ -141,10 +162,10 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                     (lastSymbol === '0' && rawValue.includes(decimalSeparator)))
             ) {
                 if (lastSymbol !== '0') {
-                    // disallow entering more than one separator
+                    // drop the entered separator when it directly follows another one
                     const secondToLastSymbol = rawValue.at(-2);
                     if (secondToLastSymbol && DECIMAL_SEPARATORS.includes(secondToLastSymbol)) {
-                        return;
+                        rawValue = rawValue.slice(0, -1);
                     }
 
                     // format a decimal separator to a locale-specific one to allow entering either one
@@ -339,17 +360,23 @@ export const NumberInput = <TFieldValues extends FieldValues>({
         [handleCopy, handleChange, inputRef],
     );
 
-    // only allow digits and separators
-    const handleOnBeforeInput = useCallback((e: FormEvent<HTMLInputElement> & { data: string }) => {
-        if (/[\d.,]/g.test(e.data)) {
-            // reset the redo history when a new digit is entered
-            setRedoHistory([]);
+    // only allow digits and separators, reject a second decimal separator
+    const handleOnBeforeInput = useCallback(
+        (e: FormEvent<HTMLInputElement> & { data: string }) => {
+            if (
+                /[\d.,]/g.test(e.data) &&
+                !(inputRef.current && isExtraDecimalSeparator(e.data, locale, inputRef.current))
+            ) {
+                // reset the redo history when a new digit is entered
+                setRedoHistory([]);
 
-            return;
-        }
+                return;
+            }
 
-        e.preventDefault();
-    }, []);
+            e.preventDefault();
+        },
+        [inputRef, locale],
+    );
 
     // checks for separators at pos + cursorCharacterOffset and moves the cursor to pos + cursorPositionOffset
     const handleCursorShift = useCallback(

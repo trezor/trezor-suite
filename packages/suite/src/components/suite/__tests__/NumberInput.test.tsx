@@ -8,7 +8,7 @@ import { type Store } from 'redux';
 import { prepareSuiteSettingsReducer, suiteSettingsInitialState } from '@suite/settings';
 import { type Locale } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
-import { NumberInput } from '@trezor/product-components';
+import { NumberInput, isExtraDecimalSeparator } from '@trezor/product-components';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
@@ -95,6 +95,10 @@ describe('NumberInput component', () => {
         await testCase(input, '12 34,.67', '1,234.67', '1234.67');
         await testCase(input, '  1234,.67.231', '1,234.67231', '1234.67231');
 
+        await testCase(input, '1.2.3', '1.23', '1.23');
+        await testCase(input, '0.001.1.1', '0.00111', '0.00111');
+        await testCase(input, '0..5', '0.5', '0.5');
+
         await testCase(input, 'a', '', '');
         await testCase(input, '1234adf134', '1,234,134', '1234134');
     });
@@ -119,6 +123,10 @@ describe('NumberInput component', () => {
         await testCase(input, '22 34,.67', '2\u00A0234,67', '1234.67');
         await testCase(input, '  2234,.67.231', '2\u00A0234,67231', '1234.67231');
 
+        await testCase(input, '2,2,3', '2,23', '2.23');
+        await testCase(input, '0,001,1,1', '0,00111', '0.00111');
+        await testCase(input, '0,,5', '0,5', '0.5');
+
         await testCase(input, 'a', '', '');
         await testCase(input, '2234adf134', '2\u00A0234\u00A0134', '2234134');
     });
@@ -141,5 +149,54 @@ describe('NumberInput component', () => {
 
         await testCase(input, 'a', '', '');
         await testCase(input, '3234adf134', '3.234.134', '3234134');
+    });
+
+    test('Formats a pasted value with consecutive decimal separators', async () => {
+        const input = renderInput('en-US');
+
+        await act(async () => {
+            input.focus();
+            await userEvent.paste('0..');
+        });
+        expect(input.value).toBe('0.');
+        expect(onChangeMock).toHaveBeenCalledWith('0');
+    });
+});
+
+describe('isExtraDecimalSeparator', () => {
+    const inputState = (
+        value: string,
+        selectionStart = value.length,
+        selectionEnd = value.length,
+    ) => ({
+        value,
+        selectionStart,
+        selectionEnd,
+    });
+
+    test('rejects a second decimal separator', () => {
+        expect(isExtraDecimalSeparator('.', 'en-US', inputState('0.001'))).toBe(true);
+        expect(isExtraDecimalSeparator(',', 'en-US', inputState('0.001'))).toBe(true);
+        expect(isExtraDecimalSeparator('.', 'en-US', inputState('1,234.'))).toBe(true);
+        expect(isExtraDecimalSeparator(',', 'cs-CZ', inputState('0,001'))).toBe(true);
+        expect(isExtraDecimalSeparator('.', 'cs-CZ', inputState('0,001'))).toBe(true);
+        expect(isExtraDecimalSeparator(',', 'es-ES', inputState('32.345,67'))).toBe(true);
+    });
+
+    test('allows the first decimal separator', () => {
+        expect(isExtraDecimalSeparator('.', 'en-US', inputState(''))).toBe(false);
+        expect(isExtraDecimalSeparator('.', 'en-US', inputState('1,234'))).toBe(false);
+        expect(isExtraDecimalSeparator(',', 'en-US', inputState('1,234'))).toBe(false);
+        expect(isExtraDecimalSeparator(',', 'cs-CZ', inputState('2\u00A0234'))).toBe(false);
+        expect(isExtraDecimalSeparator(',', 'es-ES', inputState('32.345'))).toBe(false);
+    });
+
+    test('allows a separator replacing a selection containing one', () => {
+        expect(isExtraDecimalSeparator('.', 'en-US', inputState('1.5', 0, 3))).toBe(false);
+        expect(isExtraDecimalSeparator('.', 'en-US', inputState('1.5', 1, 2))).toBe(false);
+    });
+
+    test('ignores digits', () => {
+        expect(isExtraDecimalSeparator('5', 'en-US', inputState('0.001'))).toBe(false);
     });
 });
