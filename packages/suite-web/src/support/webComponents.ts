@@ -62,6 +62,13 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
+    'earn-tron-withdraw': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronWithdraw }) => ({
+                default: EarnTronWithdraw,
+            }),
+        ),
+    ),
     'suite-connect-popup': lazy(() =>
         import(/* webpackChunkName: "connect-popup" */ 'src/views/connect-popup/index').then(
             ({ ConnectPopup }) => ({ default: ConnectPopup }),

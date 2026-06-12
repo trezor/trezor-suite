@@ -77,6 +77,12 @@ export const routes = [
         params: earnParams,
     },
     {
+        name: 'earn-tron-withdraw',
+        pattern: '/earn/tron/withdraw',
+        app: 'earn-staking',
+        params: earnParams,
+    },
+    {
         name: 'suite-version',
         pattern: '/version',
         app: 'version',
