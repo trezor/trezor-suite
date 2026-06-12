@@ -42,8 +42,10 @@ export const ChooseAccountItem = ({
             onPress={handlePress}
             icon={<CryptoIcon symbol={account.symbol} />}
             title={<AccountLabel account={account} />}
-            badges={
-                formattedAccountType ? <Badge label={formattedAccountType} size="small" /> : null
+            titleBadge={
+                formattedAccountType ? (
+                    <Badge label={formattedAccountType} size="small" />
+                ) : undefined
             }
             mainValue={
                 <CryptoAmountFormatter
