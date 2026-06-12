@@ -3613,10 +3613,6 @@ export const messages = defineMessages({
         description: 'Number of words. For example: 12 words',
         id: 'TR_WORDS',
     },
-    TR_SHOW_MORE_ADDRESSES: {
-        defaultMessage: 'Show more ({count})',
-        id: 'TR_SHOW_MORE_ADDRESSES',
-    },
     TR_RESERVE_INFO: {
         defaultMessage:
             '{networkName} addresses require a minimum balance of {minBalance} {displaySymbol} to activate and maintain the account.',

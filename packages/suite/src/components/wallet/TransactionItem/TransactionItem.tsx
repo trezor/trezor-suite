@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 
 import styled from 'styled-components';
 
@@ -34,8 +34,6 @@ const Wrapper = styled.div`
     scroll-margin-top: calc(${SUBPAGE_NAV_HEIGHT} + 115px);
 `;
 
-const DEFAULT_LIMIT = 3;
-
 type OpenModalParams = {
     flow: 'detail' | 'bump-fee' | 'cancel-transaction';
 };
@@ -62,7 +60,6 @@ export const TransactionItem = memo(
         disableBumpFee,
         index,
     }: TransactionItemProps) => {
-        const [limit, setLimit] = useState(0);
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
         const account = useSelector(selectSelectedAccount) || null;
@@ -80,9 +77,6 @@ export const TransactionItem = memo(
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
-
-        const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
-        const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;
 
         const isTxCancellable =
             transaction.type !== 'self' &&
@@ -139,68 +133,44 @@ export const TransactionItem = memo(
                             />
                         }
                         actions={
-                            (isTxBumpable || isExpandable) && (
+                            isTxBumpable && (
                                 <Row gap={12}>
-                                    {isExpandable && (
+                                    <Tooltip
+                                        content={
+                                            <Translation
+                                                id="TR_BUMP_FEE_DISABLED_TOOLTIP"
+                                                values={{
+                                                    a: chunks => (
+                                                        <Link
+                                                            href={
+                                                                HELP_CENTER_REPLACE_BY_FEE_ETHEREUM
+                                                            }
+                                                        >
+                                                            {chunks}
+                                                        </Link>
+                                                    ),
+                                                }}
+                                            />
+                                        }
+                                        isActive={disableBumpFee}
+                                    >
                                         <Button
                                             intent="neutral"
                                             priority="secondary"
-                                            iconRight={toExpand > 0 ? 'caretDown' : 'caretUp'}
-                                            size="small"
+                                            iconLeft="gauge"
                                             onClick={e => {
-                                                setLimit(toExpand > 0 ? limit + 20 : 0);
-                                                e.preventDefault();
+                                                openTxDetailsModal({
+                                                    flow: 'bump-fee',
+                                                });
                                                 e.stopPropagation();
                                             }}
+                                            isDisabled={disableBumpFee}
+                                            data-testid="@transaction-item/bump-fee-button"
+                                            size="medium"
                                         >
-                                            <Translation
-                                                id={
-                                                    toExpand > 0
-                                                        ? 'TR_SHOW_MORE_ADDRESSES'
-                                                        : 'TR_SHOW_LESS'
-                                                }
-                                                values={{ count: toExpand }}
-                                            />
+                                            <Translation id="TR_BUMP_FEE" />
                                         </Button>
-                                    )}
-                                    {isTxBumpable && (
-                                        <Tooltip
-                                            content={
-                                                <Translation
-                                                    id="TR_BUMP_FEE_DISABLED_TOOLTIP"
-                                                    values={{
-                                                        a: chunks => (
-                                                            <Link
-                                                                href={
-                                                                    HELP_CENTER_REPLACE_BY_FEE_ETHEREUM
-                                                                }
-                                                            >
-                                                                {chunks}
-                                                            </Link>
-                                                        ),
-                                                    }}
-                                                />
-                                            }
-                                            isActive={disableBumpFee}
-                                        >
-                                            <Button
-                                                intent="neutral"
-                                                priority="secondary"
-                                                iconLeft="gauge"
-                                                onClick={e => {
-                                                    openTxDetailsModal({
-                                                        flow: 'bump-fee',
-                                                    });
-                                                    e.stopPropagation();
-                                                }}
-                                                isDisabled={disableBumpFee}
-                                                data-testid="@transaction-item/bump-fee-button"
-                                                size="medium"
-                                            >
-                                                <Translation id="TR_BUMP_FEE" />
-                                            </Button>
-                                        </Tooltip>
-                                    )}
+                                    </Tooltip>
                                     {isTxCancellable && (
                                         <Button
                                             intent="neutral"
@@ -227,8 +197,6 @@ export const TransactionItem = memo(
                                 allOutputs={allOutputs}
                                 isActionDisabled={isActionDisabled}
                                 accountKey={accountKey}
-                                limit={limit}
-                                defaultLimit={DEFAULT_LIMIT}
                                 isPhishingTransaction={isPhishingTransaction}
                             />
                         ) : null}
