@@ -46,7 +46,11 @@ export const GuideNode = ({ node, description, itemVariant = 'cardList' }: Guide
 
     if (node.type === 'page') {
         return (
-            <CardList.Item onClick={navigateToNode} data-testid={`@guide/node${node.id}`}>
+            <CardList.Item
+                paddingType="medium"
+                onClick={navigateToNode}
+                data-testid={`@guide/node${node.id}`}
+            >
                 <Column
                     flex="1"
                     gap={description ? 4 : 0}
@@ -98,7 +102,11 @@ export const GuideNode = ({ node, description, itemVariant = 'cardList' }: Guide
         }
 
         return (
-            <CardList.Item onClick={navigateToNode} data-testid={`@guide/category${node.id}`}>
+            <CardList.Item
+                paddingType="medium"
+                onClick={navigateToNode}
+                data-testid={`@guide/category${node.id}`}
+            >
                 <Row gap={12} alignItems="center" flex="1" overflow="hidden">
                     {categoryIcon}
                     <Text typographyStyle="body-md" as="div" maxWidth="100%">

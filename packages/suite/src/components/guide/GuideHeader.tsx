@@ -19,7 +19,7 @@ const HeaderWrapper = styled.div<{
 }>`
     display: flex;
     align-items: center;
-    padding: 12px 21px;
+    padding: 12px 16px;
     position: sticky;
     top: 0;
     background-color: inherit;
@@ -88,7 +88,7 @@ export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
 
                     {label && (
                         <Paragraph
-                            typographyStyle="body-sm-strong"
+                            typographyStyle="body-sm"
                             align="center"
                             ellipsisLineCount={2}
                             margin={{ horizontal: 8 }}
