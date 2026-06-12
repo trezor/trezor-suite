@@ -127,7 +127,6 @@ export const TradingExchangeFormInputs = () => {
                         inputBottomText={
                             <AssetPickerInputBalance
                                 name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                                showOnlyAmount
                             />
                         }
                         includedCryptoIds={exchangeSellSupportedCryptoIds}
