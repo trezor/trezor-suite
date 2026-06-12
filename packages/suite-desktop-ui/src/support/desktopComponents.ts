@@ -6,6 +6,7 @@ import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
 import {
+    EarnTronClaim,
     EarnTronRedirect,
     EarnTronStake,
     EarnTronUnstake,
@@ -55,6 +56,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-tron-vote': EarnTronVote,
     'earn-tron-unstake': EarnTronUnstake,
     'earn-tron-withdraw': EarnTronWithdraw,
+    'earn-tron-claim': EarnTronClaim,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 
