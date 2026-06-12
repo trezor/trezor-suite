@@ -1,8 +1,8 @@
-import { A, G, pipe } from '@mobily/ts-belt';
+import { G } from '@mobily/ts-belt';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
 import type { DeviceRootState } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
@@ -42,6 +42,15 @@ We do not memoize most of following selectors because they are using only with `
 TODO: revalidate if this is still true for reselect
 */
 
+const areNetworkSymbolsEqual = (
+    previousNetworkSymbols: NetworkSymbol[],
+    nextNetworkSymbols: NetworkSymbol[],
+) =>
+    previousNetworkSymbols.length === nextNetworkSymbols.length &&
+    previousNetworkSymbols.every(
+        (networkSymbol, index) => networkSymbol === nextNetworkSymbols[index],
+    );
+
 export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
     state: AssetsRootState,
     symbol: NetworkSymbol | null,
@@ -55,30 +64,30 @@ export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
     return accounts.map(account => account.key);
 };
 
-export const selectDeviceNetworksWithAssets = createMemoizedSelector(
+export const selectDeviceNetworkSymbolsWithAssets = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
-    accounts =>
-        pipe(
-            accounts,
-            A.map(account => account.symbol),
-            A.uniq,
-            A.sort((a, b) => {
-                const aOrder = networkSymbolCollection.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
-                const bOrder = networkSymbolCollection.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
+    accounts => {
+        const networkSymbols = new Set(accounts.map(account => account.symbol));
 
-                return aOrder - bOrder;
-            }),
-        ),
+        return returnStableArrayIfEmpty(
+            networkSymbolCollection.filter(networkSymbol => networkSymbols.has(networkSymbol)),
+        );
+    },
+    {
+        memoizeOptions: {
+            resultEqualityCheck: areNetworkSymbolsEqual,
+        },
+    },
 );
 
 const selectDeviceAssetsWithBalances = createMemoizedSelector(
     [
         selectVisibleDeviceAccounts,
-        selectDeviceNetworksWithAssets,
+        selectDeviceNetworkSymbolsWithAssets,
         selectBaseCurrency,
         selectCurrentFiatRates,
     ],
-    (accounts, deviceNetworksWithAssets, baseCurrencyCode, rates) => {
+    (accounts, deviceNetworkSymbolsWithAssets, baseCurrencyCode, rates) => {
         const accountsWithFiatBalance = accounts.map(account => {
             const shouldIncludeStaking = isStakingSymbol(account.symbol);
 
@@ -98,7 +107,7 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
 
         let totalFiatBalance = asBaseCurrencyAmount(new BigNumber(0));
 
-        const assets = deviceNetworksWithAssets.map((symbol: NetworkSymbol) => {
+        const assets = deviceNetworkSymbolsWithAssets.map((symbol: NetworkSymbol) => {
             const networkAccounts = accountsWithFiatBalance.filter(
                 account => account.symbol === symbol,
             );
