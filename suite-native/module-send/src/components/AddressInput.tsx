@@ -6,7 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { type AddressCorrection, autocorrectAddress, isAddressValid } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { parseErc681TransferUri } from '@suite-common/transfer-uri';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
+import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -122,16 +123,23 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     };
 
     const handleScanAddressQRCode = (qrCodeData: string) => {
+        const parsed = parseTransferUri(qrCodeData);
+
+        // ERC-681 (Ethereum) — may switch to a matching account on another EVM network.
         const erc681 =
-            account?.networkType === 'ethereum' ? parseErc681TransferUri(qrCodeData) : null;
+            parsed.success &&
+            parsed.payload.format === 'erc681' &&
+            account?.networkType === 'ethereum'
+                ? parsed.payload
+                : null;
         if (erc681) {
             // Token amount is in subunits; convert it to display units using the holding
             // account's decimals (the target account when switching networks, see below).
             const toDisplayAmount = (tokenAccount: typeof account) => {
-                if (!erc681.contractAddress || erc681.tokenAmount === undefined) return undefined;
+                if (!erc681.token || erc681.tokenAmount === undefined) return undefined;
 
                 const token = tokenAccount?.tokens?.find(
-                    t => t.contract.toLowerCase() === erc681.contractAddress!.toLowerCase(),
+                    t => t.contract.toLowerCase() === erc681.token!.toLowerCase(),
                 );
 
                 return token
@@ -147,10 +155,8 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                 if (matchingAccount) {
                     navigation.replace(SendStackRoutes.SendOutputs, {
                         accountKey: matchingAccount.key,
-                        tokenContract: erc681.contractAddress
-                            ? toTokenAddress(erc681.contractAddress)
-                            : undefined,
-                        initialAddress: erc681.recipientAddress,
+                        tokenContract: erc681.token ? toTokenAddress(erc681.token) : undefined,
+                        initialAddress: erc681.address,
                         initialAmount: toDisplayAmount(matchingAccount),
                     });
 
@@ -160,9 +166,9 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
             } else {
                 onQrNetworkMismatch?.(null);
             }
-            setValue(addressFieldName, erc681.recipientAddress, { shouldValidate: true });
-            if (erc681.contractAddress) {
-                setValue(tokenFieldName, erc681.contractAddress, { shouldDirty: true });
+            setValue(addressFieldName, erc681.address, { shouldValidate: true });
+            if (erc681.token) {
+                setValue(tokenFieldName, erc681.token, { shouldDirty: true });
                 const displayAmount = toDisplayAmount(account);
                 if (displayAmount !== undefined) {
                     setValue(amountFieldName, displayAmount, { shouldValidate: true });
@@ -171,6 +177,29 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
                 payload: { method: 'qr-erc681' },
+            });
+
+            return;
+        }
+
+        // BIP-321 (bitcoin & other coin transfer URIs)
+        if (
+            parsed.success &&
+            parsed.payload.format === 'bip321' &&
+            getNetworkSymbolForProtocol(parsed.payload.scheme) === symbol
+        ) {
+            const bip321 = parsed.payload;
+            onQrNetworkMismatch?.(null);
+            setValue(addressFieldName, bip321.address, { shouldValidate: true });
+            if (bip321.amount) {
+                setValue(amountFieldName, bip321.amount, { shouldValidate: true });
+            }
+            if (bip321.label) {
+                setValue(utxoLabelFieldName, bip321.label, { shouldValidate: true });
+            }
+            analytics.report({
+                type: events.sendAddressFilledEvent.name,
+                payload: { method: 'qr' },
             });
 
             return;
