@@ -19,6 +19,10 @@ interface EthereumTxFixture {
 export const serializeEthereumTx: EthereumTxFixture[] = [
     {
         // https://eth.trezor.io/tx/0xf6652a681b4474132b8b96512eb0bd5311f5ed8414af59e715c9738a3b3673f3
+        // NOTE: This is pre-EIP-155 transaction signed without chainId so it's decoded as -4;
+        // we replace it by exactly the same transaction including chainId = 1
+        // old hex: 0xf86a1285104c533c00825208944dc573d5db497c0bf0674599e81c7db91151d4e6863905f13a8f0e801ca04256ec5ddf73f12f781e9f646f56fd8843296cf3eb7e2fb8f0b67ea317be3e7ca07be26525b6d6d39ef8745801bbb463c35ede09746708316a011e6eee7a2d83cf
+        // new hex: 0xf86a1285104c533c00825208944dc573d5db497c0bf0674599e81c7db91151d4e6863905f13a8f0e8026a0f2de2fdef0488cc8e328d5996d916367bf87a1482a17d77184ebc0b240fdc48aa0363eb465246f7728ba4d945c43be68e04bb1efd3b0eb4d66298b8788245547e6
         description: 'Legacy tx - ETH regular',
         from: '0x73d0385f4d8e00c5e6504c6030f47bf6212736a8',
         tx: {
@@ -33,11 +37,11 @@ export const serializeEthereumTx: EthereumTxFixture[] = [
         },
         // data received from TrezorConnect.ethereumSignTransaction
         signature: {
-            v: '0x1c',
-            r: '0x4256ec5ddf73f12f781e9f646f56fd8843296cf3eb7e2fb8f0b67ea317be3e7c',
-            s: '0x7be26525b6d6d39ef8745801bbb463c35ede09746708316a011e6eee7a2d83cf',
+            v: '0x26',
+            r: '0xf2de2fdef0488cc8e328d5996d916367bf87a1482a17d77184ebc0b240fdc48a',
+            s: '0x363eb465246f7728ba4d945c43be68e04bb1efd3b0eb4d66298b8788245547e6',
         },
-        result: '0xf6652a681b4474132b8b96512eb0bd5311f5ed8414af59e715c9738a3b3673f3',
+        result: '0x6ebfac1bc517ff14453888c64d268353022178f42d8404215bda67afe2082104',
     },
     {
         // https://eth.trezor.io/tx/0xdcaf3eba690a3cdbad8c2926a8f5a95cd20003c5ba2aace91d8c5fe8048e395b
