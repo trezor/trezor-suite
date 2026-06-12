@@ -101,7 +101,11 @@ export const CancelTransactionModal = ({
             dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState,
-                    composeContext: { account, network, feeInfo: getEthereumRbfFeeInfo(feeInfo, rbfParams) },
+                    composeContext: {
+                        account,
+                        network,
+                        feeInfo: getEthereumRbfFeeInfo(feeInfo, rbfParams),
+                    },
                 }),
             )
                 .unwrap()
@@ -155,7 +159,10 @@ export const CancelTransactionModal = ({
                         </Modal.Button>
                     ) : (
                         <>
-                            <CancelTransactionButton account={selectedAccount.account} />
+                            <CancelTransactionButton
+                                account={selectedAccount.account}
+                                onSuccess={onCancel}
+                            />
                             {error !== null ? (
                                 // This shall never happen, error like this always signal big in the code,
                                 // this is here just to make easier to detect and fix

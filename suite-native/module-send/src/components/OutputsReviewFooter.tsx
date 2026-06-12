@@ -8,9 +8,12 @@ import { useAtomValue } from 'jotai';
 
 import {
     type AccountsRootState,
+    type SendRootState,
     type TransactionsRootState,
     selectAccountByKey,
+    selectSendFormDraftByKey,
     selectTransactionByAccountKeyAndTxid,
+    sendFormActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
@@ -123,6 +126,12 @@ export const OutputsReviewFooter = ({
         selectAccountByKey(state, accountKey),
     );
 
+    const cancelOriginalTxid = useSelector((state: SendRootState) => {
+        const draft = selectSendFormDraftByKey(state, accountKey, tokenContract);
+
+        return draft?.rbfParams?.type === 'ethereum' ? draft.rbfParams.txid : null;
+    });
+
     useEffect(() => {
         // Navigate to transaction detail screen only at the moment when the transaction was already processed by backend and we have all its data.
         if (isTransactionProcessedByBackend) {
@@ -166,6 +175,15 @@ export const OutputsReviewFooter = ({
 
         if (isFulfilled(sendResponse)) {
             const { txid: sentTxid } = sendResponse.payload.payload;
+
+            if (cancelOriginalTxid) {
+                dispatch(
+                    sendFormActions.storePendingCancellation({
+                        originalTxid: cancelOriginalTxid,
+                        cancelTxid: sentTxid,
+                    }),
+                );
+            }
 
             setTxid(sentTxid);
             if (account.networkType === 'bitcoin') setSelectedUtxos([]); // clear selected UTXOs after sending the transaction

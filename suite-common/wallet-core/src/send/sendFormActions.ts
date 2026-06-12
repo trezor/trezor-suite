@@ -53,6 +53,16 @@ const sendRaw = createAction(`${SEND_MODULE_PREFIX}/sendRaw`, (payload: boolean)
 
 export const dispose = createAction(`${SEND_MODULE_PREFIX}/dispose`);
 
+const storePendingCancellation = createAction(
+    `${SEND_MODULE_PREFIX}/store-pending-cancellation`,
+    (payload: { originalTxid: string; cancelTxid: string }) => ({ payload }),
+);
+
+const removePendingCancellation = createAction(
+    `${SEND_MODULE_PREFIX}/remove-pending-cancellation`,
+    (payload: string) => ({ payload }),
+);
+
 export const sendFormActions = {
     storeDraft,
     removeDraft,
@@ -62,4 +72,6 @@ export const sendFormActions = {
     clearSignedTransactionData,
     sendRaw,
     dispose,
+    storePendingCancellation,
+    removePendingCancellation,
 };

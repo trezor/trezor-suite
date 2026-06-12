@@ -1948,6 +1948,9 @@ export const messages = {
             header: '<transactionType></transactionType> transaction',
             unstakeHeader: 'Unstake {amount}',
             cancelEvmTransactionButton: 'Cancel transaction',
+            cancellationPendingBadge: 'Cancellation pending',
+            cancellationPendingDescription:
+                'A cancellation was submitted. Once confirmed, the original transaction will be replaced.',
             exploreButton: 'Show in blockchain explorer',
             feeLabel: 'Fee',
             dateLabel: 'Date',

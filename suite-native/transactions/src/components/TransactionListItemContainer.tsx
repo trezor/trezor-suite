@@ -8,7 +8,9 @@ import { type TokenDefinitionsRootState } from '@suite-common/token-definitions'
 import {
     type FiatRatesRootState,
     type PhishingRootState,
+    type SendRootState,
     type TransactionsRootState,
+    selectIsEvmTxBeingCancelled,
     selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
@@ -135,6 +137,9 @@ export const TransactionListItemContainer = ({
     );
 
     const isTransactionPending = isPending(transaction);
+    const isBeingCancelled = useSelector((state: SendRootState) =>
+        selectIsEvmTxBeingCancelled(state, txid),
+    );
     const { isPhishing: isPhishingTransaction } = useSelector(
         (
             state: TokenDefinitionsRootState &
@@ -181,6 +186,15 @@ export const TransactionListItemContainer = ({
                                         size="small"
                                         icon="warning"
                                         intent="critical"
+                                    />
+                                )}
+                                {isBeingCancelled && (
+                                    <Badge
+                                        label={
+                                            <Translation id="transactions.detail.cancellationPendingBadge" />
+                                        }
+                                        size="small"
+                                        intent="warning"
                                     />
                                 )}
                             </Box>

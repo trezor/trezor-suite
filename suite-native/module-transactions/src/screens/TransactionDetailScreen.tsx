@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -7,8 +9,13 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useServices } from '@suite-common/dependency-injection';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
+import {
+    type SendRootState,
+    selectCancelTxidByOriginalTxid,
+    selectIsEvmTxBeingCancelled,
+} from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
@@ -24,6 +31,7 @@ import {
     type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { cancelEvmTransactionNativeThunk } from '@suite-native/send';
+import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
 import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
@@ -35,14 +43,17 @@ import {
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.TransactionDetailStack>;
+type NavigationProp = StackNavigationProps<
+    RootStackParamList,
+    RootStackRoutes.TransactionDetailStack
+>;
 
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
     const navigation = useNavigation<NavigationProp>();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<ThunkDispatch<any, any, UnknownAction>>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
@@ -87,8 +98,16 @@ export const TransactionDetailScreen = ({
         ? redactNumericalSubstring(formattedUnstakeAmount)
         : formattedUnstakeAmount;
 
+    const isBeingCancelled = useSelector((state: SendRootState) =>
+        selectIsEvmTxBeingCancelled(state, txid),
+    );
+    const cancelTxid = useSelector((state: SendRootState) =>
+        selectCancelTxidByOriginalTxid(state, txid),
+    );
+
     const isCancellableEvmTx =
         isPending &&
+        !isBeingCancelled &&
         transaction.type !== 'recv' &&
         transaction.type !== 'failed' &&
         transaction.ethereumSpecific !== undefined &&
@@ -101,12 +120,16 @@ export const TransactionDetailScreen = ({
         openInBlockchain();
     };
 
+    const [isComposing, setIsComposing] = useState(false);
+
     const handleCancelEvmTransaction = async () => {
         if (!transaction) return;
 
+        setIsComposing(true);
         const response = await dispatch(
             cancelEvmTransactionNativeThunk({ tx: transaction, accountKey }),
         );
+        setIsComposing(false);
 
         if (!isFulfilled(response)) return;
 
@@ -114,7 +137,7 @@ export const TransactionDetailScreen = ({
             screen: SendStackRoutes.SendAddressReview,
             params: {
                 accountKey,
-                transaction: response.payload,
+                transaction: response.payload as GeneralPrecomposedTransactionFinal,
                 isCancellation: true,
             },
         });
@@ -175,12 +198,22 @@ export const TransactionDetailScreen = ({
                         tokenTransfer={tokenTransfer as TypedTokenTransfer}
                     />
                 </VStack>
+                {isBeingCancelled && cancelTxid && (
+                    <InlineAlertBox
+                        variant="warning"
+                        title={
+                            <Translation id="transactions.detail.cancellationPendingDescription" />
+                        }
+                    />
+                )}
                 {isCancellableEvmTx && (
                     <Button
                         iconRight="x"
                         onPress={handleCancelEvmTransaction}
                         intent="critical"
                         priority="secondary"
+                        isLoading={isComposing}
+                        isDisabled={isComposing}
                     >
                         <Translation id="transactions.detail.cancelEvmTransactionButton" />
                     </Button>

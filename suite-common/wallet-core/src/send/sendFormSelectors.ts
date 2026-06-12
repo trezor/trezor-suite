@@ -43,6 +43,20 @@ export const selectSendFormDraftOutputsByAccountKey = (
     return draft?.outputs ?? null;
 };
 
+export const selectCancelTxidByOriginalTxid = (state: SendRootState, originalTxid: string) =>
+    state.wallet.send.pendingCancellations[originalTxid];
+
+export const selectIsEvmTxBeingCancelled = (state: SendRootState, txid: string) =>
+    !!state.wallet.send.pendingCancellations[txid];
+
+export const selectOriginalTxidByCancelTxid = (state: SendRootState, cancelTxid: string) => {
+    const entry = Object.entries(state.wallet.send.pendingCancellations).find(
+        ([, value]) => value === cancelTxid,
+    );
+
+    return entry?.[0];
+};
+
 export const selectSendFormButtonRequestCodes = (state: DeviceRootState, symbol: NetworkSymbol) => {
     const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
 
