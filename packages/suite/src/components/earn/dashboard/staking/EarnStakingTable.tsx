@@ -11,7 +11,6 @@ import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import { EarnStakingActivateRow } from './EarnStakingActivateRow';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
-import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
 import { useStakingTableData } from './hooks/useStakingTableData';
 
 export const EarnStakingTable = () => {
@@ -28,17 +27,7 @@ export const EarnStakingTable = () => {
         isExpanded,
         toggleExpanded,
         hasAnyRewardsData,
-        isStakingActive,
-        isSectionOutdated,
     } = useStakingTableData();
-
-    const badge = getEarnDashboardBadgeState({
-        isSectionActive: isStakingActive,
-        isSectionOutdated,
-        activeLabelId: 'TR_EARN_DASHBOARD_ACTIVE',
-        notActiveLabelId: 'TR_EARN_DASHBOARD_NOT_ACTIVE',
-        outdatedLabelId: 'TR_EARN_STAKING_DASHBOARD_OUTDATED',
-    });
 
     return (
         <Column gap={16}>
@@ -49,7 +38,6 @@ export const EarnStakingTable = () => {
                     titleId="TR_EARN_STAKING_DASHBOARD_TITLE"
                     subheadingId="TR_EARN_STAKING_DASHBOARD_TEXT"
                     provider="everstake"
-                    statusBadge={badge}
                     sectionRef={anchorRef}
                 >
                     <Column gap={16} alignItems="center">
