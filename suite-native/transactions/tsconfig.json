@@ -62,7 +62,6 @@
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils-store" }

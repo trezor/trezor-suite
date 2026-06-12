@@ -14848,7 +14848,6 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles-native": "workspace:*"
-    "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"

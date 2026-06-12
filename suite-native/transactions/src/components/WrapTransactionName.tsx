@@ -3,21 +3,23 @@ import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol, getWrappedNativeSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getUnwrapAmountByEthereumDataHex } from '@suite-common/wallet-utils';
-import { Text } from '@suite-native/atoms';
+import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { type NativeTypographyStyle } from '@trezor/theme';
 
-type WrapTransactionNameProps = {
+type WrapTransactionNameProps = TextProps & {
     transaction: WalletAccountTransaction;
     kind: 'wrap' | 'unwrap';
-    variant?: NativeTypographyStyle;
 };
 
 // Mirrors desktop's `WrapTxAmount` (packages/suite/src/components/suite/WrapTxAmount.tsx): wrapping is
 // 1:1, so both legs share the same amount and differ only in symbol. The amount is the transaction
 // value for a wrap and the withdraw(uint256) calldata for an unwrap, and the label always shows it in
 // the wrapped-native token (e.g. WETH).
-export const WrapTransactionName = ({ transaction, kind, variant }: WrapTransactionNameProps) => {
+export const WrapTransactionName = ({
+    transaction,
+    kind,
+    ...textProps
+}: WrapTransactionNameProps) => {
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
 
@@ -48,7 +50,7 @@ export const WrapTransactionName = ({ transaction, kind, variant }: WrapTransact
         : wrappedAmountText;
 
     return (
-        <Text variant={variant}>
+        <Text {...textProps}>
             <Translation
                 id={kind === 'wrap' ? 'transactions.name.wrap' : 'transactions.name.unwrap'}
                 values={{ nativeSymbol: getNetworkDisplaySymbol(symbol), wrappedAmount }}
