@@ -1,3 +1,5 @@
+export { ExperimentWrapper } from '@suite-common/message-system';
+
 export * from './messageSystemMiddleware';
 export * from './components/ContextMessage';
 export * from './components/MessageSystemBannerRenderer';
