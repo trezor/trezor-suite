@@ -6,9 +6,14 @@ import TrezorConnect from '@trezor/connect';
 import { type TronFreezeContract } from '../actions/freeze/freezeContract';
 import { type TronUnstakeContract } from '../actions/unstake/unstakeContract';
 import { type TronVoteContract } from '../actions/vote/voteContract';
+import { type TronWithdrawContract } from '../actions/withdraw/withdrawContract';
 import { type TronStakeError } from '../tronStakeTypes';
 
-type TronStakeContract = TronFreezeContract | TronUnstakeContract | TronVoteContract;
+type TronStakeContract =
+    | TronFreezeContract
+    | TronUnstakeContract
+    | TronVoteContract
+    | TronWithdrawContract;
 
 type SignTronContractResult = { serializedTx: string } | { error: TronStakeError };
 
