@@ -24,6 +24,8 @@ const rows = [
 
 type Row = (typeof rows)[number];
 
+const err = (value: string, reason: string) => `Value '${value}' is invalid (${reason})`;
+
 describe('eth converter', () => {
     describe('units', () => {
         it.each([
@@ -76,14 +78,25 @@ describe('eth converter', () => {
                 '-43': 'negative',
                 Infinity: 'infinity',
             }).forEach(([value, reason]) => {
-                expect(() => fromWei(value)).toThrow(`Value '${value}' is invalid (${reason})`);
-                expect(() => fromGwei(value)).toThrow(`Value '${value}' is invalid (${reason})`);
-                expect(() => fromEther(value)).toThrow(`Value '${value}' is invalid (${reason})`);
+                expect(() => fromWei(value)).toThrow(err(value, reason));
+                expect(() => fromGwei(value)).toThrow(err(value, reason));
+                expect(() => fromEther(value)).toThrow(err(value, reason));
             });
 
-            expect(() => fromWei('0.3')).toThrow(`Value '0.3' is invalid (decimal)`);
+            const errDecimals = (dec: number, max: number) =>
+                err(`0.${'0'.repeat(dec)}3`, `more than ${max} decimal places`);
+
+            expect(() => fromWei('0.3')).toThrow(errDecimals(0, 0));
             expect(() => fromGwei('0.3')).not.toThrow();
             expect(() => fromEther('0.3')).not.toThrow();
+
+            expect(() => fromWei('0.0000000003')).toThrow(errDecimals(9, 0));
+            expect(() => fromGwei('0.0000000003')).toThrow(errDecimals(9, 9));
+            expect(() => fromEther('0.0000000003')).not.toThrow();
+
+            expect(() => fromWei('0.0000000000000000003')).toThrow(errDecimals(18, 0));
+            expect(() => fromGwei('0.0000000000000000003')).toThrow(errDecimals(18, 9));
+            expect(() => fromEther('0.0000000000000000003')).toThrow(errDecimals(18, 18));
         });
     });
 
@@ -110,13 +123,11 @@ describe('eth converter', () => {
                 '0xy': 'not a number',
                 '-43': 'negative',
                 Infinity: 'infinity',
-                '0.3': 'decimal',
+                '0.3': 'more than 0 decimal places',
             }).forEach(([value, reason]: [any, string]) => {
-                expect(() => fromHex(value)).toThrow(`Value '${value}' is invalid (${reason})`);
-                expect(() => fromBigInt(value)).toThrow(`Value '${value}' is invalid (${reason})`);
-                expect(() => fromIntegerString(value)).toThrow(
-                    `Value '${value}' is invalid (${reason})`,
-                );
+                expect(() => fromHex(value)).toThrow(err(value, reason));
+                expect(() => fromBigInt(value)).toThrow(err(value, reason));
+                expect(() => fromIntegerString(value)).toThrow(err(value, reason));
             });
         });
     });
