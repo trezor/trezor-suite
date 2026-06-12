@@ -8,11 +8,7 @@ import { accounts } from './account';
 const firstAccount: (typeof accounts)[number] = accounts[0];
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
-import {
-    type TradingPaymentMethodListProps,
-    type TradingTransactionBuy,
-    type TradingTransactionExchange,
-} from '../../types';
+import { type TradingTransactionBuy, type TradingTransactionExchange } from '../../types';
 import {
     type TradingComposedTransactionInfo,
     initialState,
@@ -79,17 +75,6 @@ const symbolsInfo: InfoResponse = {
         },
     },
 };
-
-const paymentMethods: TradingPaymentMethodListProps[] = [
-    {
-        value: '',
-        label: '',
-    },
-    {
-        value: 'creditCard',
-        label: 'Credit Card',
-    },
-];
 
 const composedTransactionInfo: TradingComposedTransactionInfo = {
     selectedFee: 'normal',
@@ -242,7 +227,6 @@ export const tradingFixtures = [
             info: {
                 platforms: symbolsInfo.platforms,
                 coins: symbolsInfo.coins,
-                paymentMethods: [],
             },
         },
     },
@@ -289,23 +273,6 @@ export const tradingFixtures = [
         result: {
             ...initialState,
             trades: [tradeBuy, tradeExchange],
-        },
-    },
-    {
-        description: 'should save payment methods',
-        initialState,
-        actions: [
-            {
-                type: tradingActions.savePaymentMethods.type,
-                payload: paymentMethods,
-            },
-        ],
-        result: {
-            ...initialState,
-            info: {
-                ...initialState.info,
-                paymentMethods,
-            },
         },
     },
     {

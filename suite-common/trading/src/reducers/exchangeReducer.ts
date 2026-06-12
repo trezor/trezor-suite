@@ -71,6 +71,7 @@ const tradingExchangeSlice = createSlice({
         },
         clearQuotes(state) {
             state.quotes = [];
+            state.selectedQuote = undefined;
         },
         setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.tradingAccountKey = action.payload;

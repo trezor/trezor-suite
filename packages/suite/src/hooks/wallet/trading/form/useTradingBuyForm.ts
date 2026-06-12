@@ -15,21 +15,17 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingAmountLimitProps,
     type TradingBuyFormProps,
-    type TradingBuyType,
     buyThunks,
-    getTradingQuotesByPaymentMethod,
     isCountrySubdivisionEmpty,
     mapFiatCurrencyCodeToBaseCurrencyCode,
     selectTradingBuyAmountLimits,
     selectTradingBuyInfo,
     selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
-    selectTradingBuyQuotes,
+    selectTradingBuyQuotesByPaymentMethod,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
-    selectTradingPaymentMethods,
     selectTradingVerifiedAddress,
-    tradingActions,
     tradingBuyActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -53,6 +49,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
+import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingFiatValues } from './common/useTradingFiatValues';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
@@ -68,14 +65,12 @@ export const useTradingBuyForm = ({
 
     const buyInfo = useSelector(selectTradingBuyInfo);
     const isFromRedirect = useSelector(selectTradingBuyIsFromRedirect);
-    const quotes = useSelector(selectTradingBuyQuotes);
     const quotesRequest = useSelector(selectTradingBuyQuotesRequest);
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
     const amountLimits = useSelector(selectTradingBuyAmountLimits);
     const isLoading = useSelector(selectTradingBuyIsLoading);
 
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
-    const paymentMethods = useSelector(selectTradingPaymentMethods);
 
     const { device } = useTradingInitializer({
         pageType,
@@ -101,13 +96,8 @@ export const useTradingBuyForm = ({
           };
     useTradingFiatValues(fiatTradingValuesParams);
 
-    const {
-        defaultValues,
-        defaultSubdivision,
-        defaultCountry,
-        defaultCurrency,
-        defaultPaymentMethod,
-    } = useTradingBuyFormDefaultValues(cryptoId, buyInfo);
+    const { defaultValues, defaultSubdivision, defaultCountry, defaultCurrency } =
+        useTradingBuyFormDefaultValues(cryptoId, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const shouldSkipInitialReset = !isFormPage;
     const methods = useForm<TradingBuyFormProps>({
@@ -139,9 +129,8 @@ export const useTradingBuyForm = ({
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
-    const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<TradingBuyType>(
-        quotes,
-        values?.paymentMethod?.value ?? '',
+    const quotesByPaymentMethod = useSelector(state =>
+        selectTradingBuyQuotesByPaymentMethod(state, values?.paymentMethod?.value),
     );
     // based on selected cryptoSymbol, because of using for validation cryptoInput
     const network = getNetwork(
@@ -277,20 +266,13 @@ export const useTradingBuyForm = ({
             }
 
             if (quotePaymentMethod && paymentMethod?.value !== quotePaymentMethod) {
-                const matchingOption = paymentMethods.find(
-                    method => method.value === quotePaymentMethod,
-                );
-
-                setValue(
-                    TRADING_FORM_PAYMENT_METHOD_SELECT,
-                    matchingOption ?? {
-                        value: quotePaymentMethod,
-                        label: quote.paymentMethodName ?? quotePaymentMethod,
-                    },
-                );
+                setValue(TRADING_FORM_PAYMENT_METHOD_SELECT, {
+                    value: quotePaymentMethod,
+                    label: quote.paymentMethodName ?? quotePaymentMethod,
+                });
             }
         },
-        [paymentMethod, paymentMethods, provider, setValue],
+        [paymentMethod, provider, setValue],
     );
 
     useEffect(() => {
@@ -325,6 +307,8 @@ export const useTradingBuyForm = ({
             handleSubmit,
         ],
     );
+
+    useTradingClearStaleQuotes({ type, isEnabled: isFormPage, isAmountEmpty });
 
     // call change handler on every change of select inputs
     useEffect(() => {
@@ -408,8 +392,6 @@ export const useTradingBuyForm = ({
         defaultCountry,
         defaultSubdivision,
         defaultCurrency,
-        defaultPaymentMethod,
-        paymentMethods,
         buyInfo,
         amountLimits,
         network,
@@ -430,7 +412,6 @@ export const useTradingBuyForm = ({
         },
         clearQuotesAndParams: () => {
             dispatch(tradingBuyActions.clearQuotesAndParams());
-            dispatch(tradingActions.savePaymentMethods([]));
         },
     };
 };

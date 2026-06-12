@@ -21,7 +21,7 @@ import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
 import { type ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
 import { type SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
-import type { TradingPaymentMethodListProps, TradingType } from '../../types';
+import type { TradingType } from '../../types';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     bestBuyQuotePerPaymentMethodProjection,
@@ -74,11 +74,14 @@ import {
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
-    selectTradingPaymentMethods,
+    selectTradingPaymentMethodsByType,
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
     selectTradingProviderMetadata,
+    selectTradingQuotesByType,
+    selectTradingQuotesPerPaymentMethodByType,
+    selectTradingSelectedPaymentMethodByType,
     selectTradingSellAccountKey,
     selectTradingSellAmountLimits,
     selectTradingSellFormStep,
@@ -259,12 +262,6 @@ describe('tradingSelectors', () => {
                     ...initialState,
                     buy: getBuyState(),
                     info: {
-                        paymentMethods: [
-                            {
-                                value: 'creditCard',
-                                label: 'Credit Card label',
-                            },
-                        ] as TradingPaymentMethodListProps[],
                         coins: coins as Coins,
                         platforms: platforms as Platforms,
                     },
@@ -667,10 +664,6 @@ describe('tradingSelectors', () => {
         expect(selectTradingSellSelectedQuote(state)).toBe(state.wallet.trading.sell.selectedQuote);
     });
 
-    it('selectTradingPaymentMethods should return correct data', () => {
-        expect(selectTradingPaymentMethods(state)).toBe(state.wallet.trading.info.paymentMethods);
-    });
-
     it('selectTradingTrades should return correct data', () => {
         expect(selectTradingTrades(state)).toBe(state.wallet.trading.trades);
     });
@@ -1015,9 +1008,9 @@ describe('tradingSelectors', () => {
                 },
             ];
 
-            expect(selectTradingBuyQuotesByPaymentMethod(state, 'eps')).toEqual({
-                fixed: [state.wallet.trading.buy.quotes[0]],
-            });
+            expect(selectTradingBuyQuotesByPaymentMethod(state, 'eps')).toEqual([
+                state.wallet.trading.buy.quotes[0],
+            ]);
         });
 
         it('should be stable', () => {
@@ -1549,9 +1542,9 @@ describe('tradingSelectors', () => {
                 },
             ];
 
-            expect(selectTradingSellQuotesByPaymentMethod(state, 'creditCard')).toEqual({
-                fixed: [state.wallet.trading.sell.quotes[0]],
-            });
+            expect(selectTradingSellQuotesByPaymentMethod(state, 'creditCard')).toEqual([
+                state.wallet.trading.sell.quotes[0],
+            ]);
         });
 
         it('should be stable', () => {
@@ -1590,9 +1583,7 @@ describe('tradingSelectors', () => {
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.trading.info = {
-                    paymentMethods: [],
-                };
+                state.wallet.trading.info = {};
 
                 expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
@@ -1690,9 +1681,7 @@ describe('tradingSelectors', () => {
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.trading.info = {
-                    paymentMethods: [],
-                };
+                state.wallet.trading.info = {};
 
                 expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
@@ -1718,6 +1707,125 @@ describe('tradingSelectors', () => {
     describe(selectTradingSellQuotes.name, () => {
         it('should return quotes from trading sell state', () => {
             expect(selectTradingSellQuotes(state)).toBe(state.wallet.trading.sell.quotes);
+        });
+    });
+
+    describe(selectTradingQuotesByType.name, () => {
+        it('should return buy quotes for buy type', () => {
+            expect(selectTradingQuotesByType(state, 'buy')).toBe(state.wallet.trading.buy.quotes);
+        });
+
+        it('should return sell quotes for sell type', () => {
+            expect(selectTradingQuotesByType(state, 'sell')).toBe(state.wallet.trading.sell.quotes);
+        });
+
+        it('should return exchange quotes for exchange type', () => {
+            expect(selectTradingQuotesByType(state, 'exchange')).toBe(
+                state.wallet.trading.exchange.quotes,
+            );
+        });
+    });
+
+    describe(selectTradingPaymentMethodsByType.name, () => {
+        it('should return buy payment methods for buy type', () => {
+            state.wallet.trading.buy.quotes = [
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '5',
+                    rate: 2,
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    quoteId: 'quoteId1',
+                },
+            ];
+
+            expect(selectTradingPaymentMethodsByType(state, 'buy')).toEqual([
+                { value: 'creditCard', label: 'Credit Card' },
+            ]);
+        });
+
+        it('should return sell payment methods for sell type', () => {
+            expect(selectTradingPaymentMethodsByType(state, 'sell')).toEqual(
+                selectTradingSellPaymentMethods(state),
+            );
+        });
+
+        it('should return an empty array for exchange type', () => {
+            expect(selectTradingPaymentMethodsByType(state, 'exchange')).toEqual([]);
+        });
+    });
+
+    describe(selectTradingSelectedPaymentMethodByType.name, () => {
+        beforeEach(() => {
+            state.wallet.trading.buy.quotes = [
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '5',
+                    rate: 2,
+                    paymentMethod: 'creditCard',
+                    paymentMethodName: 'Credit Card',
+                    quoteId: 'quoteId1',
+                },
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '5',
+                    rate: 2,
+                    paymentMethod: 'bankTransfer',
+                    paymentMethodName: 'Bank Transfer',
+                    quoteId: 'quoteId2',
+                },
+            ];
+        });
+
+        it('should return the option matching the selected payment method', () => {
+            expect(selectTradingSelectedPaymentMethodByType(state, 'buy', 'bankTransfer')).toEqual({
+                value: 'bankTransfer',
+                label: 'Bank Transfer',
+            });
+        });
+
+        it('should fall back to the first option when the selected method is not available', () => {
+            expect(selectTradingSelectedPaymentMethodByType(state, 'buy', 'applePay')).toEqual({
+                value: 'creditCard',
+                label: 'Credit Card',
+            });
+        });
+
+        it('should fall back to the first option when no method is selected', () => {
+            expect(selectTradingSelectedPaymentMethodByType(state, 'buy', undefined)).toEqual({
+                value: 'creditCard',
+                label: 'Credit Card',
+            });
+        });
+
+        it('should return undefined when there are no payment methods', () => {
+            expect(
+                selectTradingSelectedPaymentMethodByType(state, 'exchange', 'creditCard'),
+            ).toBeUndefined();
+        });
+    });
+
+    describe(selectTradingQuotesPerPaymentMethodByType.name, () => {
+        it('should return buy quotes per payment method for buy type', () => {
+            expect(selectTradingQuotesPerPaymentMethodByType(state, 'buy')).toEqual(
+                selectTradingBuyQuotesPerPaymentMethod(state),
+            );
+        });
+
+        it('should return sell quotes per payment method for sell type', () => {
+            expect(selectTradingQuotesPerPaymentMethodByType(state, 'sell')).toEqual(
+                selectTradingSellQuotesPerPaymentMethod(state),
+            );
+        });
+
+        it('should return an empty array for exchange type', () => {
+            expect(selectTradingQuotesPerPaymentMethodByType(state, 'exchange')).toEqual([]);
         });
     });
 

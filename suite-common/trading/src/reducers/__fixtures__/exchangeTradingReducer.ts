@@ -134,6 +134,7 @@ export const exchangeTradingFixtures = [
         initialState: {
             ...exchangeInitialState,
             quotes: exchangeQuotes,
+            selectedQuote: changellyExchangeQuote,
         },
         actions: [
             {

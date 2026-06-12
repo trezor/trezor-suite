@@ -49,7 +49,6 @@ export const TradingSellFormInputs = () => {
         showReserveBanner,
         quotes,
         defaultCountry,
-        isAmountEmpty,
     } = context;
     const { getValues } = useFormContext<TradingSellFormProps>();
     const { outputs, sendCryptoSelect, amountInCrypto, countrySelect } = getValues();
@@ -138,7 +137,7 @@ export const TradingSellFormInputs = () => {
                     composedLevels={composedLevels}
                     changeFeeLevel={changeFeeLevel}
                 />
-                {!!quotes.length && !isAmountEmpty && (
+                {!!quotes.length && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 )}
 

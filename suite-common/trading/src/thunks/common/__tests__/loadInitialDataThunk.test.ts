@@ -95,9 +95,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
     jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
 
     const store = initStore({
-        info: {
-            paymentMethods: [],
-        },
+        info: {},
         lastLoadedTimestamp: type === 'outdated' ? 0 : mockedLastLoadedTimestamp,
     });
 

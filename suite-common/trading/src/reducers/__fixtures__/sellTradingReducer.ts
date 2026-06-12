@@ -119,6 +119,22 @@ export const sellTradingFixtures = [
         },
     },
     {
+        description: 'should clear quotes',
+        initialState: {
+            ...sellInitialState,
+            quotes: sellQuotes,
+            selectedQuote: btcdirectBankTransferSellQuote,
+        },
+        actions: [
+            {
+                type: tradingSellActions.clearQuotes.type,
+            },
+        ],
+        result: {
+            ...sellInitialState,
+        },
+    },
+    {
         description: 'should save selected quote',
         initialState: sellInitialState,
         actions: [

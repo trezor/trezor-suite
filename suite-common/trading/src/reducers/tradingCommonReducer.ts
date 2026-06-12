@@ -10,12 +10,7 @@ import {
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { type CardanoOutput, type FeeLevel, type PROTO } from '@trezor/connect';
 
-import {
-    type TradingPaymentMethodListProps,
-    type TradingTransaction,
-    type TradingType,
-    type TradingVerifiedAddress,
-} from '../types';
+import { type TradingTransaction, type TradingType, type TradingVerifiedAddress } from '../types';
 import { type TradingBuyState, buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
 import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
@@ -44,7 +39,6 @@ export interface TradingComposedTransactionInfo {
 export interface TradingInfo {
     platforms?: Platforms;
     coins?: Coins;
-    paymentMethods: TradingPaymentMethodListProps[];
 }
 
 export interface TradingPrefilledFromAccount {
@@ -91,7 +85,6 @@ export const initialState: TradingState = {
     info: {
         platforms: undefined,
         coins: undefined,
-        paymentMethods: [],
     },
     buy: buyInitialState,
     exchange: exchangeInitialState,
@@ -135,9 +128,6 @@ const tradingCommonSlice = createSlice({
         saveInfo(state, action: PayloadAction<InfoResponse>) {
             state.info.coins = action.payload.coins;
             state.info.platforms = action.payload.platforms;
-        },
-        savePaymentMethods(state, action: PayloadAction<TradingPaymentMethodListProps[]>) {
-            state.info.paymentMethods = action.payload;
         },
         saveComposedTransactionInfo(state, action: PayloadAction<TradingComposedTransactionInfo>) {
             state.composedTransactionInfo = action.payload;
