@@ -179,32 +179,45 @@ class InvityAPI {
         signal?: SignalType,
     ): Promise<any> {
         const finalUrl = `${this.getApiServerUrl()}${url}`;
-        const timeoutSignal = AbortSignal.timeout(InvityAPI.REQUEST_TIMEOUT_MS);
-        const combinedSignal = signal ? AbortSignal.any([timeoutSignal, signal]) : timeoutSignal;
-        const opts = this.options(body, method, apiHeaderValue, combinedSignal);
+        // AbortSignal.timeout() and AbortSignal.any() are not available in Hermes (React Native),
+        // so we compose a manual timeout using AbortController + setTimeout.
+        const timeoutController = new AbortController();
+        const timeoutId = setTimeout(() => timeoutController.abort(), InvityAPI.REQUEST_TIMEOUT_MS);
+        const abortHandler = () => timeoutController.abort();
+        if (signal) {
+            signal.addEventListener('abort', abortHandler);
+        }
+        const opts = this.options(body, method, apiHeaderValue, timeoutController.signal);
 
-        return await fetch(finalUrl, opts).then(response => {
-            if (response.ok) {
+        try {
+            return await fetch(finalUrl, opts).then(response => {
+                if (response.ok) {
+                    return response
+                        .json()
+                        .then(json => json)
+                        .catch(error => {
+                            throw Error(`Not possible to parse response ${error.message}`);
+                        });
+                }
+
                 return response
                     .json()
-                    .then(json => json)
+                    .then(output => {
+                        if (output.error) {
+                            return output;
+                        }
+                        throw Error(`Request rejected with status ${response.status}`);
+                    })
                     .catch(error => {
                         throw Error(`Not possible to parse response ${error.message}`);
                     });
+            });
+        } finally {
+            clearTimeout(timeoutId);
+            if (signal) {
+                signal.removeEventListener('abort', abortHandler);
             }
-
-            return response
-                .json()
-                .then(output => {
-                    if (output.error) {
-                        return output;
-                    }
-                    throw Error(`Request rejected with status ${response.status}`);
-                })
-                .catch(error => {
-                    throw Error(`Not possible to parse response ${error.message}`);
-                });
-        });
+        }
     }
 
     getInfo = async (): Promise<InfoResponse> => {

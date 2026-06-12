@@ -21,7 +21,8 @@ type PrepareTrezorEmulatorProps = {
 const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
     // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
-    detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*"\\)',
+    detoxURLBlacklistRegex:
+        '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*",".*exchange\\.trezor\\.io.*"\\)',
 
     // Main loop synchronization is infinitely blocking iOS tests while is the graph displayed, so we need to disable it.
     // Not sure about the cause of it yet.
