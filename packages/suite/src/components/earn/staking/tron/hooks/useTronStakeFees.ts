@@ -54,6 +54,7 @@ export const useTronStakeFees = (): TronStakeFees => {
                         .unwrap()
                         .catch(() => undefined);
             }
+            case 'unstake':
             case 'complete':
                 return undefined;
             default:
