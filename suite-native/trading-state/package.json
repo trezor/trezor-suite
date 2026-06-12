@@ -38,7 +38,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.83.2"
+        "react-native": "0.85.3"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",

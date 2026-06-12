@@ -47,9 +47,9 @@
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react": "19.2.4",
-        "react-native": "0.83.2",
+        "react-native": "0.85.3",
         "react-native-gesture-handler": "2.31.1",
-        "react-native-reanimated": "~4.2.1",
+        "react-native-reanimated": "4.3.1",
         "react-redux": "9.3.0",
         "type-fest": "5.5.0"
     }

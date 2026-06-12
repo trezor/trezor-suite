@@ -104,7 +104,7 @@
     "resolutions": {
         "typescript": "6.0.3",
         "prettier": "^3.8.3",
-        "react-native": "0.83.2",
+        "react-native": "0.85.3",
         "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
         "react": "19.2.4",
@@ -123,12 +123,11 @@
         "### Align versions of sentry internal packages, because electron & native use different versions of @core": "1.0.0",
         "@sentry/core": "10.53.1",
         "@sentry/browser": "10.53.1",
-        "expo-build-properties": "~55.0.9",
+        "expo-build-properties": "~56.0.15",
         "@types/react": "19.2.14",
-        "expo-modules-core": "~55.0.13",
-        "react-dom": "19.2.4",
-        "react-test-renderer": "19.2.4",
-        "expo-modules-core@npm:55.0.13": "patch:expo-modules-core@npm%3A55.0.13#~/.yarn/patches/expo-modules-core-npm-55.0.13-8534d47103.patch"
+        "react-dom": "19.2.3",
+        "react-test-renderer": "19.2.3",
+        "expo-modules-core": "patch:expo-modules-core@npm%3A56.0.13#~/.yarn/patches/expo-modules-core-npm-56.0.13-6a0e36c09c.patch"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",
@@ -141,6 +140,7 @@
         "@babel/preset-react": "^7.29.7",
         "@babel/preset-typescript": "^7.29.7",
         "@babel/runtime": "7.29.7",
+        "@react-native/jest-preset": "0.85.3",
         "@swc/core": "^1.15.40",
         "@swc/jest": "^0.2.39",
         "@trezor/eslint": "workspace:*",
@@ -152,7 +152,7 @@
         "husky": "^9.1.7",
         "jest": "29.7.0",
         "jest-environment-node": "^29.7.0",
-        "jest-expo": "~55.0.9",
+        "jest-expo": "~56.0.4",
         "node-gyp": "12.2.0",
         "nx": "^22.7.4",
         "prettier": "^3.8.3",

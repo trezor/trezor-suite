@@ -30,11 +30,11 @@
         "@suite-native/trading-state": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-linking": "~55.0.7",
-        "expo-web-browser": "~55.0.9",
+        "expo-linking": "~56.0.12",
+        "expo-web-browser": "~56.0.5",
         "react": "19.2.4",
-        "react-native": "0.83.2",
-        "react-native-reanimated": "~4.2.1",
+        "react-native": "~0.85.3",
+        "react-native-reanimated": "4.3.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
