@@ -9224,11 +9224,12 @@ export const messages = defineMessages({
     TR_PHISHING_TOOLTIP_FAKE_TOKEN: {
         id: 'TR_PHISHING_TOOLTIP_FAKE_TOKEN',
         defaultMessage:
-            'This transaction includes tokens not found in any verified list and may be fake.',
+            'This transaction includes tokens not found in any verified list and may be fake. <a>Learn more</a>',
     },
     TR_PHISHING_TOOLTIP_UNKNOWN_TX: {
         id: 'TR_PHISHING_TOOLTIP_UNKNOWN_TX',
-        defaultMessage: 'This transaction type is unknown and could not be decoded.',
+        defaultMessage:
+            'This transaction type is unknown and could not be decoded. <a>Learn more</a>',
     },
     TR_PHISHING_TOOLTIP_DUST_AMOUNT: {
         id: 'TR_PHISHING_TOOLTIP_DUST_AMOUNT',
@@ -9242,7 +9243,7 @@ export const messages = defineMessages({
     },
     TR_PHISHING_TOOLTIP_TRC10_TRANSFER: {
         id: 'TR_PHISHING_TOOLTIP_TRC10_TRANSFER',
-        defaultMessage: 'This TRC10 token transfer may be a scam.',
+        defaultMessage: 'This TRC10 token transfer may be a scam. <a>Learn more</a>',
     },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
