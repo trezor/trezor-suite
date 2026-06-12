@@ -28,9 +28,9 @@ const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     string,
     { min: number; max: number; defaultGas: number; minPriorityFee: number }
 > = {
-    eth: { min: 0.1, max: 10000, defaultGas: 10, minPriorityFee: 0 },
-    pol: { min: 0.1, max: 10000000, defaultGas: 200, minPriorityFee: 30 },
-    bsc: { min: 0.1, max: 100000, defaultGas: 1, minPriorityFee: 0 },
+    eth: { min: 0.001, max: 10000, defaultGas: 10, minPriorityFee: 0 },
+    pol: { min: 0.001, max: 10000000, defaultGas: 200, minPriorityFee: 30 },
+    bsc: { min: 0.001, max: 100000, defaultGas: 1, minPriorityFee: 0 },
     base: { min: 0.0000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     arb: { min: 0.001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     op: { min: 0.000000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
