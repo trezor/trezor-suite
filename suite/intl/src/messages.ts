@@ -10654,6 +10654,11 @@ export const messages = defineMessages({
         defaultMessage:
             "Network fees are payments made to validators for processing transactions. Paying a higher fee can speed up confirmation times. {br}Rent is a charge for storing data on the blockchain. The cost is based on the size of the account's storage.",
     },
+    TR_XRP_FEE_DESC: {
+        id: 'TR_XRP_FEE_DESC',
+        defaultMessage:
+            "The fee you're willing to pay to process the transaction. XRP fees are burned (permanently destroyed), not paid to validators. A higher fee may speed up processing during network congestion.",
+    },
     TR_STELLAR_FEE_DESC: {
         id: 'TR_STELLAR_FEE_DESC',
         defaultMessage:

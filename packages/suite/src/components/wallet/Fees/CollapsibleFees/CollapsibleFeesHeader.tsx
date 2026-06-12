@@ -28,6 +28,8 @@ export function CollapsibleFeesHeader({
                 return 'TR_STELLAR_FEE_DESC';
             case 'solana':
                 return 'TR_SOL_FEE_DESC';
+            case 'ripple':
+                return 'TR_XRP_FEE_DESC';
             default:
                 return 'TR_TRANSACTION_FEE_DESC';
         }
