@@ -1,10 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
-import {
-    selectIsDustPhishingThresholdSettingsVisible,
-    selectIsNetworkReserveSettingsVisible,
-} from '@suite-common/wallet-core';
+import { selectIsNetworkReserveSettingsVisible } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
@@ -19,9 +16,6 @@ import { ToggleNetworkReserveCheckCard } from '../components/ToggleNetworkReserv
 export const SettingsAdvancedScreen = () => {
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
     const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
-    const isDustPhishingThresholdSettingsVisible = useSelector(
-        selectIsDustPhishingThresholdSettingsVisible,
-    );
 
     return (
         <Screen
@@ -32,7 +26,7 @@ export const SettingsAdvancedScreen = () => {
             <VStack spacing="sp16">
                 <ToggleAddressDisplayCard />
                 {isMevProtectionSettingsVisible && <ToggleMevProtectionCard />}
-                {isDustPhishingThresholdSettingsVisible && <DustPhishingThresholdCard />}
+                <DustPhishingThresholdCard />
                 <ToggleFirmwareAuthenticityCheckCard />
                 <ToggleDeviceAuthenticityCheckCard />
                 {isNetworkReserveSettingsVisible && <ToggleNetworkReserveCheckCard />}
