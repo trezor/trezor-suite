@@ -36,8 +36,6 @@ const alwaysOpenStates = [
     // Allow to open Early Access model even after updater error (when desktopUpdate.latest is undefined).
     UpdateState.EarlyAccessDisable,
     UpdateState.EarlyAccessEnable,
-    // JustUpdated is also always open, because closing it advances the state
-    UpdateState.JustUpdated,
 ] satisfies UpdateState[];
 
 export const DesktopUpdater = () => {
