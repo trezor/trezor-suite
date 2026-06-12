@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { intervalToDuration } from 'date-fns';
 
@@ -11,32 +11,20 @@ export const useCountdownTimer = (
     deadline: number,
     { pastDeadlineLeadMs = 1000, isEnabled = true }: UseCountdownTimerOptions = {},
 ) => {
-    const getDuration = useCallback(
-        (currentTimestamp = Date.now()) =>
-            intervalToDuration({
-                start: currentTimestamp,
-                end: deadline,
-            }),
-        [deadline],
-    );
-
-    const [duration, setDuration] = useState(getDuration);
-    const [isPastDeadline, setIsPastDeadline] = useState(
-        () => deadline <= Date.now() + pastDeadlineLeadMs,
-    );
+    const [now, setNow] = useState(() => Date.now());
 
     useEffect(() => {
-        if (!isEnabled) return;
+        if (!isEnabled) return undefined;
 
-        const interval = setInterval(() => {
-            const now = Date.now();
-            setIsPastDeadline(deadline <= now + pastDeadlineLeadMs);
+        setNow(Date.now());
 
-            setDuration(getDuration(now));
-        }, 300);
+        const interval = setInterval(() => setNow(Date.now()), 300);
 
         return () => clearInterval(interval);
-    }, [isEnabled, deadline, getDuration, pastDeadlineLeadMs]);
+    }, [isEnabled, deadline]);
+
+    const duration = intervalToDuration({ start: now, end: deadline });
+    const isPastDeadline = deadline <= now + pastDeadlineLeadMs;
 
     return {
         duration,

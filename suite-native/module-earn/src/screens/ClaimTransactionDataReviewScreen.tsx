@@ -17,12 +17,14 @@ import {
 } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
+    TxValidityTimer,
     selectIsTransactionAlreadySigned,
     selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
+import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 
@@ -51,6 +53,16 @@ export const ClaimTransactionDataReviewScreen = ({
     });
 
     const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
+    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
+        useEarnTxValidityFlow({
+            accountKey,
+            stakeType: 'claim',
+            revealConfirmOnTrezorSheet,
+            isPushing,
+        });
+
+    const isSolanaAccount = account?.networkType === 'solana';
 
     // Once signed, the user reviews the summary and taps "Claim now" to broadcast the transaction.
     const isReadyToClaim = isTransactionAlreadySigned && !!account;
@@ -100,6 +112,15 @@ export const ClaimTransactionDataReviewScreen = ({
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
+                    {showTimer && (
+                        <TxValidityTimer
+                            secondsLeft={secondsLeft}
+                            isPastDeadline={isPastDeadline}
+                            isBroadcasting={isBroadcasting}
+                            onRetry={onRetry}
+                            isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
                     <ClaimTransactionDataReviewStepList onSign={handleSign} />
                 </VStack>
                 {isReadyToClaim && (
@@ -118,6 +139,7 @@ export const ClaimTransactionDataReviewScreen = ({
                         </VStack>
                         <Button
                             isLoading={isPushing}
+                            isDisabled={isSolanaAccount && isPastDeadline}
                             onPress={handleClaimNow}
                             testID="@earn/claim-now"
                         >

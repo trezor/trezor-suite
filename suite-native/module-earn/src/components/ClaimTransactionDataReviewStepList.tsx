@@ -18,6 +18,7 @@ import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
     type TransactionReviewOutputsState,
+    selectIsTransactionAlreadySigned,
     selectIsTransactionReviewInProgress,
     selectReviewSummaryOutput,
     useActiveStepOffset,
@@ -60,6 +61,8 @@ export const ClaimTransactionDataReviewStepList = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
 
+    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
+
     const [stepIndex, setStepIndex] = useState(0);
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
@@ -99,7 +102,7 @@ export const ClaimTransactionDataReviewStepList = ({
                 {!!accountSymbol && (
                     <ClaimOutputItem
                         symbol={accountSymbol}
-                        outputState={stepIndex > 0 ? 'success' : 'active'}
+                        outputState={isTransactionAlreadySigned ? 'success' : 'active'}
                         onLayout={event => handleReadListItemHeight(event, 0)}
                     />
                 )}

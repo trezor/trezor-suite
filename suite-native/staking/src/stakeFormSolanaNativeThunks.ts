@@ -1,7 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
     selectAddressDisplayType,
@@ -66,13 +66,26 @@ const buildSolanaStakeFormState = (
     stakeType,
 });
 
-const resolveSolanaStakingContext = (
+const resolveSolanaBlockchainUrl = async (
+    state: Parameters<typeof selectNetworkBlockchainInfo>[0],
+    symbol: NetworkSymbol,
+): Promise<string | undefined> => {
+    const connectedUrl = selectNetworkBlockchainInfo(state, symbol)?.url;
+    if (connectedUrl) return connectedUrl;
+
+    const info = await TrezorConnect.blockchainGetInfo({ coin: symbol });
+
+    return info.success ? info.payload.url : undefined;
+};
+
+const resolveSolanaStakingContext = async (
     state: Parameters<typeof selectAccountByKey>[0] &
         Parameters<typeof selectNetworkBlockchainInfo>[0],
     accountKey: AccountKey,
-):
+): Promise<
     | { success: true; account: SolanaAccount; blockchainUrl: string }
-    | { success: false; error: string; message?: string } => {
+    | { success: false; error: string; message?: string }
+> => {
     const account = selectAccountByKey(state, accountKey);
 
     if (account?.networkType !== 'solana') {
@@ -91,7 +104,7 @@ const resolveSolanaStakingContext = (
         };
     }
 
-    const blockchainUrl = selectNetworkBlockchainInfo(state, account.symbol)?.url;
+    const blockchainUrl = await resolveSolanaBlockchainUrl(state, account.symbol);
     if (!blockchainUrl) {
         return {
             success: false,
@@ -112,7 +125,7 @@ export const composeSolanaStakingTransactionFeeLevelsNativeThunk = createThunk<
     async ({ accountKey, stakeType, amount }, { getState, rejectWithValue }) => {
         if (!amount || amount === '0') return undefined;
 
-        const resolved = resolveSolanaStakingContext(getState(), accountKey);
+        const resolved = await resolveSolanaStakingContext(getState(), accountKey);
         if (!resolved.success) {
             return rejectWithValue({ error: resolved.error, message: resolved.message });
         }
@@ -150,7 +163,7 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
         { dispatch, getState, rejectWithValue },
     ) => {
         try {
-            const resolved = resolveSolanaStakingContext(getState(), accountKey);
+            const resolved = await resolveSolanaStakingContext(getState(), accountKey);
             if (!resolved.success) {
                 console.error(`${SIGN_LOG_PREFIX}: ${resolved.message}`);
 
@@ -219,7 +232,10 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
             dispatch(
                 sendFormActions.storePrecomposedTransaction({
                     formState,
-                    precomposedTransaction,
+                    precomposedTransaction: {
+                        ...precomposedTransaction,
+                        createdTimestamp: new Date().getTime(),
+                    },
                     accountKey,
                 }),
             );
@@ -254,6 +270,14 @@ export const signSolanaStakingTransactionNativeThunk = createThunk<
             const signResponse = deviceAccessResponse.payload;
 
             if (!signResponse.success) {
+                if (signResponse.error.message === 'tx-timeout') {
+                    return rejectWithValue({
+                        error: 'sign-transaction-timeout',
+                        errorCode: signResponse.error.code,
+                        message: signResponse.error.message,
+                    });
+                }
+
                 if (signResponse.error.message !== 'tx-cancelled') {
                     console.error(
                         `${SIGN_LOG_PREFIX}: Sign transaction failed: ${signResponse.error.message}`,

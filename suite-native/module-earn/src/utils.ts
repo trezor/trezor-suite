@@ -56,6 +56,10 @@ export const handleEarnReviewError = ({
     showPendingTransactionConflictAlert,
     showDeviceDisconnectedAlert,
 }: HandleEarnReviewErrorProps) => {
+    if (payload?.error === 'sign-transaction-timeout') {
+        return;
+    }
+
     if (payload?.message === 'tx-cancelled') {
         return;
     }

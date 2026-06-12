@@ -270,6 +270,16 @@ describe('useTxValidityTimer', () => {
             expect(mockTrezorConnectCancel).toHaveBeenCalledWith('tx-timeout');
         });
 
+        it('should not schedule cancellation when the deadline has already passed', () => {
+            renderTimer({ createdTimestamp: now - SOLANA_TIMEOUT_MS - 1_000 });
+
+            act(() => {
+                jest.advanceTimersByTime(SOLANA_TIMEOUT_MS * 2);
+            });
+
+            expect(mockTrezorConnectCancel).not.toHaveBeenCalled();
+        });
+
         const noCancelScenarios: { name: string; overrides: Partial<Params> }[] = [
             { name: 'while broadcasting', overrides: { isBroadcasting: true } },
             {

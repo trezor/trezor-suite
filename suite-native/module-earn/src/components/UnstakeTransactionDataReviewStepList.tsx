@@ -13,6 +13,7 @@ import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
     type TransactionReviewOutputsState,
+    selectIsTransactionAlreadySigned,
     selectIsTransactionReviewInProgress,
     selectReviewSummaryOutput,
     useActiveStepOffset,
@@ -46,6 +47,8 @@ export const UnstakeTransactionDataReviewStepList = ({
     );
 
     const selectedPrecomposed = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
+
+    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -84,7 +87,7 @@ export const UnstakeTransactionDataReviewStepList = ({
             <VStack spacing={LIST_VERTICAL_SPACING}>
                 <UnstakeOutputItem
                     symbol={accountSymbol}
-                    outputState={stepIndex > 0 ? 'success' : 'active'}
+                    outputState={isTransactionAlreadySigned ? 'success' : 'active'}
                     onLayout={event => handleReadListItemHeight(event, 0)}
                 />
 

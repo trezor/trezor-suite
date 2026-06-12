@@ -46,10 +46,11 @@ export const useTxValidityTimer = ({
     useEffect(() => {
         if (!isValidityTimerRelevant || isBroadcasting || isTransactionAlreadySigned) return;
 
-        const timeoutId = setTimeout(
-            () => TrezorConnect.cancel('tx-timeout'),
-            Math.max(deadline - Date.now(), 0),
-        );
+        const msUntilDeadline = deadline - Date.now();
+
+        if (msUntilDeadline <= 0) return;
+
+        const timeoutId = setTimeout(() => TrezorConnect.cancel('tx-timeout'), msUntilDeadline);
 
         return () => clearTimeout(timeoutId);
     }, [isValidityTimerRelevant, isBroadcasting, isTransactionAlreadySigned, deadline]);
