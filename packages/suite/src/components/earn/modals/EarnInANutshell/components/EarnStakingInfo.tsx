@@ -15,19 +15,19 @@ import { useSelector } from 'src/hooks/suite';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
-interface EarnSupplyingInfoProps {
+interface EarnStakingInfoProps {
     account: Account;
     flow: EarnFlow;
 }
 
-interface EarnSupplyingRowsProps {
+interface EarnStakingRowsProps {
     flow: EarnFlow;
     displaySymbol: string;
     apy: number | null;
     daysToAddToPool?: number;
 }
 
-const SupplyingSignRow = ({ flow }: Pick<EarnSupplyingRowsProps, 'flow'>) => (
+const StakingSignRow = ({ flow }: Pick<EarnStakingRowsProps, 'flow'>) => (
     <EarnInfoRow
         heading={
             <Translation
@@ -42,14 +42,14 @@ const SupplyingSignRow = ({ flow }: Pick<EarnSupplyingRowsProps, 'flow'>) => (
     />
 );
 
-const EthereumSupplyingRows = ({
+const EthereumStakingRows = ({
     flow,
     displaySymbol,
     apy,
     daysToAddToPool,
-}: EarnSupplyingRowsProps) => (
+}: EarnStakingRowsProps) => (
     <>
-        <SupplyingSignRow flow={flow} />
+        <StakingSignRow flow={flow} />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_ENTER_THE_STAKING_POOL" />}
             subheading={
@@ -82,9 +82,9 @@ const EthereumSupplyingRows = ({
     </>
 );
 
-const SolanaSupplyingRows = ({ flow, displaySymbol, apy }: EarnSupplyingRowsProps) => (
+const SolanaStakingRows = ({ flow, displaySymbol, apy }: EarnStakingRowsProps) => (
     <>
-        <SupplyingSignRow flow={flow} />
+        <StakingSignRow flow={flow} />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_WARM_UP_PERIOD" />}
             subheading={
@@ -114,9 +114,9 @@ const SolanaSupplyingRows = ({ flow, displaySymbol, apy }: EarnSupplyingRowsProp
     </>
 );
 
-const CardanoSupplyingRows = ({ flow, apy }: EarnSupplyingRowsProps) => (
+const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
     <>
-        <SupplyingSignRow flow={flow} />
+        <StakingSignRow flow={flow} />
         <EarnInfoRow
             heading={
                 <Translation
@@ -162,7 +162,7 @@ const CardanoSupplyingRows = ({ flow, apy }: EarnSupplyingRowsProps) => (
     </>
 );
 
-export const EarnSupplyingInfo = ({ account, flow }: EarnSupplyingInfoProps) => {
+export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
     const validatorsQueue = useSelector(selectEthValidatorsQueue);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
@@ -174,7 +174,7 @@ export const EarnSupplyingInfo = ({ account, flow }: EarnSupplyingInfoProps) => 
         switch (account.networkType) {
             case 'ethereum':
                 return (
-                    <EthereumSupplyingRows
+                    <EthereumStakingRows
                         flow={flow}
                         displaySymbol={displaySymbol}
                         apy={apy}
@@ -182,9 +182,9 @@ export const EarnSupplyingInfo = ({ account, flow }: EarnSupplyingInfoProps) => 
                     />
                 );
             case 'solana':
-                return <SolanaSupplyingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
+                return <SolanaStakingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
             case 'cardano':
-                return <CardanoSupplyingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
+                return <CardanoStakingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
             default:
                 return null;
         }

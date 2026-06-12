@@ -9,12 +9,12 @@ import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 import { getStakingHelpCenterLink } from 'src/components/earn/utils/getStakingHelpCenterLink';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
+import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 export const EstimatedGains = () => {
-    const { account, getValues, formState } = useSupplyFormContext();
+    const { account, getValues, formState } = useStakeFormContext();
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =

@@ -8,7 +8,7 @@ import { Modal, Tooltip } from '@trezor/components';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
+import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
@@ -30,7 +30,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         watch,
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
-    } = useSupplyFormContext();
+    } = useStakeFormContext();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(network.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -47,7 +47,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     const isFormInputsValid = !isCardano ? formIsValid && hasValues : !isCardanoStakingDisabled;
     const isDisabled = !isFormInputsValid || isSubmitting || (isDeviceConnected && isLocked());
 
-    const onSupplyClick = () => {
+    const onStakeClick = () => {
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -82,7 +82,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
             <Modal.Button
                 isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isLoading}
-                onClick={onSupplyClick}
+                onClick={onStakeClick}
                 iconLeft={isStakingDisabled ? 'info' : undefined}
                 data-testid="@modal/staking/continue-button"
             >
