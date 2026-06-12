@@ -7,6 +7,7 @@ import {
     composeTronFreezeFeeLevelsThunk,
     selectTronStakeSession,
     submitTronFreezeThunk,
+    submitTronUnstakeThunk,
     submitTronVoteThunk,
     tronStakeActions,
 } from '@suite-common/wallet-core';
@@ -131,7 +132,24 @@ export const useTronStakeActions = ({
                 );
                 break;
             }
-            case 'unstake':
+            case 'unstake': {
+                const { amount, resourceType } = form.methods.getValues();
+                dispatch(
+                    submitTronUnstakeThunk({
+                        account,
+                        device,
+                        amount,
+                        resourceType,
+                        requestPushApproval: async () =>
+                            Boolean(
+                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
+                            ),
+                        onSigningStart: () => dispatch(preserveModal()),
+                        onSettled: () => dispatch(closeModal()),
+                    }),
+                );
+                break;
+            }
             case 'complete':
                 break;
             default:

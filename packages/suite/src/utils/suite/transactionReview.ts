@@ -111,7 +111,12 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (precomposedForm.tronStakeResource) {
-        return { id: 'TR_EARN_TRON_FREEZE' };
+        return {
+            id:
+                routeName === 'earn-tron-unstake'
+                    ? 'TR_EARN_TRON_UNSTAKE_TITLE'
+                    : 'TR_EARN_TRON_FREEZE',
+        };
     }
 
     if (precomposedForm.tronStakeVotes !== undefined) {
