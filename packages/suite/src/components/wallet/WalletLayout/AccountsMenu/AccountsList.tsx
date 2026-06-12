@@ -4,6 +4,7 @@ import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -17,6 +18,7 @@ import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
@@ -89,6 +91,7 @@ export const AccountsList = ({
 
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
+    const tokenDefinitions = useSelector(selectTokenDefinitions);
 
     const accounts = useSelector(state =>
         selectAccountsWithSuiteSyncLabel(
@@ -120,9 +123,16 @@ export const AccountsList = ({
                           : getDefaultAccountLabel(translationString, account)) ??
                       '';
 
+                  const { shownWithBalance } = getTokens({
+                      tokens: account.tokens,
+                      symbol: account.symbol,
+                      tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
+                  });
+
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
                       accountLabel,
+                      searchableTokens: shownWithBalance,
                   });
               })
             : accounts;

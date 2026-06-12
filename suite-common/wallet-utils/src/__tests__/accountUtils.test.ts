@@ -246,6 +246,33 @@ describe('account utils', () => {
         expect(accountSearchFn(ethAcc, 'test2', { accountLabel: '' })).toBe(false);
     });
 
+    it('accountSearchFn searchableTokens', () => {
+        const shownToken = mockAccountToken({ balance: '1', name: 'shown token' });
+        const hiddenToken = mockAccountToken({
+            balance: '1',
+            name: 'hidden token',
+            contract: '0x' + 'a'.repeat(40),
+        });
+        const ethAcc = mockWalletAccount({
+            symbol: 'eth',
+            tokens: [shownToken, hiddenToken],
+        });
+
+        expect(
+            accountSearchFn(ethAcc, 'shown token', {
+                accountLabel: '',
+                searchableTokens: [shownToken],
+            }),
+        ).toBe(true);
+        expect(
+            accountSearchFn(ethAcc, 'hidden token', {
+                accountLabel: '',
+                searchableTokens: [shownToken],
+            }),
+        ).toBe(false);
+        expect(accountSearchFn(ethAcc, 'hidden token', { accountLabel: '' })).toBe(true);
+    });
+
     it('getNetworkAccountFeatures', () => {
         const btcAcc = mockWalletAccount({ symbol: 'btc' });
         const btcTaprootAcc = mockWalletAccount({ symbol: 'btc', accountType: 'taproot' });

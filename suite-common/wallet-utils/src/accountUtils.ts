@@ -803,12 +803,15 @@ export type AccountSearchParams = {
 
     /** Return true if the account has token that match the search string */
     tokensMatch?: boolean;
+
+    /** Tokens to match against instead of all account tokens, e.g. only tokens visible in the UI */
+    searchableTokens?: TokenInfo[];
 };
 
 export const accountSearchFn = (
     account: Account,
     rawSearchString: string | undefined,
-    { coinsFilter, accountLabel, tokensMatch = true }: AccountSearchParams,
+    { coinsFilter, accountLabel, tokensMatch = true, searchableTokens }: AccountSearchParams,
 ) => {
     let coinsFilterArray: NetworkSymbol[] = [];
 
@@ -860,7 +863,7 @@ export const accountSearchFn = (
                 new BigNumber(token.balance || '0').gt(0),
         );
 
-    const tokenMatch = tokensMatch && !!account.tokens?.some(filterTokens);
+    const tokenMatch = tokensMatch && !!(searchableTokens ?? account.tokens)?.some(filterTokens);
 
     return (
         accountNumberMatch ||
