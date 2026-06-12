@@ -39,6 +39,9 @@ type SignatureWithSlot = {
     slot: Slot;
 };
 
+// Cap on the number of token account pubkeys scanned for txids to prevent unbounded RPC fanout.
+export const TOKEN_ACCOUNTS_SCAN_LIMIT = 100;
+
 const getAllSignatures = async (
     api: SolanaAPI,
     descriptor: MessageTypes.GetAccountInfo['payload']['descriptor'],
@@ -149,6 +152,24 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const recognizedAccountsPubkeys = recognisedWithBalance.map(a => a.pubkey);
 
+    const isValidPubkey = (pubkey: string) => {
+        try {
+            address(pubkey);
+
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
+    // Previously known token accounts have to be scanned as well, even when they are currently
+    // drained or unrecognized, otherwise their latest transactions would be missed.
+    const knownAccountsPubkeys = (payload.tokenAccountsPubKeys ?? []).filter(isValidPubkey);
+
+    const accountsPubkeysToScan = Array.from(
+        new Set<string>([...recognizedAccountsPubkeys, ...knownAccountsPubkeys]),
+    ).slice(0, TOKEN_ACCOUNTS_SCAN_LIMIT);
+
     const getAllTxIds = async (tokenAccountPubkeys: string[]) => {
         const sortedTokenAccountPubkeys = [...tokenAccountPubkeys].sort();
 
@@ -197,7 +218,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     }
 
     if (details === 'txids') {
-        const txids = await getAllTxIds(recognizedAccountsPubkeys);
+        const txids = await getAllTxIds(accountsPubkeysToScan);
         const solEpoch = await getEpoch();
 
         const account: AccountInfo = {
@@ -286,7 +307,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         return transactions;
     };
 
-    const allTxIds = await getAllTxIds(recognizedAccountsPubkeys);
+    const allTxIds = await getAllTxIds(accountsPubkeysToScan);
 
     const pageNumber = payload.page ? payload.page - 1 : 0;
     // for the first page of txs, payload.page is undefined, for the second page is 2
