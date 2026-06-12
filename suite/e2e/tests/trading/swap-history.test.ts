@@ -62,8 +62,8 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
             } as const;
 
             await expect(tradingPage.transactions.count).toHaveTranslation(
-                'TR_TRADING_SWAP_COUNTER',
-                { values: { totalSwaps: SEEDED_TRADES.length } },
+                'TR_TRADING_TRADE_HISTORY_COUNTER',
+                { values: { totalBuys: 0, totalSells: 0, totalSwaps: SEEDED_TRADES.length } },
             );
 
             for (const trade of SEEDED_TRADES) {
