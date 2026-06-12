@@ -88,11 +88,12 @@ export const Address = ({
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
 
-    const formattedValue = AddressFormatter.format(value, {
+    const addressWithoutPrefix = clearAddressPrefix(value);
+    const formattedValue = AddressFormatter.format(addressWithoutPrefix, {
         format: isTruncated ? 'long' : 'full',
         isChunked: isAddressChunked,
     });
-    const formattedValueFull = AddressFormatter.format(clearAddressPrefix(value), {
+    const formattedValueFull = AddressFormatter.format(addressWithoutPrefix, {
         format: 'full',
         isChunked: isAddressChunked,
     });
