@@ -35,40 +35,6 @@ export const extractTextFromNode = (node: ReactNode): string => {
     return '';
 };
 
-type ShortcutsProps = {
-    isEditable: boolean;
-    isDirty: boolean;
-    handleSave: () => void;
-    handleCancel: () => void;
-};
-
-export const useShortcuts = ({ isEditable, isDirty, handleSave, handleCancel }: ShortcutsProps) => {
-    useEffect(() => {
-        if (!isEditable) return;
-
-        const downHandler = (e: KeyboardEvent) => {
-            if (isEditable) {
-                if (e.key === 'Enter' || e.key === 'Escape') {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    if (e.key === 'Enter' && isDirty) {
-                        handleSave();
-                    } else if (e.key === 'Escape') {
-                        handleCancel();
-                    }
-                }
-            }
-        };
-
-        window.addEventListener('keydown', downHandler);
-
-        return () => {
-            window.removeEventListener('keydown', downHandler);
-        };
-    }, [handleCancel, handleSave, isEditable, isDirty]);
-};
-
 type UseTextTruncationProps = {
     elementRef: RefObject<HTMLElement | null>;
     isEditable: boolean;

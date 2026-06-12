@@ -20,7 +20,6 @@ import {
     SAVED_STATUS_TIMEOUT,
     escapeCssContent,
     extractTextFromNode,
-    useShortcuts,
     useTextTruncation,
 } from './utils';
 
@@ -337,6 +336,26 @@ export const EditableText = ({
         setSavingStatus('idle');
     }, []);
 
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLElement>) => {
+            if (e.key !== 'Enter' && e.key !== 'Escape') return;
+
+            // Handle the shortcut on the focused element itself and stop propagation, so it is not
+            // shadowed by competing window-level handlers (e.g. a parent Modal closing on Escape).
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.key === 'Enter') {
+                if (isDirty) {
+                    handleSave();
+                }
+            } else {
+                handleCancel();
+            }
+        },
+        [isDirty, handleSave, handleCancel],
+    );
+
     const handleContainerClick = useCallback(
         (e: React.MouseEvent<HTMLElement>) => {
             if (isEditable) {
@@ -393,8 +412,6 @@ export const EditableText = ({
         };
     }, [isEditable, handleCancel, handleSave, isDirty]);
 
-    useShortcuts({ isEditable, isDirty, handleSave, handleCancel });
-
     return (
         <Container
             ref={containerRef}
@@ -439,6 +456,7 @@ export const EditableText = ({
                         onInput={e => {
                             setCurrentValueTextContent(e.currentTarget.textContent || '');
                         }}
+                        onKeyDown={handleKeyDown}
                         onPaste={handlePaste}
                         $placeholder={placeholder}
                         $isEmpty={isEmpty}
