@@ -36,7 +36,6 @@ export const TransactionHeading = ({
                                 priority="secondary"
                                 size="small"
                                 href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                margin={{ top: 12 }}
                             >
                                 {chunks}
                             </TextButton>
@@ -44,7 +43,7 @@ export const TransactionHeading = ({
                     }}
                 />
             }
-            tooltipMaxWidth={250}
+            tooltipMaxWidth={320}
             isActive={isPhishingTransaction}
             hasIcon
         >
