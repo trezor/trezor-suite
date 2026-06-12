@@ -97,12 +97,12 @@ export const YieldWithdrawScreen = () => {
         flowData,
         flowKey,
         resolutionStatus,
-        suppliedSharesAmount: resolvedSuppliedSharesAmount,
+        depositedSharesAmount: resolvedDepositedSharesAmount,
         vault,
         vaultTokenName,
     } = useResolvedYieldFlowData(route.params);
 
-    const suppliedAmount = useMemo(() => {
+    const depositedAmount = useMemo(() => {
         if (resolutionStatus !== 'resolved') {
             return null;
         }
@@ -111,19 +111,19 @@ export const YieldWithdrawScreen = () => {
             networkSymbol: account.symbol,
             token: vault.token,
             outputToken: vault.outputToken,
-            outputTokenBalance: resolvedSuppliedSharesAmount,
+            outputTokenBalance: resolvedDepositedSharesAmount,
             pricePerShareState: vault.state?.pricePerShareState,
         });
-    }, [account, resolutionStatus, resolvedSuppliedSharesAmount, vault]);
+    }, [account, resolutionStatus, resolvedDepositedSharesAmount, vault]);
 
-    const suppliedSharesAmount = useMemo(() => {
+    const depositedSharesAmount = useMemo(() => {
         if (resolutionStatus !== 'resolved') {
             return null;
         }
 
-        return resolvedSuppliedSharesAmount;
-    }, [resolutionStatus, resolvedSuppliedSharesAmount]);
-    const maxAmount = isSharesInput ? suppliedSharesAmount : suppliedAmount;
+        return resolvedDepositedSharesAmount;
+    }, [resolutionStatus, resolvedDepositedSharesAmount]);
+    const maxAmount = isSharesInput ? depositedSharesAmount : depositedAmount;
     const isAmountTooHigh = useMemo(
         () => !!amount && !!maxAmount && new BigNumber(amount).gt(maxAmount),
         [amount, maxAmount],
@@ -301,12 +301,12 @@ export const YieldWithdrawScreen = () => {
     const handleMaxChange = (value: boolean) => {
         setIsMaxSelected(value);
 
-        if (!value || !suppliedAmount || !suppliedSharesAmount) {
+        if (!value || !depositedAmount || !depositedSharesAmount) {
             return;
         }
 
-        setAssetAmount(suppliedAmount);
-        setSharesAmount(suppliedSharesAmount);
+        setAssetAmount(depositedAmount);
+        setSharesAmount(depositedSharesAmount);
     };
 
     const handleAmountChange = (value: string) => {
@@ -401,7 +401,7 @@ export const YieldWithdrawScreen = () => {
         ? toTokenAddress(vault.token.address)
         : route.params.tokenContract;
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
-    const suppliedAmountLabel = maxAmount
+    const depositedAmountLabel = maxAmount
         ? CryptoAmountFormatter.format(maxAmount, {
               symbol: activeUnitSymbol,
               isBalance: true,
@@ -503,13 +503,13 @@ export const YieldWithdrawScreen = () => {
                             )}
                         />
 
-                        {suppliedAmountLabel && (
+                        {depositedAmountLabel && (
                             <HStack spacing="sp4" alignItems="center">
                                 <Text variant="body-sm" color="contentSecondary">
-                                    <Translation id="earn.yieldWithdrawFlowScreen.supplied" />
+                                    <Translation id="earn.yieldWithdrawFlowScreen.deposited" />
                                 </Text>
                                 <Text variant="body-sm" color="contentSecondary">
-                                    {suppliedAmountLabel}
+                                    {depositedAmountLabel}
                                 </Text>
                             </HStack>
                         )}

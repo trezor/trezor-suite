@@ -2727,7 +2727,7 @@ export const messages = {
             providerCard: {
                 title: 'Deposit to {providerName}',
                 firstItem:
-                    '{providerName} maintains and protects your supplied {tokenSymbol} with their smart contracts, infrastructure, and technology.',
+                    '{providerName} maintains and protects your deposited {tokenSymbol} with their smart contracts, infrastructure, and technology.',
                 secondItem:
                     "When you deposit, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
             },
@@ -2790,7 +2790,7 @@ export const messages = {
                     description: 'Deposit could not be prepared. Check the amount and try again.',
                 },
                 approvalTooLow: {
-                    title: 'Approval is too low. Change approval or lower amount to supply.',
+                    title: 'Approval is too low. Change approval or lower amount to deposit.',
                     primaryButton: 'Change approval',
                 },
                 transactionFailed: {
@@ -2813,10 +2813,10 @@ export const messages = {
         yieldWithdrawFlowScreen: {
             withdrawalAmount: 'Withdrawal amount',
             withdrawMax: 'Withdraw max',
-            supplied: 'Supplied:',
+            deposited: 'Deposited:',
             withdrawPendingTitle: 'Confirming withdrawal',
             amountToWithdraw: 'Amount to withdraw',
-            amountExceedsSupplied: 'The amount exceeds your supplied balance.',
+            amountExceedsDeposited: 'The amount exceeds your deposited balance.',
             networkFeeWarning:
                 'Network fees may exceed this amount. Your balance may decrease. Enter higher amount.',
         },

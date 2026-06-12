@@ -14,7 +14,7 @@ export const YieldWithdrawWarning = ({
         return (
             <InlineAlertBox
                 variant="warning"
-                title={<Translation id="earn.yieldWithdrawFlowScreen.amountExceedsSupplied" />}
+                title={<Translation id="earn.yieldWithdrawFlowScreen.amountExceedsDeposited" />}
             />
         );
     }
