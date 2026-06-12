@@ -13,6 +13,7 @@ import type { MethodContext, MethodMessage, MethodReturnType } from '../../../co
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { computeConfirmMissingBackup } from '../../common/computeConfirmMissingBackup';
 import { bundlify } from '../../common/paramsValidator';
 
 export default class SolanaGetPublicKey extends AbstractMethod<
@@ -39,7 +40,12 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         super(message, params);
 
         this.hasBundle = hasBundle;
-        this.confirmMissingBackup = true;
+        this.confirmMissingBackup = computeConfirmMissingBackup(
+            payload.bundle.map((batch, i) => ({
+                showOnTrezor: this.params[i].show_display,
+                suppressBackupWarning: batch.suppressBackupWarning,
+            })),
+        );
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
     }
