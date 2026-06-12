@@ -67,6 +67,10 @@ const tradingSellSlice = createSlice({
         saveQuotes(state, action: PayloadAction<SellFiatTrade[]>) {
             state.quotes = action.payload;
         },
+        clearQuotes(state) {
+            state.quotes = [];
+            state.selectedQuote = undefined;
+        },
         saveSelectedQuote(state, action: PayloadAction<SellFiatTrade | undefined>) {
             state.selectedQuote = action.payload;
         },

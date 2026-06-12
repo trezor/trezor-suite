@@ -6,7 +6,6 @@ import { selectTorState } from '@suite/tor';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingCountryCode,
-    type TradingPaymentMethodListProps,
     buildTradingBaseCurrencyOptionFromFiat,
     buildTradingFiatOption,
     getDefaultCountry,
@@ -47,13 +46,6 @@ export const useTradingSellFormDefaultValues = (
 
     const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
 
-    const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
-        () => ({
-            value: TRADING_DEFAULT_PAYMENT_METHOD,
-            label: '',
-        }),
-        [],
-    );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const defaultCurrency = useMemo(
         () => buildTradingFiatOption(getSupportedFiatCurrencyWithFallback(baseCurrencyCode)),
@@ -83,10 +75,10 @@ export const useTradingSellFormDefaultValues = (
             sendCryptoSelect: defaultAsset,
             countrySelect: defaultCountry,
             countrySubdivisionSelect: defaultSubdivision,
-            paymentMethod: defaultPaymentMethod,
+            paymentMethod: { value: TRADING_DEFAULT_PAYMENT_METHOD, label: '' },
             amountInCrypto: true,
         }),
-        [defaultFormState, defaultAsset, defaultCountry, defaultPaymentMethod, defaultSubdivision],
+        [defaultFormState, defaultAsset, defaultCountry, defaultSubdivision],
     );
 
     return {
@@ -94,6 +86,5 @@ export const useTradingSellFormDefaultValues = (
         defaultCountry,
         defaultSubdivision,
         defaultCurrency,
-        defaultPaymentMethod,
     };
 };

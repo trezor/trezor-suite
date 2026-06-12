@@ -39,7 +39,7 @@ export const TradingBuyFormInputs = () => {
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
-    const { device, setAmountLimits, getValues, setValue, quotes, isAmountEmpty } = context;
+    const { device, setAmountLimits, getValues, setValue, quotes } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
@@ -110,7 +110,7 @@ export const TradingBuyFormInputs = () => {
             </TradingFormCard>
 
             <TradingFormCard>
-                {quotes?.length > 0 && !isAmountEmpty && (
+                {quotes?.length > 0 && (
                     <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
                 )}
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />

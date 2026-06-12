@@ -24,7 +24,6 @@ import {
     isSendRejectedError,
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
-    selectTradingPaymentMethods,
     selectTradingSellAmountLimits,
     selectTradingSellInfo,
     selectTradingSellIsFromRedirect,
@@ -36,7 +35,6 @@ import {
     selectTradingTrades,
     sellThunks,
     sellUtils,
-    tradingActions,
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
@@ -60,6 +58,7 @@ import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm'
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
+import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 
@@ -79,7 +78,6 @@ export const useTradingSellForm = ({
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const sellInfo = useSelector(selectTradingSellInfo);
     const amountLimits = useSelector(selectTradingSellAmountLimits);
-    const paymentMethods = useSelector(selectTradingPaymentMethods);
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
@@ -116,18 +114,13 @@ export const useTradingSellForm = ({
             trade.tradeType === 'sell' && trade.key === transactionId,
     );
 
-    const {
-        defaultValues,
-        defaultCountry,
-        defaultSubdivision,
-        defaultCurrency,
-        defaultPaymentMethod,
-    } = useTradingSellFormDefaultValues(
-        accountKey,
-        cryptoId,
-        sellInfo?.country,
-        sellInfo?.countrySubdivision,
-    );
+    const { defaultValues, defaultCountry, defaultSubdivision, defaultCurrency } =
+        useTradingSellFormDefaultValues(
+            accountKey,
+            cryptoId,
+            sellInfo?.country,
+            sellInfo?.countrySubdivision,
+        );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
     const shouldSkipInitialReset = !isFormPage;
     const shouldResetOnInitialSellInfoLoad = useRef(!sellInfo);
@@ -203,6 +196,8 @@ export const useTradingSellForm = ({
         },
         setValue,
     });
+
+    useTradingClearStaleQuotes({ type, isEnabled: isFormPage, isAmountEmpty });
 
     const helpers = useTradingFormActions({
         account,
@@ -418,20 +413,13 @@ export const useTradingSellForm = ({
             }
 
             if (quotePaymentMethod && paymentMethod?.value !== quotePaymentMethod) {
-                const matchingOption = paymentMethods.find(
-                    method => method.value === quotePaymentMethod,
-                );
-
-                setValue(
-                    TRADING_FORM_PAYMENT_METHOD_SELECT,
-                    matchingOption ?? {
-                        value: quotePaymentMethod,
-                        label: quote.paymentMethodName ?? quotePaymentMethod,
-                    },
-                );
+                setValue(TRADING_FORM_PAYMENT_METHOD_SELECT, {
+                    value: quotePaymentMethod,
+                    label: quote.paymentMethodName ?? quotePaymentMethod,
+                });
             }
         },
-        [paymentMethod, paymentMethods, provider, setValue],
+        [paymentMethod, provider, setValue],
     );
 
     // react-hook-form auto register custom form fields (without HTMLElement)
@@ -490,8 +478,6 @@ export const useTradingSellForm = ({
         defaultCountry,
         defaultSubdivision,
         defaultCurrency,
-        defaultPaymentMethod,
-        paymentMethods,
         sellInfo,
         quotesRequest,
         quotes: quotesByPaymentMethod,
@@ -518,7 +504,6 @@ export const useTradingSellForm = ({
         showReserveBanner,
         setShowReserveBanner,
         clearQuotesAndParams: () => {
-            dispatch(tradingActions.savePaymentMethods([]));
             dispatch(tradingSellActions.clearQuotesAndParams());
         },
     };

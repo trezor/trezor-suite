@@ -21,7 +21,7 @@ import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
 import { type ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
 import { type SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
-import type { TradingPaymentMethodListProps, TradingType } from '../../types';
+import type { TradingType } from '../../types';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     bestBuyQuotePerPaymentMethodProjection,
@@ -74,7 +74,6 @@ import {
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
-    selectTradingPaymentMethods,
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
     selectTradingProviderByNameAndTradeType,
@@ -259,12 +258,6 @@ describe('tradingSelectors', () => {
                     ...initialState,
                     buy: getBuyState(),
                     info: {
-                        paymentMethods: [
-                            {
-                                value: 'creditCard',
-                                label: 'Credit Card label',
-                            },
-                        ] as TradingPaymentMethodListProps[],
                         coins: coins as Coins,
                         platforms: platforms as Platforms,
                     },
@@ -665,10 +658,6 @@ describe('tradingSelectors', () => {
 
     it('selectTradingSellSelectedQuote should return correct data', () => {
         expect(selectTradingSellSelectedQuote(state)).toBe(state.wallet.trading.sell.selectedQuote);
-    });
-
-    it('selectTradingPaymentMethods should return correct data', () => {
-        expect(selectTradingPaymentMethods(state)).toBe(state.wallet.trading.info.paymentMethods);
     });
 
     it('selectTradingTrades should return correct data', () => {
@@ -1590,9 +1579,7 @@ describe('tradingSelectors', () => {
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.trading.info = {
-                    paymentMethods: [],
-                };
+                state.wallet.trading.info = {};
 
                 expect(selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });
@@ -1690,9 +1677,7 @@ describe('tradingSelectors', () => {
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
-                state.wallet.trading.info = {
-                    paymentMethods: [],
-                };
+                state.wallet.trading.info = {};
 
                 expect(selectTradingSellLoadingTimestampAndStatus(state).isFullyLoaded).toBe(false);
             });

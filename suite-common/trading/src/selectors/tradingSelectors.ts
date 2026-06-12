@@ -3,6 +3,7 @@ import {
     type BuyTrade,
     type Coins,
     type CryptoId,
+    type ExchangeTrade,
     type FiatCurrencyCode,
     type Platforms,
     type SellCryptoPaymentMethod,
@@ -355,9 +356,6 @@ export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
 
-export const selectTradingPaymentMethods = (state: TradingRootState) =>
-    state.wallet.trading.info.paymentMethods;
-
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.trading.trades);
 
@@ -611,6 +609,22 @@ export const selectTradingSellAmountLimits = (state: TradingRootState) =>
 export const selectTradingSellQuotes = (state: TradingRootState) =>
     state.wallet.trading.sell.quotes;
 
+export const selectTradingQuotesByType = (
+    state: TradingRootState,
+    type: TradingType,
+): BuyTrade[] | SellFiatTrade[] | ExchangeTrade[] => {
+    switch (type) {
+        case 'buy':
+            return selectTradingBuyQuotes(state);
+        case 'sell':
+            return selectTradingSellQuotes(state);
+        case 'exchange':
+            return selectTradingExchangeQuotes(state);
+        default:
+            return exhaustive(type);
+    }
+};
+
 export const selectTradingSellQuotesByPaymentMethod = createMemoizedSelector(
     [
         selectTradingSellQuotes,
@@ -703,6 +717,26 @@ export const selectTradingSellPaymentMethods = createMemoizedSelector(
             value: quote.paymentMethod as TradingSellPaymentMethodProps,
             label: quote.paymentMethodName ?? '',
         })),
+);
+
+export const selectTradingQuotesPerPaymentMethodByType = createMemoizedSelector(
+    [
+        selectTradingBuyQuotesPerPaymentMethod,
+        selectTradingSellQuotesPerPaymentMethod,
+        (_: TradingRootState, type: TradingType) => type,
+    ],
+    (buyQuotes, sellQuotes, type): BuyTrade[] | SellFiatTrade[] => {
+        switch (type) {
+            case 'buy':
+                return buyQuotes;
+            case 'sell':
+                return sellQuotes;
+            case 'exchange':
+                return [];
+            default:
+                return exhaustive(type);
+        }
+    },
 );
 
 export const selectTradingBuyAccountKey = (state: TradingRootState) =>
