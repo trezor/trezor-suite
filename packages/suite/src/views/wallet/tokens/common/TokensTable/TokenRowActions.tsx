@@ -503,8 +503,11 @@ const TokenRowBasicActions = ({
                                     isDisabled={isSupplyButtonDisabled}
                                     onClick={navigateToYieldSupply}
                                     tooltip={{
-                                        content: <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />,
-                                        isActive: isSupplyButtonDisabled,
+                                        content: isSupplyButtonDisabled ? (
+                                            <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
+                                        ) : (
+                                            <Translation id="TR_EARN_YIELD_SUPPLY" />
+                                        ),
                                     }}
                                 />
 
@@ -513,8 +516,11 @@ const TokenRowBasicActions = ({
                                     isDisabled={isWithdrawButtonDisabled}
                                     onClick={navigateToYieldWithdraw}
                                     tooltip={{
-                                        content: <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />,
-                                        isActive: isWithdrawButtonDisabled,
+                                        content: isWithdrawButtonDisabled ? (
+                                            <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
+                                        ) : (
+                                            <Translation id="TR_EARN_YIELD_WITHDRAW" />
+                                        ),
                                     }}
                                 />
                             </ButtonGroup>
