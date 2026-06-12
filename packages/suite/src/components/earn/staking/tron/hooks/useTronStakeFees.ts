@@ -4,6 +4,7 @@ import {
     composeTronFreezeFeeLevelsThunk,
     composeTronUnstakeFeeLevelsThunk,
     composeTronVoteFeeLevelsThunk,
+    composeTronWithdrawFeeLevelsThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -61,6 +62,10 @@ export const useTronStakeFees = (): TronStakeFees => {
                         .unwrap()
                         .catch(() => undefined);
             case 'withdraw':
+                return () =>
+                    dispatch(composeTronWithdrawFeeLevelsThunk({ account }))
+                        .unwrap()
+                        .catch(() => undefined);
             case 'complete':
                 return undefined;
             default:
