@@ -71,10 +71,14 @@ export const getEthereumRbfFeeInfo = (
     const { levels } = feeInfo;
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstLevel: (typeof levels)[number] = levels[0];
+    if (!firstLevel) return feeInfo;
 
     if (isEip1559(originalGasParams) && isEip1559(firstLevel)) {
-        const currentMaxFee = new BigNumber(originalGasParams.maxFeePerGas!);
-        const currentMaxPriorityFee = new BigNumber(originalGasParams.maxPriorityFeePerGas || '0');
+        const currentMaxFee = new BigNumber(originalGasParams.maxFeePerGas);
+        // Cast back to access maxPriorityFeePerGas — isEip1559 narrows to { maxFeePerGas: string } only
+        const currentMaxPriorityFee = new BigNumber(
+            (originalGasParams as { maxPriorityFeePerGas?: string }).maxPriorityFeePerGas || '0',
+        );
         const highLevel = levels.find(l => l.label === 'high') ?? firstLevel;
 
         const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
@@ -103,7 +107,6 @@ export const getEthereumRbfFeeInfo = (
     const currentGasPrice = new BigNumber(
         originalGasParams.gasPrice || originalGasParams.maxFeePerGas || '0',
     );
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const minFeeFromNetwork = new BigNumber(firstLevel.feePerUnit);
     const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(feeInfo.minFee));
 
@@ -488,26 +491,6 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             nonce,
             payment_req: paymentRequests?.[0],
         });
-
-        console.log('[signEth] tx params (gwei):', {
-            gasPrice: precomposedTransaction.feePerByte,
-            maxFeePerGas: precomposedTransaction.maxFeePerGas,
-            maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
-            gasLimit: precomposedTransaction.feeLimit,
-            nonce,
-            to: firstSignOutput.address,
-            amount: firstSignOutput.amount,
-        });
-        console.log(
-            '[signEth] transaction (hex):',
-            JSON.stringify({
-                gasPrice: transaction.gasPrice,
-                maxFeePerGas: (transaction as any).maxFeePerGas,
-                maxPriorityFeePerGas: (transaction as any).maxPriorityFeePerGas,
-                gasLimit: transaction.gasLimit,
-                nonce: transaction.nonce,
-            }),
-        );
 
         const response = await TrezorConnect.ethereumSignTransaction({
             device: {

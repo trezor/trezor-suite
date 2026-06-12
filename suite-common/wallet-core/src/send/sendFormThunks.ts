@@ -90,6 +90,7 @@ import {
     selectBitcoinAmountUnit,
     selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
+import { transactionsActions } from '../transactions/transactionsActions';
 import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
@@ -300,6 +301,22 @@ export const synchronizeSentTransactionThunk = createThunk(
                 }),
             );
             dispatch(accountsActions.updateAccount(selectedAccount));
+            // For RBF txs (cancel or speed-up), calling GetTransaction on the replaced
+            // pending tx has a side effect: Blockbook re-checks its mempool state and
+            // evicts the tx if it's no longer there. Remove it locally for instant feedback.
+            if ('prevTxid' in precomposedTransaction) {
+                const { prevTxid } = precomposedTransaction;
+                void TrezorConnect.blockchainGetTransactions({
+                    coin: selectedAccount.symbol,
+                    txs: [prevTxid],
+                });
+                dispatch(
+                    transactionsActions.removeTransaction({
+                        account: selectedAccount,
+                        txs: [{ txid: prevTxid }],
+                    }),
+                );
+            }
         } else {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
