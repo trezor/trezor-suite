@@ -979,16 +979,6 @@ export const messages = defineMessages({
         defaultMessage: 'Trade history',
         id: 'TR_TRADING_LAST_TRANSACTIONS',
     },
-    TR_TRADING_BUY_AND_SELL_COUNTER: {
-        defaultMessage:
-            '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} }',
-        id: 'TR_TRADING_BUY_AND_SELL_COUNTER',
-    },
-    TR_TRADING_SWAP_COUNTER: {
-        defaultMessage:
-            '{totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
-        id: 'TR_TRADING_SWAP_COUNTER',
-    },
     TR_TRADING_PAYMENT_METHOD: {
         defaultMessage: 'Payment method',
         id: 'TR_TRADING_PAYMENT_METHOD',
@@ -1113,6 +1103,11 @@ export const messages = defineMessages({
     TR_TRADING_TRADE_FEE: {
         defaultMessage: 'Trade fee',
         id: 'TR_TRADING_TRADE_FEE',
+    },
+    TR_TRADING_TRADE_HISTORY_COUNTER: {
+        defaultMessage:
+            '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} } • {totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
+        id: 'TR_TRADING_TRADE_HISTORY_COUNTER',
     },
     TR_TRADING_POPULAR_CURRENCIES: {
         defaultMessage: 'Popular currencies',
