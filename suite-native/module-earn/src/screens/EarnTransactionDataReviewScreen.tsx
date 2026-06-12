@@ -17,12 +17,14 @@ import {
 } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
+    TxValidityTimer,
     selectIsTransactionAlreadySigned,
     selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
+import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 
@@ -51,6 +53,16 @@ export const EarnTransactionDataReviewScreen = ({
     });
 
     const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
+    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
+        useEarnTxValidityFlow({
+            accountKey,
+            stakeType: 'stake',
+            revealConfirmOnTrezorSheet,
+            isPushing,
+        });
+
+    const isSolanaAccount = account?.networkType === 'solana';
 
     const isReadyToStake = isTransactionAlreadySigned && !!account;
 
@@ -99,6 +111,15 @@ export const EarnTransactionDataReviewScreen = ({
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
+                    {showTimer && (
+                        <TxValidityTimer
+                            secondsLeft={secondsLeft}
+                            isPastDeadline={isPastDeadline}
+                            isBroadcasting={isBroadcasting}
+                            onRetry={onRetry}
+                            isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
                     {account && (
                         <EarnTransactionDataReviewStepList
                             accountKey={accountKey}
@@ -124,6 +145,7 @@ export const EarnTransactionDataReviewScreen = ({
                         </VStack>
                         <Button
                             isLoading={isPushing}
+                            isDisabled={isSolanaAccount && isPastDeadline}
                             onPress={handleStakeNow}
                             testID="@earn/stake-now"
                         >

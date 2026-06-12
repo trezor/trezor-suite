@@ -21,6 +21,7 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     default: {
         solanaSignTransaction: jest.fn(),
+        blockchainGetInfo: jest.fn(),
         blockchainEstimateFee: jest.fn().mockResolvedValue({
             success: true,
             payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },
@@ -147,6 +148,7 @@ const buildSolanaPrecomposedTransaction = (): PrecomposedTransactionFinal =>
     }) as unknown as PrecomposedTransactionFinal;
 
 const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mock;
+const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
 
 const dispatchCompose = async (
     store: ReturnType<typeof buildStore>,
@@ -177,6 +179,12 @@ beforeEach(() => {
         payload: { signature: 'ed25519signature' },
     });
     solanaTxShim.addSignature.mockClear();
+
+    blockchainGetInfoMock.mockReset();
+    blockchainGetInfoMock.mockResolvedValue({
+        success: false,
+        payload: { error: 'backend not connected' },
+    });
 
     prepareStakeSolTxMock.mockReset();
     prepareStakeSolTxMock.mockResolvedValue({
@@ -310,6 +318,21 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
         );
     });
 
+    it('stamps createdTimestamp on the stored precomposed transaction (powers the validity timer)', async () => {
+        const store = buildStore();
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({ ok: true });
+        expect(store.getState().wallet.send.precomposedTx?.createdTimestamp).toEqual(
+            expect.any(Number),
+        );
+    });
+
     it('rejects when the blockchain backend URL cannot be resolved', async () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         const store = buildStore({ blockchain: { dsol: { url: 'http://localhost:8899' } } });
@@ -327,8 +350,28 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
                 message: 'Blockchain backend URL not found for sol.',
             },
         });
+        expect(blockchainGetInfoMock).toHaveBeenCalledWith({ coin: 'sol' });
         expect(solanaSignTransactionMock).not.toHaveBeenCalled();
         errorSpy.mockRestore();
+    });
+
+    it('falls back to an on-demand backend connection when the redux url is missing', async () => {
+        blockchainGetInfoMock.mockResolvedValue({
+            success: true,
+            payload: { url: 'http://localhost:8899' },
+        });
+        const store = buildStore({ blockchain: { dsol: { url: 'http://localhost:8899' } } });
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({ ok: true });
+        expect(blockchainGetInfoMock).toHaveBeenCalledWith({ coin: 'sol' });
+        expect(prepareUnstakeSolTxMock).toHaveBeenCalledTimes(1);
+        expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
     });
 
     it('rejects (without logging) when the user cancels on the device', async () => {
@@ -346,6 +389,29 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
 
         expect(result.ok).toBe(false);
         expect((result as { error: { message: string } }).error.message).toBe('tx-cancelled');
+    });
+
+    it('rejects with sign-transaction-timeout when the validity timer cancels the sign', async () => {
+        solanaSignTransactionMock.mockResolvedValue({
+            success: false,
+            error: { code: 'Method_Cancel', message: 'tx-timeout' },
+        });
+        const store = buildStore();
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: {
+                error: 'sign-transaction-timeout',
+                errorCode: 'Method_Cancel',
+                message: 'tx-timeout',
+            },
+        });
     });
 
     it('signs a solana unstake, forwarding the composed amount', async () => {

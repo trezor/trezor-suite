@@ -19,6 +19,7 @@ import {
 } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
+    TxValidityTimer,
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionAlreadySigned,
     selectIsTransactionReviewInProgress,
@@ -26,6 +27,7 @@ import {
 } from '@suite-native/transaction-management';
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
+import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
@@ -60,6 +62,16 @@ export const UnstakeTransactionDataReviewScreen = ({
     });
 
     const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
+    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
+        useEarnTxValidityFlow({
+            accountKey,
+            stakeType: 'unstake',
+            revealConfirmOnTrezorSheet,
+            isPushing,
+        });
+
+    const isSolanaAccount = account?.networkType === 'solana';
 
     const isReadyToUnstake = isTransactionAlreadySigned && !!account;
 
@@ -117,6 +129,15 @@ export const UnstakeTransactionDataReviewScreen = ({
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
+                    {showTimer && (
+                        <TxValidityTimer
+                            secondsLeft={secondsLeft}
+                            isPastDeadline={isPastDeadline}
+                            isBroadcasting={isBroadcasting}
+                            onRetry={onRetry}
+                            isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
                     <UnstakeTransactionDataReviewStepList onSign={handleSign} />
                 </VStack>
                 {isReadyToUnstake && (
@@ -135,6 +156,7 @@ export const UnstakeTransactionDataReviewScreen = ({
                         </VStack>
                         <Button
                             isLoading={isPushing}
+                            isDisabled={isSolanaAccount && isPastDeadline}
                             onPress={handleUnstakeNow}
                             testID="@earn/unstake-now"
                         >

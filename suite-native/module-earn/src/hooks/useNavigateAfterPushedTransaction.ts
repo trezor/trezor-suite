@@ -12,6 +12,7 @@ import {
     selectAccountNetworkSymbol,
     selectConvertedNetworkFeeInfo,
     selectTransactionByAccountKeyAndTxid,
+    sendFormActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -106,6 +107,14 @@ export const useNavigateAfterPushedTransaction = ({
             );
         }
     }, [accountKey, isTransactionProcessedByBackend, navigation, networkSymbol, txid]);
+
+    useEffect(() => {
+        if (!txid) return undefined;
+
+        return () => {
+            dispatch(sendFormActions.discardTransaction());
+        };
+    }, [txid, dispatch]);
 
     return { trackPushedTransaction: setTxid };
 };
