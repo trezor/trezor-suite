@@ -91,12 +91,14 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
         const highMaxPriorityFeePerGas = highLevel.maxPriorityFeePerGas;
         const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highMaxFeePerGas ?? 0)
             .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
             .toString();
         const newMaxPriorityFeePerGas = BigNumber.maximum(
             currentMaxPriorityFee,
             highMaxPriorityFeePerGas ?? 0,
         )
             .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
             .toString();
 
         return {
