@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { View } from 'react-native';
 import Animated, {
     type EntryExitAnimationFunction,
@@ -7,6 +7,8 @@ import Animated, {
     withDelay,
     withTiming,
 } from 'react-native-reanimated';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
 import { type AddCoinFlowType, type CloseActionType, GoBackIcon } from '@suite-native/navigation';
@@ -48,10 +50,12 @@ export const SearchableAccountsListHeader = ({
 
     const [isSearchActive, setIsSearchActive] = useState(false);
 
-    const handleHideFilter = () => {
+    const handleHideFilter = useCallback(() => {
         setIsSearchActive(false);
         onSearchInputChange('');
-    };
+    }, [onSearchInputChange]);
+
+    useFocusEffect(useCallback(() => handleHideFilter, [handleHideFilter]));
 
     const enteringFadeInAnimation: EntryExitAnimationFunction = () => {
         'worklet';
