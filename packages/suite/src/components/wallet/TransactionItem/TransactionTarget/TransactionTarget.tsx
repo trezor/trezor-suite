@@ -204,7 +204,7 @@ export const TransactionTarget = ({
             addressLabel={
                 <Labeling
                     deviceStaticSessionId={transaction.deviceState}
-                    isDisabled={isActionDisabled}
+                    isDisabled={isActionDisabled || isPhishingTransaction}
                     displayValue={label}
                     placeholder={translationString('TR_LABELING_OUTPUT_LABEL')}
                     payload={{
