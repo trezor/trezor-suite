@@ -3,17 +3,12 @@ import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
-import {
-    type buildFreezeBalanceV2Contract,
-    type buildUnfreezeBalanceV2Contract,
-    type buildVoteWitnessContract,
-} from './tronStakeContracts';
-import { type TronStakeError } from './tronStakeTypes';
+import { type TronFreezeContract } from '../actions/freeze/freezeContract';
+import { type TronUnstakeContract } from '../actions/unstake/unstakeContract';
+import { type TronVoteContract } from '../actions/vote/voteContract';
+import { type TronStakeError } from '../tronStakeTypes';
 
-type TronStakeContract =
-    | ReturnType<typeof buildFreezeBalanceV2Contract>
-    | ReturnType<typeof buildUnfreezeBalanceV2Contract>
-    | ReturnType<typeof buildVoteWitnessContract>;
+type TronStakeContract = TronFreezeContract | TronUnstakeContract | TronVoteContract;
 
 type SignTronContractResult = { serializedTx: string } | { error: TronStakeError };
 
