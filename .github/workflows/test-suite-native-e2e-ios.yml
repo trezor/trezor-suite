@@ -49,7 +49,6 @@ jobs:
         with:
           path: |
             node_modules
-            suite-native/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install Socket Firewall
@@ -130,7 +129,6 @@ jobs:
         with:
           path: |
             node_modules
-            suite-native/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install Socket Firewall
