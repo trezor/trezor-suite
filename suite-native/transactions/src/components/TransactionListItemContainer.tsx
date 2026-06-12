@@ -70,7 +70,13 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
 
 const titleStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,
     gap: utils.spacings.sp8,
+}));
+
+const transactionNameStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
 }));
 
 const descriptionBoxStyle = prepareNativeStyle(_ => ({
@@ -174,6 +180,8 @@ export const TransactionListItemContainer = ({
                                 <TransactionName
                                     transaction={transaction}
                                     isPending={isTransactionPending}
+                                    numberOfLines={2}
+                                    style={applyStyle(transactionNameStyle)}
                                 />
                                 {isPhishingTransaction && (
                                     <Badge

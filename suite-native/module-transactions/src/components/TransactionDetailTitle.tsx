@@ -9,6 +9,11 @@ import {
     WrapTransactionName,
     getUnstakeTxAmount,
 } from '@suite-native/transactions';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const titleTextStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
+}));
 
 type TransactionDetailTitleProps = {
     transaction: WalletAccountTransaction;
@@ -23,6 +28,7 @@ export const TransactionDetailTitle = ({
     isPending,
     tokenTransfer,
 }: TransactionDetailTitleProps) => {
+    const { applyStyle } = useNativeStyles();
     const unstakeAmount = getUnstakeTxAmount(transaction);
     const wrapKind = getNativeWrapTxKind(transaction);
 
@@ -53,7 +59,7 @@ export const TransactionDetailTitle = ({
                 contractAddress={tokenTransfer?.contract}
                 showNetworkIcon
             />
-            <Text variant="body-md-strong">
+            <Text variant="body-md-strong" numberOfLines={2} style={applyStyle(titleTextStyle)}>
                 <Translation
                     id="transactions.detail.header"
                     values={{
