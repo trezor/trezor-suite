@@ -9,7 +9,6 @@ import {
     GuideContent,
     GuideHeader,
     GuideNode,
-    GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -48,7 +47,6 @@ export const GuideCategory = () => {
             <GuideContent>
                 {pages.length ? (
                     <Section>
-                        <GuideSectionHeadline id="TR_GUIDE_ARTICLES" />
                         <CardList data-testid="@guide/nodes">
                             {pages.map(page => (
                                 <GuideNode key={page.id} node={page} />
