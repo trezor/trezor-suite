@@ -1,0 +1,352 @@
+name: "[TEMP BISECT] Trading E2E Android crash"
+
+# Temporary workflow to git-bisect the commit that introduced trading test crashes.
+# Target tests: tradingExchangeFlow.test.ts, tradingBuyFlow.test.ts
+# Delete this file once the offending commit is identified.
+
+permissions:
+  id-token: write # for OIDC → AWS credentials
+  contents: read
+  actions: write
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/bisect-suite-native-e2e-android.yml"
+  workflow_dispatch:
+
+jobs:
+  bisect:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    timeout-minutes: 480 # up to 8 h for ~8 bisect iterations
+
+    env:
+      NODE_ENV: "test"
+      RN_SRC_EXT: "e2e.ts,e2e.tsx"
+      COMMIT_HASH: "e2e-test" # hardcoded so fingerprint stays stable across JS-only changes
+
+    steps:
+      - name: Checkout project (full history for bisect)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+          submodules: "true"
+
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
+        with:
+          dotnet: true
+          haskell: true
+          tool-cache: false
+          android: false
+          swap-storage: false
+          large-packages: false
+
+      - name: Install node and yarn
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Setup Java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+
+      - name: Download and install apktool
+        run: |
+          wget -q https://github.com/iBotPeaches/Apktool/releases/download/v2.8.1/apktool_2.8.1.jar -O apktool.jar
+          wget -q https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool -O apktool
+          chmod +x apktool
+          sudo mv apktool.jar /usr/local/bin/apktool.jar
+          sudo mv apktool /usr/local/bin/apktool
+
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
+        with:
+          mode: firewall-free
+          job-summary: errors
+          firewall-version: 1.11.0
+
+      - name: Disable Yarn hardened mode
+        shell: bash
+        run: |
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+
+      - name: Install Yarn dependencies (initial)
+        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Run trezor-user-env
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+        run: |
+          docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+
+      - name: Enable Android emulator KVM optimization
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Get AVD name from detox config
+        id: device
+        run: node -e "console.log('AVD_NAME=' + require('./suite-native/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
+
+      - name: Set bisect range
+        run: |
+          # Good: last commit before this week (Fri 2026-06-05, before crashes started)
+          GOOD="4ff539b9e7c3722ff635e7eb75d0235259e77ef9"
+          BAD=$(git rev-parse HEAD)
+          echo "BISECT_GOOD=$GOOD" >> $GITHUB_ENV
+          echo "BISECT_BAD=$BAD" >> $GITHUB_ENV
+          echo "Good: $GOOD  ($(git log -1 --format='%s' $GOOD))"
+          echo "Bad:  $BAD  ($(git log -1 --format='%s' $BAD))"
+          STEPS=$(echo "l($(git rev-list --count $GOOD..$BAD))/l(2)" | bc -l 2>/dev/null | xargs printf '%.0f' || echo "?")
+          echo "Commits in range: $(git rev-list --count $GOOD..$BAD)  (~$STEPS bisect steps)"
+
+      # Stored in /tmp so git bisect commit switches don't wipe them
+      - name: Write bisect runner config to /tmp
+        run: |
+          cat > /tmp/bisect-runner.config.js << 'EOF'
+          // Temporary bisect runner config – trading tests only
+          // Both tradingExchangeFlow and tradingBuyFlow are @noDevice tests.
+          module.exports = {
+            projects: [
+              {
+                projectName: 'bisect-no-device',
+                target: 'android.emu.release',
+                model: undefined,
+                firmwareVersion: undefined,
+                grep: '^(?=.*@noDevice)(?!.*@iosOnly)',
+              },
+            ],
+          };
+          EOF
+
+      - name: Write bisect run script to /tmp
+        env:
+          E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+        run: |
+          # Use a heredoc with quoted delimiter so nothing is expanded here;
+          # $GITHUB_WORKSPACE and $ANDROID_HOME are resolved at runtime inside the script.
+          cat > /tmp/bisect-run.sh << 'BISECT_EOF'
+          #!/bin/bash
+          set -euo pipefail
+
+          cd "$GITHUB_WORKSPACE"
+
+          echo ""
+          echo "============================================================"
+          echo "BISECT: $(git rev-parse HEAD)"
+          echo "        $(git log -1 --format='%s')"
+          echo "============================================================"
+
+          # .yarnrc.yml may have been restored by git bisect checkout – re-apply.
+          grep -q "enableHardenedMode: false" .yarnrc.yml 2>/dev/null || \
+            echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+
+          # Re-install deps (yarn.lock may differ across commits).
+          # Use --no-immutable so a changed lockfile doesn't abort the step.
+          NODE_ENV=test RN_SRC_EXT="e2e.ts,e2e.tsx" COMMIT_HASH="e2e-test" \
+            yarn install --no-immutable || {
+              echo "BISECT: yarn install failed – skipping this commit"
+              git restore .
+              exit 125
+            }
+
+          # Sign message-system config (required at runtime by Detox).
+          (cd suite-common/message-system && yarn sign-config) || {
+            echo "BISECT: sign-config failed – skipping"
+            git restore .
+            exit 125
+          }
+
+          # Prebuild native Expo project so the fingerprint reflects the current code.
+          (cd suite-native/app && yarn prebuild --platform android --clean) || {
+            echo "BISECT: prebuild failed – skipping"
+            git restore .
+            exit 125
+          }
+
+          # Compute Expo fingerprint for S3 build-cache lookup.
+          FINGERPRINT=$(cd suite-native/app && \
+            yarn exec fingerprint ./ | python3 -c "import sys,json; print(json.load(sys.stdin)['hash'])") || {
+            echo "BISECT: fingerprint failed – skipping"
+            git restore .
+            exit 125
+          }
+          echo "BISECT: fingerprint=$FINGERPRINT"
+
+          S3_BASE="s3://dev.suite.sldev.cz/suite-mobile/$FINGERPRINT"
+
+          if aws s3 ls "$S3_BASE" --summarize 2>/dev/null; then
+            echo "BISECT: S3 cache HIT – downloading build and rebundling JS"
+
+            APK_OUT="suite-native/app/android/app/build/outputs"
+            aws s3 cp "$S3_BASE/" "./$APK_OUT" --recursive || {
+              echo "BISECT: S3 download failed – skipping"
+              git restore .
+              exit 125
+            }
+
+            APK_RELEASE="$APK_OUT/apk/release"
+
+            # Decompile APK so we can swap the JS bundle.
+            (cd "$APK_RELEASE" && apktool d app-release.apk -o unpacked -f) || {
+              echo "BISECT: apktool decompile failed – skipping"
+              git restore .
+              exit 125
+            }
+
+            # Patch extractNativeLibs flag required for re-packed APKs.
+            sed -i \
+              's/android:extractNativeLibs="false"/android:extractNativeLibs="true"/g' \
+              "$APK_RELEASE/unpacked/AndroidManifest.xml"
+
+            # Rebundle JS for the current commit.
+            # Must run from suite-native/app (same as the prepare template workflow):
+            #   --entry-file is resolved by Metro relative to its projectRoot (monorepo root)
+            #   --bundle-output / --assets-dest are resolved relative to cwd (suite-native/app)
+            (
+              cd suite-native/app
+              EXPO_PUBLIC_IS_DETOX_BUILD=true \
+              EXPO_PUBLIC_FF_IS_REGTEST_ENABLED=true \
+              EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED=true \
+              EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED=true \
+              EXPO_PUBLIC_ENVIRONMENT=debug \
+              NODE_ENV=test RN_SRC_EXT="e2e.ts,e2e.tsx" \
+              yarn exec react-native bundle \
+                --platform android \
+                --dev false \
+                --entry-file ./suite-native/app/index.js \
+                --bundle-output ./android/app/build/outputs/apk/release/unpacked/assets/index.android.bundle \
+                --assets-dest ./android/app/build/outputs/apk/release/unpacked/res/
+            ) || {
+              echo "BISECT: JS bundle failed – skipping"
+              git restore .
+              exit 125
+            }
+
+            # Recompile and sign APK.
+            (cd "$APK_RELEASE" && \
+              apktool b unpacked -o app-release.apk && \
+              "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign \
+                --ks ../../../../debug.keystore \
+                --ks-pass pass:android \
+                --out app-release.apk app-release.apk) || {
+              echo "BISECT: APK recompile/sign failed – skipping"
+              git restore .
+              exit 125
+            }
+
+          else
+            echo "BISECT: S3 cache MISS – running full detox build"
+            (cd suite-native/app && \
+              NODE_ENV=test RN_SRC_EXT="e2e.ts,e2e.tsx" COMMIT_HASH="e2e-test" \
+              yarn exec detox build \
+                -PreactNativeArchitectures=x86_64 \
+                --configuration android.emu.release) || {
+              echo "BISECT: full build failed – skipping"
+              git restore .
+              exit 125
+            }
+          fi
+
+          echo "BISECT: Build ready. Running trading tests…"
+
+          cd suite-native/app
+          set +e
+          TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE="$BISECT_PASSPHRASE" \
+          RUNNER_TEMP=/tmp \
+          GITHUB_ACTION=true \
+          NODE_ENV=test RN_SRC_EXT="e2e.ts,e2e.tsx" COMMIT_HASH="e2e-test" \
+            yarn test:e2e \
+              --config /tmp/bisect-runner.config.js \
+              --headless \
+              e2e/tests/tradingExchangeFlow.test.ts \
+              e2e/tests/tradingBuyFlow.test.ts
+          TEST_RC=$?
+          set -e
+
+          cd "$GITHUB_WORKSPACE"
+          # Clean up any tracked-file modifications (e.g. yarn.lock, .yarnrc.yml)
+          # so the next git bisect checkout succeeds cleanly.
+          git restore .
+
+          if [ "$TEST_RC" -eq 0 ]; then
+            echo "BISECT VERDICT: GOOD  (tests passed)"
+          else
+            echo "BISECT VERDICT: BAD   (tests failed – this commit is a candidate)"
+          fi
+
+          exit "$TEST_RC"
+          BISECT_EOF
+
+          # Inject the passphrase as a literal value so it doesn't need to be
+          # an env var at runtime (secrets aren't forwarded into bisect subshells).
+          sed -i "s|BISECT_PASSPHRASE|${E2E_TEST_PASSPHRASE}|g" /tmp/bisect-run.sh
+          chmod +x /tmp/bisect-run.sh
+
+      - name: Initialize git bisect
+        run: |
+          git bisect start
+          git bisect bad  "$BISECT_BAD"
+          git bisect good "$BISECT_GOOD"
+
+      - name: Run bisect (Android emulator stays alive across all iterations)
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        env:
+          RUNNER_TEMP: /tmp
+          GITHUB_ACTION: true
+          NODE_ENV: "test"
+          RN_SRC_EXT: "e2e.ts,e2e.tsx"
+          COMMIT_HASH: "e2e-test"
+        with:
+          api-level: 34
+          profile: pixel_6
+          arch: x86_64
+          working-directory: suite-native/app
+          ram-size: 4096M
+          force-avd-creation: true
+          avd-name: ${{ steps.device.outputs.AVD_NAME }}
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -grpc 8554 -memory 4096
+          disable-animations: true
+          cores: 4
+          heap-size: 512M
+          script: |
+            cd ${{ github.workspace }}
+            git bisect run /tmp/bisect-run.sh
+
+      - name: Show bisect result
+        if: always()
+        run: |
+          echo ""
+          echo "========================================"
+          echo "BISECT LOG"
+          echo "========================================"
+          git bisect log 2>/dev/null || echo "(bisect log unavailable)"
+          echo ""
+          echo "First bad commit:"
+          git show --stat BISECT_BAD 2>/dev/null || echo "(BISECT_BAD ref not available)"
+          git bisect reset || true
+
+      - name: Upload bisect artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: bisect-results
+          path: suite-native/app/artifacts
+          retention-days: 7
