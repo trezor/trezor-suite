@@ -10262,6 +10262,42 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_PENDING_VOTE',
         defaultMessage: 'Confirming vote…',
     },
+    TR_EARN_TRON_PENDING_UNSTAKE: {
+        id: 'TR_EARN_TRON_PENDING_UNSTAKE',
+        defaultMessage: 'Confirming unstake…',
+    },
+    TR_EARN_TRON_UNSTAKE_TITLE: {
+        id: 'TR_EARN_TRON_UNSTAKE_TITLE',
+        defaultMessage: 'Unstake',
+    },
+    TR_EARN_TRON_UNSTAKE_DESCRIPTION: {
+        id: 'TR_EARN_TRON_UNSTAKE_DESCRIPTION',
+        defaultMessage: 'Withdraw your TRX in 14 days',
+    },
+    TR_EARN_TRON_RESOURCE_TO_UNSTAKE: {
+        id: 'TR_EARN_TRON_RESOURCE_TO_UNSTAKE',
+        defaultMessage: 'Resource to unstake',
+    },
+    TR_EARN_TRON_STAKED: {
+        id: 'TR_EARN_TRON_STAKED',
+        defaultMessage: 'Staked',
+    },
+    TR_EARN_TRON_RESOURCE_REDUCTION: {
+        id: 'TR_EARN_TRON_RESOURCE_REDUCTION',
+        defaultMessage: 'Resource reduction',
+    },
+    TR_EARN_TRON_UNSTAKE_AMOUNT_EXCEEDS_STAKED: {
+        id: 'TR_EARN_TRON_UNSTAKE_AMOUNT_EXCEEDS_STAKED',
+        defaultMessage: 'Amount exceeds your staked balance.',
+    },
+    TR_EARN_TRON_BANDWIDTH_REDUCTION: {
+        id: 'TR_EARN_TRON_BANDWIDTH_REDUCTION',
+        defaultMessage: '{count, plural, other {-# bandwidth}}',
+    },
+    TR_EARN_TRON_ENERGY_REDUCTION: {
+        id: 'TR_EARN_TRON_ENERGY_REDUCTION',
+        defaultMessage: '{count, plural, other {-# energy}}',
+    },
     TR_EARN_TRON_SELECT_REPRESENTATIVE: {
         id: 'TR_EARN_TRON_SELECT_REPRESENTATIVE',
         defaultMessage: 'Select representative',
