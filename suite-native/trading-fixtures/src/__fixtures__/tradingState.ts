@@ -3,7 +3,6 @@ import type { Coins, CryptoId, FiatCurrenciesProps, FiatCurrencyCode, Platforms 
 import {
     type TradingBuyState,
     type TradingExchangeState,
-    type TradingPaymentMethodListProps,
     type TradingSellState,
     type TradingType,
 } from '@suite-common/trading';
@@ -129,12 +128,6 @@ export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
         exchange: getInitializedExchangeState(),
         sell: getInitializedSellState(),
         info: {
-            paymentMethods: [
-                {
-                    value: 'creditCard',
-                    label: 'Credit Card label',
-                },
-            ] as TradingPaymentMethodListProps[],
             coins: coins as Coins,
             platforms: platforms as Platforms,
         },
@@ -152,17 +145,6 @@ export const getInitializedTradingStateWithQuotes = () => {
     state.buy.quotes = buyQuotes as TradingBuyState['quotes'];
     state.exchange.quotes = exchangeQuotes;
     state.sell.quotes = sellQuotes;
-
-    state.info.paymentMethods = [
-        {
-            value: 'creditCard',
-            label: 'Credit Card',
-        },
-        {
-            value: 'applePay',
-            label: 'Apple Pay',
-        },
-    ];
 
     return state;
 };

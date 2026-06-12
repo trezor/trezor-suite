@@ -7,7 +7,6 @@ import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
     type TradingCountryCode,
-    type TradingPaymentMethodListProps,
     buildTradingFiatOption,
     getDefaultCountry,
     getDefaultCountrySubdivision,
@@ -47,14 +46,6 @@ export const useTradingBuyFormDefaultValues = (
         return createAssetOptionFromCryptoId(cryptoId);
     }, [createAssetOptionFromCryptoId, cryptoId, coins]);
 
-    const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
-        () => ({
-            value: TRADING_DEFAULT_PAYMENT_METHOD,
-            label: '',
-        }),
-        [],
-    );
-
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const suggestedFiatCurrency = getSupportedFiatCurrencyWithFallback(baseCurrencyCode);
     const defaultCurrency = useMemo(
@@ -69,12 +60,12 @@ export const useTradingBuyFormDefaultValues = (
             cryptoSelect: defaultCrypto,
             countrySelect: defaultCountry,
             countrySubdivisionSelect: defaultSubdivision,
-            paymentMethod: defaultPaymentMethod,
+            paymentMethod: { value: TRADING_DEFAULT_PAYMENT_METHOD, label: '' },
             provider: undefined,
             amountInCrypto: false,
             receiveAddress: undefined,
         }),
-        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod, defaultSubdivision],
+        [defaultCountry, defaultCrypto, defaultCurrency, defaultSubdivision],
     );
 
     return {
@@ -82,7 +73,6 @@ export const useTradingBuyFormDefaultValues = (
         defaultCountry,
         defaultSubdivision,
         defaultCurrency,
-        defaultPaymentMethod,
         suggestedFiatCurrency,
     };
 };

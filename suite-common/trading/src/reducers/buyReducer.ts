@@ -73,6 +73,7 @@ const tradingBuySlice = createSlice({
         },
         clearQuotes(state) {
             state.quotes = [];
+            state.selectedQuote = undefined;
         },
         setIsLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;

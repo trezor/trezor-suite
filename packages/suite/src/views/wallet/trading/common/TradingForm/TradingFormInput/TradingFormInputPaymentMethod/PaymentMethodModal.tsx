@@ -5,12 +5,10 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
-    selectTradingBuyQuotesPerPaymentMethod,
-    selectTradingSellQuotesPerPaymentMethod,
+    selectTradingQuotesPerPaymentMethodByType,
 } from '@suite-common/trading';
 import { Modal } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
-import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -30,16 +28,9 @@ interface PaymentMethodModalProps {
 export const PaymentMethodModal = ({ onClose, heading }: PaymentMethodModalProps) => {
     const { type, setValue } = useTradingFormContext<TradingTradeBuySellType>();
 
-    const quotes: TradingTradeDetailBuySellType[] = useSelector(state => {
-        switch (type) {
-            case 'buy':
-                return selectTradingBuyQuotesPerPaymentMethod(state);
-            case 'sell':
-                return selectTradingSellQuotesPerPaymentMethod(state);
-            default:
-                return exhaustive(type, 'Unexpected trade type');
-        }
-    });
+    const quotes: TradingTradeDetailBuySellType[] = useSelector(state =>
+        selectTradingQuotesPerPaymentMethodByType(state, type),
+    );
 
     const selectPaymentMethod = useCallback(
         (quote: TradingTradeDetailBuySellType) => {

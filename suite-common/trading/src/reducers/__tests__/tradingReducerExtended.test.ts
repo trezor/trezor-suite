@@ -51,7 +51,6 @@ describe('Testing trading reducer', () => {
                     trading: {
                         ...initialState,
                         isLoading: true,
-                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
                         buy: {
                             quotes: [{ id: '1', name: 'Quote 1' }],
                             amountLimits: { min: 0, max: 100 },
@@ -72,9 +71,6 @@ describe('Testing trading reducer', () => {
                 isLoading: false,
             }),
         );
-        expect(store.getState().wallet.trading.info).toEqual(
-            expect.objectContaining({ paymentMethods: [] }),
-        );
     });
 
     it('sellThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
@@ -90,7 +86,6 @@ describe('Testing trading reducer', () => {
                     trading: {
                         ...initialState,
                         isLoading: true,
-                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
                         sell: {
                             quotes: [{ id: '1', name: 'Quote 1' }],
                             amountLimits: { min: 0, max: 100 },
@@ -110,9 +105,6 @@ describe('Testing trading reducer', () => {
                 quotes: [],
                 amountLimits: undefined,
             }),
-        );
-        expect(store.getState().wallet.trading.info).toEqual(
-            expect.objectContaining({ paymentMethods: [] }),
         );
     });
 
@@ -156,7 +148,7 @@ describe('Testing trading reducer', () => {
         );
     });
 
-    it('sellThunks.handleRequestThunk.pending should clear payment methods and set isLoading to true', () => {
+    it('sellThunks.handleRequestThunk.pending should set isLoading to true', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -168,7 +160,6 @@ describe('Testing trading reducer', () => {
                 wallet: {
                     trading: {
                         ...initialState,
-                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
                         sell: {
                             ...sellInitialState,
                             isLoading: false,
@@ -184,9 +175,6 @@ describe('Testing trading reducer', () => {
             expect.objectContaining({
                 isLoading: true,
             }),
-        );
-        expect(store.getState().wallet.trading.info).toEqual(
-            expect.objectContaining({ paymentMethods: [] }),
         );
     });
 

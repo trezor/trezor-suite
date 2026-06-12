@@ -32,7 +32,6 @@ import type {
     TradingExchangeInfoSelector,
     TradingExchangeType,
     TradingFiatCurrencyOption,
-    TradingPaymentMethodListProps,
     TradingPaymentMethodType,
     TradingSellFormProps,
     TradingSellInfoSelector,
@@ -70,7 +69,6 @@ export interface TradingBuyFormDefaultValuesProps {
     defaultValues: TradingBuyFormProps;
     defaultCountry: TradingCountryOption;
     defaultCurrency: TradingFiatCurrencyOption;
-    defaultPaymentMethod: TradingPaymentMethodListProps;
     suggestedFiatCurrency: FiatCurrencyCode;
     defaultSubdivision: TradingCountrySubdivisionOption | undefined;
 }
@@ -86,7 +84,6 @@ export interface TradingSellFormDefaultValuesProps {
     defaultValues: TradingSellFormProps;
     defaultCountry: TradingCountryOption;
     defaultCurrency: TradingFiatCurrencyOption;
-    defaultPaymentMethod: TradingPaymentMethodListProps;
     defaultSubdivision: TradingCountrySubdivisionOption | undefined;
 }
 
@@ -113,8 +110,6 @@ interface TradingCommonFormBuySellProps {
     defaultCountry: TradingCountryOption;
     defaultSubdivision: TradingCountrySubdivisionOption | undefined;
     defaultCurrency: TradingFiatCurrencyOption;
-    defaultPaymentMethod: TradingPaymentMethodListProps;
-    paymentMethods: TradingPaymentMethodListProps[];
     amountLimits?: AmountLimitProps;
 }
 

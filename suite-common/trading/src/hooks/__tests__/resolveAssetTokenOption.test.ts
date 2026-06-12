@@ -13,7 +13,6 @@ const renderHook = (preloadedCoins: Coins | null = coins as Coins) =>
             info: {
                 coins: preloadedCoins ?? undefined,
                 platforms: undefined,
-                paymentMethods: [],
             },
         }),
     });

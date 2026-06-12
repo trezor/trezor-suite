@@ -74,6 +74,7 @@ import {
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
+import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
@@ -245,6 +246,8 @@ export const useTradingExchangeForm = ({
         },
         setIsScheduledQuotesRefresh,
     });
+
+    useTradingClearStaleQuotes({ type, isEnabled: isFormPage, isAmountEmpty });
 
     const helpers = useTradingFormActions({
         account,

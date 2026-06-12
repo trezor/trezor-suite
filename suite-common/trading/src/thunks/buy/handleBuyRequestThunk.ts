@@ -9,7 +9,6 @@ import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
-    selectTradingBuyPaymentMethods,
     selectTradingBuyQuotesRequest,
     selectTradingCoinSymbolByCryptoId,
 } from '../../selectors/tradingSelectors';
@@ -130,7 +129,6 @@ export const handleBuyRequestThunk = createThunk<
             dispatch(tradingBuyActions.setAmountLimits(undefined));
             dispatch(tradingBuyActions.saveQuotes(quotesSuccess));
             dispatch(tradingBuyActions.saveQuoteRequest(requestData));
-            dispatch(tradingActions.savePaymentMethods([]));
 
             return fulfillWithValue(quotesSuccess);
         }
@@ -154,7 +152,6 @@ export const handleBuyRequestThunk = createThunk<
         dispatch(tradingBuyActions.saveQuotes(quotesSuccess));
         dispatch(tradingBuyActions.setAmountLimits(limits));
         dispatch(tradingBuyActions.saveQuoteRequest(requestData));
-        dispatch(tradingActions.savePaymentMethods(selectTradingBuyPaymentMethods(getState())));
         dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
 
         return fulfillWithValue(quotesSuccess);
