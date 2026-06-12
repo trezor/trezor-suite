@@ -2,6 +2,7 @@ import { type RefObject, useEffect, useMemo, useState } from 'react';
 
 import { goto, parseDashboardParams, selectRouterParams } from '@suite/router';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,15 +22,22 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
     );
 
     const defaultNetwork = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(defaultNetwork);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (networkSymbolUrlParam && defaultNetwork === undefined) {
+        // Only preselect a network from the URL if it is actually enabled, otherwise the list shows
+        // "no accounts" under a filter the user never chose (e.g. send/sol while Solana is disabled).
+        if (
+            networkSymbolUrlParam &&
+            defaultNetwork === undefined &&
+            enabledNetworks.includes(networkSymbolUrlParam)
+        ) {
             setNetworkFilter(networkSymbolUrlParam);
         }
-    }, [networkSymbolUrlParam, defaultNetwork]);
+    }, [networkSymbolUrlParam, defaultNetwork, enabledNetworks]);
 
     useEffect(() => {
         if (networkFilter === defaultNetwork) {
