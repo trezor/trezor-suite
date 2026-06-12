@@ -39,15 +39,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
-      - run: ./scripts/circular-dependencies/check-circular-dependencies.sh
+          version: v0.19.1
+      - run: yarn install --immutable
+      - name: Check for Circular Imports
+        # safedep/pmg covers also the `npx` running inside the shell script
+        run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
   test-unit:
     runs-on: ubuntu-latest
@@ -63,14 +63,12 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          version: v0.19.1
+      - run: yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
         run: yarn test:unit:all --exclude='@suite-native/*' -- --silent
@@ -93,14 +91,12 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          version: v0.19.1
+      - run: yarn install --immutable
       - name: Fuzz Tests - Transport sessions lock
         run: yarn workspace @trezor/transport-common test:fuzz
 
@@ -116,7 +112,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      # sfw not working on windows runners
+      # safedep/pmg not available on Windows (that's ok, PMG must be run on PR workflows but here it's optional)
       - run: yarn install --immutable
       - run: yarn workspace @trezor/node-utils test:unit
 
@@ -132,14 +128,12 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          version: v0.19.1
+      - run: yarn install --immutable
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
 
@@ -154,12 +148,10 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          version: v0.19.1
+      - run: yarn install --immutable
       - run: yarn tsx ./packages/components/scripts/test-img-paths-exist.ts

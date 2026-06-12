@@ -63,21 +63,19 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - run: echo "FOCUS_WORKSPACES=@trezor/connect" >> "$GITHUB_ENV"
       - if: ${{ inputs.testEnv == 'web' }}
         run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/connect-web" >> "$GITHUB_ENV"
       - if: ${{ inputs.transport && contains(inputs.transport, 'local-suite') }}
         run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/transport-bridge" >> "$GITHUB_ENV"
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus $FOCUS_WORKSPACES
+      - run: yarn workspaces focus $FOCUS_WORKSPACES
       - if: ${{ inputs.transport && contains(inputs.transport, 'local-suite') }}
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspace @trezor/transport-bridge build:node:bin
+        run: yarn workspace @trezor/transport-bridge build:node:bin
       - name: Install Playwright chromium
         if: ${{ inputs.testEnv == 'web' }}
         run: yarn workspace @trezor/connect-web exec playwright install --with-deps chromium

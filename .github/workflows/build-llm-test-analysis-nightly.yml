@@ -49,16 +49,14 @@ jobs:
           path: node_modules
           key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Install dependencies
         shell: bash
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/e2e-utils
+        run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Delete existing LLM analysis cache from S3 (no_cache)
         if: ${{ inputs.no_cache }}

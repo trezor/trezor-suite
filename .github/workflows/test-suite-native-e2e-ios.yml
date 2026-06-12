@@ -52,19 +52,13 @@ jobs:
             suite-native/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Disable Yarn hardened mode
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+        run: yarn install --immutable
 
       - name: Use latest stable Xcode
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
@@ -133,19 +127,13 @@ jobs:
             suite-native/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Disable Yarn hardened mode
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+        run: yarn install --immutable
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
