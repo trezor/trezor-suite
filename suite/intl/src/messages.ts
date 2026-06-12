@@ -10274,6 +10274,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_WITHDRAW_TITLE',
         defaultMessage: 'Withdraw',
     },
+    TR_EARN_TRON_CLAIM_ADDRESS: {
+        id: 'TR_EARN_TRON_CLAIM_ADDRESS',
+        defaultMessage: 'Claim address',
+    },
     TR_EARN_TRON_UNSTAKE_TITLE: {
         id: 'TR_EARN_TRON_UNSTAKE_TITLE',
         defaultMessage: 'Unstake',

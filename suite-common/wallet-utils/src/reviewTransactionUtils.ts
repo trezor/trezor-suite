@@ -346,6 +346,7 @@ const constructNewFlow = ({
     const isTron = account.networkType === 'tron';
     const isTronStakeFreeze = isTron && Boolean(precomposedForm.tronStakeResource);
     const isTronStakeVote = isTron && precomposedForm.tronStakeVotes !== undefined;
+    const isTronStakeWithdraw = isTron && Boolean(precomposedForm.tronStakeWithdraw);
     const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -401,6 +402,12 @@ const constructNewFlow = ({
                 });
             }
         });
+
+        return outputs;
+    }
+
+    if (isTronStakeWithdraw) {
+        outputs.push({ type: 'tron-withdraw', value: account.descriptor });
 
         return outputs;
     }

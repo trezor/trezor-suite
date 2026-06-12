@@ -85,6 +85,7 @@ export interface FormState {
     destinationTag?: string; // For Ripple, Stellar, Solana, and Tron
     tronStakeResource?: 'bandwidth' | 'energy';
     tronStakeVotes?: string;
+    tronStakeWithdraw?: boolean;
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;

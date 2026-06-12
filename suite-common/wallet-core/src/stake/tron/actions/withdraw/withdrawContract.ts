@@ -28,6 +28,7 @@ export const buildWithdrawReviewForm = (): FormState => ({
     feePerUnit: '0',
     feeLimit: '',
     options: ['broadcast'],
+    tronStakeWithdraw: true,
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],
