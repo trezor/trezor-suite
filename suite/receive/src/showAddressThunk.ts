@@ -83,8 +83,13 @@ export const showAddressThunk =
             });
         } else {
             dispatch(closeModal());
-            // Special case: device no-backup permissions not granted.
-            if (response.error.code === 'Method_PermissionsNotGranted') return;
+            if (
+                // Special case: device no-backup permissions not granted
+                response.error.code === 'Method_PermissionsNotGranted' ||
+                // User action: address cancelled on device
+                response.error.code === 'Failure_ActionCancelled'
+            )
+                return;
 
             dispatch(
                 notificationsActions.addToast({
