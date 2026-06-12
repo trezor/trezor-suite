@@ -22,6 +22,7 @@ export { TronStake } from './staking/tron/TronStake';
 export { TronUnstake } from './staking/tron/TronUnstake';
 export { TronVote } from './staking/tron/TronVote';
 export { TronWithdraw } from './staking/tron/TronWithdraw';
+export { TronClaim } from './staking/tron/TronClaim';
 export { YieldDeposit } from './yield/deposit/YieldDeposit';
 export { YieldWithdraw } from './yield/withdraw/YieldWithdraw';
 export { EarnStakingInfo } from './modals/EarnInANutshell/components/EarnStakingInfo';

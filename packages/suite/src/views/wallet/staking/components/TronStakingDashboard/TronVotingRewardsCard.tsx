@@ -1,21 +1,36 @@
 import { Translation } from '@suite/intl';
+import { goto } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 import { getTronStakingRewards } from '@suite-common/wallet-utils';
 import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 interface TronVotingRewardsCardProps {
     account: Account;
 }
 
 export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) => {
+    const dispatch = useDispatch();
     const rewards = getTronStakingRewards(account);
 
     if (new BigNumber(rewards).lte(0)) {
         return null;
     }
+
+    const goToClaim = () =>
+        dispatch(
+            goto({
+                routeName: 'earn-tron-claim',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
 
     return (
         <Card paddingType="none">
@@ -37,7 +52,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                                 />
                             </Text>
                         </Column>
-                        <Button intent="brand" priority="primary" isDisabled>
+                        <Button intent="neutral" priority="secondary" onClick={goToClaim}>
                             <Translation id="TR_STAKE_CLAIM" />
                         </Button>
                     </Row>
