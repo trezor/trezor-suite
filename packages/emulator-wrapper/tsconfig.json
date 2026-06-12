@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["src/**/*"],
+    "references": [
+        { "path": "../transport-common" },
+        { "path": "../trezor-user-env-link" }
+    ]
+}

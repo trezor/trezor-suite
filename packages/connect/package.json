@@ -112,6 +112,7 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.28.5",
+        "@trezor/emulator-wrapper": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/jws": "^3.2.11",

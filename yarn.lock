@@ -15929,6 +15929,7 @@ __metadata:
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/emulator-wrapper": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
@@ -16019,6 +16020,17 @@ __metadata:
     tsx: "npm:^4.21.0"
     ws: "npm:^8.20.0"
     zod: "npm:4.3.6"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/emulator-wrapper@workspace:*, @trezor/emulator-wrapper@workspace:packages/emulator-wrapper":
+  version: 0.0.0-use.local
+  resolution: "@trezor/emulator-wrapper@workspace:packages/emulator-wrapper"
+  dependencies:
+    "@trezor/transport-common": "workspace:*"
+    "@trezor/trezor-user-env-link": "workspace:*"
+    tsx: "npm:^4.21.0"
+    usb: "npm:^2.17.0"
   languageName: unknown
   linkType: soft
 

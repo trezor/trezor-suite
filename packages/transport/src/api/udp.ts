@@ -17,6 +17,16 @@ import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 const PING = Buffer.from('PINGPING');
 const PONG = Buffer.from('PONGPONG');
 
+export interface UdpApiTargetOverride {
+    host?: string;
+    mainPort?: number;
+    debugPort?: number;
+}
+
+const DEFAULT_HOST = '127.0.0.1';
+const DEFAULT_MAIN_PORT = 21324;
+const DEFAULT_DEBUG_PORT = 21325;
+
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
 
@@ -28,14 +38,24 @@ export class UdpApi extends AbstractApi {
     });
     private debugLink?: boolean;
     private readBuffer: ReturnType<typeof readMessageBuffer>;
+    private readonly host: string;
+    private readonly mainPort: number;
+    private readonly debugPort: number;
 
     constructor({
         logger,
         debugLink,
-    }: Omit<AbstractApiConstructorParams, 'type'> & { debugLink?: boolean }) {
+        target,
+    }: Omit<AbstractApiConstructorParams, 'type'> & {
+        debugLink?: boolean;
+        target?: UdpApiTargetOverride;
+    }) {
         super({ logger, type: 'udp' });
         this.debugLink = debugLink;
         this.readBuffer = readMessageBuffer();
+        this.host = target?.host ?? DEFAULT_HOST;
+        this.mainPort = target?.mainPort ?? DEFAULT_MAIN_PORT;
+        this.debugPort = target?.debugPort ?? DEFAULT_DEBUG_PORT;
 
         const onMessage = (message: Buffer, info: UDP.RemoteInfo) => {
             if (message.compare(PONG) === 0) {
@@ -157,8 +177,8 @@ export class UdpApi extends AbstractApi {
     public async enumerate(signal?: AbortSignal) {
         // in theory we could support multiple devices, but we don't yet
         const paths = this.debugLink
-            ? [PathInternal('127.0.0.1:21325')]
-            : [PathInternal('127.0.0.1:21324')];
+            ? [PathInternal(`${this.host}:${this.debugPort}`)]
+            : [PathInternal(`${this.host}:${this.mainPort}`)];
 
         try {
             const enumerateResult = await Promise.all(
