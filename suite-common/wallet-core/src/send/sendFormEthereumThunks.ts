@@ -72,7 +72,12 @@ export const calculate = (
         ? convertAmountUnitsToSubunits(token.balance!, token.decimals)
         : undefined;
 
-    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
+    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
+
+    const consumesEntireFee =
+        isSendMax && !token && feeLevel.label !== 'custom' && !!feeLevel.maxFeePerGas;
+
+    if (isSendMax) {
         max = availableTokenBalance || calculateMax(availableBalance, totalGasCostInWei);
 
         if (composeContext) {
@@ -148,7 +153,9 @@ export const calculate = (
         max,
         fee: totalGasCostInWei,
         maxFeePerGas: feeLevel.maxFeePerGas,
-        maxPriorityFeePerGas: feeLevel.maxPriorityFeePerGas,
+        maxPriorityFeePerGas: consumesEntireFee
+            ? feeLevel.maxFeePerGas
+            : feeLevel.maxPriorityFeePerGas,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
         token,
