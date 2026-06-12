@@ -150,6 +150,7 @@ export const useTronStakeActions = ({
                 );
                 break;
             }
+            case 'withdraw':
             case 'complete':
                 break;
             default:
