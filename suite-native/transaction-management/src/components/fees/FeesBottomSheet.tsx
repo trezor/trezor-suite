@@ -20,6 +20,7 @@ import { Form, useFormState } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeTabContent } from './CustomFee/CustomFeeTabContent';
+import { FeeDescriptionTranslation } from './FeeDescriptionTranslation';
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 import { FeeOptionsList } from './FeeOptionList/FeeOptionsList';
 import { TronFeeLimitContent } from './TronFeeLimitContent';
@@ -141,7 +142,7 @@ export const FeesBottomSheet = ({
             title={
                 <FeeLabelTranslation networkType={networkType} supportsAdjustableFees={isTrc20} />
             }
-            subtitle={<Translation id="transactionManagement.fees.description.body" />}
+            subtitle={<FeeDescriptionTranslation networkType={networkType} />}
             isCloseDisplayed
             bottomSheetCustomProps={{
                 enableDynamicSizing: false,

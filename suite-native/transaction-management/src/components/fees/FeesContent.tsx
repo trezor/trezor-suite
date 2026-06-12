@@ -1,9 +1,9 @@
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type FeeLevelLabel, type FormState } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 
 import { CustomFee } from './CustomFee/CustomFee';
+import { FeeDescriptionTranslation } from './FeeDescriptionTranslation';
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 import { FeeOptionsList, type FeeOptionsListProps } from './FeeOptionList/FeeOptionsList';
 import { type CustomFeeParams } from '../../hooks';
@@ -37,7 +37,7 @@ export const FeesContent = ({
                 <FeeLabelTranslation networkType={networkType} />
             </Text>
             <Text>
-                <Translation id="transactionManagement.fees.description.body" />
+                <FeeDescriptionTranslation networkType={networkType} />
             </Text>
         </VStack>
         <VStack spacing="sp24">
