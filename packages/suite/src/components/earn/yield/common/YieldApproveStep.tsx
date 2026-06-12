@@ -20,7 +20,7 @@ const approveStepTranslationMap = {
     },
     withdraw: {
         amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
-        balanceLabelTranslationId: 'TR_EARN_YIELD_SUPPLIED',
+        balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
     },
 } as const;
 

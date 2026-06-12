@@ -12,28 +12,28 @@ import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { useAllowance } from 'src/hooks/wallet/allowance/useAllowance';
 import { AllowanceContext } from 'src/hooks/wallet/allowance/useAllowanceContext';
 
-import { YieldSupplyForm } from './YieldSupplyForm';
-import { useYieldSupply } from './useYieldSupply';
-import { YieldSupplyContext } from './useYieldSupplyContext';
+import { YieldDepositForm } from './YieldDepositForm';
+import { useYieldDeposit } from './useYieldDeposit';
+import { YieldDepositContext } from './useYieldDepositContext';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 
-type YieldSupplyProps = {
+type YieldDepositProps = {
     account: Account;
     routeParams: EarnParams;
     vault: YieldDto;
 };
 
-export const YieldSupply = ({ account, routeParams, vault }: YieldSupplyProps) => {
+export const YieldDeposit = ({ account, routeParams, vault }: YieldDepositProps) => {
     const allowanceContextValue = useAllowance({ account });
-    const yieldSupplyContextValues = useYieldSupply({ account, routeParams, vault });
-    const vaultContractAddress = yieldSupplyContextValues
-        ? getYieldVaultContractAddress(yieldSupplyContextValues.vault)
+    const yieldDepositContextValues = useYieldDeposit({ account, routeParams, vault });
+    const vaultContractAddress = yieldDepositContextValues
+        ? getYieldVaultContractAddress(yieldDepositContextValues.vault)
         : undefined;
     const { isDisabled, content, variant } = useMessageSystemYield('deposit', {
         vaultContractAddress,
     });
 
-    if (!yieldSupplyContextValues) {
+    if (!yieldDepositContextValues) {
         return null;
     }
 
@@ -44,11 +44,11 @@ export const YieldSupply = ({ account, routeParams, vault }: YieldSupplyProps) =
                 {isDisabled ? (
                     <YieldDisabledBanner type="deposit" content={content} variant={variant} />
                 ) : (
-                    <YieldSupplyContext.Provider value={yieldSupplyContextValues}>
-                        <FormProvider {...yieldSupplyContextValues.methods}>
-                            <YieldSupplyForm />
+                    <YieldDepositContext.Provider value={yieldDepositContextValues}>
+                        <FormProvider {...yieldDepositContextValues.methods}>
+                            <YieldDepositForm />
                         </FormProvider>
-                    </YieldSupplyContext.Provider>
+                    </YieldDepositContext.Provider>
                 )}
             </Column>
         </AllowanceContext.Provider>

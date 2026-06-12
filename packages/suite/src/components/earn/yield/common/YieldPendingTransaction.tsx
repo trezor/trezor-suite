@@ -17,7 +17,7 @@ const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']):
         case 'revoke-only':
             return 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL';
         case 'deposit':
-            return 'TR_EARN_YIELD_PENDING_SUPPLY';
+            return 'TR_EARN_YIELD_PENDING_DEPOSIT';
         case 'withdraw':
             return 'TR_EARN_YIELD_PENDING_WITHDRAW';
         case 'claim':

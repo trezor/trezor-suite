@@ -3,24 +3,24 @@ import { type Account } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 type YieldRowWithAvailableBalance = {
-    additionalSupplyAmount: string;
+    additionalDepositAmount: string;
     matchedInputToken: unknown;
     account?: {
         formattedBalance: string;
     };
 };
 
-type YieldRowWithSuppliedBalance = {
-    suppliedAmount: string;
+type YieldRowWithDepositedBalance = {
+    depositedAmount: string;
 };
 
 const getYieldAvailableBalanceForSorting = (row: YieldRowWithAvailableBalance) =>
-    row.matchedInputToken ? row.additionalSupplyAmount : (row.account?.formattedBalance ?? '0');
+    row.matchedInputToken ? row.additionalDepositAmount : (row.account?.formattedBalance ?? '0');
 
-export const compareYieldRowsBySuppliedAmountDesc = (
-    a: YieldRowWithSuppliedBalance,
-    b: YieldRowWithSuppliedBalance,
-) => new BigNumber(b.suppliedAmount).comparedTo(a.suppliedAmount) ?? 0;
+export const compareYieldRowsByDepositedAmountDesc = (
+    a: YieldRowWithDepositedBalance,
+    b: YieldRowWithDepositedBalance,
+) => new BigNumber(b.depositedAmount).comparedTo(a.depositedAmount) ?? 0;
 
 export const compareYieldRowsByAvailableBalanceDesc = (
     a: YieldRowWithAvailableBalance,
@@ -32,12 +32,12 @@ export const compareYieldRowsByAvailableBalanceDesc = (
 
 type YieldRowWithAccount = {
     account?: Pick<Account, 'symbol' | 'accountType' | 'index'>;
-    suppliedSymbol?: string;
+    depositedSymbol?: string;
 };
 
 /**
  * Groups rows by network only (in networkSymbolCollection order). Used for the deposited and
- * deposit buckets so a stable secondary sort by balance/supplied amount actually controls
+ * deposit buckets so a stable secondary sort by balance/deposited amount actually controls
  * the within-network order.
  */
 export const compareYieldRowsByNetworkOnly = (a: YieldRowWithAccount, b: YieldRowWithAccount) => {
@@ -64,8 +64,8 @@ export const compareYieldRowsByTokenNetworkOrder = (
     const bSymbolIndex = networkSymbolCollection.indexOf(b.account.symbol);
     if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
 
-    if (a.suppliedSymbol && b.suppliedSymbol && a.suppliedSymbol !== b.suppliedSymbol) {
-        return a.suppliedSymbol.localeCompare(b.suppliedSymbol);
+    if (a.depositedSymbol && b.depositedSymbol && a.depositedSymbol !== b.depositedSymbol) {
+        return a.depositedSymbol.localeCompare(b.depositedSymbol);
     }
 
     const network = networks[a.account.symbol];

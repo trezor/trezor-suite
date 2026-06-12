@@ -92,34 +92,34 @@ export const EarnYieldAccountOpportunity = ({
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
     const withdrawMessageSystem = useMessageSystemYield('withdraw', { vaultContractAddress });
 
-    const hasSuppliedBalance = opportunity.hasVaultPosition;
-    const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
-    const hasAdditionalDepositAmount = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
+    const hasDepositedBalance = opportunity.hasVaultPosition;
+    const hasDisplayableDepositedAmount = new BigNumber(opportunity.depositedAmount).gt(0);
+    const hasAdditionalDepositAmount = new BigNumber(opportunity.additionalDepositAmount).gt(0);
     const { hasRewardsData } = opportunity;
     const hasApy = opportunity.apyPercentage !== null && opportunity.apyPercentage > 0;
-    const yearlyRewards = hasDisplayableSuppliedAmount
-        ? new BigNumber(opportunity.suppliedAmount)
+    const yearlyRewards = hasDisplayableDepositedAmount
+        ? new BigNumber(opportunity.depositedAmount)
               .times(opportunity.vault.rewardRate.total)
               .toString()
         : '0';
     const potentialRewards = hasRewardsData
-        ? new BigNumber(opportunity.suppliedAmount)
-              .plus(opportunity.additionalSupplyAmount)
+        ? new BigNumber(opportunity.depositedAmount)
+              .plus(opportunity.additionalDepositAmount)
               .times(opportunity.vault.rewardRate.total)
               .toString()
         : '0';
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
-    const hasMaximumDeposited = hasSuppliedBalance && !hasAdditionalDepositAmount;
+    const hasMaximumDeposited = hasDepositedBalance && !hasAdditionalDepositAmount;
     const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards && !hasMaximumDeposited;
-    const formattedSuppliedAmount = CryptoAmountFormatter.format(opportunity.suppliedAmount, {
-        symbol: opportunity.suppliedSymbol,
+    const formattedDepositedAmount = CryptoAmountFormatter.format(opportunity.depositedAmount, {
+        symbol: opportunity.depositedSymbol,
         withSymbol: false,
         isBalance: true,
     });
-    const formattedAdditionalSupplyAmount = CryptoAmountFormatter.format(
-        opportunity.additionalSupplyAmount,
+    const formattedAdditionalDepositAmount = CryptoAmountFormatter.format(
+        opportunity.additionalDepositAmount,
         {
-            symbol: opportunity.suppliedSymbol,
+            symbol: opportunity.depositedSymbol,
             withSymbol: false,
             isBalance: true,
         },
@@ -169,7 +169,7 @@ export const EarnYieldAccountOpportunity = ({
         );
     };
 
-    const openYieldSupplyFlow = () => {
+    const openYieldDepositFlow = () => {
         if (!opportunity.account) {
             return;
         }
@@ -215,7 +215,7 @@ export const EarnYieldAccountOpportunity = ({
         );
     };
 
-    const navigateToYieldSupply = () => {
+    const navigateToYieldDeposit = () => {
         if (!opportunity.account) {
             return;
         }
@@ -303,7 +303,7 @@ export const EarnYieldAccountOpportunity = ({
 
     const isDepositDisabled = depositMessageSystem.isDisabled;
     const isWithdrawDisabled = withdrawMessageSystem.isDisabled;
-    const isSupplyNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
+    const isDepositNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
     const isDepositMoreDisabled =
         !opportunity.vault.status.enter || !hasAdditionalDepositAmount || isDepositDisabled;
 
@@ -316,36 +316,36 @@ export const EarnYieldAccountOpportunity = ({
     );
 
     const yearlyRewardsProps = {
-        symbol: opportunity.suppliedSymbol,
+        symbol: opportunity.depositedSymbol,
         rewards: yearlyRewards,
         apy: opportunity.apyPercentage,
-        hasDisplayableSuppliedAmount,
-        formattedSuppliedAmount,
-        displaySymbol: opportunity.suppliedSymbol,
+        hasDisplayableDepositedAmount,
+        formattedDepositedAmount,
+        displaySymbol: opportunity.depositedSymbol,
     } as const;
 
     const potentialRewardsProps = {
         hasMaximumDeposited,
         hasPotentialRewards,
-        symbol: opportunity.suppliedSymbol,
+        symbol: opportunity.depositedSymbol,
         rewards: potentialRewards,
         apy: opportunity.apyPercentage,
-        formattedAdditionalSupplyAmount,
-        displaySymbol: opportunity.suppliedSymbol,
+        formattedAdditionalDepositAmount,
+        displaySymbol: opportunity.depositedSymbol,
     } as const;
 
     const actionButtonsProps = {
-        hasSuppliedBalance,
+        hasDepositedBalance,
         hasAdditionalDepositAmount,
         isDepositMoreDisabled,
         isDepositDisabled,
-        isSupplyNowDisabled,
+        isDepositNowDisabled,
         isWithdrawDisabled,
         depositMessageContent: depositMessageSystem.content,
         withdrawMessageContent: withdrawMessageSystem.content,
-        onSupplyMore: navigateToYieldSupply,
+        onDepositMore: navigateToYieldDeposit,
         onWithdraw: navigateToYieldWithdraw,
-        onSupplyNow: openYieldSupplyFlow,
+        onDepositNow: openYieldDepositFlow,
         onBuy: navigateToTradingBuy,
     } as const;
 
@@ -357,9 +357,9 @@ export const EarnYieldAccountOpportunity = ({
             showAssetNetworkIcon
             subtitle={opportunity.vault.outputToken?.name ?? ''}
             tokenBalance={{
-                value: opportunity.additionalSupplyAmount,
-                symbol: opportunity.suppliedSymbol,
-                contractAddress: opportunity.suppliedContractAddress,
+                value: opportunity.additionalDepositAmount,
+                symbol: opportunity.depositedSymbol,
+                contractAddress: opportunity.depositedContractAddress,
             }}
         />
     );

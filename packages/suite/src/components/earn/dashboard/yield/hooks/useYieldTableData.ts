@@ -15,8 +15,8 @@ import { useSelector } from 'src/hooks/suite';
 
 import {
     compareYieldRowsByAvailableBalanceDesc,
+    compareYieldRowsByDepositedAmountDesc,
     compareYieldRowsByNetworkOnly,
-    compareYieldRowsBySuppliedAmountDesc,
     compareYieldRowsByTokenNetworkOrder,
 } from '../../utils/earnYieldUtils';
 import {
@@ -77,25 +77,25 @@ const getYieldOpportunityData = ({
         token: vault.outputToken,
     });
     const hasVaultPosition = new BigNumber(matchedOutputToken?.balance ?? '0').gt(0);
-    const suppliedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+    const depositedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
         networkSymbol,
         token: vault.token,
         outputToken: vault.outputToken,
         outputTokenBalance: matchedOutputToken?.balance,
         pricePerShareState: vault.state?.pricePerShareState,
     });
-    const additionalSupplyAmount = matchedInputToken?.balance ?? '0';
+    const additionalDepositAmount = matchedInputToken?.balance ?? '0';
     const hasRewardsData =
-        new BigNumber(suppliedAmount).gt(0) || new BigNumber(additionalSupplyAmount).gt(0);
+        new BigNumber(depositedAmount).gt(0) || new BigNumber(additionalDepositAmount).gt(0);
 
     return {
         matchedInputToken,
         hasVaultPosition,
         hasRewardsData,
-        suppliedAmount,
-        additionalSupplyAmount,
-        suppliedSymbol: matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol),
-        suppliedContractAddress: matchedInputToken?.contract ?? vault.token.address ?? null,
+        depositedAmount,
+        additionalDepositAmount,
+        depositedSymbol: matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol),
+        depositedContractAddress: matchedInputToken?.contract ?? vault.token.address ?? null,
     };
 };
 
@@ -142,7 +142,7 @@ export const useYieldTableData = ({
 
         allOpportunities.forEach(opportunity => {
             const hasMatchedInputToken = opportunity.matchedInputToken !== undefined;
-            const hasDepositableBalance = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
+            const hasDepositableBalance = new BigNumber(opportunity.additionalDepositAmount).gt(0);
 
             if (opportunity.hasVaultPosition) {
                 activeOpportunities.push(opportunity);
@@ -161,7 +161,7 @@ export const useYieldTableData = ({
 
         return [
             ...activeOpportunities
-                .toSorted(compareYieldRowsBySuppliedAmountDesc)
+                .toSorted(compareYieldRowsByDepositedAmountDesc)
                 .toSorted(compareYieldRowsByNetworkOnly),
             ...depositableOpportunities
                 .toSorted(compareYieldRowsByAvailableBalanceDesc)

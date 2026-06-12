@@ -26,7 +26,7 @@ export const UpdateEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: UpdateEarnProviderConsentModalProps) => {
-    const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
+    const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.UpdateProvider,
         onCancel,
         includeVotingDelegation: true,
@@ -56,7 +56,7 @@ export const UpdateEarnProviderConsentModal = ({
                     values={{ providerName }}
                 />
             }
-            onConfirm={proceedToSupply}
+            onConfirm={proceedToEarnFlow}
             onCancel={onCancelClick}
             networkType={account.networkType}
         >

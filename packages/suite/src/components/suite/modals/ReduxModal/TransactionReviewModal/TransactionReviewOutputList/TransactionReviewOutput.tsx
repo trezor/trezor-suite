@@ -98,9 +98,9 @@ const yieldStrings: Record<
     Record<'value' | 'label' | 'amount', TranslationKey>
 > = {
     deposit: {
-        value: 'TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION',
-        label: 'TR_EARN_YIELD_REVIEW_SUPPLY_TITLE',
-        amount: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
+        value: 'TR_EARN_YIELD_REVIEW_DEPOSIT_DESCRIPTION',
+        label: 'TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE',
+        amount: 'TR_EARN_YIELD_REVIEW_DEPOSIT_AMOUNT',
     },
     withdraw: {
         value: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',

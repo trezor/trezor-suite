@@ -6,15 +6,15 @@ import { Banner, BulletList, Button, Column, Row, Text } from '@trezor/component
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
-import { useYieldSupplyContext } from './useYieldSupplyContext';
+import { useYieldDepositContext } from './useYieldDepositContext';
 import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldApproveModal } from '../common/YieldApproveModal';
 import { YieldApproveStep } from '../common/YieldApproveStep';
-import { YieldFlowCompleteSupply } from '../common/YieldFlowCompleteSupply';
+import { YieldFlowCompleteDeposit } from '../common/YieldFlowCompleteDeposit';
 import { getApyBreakdown } from '../yieldFlowUtils';
 
-export const YieldSupplyForm = () => {
+export const YieldDepositForm = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
@@ -49,11 +49,11 @@ export const YieldSupplyForm = () => {
         openPendingTransaction,
         retryInitAllowance,
         flow,
-    } = useYieldSupplyContext();
+    } = useYieldDepositContext();
 
     const { approve: approveStepState, action: actionStepState } = flow.stepStates;
 
-    const { approvalPendingTransaction, actionPendingTransaction: supplyPendingTransaction } =
+    const { approvalPendingTransaction, actionPendingTransaction: depositPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
 
     const handleOnApprovalSubmit = () => {
@@ -98,7 +98,7 @@ export const YieldSupplyForm = () => {
         enterModifyApproval();
     };
 
-    const handleOnSupply = () => {
+    const handleOnDeposit = () => {
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
         analytics.report({
             type: events.yieldDepositEvent.name,
@@ -145,7 +145,7 @@ export const YieldSupplyForm = () => {
             <Column width="100%" alignItems="center">
                 <Column gap={24} width="100%" maxWidth={500}>
                     {flow.currentStep === 'complete' ? (
-                        <YieldFlowCompleteSupply
+                        <YieldFlowCompleteDeposit
                             apy={apy}
                             vault={vault}
                             networkSymbol={account.symbol}
@@ -161,7 +161,7 @@ export const YieldSupplyForm = () => {
                     ) : (
                         <>
                             <Text typographyStyle="headline-md">
-                                <Translation id="TR_EARN_YIELD_SUPPLY" />
+                                <Translation id="TR_EARN_YIELD_DEPOSIT" />
                             </Text>
 
                             {errorMessage && (
@@ -295,7 +295,7 @@ export const YieldSupplyForm = () => {
                                                 width="100%"
                                                 gap={16}
                                             >
-                                                <Translation id="TR_EARN_YIELD_SUPPLY" />
+                                                <Translation id="TR_EARN_YIELD_DEPOSIT" />
                                             </Row>
                                         </Column>
                                     }
@@ -327,12 +327,12 @@ export const YieldSupplyForm = () => {
                                                 isAmountInvalidDecimals ||
                                                 isApprovalInsufficient ||
                                                 isSubmittingAction ||
-                                                !!supplyPendingTransaction
+                                                !!depositPendingTransaction
                                             }
                                             isPending={isSubmittingAction}
-                                            pendingTransaction={supplyPendingTransaction}
+                                            pendingTransaction={depositPendingTransaction}
                                             onMaxClick={handleMaxClick}
-                                            onSubmit={handleOnSupply}
+                                            onSubmit={handleOnDeposit}
                                             onPendingTxClick={openPendingTransaction}
                                         />
                                     )}

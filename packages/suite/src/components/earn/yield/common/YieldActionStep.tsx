@@ -14,13 +14,13 @@ import { YieldPendingTransaction } from './YieldPendingTransaction';
 const actionStepTranslationMap = {
     deposit: {
         amountLabelTranslationId: 'AMOUNT',
-        submitTranslationId: 'TR_EARN_YIELD_SUPPLY',
+        submitTranslationId: 'TR_EARN_YIELD_DEPOSIT',
         balanceLabelTranslationId: 'TR_BALANCE',
     },
     withdraw: {
         amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
         submitTranslationId: 'TR_EARN_YIELD_WITHDRAW',
-        balanceLabelTranslationId: 'TR_EARN_YIELD_SUPPLIED',
+        balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
     },
 } as const;
 

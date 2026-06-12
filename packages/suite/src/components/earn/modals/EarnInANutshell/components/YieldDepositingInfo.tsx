@@ -8,35 +8,38 @@ import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
-type YieldSupplyingInfoProps = {
+type YieldDepositingInfoProps = {
     apy: number | null;
     vault: YieldDto | undefined;
     networkSymbol: NetworkSymbol;
-    supplySymbol: string;
+    depositSymbol: string;
     vaultSymbol: string | undefined;
 };
 
-export const YieldSupplyingInfo = ({
+export const YieldDepositingInfo = ({
     apy,
     vault,
     networkSymbol,
-    supplySymbol,
+    depositSymbol,
     vaultSymbol,
-}: YieldSupplyingInfoProps) => (
+}: YieldDepositingInfoProps) => (
     <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
             heading={
                 <Translation
                     id="TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION"
-                    values={{ supplySymbol }}
+                    values={{ supplySymbol: depositSymbol }}
                 />
             }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
         />
         <EarnInfoRow
-            heading={<Translation id="TR_EARN_SIGN_SUPPLYING_TRANSACTION" />}
+            heading={<Translation id="TR_EARN_SIGN_DEPOSIT_TRANSACTION" />}
             subheading={
-                <Translation id="TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB" values={{ supplySymbol }} />
+                <Translation
+                    id="TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB"
+                    values={{ supplySymbol: depositSymbol }}
+                />
             }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
         />

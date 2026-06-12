@@ -555,14 +555,14 @@ export const NotificationRenderer = ({
                 />
             );
 
-        case 'tx-yield-supply':
+        case 'tx-yield-deposit':
             return (
                 <TransactionRenderer
                     render={render}
                     notification={notification}
                     icon="arrowUp"
                     variant="success"
-                    message="TOAST_TX_YIELD_SUPPLY"
+                    message="TOAST_TX_YIELD_DEPOSIT"
                     messageValues={{
                         account: notification.descriptor,
                     }}

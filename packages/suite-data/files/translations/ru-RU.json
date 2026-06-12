@@ -207,7 +207,7 @@
   "TOAST_TX_STAKED": "{amount} состаковано с {account}",
   "TOAST_TX_UNSTAKED": "{amount} отстаковано",
   "TOAST_TX_YIELD_CLAIM": "Получение наград отправлено в сеть с {account}",
-  "TOAST_TX_YIELD_SUPPLY": "Депозит отправлен в сеть с {account}",
+  "TOAST_TX_YIELD_DEPOSIT": "Депозит отправлен в сеть с {account}",
   "TOAST_TX_YIELD_WITHDRAW": "Вывод отправлен в сеть с {account}",
   "TOAST_VERIFY_ADDRESS_ERROR": "Ошибка проверки адреса: {error}",
   "TOAST_VERIFY_MESSAGE_ERROR": "Ошибка проверки сообщения: {error}",

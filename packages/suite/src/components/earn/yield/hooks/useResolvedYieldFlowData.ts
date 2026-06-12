@@ -49,8 +49,8 @@ type UseResolvedYieldFlowDataResult = {
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
-    suppliedAmount: string;
-    suppliedSharesAmount: string;
+    depositedAmount: string;
+    depositedSharesAmount: string;
     flowKey: string;
 };
 
@@ -126,7 +126,7 @@ export const useResolvedYieldFlowData = ({
         };
     }, [account, token, vault]);
 
-    const suppliedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+    const depositedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
         networkSymbol: account.symbol,
         token: vault.token,
         outputToken: vault.outputToken,
@@ -134,7 +134,7 @@ export const useResolvedYieldFlowData = ({
         pricePerShareState: vault.state?.pricePerShareState,
     });
 
-    const suppliedSharesAmount = matchedOutputToken?.balance ?? '0';
+    const depositedSharesAmount = matchedOutputToken?.balance ?? '0';
 
     const flowKey = getStablecoinYieldFlowKey({
         accountKey: account.key,
@@ -149,8 +149,8 @@ export const useResolvedYieldFlowData = ({
         token,
         receiptToken,
         apy,
-        suppliedAmount,
-        suppliedSharesAmount,
+        depositedAmount,
+        depositedSharesAmount,
         flowKey,
     };
 };

@@ -113,7 +113,7 @@ const TokenRowBasicActions = ({
                 getContractAddressForNetworkSymbol(account.symbol, token.contract),
     );
 
-    const isSupplyButtonDisabled = !availableVault?.status.enter;
+    const isDepositButtonDisabled = !availableVault?.status.enter;
     const isWithdrawButtonDisabled = !availableVault?.status.exit;
 
     if (!unusedAddress || !device) return null;
@@ -128,7 +128,7 @@ const TokenRowBasicActions = ({
         dispatch(goto(payload));
     };
 
-    const navigateToYieldSupply = () => {
+    const navigateToYieldDeposit = () => {
         if (!availableVault) return;
 
         const yieldId = availableVault.id;
@@ -402,10 +402,10 @@ const TokenRowBasicActions = ({
                                 : true),
                     },
                     {
-                        label: <Translation id="TR_EARN_YIELD_SUPPLY" />,
+                        label: <Translation id="TR_EARN_YIELD_DEPOSIT" />,
                         icon: 'plus',
                         onClick: () => {},
-                        isDisabled: type === 'defi' ? isSupplyButtonDisabled : true,
+                        isDisabled: type === 'defi' ? isDepositButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
                     {
@@ -500,13 +500,13 @@ const TokenRowBasicActions = ({
                             <ButtonGroup intent="neutral" priority="secondary">
                                 <IconButton
                                     icon="plus"
-                                    isDisabled={isSupplyButtonDisabled}
-                                    onClick={navigateToYieldSupply}
+                                    isDisabled={isDepositButtonDisabled}
+                                    onClick={navigateToYieldDeposit}
                                     tooltip={{
-                                        content: isSupplyButtonDisabled ? (
+                                        content: isDepositButtonDisabled ? (
                                             <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
                                         ) : (
-                                            <Translation id="TR_EARN_YIELD_SUPPLY" />
+                                            <Translation id="TR_EARN_YIELD_DEPOSIT" />
                                         ),
                                     }}
                                 />

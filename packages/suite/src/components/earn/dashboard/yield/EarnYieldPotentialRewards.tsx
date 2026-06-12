@@ -11,7 +11,7 @@ type EarnYieldPotentialRewardsProps = {
     symbol: TokenSymbol;
     rewards: string;
     apy: number | null;
-    formattedAdditionalSupplyAmount: string;
+    formattedAdditionalDepositAmount: string;
     displaySymbol: string;
 };
 
@@ -21,7 +21,7 @@ export const EarnYieldPotentialRewards = ({
     symbol,
     rewards,
     apy,
-    formattedAdditionalSupplyAmount,
+    formattedAdditionalDepositAmount,
     displaySymbol,
 }: EarnYieldPotentialRewardsProps) => {
     if (hasMaximumDeposited) {
@@ -44,7 +44,7 @@ export const EarnYieldPotentialRewards = ({
                 <HiddenPlaceholder>
                     <Translation
                         id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                        values={{ amount: formattedAdditionalSupplyAmount, displaySymbol }}
+                        values={{ amount: formattedAdditionalDepositAmount, displaySymbol }}
                     />
                 </HiddenPlaceholder>
             </Paragraph>

@@ -66,8 +66,8 @@ export type UseYieldFlowResult = {
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
-    suppliedAmount: string;
-    suppliedSharesAmount: string;
+    depositedAmount: string;
+    depositedSharesAmount: string;
     flowKey: string;
     maxAmount: string;
     withdrawInputUnit: YieldWithdrawInputUnit;
@@ -105,7 +105,7 @@ export type UseYieldFlowResult = {
     flow: UseYieldFlowStepsResult;
 };
 
-/** Context value type shared by both supply and withdraw — non-null token/receiptToken/vault. */
+/** Context value type shared by both deposit and withdraw — non-null token/receiptToken/vault. */
 export type YieldFlowContextValues = Omit<
     UseYieldFlowResult,
     'token' | 'receiptToken' | 'vault'
@@ -134,7 +134,7 @@ export const useYieldFlow = ({
     const methodsRef = useCurrentRef(methods);
     const initAllowancePromiseRef = useRef<{ abort: () => void } | null>(null);
 
-    const { token, receiptToken, apy, suppliedAmount, suppliedSharesAmount, flowKey } =
+    const { token, receiptToken, apy, depositedAmount, depositedSharesAmount, flowKey } =
         useResolvedYieldFlowData({
             account,
             routeParams,
@@ -159,10 +159,10 @@ export const useYieldFlow = ({
             return token?.balance ?? '';
         }
         if (isSharesInput) {
-            return suppliedSharesAmount;
+            return depositedSharesAmount;
         }
 
-        return suppliedAmount;
+        return depositedAmount;
     };
     const maxAmount = getMaxAmount();
 
@@ -567,8 +567,8 @@ export const useYieldFlow = ({
         token,
         receiptToken,
         apy,
-        suppliedAmount,
-        suppliedSharesAmount,
+        depositedAmount,
+        depositedSharesAmount,
         flowKey,
         maxAmount,
         withdrawInputUnit,

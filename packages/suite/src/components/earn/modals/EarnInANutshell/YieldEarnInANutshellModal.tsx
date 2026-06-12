@@ -19,8 +19,8 @@ import {
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
 import { YieldClaimingInfo } from './components/YieldClaimingInfo';
+import { YieldDepositingInfo } from './components/YieldDepositingInfo';
 import { YieldEarnInANutshellHighlights } from './components/YieldEarnInANutshellHighlights';
-import { YieldSupplyingInfo } from './components/YieldSupplyingInfo';
 import { YieldWithdrawingInfo } from './components/YieldWithdrawingInfo';
 import { useEarnInANutshell } from './hooks/useEarnInANutshell';
 
@@ -53,7 +53,7 @@ export const YieldEarnInANutshellModal = ({
 
     if (!isStakingNetworkType(account.networkType)) return null;
 
-    const supplySymbol = vault?.token.symbol ?? '';
+    const depositSymbol = vault?.token.symbol ?? '';
     const vaultSymbol = vault?.outputToken?.symbol;
     const rewardsSymbols = vault?.rewardRate.components
         .filter(c => c.yieldSource === RewardDtoYieldSource.protocol_incentive)
@@ -64,14 +64,14 @@ export const YieldEarnInANutshellModal = ({
     const processes: EarnInANutshellProcess[] = [
         {
             processType: 'deposit',
-            heading: <Translation id="TR_EARN_SUPPLYING_PROCESS" />,
+            heading: <Translation id="TR_EARN_DEPOSITING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
-                <YieldSupplyingInfo
+                <YieldDepositingInfo
                     apy={yieldApy}
                     vault={vault}
                     networkSymbol={account.symbol}
-                    supplySymbol={supplySymbol}
+                    depositSymbol={depositSymbol}
                     vaultSymbol={vaultSymbol}
                 />
             ),
@@ -80,7 +80,7 @@ export const YieldEarnInANutshellModal = ({
             processType: 'withdraw',
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
-            content: <YieldWithdrawingInfo supplySymbol={supplySymbol} />,
+            content: <YieldWithdrawingInfo depositSymbol={depositSymbol} />,
         },
         ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
             ? [
@@ -140,13 +140,13 @@ export const YieldEarnInANutshellModal = ({
 
     return (
         <EarnInANutshellModalLayout
-            heading={<Translation id="TR_EARN_SUPPLYING_IN_A_NUTSHELL" />}
+            heading={<Translation id="TR_EARN_DEPOSITING_IN_A_NUTSHELL" />}
             onCancel={handleOnCancel}
             actionType={actionType}
             onAction={handleOnAction}
         >
             <YieldEarnInANutshellHighlights
-                supplySymbol={supplySymbol}
+                depositSymbol={depositSymbol}
                 vaultSymbol={vaultSymbol}
                 rewardsSymbols={rewardsSymbols}
             />
