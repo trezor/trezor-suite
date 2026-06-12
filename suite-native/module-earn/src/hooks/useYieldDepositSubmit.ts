@@ -1,16 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
-import { isFulfilled } from '@reduxjs/toolkit';
-
-import { prepareYieldDepositThunk } from '@suite-common/wallet-core';
-
-import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useShowYieldAlert } from './useShowYieldAlert';
 import { type PreparedYieldDepositAction } from './useYieldDepositFees';
-import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
-type UseYieldDepositSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
+type UseYieldDepositSubmitParams = {
     amount: string | undefined;
     onActionReady: (preparedAction: PreparedYieldDepositAction) => void;
     preparedAction: PreparedYieldDepositAction | null;
@@ -18,34 +11,13 @@ type UseYieldDepositSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flo
 
 export const useYieldDepositSubmit = ({
     amount,
-    flowData,
-    flowKey,
     onActionReady,
     preparedAction,
 }: UseYieldDepositSubmitParams) => {
-    const dispatch = useDispatch();
     const showYieldAlert = useShowYieldAlert();
 
-    const handleSubmitDeposit = useCallback(async () => {
-        if (!amount || !flowData || !flowKey) {
-            return;
-        }
-
-        if (preparedAction?.amount === amount) {
-            onActionReady(preparedAction);
-
-            return;
-        }
-
-        const response = await dispatch(
-            prepareYieldDepositThunk({
-                amount,
-                flowData,
-                flowKey,
-            }),
-        );
-
-        if (!isFulfilled(response) || response.payload.type === 'error') {
+    const handleSubmitDeposit = useCallback(() => {
+        if (!preparedAction || preparedAction.amount !== amount) {
             showYieldAlert({
                 title: 'earn.yieldDepositFlowScreen.alerts.depositUnavailable.title',
                 description: 'earn.yieldDepositFlowScreen.alerts.depositUnavailable.description',
@@ -54,29 +26,8 @@ export const useYieldDepositSubmit = ({
             return;
         }
 
-        if (response.payload.type === 'action-ready') {
-            const feePreview = buildYieldDepositFeePreview(response.payload.unsignedTransaction);
-
-            if (!feePreview) {
-                showYieldAlert({
-                    title: 'earn.yieldDepositFlowScreen.alerts.depositUnavailable.title',
-                    description:
-                        'earn.yieldDepositFlowScreen.alerts.depositUnavailable.description',
-                });
-
-                return;
-            }
-
-            onActionReady({
-                amount,
-                feePreview,
-                receiptAmount: response.payload.receiptAmount,
-                unsignedTransaction: response.payload.unsignedTransaction,
-            });
-
-            return;
-        }
-    }, [amount, dispatch, flowData, flowKey, onActionReady, preparedAction, showYieldAlert]);
+        onActionReady(preparedAction);
+    }, [amount, onActionReady, preparedAction, showYieldAlert]);
 
     return { handleSubmitDeposit };
 };
