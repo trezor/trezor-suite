@@ -69,7 +69,7 @@ export const CONTEXT_PATTERNS = {
     },
     getEarnYield: {
         pattern: 'earn.yield.{type}',
-        regex: /^earn\.yield\.(supply|withdraw|claim)$/,
+        regex: /^earn\.yield\.(deposit|withdraw|claim)$/,
     },
     getSettings: {
         pattern: 'settings.{category}',

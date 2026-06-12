@@ -30,7 +30,7 @@ class ChainAddressKey {
 }
 
 /**
- * Account with nonce 1 sent only 1 tx (when user supplies, first tx is approval)
+ * Account with nonce 1 sent only 1 tx (when user deposits, first tx is approval)
  */
 function isEmptyEvmAccount(account: AccountWithNetworkType<'ethereum'>) {
     return Number(account?.misc?.nonce ?? 0) <= 1;
