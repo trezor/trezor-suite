@@ -53,6 +53,9 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
             totalFiatBalance,
         });
 
+    const isTokenPriceUnavailable = !isLoading && (!!error || graphPoints.length <= 1);
+    const isGraphHidden = !!tokenContract && isTokenPriceUnavailable;
+
     return (
         <VStack spacing="sp24">
             <AccountDetailHeader
@@ -61,7 +64,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
                 totalFiatBalance={totalFiatBalance}
             />
 
-            {isHistoryEnabledAccount && (
+            {isHistoryEnabledAccount && !isGraphHidden && (
                 <>
                     <Graph<FiatGraphPointWithCryptoBalance>
                         onPointSelected={setSelectedPoint}
