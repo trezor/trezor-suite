@@ -3,6 +3,7 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./lib",
+        "rootDir": "./src",
         "lib": ["DOM", "ES2023"],
         "types": []
     },

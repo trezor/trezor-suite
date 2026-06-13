@@ -5,10 +5,9 @@
         "lib": ["dom", "dom.iterable", "esnext"],
         "emitDeclarationOnly": false,
         "noEmit": true,
-        "baseUrl": ".",
         "paths": {
             "@suite-common/icons/src/icons": [
-                "src/icons/minimalIcons.ts"
+                "./src/icons/minimalIcons.ts"
             ]
         },
         "plugins": [

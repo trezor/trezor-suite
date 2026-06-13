@@ -25,7 +25,7 @@ module.exports = {
         '^@evolu/react-native$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/react-native/expo-sqlite$':
             '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
-        '^(@formatjs/[^/]+)/(polyfill|locale-data/.+)$': '<rootDir>/../../node_modules/$1/$2.js',
+        '^(@formatjs/[^/]+)/(polyfill|locale-data/.+)$': '<rootDir>/../../node_modules/$1/$2',
         '^@rozenite/redux-devtools-plugin$':
             '<rootDir>/../../suite-native/test-utils/src/mocks/rozeniteReduxDevtoolsPluginMock.ts',
     },

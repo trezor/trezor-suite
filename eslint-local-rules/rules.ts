@@ -154,16 +154,22 @@ export const rules = {
 
             return {
                 ImportDeclaration(node) {
-                    if (packageNames.includes(node.source.value)) {
+                    const sourceValue = node.source.value;
+
+                    if (typeof sourceValue === 'string' && packageNames.includes(sourceValue)) {
                         node.specifiers.forEach(specifier => {
                             if (
                                 specifier.type === 'ImportSpecifier' ||
                                 specifier.type === 'ImportDefaultSpecifier'
                             ) {
-                                if (!importedComponents.has(node.source.value)) {
-                                    importedComponents.set(node.source.value, new Set<string>());
+                                let components = importedComponents.get(sourceValue);
+
+                                if (components === undefined) {
+                                    components = new Set<string>();
+                                    importedComponents.set(sourceValue, components);
                                 }
-                                importedComponents.get(node.source.value).add(specifier.local.name);
+
+                                components.add(specifier.local.name);
                             }
                         });
                     }
@@ -355,6 +361,10 @@ export const rules = {
                 const parts = value.split('/');
                 const domain = parts[0];
                 const eventSegments = parts.slice(1);
+                if (domain === undefined) {
+                    return { messageId: 'invalidFormat' };
+                }
+
                 if (!ALLOWED_DOMAINS.has(domain)) {
                     return { messageId: 'invalidDomain', data: { domain } };
                 }

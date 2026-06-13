@@ -3,6 +3,7 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./lib",
+        "rootDir": "./src",
         "target": "es2022",
         "lib": ["es2022", "esnext"]
     },
