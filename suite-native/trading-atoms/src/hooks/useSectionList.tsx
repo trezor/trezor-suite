@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, useMemo } from 'react';
+import { type ReactElement, type ReactNode, useCallback, useMemo } from 'react';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedBox, type BottomSheetFlashListControls, Text } from '@suite-native/atoms';
@@ -275,13 +275,13 @@ export const useSectionList = <T, U = undefined>({
         [data, noSingletonSectionHeader, isLastItemRounded, isEmptySectionPlaceholderDefined],
     );
 
-    return {
-        data: internalData,
-        sectionsCount,
-        itemsCount,
-        keyExtractor: (item: ListInternalItemShape<T, U>) =>
-            internalKeyExtractor(item, keyExtractor),
-        renderItem: (
+    const memoizedKeyExtractor = useCallback(
+        (item: ListInternalItemShape<T, U>) => internalKeyExtractor(item, keyExtractor),
+        [keyExtractor],
+    );
+
+    const memoizedRenderItem = useCallback(
+        (
             { item }: { item: ListInternalItemShape<T, U> },
             sheetControls: BottomSheetFlashListControls = { closeSheet: () => {} },
         ) =>
@@ -294,5 +294,14 @@ export const useSectionList = <T, U = undefined>({
                 itemStyle,
                 sheetControls,
             }),
+        [renderItem, renderSectionHeader, SectionEmptyComponent, applyStyle, itemStyle],
+    );
+
+    return {
+        data: internalData,
+        sectionsCount,
+        itemsCount,
+        keyExtractor: memoizedKeyExtractor,
+        renderItem: memoizedRenderItem,
     };
 };

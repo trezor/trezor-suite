@@ -1,10 +1,17 @@
-import { memo, useCallback } from 'react';
+import { type ReactNode, memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TradingType } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
-import { BottomSheetSectionList } from '@suite-native/trading-atoms';
+import {
+    type BottomSheetFlashListControls,
+    type BottomSheetFlashListHandleProps,
+} from '@suite-native/atoms';
+import {
+    BottomSheetSectionList,
+    type ItemRenderConfig,
+    type SectionHeaderRenderConfig,
+} from '@suite-native/trading-atoms';
 import {
     type CombinedSelectorsRootState,
     selectAccountsWithTokensToSellSectionCondensedListByTradingType,
@@ -69,6 +76,35 @@ export const MyAssetSheet = memo(
             [setFilterValue, setFilterSymbol, availableNetworks, headerTestID],
         );
 
+        const handleRenderItem = useCallback(
+            (
+                asset: MyAssetRow,
+                config: ItemRenderConfig<Account>,
+                { closeSheet }: BottomSheetFlashListControls,
+            ) =>
+                renderItem(asset, config, (selectedAsset: TradeableAsset, account: Account) => {
+                    onAssetSelect(selectedAsset, account);
+                    closeSheet();
+                }),
+            [onAssetSelect],
+        );
+
+        const handleRenderSectionHeader = useCallback(
+            (_label: ReactNode, config: SectionHeaderRenderConfig<Account>) => {
+                const sectionIndex = filteredSections.findIndex(
+                    section => section.sectionData.key === config.sectionData.key,
+                );
+
+                return (
+                    <MyAssetListSectionHeader
+                        account={config.sectionData}
+                        isFirst={sectionIndex === 0}
+                    />
+                );
+            },
+            [filteredSections],
+        );
+
         return (
             <BottomSheetSectionList<MyAssetRow, Account>
                 isVisible={isVisible}
@@ -77,24 +113,8 @@ export const MyAssetSheet = memo(
                 handleComponent={renderHandle}
                 data={filteredSections}
                 keyExtractor={keyExtractor}
-                renderItem={(asset, config, { closeSheet }) =>
-                    renderItem(asset, config, (selectedAsset: TradeableAsset, account: Account) => {
-                        onAssetSelect(selectedAsset, account);
-                        closeSheet();
-                    })
-                }
-                renderSectionHeader={(_label, config) => {
-                    const sectionIndex = filteredSections.findIndex(
-                        section => section.sectionData.key === config.sectionData.key,
-                    );
-
-                    return (
-                        <MyAssetListSectionHeader
-                            account={config.sectionData}
-                            isFirst={sectionIndex === 0}
-                        />
-                    );
-                }}
+                renderItem={handleRenderItem}
+                renderSectionHeader={handleRenderSectionHeader}
                 flashListKey={filterValue}
             />
         );
