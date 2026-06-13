@@ -3,7 +3,7 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./lib",
-        "esModuleInterop": false,
+        "rootDir": "./src",
         "types": ["node", "chrome", "jest"]
     },
     "references": [

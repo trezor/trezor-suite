@@ -1,8 +1,8 @@
+const path = require('path');
+
 require('ts-node').register({
     transpileOnly: true,
-    compilerOptions: {
-        module: 'commonjs',
-    },
+    project: path.join(__dirname, 'tsconfig.json'),
 });
 
 module.exports = require('./rules').rules;

@@ -3,6 +3,7 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./lib",
+        "rootDir": "./src",
         "lib": ["webworker", "ES2022"],
         "types": ["w3c-web-usb"]
     },

@@ -100,10 +100,12 @@ const getInitialState = (state?: InitialState) => {
 type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
     const store = configureMockStore<State, any>({
-        reducer: (s = state, action: any) => ({
-            ...s,
-            metadata: metadataReducer(s.metadata, action),
-        }),
+        reducer: (s = state, action: any): State => {
+            // the reducer may also receive the empty PreloadedState ({}), fall back to the initial state
+            const current = { ...state, ...s };
+
+            return { ...current, metadata: metadataReducer(current.metadata, action) };
+        },
         preloadedState: state,
         serializableCheck: {
             ignoredActions: ['@modal/open-user-context'],

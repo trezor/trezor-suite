@@ -7,11 +7,11 @@ import '@formatjs/intl-getcanonicallocales/polyfill.js';
 import '@formatjs/intl-locale/polyfill.js';
 // Intl.ListFormat polyfill and locale data
 import '@formatjs/intl-listformat/polyfill.js';
-import '@formatjs/intl-listformat/locale-data/en';
-import '@formatjs/intl-listformat/locale-data/cs';
-import '@formatjs/intl-listformat/locale-data/de';
-import '@formatjs/intl-listformat/locale-data/pt';
-import '@formatjs/intl-listformat/locale-data/ja';
+import '@formatjs/intl-listformat/locale-data/en.js';
+import '@formatjs/intl-listformat/locale-data/cs.js';
+import '@formatjs/intl-listformat/locale-data/de.js';
+import '@formatjs/intl-listformat/locale-data/pt.js';
+import '@formatjs/intl-listformat/locale-data/ja.js';
 
 import { IntlProvider as ReactIntlProvider } from 'react-intl';
 import { useSelector } from 'react-redux';

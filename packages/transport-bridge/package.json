@@ -12,7 +12,7 @@
         "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
         "build:node:module": "yarn esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node18 --external:usb",
         "build:node": "yarn build:node:bin && yarn build:node:module",
-        "build:ui": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack/ui.webpack.config.ts",
+        "build:ui": "TS_NODE_PROJECT=\"webpack/tsconfig.json\" webpack --config ./webpack/ui.webpack.config.ts",
         "build:js": "yarn g:rimraf -rf dist && yarn build:node && yarn build:ui",
         "build": "yarn build:js",
         "build:lib": "yarn build:js",

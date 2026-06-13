@@ -47,8 +47,9 @@
     ],
     "ts-node": {
         "compilerOptions": {
-            "module": "CommonJS",
-            "moduleResolution": "node"
+            "module": "Node16",
+            "moduleResolution": "node16",
+            "rootDir": "."
         }
     }
 }

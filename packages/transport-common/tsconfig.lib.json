@@ -4,6 +4,7 @@
     "compilerOptions": {
         "lib": ["ES2023"],
         "outDir": "./lib",
+        "rootDir": "./src",
         "types": ["node"]
     },
     "references": [

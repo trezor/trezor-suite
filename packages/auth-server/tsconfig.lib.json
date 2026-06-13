@@ -2,9 +2,10 @@
     "extends": "../../tsconfig.lib.json",
     "include": ["./src"],
     "compilerOptions": {
-        "outDir": "./lib",
-        "module": "commonjs",
-        "moduleResolution": "node"
+        "rootDir": "./src",
+        "module": "node16",
+        "moduleResolution": "node16",
+        "outDir": "./lib"
     },
     "references": []
 }
