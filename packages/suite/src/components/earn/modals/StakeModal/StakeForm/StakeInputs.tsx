@@ -27,7 +27,7 @@ import { type FormPercentButtonValue } from 'src/views/wallet/trading/common/Tra
 
 export const StakeInputs = () => {
     const { translationString } = useTranslation();
-    const { CryptoAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
@@ -70,6 +70,7 @@ export const StakeInputs = () => {
                 amountLimits,
                 localCurrency: baseCurrencyCode,
                 formatter: CryptoAmountFormatter,
+                fiatFormatter: BaseCurrencyAmountFormatter,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
             }),

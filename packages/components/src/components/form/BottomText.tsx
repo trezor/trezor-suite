@@ -60,6 +60,7 @@ export const BottomText = ({
                     typographyStyle="body-sm"
                     as="div"
                     flex="auto"
+                    overflowWrap="anywhere"
                 >
                     {children}
                 </Text>

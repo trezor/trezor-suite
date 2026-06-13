@@ -22,7 +22,7 @@ import {
 
 export const UnstakeInputs = () => {
     const { translationString } = useTranslation();
-    const { CryptoAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
 
     const locale = useSelector(selectLanguage);
 
@@ -67,6 +67,7 @@ export const UnstakeInputs = () => {
                 amountLimits,
                 localCurrency: baseCurrencyCode,
                 formatter: CryptoAmountFormatter,
+                fiatFormatter: BaseCurrencyAmountFormatter,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
             }),

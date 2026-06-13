@@ -1,7 +1,7 @@
 import { type TranslationFunction } from '@suite/intl';
-import { type Formatter } from '@suite-common/formatters';
+import { type Formatter, type Formatters } from '@suite-common/formatters';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,
@@ -135,12 +135,20 @@ interface ValidateFiatLimitsOptions {
     decimals: number;
     rate?: number;
     formatter: Formatter<string, string>;
+    fiatFormatter: Formatters['BaseCurrencyAmountFormatter'];
 }
 
 export const validateFiatLimits =
     (
         translationString: TranslationFunction,
-        { amountLimits, localCurrency, formatter, decimals, rate }: ValidateFiatLimitsOptions,
+        {
+            amountLimits,
+            localCurrency,
+            formatter,
+            fiatFormatter,
+            decimals,
+            rate,
+        }: ValidateFiatLimitsOptions,
     ) =>
     (value: string, formValues?: { setMaxOutputId?: number }) => {
         if (value && amountLimits) {
@@ -183,7 +191,10 @@ export const validateFiatLimits =
                     return translationString(
                         'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT',
                         {
-                            missingAmount: missingAmount.toString(),
+                            missingAmount:
+                                fiatFormatter.format(asBaseCurrencyAmount(missingAmount), {
+                                    style: 'decimal',
+                                }) ?? missingAmount.toFixed(2),
                             currency: localCurrency.toUpperCase(),
                         },
                     );
