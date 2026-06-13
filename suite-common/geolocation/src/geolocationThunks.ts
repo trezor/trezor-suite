@@ -8,11 +8,15 @@ type GeolocationResponse = {
     country: string;
 };
 
+const GEOLOCATION_TIMEOUT_MS = 10_000;
+
 export const fetchCountryCodeThunk = createThunk<void, void, void>(
     `${GEOLOCATION_PREFIX}/fetchCountryCodeThunk`,
     async (_, { dispatch }) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), GEOLOCATION_TIMEOUT_MS);
         try {
-            const response = await fetch(GEOLOCATION_API_URL);
+            const response = await fetch(GEOLOCATION_API_URL, { signal: controller.signal });
             const data = (await response.json()) as GeolocationResponse;
 
             if (typeof data?.country === 'string') {
@@ -22,6 +26,8 @@ export const fetchCountryCodeThunk = createThunk<void, void, void>(
             }
         } catch {
             // silently fail
+        } finally {
+            clearTimeout(timeoutId);
         }
     },
 );

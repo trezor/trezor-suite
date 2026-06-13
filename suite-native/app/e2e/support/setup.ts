@@ -21,8 +21,12 @@ type PrepareTrezorEmulatorProps = {
 const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
     // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
+    // Prevent Detox from waiting for in-flight requests to external Trezor services and
+    // third-party domains (analytics, geolocation, error reporting) that may be slow or
+    // unavailable in CI. Without these entries Detox synchronisation hangs indefinitely and
+    // the Android instrumentation runner exits with code #255.
     detoxURLBlacklistRegex:
-        '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*",".*exchange\\.trezor\\.io.*"\\)',
+        '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*",".*trezor\\.io.*",".*sentry\\.io.*"\\)',
 
     // Main loop synchronization is infinitely blocking iOS tests while is the graph displayed, so we need to disable it.
     // Not sure about the cause of it yet.
