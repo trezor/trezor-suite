@@ -108,7 +108,7 @@
         "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
         "react": "19.2.4",
-        "electron": "42.2.0",
+        "electron": "41.3.0",
         "@types/node": "22.13.10",
         "bn.js": "5.2.3",
         "### Force buffer >=6 so the browser polyfill has writeBig(U)Int64LE etc. (5.x lacks them, see suite-build)": "1.0.0",
@@ -132,15 +132,15 @@
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",
-        "@babel/cli": "7.29.7",
-        "@babel/core": "7.29.7",
-        "@babel/node": "^7.29.7",
-        "@babel/plugin-proposal-decorators": "^7.29.7",
-        "@babel/plugin-transform-runtime": "7.29.7",
-        "@babel/preset-env": "7.29.7",
-        "@babel/preset-react": "^7.29.7",
-        "@babel/preset-typescript": "^7.29.7",
-        "@babel/runtime": "7.29.7",
+        "@babel/cli": "7.28.6",
+        "@babel/core": "7.29.0",
+        "@babel/node": "^7.29.0",
+        "@babel/plugin-proposal-decorators": "^7.29.0",
+        "@babel/plugin-transform-runtime": "7.29.0",
+        "@babel/preset-env": "7.29.2",
+        "@babel/preset-react": "^7.28.5",
+        "@babel/preset-typescript": "^7.28.5",
+        "@babel/runtime": "7.29.2",
         "@swc/core": "^1.15.26",
         "@swc/jest": "^0.2.39",
         "@trezor/eslint": "workspace:*",
@@ -154,14 +154,14 @@
         "jest-environment-node": "^29.7.0",
         "jest-expo": "~55.0.9",
         "node-gyp": "12.2.0",
-        "nx": "^22.7.4",
+        "nx": "^22.7.0",
         "prettier": "^3.8.3",
         "rimraf": "^6.1.2",
         "ts-node": "^10.9.2",
         "tslib": "^2.6.2",
         "tsx": "^4.21.0",
         "typescript": "5.9.3",
-        "typescript-eslint": "^8.60.0",
+        "typescript-eslint": "^8.59.0",
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
@@ -193,6 +193,9 @@
             "built": true
         },
         "detox": {
+            "built": true
+        },
+        "electron": {
             "built": true
         },
         "esbuild": {

@@ -72,21 +72,21 @@
         "@types/node": "22.13.10",
         "html-webpack-plugin": "5.6.7",
         "tiny-worker": "^2.3.0",
-        "webpack": "5.107.2"
+        "webpack": "5.106.2"
     },
     "dependencies": {
+        "@stellar/stellar-sdk": "14.5.0",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/coins-solana": "workspace:*",
-        "@trezor/coins-stellar": "workspace:*",
-        "@trezor/coins-xrpl": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.345",
         "socks-proxy-agent": "8.0.5",
-        "viem": "^2.48.1"
+        "viem": "^2.48.1",
+        "xrpl": "4.6.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

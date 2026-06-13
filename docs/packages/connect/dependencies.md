@@ -13,7 +13,7 @@ List of essential libraries to produce build:
 - `process` (polyfill)
 - `stream-browserify` (polyfill)
 - `style-loader`
-- `minimizer-webpack-plugin`
+- `terser-webpack-plugin`
 - `util` (polyfill)
 - `webpack-*`
 - `worker-loader`
