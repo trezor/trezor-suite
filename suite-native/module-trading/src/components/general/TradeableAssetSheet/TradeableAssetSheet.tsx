@@ -1,7 +1,10 @@
 import { memo, useCallback } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
+import {
+    type BottomSheetFlashListControls,
+    type BottomSheetFlashListHandleProps,
+} from '@suite-native/atoms';
 import { BottomSheetSectionList, type ItemRenderConfig } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -49,6 +52,24 @@ export const TradeableAssetSheet = memo(
 
         const headerTestID = testID ? `${testID}/header` : undefined;
 
+        const handleClose = useCallback(
+            () => onClose(hideKeyboardOnAssetSelect),
+            [onClose, hideKeyboardOnAssetSelect],
+        );
+
+        const handleRenderItem = useCallback(
+            (
+                item: TradeableAsset,
+                config: ItemRenderConfig<ListItemExtraData>,
+                { closeSheet }: BottomSheetFlashListControls,
+            ) =>
+                renderItem(item, config, selectedAsset => {
+                    onAssetSelect(selectedAsset);
+                    closeSheet();
+                }),
+            [onAssetSelect],
+        );
+
         // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
             ({ closeSheet }: BottomSheetFlashListHandleProps) => (
@@ -65,17 +86,12 @@ export const TradeableAssetSheet = memo(
         return (
             <BottomSheetSectionList<TradeableAsset, ListItemExtraData>
                 isVisible={isVisible}
-                onClose={() => onClose(hideKeyboardOnAssetSelect)}
+                onClose={handleClose}
                 ListEmptyComponent={<TradeableAssetListEmptyComponent />}
                 handleComponent={renderHandle}
                 data={listData}
                 keyExtractor={keyExtractor}
-                renderItem={(item, config, { closeSheet }) =>
-                    renderItem(item, config, selectedAsset => {
-                        onAssetSelect(selectedAsset);
-                        closeSheet();
-                    })
-                }
+                renderItem={handleRenderItem}
                 flashListKey={flashListKey}
                 noSingletonSectionHeader
                 testID={testID}
