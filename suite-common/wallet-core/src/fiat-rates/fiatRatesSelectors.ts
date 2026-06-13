@@ -23,7 +23,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
 import { type FiatRatesRootState } from './fiatRatesTypes';
-import { selectDeviceAccounts } from '../accounts/accountsSelectors';
+import { selectAccounts } from '../accounts/accountsSelectors';
 
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
     state.wallet.fiat?.['current'];
@@ -88,7 +88,10 @@ export const selectShouldUpdateFiatRate = (
 export const selectTickerFromAccounts = (
     state: FiatRatesRootState & TokenDefinitionsRootState,
 ): TickerId[] => {
-    const accounts = selectDeviceAccounts(state as any);
+    // Use accounts of all remembered devices/wallets, not just the selected one, so that
+    // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
+    // non-selected wallet (e.g. a passphrase wallet) never get a rate fetched on launch.
+    const accounts = selectAccounts(state as any);
 
     return pipe(
         accounts,
