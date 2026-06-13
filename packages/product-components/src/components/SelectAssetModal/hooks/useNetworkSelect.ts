@@ -14,7 +14,7 @@ export interface SearchAssetSelectConfig {
 export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
     const { networks = [], includeAllOption, allLabel, selectedNetwork } = config ?? {};
 
-    const options = useMemo(() => {
+    const allOptions = useMemo(() => {
         const networkOptions = networks
             .map(symbol => {
                 const network = getNetwork(symbol);
@@ -29,8 +29,15 @@ export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
     }, [networks, includeAllOption, allLabel]);
 
     const selectedOption = useMemo(
-        () => options.find(option => option.value === selectedNetwork),
-        [options, selectedNetwork],
+        () => allOptions.find(option => option.value === selectedNetwork),
+        [allOptions, selectedNetwork],
+    );
+
+    // The currently selected option is already shown in the select value, so it is
+    // filtered out of the menu to avoid showing it twice.
+    const options = useMemo(
+        () => allOptions.filter(option => option.value !== selectedNetwork),
+        [allOptions, selectedNetwork],
     );
 
     return { options, selectedOption };
