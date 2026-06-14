@@ -78,6 +78,8 @@ export const SuiteSyncTurnOnModal = ({
             }
         }
 
+        dispatch(notificationsActions.addToast({ type: 'suite-sync-enabled' }));
+
         onSuccess?.();
     };
 
