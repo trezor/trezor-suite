@@ -69,6 +69,21 @@ export const ClaudeResultSchema = z.object({
     duration_ms: z.number().optional(),
 });
 
+export const AgentMessageEntrySchema = z.object({
+    type: z.literal('assistant'),
+    parent_tool_use_id: z.string().nullish(),
+    message: z.object({
+        id: z.string(),
+        content: z.array(
+            z.object({
+                type: z.string(),
+                input: z.record(z.string(), z.unknown()).optional(),
+            }),
+        ),
+        usage: ClaudeUsageSchema.optional(),
+    }),
+});
+
 export const SlackFixSummarySchema = FixResultSchema.extend({
     prUrl: z.string().nullable().default(null),
     costUsd: z.number().nullable().default(null),
