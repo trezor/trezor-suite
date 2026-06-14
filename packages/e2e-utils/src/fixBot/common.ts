@@ -13,6 +13,7 @@ import {
     type SlackFixSummary,
     SlackFixSummarySchema,
 } from './schemas';
+import { type AgentName, formatStageBreakdown } from './stageCost';
 
 export const EMPTY_LEDGER: Ledger = { version: 1, updatedAt: '1970-01-01', entries: [] };
 
@@ -94,40 +95,53 @@ export function runClaude(opts: {
     return { output, status: result.status, signal: result.signal, spawnError: result.error };
 }
 
-function parseClaudeOutput(raw: string): ClaudeResult {
-    const unsafeParsed: unknown = JSON.parse(raw.trim());
-    const entries = Array.isArray(unsafeParsed) ? unsafeParsed : [unsafeParsed];
+function parseEnvelopeEntries(rawOutput: string): unknown[] | null {
+    try {
+        const parsed: unknown = JSON.parse(rawOutput.trim());
+
+        return Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+        return null;
+    }
+}
+
+function findResultEntry(entries: unknown[]): ClaudeResult | null {
     const resultEntry = entries
         .map(entry => ClaudeResultSchema.safeParse(entry))
         .find(parsed => parsed.success && parsed.data.type === 'result');
 
-    if (!resultEntry?.success) {
-        throw new Error('No result entry found in Claude output');
-    }
+    return resultEntry?.success ? resultEntry.data : null;
+}
 
-    return resultEntry.data;
+function logResultToTerminal(agentName: AgentName, claudeResult: ClaudeResult): void {
+    const RESULT_PREVIEW_LIMIT = 800;
+    log(`[${agentName}] subtype=${claudeResult.subtype ?? 'N/A'}`);
+
+    if (claudeResult.result) {
+        log(`${claudeResult.result.slice(0, RESULT_PREVIEW_LIMIT)}`);
+    }
 }
 
 export function processAgentOutput(
     rawOutput: string,
-    agent: 'nightlyAnalyzer' | 'nightlyFixer',
+    agent: AgentName,
     model: string,
 ): ClaudeResult | null {
-    let result: ClaudeResult;
-    try {
-        result = parseClaudeOutput(rawOutput);
-    } catch {
+    const entries = parseEnvelopeEntries(rawOutput);
+    if (!entries) {
         warn(`[${agent}] agent output unparsable (${rawOutput.length} bytes)`);
 
         return null;
     }
 
-    const subtype = result.subtype ?? '?';
-    const text = result.result ?? '';
-    const preview = text.length > 800 ? `${text.slice(0, 800)}…` : text;
+    const result = findResultEntry(entries);
+    if (!result) {
+        warn(`[${agent}] no result entry found in agent output`);
 
-    log(`[${agent}] subtype=${subtype}`);
-    if (preview) log(preview);
+        return null;
+    }
+
+    logResultToTerminal(agent, result);
 
     reportTokenUsage({
         timestamp: new Date().toISOString(),
@@ -141,6 +155,9 @@ export function processAgentOutput(
         output_tokens: result.usage?.output_tokens ?? null,
         total_cost_usd: result.total_cost_usd,
     });
+
+    const breakdown = formatStageBreakdown(agent, entries, result);
+    log(breakdown ?? `[${agent}] no stage breakdown available`);
 
     return result;
 }

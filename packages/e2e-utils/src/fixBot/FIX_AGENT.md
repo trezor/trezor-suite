@@ -78,11 +78,11 @@ or change what the test checks, the failure is not yours to fix — bail as in S
 
 ## Step 2 — Pre-flight
 
+_Cost marker: run `echo fixagent-stage-preflight` before starting this step._
+
 Confirm each validation actually fails before attempting any fix.
 
 ```bash
-touch /tmp/preflight-marker
-
 # For each validation — select config by platform:
 (cd suite/e2e && yarn xvfb-maybe -- playwright test \
   --config=./playwright-config/playwright-<web|desktop>.config.ts \
@@ -98,7 +98,7 @@ Non-zero = failing — read the trace before deciding anything further (see belo
 ### Reading traces after pre-flight and any test run
 
 ```bash
-find suite/e2e/test-results -name 'trace.zip' -newer /tmp/preflight-marker
+find suite/e2e/test-results -name 'trace.zip'
 ```
 
 Unzip and read the screenshot closest to the failure:
@@ -134,6 +134,8 @@ Track your current iteration number starting at 1. Stop when budget is exhausted
 
 ### Per iteration
 
+_Cost marker: at the start of each iteration, run `echo fixagent-stage-iteration-<N>` with the current iteration number (e.g. `fixagent-stage-iteration-1`)._
+
 **1. Make changes** within the allowed surface (see Fix Constraints).
 
 **Missing / mismatched locator.** When a locator the test uses is not found, do not reflexively
@@ -143,12 +145,11 @@ current one. Add a new `data-testid` only if the element genuinely has none.
 
 **2. Run all validations that are still failing:**
 
-Run each failing validation separately so you get one trace per spec.
+Run each failing validation separately, reading its trace right after the run (see
+"Reading traces" above) — `test-results` is overwritten by the next run.
 Select config by platform:
 
 ```bash
-touch /tmp/iter-<N>-marker
-
 (cd suite/e2e && yarn xvfb-maybe -- playwright test \
   --config=./playwright-config/playwright-<web|desktop>.config.ts \
   --project=<group> \
@@ -158,7 +159,7 @@ touch /tmp/iter-<N>-marker
 **3. Read traces for any that still fail:**
 
 ```bash
-find suite/e2e/test-results -name 'trace.zip' -newer /tmp/iter-<N>-marker
+find suite/e2e/test-results -name 'trace.zip'
 unzip -q <trace.zip> -d /tmp/trace-iter-<N>/
 ls /tmp/trace-iter-<N>/resources/page@*.jpeg | sort | tail -10
 ```
@@ -184,6 +185,8 @@ Then use `git commit --fixup $FIRST_SHA` for all subsequent iterations.
 ---
 
 ## Step 4 — Write the PR description and return the result
+
+_Cost marker: run `echo fixagent-stage-finalize` before starting this step._
 
 **`pr-description.md`** — write this file to the repo root (current directory) using the
 Write tool (see the section below for its contents).

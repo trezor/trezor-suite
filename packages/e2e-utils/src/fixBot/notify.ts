@@ -36,21 +36,38 @@ function formatTestRef(validations: AnalysisReport['fixTasks'][number]['validati
     return `    ${first.spec} [${first.group}]${extrasPart}`;
 }
 
+function runUrl(): string {
+    const runId = process.env.GITHUB_RUN_ID ?? '';
+    const repo = process.env.GITHUB_REPOSITORY ?? 'trezor/trezor-suite';
+
+    return `https://github.com/${repo}/actions/runs/${runId}`;
+}
+
+function readReport(reportPath: string): AnalysisReport | null {
+    try {
+        const parsed = AnalysisReportSchema.safeParse(
+            JSON.parse(readFileSync(reportPath, 'utf-8')),
+        );
+
+        return parsed.success ? parsed.data : null;
+    } catch (err) {
+        error(`[notify] Could not read report at ${reportPath}: ${String(err)}`);
+
+        return null;
+    }
+}
+
 function buildMessage(
     report: AnalysisReport,
     summaries: SlackFixSummary[],
     analyzeCost: number | null,
 ): string {
-    const runId = process.env.GITHUB_RUN_ID ?? '';
-    const repo = process.env.GITHUB_REPOSITORY ?? 'trezor/trezor-suite';
-    const runUrl = `https://github.com/${repo}/actions/runs/${runId}`;
-
     const summaryById = new Map(summaries.map(s => [s.taskId, s]));
 
     const lines: string[] = [];
 
     // Header
-    lines.push(`🤖 *Nightly Fix Agent — ${report.runDate}*  <${runUrl}|GHA Run>`);
+    lines.push(`🤖 *Nightly Fix Agent — ${report.runDate}*  <${runUrl()}|GHA Run>`);
     lines.push('');
 
     // Analyzer summary line
@@ -163,7 +180,16 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
-    const report = AnalysisReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
+    const report = readReport(reportPath);
+
+    if (!report) {
+        await sendSlackNotification(
+            `🤖 *Nightly Fix Agent*  <${runUrl()}|GHA Run>\n\n❓ Analysis agent did not complete correctly.`,
+        );
+
+        return;
+    }
+
     const summaries = readSummaries(summariesDir);
     const analyzeCost = readAnalysisCost(analyzeCostFile);
 
