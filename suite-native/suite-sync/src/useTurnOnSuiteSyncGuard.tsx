@@ -26,6 +26,7 @@ import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
 import { suiteSyncErrorMessageMap } from './suiteSyncErrorMessages';
+import { useShowSuiteSyncEnabledToast } from './useShowSuiteSyncEnabledToast';
 
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
@@ -36,6 +37,7 @@ export const useTurnOnSuiteSyncGuard = () => {
     );
 
     const { showToast } = useToast();
+    const { showSuiteSyncEnabledToast } = useShowSuiteSyncEnabledToast();
     const { translate } = useTranslate();
     const navigation =
         useNavigation<
@@ -112,11 +114,7 @@ export const useTurnOnSuiteSyncGuard = () => {
             }
         }
 
-        showToast({
-            intent: 'neutral',
-            icon: 'check',
-            message: <Translation id="suiteSync.enabledToast" />,
-        });
+        showSuiteSyncEnabledToast();
 
         onSuccess();
     };
