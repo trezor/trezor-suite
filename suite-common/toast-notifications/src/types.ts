@@ -136,6 +136,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'thp-credentials-reset'
               | 'sign-transaction-timeout'
               | 'suite-sync-keys-error'
+              | 'suite-sync-enabled'
               | 'bip-329-labels-imported';
       }
     | {

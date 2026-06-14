@@ -392,6 +392,13 @@ export const NotificationRenderer = ({
                 values: { error: notification.error },
             });
 
+        case 'suite-sync-enabled':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_SUITE_SYNC_ENABLED_SUCCESS',
+                icon: 'check',
+            });
+
         case 'tx-received':
             return (
                 <TransactionRenderer
