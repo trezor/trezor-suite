@@ -112,6 +112,12 @@ export const useTurnOnSuiteSyncGuard = () => {
             }
         }
 
+        showToast({
+            intent: 'neutral',
+            icon: 'check',
+            message: <Translation id="suiteSync.enabledToast" />,
+        });
+
         onSuccess();
     };
 
