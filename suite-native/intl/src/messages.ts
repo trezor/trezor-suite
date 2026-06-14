@@ -83,6 +83,7 @@ export const messages = {
     suiteSync: {
         label: 'Label',
         addLabel: 'Add label',
+        enabledToast: 'Suite Sync turned on successfully.',
         disableAlert: {
             title: 'Turn off Suite Sync?',
             description:
