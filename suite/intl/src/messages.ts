@@ -11807,6 +11807,10 @@ export const messages = defineMessages({
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
         defaultMessage: 'Turn on Suite Sync',
     },
+    TR_SUITE_SYNC_ENABLED_SUCCESS: {
+        id: 'TR_SUITE_SYNC_ENABLED_SUCCESS',
+        defaultMessage: 'Suite Sync turned on successfully.',
+    },
     TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
         defaultMessage: 'Securely sync your labels and names between mobile & desktop.',
