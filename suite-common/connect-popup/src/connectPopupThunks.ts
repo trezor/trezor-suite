@@ -61,7 +61,7 @@ export const connectPopupCallThunkInner = createThunk<
                 methodInfoPayload.requiredPermissions.includes('management') ||
                 methodInfoPayload.requiredPermissions.includes('internal') ||
                 (methodInfoPayload.requiredPermissions.includes('push_tx') &&
-                    source.type === 'deeplink')
+                    source.type === CALL_SOURCE_DEEPLINK)
             ) {
                 throw TypedError('Method_NotAllowed');
             }
@@ -293,7 +293,7 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
         dispatch(
             connectPopupCallThunk({
                 source: {
-                    type: 'deeplink',
+                    type: CALL_SOURCE_DEEPLINK,
                     origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
                     manifest: {
                         appName: queryParams.appName ?? '',
