@@ -36,7 +36,7 @@ import type {
     FiatRatesItem,
 } from './types';
 
-export const addBalanceForAccountMovementHistory = (
+const addBalanceForAccountMovementHistory = (
     data: AccountMovementHistory[] | AccountHistoryMovementItem[],
     symbol: NetworkSymbol,
     initialBalance = '0',
@@ -297,7 +297,7 @@ type GetFiatRatesForNetworkInTimeFrame = {
     isElectrumBackend: boolean;
 };
 
-export const getFiatRatesForNetworkInTimeFrame = async ({
+const getFiatRatesForNetworkInTimeFrame = async ({
     timestamps,
     symbol,
     contractId,

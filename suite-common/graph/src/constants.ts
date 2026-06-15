@@ -4,7 +4,7 @@ import { isArrayMember } from '@trezor/utils';
 // Going over 180 will broke graph in mobile app
 export const NUMBER_OF_POINTS = 40;
 
-export const LOCAL_BALANCE_HISTORY_COINS = [
+const LOCAL_BALANCE_HISTORY_COINS = [
     'eth',
     'pol',
     'bsc',
@@ -24,6 +24,6 @@ export const isLocalBalanceHistoryCoin = (
 // Some networks might be ignored by graph
 // Solana is ignored because it takes a lot of time and network resources to get all needed history data
 // Ada is ignored because it sends a lot of requests to the blockfrost API. Therefore we have temporarily disabled it.
-export const IGNORED_BALANCE_HISTORY_COINS = ['sol', 'dsol', 'ada'] satisfies Array<NetworkSymbol>;
+const IGNORED_BALANCE_HISTORY_COINS = ['sol', 'dsol', 'ada'] satisfies Array<NetworkSymbol>;
 export const isIgnoredBalanceHistoryCoin = (symbol: NetworkSymbol) =>
     isArrayMember(symbol, IGNORED_BALANCE_HISTORY_COINS);
