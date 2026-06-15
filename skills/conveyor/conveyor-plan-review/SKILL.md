@@ -108,9 +108,11 @@ Then branch on mode:
 
 #### Interactive
 Present **all open decisions (taste + user-challenge) as one batch** — do not
-drip them one per turn. For each, give your recommendation, the one-sentence
-downstream impact of the alternative, and mark user-challenges clearly as
-"changes what you asked for". The human responds once.
+drip them one per turn. For each decision give the human **the concrete options
+you weighed as a numbered list**, each with its trade-off, plus your recommended
+option — so the human can answer by **picking a number**, not by inventing an
+answer. Mark user-challenges clearly as "changes what you asked for". The human
+responds once.
 
 For each resolved decision:
 - Record it under "Resolved decisions" in the status comment (what, who decided,
@@ -126,8 +128,9 @@ Then:
 
 #### Autonomous
 Do **not** block. Write every open decision into the status comment's "Open
-decisions (need a human)" section, with your recommendation and the trade-off so
-a human can decide quickly later. Apply all mechanical resolutions to the body as
+decisions (need a human)" section as **numbered options with your recommendation**
+and each option's trade-off, so the human can later resolve it by picking a number
+rather than designing an answer. Apply all mechanical resolutions to the body as
 usual. Set `plan:needs-human`. Exit with a summary of what was parked.
 
 ### 4. Status comment shape
@@ -140,8 +143,9 @@ Keep the status comment as the single dashboard. After a run it should look like
 **State:** in-review | needs-human | ready-to-implement
 
 ### Open decisions (need a human)
-1. **<title>** — recommend: <X>. Alternative: <Y> (<one-line impact>). [taste]
-2. **<title>** — ⚠️ changes stated scope: <…>. [user-challenge]
+1. **<title>** — options: (a) <X> ✅ recommended — <trade-off>; (b) <Y> — <trade-off>. [taste]
+2. **<title>** — ⚠️ changes stated scope. options: (a) keep as planned; (b) <change> ✅ — <why>. [user-challenge]
+_(pick the option letter)_
 
 ### Resolved decisions
 - <title> — <decision> (mechanical / decided by <name>) — <why>
@@ -162,6 +166,8 @@ _Last updated by: conveyor-plan-review (<interactive|autonomous>)_
 - Always do the full analysis, even in autonomous mode. Mode changes only where
   the gate ends up (terminal vs. GitHub), never the depth.
 - Batch human interaction. Never one question per turn.
+- Every decision you surface comes with numbered options + a recommendation — the
+  human picks one, never invents the answer.
 - The issue body is the single source of truth — reconsolidate it after every
   resolution.
 - Read real code for the architecture lens; no speculative findings.

@@ -227,6 +227,13 @@ Same two modes (interactive / autonomous routine). See
   direction is wrong) are never auto-decided.
 - **Batch human interaction.** Never drip questions one per turn during review.
   Collect, then present once.
+- **Offer options, never ask the human to invent one.** Whenever the belt parks
+  for a human — a taste decision, a user-challenge, a stuck implementation, a
+  split proposal — the agent presents the concrete options it already weighed,
+  each with its trade-off and a recommendation, as a numbered list. The human's
+  job is to **pick a number**, not to design the answer from scratch. The agent
+  does the thinking; the human does the deciding. An open-ended "what should I
+  do?" is a failure of this station.
 - **Gate noise.** Surface review findings at confidence ≥ 6/10; always surface
   anything that blocks (P1), regardless of confidence. State what was examined
   even when nothing was found — no silent skips.

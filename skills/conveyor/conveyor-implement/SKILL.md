@@ -128,8 +128,11 @@ Stop and hand back when either:
 
 Then:
 
-- Post a PR comment with your diagnosis: which check, what you tried, why you
-  think it is stuck or the plan is wrong.
+- Post a PR comment with your diagnosis (which check, what you tried, why it is
+  stuck or the plan is wrong) **and the numbered options you see** — e.g.
+  (1) try fix approach X, (2) try approach Y, (3) relax constraint Z in the plan,
+  (4) bounce back to planning — with your recommendation. The human should be able
+  to unblock you by picking a number, not by working out the options themselves.
 - Swap labels on the **PR**: remove `impl:in-progress`, add `impl:needs-human`.
 - Exit. `impl:needs-human` means hands-off for other agents until a human
   intervenes (fixes it, or bounces the plan back to the planning phase).

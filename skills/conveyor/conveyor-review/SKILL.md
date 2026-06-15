@@ -110,7 +110,9 @@ Gate for noise, then classify each finding by who resolves it (same model as
   commit SHA, and resolve it. Log it under "Resolved" in the status comment.
 - **Park** — everything else: taste calls, uncertain findings, risky fixes,
   anything that would change behaviour or contradict the spec. Write it into the
-  status comment's "Open findings" with your recommendation. Never auto-apply.
+  status comment's "Open findings" as **numbered options** (e.g. (1) fix this way,
+  (2) fix that way, (3) accept as-is) with your recommendation, so the human
+  resolves it by picking a number. Never auto-apply.
 
 ### 7. Maintain the status comment
 
@@ -140,7 +142,8 @@ for me".
 1. **<slice>** — <what it delivers> — depends on: <…>
 
 ### Open findings (need a human)
-1. **<title>** — <file:line> — recommend: <…>. [taste | risky | changes-spec]
+1. **<title>** — <file:line> — options: (a) <…> ✅ recommended; (b) <…>; (c) accept as-is. [taste | risky | changes-spec]
+_(pick the option letter)_
 
 ### Resolved
 - <title> — <file:line> — fixed in <sha> (<source: copilot | adversarial>)
@@ -167,6 +170,8 @@ _Last updated by: conveyor-review (<interactive|autonomous>)_
 - Never promote the PR to "Ready for review" — that is the human's signal.
 - Check splittability before the deep review; never auto-split — a split is a
   user-challenge, so propose it and let a human approve.
+- Every parked finding (and the split proposal) is presented as numbered options
+  with a recommendation — the human picks one, never invents the answer.
 - The issue is frozen once the PR exists; write everything to the PR.
 - Auto-fix only high-confidence, low-risk, behaviour-preserving findings; park
   everything else.
