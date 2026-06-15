@@ -13664,7 +13664,7 @@ __metadata:
     "@trezor/transport-native-usb": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@types/redux-logger": "npm:^3.0.13"
-    expo-device: "patch:expo-device@npm%3A55.0.9#~/.yarn/patches/expo-device-npm-55.0.9-6f86cc1aa2.patch"
+    expo-device: "npm:55.0.17"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-redux: "npm:9.2.0"
@@ -26648,25 +26648,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-device@npm:55.0.9":
-  version: 55.0.9
-  resolution: "expo-device@npm:55.0.9"
+"expo-device@npm:55.0.17":
+  version: 55.0.17
+  resolution: "expo-device@npm:55.0.17"
   dependencies:
     ua-parser-js: "npm:^0.7.33"
   peerDependencies:
     expo: "*"
-  checksum: 10/aa3e3cb1f5d238ac5da4c4a41e1a14582f802230869eb25f6b8e99140021ce7572eb8268431827539a14971368d8942b42c3a15a9cc45249d27262cb3945b2b0
-  languageName: node
-  linkType: hard
-
-"expo-device@patch:expo-device@npm%3A55.0.9#~/.yarn/patches/expo-device-npm-55.0.9-6f86cc1aa2.patch":
-  version: 55.0.9
-  resolution: "expo-device@patch:expo-device@npm%3A55.0.9#~/.yarn/patches/expo-device-npm-55.0.9-6f86cc1aa2.patch::version=55.0.9&hash=940954"
-  dependencies:
-    ua-parser-js: "npm:^0.7.33"
-  peerDependencies:
-    expo: "*"
-  checksum: 10/618f7acc6307311811c7ccd0aeb733e854a0179f1f683d3c09cd69eaeec709d208e522c56c4dbc074a518c3f8456861ea4844d19b4272bd7bf9b61062b5287b7
+  checksum: 10/69626e6d1717bf0c49a8a5c333cad20e794d5e9d41f70ed295743099c7cf9770c0dc2b05cf8a418b2c5e835bc791552d1876784f4fb9acf83f666f9077f355e9
   languageName: node
   linkType: hard
 
