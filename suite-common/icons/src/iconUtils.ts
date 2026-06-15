@@ -38,7 +38,7 @@ export const networkIconSymbolMap = {
     zec: 'zec',
 } as const satisfies Record<NetworkIconSymbol, NetworkIconName>;
 
-export const testnetNetworkIconSymbols = [
+const testnetNetworkIconSymbols = [
     'test',
     'regtest',
     'tada',
@@ -50,7 +50,7 @@ export const testnetNetworkIconSymbols = [
     'dsol',
 ] as const satisfies readonly NetworkIconSymbol[];
 
-export type TestnetNetworkIconSymbol = (typeof testnetNetworkIconSymbols)[number];
+type TestnetNetworkIconSymbol = (typeof testnetNetworkIconSymbols)[number];
 
 const testnetNetworkIconSymbolSet: ReadonlySet<NetworkIconSymbol> = new Set(
     testnetNetworkIconSymbols,
