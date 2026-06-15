@@ -1,0 +1,28 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../coins/bitcoin/bitcoin-suite"
+        },
+        {
+            "path": "../../coins/cardano/cardano-suite"
+        },
+        {
+            "path": "../../coins/ethereum/ethereum-suite"
+        },
+        {
+            "path": "../../coins/ripple/ripple-suite"
+        },
+        {
+            "path": "../../coins/solana/solana-suite"
+        },
+        {
+            "path": "../../coins/stellar/stellar-suite"
+        },
+        {
+            "path": "../../coins/network-module/suite-types"
+        },
+        { "path": "../../coins/tron/tron-suite" }
+    ]
+}

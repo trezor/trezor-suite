@@ -49,6 +49,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/mev": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/receive": "workspace:*",
