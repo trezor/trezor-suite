@@ -1,4 +1,4 @@
-# GitHub-native agentic planning workflow
+# Conveyor — a GitHub-native agentic dev workflow
 
 > **Status: proposal / RFC.** This directory is opened as a draft PR to start a
 > team discussion. Where the skills ultimately live (this repo vs. a dedicated
@@ -6,20 +6,20 @@
 
 ## Why
 
-We deliver code. Every feature goes through the same four phases:
+We deliver code. Every feature goes through the same four stations:
 
 ```
 plan  →  implement  →  review  →  test
 ```
 
-Think of it as an **assembly line**. The product — a feature — moves down a
-conveyor belt from station to station. At each station an agent does its shift of
-work and passes the product to the next station; a human steps in only at the few
-stations where human judgement is irreplaceable (taste, architecture, product
-decisions, the final review). The scarce, non-scalable resource is **human
-attention** — not tokens. The whole design exists to keep the belt moving with as
-little human time on it as possible, and to let any worker with spare tokens take
-over any station.
+**Conveyor** treats this as an **assembly line**. The product — a feature — moves
+down the belt from station to station. At each station an agent does its shift of
+work and passes the product to the next station; a human steps onto the line only
+at the few stations where human judgement is irreplaceable (taste, architecture,
+product decisions, the final review). The scarce, non-scalable resource is
+**human attention** — not tokens. The whole design exists to keep the belt moving
+with as little human time on it as possible, and to let any worker with spare
+tokens take over any station. The skills are prefixed `conveyor-*`.
 
 Two structural ideas make that possible:
 
@@ -47,9 +47,9 @@ One GitHub issue per feature plan.
 
 | Slot | Role | Who writes it |
 | --- | --- | --- |
-| **Issue body** | The single source of truth: the always-current, consolidated plan. Rewritten in place as the plan evolves. | `plan-create`, then `plan-review` |
-| **Status comment** (first comment) | A living dashboard: lifecycle state, open decisions waiting for a human, resolved decisions, and per-lens review status. Rewritten in place. | `plan-create` (placeholder), `plan-review` (maintained) |
-| **Thread comments** | The working log: each review lens posts its raw findings as its own comment. Append-only, preserves discussion history. | `plan-review` lenses + humans |
+| **Issue body** | The single source of truth: the always-current, consolidated plan. Rewritten in place as the plan evolves. | `conveyor-plan-create`, then `conveyor-plan-review` |
+| **Status comment** (first comment) | A living dashboard: lifecycle state, open decisions waiting for a human, resolved decisions, and per-lens review status. Rewritten in place. | `conveyor-plan-create` (placeholder), `conveyor-plan-review` (maintained) |
+| **Thread comments** | The working log: each review lens posts its raw findings as its own comment. Append-only, preserves discussion history. | `conveyor-plan-review` lenses + humans |
 
 Rationale: the body is what GitHub surfaces at the top and is the thing an
 implementer will read, so it must always be current. The status comment is the
@@ -78,20 +78,20 @@ out of tokens.
 Labels live on the **issue** until the PR opens, then on the **PR**.
 
 ```
-ISSUE                          plan-create        plan-review
+ISSUE                          conveyor-plan-create        conveyor-plan-review
   (idea)──▶ plan:draft ──▶ plan:in-review ──┐
                                             │ parked
                     ┌────────clean──────────┴──────────┐
                     ▼                                   ▼
           plan:ready-to-implement                 plan:needs-human
-                    │                          (re-run plan-review to drain)
-═══════════════════╪═══════ plan-implement opens PR; belt moves to the PR ══════
+                    │                          (re-run conveyor-plan-review to drain)
+═══════════════════╪═══════ conveyor-implement opens PR; belt moves to the PR ══════
 PR                  ▼
              impl:in-progress ──(implement, CI→green, rebase)──┐
                     │                                          │
           ┌─green + fresh──────────────▶ review:queued         │
           └─stuck / plan wrong ────────▶ impl:needs-human      │
-                    │ pr-review: Copilot + adversarial         │
+                    │ conveyor-review: Copilot + adversarial         │
                     ▼                                          │
              review:in-progress ───────────────────────────────┘
                     │
@@ -101,15 +101,15 @@ PR                  ▼
 
 | Label | On | Meaning | Next action |
 | --- | --- | --- | --- |
-| `plan:draft` | issue | Issue created, not yet reviewed | run `plan-review` |
+| `plan:draft` | issue | Issue created, not yet reviewed | run `conveyor-plan-review` |
 | `plan:in-review` | issue | A plan review is in progress | wait / let it finish |
-| `plan:needs-human` | issue | Plan decisions parked for a human | run `plan-review` to drain |
-| `plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `plan-implement` |
+| `plan:needs-human` | issue | Plan decisions parked for a human | run `conveyor-plan-review` to drain |
+| `plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `conveyor-implement` |
 | `impl:in-progress` | issue→PR | Being implemented now — **active lock** (stale ⇒ takeover) | let it run, or take over if stale |
 | `impl:needs-human` | PR | Implementation stuck (CI unbeatable, or the plan is wrong) — **hands-off** | a human fixes it or bounces it to planning |
-| `review:queued` | PR | Green draft PR, awaiting agentic review | run `pr-review` |
+| `review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-review` |
 | `review:in-progress` | PR | Agentic review running — **lock** | let it run |
-| `review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `pr-review` |
+| `review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-review` |
 | `review:passed` | PR | Agentic review clean | a human verifies, flips draft→ready, finds a reviewer |
 
 A worker "with tokens" finds an open station by filtering the board:
@@ -125,18 +125,18 @@ gh pr list --label review:needs-human          # review findings waiting for a h
 
 ## The skills
 
-### `plan-create`
+### `conveyor-plan-create`
 Interactive. Guides one developer through turning an idea into a well-formed
 plan using forcing questions (one at a time, with pushback on vague answers),
 then creates the issue: body = structured plan, status comment = placeholder,
-label = `plan:draft`. See [plan-create/SKILL.md](plan-create/SKILL.md).
+label = `plan:draft`. See [conveyor-plan-create/SKILL.md](conveyor-plan-create/SKILL.md).
 
-### `plan-review`
+### `conveyor-plan-review`
 Runs multiple independent review lenses (scope/product, architecture, and —
 conditionally — design and DX) against the plan. Each lens does full analysis;
 mechanical decisions are auto-resolved, only genuine taste decisions and
 user-challenges are surfaced to a human. See
-[plan-review/SKILL.md](plan-review/SKILL.md).
+[conveyor-plan-review/SKILL.md](conveyor-plan-review/SKILL.md).
 
 It has **two execution modes** sharing one core:
 
@@ -151,7 +151,7 @@ The only difference between the modes is where the decision gate ends up:
 the terminal (live) or GitHub (parked). Human interaction is batched and
 minimized by design.
 
-### `plan-implement`
+### `conveyor-implement`
 Picks up a `plan:ready-to-implement` issue, claims the `impl:in-progress` lock,
 implements it per the consolidated plan, and opens a draft PR linked with
 `Closes #<issue>`. It then drives the PR to green and keeps the branch fresh
@@ -170,11 +170,11 @@ without a human:
 - **Handoff.** Green + fresh → `review:queued` on the PR. The PR stays a draft.
 
 When the PR opens, it migrates the lock to the PR and stops touching the issue
-(now the frozen spec). Same two modes as `plan-review`: interactive (watch CI
+(now the frozen spec). Same two modes as `conveyor-plan-review`: interactive (watch CI
 live) or autonomous (routine polls CI between wakes — the mode meant for burning
-pooled tokens overnight). See [plan-implement/SKILL.md](plan-implement/SKILL.md).
+pooled tokens overnight). See [conveyor-implement/SKILL.md](conveyor-implement/SKILL.md).
 
-### `pr-review`
+### `conveyor-review`
 The agentic review station. Picks up a `review:queued` draft PR and gets it
 review-clean while it is still a draft:
 
@@ -184,7 +184,7 @@ review-clean while it is still a draft:
   per area plus a security pass for a large or signing-sensitive one. Reviewers
   hunt real bugs and breakage, not style.
 - **Processes all findings** (Copilot + adversarial) through the same
-  classification as `plan-review`: auto-fix only high-confidence, low-risk,
+  classification as `conveyor-plan-review`: auto-fix only high-confidence, low-risk,
   behaviour-preserving findings (commit, push, reply with the SHA, resolve);
   **park** everything else into the review status comment and set
   `review:needs-human`.
@@ -193,7 +193,7 @@ review-clean while it is still a draft:
   state, flip the draft, and find a second human to do the final review.
 
 Same two modes (interactive / autonomous routine). See
-[pr-review/SKILL.md](pr-review/SKILL.md).
+[conveyor-review/SKILL.md](conveyor-review/SKILL.md).
 
 ## Design principles (borrowed, adapted)
 
@@ -222,7 +222,7 @@ Same two modes (interactive / autonomous routine). See
   counts as abandoned and another agent may take over.
 - **Rebase threshold** — 20 commits behind `develop` is a starting heuristic;
   each rebase re-triggers a full CI run, so the number trades freshness for cost.
-- **Triage thresholds** for `pr-review` — the diff sizes that switch between one
+- **Triage thresholds** for `conveyor-review` — the diff sizes that switch between one
   reviewer, a fan-out, and an added security pass.
 - **Copilot reviewer wiring** — the exact way to request Copilot's review for our
   org, and how reliable / fast its delivery is.

@@ -1,12 +1,12 @@
 ---
-name: pr-review
+name: conveyor-review
 description: Run the agentic review station on a green draft PR (label review:queued). Request GitHub Copilot's review, run a triage-scaled adversarial second-opinion review in parallel, then process all findings — auto-fixing high-confidence low-risk ones and parking the rest for a human. Leaves a clean draft PR for a human to promote to "Ready for review". Runs interactively or autonomously (overnight routine). Use when asked to "review a PR", "run agentic review", or "process Copilot findings".
 ---
 
-# pr-review
+# conveyor-review
 
 The agentic review station of the [workflow](../README.md): take a green draft PR
-that `plan-implement` handed off (`review:queued`) and get it review-clean while
+that `conveyor-implement` handed off (`review:queued`) and get it review-clean while
 it is still a draft, so the only thing left is a human's final look.
 
 This skill never promotes the PR to "Ready for review" — that is strictly a
@@ -73,7 +73,7 @@ with your adversarial findings into one set.
 ### 4. Process the findings
 
 Gate for noise, then classify each finding by who resolves it (same model as
-`plan-review`):
+`conveyor-plan-review`):
 
 - **Noise gate.** Consider findings at confidence ≥ 6/10; always consider
   anything that looks like a real bug or a security issue regardless of
@@ -100,7 +100,7 @@ for me".
   **draft** — a human now verifies and promotes it to "Ready for review".
 - **Parked** (open findings remain): set `review:needs-human`, remove
   `review:in-progress`. `review:needs-human` is hands-off for other agents until a
-  human resolves the open findings (then re-run `pr-review` to continue).
+  human resolves the open findings (then re-run `conveyor-review` to continue).
 
 ## Status comment template
 
@@ -122,7 +122,7 @@ for me".
 | Copilot | requested / delivered | <n> |
 | Adversarial | <n reviewers> | <n> |
 
-_Last updated by: pr-review (<interactive|autonomous>)_
+_Last updated by: conveyor-review (<interactive|autonomous>)_
 ```
 
 ## Modes

@@ -1,12 +1,12 @@
 ---
-name: plan-create
+name: conveyor-plan-create
 description: Turn a feature idea into a well-formed GitHub issue (a feature plan) through forcing questions, then create the issue with a structured body, a status-comment placeholder, and the plan:draft label. Use when starting a new feature, beginning planning, or when asked to "create a plan" or "open a plan issue".
 ---
 
-# plan-create
+# conveyor-plan-create
 
 Guide one developer from a raw idea to a `plan:draft` GitHub issue that is good
-enough to hand to `plan-review`. This is the first step of the
+enough to hand to `conveyor-plan-review`. This is the first step of the
 [planning workflow](../README.md).
 
 You are an interviewer first and a scribe second. A weak plan in means three
@@ -16,7 +16,7 @@ effort here.
 ## When to use
 
 - The developer has a feature idea and wants to start the workflow.
-- There is no issue yet (if an issue exists, use `plan-review` instead).
+- There is no issue yet (if an issue exists, use `conveyor-plan-review` instead).
 
 ## Process
 
@@ -54,7 +54,7 @@ well-evidenced, you may collapse to the two highest-leverage open questions
 
 If a question hinges on how the code actually works (which package owns a flow,
 whether a pattern already exists), do a quick read of the codebase rather than
-guessing — but keep it light. Deep architecture analysis is `plan-review`'s job,
+guessing — but keep it light. Deep architecture analysis is `conveyor-plan-review`'s job,
 not yours. Note anything you find as an "Open question" rather than resolving it.
 
 ### 3. Draft the plan
@@ -101,7 +101,7 @@ Then create the issue with `gh`:
 - **Label:** `plan:draft`. (If the label does not exist yet, tell the developer;
   do not silently create labels on the upstream repo.)
 - **First comment — the status placeholder.** Immediately post this as the first
-  comment so `plan-review` has a dashboard to maintain:
+  comment so `conveyor-plan-review` has a dashboard to maintain:
 
 ```markdown
 ## 🤖 Plan review status
@@ -128,7 +128,7 @@ _Last updated by: plan-create_
 ### 5. Hand off
 
 Report the issue URL and tell the developer the next step: anyone with tokens
-can run `plan-review` on it (`gh issue list --label plan:draft` to find it).
+can run `conveyor-plan-review` on it (`gh issue list --label plan:draft` to find it).
 
 ## Rules
 
