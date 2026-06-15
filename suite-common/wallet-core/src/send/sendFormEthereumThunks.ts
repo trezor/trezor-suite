@@ -557,6 +557,33 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         ).unwrap();
         dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
 
+        const customNonce = formState.ethereumNonce?.trim();
+        let nonce: string;
+
+        if (customNonce && !formState.rbfParams) {
+            const customBig = new BigNumber(customNonce);
+            const confirmedBig = new BigNumber(confirmedNonce);
+            const autoBig = new BigNumber(autoNonce);
+
+            if (customBig.lt(confirmedBig)) {
+                return rejectWithValue({
+                    error: 'sign-transaction-failed',
+                    message: `Custom nonce ${customNonce} is below the confirmed nonce ${confirmedNonce} and would be rejected by the network.`,
+                });
+            }
+
+            if (customBig.gt(autoBig)) {
+                return rejectWithValue({
+                    error: 'sign-transaction-failed',
+                    message: `Custom nonce ${customNonce} would create a transaction gap. Next expected nonce: ${autoNonce}.`,
+                });
+            }
+
+            nonce = customNonce;
+        } else {
+            nonce = autoNonce;
+        }
+
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
