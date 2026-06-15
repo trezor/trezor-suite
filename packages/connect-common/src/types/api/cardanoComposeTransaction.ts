@@ -5,13 +5,13 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { DerivationPath, type Params, type Response } from '../params';
-import { CardanoCertificate, CardanoCertificatePointer } from './cardano';
-import type { CardanoInput, CardanoOutput } from './cardano';
 import type {
     PrecomposeResultError,
     PrecomposeResultFinal,
     PrecomposeResultNonFinal,
-} from './composeTransaction';
+} from './bitcoin/composeTransaction';
+import { CardanoCertificate, CardanoCertificatePointer } from './cardano';
+import type { CardanoInput, CardanoOutput } from './cardano';
 
 export type PrecomposedTransactionFinalCardano = Omit<
     PrecomposeResultFinal,

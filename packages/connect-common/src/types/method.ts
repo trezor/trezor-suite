@@ -1,5 +1,5 @@
 import type { UiRequestConfirmation } from '../events/ui-request';
-import type { PrecomposeResultFinal } from './api/composeTransaction';
+import type { PrecomposeResultFinal } from './api/bitcoin/composeTransaction';
 
 /**
  * Permission category requested by a `@trezor/connect` method.
