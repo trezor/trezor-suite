@@ -39,7 +39,7 @@ export type { AuthenticateDeviceParams, AuthenticateDeviceResult } from './api/a
 export { CipherKeyValue } from './api/cipherKeyValue';
 export { ApplySettings } from './api/applySettings';
 export { AuthorizeCoinjoin } from './api/bitcoin/authorizeCoinjoin';
-export * from './api/uiResponse';
+export * from './api/core/uiResponse';
 export type {
     ComposeUtxo,
     ComposeResultFinal,
@@ -59,7 +59,7 @@ export {
     CARDANO_DERIVATIONS,
 } from './api/discoverAccounts';
 export { type FirmwareUpdateResponse } from './api/firmwareUpdate';
-export { type UpdateConnectSettings } from './api/updateConnectSettings';
+export { type UpdateConnectSettings } from './api/core/updateConnectSettings';
 export { GetOwnershipId } from './api/getOwnershipId';
 export { GetOwnershipProof } from './api/getOwnershipProof';
 export { PushTransaction } from './api/pushTransaction';

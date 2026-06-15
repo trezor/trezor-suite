@@ -21,7 +21,6 @@ import type { blockchainSubscribeFiatRates } from './blockchainSubscribeFiatRate
 import type { blockchainUnsubscribe } from './blockchainUnsubscribe';
 import type { blockchainUnsubscribeFiatRates } from './blockchainUnsubscribeFiatRates';
 import type { blockchainValidateEvmRpcUrl } from './blockchainValidateEvmRpcUrl';
-import type { cancel } from './cancel';
 import type { cardanoComposeTransaction } from './cardanoComposeTransaction';
 import type { cardanoGetAddress } from './cardanoGetAddress';
 import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
@@ -33,7 +32,6 @@ import type { changePin } from './changePin';
 import type { changeWipeCode } from './changeWipeCode';
 import type { cipherKeyValue } from './cipherKeyValue';
 import type { discoverAccounts } from './discoverAccounts';
-import type { dispose } from './dispose';
 import type { ethereumGetAddress } from './ethereumGetAddress';
 import type { ethereumGetPublicKey } from './ethereumGetPublicKey';
 import type { ethereumSignMessage } from './ethereumSignMessage';
@@ -62,12 +60,9 @@ import type { moneroKeyImageSync } from './moneroKeyImageSync';
 import type { moneroSignTransaction } from './moneroSignTransaction';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { off } from './off';
-import type { on } from './on';
 import type { pingDevice } from './pingDevice';
 import type { pushTransaction } from './pushTransaction';
 import type { recoveryDevice } from './recoveryDevice';
-import type { removeAllListeners } from './removeAllListeners';
 import type { requestLogin } from './requestLogin';
 import type { resetDevice } from './resetDevice';
 import type { rippleGetAddress } from './rippleGetAddress';
@@ -91,40 +86,14 @@ import type { thpRemoveCredentials } from './thpRemoveCredentials';
 import type { tronComposeTransaction } from './tronComposeTransaction';
 import type { tronGetAddress } from './tronGetAddress';
 import type { tronSignTransaction } from './tronSignTransaction';
-import type { uiResponse } from './uiResponse';
 import type { unlockPath } from './unlockPath';
-import type { updateConnectSettings } from './updateConnectSettings';
 import type { verifyMessage } from './verifyMessage';
 import type { wipeDevice } from './wipeDevice';
 
 import { TrezorConnectBitcoin } from './bitcoin';
+import { TrezorConnectCore } from './core';
 
-export { TrezorConnectBitcoin };
-
-// Initialization, lifecycle, events, and settings
-export const TrezorConnectCore = Type.Object({
-    // For internal use, no public documentation.
-    dispose: Type.Unsafe<typeof dispose>(),
-
-    // For internal use, no public documentation.
-    cancel: Type.Unsafe<typeof cancel>(),
-
-    // For internal use, no public documentation.
-    on: Type.Unsafe<typeof on>(),
-
-    // For internal use, no public documentation.
-    off: Type.Unsafe<typeof off>(),
-
-    // For internal use, no public documentation.
-    removeAllListeners: Type.Unsafe<typeof removeAllListeners>(),
-
-    // For internal use, no public documentation.
-    uiResponse: Type.Unsafe<typeof uiResponse>(),
-
-    // For internal use, no public documentation.
-    updateConnectSettings: Type.Unsafe<typeof updateConnectSettings>(),
-});
-export type TrezorConnectCore = Static<typeof TrezorConnectCore>;
+export { TrezorConnectBitcoin, TrezorConnectCore };
 
 // Device configuration, firmware, security, and hardware control
 export const TrezorConnectManagement = Type.Object({
