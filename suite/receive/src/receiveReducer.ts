@@ -89,7 +89,7 @@ const markAddressUnverified = (draft: ReceiveAccountState, path: string, address
     draft.currentFreshAddress = undefined;
 };
 
-export const receiveSlice = createSlice({
+const receiveSlice = createSlice({
     name: 'receive',
     initialState: receiveInitialState,
     reducers: {
