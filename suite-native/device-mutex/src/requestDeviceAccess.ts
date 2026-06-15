@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 
 import { deviceAccessMutex } from './DeviceAccessMutex';
@@ -17,7 +16,7 @@ export const requestDeviceAccess = async <TReturnType>(
         : deviceAccessMutex.lock());
     if (!wasLockSuccessful) return DEVICE_ACCESS_ERROR;
 
-    const keepAwakeTag = randomUUID();
+    const keepAwakeTag = crypto.randomUUID();
 
     try {
         activateKeepAwakeAsync(keepAwakeTag); // Prevents screen from sleeping while app interacts with device.
