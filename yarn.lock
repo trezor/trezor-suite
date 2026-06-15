@@ -14585,6 +14585,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/debug@workspace:*, @suite/debug@workspace:suite/debug":
+  version: 0.0.0-use.local
+  resolution: "@suite/debug@workspace:suite/debug"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/settings": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
 "@suite/desktop-update@workspace:*, @suite/desktop-update@workspace:suite/desktop-update":
   version: 0.0.0-use.local
   resolution: "@suite/desktop-update@workspace:suite/desktop-update"
@@ -16741,6 +16758,7 @@ __metadata:
     "@suite/analytics": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
     "@suite/backup": "workspace:*"
+    "@suite/debug": "workspace:*"
     "@suite/desktop-update": "workspace:*"
     "@suite/device": "workspace:*"
     "@suite/discreet-mode": "workspace:*"

@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { DebugLegend } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
@@ -23,7 +24,6 @@ import {
 } from './OnboardingCancelButtonContext';
 import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 import { ConnectionGlobalModalManager } from '../connection/ConnectionGlobalModalManager';
-import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 
 const OnboardingSpacer = styled.div`
     height: ${TRAFFIC_LIGHT_DEFAULT_OFFSET}px;

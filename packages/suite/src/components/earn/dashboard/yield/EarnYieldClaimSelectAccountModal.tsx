@@ -1,6 +1,7 @@
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { DebugOnlyBadge } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
@@ -10,7 +11,6 @@ import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { CardList, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
 
 type EarnYieldClaimSelectAccountModalProps = {

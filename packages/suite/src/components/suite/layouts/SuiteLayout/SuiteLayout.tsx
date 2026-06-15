@@ -2,6 +2,7 @@ import { type ReactNode, useRef, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { DebugLegend } from '@suite/debug';
 import { ScrollContext } from '@suite/router';
 import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
 
@@ -19,7 +20,6 @@ import { AppShortcuts } from './AppShortcuts';
 import { ContentContainer } from '../ContentContainer';
 import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
-import { DebugLegend } from './DebugLegend';
 import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
 import { Sidebar } from './Sidebar/Sidebar';
 import { SwitchDeviceLayer } from './SwitchDeviceLayer';

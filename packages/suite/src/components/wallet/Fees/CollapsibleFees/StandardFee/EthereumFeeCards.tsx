@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
+import { DebugOnlyBadge } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { formatDurationStrict } from '@suite-common/suite-utils';
@@ -12,7 +13,6 @@ import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
