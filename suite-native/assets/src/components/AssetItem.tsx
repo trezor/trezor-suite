@@ -81,8 +81,8 @@ const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {
     return (
         <CryptoIconWithPercentage
             iconName={symbol}
-            percentage={assetPercentages?.fiatPercentage}
-            percentageOffset={assetPercentages?.fiatPercentageOffset}
+            percentage={assetPercentages.fiatPercentage}
+            percentageOffset={assetPercentages.fiatPercentageOffset}
         />
     );
 });

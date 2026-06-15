@@ -1,14 +1,19 @@
-import { calculateAssetsPercentage } from '@suite-common/assets';
+import {
+    type AssetFiatBalanceWithPercentage,
+    calculateAssetsPercentage,
+} from '@suite-common/assets';
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type DiscoveryRootState,
     type FiatRatesRootState,
     type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
+    selectHasRunningDiscovery,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -30,7 +35,8 @@ export type AssetsRootState = AccountsRootState &
     WalletSettingsRootState &
     TokenDefinitionsRootState &
     NativeStakingRootState &
-    DeviceRootState;
+    DeviceRootState &
+    DiscoveryRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
 
@@ -134,39 +140,29 @@ export const selectAssetFiatValue = createMemoizedSelector(
     },
 );
 
-const selectAssetsFiatValuePercentage = createMemoizedSelector(
-    [selectDeviceAssetsWithBalances],
-    assets => {
-        const percentages = calculateAssetsPercentage(assets);
-
-        return percentages;
-    },
-);
-
 type AssetFiatPercentage = {
     fiatPercentage: number;
     fiatPercentageOffset: number;
 };
 
-const areAssetPercentagesEqual = (previous: AssetFiatPercentage, next: AssetFiatPercentage) =>
-    previous.fiatPercentage === next.fiatPercentage &&
-    previous.fiatPercentageOffset === next.fiatPercentageOffset;
+const selectAssetsFiatValuePercentage = createMemoizedSelector(
+    [selectDeviceAssetsWithBalances, selectHasRunningDiscovery],
+    (assets, hasDiscovery): AssetFiatBalanceWithPercentage[] =>
+        // While discovery runs the totals change every tick, so skip the full percentage pass and
+        // compute it once discovery finishes. The empty result must stay a STABLE reference
+        // (returnStableArrayIfEmpty) - that stability is what keeps selectAssetFiatValuePercentage
+        // stable during discovery, so its consumer needs no resultEqualityCheck.
+        hasDiscovery ? returnStableArrayIfEmpty([]) : calculateAssetsPercentage(assets),
+);
 
 export const selectAssetFiatValuePercentage = createMemoizedSelector(
     [selectAssetsFiatValuePercentage, (_state, symbol: NetworkSymbol) => symbol],
     (assetsPercentages, symbol): AssetFiatPercentage => {
         const asset = assetsPercentages.find(a => a.symbol === symbol);
 
-        const assetPercentage = {
+        return {
             fiatPercentage: Math.ceil(asset?.fiatPercentage ?? 0),
             fiatPercentageOffset: Math.floor(asset?.fiatPercentageOffset ?? 0),
         };
-
-        return assetPercentage;
-    },
-    {
-        memoizeOptions: {
-            resultEqualityCheck: areAssetPercentagesEqual,
-        },
     },
 );
