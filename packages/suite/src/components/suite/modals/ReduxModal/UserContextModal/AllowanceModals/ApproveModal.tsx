@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
+import { DebugOnlyBadge } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
@@ -23,7 +24,6 @@ import { AssetLogo, NetworkIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { borders } from '@trezor/theme';
 
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useAllowanceModal } from 'src/hooks/wallet/allowance';
