@@ -19,7 +19,7 @@ const getHeaderValue = (headers: http.OutgoingHttpHeaders | undefined, name: str
     return { key, value };
 };
 
-const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
+export const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     const identity = Array.isArray(proxyAuthorization) ? proxyAuthorization[0] : proxyAuthorization;
 
     // Only return identity name if it is explicitly defined.
