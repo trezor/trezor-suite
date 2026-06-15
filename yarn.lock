@@ -15739,6 +15739,7 @@ __metadata:
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     clsx: "npm:^2.1.1"
     concurrently: "npm:^9.2.1"
