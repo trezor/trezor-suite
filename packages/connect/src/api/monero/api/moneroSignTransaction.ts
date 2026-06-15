@@ -1,10 +1,11 @@
 import type { MethodPermission, PROTO } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 
 import type { MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
+import { validatePath } from '../../../utils/pathUtils';
 
 type Params = {
     address_n: number[];
@@ -61,7 +62,7 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
 
         // Validate path - must be minimum 3 hardened components
         const path = validatePath(payload.path, 3);
-        const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
+        const allHardened = path.every(component => (component & HD_HARDENED_PATH_PART) !== 0);
         if (!allHardened) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',

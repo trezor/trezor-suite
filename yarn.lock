@@ -11221,6 +11221,7 @@ __metadata:
     "@trezor/coins-solana": "workspace:*"
     "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -15949,6 +15950,8 @@ __metadata:
 "@trezor/crypto-utils@workspace:*, @trezor/crypto-utils@workspace:packages/crypto-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -15960,7 +15963,6 @@ __metadata:
   dependencies:
     "@noble/curves": "npm:^2.0.1"
     "@noble/post-quantum": "npm:^0.6.1"
-    "@trezor/crypto-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/utils": "workspace:*"

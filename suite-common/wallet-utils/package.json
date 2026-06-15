@@ -30,6 +30,7 @@
         "@trezor/coins-solana": "workspace:*",
         "@trezor/coins-stellar": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",

@@ -1,9 +1,10 @@
+import { toHardenedPathPart } from '@trezor/crypto-utils';
+
 import {
     getAccountType,
     getHDPath,
     getOutputScriptType,
     getScriptType,
-    toHardened,
     validatePath,
 } from '../pathUtils';
 
@@ -61,21 +62,27 @@ describe('utils/pathUtils', () => {
     describe('validatePath', () => {
         it('parses string path with hardened apostrophe', () => {
             expect(validatePath("m/44'/0'/0'")).toEqual([
-                toHardened(44),
-                toHardened(0),
-                toHardened(0),
+                toHardenedPathPart(44),
+                toHardenedPathPart(0),
+                toHardenedPathPart(0),
             ]);
             expect(validatePath("m/44'/0'/0'/0/0")).toEqual([
-                toHardened(44),
-                toHardened(0),
-                toHardened(0),
+                toHardenedPathPart(44),
+                toHardenedPathPart(0),
+                toHardenedPathPart(0),
                 0,
                 0,
             ]);
         });
 
         it('passes number[] path through unchanged', () => {
-            const path = [toHardened(44), toHardened(0), toHardened(0), 0, 0];
+            const path = [
+                toHardenedPathPart(44),
+                toHardenedPathPart(0),
+                toHardenedPathPart(0),
+                0,
+                0,
+            ];
             expect(validatePath(path)).toEqual(path);
         });
 
@@ -104,11 +111,17 @@ describe('utils/pathUtils', () => {
         });
 
         it('returns first 3 elements when base flag is set', () => {
-            const path = [toHardened(44), toHardened(0), toHardened(0), 0, 0];
+            const path = [
+                toHardenedPathPart(44),
+                toHardenedPathPart(0),
+                toHardenedPathPart(0),
+                0,
+                0,
+            ];
             expect(validatePath(path, 0, true)).toEqual([
-                toHardened(44),
-                toHardened(0),
-                toHardened(0),
+                toHardenedPathPart(44),
+                toHardenedPathPart(0),
+                toHardenedPathPart(0),
             ]);
         });
     });

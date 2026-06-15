@@ -8,13 +8,14 @@ import {
     createUiMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
+import { getSerializedPath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 import {
     addressParametersFromProto,
@@ -79,7 +80,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const accountIndex: number = addressN[2];
 
-            return `Export Cardano address for account #${fromHardened(accountIndex) + 1}`;
+            return `Export Cardano address for account #${fromHardenedPathPart(accountIndex) + 1}`;
         }
 
         return 'Export multiple Cardano addresses';
