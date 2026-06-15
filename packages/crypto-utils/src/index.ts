@@ -1,3 +1,4 @@
+export { comparePath } from './bipPath/comparePath';
 export { getHDPath } from './bipPath/getHDPath';
 export {
     HD_HARDENED_PATH_PART,
