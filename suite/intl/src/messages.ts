@@ -3741,6 +3741,14 @@ export const messages = defineMessages({
         id: 'TR_NONCE',
         defaultMessage: 'Nonce',
     },
+    ETHEREUM_NONCE_IS_NOT_INTEGER: {
+        id: 'ETHEREUM_NONCE_IS_NOT_INTEGER',
+        defaultMessage: 'Nonce must be a non-negative integer',
+    },
+    ETHEREUM_NONCE_IS_TOO_LOW: {
+        id: 'ETHEREUM_NONCE_IS_TOO_LOW',
+        defaultMessage: 'Nonce must be 0 or greater',
+    },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: "The PINs you have entered don't match",
