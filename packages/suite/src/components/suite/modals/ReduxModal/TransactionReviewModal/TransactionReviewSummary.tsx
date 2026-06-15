@@ -1,10 +1,13 @@
+import { useEffect, useState } from 'react';
+
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
-import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import { selectPrecomposedSendForm, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
@@ -25,7 +28,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
-import { useLocales } from 'src/hooks/suite';
+import { useDispatch, useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
@@ -80,7 +83,38 @@ export const TransactionReviewSummary = ({
     const isFeeCustom = drafts[currentAccountKey as SendFormDraftKey]?.selectedFee === 'custom'; // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
 
+    const dispatch = useDispatch();
+    const [resolvedNonce, setResolvedNonce] = useState<string>();
+
     const isEthereumNetworkType = networkType === 'ethereum';
+    // Read from the precomposed form actually being signed — not the draft, which the RBF
+    // (bump-fee / cancel) flow does not populate, so its rbfParams/nonce would be missing.
+    const precomposedForm = useSelector(selectPrecomposedSendForm);
+    const rbfParams = precomposedForm?.rbfParams;
+
+    useEffect(() => {
+        if (!isEthereumNetworkType) return;
+
+        // Nonce is resolved at signing time, so we replicate that resolution here to show
+        // the user the exact nonce that will be used for the transaction they are reviewing.
+        const promise = dispatch(
+            ethereumGetCurrentNonceThunk({
+                selectedAccount: account as Account & { networkType: 'ethereum' },
+                rbfParams,
+            }),
+        );
+
+        void promise
+            .unwrap()
+            .then(result => setResolvedNonce(result.nonce))
+            .catch(() => {});
+
+        return () => {
+            promise.abort();
+        };
+    }, [account, dispatch, isEthereumNetworkType, rbfParams]);
+
+    const ethereumNonce = resolvedNonce;
 
     return (
         <>
@@ -129,6 +163,13 @@ export const TransactionReviewSummary = ({
                                     />
                                 </Note>
                             ) : undefined}
+                            {ethereumNonce !== undefined && (
+                                <Note data-testid="@modal/ethereum/nonce" iconName="receipt">
+                                    <Translation id="TR_NONCE" />
+                                    {': '}
+                                    {ethereumNonce}
+                                </Note>
+                            )}
                         </>
                     )}
 
