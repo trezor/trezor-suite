@@ -34,13 +34,13 @@ describe('TrezorConnect.authenticateDevice', () => {
                     {
                         rootPubKeysOptiga: value.debug.rootPubKeysOptiga,
                         rootPubKeysTropic: value.debug.rootPubKeysTropic,
+                        rootPubKeysMLDSA: value.debug.rootPubKeysMLDSA,
                     },
                 ]),
         ),
     };
 
-    // T3W1 skipped (#23966)
-    /*conditionalTest(['*T3W1'], 'validation successful - tropic', async () => {
+    conditionalTest(['*T3W1', '<2.12.3'], 'validation successful - tropic and mcu', async () => {
         const result = await TrezorConnect.authenticateDevice({
             config,
         });
@@ -49,13 +49,11 @@ describe('TrezorConnect.authenticateDevice', () => {
             success: true,
             payload: {
                 optigaResult: { valid: true },
-                // trezor-user-env T3W1 has no tropic debug keys provisioned, but it is now required.
-                // TODO change to true when it's fixed in trezor-user-env (this E2E will start failing)
-                // once this is reenabled, note that the serialNumbers must match BETWEEN all results, else it will be failure
-                tropicResult: { valid: false },
+                tropicResult: { valid: true },
+                mcuResult: { valid: true },
             },
         });
-    });*/
+    });
 
     conditionalTest(['*T3T1', '*T3B1', '*T2B1'], 'validation successful - optiga', async () => {
         const result = await TrezorConnect.authenticateDevice({
@@ -72,7 +70,7 @@ describe('TrezorConnect.authenticateDevice', () => {
     });
 
     conditionalTest(
-        ['!T2T1', '!T1B1', '!T3W1'], // T3W1 skipped (#23966)
+        ['!T2T1', '!T1B1'],
         'validation unsuccessful (rootPubKey not found)',
         async () => {
             const result = await TrezorConnect.authenticateDevice({
