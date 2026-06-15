@@ -98,7 +98,9 @@ stop and reconcile, do not retry the push. Two crash-safety rules back this up:
 **add-before-remove** on every label transition (add the new lifecycle label before
 removing the old, so a crash mid-transition leaves an extra findable label, never an
 invisible orphan), and **step-0 reconciliation** at claim time (if an issue/PR carries
-zero conveyor lifecycle labels, or more than one, fix that before doing anything else).
+zero conveyor lifecycle labels or more than one — or a single label that disagrees
+with the status comment's `State:` line, the trace of a run interrupted mid-handoff
+— re-derive the true state and align both before doing anything else).
 
 ## Lifecycle (labels as a state machine)
 

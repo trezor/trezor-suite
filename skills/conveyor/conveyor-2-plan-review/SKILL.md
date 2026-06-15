@@ -30,7 +30,14 @@ human, batched.** Everything else is auto-decided and logged.
 
 **Reconcile first (step-0).** Look at the issue's `conveyor/plan:*` labels. If it has zero
 of them (orphan) or more than one, fix that before proceeding — drop the stale
-ones so it carries exactly the one lifecycle label it should. Only then claim.
+ones so it carries exactly the one lifecycle label it should. **Also cross-check
+that single label against the status comment's `State:` line.** If they disagree, a
+previous run was interrupted between writing the comment and swapping the label —
+re-derive the true state from the comment (unresolved open decisions →
+`conveyor/plan:needs-human`; all clean with the acceptance-criteria gate passing →
+`conveyor/plan:ready-to-implement`; an inconclusive in-review run → treat as a
+stale lock and take over) and align both the label (add-before-remove) and the
+`State:` line. Only then claim.
 
 Fetch the issue body (the plan), the status comment, and the thread; **remember a
 hash of the body and the label set as you loaded them** — you will re-check before

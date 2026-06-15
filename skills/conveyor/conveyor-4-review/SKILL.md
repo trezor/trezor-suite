@@ -45,7 +45,14 @@ working state lives on the **PR**, mirroring the issue model one station back:
 
 **Reconcile first (step-0).** Look at the PR's `conveyor/review:*` labels. If it has zero
 of them (orphan) or more than one, fix that before proceeding — drop the stale
-ones so it carries exactly the one lifecycle label it should. Only then claim.
+ones so it carries exactly the one lifecycle label it should. **Also cross-check
+that single label against the status comment's `State:` line.** If they disagree, a
+previous run was interrupted between writing the comment and swapping the label —
+re-derive the true state from the comment (unresolved open findings or a pending
+split → `conveyor/review:needs-human`; all clean and the branch fresh →
+`conveyor/review:passed`; an inconclusive in-progress run → treat as a stale lock
+and take over) and align both the label (add-before-remove) and the `State:` line.
+Only then claim.
 
 Claim by **adding** `conveyor/review:in-progress` (the advisory review lock) **before**
 removing the prior label (`conveyor/review:queued` on a fresh run, `conveyor/review:needs-human`
