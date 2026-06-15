@@ -34,6 +34,17 @@ Two structural ideas make that possible:
 
 GitHub is therefore the shared work queue. Labels are the handoff token.
 
+Each station has a clear goal, and they build on each other:
+
+- **Plan** aims at a **complete feature** — the whole thing, done properly. Size
+  is not a constraint here; do not pre-shrink the plan to fit a small PR.
+- **Implement** builds that feature and **proves it as a proof of concept**: CI
+  stands up a dev environment and the e2e tests pass. A PoC that does not build a
+  dev environment or pass e2e has not earned the next station.
+- **Review** (and later QA) only begins **after the PoC is proven**. This is also
+  where a too-large change is **split** into shippable pieces — so completeness is
+  planned and proven first, and broken down second, not the other way around.
+
 ## Scope of this proposal
 
 This RFC covers the stations from an idea up to a **review-clean draft PR waiting
@@ -130,7 +141,9 @@ gh pr list --label review:needs-human          # review findings waiting for a h
 Interactive. Guides one developer through turning an idea into a well-formed
 plan using forcing questions (one at a time, with pushback on vague answers),
 then creates the issue: body = structured plan, status comment = placeholder,
-label = `plan:draft`. See [conveyor-plan-create/SKILL.md](conveyor-plan-create/SKILL.md).
+label = `plan:draft`. The plan targets the **complete feature** — size is not a
+constraint here; splitting is a downstream review concern. See
+[conveyor-plan-create/SKILL.md](conveyor-plan-create/SKILL.md).
 
 ### `conveyor-plan-review`
 Runs multiple independent review lenses (scope/product, architecture, and —
@@ -154,13 +167,16 @@ minimized by design.
 
 ### `conveyor-implement`
 Picks up a `plan:ready-to-implement` issue, claims the `impl:in-progress` lock,
-implements it per the consolidated plan, and opens a draft PR linked with
-`Closes #<issue>`. It then drives the PR to green and keeps the branch fresh
-without a human:
+implements the complete feature per the consolidated plan, and opens a draft PR
+linked with `Closes #<issue>`. The draft's goal is a **proven proof of concept**:
+it drives the PR to green and keeps the branch fresh without a human:
 
-- **CI to green.** Watches the checks and fixes failures it caused. "Green" means
-  green, with two escape valves so it does not burn tokens on failures that are
-  not its to fix: a gate already **broken in `develop`** (verified) is noted and
+- **CI to green — including the PoC gates.** Watches the checks and fixes failures
+  it caused. "Green" means green and **explicitly includes the dev-environment
+  build and the e2e tests** — a feature that builds units but does not stand up a
+  dev environment or pass e2e has not proven its PoC and has not earned the review
+  station. Two escape valves keep it from burning tokens on failures that are not
+  its to fix: a gate already **broken in `develop`** (verified) is noted and
   ignored; **flaky** checks are rerun a few times. After **3 fix attempts on the
   same check** — or if a failure shows the plan itself is wrong — it parks to
   `impl:needs-human` instead of looping forever.

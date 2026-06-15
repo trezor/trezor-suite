@@ -10,8 +10,12 @@ PR that is ready for the agentic review phase. This is the third step of the
 [planning workflow](../README.md); read that README for the data model,
 lifecycle, and token-pooling model before running.
 
-The job ends at **green CI + fresh branch + draft PR open**. This skill does
-**not** do the code review — that is the next phase.
+**The draft's goal is to prove the feature works — a proof of concept.** Build the
+complete feature from the plan and prove it end to end: CI must build a dev
+environment and the e2e tests must pass. Only once that is green does the
+review/QA work begin (the next station). So this skill ends at **a proven PoC: CI
+green including the dev-environment build and e2e + fresh branch + draft PR open**.
+It does **not** do the code review or the split — those are the next station.
 
 ## When to use
 
@@ -85,7 +89,11 @@ For each **failing** check, classify it:
   times (`gh run rerun --failed`). If it goes green, fine. If it keeps failing
   deterministically, treat it as "caused by this PR".
 
-Readiness requires every check green except those documented as broken-in-develop.
+Readiness requires every check green except those documented as broken-in-develop
+— and that explicitly includes the **proof-of-concept gates**: the
+dev-environment build and the e2e tests. A PoC is only proven when those are
+green; a feature that builds units but does not stand up a dev environment or
+pass e2e has not yet earned the review station.
 
 ### 4. Keep the branch fresh (aggressive rebase)
 
@@ -99,9 +107,10 @@ Whenever the branch is **more than 20 commits behind `origin/develop`**:
   you hold the `impl:in-progress` lock on).
 - Re-enter step 3 (the rebase re-triggers CI).
 
-### 5. Done — hand off to review
+### 5. Done — PoC proven, hand off to review
 
-When CI is green and the branch is fresh:
+When the PoC is proven (CI green incl. dev-environment build and e2e) and the
+branch is fresh:
 
 - Swap labels on the **PR**: remove `impl:in-progress`, add `review:queued`.
 - Comment the handoff on the PR.

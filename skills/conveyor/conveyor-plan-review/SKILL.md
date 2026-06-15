@@ -45,9 +45,12 @@ parallel.
 
 Always run:
 
-- **Scope / product lens.** Is this the right problem? Is the narrowest slice
-  actually the narrowest? Is anything in scope that should be deferred, or
-  deferred that is load-bearing? Is the plan solving a real, evidenced need?
+- **Scope / product lens.** Is this the right problem, solving a real, evidenced
+  need? Is the feature **complete** — anything missing that the feature needs to
+  work properly? Are the stated non-goals genuinely out of this feature (not just
+  deferred work that is actually load-bearing)? Do **not** push to shrink the
+  plan: the goal is a complete feature; splitting a large change into shippable
+  pieces is the review station's job, not the plan's.
 - **Architecture lens.** Does the approach fit the codebase? Coupling, shared
   code blast radius, data flow, failure modes, security/privacy/signing
   implications (hardware wallet — take this seriously), test surface, backward

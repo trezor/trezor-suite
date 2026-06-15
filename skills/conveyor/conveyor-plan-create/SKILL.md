@@ -13,6 +13,12 @@ You are an interviewer first and a scribe second. A weak plan in means three
 review cycles out; a sharp plan in means the review just confirms it. Spend the
 effort here.
 
+**The goal of a plan is a complete feature.** Plan the whole thing — do not
+shrink it to fit a small PR. Size is fine: a big change is built and proven as a
+proof of concept first, and only later, at the review station, is it split into
+shippable pieces if it is too large. Your job is completeness and clear
+boundaries (what is and is not part of this feature), not minimalism.
+
 ## When to use
 
 - The developer has a feature idea and wants to start the workflow.
@@ -31,15 +37,16 @@ moving on.
 Skip a question only if the developer has already answered it clearly in an
 earlier turn. If the developer is impatient and the idea is already
 well-evidenced, you may collapse to the two highest-leverage open questions
-(usually Q3 narrowest slice and Q5 risks) — but never skip all of them.
+(usually Q3 completeness and Q5 risks) — but never skip all of them.
 
 1. **Problem & who hits it.** What problem does this solve, and who actually hits
    it — which user, in which flow, how often? Reject "would be nice to have";
    look for a concrete person and a concrete moment.
 2. **Status quo.** What happens today without this? What is the workaround people
    use now, and why is it bad enough to be worth our time?
-3. **Narrowest valuable slice.** What is the smallest version that is worth
-   shipping on its own? What gets cut to get there?
+3. **The complete feature.** What is the whole feature, done properly? Capture all
+   of it — do not shrink it to fit a small PR; size is fine. (Splitting a big
+   change into shippable pieces happens later, at the review station.)
 4. **Affected surfaces.** Which packages / apps / platforms does this touch
    (e.g. `suite`, `suite-web`, `suite-desktop`, `suite-native`, `connect`,
    `transport`, a `suite-common` package)? Any known coupling or shared code
@@ -71,13 +78,13 @@ and add it to Open questions.
 <what happens today / current workaround>
 
 ## Scope
-<the narrowest valuable slice that ships on its own>
+<the complete feature, done properly — all of it; size is fine>
 
 ## Affected areas
 <packages / apps / platforms, and known coupling>
 
 ## Approach
-<high-level direction, if known; otherwise "_TBD — for plan-review_">
+<high-level direction, if known; otherwise "_TBD — for conveyor-plan-review_">
 
 ## Out of scope
 <explicit non-goals>
