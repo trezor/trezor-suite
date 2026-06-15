@@ -447,6 +447,7 @@ export const isHomescreenSupportedOnDevice = (device: TrezorDevice): boolean => 
     return (
         deviceModelInternal !== DeviceModelInternal.T2T1 ||
         (deviceModelInternal === DeviceModelInternal.T2T1 &&
-            device.features?.homescreen_format !== undefined)
+            device.features?.homescreen_format !== undefined &&
+            device.features?.homescreen_format !== null)
     );
 };
