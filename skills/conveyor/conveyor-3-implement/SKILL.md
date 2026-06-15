@@ -19,8 +19,10 @@ It does **not** do the code review or the split — those are the next station.
 
 ## When to use
 
-- An issue is labeled `conveyor/plan:ready-to-implement` and is **not** locked
-  (`conveyor/impl:in-progress`) or blocked (`conveyor/impl:needs-human`).
+- A fresh build: an issue labeled `conveyor/plan:ready-to-implement` and **not**
+  locked (`conveyor/impl:in-progress`) or blocked (`conveyor/impl:needs-human`).
+- A **drain run**: a PR labeled `conveyor/impl:needs-human` where the human has
+  ticked the answer checkboxes (see step 6) — re-run to read their choice and act.
 - Or you are resuming an issue whose lock has gone stale (see step 0).
 
 ## Inputs
@@ -178,17 +180,19 @@ Stop and hand back when any of:
 Then:
 
 - Post a PR comment with your diagnosis (which check, what you tried, why it is
-  stuck / the plan is wrong / the spec contradicts itself) **and the numbered
-  options you see** — e.g. (1) try fix approach X, (2) try approach Y, (3) relax
-  constraint Z in the plan, (4) bounce back to planning — with your
-  recommendation. The human should be able to unblock you by picking a number,
-  not by working out the options themselves.
+  stuck / the plan is wrong / the spec contradicts itself) **and the options you
+  see as a checkbox list** under a `✅ Done` box — e.g.
+  `- [ ] (a) try fix approach X ✅ recommended`, `- [ ] (b) try approach Y`,
+  `- [ ] (c) relax constraint Z in the plan`, `- [ ] (d) bounce back to planning`.
+  The human ticks a box in the GitHub web UI (async, no agent running), never works
+  out the options themselves.
 - Swap labels on the **PR** add-before-remove: add `conveyor/impl:needs-human` first, then
   remove `conveyor/impl:in-progress`.
 - Exit. `conveyor/impl:needs-human` means hands-off for other agents until a human
-  intervenes. **Resume path:** a human clears `conveyor/impl:needs-human` (after fixing
-  it, or bouncing the plan back to the planning phase), handing the PR back to a
-  re-claimable state.
+  acts. **Resume path (drain):** the human ticks a box + the `✅ Done` box; re-run
+  `conveyor-3-implement` on the PR — it reads the ticked choice (exactly one = that
+  option; none = the recommended one; Done unticked = still waiting) and acts on it
+  (retry the chosen approach, or bounce the plan back to planning).
 
 ## Modes
 
