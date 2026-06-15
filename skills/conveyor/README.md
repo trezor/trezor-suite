@@ -209,6 +209,59 @@ gh issue list --label conveyor/plan:needs-human --json number,title,updatedAt --
 gh pr list    --label conveyor/review:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
 ```
 
+## Routines — hands-off draining (the overnight loop)
+
+The async-checkbox model lets a human tick answers whenever they like. A
+**routine** closes the loop: it periodically picks up the items the human has
+finished answering and drains them, so the belt keeps moving with no one at a
+keyboard. This is the "tick it whenever, the agent picks it up" path (layer B1).
+
+A routine is a **scheduled agent**, not a plain shell script — the actual drain is
+an agent running a conveyor skill. The shell only does the read-only *filter*:
+[`routines/conveyor-ready.sh`](routines/conveyor-ready.sh) lists every
+`*:needs-human` item whose `✅ Done` box is ticked. Test it standalone first:
+
+```bash
+REPO=mroz22/conveyor-sandbox ./skills/conveyor/routines/conveyor-ready.sh
+# plan:1      (issue 1, ready)   -> conveyor-2-plan-review
+# review:7    (PR 7, ready)      -> conveyor-4-review
+```
+
+The routine's agent runs that filter, then drains each printed item with the
+matching skill. The driver prompt it runs each tick:
+
+```text
+Run: REPO=mroz22/conveyor-sandbox ./skills/conveyor/routines/conveyor-ready.sh
+For each printed `kind:number`, run the matching conveyor drain skill, autonomous mode:
+  plan:N   -> conveyor-2-plan-review on issue N
+  impl:N   -> conveyor-3-implement on PR N
+  review:N -> conveyor-4-review on PR N
+Process at most 5 items this run. If none are ready, exit. Stop if you hit your token budget.
+```
+
+Schedule it either way:
+
+- **Claude Code / Conductor routine** (`/schedule`): create a routine with the
+  driver prompt above on a cron (e.g. every 30 min, or nightly) — it runs on the
+  team member's own subscription.
+- **Plain cron + headless CLI** (once headless auth is set up):
+  `*/30 * * * * cd <repo> && claude -p "<driver prompt>"`.
+
+Guardrails:
+
+- **Whose tokens:** the member who enabled the routine — the overnight
+  token-pooling model. Several members can run their own; the locks keep them from
+  colliding.
+- **Only Done-ticked items** are touched; a half-ticked decision is left waiting.
+- **Bounded per run** (the "at most 5" + token budget) so a backlog can't drain
+  the whole pool in one tick.
+- **Safe to crash:** the drain skills are idempotent (step-0 reconciliation,
+  add-before-remove), so a routine dying mid-drain leaves a findable state, not a
+  corrupt one.
+- This is **layer B1** (poll). The instant, event-driven version (a GitHub Action
+  firing on the checkbox edit) is deliberately **not** built — it clashes with
+  running on personal subscriptions, and a frequent poll gets you ~the same thing.
+
 ## The skills
 
 ### `conveyor-1-plan-create`
