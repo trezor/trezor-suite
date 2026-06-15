@@ -3,17 +3,12 @@ import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import {
-    type AccountKey,
-    type TokenAddress,
-    type TokenInfoBranded,
-} from '@suite-common/wallet-types';
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { getFiatRateKey, isErc4626, toFiatCurrency } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
 
 import { type GetTokensOutputType, getTokens } from './tokenUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
-import { selectAccountByKey, selectAccounts } from '../accounts/accountsSelectors';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { selectCurrentFiatRates } from '../fiat-rates/fiatRatesSelectors';
 import { type FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import {
@@ -93,28 +88,6 @@ export const selectAccountUnrecognizedTokens = createMemoizedSelector(
 export const selectAccountManuallyHiddenTokensCount = createMemoizedSelector(
     [selectAccountManuallyHiddenTokens],
     (tokens): number => tokens.length,
-);
-
-/**
- * Returns a map of accountKey → shown (non-hidden, non-unverified) tokens for all accounts.
- * Used to exclude spam/junk tokens from account search.
- */
-export const selectAccountsShownTokens = createMemoizedSelector(
-    [selectAccounts, selectTokenDefinitions],
-    (accounts, tokenDefinitions): Record<AccountKey, TokenInfo[]> => {
-        const result: Record<string, TokenInfo[]> = {};
-
-        for (const account of accounts) {
-            const { shownWithBalance, shownWithoutBalance } = getTokens({
-                tokens: account.tokens ?? [],
-                symbol: account.symbol,
-                tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
-            });
-            result[account.key] = [...shownWithBalance, ...shownWithoutBalance];
-        }
-
-        return result as Record<AccountKey, TokenInfo[]>;
-    },
 );
 
 export const selectAccountDefiTokens = createMemoizedSelector(

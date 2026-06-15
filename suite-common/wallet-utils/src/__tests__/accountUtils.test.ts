@@ -252,7 +252,7 @@ describe('account utils', () => {
         expect(accountSearchFn(ethAcc, 'pepe', { accountLabel: '' })).toBe(false);
     });
 
-    it('accountSearchFn hidden tokens excluded via shownTokens', () => {
+    it('accountSearchFn hidden tokens excluded via searchableTokens', () => {
         const shownToken = mockAccountToken({ balance: '0.000069', name: 'shown' });
         const hiddenToken = mockAccountToken({ balance: '1.0', name: 'hidden-spam' });
         const ethAcc = mockWalletAccount({
@@ -264,13 +264,13 @@ describe('account utils', () => {
         expect(
             accountSearchFn(ethAcc, 'hidden-spam', {
                 accountLabel: '',
-                shownTokens: [shownToken],
+                searchableTokens: [shownToken],
             }),
         ).toBe(false);
         expect(
             accountSearchFn(ethAcc, 'shown', {
                 accountLabel: '',
-                shownTokens: [shownToken],
+                searchableTokens: [shownToken],
             }),
         ).toBe(true);
     });
