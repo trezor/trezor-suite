@@ -91,9 +91,7 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
             };
         });
 
-        let totalFiatBalance = asBaseCurrencyAmount(new BigNumber(0));
-
-        const assets = deviceNetworkSymbolsWithAssets.map((symbol: NetworkSymbol) => {
+        return deviceNetworkSymbolsWithAssets.map((symbol: NetworkSymbol): AssetType => {
             const networkAccounts = accountsWithFiatBalance.filter(
                 account => account.symbol === symbol,
             );
@@ -110,27 +108,19 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
                 return sum.plus(fiatValue);
             }, new BigNumber(0));
 
-            if (fiatBalance) {
-                totalFiatBalance = asBaseCurrencyAmount(totalFiatBalance.plus(fiatBalance));
-            }
-
-            const asset: AssetType = {
+            return {
                 symbol,
                 // For assets we should always only 8 decimals to save space
                 assetBalance: assetBalance.toFixed(8),
                 fiatBalance: fiatBalance ? asBaseCurrencyAmount(fiatBalance) : null,
             };
-
-            return asset;
         });
-
-        return { assets, totalFiatBalance: asBaseCurrencyAmount(totalFiatBalance) };
     },
 );
 
 export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSymbol) => {
     const assets = selectDeviceAssetsWithBalances(state);
-    const asset = assets.assets.find(a => a.symbol === symbol);
+    const asset = assets.find(a => a.symbol === symbol);
 
     return asset?.assetBalance ?? '0';
 };
@@ -138,7 +128,7 @@ export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSy
 export const selectAssetFiatValue = createMemoizedSelector(
     [selectDeviceAssetsWithBalances, (_state, symbol: NetworkSymbol) => symbol],
     (assets, symbol) => {
-        const asset = assets.assets.find(a => a.symbol === symbol);
+        const asset = assets.find(a => a.symbol === symbol);
 
         return asset?.fiatBalance?.toString() ?? null;
     },
@@ -147,7 +137,7 @@ export const selectAssetFiatValue = createMemoizedSelector(
 const selectAssetsFiatValuePercentage = createMemoizedSelector(
     [selectDeviceAssetsWithBalances],
     assets => {
-        const percentages = calculateAssetsPercentage(assets.assets);
+        const percentages = calculateAssetsPercentage(assets);
 
         return percentages;
     },
