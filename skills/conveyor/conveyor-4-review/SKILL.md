@@ -27,12 +27,16 @@ working state lives on the **PR**, mirroring the issue model one station back:
 
 ## When to use
 
-- A PR is labeled `conveyor/review:queued` and is not `conveyor/review:in-progress` /
-  `conveyor/review:needs-human`.
+- A fresh review: a PR labeled `conveyor/review:queued` and not
+  `conveyor/review:in-progress`.
+- A **drain run**: a PR labeled `conveyor/review:needs-human` where the human has
+  ticked the answer checkboxes (see step 6) — re-run to resolve from their answers
+  and continue.
 
 ## Inputs
 
-- **Target PR.** A passed PR number, or the oldest `conveyor/review:queued` PR otherwise.
+- **Target PR.** A passed PR number; otherwise the oldest `conveyor/review:queued`
+  PR, then the oldest `conveyor/review:needs-human` PR whose `✅ Done` box is ticked.
 - **Mode.** Interactive (human at keyboard) or autonomous (routine; never blocks).
 
 ## Process
@@ -44,11 +48,20 @@ of them (orphan) or more than one, fix that before proceeding — drop the stale
 ones so it carries exactly the one lifecycle label it should. Only then claim.
 
 Claim by **adding** `conveyor/review:in-progress` (the advisory review lock) **before**
-removing `conveyor/review:queued`, so a crash mid-transition leaves an extra findable
-label, never zero. The label is advisory only — two agents can race the
-read-then-write — so the real guard is the branch on origin plus
-`--force-with-lease` (see §6). If the status comment does not exist yet, create it
-from the template below; if one already exists (re-run), reuse it.
+removing the prior label (`conveyor/review:queued` on a fresh run, `conveyor/review:needs-human`
+on a drain), so a crash mid-transition leaves an extra findable label, never zero.
+The label is advisory only — two agents can race the read-then-write — so the real
+guard is the branch on origin plus `--force-with-lease` (see §6). If the status
+comment does not exist yet, create it from the template below; if one already
+exists (re-run), reuse it.
+
+**Drain run (entered at `conveyor/review:needs-human`).** The human has been ticking
+answer checkboxes since the last run. Skip fresh lens work (unless the diff changed
+since the parked findings were written) and resolve from the ticked state exactly
+as in step 6's "Resolve from ticked boxes": apply each finding's chosen option,
+honour an approved/declined split, then re-run the readiness checks. If the
+`✅ Done` box is not ticked, the human is not finished — report "still waiting" and
+exit without changing the lifecycle label.
 
 ### 1. Triage the diff
 
@@ -71,8 +84,11 @@ it (reviewing a PR you are about to chop up is wasted work).
   split. When the bar is met, produce a concrete **split proposal**: the slices,
   what each delivers, and their dependency order.
 - **Never auto-split.** Splitting restructures already-built work, so it is a
-  user-challenge. Surface the proposal to a human: write it into the status
-  comment and set `conveyor/review:needs-human`. In autonomous mode, park and exit.
+  user-challenge. Surface the proposal to a human as a **checkbox** in the status
+  comment (`- [ ] approve split (slices below)` / `- [ ] decline — review as one PR`)
+  under the shared `✅ Done` box, and set `conveyor/review:needs-human`. The human
+  ticks their choice async; the next drain run acts on it. In autonomous mode, park
+  and exit.
 - **On approval, each slice re-enters the line at the start** — lift the slice off
   the belt and set it back at the beginning as its own `conveyor-1-plan-create`
   issue; this PR is then closed or reduced to the first slice. (How the branch is
@@ -142,9 +158,10 @@ Gate for noise, then classify each finding by who resolves it (same model as
 - **Park** — everything else: taste calls, uncertain findings, risky fixes,
   anything that would change behaviour or contradict the spec, plus every
   security/privacy finding regardless of confidence. Write it into the status
-  comment's "Open findings" as **numbered options** (e.g. (1) fix this way, (2)
-  fix that way, (3) accept as-is) with your recommendation, so the human resolves
-  it by picking a number. Never auto-apply.
+  comment's "Open findings" as a **checkbox list** of options (e.g.
+  `- [ ] fix this way`, `- [ ] fix that way`, `- [ ] accept as-is`) with your
+  `✅ recommended`, under one shared `✅ Done` box — so the human resolves it by
+  **ticking a box in the GitHub web UI** (async, no agent running). Never auto-apply.
 - **After an auto-fix push, re-watch CI.** Poll `gh pr checks` (0 = all pass, 8 =
   some pending, 1 = some failed) and keep polling while anything is pending. If
   the fix breaks a check, only count a fix attempt against a check whose
@@ -152,6 +169,16 @@ Gate for noise, then classify each finding by who resolves it (same model as
   against an infra/transient failure (registry 5xx, emulator boot, runner OOM):
   those back off and retry the same commit. Honour the global run budget (default
   10 total fix attempts); on exhaustion, park as `conveyor/review:needs-human`.
+
+**Resolve from ticked boxes (drain run).** On a drain run (§0), the human has
+ticked checkboxes since the parked findings were written. Read the status comment:
+- **`✅ Done` box not ticked** → the human is not finished; report "still waiting"
+  and exit without changing the label.
+- **Done ticked** → for each open finding and the split proposal: **exactly one
+  option ticked** → apply it (a chosen fix goes through the same commit →
+  force-with-lease → resolve-thread flow as an auto-fix); **none ticked** → apply
+  the `✅ recommended` option and note "applied recommended"; **more than one
+  ticked** → ambiguous, re-surface just that one and do not pass it.
 
 ### 7. Maintain the status comment
 
@@ -209,11 +236,19 @@ and take it over — never leave it a silent dead PR.
 **Split:** not needed | proposed (see below) — <n slices> | declined (do not re-propose)
 
 ### Split proposal (if any)
-1. **<slice>** — <what it delivers> — depends on: <…>
+<slices: **(a)** … delivers …, depends on …; **(b)** …>
+- [ ] approve split — slices re-enter the line as new plans
+- [ ] decline — review as one PR ✅ recommended
 
 ### Open findings (need a human)
-1. **<title>** — <file:line> — options: (a) <…> ✅ recommended; (b) <…>; (c) accept as-is. [taste | risky | changes-spec]
-_(pick the option letter)_
+_Tick one box per finding (no tick = the ✅ recommended option), then tick Done. Do it in the GitHub web UI — no agent needed._
+
+**1. <title>** — <file:line> — [taste | risky | changes-spec]
+- [ ] (a) <fix this way> ✅ recommended
+- [ ] (b) <fix that way>
+- [ ] (c) accept as-is
+
+- [ ] ✅ **Done — agent, pick this up**
 
 ### Resolved
 - <title> — <file:line> — fixed in <sha> (<source: copilot | adversarial>)
@@ -246,8 +281,10 @@ _Last updated by: conveyor-4-review (<interactive|autonomous>)_
   user-challenge, so propose it and let a human approve. Use a concrete bar
   (> ~800 lines OR > 15 files AND ≥ 2 independent symbol-disjoint concerns) and
   record a declined split so it is never re-proposed.
-- Every parked finding (and the split proposal) is presented as numbered options
-  with a recommendation — the human picks one, never invents the answer.
+- Every parked finding (and the split proposal) is a **checkbox list** of options +
+  a recommendation, under one `✅ Done` box — the human ticks a box (async, in the
+  GitHub UI), never invents the answer. A drain run (re-entered at
+  `conveyor/review:needs-human`) resolves from the ticked state once Done is ticked.
 - The issue is frozen once the PR exists; write everything to the PR.
 - Auto-fix only high-confidence, low-risk, behaviour-preserving findings; park
   everything else. Never treat a signing / key-handling / persistence / privacy

@@ -134,53 +134,53 @@ Principles for auto-deciding taste calls (and for your recommendation):
 
 ### 3. The decision gate (mode-dependent)
 
-**On a drain run** (entered at `conveyor/plan:needs-human`): re-read the body, the status
-comment, and the thread, and **re-validate every parked option against the
-current body** — a human may have edited the plan since the options were written,
-making some moot or wrong. Drop or rewrite stale options before presenting them.
+Open decisions are surfaced as **GitHub task-list checkboxes** in the status
+comment, so a human can answer **asynchronously by ticking boxes in the GitHub web
+UI** — no agent has to be running, and they can do it from a phone. The format
+(see step 4) is one checkbox per option per decision, plus a single
+`- [ ] ✅ Done — agent, pick this up` box that signals the answers are final.
 
 First, **post each lens's raw findings as its own thread comment** (the durable
-log), and **rewrite the status comment** so its "Review lenses" table and
-"Resolved decisions" reflect this run. Before any **wholesale body rewrite**,
+log), and **rewrite the status comment** so its checkboxes, "Review lenses" table,
+and "Resolved decisions" reflect this run. Before any **wholesale body rewrite**,
 compare the current body against the hash you loaded in step 0 — if it changed, a
-human edited it concurrently; reconcile (re-apply your resolutions onto the new
-body) rather than overwriting and clobbering their edit.
+human edited it concurrently; reconcile onto the new body rather than clobbering
+their edit. On every label transition below, **add the new label before removing
+`conveyor/plan:in-review`** (a crash mid-flip leaves an extra findable label, never zero).
 
-Then branch on mode:
+#### Drain run (entered at `conveyor/plan:needs-human`)
+The human has been ticking boxes since the last run. Resolve from the ticked state:
+- **Done box not ticked** → the human is not finished. Re-validate the parked
+  options against the current body (drop/rewrite stale ones), report "still
+  waiting on the human", and exit without promoting.
+- **Done box ticked** → read each decision's boxes:
+  - **exactly one option ticked** → that is the choice; apply it.
+  - **no option ticked** → apply that decision's `✅ recommended` option and note
+    "no box ticked — applied recommended" in Resolved.
+  - **more than one ticked** → ambiguous; re-surface just that decision (clear its
+    ticks, untick Done) and do **not** promote until it is resolved.
 
 #### Interactive
-Present **all open decisions (taste + user-challenge) as one batch** — do not
-drip them one per turn. For each decision give the human **the concrete options
-you weighed as a numbered list**, each with its trade-off, plus your recommended
-option — so the human can answer by **picking a number**, not by inventing an
-answer. Mark user-challenges clearly as "changes what you asked for". The human
-responds once.
-
-For each resolved decision:
-- Record it under "Resolved decisions" in the status comment (what, who decided,
-  why).
-- **Reconsolidate the issue body** so it reflects the decision — the body must
-  always be the latest plan.
-
-On every transition below, **add the new lifecycle label before removing
-`conveyor/plan:in-review`**, so a crash mid-flip leaves an extra findable label, never
-zero.
-
-Then:
-- If no open decisions remain, no lens left a P1 (including an auto-resolved one),
-  and the acceptance-criteria gate passes → add `conveyor/plan:ready-to-implement` then
-  remove `conveyor/plan:in-review`, update the status comment state, report done.
-- If decisions remain unresolved (human deferred some) → add `conveyor/plan:needs-human`
-  then remove `conveyor/plan:in-review`, leave them in "Open decisions", report what is
-  parked.
+Write all open decisions as the checkbox batch in the status comment (so they stay
+answerable async too) **and** present them live to the human. They can either
+answer now (tell you the option letters) or say they will tick the boxes in GitHub
+later. If they answer now, tick the chosen boxes + the Done box yourself as the
+record and resolve as in a drain run. If they defer, leave it parked.
 
 #### Autonomous
-Do **not** block. Write every open decision into the status comment's "Open
-decisions (need a human)" section as **numbered options with your recommendation**
-and each option's trade-off, so the human can later resolve it by picking a number
-rather than designing an answer. Apply all mechanical resolutions to the body as
-usual. Add `conveyor/plan:needs-human` then remove `conveyor/plan:in-review`. Exit with a summary of
-what was parked.
+Do **not** block. Write every open decision as the checkbox batch (options +
+`✅ recommended` + an unticked Done box) into the status comment, apply all
+mechanical resolutions to the body as usual, add `conveyor/plan:needs-human` then
+remove `conveyor/plan:in-review`, and exit with a summary of what was parked. A
+human ticks the boxes later; the next drain run picks it up.
+
+**After resolving (any mode):** record each resolved decision under "Resolved
+decisions" (what, which option, who/what decided, why) and **reconsolidate the
+issue body** so it always reflects the latest plan. Then:
+- If no open decisions remain, no lens left a P1 (including an auto-resolved one),
+  and the acceptance-criteria gate passes → add `conveyor/plan:ready-to-implement`
+  then remove `conveyor/plan:in-review`, update the status comment state, report done.
+- Otherwise → keep `conveyor/plan:needs-human` and report what is still parked.
 
 ### 4. Status comment shape
 
@@ -192,9 +192,17 @@ Keep the status comment as the single dashboard. After a run it should look like
 **State:** in-review | needs-human | ready-to-implement
 
 ### Open decisions (need a human)
-1. **<title>** — options: (a) <X> ✅ recommended — <trade-off>; (b) <Y> — <trade-off>. [taste]
-2. **<title>** — ⚠️ changes stated scope. options: (a) keep as planned; (b) <change> ✅ — <why>. [user-challenge]
-_(pick the option letter)_
+_Tick one box per decision (no tick = the ✅ recommended option), then tick Done. You can do this in the GitHub web UI — no agent needed._
+
+**1. <title>** — [taste]
+- [ ] (a) <X> — <trade-off> ✅ recommended
+- [ ] (b) <Y> — <trade-off>
+
+**2. <title>** — ⚠️ user-challenge · changes stated scope · blocks promotion
+- [ ] (a) keep as planned
+- [ ] (b) <change> — <why> ✅ recommended
+
+- [ ] ✅ **Done — agent, pick this up**
 
 ### Resolved decisions
 - <title> — <decision> (mechanical / decided by <name>) — <why>
@@ -218,8 +226,10 @@ _Last updated by: conveyor-2-plan-review (<interactive|autonomous>)_
 - Always do the full analysis, even in autonomous mode. Mode changes only where
   the gate ends up (terminal vs. GitHub), never the depth.
 - Batch human interaction. Never one question per turn.
-- Every decision you surface comes with numbered options + a recommendation — the
-  human picks one, never invents the answer.
+- Every decision you surface is a **checkbox list** of options + a recommendation,
+  with one `✅ Done` box — the human ticks a box (async, in the GitHub UI), never
+  invents the answer. The Done box is the signal that the answers are final; a
+  drain run resolves from the ticked state.
 - The issue body is the single source of truth — reconsolidate it after every
   resolution.
 - Read real code for the architecture lens; no speculative findings.

@@ -194,11 +194,15 @@ gh issue list --search 'is:open -label:"conveyor/plan:draft" -label:"conveyor/pl
 gh pr list    --search 'is:open draft:true -label:"conveyor/impl:in-progress" -label:"conveyor/impl:needs-human" -label:"conveyor/review:queued" -label:"conveyor/review:in-progress" -label:"conveyor/review:needs-human" -label:"conveyor/review:passed"'
 ```
 
-**Resume path for parked items.** A `*-needs-human` item is not a dead end: once a
-human picks a number / resolves the parked decisions, the same skill is re-run to
-drain it and the belt moves on. Because nothing automatically chases these, parked
-items need an **age / escalation** query so a branch can't rot silently — periodically
-sort the `*-needs-human` queries by age and escalate the oldest:
+**Resume path for parked items.** A `*-needs-human` item is not a dead end: the
+human **ticks the answer checkboxes** in the status comment (async, in the GitHub
+web UI) and ticks the `✅ Done` box; the same skill is then re-run in **drain mode**
+— manually, or by a scheduled routine — which reads the ticked state and moves the
+belt on. (A routine that periodically drains every `*-needs-human` item whose Done
+box is ticked is the hands-off "tick it whenever, the agent picks it up" loop.)
+Because nothing chases these instantly, parked items also want an **age /
+escalation** query so a branch can't rot silently — periodically sort the
+`*-needs-human` queries by age and escalate the oldest:
 
 ```bash
 gh issue list --label conveyor/plan:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
@@ -297,13 +301,18 @@ Same two modes (interactive / autonomous routine). See
   direction is wrong) are never auto-decided.
 - **Batch human interaction.** Never drip questions one per turn during review.
   Collect, then present once.
-- **Offer options, never ask the human to invent one.** Whenever the belt parks
-  for a human — a taste decision, a user-challenge, a stuck implementation, a
-  split proposal — the agent presents the concrete options it already weighed,
-  each with its trade-off and a recommendation, as a numbered list. The human's
-  job is to **pick a number**, not to design the answer from scratch. The agent
-  does the thinking; the human does the deciding. An open-ended "what should I
-  do?" is a failure of this station.
+- **Offer options, never ask the human to invent one — answered async via
+  checkboxes.** Whenever the belt parks for a human — a taste decision, a
+  user-challenge, a stuck implementation, a split proposal — the agent presents the
+  concrete options it already weighed, each with its trade-off and a
+  recommendation, as a **GitHub task-list checkbox** in the status comment, under a
+  single `✅ Done — agent, pick this up` box. The human **ticks a box in the GitHub
+  web UI** (from a laptop or a phone, no agent running), then ticks Done. The next
+  run of the skill — manual, or a routine — **drains** the parked item: it reads the
+  ticked state (exactly one box per item = the choice; none = the recommended
+  option; Done unticked = still waiting) and continues. The human's job is to tick,
+  not to design the answer from scratch; an open-ended "what should I do?" is a
+  failure of this station.
 - **Gate noise.** Surface review findings at confidence ≥ 6/10; always surface
   anything that blocks (P1), regardless of confidence. State what was examined
   even when nothing was found — no silent skips.
