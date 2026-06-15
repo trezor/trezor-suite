@@ -6,7 +6,7 @@ import { type ButtonColorProps, type PictogramVariant } from '@suite-native/atom
 import { type IconName } from '@suite-native/icons';
 import { type NativeSpacing } from '@trezor/theme';
 
-export type AlertType =
+type AlertType =
     | 'autoEject'
     | 'bluetoothAdapter'
     | 'bluetoothPairing'
