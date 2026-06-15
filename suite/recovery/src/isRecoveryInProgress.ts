@@ -2,7 +2,7 @@ import { type PROTO } from '@trezor/connect';
 
 export const isAdditionalShamirBackupInProgress = (features: PROTO.Features) =>
     features.recovery_status === 'Backup' &&
-    features.recovery_type === undefined &&
+    (features.recovery_type === undefined || features.recovery_type === null) &&
     features.backup_availability === 'Available';
 
 export const isRecoveryInProgress = (features: PROTO.Features) => {
