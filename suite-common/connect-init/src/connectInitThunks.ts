@@ -165,7 +165,10 @@ export const connectInitThunk = createThunk<void, void, void>(
         // in extraDependenciesType.ts), so we have to narrow `debugTransports`.
         // The mapper is host-provided via extra.services so this shared thunk never
         // statically imports env-specific transport packages (e.g. @trezor/transport-web).
-        const transports = mapDebugTransports(debugTransports as unknown[] | undefined);
+        const transports = mapDebugTransports({
+            debugTransports: debugTransports as unknown[] | undefined,
+            createLogger,
+        });
 
         try {
             await TrezorConnect.init({

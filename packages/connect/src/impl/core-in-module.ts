@@ -13,7 +13,6 @@ import type {
     ConnectFactoryDependencies,
     ConnectSettings,
     ConnectSettingsPublic,
-    ConnectSettingsTransport,
     CoreEventMessage,
     CoreRequestMessage,
     MethodResponseMessage,
@@ -28,7 +27,7 @@ import {
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
 import { noopLogger } from '@trezor/connect-common/src/utils/debug';
-import { TRANSPORT } from '@trezor/transport-common';
+import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
 import { type Logger, cloneObject, createDeferredManager } from '@trezor/utils';
 
 import { initCoreState } from '../core';
@@ -43,7 +42,18 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
 
-    protected abstract get defaultTransports(): ConnectSettingsTransport[];
+    // Connect's per-environment fallback when the host passes no transports.
+    // Built here (not at module load) so the connect-supplied logger and a
+    // manifest-derived id can be injected into the instances — the one place
+    // where connect still constructs transports, and only its own defaults.
+    protected abstract defaultTransports(params: AbstractTransportParams): Transport[];
+
+    private buildDefaultTransports(): Transport[] {
+        return this.defaultTransports({
+            logger: this.settings.createLogger?.('@trezor/transport'),
+            id: this.settings.manifest?.appName || this.settings.manifest?.appUrl || 'unknown app',
+        });
+    }
 
     public constructor() {
         this.settings = parseConnectSettings();
@@ -121,12 +131,12 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
-        if (!this.settings.transports?.length) {
-            this.settings.transports = this.defaultTransports;
-        }
-
         // `createLogger` is optional. Without it, connect stays silent.
         this.log = this.settings.createLogger?.('@trezor/connect') ?? noopLogger;
+
+        if (!this.settings.transports?.length) {
+            this.settings.transports = this.buildDefaultTransports();
+        }
 
         await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }
@@ -143,7 +153,9 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         }
 
         if (newTransports !== undefined) {
-            const transports = newTransports?.length ? newTransports : this.defaultTransports;
+            const transports = newTransports?.length
+                ? newTransports
+                : this.buildDefaultTransports();
 
             this.settings = parseConnectSettings({ ...this.settings, transports });
             this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });

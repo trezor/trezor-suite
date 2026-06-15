@@ -5,12 +5,27 @@ import { isWeb } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
 import { WebUsbTransport } from '@trezor/transport-web';
 
-const mapWebDebugTransport = (transport: unknown): ConnectSettingsTransport | undefined => {
+// Pure DI: connect expects ready-made Transport instances, so the host constructs
+// them here. `id` becomes the Bridge session owner shown to the user; it mirrors
+// the web manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+const TRANSPORT_ID = 'Trezor Suite web';
+
+type GetConnectSettingsTransportsParams = {
+    debugTransports: readonly unknown[] | undefined;
+    createLogger: ConnectSettings['createLogger'];
+};
+
+const mapWebDebugTransport = (
+    transport: unknown,
+    createLogger: ConnectSettings['createLogger'],
+): ConnectSettingsTransport | undefined => {
+    const logger = createLogger?.('@trezor/transport');
+
     switch (transport) {
         case 'BridgeTransport':
-            return BridgeTransport;
+            return new BridgeTransport({ id: TRANSPORT_ID, logger });
         case 'WebUsbTransport':
-            return WebUsbTransport;
+            return new WebUsbTransport({ id: TRANSPORT_ID, logger });
         default:
             return undefined;
     }
@@ -21,14 +36,15 @@ const mapWebDebugTransport = (transport: unknown): ConnectSettingsTransport | un
 // never has to import `@trezor/transport-web` — that import is unsafe in the
 // React Native bundle. On desktop, strings travel through IPC unchanged and are
 // mapped to DI references in `@trezor/suite-desktop-core`'s main process.
-export const getConnectSettingsTransports = (
-    debugTransports: readonly unknown[] | undefined,
-): ConnectSettings['transports'] => {
+export const getConnectSettingsTransports = ({
+    debugTransports,
+    createLogger,
+}: GetConnectSettingsTransportsParams): ConnectSettings['transports'] => {
     if (!isWeb()) {
         return debugTransports as ConnectSettings['transports'];
     }
 
     return debugTransports
-        ?.map(mapWebDebugTransport)
+        ?.map(transport => mapWebDebugTransport(transport, createLogger))
         .filter((transport): transport is ConnectSettingsTransport => transport !== undefined);
 };

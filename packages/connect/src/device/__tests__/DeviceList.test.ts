@@ -1,5 +1,5 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
-import { noopCreateLogger, noopLogger } from '@trezor/connect-common/src/utils/debug';
+import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
 
 import { initializeFirmwareConfig } from '../../data/firmwareInfo';
 import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
@@ -7,7 +7,7 @@ import { loadProtobufModules } from '../../data/protobufLoader';
 import * as settingsStore from '../../data/settingsStore';
 import { DeviceList } from '../DeviceList';
 
-const { createTestTransport, createTestTransportClass } = global.JestMocks;
+const { createTestTransport } = global.JestMocks;
 
 const waitForNthEventOfType = (
     emitter: { on: (...args: any[]) => any },
@@ -63,26 +63,13 @@ describe('DeviceList', () => {
         list.dispose();
     });
 
-    it('builds the transport logger through injected createLogger', () => {
-        const createLogger = jest.fn(() => noopLogger);
-        const local = new DeviceList({
-            ...parseConnectSettings({}),
-            priority: 0,
-            createLogger,
-        });
-
-        expect(createLogger).toHaveBeenCalledWith('@trezor/transport');
-
-        return local.dispose();
-    });
-
     it('.init() throws error on unknown transport (string)', async () => {
         await expect(() =>
             list.init({
                 // @ts-expect-error
                 transports: ['FooBarTransport'],
             }),
-        ).rejects.toThrow('init({ transports }) entry is not a Transport instance or class');
+        ).rejects.toThrow('init({ transports }) entry is not a valid Transport instance');
     });
 
     it('.init() throws error on unknown transport (non-Transport object)', async () => {
@@ -94,9 +81,9 @@ describe('DeviceList', () => {
         ).rejects.toThrow('init({ transports }) entry is not a valid Transport instance');
     });
 
-    it('.init() accepts transports in form of transport class', async () => {
-        const classConstructor = createTestTransportClass();
-        await expect(list.init({ transports: [classConstructor] })).resolves.not.toThrow();
+    it('.init() accepts a pre-built transport instance', async () => {
+        const transport = createTestTransport();
+        await expect(list.init({ transports: [transport] })).resolves.not.toThrow();
     });
 
     it('.init() throws async error from transport.init()', async () => {

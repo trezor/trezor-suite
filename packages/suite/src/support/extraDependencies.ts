@@ -67,8 +67,8 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
-import { getConnectSettingsTransports } from './debugTransports';
 import { createConnectInitHooks } from './createConnectInitHooks';
+import { getConnectSettingsTransports } from './debugTransports';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { type AppState, type TrezorDevice } from '../types/suite';

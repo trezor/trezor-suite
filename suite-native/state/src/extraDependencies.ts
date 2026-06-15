@@ -34,17 +34,40 @@ import { ok } from '@trezor/type-utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
-const bridgeTransport = new BridgeTransport({ port: 21328, id: 'bridge' });
+type NativeDebugTransport = 'BridgeTransport' | 'NativeUsbTransport' | 'NativeBluetoothTransport';
+
+type ConnectSettingsTransport = NonNullable<ConnectSettings['transports']>[number];
 
 const transportsPerDeviceType = {
-    device: Platform.select({
-        ios: [bridgeTransport, NativeBluetoothTransport],
-        android: [NativeUsbTransport, NativeBluetoothTransport],
+    device: Platform.select<NativeDebugTransport[]>({
+        ios: ['BridgeTransport', 'NativeBluetoothTransport'],
+        android: ['NativeUsbTransport', 'NativeBluetoothTransport'],
+        default: ['BridgeTransport'],
     }),
-    emulator: [bridgeTransport],
+    emulator: ['BridgeTransport'] satisfies NativeDebugTransport[],
 };
 
 const transports = transportsPerDeviceType[deviceType];
+
+const mapNativeDebugTransport = (
+    transport: unknown,
+    createLogger: ConnectSettings['createLogger'],
+): ConnectSettingsTransport | undefined => {
+    if (typeof transport !== 'string') return transport as ConnectSettingsTransport;
+
+    const logger = createLogger?.('@trezor/transport');
+
+    switch (transport) {
+        case 'BridgeTransport':
+            return new BridgeTransport({ port: 21328, id: 'bridge', logger });
+        case 'NativeUsbTransport':
+            return new NativeUsbTransport({ id: 'native-usb', logger });
+        case 'NativeBluetoothTransport':
+            return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
+        default:
+            return undefined;
+    }
+};
 
 const bip329: Bip329 = {
     export: () => ({ accountLabel: null, labelsToExport: [] }),
@@ -101,12 +124,16 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             },
         },
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
-        // Native's `selectDebugSettings` already returns real Transport
-        // instances/classes (see `transportsPerDeviceType` above), so the
-        // mapper is identity. Web's mapper lives in `packages/suite` to keep
+        // Native keeps transport identifiers in debug settings and constructs
+        // real Transport instances here so logger/id params stay host-owned.
+        // Web's mapper lives in `packages/suite` to keep
         // `@trezor/transport-web` out of the Metro bundle.
-        mapDebugTransports: (debugTransports: readonly unknown[] | undefined) =>
-            debugTransports as ConnectSettings['transports'],
+        mapDebugTransports: ({ debugTransports, createLogger }) =>
+            debugTransports
+                ?.map(transport => mapNativeDebugTransport(transport, createLogger))
+                .filter(
+                    (transport): transport is ConnectSettingsTransport => transport !== undefined,
+                ),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

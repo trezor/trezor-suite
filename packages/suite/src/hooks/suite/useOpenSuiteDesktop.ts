@@ -1,4 +1,5 @@
-import TrezorConnect from '@trezor/connect';
+import { selectShowConnectLogs } from '@suite/settings';
+import TrezorConnect, { initLog } from '@trezor/connect';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
@@ -12,6 +13,7 @@ import { getConnectSettingsTransports } from 'src/support/debugTransports';
 export const useOpenSuiteDesktop = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const activeTransports = useSelector(selectActiveTransports);
+    const showConnectLogs = useSelector(selectShowConnectLogs);
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
         const iframe = document.createElement('iframe');
@@ -28,11 +30,12 @@ export const useOpenSuiteDesktop = () => {
                 const filtered = activeTransports
                     .filter(t => t.type !== 'WebUsbTransport')
                     .map(t => t.type);
-                const transports = getConnectSettingsTransports(
-                    filtered.includes('BridgeTransport')
+                const transports = getConnectSettingsTransports({
+                    debugTransports: filtered.includes('BridgeTransport')
                         ? filtered
                         : ['BridgeTransport', ...filtered],
-                );
+                    createLogger: (prefix: string) => initLog(prefix, showConnectLogs),
+                });
                 TrezorConnect.updateConnectSettings({ transports });
             }
             if (!windowFocused.current) return;

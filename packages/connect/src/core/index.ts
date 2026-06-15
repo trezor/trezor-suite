@@ -977,11 +977,10 @@ export class Core extends EventEmitter {
                 localFirmwareStore.set(localFirmwares);
             }
             await loadProtobufModules();
-            const { priority, manifest } = settingsStore.get();
+            const { priority } = settingsStore.get();
 
             this._deviceList = new DeviceList({
                 priority,
-                manifest,
                 createLogger: this.createLogger,
             });
             initDeviceList(this.getCoreContext());

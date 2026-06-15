@@ -98,7 +98,7 @@ export const assertDeviceListConnected: (
     }
 };
 
-type ConstructorParams = Pick<ConnectSettings, 'priority' | 'manifest'> & {
+type ConstructorParams = Pick<ConnectSettings, 'priority'> & {
     createLogger: CreateLogger;
 };
 type InitParams = Pick<
@@ -117,8 +117,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private readonly handshakeLock;
     private readonly authPenaltyManager;
     private readonly createLogger: CreateLogger;
-
-    private updateTransports;
 
     private getConnectedTransports() {
         return Object.values(this.transportManagers)
@@ -142,16 +140,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getConnectedTransports().map(getTransportInfo);
     }
 
-    constructor({ priority, manifest, createLogger }: ConstructorParams) {
+    constructor({ priority, createLogger }: ConstructorParams) {
         super();
 
         this.createLogger = createLogger;
         this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
-        this.updateTransports = createTransportList({
-            logger: createLogger('@trezor/transport'),
-            id: manifest?.appName || manifest?.appUrl || 'unknown app',
-        });
     }
 
     private getSimilarDevices(device: Device) {
@@ -254,7 +248,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     async init({ transports, transportReconnect, pendingTransportEvent }: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
-        this.transports = this.updateTransports(this.transports, transports);
+        this.transports = createTransportList(this.transports, transports);
 
         const promises = this.transports
             .map(t => t.apiType)

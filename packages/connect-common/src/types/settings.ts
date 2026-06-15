@@ -3,7 +3,7 @@ import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
-import type { AbstractTransportParams, Transport } from '@trezor/transport-common';
+import type { Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
 import type { Logger } from '@trezor/utils';
 
@@ -31,13 +31,10 @@ export type ThpSettings = {
     pairingMethods: ThpPairingMethod[] | (keyof typeof ThpPairingMethod)[]; // pairing methods supported by the host
 };
 
-// A transport class — constructed by @trezor/connect with the connect-supplied
-// AbstractTransportParams (logger, id, …). Hosts pass a class when they want
-// connect to manage the lifecycle; they pass a pre-built Transport instance
-// when they need full control over construction parameters.
-export type TransportClass = new (params: AbstractTransportParams) => Transport;
-
-export type ConnectSettingsTransport = Transport | TransportClass;
+// Pure dependency injection: hosts always hand @trezor/connect a fully
+// constructed Transport instance and own its construction params (logger, id,
+// sessionsBackgroundUrl, …). Connect never instantiates transports itself.
+export type ConnectSettingsTransport = Transport;
 
 export type CreateLogger = (prefix: string) => Logger;
 

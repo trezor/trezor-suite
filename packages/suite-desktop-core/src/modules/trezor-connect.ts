@@ -51,12 +51,22 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
     }
 };
 
+// `id` becomes the Bridge session owner shown to the user; it mirrors the desktop
+// manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+const TRANSPORT_ID = 'Trezor Suite desktop';
+type CreateLogger = NonNullable<ConnectSettings['createLogger']>;
+
+const createTransportParams = (createLogger: ConnectSettings['createLogger']) => ({
+    id: TRANSPORT_ID,
+    logger: createLogger?.('@trezor/transport'),
+});
+
 // The Suite renderer's debug transport switcher writes string identifiers to
 // Redux (`debug.transports`) and forwards them through IPC to this process.
-// Strings serialize cleanly across IPC; classes don't — so the renderer
-// cannot send DI references directly. We translate the legacy string
-// names to the equivalent DI references here, below the IPC boundary, before
-// they reach @trezor/connect.
+// Strings serialize cleanly across IPC; Transport instances don't — so the
+// renderer cannot construct and send them directly. We build the equivalent
+// pure-DI Transport instances here, below the IPC boundary, before they reach
+// @trezor/connect.
 //
 // The renderer casts string transports through `ConnectSettings['transports']`
 // (which is pure DI in connect's public type surface), so at this point the
@@ -64,21 +74,25 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
 // `unknown` here and narrow at runtime.
 //
 // 'WebUsbTransport' is intentionally not mapped — desktop never uses WebUSB.
-// Any unmapped string that reaches @trezor/connect's TransportList will be
-// rejected with a controlled `Runtime` error (`init({ transports }) entry is
-// not a Transport instance or class`). On desktop the renderer UI only offers
-// Bridge/NodeUsb/Udp, so this path is unreachable in practice.
-export const mapStringTransport = (t: unknown): ConnectSettingsTransport => {
+// Any other/unmapped string is dropped (returns undefined and is filtered out
+// in getTransportsParam), mirroring the web (getConnectSettingsTransports) and
+// native (mapNativeDebugTransport) mappers — a stray or typo'd identifier
+// degrades to "no transport" instead of crashing connect init. On desktop the
+// renderer UI only offers Bridge/NodeUsb/Udp.
+export const mapStringTransport = (
+    t: unknown,
+    createLogger?: CreateLogger,
+): ConnectSettingsTransport | undefined => {
     if (typeof t !== 'string') return t as ConnectSettingsTransport;
     switch (t) {
         case 'BridgeTransport':
-            return BridgeTransport;
+            return new BridgeTransport(createTransportParams(createLogger));
         case 'NodeUsbTransport':
-            return NodeUsbTransport;
+            return new NodeUsbTransport(createTransportParams(createLogger));
         case 'UdpTransport':
-            return UdpTransport;
+            return new UdpTransport(createTransportParams(createLogger));
         default:
-            return t as unknown as ConnectSettingsTransport;
+            return undefined;
     }
 };
 
@@ -87,8 +101,11 @@ export const mapStringTransport = (t: unknown): ConnectSettingsTransport => {
 // 2) add BluetoothTransport if the bluetooth module is enabled
 export const getTransportsParam = (
     rawTransports?: ConnectSettings['transports'],
+    createLogger?: CreateLogger,
 ): ConnectSettings['transports'] => {
-    const transports = rawTransports?.map(mapStringTransport);
+    const transports = rawTransports
+        ?.map(transport => mapStringTransport(transport, createLogger))
+        .filter((transport): transport is ConnectSettingsTransport => transport !== undefined);
     const bluetooth = bluetoothModuleState.getTransport();
     if (!bluetooth) return transports;
 
@@ -98,11 +115,13 @@ export const getTransportsParam = (
 
     // If the caller did not pass any transports, restore the Bridge default
     // explicitly so we don't end up with a Bluetooth-only list.
-    return [bluetooth, BridgeTransport];
+    return [bluetooth, new BridgeTransport(createTransportParams(createLogger))];
 };
 
 export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store }) => {
     const { logger } = global;
+    let createLogger: ConnectSettings['createLogger'];
+
     logger.info(SERVICE_NAME, `Starting service`);
 
     const setProxy = () => {
@@ -131,11 +150,12 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     if (localFirmwares.success) {
                         settings.localFirmwares = localFirmwares.payload;
                     }
-                    settings.transports = getTransportsParam(settings.transports);
                     // Core runs in this (main) process; the renderer cannot send a logger factory
                     // across IPC, so build it here from the serializable `debug` enabled hint.
                     // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
-                    settings.createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
+                    createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
+                    settings.createLogger = createLogger;
+                    settings.transports = getTransportsParam(settings.transports, createLogger);
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
@@ -157,7 +177,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 }
 
                 if (method === 'updateConnectSettings') {
-                    params[0].transports = getTransportsParam(params[0].transports);
+                    params[0].transports = getTransportsParam(params[0].transports, createLogger);
                 }
 
                 return (TrezorConnect[method] as any)(...params);

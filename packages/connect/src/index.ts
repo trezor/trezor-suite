@@ -5,6 +5,7 @@ import { factory } from '@trezor/connect-common';
 // `NodeUsbTransport`/`usb`) when react-native consumers reach this file via
 // connect's Node entry.
 import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+import type { AbstractTransportParams } from '@trezor/transport-common';
 import { deepEqual } from '@trezor/utils';
 
 import { reconnectAllBackends } from './backend/BlockchainLink';
@@ -12,8 +13,8 @@ import * as settingsStore from './data/settingsStore';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleNode extends CoreInModule {
-    protected get defaultTransports() {
-        return [BridgeTransport];
+    protected defaultTransports(params: AbstractTransportParams) {
+        return [new BridgeTransport(params)];
     }
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {

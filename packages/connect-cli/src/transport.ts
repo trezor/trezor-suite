@@ -145,10 +145,10 @@ export const getTransport = async (): Promise<ConnectSettingsTransport> => {
             logger: getLogger(),
         });
     } else if (transportName === 'bridge') {
-        return BridgeTransport;
+        return new BridgeTransport({ id: 'bridge', logger: getLogger() });
     } else if (transportName === 'udp') {
-        return UdpTransport;
+        return new UdpTransport({ id: 'udp', logger: getLogger() });
     }
 
-    return NodeUsbTransport;
+    return new NodeUsbTransport({ id: 'usb', logger: getLogger() });
 };

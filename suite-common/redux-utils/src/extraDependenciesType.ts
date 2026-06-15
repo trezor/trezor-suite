@@ -46,9 +46,10 @@ export type CommonServices = SuiteSyncDep &
         // surface expected by @trezor/connect's `init`. The mapper lives at
         // each host boundary so shared modules never statically import
         // env-specific transport packages (e.g. @trezor/transport-web).
-        mapDebugTransports: (
-            debugTransports: readonly unknown[] | undefined,
-        ) => ConnectSettings['transports'];
+        mapDebugTransports: (params: {
+            debugTransports: readonly unknown[] | undefined;
+            createLogger: ConnectSettings['createLogger'];
+        }) => ConnectSettings['transports'];
     } & ReportSecurityCheckDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep;
 

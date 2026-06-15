@@ -51,8 +51,8 @@ export const updateConnectSettings = async (api: TrezorConnect) => {
     api.updateConnectSettings({ proxy: { uri: 'socks://localhost:9050' } });
     api.updateConnectSettings({ proxy: undefined });
 
-    // transports settings — strings are no longer accepted; only Transport
-    // instances or classes. An empty array is still valid.
+    // transports settings — strings are no longer accepted; only pre-built
+    // Transport instances (pure DI). An empty array is still valid.
     api.updateConnectSettings({ transports: [] });
     // @ts-expect-error - string transport names are no longer valid
     api.updateConnectSettings({ transports: ['BridgeTransport'] });

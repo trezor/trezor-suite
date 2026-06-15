@@ -28,7 +28,7 @@ const DefaultA = TestTransportA as unknown as ConnectSettingsTransport;
 const DefaultB = TestTransportB as unknown as ConnectSettingsTransport;
 
 class TestCoreInModule extends CoreInModule {
-    protected get defaultTransports(): ConnectSettingsTransport[] {
+    protected defaultTransports(): ConnectSettingsTransport[] {
         return [DefaultA, DefaultB];
     }
     protected updateProxy() {

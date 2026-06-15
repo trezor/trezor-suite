@@ -3,10 +3,11 @@ import { useMemo } from 'react';
 import {
     type DebugModeOptions,
     selectDebugTransports,
+    selectShowConnectLogs,
     suiteSettingsActions,
 } from '@suite/settings';
 import { Checkbox } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { initLog } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type ArrayElement } from '@trezor/type-utils';
@@ -53,6 +54,7 @@ const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[
 
 export const Transport = () => {
     const dispatch = useDispatch();
+    const showConnectLogs = useSelector(selectShowConnectLogs);
     const transports = isDesktop() ? TRANSPORTS_DESKTOP : TRANSPORTS_WEB;
     const items = useTransportItems(transports);
 
@@ -87,7 +89,11 @@ export const Transport = () => {
                                     }),
                                 );
                                 TrezorConnect.updateConnectSettings({
-                                    transports: getConnectSettingsTransports(nextTransports),
+                                    transports: getConnectSettingsTransports({
+                                        debugTransports: nextTransports,
+                                        createLogger: (prefix: string) =>
+                                            initLog(prefix, showConnectLogs),
+                                    }),
                                 });
                             }}
                         />

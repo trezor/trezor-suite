@@ -2,7 +2,7 @@
 
 Breaking changes:
 
-- `ConnectSettingsTransport` redefined as `Transport | TransportClass` (pure dependency injection). String identifiers (`'BridgeTransport'`, `'WebUsbTransport'`, `'NodeUsbTransport'`, `'UdpTransport'`) are no longer accepted. The legacy `KnownTransport` string-literal type has been removed. See `@trezor/connect` CHANGELOG for caller-side migration.
+- `ConnectSettingsTransport` redefined as `Transport` (pure dependency injection). Callers must pass a fully constructed `Transport` instance; transport classes and string identifiers (`'BridgeTransport'`, `'WebUsbTransport'`, `'NodeUsbTransport'`, `'UdpTransport'`) are no longer accepted. The legacy `KnownTransport` string-literal type has been removed. See `@trezor/connect` CHANGELOG for caller-side migration.
 
 # 0.5.0
 
