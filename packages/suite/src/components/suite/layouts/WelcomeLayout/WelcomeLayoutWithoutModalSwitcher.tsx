@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { DebugLegend } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { TrafficLightOffset } from '@suite/macos';
 import { selectThemeSettings } from '@suite/settings';
@@ -23,7 +24,6 @@ import { useSelector } from 'src/hooks/suite';
 
 import { ContentContainer } from '../ContentContainer';
 import { PageHeader } from '../SuiteLayout';
-import { DebugLegend } from '../SuiteLayout/DebugLegend';
 import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
 import { Sidebar } from '../SuiteLayout/Sidebar/Sidebar';
 import { MainContent } from '../SuiteLayout/SuiteLayout';

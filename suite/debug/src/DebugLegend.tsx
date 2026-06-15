@@ -63,39 +63,33 @@ const mapDebugElevations: MapDebugElevationType = {
     },
 } as const;
 
-type DebugLegend = {
+type DebugLegendProps = {
     layout: string;
 };
 
-export const DebugLegend = ({ layout }: DebugLegend) => {
+export const DebugLegend = ({ layout }: DebugLegendProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
         <DebugLegendContainer onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen && (
-                <>
-                    <Column
-                        justifyContent="center"
-                        gap={spacings.xs}
-                        margin={{ bottom: spacings.xs }}
-                    >
-                        {typedObjectKeys(mapDebugElevations).map(key => (
-                            <Row key={key} gap={spacings.xs}>
-                                <Badge
-                                    $fill={mapDebugElevations[key].background}
-                                    $stroke={mapDebugElevations[key].border}
-                                />
-                                <Text typographyStyle="body-xs">{key}</Text>
-                            </Row>
-                        ))}
-                        <Divider orientation="horizontal" margin={{ vertical: spacings.xs }} />
-                        <Row gap={spacings.xs}>
-                            <Text typographyStyle="body-xs">
-                                <Code>[{layout}]</Code>
-                            </Text>
+                <Column justifyContent="center" gap={spacings.xs} margin={{ bottom: spacings.xs }}>
+                    {typedObjectKeys(mapDebugElevations).map(key => (
+                        <Row key={key} gap={spacings.xs}>
+                            <Badge
+                                $fill={mapDebugElevations[key].background}
+                                $stroke={mapDebugElevations[key].border}
+                            />
+                            <Text typographyStyle="body-xs">{key}</Text>
                         </Row>
-                    </Column>
-                </>
+                    ))}
+                    <Divider orientation="horizontal" margin={{ vertical: spacings.xs }} />
+                    <Row gap={spacings.xs}>
+                        <Text typographyStyle="body-xs">
+                            <Code>[{layout}]</Code>
+                        </Text>
+                    </Row>
+                </Column>
             )}
             <Row gap={spacings.xs}>
                 <Text typographyStyle="body-xs">Debug theme legend</Text>

@@ -85,6 +85,7 @@
         "@suite/analytics": "workspace:*",
         "@suite/authenticity-checks": "workspace:*",
         "@suite/backup": "workspace:*",
+        "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/device": "workspace:*",
         "@suite/discreet-mode": "workspace:*",
