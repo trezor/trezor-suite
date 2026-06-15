@@ -65,7 +65,7 @@ export { type FirmwareUpdateResponse } from './api/device/firmwareUpdate';
 export { type UpdateConnectSettings } from './api/core/updateConnectSettings';
 export { GetOwnershipId } from './api/device/getOwnershipId';
 export { GetOwnershipProof } from './api/device/getOwnershipProof';
-export { PushTransaction } from './api/pushTransaction';
+export { PushTransaction } from './api/blockchain/pushTransaction';
 export { RequestLoginSchema } from './api/device/requestLogin';
 export { UnlockPathParams } from './api/device/unlockPath';
 export { FirmwareType } from '@trezor/device-utils';

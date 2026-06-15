@@ -1,7 +1,7 @@
 import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
 
-import type { FeeInfo, FeeLevel } from '../fees';
-import type { CommonParamsWithCoin, Response } from '../params';
+import type { FeeInfo, FeeLevel } from '../../fees';
+import type { CommonParamsWithCoin, Response } from '../../params';
 
 export interface BlockchainEstimateFee {
     request?: BlockchainLinkParams<'estimateFee'> & {

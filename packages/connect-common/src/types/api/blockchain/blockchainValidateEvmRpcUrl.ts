@@ -1,4 +1,4 @@
-import type { CommonParams, Response } from '../params';
+import type { CommonParams, Response } from '../../params';
 
 export type BlockchainValidateEvmRpcUrl = CommonParams & {
     url: string;
