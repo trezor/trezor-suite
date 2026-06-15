@@ -61,7 +61,7 @@ export const invityDexQuote: ExchangeTrade = {
     sendStringAmount: '100',
 };
 
-export const mercuryoDexQuote: ExchangeTrade = {
+const mercuryoDexQuote: ExchangeTrade = {
     exchange: 'mercuryo',
     fee: 'UNKNOWN',
     max: 'NONE',

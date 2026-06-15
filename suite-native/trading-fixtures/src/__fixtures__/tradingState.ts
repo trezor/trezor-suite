@@ -25,7 +25,7 @@ import { platforms } from './platforms';
 import { sellBanxa, sellCexdirect, sellInvity, sellMercuryo, sellMoonpay } from './sellProviders';
 import { sellQuotes } from './sellQuotes';
 
-export const getInitializedBuyState = () =>
+const getInitializedBuyState = () =>
     ({
         ...tradingInitialState.buy,
         quotesRequest: undefined,
@@ -65,7 +65,7 @@ export const getInitializedBuyState = () =>
         },
     }) as TradingBuyState;
 
-export const getInitializedExchangeState = () =>
+const getInitializedExchangeState = () =>
     ({
         ...tradingInitialState.exchange,
         exchangeInfo: {
@@ -96,7 +96,7 @@ export const getInitializedExchangeState = () =>
         },
     }) as TradingExchangeState;
 
-export const getInitializedSellState = () =>
+const getInitializedSellState = () =>
     ({
         ...tradingInitialState.sell,
         sellInfo: {
