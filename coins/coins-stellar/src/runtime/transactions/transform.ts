@@ -26,13 +26,13 @@ const transformSigner = (signer: Signer) => {
 
         return { type: 0, key, weight };
     }
-    if ('preAuthTx' in signer && signer.preAuthTx instanceof Buffer) {
-        const key = signer.preAuthTx.toString('hex');
+    if ('preAuthTx' in signer) {
+        const key = Buffer.from(signer.preAuthTx).toString('hex');
 
         return { type: 1, key, weight };
     }
-    if ('sha256Hash' in signer && signer.sha256Hash instanceof Buffer) {
-        const key = signer.sha256Hash.toString('hex');
+    if ('sha256Hash' in signer) {
+        const key = Buffer.from(signer.sha256Hash).toString('hex');
 
         return { type: 2, key, weight };
     }
