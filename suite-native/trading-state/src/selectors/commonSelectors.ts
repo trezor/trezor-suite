@@ -5,6 +5,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -242,8 +243,11 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectTokenDefinitions,
             selectCurrentFiatRates,
             selectBaseCurrency,
-            (state: CombinedSelectorsRootState, tradingType: TradingType) =>
-                selectTradingSupportedSymbols(state, tradingType),
+            (
+                state: CombinedSelectorsRootState,
+                tradingType: TradingType,
+                supportedCoins: readonly NetworkSymbol[],
+            ) => selectTradingSupportedSymbols(state, tradingType, supportedCoins),
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,

@@ -26,6 +26,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-sync-evolu"
         },

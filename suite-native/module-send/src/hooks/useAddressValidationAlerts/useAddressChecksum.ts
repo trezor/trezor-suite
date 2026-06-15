@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { checkAddressChecksum, isAddressValid, toChecksumAddress } from '@suite-common/address';
+import {
+    checkAddressChecksum,
+    selectAddressValidatorDep,
+    toChecksumAddress,
+} from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext, useWatch } from '@suite-native/forms';
@@ -14,6 +19,7 @@ import { createChecksumAlert } from './alertBuilders';
 
 export const useAddressChecksum = (addressFieldName: string) => {
     const { showAlert } = useAlert();
+    const { addressValidator } = useServices(selectAddressValidatorDep);
     const { setValue, control } = useFormContext();
     const {
         params: { accountKey },
@@ -25,7 +31,8 @@ export const useAddressChecksum = (addressFieldName: string) => {
     const [wasAddressChecksummed, setWasAddressChecksummed] = useState(false);
 
     const addressValue = useWatch({ control, name: addressFieldName });
-    const isFilledValidAddress = !!addressValue && !!symbol && isAddressValid(addressValue, symbol);
+    const isFilledValidAddress =
+        !!addressValue && !!symbol && addressValidator.isAddressValid(addressValue, symbol);
 
     const convertAddressToChecksum = useCallback(() => {
         setValue(addressFieldName, toChecksumAddress(addressValue), {

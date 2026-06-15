@@ -27,13 +27,20 @@ const mockHandleRequest = jest.fn((payload: unknown) => {
     return Object.assign(thunk, { payload });
 });
 const mockSaveSelectedQuote = jest.fn();
+const mockAddressValidator = {
+    getAddressType: jest.fn(),
+    isAddressValid: jest.fn(() => true),
+};
 
 let mockDexQuotes: ExchangeTrade[] = [];
 let mockCexQuotes: ExchangeTrade[] = [];
 
 jest.mock('@suite-common/dependency-injection', () => ({
     ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({ analytics: { report: jest.fn() } }),
+    useServices: () => ({
+        addressValidator: mockAddressValidator,
+        analytics: { report: jest.fn() },
+    }),
 }));
 
 jest.mock('@suite-common/trading', () => {

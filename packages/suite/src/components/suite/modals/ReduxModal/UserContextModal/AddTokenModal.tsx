@@ -3,7 +3,7 @@ import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { isAddressValid } from '@suite-common/address';
+import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
@@ -25,7 +25,10 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, addressValidator } = useServices(
+        selectDesktopAnalyticsDep,
+        selectAddressValidatorDep,
+    );
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
@@ -80,7 +83,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             t => t.contract.toLowerCase() === addr.toLowerCase(),
         );
 
-        const isValid = isAddressValid(addr, account.symbol);
+        const isValid = addressValidator.isAddressValid(addr, account.symbol);
 
         if (addr && !isValid) {
             setError(translationString('TR_ADD_TOKEN_ADDRESS_NOT_VALID'));

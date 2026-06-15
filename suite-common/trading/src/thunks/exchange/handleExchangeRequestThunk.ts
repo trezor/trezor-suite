@@ -89,7 +89,7 @@ export const handleExchangeRequestThunk = createThunk<
             shouldSendInSats,
             composeRequestCallback,
         }: HandleExchangeRequestThunkProps,
-        { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, signal, extra },
     ) => {
         const requestData = getQuoteRequestData({
             formValues,
@@ -110,6 +110,7 @@ export const handleExchangeRequestThunk = createThunk<
 
         if (
             !isReceiveAddressCoherent({
+                addressValidator: extra.services.addressValidator,
                 receiveAddress: requestData.receiveAddress,
                 receiveCryptoId: requestData.receive,
                 receiveAccountKey,

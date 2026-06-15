@@ -79,6 +79,7 @@
             "path": "../../suite-common/metadata-types"
         },
         { "path": "../../suite-common/mev" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/platform-encryption"
         },
@@ -212,7 +213,6 @@
         { "path": "../../suite/tx-simulation" },
         { "path": "../../suite/ui-animations" },
         { "path": "../../suite/wallet" },
-        { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
         { "path": "../asset-utils" },
         { "path": "../blockchain-link-types" },

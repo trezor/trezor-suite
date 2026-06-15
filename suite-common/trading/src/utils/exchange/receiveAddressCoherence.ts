@@ -1,22 +1,24 @@
 import { type CryptoId } from 'invity-api';
 
+import { type AddressValidator } from '@suite-common/address';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { isAddressValid } from '@trezor/address-validator';
 
 import { cryptoIdToSymbol } from '../../utils';
 
 export const isReceiveAddressValid = (
+    addressValidator: AddressValidator,
     receiveAddress: string,
     receiveSymbol: NetworkSymbol,
 ): boolean => {
     try {
-        return isAddressValid(receiveAddress, receiveSymbol);
+        return addressValidator.isAddressValid(receiveAddress, receiveSymbol);
     } catch {
         return false;
     }
 };
 
 type IsReceiveAddressCoherentProps = {
+    addressValidator: AddressValidator;
     receiveAddress: string | undefined;
     receiveCryptoId: CryptoId | undefined;
     receiveAccountKey: string | undefined;
@@ -24,6 +26,7 @@ type IsReceiveAddressCoherentProps = {
 };
 
 export const isReceiveAddressCoherent = ({
+    addressValidator,
     receiveAddress,
     receiveCryptoId,
     receiveAccountKey,
@@ -38,7 +41,7 @@ export const isReceiveAddressCoherent = ({
         return false;
     }
 
-    if (!isReceiveAddressValid(receiveAddress, receiveSymbol)) {
+    if (!isReceiveAddressValid(addressValidator, receiveAddress, receiveSymbol)) {
         return false;
     }
 

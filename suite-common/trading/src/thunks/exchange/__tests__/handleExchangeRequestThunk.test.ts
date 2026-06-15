@@ -36,8 +36,18 @@ describe('handleExchangeRequestThunk', () => {
     invityAPI.createInvityAPIKey = () => {};
 
     const getMocks = () => {
+        const validEthAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
         const store = configureMockStore({
-            extra: {},
+            extra: {
+                services: {
+                    addressValidator: {
+                        getAddressType: jest.fn(),
+                        isAddressValid: jest.fn(
+                            (address, symbol) => address === validEthAddress && symbol === 'eth',
+                        ),
+                    },
+                },
+            },
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

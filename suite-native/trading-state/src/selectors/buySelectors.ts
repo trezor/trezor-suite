@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TradingCountryCode,
@@ -61,9 +62,8 @@ export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
 
 export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
-        selectTradingBuySupportedCryptoIds as unknown as (
-            state: TradingRootState,
-        ) => ReturnType<typeof selectTradingBuySupportedCryptoIds>,
+        (state: TradingRootState, supportedCoins: readonly NetworkSymbol[]) =>
+            selectTradingBuySupportedCryptoIds(state, supportedCoins),
         ({ wallet }) => wallet.trading.info.coins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),

@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -50,10 +52,9 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
-    const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
-    const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
     const quotes = useSelector(selectTradingExchangeQuotes);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
 
@@ -128,6 +129,14 @@ export const TradingExchangeFormInputs = () => {
             setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
         },
         [dispatch, setAmountLimitsRef, setValueRef],
+    );
+
+    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const exchangeBuySupportedCryptoIds = useSelector(state =>
+        selectTradingExchangeBuyCryptoIds(state, supportedNetworks),
+    );
+    const exchangeSellSupportedCryptoIds = useSelector(state =>
+        selectTradingExchangeSellCryptoIds(state, supportedNetworks),
     );
 
     return (

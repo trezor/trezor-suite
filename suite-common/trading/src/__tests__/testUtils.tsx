@@ -1,5 +1,12 @@
+import type { PropsWithChildren } from 'react';
+
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { ServicesProvider } from '@suite-common/dependency-injection';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import {
     type RenderHookOptions,
     configureMockStore,
@@ -41,6 +48,9 @@ export type TradingTestStateWithWalletSettings = {
 type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
     preloadedState?: Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>;
 };
+
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 
 /**
  * Creates a trading test state with proper structure.
@@ -182,7 +192,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  */
 export const renderHookWithTradingStore = <Result, Props = unknown>(
     callback: (props: Props) => Result,
-    { preloadedState, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
+    { preloadedState, wrapper: Wrapper, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
 ) => {
     const store = configureMockStore({
         reducer: combineReducers({
@@ -201,8 +211,18 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
         preloadedState: preloadedState || createTradingTestState(),
     });
 
+    const TradingServicesProvider = ({ children }: PropsWithChildren) => (
+        <ServicesProvider services={{ networkModuleRepository }}>
+            {Wrapper ? <Wrapper>{children}</Wrapper> : children}
+        </ServicesProvider>
+    );
+
     return {
-        ...renderHookWithStoreProvider(callback, { store, ...options }),
+        ...renderHookWithStoreProvider(callback, {
+            store,
+            wrapper: TradingServicesProvider,
+            ...options,
+        }),
         store,
     };
 };

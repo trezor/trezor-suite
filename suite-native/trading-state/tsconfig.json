@@ -6,6 +6,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },

@@ -29,6 +29,7 @@
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/mev": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",

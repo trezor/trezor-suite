@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type AddressCorrection, autocorrectAddress, isAddressValid } from '@suite-common/address';
+import {
+    type AddressCorrection,
+    autocorrectAddress,
+    selectAddressValidatorDep,
+} from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
@@ -65,7 +69,10 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics, addressValidator } = useServices(
+        selectNativeAnalyticsDep,
+        selectAddressValidatorDep,
+    );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -112,7 +119,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     const correctAddress = (value: string): string => {
         if (!symbol) return value;
 
-        const correction = autocorrectAddress(value, symbol);
+        const correction = autocorrectAddress({ addressValidator, address: value, symbol });
         if (correction) {
             showAutocorrectMessage(autocorrectMessageKeys[correction.type]);
 
@@ -208,7 +215,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         onQrNetworkMismatch?.(null);
         const corrected = correctAddress(qrCodeData);
         setValue(addressFieldName, corrected, { shouldValidate: true });
-        if (symbol && isAddressValid(corrected, symbol)) {
+        if (symbol && addressValidator.isAddressValid(corrected, symbol)) {
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
                 payload: { method: 'qr' },
@@ -222,7 +229,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         if (corrected !== newValue) {
             setValue(addressFieldName, corrected, { shouldValidate: true });
         }
-        if (symbol && isAddressValid(corrected, symbol)) {
+        if (symbol && addressValidator.isAddressValid(corrected, symbol)) {
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
                 payload: { method: 'manual' },

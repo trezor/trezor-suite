@@ -5,7 +5,8 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { isAddressValid } from '@suite-common/address';
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type XpubFormContext,
     type XpubFormValues,
@@ -69,13 +70,14 @@ export const XpubScanScreen = ({
     } = useBottomSheetModal();
 
     const { showAlert } = useAlert();
+    const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const { networkSymbol } = route.params;
     const networkType = getNetworkType(networkSymbol);
 
     const form = useForm<XpubFormValues, XpubFormContext>({
         validation: xpubFormValidationSchema,
-        context: { symbol: networkSymbol },
+        context: { addressValidator, symbol: networkSymbol },
     });
     const { handleSubmit, setValue, control } = form;
     const watchXpubAddress = useWatch({ control, name: 'xpubAddress' });
@@ -120,7 +122,7 @@ export const XpubScanScreen = ({
         if (
             xpubAddress &&
             !isAddressBasedNetwork(networkType) &&
-            isAddressValid(xpubAddress, networkSymbol)
+            addressValidator.isAddressValid(xpubAddress, networkSymbol)
         ) {
             showDelayedAlert({
                 title: <Translation id="moduleAccountImport.xpubScanScreen.alert.address.title" />,

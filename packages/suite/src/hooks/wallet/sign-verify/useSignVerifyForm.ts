@@ -3,7 +3,8 @@ import { useController, useForm, useWatch } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { isAddressValid } from '@suite-common/address';
+import { type AddressValidator, selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -13,6 +14,7 @@ export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;
 
 type SignVerifyContext = {
+    addressValidator: AddressValidator;
     isSignPage: boolean;
     symbol: NetworkSymbol;
 };
@@ -44,7 +46,9 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
             'isAddressValid',
             'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
             (value, { options }) =>
-                value && options.context?.symbol && isAddressValid(value, options.context?.symbol),
+                value &&
+                options.context?.symbol &&
+                options.context.addressValidator.isAddressValid(value, options.context.symbol),
         )
         .required(),
     path: yup.string().when('$isSignPage', {
@@ -73,12 +77,14 @@ const DEFAULT_VALUES: SignVerifyFields = {
 };
 
 export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
+    const { addressValidator } = useServices(selectAddressValidatorDep);
     const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =
         useForm<SignVerifyFields, SignVerifyContext>({
             mode: 'onBlur',
             reValidateMode: 'onChange',
             resolver: yupResolver(signVerifySchema),
             context: {
+                addressValidator,
                 isSignPage,
                 symbol: account?.symbol,
             },

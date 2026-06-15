@@ -1,6 +1,8 @@
 import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { type TradingType } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
@@ -42,8 +44,14 @@ const renderItem = (
 
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
+        const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+        const supportedNetworks = networkModuleRepository.getSupportedNetworks();
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
-            selectAccountsWithTokensToSellSectionCondensedListByTradingType(state, tradingType),
+            selectAccountsWithTokensToSellSectionCondensedListByTradingType(
+                state,
+                tradingType,
+                supportedNetworks,
+            ),
         );
 
         const {

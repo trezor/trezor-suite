@@ -1,5 +1,7 @@
+import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
+import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -57,6 +59,19 @@ const platformEncryptionMock: PlatformEncryption = {
 
 const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
 
+const addressValidatorMock: AddressValidator = {
+    isAddressValid: () => false,
+    getAddressType: () => undefined,
+};
+
+const networkModuleRepositoryMock: NetworkModuleRepository = {
+    get: () => {
+        throw new Error('Network module repository mock is not implemented.');
+    },
+    getSupportedNetworks: () => [],
+    isSupportedNetwork: (_symbol: string): _symbol is NetworkSymbol => false,
+};
+
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
     manifest: {
@@ -74,6 +89,8 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         forgetBluetoothDevice: notImplementedThunk('forgetBluetoothDevice'),
     },
     services: {
+        addressValidator: addressValidatorMock,
+        networkModuleRepository: networkModuleRepositoryMock,
         suiteSync: suiteSyncMock,
         bip329: bip329Mock,
         ensureDelegatedIdentityKey: () =>
