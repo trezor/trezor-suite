@@ -210,6 +210,9 @@ export const HELP_CENTER_ADVANCED_RECOVERY_URL: Url = withPlatformUtm(
 export const HELP_CENTER_XPUB_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/bitcoin/what-is-a-public-key-xpub',
 );
+export const TREZOR_GLOSSARY_NONCE_URL: Url = withPlatformUtm(
+    'https://trezor.io/learn/supported-assets/ethereum-layer-2-EVM/replace-by-fee-rbf-ethereum',
+);
 export const HELP_CENTER_BIP329_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/advanced/standards-proposals/what-is-bip-329',
 );
