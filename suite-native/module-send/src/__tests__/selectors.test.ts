@@ -12,6 +12,7 @@ const createMockState = (
             feeLevels: {},
             error: null,
             drafts: {},
+            pendingCancellations: {},
             ...overrides,
         },
     },

@@ -24,6 +24,8 @@ export type SendState = {
     signedTx?: BlockbookTransaction;
     serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction).
     accountKey?: AccountKey; // Account key for the transaction being processed.
+    // Maps original pending txid to the submitted cancel txid (EVM RBF cancellations).
+    pendingCancellations: Record<string, string>;
 };
 
 export const initialState: SendState = {
@@ -32,6 +34,7 @@ export const initialState: SendState = {
     serializedTx: undefined,
     signedTx: undefined,
     accountKey: undefined,
+    pendingCancellations: {},
 };
 
 export type SendRootState = {
@@ -102,6 +105,15 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.serializedTx;
             delete state.signedTx;
             delete state.accountKey;
+        })
+        .addCase(
+            sendFormActions.storePendingCancellation,
+            (state, { payload: { originalTxid, cancelTxid } }) => {
+                state.pendingCancellations[originalTxid] = cancelTxid;
+            },
+        )
+        .addCase(sendFormActions.removePendingCancellation, (state, { payload: originalTxid }) => {
+            delete state.pendingCancellations[originalTxid];
         })
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFormDrafts)
         .addCase(accountsActions.removeAccount, (state, { payload }) => {
