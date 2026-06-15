@@ -24,8 +24,8 @@ describe('Trade Buy [@noDevice]', () => {
         await tradingBuyActions.selectReceiveAsset('BTC', undefined, 'Bitcoin');
         await tradingBuyActions.selectBtcReceiveAccount('BTC SegWit', "m/84'/0'/0'/0/0");
         await tradingBuyActions.selectFiatCurrency('PLN');
-        await tradingBuyActions.selectCountry('Polan', 'Poland', 'POL');
         await tradingBuyActions.setFiatAmount('100');
+        await tradingBuyActions.selectCountry('Polan', 'Poland', 'POL');
 
         await tradingBuyActions.viewHowTradingWorks();
         await tradingBuyActions.viewPaymentMethods();
