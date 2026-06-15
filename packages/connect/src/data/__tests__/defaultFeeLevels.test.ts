@@ -3,7 +3,7 @@ import { getEthereumFeeLevels } from '../defaultFeeLevels';
 describe('getEthereumFeeLevels', () => {
     const fixtures = {
         eth: {
-            defaultGas: 15,
+            defaultGas: 3,
             minFee: 0.001,
             maxFee: 10000,
             coinInfo: {
@@ -15,7 +15,7 @@ describe('getEthereumFeeLevels', () => {
                 defaultFees: [
                     {
                         label: 'normal',
-                        feePerUnit: '10000000000', // 10 Gwei * 1e9 = 15000000000 Wei
+                        feePerUnit: '3000000000', // 3 Gwei * 1e9 = 3000000000 Wei
                         feeLimit: '21000',
                         blocks: -1,
                     },
@@ -28,7 +28,7 @@ describe('getEthereumFeeLevels', () => {
         },
         pol: {
             defaultGas: 200,
-            minFee: 0.001,
+            minFee: 0.1,
             maxFee: 10000000,
             coinInfo: {
                 chain: 'pol',
@@ -44,7 +44,7 @@ describe('getEthereumFeeLevels', () => {
                         blocks: -1,
                     },
                 ],
-                minFee: 0.001,
+                minFee: 0.1,
                 maxFee: 10000000,
                 minPriorityFee: 30,
                 dustLimit: -1,
