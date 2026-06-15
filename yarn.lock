@@ -5710,6 +5710,70 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@network-module/bitcoin-suite@workspace:*, @network-module/bitcoin-suite@workspace:coins/bitcoin/bitcoin-suite":
+  version: 0.0.0-use.local
+  resolution: "@network-module/bitcoin-suite@workspace:coins/bitcoin/bitcoin-suite"
+  dependencies:
+    "@network-module/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@network-module/cardano-suite@workspace:*, @network-module/cardano-suite@workspace:coins/cardano/cardano-suite":
+  version: 0.0.0-use.local
+  resolution: "@network-module/cardano-suite@workspace:coins/cardano/cardano-suite"
+  dependencies:
+    "@network-module/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@network-module/ethereum-suite@workspace:*, @network-module/ethereum-suite@workspace:coins/ethereum/ethereum-suite":
+  version: 0.0.0-use.local
+  resolution: "@network-module/ethereum-suite@workspace:coins/ethereum/ethereum-suite"
+  dependencies:
+    "@network-module/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@network-module/ripple-suite@workspace:*, @network-module/ripple-suite@workspace:coins/ripple/ripple-suite":
+  version: 0.0.0-use.local
+  resolution: "@network-module/ripple-suite@workspace:coins/ripple/ripple-suite"
+  dependencies:
+    "@network-module/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@network-module/solana-suite@workspace:*, @network-module/solana-suite@workspace:coins/solana/solana-suite":
+  version: 0.0.0-use.local
+  resolution: "@network-module/solana-suite@workspace:coins/solana/solana-suite"
+  dependencies:
+    "@network-module/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@network-module/stellar-suite@workspace:*, @network-module/stellar-suite@workspace:coins/stellar/stellar-suite":
+  version: 0.0.0-use.local
+  resolution: "@network-module/stellar-suite@workspace:coins/stellar/stellar-suite"
+  dependencies:
+    "@network-module/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@network-module/suite-types@workspace:*, @network-module/suite-types@workspace:coins/network-module/suite-types":
+  version: 0.0.0-use.local
+  resolution: "@network-module/suite-types@workspace:coins/network-module/suite-types"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@network-module/tron-suite@workspace:*, @network-module/tron-suite@workspace:coins/tron/tron-suite":
+  version: 0.0.0-use.local
+  resolution: "@network-module/tron-suite@workspace:coins/tron/tron-suite"
+  dependencies:
+    "@network-module/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@next/env@npm:15.5.18":
   version: 15.5.18
   resolution: "@next/env@npm:15.5.18"
@@ -10985,6 +11049,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/networks@workspace:*, @suite-common/networks@workspace:suite-common/networks":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/networks@workspace:suite-common/networks"
+  dependencies:
+    "@network-module/bitcoin-suite": "workspace:*"
+    "@network-module/cardano-suite": "workspace:*"
+    "@network-module/ethereum-suite": "workspace:*"
+    "@network-module/ripple-suite": "workspace:*"
+    "@network-module/solana-suite": "workspace:*"
+    "@network-module/stellar-suite": "workspace:*"
+    "@network-module/suite-types": "workspace:*"
+    "@network-module/tron-suite": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/platform-encryption-native@workspace:*, @suite-common/platform-encryption-native@workspace:suite-native/platform-encryption-native":
   version: 0.0.0-use.local
   resolution: "@suite-common/platform-encryption-native@workspace:suite-native/platform-encryption-native"
@@ -11285,6 +11364,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
@@ -17003,6 +17083,7 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/mev": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"

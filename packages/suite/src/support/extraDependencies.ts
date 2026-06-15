@@ -30,6 +30,7 @@ import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-ide
 import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
+import { type NetworksServiceDep, createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type CommonServices,
@@ -96,6 +97,7 @@ export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep & Cr
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
+    NetworksServiceDep &
     SuiteRouterHistoryDep;
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
@@ -153,6 +155,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     return {
+        networks: createNetworksCompositionRoot(),
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

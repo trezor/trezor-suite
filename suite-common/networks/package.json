@@ -1,0 +1,23 @@
+{
+    "name": "@suite-common/networks",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@network-module/bitcoin-suite": "workspace:*",
+        "@network-module/cardano-suite": "workspace:*",
+        "@network-module/ethereum-suite": "workspace:*",
+        "@network-module/ripple-suite": "workspace:*",
+        "@network-module/solana-suite": "workspace:*",
+        "@network-module/stellar-suite": "workspace:*",
+        "@network-module/suite-types": "workspace:*",
+        "@network-module/tron-suite": "workspace:*"
+    }
+}

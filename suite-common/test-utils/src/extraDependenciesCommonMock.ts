@@ -1,5 +1,6 @@
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
+import type { NetworksServiceDep } from '@suite-common/networks';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -63,7 +64,11 @@ const connectInitSettings: ConnectInitSettings = {
     },
 };
 
-export const extraDependenciesCommonMock: ExtraDependencies = {
+type ExtraDependenciesCommonMock = ExtraDependencies & {
+    services: ExtraDependencies['services'] & NetworksServiceDep;
+};
+
+export const extraDependenciesCommonMock: ExtraDependenciesCommonMock = {
     thunks: {
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
         initMetadata: notImplementedThunk('initMetadata'),
@@ -86,6 +91,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         connectInitSettings,
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
+        networks: { networkModules: new Map() },
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: notImplementedSelector(

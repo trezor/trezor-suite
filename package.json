@@ -11,6 +11,7 @@
     "workspaces": {
         "packages": [
             "coins/*",
+            "coins/*/*",
             "packages/*",
             "packages/connect-examples/*",
             "suite-native/*",
