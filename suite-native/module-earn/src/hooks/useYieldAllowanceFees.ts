@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { type FeeInfo } from '@suite-common/fee-types';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -12,11 +13,7 @@ import {
     selectConvertedNetworkFeeInfo,
     selectFormDraft,
 } from '@suite-common/wallet-core';
-import {
-    type FeeInfo,
-    type FormState,
-    isFinalPrecomposedTransaction,
-} from '@suite-common/wallet-types';
+import { type FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import {
     type NativeSendRootState,

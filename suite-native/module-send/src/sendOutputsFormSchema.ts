@@ -4,10 +4,11 @@ import {
     isBech32AddressUppercase,
     isTaprootAddress,
 } from '@suite-common/address';
+import { type FeeInfo } from '@suite-common/fee-types';
 import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
-import { type FeeInfo, type Output } from '@suite-common/wallet-types';
+import { type Output } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     isAmountWithinNetworkReserve,

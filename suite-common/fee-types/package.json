@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/fee",
+    "name": "@suite-common/fee-types",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -8,16 +8,10 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/fee-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "react": "19.2.4"
+        "@trezor/connect": "workspace:*"
     }
 }

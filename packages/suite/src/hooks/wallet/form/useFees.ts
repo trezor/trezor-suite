@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { type FeeInfo } from '@suite-common/fee-types';
 import {
-    type FeeInfo,
     type FormState,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,

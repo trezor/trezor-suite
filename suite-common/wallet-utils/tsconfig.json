@@ -6,6 +6,7 @@
         { "path": "../address" },
         { "path": "../calldata" },
         { "path": "../earn-staking-api" },
+        { "path": "../fee-types" },
         { "path": "../fiat-services" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },

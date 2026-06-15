@@ -1,3 +1,4 @@
+import { type FeeInfo } from '@suite-common/fee-types';
 import type { Network } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FeeLevel } from '@trezor/connect';
@@ -5,7 +6,7 @@ import { type BigNumber } from '@trezor/utils';
 
 import { type Account } from './account';
 import { type StakeFormState } from './stakeForm';
-import { type ExcludedUtxos, type FeeInfo, type PrecomposedLevels } from './transaction';
+import { type ExcludedUtxos, type PrecomposedLevels } from './transaction';
 
 export type StakingLimits = {
     MIN_AMOUNT_FOR_STAKING: BigNumber;
