@@ -16,3 +16,9 @@ export const coinsSelect: CoinSelectOption[] = [
     { value: 'zec', label: 'Zcash', affectedValue: `m/44'/133'/0'` },
     { value: 'doge', label: 'Dogecoin', affectedValue: `m/44'/3'/0'` },
 ];
+
+export const allCoinsSelect = [
+    ...coinsSelect,
+    { value: 'eth', label: 'Ethereum', affectedValue: `m/44'/60'/0'` },
+    { value: 'xrp', label: 'Ripple', affectedValue: `m/44'/144'/0'` },
+];
