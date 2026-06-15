@@ -30,6 +30,7 @@
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "clsx": "^2.1.1",
         "escape-string-regexp": "^5.0.0",
         "flexsearch": "^0.7.31",
