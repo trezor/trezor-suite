@@ -203,6 +203,9 @@ Then:
 
 ## Rules
 
+- **English only on GitHub.** Everything you write to GitHub — PR description,
+  comments, commit messages — is in English, even when the developer chats with
+  you in another language.
 - The label lock is advisory; the **branch on `origin` is the real lock**. Hold
   it before touching the branch; only ever force-push a branch you have locked,
   and always with `git push --force-with-lease`. Respect `conveyor/impl:in-progress` /

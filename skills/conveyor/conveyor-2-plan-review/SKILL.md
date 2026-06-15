@@ -212,6 +212,9 @@ _Last updated by: conveyor-2-plan-review (<interactive|autonomous>)_
 
 ## Rules
 
+- **English only on GitHub.** Everything you write to GitHub — the consolidated
+  issue body, status comment, lens thread comments — is in English, even when the
+  developer chats with you in another language.
 - Always do the full analysis, even in autonomous mode. Mode changes only where
   the gate ends up (terminal vs. GitHub), never the depth.
 - Batch human interaction. Never one question per turn.

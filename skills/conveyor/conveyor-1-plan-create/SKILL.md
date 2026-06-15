@@ -158,6 +158,10 @@ can run `conveyor-2-plan-review` on it (`gh issue list --label conveyor/plan:dra
 
 ## Rules
 
+- **English only on GitHub.** Everything you write to GitHub — issue title and
+  body, status/thread comments, labels — is in English, even when the developer
+  chats with you in another language. (The interview itself can be in their
+  language; the artifact is English.)
 - One question per turn during the interview. Do **not** batch the forcing
   questions — the friction is the point.
 - Search for an existing issue/PR before creating anything; if a match exists,
