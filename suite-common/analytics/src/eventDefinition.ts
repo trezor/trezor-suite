@@ -2,14 +2,14 @@ export type AppVersion = `${number}.${number}.${number}` | '?';
 
 export type AnalyticsPlatform = 'desktop' | 'mobile';
 
-export type BaseData = {
+type BaseData = {
     changelog: Array<{ version: AppVersion; notes: string }>;
     description?: string;
 };
 
-export type AnalyticsBaseAttribute = BaseData;
+type AnalyticsBaseAttribute = BaseData;
 
-export type AnalyticsBaseEvent = BaseData & {
+type AnalyticsBaseEvent = BaseData & {
     name: string;
     descriptionTrigger: string;
     possibleImprovements?: string;
