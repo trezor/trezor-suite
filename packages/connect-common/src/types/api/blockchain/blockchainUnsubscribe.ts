@@ -1,7 +1,7 @@
 import type { BlockchainLinkResponse } from '@trezor/blockchain-link';
 
-import type { Response } from '../params';
 import type { BlockchainSubscribe } from './blockchainSubscribe';
+import type { Response } from '../../params';
 
 export declare function blockchainUnsubscribe(
     params: BlockchainSubscribe,

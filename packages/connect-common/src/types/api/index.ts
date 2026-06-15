@@ -1,21 +1,6 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { blockchainDisconnect } from './blockchainDisconnect';
-import type { blockchainEstimateFee } from './blockchainEstimateFee';
-import type { blockchainEvmRpcCall } from './blockchainEvmRpcCall';
-import type { blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';
-import type { blockchainGetContractInfo } from './blockchainGetContractInfo';
-import type { blockchainGetCurrentFiatRates } from './blockchainGetCurrentFiatRates';
-import type { blockchainGetFiatRatesForTimestamps } from './blockchainGetFiatRatesForTimestamps';
-import type { blockchainGetInfo } from './blockchainGetInfo';
-import type { blockchainGetTransactions } from './blockchainGetTransactions';
-import type { blockchainSetCustomBackend } from './blockchainSetCustomBackend';
-import type { blockchainSubscribe } from './blockchainSubscribe';
-import type { blockchainSubscribeFiatRates } from './blockchainSubscribeFiatRates';
-import type { blockchainUnsubscribe } from './blockchainUnsubscribe';
-import type { blockchainUnsubscribeFiatRates } from './blockchainUnsubscribeFiatRates';
-import type { blockchainValidateEvmRpcUrl } from './blockchainValidateEvmRpcUrl';
 import type { cardanoComposeTransaction } from './cardanoComposeTransaction';
 import type { cardanoGetAddress } from './cardanoGetAddress';
 import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
@@ -42,7 +27,6 @@ import type { moneroKeyImageSync } from './moneroKeyImageSync';
 import type { moneroSignTransaction } from './moneroSignTransaction';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { pushTransaction } from './pushTransaction';
 import type { rippleGetAddress } from './rippleGetAddress';
 import type { rippleSignTransaction } from './rippleSignTransaction';
 import type { signMessage } from './signMessage';
@@ -61,63 +45,18 @@ import type { tronSignTransaction } from './tronSignTransaction';
 import type { verifyMessage } from './verifyMessage';
 
 import { TrezorConnectBitcoin } from './bitcoin';
+import { TrezorConnectBlockchain } from './blockchain';
 import { TrezorConnectCore } from './core';
 import { TrezorConnectDevice } from './device';
 import { TrezorConnectManagement } from './management';
 
-export { TrezorConnectBitcoin, TrezorConnectCore, TrezorConnectDevice, TrezorConnectManagement };
-
-// Blockchain backend operations (no device needed)
-export const TrezorConnectBlockchain = Type.Object({
-    // For internal use, no public documentation.[]
-    blockchainSubscribe: Type.Unsafe<typeof blockchainSubscribe>(),
-
-    // For internal use, no public documentation.
-    blockchainUnsubscribe: Type.Unsafe<typeof blockchainUnsubscribe>(),
-
-    // For internal use, no public documentation.
-    blockchainDisconnect: Type.Unsafe<typeof blockchainDisconnect>(),
-
-    // For internal use, no public documentation.
-    blockchainSetCustomBackend: Type.Unsafe<typeof blockchainSetCustomBackend>(),
-
-    // For internal use, no public documentation.
-    blockchainGetInfo: Type.Unsafe<typeof blockchainGetInfo>(),
-
-    // For internal use, no public documentation.
-    blockchainValidateEvmRpcUrl: Type.Unsafe<typeof blockchainValidateEvmRpcUrl>(),
-
-    // For internal use, no public documentation.
-    blockchainEstimateFee: Type.Unsafe<typeof blockchainEstimateFee>(),
-
-    // For internal use, no public documentation.
-    blockchainGetAccountBalanceHistory: Type.Unsafe<typeof blockchainGetAccountBalanceHistory>(),
-
-    // For internal use, no public documentation.
-    blockchainGetTransactions: Type.Unsafe<typeof blockchainGetTransactions>(),
-
-    // For internal use, no public documentation.
-    blockchainEvmRpcCall: Type.Unsafe<typeof blockchainEvmRpcCall>(),
-
-    // For internal use, no public documentation.
-    blockchainGetCurrentFiatRates: Type.Unsafe<typeof blockchainGetCurrentFiatRates>(),
-
-    // For internal use, no public documentation.
-    blockchainGetContractInfo: Type.Unsafe<typeof blockchainGetContractInfo>(),
-
-    // For internal use, no public documentation.
-    blockchainGetFiatRatesForTimestamps: Type.Unsafe<typeof blockchainGetFiatRatesForTimestamps>(),
-
-    // For internal use, no public documentation.
-    blockchainSubscribeFiatRates: Type.Unsafe<typeof blockchainSubscribeFiatRates>(),
-
-    // For internal use, no public documentation.
-    blockchainUnsubscribeFiatRates: Type.Unsafe<typeof blockchainUnsubscribeFiatRates>(),
-
-    // https://connect.trezor.io/9/methods/bitcoin/pushTransaction/
-    pushTransaction: Type.Unsafe<typeof pushTransaction>(),
-});
-export type TrezorConnectBlockchain = Static<typeof TrezorConnectBlockchain>;
+export {
+    TrezorConnectBitcoin,
+    TrezorConnectBlockchain,
+    TrezorConnectCore,
+    TrezorConnectDevice,
+    TrezorConnectManagement,
+};
 
 // Generic account and address operations (multi-coin)
 export const TrezorConnectAccount = Type.Object({
