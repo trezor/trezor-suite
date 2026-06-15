@@ -84,6 +84,19 @@ The PR **branch on `origin`** is the shared implementation state — agents push
 it frequently so any other agent or routine can resume the work if the first runs
 out of tokens.
 
+**The lock is advisory; the branch is the real lock.** An `*-in-progress` label is
+just a hint — two agents can race it (read-then-write over two API calls, no
+compare-and-swap), so it must never be trusted as a mutex. The actual guard is the
+**branch on `origin` plus `git push --force-with-lease`** with an ownership re-check
+before each push: `git fetch origin <branch>`, and if it advanced with a commit the
+agent did **not** author, STOP — a human or a repo bot (e.g. `bot-rebase.yml`) pushed;
+never clobber it. A non-fast-forward / lease rejection means the claim was lost →
+stop and reconcile, do not retry the push. Two crash-safety rules back this up:
+**add-before-remove** on every label transition (add the new lifecycle label before
+removing the old, so a crash mid-transition leaves an extra findable label, never an
+invisible orphan), and **step-0 reconciliation** at claim time (if an issue/PR carries
+zero conveyor lifecycle labels, or more than one, fix that before doing anything else).
+
 ## Lifecycle (labels as a state machine)
 
 Labels live on the **issue** until the PR opens, then on the **PR**.
@@ -96,7 +109,9 @@ ISSUE                          conveyor-plan-create        conveyor-plan-review
                     ▼                                   ▼
           plan:ready-to-implement                 plan:needs-human
                     │                          (re-run conveyor-plan-review to drain)
-═══════════════════╪═══════ conveyor-implement opens PR; belt moves to the PR ══════
+                    ▼
+             impl:in-progress  (claimed on the ISSUE; lock straddles the divider)
+════════════════════╪═══ conveyor-implement opens PR; belt + lock move to the PR ════
 PR                  ▼
              impl:in-progress ──(implement, CI→green, rebase)──┐
                     │                                          │
@@ -117,12 +132,29 @@ PR                  ▼
 | `plan:in-review` | issue | A plan review is in progress | wait / let it finish |
 | `plan:needs-human` | issue | Plan decisions parked for a human | run `conveyor-plan-review` to drain |
 | `plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `conveyor-implement` |
-| `impl:in-progress` | issue→PR | Being implemented now — **active lock** (stale ⇒ takeover) | let it run, or take over if stale |
+| `impl:in-progress` | issue→PR | Being implemented now — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
 | `impl:needs-human` | PR | Implementation stuck (CI unbeatable, or the plan is wrong) — **hands-off** | a human fixes it or bounces it to planning |
 | `review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-review` |
-| `review:in-progress` | PR | Agentic review running — **lock** | let it run |
+| `review:in-progress` | PR | Agentic review running — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
 | `review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-review` |
 | `review:passed` | PR | Agentic review clean | a human verifies, flips draft→ready, finds a reviewer |
+
+**Label bootstrap (one-time).** The board is empty on day one until the 10
+lifecycle labels exist. Create them once per repo:
+
+```bash
+for l in plan:draft plan:in-review plan:needs-human plan:ready-to-implement \
+         impl:in-progress impl:needs-human \
+         review:queued review:in-progress review:needs-human review:passed; do
+  gh label create "$l" --force
+done
+```
+
+Each skill **preflight-checks** that these labels exist before it queries or writes
+the board. If any are missing it **stops and asks a human to run the bootstrap
+above** — it does **not** create labels itself (creating labels on the upstream
+repo is a deliberate, human-confirmed step). That way a fresh repo never silently
+yields an empty board, and no agent invents labels on its own.
 
 A worker "with tokens" finds an open station by filtering the board:
 
@@ -130,9 +162,31 @@ A worker "with tokens" finds an open station by filtering the board:
 gh issue list --label plan:draft               # plans waiting for first review
 gh issue list --label plan:needs-human         # plan decisions to drain
 gh issue list --label plan:ready-to-implement  # plans waiting to be built
+gh issue list --label impl:in-progress         # claimed but not yet on a PR (check for stale)
+gh pr list --label impl:in-progress            # in-flight implementations (check for stale)
 gh pr list --label review:queued               # green PRs waiting for agentic review
 gh pr list --label impl:needs-human            # stuck implementations
 gh pr list --label review:needs-human          # review findings waiting for a human
+```
+
+To find **orphans** — issues/PRs carrying NONE of the conveyor lifecycle labels (a
+crash dropped the last label, or an item never entered the line) — query the
+negative space and reconcile (step-0) anything that turns up:
+
+```bash
+gh issue list --search 'is:open -label:plan:draft -label:plan:in-review -label:plan:needs-human -label:plan:ready-to-implement -label:impl:in-progress'
+gh pr list    --search 'is:open draft:true -label:impl:in-progress -label:impl:needs-human -label:review:queued -label:review:in-progress -label:review:needs-human -label:review:passed'
+```
+
+**Resume path for parked items.** A `*-needs-human` item is not a dead end: once a
+human picks a number / resolves the parked decisions, the same skill is re-run to
+drain it and the belt moves on. Because nothing automatically chases these, parked
+items need an **age / escalation** query so a branch can't rot silently — periodically
+sort the `*-needs-human` queries by age and escalate the oldest:
+
+```bash
+gh issue list --label plan:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
+gh pr list    --label review:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
 ```
 
 ## The skills
@@ -249,12 +303,18 @@ Same two modes (interactive / autonomous routine). See
 - **Label namespace.** `plan:*` / `impl:*` / `review:*` proposed; bikeshed welcome.
 - **Routine cadence & guardrails** for overnight autonomous runs.
 - **Lock staleness window** — how long without a push before `impl:in-progress`
-  counts as abandoned and another agent may take over.
+  counts as abandoned and another agent may take over. Fencing is now in place
+  (`git push --force-with-lease` + an ownership re-check before each push), so a
+  wrong guess here **fails loudly** — a premature takeover loses the lease and stops
+  rather than destroying the other worker's commits — but the window still wants tuning.
 - **Rebase threshold** — 20 commits behind `develop` is a starting heuristic;
   each rebase re-triggers a full CI run, so the number trades freshness for cost.
 - **Triage thresholds** for `conveyor-review` — the diff sizes that switch between one
   reviewer, a fan-out, and an added security pass, and the size/concern bar that
-  triggers a split proposal.
+  triggers a split proposal. The split trigger now has a concrete starting bar
+  (>~800 changed lines **or** >15 files, **and** ≥2 independent concerns that share
+  no symbols — see `conveyor-review`); the open question is to **tune those numbers**
+  against real PRs, not whether a bar exists.
 - **Split mechanics** — how a slice is physically carved off the branch when a
   split is approved: re-plan each slice from scratch vs. carve the existing commits
   into new branches. Left open for discussion.
@@ -262,3 +322,14 @@ Same two modes (interactive / autonomous routine). See
   org, and how reliable / fast its delivery is.
 - **Naming / terminology** — the station and label names ("worker", "station",
   `plan:*` / `impl:*` / `review:*`) are open for discussion.
+
+## Known gaps — hardening before autonomous runs
+
+Lower-priority gaps not yet fixed in the skills, listed so they stay tracked:
+
+- **Advisory `continue-on-error` CI checks.** Some per-PR checks are advisory and never fail the run, so gating must read each check's **conclusion**, not the presence of a red line in a log.
+- **e2e is paths-ignore-gated and platform-specific.** An absent e2e job on a surface the PR doesn't touch is a valid green, not a missing gate — don't treat "no e2e ran" as failure on an unaffected surface.
+- **`broken-in-develop` can't be reproduced locally for e2e / dev-env.** Verify that bucket by reading the latest `develop` / nightly CI run instead of running it locally, and bootstrap the workspace first (`git submodule update --init`, `yarn install`) so submodule-absent errors aren't misread as PR breakage.
+- **PR template.** The draft PR should start from the repo's `pull_request_template.md` (including the **Notes for QA** section), not a hand-rolled body.
+- **Two classifiers, two thresholds.** `conveyor-plan-review` and `conveyor-review` share the same classification **structure** but use different numeric thresholds (surface at ≥6 confidence; auto-fix only at ≥8) — don't unify the numbers by accident.
+- **Build-big-then-split cost.** A large feature pays one full implement + e2e cycle **before** the split decision is taken at review, so the first slice's proof work is partly redone — accepted for now, flagged as a cost.

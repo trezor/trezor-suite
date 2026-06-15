@@ -57,14 +57,30 @@ well-evidenced, you may collapse to the two highest-leverage open questions
 6. **Out of scope.** What are we explicitly **not** doing in this plan, so the
    reviewer and implementer do not assume it?
 
-### 2. Optional grounding
+### 2. Search before you create — dedup
+
+Before drafting anything, search for an existing issue or PR covering the same
+feature, so you do not open a duplicate:
+
+```bash
+gh issue list --state open --search "<feature keywords>"
+gh search issues --repo trezor/trezor-suite "<feature keywords>" --state open
+gh search prs --repo trezor/trezor-suite "<feature keywords>" --state open
+```
+
+If a real match exists, **stop and point the developer at it** instead of
+creating a new issue — link the existing issue/PR and suggest running
+`conveyor-plan-review` on it (or commenting on the open PR). Only proceed when
+you are confident no equivalent plan already exists.
+
+### 3. Optional grounding
 
 If a question hinges on how the code actually works (which package owns a flow,
 whether a pattern already exists), do a quick read of the codebase rather than
 guessing — but keep it light. Deep architecture analysis is `conveyor-plan-review`'s job,
 not yours. Note anything you find as an "Open question" rather than resolving it.
 
-### 3. Draft the plan
+### 4. Draft the plan
 
 Assemble answers into the issue body using exactly this structure. Keep it tight
 and concrete — no filler. Leave a section as `_TBD_` only if genuinely unknown,
@@ -92,11 +108,14 @@ and add it to Open questions.
 ## Constraints & risks
 <technical constraints, compat, security/privacy/signing implications>
 
+## Acceptance criteria / Definition of done
+<a few testable criteria that prove the feature is done, phrased so implementation can write an e2e/integration test against them — observable behaviour, not "code merged". conveyor-implement must land ≥1 new e2e covering these.>
+
 ## Open questions
 <anything unresolved the review should settle>
 ```
 
-### 4. Confirm, then create the issue
+### 5. Confirm, then create the issue
 
 Show the assembled body to the developer and get a yes before creating anything
 on GitHub (creating an issue is outward-facing).
@@ -132,7 +151,7 @@ _none yet_
 _Last updated by: plan-create_
 ```
 
-### 5. Hand off
+### 6. Hand off
 
 Report the issue URL and tell the developer the next step: anyone with tokens
 can run `conveyor-plan-review` on it (`gh issue list --label plan:draft` to find it).
@@ -141,6 +160,11 @@ can run `conveyor-plan-review` on it (`gh issue list --label plan:draft` to find
 
 - One question per turn during the interview. Do **not** batch the forcing
   questions — the friction is the point.
+- Search for an existing issue/PR before creating anything; if a match exists,
+  point the developer at it rather than opening a duplicate.
+- Every plan must carry an `## Acceptance criteria / Definition of done` section
+  with testable criteria — never leave it `_TBD_`; this is what implementation
+  writes its required new e2e against.
 - Never invent product or UX behaviour the developer did not state. If you do not
   know, it is an Open question, not a guess. (No speculative state machines /
   phases / flows.)
