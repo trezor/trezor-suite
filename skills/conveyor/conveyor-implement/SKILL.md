@@ -1,11 +1,11 @@
 ---
 name: conveyor-implement
-description: Pick up a plan:ready-to-implement GitHub issue, claim it with a lock label, implement it per the consolidated plan, open a draft PR linked to the issue, then drive CI to green and keep the branch fresh (aggressive rebase) until the work is ready for agentic review. Runs interactively or autonomously (overnight routine). Use when asked to "implement a plan", "pick up an issue", or "drive a PR to green".
+description: Pick up a conveyor/plan:ready-to-implement GitHub issue, claim it with a lock label, implement it per the consolidated plan, open a draft PR linked to the issue, then drive CI to green and keep the branch fresh (aggressive rebase) until the work is ready for agentic review. Runs interactively or autonomously (overnight routine). Use when asked to "implement a plan", "pick up an issue", or "drive a PR to green".
 ---
 
 # conveyor-implement
 
-Take a `plan:ready-to-implement` issue all the way to a green, up-to-date draft
+Take a `conveyor/plan:ready-to-implement` issue all the way to a green, up-to-date draft
 PR that is ready for the agentic review phase. This is the third step of the
 [planning workflow](../README.md); read that README for the data model,
 lifecycle, and token-pooling model before running.
@@ -19,18 +19,18 @@ It does **not** do the code review or the split — those are the next station.
 
 ## When to use
 
-- An issue is labeled `plan:ready-to-implement` and is **not** locked
-  (`impl:in-progress`) or blocked (`impl:needs-human`).
+- An issue is labeled `conveyor/plan:ready-to-implement` and is **not** locked
+  (`conveyor/impl:in-progress`) or blocked (`conveyor/impl:needs-human`).
 - Or you are resuming an issue whose lock has gone stale (see step 0).
 
 ## Inputs
 
 - **Target issue.** A passed issue number, or — if none given — the oldest
-  `plan:ready-to-implement` issue that is not locked.
+  `conveyor/plan:ready-to-implement` issue that is not locked.
 - **Mode.**
   - **Interactive** (default): a human is at the keyboard; watch CI live.
   - **Autonomous**: a routine / overnight run; poll CI between wakes, never block
-    on a human, and park to `impl:needs-human` when stuck.
+    on a human, and park to `conveyor/impl:needs-human` when stuck.
 
 ## Process
 
@@ -44,15 +44,15 @@ compare-and-swap). The **real lock is the branch on `origin`** plus
 - **Step 0 — reconcile state first.** If the issue has **zero** conveyor
   lifecycle labels (orphan) or **more than one**, fix that before proceeding
   (an interrupted transition can leave an extra or missing label).
-- Refuse to start if the issue is `impl:in-progress` or `impl:needs-human`,
+- Refuse to start if the issue is `conveyor/impl:in-progress` or `conveyor/impl:needs-human`,
   **unless** the lock is **stale**: the PR branch has had no new commits pushed
   for a while (treat as abandoned — the previous agent ran out of tokens or
   died). Only then take over.
-- Swap labels **add-before-remove**: add `impl:in-progress` first, then remove
-  `plan:ready-to-implement` (a crash mid-swap leaves an extra label, findable —
+- Swap labels **add-before-remove**: add `conveyor/impl:in-progress` first, then remove
+  `conveyor/plan:ready-to-implement` (a crash mid-swap leaves an extra label, findable —
   never zero, an invisible orphan).
 - **Re-read immediately after adding the label.** If a *second*
-  `impl:in-progress` appeared (another agent raced you), back off — you lost the
+  `conveyor/impl:in-progress` appeared (another agent raced you), back off — you lost the
   race; reconcile to a single owner before doing anything.
 - Create or check out the feature branch and push it to `origin` immediately, so
   the lock and the branch exist together. A **non-fast-forward rejection on this
@@ -77,11 +77,11 @@ compare-and-swap). The **real lock is the branch on `origin`** plus
 - Body: a short summary of the approach, and `Closes #<issue>` to link it.
 - **Remove the auto-requested CODEOWNERS reviewers right away.** Opening the PR
   auto-requests reviewers; clear them now so humans are not pinged early — they
-  are only (re-)requested at the `review:passed` handoff, by the human who flips
+  are only (re-)requested at the `conveyor/review:passed` handoff, by the human who flips
   the draft to ready.
 - Post a one-time comment on the issue with the PR URL. **From here on the issue
   is the frozen spec — do not update it.** All working state lives on the PR.
-- **Migrate the lock to the PR add-before-remove:** add `impl:in-progress` to the
+- **Migrate the lock to the PR add-before-remove:** add `conveyor/impl:in-progress` to the
   PR *first*, then remove it from the issue. Every lifecycle label from now on
   lives on the PR, not the issue.
 - Labels via REST API (not `gh pr edit`): `no-project` + `code` (this is product
@@ -138,7 +138,7 @@ Whenever the branch is **more than 20 commits behind `origin/develop`**:
   (e.g. `bot-rebase.yml`) pushed; never clobber it. Re-verify you still hold the
   lock immediately before pushing.
 - Force-push with `git push --force-with-lease` to **your locked branch on
-  `origin`** (only ever force-push a branch you hold the `impl:in-progress` lock
+  `origin`** (only ever force-push a branch you hold the `conveyor/impl:in-progress` lock
   on). A non-fast-forward / lease rejection means you **lost the claim** → stop
   and reconcile, do **not** retry the push.
 - Re-enter step 3 (the rebase re-triggers CI).
@@ -148,15 +148,15 @@ Whenever the branch is **more than 20 commits behind `origin/develop`**:
 cap**, whichever trips first. The per-check "3 attempts" cap still stands, but
 this global budget guarantees termination even when each rebase surfaces a
 different upstream-churn failure. When the budget is exhausted, route to step 6
-(`impl:needs-human`).
+(`conveyor/impl:needs-human`).
 
 ### 5. Done — PoC proven, hand off to review
 
 When the PoC is proven (CI green incl. dev-environment build and e2e) and the
 branch is fresh:
 
-- Swap labels on the **PR** add-before-remove: add `review:queued` first, then
-  remove `impl:in-progress`.
+- Swap labels on the **PR** add-before-remove: add `conveyor/review:queued` first, then
+  remove `conveyor/impl:in-progress`.
 - Comment the handoff on the PR.
 - Report the PR URL and that it is ready for the agentic review phase
   (`conveyor-review`). The PR stays a **draft** — promoting to "Ready for review" is a
@@ -183,10 +183,10 @@ Then:
   constraint Z in the plan, (4) bounce back to planning — with your
   recommendation. The human should be able to unblock you by picking a number,
   not by working out the options themselves.
-- Swap labels on the **PR** add-before-remove: add `impl:needs-human` first, then
-  remove `impl:in-progress`.
-- Exit. `impl:needs-human` means hands-off for other agents until a human
-  intervenes. **Resume path:** a human clears `impl:needs-human` (after fixing
+- Swap labels on the **PR** add-before-remove: add `conveyor/impl:needs-human` first, then
+  remove `conveyor/impl:in-progress`.
+- Exit. `conveyor/impl:needs-human` means hands-off for other agents until a human
+  intervenes. **Resume path:** a human clears `conveyor/impl:needs-human` (after fixing
   it, or bouncing the plan back to the planning phase), handing the PR back to a
   re-claimable state.
 
@@ -194,8 +194,8 @@ Then:
 
 - **Interactive**: implement, open PR, watch CI live, fix, rebase, hand off.
 - **Autonomous** (routine): same core, but between CI runs you sleep and poll
-  rather than block; on success set `review:queued`, on stuck set
-  `impl:needs-human`. This is the mode meant for burning pooled tokens overnight.
+  rather than block; on success set `conveyor/review:queued`, on stuck set
+  `conveyor/impl:needs-human`. This is the mode meant for burning pooled tokens overnight.
   Bounded by the **hard per-run budget** (10 total fix attempts, 3 rebase cycles,
   wall-clock cap — see step 4). **Intake rule:** before starting a *new* issue,
   first resume the highest-priority non-stale in-progress PR and drive its CI —
@@ -205,8 +205,8 @@ Then:
 
 - The label lock is advisory; the **branch on `origin` is the real lock**. Hold
   it before touching the branch; only ever force-push a branch you have locked,
-  and always with `git push --force-with-lease`. Respect `impl:in-progress` /
-  `impl:needs-human` on other issues.
+  and always with `git push --force-with-lease`. Respect `conveyor/impl:in-progress` /
+  `conveyor/impl:needs-human` on other issues.
 - **Every label transition is add-before-remove** (extra label on a crash, never
   zero).
 - Before any force-push, `git fetch origin <branch>`; abort if the tip advanced
@@ -226,4 +226,4 @@ Then:
 - Once the PR is open, the issue is the frozen spec; all lifecycle labels and
   working state live on the PR.
 - PRs stay drafts — only a human promotes to "Ready for review". This skill
-  stops at `review:queued`.
+  stops at `conveyor/review:queued`.

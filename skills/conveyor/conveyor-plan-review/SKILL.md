@@ -1,11 +1,11 @@
 ---
 name: conveyor-plan-review
-description: Review a feature-plan GitHub issue through multiple independent lenses (scope, architecture, and conditionally design and DX), auto-resolve mechanical decisions, surface only genuine taste decisions and user-challenges, consolidate the plan, and promote it from plan:draft toward plan:ready-to-implement. Runs interactively (human at keyboard) or autonomously (overnight routine, parks decisions). Use when asked to "review a plan", "advance a plan issue", or "drain plan decisions".
+description: Review a feature-plan GitHub issue through multiple independent lenses (scope, architecture, and conditionally design and DX), auto-resolve mechanical decisions, surface only genuine taste decisions and user-challenges, consolidate the plan, and promote it from conveyor/plan:draft toward conveyor/plan:ready-to-implement. Runs interactively (human at keyboard) or autonomously (overnight routine, parks decisions). Use when asked to "review a plan", "advance a plan issue", or "drain plan decisions".
 ---
 
 # conveyor-plan-review
 
-Take a feature-plan issue and move it toward `plan:ready-to-implement` while
+Take a feature-plan issue and move it toward `conveyor/plan:ready-to-implement` while
 spending as little human attention as possible. This is the second step of the
 [planning workflow](../README.md); read that README for the data model and
 lifecycle before running.
@@ -17,7 +17,7 @@ human, batched.** Everything else is auto-decided and logged.
 
 - **Target issue.** Either a passed issue number, or — if none given — pick the
   highest-priority issue from the queue:
-  `plan:needs-human` first (a human is needed to drain it), then `plan:draft`.
+  `conveyor/plan:needs-human` first (a human is needed to drain it), then `conveyor/plan:draft`.
 - **Mode.**
   - **Interactive** (default): a human is at the keyboard; resolve decisions live.
   - **Autonomous**: triggered by a routine / overnight run; never block on a
@@ -28,19 +28,19 @@ human, batched.** Everything else is auto-decided and logged.
 
 ### 0. Claim / load state
 
-**Reconcile first (step-0).** Look at the issue's `plan:*` labels. If it has zero
+**Reconcile first (step-0).** Look at the issue's `conveyor/plan:*` labels. If it has zero
 of them (orphan) or more than one, fix that before proceeding — drop the stale
 ones so it carries exactly the one lifecycle label it should. Only then claim.
 
 Fetch the issue body (the plan), the status comment, and the thread; **remember a
 hash of the body and the label set as you loaded them** — you will re-check before
 any write. If the status comment is missing, recreate it from the template in
-`conveyor-plan-create`. Claim by **adding** `plan:in-review` **before** removing the
+`conveyor-plan-create`. Claim by **adding** `conveyor/plan:in-review` **before** removing the
 prior lifecycle label, so a crash mid-transition leaves an extra findable label,
 never zero.
 
-`plan:in-review` is a real (advisory) lock: if the issue is already
-`plan:in-review` and it was set recently (a fresh claim, not a stale crash),
+`conveyor/plan:in-review` is a real (advisory) lock: if the issue is already
+`conveyor/plan:in-review` and it was set recently (a fresh claim, not a stale crash),
 **refuse** — another run holds it; do not race it. The label is advisory only —
 two agents can race the read-then-write with no compare-and-swap — so never treat
 it as a hard mutex; if in doubt about freshness, prefer to back off.
@@ -51,7 +51,7 @@ changed since you loaded it — a human or another run edited it — **abort the
 write** and reconcile; never blindly "restore on exit" a remembered label, which
 would clobber a concurrent edit.
 
-If the issue is already `plan:needs-human`, you are **draining**: skip new lens
+If the issue is already `conveyor/plan:needs-human`, you are **draining**: skip new lens
 analysis unless the plan changed since the parked decisions were written, and go
 straight to the gate (step 3) with the parked decisions (re-validate them against
 the current body first — see step 3).
@@ -68,7 +68,7 @@ Always run:
   need? Is the feature **complete** — anything missing that the feature needs to
   work properly? Are the stated non-goals genuinely out of this feature (not just
   deferred work that is actually load-bearing)? Do **not** push to shrink the
-  plan: the goal is a complete feature; splitting a large change into shippable
+  conveyor/plan: the goal is a complete feature; splitting a large change into shippable
   pieces is the review station's job, not the plan's.
 - **Architecture lens.** Does the approach fit the codebase? Coupling, shared
   code blast radius, data flow, failure modes, security/privacy/signing
@@ -96,7 +96,7 @@ Apply noise gating, then classify:
 
 **Acceptance-criteria gate.** The plan body must carry a non-empty
 `## Acceptance criteria / Definition of done` section (testable criteria) before
-it can reach `plan:ready-to-implement`. If it is missing or empty, that is an open
+it can reach `conveyor/plan:ready-to-implement`. If it is missing or empty, that is an open
 decision for the human (numbered options: draft criteria for approval, or send
 back) — it blocks promotion just like a P1.
 
@@ -107,7 +107,7 @@ back) — it blocks promotion just like a P1.
   nothing — no silent skips.
 - **A P1 always blocks promotion**, even one classified as **mechanical** and
   auto-resolved: the noise/classification gate decides who fixes it, not whether
-  it blocks. An auto-fixed P1 still holds the plan out of `plan:ready-to-implement`
+  it blocks. An auto-fixed P1 still holds the plan out of `conveyor/plan:ready-to-implement`
   until the human confirms (it stays a tracked blocker, not silently cleared).
 
 **Classification** — who decides:
@@ -134,7 +134,7 @@ Principles for auto-deciding taste calls (and for your recommendation):
 
 ### 3. The decision gate (mode-dependent)
 
-**On a drain run** (entered at `plan:needs-human`): re-read the body, the status
+**On a drain run** (entered at `conveyor/plan:needs-human`): re-read the body, the status
 comment, and the thread, and **re-validate every parked option against the
 current body** — a human may have edited the plan since the options were written,
 making some moot or wrong. Drop or rewrite stale options before presenting them.
@@ -163,15 +163,15 @@ For each resolved decision:
   always be the latest plan.
 
 On every transition below, **add the new lifecycle label before removing
-`plan:in-review`**, so a crash mid-flip leaves an extra findable label, never
+`conveyor/plan:in-review`**, so a crash mid-flip leaves an extra findable label, never
 zero.
 
 Then:
 - If no open decisions remain, no lens left a P1 (including an auto-resolved one),
-  and the acceptance-criteria gate passes → add `plan:ready-to-implement` then
-  remove `plan:in-review`, update the status comment state, report done.
-- If decisions remain unresolved (human deferred some) → add `plan:needs-human`
-  then remove `plan:in-review`, leave them in "Open decisions", report what is
+  and the acceptance-criteria gate passes → add `conveyor/plan:ready-to-implement` then
+  remove `conveyor/plan:in-review`, update the status comment state, report done.
+- If decisions remain unresolved (human deferred some) → add `conveyor/plan:needs-human`
+  then remove `conveyor/plan:in-review`, leave them in "Open decisions", report what is
   parked.
 
 #### Autonomous
@@ -179,7 +179,7 @@ Do **not** block. Write every open decision into the status comment's "Open
 decisions (need a human)" section as **numbered options with your recommendation**
 and each option's trade-off, so the human can later resolve it by picking a number
 rather than designing an answer. Apply all mechanical resolutions to the body as
-usual. Add `plan:needs-human` then remove `plan:in-review`. Exit with a summary of
+usual. Add `conveyor/plan:needs-human` then remove `conveyor/plan:in-review`. Exit with a summary of
 what was parked.
 
 ### 4. Status comment shape
@@ -220,7 +220,7 @@ _Last updated by: conveyor-plan-review (<interactive|autonomous>)_
 - The issue body is the single source of truth — reconsolidate it after every
   resolution.
 - Read real code for the architecture lens; no speculative findings.
-- Do not promote to `plan:ready-to-implement` while any P1 (even an auto-resolved
+- Do not promote to `conveyor/plan:ready-to-implement` while any P1 (even an auto-resolved
   one), any unresolved open decision, or a missing/empty acceptance-criteria
   section remains.
 - Never classify a signing/key/persistence/privacy edit as mechanical; always

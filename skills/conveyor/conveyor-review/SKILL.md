@@ -1,12 +1,12 @@
 ---
 name: conveyor-review
-description: Run the agentic review station on a green draft PR (label review:queued). Request GitHub Copilot's review, run a triage-scaled adversarial second-opinion review in parallel, then process all findings — auto-fixing high-confidence low-risk ones and parking the rest for a human. Leaves a clean draft PR for a human to promote to "Ready for review". Runs interactively or autonomously (overnight routine). Use when asked to "review a PR", "run agentic review", or "process Copilot findings".
+description: Run the agentic review station on a green draft PR (label conveyor/review:queued). Request GitHub Copilot's review, run a triage-scaled adversarial second-opinion review in parallel, then process all findings — auto-fixing high-confidence low-risk ones and parking the rest for a human. Leaves a clean draft PR for a human to promote to "Ready for review". Runs interactively or autonomously (overnight routine). Use when asked to "review a PR", "run agentic review", or "process Copilot findings".
 ---
 
 # conveyor-review
 
 The agentic review station of the [workflow](../README.md): take a green draft PR
-that `conveyor-implement` handed off (`review:queued`) and get it review-clean while
+that `conveyor-implement` handed off (`conveyor/review:queued`) and get it review-clean while
 it is still a draft, so the only thing left is a human's final look.
 
 This skill never promotes the PR to "Ready for review" — that is strictly a
@@ -23,28 +23,28 @@ working state lives on the **PR**, mirroring the issue model one station back:
 | **PR description** | summary of the approach + `Closes #<issue>` (link to the spec) |
 | **Review status comment** (yours, maintained) | dashboard: triage (diff size / risk), which reviews ran (Copilot, adversarial), open findings needing a human, resolved findings (what was fixed + commit SHA) |
 | **Inline review comments** | the granular findings — Copilot's native ones plus your adversarial ones. Resolving a thread is two steps: reply with the fixing commit SHA (a REST reply does **not** resolve), then call the GraphQL `resolveReviewThread` mutation |
-| **PR labels** | `review:*` lifecycle (below) |
+| **PR labels** | `conveyor/review:*` lifecycle (below) |
 
 ## When to use
 
-- A PR is labeled `review:queued` and is not `review:in-progress` /
-  `review:needs-human`.
+- A PR is labeled `conveyor/review:queued` and is not `conveyor/review:in-progress` /
+  `conveyor/review:needs-human`.
 
 ## Inputs
 
-- **Target PR.** A passed PR number, or the oldest `review:queued` PR otherwise.
+- **Target PR.** A passed PR number, or the oldest `conveyor/review:queued` PR otherwise.
 - **Mode.** Interactive (human at keyboard) or autonomous (routine; never blocks).
 
 ## Process
 
 ### 0. Claim
 
-**Reconcile first (step-0).** Look at the PR's `review:*` labels. If it has zero
+**Reconcile first (step-0).** Look at the PR's `conveyor/review:*` labels. If it has zero
 of them (orphan) or more than one, fix that before proceeding — drop the stale
 ones so it carries exactly the one lifecycle label it should. Only then claim.
 
-Claim by **adding** `review:in-progress` (the advisory review lock) **before**
-removing `review:queued`, so a crash mid-transition leaves an extra findable
+Claim by **adding** `conveyor/review:in-progress` (the advisory review lock) **before**
+removing `conveyor/review:queued`, so a crash mid-transition leaves an extra findable
 label, never zero. The label is advisory only — two agents can race the
 read-then-write — so the real guard is the branch on origin plus
 `--force-with-lease` (see §6). If the status comment does not exist yet, create it
@@ -72,7 +72,7 @@ it (reviewing a PR you are about to chop up is wasted work).
   what each delivers, and their dependency order.
 - **Never auto-split.** Splitting restructures already-built work, so it is a
   user-challenge. Surface the proposal to a human: write it into the status
-  comment and set `review:needs-human`. In autonomous mode, park and exit.
+  comment and set `conveyor/review:needs-human`. In autonomous mode, park and exit.
 - **On approval, each slice re-enters the line at the start** — lift the slice off
   the belt and set it back at the beginning as its own `conveyor-plan-create`
   issue; this PR is then closed or reduced to the first slice. (How the branch is
@@ -151,7 +151,7 @@ Gate for noise, then classify each finding by who resolves it (same model as
   conclusion is actually `failure` — never against a pending/queued one, and never
   against an infra/transient failure (registry 5xx, emulator boot, runner OOM):
   those back off and retry the same commit. Honour the global run budget (default
-  10 total fix attempts); on exhaustion, park as `review:needs-human`.
+  10 total fix attempts); on exhaustion, park as `conveyor/review:needs-human`.
 
 ### 7. Maintain the status comment
 
@@ -168,34 +168,34 @@ deleting the rest. Never blindly post a new comment.
 ### 8. Freshness check (before any clean hand-off)
 
 A long review can leave the branch stale or red against `develop`. Before handing
-off `review:passed`, check the branch against `origin/develop`
+off `conveyor/review:passed`, check the branch against `origin/develop`
 (`git rev-list --count origin/develop ^<branch>` for how far behind). The
-`review:in-progress` label is the lock you hold through this.
+`conveyor/review:in-progress` label is the lock you hold through this.
 
 - If it is **> 20 commits behind**, rebase onto `develop`, run a **local
   type-check before pushing**, then `git fetch origin <branch>` and (if it did not
   advance with a commit you did not author) `git push --force-with-lease`. A
   lease rejection means you lost the lock — stop and reconcile, do not retry.
 - If the rebase surfaces non-trivial conflicts or the post-rebase build/tests go
-  red, **bounce it back to implementation** (`impl:in-progress` for that station to
+  red, **bounce it back to implementation** (`conveyor/impl:in-progress` for that station to
   pick up) rather than hand off a broken PR — note why in the status comment.
 - Only a green, reasonably-fresh branch proceeds to the clean hand-off.
 
 ### 9. Hand off
 
-Always **add** the new label **before** removing `review:in-progress`, so a crash
+Always **add** the new label **before** removing `conveyor/review:in-progress`, so a crash
 mid-transition leaves an extra findable label, never zero.
 
 - **Clean** (nothing parked, no unresolved real/security finding, branch fresh):
-  add `review:passed`, then remove `review:in-progress`. Comment a summary. The PR
+  add `conveyor/review:passed`, then remove `conveyor/review:in-progress`. Comment a summary. The PR
   stays a **draft** — a human now verifies and promotes it to "Ready for review".
-- **Parked** (open findings remain): add `review:needs-human`, then remove
-  `review:in-progress`. `review:needs-human` is hands-off for other agents until a
+- **Parked** (open findings remain): add `conveyor/review:needs-human`, then remove
+  `conveyor/review:in-progress`. `conveyor/review:needs-human` is hands-off for other agents until a
   human resolves the open findings (then re-run `conveyor-review` to continue).
 
-**Stale-takeover of a crashed review.** `review:in-progress` is advisory, so a
+**Stale-takeover of a crashed review.** `conveyor/review:in-progress` is advisory, so a
 crashed run can leave a PR stuck under it with no agent working. If a PR carries
-`review:in-progress` but its branch has had no new commit and the status comment
+`conveyor/review:in-progress` but its branch has had no new commit and the status comment
 no update for a stale interval, treat the lock as abandoned: reconcile (step-0)
 and take it over — never leave it a silent dead PR.
 
@@ -233,8 +233,8 @@ _Last updated by: conveyor-review (<interactive|autonomous>)_
 - **Interactive**: request Copilot, run adversarial review, process findings live,
   hand off.
 - **Autonomous** (routine): same core, but poll for Copilot's review between wakes
-  instead of blocking; on clean set `review:passed`, on parked set
-  `review:needs-human`. The mode for burning pooled tokens overnight.
+  instead of blocking; on clean set `conveyor/review:passed`, on parked set
+  `conveyor/review:needs-human`. The mode for burning pooled tokens overnight.
 
 ## Rules
 
@@ -260,6 +260,6 @@ _Last updated by: conveyor-review (<interactive|autonomous>)_
   author; push with `--force-with-lease`; a lease rejection means you lost the
   lock — reconcile, do not retry.
 - Add the new lifecycle label before removing the old one on every transition.
-- Respect `review:in-progress` / `review:needs-human` on other PRs, but treat an
-  `review:in-progress` whose branch and status comment have gone stale as an
+- Respect `conveyor/review:in-progress` / `conveyor/review:needs-human` on other PRs, but treat an
+  `conveyor/review:in-progress` whose branch and status comment have gone stale as an
   abandoned lock to reconcile and take over.

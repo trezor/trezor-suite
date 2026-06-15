@@ -1,11 +1,11 @@
 ---
 name: conveyor-plan-create
-description: Turn a feature idea into a well-formed GitHub issue (a feature plan) through forcing questions, then create the issue with a structured body, a status-comment placeholder, and the plan:draft label. Use when starting a new feature, beginning planning, or when asked to "create a plan" or "open a plan issue".
+description: Turn a feature idea into a well-formed GitHub issue (a feature plan) through forcing questions, then create the issue with a structured body, a status-comment placeholder, and the conveyor/plan:draft label. Use when starting a new feature, beginning planning, or when asked to "create a plan" or "open a plan issue".
 ---
 
 # conveyor-plan-create
 
-Guide one developer from a raw idea to a `plan:draft` GitHub issue that is good
+Guide one developer from a raw idea to a `conveyor/plan:draft` GitHub issue that is good
 enough to hand to `conveyor-plan-review`. This is the first step of the
 [planning workflow](../README.md).
 
@@ -124,7 +124,7 @@ Then create the issue with `gh`:
 
 - **Title:** a concise imperative summary (e.g. "Add X to Y").
 - **Body:** the structured plan above.
-- **Label:** `plan:draft`. (If the label does not exist yet, tell the developer;
+- **Label:** `conveyor/plan:draft`. (If the label does not exist yet, tell the developer;
   do not silently create labels on the upstream repo.)
 - **First comment — the status placeholder.** Immediately post this as the first
   comment so `conveyor-plan-review` has a dashboard to maintain:
@@ -154,7 +154,7 @@ _Last updated by: plan-create_
 ### 6. Hand off
 
 Report the issue URL and tell the developer the next step: anyone with tokens
-can run `conveyor-plan-review` on it (`gh issue list --label plan:draft` to find it).
+can run `conveyor-plan-review` on it (`gh issue list --label conveyor/plan:draft` to find it).
 
 ## Rules
 

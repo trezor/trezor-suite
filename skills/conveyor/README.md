@@ -78,7 +78,7 @@ mirroring the issue model one station back:
 | **PR description** | summary of the approach + `Closes #<issue>` |
 | **Review status comment** | dashboard: triage, which reviews ran, open findings for a human, resolved findings (+ commit SHA) |
 | **Inline review comments** | granular findings (Copilot + adversarial); the durable log |
-| **PR labels** | `impl:*` / `review:*` lifecycle |
+| **PR labels** | `conveyor/impl:*` / `conveyor/review:*` lifecycle |
 
 The PR **branch on `origin`** is the shared implementation state — agents push to
 it frequently so any other agent or routine can resume the work if the first runs
@@ -100,6 +100,9 @@ zero conveyor lifecycle labels, or more than one, fix that before doing anything
 ## Lifecycle (labels as a state machine)
 
 Labels live on the **issue** until the PR opens, then on the **PR**.
+
+Labels below are shown **without the `conveyor/` prefix** for brevity — the real
+labels are `conveyor/plan:draft`, `conveyor/impl:in-progress`, etc. (see the table).
 
 ```
 ISSUE                          conveyor-plan-create        conveyor-plan-review
@@ -128,27 +131,37 @@ PR                  ▼
 
 | Label | On | Meaning | Next action |
 | --- | --- | --- | --- |
-| `plan:draft` | issue | Issue created, not yet reviewed | run `conveyor-plan-review` |
-| `plan:in-review` | issue | A plan review is in progress | wait / let it finish |
-| `plan:needs-human` | issue | Plan decisions parked for a human | run `conveyor-plan-review` to drain |
-| `plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `conveyor-implement` |
-| `impl:in-progress` | issue→PR | Being implemented now — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
-| `impl:needs-human` | PR | Implementation stuck (CI unbeatable, or the plan is wrong) — **hands-off** | a human fixes it or bounces it to planning |
-| `review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-review` |
-| `review:in-progress` | PR | Agentic review running — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
-| `review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-review` |
-| `review:passed` | PR | Agentic review clean | a human verifies, flips draft→ready, finds a reviewer |
+| `conveyor/plan:draft` | issue | Issue created, not yet reviewed | run `conveyor-plan-review` |
+| `conveyor/plan:in-review` | issue | A plan review is in progress | wait / let it finish |
+| `conveyor/plan:needs-human` | issue | Plan decisions parked for a human | run `conveyor-plan-review` to drain |
+| `conveyor/plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `conveyor-implement` |
+| `conveyor/impl:in-progress` | issue→PR | Being implemented now — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
+| `conveyor/impl:needs-human` | PR | Implementation stuck (CI unbeatable, or the plan is wrong) — **hands-off** | a human fixes it or bounces it to planning |
+| `conveyor/review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-review` |
+| `conveyor/review:in-progress` | PR | Agentic review running — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
+| `conveyor/review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-review` |
+| `conveyor/review:passed` | PR | Agentic review clean | a human verifies, flips draft→ready, finds a reviewer |
 
 **Label bootstrap (one-time).** The board is empty on day one until the 10
 lifecycle labels exist. Create them once per repo:
 
 ```bash
-for l in plan:draft plan:in-review plan:needs-human plan:ready-to-implement \
-         impl:in-progress impl:needs-human \
-         review:queued review:in-progress review:needs-human review:passed; do
-  gh label create "$l" --force
-done
+# The conveyor/ prefix groups them as one family; shared colours make them pop.
+mk(){ gh label create "$1" --color "$2" --description "Conveyor: $3" --force; }
+mk conveyor/plan:draft              1f6feb "plan created, awaiting review"
+mk conveyor/plan:in-review          1f6feb "plan review in progress"
+mk conveyor/plan:needs-human        cf222e "plan decisions parked for a human"
+mk conveyor/plan:ready-to-implement 1f6feb "plan clean, ready to build"
+mk conveyor/impl:in-progress        d29922 "being implemented (advisory lock)"
+mk conveyor/impl:needs-human        cf222e "implementation stuck, needs a human"
+mk conveyor/review:queued           2da44e "green draft PR, awaiting agentic review"
+mk conveyor/review:in-progress      2da44e "agentic review running"
+mk conveyor/review:needs-human      cf222e "review findings parked for a human"
+mk conveyor/review:passed           2da44e "agentic review clean, human takes over"
 ```
+
+Colours: `plan:*` blue, `impl:*` amber, `review:*` green, every `*:needs-human`
+red so a human-needed park stands out at a glance.
 
 Each skill **preflight-checks** that these labels exist before it queries or writes
 the board. If any are missing it **stops and asks a human to run the bootstrap
@@ -159,14 +172,14 @@ yields an empty board, and no agent invents labels on its own.
 A worker "with tokens" finds an open station by filtering the board:
 
 ```bash
-gh issue list --label plan:draft               # plans waiting for first review
-gh issue list --label plan:needs-human         # plan decisions to drain
-gh issue list --label plan:ready-to-implement  # plans waiting to be built
-gh issue list --label impl:in-progress         # claimed but not yet on a PR (check for stale)
-gh pr list --label impl:in-progress            # in-flight implementations (check for stale)
-gh pr list --label review:queued               # green PRs waiting for agentic review
-gh pr list --label impl:needs-human            # stuck implementations
-gh pr list --label review:needs-human          # review findings waiting for a human
+gh issue list --label conveyor/plan:draft               # plans waiting for first review
+gh issue list --label conveyor/plan:needs-human         # plan decisions to drain
+gh issue list --label conveyor/plan:ready-to-implement  # plans waiting to be built
+gh issue list --label conveyor/impl:in-progress         # claimed but not yet on a PR (check for stale)
+gh pr list --label conveyor/impl:in-progress            # in-flight implementations (check for stale)
+gh pr list --label conveyor/review:queued               # green PRs waiting for agentic review
+gh pr list --label conveyor/impl:needs-human            # stuck implementations
+gh pr list --label conveyor/review:needs-human          # review findings waiting for a human
 ```
 
 To find **orphans** — issues/PRs carrying NONE of the conveyor lifecycle labels (a
@@ -174,8 +187,8 @@ crash dropped the last label, or an item never entered the line) — query the
 negative space and reconcile (step-0) anything that turns up:
 
 ```bash
-gh issue list --search 'is:open -label:plan:draft -label:plan:in-review -label:plan:needs-human -label:plan:ready-to-implement -label:impl:in-progress'
-gh pr list    --search 'is:open draft:true -label:impl:in-progress -label:impl:needs-human -label:review:queued -label:review:in-progress -label:review:needs-human -label:review:passed'
+gh issue list --search 'is:open -label:"conveyor/plan:draft" -label:"conveyor/plan:in-review" -label:"conveyor/plan:needs-human" -label:"conveyor/plan:ready-to-implement" -label:"conveyor/impl:in-progress"'
+gh pr list    --search 'is:open draft:true -label:"conveyor/impl:in-progress" -label:"conveyor/impl:needs-human" -label:"conveyor/review:queued" -label:"conveyor/review:in-progress" -label:"conveyor/review:needs-human" -label:"conveyor/review:passed"'
 ```
 
 **Resume path for parked items.** A `*-needs-human` item is not a dead end: once a
@@ -185,8 +198,8 @@ items need an **age / escalation** query so a branch can't rot silently — peri
 sort the `*-needs-human` queries by age and escalate the oldest:
 
 ```bash
-gh issue list --label plan:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
-gh pr list    --label review:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
+gh issue list --label conveyor/plan:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
+gh pr list    --label conveyor/review:needs-human --json number,title,updatedAt --jq 'sort_by(.updatedAt)'
 ```
 
 ## The skills
@@ -195,7 +208,7 @@ gh pr list    --label review:needs-human --json number,title,updatedAt --jq 'sor
 Interactive. Guides one developer through turning an idea into a well-formed
 plan using forcing questions (one at a time, with pushback on vague answers),
 then creates the issue: body = structured plan, status comment = placeholder,
-label = `plan:draft`. The plan targets the **complete feature** — size is not a
+label = `conveyor/plan:draft`. The plan targets the **complete feature** — size is not a
 constraint here; splitting is a downstream review concern. See
 [conveyor-plan-create/SKILL.md](conveyor-plan-create/SKILL.md).
 
@@ -213,14 +226,14 @@ It has **two execution modes** sharing one core:
   records the decisions, consolidates the body, and promotes the label.
 - **Autonomous** (routine / overnight): does the same analysis, but instead of
   blocking on a human it **parks** every open decision into the status comment
-  and sets `plan:needs-human`, then exits. The next human with tokens drains it.
+  and sets `conveyor/plan:needs-human`, then exits. The next human with tokens drains it.
 
 The only difference between the modes is where the decision gate ends up:
 the terminal (live) or GitHub (parked). Human interaction is batched and
 minimized by design.
 
 ### `conveyor-implement`
-Picks up a `plan:ready-to-implement` issue, claims the `impl:in-progress` lock,
+Picks up a `conveyor/plan:ready-to-implement` issue, claims the `conveyor/impl:in-progress` lock,
 implements the complete feature per the consolidated plan, and opens a draft PR
 linked with `Closes #<issue>`. The draft's goal is a **proven proof of concept**:
 it drives the PR to green and keeps the branch fresh without a human:
@@ -233,12 +246,12 @@ it drives the PR to green and keeps the branch fresh without a human:
   its to fix: a gate already **broken in `develop`** (verified) is noted and
   ignored; **flaky** checks are rerun a few times. After **3 fix attempts on the
   same check** — or if a failure shows the plan itself is wrong — it parks to
-  `impl:needs-human` instead of looping forever.
+  `conveyor/impl:needs-human` instead of looping forever.
 - **Aggressive rebase.** Whenever the branch is **more than 20 commits behind
   `origin/develop`** it rebases, type-checks locally (this repo can silently
   break type-check on rebase while tests still pass), and force-pushes its locked
   branch.
-- **Handoff.** Green + fresh → `review:queued` on the PR. The PR stays a draft.
+- **Handoff.** Green + fresh → `conveyor/review:queued` on the PR. The PR stays a draft.
 
 When the PR opens, it migrates the lock to the PR and stops touching the issue
 (now the frozen spec). Same two modes as `conveyor-plan-review`: interactive (watch CI
@@ -246,7 +259,7 @@ live) or autonomous (routine polls CI between wakes — the mode meant for burni
 pooled tokens overnight). See [conveyor-implement/SKILL.md](conveyor-implement/SKILL.md).
 
 ### `conveyor-review`
-The agentic review station. Picks up a `review:queued` draft PR and gets it
+The agentic review station. Picks up a `conveyor/review:queued` draft PR and gets it
 review-clean while it is still a draft:
 
 - **Triages** the diff (size, risk, splittability) and runs a **split-feasibility
@@ -264,8 +277,8 @@ review-clean while it is still a draft:
   classification as `conveyor-plan-review`: auto-fix only high-confidence, low-risk,
   behaviour-preserving findings (commit, push, reply with the SHA, resolve);
   **park** everything else into the review status comment and set
-  `review:needs-human`.
-- **Hands off** clean work as `review:passed` — but **never promotes the PR to
+  `conveyor/review:needs-human`.
+- **Hands off** clean work as `conveyor/review:passed` — but **never promotes the PR to
   "Ready for review"**. That flip is strictly a human's signal: they verify the
   state, flip the draft, and find a second human to do the final review.
 
@@ -300,9 +313,9 @@ Same two modes (interactive / autonomous routine). See
   the team's attention, but committing internal workflow tooling to upstream
   `trezor/trezor-suite` long-term is questionable. A dedicated team-tooling repo
   is a likely home.
-- **Label namespace.** `plan:*` / `impl:*` / `review:*` proposed; bikeshed welcome.
+- **Label namespace.** `conveyor/plan:*` / `conveyor/impl:*` / `conveyor/review:*` proposed; bikeshed welcome.
 - **Routine cadence & guardrails** for overnight autonomous runs.
-- **Lock staleness window** — how long without a push before `impl:in-progress`
+- **Lock staleness window** — how long without a push before `conveyor/impl:in-progress`
   counts as abandoned and another agent may take over. Fencing is now in place
   (`git push --force-with-lease` + an ownership re-check before each push), so a
   wrong guess here **fails loudly** — a premature takeover loses the lease and stops
@@ -321,7 +334,7 @@ Same two modes (interactive / autonomous routine). See
 - **Copilot reviewer wiring** — the exact way to request Copilot's review for our
   org, and how reliable / fast its delivery is.
 - **Naming / terminology** — the station and label names ("worker", "station",
-  `plan:*` / `impl:*` / `review:*`) are open for discussion.
+  `conveyor/plan:*` / `conveyor/impl:*` / `conveyor/review:*`) are open for discussion.
 
 ## Known gaps — hardening before autonomous runs
 
