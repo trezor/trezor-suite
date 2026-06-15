@@ -268,6 +268,31 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         const { account, network, feeInfo } = composeContext;
         const { transactionData } = formState;
 
+        // If a custom nonce targets an existing pending tx (a replacement made outside the RBF
+        // flow), bump the fee to the RBF threshold so the node accepts it instead of rejecting it
+        // as "replacement transaction underpriced". RBF (speed-up / cancel) flows already pass a
+        // pre-bumped feeInfo, so they're skipped here.
+        const customNonce = formState.ethereumNonce?.trim();
+        const replacedPendingTx =
+            customNonce && !formState.rbfParams && account.networkType === 'ethereum'
+                ? (selectTransactions(getState())[account.key] ?? [])
+                      .filter(isPending)
+                      .filter(isSentTransaction)
+                      .find(tx => tx.ethereumSpecific?.nonce === Number(customNonce))
+                : undefined;
+        const replacedGas = replacedPendingTx?.ethereumSpecific;
+        const effectiveFeeInfo = replacedGas
+            ? getEthereumRbfFeeInfo(feeInfo, {
+                  gasPrice: replacedGas.gasPrice ? fromWei(replacedGas.gasPrice, 'gwei') : undefined,
+                  maxFeePerGas: replacedGas.maxFeePerGas
+                      ? fromWei(replacedGas.maxFeePerGas, 'gwei')
+                      : undefined,
+                  maxPriorityFeePerGas: replacedGas.maxPriorityFeePerGas
+                      ? fromWei(replacedGas.maxPriorityFeePerGas, 'gwei')
+                      : undefined,
+              })
+            : feeInfo;
+
         const isApproveTx = isEvmApprovalTx(transactionData);
         const { outputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -361,7 +386,9 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         }
 
         // FeeLevels are read-only
-        const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
+        const levels = customFeeLimit
+            ? effectiveFeeInfo.levels.map(l => ({ ...l }))
+            : effectiveFeeInfo.levels;
         const predefinedLevels = levels.filter(l => l.label !== 'custom');
         // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
         if (customFeeLimit.gt(0)) {
