@@ -91,11 +91,12 @@ PR                  ▼
                     │                                          │
           ┌─green + fresh──────────────▶ review:queued         │
           └─stuck / plan wrong ────────▶ impl:needs-human      │
-                    │ conveyor-review: Copilot + adversarial         │
+                    │ conveyor-review: triage → split? → Copilot + adversarial
                     ▼                                          │
              review:in-progress ───────────────────────────────┘
                     │
-          ┌─clean─────────────▶ review:passed ──▶ (human flips draft→ready)
+          ┌─too big ──────────▶ split proposal ──▶ slices re-enter at conveyor-plan-create ↺
+          ├─clean ────────────▶ review:passed ──▶ (human flips draft→ready)
           └─findings parked ──▶ review:needs-human (hands off)
 ```
 
@@ -178,11 +179,17 @@ pooled tokens overnight). See [conveyor-implement/SKILL.md](conveyor-implement/S
 The agentic review station. Picks up a `review:queued` draft PR and gets it
 review-clean while it is still a draft:
 
-- **Requests GitHub Copilot's review** first (async), then — without idling —
-  triages the diff (size + risk) and runs an **adversarial second-opinion review**
-  scaled to that triage: one reviewer for a small diff, a fan-out of reviewers
-  per area plus a security pass for a large or signing-sensitive one. Reviewers
-  hunt real bugs and breakage, not style.
+- **Triages** the diff (size, risk, splittability) and runs a **split-feasibility
+  gate first**: a PR that is too large or bundles independent concerns is hard to
+  review and risky to ship, so before any deep review the station proposes a
+  concrete split (slices + dependency order). It never auto-splits — a split is a
+  user-challenge; on a human's approval each slice **re-enters the line at the
+  start** as its own `conveyor-plan-create` issue (lifted off the belt, set back at
+  the beginning) and this PR is closed or reduced.
+- **Requests GitHub Copilot's review** (async), then — without idling — runs an
+  **adversarial second-opinion review** scaled to the triage: one reviewer for a
+  small diff, a fan-out per area plus a security pass for a large or
+  signing-sensitive one. Reviewers hunt real bugs and breakage, not style.
 - **Processes all findings** (Copilot + adversarial) through the same
   classification as `conveyor-plan-review`: auto-fix only high-confidence, low-risk,
   behaviour-preserving findings (commit, push, reply with the SHA, resolve);
@@ -223,7 +230,11 @@ Same two modes (interactive / autonomous routine). See
 - **Rebase threshold** — 20 commits behind `develop` is a starting heuristic;
   each rebase re-triggers a full CI run, so the number trades freshness for cost.
 - **Triage thresholds** for `conveyor-review` — the diff sizes that switch between one
-  reviewer, a fan-out, and an added security pass.
+  reviewer, a fan-out, and an added security pass, and the size/concern bar that
+  triggers a split proposal.
+- **Split mechanics** — how a slice is physically carved off the branch when a
+  split is approved: re-plan each slice from scratch vs. carve the existing commits
+  into new branches. Left open for discussion.
 - **Copilot reviewer wiring** — the exact way to request Copilot's review for our
   org, and how reliable / fast its delivery is.
 - **Naming / terminology** — the station and label names ("worker", "station",

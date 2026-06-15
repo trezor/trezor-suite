@@ -42,35 +42,60 @@ working state lives on the **PR**, mirroring the issue model one station back:
 Set the PR label to `review:in-progress` (the review lock). If the status comment
 does not exist yet, create it from the template below.
 
-### 1. Request GitHub Copilot's review
+### 1. Triage the diff
 
-Request Copilot as a reviewer on the PR (via the GitHub UI's "Request review" or
-the request-reviewers API — pin the exact Copilot reviewer login for your org).
-Copilot delivers asynchronously, usually within minutes, so kick this off first
-and do other work while it runs.
+- **Size & risk.** Measure size (files and lines changed) and risk (does it touch
+  sensitive areas — signing paths, transport, crypto, persistence?). This sets
+  review depth.
+- **Splittability.** Does the PR bundle several independent concerns that could
+  ship on their own? Note them — this feeds the split gate next.
 
-### 2. Triage, then run your own adversarial review (in parallel with Copilot)
+### 2. Split feasibility — split a giant before reviewing it
 
-While Copilot runs, do not idle:
+A PR that is too large, or that bundles several independent concerns, is hard to
+review well and risky to ship. Decide this **before** spending a deep review on
+it (reviewing a PR you are about to chop up is wasted work).
 
-- **Triage the diff.** Measure size (files and lines changed) and risk (does it
-  touch sensitive areas — signing paths, transport, crypto, persistence?). This
-  sets review depth.
-- **Run an adversarial second-opinion review**, scaled to the triage:
-  - small / low-risk → one reviewer subagent.
-  - medium → a couple, split by concern.
-  - large / sensitive → fan out several reviewers per package/area, plus a
-    dedicated security pass (hardware wallet — take signing and key handling
-    seriously).
-- Each reviewer is prompted to **find real bugs and try to break the code**, not
-  to nitpick style (lint/format is CI's job). Post findings as inline comments.
+- If the diff is large **and** decomposable into independent slices (heuristic:
+  well past what one reviewer can hold in a sitting, or clearly separable
+  concerns), produce a concrete **split proposal**: the slices, what each
+  delivers, and their dependency order.
+- **Never auto-split.** Splitting restructures already-built work, so it is a
+  user-challenge. Surface the proposal to a human: write it into the status
+  comment and set `review:needs-human`. In autonomous mode, park and exit.
+- **On approval, each slice re-enters the line at the start** — lift the slice off
+  the belt and set it back at the beginning as its own `conveyor-plan-create`
+  issue; this PR is then closed or reduced to the first slice. (How the branch is
+  mechanically carved into slices is an open question — see the README.)
+- If the PR is not too big, or the human declines the split, continue.
 
-### 3. Collect Copilot's findings
+### 3. Request GitHub Copilot's review
+
+Now that this PR is actually going to be reviewed, request Copilot as a reviewer
+(via the GitHub UI's "Request review" or the request-reviewers API — pin the
+exact Copilot reviewer login for your org). Copilot delivers asynchronously,
+usually within minutes, so kick this off and do other work while it runs.
+
+### 4. Run your own adversarial review (in parallel with Copilot)
+
+While Copilot runs, do not idle. Run an adversarial second-opinion review, scaled
+to the triage:
+
+- small / low-risk → one reviewer subagent.
+- medium → a couple, split by concern.
+- large / sensitive → fan out several reviewers per package/area, plus a
+  dedicated security pass (hardware wallet — take signing and key handling
+  seriously).
+
+Each reviewer is prompted to **find real bugs and try to break the code**, not to
+nitpick style (lint/format is CI's job). Post findings as inline comments.
+
+### 5. Collect Copilot's findings
 
 Once Copilot's review lands, pull its review and inline comments and merge them
 with your adversarial findings into one set.
 
-### 4. Process the findings
+### 6. Process the findings
 
 Gate for noise, then classify each finding by who resolves it (same model as
 `conveyor-plan-review`):
@@ -87,13 +112,13 @@ Gate for noise, then classify each finding by who resolves it (same model as
   anything that would change behaviour or contradict the spec. Write it into the
   status comment's "Open findings" with your recommendation. Never auto-apply.
 
-### 5. Maintain the status comment
+### 7. Maintain the status comment
 
 Keep the review status comment current (template below). It is the human's
 one-stop dashboard for "what did the agents find, what did they fix, what is left
 for me".
 
-### 6. Hand off
+### 8. Hand off
 
 - **Clean** (nothing parked, no unresolved real/security finding): set
   `review:passed`, remove `review:in-progress`. Comment a summary. The PR stays a
@@ -109,6 +134,10 @@ for me".
 
 **State:** in-progress | needs-human | passed
 **Triage:** <N files, ~M lines> — risk: low | medium | high (<sensitive areas>)
+**Split:** not needed | proposed (see below) — <n slices>
+
+### Split proposal (if any)
+1. **<slice>** — <what it delivers> — depends on: <…>
 
 ### Open findings (need a human)
 1. **<title>** — <file:line> — recommend: <…>. [taste | risky | changes-spec]
@@ -136,6 +165,8 @@ _Last updated by: conveyor-review (<interactive|autonomous>)_
 ## Rules
 
 - Never promote the PR to "Ready for review" — that is the human's signal.
+- Check splittability before the deep review; never auto-split — a split is a
+  user-challenge, so propose it and let a human approve.
 - The issue is frozen once the PR exists; write everything to the PR.
 - Auto-fix only high-confidence, low-risk, behaviour-preserving findings; park
   everything else.
