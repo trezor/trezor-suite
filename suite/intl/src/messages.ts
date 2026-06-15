@@ -2479,6 +2479,10 @@ export const messages = defineMessages({
         defaultMessage: 'Skip',
         id: 'TR_SKIP_BACKUP',
     },
+    TR_SKIP_BACKUP_HEADER: {
+        defaultMessage: 'Skip',
+        id: 'TR_SKIP_BACKUP_HEADER',
+    },
     TR_SKIP_BACKUP_DESCRIPTION: {
         defaultMessage:
             'A wallet backup lets you recover your assets if your Trezor gets lost, stolen, or damaged. Without a wallet backup, you could lose access to your assets permanently.',
