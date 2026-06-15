@@ -3943,6 +3943,23 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
         defaultMessage: 'Public key (XPUB)',
     },
+    TR_ACCOUNT_DETAILS_NONCE_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_NONCE_HEADER',
+        defaultMessage: 'Nonce',
+    },
+    TR_ACCOUNT_DETAILS_NONCE_DESC: {
+        id: 'TR_ACCOUNT_DETAILS_NONCE_DESC',
+        defaultMessage:
+            'The nonce is the number of confirmed transactions sent from this account. The next transaction will use the next available nonce.',
+    },
+    TR_ACCOUNT_DETAILS_NONCE_CONFIRMED: {
+        id: 'TR_ACCOUNT_DETAILS_NONCE_CONFIRMED',
+        defaultMessage: 'Confirmed',
+    },
+    TR_ACCOUNT_DETAILS_NONCE_NEXT: {
+        id: 'TR_ACCOUNT_DETAILS_NONCE_NEXT',
+        defaultMessage: 'Next',
+    },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON',
         defaultMessage: 'Export',

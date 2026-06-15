@@ -10,7 +10,12 @@ import { useReceiveDisabled } from '@suite/receive';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
-import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
+import {
+    HELP_CENTER_BIP32_URL,
+    HELP_CENTER_XPUB_URL,
+    TREZOR_GLOSSARY_NONCE_URL,
+    type Url,
+} from '@trezor/urls';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
@@ -18,6 +23,7 @@ import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
+import { AccountNonce } from './AccountNonce';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
@@ -159,6 +165,15 @@ const Details = () => {
                         )
                     ) : (
                         <RescanAccount account={account} />
+                    )}
+                    {account.networkType === 'ethereum' && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_NONCE_HEADER"
+                            description={<Translation id="TR_ACCOUNT_DETAILS_NONCE_DESC" />}
+                            learnMoreUrl={TREZOR_GLOSSARY_NONCE_URL}
+                        >
+                            <AccountNonce account={account} />
+                        </DetailsRow>
                     )}
                     <Bip329Labels account={account} isLoading={locked} />
                 </Column>
