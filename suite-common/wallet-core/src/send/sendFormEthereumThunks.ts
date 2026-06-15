@@ -560,19 +560,24 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         const customNonce = formState.ethereumNonce?.trim();
         let nonce: string;
 
-        if (customNonce && !formState.rbfParams) {
-            const customBig = new BigNumber(customNonce);
-            const confirmedBig = new BigNumber(confirmedNonce);
-            const autoBig = new BigNumber(autoNonce);
+        if (customNonce) {
+            // A custom nonce overrides even an RBF (speed-up / cancel) nonce — used to re-target a
+            // gapped tx at the gap nonce. Validate against the real confirmed/next nonce, resolved
+            // WITHOUT the RBF short-circuit (which would otherwise just echo the original nonce).
+            const { nonce: autoNonce, confirmedNonce } = await dispatch(
+                ethereumGetCurrentNonceThunk({ selectedAccount }),
+            ).unwrap();
 
-            if (customBig.lt(confirmedBig)) {
+            const customBig = new BigNumber(customNonce);
+
+            if (customBig.lt(confirmedNonce)) {
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
                     message: `Custom nonce ${customNonce} is below the confirmed nonce ${confirmedNonce} and would be rejected by the network.`,
                 });
             }
 
-            if (customBig.gt(autoBig)) {
+            if (customBig.gt(autoNonce)) {
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
                     message: `Custom nonce ${customNonce} would create a transaction gap. Next expected nonce: ${autoNonce}.`,
@@ -581,7 +586,11 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 
             nonce = customNonce;
         } else {
-            nonce = autoNonce;
+            // No override: reuse the RBF nonce (same-nonce replace) or the next nonce for a new send.
+            const { nonce: resolvedNonce } = await dispatch(
+                ethereumGetCurrentNonceThunk({ selectedAccount, rbfParams: formState.rbfParams }),
+            ).unwrap();
+            nonce = resolvedNonce;
         }
 
         const { outputs: signOutputs } = formState;
