@@ -61,7 +61,7 @@
         "@trezor/transport-native-bluetooth": "workspace:*",
         "@trezor/transport-native-usb": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "expo-device": "patch:expo-device@npm%3A55.0.9#~/.yarn/patches/expo-device-npm-55.0.9-6f86cc1aa2.patch",
+        "expo-device": "55.0.17",
         "react": "19.2.4",
         "react-native": "0.83.2",
         "react-redux": "9.2.0",
