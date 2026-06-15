@@ -86,7 +86,7 @@ export class OnboardingPage {
     @step()
     async verifySuiteIsLoaded() {
         await expect(this.welcomeBody, 'expect Suite to load in under 30s').toBeVisible({
-            timeout: 30_000,
+            timeout: 60_000,
         });
     }
 

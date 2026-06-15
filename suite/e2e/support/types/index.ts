@@ -47,7 +47,7 @@ declare global {
 
 export type ElectronConf = Pick<
     LaunchSuiteParams,
-    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode'
+    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'offlineMode' | 'tor'
 >;
 
 export type TrezorUserEnv = Pick<
