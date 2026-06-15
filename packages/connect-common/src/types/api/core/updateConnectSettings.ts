@@ -2,8 +2,8 @@
  * Update Connect settings such as proxy and transports configuration.
  */
 
-import type { Response } from '../params';
-import type { ConnectSettingsTransport, Proxy } from '../settings';
+import type { Response } from '../../params';
+import type { ConnectSettingsTransport, Proxy } from '../../settings';
 
 export type UpdateConnectSettings = {
     proxy?: Proxy;
