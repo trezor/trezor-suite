@@ -4,8 +4,9 @@ import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type AccountType } from '@suite-common/wallet-config';
-import { selectAccountsShownTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
+import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
@@ -103,7 +104,7 @@ export const AccountsList = ({
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';
-    const accountsShownTokens = useSelector(selectAccountsShownTokens);
+    const tokenDefinitions = useSelector(selectTokenDefinitions);
 
     if (!device) {
         return null;
@@ -121,10 +122,16 @@ export const AccountsList = ({
                           : getDefaultAccountLabel(translationString, account)) ??
                       '';
 
+                  const { shownWithBalance } = getTokens({
+                      tokens: account.tokens ?? [],
+                      symbol: account.symbol,
+                      tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
+                  });
+
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
                       accountLabel,
-                      shownTokens: accountsShownTokens[key],
+                      searchableTokens: shownWithBalance,
                   });
               })
             : accounts;
