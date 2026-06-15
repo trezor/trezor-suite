@@ -1,12 +1,12 @@
 ---
-name: conveyor-review
+name: conveyor-4-review
 description: Run the agentic review station on a green draft PR (label conveyor/review:queued). Request GitHub Copilot's review, run a triage-scaled adversarial second-opinion review in parallel, then process all findings — auto-fixing high-confidence low-risk ones and parking the rest for a human. Leaves a clean draft PR for a human to promote to "Ready for review". Runs interactively or autonomously (overnight routine). Use when asked to "review a PR", "run agentic review", or "process Copilot findings".
 ---
 
-# conveyor-review
+# conveyor-4-review
 
 The agentic review station of the [workflow](../README.md): take a green draft PR
-that `conveyor-implement` handed off (`conveyor/review:queued`) and get it review-clean while
+that `conveyor-3-implement` handed off (`conveyor/review:queued`) and get it review-clean while
 it is still a draft, so the only thing left is a human's final look.
 
 This skill never promotes the PR to "Ready for review" — that is strictly a
@@ -74,7 +74,7 @@ it (reviewing a PR you are about to chop up is wasted work).
   user-challenge. Surface the proposal to a human: write it into the status
   comment and set `conveyor/review:needs-human`. In autonomous mode, park and exit.
 - **On approval, each slice re-enters the line at the start** — lift the slice off
-  the belt and set it back at the beginning as its own `conveyor-plan-create`
+  the belt and set it back at the beginning as its own `conveyor-1-plan-create`
   issue; this PR is then closed or reduced to the first slice. (How the branch is
   mechanically carved into slices is an open question — see the README.)
 - **Record a declined split so it is not re-proposed.** If the human declines (or
@@ -121,7 +121,7 @@ with your adversarial findings into one set.
 ### 6. Process the findings
 
 Gate for noise, then classify each finding by who resolves it (same model as
-`conveyor-plan-review`):
+`conveyor-2-plan-review`):
 
 - **Noise gate.** Consider findings at confidence ≥ 6/10; always consider
   anything that looks like a real bug or a security issue regardless of
@@ -191,7 +191,7 @@ mid-transition leaves an extra findable label, never zero.
   stays a **draft** — a human now verifies and promotes it to "Ready for review".
 - **Parked** (open findings remain): add `conveyor/review:needs-human`, then remove
   `conveyor/review:in-progress`. `conveyor/review:needs-human` is hands-off for other agents until a
-  human resolves the open findings (then re-run `conveyor-review` to continue).
+  human resolves the open findings (then re-run `conveyor-4-review` to continue).
 
 **Stale-takeover of a crashed review.** `conveyor/review:in-progress` is advisory, so a
 crashed run can leave a PR stuck under it with no agent working. If a PR carries
@@ -225,7 +225,7 @@ _(pick the option letter)_
 | Adversarial | <n reviewers> | <n> |
 | Spec-fidelity | done | <n drift items> |
 
-_Last updated by: conveyor-review (<interactive|autonomous>)_
+_Last updated by: conveyor-4-review (<interactive|autonomous>)_
 ```
 
 ## Modes

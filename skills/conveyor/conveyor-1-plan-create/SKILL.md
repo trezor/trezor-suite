@@ -1,12 +1,12 @@
 ---
-name: conveyor-plan-create
+name: conveyor-1-plan-create
 description: Turn a feature idea into a well-formed GitHub issue (a feature plan) through forcing questions, then create the issue with a structured body, a status-comment placeholder, and the conveyor/plan:draft label. Use when starting a new feature, beginning planning, or when asked to "create a plan" or "open a plan issue".
 ---
 
-# conveyor-plan-create
+# conveyor-1-plan-create
 
 Guide one developer from a raw idea to a `conveyor/plan:draft` GitHub issue that is good
-enough to hand to `conveyor-plan-review`. This is the first step of the
+enough to hand to `conveyor-2-plan-review`. This is the first step of the
 [planning workflow](../README.md).
 
 You are an interviewer first and a scribe second. A weak plan in means three
@@ -22,7 +22,7 @@ boundaries (what is and is not part of this feature), not minimalism.
 ## When to use
 
 - The developer has a feature idea and wants to start the workflow.
-- There is no issue yet (if an issue exists, use `conveyor-plan-review` instead).
+- There is no issue yet (if an issue exists, use `conveyor-2-plan-review` instead).
 
 ## Process
 
@@ -70,14 +70,14 @@ gh search prs --repo trezor/trezor-suite "<feature keywords>" --state open
 
 If a real match exists, **stop and point the developer at it** instead of
 creating a new issue — link the existing issue/PR and suggest running
-`conveyor-plan-review` on it (or commenting on the open PR). Only proceed when
+`conveyor-2-plan-review` on it (or commenting on the open PR). Only proceed when
 you are confident no equivalent plan already exists.
 
 ### 3. Optional grounding
 
 If a question hinges on how the code actually works (which package owns a flow,
 whether a pattern already exists), do a quick read of the codebase rather than
-guessing — but keep it light. Deep architecture analysis is `conveyor-plan-review`'s job,
+guessing — but keep it light. Deep architecture analysis is `conveyor-2-plan-review`'s job,
 not yours. Note anything you find as an "Open question" rather than resolving it.
 
 ### 4. Draft the plan
@@ -109,7 +109,7 @@ and add it to Open questions.
 <technical constraints, compat, security/privacy/signing implications>
 
 ## Acceptance criteria / Definition of done
-<a few testable criteria that prove the feature is done, phrased so implementation can write an e2e/integration test against them — observable behaviour, not "code merged". conveyor-implement must land ≥1 new e2e covering these.>
+<a few testable criteria that prove the feature is done, phrased so implementation can write an e2e/integration test against them — observable behaviour, not "code merged". conveyor-3-implement must land ≥1 new e2e covering these.>
 
 ## Open questions
 <anything unresolved the review should settle>
@@ -127,7 +127,7 @@ Then create the issue with `gh`:
 - **Label:** `conveyor/plan:draft`. (If the label does not exist yet, tell the developer;
   do not silently create labels on the upstream repo.)
 - **First comment — the status placeholder.** Immediately post this as the first
-  comment so `conveyor-plan-review` has a dashboard to maintain:
+  comment so `conveyor-2-plan-review` has a dashboard to maintain:
 
 ```markdown
 ## 🤖 Plan review status
@@ -154,7 +154,7 @@ _Last updated by: plan-create_
 ### 6. Hand off
 
 Report the issue URL and tell the developer the next step: anyone with tokens
-can run `conveyor-plan-review` on it (`gh issue list --label conveyor/plan:draft` to find it).
+can run `conveyor-2-plan-review` on it (`gh issue list --label conveyor/plan:draft` to find it).
 
 ## Rules
 

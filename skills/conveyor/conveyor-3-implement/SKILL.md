@@ -1,9 +1,9 @@
 ---
-name: conveyor-implement
+name: conveyor-3-implement
 description: Pick up a conveyor/plan:ready-to-implement GitHub issue, claim it with a lock label, implement it per the consolidated plan, open a draft PR linked to the issue, then drive CI to green and keep the branch fresh (aggressive rebase) until the work is ready for agentic review. Runs interactively or autonomously (overnight routine). Use when asked to "implement a plan", "pick up an issue", or "drive a PR to green".
 ---
 
-# conveyor-implement
+# conveyor-3-implement
 
 Take a `conveyor/plan:ready-to-implement` issue all the way to a green, up-to-date draft
 PR that is ready for the agentic review phase. This is the third step of the
@@ -159,7 +159,7 @@ branch is fresh:
   remove `conveyor/impl:in-progress`.
 - Comment the handoff on the PR.
 - Report the PR URL and that it is ready for the agentic review phase
-  (`conveyor-review`). The PR stays a **draft** — promoting to "Ready for review" is a
+  (`conveyor-4-review`). The PR stays a **draft** — promoting to "Ready for review" is a
   human's job, after the agentic review is clean.
 
 ### 6. Give up — park for a human

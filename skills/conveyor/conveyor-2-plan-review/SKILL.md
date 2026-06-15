@@ -1,9 +1,9 @@
 ---
-name: conveyor-plan-review
+name: conveyor-2-plan-review
 description: Review a feature-plan GitHub issue through multiple independent lenses (scope, architecture, and conditionally design and DX), auto-resolve mechanical decisions, surface only genuine taste decisions and user-challenges, consolidate the plan, and promote it from conveyor/plan:draft toward conveyor/plan:ready-to-implement. Runs interactively (human at keyboard) or autonomously (overnight routine, parks decisions). Use when asked to "review a plan", "advance a plan issue", or "drain plan decisions".
 ---
 
-# conveyor-plan-review
+# conveyor-2-plan-review
 
 Take a feature-plan issue and move it toward `conveyor/plan:ready-to-implement` while
 spending as little human attention as possible. This is the second step of the
@@ -35,7 +35,7 @@ ones so it carries exactly the one lifecycle label it should. Only then claim.
 Fetch the issue body (the plan), the status comment, and the thread; **remember a
 hash of the body and the label set as you loaded them** — you will re-check before
 any write. If the status comment is missing, recreate it from the template in
-`conveyor-plan-create`. Claim by **adding** `conveyor/plan:in-review` **before** removing the
+`conveyor-1-plan-create`. Claim by **adding** `conveyor/plan:in-review` **before** removing the
 prior lifecycle label, so a crash mid-transition leaves an extra findable label,
 never zero.
 
@@ -207,7 +207,7 @@ _(pick the option letter)_
 | Design | n/a / clean / N open | <summary> |
 | DX | n/a / clean / N open | <summary> |
 
-_Last updated by: conveyor-plan-review (<interactive|autonomous>)_
+_Last updated by: conveyor-2-plan-review (<interactive|autonomous>)_
 ```
 
 ## Rules

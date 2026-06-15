@@ -19,7 +19,10 @@ at the few stations where human judgement is irreplaceable (taste, architecture,
 product decisions, the final review). The scarce, non-scalable resource is
 **human attention** — not tokens. The whole design exists to keep the belt moving
 with as little human time on it as possible, and to let any worker with spare
-tokens take over any station. The skills are prefixed `conveyor-*`.
+tokens take over any station. The skills are named `conveyor-<N>-<station>`, where
+`<N>` is the station's order on the belt (`conveyor-1-plan-create`,
+`conveyor-2-plan-review`, `conveyor-3-implement`, `conveyor-4-review`) so the
+sequence is unambiguous at a glance.
 
 Two structural ideas make that possible:
 
@@ -58,9 +61,9 @@ One GitHub issue per feature plan.
 
 | Slot | Role | Who writes it |
 | --- | --- | --- |
-| **Issue body** | The single source of truth: the always-current, consolidated plan. Rewritten in place as the plan evolves. | `conveyor-plan-create`, then `conveyor-plan-review` |
-| **Status comment** (first comment) | A living dashboard: lifecycle state, open decisions waiting for a human, resolved decisions, and per-lens review status. Rewritten in place. | `conveyor-plan-create` (placeholder), `conveyor-plan-review` (maintained) |
-| **Thread comments** | The working log: each review lens posts its raw findings as its own comment. Append-only, preserves discussion history. | `conveyor-plan-review` lenses + humans |
+| **Issue body** | The single source of truth: the always-current, consolidated plan. Rewritten in place as the plan evolves. | `conveyor-1-plan-create`, then `conveyor-2-plan-review` |
+| **Status comment** (first comment) | A living dashboard: lifecycle state, open decisions waiting for a human, resolved decisions, and per-lens review status. Rewritten in place. | `conveyor-1-plan-create` (placeholder), `conveyor-2-plan-review` (maintained) |
+| **Thread comments** | The working log: each review lens posts its raw findings as its own comment. Append-only, preserves discussion history. | `conveyor-2-plan-review` lenses + humans |
 
 Rationale: the body is what GitHub surfaces at the top and is the thing an
 implementer will read, so it must always be current. The status comment is the
@@ -105,41 +108,41 @@ Labels below are shown **without the `conveyor/` prefix** for brevity — the re
 labels are `conveyor/plan:draft`, `conveyor/impl:in-progress`, etc. (see the table).
 
 ```
-ISSUE                          conveyor-plan-create        conveyor-plan-review
+ISSUE                          conveyor-1-plan-create        conveyor-2-plan-review
   (idea)──▶ plan:draft ──▶ plan:in-review ──┐
                                             │ parked
                     ┌────────clean──────────┴──────────┐
                     ▼                                   ▼
           plan:ready-to-implement                 plan:needs-human
-                    │                          (re-run conveyor-plan-review to drain)
+                    │                          (re-run conveyor-2-plan-review to drain)
                     ▼
              impl:in-progress  (claimed on the ISSUE; lock straddles the divider)
-════════════════════╪═══ conveyor-implement opens PR; belt + lock move to the PR ════
+════════════════════╪═══ conveyor-3-implement opens PR; belt + lock move to the PR ════
 PR                  ▼
              impl:in-progress ──(implement, CI→green, rebase)──┐
                     │                                          │
           ┌─green + fresh──────────────▶ review:queued         │
           └─stuck / plan wrong ────────▶ impl:needs-human      │
-                    │ conveyor-review: triage → split? → Copilot + adversarial
+                    │ conveyor-4-review: triage → split? → Copilot + adversarial
                     ▼                                          │
              review:in-progress ───────────────────────────────┘
                     │
-          ┌─too big ──────────▶ split proposal ──▶ slices re-enter at conveyor-plan-create ↺
+          ┌─too big ──────────▶ split proposal ──▶ slices re-enter at conveyor-1-plan-create ↺
           ├─clean ────────────▶ review:passed ──▶ (human flips draft→ready)
           └─findings parked ──▶ review:needs-human (hands off)
 ```
 
 | Label | On | Meaning | Next action |
 | --- | --- | --- | --- |
-| `conveyor/plan:draft` | issue | Issue created, not yet reviewed | run `conveyor-plan-review` |
+| `conveyor/plan:draft` | issue | Issue created, not yet reviewed | run `conveyor-2-plan-review` |
 | `conveyor/plan:in-review` | issue | A plan review is in progress | wait / let it finish |
-| `conveyor/plan:needs-human` | issue | Plan decisions parked for a human | run `conveyor-plan-review` to drain |
-| `conveyor/plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `conveyor-implement` |
+| `conveyor/plan:needs-human` | issue | Plan decisions parked for a human | run `conveyor-2-plan-review` to drain |
+| `conveyor/plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `conveyor-3-implement` |
 | `conveyor/impl:in-progress` | issue→PR | Being implemented now — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
 | `conveyor/impl:needs-human` | PR | Implementation stuck (CI unbeatable, or the plan is wrong) — **hands-off** | a human fixes it or bounces it to planning |
-| `conveyor/review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-review` |
+| `conveyor/review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-4-review` |
 | `conveyor/review:in-progress` | PR | Agentic review running — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
-| `conveyor/review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-review` |
+| `conveyor/review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-4-review` |
 | `conveyor/review:passed` | PR | Agentic review clean | a human verifies, flips draft→ready, finds a reviewer |
 
 **Label bootstrap (one-time).** The board is empty on day one until the 10
@@ -204,20 +207,20 @@ gh pr list    --label conveyor/review:needs-human --json number,title,updatedAt 
 
 ## The skills
 
-### `conveyor-plan-create`
+### `conveyor-1-plan-create`
 Interactive. Guides one developer through turning an idea into a well-formed
 plan using forcing questions (one at a time, with pushback on vague answers),
 then creates the issue: body = structured plan, status comment = placeholder,
 label = `conveyor/plan:draft`. The plan targets the **complete feature** — size is not a
 constraint here; splitting is a downstream review concern. See
-[conveyor-plan-create/SKILL.md](conveyor-plan-create/SKILL.md).
+[conveyor-1-plan-create/SKILL.md](conveyor-1-plan-create/SKILL.md).
 
-### `conveyor-plan-review`
+### `conveyor-2-plan-review`
 Runs multiple independent review lenses (scope/product, architecture, and —
 conditionally — design and DX) against the plan. Each lens does full analysis;
 mechanical decisions are auto-resolved, only genuine taste decisions and
 user-challenges are surfaced to a human. See
-[conveyor-plan-review/SKILL.md](conveyor-plan-review/SKILL.md).
+[conveyor-2-plan-review/SKILL.md](conveyor-2-plan-review/SKILL.md).
 
 It has **two execution modes** sharing one core:
 
@@ -232,7 +235,7 @@ The only difference between the modes is where the decision gate ends up:
 the terminal (live) or GitHub (parked). Human interaction is batched and
 minimized by design.
 
-### `conveyor-implement`
+### `conveyor-3-implement`
 Picks up a `conveyor/plan:ready-to-implement` issue, claims the `conveyor/impl:in-progress` lock,
 implements the complete feature per the consolidated plan, and opens a draft PR
 linked with `Closes #<issue>`. The draft's goal is a **proven proof of concept**:
@@ -254,11 +257,11 @@ it drives the PR to green and keeps the branch fresh without a human:
 - **Handoff.** Green + fresh → `conveyor/review:queued` on the PR. The PR stays a draft.
 
 When the PR opens, it migrates the lock to the PR and stops touching the issue
-(now the frozen spec). Same two modes as `conveyor-plan-review`: interactive (watch CI
+(now the frozen spec). Same two modes as `conveyor-2-plan-review`: interactive (watch CI
 live) or autonomous (routine polls CI between wakes — the mode meant for burning
-pooled tokens overnight). See [conveyor-implement/SKILL.md](conveyor-implement/SKILL.md).
+pooled tokens overnight). See [conveyor-3-implement/SKILL.md](conveyor-3-implement/SKILL.md).
 
-### `conveyor-review`
+### `conveyor-4-review`
 The agentic review station. Picks up a `conveyor/review:queued` draft PR and gets it
 review-clean while it is still a draft:
 
@@ -267,14 +270,14 @@ review-clean while it is still a draft:
   review and risky to ship, so before any deep review the station proposes a
   concrete split (slices + dependency order). It never auto-splits — a split is a
   user-challenge; on a human's approval each slice **re-enters the line at the
-  start** as its own `conveyor-plan-create` issue (lifted off the belt, set back at
+  start** as its own `conveyor-1-plan-create` issue (lifted off the belt, set back at
   the beginning) and this PR is closed or reduced.
 - **Requests GitHub Copilot's review** (async), then — without idling — runs an
   **adversarial second-opinion review** scaled to the triage: one reviewer for a
   small diff, a fan-out per area plus a security pass for a large or
   signing-sensitive one. Reviewers hunt real bugs and breakage, not style.
 - **Processes all findings** (Copilot + adversarial) through the same
-  classification as `conveyor-plan-review`: auto-fix only high-confidence, low-risk,
+  classification as `conveyor-2-plan-review`: auto-fix only high-confidence, low-risk,
   behaviour-preserving findings (commit, push, reply with the SHA, resolve);
   **park** everything else into the review status comment and set
   `conveyor/review:needs-human`.
@@ -283,7 +286,7 @@ review-clean while it is still a draft:
   state, flip the draft, and find a second human to do the final review.
 
 Same two modes (interactive / autonomous routine). See
-[conveyor-review/SKILL.md](conveyor-review/SKILL.md).
+[conveyor-4-review/SKILL.md](conveyor-4-review/SKILL.md).
 
 ## Design principles (borrowed, adapted)
 
@@ -322,11 +325,11 @@ Same two modes (interactive / autonomous routine). See
   rather than destroying the other worker's commits — but the window still wants tuning.
 - **Rebase threshold** — 20 commits behind `develop` is a starting heuristic;
   each rebase re-triggers a full CI run, so the number trades freshness for cost.
-- **Triage thresholds** for `conveyor-review` — the diff sizes that switch between one
+- **Triage thresholds** for `conveyor-4-review` — the diff sizes that switch between one
   reviewer, a fan-out, and an added security pass, and the size/concern bar that
   triggers a split proposal. The split trigger now has a concrete starting bar
   (>~800 changed lines **or** >15 files, **and** ≥2 independent concerns that share
-  no symbols — see `conveyor-review`); the open question is to **tune those numbers**
+  no symbols — see `conveyor-4-review`); the open question is to **tune those numbers**
   against real PRs, not whether a bar exists.
 - **Split mechanics** — how a slice is physically carved off the branch when a
   split is approved: re-plan each slice from scratch vs. carve the existing commits
@@ -344,5 +347,5 @@ Lower-priority gaps not yet fixed in the skills, listed so they stay tracked:
 - **e2e is paths-ignore-gated and platform-specific.** An absent e2e job on a surface the PR doesn't touch is a valid green, not a missing gate — don't treat "no e2e ran" as failure on an unaffected surface.
 - **`broken-in-develop` can't be reproduced locally for e2e / dev-env.** Verify that bucket by reading the latest `develop` / nightly CI run instead of running it locally, and bootstrap the workspace first (`git submodule update --init`, `yarn install`) so submodule-absent errors aren't misread as PR breakage.
 - **PR template.** The draft PR should start from the repo's `pull_request_template.md` (including the **Notes for QA** section), not a hand-rolled body.
-- **Two classifiers, two thresholds.** `conveyor-plan-review` and `conveyor-review` share the same classification **structure** but use different numeric thresholds (surface at ≥6 confidence; auto-fix only at ≥8) — don't unify the numbers by accident.
+- **Two classifiers, two thresholds.** `conveyor-2-plan-review` and `conveyor-4-review` share the same classification **structure** but use different numeric thresholds (surface at ≥6 confidence; auto-fix only at ≥8) — don't unify the numbers by accident.
 - **Build-big-then-split cost.** A large feature pays one full implement + e2e cycle **before** the split decision is taken at review, so the first slice's proof work is partly redone — accepted for now, flagged as a cost.
