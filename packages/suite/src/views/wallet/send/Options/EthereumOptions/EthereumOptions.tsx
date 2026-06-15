@@ -7,6 +7,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 
 import { OnOffSwitcher } from '../OnOffSwitcher';
 import { TransactionData } from '../shared/TransactionData';
+import { EthereumNonce } from './EthereumNonce';
 
 export const EthereumOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
@@ -58,6 +59,7 @@ export const EthereumOptions = () => {
             {dataEnabled && (
                 <TransactionData maxBytes={formInputsMaxLength.ethData} close={toggleData} />
             )}
+            <EthereumNonce />
         </Column>
     );
 };

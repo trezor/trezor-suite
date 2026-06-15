@@ -91,6 +91,8 @@ export const TransactionReviewSummary = ({
     // (bump-fee / cancel) flow does not populate, so its rbfParams/nonce would be missing.
     const precomposedForm = useSelector(selectPrecomposedSendForm);
     const rbfParams = precomposedForm?.rbfParams;
+    // A custom nonce set in the send form takes precedence over the auto-resolved value.
+    const nonceOverride = precomposedForm?.ethereumNonce?.trim();
 
     useEffect(() => {
         if (!isEthereumNetworkType) return;
@@ -114,7 +116,7 @@ export const TransactionReviewSummary = ({
         };
     }, [account, dispatch, isEthereumNetworkType, rbfParams]);
 
-    const ethereumNonce = resolvedNonce;
+    const ethereumNonce = nonceOverride || resolvedNonce;
 
     return (
         <>

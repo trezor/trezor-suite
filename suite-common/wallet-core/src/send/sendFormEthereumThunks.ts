@@ -523,12 +523,41 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
-        const { nonce } = await dispatch(
+        // Always fetch the current nonce so we can validate a custom override against
+        // the confirmed and auto-calculated values at the moment of signing.
+        const { nonce: autoNonce, confirmedNonce } = await dispatch(
             ethereumGetCurrentNonceThunk({
                 selectedAccount,
                 rbfParams: formState.rbfParams,
             }),
         ).unwrap();
+
+        const customNonce = formState.ethereumNonce?.trim();
+        let nonce: string;
+
+        if (customNonce && !formState.rbfParams) {
+            const customBig = new BigNumber(customNonce);
+            const confirmedBig = new BigNumber(confirmedNonce);
+            const autoBig = new BigNumber(autoNonce);
+
+            if (customBig.lt(confirmedBig)) {
+                return rejectWithValue({
+                    error: 'sign-transaction-failed',
+                    message: `Custom nonce ${customNonce} is below the confirmed nonce ${confirmedNonce} and would be rejected by the network.`,
+                });
+            }
+
+            if (customBig.gt(autoBig)) {
+                return rejectWithValue({
+                    error: 'sign-transaction-failed',
+                    message: `Custom nonce ${customNonce} would create a transaction gap. Next expected nonce: ${autoNonce}.`,
+                });
+            }
+
+            nonce = customNonce;
+        } else {
+            nonce = autoNonce;
+        }
 
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
