@@ -165,6 +165,7 @@
             "path": "../../suite/authenticity-checks"
         },
         { "path": "../../suite/backup" },
+        { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
         { "path": "../../suite/discreet-mode" },

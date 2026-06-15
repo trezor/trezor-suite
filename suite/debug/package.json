@@ -1,0 +1,25 @@
+{
+    "name": "@suite/debug",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/suite-types": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/settings": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/suite-desktop-api": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react": "19.2.4",
+        "react-redux": "9.2.0",
+        "styled-components": "^6.3.9"
+    }
+}

@@ -4,6 +4,7 @@ import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { DebugOnlyBadge } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
@@ -28,7 +29,6 @@ import {
 import { CoinLogo } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';

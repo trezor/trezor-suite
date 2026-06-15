@@ -1,6 +1,7 @@
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 import styled from 'styled-components';
 
+import { DebugOnlyBadge } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -18,7 +19,6 @@ import {
 } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
