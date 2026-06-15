@@ -11,6 +11,7 @@ import type {
     MethodPermission,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import { unique } from '@trezor/utils/src/unique';
 
@@ -23,7 +24,7 @@ import { bundlify, validateParams } from './common/paramsValidator';
 import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
-import { fromHardened, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
+import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Request = GetAccountInfoParams & { address_n: number[]; coinInfo: CoinInfo };
 
@@ -225,8 +226,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                             (request.coinInfo.type === 'bitcoin' && legacyXpub
                                 ? buildOutputDescriptor({
                                       coin: request.coinInfo.name,
-                                      account: fromHardened(accountIndex),
-                                      purpose: fromHardened(purposeIndex),
+                                      account: fromHardenedPathPart(accountIndex),
+                                      purpose: fromHardenedPathPart(purposeIndex),
                                       scriptType: getScriptType(address_n),
                                       xpub: legacyXpub,
                                       rootFingerprint,

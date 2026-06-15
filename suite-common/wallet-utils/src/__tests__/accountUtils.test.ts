@@ -15,7 +15,6 @@ import {
     getUtxoOutpoint,
     hasNetworkFeatures,
     isTestnet,
-    parseBIP44Path,
     sortByBIP44AddressIndex,
     sortByCoin,
     substituteBip43Path,
@@ -32,12 +31,6 @@ describe('account utils', () => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
             // @ts-expect-error params are partial
             expect(getUtxoFromSignedTransaction(f.params)).toMatchObject(f.result);
-        });
-    });
-
-    fixtures.parseBIP44Path.forEach(f => {
-        it('accountUtils.parseBIP44Path', () => {
-            expect(parseBIP44Path(f.path)).toEqual(f.result);
         });
     });
 

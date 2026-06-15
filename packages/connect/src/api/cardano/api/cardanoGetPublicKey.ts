@@ -7,13 +7,14 @@ import {
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 interface Params {
     proto: PROTO.CardanoGetPublicKey;
@@ -77,7 +78,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
 
         return {
             view: 'export-xpub' as const,
-            label: `Export Cardano public key for account #${fromHardened(accountIndex) + 1}`,
+            label: `Export Cardano public key for account #${fromHardenedPathPart(accountIndex) + 1}`,
         };
     }
 

@@ -1,12 +1,13 @@
 // Monero GetWatchKey implementation
 import type { MethodPermission, MoneroWatchKey } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
+import { validatePath } from '../../../utils/pathUtils';
 
 type Params = {
     proto: PROTO.MoneroGetWatchKey;
@@ -18,7 +19,7 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
         const path = validatePath(payload.path, 3);
 
         // require all path components to be hardened
-        const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
+        const allHardened = path.every(component => (component & HD_HARDENED_PATH_PART) !== 0);
         if (!allHardened) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',

@@ -1,17 +1,17 @@
 import { DEVICE, UI_REQUEST, createDeviceMessage, createUiMessage } from '@trezor/connect-common';
 import type { StaticSessionId } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { toHardenedPathPart } from '@trezor/crypto-utils';
 import { createStaticSessionId, parseStaticSessionId } from '@trezor/device-utils';
 
 import type { WorkflowContext } from '../../types/workflow';
-import { toHardened } from '../../utils/pathUtils';
 import { createThpSession } from '../thp';
 
 const getStaticSessionId = (device: WorkflowContext['device']) =>
     device
         .getCurrentSession()
         .typedCall('GetAddress', 'Address', {
-            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+            address_n: [toHardenedPathPart(44), toHardenedPathPart(1), toHardenedPathPart(0), 0, 0],
             coin_name: 'Testnet',
             script_type: 'SPENDADDRESS',
         })

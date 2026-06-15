@@ -7,12 +7,13 @@ import {
     createUiMessage,
 } from '@trezor/connect-common';
 import type { MethodPermission, PROTO } from '@trezor/connect-common';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 
 export default class SolanaGetPublicKey extends AbstractMethod<
@@ -68,7 +69,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
 
         return {
             view: 'export-xpub' as const,
-            label: `Export Solana public key for account #${fromHardened(accountIndex) + 1}`,
+            label: `Export Solana public key for account #${fromHardenedPathPart(accountIndex) + 1}`,
         };
     }
 
