@@ -5,13 +5,13 @@ import { type LegacyToBip329Dep } from './legacy/createLegacyToBip329';
 import { type ImportBip329ToSuiteSyncDep } from './suiteSync/createBip329ToSuiteSync';
 import { type ExportSuiteSyncToBip329Dep } from './suiteSync/createSuiteSyncToBip329';
 
-export type GetIsSuiteSyncEnabled = () => boolean;
+type GetIsSuiteSyncEnabled = () => boolean;
 
 export type GetIsSuiteSyncEnabledDep = {
     getIsSuiteSyncEnabled: GetIsSuiteSyncEnabled;
 };
 
-export type CreateBip329Deps = GetIsSuiteSyncEnabledDep &
+type CreateBip329Deps = GetIsSuiteSyncEnabledDep &
     LegacyToBip329Dep &
     ExportSuiteSyncToBip329Dep &
     ImportBip329ToSuiteSyncDep;

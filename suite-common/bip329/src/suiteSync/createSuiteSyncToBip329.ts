@@ -12,13 +12,13 @@ export type AllLabelsForAccount = {
     outputLabels: SuiteSyncOutput[];
 };
 
-export type GetAllLabelsForAccountParams = {
+type GetAllLabelsForAccountParams = {
     walletDescriptor: WalletDescriptor;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
 };
 
-export type GetAllLabelsForAccount = (params: GetAllLabelsForAccountParams) => AllLabelsForAccount;
+type GetAllLabelsForAccount = (params: GetAllLabelsForAccountParams) => AllLabelsForAccount;
 
 export type GetAllLabelsForAccountDeps = {
     getAllLabelsForAccount: GetAllLabelsForAccount;
