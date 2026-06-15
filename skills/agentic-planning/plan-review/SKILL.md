@@ -1,0 +1,167 @@
+---
+name: plan-review
+description: Review a feature-plan GitHub issue through multiple independent lenses (scope, architecture, and conditionally design and DX), auto-resolve mechanical decisions, surface only genuine taste decisions and user-challenges, consolidate the plan, and promote it from plan:draft toward plan:ready-to-implement. Runs interactively (human at keyboard) or autonomously (overnight routine, parks decisions). Use when asked to "review a plan", "advance a plan issue", or "drain plan decisions".
+---
+
+# plan-review
+
+Take a feature-plan issue and move it toward `plan:ready-to-implement` while
+spending as little human attention as possible. This is the second step of the
+[planning workflow](../README.md); read that README for the data model and
+lifecycle before running.
+
+Core idea: **agents do the full analysis; only genuine judgement calls reach a
+human, batched.** Everything else is auto-decided and logged.
+
+## Inputs
+
+- **Target issue.** Either a passed issue number, or — if none given — pick the
+  highest-priority issue from the queue:
+  `plan:needs-human` first (a human is needed to drain it), then `plan:draft`.
+- **Mode.**
+  - **Interactive** (default): a human is at the keyboard; resolve decisions live.
+  - **Autonomous**: triggered by a routine / overnight run; never block on a
+    human — park decisions and exit. Treat the run as autonomous if invoked with
+    an autonomous/routine flag or if no interactive human is available.
+
+## Process
+
+### 0. Load state
+
+Fetch the issue body (the plan), the status comment, and the thread. If the
+status comment is missing, recreate it from the template in `plan-create`. Set
+the label to `plan:in-review` for the duration of the run (restore on exit if you
+parked or did not promote).
+
+If the issue is already `plan:needs-human`, you are **draining**: skip new lens
+analysis unless the plan changed since the parked decisions were written, and go
+straight to the gate (step 3) with the parked decisions.
+
+### 1. Run the review lenses
+
+Run each applicable lens as an **independent subagent with fresh eyes** (no
+shared context between lenses — divergence between them is signal). Run them in
+parallel.
+
+Always run:
+
+- **Scope / product lens.** Is this the right problem? Is the narrowest slice
+  actually the narrowest? Is anything in scope that should be deferred, or
+  deferred that is load-bearing? Is the plan solving a real, evidenced need?
+- **Architecture lens.** Does the approach fit the codebase? Coupling, shared
+  code blast radius, data flow, failure modes, security/privacy/signing
+  implications (hardware wallet — take this seriously), test surface, backward
+  compatibility. Read the actual code for the affected areas; do not theorize.
+
+Run conditionally (detect from the plan's "Affected areas" / "Scope"):
+
+- **Design lens** — only if the plan has UI scope (components, screens, flows).
+  Information architecture, interaction states, accessibility, consistency.
+- **DX lens** — only if the plan changes a developer-facing surface (a
+  `connect` API, an exported package API, a CLI). API ergonomics, docs, migration.
+
+Each lens returns findings in this shape:
+
+```
+[SEVERITY P1|P2|P3] (confidence N/10) area — finding
+  → recommendation
+  → decision type: mechanical | taste | user-challenge
+```
+
+### 2. Gate the findings into decisions
+
+Apply noise gating, then classify:
+
+**Noise gating** — what to surface at all:
+- Surface findings at confidence ≥ 6/10.
+- Always surface P1 (blocks implementation), regardless of confidence.
+- Suppress P3 below confidence 7. State what was examined even when a lens found
+  nothing — no silent skips.
+
+**Classification** — who decides:
+- **Mechanical** (one clearly-right answer, no real alternatives): auto-resolve.
+  Apply the fix to the plan body, log it under "Resolved decisions". Do not ask.
+- **Taste** (reasonable people disagree — close approaches, borderline scope of a
+  few files, lens disagreement with valid reasoning): pick the better option per
+  the principles below, but surface it as an open decision the human can override.
+- **User-challenge** (the analysis concludes the developer's *stated* direction
+  should change — drop a scoped feature, merge two things they wanted separate,
+  add something they did not ask for): never auto-decide. Always surface.
+
+Principles for auto-deciding taste calls (and for your recommendation):
+1. Prefer the complete option over the shortcut — agent time is cheap, the cost
+   delta is negligible.
+2. Reuse what exists; reject plans that duplicate existing code.
+3. Explicit and obvious over clever and abstract.
+4. Bias toward unblocking — flag concerns, do not invent blockers.
+
+### 3. The decision gate (mode-dependent)
+
+First, **post each lens's raw findings as its own thread comment** (the durable
+log), and **rewrite the status comment** so its "Review lenses" table and
+"Resolved decisions" reflect this run.
+
+Then branch on mode:
+
+#### Interactive
+Present **all open decisions (taste + user-challenge) as one batch** — do not
+drip them one per turn. For each, give your recommendation, the one-sentence
+downstream impact of the alternative, and mark user-challenges clearly as
+"changes what you asked for". The human responds once.
+
+For each resolved decision:
+- Record it under "Resolved decisions" in the status comment (what, who decided,
+  why).
+- **Reconsolidate the issue body** so it reflects the decision — the body must
+  always be the latest plan.
+
+Then:
+- If no open decisions remain and no lens left a P1 → set `plan:ready-to-implement`,
+  update the status comment state, report done.
+- If decisions remain unresolved (human deferred some) → set `plan:needs-human`,
+  leave them in "Open decisions", report what is parked.
+
+#### Autonomous
+Do **not** block. Write every open decision into the status comment's "Open
+decisions (need a human)" section, with your recommendation and the trade-off so
+a human can decide quickly later. Apply all mechanical resolutions to the body as
+usual. Set `plan:needs-human`. Exit with a summary of what was parked.
+
+### 4. Status comment shape
+
+Keep the status comment as the single dashboard. After a run it should look like:
+
+```markdown
+## 🤖 Plan review status
+
+**State:** in-review | needs-human | ready-to-implement
+
+### Open decisions (need a human)
+1. **<title>** — recommend: <X>. Alternative: <Y> (<one-line impact>). [taste]
+2. **<title>** — ⚠️ changes stated scope: <…>. [user-challenge]
+
+### Resolved decisions
+- <title> — <decision> (mechanical / decided by <name>) — <why>
+
+### Review lenses
+| Lens | Status | Findings |
+| --- | --- | --- |
+| Scope / product | clean / N open | <summary> |
+| Architecture | clean / N open | <summary> |
+| Design | n/a / clean / N open | <summary> |
+| DX | n/a / clean / N open | <summary> |
+
+_Last updated by: plan-review (<interactive|autonomous>)_
+```
+
+## Rules
+
+- Always do the full analysis, even in autonomous mode. Mode changes only where
+  the gate ends up (terminal vs. GitHub), never the depth.
+- Batch human interaction. Never one question per turn.
+- The issue body is the single source of truth — reconsolidate it after every
+  resolution.
+- Read real code for the architecture lens; no speculative findings.
+- Do not promote to `plan:ready-to-implement` while any P1 or any unresolved
+  open decision remains.
+- Lenses run with fresh, independent context — do not let them share findings.
