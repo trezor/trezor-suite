@@ -10180,6 +10180,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/address-validator": "workspace:*"
+    "@trezor/crypto-utils": "workspace:*"
     viem: "npm:^2.52.2"
   languageName: unknown
   linkType: soft
@@ -11270,7 +11271,6 @@ __metadata:
     "@trezor/coins-solana": "workspace:*"
     "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"

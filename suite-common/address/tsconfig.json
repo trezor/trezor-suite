@@ -6,6 +6,7 @@
         { "path": "../wallet-types" },
         {
             "path": "../../packages/address-validator"
-        }
+        },
+        { "path": "../../packages/crypto-utils" }
     ]
 }
