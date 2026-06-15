@@ -35,7 +35,7 @@ import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = ReturnType<typeof prepareRootReducers>;
 
-export type FullPersistedAppState = ReducerState<RootReducerShape>;
+type FullPersistedAppState = ReducerState<RootReducerShape>;
 
 type ExcludePersist<T> = Omit<T, '_persist'>;
 type ExcludeChildPersists<T> = {

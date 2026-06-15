@@ -12,7 +12,7 @@ export const appSliceInitialState: AppSliceState = {
     isAppReady: false,
 };
 
-export const appSlice = createSlice({
+const appSlice = createSlice({
     name: 'app',
     initialState: appSliceInitialState,
     reducers: {
