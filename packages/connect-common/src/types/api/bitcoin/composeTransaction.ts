@@ -13,7 +13,7 @@ import type {
     TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
 
-import type { Params, Response } from '../params';
+import type { Params, Response } from '../../params';
 
 // for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api
 export type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'payment' }>, 'type'> & {

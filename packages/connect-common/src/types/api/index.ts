@@ -4,7 +4,6 @@ import { Type } from '@trezor/schema-utils';
 import type { applyFlags } from './applyFlags';
 import type { applySettings } from './applySettings';
 import type { authenticateDevice } from './authenticateDevice';
-import type { authorizeCoinjoin } from './authorizeCoinjoin';
 import type { backupDevice } from './backupDevice';
 import type { bleUnpair } from './bleUnpair';
 import type { blockchainDisconnect } from './blockchainDisconnect';
@@ -23,7 +22,6 @@ import type { blockchainUnsubscribe } from './blockchainUnsubscribe';
 import type { blockchainUnsubscribeFiatRates } from './blockchainUnsubscribeFiatRates';
 import type { blockchainValidateEvmRpcUrl } from './blockchainValidateEvmRpcUrl';
 import type { cancel } from './cancel';
-import type { cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
 import type { cardanoComposeTransaction } from './cardanoComposeTransaction';
 import type { cardanoGetAddress } from './cardanoGetAddress';
 import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
@@ -34,7 +32,6 @@ import type { changeLanguage } from './changeLanguage';
 import type { changePin } from './changePin';
 import type { changeWipeCode } from './changeWipeCode';
 import type { cipherKeyValue } from './cipherKeyValue';
-import type { composeTransaction } from './composeTransaction';
 import type { discoverAccounts } from './discoverAccounts';
 import type { dispose } from './dispose';
 import type { ethereumGetAddress } from './ethereumGetAddress';
@@ -79,7 +76,6 @@ import type { setBrightness } from './setBrightness';
 import type { setBusy } from './setBusy';
 import type { showDeviceTutorial } from './showDeviceTutorial';
 import type { signMessage } from './signMessage';
-import type { signTransaction } from './signTransaction';
 import type { solanaComposeTransaction } from './solanaComposeTransaction';
 import type { solanaGetAddress } from './solanaGetAddress';
 import type { solanaGetPublicKey } from './solanaGetPublicKey';
@@ -100,6 +96,10 @@ import type { unlockPath } from './unlockPath';
 import type { updateConnectSettings } from './updateConnectSettings';
 import type { verifyMessage } from './verifyMessage';
 import type { wipeDevice } from './wipeDevice';
+
+import { TrezorConnectBitcoin } from './bitcoin';
+
+export { TrezorConnectBitcoin };
 
 // Initialization, lifecycle, events, and settings
 export const TrezorConnectCore = Type.Object({
@@ -298,20 +298,6 @@ export const TrezorConnectAccount = Type.Object({
     getCoinInfo: Type.Unsafe<typeof getCoinInfo>(),
 });
 export type TrezorConnectAccount = Static<typeof TrezorConnectAccount>;
-
-// Bitcoin-specific operations
-export const TrezorConnectBitcoin = Type.Object({
-    // https://connect.trezor.io/9/methods/bitcoin/signTransaction/
-    signTransaction: Type.Unsafe<typeof signTransaction>(),
-    composeTransaction: Type.Unsafe<typeof composeTransaction>(),
-
-    // https://connect.trezor.io/9/methods/bitcoin/authorizeCoinjoin/
-    authorizeCoinjoin: Type.Unsafe<typeof authorizeCoinjoin>(),
-
-    // https://connect.trezor.io/9/methods/bitcoin/cancelCoinjoinAuthorization/
-    cancelCoinjoinAuthorization: Type.Unsafe<typeof cancelCoinjoinAuthorization>(),
-});
-export type TrezorConnectBitcoin = Static<typeof TrezorConnectBitcoin>;
 
 // Ethereum-specific operations
 export const TrezorConnectEthereum = Type.Object({

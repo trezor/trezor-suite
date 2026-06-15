@@ -10,7 +10,7 @@ export * from './settings';
 
 // altcoin related types. these exports should satisfy needs of 3rd party apps
 export * from './api/cardano';
-export * from './api/bitcoin';
+export * from './api/bitcoin/common';
 export * from './api/ripple';
 export * from './api/ethereum';
 export * from './api/monero';
@@ -27,7 +27,7 @@ export type {
     PrecomposeResultNonFinal,
     PrecomposeResultFinal,
     PrecomposedResult,
-} from './api/composeTransaction';
+} from './api/bitcoin/composeTransaction';
 export type {
     PrecomposedTransactionCardano,
     PrecomposedTransactionErrorCardano,
@@ -38,7 +38,7 @@ export type { RecoveryDevice } from './api/recoveryDevice';
 export type { AuthenticateDeviceParams, AuthenticateDeviceResult } from './api/authenticateDevice';
 export { CipherKeyValue } from './api/cipherKeyValue';
 export { ApplySettings } from './api/applySettings';
-export { AuthorizeCoinjoin } from './api/authorizeCoinjoin';
+export { AuthorizeCoinjoin } from './api/bitcoin/authorizeCoinjoin';
 export * from './api/uiResponse';
 export type {
     ComposeUtxo,
@@ -46,8 +46,8 @@ export type {
     ComposeResult,
     ComposedInputs,
     PrecomposeParams,
-} from './api/composeTransaction';
-export { CancelCoinjoinAuthorization } from './api/cancelCoinjoinAuthorization';
+} from './api/bitcoin/composeTransaction';
+export { CancelCoinjoinAuthorization } from './api/bitcoin/cancelCoinjoinAuthorization';
 export { ChangeLanguage } from './api/changeLanguage';
 export type { GetAccountInfo } from './api/getAccountInfo';
 export {
