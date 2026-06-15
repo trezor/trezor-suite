@@ -2,7 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { Params, Response } from '../params';
+import type { Params, Response } from '../../params';
 
 export type ApplySettings = Static<typeof ApplySettings>;
 export const ApplySettings = Type.Composite([

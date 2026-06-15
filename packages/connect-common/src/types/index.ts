@@ -34,10 +34,13 @@ export type {
     PrecomposedTransactionFinalCardano,
     PrecomposedTransactionNonFinalCardano,
 } from './api/cardanoComposeTransaction';
-export type { RecoveryDevice } from './api/recoveryDevice';
-export type { AuthenticateDeviceParams, AuthenticateDeviceResult } from './api/authenticateDevice';
+export type { RecoveryDevice } from './api/management/recoveryDevice';
+export type {
+    AuthenticateDeviceParams,
+    AuthenticateDeviceResult,
+} from './api/management/authenticateDevice';
 export { CipherKeyValue } from './api/cipherKeyValue';
-export { ApplySettings } from './api/applySettings';
+export { ApplySettings } from './api/management/applySettings';
 export { AuthorizeCoinjoin } from './api/bitcoin/authorizeCoinjoin';
 export * from './api/core/uiResponse';
 export type {
@@ -48,7 +51,7 @@ export type {
     PrecomposeParams,
 } from './api/bitcoin/composeTransaction';
 export { CancelCoinjoinAuthorization } from './api/bitcoin/cancelCoinjoinAuthorization';
-export { ChangeLanguage } from './api/changeLanguage';
+export { ChangeLanguage } from './api/management/changeLanguage';
 export type { GetAccountInfo } from './api/getAccountInfo';
 export {
     ACCOUNT_TYPES,

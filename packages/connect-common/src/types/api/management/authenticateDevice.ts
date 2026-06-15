@@ -3,7 +3,7 @@ import type {
     VerifyAuthenticityProofResult,
 } from '@trezor/device-authenticity';
 
-import type { Params, Response } from '../params';
+import type { Params, Response } from '../../params';
 
 export type { AuthenticateDeviceParams };
 

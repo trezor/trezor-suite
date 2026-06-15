@@ -1,11 +1,6 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { applyFlags } from './applyFlags';
-import type { applySettings } from './applySettings';
-import type { authenticateDevice } from './authenticateDevice';
-import type { backupDevice } from './backupDevice';
-import type { bleUnpair } from './bleUnpair';
 import type { blockchainDisconnect } from './blockchainDisconnect';
 import type { blockchainEstimateFee } from './blockchainEstimateFee';
 import type { blockchainEvmRpcCall } from './blockchainEvmRpcCall';
@@ -27,9 +22,6 @@ import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
 import type { cardanoGetPublicKey } from './cardanoGetPublicKey';
 import type { cardanoSignMessage } from './cardanoSignMessage';
 import type { cardanoSignTransaction } from './cardanoSignTransaction';
-import type { changeLanguage } from './changeLanguage';
-import type { changePin } from './changePin';
-import type { changeWipeCode } from './changeWipeCode';
 import type { cipherKeyValue } from './cipherKeyValue';
 import type { discoverAccounts } from './discoverAccounts';
 import type { ethereumGetAddress } from './ethereumGetAddress';
@@ -47,28 +39,19 @@ import type { getAddress } from './getAddress';
 import type { getCoinInfo } from './getCoinInfo';
 import type { getDeviceState } from './getDeviceState';
 import type { getFeatures } from './getFeatures';
-import type { getFirmwareHash } from './getFirmwareHash';
-import type { getNonce } from './getNonce';
 import type { getOwnershipId } from './getOwnershipId';
 import type { getOwnershipProof } from './getOwnershipProof';
 import type { getPublicKey } from './getPublicKey';
-import type { getSettings } from './getSettings';
-import type { loadDevice } from './loadDevice';
 import type { moneroGetAddress } from './moneroGetAddress';
 import type { moneroGetWatchKey } from './moneroGetWatchKey';
 import type { moneroKeyImageSync } from './moneroKeyImageSync';
 import type { moneroSignTransaction } from './moneroSignTransaction';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { pingDevice } from './pingDevice';
 import type { pushTransaction } from './pushTransaction';
-import type { recoveryDevice } from './recoveryDevice';
 import type { requestLogin } from './requestLogin';
-import type { resetDevice } from './resetDevice';
 import type { rippleGetAddress } from './rippleGetAddress';
 import type { rippleSignTransaction } from './rippleSignTransaction';
-import type { setBrightness } from './setBrightness';
-import type { setBusy } from './setBusy';
 import type { showDeviceTutorial } from './showDeviceTutorial';
 import type { signMessage } from './signMessage';
 import type { solanaComposeTransaction } from './solanaComposeTransaction';
@@ -77,88 +60,20 @@ import type { solanaGetPublicKey } from './solanaGetPublicKey';
 import type { solanaSignTransaction } from './solanaSignTransaction';
 import type { stellarGetAddress } from './stellarGetAddress';
 import type { stellarSignTransaction } from './stellarSignTransaction';
-import type { telemetryGet } from './telemetryGet';
 import type { tezosGetAddress } from './tezosGetAddress';
 import type { tezosGetPublicKey } from './tezosGetPublicKey';
 import type { tezosSignTransaction } from './tezosSignTransaction';
-import type { thpGetCredentials } from './thpGetCredentials';
-import type { thpRemoveCredentials } from './thpRemoveCredentials';
 import type { tronComposeTransaction } from './tronComposeTransaction';
 import type { tronGetAddress } from './tronGetAddress';
 import type { tronSignTransaction } from './tronSignTransaction';
 import type { unlockPath } from './unlockPath';
 import type { verifyMessage } from './verifyMessage';
-import type { wipeDevice } from './wipeDevice';
 
 import { TrezorConnectBitcoin } from './bitcoin';
 import { TrezorConnectCore } from './core';
+import { TrezorConnectManagement } from './management';
 
-export { TrezorConnectBitcoin, TrezorConnectCore };
-
-// Device configuration, firmware, security, and hardware control
-export const TrezorConnectManagement = Type.Object({
-    // https://connect.trezor.io/9/methods/device/getFirmwareHash/
-    getFirmwareHash: Type.Unsafe<typeof getFirmwareHash>(),
-
-    // https://connect.trezor.io/9/methods/device/resetDevice/
-    resetDevice: Type.Unsafe<typeof resetDevice>(),
-
-    // https://connect.trezor.io/9/methods/device/loadDevice/
-    loadDevice: Type.Unsafe<typeof loadDevice>(),
-
-    // todo: link docs
-    recoveryDevice: Type.Unsafe<typeof recoveryDevice>(),
-
-    // https://connect.trezor.io/9/methods/device/wipeDevice/
-    wipeDevice: Type.Unsafe<typeof wipeDevice>(),
-
-    // https://connect.trezor.io/9/methods/device/backupDevice/
-    backupDevice: Type.Unsafe<typeof backupDevice>(),
-
-    // https://connect.trezor.io/9/methods/device/changePin/
-    changePin: Type.Unsafe<typeof changePin>(),
-
-    // https://connect.trezor.io/9/methods/device/changeWipeCode/
-    changeWipeCode: Type.Unsafe<typeof changeWipeCode>(),
-
-    // https://connect.trezor.io/9/methods/device/changeLanguage/
-    changeLanguage: Type.Unsafe<typeof changeLanguage>(),
-
-    // https://connect.trezor.io/9/methods/device/applySettings/
-    applySettings: Type.Unsafe<typeof applySettings>(),
-
-    // https://connect.trezor.io/9/methods/device/applyFlags/
-    applyFlags: Type.Unsafe<typeof applyFlags>(),
-
-    // https://connect.trezor.io/9/methods/device/authenticateDevice/
-    authenticateDevice: Type.Unsafe<typeof authenticateDevice>(),
-
-    // https://connect.trezor.io/9/methods/device/setBusy/
-    setBusy: Type.Unsafe<typeof setBusy>(),
-
-    setBrightness: Type.Unsafe<typeof setBrightness>(),
-
-    // https://connect.trezor.io/9/methods/device/bleUnpair/
-    bleUnpair: Type.Unsafe<typeof bleUnpair>(),
-
-    // https://connect.trezor.io/9/methods/device/thpGetCredentials/
-    thpGetCredentials: Type.Unsafe<typeof thpGetCredentials>(),
-
-    // https://connect.trezor.io/9/methods/device/thpRemoveCredentials/
-    thpRemoveCredentials: Type.Unsafe<typeof thpRemoveCredentials>(),
-
-    telemetryGet: Type.Unsafe<typeof telemetryGet>(),
-
-    // https://connect.trezor.io/9/methods/device/pingDevice/
-    pingDevice: Type.Unsafe<typeof pingDevice>(),
-
-    // For internal use, no public documentation.
-    getNonce: Type.Unsafe<typeof getNonce>(),
-
-    // todo: link docs
-    getSettings: Type.Unsafe<typeof getSettings>(),
-});
-export type TrezorConnectManagement = Static<typeof TrezorConnectManagement>;
+export { TrezorConnectBitcoin, TrezorConnectCore, TrezorConnectManagement };
 
 // Device configuration, firmware, security, and hardware control
 export const TrezorConnectDevice = Type.Object({

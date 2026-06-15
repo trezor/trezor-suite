@@ -4,8 +4,8 @@
 
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { XPubHashesPerBip43Path } from '../device';
-import type { Params, Response } from '../params';
+import type { XPubHashesPerBip43Path } from '../../device';
+import type { Params, Response } from '../../params';
 
 export declare function resetDevice(
     params: Params<PROTO.ResetDevice>,
