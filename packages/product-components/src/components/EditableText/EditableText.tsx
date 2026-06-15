@@ -345,11 +345,11 @@ export const EditableText = ({
 
             if (e.key === 'Enter' && isDirty) {
                 handleSave();
-            } else if (e.key === 'Escape') {
+            } else if (e.key === 'Enter' || e.key === 'Escape') {
                 handleCancel();
             }
         },
-        [isDirty, handleSave, handleCancel],
+
     );
 
     const handleContainerClick = useCallback(
