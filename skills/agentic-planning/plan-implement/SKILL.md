@@ -55,12 +55,15 @@ agents from working the same issue at once (essential — this skill force-pushe
   `nx affected`, affected tests) so you do not waste CI cycles on trivially
   catchable failures.
 
-### 2. Open the draft PR
+### 2. Open the draft PR — lifecycle moves to the PR
 
 - Open it as a **draft**, base `develop`, head your branch.
 - Body: a short summary of the approach, and `Closes #<issue>` to link it.
-- Post a comment on the issue with the PR URL, and update the issue's status
-  comment to point at the PR.
+- Post a one-time comment on the issue with the PR URL. **From here on the issue
+  is the frozen spec — do not update it.** All working state lives on the PR.
+- **Migrate the lock to the PR:** add `impl:in-progress` to the PR and remove it
+  from the issue. Every lifecycle label from now on lives on the PR, not the
+  issue.
 - Labels via REST API (not `gh pr edit`): `no-project` + `code` (this is product
   code).
 
@@ -100,9 +103,11 @@ Whenever the branch is **more than 20 commits behind `origin/develop`**:
 
 When CI is green and the branch is fresh:
 
-- Swap labels: remove `impl:in-progress`, add `review:ready`.
-- Comment the handoff on the issue and PR.
-- Report the PR URL and that it is ready for the agentic review phase.
+- Swap labels on the **PR**: remove `impl:in-progress`, add `review:queued`.
+- Comment the handoff on the PR.
+- Report the PR URL and that it is ready for the agentic review phase
+  (`pr-review`). The PR stays a **draft** — promoting to "Ready for review" is a
+  human's job, after the agentic review is clean.
 
 ### 6. Give up — park for a human
 
@@ -114,17 +119,17 @@ Stop and hand back when either:
 
 Then:
 
-- Post a PR + issue comment with your diagnosis: which check, what you tried, why
-  you think it is stuck or the plan is wrong.
-- Swap labels: remove `impl:in-progress`, add `impl:needs-human`.
+- Post a PR comment with your diagnosis: which check, what you tried, why you
+  think it is stuck or the plan is wrong.
+- Swap labels on the **PR**: remove `impl:in-progress`, add `impl:needs-human`.
 - Exit. `impl:needs-human` means hands-off for other agents until a human
-  intervenes (fixes it, or bounces the issue back to the planning phase).
+  intervenes (fixes it, or bounces the plan back to the planning phase).
 
 ## Modes
 
 - **Interactive**: implement, open PR, watch CI live, fix, rebase, hand off.
 - **Autonomous** (routine): same core, but between CI runs you sleep and poll
-  rather than block; on success set `review:ready`, on stuck set
+  rather than block; on success set `review:queued`, on stuck set
   `impl:needs-human`. This is the mode meant for burning pooled tokens overnight.
 
 ## Rules
@@ -139,4 +144,7 @@ Then:
   pre-existing failures past the escape valves.
 - Give up at 3 attempts per check, or immediately if the plan is wrong — never
   loop CI forever.
-- PRs are drafts; the human promotes to ready. This skill stops at `review:ready`.
+- Once the PR is open, the issue is the frozen spec; all lifecycle labels and
+  working state live on the PR.
+- PRs stay drafts — only a human promotes to "Ready for review". This skill
+  stops at `review:queued`.

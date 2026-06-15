@@ -12,10 +12,14 @@ We deliver code. Every feature goes through the same four phases:
 plan  →  implement  →  review  →  test
 ```
 
-Each phase is a human collaborating with an agent. The scarce, non-scalable
-resource is **human attention** — not tokens. The goal of this workflow is to
-spend human attention only where human judgement is irreplaceable (taste,
-architecture, product decisions) and let agents do everything else, verifiably.
+Think of it as an **assembly line**. The product — a feature — moves down a
+conveyor belt from station to station. At each station an agent does its shift of
+work and passes the product to the next station; a human steps in only at the few
+stations where human judgement is irreplaceable (taste, architecture, product
+decisions, the final review). The scarce, non-scalable resource is **human
+attention** — not tokens. The whole design exists to keep the belt moving with as
+little human time on it as possible, and to let any worker with spare tokens take
+over any station.
 
 Two structural ideas make that possible:
 
@@ -32,10 +36,10 @@ GitHub is therefore the shared work queue. Labels are the handoff token.
 
 ## Scope of this proposal
 
-This RFC covers the **planning and implementation phases** — from an idea, to a
-`plan:ready-to-implement` issue, to a green draft PR that is ready for review.
-The agentic review and test phases will be designed in follow-ups once these are
-agreed.
+This RFC covers the stations from an idea up to a **review-clean draft PR waiting
+for a human's final look**: planning, implementation, and the agentic review
+station (Copilot + adversarial second opinion). The human review and test
+stations will be designed in follow-ups once these are agreed.
 
 ## Data model
 
@@ -53,48 +57,70 @@ implementer will read, so it must always be current. The status comment is the
 "review comment" would lose history; a pure thread would be noise — this split
 gets both.
 
-Once implementation starts, a **draft PR** becomes the implementation artifact,
-linked to the issue with `Closes #<issue>`. The issue stays the master lifecycle
-tracker; the PR carries the code and its CI. The PR **branch on `origin`** is the
-shared implementation state — the agent pushes to it frequently so any other
-agent or routine can resume the work if the first runs out of tokens.
+**Once the PR is open, the belt moves onto the PR.** The linked issue becomes the
+**frozen spec** (`Closes #<issue>`) and is no longer updated; from then on all
+working state — lifecycle labels, review findings, decisions — lives on the PR,
+mirroring the issue model one station back:
+
+| PR slot | Role |
+| --- | --- |
+| **PR description** | summary of the approach + `Closes #<issue>` |
+| **Review status comment** | dashboard: triage, which reviews ran, open findings for a human, resolved findings (+ commit SHA) |
+| **Inline review comments** | granular findings (Copilot + adversarial); the durable log |
+| **PR labels** | `impl:*` / `review:*` lifecycle |
+
+The PR **branch on `origin`** is the shared implementation state — agents push to
+it frequently so any other agent or routine can resume the work if the first runs
+out of tokens.
 
 ## Lifecycle (labels as a state machine)
 
+Labels live on the **issue** until the PR opens, then on the **PR**.
+
 ```
-   plan-create            plan-review              plan-review
-(idea)──▶ plan:draft ──▶ plan:in-review ──┐
-                                          │ parked
-                  ┌────────clean──────────┴──────────┐
-                  ▼                                   ▼
-        plan:ready-to-implement                 plan:needs-human
-                  │                          (re-run plan-review to drain)
-                  │ plan-implement: pick up + lock
-                  ▼
-           impl:in-progress ──(implement, draft PR, CI→green, rebase)──┐
-                  │                                                     │
-        ┌─green + fresh─────────────────────▶ review:ready (→ agentic review)
-        │
-        └─stuck / plan wrong ───────────────▶ impl:needs-human (hands off)
+ISSUE                          plan-create        plan-review
+  (idea)──▶ plan:draft ──▶ plan:in-review ──┐
+                                            │ parked
+                    ┌────────clean──────────┴──────────┐
+                    ▼                                   ▼
+          plan:ready-to-implement                 plan:needs-human
+                    │                          (re-run plan-review to drain)
+═══════════════════╪═══════ plan-implement opens PR; belt moves to the PR ══════
+PR                  ▼
+             impl:in-progress ──(implement, CI→green, rebase)──┐
+                    │                                          │
+          ┌─green + fresh──────────────▶ review:queued         │
+          └─stuck / plan wrong ────────▶ impl:needs-human      │
+                    │ pr-review: Copilot + adversarial         │
+                    ▼                                          │
+             review:in-progress ───────────────────────────────┘
+                    │
+          ┌─clean─────────────▶ review:passed ──▶ (human flips draft→ready)
+          └─findings parked ──▶ review:needs-human (hands off)
 ```
 
-| Label | Meaning | Next action |
-| --- | --- | --- |
-| `plan:draft` | Issue created, not yet reviewed | run `plan-review` |
-| `plan:in-review` | A review run is in progress | wait / let it finish |
-| `plan:needs-human` | Agent parked decisions; a human must resolve them | run `plan-review` to drain, or comment decisions |
-| `plan:ready-to-implement` | Review clean, plan consolidated | hand to `plan-implement` |
-| `impl:in-progress` | Being implemented now — **active lock**, other agents hands-off (unless the branch is stale/abandoned) | let it run, or take over if stale |
-| `impl:needs-human` | Implementation stuck (CI unbeatable after retries, or the plan is wrong) — **hands-off** | a human fixes it or bounces it back to planning |
-| `review:ready` | Green CI, fresh branch, draft PR open | hand to the agentic review phase |
+| Label | On | Meaning | Next action |
+| --- | --- | --- | --- |
+| `plan:draft` | issue | Issue created, not yet reviewed | run `plan-review` |
+| `plan:in-review` | issue | A plan review is in progress | wait / let it finish |
+| `plan:needs-human` | issue | Plan decisions parked for a human | run `plan-review` to drain |
+| `plan:ready-to-implement` | issue | Plan clean, consolidated | hand to `plan-implement` |
+| `impl:in-progress` | issue→PR | Being implemented now — **active lock** (stale ⇒ takeover) | let it run, or take over if stale |
+| `impl:needs-human` | PR | Implementation stuck (CI unbeatable, or the plan is wrong) — **hands-off** | a human fixes it or bounces it to planning |
+| `review:queued` | PR | Green draft PR, awaiting agentic review | run `pr-review` |
+| `review:in-progress` | PR | Agentic review running — **lock** | let it run |
+| `review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `pr-review` |
+| `review:passed` | PR | Agentic review clean | a human verifies, flips draft→ready, finds a reviewer |
 
-A team member "with tokens" finds work by filtering the board:
+A worker "with tokens" finds an open station by filtering the board:
 
 ```bash
 gh issue list --label plan:draft               # plans waiting for first review
-gh issue list --label plan:needs-human         # decisions waiting to be drained
+gh issue list --label plan:needs-human         # plan decisions to drain
 gh issue list --label plan:ready-to-implement  # plans waiting to be built
-gh issue list --label impl:needs-human         # stuck implementations needing a human
+gh pr list --label review:queued               # green PRs waiting for agentic review
+gh pr list --label impl:needs-human            # stuck implementations
+gh pr list --label review:needs-human          # review findings waiting for a human
 ```
 
 ## The skills
@@ -141,11 +167,33 @@ without a human:
   `origin/develop`** it rebases, type-checks locally (this repo can silently
   break type-check on rebase while tests still pass), and force-pushes its locked
   branch.
-- **Handoff.** Green + fresh → `review:ready`, ready for the agentic review phase.
+- **Handoff.** Green + fresh → `review:queued` on the PR. The PR stays a draft.
 
-Same two modes as `plan-review`: interactive (watch CI live) or autonomous
-(routine polls CI between wakes — the mode meant for burning pooled tokens
-overnight). See [plan-implement/SKILL.md](plan-implement/SKILL.md).
+When the PR opens, it migrates the lock to the PR and stops touching the issue
+(now the frozen spec). Same two modes as `plan-review`: interactive (watch CI
+live) or autonomous (routine polls CI between wakes — the mode meant for burning
+pooled tokens overnight). See [plan-implement/SKILL.md](plan-implement/SKILL.md).
+
+### `pr-review`
+The agentic review station. Picks up a `review:queued` draft PR and gets it
+review-clean while it is still a draft:
+
+- **Requests GitHub Copilot's review** first (async), then — without idling —
+  triages the diff (size + risk) and runs an **adversarial second-opinion review**
+  scaled to that triage: one reviewer for a small diff, a fan-out of reviewers
+  per area plus a security pass for a large or signing-sensitive one. Reviewers
+  hunt real bugs and breakage, not style.
+- **Processes all findings** (Copilot + adversarial) through the same
+  classification as `plan-review`: auto-fix only high-confidence, low-risk,
+  behaviour-preserving findings (commit, push, reply with the SHA, resolve);
+  **park** everything else into the review status comment and set
+  `review:needs-human`.
+- **Hands off** clean work as `review:passed` — but **never promotes the PR to
+  "Ready for review"**. That flip is strictly a human's signal: they verify the
+  state, flip the draft, and find a second human to do the final review.
+
+Same two modes (interactive / autonomous routine). See
+[pr-review/SKILL.md](pr-review/SKILL.md).
 
 ## Design principles (borrowed, adapted)
 
@@ -174,3 +222,9 @@ overnight). See [plan-implement/SKILL.md](plan-implement/SKILL.md).
   counts as abandoned and another agent may take over.
 - **Rebase threshold** — 20 commits behind `develop` is a starting heuristic;
   each rebase re-triggers a full CI run, so the number trades freshness for cost.
+- **Triage thresholds** for `pr-review` — the diff sizes that switch between one
+  reviewer, a fan-out, and an added security pass.
+- **Copilot reviewer wiring** — the exact way to request Copilot's review for our
+  org, and how reliable / fast its delivery is.
+- **Naming / terminology** — the station and label names ("worker", "station",
+  `plan:*` / `impl:*` / `review:*`) are open for discussion.
