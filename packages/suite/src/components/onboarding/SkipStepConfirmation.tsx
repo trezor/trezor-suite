@@ -32,7 +32,7 @@ const getModalContent = (
             };
         case STEP.ID_SECURITY_STEP:
             return {
-                heading: <Translation id="TR_SKIP_BACKUP" />,
+                heading: <Translation id="TR_SKIP_BACKUP_HEADER" />,
                 secondaryButtonText: <Translation id="TR_SKIP_BACKUP" />,
                 body: <Translation id="TR_SKIP_BACKUP_DESCRIPTION" />,
                 nextStep: resolveNextAfterSkipped(STEP.ID_SET_PIN_STEP),
