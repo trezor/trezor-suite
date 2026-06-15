@@ -34,6 +34,7 @@
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

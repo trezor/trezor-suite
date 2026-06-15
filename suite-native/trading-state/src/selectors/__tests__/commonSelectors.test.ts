@@ -2,6 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type MessageSystemState } from '@suite-common/message-system';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import {
     type Action,
@@ -55,6 +56,8 @@ import {
     selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from '../commonSelectors';
+
+const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
 
 const actionId = 'ActionId_1';
 const contentText = 'Content Text';
@@ -520,7 +523,11 @@ describe('commonSelectors', () => {
             } as any;
 
             expect(
-                selectAccountsWithTokensToSellSectionListByTradingType(stateWithDevice, 'exchange'),
+                selectAccountsWithTokensToSellSectionListByTradingType(
+                    stateWithDevice,
+                    'exchange',
+                    supportedCoins,
+                ),
             ).toEqual([]);
         });
 
@@ -549,6 +556,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBeGreaterThan(0);
@@ -586,7 +594,11 @@ describe('commonSelectors', () => {
             } as any;
 
             expect(
-                selectAccountsWithTokensToSellSectionListByTradingType(stateWithDevice, 'exchange'),
+                selectAccountsWithTokensToSellSectionListByTradingType(
+                    stateWithDevice,
+                    'exchange',
+                    supportedCoins,
+                ),
             ).toEqual([]);
         });
 
@@ -649,7 +661,8 @@ describe('commonSelectors', () => {
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
-                'exchange',
+                'sell',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -707,6 +720,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -761,7 +775,8 @@ describe('commonSelectors', () => {
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
-                'exchange',
+                'sell',
+                supportedCoins,
             );
 
             expect(result).toEqual([]); // No sections with assets
@@ -805,6 +820,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -839,6 +855,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'buy',
+                supportedCoins,
             );
 
             expect(result).toEqual([]);
@@ -870,7 +887,8 @@ describe('commonSelectors', () => {
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
-                'sell',
+                'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -899,6 +917,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             const accountAsset = result[3]?.data[0];
@@ -939,6 +958,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -981,6 +1001,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -1020,6 +1041,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(2);
@@ -1076,6 +1098,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -1158,6 +1181,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionCondensedListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);
@@ -1223,6 +1247,7 @@ describe('commonSelectors', () => {
             const result = selectAccountsWithTokensToSellSectionCondensedListByTradingType(
                 stateWithDevice,
                 'exchange',
+                supportedCoins,
             );
 
             expect(result.length).toBe(1);

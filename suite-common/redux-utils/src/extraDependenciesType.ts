@@ -4,10 +4,12 @@ import {
     type ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
+import type { AddressValidatorDep } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import type { NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
@@ -70,6 +72,8 @@ export type CreateTransports = (transports: TransportName[]) => ConnectSettings[
 export type TransportsDep = { createTransports: CreateTransports };
 
 export type CommonServices = SuiteSyncDep &
+    AddressValidatorDep &
+    NetworkModuleRepositoryDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep & {

@@ -2,8 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../address" },
         { "path": "../analytics" },
         { "path": "../bip329-types" },
+        { "path": "../networks" },
         { "path": "../platform-encryption" },
         { "path": "../redux-utils" },
         { "path": "../suite-sync-types" },

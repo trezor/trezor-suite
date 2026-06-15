@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -36,8 +38,8 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
-    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
     const quotes = useSelector(selectTradingBuyQuotes);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const { device } = useDevice();
     const { setAmountLimits, getValues, setValue } = context;
@@ -64,6 +66,11 @@ export const TradingBuyFormInputs = () => {
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
         },
         [dispatch, setAmountLimitsRef, setValueRef],
+    );
+
+    const supportedNetworks = networkModuleRepository.getSupportedNetworks();
+    const buySupportedCryptoIds = useSelector(state =>
+        selectTradingBuySupportedCryptoIds(state, supportedNetworks),
     );
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);

@@ -5,7 +5,11 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
-import { isAddressValid } from '@suite-common/address';
+import { createAddressValidator } from '@suite-common/address';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { Model } from '@trezor/trezor-user-env-link';
 import { getIndexOrThrow } from '@trezor/utils';
@@ -19,6 +23,10 @@ type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'f
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
+
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const addressValidator = createAddressValidator({ networkModuleRepository });
 
 const compareTextAndNumber = async (
     locator: Locator,
@@ -326,7 +334,7 @@ export const expect = baseExpect.extend({
         const stripped = text?.replace(/\s/g, '') ?? '';
 
         return {
-            pass: isAddressValid(stripped, symbol),
+            pass: addressValidator.isAddressValid(stripped, symbol),
             message: () =>
                 `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
         };

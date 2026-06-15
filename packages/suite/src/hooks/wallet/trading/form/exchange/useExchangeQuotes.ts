@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_EXCHANGE_FORM,
@@ -50,7 +51,10 @@ export const useExchangeQuotes = ({
     composeRequestCallback,
 }: UseExchangeQuotesProps) => {
     const dispatch = useDispatch();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { addressValidator, analytics } = useServices(
+        selectAddressValidatorDep,
+        selectDesktopAnalyticsDep,
+    );
 
     const dexQuotes = useSelector(selectTradingExchangeDexQuotes);
     const cexQuotes = useSelector(selectTradingExchangeCexQuotes);
@@ -104,6 +108,7 @@ export const useExchangeQuotes = ({
 
         if (
             !isReceiveAddressCoherent({
+                addressValidator,
                 receiveAddress,
                 receiveCryptoId: receiveCryptoSelect?.id,
                 receiveAccountKey,
@@ -122,6 +127,7 @@ export const useExchangeQuotes = ({
         receiveCryptoSelect?.id,
         receiveAccountKey,
         receiveAccountSymbol,
+        addressValidator,
         dispatch,
         refreshQuotes,
         abortActiveRequest,

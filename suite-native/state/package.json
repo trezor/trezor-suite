@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/address": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/bip329": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
@@ -23,6 +24,7 @@
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption-native": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",

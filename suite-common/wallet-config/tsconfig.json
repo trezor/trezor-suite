@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../earn-stablecoin-defs" },
+        { "path": "../networks" },
         { "path": "../wallet-constants" },
         { "path": "../../packages/device-utils" },
         {

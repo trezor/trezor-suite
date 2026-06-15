@@ -3,9 +3,6 @@ import { type AccountInfo } from '@trezor/blockchain-link-types';
 
 // Re-export address functions from their new home for backwards compatibility.
 export {
-    isAddressValid,
-    isAddressDeprecated,
-    isTaprootAddress,
     hasBitcoinCashAddressPrefix,
     isBitcoinCashAddressUppercase,
     isBech32AddressUppercase,

@@ -13,10 +13,12 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/address": "workspace:*",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bip329-types": "workspace:*",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations-types": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
