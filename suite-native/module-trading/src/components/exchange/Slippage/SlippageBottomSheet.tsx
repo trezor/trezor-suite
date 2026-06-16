@@ -1,18 +1,13 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
 import {
-    SLIPPAGE_MAX,
-    SLIPPAGE_MIN,
     SLIPPAGE_PRESETS,
     type SlippageFormValues,
-    getSlippageFormValidationSchema,
-    selectTradingMaxSlippagePercentage,
     tradingSettingsActions,
 } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
 import {
     BottomSheetModal,
     Button,
@@ -21,11 +16,12 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, TextInputField } from '@suite-native/forms';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { SlippageSummary } from './SlippageSummary';
+import { useSlippageForm } from '../../../hooks/Slippage/useSlippageForm';
 
 type SlippageBottomSheetProps = {
     isVisible: boolean;
@@ -37,39 +33,9 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const defaultMaxSlippage = useSelector(selectTradingMaxSlippagePercentage);
+    const { form, isValid, handlePresetPress } = useSlippageForm();
 
-    const validationSchema = useMemo(
-        () =>
-            yup.object({
-                slippage: getSlippageFormValidationSchema({
-                    required: translate(
-                        'moduleTrading.advancedSettings.slippage.validation.required',
-                    ),
-                    notNumber: translate(
-                        'moduleTrading.advancedSettings.slippage.validation.notNumber',
-                    ),
-                    outOfRange: translate(
-                        'moduleTrading.advancedSettings.slippage.validation.outOfRange',
-                        { min: SLIPPAGE_MIN, max: SLIPPAGE_MAX },
-                    ),
-                }),
-            }),
-        [translate],
-    );
-
-    const form = useForm<SlippageFormValues>({
-        defaultValues: { slippage: defaultMaxSlippage },
-        validation: validationSchema,
-    });
-
-    const {
-        handleSubmit,
-        setValue,
-        trigger,
-        reset,
-        formState: { isValid },
-    } = form;
+    const { handleSubmit, reset } = form;
 
     useEffect(() => {
         if (isVisible) {
@@ -93,16 +59,6 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
         reset();
     }, [closeModal, onClose, reset]);
 
-    const handlePresetPress = useCallback(
-        (preset: string) => {
-            setValue('slippage', preset);
-            void trigger('slippage');
-        },
-        [setValue, trigger],
-    );
-
-    const forceValidation = useCallback(() => trigger('slippage'), [trigger]);
-
     return (
         <BottomSheetModal
             ref={bottomSheetRef}
@@ -120,7 +76,6 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
                             rightIcon={<Text>%</Text>}
                             keyboardType="numeric"
                             valueTransformer={decimalTransformer}
-                            onChangeText={forceValidation}
                             asBottomSheetInput
                             accessibilityLabel={translate(
                                 'moduleTrading.advancedSettings.slippage.inputLabel',
