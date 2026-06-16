@@ -1,5 +1,5 @@
-import type { BundledParams, Params, Response } from '../params';
-import type { CardanoGetPublicKey, CardanoPublicKey } from './cardano';
+import type { CardanoGetPublicKey, CardanoPublicKey } from './common';
+import type { BundledParams, Params, Response } from '../../params';
 
 export declare function cardanoGetPublicKey(
     params: Params<CardanoGetPublicKey>,

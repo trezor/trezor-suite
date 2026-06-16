@@ -1,9 +1,9 @@
-import type { Params, Response } from '../params';
 import type {
     CardanoSignTransaction,
     CardanoSignTransactionExtended,
     CardanoSignedTxData,
-} from './cardano';
+} from './common';
+import type { Params, Response } from '../../params';
 
 export declare function cardanoSignTransaction(
     params: Params<CardanoSignTransaction & { unsignedTx?: undefined; testnet?: undefined }>, // Explicitly distinguish type
