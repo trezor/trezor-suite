@@ -4,6 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    ETH_SPEED_UP_TX_MULTIPLIER,
     ETH_TRANSFER_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
@@ -13,6 +14,7 @@ import {
     AddressDisplayOptions,
     type ComposeActionContext,
     type ExternalOutput,
+    type FeeInfo,
     type PrecomposedLevels,
     type PrecomposedTransaction,
     type RbfTransactionParams,
@@ -34,6 +36,7 @@ import {
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
+    isEip1559,
     isEvmApprovalTx,
     isPending,
     isSentTransaction,
@@ -55,6 +58,71 @@ import {
 } from './sendFormTypes';
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
+
+/**
+ * Returns fee info with levels bumped above the original transaction's gas price,
+ * so that the replacement transaction will be accepted by the mempool.
+ *
+ * Expects `feeInfo` with levels already in Gwei (i.e. from selectConvertedNetworkFeeInfo).
+ * `originalGasParams` must also be in Gwei.
+ */
+export const getEthereumRbfFeeInfo = (
+    feeInfo: FeeInfo,
+    originalGasParams: { gasPrice?: string; maxFeePerGas?: string; maxPriorityFeePerGas?: string },
+): FeeInfo => {
+    // feeInfo.levels are already in Gwei — do NOT call getConvertedOrDefaultFeeInfo here,
+    // that would double-convert and produce near-zero values.
+    const { levels } = feeInfo;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstLevel: (typeof levels)[number] = levels[0];
+    if (!firstLevel) return feeInfo;
+
+    if (isEip1559(originalGasParams) && isEip1559(firstLevel)) {
+        const currentMaxFee = new BigNumber(originalGasParams.maxFeePerGas);
+        // Cast back to access maxPriorityFeePerGas — isEip1559 narrows to { maxFeePerGas: string } only
+        const currentMaxPriorityFee = new BigNumber(
+            (originalGasParams as { maxPriorityFeePerGas?: string }).maxPriorityFeePerGas || '0',
+        );
+        const highLevel = levels.find(l => l.label === 'high') ?? firstLevel;
+
+        const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .toString();
+        const newMaxPriorityFeePerGas = BigNumber.maximum(
+            currentMaxPriorityFee,
+            highLevel.maxPriorityFeePerGas ?? 0,
+        )
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .toString();
+
+        return {
+            ...feeInfo,
+            levels: [
+                {
+                    ...highLevel,
+                    label: 'normal' as const,
+                    maxFeePerGas: newMaxFeePerGas,
+                    maxPriorityFeePerGas: newMaxPriorityFeePerGas,
+                },
+            ],
+        };
+    }
+
+    const currentGasPrice = new BigNumber(
+        originalGasParams.gasPrice || originalGasParams.maxFeePerGas || '0',
+    );
+    const minFeeFromNetwork = new BigNumber(firstLevel.feePerUnit);
+    const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(feeInfo.minFee));
+
+    return {
+        ...feeInfo,
+        levels: feeInfo.levels.map(level => ({
+            ...level,
+            feePerUnit: fee.toString(),
+        })),
+        minFee: currentGasPrice.plus(feeInfo.minFee).toNumber(),
+    };
+};
 
 export const calculate = (
     availableBalance: string,
