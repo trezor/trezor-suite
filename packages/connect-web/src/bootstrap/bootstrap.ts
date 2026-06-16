@@ -1,3 +1,5 @@
+import { addEventListener, combineDisposers } from '@trezor/utils';
+
 import { BootstrapError } from './bootstrap-errors';
 
 const logger = (() => {
@@ -122,7 +124,7 @@ const handleBootstrapHandshake = (
     timeout: number = 5000,
 ): Promise<void> =>
     new Promise((resolve, reject) => {
-        const onHandshakeRequest = (event: MessageEvent): void => {
+        const dispose = addEventListener(broadcast, 'message', (event: MessageEvent) => {
             const channel = event.data?.channel;
             if (!channel) return;
 
@@ -133,16 +135,14 @@ const handleBootstrapHandshake = (
             ) {
                 // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 clearTimeout(timer);
-                broadcast.removeEventListener('message', onHandshakeRequest);
+                dispose();
                 broadcast.postMessage(getConfirmHandshake(event.data));
                 resolve();
             }
-        };
-
-        broadcast.addEventListener('message', onHandshakeRequest);
+        });
 
         const timer = setTimeout(() => {
-            broadcast.removeEventListener('message', onHandshakeRequest);
+            dispose();
             reject(BootstrapError.HANDSHAKE_TIMEOUT);
         }, timeout);
     });
@@ -219,17 +219,16 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin
         broadcast.postMessage({ ...event.data, origin: event.origin });
     };
 
-    // Messages from connect-popup (suite-web) addressed to connect-web (3rd party window).
-    broadcast.addEventListener('message', onBroadcastMessage);
+    const stopForwarding = combineDisposers(
+        // Messages from connect-popup (suite-web) addressed to connect-web (3rd party window).
+        addEventListener(broadcast, 'message', onBroadcastMessage),
+        // Messages from connect-web (3rd party window) addressed to connect-popup (suite-web).
+        addEventListener(window, 'message', onOwnerMessage),
+    );
 
-    // Messages from connect-web (3rd party window) addressed to connect-popup (suite-web).
-    window.addEventListener('message', onOwnerMessage);
-
-    // Return cleanup function to stop forwarding.
     return () => {
         logger.log(PEERS.HERE, 'stop forwarding');
-        broadcast.removeEventListener('message', onBroadcastMessage);
-        window.removeEventListener('message', onOwnerMessage);
+        stopForwarding();
     };
 };
 
@@ -244,38 +243,38 @@ const startBootstrapHandshake = (
     const promise = new Promise<void>((resolve, reject) => {
         let attempt = 0;
         let timer: ReturnType<typeof setTimeout>;
+        let disposeAttempt: (() => void) | undefined;
+
+        const disposeAbort = addEventListener(abortController.signal, 'abort', () => {
+            disposeAttempt?.();
+            reject(BootstrapError.HANDSHAKE_TIMEOUT);
+        });
 
         const tryOnce = () => {
             attempt++;
 
             logger.log(PEERS.HERE, 'handshake attempt', attempt, 'of', maxAttempts);
 
-            const onHandshakeConfirm = (event: MessageEvent): void => {
-                const channel = event.data?.channel;
-                if (!channel) return;
+            const disposeListener = addEventListener(
+                broadcast,
+                'message',
+                (event: MessageEvent) => {
+                    const channel = event.data?.channel;
+                    if (!channel) return;
 
-                if (
-                    event.data.type === HANDSHAKE_CONF &&
-                    channel.here === PEERS.BOOTSTRAP &&
-                    channel.peer === PEERS.HERE
-                ) {
-                    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                    cleanup();
-                    resolve();
-                }
-            };
+                    if (
+                        event.data.type === HANDSHAKE_CONF &&
+                        channel.here === PEERS.BOOTSTRAP &&
+                        channel.peer === PEERS.HERE
+                    ) {
+                        disposeAttempt?.();
+                        disposeAbort();
+                        resolve();
+                    }
+                },
+            );
 
-            const cleanup = () => {
-                clearTimeout(timer);
-                broadcast.removeEventListener('message', onHandshakeConfirm);
-            };
-
-            abortController.signal.addEventListener('abort', () => {
-                cleanup();
-                reject(BootstrapError.HANDSHAKE_TIMEOUT);
-            });
-
-            broadcast.addEventListener('message', onHandshakeConfirm);
+            disposeAttempt = combineDisposers(() => clearTimeout(timer), disposeListener);
 
             broadcast.postMessage({
                 type: HANDSHAKE_REQ,
@@ -283,10 +282,11 @@ const startBootstrapHandshake = (
             });
 
             timer = setTimeout(() => {
-                broadcast.removeEventListener('message', onHandshakeConfirm);
+                disposeListener();
                 if (attempt < maxAttempts) {
                     tryOnce();
                 } else {
+                    disposeAbort();
                     reject(BootstrapError.HANDSHAKE_TIMEOUT);
                 }
             }, HANDSHAKE_TIMEOUT);

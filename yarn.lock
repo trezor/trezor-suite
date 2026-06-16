@@ -16875,6 +16875,7 @@ __metadata:
   dependencies:
     "@trezor/eslint": "workspace:*"
     "@trezor/transport-common": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/sharedworker": "npm:^0.0.223"
   peerDependencies:
     tslib: ^2.6.2
