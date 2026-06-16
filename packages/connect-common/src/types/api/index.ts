@@ -1,9 +1,6 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
-import type { evoluGetNode } from './evoluGetNode';
-import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
 import type { stellarGetAddress } from './stellarGetAddress';
@@ -22,6 +19,7 @@ import { TrezorConnectCardano } from './cardano';
 import { TrezorConnectCore } from './core';
 import { TrezorConnectDevice } from './device';
 import { TrezorConnectEthereum } from './ethereum';
+import { TrezorConnectEvolu } from './evolu';
 import { TrezorConnectManagement } from './management';
 import { TrezorConnectMonero } from './monero';
 import { TrezorConnectRipple } from './ripple';
@@ -35,6 +33,7 @@ export {
     TrezorConnectCore,
     TrezorConnectDevice,
     TrezorConnectEthereum,
+    TrezorConnectEvolu,
     TrezorConnectManagement,
     TrezorConnectMonero,
     TrezorConnectRipple,
@@ -75,19 +74,6 @@ export const TrezorConnectTron = Type.Object({
     tronComposeTransaction: Type.Unsafe<typeof tronComposeTransaction>(),
 });
 export type TrezorConnectTron = Static<typeof TrezorConnectTron>;
-
-// Evolu identity protocol operations
-export const TrezorConnectEvolu = Type.Object({
-    // For internal use, no public documentation.
-    evoluGetNode: Type.Unsafe<typeof evoluGetNode>(),
-
-    // For internal use, no public documentation.
-    evoluSignRegistrationRequest: Type.Unsafe<typeof evoluSignRegistrationRequest>(),
-
-    // For internal use, no public documentation.
-    evoluGetDelegatedIdentityKey: Type.Unsafe<typeof evoluGetDelegatedIdentityKey>(),
-});
-export type TrezorConnectEvolu = Static<typeof TrezorConnectEvolu>;
 
 // Nostr protocol operations
 export const TrezorConnectNostr = Type.Object({
