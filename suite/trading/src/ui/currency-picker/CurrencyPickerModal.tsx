@@ -36,7 +36,7 @@ export const CurrencyPickerModal = ({
     };
 
     return (
-        <Modal {...props} width={400} heading={<Translation id="TR_CURRENCY" />} height="85vh">
+        <Modal {...props} width={400} heading={<Translation id="TR_CURRENCY" />} maxHeight={680}>
             <Column gap={16} height="100%">
                 <Input
                     onChange={ev => setFilterValue(ev.target.value)}

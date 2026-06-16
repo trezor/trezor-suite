@@ -38,7 +38,7 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
     return (
         <Modal
             width={400}
-            height="85vh"
+            maxHeight={680}
             onCancel={onClose}
             heading={heading ? <Translation id={heading} /> : undefined}
         >

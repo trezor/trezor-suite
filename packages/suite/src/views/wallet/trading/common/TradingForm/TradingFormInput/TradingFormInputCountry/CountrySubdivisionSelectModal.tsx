@@ -39,7 +39,7 @@ export const CountrySubdivisionSelectModal = ({
         <Modal
             heading={<Translation id="TR_TRADING_COUNTRY_SUBDIVISION" />}
             onCancel={onClose}
-            height="85vh"
+            maxHeight={680}
             width={400}
         >
             <Column gap={12} height="100%">
