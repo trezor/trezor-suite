@@ -59,6 +59,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'gap', type: 'number' },
                 { name: 'marker', type: 'object' },
                 { name: 'protocols', type: 'array' },
+                { name: 'confirmedNonce', type: 'boolean' },
                 { name: 'defaultAccountType', type: 'string' },
                 { name: 'derivationType', type: 'number' },
                 { name: 'suppressBackupWarning', type: 'boolean' },
@@ -276,6 +277,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     marker: request.marker,
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
                     protocols: request.protocols,
+                    confirmedNonce: request.confirmedNonce,
                 });
 
                 if (this.disposed) break;
@@ -458,6 +460,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             gap: request.gap,
             marker: request.marker,
             protocols: request.protocols,
+            confirmedNonce: request.confirmedNonce,
         });
 
         let utxo: AccountUtxo[] | undefined;
