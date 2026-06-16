@@ -50,10 +50,13 @@ Each station has a clear goal, and they build on each other:
 
 ## Scope of this proposal
 
-This RFC covers the stations from an idea up to a **review-clean draft PR waiting
-for a human's final look**: planning, implementation, and the agentic review
-station (Copilot + adversarial second opinion). The human review and test
-stations will be designed in follow-ups once these are agreed.
+This RFC covers the stations from an idea to a **verified merge**: planning,
+implementation, the agentic review station (Copilot + adversarial second opinion),
+and — after a human reviews and merges — a post-merge verification station
+(`conveyor-5-land`) that confirms the merge did not break the base. The human
+review/merge step in the middle stays human-owned; test discipline is woven into
+plan/implement/review (acceptance criteria, a new test per feature, regression
+tests per fix) rather than a separate station.
 
 ## Data model
 
@@ -130,8 +133,12 @@ PR                  ▼
              review:in-progress ───────────────────────────────┘
                     │
           ┌─too big ──────────▶ split proposal ──▶ slices re-enter at conveyor-1-plan-create ↺
-          ├─clean ────────────▶ review:passed ──▶ (human flips draft→ready)
+          ├─clean ────────────▶ review:passed ──▶ human flips draft→ready, reviews, MERGES
           └─findings parked ──▶ review:needs-human (hands off)
+                                         │  (human merge)
+                                         ▼  conveyor-5-land: watch post-merge develop CI
+          ┌─green ────────────────────▶ land:verified ✅
+          └─broke develop ────────────▶ land:broke-develop ──▶ land:needs-human (revert / forward-fix / flake)
 ```
 
 | Label | On | Meaning | Next action |
@@ -145,10 +152,14 @@ PR                  ▼
 | `conveyor/review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-4-review` |
 | `conveyor/review:in-progress` | PR | Agentic review running — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
 | `conveyor/review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-4-review` |
-| `conveyor/review:passed` | PR | Agentic review clean | a human verifies, flips draft→ready, finds a reviewer |
+| `conveyor/review:passed` | PR | Agentic review clean (vouches for the `Reviewed at:` SHA) | a human verifies, flips draft→ready, requests the Team reviewer, merges |
+| `conveyor/land:watching` | PR (merged) | Watching the post-merge `develop` CI for the merge commit | let `conveyor-5-land` finish |
+| `conveyor/land:verified` | PR (merged) | Merge did not break `develop` | done — belt complete |
+| `conveyor/land:broke-develop` | PR (merged) | Merge broke the base branch | a human picks revert / forward-fix / flake |
+| `conveyor/land:needs-human` | PR (merged) | Post-merge decision parked — **hands-off** | drain `conveyor-5-land` after ticking |
 
-**Label bootstrap (one-time).** The board is empty on day one until the 10
-lifecycle labels exist. Create them once per repo:
+**Label bootstrap (one-time).** The board is empty on day one until the lifecycle
+labels exist. Create them once per repo:
 
 ```bash
 # The conveyor/ prefix groups them as one family; shared colours make them pop.
@@ -163,6 +174,10 @@ mk conveyor/review:queued           2da44e "green draft PR, awaiting agentic rev
 mk conveyor/review:in-progress      2da44e "agentic review running"
 mk conveyor/review:needs-human      cf222e "review findings parked for a human"
 mk conveyor/review:passed           2da44e "agentic review clean, human takes over"
+mk conveyor/land:watching           006b75 "watching post-merge develop CI"
+mk conveyor/land:verified           0e8a16 "merge did not break develop"
+mk conveyor/land:broke-develop      cf222e "merge broke the base branch"
+mk conveyor/land:needs-human        cf222e "post-merge decision parked for a human"
 mk conveyor:meta                    6f42c1 "workflow friction / skill-improvement item"
 ```
 
@@ -404,8 +419,20 @@ review-clean while it is still a draft:
   "Ready for review"**. That flip is strictly a human's signal: they verify the
   state, flip the draft, and find a second human to do the final review.
 
+It also **records the reviewed SHA**; if the branch later moves past it (a rebase or
+a human push), the review is **stale** and is re-opened rather than merged as-is.
 Same two modes (interactive / autonomous routine). See
 [conveyor-4-review/SKILL.md](conveyor-4-review/SKILL.md).
+
+### `conveyor-5-land`
+The **post-merge verification** station. A human reviews and **merges** the PR (that
+step stays human-owned); `conveyor-5-land` then watches the post-merge `develop` CI
+for the merge commit, because a PR that was green can still break the base after
+merge (rebase/interaction — a failure mode this repo has hit). Green (minus
+already-broken-in-develop checks, and ignoring single flakes) → `conveyor/land:verified`,
+the belt is complete. Broke the base → `conveyor/land:broke-develop`, it `@`-mentions
+the Team eng owner (their gate) and **parks a checkbox**: revert / forward-fix /
+flake-rerun. Same two modes. See [conveyor-5-land/SKILL.md](conveyor-5-land/SKILL.md).
 
 ## Design principles (borrowed, adapted)
 

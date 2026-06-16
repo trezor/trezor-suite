@@ -63,6 +63,16 @@ guard is the branch on origin plus `--force-with-lease` (see §6). If the status
 comment does not exist yet, create it from the template below; if one already
 exists (re-run), reuse it.
 
+**Staleness gate (if already `conveyor/review:passed`).** A review only vouches for the
+exact commit it ran against. If the PR is `conveyor/review:passed` but the branch HEAD
+has advanced past the `Reviewed at:` SHA in the status comment — Conveyor's own
+aggressive rebase (`conveyor-3-implement` §4) or a human push moved it — the
+review is **stale**: it must not be merged as-is. Re-open it (add
+`conveyor/review:queued`, remove `conveyor/review:passed`, add-before-remove) and
+re-review the delta (`git diff <reviewed-sha>..HEAD`) — a tiny rebase-only delta may
+re-pass quickly; a real change goes through the full station. This is cheap
+insurance against a green-but-stale review merging into a moved tree.
+
 **Drain run (entered at `conveyor/review:needs-human`).** The human has been ticking
 answer checkboxes since the last run. Skip fresh lens work (unless the diff changed
 since the parked findings were written) and resolve from the ticked state exactly
@@ -222,9 +232,11 @@ Always **add** the new label **before** removing `conveyor/review:in-progress`, 
 mid-transition leaves an extra findable label, never zero.
 
 - **Clean** (nothing parked, no unresolved real/security finding, branch fresh):
-  add `conveyor/review:passed`, then remove `conveyor/review:in-progress`. Comment a summary,
-  and name the **reviewer from the PR's `## Team` block** as the one to request. The
-  PR stays a **draft** — a human now verifies, flips it to "Ready for review", and
+  add `conveyor/review:passed`, then remove `conveyor/review:in-progress`. **Record the
+  reviewed SHA** (`git rev-parse HEAD`) as a `**Reviewed at:** <sha>` line in the
+  status comment — the review only vouches for *that* commit. Comment a summary, and
+  name the **reviewer from the PR's `## Team` block** as the one to request. The PR
+  stays a **draft** — a human now verifies, flips it to "Ready for review", and
   requests that reviewer (the `@`-mention / review-request at that flip is the
   intended notification — the reviewer's gate has arrived).
 - **Parked** (open findings remain): add `conveyor/review:needs-human`, then remove
@@ -243,6 +255,7 @@ and take it over — never leave it a silent dead PR.
 ## 🤖 Review status
 
 **State:** in-progress | needs-human | passed
+**Reviewed at:** <sha the review vouches for — set on passed; if HEAD has moved past it, the review is stale>
 **Triage:** <N files, ~M lines> — risk: low | medium | high (<sensitive areas>)
 **Split:** not needed | proposed (see below) — <n slices> | declined (do not re-propose)
 
