@@ -156,10 +156,11 @@ export const getBigNumberFromBalance = async (locator: Locator) => {
 /**
  * Mocks remote message-system with an empty JWS config signed by develop key.
  */
-export const mockRemoteMessageSystem = async (page: Page): Promise<void> =>
+export const mockRemoteMessageSystem = async (page: Page): Promise<void> => {
     await page.route('**/config.v1.jws', async route => {
         await route.fulfill({ status: 200, body: validJws });
     });
+};
 
 export const normalizeWhitespace = (obj: any): any => {
     if (typeof obj === 'string') {

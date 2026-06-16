@@ -195,6 +195,7 @@ jobs:
           PASSPHRASE_LIVE: ${{ secrets.e2e-passphrase-live }}
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token }}
           RELEASE_BUILD: ${{ inputs.release-build }}
+          RUN_GITHUB_REPORTER: ${{ inputs.run-reporter }} # Read by playwright-base.config.ts to enable the GitHub reporter
           ELECTRON_DISABLE_SANDBOX: 1
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
@@ -210,12 +211,6 @@ jobs:
           # Handle default for CURRENTS_CI_BUILD_ID if empty
           if [[ -z "${{ inputs.currents-ci-build-id }}" ]]; then
              export CURRENTS_CI_BUILD_ID="pr-run-${{ inputs.target }}-${{ github.run_id }}-${{ github.run_attempt }}"
-          fi
-
-          if [[ "${{ inputs.run-reporter }}" == "true" ]]; then
-            REPORTER_OPT="--reporter=./support/reporters/gitHubReporter.ts"
-          else
-            REPORTER_OPT=""
           fi
 
           if [[ "${{ inputs.enable-coverage }}" == "true" ]]; then
@@ -263,15 +258,30 @@ jobs:
           docker compose up -d ${{ inputs.containers }}
 
           echo "Starting ${{ inputs.target }} Playwright tests with config ${{ inputs.pw-config }} for test group ${{ inputs.test-group }}"
-          yarn workspace @trezor/suite-e2e test:orchestrated:e2e \
+
+          # Currents orchestration is a two-step process since @currents/playwright v2:
+          #   1. discover: list/select the tests (all test-selection flags live here)
+          #   2. run: orchestrate the selected tests across machines (execution flags + CURRENTS_* env)
+          DISCOVERY_FILE="$(mktemp)"
+
+          yarn workspace @trezor/suite-e2e test:orchestrated:e2e discover \
+            --pwc-discovery-file "$DISCOVERY_FILE" \
+            --config=${{ inputs.pw-config }} \
+            $PASS_WITH_NO_TESTS \
+            $SPEC_ARGS
+
+          if grep -qE "Total: 0 tests" "$DISCOVERY_FILE"; then
+            echo "Discovery selected 0 tests for the focused spec list - skipping orchestration run."
+            exit 0
+          fi
+
+          yarn workspace @trezor/suite-e2e test:orchestrated:e2e run \
+            --pwc-discovery-file "$DISCOVERY_FILE" \
             --config=${{ inputs.pw-config }} \
             --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
             --pwc-disable-test-tags \
-            $COVERAGE_OPT \
-            --forbid-only \
-            $REPORTER_OPT \
-            $PASS_WITH_NO_TESTS \
-            $SPEC_ARGS
+            --pwc-skip-reporter-injection \
+            $COVERAGE_OPT
 
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}
