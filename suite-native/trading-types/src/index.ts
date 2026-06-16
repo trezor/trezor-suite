@@ -4,5 +4,4 @@ export type * from './exchange';
 export type * from './general';
 export type * from './navigation';
 export type * from './sell';
-export type * from './settings';
 export type * from './state';
