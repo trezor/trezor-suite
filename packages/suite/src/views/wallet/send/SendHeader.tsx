@@ -62,6 +62,7 @@ export const SendHeader = () => {
         }
     }, [networkType, dataEnabled, token, toggleOption, resetDefaultValue]);
 
+    const nonceEditEnabled = enabledFormOptions.includes('ethereumNonce');
     const options: Array<DropdownMenuItemProps> = [
         {
             'data-testid': '@send/header-dropdown/import',
@@ -133,6 +134,13 @@ export const SendHeader = () => {
             ),
             isDisabled: !!locktimeEnabled,
             isHidden: !BROADCAST_SUPPORTED_NETWORK_TYPES.includes(networkType),
+        },
+        {
+            'data-testid': '@send/header-dropdown/ethereum-nonce',
+            onClick: () => toggleOption('ethereumNonce'),
+            label: <Translation id="EVM_NONCE_EDIT" />,
+            isDisabled: nonceEditEnabled,
+            isHidden: networkType !== 'ethereum',
         },
         {
             'data-testid': '@send/header-dropdown/raw',

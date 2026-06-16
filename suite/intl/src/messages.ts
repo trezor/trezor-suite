@@ -3749,6 +3749,33 @@ export const messages = defineMessages({
         id: 'ETHEREUM_NONCE_IS_TOO_LOW',
         defaultMessage: 'Nonce must be 0 or greater',
     },
+    ETHEREUM_NONCE_IS_MINED: {
+        id: 'ETHEREUM_NONCE_IS_MINED',
+        defaultMessage: 'Nonce must be greater than {lastMinedNonce}',
+    },
+    ETHEREUM_NONCE_BELOW_CONFIRMED: {
+        id: 'ETHEREUM_NONCE_BELOW_CONFIRMED',
+        defaultMessage:
+            'This nonce has already been confirmed on-chain. The network would reject the transaction as "nonce too low". The next available nonce is {nextNonce}.',
+    },
+    ETHEREUM_NONCE_GAP_WARNING: {
+        id: 'ETHEREUM_NONCE_GAP_WARNING',
+        defaultMessage:
+            'This nonce is higher than the next expected nonce ({nextNonce}). The transaction will stay pending until every nonce before it is used.',
+    },
+    ETHEREUM_NONCE_REPLACEMENT_WARNING: {
+        id: 'ETHEREUM_NONCE_REPLACEMENT_WARNING',
+        defaultMessage:
+            'This nonce replaces a pending transaction. Increase both the max fee and the max priority fee by at least 10%, otherwise the network will reject it as "replacement transaction underpriced".',
+    },
+    ETHEREUM_NONCE_APPLY_FEE_BUMP: {
+        id: 'ETHEREUM_NONCE_APPLY_FEE_BUMP',
+        defaultMessage: 'Apply recommended fee',
+    },
+    ETHEREUM_NONCE_REPLACES_PENDING: {
+        id: 'ETHEREUM_NONCE_REPLACES_PENDING',
+        defaultMessage: 'This transaction will replace the pending transaction with nonce {nonce}.',
+    },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: "The PINs you have entered don't match",
@@ -6488,6 +6515,23 @@ export const messages = defineMessages({
     BROADCAST: {
         id: 'BROADCAST',
         defaultMessage: 'Broadcast',
+    },
+    BROADCAST_TOOLTIP: {
+        id: 'BROADCAST_TOOLTIP',
+        defaultMessage: 'Broadcast the transaction to the network.',
+    },
+    EVM_NONCE: {
+        id: 'EVM_NONCE',
+        defaultMessage: 'Nonce: {nonce}',
+    },
+    EVM_NONCE_TOOLTIP: {
+        id: 'EVM_NONCE_TOOLTIP',
+        defaultMessage:
+            'The next sequential nonce — the position of this transaction in your account’s history. It’s set automatically and rarely needs changing.',
+    },
+    EVM_NONCE_EDIT: {
+        id: 'EVM_NONCE_EDIT',
+        defaultMessage: 'Edit nonce',
     },
     IMPORT_CSV: {
         id: 'IMPORT_CSV',

@@ -1,5 +1,9 @@
 import { configureMockStore } from '@suite-common/test-utils';
-import { AddressDisplayOptions, type FormState, type RbfTransactionParams } from '@suite-common/wallet-types';
+import {
+    AddressDisplayOptions,
+    type FormState,
+    type RbfTransactionParams,
+} from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import { confirmedNonces, ethAccount, evmTx } from './evmFixtures';
