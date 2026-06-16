@@ -65,7 +65,7 @@
         "react-native": "0.85.3",
         "react-native-gesture-handler": "2.31.1",
         "react-native-reanimated": "4.3.1",
-        "react-native-svg": "15.15.3",
+        "react-native-svg": "15.15.5",
         "react-redux": "9.3.0",
         "semver": "^7.7.1",
         "type-fest": "5.5.0"
