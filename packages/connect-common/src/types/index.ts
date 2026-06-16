@@ -13,7 +13,7 @@ export * from './api/cardano/common';
 export * from './api/bitcoin/common';
 export * from './api/ripple';
 export * from './api/ethereum/common';
-export * from './api/monero';
+export * from './api/monero/common';
 export * from './api/solana';
 export * from './api/stellar';
 export * from './api/tezos';

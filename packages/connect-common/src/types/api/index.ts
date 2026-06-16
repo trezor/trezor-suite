@@ -4,10 +4,6 @@ import { Type } from '@trezor/schema-utils';
 import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
-import type { moneroGetAddress } from './moneroGetAddress';
-import type { moneroGetWatchKey } from './moneroGetWatchKey';
-import type { moneroKeyImageSync } from './moneroKeyImageSync';
-import type { moneroSignTransaction } from './moneroSignTransaction';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
 import type { rippleGetAddress } from './rippleGetAddress';
@@ -33,6 +29,7 @@ import { TrezorConnectCore } from './core';
 import { TrezorConnectDevice } from './device';
 import { TrezorConnectEthereum } from './ethereum';
 import { TrezorConnectManagement } from './management';
+import { TrezorConnectMonero } from './monero';
 
 export {
     TrezorConnectAccount,
@@ -43,23 +40,8 @@ export {
     TrezorConnectDevice,
     TrezorConnectEthereum,
     TrezorConnectManagement,
+    TrezorConnectMonero,
 };
-
-// Monero-specific operations
-export const TrezorConnectMonero = Type.Object({
-    // https://connect.trezor.io/9/methods/monero/moneroGetAddress/
-    moneroGetAddress: Type.Unsafe<typeof moneroGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/monero/moneroGetWatchKey/
-    moneroGetWatchKey: Type.Unsafe<typeof moneroGetWatchKey>(),
-
-    // https://connect.trezor.io/9/methods/monero/moneroKeyImageSync/
-    moneroKeyImageSync: Type.Unsafe<typeof moneroKeyImageSync>(),
-
-    // https://connect.trezor.io/9/methods/monero/moneroSignTransaction/
-    moneroSignTransaction: Type.Unsafe<typeof moneroSignTransaction>(),
-});
-export type TrezorConnectMonero = Static<typeof TrezorConnectMonero>;
 
 // Ripple-specific operations
 export const TrezorConnectRipple = Type.Object({
