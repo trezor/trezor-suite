@@ -15,6 +15,7 @@ import {
     type PrecomposedLevels,
     type PrecomposedTransaction,
     type RbfTransactionParams,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -37,6 +38,7 @@ import {
     isSentTransaction,
     prepareEthereumTransaction,
     subunitsToUnits,
+    tryGetAccountIdentity,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
@@ -350,39 +352,88 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+/**
+ * Resolves the nonce to use for the next Ethereum transaction.
+ *
+ * For RBF (cancel / speed-up) the original tx's nonce is reused. Otherwise:
+ *  - `confirmedNonce` = the backend's mined-only nonce (trezor/blockbook#1562), i.e. the on-chain
+ *    transaction count. Lower bound for custom-nonce validation. Falls back to the highest confirmed
+ *    (mined) outgoing nonce + 1 from the local tx list when the backend doesn't provide it. (Nonces
+ *    are sequential from 0, so the latest confirmed outgoing tx's nonce + 1 is the confirmed count.)
+ *  - `nonce` (signing default) = `confirmedNonce` advanced past any *contiguous* outgoing pending
+ *    txs. Gapped pending txs (e.g. a stuck tx far above the confirmed nonce) are ignored, so the
+ *    suggestion fills the gap instead of queueing behind an unmineable tx.
+ *
+ * Reads Redux/network only via TrezorConnect; the caller still passes the tx list in.
+ */
+export const resolveEthereumNonce = async ({
+    selectedAccount,
+    rbfParams,
+    accountTransactions,
+}: {
+    selectedAccount: Account & { networkType: 'ethereum' };
+    rbfParams?: RbfTransactionParams;
+    accountTransactions: WalletAccountTransaction[];
+}): Promise<{ nonce: string; confirmedNonce: string }> => {
+    // For RBF (cancel / speed-up) always use the original tx's nonce.
+    // confirmedNonce is only consumed for custom-nonce validation (non-RBF), so mirror nonce here.
+    if (rbfParams?.type === 'ethereum' && typeof rbfParams.ethereumNonce === 'number') {
+        const rbfNonce = rbfParams.ethereumNonce.toString();
+
+        return { nonce: rbfNonce, confirmedNonce: rbfNonce };
+    }
+
+    const accountInfoResponse = await TrezorConnect.getAccountInfo({
+        coin: selectedAccount.symbol,
+        descriptor: selectedAccount.descriptor,
+        identity: tryGetAccountIdentity(selectedAccount),
+        details: 'basic',
+        // opt in to blockbook's mined-only nonce (trezor/blockbook#1562); costs an extra backend call
+        confirmedNonce: true,
+        suppressBackupWarning: true,
+    });
+
+    const sentNonces = (predicate: (tx: WalletAccountTransaction) => boolean) =>
+        accountTransactions
+            .filter(predicate)
+            .filter(isSentTransaction)
+            .map(tx => tx.ethereumSpecific?.nonce)
+            .filter((nonce): nonce is number => typeof nonce === 'number');
+
+    // Prefer the backend's confirmed (mined-only) nonce — it's authoritative and doesn't depend on
+    // the local tx list being complete (trezor/blockbook#1562). Fall back to the highest confirmed
+    // outgoing nonce + 1 until that field is available.
+    const backendConfirmedNonce =
+        accountInfoResponse.success && accountInfoResponse.payload.misc?.confirmedNonce != null
+            ? parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10)
+            : undefined;
+    const localConfirmedNonces = sentNonces(tx => !isPending(tx));
+    const confirmedNonce =
+        backendConfirmedNonce ??
+        (localConfirmedNonces.length ? Math.max(...localConfirmedNonces) + 1 : 0);
+
+    // Next free nonce: advance past contiguous pending txs from the confirmed nonce, stopping at the
+    // first gap, so a stuck/gapped tx far above the confirmed nonce doesn't inflate the suggestion.
+    const pendingNonceSet = new Set(sentNonces(isPending));
+    let nextNonce = confirmedNonce;
+    while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
+
+    return { nonce: nextNonce.toString(), confirmedNonce: confirmedNonce.toString() };
+};
+
 export const ethereumGetCurrentNonceThunk = createThunk<
-    { nonce: string },
+    { nonce: string; confirmedNonce: string },
     { selectedAccount: Account & { networkType: 'ethereum' }; rbfParams?: RbfTransactionParams }
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
     ({ selectedAccount, rbfParams }, { getState }) => {
-        // Ethereum account `misc.nonce` is not updated before pending tx is mined
-        // Calculate `pendingNonce`: greatest value in pending tx + 1
-        // This may lead to unexpected/unwanted behavior
-        // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
         const transactions = selectTransactions(getState());
-        const pendingTxs = (transactions[selectedAccount.key] || [])
-            .filter(isPending)
-            .filter(isSentTransaction);
-        const pendingNonce = pendingTxs.reduce((value, tx) => {
-            if (!tx.ethereumSpecific) return value;
 
-            return Math.max(value, tx.ethereumSpecific.nonce + 1);
-        }, 0);
-
-        const pendingNonceBig = new BigNumber(pendingNonce);
-        const accountNonce = selectedAccount.misc?.nonce;
-
-        let nonce =
-            pendingNonceBig.gt(0) && pendingNonceBig.gt(accountNonce)
-                ? pendingNonceBig.toString()
-                : accountNonce;
-
-        if (rbfParams?.type === 'ethereum' && typeof rbfParams.ethereumNonce === 'number') {
-            nonce = rbfParams.ethereumNonce.toString();
-        }
-
-        return { nonce };
+        return resolveEthereumNonce({
+            selectedAccount,
+            rbfParams,
+            accountTransactions: transactions[selectedAccount.key] ?? [],
+        });
     },
 );
 
