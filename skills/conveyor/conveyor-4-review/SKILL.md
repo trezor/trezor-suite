@@ -137,6 +137,15 @@ to the triage:
 Each reviewer is prompted to **find real bugs and try to break the code**, not to
 nitpick style (lint/format is CI's job). Post findings as inline comments.
 
+**Always probe termination & progress.** For every loop, retry, recursion, or poll
+in the diff (or in code the diff newly relies on), one reviewer must verify it
+**terminates and makes progress** — each iteration advances the state it branches
+on, a retry eventually exhausts its options or backs off, and no path recurses on an
+unchanged condition. A loop/retry that can spin on a value that never changes is a
+finding even when every individual statement is correct. (This is the exact class
+the adversarial pass missed on PR #28820 — a retry recursing on an unchanged
+`this.port` — while it correctly checked resolve-safety. Check *both*.)
+
 **Cite the line or flag it UNVERIFIED.** No "probably handled / likely tested" —
 every claim that something is safe/handled/tested must cite `file:line` or the test
 name, else label it UNVERIFIED; "looks fine" is **not** a finding. Attach a 1-10
@@ -159,10 +168,31 @@ codebase insight (not a one-off): append an entry to `.github/conveyor-learnings
 as a commit on this PR (see CONVENTIONS) so the next plan/implement run starts
 warmer — it is human-reviewed at merge.
 
-### 5. Collect Copilot's findings
+### 5. Collect Copilot's findings — wait for them, do not pass without them
 
-Once Copilot's review lands, pull its review and inline comments and merge them
-with your adversarial findings into one set.
+Copilot is a bot that answers asynchronously, usually within a few minutes — its
+findings are a **required input, not a bonus**. **Never finalize a review while
+Copilot is still pending:** a `conveyor/review:passed` hand-off (§9) requires
+Copilot's review to have *landed and been ingested*, not merely *requested*.
+(Conveyor has already hit this: an autonomous run passed PR #28820 ~3 minutes
+before Copilot replied, and Copilot caught a real retry-loop bug the pass missed.)
+
+Poll for Copilot's review with a **bounded wait** (e.g. up to ~8 minutes, backing
+off between checks):
+
+```bash
+gh api repos/<owner>/<repo>/pulls/<n>/reviews \
+  --jq '.[] | select(.user.login=="copilot-pull-request-reviewer[bot]")'
+```
+
+- **Landed** → pull its review body and inline comments and merge them with your
+  adversarial findings into one set; process them all in step 6.
+- **Still pending after the wait** → do **not** pass. Either continue with other
+  unblocked work and re-check on the next wake, or park to
+  `conveyor/review:needs-human` with the Copilot row marked `pending (held)` and a
+  note "held for Copilot — re-run to ingest". A later drain ingests it. A hand-off
+  that records Copilot as `requested / in-progress` at pass time is a **bug** in
+  this station.
 
 ### 6. Process the findings
 
@@ -254,7 +284,8 @@ off `conveyor/review:passed`, check the branch against `origin/develop`
 Always **add** the new label **before** removing `conveyor/review:in-progress`, so a crash
 mid-transition leaves an extra findable label, never zero.
 
-- **Clean** (nothing parked, no unresolved real/security finding, branch fresh):
+- **Clean** (Copilot's review has landed and been ingested, nothing parked, no
+  unresolved real/security finding, branch fresh):
   add `conveyor/review:passed`, then remove `conveyor/review:in-progress`. **Record the
   reviewed SHA** (`git rev-parse HEAD`) as a `**Reviewed at:** <sha>` line in the
   status comment — the review only vouches for *that* commit. Comment a summary, and
@@ -303,7 +334,7 @@ _Tick one box per finding (no tick = the ✅ recommended option), then tick Done
 ### Reviews run
 | Review | Status | Findings |
 | --- | --- | --- |
-| Copilot | requested / delivered | <n> |
+| Copilot | delivered / pending (held) — never "requested" at pass | <n> |
 | Adversarial | <n reviewers> | <n> |
 | Spec-fidelity | done | <n drift items> |
 
@@ -314,9 +345,13 @@ _Last updated by: conveyor-4-review (<interactive|autonomous>)_
 
 - **Interactive**: request Copilot, run adversarial review, process findings live,
   hand off.
-- **Autonomous** (routine): same core, but poll for Copilot's review between wakes
-  instead of blocking; on clean set `conveyor/review:passed`, on parked set
-  `conveyor/review:needs-human`. The mode for burning pooled tokens overnight.
+- **Autonomous** (routine): same core, with the **bounded Copilot wait of §5
+  inside the run**. If Copilot has still not landed by the end of the wait, park
+  (`conveyor/review:needs-human`, "held for Copilot") rather than pass — a later
+  wake drains it. **Never set `conveyor/review:passed` on a PR whose Copilot review
+  has not landed and been ingested.** On clean set `conveyor/review:passed`, on
+  parked set `conveyor/review:needs-human`. The mode for burning pooled tokens
+  overnight.
 
 ## Rules
 
@@ -326,6 +361,12 @@ _Last updated by: conveyor-4-review (<interactive|autonomous>)_
   (read ticks first, never re-ask), and the **security carve-out** all apply here.
   Plus the rules specific to review:
 - Never promote the PR to "Ready for review" — that is the human's signal.
+- Copilot's review is a **required input**: never hand off `conveyor/review:passed`
+  while Copilot is still pending — bounded-wait for it (§5), ingest its findings,
+  and park ("held for Copilot") if it has not landed by the end of the wait.
+- **Probe termination & progress** on every loop / retry / recursion / poll (§4) —
+  a loop that can spin on an unchanged condition is a finding even when each
+  statement is individually correct.
 - Check splittability before the deep review; never auto-split — a split is a
   user-challenge, so propose it and let a human approve. Use a concrete bar
   (> ~800 lines OR > 15 files AND ≥ 2 independent symbol-disjoint concerns) and
