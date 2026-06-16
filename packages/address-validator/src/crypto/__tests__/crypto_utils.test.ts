@@ -1,4 +1,4 @@
-import { sha256, sha256Checksum, sha256x2 } from '../src/crypto/utils';
+import { sha256, sha256Checksum, sha256x2 } from '../utils';
 
 // These functions were re-implemented on top of @noble/hashes (issue #27403,
 // replacing the unmaintained jssha dependency). The behaviour must stay

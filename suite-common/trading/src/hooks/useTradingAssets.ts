@@ -17,7 +17,7 @@ import {
     getNetwork,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { getCurrencies } from '@trezor/address-validator';
+import { getSupportedCoins } from '@trezor/address-validator';
 import { type TokenInfo } from '@trezor/connect';
 import { isNotNull } from '@trezor/utils';
 
@@ -40,7 +40,7 @@ import {
     getTradingPlatformsInfoByCryptoId,
 } from '../utils/infoUtils';
 
-const supportedAddressValidatorSymbols = new Set(getCurrencies().map(c => c.symbol));
+const supportedAddressValidatorSymbols = new Set(getSupportedCoins());
 const mainnets = new Set(getMainnets().map(network => network.symbol));
 
 function hasSupportedAddressValidator(platforms: Platforms, coins: Coins, cryptoId: CryptoId) {
@@ -49,7 +49,11 @@ function hasSupportedAddressValidator(platforms: Platforms, coins: Coins, crypto
         cryptoIdToNetwork(prodCryptoId)?.symbol ??
         getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
 
-    return networkSymbol && supportedAddressValidatorSymbols.has(networkSymbol);
+    return (
+        networkSymbol !== undefined &&
+        isNetworkSymbol(networkSymbol) &&
+        supportedAddressValidatorSymbols.has(networkSymbol)
+    );
 }
 
 function getNonTestnetNetworkSymbol(

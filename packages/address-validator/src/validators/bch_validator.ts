@@ -1,10 +1,11 @@
 // CashAddr address format spec:
 // https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
-import * as BTCValidator from './bitcoin_validator';
-import { addressType } from './crypto/utils';
-import type { Currency, NetworkEnvironment } from './currency-types';
 
-const DEFAULT_NETWORK: NetworkEnvironment = 'prod';
+import type { AddressValidator } from '../AddressValidator';
+import { addressType } from '../addressType';
+import type { NetworkSymbol } from '../networkTypes';
+
+const CASHADDR_REGEXP = /^[qQpP]{1}[0-9a-zA-Z]{41}$/;
 
 // Base32 charset used for the cashaddr payload (see "Base32" in the spec).
 const CASHADDR_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
@@ -68,14 +69,13 @@ function verifyChecksum(prefix: string, payload: string): boolean {
     return cashAddrPolymod(data) === BigInt(0);
 }
 
-function validateAddress(address: string, currency: any): boolean {
+function validateAddress(address: string): boolean {
     if (address.toLowerCase() !== address && address.toUpperCase() !== address) {
         return false;
     }
 
     const normalized = address.toLowerCase();
     const colonIndex = normalized.indexOf(':');
-    const regexp = new RegExp(currency.regexp);
 
     if (colonIndex !== -1) {
         const prefix = normalized.slice(0, colonIndex);
@@ -83,37 +83,35 @@ function validateAddress(address: string, currency: any): boolean {
         if (prefix !== CASHADDR_PREFIX) {
             return false;
         }
-        if (!regexp.test(payload)) {
+        if (!CASHADDR_REGEXP.test(payload)) {
             return false;
         }
 
         return verifyChecksum(prefix, payload);
     }
 
-    if (!regexp.test(normalized)) {
+    if (!CASHADDR_REGEXP.test(normalized)) {
         return false;
     }
 
     return verifyChecksum(CASHADDR_PREFIX, normalized);
 }
 
-export const isValidAddress = (
-    address: string,
-    currency?: Currency,
-    network?: NetworkEnvironment,
-): boolean =>
-    validateAddress(address, currency) ||
-    (currency?.symbol !== 'bch' && BTCValidator.isValidAddress(address, currency, network));
+export const isAddressValid = (address: string, _symbol: NetworkSymbol): boolean =>
+    validateAddress(address);
 
-export const getAddressType = (
-    address: string,
-    currency?: Currency,
-    network?: NetworkEnvironment,
-) => {
-    const resolvedNetwork = network || DEFAULT_NETWORK;
-    if (isValidAddress(address, currency, resolvedNetwork)) {
+export const getAddressType = (address: string, symbol: NetworkSymbol) => {
+    if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
 
     return undefined;
+};
+
+const getSupportedCoins = (): NetworkSymbol[] => ['bch'];
+
+export const bchValidator: AddressValidator = {
+    isAddressValid,
+    getAddressType,
+    getSupportedCoins,
 };

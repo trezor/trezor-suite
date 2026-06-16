@@ -12,14 +12,18 @@ import {
 
 import { type DeviceRootState, selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbolExtended, type NetworkType } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbolExtended,
+    type NetworkType,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccounts,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
-import { getCurrencies } from '@trezor/address-validator';
+import { getSupportedCoins } from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 import { unique } from '@trezor/utils';
 
@@ -59,6 +63,8 @@ import {
 } from '../utils/infoUtils';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
+
+const supportedAddressValidatorSymbols = new Set(getSupportedCoins());
 
 type SelectedAccountRootState = {
     wallet: {
@@ -475,8 +481,6 @@ const getFilteredCryptoIds = (
         return [];
     }
 
-    const supportedAddressValidatorSymbols = new Set(getCurrencies().map(c => c.symbol));
-
     const uniqueSupportedCryptoIds = unique(supportedCryptoIds);
 
     return uniqueSupportedCryptoIds
@@ -488,7 +492,11 @@ const getFilteredCryptoIds = (
                 cryptoIdToNetwork(prodCryptoId)?.symbol ??
                 getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
 
-            return nativeCoinSymbol && supportedAddressValidatorSymbols.has(nativeCoinSymbol);
+            return (
+                nativeCoinSymbol !== undefined &&
+                isNetworkSymbol(nativeCoinSymbol) &&
+                supportedAddressValidatorSymbols.has(nativeCoinSymbol)
+            );
         });
 };
 
