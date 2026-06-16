@@ -8,6 +8,7 @@
     "sideEffects": false,
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest",
         "lint": "yarn lint:js && yarn lint:styles",
         "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "yarn g:tsc --build tsconfig.json",

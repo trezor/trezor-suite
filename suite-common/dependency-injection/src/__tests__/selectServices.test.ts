@@ -15,7 +15,7 @@ const selectADep = (currentServices: any) => ({
 });
 
 const selectBDep = (currentServices: any) => ({
-    b: currentServices.suiteSync.b,
+    b: currentServices.b,
 });
 
 describe(selectServices.name, () => {

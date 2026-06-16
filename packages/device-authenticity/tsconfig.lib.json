@@ -3,7 +3,6 @@
     "include": ["./src"],
     "compilerOptions": { "outDir": "./lib" },
     "references": [
-        { "path": "../crypto-utils" },
         { "path": "../protobuf" },
         { "path": "../utils" }
     ]

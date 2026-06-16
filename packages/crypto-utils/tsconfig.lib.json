@@ -2,5 +2,5 @@
     "extends": "../../tsconfig.lib.json",
     "include": ["./src"],
     "compilerOptions": { "outDir": "./lib" },
-    "references": []
+    "references": [{ "path": "../type-utils" }]
 }
