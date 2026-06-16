@@ -84,6 +84,7 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                     });
                 });
             }
+            await tradingPage.quotes.waitForSync();
             await tradingPage.fees.switchToCustom();
             await tradingPage.fees.customInput.fill(customFeeRate.toString());
 

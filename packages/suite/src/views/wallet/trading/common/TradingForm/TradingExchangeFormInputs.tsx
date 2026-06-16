@@ -11,14 +11,17 @@ import {
     type TradingExchangeType,
     getDisplayComposedLevels,
     selectTradingExchangeBuyCryptoIds,
+    selectTradingExchangeQuotes,
+    selectTradingExchangeSelectedQuote,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -47,6 +50,10 @@ export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
+    const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
+    const quotes = useSelector(selectTradingExchangeQuotes);
+    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
 
     const {
         feeInfo,
@@ -57,7 +64,6 @@ export const TradingExchangeFormInputs = () => {
         shouldSendInSats,
         showReserveBanner,
         resetSelectedOffer,
-        selectedQuote,
         setAmountLimits,
     } = context;
 
@@ -88,7 +94,10 @@ export const TradingExchangeFormInputs = () => {
     );
     const outputAmount =
         shouldSendInSats && output?.amount
-            ? convertAmountSubunitsToUnits(output.amount, sendAssetDecimals)
+            ? subunitsToUnits({
+                  value: asAmountSubunit(new BigNumber(output.amount)),
+                  decimals: sendAssetDecimals,
+              }).toString()
             : output?.amount;
 
     const dispatch = useDispatch();
@@ -120,9 +129,6 @@ export const TradingExchangeFormInputs = () => {
         },
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
-
-    const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
-    const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
 
     return (
         <Column gap={20}>
@@ -183,12 +189,14 @@ export const TradingExchangeFormInputs = () => {
             </TradingFormCard>
             <TradingFormCard>
                 {receiveCryptoSelect && !isLoading && <TradingReceiveAddress />}
-                <TradingFormFees
-                    feeInfo={feeInfo}
-                    account={account}
-                    composedLevels={displayComposedLevels}
-                    changeFeeLevel={changeFeeLevel}
-                />
+                {!!quotes.length && (
+                    <TradingFormFees
+                        feeInfo={feeInfo}
+                        account={account}
+                        composedLevels={displayComposedLevels}
+                        changeFeeLevel={changeFeeLevel}
+                    />
+                )}
                 <TradingSelectedOfferProvider />
             </TradingFormCard>
         </Column>
