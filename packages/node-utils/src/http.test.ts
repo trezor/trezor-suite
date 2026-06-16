@@ -654,6 +654,63 @@ describe('HttpServer', () => {
         }
     });
 
+    // The 'other error' branch used to return instead of resolve(), so start() hung.
+    test('start() resolves with "other error" on a non-port server error', async () => {
+        const underlying = (server as any).server;
+        // Emit a non-port error (neither EADDRINUSE nor EACCES) while start() is pending.
+        jest.spyOn(underlying, 'listen').mockImplementation(() => {
+            const error = Object.assign(new Error('synthetic'), { code: 'EOTHER' });
+            underlying.emit('error', error);
+
+            return underlying;
+        });
+
+        await expect(server.start()).resolves.toEqual({
+            success: false,
+            error: 'other error',
+            message: 'Start error code: EOTHER',
+        });
+    });
+
+    // The port-fallback retry must settle the original start() promise.
+    test('start() resolves via the port-fallback retry when the first port is occupied', async () => {
+        const [freePort1, freePort2] = await getFreePort(2);
+
+        const blocker = new HttpServer<Events>({ logger: muteLogger, port: freePort1 ?? 0 });
+        await blocker.start();
+
+        server = new HttpServer<Events>({
+            logger: muteLogger,
+            ports: [freePort1 ?? 0, freePort2 ?? 0],
+        });
+
+        const result = await server.start();
+        expect(result).toMatchObject({ success: true });
+        expect(server.getServerAddress()).toMatchObject({ port: freePort2 });
+
+        await blocker.stop();
+    });
+
+    // Consumers await start() without try/catch, so exhausted fallbacks must resolve, not reject.
+    test('start() resolves (never rejects) when every fallback port is occupied', async () => {
+        const [freePort1, freePort2] = await getFreePort(2);
+
+        const blocker1 = new HttpServer<Events>({ logger: muteLogger, port: freePort1 ?? 0 });
+        const blocker2 = new HttpServer<Events>({ logger: muteLogger, port: freePort2 ?? 0 });
+        await blocker1.start();
+        await blocker2.start();
+
+        server = new HttpServer<Events>({
+            logger: muteLogger,
+            ports: [freePort1 ?? 0, freePort2 ?? 0],
+        });
+
+        const result = await server.start();
+        expect(result).toMatchObject({ success: false });
+
+        await Promise.all([blocker1.stop(), blocker2.stop()]);
+    });
+
     describe('route matching logic (express.js-like)', () => {
         test('unregistered route does not match any registered route', async () => {
             const handler1 = jest.fn((_request, response) => {
