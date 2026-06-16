@@ -8,7 +8,8 @@ description: Review a feature-plan GitHub issue through multiple independent len
 Take a feature-plan issue and move it toward `conveyor/plan:ready-to-implement` while
 spending as little human attention as possible. This is the second step of the
 [planning workflow](../README.md); read that README for the data model and
-lifecycle before running.
+lifecycle, and the shared [conventions](../CONVENTIONS.md) for the house rules,
+before running.
 
 Core idea: **agents do the full analysis; only genuine judgement calls reach a
 human, batched.** Everything else is auto-decided and logged.
@@ -263,21 +264,14 @@ _Last updated by: conveyor-2-plan-review (<interactive|autonomous>)_
 
 ## Rules
 
-- **English only on GitHub.** Everything you write to GitHub — the consolidated
-  issue body, status comment, lens thread comments — is in English, even when the
-  developer chats with you in another language.
-- **No hard-wrapping on GitHub.** Write the consolidated issue body, the status
-  comment, and lens thread comments as **one line per paragraph and per bullet** —
-  never insert manual line breaks at ~80 characters; let GitHub soft-wrap. Hard
-  breaks belong only inside code blocks. (These SKILL.md files are hard-wrapped for
-  editing — do **not** copy that wrapping into the text you produce.)
+- Follow the shared [conventions](../CONVENTIONS.md) — **English only**, **no
+  hard-wrapping**, **async checkboxes** (read ticks first, never re-ask),
+  **add-before-remove + reconciliation / re-fetch before write**, the **security
+  carve-out**, and **team handles without `@`** all apply here. Plus the rules
+  specific to plan review:
 - Always do the full analysis, even in autonomous mode. Mode changes only where
   the gate ends up (terminal vs. GitHub), never the depth.
 - Batch human interaction. Never one question per turn.
-- Every decision you surface is a **checkbox list** of options + a recommendation,
-  with one `✅ Done` box — the human ticks a box (async, in the GitHub UI), never
-  invents the answer. The Done box is the signal that the answers are final; a
-  drain run resolves from the ticked state.
 - The issue body is the single source of truth — reconsolidate it after every
   resolution.
 - Read real code for the architecture lens; no speculative findings.
@@ -285,12 +279,5 @@ _Last updated by: conveyor-2-plan-review (<interactive|autonomous>)_
   one), any unresolved open decision, a missing/empty acceptance-criteria section,
   or **no assigned reviewer** remains. Every plan needs exactly one reviewer.
 - The `## Team` block: Product owner = issue creator (kept as-is); assign exactly
-  one reviewer (required); eng owner + tester are optional, by size. Store handles
-  without a leading `@` (no notification until each person's downstream gate).
-- Never classify a signing/key/persistence/privacy edit as mechanical; always
-  surface security/privacy findings regardless of confidence.
-- Re-fetch the issue and compare against the body hash / labels you loaded before
-  any label or body write; abort and reconcile if it changed — never blindly
-  restore a remembered label.
-- Add the new lifecycle label before removing the old one on every transition.
+  one reviewer (required); eng owner + tester are optional, by size.
 - Lenses run with fresh, independent context — do not let them share findings.

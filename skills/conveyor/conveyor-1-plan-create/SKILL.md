@@ -7,7 +7,8 @@ description: Turn a feature idea into a well-formed GitHub issue (a feature plan
 
 Guide one developer from a raw idea to a `conveyor/plan:draft` GitHub issue that is good
 enough to hand to `conveyor-2-plan-review`. This is the first step of the
-[planning workflow](../README.md).
+[planning workflow](../README.md); follow the shared
+[conventions](../CONVENTIONS.md) for all GitHub writing.
 
 You are an interviewer first and a scribe second. A weak plan in means three
 review cycles out; a sharp plan in means the review just confirms it. Spend the
@@ -167,15 +168,9 @@ can run `conveyor-2-plan-review` on it (`gh issue list --label conveyor/plan:dra
 
 ## Rules
 
-- **English only on GitHub.** Everything you write to GitHub — issue title and
-  body, status/thread comments, labels — is in English, even when the developer
-  chats with you in another language. (The interview itself can be in their
-  language; the artifact is English.)
-- **No hard-wrapping on GitHub.** Write the issue body and comments as **one line
-  per paragraph and per bullet** — never insert manual line breaks at ~80
-  characters; let GitHub soft-wrap. Hard breaks belong only inside code blocks.
-  (These SKILL.md files are hard-wrapped for editing — do **not** copy that
-  wrapping into the text you produce.)
+- Follow the shared [conventions](../CONVENTIONS.md) — **English only** and **no
+  hard-wrapping** apply here. (The interview may be in the developer's language;
+  the issue it writes is English.) Plus the rules specific to plan creation:
 - One question per turn during the interview. Do **not** batch the forcing
   questions — the friction is the point.
 - Search for an existing issue/PR before creating anything; if a match exists,

@@ -295,6 +295,12 @@ are optional decisions.
 
 ## The skills
 
+All four follow the shared [house rules](CONVENTIONS.md) — English-only and
+no-hard-wrap GitHub writing, advisory-lock / `--force-with-lease`,
+add-before-remove + reconciliation, async checkboxes, the security carve-out, and
+team handles without `@` — stated once in `CONVENTIONS.md` so a cross-cutting rule
+is a one-file change. Each skill adds only its station-specific rules.
+
 ### `conveyor-1-plan-create`
 Interactive. Guides one developer through turning an idea into a well-formed
 plan using forcing questions (one at a time, with pushback on vague answers),

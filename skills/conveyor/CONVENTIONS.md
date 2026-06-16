@@ -1,0 +1,74 @@
+# Conveyor — shared conventions
+
+Every `conveyor-*` skill follows these house rules. They live here once so a new
+cross-cutting rule is a **one-file change**; each SKILL.md references this file and
+adds only its station-specific rules. The operational *how* stays in each skill's
+process steps — this file is the canonical *what/always*.
+
+## Writing to GitHub
+
+- **English only.** Everything written to GitHub — issue title/body, PR
+  description, status / thread / inline comments, commit messages, labels — is in
+  English, even when the developer chats in another language. (An interactive
+  interview may be in the developer's language; the artifact it writes is English.)
+- **No hard-wrapping.** Write GitHub prose as **one line per paragraph and per
+  bullet** — never insert manual line breaks at ~80 characters; let GitHub
+  soft-wrap. Hard breaks belong only inside code blocks. (These SKILL.md files are
+  hard-wrapped for editing convenience — do **not** copy that wrapping into the
+  text you produce.)
+
+## Locking & pushes
+
+- The `*-in-progress` label is **advisory** — two agents can race the
+  read-then-write (no compare-and-swap). The **real lock is the branch on
+  `origin`** plus `git push --force-with-lease`.
+- Before any (force-)push: `git fetch origin <branch>`; if the tip advanced with a
+  commit you did **not** author, STOP — a human or a repo bot (e.g. `bot-rebase.yml`)
+  pushed; never clobber it. A non-fast-forward / lease rejection means you **lost
+  the claim** — stop and reconcile, do **not** retry the push.
+- Only ever force-push a branch you hold the lock on. Push to `origin` (the
+  upstream repo), **never a fork** — CI workflows fetch from the upstream branch.
+
+## Label transitions & reconciliation
+
+- **Add-before-remove:** always add the new lifecycle label **before** removing the
+  old, so a crash mid-transition leaves an extra findable label, never an invisible
+  orphan.
+- **Step-0 reconciliation (at claim):** if the issue/PR carries zero conveyor
+  lifecycle labels (orphan) or more than one, fix it first. Also cross-check the
+  single label against the status comment's `State:` line; if they disagree (a run
+  interrupted mid-handoff), re-derive the true state from the comment and align
+  both.
+- **Re-fetch before any exit write:** before writing labels/body on exit, re-read
+  and compare against what you loaded; if it changed, a human or another run edited
+  it — reconcile rather than blindly overwriting or restoring a remembered label.
+
+## Async decisions (checkboxes)
+
+- Whenever the belt parks for a human, surface the options as **GitHub task-list
+  checkboxes** in the status comment (one checkbox per option, with your
+  `✅ recommended`), under a single `- [ ] ✅ Done — agent, pick this up` box. The
+  human ticks in the GitHub web UI (laptop or phone, no agent running).
+- **Always read the status comment before asking the human anything.** If the Done
+  box is already ticked, this is a **drain** — resolve from the ticks: exactly one
+  box per item = the choice; none = the `✅ recommended` option; Done unticked =
+  still waiting; more than one = ambiguous, re-surface that item. Ticking alone
+  advances nothing — a drain run (re-running the **owning** skill, not the next
+  station) must read the boxes.
+- Two shapes are **bugs**: re-asking in chat for an answer the human already ticked
+  in GitHub, and a next-station skill refusing a ticked-but-not-drained item
+  instead of pointing at the drain.
+
+## Security carve-out
+
+- Never classify a **signing / key-handling / persistence / privacy** change as
+  "mechanical" — route it to taste or user-challenge so a human decides. Always
+  surface security/privacy findings **regardless of confidence** (they bypass the
+  noise gate, like a P1).
+
+## Team handles
+
+- Store team handles in the `## Team` block **without a leading `@`** — nobody is
+  notified up front. Each person is actually requested / `@`-mentioned only **at
+  their own gate** (eng owner when implementation stalls, reviewer at the
+  draft→ready flip, tester at the test station).

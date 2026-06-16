@@ -7,7 +7,8 @@ description: Run the agentic review station on a green draft PR (label conveyor/
 
 The agentic review station of the [workflow](../README.md): take a green draft PR
 that `conveyor-3-implement` handed off (`conveyor/review:queued`) and get it review-clean while
-it is still a draft, so the only thing left is a human's final look.
+it is still a draft, so the only thing left is a human's final look. Follow the
+shared [conventions](../CONVENTIONS.md) for the house rules.
 
 This skill never promotes the PR to "Ready for review" — that is strictly a
 human's signal (they verify the state, flip the draft, and find a second human to
@@ -283,41 +284,24 @@ _Last updated by: conveyor-4-review (<interactive|autonomous>)_
 
 ## Rules
 
-- **English only on GitHub.** Everything you write to GitHub — review status
-  comment, inline review comments, commit messages — is in English, even when the
-  developer chats with you in another language.
-- **No hard-wrapping on GitHub.** Write the review status comment and inline
-  comments as **one line per paragraph and per bullet** — never insert manual line
-  breaks at ~80 characters; let GitHub soft-wrap. Hard breaks belong only inside
-  code blocks. (These SKILL.md files are hard-wrapped for editing — do **not** copy
-  that wrapping into the text you produce.)
+- Follow the shared [conventions](../CONVENTIONS.md) — **English only**, **no
+  hard-wrapping**, **advisory lock = branch + `git push --force-with-lease`**
+  (fetch-and-abort), **add-before-remove + reconciliation**, **async checkboxes**
+  (read ticks first, never re-ask), and the **security carve-out** all apply here.
+  Plus the rules specific to review:
 - Never promote the PR to "Ready for review" — that is the human's signal.
 - Check splittability before the deep review; never auto-split — a split is a
   user-challenge, so propose it and let a human approve. Use a concrete bar
   (> ~800 lines OR > 15 files AND ≥ 2 independent symbol-disjoint concerns) and
   record a declined split so it is never re-proposed.
-- Every parked finding (and the split proposal) is a **checkbox list** of options +
-  a recommendation, under one `✅ Done` box — the human ticks a box (async, in the
-  GitHub UI), never invents the answer. A drain run (re-entered at
-  `conveyor/review:needs-human`) resolves from the ticked state once Done is ticked.
-- **Always read the status comment before asking the human anything.** If the Done
-  box is already ticked, drain from the ticks — never ask them to re-answer in chat
-  what they have already ticked in GitHub.
 - The issue is frozen once the PR exists; write everything to the PR.
 - Auto-fix only high-confidence, low-risk, behaviour-preserving findings; park
-  everything else. Never treat a signing / key-handling / persistence / privacy
-  finding as mechanical, and always surface security/privacy findings regardless
-  of confidence.
+  everything else.
 - Adversarial reviewers hunt bugs and breakage, not style — leave lint/format to
   CI. Always run the spec-fidelity reviewer too (frozen spec vs diff), at every
   triage size, to catch unimplemented scope / drift.
 - Scale review depth to the triage; never run a single light pass over a large or
   signing-sensitive diff.
-- The label is advisory; the branch is the real lock. Always `git fetch origin
-  <branch>` before any push and STOP if it advanced with a commit you did not
-  author; push with `--force-with-lease`; a lease rejection means you lost the
-  lock — reconcile, do not retry.
-- Add the new lifecycle label before removing the old one on every transition.
-- Respect `conveyor/review:in-progress` / `conveyor/review:needs-human` on other PRs, but treat an
-  `conveyor/review:in-progress` whose branch and status comment have gone stale as an
-  abandoned lock to reconcile and take over.
+- Respect `conveyor/review:*` locks on other PRs, but treat a
+  `conveyor/review:in-progress` whose branch and status comment have gone stale as
+  an abandoned lock to reconcile and take over.

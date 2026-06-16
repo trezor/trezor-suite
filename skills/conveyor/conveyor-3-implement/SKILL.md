@@ -8,7 +8,8 @@ description: Pick up a conveyor/plan:ready-to-implement GitHub issue, claim it w
 Take a `conveyor/plan:ready-to-implement` issue all the way to a green, up-to-date draft
 PR that is ready for the agentic review phase. This is the third step of the
 [planning workflow](../README.md); read that README for the data model,
-lifecycle, and token-pooling model before running.
+lifecycle, and token-pooling model, and the shared [conventions](../CONVENTIONS.md)
+for the house rules, before running.
 
 **The draft's goal is to prove the feature works — a proof of concept.** Build the
 complete feature from the plan and prove it end to end: CI must build a dev
@@ -227,25 +228,12 @@ Then:
 
 ## Rules
 
-- **English only on GitHub.** Everything you write to GitHub — PR description,
-  comments, commit messages — is in English, even when the developer chats with
-  you in another language.
-- **No hard-wrapping on GitHub.** Write the PR description and comments as **one
-  line per paragraph and per bullet** — never insert manual line breaks at ~80
-  characters; let GitHub soft-wrap. Hard breaks belong only inside code blocks.
-  (These SKILL.md files are hard-wrapped for editing — do **not** copy that
-  wrapping into the text you produce.)
-- The label lock is advisory; the **branch on `origin` is the real lock**. Hold
-  it before touching the branch; only ever force-push a branch you have locked,
-  and always with `git push --force-with-lease`. Respect `conveyor/impl:in-progress` /
-  `conveyor/impl:needs-human` on other issues.
-- **Every label transition is add-before-remove** (extra label on a crash, never
-  zero).
-- Before any force-push, `git fetch origin <branch>`; abort if the tip advanced
-  with a commit you did not author. A non-fast-forward / lease rejection = lost
-  claim → stop, do not retry.
-- Push to `origin` (the upstream repo), never a fork — CI workflows fetch from
-  the upstream branch.
+- Follow the shared [conventions](../CONVENTIONS.md) — **English only**, **no
+  hard-wrapping**, **advisory lock = branch + `git push --force-with-lease`**
+  (fetch-and-abort, push to `origin` not a fork), **add-before-remove +
+  reconciliation**, and **async checkboxes** (read ticks first, never re-ask) all
+  apply here. Plus the rules specific to implementation:
+- Respect `conveyor/impl:in-progress` / `conveyor/impl:needs-human` on other issues.
 - Push frequently so the work is resumable.
 - Type-check locally after every rebase before force-pushing.
 - Green = green, minus documented broken-in-develop gates. **Infra / transient
