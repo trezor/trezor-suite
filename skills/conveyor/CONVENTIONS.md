@@ -89,9 +89,11 @@ any decision:
   describing the friction and a suggested fix. Do **not** change the skills mid-run
   for these.
 
-The **conveyor home repo** is wherever the skills are tracked and improved — **not
-the product repo you are working in** (keep product repos free of workflow-tooling
-issues). For now that home is the testing sandbox; the team sets it once.
+The **conveyor home repo** — where the skills live and `conveyor:meta` issues go —
+is **`trezor/trezor-suite`** (the skills are tracked there). File `conveyor:meta`
+issues there even when you are working in a different product repo, so the
+workflow-improvement signal lands with the skills rather than scattering across
+product repos.
 
 A `conveyor:meta` issue is just a friction-log entry; the triage step
 (`conveyor-improve`, when built) drains them into **gated** skill-change PRs. A
