@@ -7,7 +7,8 @@ import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
-describe('Import Bitcoin network accounts. [@noDevice]', () => {
+// Skipping due to emulator crash
+describe.skip('Import Bitcoin network accounts. [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onTabBar.navigateToMyAssets();
