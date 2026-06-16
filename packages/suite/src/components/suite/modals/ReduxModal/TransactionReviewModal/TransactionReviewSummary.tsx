@@ -1,10 +1,16 @@
+import { useEffect, useState } from 'react';
+
 import { AccountLabel } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
-import { selectRawNetworkFeeInfo, selectResolvedEthereumNonce } from '@suite-common/wallet-core';
+import {
+    ethereumGetCurrentNonceThunk,
+    selectRawNetworkFeeInfo,
+    selectResolvedEthereumNonce,
+} from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
@@ -80,10 +86,49 @@ export const TransactionReviewSummary = ({
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
 
     const isEthereumNetworkType = networkType === 'ethereum';
-    // The signing thunk resolves the nonce (backend-checked, next-available) and stores it in send
-    // state. We read that exact value here instead of resolving it again, so the displayed nonce
-    // always matches the one being signed and we avoid a TrezorConnect call racing the device sign.
-    const ethereumNonce = useSelector(selectResolvedEthereumNonce);
+    const dispatch = useDispatch();
+    const precomposedFormEthereumNonce = useSelector(
+        state => state.wallet.send.precomposedForm?.ethereumNonce,
+    );
+    // In the normal flow the signing thunk stores this before the device button-request fires, so
+    // the modal reads the already-resolved value. The local fallback below covers edge cases where
+    // the modal renders before the thunk has stored it (e.g. in tests, or slow device response).
+    const storedEthereumNonce = useSelector(selectResolvedEthereumNonce);
+    const [resolvedNonce, setResolvedNonce] = useState<string>();
+    const ethereumNonce = storedEthereumNonce ?? resolvedNonce;
+
+    useEffect(() => {
+        // Skip if already resolved (production path: signing thunk stored it) or non-EVM.
+        if (!isEthereumNetworkType || storedEthereumNonce !== undefined) return;
+
+        if (precomposedFormEthereumNonce) {
+            setResolvedNonce(precomposedFormEthereumNonce);
+
+            return;
+        }
+
+        const promise = dispatch(
+            ethereumGetCurrentNonceThunk({
+                selectedAccount: account as Account & { networkType: 'ethereum' },
+                fetchConfirmedNonce: true,
+            }),
+        );
+
+        void promise
+            .unwrap()
+            .then(({ nonce }) => setResolvedNonce(nonce))
+            .catch(() => {});
+
+        return () => {
+            promise.abort();
+        };
+    }, [
+        account,
+        dispatch,
+        isEthereumNetworkType,
+        precomposedFormEthereumNonce,
+        storedEthereumNonce,
+    ]);
 
     return (
         <>
