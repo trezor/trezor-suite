@@ -7,6 +7,7 @@ import {
     SLIPPAGE_MAX,
     SLIPPAGE_MIN,
     SLIPPAGE_PRESETS,
+    type SlippageFormValues,
     getSlippageFormValidationSchema,
     selectTradingMaxSlippagePercentage,
     tradingSettingsActions,
@@ -23,7 +24,6 @@ import {
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { type MaxSlippageFormValues } from '@suite-native/trading-types';
 
 import { SlippageSummary } from './SlippageSummary';
 
@@ -42,7 +42,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
     const validationSchema = useMemo(
         () =>
             yup.object({
-                maxSlippage: getSlippageFormValidationSchema({
+                slippage: getSlippageFormValidationSchema({
                     required: translate(
                         'moduleTrading.advancedSettings.slippage.validation.required',
                     ),
@@ -58,8 +58,8 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
         [translate],
     );
 
-    const form = useForm<MaxSlippageFormValues>({
-        defaultValues: { maxSlippage: defaultMaxSlippage },
+    const form = useForm<SlippageFormValues>({
+        defaultValues: { slippage: defaultMaxSlippage },
         validation: validationSchema,
     });
 
@@ -78,8 +78,8 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
     }, [isVisible, openModal]);
 
     const handleConfirm = useCallback(
-        ({ maxSlippage }: MaxSlippageFormValues) => {
-            dispatch(tradingSettingsActions.setMaxSlippagePercentage(String(maxSlippage)));
+        ({ slippage }: SlippageFormValues) => {
+            dispatch(tradingSettingsActions.setMaxSlippagePercentage(String(slippage)));
             closeModal();
             onClose();
             reset();
@@ -95,13 +95,13 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
 
     const handlePresetPress = useCallback(
         (preset: string) => {
-            setValue('maxSlippage', preset);
-            void trigger('maxSlippage');
+            setValue('slippage', preset);
+            void trigger('slippage');
         },
         [setValue, trigger],
     );
 
-    const forceValidation = useCallback(() => trigger('maxSlippage'), [trigger]);
+    const forceValidation = useCallback(() => trigger('slippage'), [trigger]);
 
     return (
         <BottomSheetModal
@@ -116,7 +116,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
                     </Text>
                     <VStack spacing="sp8">
                         <TextInputField
-                            name="maxSlippage"
+                            name="slippage"
                             rightIcon={<Text>%</Text>}
                             keyboardType="numeric"
                             valueTransformer={decimalTransformer}
