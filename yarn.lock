@@ -14260,6 +14260,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/trading-slippage@workspace:*, @suite-native/trading-slippage@workspace:suite-native/trading-slippage":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-slippage@workspace:suite-native/trading-slippage"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/trading": "workspace:*"
+    "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
+    "@suite-native/trading-atoms": "workspace:*"
+    "@suite-native/trading-fixtures": "workspace:*"
+    "@suite-native/trading-state": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/invity-api": "npm:^1.1.15"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/trading-state@workspace:*, @suite-native/trading-state@workspace:suite-native/trading-state":
   version: 0.0.0-use.local
   resolution: "@suite-native/trading-state@workspace:suite-native/trading-state"
