@@ -10278,6 +10278,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_CLAIM_ADDRESS',
         defaultMessage: 'Claim address',
     },
+    TR_EARN_TRON_WITHDRAW_COMPLETE: {
+        id: 'TR_EARN_TRON_WITHDRAW_COMPLETE',
+        defaultMessage: 'Withdrawal complete',
+    },
+    TR_EARN_TRON_WITHDRAW_DESCRIPTION: {
+        id: 'TR_EARN_TRON_WITHDRAW_DESCRIPTION',
+        defaultMessage: 'The withdrawn amount was added to your balance.',
+    },
+    TR_EARN_TRON_WITHDRAWN: {
+        id: 'TR_EARN_TRON_WITHDRAWN',
+        defaultMessage: 'Withdrawn',
+    },
     TR_EARN_TRON_UNSTAKE_TITLE: {
         id: 'TR_EARN_TRON_UNSTAKE_TITLE',
         defaultMessage: 'Unstake',
