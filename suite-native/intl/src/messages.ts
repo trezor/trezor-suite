@@ -3407,7 +3407,7 @@ export const messages = {
             slippage: {
                 title: 'Maximum slippage',
                 description:
-                    'Limit how much the rate can change before the transaction fails. Network fees always apply.',
+                    "Set the maximum difference you're willing to accept. Higher means more likely to succeed, while lower may fail but protects your price.",
                 confirm: 'Confirm custom slippage',
                 inputLabel: 'Slippage',
             },

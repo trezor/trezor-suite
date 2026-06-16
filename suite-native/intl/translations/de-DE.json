@@ -1098,7 +1098,7 @@
     "qrCode.deniedWarning.title": "Kamerazugriff verweigert.",
     "qrCode.deniedWarning.description": "Kamera-Zugriff in den Geräteeinstellungen aktivieren.",
     "qrCode.deniedWarning.grantPermissionButton": "Berechtigung erteilen",
-    "graph.retrievingData": "Diagram wird geladen...",
+    "graph.retrievingData": "Diagramm wird geladen...",
     "graph.errorMessage": "Beim Laden des Graphen ist ein Problem aufgetreten: ",
     "graph.tryAgain": "Erneut versuchen",
     "graph.retrievengTakesLongerThanExpected": "Das Abrufen der Kontostände dauert länger als üblich. \n Möglicherweise ist die Internetverbindung instabil.",
