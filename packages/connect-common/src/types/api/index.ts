@@ -3,9 +3,6 @@ import { Type } from '@trezor/schema-utils';
 
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { tronComposeTransaction } from './tronComposeTransaction';
-import type { tronGetAddress } from './tronGetAddress';
-import type { tronSignTransaction } from './tronSignTransaction';
 
 import { TrezorConnectAccount } from './account';
 import { TrezorConnectBitcoin } from './bitcoin';
@@ -21,6 +18,7 @@ import { TrezorConnectRipple } from './ripple';
 import { TrezorConnectSolana } from './solana';
 import { TrezorConnectStellar } from './stellar';
 import { TrezorConnectTezos } from './tezos';
+import { TrezorConnectTron } from './tron';
 
 export {
     TrezorConnectAccount,
@@ -37,19 +35,8 @@ export {
     TrezorConnectSolana,
     TrezorConnectStellar,
     TrezorConnectTezos,
+    TrezorConnectTron,
 };
-
-// Tron-specific operations
-export const TrezorConnectTron = Type.Object({
-    // https://connect.trezor.io/9/methods/tron/tronGetAddress/
-    tronGetAddress: Type.Unsafe<typeof tronGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/tron/tronSignTransaction/
-    tronSignTransaction: Type.Unsafe<typeof tronSignTransaction>(),
-
-    tronComposeTransaction: Type.Unsafe<typeof tronComposeTransaction>(),
-});
-export type TrezorConnectTron = Static<typeof TrezorConnectTron>;
 
 // Nostr protocol operations
 export const TrezorConnectNostr = Type.Object({
