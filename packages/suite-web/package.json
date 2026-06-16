@@ -25,8 +25,8 @@
         "@trezor/suite": "workspace:*",
         "core-js": "^3.49.0",
         "history": "^5.3.0",
-        "react": "19.2.4",
-        "react-dom": "19.2.4",
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

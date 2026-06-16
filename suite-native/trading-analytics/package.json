@@ -19,7 +19,7 @@
         "@suite-common/trading": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

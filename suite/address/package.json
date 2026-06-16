@@ -29,7 +29,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "styled-components": "^6.3.9"
