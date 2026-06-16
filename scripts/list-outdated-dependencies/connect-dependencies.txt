@@ -72,6 +72,7 @@ tailwindcss
 tiny-worker
 ts-mixer
 ts-node
+undici
 usb
 version-bump-prompt
 ws
