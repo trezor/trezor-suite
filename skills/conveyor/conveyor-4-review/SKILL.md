@@ -283,6 +283,11 @@ _Last updated by: conveyor-4-review (<interactive|autonomous>)_
 - **English only on GitHub.** Everything you write to GitHub — review status
   comment, inline review comments, commit messages — is in English, even when the
   developer chats with you in another language.
+- **No hard-wrapping on GitHub.** Write the review status comment and inline
+  comments as **one line per paragraph and per bullet** — never insert manual line
+  breaks at ~80 characters; let GitHub soft-wrap. Hard breaks belong only inside
+  code blocks. (These SKILL.md files are hard-wrapped for editing — do **not** copy
+  that wrapping into the text you produce.)
 - Never promote the PR to "Ready for review" — that is the human's signal.
 - Check splittability before the deep review; never auto-split — a split is a
   user-challenge, so propose it and let a human approve. Use a concrete bar

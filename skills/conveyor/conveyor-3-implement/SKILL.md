@@ -223,6 +223,11 @@ Then:
 - **English only on GitHub.** Everything you write to GitHub — PR description,
   comments, commit messages — is in English, even when the developer chats with
   you in another language.
+- **No hard-wrapping on GitHub.** Write the PR description and comments as **one
+  line per paragraph and per bullet** — never insert manual line breaks at ~80
+  characters; let GitHub soft-wrap. Hard breaks belong only inside code blocks.
+  (These SKILL.md files are hard-wrapped for editing — do **not** copy that
+  wrapping into the text you produce.)
 - The label lock is advisory; the **branch on `origin` is the real lock**. Hold
   it before touching the branch; only ever force-push a branch you have locked,
   and always with `git push --force-with-lease`. Respect `conveyor/impl:in-progress` /
