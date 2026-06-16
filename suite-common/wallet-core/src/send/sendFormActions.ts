@@ -43,6 +43,15 @@ const storeSignedTransaction = createAction(
     }),
 );
 
+// The EVM nonce resolved at signing time (backend-checked, next-available). Stored so the
+// transaction review modal can display the exact nonce being signed without resolving it again.
+const storeResolvedEthereumNonce = createAction(
+    `${SEND_MODULE_PREFIX}/store-resolved-ethereum-nonce`,
+    (payload: string) => ({
+        payload,
+    }),
+);
+
 const discardTransaction = createAction(`${SEND_MODULE_PREFIX}/discard-transaction`);
 
 const clearSignedTransactionData = createAction(`${SEND_MODULE_PREFIX}/clear-signed-transaction`);
@@ -58,6 +67,7 @@ export const sendFormActions = {
     removeDraft,
     storePrecomposedTransaction,
     storeSignedTransaction,
+    storeResolvedEthereumNonce,
     discardTransaction,
     clearSignedTransactionData,
     sendRaw,
