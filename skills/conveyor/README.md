@@ -141,6 +141,7 @@ PR                  ▼
                     │
           ┌─too big ──────────▶ split proposal ──▶ slices re-enter at conveyor-1-plan-create ↺
           ├─clean ────────────▶ review:passed ──▶ human flips draft→ready, reviews, MERGES
+          │                     review:passed ──(rebase/push moves HEAD past Reviewed-at SHA)──▶ review:queued ↺ (stale, re-review)
           └─findings parked ──▶ review:needs-human (hands off)
                                          │  (human merge)
                                          ▼  conveyor-5-land: watch post-merge develop CI
