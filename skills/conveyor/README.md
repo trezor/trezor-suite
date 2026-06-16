@@ -483,12 +483,25 @@ human's job is to tick,
 - **Body is truth.** After every resolution, the agent reconsolidates the issue
   body so the latest plan is always the body.
 
+## Distribution
+
+The skills' home is **`trezor/trezor-suite`**, path `skills/conveyor/` — the same
+repo the team works in and where `conveyor:meta` improvement issues land. A worker
+makes them invocable on their machine with **[`conveyor-sync`](conveyor-sync/SKILL.md)**:
+it resolves the latest `skills/conveyor` commit on the home repo, atomically
+installs each `conveyor-*` skill (plus the shared `CONVENTIONS.md` / `README.md`,
+which the flattened install needs alongside) with move-to-`.bak` + restore-on-
+failure, and records the synced SHA. Skill **edits** never happen through sync —
+they are human-gated PRs to the home repo (per the feedback loop); `conveyor-sync`
+only distributes approved skills. A schema change (a label rename, a status-comment
+format) ships an idempotent script under `skills/conveyor/migrations/` that
+`conveyor-sync` runs to sweep the board and rewrite in-flight items — the on-board
+analogue of a database migration, so the workflow can evolve while teammates already
+have live work on the belt. Each station also does a throttled update-check at start
+and nudges `/conveyor-sync` when behind (see [CONVENTIONS.md](CONVENTIONS.md#staying-current)).
+
 ## Open questions
 
-- **Where do these skills ultimately live?** This repo is a good place to attract
-  the team's attention, but committing internal workflow tooling to upstream
-  `trezor/trezor-suite` long-term is questionable. A dedicated team-tooling repo
-  is a likely home.
 - **Label namespace.** `conveyor/plan:*` / `conveyor/impl:*` / `conveyor/review:*` proposed; bikeshed welcome.
 - **Routine cadence & guardrails** for overnight autonomous runs.
 - **Lock staleness window** — how long without a push before `conveyor/impl:in-progress`
