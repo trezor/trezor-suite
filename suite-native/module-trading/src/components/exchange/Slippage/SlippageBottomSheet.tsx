@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import type { ExchangeTrade } from 'invity-api';
+
 import {
     SLIPPAGE_MAX,
     SLIPPAGE_MIN,
@@ -23,12 +25,15 @@ import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type MaxSlippageFormValues } from '@suite-native/trading-types';
 
+import { SlippageSummary } from './SlippageSummary';
+
 type SlippageBottomSheetProps = {
     isVisible: boolean;
     onClose: () => void;
+    quote?: ExchangeTrade;
 };
 
-export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetProps) => {
+export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBottomSheetProps) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -109,31 +114,34 @@ export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetP
                     <Text>
                         <Translation id="moduleTrading.advancedSettings.slippage.description" />
                     </Text>
-                    <TextInputField
-                        name="maxSlippage"
-                        rightIcon={<Text>%</Text>}
-                        keyboardType="numeric"
-                        valueTransformer={decimalTransformer}
-                        onChangeText={forceValidation}
-                        asBottomSheetInput
-                        accessibilityLabel={translate(
-                            'moduleTrading.advancedSettings.slippage.inputLabel',
-                        )}
-                    />
-                    <HStack spacing="sp8">
-                        {SLIPPAGE_PRESETS.map(preset => (
-                            <Button
-                                key={preset}
-                                intent="neutral"
-                                priority="secondary"
-                                size="small"
-                                flex={1}
-                                onPress={() => handlePresetPress(preset)}
-                            >
-                                {preset}%
-                            </Button>
-                        ))}
-                    </HStack>
+                    <VStack spacing="sp8">
+                        <TextInputField
+                            name="maxSlippage"
+                            rightIcon={<Text>%</Text>}
+                            keyboardType="numeric"
+                            valueTransformer={decimalTransformer}
+                            onChangeText={forceValidation}
+                            asBottomSheetInput
+                            accessibilityLabel={translate(
+                                'moduleTrading.advancedSettings.slippage.inputLabel',
+                            )}
+                        />
+                        <HStack spacing="sp4">
+                            {SLIPPAGE_PRESETS.map(preset => (
+                                <Button
+                                    key={preset}
+                                    intent="neutral"
+                                    priority="secondary"
+                                    size="medium"
+                                    flex={1}
+                                    onPress={() => handlePresetPress(preset)}
+                                >
+                                    {preset}%
+                                </Button>
+                            ))}
+                        </HStack>
+                    </VStack>
+                    {quote && <SlippageSummary quote={quote} />}
                     <VStack spacing="sp12">
                         <Button
                             intent="brand"

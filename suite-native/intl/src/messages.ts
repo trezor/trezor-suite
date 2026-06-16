@@ -3474,6 +3474,11 @@ export const messages = {
                     notNumber: 'Slippage must be a number.',
                     outOfRange: 'Slippage must be between {min}% and {max}%.',
                 },
+                summary: {
+                    offered: 'Swap offer',
+                    deduction: 'Maximum slippage',
+                    minimum: 'Minimum received',
+                },
             },
         },
         browser: {
