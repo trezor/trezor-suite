@@ -6,10 +6,6 @@ import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { solanaComposeTransaction } from './solanaComposeTransaction';
-import type { solanaGetAddress } from './solanaGetAddress';
-import type { solanaGetPublicKey } from './solanaGetPublicKey';
-import type { solanaSignTransaction } from './solanaSignTransaction';
 import type { stellarGetAddress } from './stellarGetAddress';
 import type { stellarSignTransaction } from './stellarSignTransaction';
 import type { tezosGetAddress } from './tezosGetAddress';
@@ -29,6 +25,7 @@ import { TrezorConnectEthereum } from './ethereum';
 import { TrezorConnectManagement } from './management';
 import { TrezorConnectMonero } from './monero';
 import { TrezorConnectRipple } from './ripple';
+import { TrezorConnectSolana } from './solana';
 
 export {
     TrezorConnectAccount,
@@ -41,23 +38,8 @@ export {
     TrezorConnectManagement,
     TrezorConnectMonero,
     TrezorConnectRipple,
+    TrezorConnectSolana,
 };
-
-// Solana-specific operations
-export const TrezorConnectSolana = Type.Object({
-    // https://connect.trezor.io/9/methods/solana/solanaGetAddress/
-    solanaGetAddress: Type.Unsafe<typeof solanaGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/solana/solanaGetPublicKey/
-    solanaGetPublicKey: Type.Unsafe<typeof solanaGetPublicKey>(),
-
-    // https://connect.trezor.io/9/methods/solana/solanaSignTransaction/
-    solanaSignTransaction: Type.Unsafe<typeof solanaSignTransaction>(),
-
-    // https://connect.trezor.io/9/methods/solana/solanaComposeTransaction/
-    solanaComposeTransaction: Type.Unsafe<typeof solanaComposeTransaction>(),
-});
-export type TrezorConnectSolana = Static<typeof TrezorConnectSolana>;
 
 // Stellar-specific operations
 export const TrezorConnectStellar = Type.Object({
