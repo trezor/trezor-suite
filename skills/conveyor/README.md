@@ -163,10 +163,12 @@ mk conveyor/review:queued           2da44e "green draft PR, awaiting agentic rev
 mk conveyor/review:in-progress      2da44e "agentic review running"
 mk conveyor/review:needs-human      cf222e "review findings parked for a human"
 mk conveyor/review:passed           2da44e "agentic review clean, human takes over"
+mk conveyor:meta                    6f42c1 "workflow friction / skill-improvement item"
 ```
 
 Colours: `plan:*` blue, `impl:*` amber, `review:*` green, every `*:needs-human`
-red so a human-needed park stands out at a glance.
+red so a human-needed park stands out at a glance; `conveyor:meta` purple (it is
+not a lifecycle label — it tags [feedback](#feedback-loop--improving-conveyor-from-use) issues about the workflow itself).
 
 Each skill **preflight-checks** that these labels exist before it queries or writes
 the board. If any are missing it **stops and asks a human to run the bootstrap
@@ -292,6 +294,29 @@ are optional decisions.
   notified up front. Each person is only actually requested/`@`-mentioned **at their
   own gate** — the eng owner when implementation stalls, the reviewer when the PR is
   flipped to "Ready for review", the tester at the test station.
+
+## Feedback loop — improving Conveyor from use
+
+Conveyor is itself a versioned project, so it improves the same way it ships
+features: friction is **captured cheaply in the moment** and **drained into gated
+skill changes** — agents propose, a human approves at the PR gate. Three layers:
+
+- **L1 — capture (automatic).** When a skill gets in the way *during a run* — a rule
+  is wrong / missing / ambiguous, a step misfired, output needed hand-fixing — the
+  agent records it (see [CONVENTIONS.md](CONVENTIONS.md#improving-the-workflow-friction-capture)):
+  an **obvious tooling fix** becomes a small skill-fix PR right away; anything
+  **debatable** becomes a **`conveyor:meta` issue** filed against the *conveyor home
+  repo* (not the product repo). You can file one by hand too, but the point is the
+  agent does it without anyone having to remember.
+- **L2 — triage (gated).** A `conveyor-improve` step (a skill or an overnight
+  routine, *to be built*) reads the open `conveyor:meta` queue + recent runs,
+  clusters recurring friction, and proposes skill edits **as a PR** — never
+  auto-applied. A human approves at the gate.
+- **L3 — dogfood.** Substantial changes (a new station, a phase redesign) become
+  `conveyor:meta` plan-issues that run through the pipeline itself.
+
+The non-negotiable: **friction capture is automatic and low-risk; skill *edits* are
+always human-gated**, so the workflow can't silently drift.
 
 ## The skills
 

@@ -72,3 +72,28 @@ process steps — this file is the canonical *what/always*.
   notified up front. Each person is actually requested / `@`-mentioned only **at
   their own gate** (eng owner when implementation stalls, reviewer at the
   draft→ready flip, tester at the test station).
+
+## Improving the workflow (friction capture)
+
+These skills improve from real use. If, **while running**, a skill itself gets in
+your way — a rule is wrong, missing, or ambiguous; a step misfired; the output
+needed hand-correction — capture the friction so it is not lost. Classify it like
+any decision:
+
+- **Obvious tooling fix** (a typo, a plainly-missing line, a wrong command): open a
+  small **skill-fix PR** against the conveyor home repo right away, separate from
+  the product PR you are working on.
+- **Debatable** (a rule that might be wrong, a design gap, a recurring annoyance):
+  file a **`conveyor:meta` issue** against the conveyor home repo —
+  `gh issue create --repo <conveyor-home> --label conveyor:meta --title "friction(<skill>): …" --body "…"` —
+  describing the friction and a suggested fix. Do **not** change the skills mid-run
+  for these.
+
+The **conveyor home repo** is wherever the skills are tracked and improved — **not
+the product repo you are working in** (keep product repos free of workflow-tooling
+issues). For now that home is the testing sandbox; the team sets it once.
+
+A `conveyor:meta` issue is just a friction-log entry; the triage step
+(`conveyor-improve`, when built) drains them into **gated** skill-change PRs. A
+human always approves the skill change at the PR gate — **friction capture is
+automatic, skill edits are never silently auto-applied.**
