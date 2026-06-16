@@ -3,8 +3,6 @@ import { Type } from '@trezor/schema-utils';
 
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { stellarGetAddress } from './stellarGetAddress';
-import type { stellarSignTransaction } from './stellarSignTransaction';
 import type { tezosGetAddress } from './tezosGetAddress';
 import type { tezosGetPublicKey } from './tezosGetPublicKey';
 import type { tezosSignTransaction } from './tezosSignTransaction';
@@ -24,6 +22,7 @@ import { TrezorConnectManagement } from './management';
 import { TrezorConnectMonero } from './monero';
 import { TrezorConnectRipple } from './ripple';
 import { TrezorConnectSolana } from './solana';
+import { TrezorConnectStellar } from './stellar';
 
 export {
     TrezorConnectAccount,
@@ -38,17 +37,8 @@ export {
     TrezorConnectMonero,
     TrezorConnectRipple,
     TrezorConnectSolana,
+    TrezorConnectStellar,
 };
-
-// Stellar-specific operations
-export const TrezorConnectStellar = Type.Object({
-    // https://connect.trezor.io/9/methods/stellar/stellarGetAddress/
-    stellarGetAddress: Type.Unsafe<typeof stellarGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/stellar/stellarSignTransaction/
-    stellarSignTransaction: Type.Unsafe<typeof stellarSignTransaction>(),
-});
-export type TrezorConnectStellar = Static<typeof TrezorConnectStellar>;
 
 // Tezos-specific operations
 export const TrezorConnectTezos = Type.Object({
