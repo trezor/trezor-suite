@@ -18,7 +18,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles-native": "workspace:*",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-redux": "9.3.0"
     }
 }

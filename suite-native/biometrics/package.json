@@ -21,7 +21,7 @@
         "@suite-native/intl": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "expo-local-authentication": "~56.0.4",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-svg": "15.15.5",
         "react-redux": "9.3.0"

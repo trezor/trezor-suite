@@ -44,7 +44,7 @@
         "@trezor/utils": "workspace:*",
         "dropbox": "^10.34.0",
         "immer": "11.1.5",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0",

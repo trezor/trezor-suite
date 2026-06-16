@@ -24,7 +24,7 @@
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:^",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-intl": "^8.1.3"
     }
 }

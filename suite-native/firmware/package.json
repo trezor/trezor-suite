@@ -41,7 +41,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:^",
         "expo-keep-awake": "~56.0.3",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-reanimated": "4.3.1",
         "react-redux": "9.3.0"

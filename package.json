@@ -107,8 +107,8 @@
         "react-native": "0.85.3",
         "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
-        "react": "19.2.4",
         "electron": "42.5.0",
+        "react": "19.2.3",
         "@types/node": "22.13.10",
         "bn.js": "5.2.3",
         "### Force buffer >=6 so the browser polyfill has writeBig(U)Int64LE etc. (5.x lacks them, see suite-build)": "1.0.0",
@@ -126,8 +126,8 @@
         "expo-build-properties": "~56.0.15",
         "@types/react": "19.2.14",
         "react-dom": "19.2.3",
-        "react-test-renderer": "19.2.3",
-        "expo-modules-core": "patch:expo-modules-core@npm%3A56.0.13#~/.yarn/patches/expo-modules-core-npm-56.0.13-6a0e36c09c.patch"
+        "expo-modules-core": "patch:expo-modules-core@npm%3A56.0.13#~/.yarn/patches/expo-modules-core-npm-56.0.13-6a0e36c09c.patch",
+        "react-test-renderer": "19.2.3"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",

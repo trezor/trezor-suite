@@ -19,7 +19,7 @@
         "@suite/locks": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
