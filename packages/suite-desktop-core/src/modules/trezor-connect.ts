@@ -1,13 +1,16 @@
 import { ipcMain } from 'electron';
 
 import TrezorConnect, {
+    type ConnectSettings,
+    type ConnectSettingsTransport,
     type LocalFirmwares,
     UI_EVENT,
     UI_REQUEST,
     UI_RESPONSE,
 } from '@trezor/connect';
-import { type ConnectSettingsTransport, initLog } from '@trezor/connect-common';
+import { initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import { BridgeTransport, NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
@@ -48,11 +51,43 @@ const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
     }
 };
 
-// override TrezorConnect.init and TrezorConnect.updateConnectSettings params
-// add BluetoothTransport if bluetooth module is enabled
-const getTransportsParam = (
-    transports?: ConnectSettingsTransport[],
-): ConnectSettingsTransport[] | undefined => {
+// `id` becomes the Bridge session owner shown to the user; it mirrors the desktop
+// manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+const TRANSPORT_ID = 'Trezor Suite desktop';
+type CreateLogger = NonNullable<ConnectSettings['createLogger']>;
+
+const createTransportParams = (createLogger: ConnectSettings['createLogger']) => ({
+    id: TRANSPORT_ID,
+    logger: createLogger?.('@trezor/transport'),
+});
+
+export const transportFactory = (
+    t: unknown,
+    createLogger?: CreateLogger,
+): ConnectSettingsTransport | undefined => {
+    if (typeof t !== 'string') return t as ConnectSettingsTransport;
+    switch (t) {
+        case 'BridgeTransport':
+            return new BridgeTransport(createTransportParams(createLogger));
+        case 'NodeUsbTransport':
+            return new NodeUsbTransport(createTransportParams(createLogger));
+        case 'UdpTransport':
+            return new UdpTransport(createTransportParams(createLogger));
+        default:
+            return undefined;
+    }
+};
+
+// override TrezorConnect.init and TrezorConnect.updateConnectSettings params:
+// 1) translate legacy string transports to DI references (see above)
+// 2) add BluetoothTransport if the bluetooth module is enabled
+export const getTransportsParam = (
+    rawTransports?: ConnectSettings['transports'],
+    createLogger?: CreateLogger,
+): ConnectSettings['transports'] => {
+    const transports = rawTransports
+        ?.map(transport => transportFactory(transport, createLogger))
+        .filter((transport): transport is ConnectSettingsTransport => transport !== undefined);
     const bluetooth = bluetoothModuleState.getTransport();
     if (!bluetooth) return transports;
 
@@ -60,12 +95,15 @@ const getTransportsParam = (
         return [...transports, bluetooth];
     }
 
-    // we don't want to break fallback in https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/device/TransportList.ts#L70
-    return [bluetooth, 'BridgeTransport'];
+    // If the caller did not pass any transports, restore the Bridge default
+    // explicitly so we don't end up with a Bluetooth-only list.
+    return [bluetooth, new BridgeTransport(createTransportParams(createLogger))];
 };
 
 export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store }) => {
     const { logger } = global;
+    let createLogger: ConnectSettings['createLogger'];
+
     logger.info(SERVICE_NAME, `Starting service`);
 
     const setProxy = () => {
@@ -108,11 +146,12 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     if (localFirmwares.success) {
                         settings.localFirmwares = localFirmwares.payload;
                     }
-                    settings.transports = getTransportsParam(settings.transports);
                     // Core runs in this (main) process; the renderer cannot send a logger factory
                     // across IPC, so build it here from the serializable `debug` enabled hint.
                     // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
-                    settings.createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
+                    createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
+                    settings.createLogger = createLogger;
+                    settings.transports = getTransportsParam(settings.transports, createLogger);
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
@@ -138,7 +177,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 // fallback here would make `newTransports` defined in Core and trigger a needless
                 // SET_TRANSPORTS → resetTransports → deviceList.init on every such update.
                 if (method === 'updateConnectSettings' && params[0].transports !== undefined) {
-                    params[0].transports = getTransportsParam(params[0].transports);
+                    params[0].transports = getTransportsParam(params[0].transports, createLogger);
                 }
 
                 return (TrezorConnect[method] as any)(...params);

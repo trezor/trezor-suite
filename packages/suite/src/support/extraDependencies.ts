@@ -36,6 +36,9 @@ import {
     type CommonServices,
     type ConnectInitSettings,
     type ExtraDependenciesStatic,
+    type CreateTransports,
+    type TransportsDep,
+    type GetTransportsFactoriesDep,
     type ThpHostNameDep,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
@@ -98,12 +101,14 @@ export type SuiteAppDeps = StoreAPIDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
     ReloadAppDep &
-    ThpHostNameDep;
+    ThpHostNameDep &
+    GetTransportsFactoriesDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
-    SuiteRouterHistoryDep;
+    SuiteRouterHistoryDep &
+    TransportsDep;
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
@@ -159,6 +164,19 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getState: deps.getState,
     });
 
+    const createTransports: CreateTransports = transports => {
+        const factories = deps.getTransportsFactories();
+
+        return transports.map(name => {
+            const factory = factories[name];
+            if (!factory) {
+                throw new Error(`Transport factory for ${name} not found`);
+            }
+
+            return factory(deps.createLogger);
+        }) as ReturnType<CreateTransports>;
+    };
+
     return {
         suiteSync,
         bip329,
@@ -176,6 +194,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitHooks,
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
+        createTransports,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

@@ -6,17 +6,26 @@ import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import type { ConnectSettingsTransport, DefinitionsChannel } from '@trezor/connect-common';
+import type { DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
 
+/**
+ * String identifiers used by the debug transport switcher UI.
+ */
+export type DebugTransport =
+    | 'BridgeTransport'
+    | 'NodeUsbTransport'
+    | 'UdpTransport'
+    | 'WebUsbTransport';
+
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
-    transports: Extract<ConnectSettingsTransport, string>[];
+    transports: DebugTransport[];
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
     definitionsChannel?: DefinitionsChannel;

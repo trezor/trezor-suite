@@ -1,6 +1,11 @@
 import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
+import type { CreateLogger } from '@trezor/connect-common';
+// Deep import bypasses the `@trezor/transport` barrel so the web bundle never resolves
+// node-only sibling modules (`UdpTransport`/`dgram`, `NodeUsbTransport`/`usb`).
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+import { WebUsbTransport } from '@trezor/transport-web';
 
 import { initStore } from 'src/reducers/store';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
@@ -13,6 +18,26 @@ export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreA
     const platformEncryption = createWebauthnPlatformEncryption();
     const reloadApp = () => window.location.reload();
 
+    const getTransportsFactories = () => {
+        // Pure DI: connect expects ready-made Transport instances, so the host constructs
+        // them here. `id` becomes the Bridge session owner shown to the user; it mirrors
+        // the web manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+        const TRANSPORT_ID = 'Trezor Suite web';
+
+        return {
+            BridgeTransport: (createLogger?: CreateLogger) =>
+                new BridgeTransport({
+                    id: TRANSPORT_ID,
+                    logger: createLogger?.('@trezor/transport'),
+                }),
+            WebUsbTransport: (createLogger?: CreateLogger) =>
+                new WebUsbTransport({
+                    id: TRANSPORT_ID,
+                    logger: createLogger?.('@trezor/transport'),
+                }),
+        };
+    };
+
     return initStore(
         {
             history,
@@ -20,6 +45,7 @@ export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreA
             createConnectLoggerFactory,
             reloadApp,
             thpHostName: getWebThpHostName(),
+            getTransportsFactories,
         },
         preloadStoreAction,
     );

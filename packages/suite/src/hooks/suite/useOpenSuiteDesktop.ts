@@ -1,4 +1,6 @@
-import TrezorConnect, { type UpdateConnectSettings } from '@trezor/connect';
+import { useServices } from '@suite-common/dependency-injection';
+import { type TransportName, type TransportsDep } from '@suite-common/redux-utils';
+import TrezorConnect from '@trezor/connect';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
@@ -12,6 +14,10 @@ export const useOpenSuiteDesktop = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const activeTransports = useSelector(selectActiveTransports);
     const windowFocused = useWindowFocus();
+    const { createTransports } = useServices(
+        (services): TransportsDep => ({ createTransports: services.createTransports }),
+    );
+
     const handleOpenSuite = () => {
         const iframe = document.createElement('iframe');
         iframe.src = SUITE_BRIDGE_DEEPLINK;
@@ -27,12 +33,13 @@ export const useOpenSuiteDesktop = () => {
                 const filtered = activeTransports
                     .filter(t => t.type !== 'WebUsbTransport')
                     .map(t => t.type);
-                const transports = (
-                    filtered.includes('BridgeTransport')
-                        ? filtered
-                        : ['BridgeTransport', ...filtered]
-                ) as UpdateConnectSettings['transports'];
-                TrezorConnect.updateConnectSettings({ transports });
+                TrezorConnect.updateConnectSettings({
+                    transports: createTransports(
+                        (filtered.includes('BridgeTransport')
+                            ? filtered
+                            : ['BridgeTransport', ...filtered]) as TransportName[],
+                    ),
+                });
             }
             if (!windowFocused.current) return;
 

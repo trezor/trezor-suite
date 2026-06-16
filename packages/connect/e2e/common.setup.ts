@@ -2,6 +2,11 @@
 import TrezorConnect from '@trezor/connect';
 import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
+// Deep import bypasses the `@trezor/transport` barrel so vitest's web project
+// (which mocks `usb` via `transport/mocks/usb.cjs`) doesn't evaluate
+// `NodeUsbTransport`'s `import { WebUSB } from 'usb'` — the cjs mock's named
+// export interop is unreliable through Vite's browser resolver.
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
@@ -225,7 +230,7 @@ export const initTrezorConnect = async (
             appUrl: 'tests.connect.trezor.io',
             email: 'tests@connect.trezor.io',
         },
-        transports: ['BridgeTransport'],
+        transports: [new BridgeTransport({ id: 'bridge', port: 21328 })],
         debug: true,
         pendingTransportEvent: true,
         transportReconnect: false,

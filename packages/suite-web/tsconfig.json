@@ -18,7 +18,10 @@
         },
         { "path": "../../suite/router" },
         { "path": "../connect" },
+        { "path": "../connect-common" },
         { "path": "../suite" },
+        { "path": "../transport" },
+        { "path": "../transport-web" },
         { "path": "../utils" },
         { "path": "../../suite/sentry" },
         { "path": "../eslint" }
