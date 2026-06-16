@@ -59,4 +59,5 @@ export interface AccountInfoParams {
     };
     tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
     protocols?: 'erc4626'[]; // protocols to include in the response (e.g. 'erc4626')
+    confirmedNonce?: boolean; // blockbook only (EVM), additionally fetch the confirmed (mined-only) nonce
 }

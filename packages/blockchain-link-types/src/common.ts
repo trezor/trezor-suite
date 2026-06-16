@@ -349,6 +349,7 @@ export interface AccountInfo {
     misc?: {
         // EVM
         nonce?: string;
+        confirmedNonce?: string;
         contractInfo?: ContractInfo;
         stakingPools?: StakingPool[];
         addressAliases?: { [key: string]: AddressAlias };
