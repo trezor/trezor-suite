@@ -1,6 +1,16 @@
 export const fixtures = [
     {
         method: 'GET',
+        path: '/status',
+        search: '',
+        result: {
+            response: {
+                status: 200,
+            },
+        },
+    },
+    {
+        method: 'GET',
         path: '/oauth',
         search: '?code=meow',
         result: {
