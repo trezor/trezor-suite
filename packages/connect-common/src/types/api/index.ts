@@ -1,5 +1,4 @@
-import type { Static } from '@trezor/schema-utils';
-import { Type } from '@trezor/schema-utils';
+import { type Static, Type } from '@trezor/schema-utils';
 
 import { TrezorConnectAccount } from './account';
 import { TrezorConnectBitcoin } from './bitcoin';
@@ -61,22 +60,4 @@ export const TrezorConnectSchema = Type.Composite([
     TrezorConnectExperimental,
 ]);
 
-// Type-level interface for precise function types.
-export interface TrezorConnect
-    extends
-        TrezorConnectCore,
-        TrezorConnectManagement,
-        TrezorConnectDevice,
-        TrezorConnectBlockchain,
-        TrezorConnectAccount,
-        TrezorConnectBitcoin,
-        TrezorConnectEthereum,
-        TrezorConnectCardano,
-        TrezorConnectMonero,
-        TrezorConnectRipple,
-        TrezorConnectSolana,
-        TrezorConnectStellar,
-        TrezorConnectTezos,
-        TrezorConnectTron,
-        TrezorConnectEvolu,
-        TrezorConnectExperimental {}
+export type TrezorConnect = Static<typeof TrezorConnectSchema>;
