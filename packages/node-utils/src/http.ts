@@ -225,7 +225,23 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 const portOccupied = errorCode === 'EADDRINUSE' || errorCode === 'EACCES';
 
                 if (portIndex + 1 < this.ports.length) {
-                    return resolve(this.stop().then(() => this.startOnPort(portIndex + 1)));
+                    // Never reject: callers (e.g. transport-bridge) await start() without try/catch.
+                    // stop() also drops consumer server/* listeners across this retry.
+                    try {
+                        return resolve(
+                            await this.stop().then(() => this.startOnPort(portIndex + 1)),
+                        );
+                    } catch (retryError) {
+                        const retryMessage =
+                            retryError instanceof Error ? retryError.message : String(retryError);
+                        this.logger.error(retryMessage);
+
+                        return resolve({
+                            success: false,
+                            error: 'other error',
+                            message: retryMessage,
+                        });
+                    }
                 }
 
                 if (portOccupied) {
@@ -245,11 +261,11 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
                 this.logger.error(errorMessage);
 
-                return {
+                return resolve({
                     success: false,
                     error: 'other error',
-                    message: `Start error code: ${errorCode}`,
-                };
+                    message: errorMessage,
+                });
             };
             this.server.on('error', this.onError);
 
