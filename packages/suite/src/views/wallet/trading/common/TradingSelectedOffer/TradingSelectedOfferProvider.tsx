@@ -68,6 +68,7 @@ export const TradingSelectedOfferProvider = () => {
                 cursor="pointer"
                 data-testid="@trading/selected-offer-provider"
                 borderRadius={0}
+                isDisabled={form.state.isFormLoading}
             >
                 <Row alignItems="center" justifyContent="space-between" padding={20}>
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
@@ -78,15 +79,22 @@ export const TradingSelectedOfferProvider = () => {
                             {form.state.isFormLoading ? (
                                 <Skeleton animate />
                             ) : (
-                                <Text typographyStyle="body-md" as="div">
-                                    <TradingUtilsProvider
-                                        providers={providers}
-                                        exchange={quote.exchange}
+                                <>
+                                    <Text typographyStyle="body-md" as="div">
+                                        <TradingUtilsProvider
+                                            providers={providers}
+                                            exchange={quote.exchange}
+                                        />
+                                    </Text>
+                                    <Icon
+                                        name="caretRight"
+                                        size={20}
+                                        intent="neutral"
+                                        priority="secondary"
                                     />
-                                </Text>
+                                </>
                             )}
                         </Row>
-                        <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
                     </Row>
                 </Row>
             </GhostContainer>
