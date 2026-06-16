@@ -6,8 +6,6 @@ import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { rippleGetAddress } from './rippleGetAddress';
-import type { rippleSignTransaction } from './rippleSignTransaction';
 import type { solanaComposeTransaction } from './solanaComposeTransaction';
 import type { solanaGetAddress } from './solanaGetAddress';
 import type { solanaGetPublicKey } from './solanaGetPublicKey';
@@ -30,6 +28,7 @@ import { TrezorConnectDevice } from './device';
 import { TrezorConnectEthereum } from './ethereum';
 import { TrezorConnectManagement } from './management';
 import { TrezorConnectMonero } from './monero';
+import { TrezorConnectRipple } from './ripple';
 
 export {
     TrezorConnectAccount,
@@ -41,17 +40,8 @@ export {
     TrezorConnectEthereum,
     TrezorConnectManagement,
     TrezorConnectMonero,
+    TrezorConnectRipple,
 };
-
-// Ripple-specific operations
-export const TrezorConnectRipple = Type.Object({
-    // https://connect.trezor.io/9/methods/ripple/rippleGetAddress/
-    rippleGetAddress: Type.Unsafe<typeof rippleGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/ripple/rippleSignTransaction/
-    rippleSignTransaction: Type.Unsafe<typeof rippleSignTransaction>(),
-});
-export type TrezorConnectRipple = Static<typeof TrezorConnectRipple>;
 
 // Solana-specific operations
 export const TrezorConnectSolana = Type.Object({
