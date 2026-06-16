@@ -438,10 +438,12 @@ export const resolveEthereumNonce = async ({
     selectedAccount,
     rbfParams,
     accountTransactions,
+    fetchConfirmedNonce,
 }: {
     selectedAccount: Account & { networkType: 'ethereum' };
     rbfParams?: RbfTransactionParams;
     accountTransactions: WalletAccountTransaction[];
+    fetchConfirmedNonce?: boolean;
 }): Promise<{ nonce: string; confirmedNonce: string }> => {
     // For RBF (cancel / speed-up) always use the original tx's nonce.
     // confirmedNonce is only consumed for custom-nonce validation (non-RBF), so mirror nonce here.
@@ -451,16 +453,6 @@ export const resolveEthereumNonce = async ({
         return { nonce: rbfNonce, confirmedNonce: rbfNonce };
     }
 
-    const accountInfoResponse = await TrezorConnect.getAccountInfo({
-        coin: selectedAccount.symbol,
-        descriptor: selectedAccount.descriptor,
-        identity: tryGetAccountIdentity(selectedAccount),
-        details: 'basic',
-        // opt in to blockbook's mined-only nonce (trezor/blockbook#1562); costs an extra backend call
-        confirmedNonce: true,
-        suppressBackupWarning: true,
-    });
-
     const sentNonces = (predicate: (tx: WalletAccountTransaction) => boolean) =>
         accountTransactions
             .filter(predicate)
@@ -468,13 +460,28 @@ export const resolveEthereumNonce = async ({
             .map(tx => tx.ethereumSpecific?.nonce)
             .filter((nonce): nonce is number => typeof nonce === 'number');
 
-    // Prefer the backend's confirmed (mined-only) nonce — it's authoritative and doesn't depend on
-    // the local tx list being complete (trezor/blockbook#1562). Fall back to the highest confirmed
-    // outgoing nonce + 1 until that field is available.
-    const backendConfirmedNonce =
-        accountInfoResponse.success && accountInfoResponse.payload.misc?.confirmedNonce != null
-            ? parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10)
-            : undefined;
+    // Optionally fetch blockbook's confirmed (mined-only) nonce (trezor/blockbook#1562). It's an
+    // extra backend call, so we only make it when the caller opts in; otherwise the confirmed nonce
+    // is derived purely from the local tx list. When available the backend value is authoritative and
+    // doesn't depend on the local tx list being complete.
+    let backendConfirmedNonce: number | undefined;
+    if (fetchConfirmedNonce) {
+        const accountInfoResponse = await TrezorConnect.getAccountInfo({
+            coin: selectedAccount.symbol,
+            descriptor: selectedAccount.descriptor,
+            identity: tryGetAccountIdentity(selectedAccount),
+            details: 'basic',
+            confirmedNonce: true,
+            suppressBackupWarning: true,
+        });
+        if (
+            accountInfoResponse.success &&
+            accountInfoResponse.payload.misc?.confirmedNonce != null
+        ) {
+            backendConfirmedNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
+        }
+    }
+
     const localConfirmedNonces = sentNonces(tx => !isPending(tx));
     const confirmedNonce =
         backendConfirmedNonce ??
@@ -491,15 +498,20 @@ export const resolveEthereumNonce = async ({
 
 export const ethereumGetCurrentNonceThunk = createThunk<
     { nonce: string; confirmedNonce: string },
-    { selectedAccount: Account & { networkType: 'ethereum' }; rbfParams?: RbfTransactionParams }
+    {
+        selectedAccount: Account & { networkType: 'ethereum' };
+        rbfParams?: RbfTransactionParams;
+        fetchConfirmedNonce?: boolean;
+    }
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
-    ({ selectedAccount, rbfParams }, { getState }) => {
+    ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
         const transactions = selectTransactions(getState());
 
         return resolveEthereumNonce({
             selectedAccount,
             rbfParams,
+            fetchConfirmedNonce,
             accountTransactions: transactions[selectedAccount.key] ?? [],
         });
     },

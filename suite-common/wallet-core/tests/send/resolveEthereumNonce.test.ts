@@ -105,6 +105,7 @@ describe('resolveEthereumNonce', () => {
         const result = await resolveEthereumNonce({
             selectedAccount: ethAccount,
             accountTransactions: confirmedNonces(3),
+            fetchConfirmedNonce: true,
         });
 
         expect(result).toEqual({ nonce: '9', confirmedNonce: '9' });
