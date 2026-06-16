@@ -264,6 +264,10 @@ export const HELP_CENTER_EVM_ADDRESS_CHECKSUM: Url = withPlatformUtm(
 export const HELP_CENTER_EVM_SEND_TO_CONTRACT_URL = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/coins-tokens/where-is-my-ethereum',
 );
+// TODO: update this link when the nonce article is published
+export const HELP_CENTER_EVM_NONCE_URL: Url = withPlatformUtm(
+    'https://trezor.io/learn/advanced/what-is-a-nonce',
+);
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-revision-check',
 );
