@@ -197,11 +197,11 @@ export class DashboardPage {
         await this.device.pressYes();
 
         await this.passphraseInput.fill(passphrase);
-        await this.passphraseSubmitButton.click();
-
         // Give Connect time to emit REQUEST_PASSPHRASE before we submit
         // submitting in the ~100ms gap before it drops the response and the device prompt never shows.
         await this.page.waitForTimeout(2_000);
+        await this.passphraseSubmitButton.click();
+
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
 
