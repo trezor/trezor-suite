@@ -12,7 +12,7 @@ A fully automated system that runs after nightly tests, analyzes failures, imple
 
 ## Overall Architecture
 
-A single GitHub Actions workflow, `.github/workflows/test-suite-nightly-fix-agent.yml`, is the orchestrator:
+Source code in `packages/e2e-utils/src/fixBot`. A single GitHub Actions workflow, `.github/workflows/test-suite-nightly-fix-agent.yml`, is the orchestrator:
 
 ```
 analyze        → downloads ledger.json (S3), harness writes report.json + report.md
