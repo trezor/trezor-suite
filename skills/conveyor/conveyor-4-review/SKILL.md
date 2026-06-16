@@ -36,8 +36,13 @@ working state lives on the **PR**, mirroring the issue model one station back:
 
 ## Inputs
 
-- **Target PR.** A passed PR number; otherwise the oldest `conveyor/review:queued`
-  PR, then the oldest `conveyor/review:needs-human` PR whose `✅ Done` box is ticked.
+- **Target PR.** An explicitly provided PR number; otherwise sweep the board in
+  this order: the oldest `conveyor/review:queued` PR (fresh review), then the oldest
+  `conveyor/review:needs-human` PR whose `✅ Done` box is ticked (drain), then any
+  `conveyor/review:passed` PR whose branch HEAD has advanced past its `Reviewed at:`
+  SHA (a **stale** review to re-open — see §0's staleness gate). A
+  `conveyor/review:passed` PR still at its reviewed SHA is fresh — skip it with a
+  single `headRefOid`-vs-SHA compare, no re-review.
 - **Mode.** Interactive (human at keyboard) or autonomous (routine; never blocks).
 
 ## Process
@@ -72,6 +77,12 @@ review is **stale**: it must not be merged as-is. Re-open it (add
 re-review the delta (`git diff <reviewed-sha>..HEAD`) — a tiny rebase-only delta may
 re-pass quickly; a real change goes through the full station. This is cheap
 insurance against a green-but-stale review merging into a moved tree.
+
+An autonomous sweep reaches this gate **proactively**: its board scan includes
+`conveyor/review:passed` PRs precisely so a post-pass rebase/push (a repo bot or a
+human moving HEAD after the review passed) is caught here, not left to chance until
+the skill happens to be re-invoked. For a passed PR still at its `Reviewed at:` SHA
+the check is a single `headRefOid`-vs-SHA compare — fresh, skip with no work.
 
 **Drain run (entered at `conveyor/review:needs-human`).** The human has been ticking
 answer checkboxes since the last run. Skip fresh lens work (unless the diff changed
@@ -346,7 +357,10 @@ _Last updated by: conveyor-4-review (<interactive|autonomous>)_
 - **Interactive**: request Copilot, run adversarial review, process findings live,
   hand off.
 - **Autonomous** (routine): same core, with the **bounded Copilot wait of §5
-  inside the run**. If Copilot has still not landed by the end of the wait, park
+  inside the run**. Its board sweep also includes `conveyor/review:passed` PRs for a
+  cheap staleness check (`headRefOid` vs `Reviewed at:` SHA), re-opening only those
+  whose HEAD moved — so a post-pass rebase is re-reviewed automatically, not left to
+  chance. If Copilot has still not landed by the end of the wait, park
   (`conveyor/review:needs-human`, "held for Copilot") rather than pass — a later
   wake drains it. **Never set `conveyor/review:passed` on a PR whose Copilot review
   has not landed and been ingested.** On clean set `conveyor/review:passed`, on
