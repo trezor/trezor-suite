@@ -19,13 +19,6 @@ export const config: Config = {
             ],
         },
         {
-            coin: ['bnb'],
-            min: { T1B1: '1.9.0', T2T1: '2.3.0' },
-            comment: [
-                'There were protobuf backwards incompatible changes with introduction of 1.9.0/2.3.0 firmwares',
-            ],
-        },
-        {
             coin: ['eth', 'tsep', 'thod'],
             min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],
@@ -93,12 +86,6 @@ export const config: Config = {
                 'new btc accounts taproot since 1.10.4/2.4.3 (BTC + TEST only)',
                 'SignMessage with no_script_type support',
             ],
-        },
-        {
-            coin: ['dcr', 'tdcr'],
-            methods: ['signTransaction'],
-            min: { T1B1: '1.10.1', T2T1: '2.4.0' },
-            comment: [''],
         },
         {
             methods: ['ethereumSignTypedData'],

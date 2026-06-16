@@ -21,22 +21,10 @@ const examples: Partial<Record<CoinSymbol, Array<{ amount: string; address: stri
             address: 'bitcoincash:qrjgzvp26w92hgg06h69zxuarxtlsryzwg7wecq0mn',
         },
     ],
-    btg: [
-        {
-            amount: '20000',
-            address: 'AXibjT5r96ZaVA8Lu4BQZocdTx7p5Ud8ZP',
-        },
-    ],
     ltc: [
         {
             amount: '20000',
             address: 'MUbHn23ZL733kCUbvQ88ZhVSWMdFQMEoV8',
-        },
-    ],
-    dash: [
-        {
-            amount: '20000',
-            address: 'XdTw4G5AWW4cogGd7ayybyBNDbuB45UpgH',
         },
     ],
     zec: [

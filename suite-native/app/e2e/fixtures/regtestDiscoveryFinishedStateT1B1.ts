@@ -236,7 +236,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                 },
                 unavailableCapabilities: {
                     ada: 'no-support',
-                    bnb: 'no-support',
                     dsol: 'no-support',
                     sol: 'no-support',
                     tada: 'no-support',
@@ -244,9 +243,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                     xmr: 'no-support',
                     xrp: 'no-support',
                     xtz: 'no-support',
-                    maid: 'no-capability',
-                    omni: 'no-capability',
-                    usdt: 'no-capability',
                     tutorial: 'no-support',
                     chunkify: 'no-support',
                     evmApproval: 'no-support',
