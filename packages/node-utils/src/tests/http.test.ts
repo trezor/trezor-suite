@@ -582,6 +582,73 @@ describe('HttpServer', () => {
         expect(newAddress.port).toEqual(address.port);
     });
 
+    // Previously start() never resolved the outer promise on a non-port server
+    // error: the 'other error' branch of onError returned a plain object instead
+    // of calling resolve(), so `await start()` hung forever and the failure never
+    // reached consumers (e.g. the suite-desktop http-receiver Sentry warning).
+    test('start() resolves with "other error" on a non-port server error', async () => {
+        const underlying = (server as any).server;
+        // Force a non-port start failure: emit a synthetic error with a code that
+        // is neither EADDRINUSE nor EACCES while the start() promise is pending.
+        // onError is attached before listen() is called, so this is observed.
+        jest.spyOn(underlying, 'listen').mockImplementation(() => {
+            const error = Object.assign(new Error('synthetic'), { code: 'EOTHER' });
+            underlying.emit('error', error);
+
+            return underlying;
+        });
+
+        await expect(server.start()).resolves.toEqual({
+            success: false,
+            error: 'other error',
+            message: 'Start error code: EOTHER',
+        });
+    });
+
+    // Previously the port-fallback retry branch (`if (this.ports.length) return
+    // this.stop().then(() => this.start())`) returned the retry promise into the
+    // error-event handler without settling the outer promise, so `await start()`
+    // hung whenever the first port was occupied and a fallback port existed.
+    test('start() resolves via the port-fallback retry when the first port is occupied', async () => {
+        const [freePort1, freePort2] = await getFreePort(2);
+
+        const blocker = new HttpServer<Events>({ logger: muteLogger, port: freePort1 ?? 0 });
+        await blocker.start();
+
+        server = new HttpServer<Events>({
+            logger: muteLogger,
+            ports: [freePort1 ?? 0, freePort2 ?? 0],
+        });
+
+        const result = await server.start();
+        expect(result).toMatchObject({ success: true });
+        expect(server.getServerAddress()).toMatchObject({ port: freePort2 });
+
+        await blocker.stop();
+    });
+
+    // The retry chain must always resolve to a {success} value, never reject:
+    // consumers `await start()` without a try/catch. When every fallback port is
+    // occupied, start() resolves with a failure rather than rejecting or hanging.
+    test('start() resolves (never rejects) when every fallback port is occupied', async () => {
+        const [freePort1, freePort2] = await getFreePort(2);
+
+        const blocker1 = new HttpServer<Events>({ logger: muteLogger, port: freePort1 ?? 0 });
+        const blocker2 = new HttpServer<Events>({ logger: muteLogger, port: freePort2 ?? 0 });
+        await blocker1.start();
+        await blocker2.start();
+
+        server = new HttpServer<Events>({
+            logger: muteLogger,
+            ports: [freePort1 ?? 0, freePort2 ?? 0],
+        });
+
+        const result = await server.start();
+        expect(result).toMatchObject({ success: false });
+
+        await Promise.all([blocker1.stop(), blocker2.stop()]);
+    });
+
     describe('route matching logic (express.js-like)', () => {
         test('unregistered route does not match any registered route', async () => {
             const handler1 = jest.fn((_request, response) => {

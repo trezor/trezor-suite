@@ -200,7 +200,25 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 const portOccupied = errorCode === 'EADDRINUSE' || errorCode === 'EACCES';
 
                 if (this.ports.length) {
-                    return this.stop().then(() => this.start());
+                    // Retry on the next port. The recursive start() settles the
+                    // outer promise; it must always resolve (never reject) because
+                    // callers `await start()` without a try/catch and rely on the
+                    // {success} union (e.g. transport-bridge/src/http.ts). Note that
+                    // stop() calls this.emitter.removeAllListeners(), which also
+                    // drops any consumer server/* subscriptions across this retry.
+                    try {
+                        return resolve(await this.stop().then(() => this.start()));
+                    } catch (retryError) {
+                        const retryMessage =
+                            retryError instanceof Error ? retryError.message : String(retryError);
+                        this.logger.error(retryMessage);
+
+                        return resolve({
+                            success: false,
+                            error: 'other error',
+                            message: retryMessage,
+                        });
+                    }
                 }
 
                 if (portOccupied) {
@@ -220,11 +238,11 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
                 this.logger.error(errorMessage);
 
-                return {
+                return resolve({
                     success: false,
                     error: 'other error',
-                    message: `Start error code: ${errorCode}`,
-                };
+                    message: errorMessage,
+                });
             };
             this.server.on('error', this.onError);
 
