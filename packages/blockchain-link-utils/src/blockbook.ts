@@ -459,6 +459,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     } else if (isEVM) {
         misc = {
             nonce: payload.nonce,
+            confirmedNonce: payload.confirmedNonce,
             contractInfo: payload.contractInfo,
             stakingPools: payload.stakingPools,
             addressAliases: payload.addressAliases,

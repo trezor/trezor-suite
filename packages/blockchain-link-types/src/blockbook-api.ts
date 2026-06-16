@@ -417,8 +417,10 @@ export interface Address {
     transactions?: Tx[];
     /** List of transaction IDs (if detailed data is not requested). */
     txids?: string[];
-    /** Current transaction nonce for Ethereum-like addresses. */
+    /** Current transaction nonce for Ethereum-like addresses (pending-inclusive). */
     nonce?: string;
+    /** Confirmed transaction nonce (mined only, eth_getTransactionCount at latest block). */
+    confirmedNonce?: string;
     /** Number of tokens with any historical usage at this address. */
     usedTokens?: number;
     /** List of tokens associated with this address. */
@@ -785,6 +787,8 @@ export interface WsAccountInfoReq {
     secondaryCurrency?: string;
     /** Gap limit for XPUB scanning, if relevant. */
     gap?: number;
+    /** If true, additionally fetch and return the confirmed (mined-only) nonce for Ethereum-like addresses (extra backend call). */
+    confirmedNonce?: boolean;
 }
 export interface WsContractInfoReq {
     /** Contract address to query. */
