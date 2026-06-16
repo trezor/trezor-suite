@@ -33,7 +33,7 @@ export const SlippagePicker = ({ quote }: SlippagePickerProps) => {
                     <Icon name="caretDown" size="medium" color="contentSecondary" />
                 </HStack>
             </TradeInfoRow>
-            <SlippageBottomSheet isVisible={isSheetVisible} onClose={hideSheet} />
+            <SlippageBottomSheet isVisible={isSheetVisible} onClose={hideSheet} quote={quote} />
         </>
     );
 };
