@@ -42,6 +42,7 @@ jobs:
       allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.matrix }}
       allTransportsMatrix: ${{ steps.set-matrix-all-transports.outputs.matrix }}
       modelOneMatrix: ${{ steps.set-matrix-model-one.outputs.matrix }}
+      experimentalMethodsMatrix: ${{ steps.set-matrix-experimental-methods.outputs.matrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -82,6 +83,10 @@ jobs:
         # that the public Testnet 4 backend cannot serve, so the local TX cache
         # is required.
         run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api,ethereum,btc-sign,btc-others --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
+
+      - name: Set experimental methods matrix
+        id: set-matrix-experimental-methods
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=experimental --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [set-matrix]
@@ -238,3 +243,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.modelOneMatrix) }}
+
+  experimental-methods:
+    needs: [set-matrix]
+    name: experimental-methods ${{ matrix.key }}
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.groups.pattern }}
+      includeFilter: ${{ matrix.groups.includeFilter }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
+      testGroup: experimental-methods
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.experimentalMethodsMatrix) }}

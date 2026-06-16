@@ -84,6 +84,11 @@ const groups = {
         includeFilter:
             'solanaGetAddress,solanaGetPublicKey,solanaSignTransaction,solanaComposeTransaction',
     },
+    experimental: {
+        name: 'experimental',
+        pattern: 'methods',
+        includeFilter: 'nostrGetPublicKey,nostrSignEvent',
+    },
 };
 
 const firmwares1 = ['1.9.0', '1-latest', '1-main'];
