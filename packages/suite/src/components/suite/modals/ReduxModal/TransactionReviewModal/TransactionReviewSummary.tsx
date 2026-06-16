@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
-
 import { AccountLabel } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
-import { selectPrecomposedSendForm, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
+import { selectRawNetworkFeeInfo, selectResolvedEthereumNonce } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
@@ -82,38 +79,11 @@ export const TransactionReviewSummary = ({
     const isFeeCustom = drafts[currentAccountKey as SendFormDraftKey]?.selectedFee === 'custom'; // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
 
-    const dispatch = useDispatch();
-    const [resolvedNonce, setResolvedNonce] = useState<string>();
-
     const isEthereumNetworkType = networkType === 'ethereum';
-    // Read from the precomposed form actually being signed — not the draft, which the RBF
-    // (bump-fee / cancel) flow does not populate, so its rbfParams/nonce would be missing.
-    const precomposedForm = useSelector(selectPrecomposedSendForm);
-    const rbfParams = precomposedForm?.rbfParams;
-
-    useEffect(() => {
-        if (!isEthereumNetworkType) return;
-
-        // Nonce is resolved at signing time, so we replicate that resolution here to show
-        // the user the exact nonce that will be used for the transaction they are reviewing.
-        const promise = dispatch(
-            ethereumGetCurrentNonceThunk({
-                selectedAccount: account as Account & { networkType: 'ethereum' },
-                rbfParams,
-            }),
-        );
-
-        void promise
-            .unwrap()
-            .then(result => setResolvedNonce(result.nonce))
-            .catch(() => {});
-
-        return () => {
-            promise.abort();
-        };
-    }, [account, dispatch, isEthereumNetworkType, rbfParams]);
-
-    const ethereumNonce = resolvedNonce;
+    // The signing thunk resolves the nonce (backend-checked, next-available) and stores it in send
+    // state. We read that exact value here instead of resolving it again, so the displayed nonce
+    // always matches the one being signed and we avoid a TrezorConnect call racing the device sign.
+    const ethereumNonce = useSelector(selectResolvedEthereumNonce);
 
     return (
         <>
@@ -137,6 +107,13 @@ export const TransactionReviewSummary = ({
 
                     {isEthereumNetworkType && (
                         <>
+                            {ethereumNonce !== undefined && (
+                                <Note data-testid="@modal/ethereum/nonce" iconName="receipt">
+                                    <Translation id="TR_NONCE" />
+                                    {': '}
+                                    {ethereumNonce}
+                                </Note>
+                            )}
                             <Note data-testid="@modal/ethereum/gas-limit" iconName="gasPump">
                                 <Translation id="TR_GAS_LIMIT" />
                                 {': '}
@@ -162,13 +139,6 @@ export const TransactionReviewSummary = ({
                                     />
                                 </Note>
                             ) : undefined}
-                            {ethereumNonce !== undefined && (
-                                <Note data-testid="@modal/ethereum/nonce" iconName="receipt">
-                                    <Translation id="TR_NONCE" />
-                                    {': '}
-                                    {ethereumNonce}
-                                </Note>
-                            )}
                         </>
                     )}
 

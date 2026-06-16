@@ -1460,6 +1460,7 @@ export const signAndPush: SignAndPush[] = [
         connect: [
             undefined, // updateFeeInfoThunk
             undefined, // estimateFee
+            undefined, // getAccountInfo (signing-time confirmed-nonce check; falls back to local)
             {
                 success: true,
                 payload: {

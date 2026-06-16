@@ -24,6 +24,7 @@ export type SendState = {
     signedTx?: BlockbookTransaction;
     serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction).
     accountKey?: AccountKey; // Account key for the transaction being processed.
+    resolvedEthereumNonce?: string; // EVM nonce resolved at signing time, shown in the review modal.
 };
 
 export const initialState: SendState = {
@@ -81,12 +82,16 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
                 state.signedTx = signedTx;
             },
         )
+        .addCase(sendFormActions.storeResolvedEthereumNonce, (state, { payload: nonce }) => {
+            state.resolvedEthereumNonce = nonce;
+        })
         .addCase(sendFormActions.discardTransaction, state => {
             delete state.precomposedTx;
             delete state.precomposedForm;
             delete state.serializedTx;
             delete state.signedTx;
             delete state.accountKey;
+            delete state.resolvedEthereumNonce;
         })
         .addCase(sendFormActions.clearSignedTransactionData, state => {
             delete state.serializedTx;
@@ -102,6 +107,7 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.serializedTx;
             delete state.signedTx;
             delete state.accountKey;
+            delete state.resolvedEthereumNonce;
         })
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFormDrafts)
         .addCase(accountsActions.removeAccount, (state, { payload }) => {
