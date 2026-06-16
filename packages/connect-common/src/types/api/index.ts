@@ -3,9 +3,6 @@ import { Type } from '@trezor/schema-utils';
 
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
-import type { tezosGetAddress } from './tezosGetAddress';
-import type { tezosGetPublicKey } from './tezosGetPublicKey';
-import type { tezosSignTransaction } from './tezosSignTransaction';
 import type { tronComposeTransaction } from './tronComposeTransaction';
 import type { tronGetAddress } from './tronGetAddress';
 import type { tronSignTransaction } from './tronSignTransaction';
@@ -23,6 +20,7 @@ import { TrezorConnectMonero } from './monero';
 import { TrezorConnectRipple } from './ripple';
 import { TrezorConnectSolana } from './solana';
 import { TrezorConnectStellar } from './stellar';
+import { TrezorConnectTezos } from './tezos';
 
 export {
     TrezorConnectAccount,
@@ -38,20 +36,8 @@ export {
     TrezorConnectRipple,
     TrezorConnectSolana,
     TrezorConnectStellar,
+    TrezorConnectTezos,
 };
-
-// Tezos-specific operations
-export const TrezorConnectTezos = Type.Object({
-    // https://connect.trezor.io/9/methods/tezos/tezosGetAddress/
-    tezosGetAddress: Type.Unsafe<typeof tezosGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/tezos/tezosGetPublicKey/
-    tezosGetPublicKey: Type.Unsafe<typeof tezosGetPublicKey>(),
-
-    // https://connect.trezor.io/9/methods/tezos/tezosSignTransaction/
-    tezosSignTransaction: Type.Unsafe<typeof tezosSignTransaction>(),
-});
-export type TrezorConnectTezos = Static<typeof TrezorConnectTezos>;
 
 // Tron-specific operations
 export const TrezorConnectTron = Type.Object({
