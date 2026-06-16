@@ -33,9 +33,9 @@
     },
     "devDependencies": {
         "@anthropic-ai/claude-code": "^2.1.89",
-        "@currents/mcp": "^2.2.16",
-        "@currents/playwright": "^1.22.2",
-        "@playwright/test": "1.58.2",
+        "@currents/mcp": "^2.3.2",
+        "@currents/playwright": "^2.1.4",
+        "@playwright/test": "1.60.0",
         "@trezor/node-utils": "workspace:*",
         "tsx": "^4.21.0"
     }
