@@ -137,6 +137,13 @@ to the triage:
 Each reviewer is prompted to **find real bugs and try to break the code**, not to
 nitpick style (lint/format is CI's job). Post findings as inline comments.
 
+**Cite the line or flag it UNVERIFIED.** No "probably handled / likely tested" —
+every claim that something is safe/handled/tested must cite `file:line` or the test
+name, else label it UNVERIFIED; "looks fine" is **not** a finding. Attach a 1-10
+**confidence** to each finding and gate the display: ≥7 shown normally, 5-6 shown
+with a "verify" caveat, 3-4 collapsed unless it would be a P0. This kills
+hallucinated all-clears and low-signal noise before it reaches the human gate.
+
 **Always-on spec-fidelity reviewer (every triage size).** Independent of the
 bug-hunters, run one reviewer whose only job is to read the **frozen spec** (the
 linked issue — its `## Acceptance criteria / Definition of done` in particular)
@@ -162,14 +169,25 @@ with your adversarial findings into one set.
 Gate for noise, then classify each finding by who resolves it (same model as
 `conveyor-2-plan-review`):
 
+- **Skip-memory (don't re-litigate dismissed findings).** Fingerprint each finding
+  `path:line:category` and record it in the status comment with its triage action
+  (auto-fixed / human-fixed / parked-skipped). On a re-review (after a rebase or new
+  commits), **suppress only `parked-skipped` findings whose file is unchanged since
+  the prior review** (`git diff --name-only <prior-review-sha> HEAD`); **always
+  re-check fixed ones** (they can regress). Note "Suppressed N findings the human
+  already dismissed (code unchanged)" — never silently, and never re-surface what a
+  human waved off.
 - **Noise gate.** Consider findings at confidence ≥ 6/10; always consider
   anything that looks like a real bug or a security issue regardless of
   confidence. Drop pure style nits.
 - **Auto-fix** — only when **all** hold: confidence is high (≥ 8/10), the fix is
   clear and mechanical, it is low-risk, and it does not change intended behaviour
   or the spec. Never classify a signing / key-handling / persistence / privacy
-  finding as mechanical — those always route to a human (park). Apply it, commit
-  (conventional commit; for a bug in a specific earlier commit prefer `--fixup`).
+  finding as mechanical — those always route to a human (park). **A behavioural fix
+  (not pure style) must ship a regression test** that fails before the fix and
+  passes after (`// Regression: #<issue>`) — a behavioural fix without one is not
+  low-risk, so **park it** instead. Apply it, commit (conventional commit; for a bug
+  in a specific earlier commit prefer `--fixup`).
   Before pushing: `git fetch origin <branch>`; if it advanced with a commit you
   did NOT author, STOP (a human or a repo bot pushed — never clobber it) and
   reconcile. Otherwise `git push --force-with-lease`; a non-fast-forward / lease
