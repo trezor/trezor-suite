@@ -82,6 +82,9 @@ Always run:
   code blast radius, data flow, failure modes, security/privacy/signing
   implications (hardware wallet — take this seriously), test surface, backward
   compatibility. Read the actual code for the affected areas; do not theorize.
+  **Load project learnings** (`.github/conveyor-learnings.md`, see CONVENTIONS) for
+  those areas and apply any that are relevant (annotate `Applied prior learning:`
+  in the status comment).
 
 Run conditionally (detect from the plan's "Affected areas" / "Scope"):
 

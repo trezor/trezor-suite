@@ -99,3 +99,28 @@ A `conveyor:meta` issue is just a friction-log entry; the triage step
 (`conveyor-improve`, when built) drains them into **gated** skill-change PRs. A
 human always approves the skill change at the PR gate — **friction capture is
 automatic, skill edits are never silently auto-applied.**
+
+## Project learnings
+
+Stations should not cold-start on the codebase every run. The product repo keeps a
+**`.github/conveyor-learnings.md`** file (format + examples in
+[`conveyor-learnings.example.md`](conveyor-learnings.example.md)) — the cross-run
+memory of codebase-specific knowledge: build-order gotchas, recurring bug classes,
+"this package needs X", conventions agents discovered.
+
+- **Load** (preflight, before you work): `conveyor-1-plan-create`, `conveyor-2-plan-review`,
+  and `conveyor-3-implement` read the top entries relevant to the issue's Affected
+  areas. When a learning actually shapes a decision, **annotate it** in the status
+  comment — `Applied prior learning: <key> (source, conf N)` — so compounding is
+  visible at the human gate and a stale learning can be challenged.
+- **Capture** (during work): `conveyor-3-implement` and `conveyor-4-review` append a
+  new entry when real codebase knowledge surfaces — **as part of the implementation
+  PR**, so the learning is human-reviewed at the merge gate before it is trusted
+  (the merge IS the promotion event; no per-use counter).
+- **Trust:** append-only, latest-winner (a correction is a newer entry with the same
+  `key`); `human`-source entries apply without caveat, unconfirmed `agent` entries
+  carry lower confidence and decay; a `<7` agent entry reads as a hint to verify,
+  not a rule.
+- **GC:** drop an entry that references a now-deleted file/symbol (staleness, in a
+  reviewed PR); on a cross-key contradiction keep both, tagged, and surface the
+  conflict for a human.

@@ -333,6 +333,16 @@ skill changes** — agents propose, a human approves at the PR gate. Three layer
 The non-negotiable: **friction capture is automatic and low-risk; skill *edits* are
 always human-gated**, so the workflow can't silently drift.
 
+Conveyor compounds along a second axis too — **project learnings**. The product repo
+keeps a versioned `.github/conveyor-learnings.md` (codebase gotchas, recurring bug
+classes, package quirks) that stations **load** before working and **append to
+inside the implementation PR**, so each learning is human-reviewed at the merge gate
+before it is trusted — the merge is the promotion event (no per-use counter), with
+confidence-decay for unconfirmed agent entries and GC for stale/contradictory ones.
+This turns each station from cold-start into compounding memory. See
+[CONVENTIONS.md](CONVENTIONS.md#project-learnings) and
+[`conveyor-learnings.example.md`](conveyor-learnings.example.md).
+
 ## The skills
 
 All four follow the shared [house rules](CONVENTIONS.md) — English-only and

@@ -78,8 +78,10 @@ you are confident no equivalent plan already exists.
 
 If a question hinges on how the code actually works (which package owns a flow,
 whether a pattern already exists), do a quick read of the codebase rather than
-guessing — but keep it light. Deep architecture analysis is `conveyor-2-plan-review`'s job,
-not yours. Note anything you find as an "Open question" rather than resolving it.
+guessing — but keep it light. **Skim `.github/conveyor-learnings.md`** (see
+CONVENTIONS) for the area — a known gotcha may belong in Constraints & risks. Deep
+architecture analysis is `conveyor-2-plan-review`'s job, not yours. Note anything you
+find as an "Open question" rather than resolving it.
 
 ### 4. Draft the plan
 

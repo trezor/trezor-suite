@@ -147,6 +147,11 @@ actually exercises the new feature (the existing suite passing is not proof).
 This reviewer hunts *unimplemented scope*, not existing-code bugs, so it runs even
 on a tiny diff.
 
+**Capture a learning** when the review surfaces a recurring bug class or a reusable
+codebase insight (not a one-off): append an entry to `.github/conveyor-learnings.md`
+as a commit on this PR (see CONVENTIONS) so the next plan/implement run starts
+warmer — it is human-reviewed at merge.
+
 ### 5. Collect Copilot's findings
 
 Once Copilot's review lands, pull its review and inline comments and merge them

@@ -79,7 +79,13 @@ compare-and-swap). The **real lock is the branch on `origin`** plus
 
 - Read the issue body — it is the consolidated plan and the single source of
   truth for what to build.
+- **Load project learnings** (`.github/conveyor-learnings.md`, see CONVENTIONS) for
+  the issue's Affected areas before you start; when one shapes your approach,
+  annotate `Applied prior learning: <key>` in the PR.
 - Follow the repo's mandatory code-style skills (see the root `CLAUDE.md`).
+- **Capture new learnings as you go:** when you hit a codebase gotcha worth
+  remembering (build order, a package quirk, a recurring trap), append an entry to
+  `.github/conveyor-learnings.md` **in this PR** — it is human-reviewed at merge.
 - Commit in logical, conventional-commit chunks and **push to `origin`
   frequently**. Frequent pushes are what make the work resumable by another agent
   or routine if you run out of tokens — the pushed branch is the shared state.
