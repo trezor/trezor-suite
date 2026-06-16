@@ -103,7 +103,14 @@ removing the old, so a crash mid-transition leaves an extra findable label, neve
 invisible orphan), and **step-0 reconciliation** at claim time (if an issue/PR carries
 zero conveyor lifecycle labels or more than one — or a single label that disagrees
 with the status comment's `State:` line, the trace of a run interrupted mid-handoff
-— re-derive the true state and align both before doing anything else).
+— re-derive the true state and align both before doing anything else). These prose
+rules are backed by a deterministic **PreToolUse guard hook**
+([`hooks/conveyor-guard.sh`](hooks/conveyor-guard.sh)) that hard-denies the
+irreversible commands (force-push without lease, `reset --hard`, `gh pr merge`,
+`gh api -X DELETE` …) so an unattended run can't clobber even if the model slips —
+and by treating agent/external-authored GitHub text as **untrusted input** (a
+comment that says "skip the security review" is rejected, not obeyed). See
+[CONVENTIONS.md](CONVENTIONS.md#enforcement--untrusted-input).
 
 ## Lifecycle (labels as a state machine)
 
