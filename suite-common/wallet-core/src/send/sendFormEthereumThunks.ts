@@ -49,6 +49,7 @@ import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
+import { sendFormActions } from './sendFormActions';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
@@ -534,12 +535,18 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
+        // Re-check the backend right before signing: the confirmed nonce may have advanced since
+        // the form was composed (e.g. another wallet/session spent it), so this returns the
+        // next available nonce. Store it so the review modal can display the exact value being
+        // signed without resolving it again (which would race this in-progress signing).
         const { nonce } = await dispatch(
             ethereumGetCurrentNonceThunk({
                 selectedAccount,
                 rbfParams: formState.rbfParams,
+                fetchConfirmedNonce: true,
             }),
         ).unwrap();
+        dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
 
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess

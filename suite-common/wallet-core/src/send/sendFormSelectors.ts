@@ -24,6 +24,8 @@ export const selectSendFormAccountKey = (state: SendRootState) => state.wallet.s
 export const selectSendRaw = (state: SendRootState) => state.wallet.send.sendRaw;
 export const selectPrecomposedSendForm = (state: SendRootState) =>
     state.wallet.send.precomposedForm;
+export const selectResolvedEthereumNonce = (state: SendRootState) =>
+    state.wallet.send.resolvedEthereumNonce;
 
 export const selectSendFormDraftByKey = (
     state: SendRootState,
