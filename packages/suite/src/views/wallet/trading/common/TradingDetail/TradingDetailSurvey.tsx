@@ -42,7 +42,7 @@ export const TradingDetailSurvey = () => {
         <Card>
             <Column gap={spacings.lg} padding={8}>
                 <Column gap={spacings.xs}>
-                    <H2>{title}</H2>
+                    <H2 typographyStyle="headline-sm">{title}</H2>
                     <Paragraph typographyStyle="body-sm" color="contentSecondary">
                         {description}
                     </Paragraph>
