@@ -4,6 +4,7 @@ import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { getTranslation, localeReducer } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 import {
     type TestStore,
     act,
@@ -13,8 +14,16 @@ import {
     userEvent,
 } from '@suite-native/test-utils-store';
 import { tradingSlice } from '@suite-native/trading-state';
+import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
 import { SlippageBottomSheet } from '../SlippageBottomSheet';
+
+jest.mock('@suite-native/link', () => ({
+    useOpenLink: jest.fn(),
+}));
+
+const mockUseOpenLink = useOpenLink as jest.MockedFunction<typeof useOpenLink>;
+const mockOpenLink = jest.fn();
 
 const mockOnClose = jest.fn();
 
@@ -40,6 +49,7 @@ describe('SlippageBottomSheet', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockUseOpenLink.mockReturnValue(mockOpenLink);
     });
 
     it('should show default slippage value initially', async () => {
@@ -103,5 +113,14 @@ describe('SlippageBottomSheet', () => {
 
         expect(getByText(getTranslation('generic.buttons.confirm'))).toBeOnTheScreen();
         expect(getByText(getTranslation('generic.buttons.cancel'))).toBeOnTheScreen();
+    });
+
+    it('should open DEX slippage URL when learn more is pressed', async () => {
+        const store = createLightStore({ reducer });
+        const { getByText } = await renderSlippageBottomSheet(store);
+
+        await userEvent.press(getByText(getTranslation('generic.buttons.learnMore')));
+
+        expect(mockOpenLink).toHaveBeenCalledWith(TREZOR_TRADING_DEX_SLIPPAGE_URL);
     });
 });
