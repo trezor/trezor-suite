@@ -211,6 +211,14 @@ gh pr list --label conveyor/impl:needs-human            # stuck implementations
 gh pr list --label conveyor/review:needs-human          # review findings waiting for a human
 ```
 
+**The whole board in the browser.** GitHub label search has no glob (`conveyor/*`),
+so the URL lists every conveyor label OR-ed (a comma inside one `label:` qualifier =
+OR; it returns issues **and** PRs, all states). Update it if you add a label:
+
+```
+https://github.com/trezor/trezor-suite/issues?q=label%3A%22conveyor%2Fplan%3Adraft%22%2C%22conveyor%2Fplan%3Ain-review%22%2C%22conveyor%2Fplan%3Aneeds-human%22%2C%22conveyor%2Fplan%3Aready-to-implement%22%2C%22conveyor%2Fimpl%3Ain-progress%22%2C%22conveyor%2Fimpl%3Aneeds-human%22%2C%22conveyor%2Freview%3Aqueued%22%2C%22conveyor%2Freview%3Ain-progress%22%2C%22conveyor%2Freview%3Aneeds-human%22%2C%22conveyor%2Freview%3Apassed%22%2C%22conveyor%2Fland%3Awatching%22%2C%22conveyor%2Fland%3Averified%22%2C%22conveyor%2Fland%3Abroke-develop%22%2C%22conveyor%2Fland%3Aneeds-human%22%2C%22conveyor%3Ameta%22
+```
+
 To find **orphans** — issues/PRs carrying NONE of the conveyor lifecycle labels (a
 crash dropped the last label, or an item never entered the line) — query the
 negative space and reconcile (step-0) anything that turns up:
