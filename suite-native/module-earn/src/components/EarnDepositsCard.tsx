@@ -10,11 +10,10 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
+import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../types';
 import { EarnActiveItemsBottomSheet } from './EarnActiveItemsBottomSheet';
 import { EarnDepositsCardRow } from './EarnDepositsCardRow';
-import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
-import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
-import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../types';
 import { EarnItemInfoModal } from './EarnItemInfoModal';
 
 const cardHeaderStyle = prepareNativeStyle(utils => ({
@@ -37,7 +36,6 @@ export const EarnDepositsCard = ({
         stakingActiveItems,
         stablecoinYieldActiveItems,
     });
-    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const {
         bottomSheetRef: stakingSheetRef,
         closeModal: closeStakingSheet,
@@ -93,7 +91,6 @@ export const EarnDepositsCard = ({
                 ref={stakingSheetRef}
                 type="staking"
                 items={stakingRow?.activeItems ?? []}
-                navigateToStakingDetail={navigateToStakingDetail}
                 onClose={closeStakingSheet}
                 onSolanaClaimPress={openStakingInfoModal}
             />
@@ -101,7 +98,6 @@ export const EarnDepositsCard = ({
                 ref={stablecoinYieldSheetRef}
                 type="stablecoin-yield"
                 items={stablecoinYieldRow?.activeItems ?? []}
-                navigateToStakingDetail={navigateToStakingDetail}
                 onClose={closeStablecoinYieldSheet}
             />
 

@@ -2,10 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import {
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
@@ -22,7 +19,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 import { EarnClaimAlert } from './EarnClaimAlert';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
-import { useSolanaStakingFlag } from '../hooks/useSolanaStakingFlag';
 import { type EarnDepositsCardActiveItem } from '../types';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
@@ -70,9 +66,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
-    const isSolStaking = isStakingItem && isSupportedSolStakingNetworkSymbol(item.symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isSolanaStakingEnabled = useSolanaStakingFlag();
 
     const apy = useStakingSelector(state =>
         isStakingItem
@@ -97,10 +91,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
 
     const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
 
-    const isSolClaimHidden = isSolStaking && !isSolanaStakingEnabled;
-
-    const showClaimAlert =
-        canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice && !isSolClaimHidden;
+    const showClaimAlert = canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice;
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
     const contractAddress = isStablecoinYieldItem ? item.tokenContractAddress : undefined;

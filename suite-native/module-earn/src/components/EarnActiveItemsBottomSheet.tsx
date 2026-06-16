@@ -15,7 +15,7 @@ import {
 } from '@suite-native/navigation';
 
 import { EarnAccountCard } from './EarnAccountCard';
-import { type NavigateToStakingDetail } from '../hooks/useStakingDetailNavigation';
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from '../hooks/useStakingNavigateAnalytics';
 import { type EarnDepositsCardActiveItem } from '../types';
 
@@ -25,7 +25,6 @@ type EarnActiveItemsBottomSheetProps = {
     ref: BottomSheetModalRef;
     type: EarnDepositsCardActiveItem['type'];
     items: EarnDepositsCardActiveItem[];
-    navigateToStakingDetail: NavigateToStakingDetail;
     onClose: () => void;
     onSolanaClaimPress?: () => void;
 };
@@ -34,11 +33,11 @@ export const EarnActiveItemsBottomSheet = ({
     ref,
     type,
     items,
-    navigateToStakingDetail,
     onClose,
     onSolanaClaimPress,
 }: EarnActiveItemsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProp>();
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const store = useStore<AccountsRootState>();
 
@@ -94,7 +93,6 @@ export const EarnActiveItemsBottomSheet = ({
             }
 
             onClose();
-
             navigation.navigate(RootStackRoutes.ClaimReview, {
                 accountKey: item.accountKey,
                 symbol: item.symbol,
