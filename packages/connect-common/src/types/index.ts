@@ -52,7 +52,7 @@ export type {
 } from './api/bitcoin/composeTransaction';
 export { CancelCoinjoinAuthorization } from './api/bitcoin/cancelCoinjoinAuthorization';
 export { ChangeLanguage } from './api/management/changeLanguage';
-export type { GetAccountInfo } from './api/getAccountInfo';
+export type { GetAccountInfo } from './api/account/getAccountInfo';
 export {
     ACCOUNT_TYPES,
     type AccountTypeItem,
@@ -60,7 +60,7 @@ export {
     type AdditionalParams,
     type DiscoverAccountsProgress,
     CARDANO_DERIVATIONS,
-} from './api/discoverAccounts';
+} from './api/account/discoverAccounts';
 export { type FirmwareUpdateResponse } from './api/device/firmwareUpdate';
 export { type UpdateConnectSettings } from './api/core/updateConnectSettings';
 export { GetOwnershipId } from './api/device/getOwnershipId';

@@ -2,8 +2,8 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { BundledParams, Params, Response } from '../params';
-import { GetPublicKey as GetPublicKeyShared, PublicKey } from '../params';
+import type { BundledParams, Params, Response } from '../../params';
+import { GetPublicKey as GetPublicKeyShared, PublicKey } from '../../params';
 
 export type GetPublicKey = Static<typeof GetPublicKey>;
 export const GetPublicKey = Type.Intersect([

@@ -1,9 +1,9 @@
 import type { BlockchainLinkParams } from '@trezor/blockchain-link';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { AccountInfo } from '../account';
-import type { EntropyCheckResult } from '../device';
-import type { Params, Response } from '../params';
+import type { AccountInfo } from '../../account';
+import type { EntropyCheckResult } from '../../device';
+import type { Params, Response } from '../../params';
 
 export const ACCOUNT_TYPES = [
     { symbol: 'btc', type: 'normal', path: "m/84'/0'/i'" },

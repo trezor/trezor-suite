@@ -7,7 +7,6 @@ import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
 import type { cardanoGetPublicKey } from './cardanoGetPublicKey';
 import type { cardanoSignMessage } from './cardanoSignMessage';
 import type { cardanoSignTransaction } from './cardanoSignTransaction';
-import type { discoverAccounts } from './discoverAccounts';
 import type { ethereumGetAddress } from './ethereumGetAddress';
 import type { ethereumGetPublicKey } from './ethereumGetPublicKey';
 import type { ethereumSignMessage } from './ethereumSignMessage';
@@ -17,10 +16,6 @@ import type { ethereumVerifyMessage } from './ethereumVerifyMessage';
 import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
-import type { getAccountInfo } from './getAccountInfo';
-import type { getAddress } from './getAddress';
-import type { getCoinInfo } from './getCoinInfo';
-import type { getPublicKey } from './getPublicKey';
 import type { moneroGetAddress } from './moneroGetAddress';
 import type { moneroGetWatchKey } from './moneroGetWatchKey';
 import type { moneroKeyImageSync } from './moneroKeyImageSync';
@@ -29,7 +24,6 @@ import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
 import type { rippleGetAddress } from './rippleGetAddress';
 import type { rippleSignTransaction } from './rippleSignTransaction';
-import type { signMessage } from './signMessage';
 import type { solanaComposeTransaction } from './solanaComposeTransaction';
 import type { solanaGetAddress } from './solanaGetAddress';
 import type { solanaGetPublicKey } from './solanaGetPublicKey';
@@ -42,8 +36,8 @@ import type { tezosSignTransaction } from './tezosSignTransaction';
 import type { tronComposeTransaction } from './tronComposeTransaction';
 import type { tronGetAddress } from './tronGetAddress';
 import type { tronSignTransaction } from './tronSignTransaction';
-import type { verifyMessage } from './verifyMessage';
 
+import { TrezorConnectAccount } from './account';
 import { TrezorConnectBitcoin } from './bitcoin';
 import { TrezorConnectBlockchain } from './blockchain';
 import { TrezorConnectCore } from './core';
@@ -51,37 +45,13 @@ import { TrezorConnectDevice } from './device';
 import { TrezorConnectManagement } from './management';
 
 export {
+    TrezorConnectAccount,
     TrezorConnectBitcoin,
     TrezorConnectBlockchain,
     TrezorConnectCore,
     TrezorConnectDevice,
     TrezorConnectManagement,
 };
-
-// Generic account and address operations (multi-coin)
-export const TrezorConnectAccount = Type.Object({
-    // https://connect.trezor.io/9/methods/bitcoin/getAddress/
-    getAddress: Type.Unsafe<typeof getAddress>(),
-
-    // https://connect.trezor.io/9/methods/bitcoin/getPublicKey/
-    getPublicKey: Type.Unsafe<typeof getPublicKey>(),
-
-    // https://connect.trezor.io/9/methods/bitcoin/getAccountInfo/
-    getAccountInfo: Type.Unsafe<typeof getAccountInfo>(),
-
-    // todo: link docs
-    discoverAccounts: Type.Unsafe<typeof discoverAccounts>(),
-
-    // https://connect.trezor.io/9/methods/bitcoin/signMessage/
-    signMessage: Type.Unsafe<typeof signMessage>(),
-
-    // https://connect.trezor.io/9/methods/bitcoin/verifyMessage/
-    verifyMessage: Type.Unsafe<typeof verifyMessage>(),
-
-    // https://connect.trezor.io/9/methods/other/getCoinInfo/
-    getCoinInfo: Type.Unsafe<typeof getCoinInfo>(),
-});
-export type TrezorConnectAccount = Static<typeof TrezorConnectAccount>;
 
 // Ethereum-specific operations
 export const TrezorConnectEthereum = Type.Object({

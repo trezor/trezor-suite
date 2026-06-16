@@ -2,8 +2,8 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { Address as AddressShared, BundledParams, Params, Response } from '../params';
-import { GetAddress as GetAddressShared } from '../params';
+import type { Address as AddressShared, BundledParams, Params, Response } from '../../params';
+import { GetAddress as GetAddressShared } from '../../params';
 
 export type GetAddress = Static<typeof GetAddress>;
 export const GetAddress = Type.Composite([
