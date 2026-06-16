@@ -38,6 +38,7 @@ import {
     buildLocalReleaseName,
     findBestCompatibleRelease,
     isFirmwareCacheUsedForSelectedSource,
+    isProductionFirmwareChannel,
     isStrictFeatures,
 } from '../utils/firmwareUtils';
 
@@ -164,6 +165,7 @@ export const getReleaseByVersion = async (
     firmwareType: FirmwareType,
 ): Promise<FirmwareRelease | undefined> => {
     const deviceModel = features.internal_model;
+    const firmwareChannel = settingsStore.get('firmwareChannel');
 
     const tryGetRelease = async (
         getter: () => Promise<FirmwareRelease | undefined> | FirmwareRelease | undefined,
@@ -184,7 +186,7 @@ export const getReleaseByVersion = async (
 
     const { firmwareDir, firmwareList } = localFirmwareStore.get();
     if (
-        isFirmwareCacheUsedForSelectedSource(settingsStore.get('firmwareChannel')) &&
+        isFirmwareCacheUsedForSelectedSource(firmwareChannel) &&
         firmwareList.includes(releaseName)
     ) {
         const localReleasePath = `${firmwareDir}${releaseName}`;
@@ -193,9 +195,15 @@ export const getReleaseByVersion = async (
         return JSON.parse(localReleaseBuffer.toString());
     }
 
+    // Bundled assets are production releases, so only use them on production-like channels.
+    // On other channels we must fetch the channel-appropriate release from remote.
+    const useBundledRelease = isProductionFirmwareChannel(firmwareChannel);
+
     const release =
         // Order is important!
-        (await tryGetRelease(() => getReleaseAsset(deviceModel, firmwareVersion, firmwareType))) ||
+        (useBundledRelease
+            ? await tryGetRelease(() => getReleaseAsset(deviceModel, firmwareVersion, firmwareType))
+            : undefined) ||
         (await tryGetRelease(() =>
             getOnlineReleaseByVersion(deviceModel, firmwareVersion, firmwareType),
         ));

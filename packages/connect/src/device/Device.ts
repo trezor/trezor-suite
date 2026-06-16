@@ -49,6 +49,7 @@ import {
     getFirmwareStatus,
     getReleaseByVersion,
 } from '../data/firmwareInfo';
+import * as settingsStore from '../data/settingsStore';
 import type { DeviceEvents, DeviceLifecycleEvents, IDevice, RunOptions } from '../types/idevice';
 import { getReleaseAsset } from '../utils/assetUtils';
 import {
@@ -57,7 +58,11 @@ import {
     parseCapabilities,
     parseRevision,
 } from '../utils/deviceFeaturesUtils';
-import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
+import {
+    getFirmwareMode,
+    getFirmwareType,
+    isProductionFirmwareChannel,
+} from '../utils/firmwareUtils';
 import { changeLanguage } from './workflow/changeLanguage';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { handshakeCancel } from './workflow/handshake';
@@ -736,7 +741,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         if (
             this._currentRelease &&
             newFirmwareType === this.firmwareType &&
-            versionUtils.isEqual(this._currentRelease.version, firmwareVersion)
+            versionUtils.isEqual(this._currentRelease.version, firmwareVersion) &&
+            // When test firmware channel is used, we need to fetch the release from remote.
+            isProductionFirmwareChannel(settingsStore.get('firmwareChannel'))
         ) {
             return;
         }
