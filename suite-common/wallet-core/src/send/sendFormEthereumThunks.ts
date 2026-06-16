@@ -470,19 +470,28 @@ export const resolveEthereumNonce = async ({
     // call but is authoritative and unaffected by local pending-tx state.
     let accountNonce = parseInt(selectedAccount.misc?.nonce ?? '0', 10);
     if (fetchConfirmedNonce) {
-        const accountInfoResponse = await TrezorConnect.getAccountInfo({
-            coin: selectedAccount.symbol,
-            descriptor: selectedAccount.descriptor,
-            identity: tryGetAccountIdentity(selectedAccount),
-            details: 'basic',
-            confirmedNonce: true,
-            suppressBackupWarning: true,
-        });
-        if (
-            accountInfoResponse.success &&
-            accountInfoResponse.payload.misc?.confirmedNonce != null
-        ) {
-            accountNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
+        // A backend failure (rejection or unsuccessful response) must not block signing — swallow it
+        // and fall back to local derivation below.
+        try {
+            const accountInfoResponse = await TrezorConnect.getAccountInfo({
+                coin: selectedAccount.symbol,
+                descriptor: selectedAccount.descriptor,
+                identity: tryGetAccountIdentity(selectedAccount),
+                details: 'basic',
+                confirmedNonce: true,
+                suppressBackupWarning: true,
+            });
+            if (
+                accountInfoResponse?.success &&
+                accountInfoResponse.payload.misc?.confirmedNonce != null
+            ) {
+                backendConfirmedNonce = parseInt(
+                    accountInfoResponse.payload.misc.confirmedNonce,
+                    10,
+                );
+            }
+        } catch {
+            // ignore — local derivation below
         }
     }
 
