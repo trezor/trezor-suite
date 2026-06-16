@@ -7,12 +7,6 @@ import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
 import type { cardanoGetPublicKey } from './cardanoGetPublicKey';
 import type { cardanoSignMessage } from './cardanoSignMessage';
 import type { cardanoSignTransaction } from './cardanoSignTransaction';
-import type { ethereumGetAddress } from './ethereumGetAddress';
-import type { ethereumGetPublicKey } from './ethereumGetPublicKey';
-import type { ethereumSignMessage } from './ethereumSignMessage';
-import type { ethereumSignTransaction } from './ethereumSignTransaction';
-import type { ethereumSignTypedData } from './ethereumSignTypedData';
-import type { ethereumVerifyMessage } from './ethereumVerifyMessage';
 import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
@@ -42,6 +36,7 @@ import { TrezorConnectBitcoin } from './bitcoin';
 import { TrezorConnectBlockchain } from './blockchain';
 import { TrezorConnectCore } from './core';
 import { TrezorConnectDevice } from './device';
+import { TrezorConnectEthereum } from './ethereum';
 import { TrezorConnectManagement } from './management';
 
 export {
@@ -50,30 +45,9 @@ export {
     TrezorConnectBlockchain,
     TrezorConnectCore,
     TrezorConnectDevice,
+    TrezorConnectEthereum,
     TrezorConnectManagement,
 };
-
-// Ethereum-specific operations
-export const TrezorConnectEthereum = Type.Object({
-    // https://connect.trezor.io/9/methods/ethereum/ethereumGetAddress/
-    ethereumGetAddress: Type.Unsafe<typeof ethereumGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumGetPublicKey/
-    ethereumGetPublicKey: Type.Unsafe<typeof ethereumGetPublicKey>(),
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumSignTransaction/
-    ethereumSignTransaction: Type.Unsafe<typeof ethereumSignTransaction>(),
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumSignMessage/
-    ethereumSignMessage: Type.Unsafe<typeof ethereumSignMessage>(),
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumSignTypedData/
-    ethereumSignTypedData: Type.Unsafe<typeof ethereumSignTypedData>(),
-
-    // https://connect.trezor.io/9/methods/ethereum/ethereumVerifyMessage/
-    ethereumVerifyMessage: Type.Unsafe<typeof ethereumVerifyMessage>(),
-});
-export type TrezorConnectEthereum = Static<typeof TrezorConnectEthereum>;
 
 // Cardano-specific operations
 export const TrezorConnectCardano = Type.Object({

@@ -12,7 +12,7 @@ export * from './settings';
 export * from './api/cardano';
 export * from './api/bitcoin/common';
 export * from './api/ripple';
-export * from './api/ethereum';
+export * from './api/ethereum/common';
 export * from './api/monero';
 export * from './api/solana';
 export * from './api/stellar';
