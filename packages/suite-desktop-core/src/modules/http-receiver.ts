@@ -34,9 +34,16 @@ export const initBackground: ModuleInitBackground = ({
         if (httpReceiver) {
             return httpReceiver.getInfo();
         }
+        const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
+
         // External request handler.
         // Note that if we override the `port` to something else than 21335, it might break google oauth
-        const receiver = createHttpReceiver();
+        const receiver = createHttpReceiver({
+            getStatus: () => ({
+                appVersion: app.getVersion(),
+                connectPopupWsEnabled: connectPopupEnabled(),
+            }),
+        });
         httpReceiver = receiver;
 
         // wait for httpReceiver to start accepting connections then register event handlers
@@ -91,7 +98,6 @@ export const initBackground: ModuleInitBackground = ({
             }
         });
 
-        const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
         ipcMain.handle('connect-popup/enabled', ipcEvent => {
             validateIpcMessage({ ipcEvent });
 

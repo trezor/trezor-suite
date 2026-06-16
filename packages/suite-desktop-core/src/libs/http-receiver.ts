@@ -9,6 +9,16 @@ type TemplateOptions = {
     title?: string;
     script?: string;
 };
+
+/**
+ * Lightweight runtime status of the built-in HTTP server, rendered on `/status`.
+ */
+export type HttpReceiverStatus = {
+    /** Application version, e.g. `25.6.1`. */
+    appVersion?: string;
+    /** Whether the connect-popup WebSocket transport (`/connect-ws`) is enabled. */
+    connectPopupWsEnabled: boolean;
+};
 /**
  * Events that may be emitted or listened to by HttpReceiver
  */
@@ -63,7 +73,99 @@ const applyTemplate = (content = 'You may now close this window.', options?: Tem
     return template;
 };
 
-export const createHttpReceiver = (options?: { port?: number }) => {
+/**
+ * Standalone, dependency-free status page. Intentionally minimal: no logo, no
+ * scripts, no external assets – just plain HTML/CSS describing the server state.
+ */
+const renderStatusPage = (status?: HttpReceiverStatus) => {
+    const wsEnabled = status?.connectPopupWsEnabled ?? false;
+    const version = status?.appVersion;
+
+    const row = (label: string, on: boolean) => `
+        <div class="row">
+            <span class="label">${label}</span>
+            <span class="value ${on ? 'on' : 'off'}">${on ? 'Enabled' : 'Disabled'}</span>
+        </div>
+    `;
+
+    return `<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Trezor Suite – Status</title>
+        <style>
+            body {
+                margin: 0;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: system-ui, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+                color: #171717;
+                background: #f7f7f7;
+            }
+            main {
+                width: 320px;
+                padding: 24px;
+                background: #fff;
+                border: 1px solid #ebebeb;
+                border-radius: 12px;
+            }
+            h1 {
+                margin: 0 0 4px;
+                font-size: 16px;
+                font-weight: 600;
+            }
+            p {
+                margin: 0 0 20px;
+                font-size: 13px;
+                color: #757575;
+            }
+            .row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 0;
+                border-top: 1px solid #ebebeb;
+                font-size: 14px;
+            }
+            .value {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 500;
+            }
+            .value::before {
+                content: "";
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: currentColor;
+            }
+            .value.on {
+                color: #21963b;
+            }
+            .value.off {
+                color: #b0b0b0;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>Trezor Suite</h1>
+            <p>Local HTTP server is running${version ? ` · v${xssFilters.inHTML(version)}` : ''}.</p>
+            ${row('Connect popup WebSocket', wsEnabled)}
+        </main>
+    </body>
+</html>`;
+};
+
+export const createHttpReceiver = (options?: {
+    port?: number;
+    /** Provides the current status rendered on the `/status` page. */
+    getStatus?: () => HttpReceiverStatus;
+}) => {
     // Note that if we override the `address` to something else than 127.0.0.1 or localhost, it might break google oauth
     const httpReceiver = new HttpServer<Events>({
         logger: convertILoggerToLog(global.logger, { serviceName: 'http-receiver' }),
@@ -74,6 +176,16 @@ export const createHttpReceiver = (options?: { port?: number }) => {
         (request, response, next) => {
             response.setHeader('Content-Type', 'text/html; charset=UTF-8');
             next(request, response);
+        },
+    ]);
+
+    // Lightweight status page. Unlike the other routes it stays active so it can
+    // always be reached to inspect the server while it is running. The server is
+    // bound to 127.0.0.1 and sets no CORS headers, so a cross-origin page can't
+    // read this (trivial) response anyway.
+    httpReceiver.get('/status', [
+        (_request, response) => {
+            response.end(renderStatusPage(options?.getStatus?.()));
         },
     ]);
 
