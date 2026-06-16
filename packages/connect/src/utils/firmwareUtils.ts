@@ -141,5 +141,11 @@ export const getFirmwareType = (features: Features) => {
     return type;
 };
 
+// Bundled release JSONs are the production assets, valid only for production-like channels.
+export const isProductionFirmwareChannel = (firmwareChannel?: FirmwareChannel) =>
+    firmwareChannel === undefined ||
+    firmwareChannel === 'production' ||
+    firmwareChannel === 'production-early-access';
+
 export const isFirmwareCacheUsedForSelectedSource = (firmwareChannel?: FirmwareChannel) =>
-    firmwareChannel === 'production';
+    isProductionFirmwareChannel(firmwareChannel);
