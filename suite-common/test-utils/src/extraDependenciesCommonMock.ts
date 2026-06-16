@@ -88,6 +88,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
             ),
         connectInitSettings,
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        createTransports: () => [],
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {

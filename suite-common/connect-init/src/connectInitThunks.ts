@@ -48,6 +48,7 @@ export const connectInitThunk = createThunk<void, void, void>(
                 analytics,
                 createLogger,
                 thpHostName,
+                createTransports,
             },
         } = extra;
 
@@ -137,7 +138,11 @@ export const connectInitThunk = createThunk<void, void, void>(
             ...firmwareHashCheckTimeoutsOverride,
         };
 
-        const { transports, showConnectLogs, definitionsChannel } = selectDebugSettings(getState());
+        const {
+            transports: debugTransports,
+            showConnectLogs,
+            definitionsChannel,
+        } = selectDebugSettings(getState());
         const thp = selectThpSettings(getState());
         // desktop thp appName/hostName enhanced in ./packages/suite-desktop-core/src/modules/trezor-connect.ts
         if (thpHostName !== undefined) {
@@ -149,7 +154,7 @@ export const connectInitThunk = createThunk<void, void, void>(
                 ...connectInitSettings,
                 binFilesBaseUrl,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
-                transports,
+                transports: createTransports(debugTransports),
                 thp,
                 debug: showConnectLogs,
                 createLogger,

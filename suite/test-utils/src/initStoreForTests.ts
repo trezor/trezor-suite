@@ -33,6 +33,7 @@ export const initStoreForTests = (preloadedState: PreloadedState = {}) => {
             history: memoryHistory,
             platformEncryption: testPlatformEncryption,
             reloadApp: () => {},
+            getTransportsFactories: () => ({}),
         },
         undefined,
         { statePatch: preloadedState },

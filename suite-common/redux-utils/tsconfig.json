@@ -22,6 +22,9 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/transport-common"
         }
     ]
 }

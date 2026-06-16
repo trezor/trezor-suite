@@ -10,7 +10,7 @@ import type {
     TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { CreateLogger, Manifest } from '@trezor/connect-common/src/types/settings';
+import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import {
     type Descriptor,
@@ -100,7 +100,6 @@ export const assertDeviceListConnected: (
 };
 
 type ConstructorParams = {
-    manifest?: Manifest;
     createLogger: CreateLogger;
 };
 type InitParams = Pick<
@@ -119,8 +118,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private readonly handshakeLock;
     private readonly authPenaltyManager;
     private readonly createLogger: CreateLogger;
-
-    private updateTransports;
 
     private getConnectedTransports() {
         return Object.values(this.transportManagers)
@@ -144,16 +141,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getConnectedTransports().map(getTransportInfo);
     }
 
-    constructor({ manifest, createLogger }: ConstructorParams) {
+    constructor({ createLogger }: ConstructorParams) {
         super();
 
         this.createLogger = createLogger;
         this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager();
-        this.updateTransports = createTransportList({
-            logger: createLogger('@trezor/transport'),
-            id: manifest?.appName || manifest?.appUrl || 'unknown app',
-        });
     }
 
     private getSimilarDevices(device: Device) {
@@ -256,7 +249,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     async init({ transports, transportReconnect, pendingTransportEvent }: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
-        this.transports = this.updateTransports(this.transports, transports);
+        this.transports = createTransportList(this.transports, transports);
 
         const promises = this.transports
             .map(t => t.apiType)

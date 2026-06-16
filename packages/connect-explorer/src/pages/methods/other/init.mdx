@@ -10,15 +10,6 @@ export const InitSchema = Type.Object({
     debug: Type.Optional(Type.Boolean()),
     transportReconnect: Type.Optional(Type.Boolean()),
     pendingTransportEvent: Type.Optional(Type.Boolean()),
-    transports: Type.Optional(
-        Type.Array(
-            Type.Union([
-                Type.Literal('BridgeTransport'),
-                Type.Literal('WebUsbTransport'),
-                Type.Literal('NodeUsbTransport'),
-            ]),
-        ),
-    ),
     coreMode: Type.Optional(
         Type.Union([
             Type.Literal('auto'),
@@ -35,8 +26,6 @@ export const paramDescriptions = {
         'default `true`. If transport dies during lifecycle of application, this field decides whether TrezorConnect tries to reestablish connection with transport layer.',
     pendingTransportEvent:
         'default `true`. Postpone emitting TRANSPORT.START event to the moment when connected device becomes available.',
-    transports:
-        'Array of transports that should be use. If not provided, TrezorConnect will choose a reasonable default based on your environment.',
     coreMode: `default \`auto\`.
 In the default \`auto\` mode, TrezorConnect will automatically choose \`core-in-suite-desktop\` if Suite desktop is available and \`core-in-suite-web\` otherwise, to allow for webUSB use.`,
 };

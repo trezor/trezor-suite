@@ -1,12 +1,17 @@
 import { ERRORS, type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
-import { TRANSPORT } from '@trezor/transport-common';
+// Deep import bypasses the `@trezor/transport` barrel so browser bundlers
+// do not resolve sibling node-only modules (`UdpTransport`/`dgram`,
+// `NodeUsbTransport`/`usb`).
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+import { type AbstractTransportParams, TRANSPORT } from '@trezor/transport-common';
+import { WebUsbTransport } from '@trezor/transport-web';
 
 import { config } from './data/config';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleWeb extends CoreInModule {
-    protected get defaultTransports() {
-        return ['BridgeTransport' as const, 'WebUsbTransport' as const];
+    protected defaultTransports(params: AbstractTransportParams) {
+        return [new BridgeTransport(params), new WebUsbTransport(params)];
     }
 
     protected updateProxy(proxy: UpdateConnectSettings['proxy']) {

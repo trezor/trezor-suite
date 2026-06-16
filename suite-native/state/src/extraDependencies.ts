@@ -26,22 +26,26 @@ import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
-import TrezorConnect, { initLog } from '@trezor/connect';
-import { BridgeTransport } from '@trezor/transport';
+import TrezorConnect, { type ConnectSettings, initLog } from '@trezor/connect';
+// Deep import bypasses the `@trezor/transport` barrel so Metro does not
+// resolve sibling node-only modules (`UdpTransport`/`dgram`,
+// `NodeUsbTransport`/`usb`).
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
-const bridgeTransport = new BridgeTransport({ port: 21328, id: 'bridge' });
+type NativeTransport = 'BridgeTransport' | 'NativeUsbTransport' | 'NativeBluetoothTransport';
 
 const transportsPerDeviceType = {
-    device: Platform.select({
-        ios: [bridgeTransport, NativeBluetoothTransport],
-        android: [NativeUsbTransport, NativeBluetoothTransport],
+    device: Platform.select<NativeTransport[]>({
+        ios: ['BridgeTransport', 'NativeBluetoothTransport'],
+        android: ['NativeUsbTransport', 'NativeBluetoothTransport'],
+        default: ['BridgeTransport'],
     }),
-    emulator: [bridgeTransport],
-} as const;
+    emulator: ['BridgeTransport'] satisfies NativeTransport[],
+};
 
 const transports = transportsPerDeviceType[deviceType];
 
@@ -81,6 +85,11 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
+        initLog(prefix, false);
+
+    const logger = createLogger('native-transport');
+
     return {
         suiteSync,
         bip329,
@@ -104,7 +113,20 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             },
         },
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
-        createLogger: (prefix: string) => initLog(prefix, false),
+        createLogger,
+        // Native constructs its per-device-type transports directly (single platform, no
+        // web/desktop split) and returns the enabled ones as ready-made instances.
+        createTransports: () =>
+            (transports ?? []).map(name => {
+                switch (name) {
+                    case 'BridgeTransport':
+                        return new BridgeTransport({ port: 21328, id: 'bridge', logger });
+                    case 'NativeUsbTransport':
+                        return new NativeUsbTransport({ id: 'native-usb', logger });
+                    case 'NativeBluetoothTransport':
+                        return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
+                }
+            }),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

@@ -21,6 +21,7 @@ import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type ExtraDependencies,
+    type GetTransportsFactoriesDep,
     type ThpHostNameDep,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
@@ -135,7 +136,8 @@ export type SuiteStoreDeps = HistoryDep &
     PlatformEncryptionDep &
     CreateConnectLoggerFactoryDep &
     ReloadAppDep &
-    ThpHostNameDep;
+    ThpHostNameDep &
+    GetTransportsFactoriesDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -167,6 +169,7 @@ export const initStore = (
             reloadApp: deps.reloadApp,
             createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
             thpHostName: deps.thpHostName,
+            getTransportsFactories: deps.getTransportsFactories,
         }),
     });
 

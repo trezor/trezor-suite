@@ -26,6 +26,7 @@
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/transport-common": "workspace:*",
         "lodash": "^4.18.1",
         "react": "19.2.3",
         "react-redux": "9.3.0",

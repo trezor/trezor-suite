@@ -37,7 +37,9 @@ const createTransportApi = (override = {}) =>
         ...override,
     }) as unknown as UsbApi;
 
-export const createTestTransportClass = (apiMethods = {}): any =>
+// Internal helper: pure DI means connect only ever receives Transport instances,
+// so the class form is no longer part of the public test surface — it stays here
+const createTestTransportClass = (apiMethods = {}): any =>
     class TestTransport extends AbstractApiTransport {
         name = 'TestTransport' as any;
 
@@ -95,7 +97,6 @@ declare global {
     var JestMocks: {
         getDeviceFeatures: typeof getDeviceFeatures;
         createTestTransport: typeof createTestTransport;
-        createTestTransportClass: typeof createTestTransportClass;
         releasesT1B1: FirmwareRelease[];
         releasesT2T1: FirmwareRelease[];
     };
@@ -124,7 +125,6 @@ const releasesT2T1 = Object.values(t2t1Assets).sort((a, b) =>
 global.JestMocks = {
     getDeviceFeatures,
     createTestTransport,
-    createTestTransportClass,
     releasesT1B1,
     releasesT2T1,
 };
