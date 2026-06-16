@@ -292,6 +292,9 @@ _Last updated by: conveyor-4-review (<interactive|autonomous>)_
   a recommendation, under one `✅ Done` box — the human ticks a box (async, in the
   GitHub UI), never invents the answer. A drain run (re-entered at
   `conveyor/review:needs-human`) resolves from the ticked state once Done is ticked.
+- **Always read the status comment before asking the human anything.** If the Done
+  box is already ticked, drain from the ticks — never ask them to re-answer in chat
+  what they have already ticked in GitHub.
 - The issue is frozen once the PR exists; write everything to the PR.
 - Auto-fix only high-confidence, low-risk, behaviour-preserving findings; park
   everything else. Never treat a signing / key-handling / persistence / privacy

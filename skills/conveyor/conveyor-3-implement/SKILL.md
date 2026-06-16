@@ -25,6 +25,19 @@ It does **not** do the code review or the split — those are the next station.
   ticked the answer checkboxes (see step 6) — re-run to read their choice and act.
 - Or you are resuming an issue whose lock has gone stale (see step 0).
 
+**If asked to implement a plan that is not yet `conveyor/plan:ready-to-implement`:**
+read the issue's status comment **first** — the decisions may already be answered.
+- `conveyor/plan:needs-human` with the **`✅ Done` box ticked** → the human has
+  already answered via the checkboxes. The plan just needs draining: run
+  `conveyor-2-plan-review` (drain) to apply the ticks, reconsolidate the plan, and
+  promote it to `ready-to-implement` — then implement. **Never ask the human to
+  re-answer decisions they have already ticked in GitHub.**
+- `conveyor/plan:needs-human` with **Done not ticked** → the human has not
+  finished. Point them at the `- [ ]` boxes in the status comment (tick the
+  choices + Done, async in the GitHub UI) and re-run `conveyor-2-plan-review` to
+  drain. Do **not** ask them to type an answer in chat as if there were no
+  checkboxes.
+
 ## Inputs
 
 - **Target issue.** A passed issue number, or — if none given — the oldest

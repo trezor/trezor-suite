@@ -147,6 +147,12 @@ UI** — no agent has to be running, and they can do it from a phone. The format
 (see step 4) is one checkbox per option per decision, plus a single
 `- [ ] ✅ Done — agent, pick this up` box that signals the answers are final.
 
+**Always read the existing status comment before you ask the human anything.** If a
+prior run already parked these decisions and the human has since ticked the
+`✅ Done` box, this is a **drain** — resolve from the ticked boxes (below) and do
+**not** re-present the decisions or ask for an answer in chat. Re-asking for an
+answer the human has already ticked in GitHub is a bug.
+
 First, **post each lens's raw findings as its own thread comment** (the durable
 log), and **rewrite the status comment** so its checkboxes, "Review lenses" table,
 and "Resolved decisions" reflect this run. Before any **wholesale body rewrite**,
@@ -172,7 +178,11 @@ Write all open decisions as the checkbox batch in the status comment (so they st
 answerable async too) **and** present them live to the human. They can either
 answer now (tell you the option letters) or say they will tick the boxes in GitHub
 later. If they answer now, tick the chosen boxes + the Done box yourself as the
-record and resolve as in a drain run. If they defer, leave it parked.
+record and resolve as in a drain run. If they defer, leave it parked **and tell
+them the exact next step:** *tick the boxes + the `✅ Done` box in the status
+comment, then re-run `/conveyor-2-plan-review`* — that drain reads the ticks,
+consolidates the plan, and promotes it to `ready-to-implement`. (Not
+`/conveyor-3-implement` — that only runs once the plan is `ready-to-implement`.)
 
 #### Autonomous
 Do **not** block. Write every open decision as the checkbox batch (options +

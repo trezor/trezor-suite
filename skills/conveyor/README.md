@@ -365,7 +365,12 @@ Same two modes (interactive / autonomous routine). See
   web UI** (from a laptop or a phone, no agent running), then ticks Done. The next
   run of the skill — manual, or a routine — **drains** the parked item: it reads the
   ticked state (exactly one box per item = the choice; none = the recommended
-  option; Done unticked = still waiting) and continues. The human's job is to tick,
+  option; Done unticked = still waiting) and continues. **Ticking alone changes
+nothing — re-run the same skill that parked it (e.g. `conveyor-2-plan-review`),
+not the next station like `conveyor-3-implement`, to drain. Asking the human to
+re-answer in chat what they already ticked, or a next-station skill refusing a
+ticked-but-not-drained plan instead of pointing at the drain, are bugs.** The
+human's job is to tick,
   not to design the answer from scratch; an open-ended "what should I do?" is a
   failure of this station.
 - **Gate noise.** Surface review findings at confidence ≥ 6/10; always surface
