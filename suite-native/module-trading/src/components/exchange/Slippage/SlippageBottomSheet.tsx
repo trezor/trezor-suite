@@ -10,15 +10,19 @@ import {
 } from '@suite-common/trading';
 import {
     BottomSheetModal,
+    Box,
     Button,
     HStack,
     Text,
+    TextButton,
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
 import { SlippageSummary } from './SlippageSummary';
 import { useSlippageForm } from '../../../hooks/Slippage/useSlippageForm';
@@ -34,6 +38,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const { form, isValid, handlePresetPress } = useSlippageForm();
+    const openLink = useOpenLink();
 
     const { handleSubmit, reset } = form;
 
@@ -97,6 +102,16 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
                         </HStack>
                     </VStack>
                     {quote && <SlippageSummary quote={quote} />}
+                    <Box alignSelf="flex-start">
+                        <TextButton
+                            onPress={() => openLink(TREZOR_TRADING_DEX_SLIPPAGE_URL)}
+                            iconRight="arrowUpRight"
+                            intent="brand"
+                            isUnderlined
+                        >
+                            <Translation id="generic.buttons.learnMore" />
+                        </TextButton>
+                    </Box>
                     <VStack spacing="sp12">
                         <Button
                             intent="brand"
