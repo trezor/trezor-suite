@@ -7614,10 +7614,6 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
         defaultMessage: 'Support & Feedback',
     },
-    TR_GUIDE_ARTICLES: {
-        id: 'TR_GUIDE_ARTICLES',
-        defaultMessage: 'Articles',
-    },
     TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER: {
         id: 'TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER',
         defaultMessage: 'Suite Guide',
