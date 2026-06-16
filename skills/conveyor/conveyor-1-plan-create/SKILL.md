@@ -29,20 +29,40 @@ boundaries (what is and is not part of this feature), not minimalism.
 
 ### 1. Forcing questions — one at a time
 
-Ask the questions below **one per turn**. Wait for the answer before asking the
-next. Push back on vague answers: the first answer is usually polished, the real
-constraint shows up in the second. If an answer uses an undefined term
-("seamless", "better UX", "faster"), restate it precisely and confirm before
-moving on.
+**Before you ask, find out.** Never ask the developer anything you can determine
+yourself by reading the code, the git history, or the report — who calls a
+function, which flows use it, which packages it touches, how a branch behaves, how
+often a path is realistically hit (estimate it from the code). **Investigate first**
+(step 3), answer every question you can from the codebase, and put to the developer
+**only what is genuinely human-only:** intent, priorities, product context you
+cannot observe, and scope/taste choices. Asking the developer an investigable fact
+is a bug in this station — it offloads your homework onto the human, the one scarce
+resource Conveyor exists to protect.
 
-Skip a question only if the developer has already answered it clearly in an
-earlier turn. If the developer is impatient and the idea is already
-well-evidenced, you may collapse to the two highest-leverage open questions
-(usually Q3 completeness and Q5 risks) — but never skip all of them.
+**For a bug fix** (a confirmed defect in identified code), lead with investigation,
+not interrogation: read the buggy code and trace it — the failing path, its callers,
+what relies on the broken behaviour, how often it triggers — and draft the problem,
+impact, and affected areas from that. Put to the developer only the real decisions:
+confirm the intended behaviour, the **fix scope** (just this branch, or sibling
+cases too?), and priority.
+
+Ask the questions below **one per turn**, but only for the parts investigation
+left open. Wait for the answer before asking the next. Push back on vague answers:
+the first answer is usually polished, the real constraint shows up in the second.
+If an answer uses an undefined term ("seamless", "better UX", "faster"), restate it
+precisely and confirm before moving on.
+
+Skip a question outright when the codebase (or an earlier answer) already settles
+it — state what you found instead of asking. If the developer is impatient and the
+idea is already well-evidenced, you may collapse to the two highest-leverage open
+questions (usually Q3 completeness and Q5 risks) — but never skip all of them.
 
 1. **Problem & who hits it.** What problem does this solve, and who actually hits
-   it — which user, in which flow, how often? Reject "would be nice to have";
-   look for a concrete person and a concrete moment.
+   it — which user, in which flow, how often? **Answer the mechanics from the code
+   yourself** (trace the affected path and its callers; estimate the frequency from
+   how the path is reached); ask the developer only for the intent and real-world
+   impact you cannot read off the code. Reject "would be nice to have"; look for a
+   concrete person and a concrete moment.
 2. **Status quo.** What happens today without this? What is the workaround people
    use now, and why is it bad enough to be worth our time?
 3. **The complete feature.** What is the whole feature, done properly? Capture all
@@ -50,8 +70,9 @@ well-evidenced, you may collapse to the two highest-leverage open questions
    change into shippable pieces happens later, at the review station.)
 4. **Affected surfaces.** Which packages / apps / platforms does this touch
    (e.g. `suite`, `suite-web`, `suite-desktop`, `suite-native`, `connect`,
-   `transport`, a `suite-common` package)? Any known coupling or shared code
-   that this will ripple into?
+   `transport`, a `suite-common` package)? **Determine this yourself** — read the
+   imports, callers, and shared modules — and present what you found for
+   confirmation, rather than asking the developer to enumerate it.
 5. **Constraints & risks.** Known technical constraints, backward-compatibility
    concerns, and — this is a hardware-wallet codebase — any security, privacy,
    or signing-path implications. What is the most likely way this goes wrong?
@@ -74,13 +95,16 @@ creating a new issue — link the existing issue/PR and suggest running
 `conveyor-2-plan-review` on it (or commenting on the open PR). Only proceed when
 you are confident no equivalent plan already exists.
 
-### 3. Optional grounding
+### 3. Ground the plan by investigation (do this first, not optionally)
 
-If a question hinges on how the code actually works (which package owns a flow,
-whether a pattern already exists), do a quick read of the codebase rather than
-guessing — but keep it light. **Skim `.github/conveyor-learnings.md`** (see
-CONVENTIONS) for the area — a known gotcha may belong in Constraints & risks. Deep
-architecture analysis is `conveyor-2-plan-review`'s job, not yours. Note anything you
+Read the code to **answer the questions above yourself** wherever the answer lives
+in the codebase — which package owns a flow, who calls what, how a function behaves,
+the realistic blast radius, the frequency of a path. For a bug, this means reading
+the buggy file and tracing it before you say a word to the developer. This is not
+the *deep* architecture analysis `conveyor-2-plan-review` does (that's its job) — it
+is the basic homework so you never put an investigable fact to the human. **Skim
+`.github/conveyor-learnings.md`** (see CONVENTIONS) for the area — a known gotcha may
+belong in Constraints & risks. Note anything you
 find as an "Open question" rather than resolving it.
 
 ### 4. Draft the plan

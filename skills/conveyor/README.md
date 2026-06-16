@@ -461,6 +461,12 @@ flake-rerun. Same two modes. See [conveyor-5-land/SKILL.md](conveyor-5-land/SKIL
   by the agent silently. Taste decisions (reasonable people disagree) are made by
   the agent but surfaced. User-challenges (the agent thinks the human's stated
   direction is wrong) are never auto-decided.
+- **Find out before you ask.** Never ask the human anything you can determine
+  yourself by reading the code, git history, or the report — callers, affected
+  packages, how a path behaves, how often it fires. Investigate first; put to the
+  human only what is genuinely human-only (intent, priorities, scope, unobservable
+  context). For a bug, lead with investigation, not interrogation. Asking the human
+  an investigable fact wastes the one resource Conveyor exists to protect.
 - **Batch human interaction.** Never drip questions one per turn during review.
   Collect, then present once.
 - **Offer options, never ask the human to invent one — answered async via
