@@ -171,7 +171,8 @@ Route each cluster by the **first** rule that applies:
    cluster against every entry's `rootCause` and `validations` (platform/group/spec), not just an
    overlapping spec path — a failure may be specific to a platform or device group (e.g. `T1B1`):
     - **Confident match → skipped**, reusing the entry's `reason`.
-    - **Unsure → treat as new** — skip this rule, continue to rules 2–4.
+    - **rootCause match, but different validations → treat as new** — continue to rules 2–4.
+    - **Unsure → treat as new** — continue to rules 2–4.
 2. **Fixable** — the **entire** remedy fits inside `suite/e2e/` and/or adding `data-testid`
    attributes in product source → **fix_task**.
 3. **Needs a product-logic change** → **skipped**, `reason: "PRODUCT_BUG"`.
