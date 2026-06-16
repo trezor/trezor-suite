@@ -1,5 +1,5 @@
-import type { Params, Response } from '../params';
-import type { CardanoGetNativeScriptHash, CardanoNativeScriptHash } from './cardano';
+import type { CardanoGetNativeScriptHash, CardanoNativeScriptHash } from './common';
+import type { Params, Response } from '../../params';
 
 export declare function cardanoGetNativeScriptHash(
     params: Params<CardanoGetNativeScriptHash>,

@@ -4,14 +4,18 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import { DerivationPath, type Params, type Response } from '../params';
+import {
+    CardanoCertificate,
+    CardanoCertificatePointer,
+    type CardanoInput,
+    type CardanoOutput,
+} from './common';
+import { DerivationPath, type Params, type Response } from '../../params';
 import type {
     PrecomposeResultError,
     PrecomposeResultFinal,
     PrecomposeResultNonFinal,
-} from './bitcoin/composeTransaction';
-import { CardanoCertificate, CardanoCertificatePointer } from './cardano';
-import type { CardanoInput, CardanoOutput } from './cardano';
+} from '../bitcoin/composeTransaction';
 
 export type PrecomposedTransactionFinalCardano = Omit<
     PrecomposeResultFinal,

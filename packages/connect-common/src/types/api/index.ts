@@ -1,12 +1,6 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { cardanoComposeTransaction } from './cardanoComposeTransaction';
-import type { cardanoGetAddress } from './cardanoGetAddress';
-import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
-import type { cardanoGetPublicKey } from './cardanoGetPublicKey';
-import type { cardanoSignMessage } from './cardanoSignMessage';
-import type { cardanoSignTransaction } from './cardanoSignTransaction';
 import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
@@ -34,6 +28,7 @@ import type { tronSignTransaction } from './tronSignTransaction';
 import { TrezorConnectAccount } from './account';
 import { TrezorConnectBitcoin } from './bitcoin';
 import { TrezorConnectBlockchain } from './blockchain';
+import { TrezorConnectCardano } from './cardano';
 import { TrezorConnectCore } from './core';
 import { TrezorConnectDevice } from './device';
 import { TrezorConnectEthereum } from './ethereum';
@@ -43,33 +38,12 @@ export {
     TrezorConnectAccount,
     TrezorConnectBitcoin,
     TrezorConnectBlockchain,
+    TrezorConnectCardano,
     TrezorConnectCore,
     TrezorConnectDevice,
     TrezorConnectEthereum,
     TrezorConnectManagement,
 };
-
-// Cardano-specific operations
-export const TrezorConnectCardano = Type.Object({
-    // https://connect.trezor.io/9/methods/cardano/cardanoGetAddress/
-    cardanoGetAddress: Type.Unsafe<typeof cardanoGetAddress>(),
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoGetPublicKey/
-    cardanoGetPublicKey: Type.Unsafe<typeof cardanoGetPublicKey>(),
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoGetNativeScriptHash
-    cardanoGetNativeScriptHash: Type.Unsafe<typeof cardanoGetNativeScriptHash>(),
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoSignTransaction/
-    cardanoSignTransaction: Type.Unsafe<typeof cardanoSignTransaction>(),
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoSignMessage/
-    cardanoSignMessage: Type.Unsafe<typeof cardanoSignMessage>(),
-
-    // https://connect.trezor.io/9/methods/cardano/cardanoComposeTransaction/
-    cardanoComposeTransaction: Type.Unsafe<typeof cardanoComposeTransaction>(),
-});
-export type TrezorConnectCardano = Static<typeof TrezorConnectCardano>;
 
 // Monero-specific operations
 export const TrezorConnectMonero = Type.Object({

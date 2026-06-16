@@ -9,7 +9,7 @@ export * from './params';
 export * from './settings';
 
 // altcoin related types. these exports should satisfy needs of 3rd party apps
-export * from './api/cardano';
+export * from './api/cardano/common';
 export * from './api/bitcoin/common';
 export * from './api/ripple';
 export * from './api/ethereum/common';
@@ -33,7 +33,7 @@ export type {
     PrecomposedTransactionErrorCardano,
     PrecomposedTransactionFinalCardano,
     PrecomposedTransactionNonFinalCardano,
-} from './api/cardanoComposeTransaction';
+} from './api/cardano/cardanoComposeTransaction';
 export type { RecoveryDevice } from './api/management/recoveryDevice';
 export type {
     AuthenticateDeviceParams,
