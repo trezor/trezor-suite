@@ -39,7 +39,12 @@ const reporters =
 module.exports = {
     ...nativeJestConfig,
     setupFiles: ['<rootDir>/e2e/jest.setup.js', ...(nativeJestConfig.setupFiles ?? [])],
-    moduleNameMapper: restModuleNameMapper,
+    moduleNameMapper: {
+        ...restModuleNameMapper,
+        // Prevent @sentry/react-native from loading in the Jest worker — its AsyncExpiringMap
+        // creates a module-level setInterval that keeps Jest from exiting after tests complete.
+        '^@sentry/react-native$': '<rootDir>/e2e/support/mocks/sentry.js',
+    },
     rootDir: process.cwd(),
     testTimeout: 120000,
     globalSetup: 'detox/runners/jest/globalSetup',
