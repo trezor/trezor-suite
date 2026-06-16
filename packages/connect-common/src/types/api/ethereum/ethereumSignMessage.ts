@@ -1,7 +1,7 @@
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { Params, Response } from '../params';
-import type { EthereumSignMessage } from './ethereum';
+import type { EthereumSignMessage } from './common';
+import type { Params, Response } from '../../params';
 
 export declare function ethereumSignMessage(
     params: Params<EthereumSignMessage>,
