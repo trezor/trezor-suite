@@ -75,11 +75,12 @@ describe(signEthereumSendFormTransactionThunk.name, () => {
         expect(signMock).not.toHaveBeenCalled();
     });
 
-    it('rejects a custom nonce that would create a gap', async () => {
-        await expect(sign(initStore(), formState({ ethereumNonce: '9' }))).rejects.toMatchObject({
-            message: expect.stringContaining('create a transaction gap'),
-        });
-        expect(signMock).not.toHaveBeenCalled();
+    it('signs a custom nonce above the next expected one (gap allowed)', async () => {
+        // confirmed 0..5 -> next 6; nonce 9 leaves a gap, which is now permitted (warned in the UI).
+        await sign(initStore(), formState({ ethereumNonce: '9' }));
+
+        expect(signMock).toHaveBeenCalledTimes(1);
+        expect(signMock.mock.calls[0][0].transaction.nonce).toBe('0x9');
     });
 
     it('signs with a valid custom nonce', async () => {
