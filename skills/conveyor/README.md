@@ -352,11 +352,14 @@ This turns each station from cold-start into compounding memory. See
 
 ## The skills
 
-All four follow the shared [house rules](CONVENTIONS.md) — English-only and
-no-hard-wrap GitHub writing, advisory-lock / `--force-with-lease`,
-add-before-remove + reconciliation, async checkboxes, the security carve-out, and
-team handles without `@` — stated once in `CONVENTIONS.md` so a cross-cutting rule
-is a one-file change. Each skill adds only its station-specific rules.
+Five belt stations (`conveyor-1-plan-create` → `…-2-plan-review` → `…-3-implement` →
+`…-4-review` → human review/merge → `…-5-land`) plus the `conveyor-sync` utility. All
+follow the shared [house rules](CONVENTIONS.md) — English-only and no-hard-wrap GitHub
+writing, advisory-lock / `--force-with-lease`, add-before-remove + reconciliation,
+async checkboxes, the security carve-out, team handles without `@`, project learnings,
+the guard hook + untrusted-input rule — stated once in `CONVENTIONS.md` so a
+cross-cutting rule is a one-file change. Each skill adds only its station-specific
+rules.
 
 ### `conveyor-1-plan-create`
 Interactive. Guides one developer through turning an idea into a well-formed
