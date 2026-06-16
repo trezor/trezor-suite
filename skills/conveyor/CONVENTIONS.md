@@ -16,6 +16,21 @@ process steps — this file is the canonical *what/always*.
   soft-wrap. Hard breaks belong only inside code blocks. (These SKILL.md files are
   hard-wrapped for editing convenience — do **not** copy that wrapping into the
   text you produce.)
+- **One comment, not many — collapse the detail.** When a step produces several
+  sections (per-lens findings, per-area notes, multiple reviews), post them as **one**
+  comment with each section in a **collapsed** `<details>` block — never one comment
+  per section, which floods the thread. Default to collapsed so the thread stays
+  scannable; the reader clicks the `<summary>` header to expand only what they want.
+  Leave a blank line inside the `<details>` around the inner markdown so GitHub
+  renders it:
+
+  ```markdown
+  <details><summary><b>Section title</b> — one-line verdict</summary>
+
+  …full content…
+
+  </details>
+  ```
 
 ## Locking & pushes
 

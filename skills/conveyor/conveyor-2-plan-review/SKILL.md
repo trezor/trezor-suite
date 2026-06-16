@@ -157,8 +157,28 @@ prior run already parked these decisions and the human has since ticked the
 **not** re-present the decisions or ask for an answer in chat. Re-asking for an
 answer the human has already ticked in GitHub is a bug.
 
-First, **post each lens's raw findings as its own thread comment** (the durable
-log), and **rewrite the status comment** so its checkboxes, "Review lenses" table,
+First, **post all lens findings in a single "review lenses" thread comment** (the
+durable log) — **never one comment per lens** (see CONVENTIONS "one comment, not
+many"). Put each lens that ran in its own **collapsed** `<details>` block, so the
+thread keeps one comment and the reader expands only the lens they want:
+
+```markdown
+## 🔍 Plan review lenses (this run)
+
+<details><summary><b>Scope / product</b> — <one-line verdict></summary>
+
+<raw findings>
+
+</details>
+
+<details><summary><b>Architecture</b> — <one-line verdict></summary>
+
+<raw findings>
+
+</details>
+```
+
+Then **rewrite the status comment** so its checkboxes, "Review lenses" table,
 and "Resolved decisions" reflect this run. Before any **wholesale body rewrite**,
 compare the current body against the hash you loaded in step 0 — if it changed, a
 human edited it concurrently; reconcile onto the new body rather than clobbering
