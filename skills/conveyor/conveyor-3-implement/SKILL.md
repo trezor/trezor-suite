@@ -89,7 +89,10 @@ compare-and-swap). The **real lock is the branch on `origin`** plus
 ### 2. Open the draft PR — lifecycle moves to the PR
 
 - Open it as a **draft**, base `develop`, head your branch.
-- Body: a short summary of the approach, and `Closes #<issue>` to link it.
+- Body: a short summary of the approach, `Closes #<issue>` to link it, and **copy
+  the `## Team` block** from the issue into the PR (still with handles **without a
+  leading `@`** — no notifications yet; people are requested/assigned at their own
+  gate).
 - **Remove the auto-requested CODEOWNERS reviewers right away.** Opening the PR
   auto-requests reviewers; clear them now so humans are not pinged early — they
   are only (re-)requested at the `conveyor/review:passed` handoff, by the human who flips
@@ -199,6 +202,10 @@ Then:
   `- [ ] (c) relax constraint Z in the plan`, `- [ ] (d) bounce back to planning`.
   The human ticks a box in the GitHub web UI (async, no agent running), never works
   out the options themselves.
+- **Pull in the eng owner — this is their gate.** If the `## Team` block names an
+  eng owner, request/assign them now and `@`-mention them in the diagnosis comment
+  (a notification here is intended — implementation is stuck and needs them). If
+  there is no eng owner, fall back to the Product owner.
 - Swap labels on the **PR** add-before-remove: add `conveyor/impl:needs-human` first, then
   remove `conveyor/impl:in-progress`.
 - Exit. `conveyor/impl:needs-human` means hands-off for other agents until a human

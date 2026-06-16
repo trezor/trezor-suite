@@ -221,8 +221,11 @@ Always **add** the new label **before** removing `conveyor/review:in-progress`, 
 mid-transition leaves an extra findable label, never zero.
 
 - **Clean** (nothing parked, no unresolved real/security finding, branch fresh):
-  add `conveyor/review:passed`, then remove `conveyor/review:in-progress`. Comment a summary. The PR
-  stays a **draft** — a human now verifies and promotes it to "Ready for review".
+  add `conveyor/review:passed`, then remove `conveyor/review:in-progress`. Comment a summary,
+  and name the **reviewer from the PR's `## Team` block** as the one to request. The
+  PR stays a **draft** — a human now verifies, flips it to "Ready for review", and
+  requests that reviewer (the `@`-mention / review-request at that flip is the
+  intended notification — the reviewer's gate has arrived).
 - **Parked** (open findings remain): add `conveyor/review:needs-human`, then remove
   `conveyor/review:in-progress`. `conveyor/review:needs-human` is hands-off for other agents until a
   human resolves the open findings (then re-run `conveyor-4-review` to continue).

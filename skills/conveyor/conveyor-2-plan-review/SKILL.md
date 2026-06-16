@@ -192,12 +192,38 @@ remove `conveyor/plan:in-review`, and exit with a summary of what was parked. A
 human ticks the boxes later; the next drain run picks it up.
 
 **After resolving (any mode):** record each resolved decision under "Resolved
-decisions" (what, which option, who/what decided, why) and **reconsolidate the
-issue body** so it always reflects the latest plan. Then:
+decisions" (what, which option, who/what decided, why), **reconsolidate the issue
+body** (including the `## Team` block — keep it), and **assemble the team** (below).
+Then:
 - If no open decisions remain, no lens left a P1 (including an auto-resolved one),
-  and the acceptance-criteria gate passes → add `conveyor/plan:ready-to-implement`
-  then remove `conveyor/plan:in-review`, update the status comment state, report done.
+  the acceptance-criteria gate passes, **and a reviewer is assigned** → add
+  `conveyor/plan:ready-to-implement` then remove `conveyor/plan:in-review`, update
+  the status comment state, report done.
 - Otherwise → keep `conveyor/plan:needs-human` and report what is still parked.
+
+#### Assemble the team
+The plan body carries a `## Team` block (seeded by `conveyor-1-plan-create` with the
+**Product owner** = issue creator). Fill in the rest, scaled to the plan's size and
+"Affected areas". Read the roster at `.github/conveyor-team.yml` if present (maps
+people → roles `product|eng|review|qa` → areas); **if absent, ask the human** for
+the handles instead of proposing.
+
+- **Reviewer — required, exactly one.** Always assign one (a roster member whose
+  `review` role + areas best match; not the Product owner if avoidable). A plan
+  cannot reach `ready-to-implement` without a reviewer, so this is a blocking
+  decision: surface it as a checkbox option set if the roster offers candidates,
+  or ask the human if there is no roster.
+- **Eng owner — optional.** Propose one only when the change is **large or
+  architecturally significant** (multi-package, new infra, signing/transport).
+  They own the technical approach and are the human `conveyor-3-implement` pulls in
+  when implementation parks to `conveyor/impl:needs-human`.
+- **Tester — optional.** Propose one only when there is a **real test/QA surface**
+  (user-facing flow, risky behaviour) — they own the future test/QA sign-off.
+
+Surface eng/tester as async checkbox decisions ("add an eng owner? who?" / "add a
+tester? who?") alongside the other decisions, with your recommendation. Write the
+final names into the `## Team` block **without a leading `@`** (no notification);
+each person is only actually requested/assigned at their own gate downstream.
 
 ### 4. Status comment shape
 
@@ -256,8 +282,11 @@ _Last updated by: conveyor-2-plan-review (<interactive|autonomous>)_
   resolution.
 - Read real code for the architecture lens; no speculative findings.
 - Do not promote to `conveyor/plan:ready-to-implement` while any P1 (even an auto-resolved
-  one), any unresolved open decision, or a missing/empty acceptance-criteria
-  section remains.
+  one), any unresolved open decision, a missing/empty acceptance-criteria section,
+  or **no assigned reviewer** remains. Every plan needs exactly one reviewer.
+- The `## Team` block: Product owner = issue creator (kept as-is); assign exactly
+  one reviewer (required); eng owner + tester are optional, by size. Store handles
+  without a leading `@` (no notification until each person's downstream gate).
 - Never classify a signing/key/persistence/privacy edit as mechanical; always
   surface security/privacy findings regardless of confidence.
 - Re-fetch the issue and compare against the body hash / labels you loaded before

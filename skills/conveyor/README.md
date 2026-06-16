@@ -264,6 +264,35 @@ Guardrails:
   firing on the checkbox edit) is deliberately **not** built — it clashes with
   running on personal subscriptions, and a frequent poll gets you ~the same thing.
 
+## Team — who owns the human gates
+
+Conveyor keeps the *stations* poolable (any worker's tokens do the agent work), but
+for a given feature it **assembles a team** of the humans accountable at the few
+**human gates**. Roles map to gates, not to agent stations:
+
+| Role | Owns | When assigned |
+| --- | --- | --- |
+| **Product owner** | the spec + plan decisions | always — it is the **issue creator** (set at `conveyor-1-plan-create`) |
+| **Reviewer** | the final human review | always — **exactly one, required**; a plan can't reach `ready-to-implement` without one |
+| **Eng owner** | the technical approach; pulled in when implementation parks to `impl:needs-human` | optional — only for large / architecturally significant changes |
+| **Tester** | the test/QA sign-off (future station) | optional — only when there is a real test/QA surface |
+
+The team is **assembled during `conveyor-2-plan-review`** (at the promote gate, once
+the scope and size are known), scaled to the plan: small stays near-fungible (the
+creator + one reviewer), large pulls in specialists. The agent proposes from a
+roster and the human confirms via the same async checkboxes; eng owner and tester
+are optional decisions.
+
+- **Roster:** `.github/conveyor-team.yml` maps people → roles (`product|eng|review|qa`)
+  → areas, matched to the plan's "Affected areas". It is **optional** — without it,
+  Product owner still defaults to the creator and the rest is asked of the human.
+  See [`conveyor-team.example.yml`](conveyor-team.example.yml).
+- **Recorded** in a `## Team` block in the issue body, carried onto the PR.
+- **No early pings:** handles are stored **without a leading `@`** so nobody is
+  notified up front. Each person is only actually requested/`@`-mentioned **at their
+  own gate** — the eng owner when implementation stalls, the reviewer when the PR is
+  flipped to "Ready for review", the tester at the test station.
+
 ## The skills
 
 ### `conveyor-1-plan-create`

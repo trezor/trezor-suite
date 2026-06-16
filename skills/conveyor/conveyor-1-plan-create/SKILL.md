@@ -87,6 +87,12 @@ and concrete — no filler. Leave a section as `_TBD_` only if genuinely unknown
 and add it to Open questions.
 
 ```markdown
+## Team
+- **Product owner:** <issue creator's handle, no leading @> — owns the spec and the plan decisions
+- **Reviewer:** _required — assigned in review_
+- **Eng owner:** _optional — assigned in review if the change is large_
+- **Tester:** _optional — assigned in review if there is a real test/QA surface_
+
 ## Problem
 <the problem and who hits it, when, how often>
 
@@ -123,7 +129,10 @@ on GitHub (creating an issue is outward-facing).
 Then create the issue with `gh`:
 
 - **Title:** a concise imperative summary (e.g. "Add X to Y").
-- **Body:** the structured plan above.
+- **Body:** the structured plan above. Fill the `## Team` block's **Product owner**
+  with the issue creator — you, the authenticated user (`gh api user --jq .login`).
+  Record the handle **without a leading `@`** so no notification fires; the rest of
+  the team is left for the assembly step in `conveyor-2-plan-review`.
 - **Label:** `conveyor/plan:draft`. (If the label does not exist yet, tell the developer;
   do not silently create labels on the upstream repo.)
 - **First comment — the status placeholder.** Immediately post this as the first
