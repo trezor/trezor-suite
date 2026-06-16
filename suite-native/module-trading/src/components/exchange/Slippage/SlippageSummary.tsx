@@ -1,10 +1,11 @@
 import type { ExchangeTrade } from 'invity-api';
 
+import { type SlippageFormValues } from '@suite-common/trading';
 import { Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useFormatCryptoValue } from '@suite-native/trading-atoms';
-import { type MaxSlippageFormValues } from '@suite-native/trading-types';
+import type { MaxSlippageFormValues } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 type SlippageSummaryProps = {
@@ -12,11 +13,11 @@ type SlippageSummaryProps = {
 };
 
 export const SlippageSummary = ({ quote }: SlippageSummaryProps) => {
-    const { watch, formState } = useFormContext<MaxSlippageFormValues>();
+    const { watch, formState } = useFormContext<SlippageFormValues>();
     const formatCryptoValue = useFormatCryptoValue();
 
     const { receive, receiveStringAmount, swapSlippage } = quote;
-    const slippageValue = watch('maxSlippage');
+    const slippageValue = watch('slippage');
 
     if (swapSlippage === undefined) {
         throw new Error('swapSlippage is required in quote for SlippageSummary');
@@ -29,7 +30,7 @@ export const SlippageSummary = ({ quote }: SlippageSummaryProps) => {
     const previewSlippage =
         !formState.errors.slippage && slippageValue !== ''
             ? BigNumber(slippageValue)
-            : BigNumber(swapSlippage);
+            : BigNumber(quote.swapSlippage);
 
     const receiveAmount = BigNumber(receiveStringAmount);
     const slippageDeduction = previewSlippage.dividedBy(100).multipliedBy(receiveAmount).negated();

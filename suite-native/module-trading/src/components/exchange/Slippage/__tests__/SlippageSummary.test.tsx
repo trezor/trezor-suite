@@ -1,24 +1,17 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { type SlippageFormValues } from '@suite-common/trading';
+import type { SlippageFormValues } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import { Form, useForm } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
-import { type MaxSlippageFormValues } from '@suite-native/trading-types';
 
 import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { SlippageSummary } from '../SlippageSummary';
 
-const validationSchema = yup.object({ maxSlippage: yup.string() });
+const validationSchema = yup.object({ slippage: yup.string() });
 
-const TestWrapper = ({
-    slippage = '1',
-    quote = mercuryoDexQuote,
-}: {
-    slippage?: string;
-    quote?: ExchangeTrade;
-}) => {
+const TestWrapper = ({ slippage = '1' }: { slippage?: string }) => {
     const form = useForm<SlippageFormValues>({
         defaultValues: { slippage },
         validation: validationSchema,
