@@ -11,7 +11,7 @@ export type FormOptions =
     | 'utxoSelection'
     | 'bitcoinLocktime'
     | 'transactionData'
-    | 'ethereumNonce' // TODO
+    | 'ethereumNonce'
     | 'destinationTag';
 
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
