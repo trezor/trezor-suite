@@ -101,9 +101,10 @@ compare-and-swap). The **real lock is the branch on `origin`** plus
   leading `@`** — no notifications yet; people are requested/assigned at their own
   gate).
 - **Remove the auto-requested CODEOWNERS reviewers right away.** Opening the PR
-  auto-requests reviewers; clear them now so humans are not pinged early — they
-  are only (re-)requested at the `conveyor/review:passed` handoff, by the human who flips
-  the draft to ready.
+  auto-requests reviewers; clear them now so humans are not pinged early — they are
+  auto-requested again by GitHub **CODEOWNERS** at the draft→ready flip (the
+  human-review handoff, where the PR moves to `conveyor/human:needs-approval`); if
+  CODEOWNERS matches no owner, the belt falls back to the `## Team` reviewer.
 - Post a one-time comment on the issue with the PR URL. **From here on the issue
   is the frozen spec — do not update it.** All working state lives on the PR.
 - **Migrate the lock to the PR add-before-remove:** add `conveyor/impl:in-progress` to the

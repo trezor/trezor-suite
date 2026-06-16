@@ -140,11 +140,12 @@ PR                  ▼
              review:in-progress ───────────────────────────────┘
                     │
           ┌─too big ──────────▶ split proposal ──▶ slices re-enter at conveyor-1-plan-create ↺
-          ├─clean ────────────▶ review:passed ──▶ human flips draft→ready, reviews, MERGES
+          ├─clean ────────────▶ review:passed ──🧑 verify──▶ flip draft→ready
+          │                          └─(ready)──▶ human:needs-approval ──🧑 CODEOWNERS approve──▶ 🧑 MERGE
           │                     review:passed ──(rebase/push moves HEAD past Reviewed-at SHA)──▶ review:queued ↺ (stale, re-review)
-          └─findings parked ──▶ review:needs-human (hands off)
-                                         │  (human merge)
-                                         ▼  conveyor-5-land: watch post-merge develop CI
+          └─findings parked ──▶ review:needs-human (hands off — no merge)
+
+          🧑 MERGE ──▶ conveyor-5-land: watch post-merge develop CI for the merge commit
           ┌─green ────────────────────▶ land:verified ✅
           └─broke develop ────────────▶ land:broke-develop ──▶ land:needs-human (revert / forward-fix / flake)
 ```
@@ -160,7 +161,8 @@ PR                  ▼
 | `conveyor/review:queued` | PR | Green draft PR, awaiting agentic review | run `conveyor-4-review` |
 | `conveyor/review:in-progress` | PR | Agentic review running — **advisory lock**; real lock is the branch + force-with-lease (stale ⇒ takeover) | let it run, or take over if stale |
 | `conveyor/review:needs-human` | PR | Review findings parked for a human — **hands-off** | a human resolves them, then re-run `conveyor-4-review` |
-| `conveyor/review:passed` | PR | Agentic review clean (vouches for the `Reviewed at:` SHA) | a human verifies, flips draft→ready, requests the Team reviewer, merges |
+| `conveyor/review:passed` | PR (draft) | Agentic review clean (vouches for the `Reviewed at:` SHA), still a draft | a human verifies and flips draft→ready — that flip hands off to human review |
+| `conveyor/human:needs-approval` | PR (ready) | Promoted to ready; awaiting the required human approval (the author cannot self-approve) | CODEOWNERS auto-requests the owning reviewer (belt requests the `## Team` reviewer if none match); a human approves and merges |
 | `conveyor/land:watching` | PR (merged) | Watching the post-merge `develop` CI for the merge commit | let `conveyor-5-land` finish |
 | `conveyor/land:verified` | PR (merged) | Merge did not break `develop` | done — belt complete |
 | `conveyor/land:broke-develop` | PR (merged) | Merge broke the base branch | a human picks revert / forward-fix / flake |
@@ -182,6 +184,7 @@ mk conveyor/review:queued           2da44e "green draft PR, awaiting agentic rev
 mk conveyor/review:in-progress      2da44e "agentic review running"
 mk conveyor/review:needs-human      cf222e "review findings parked for a human"
 mk conveyor/review:passed           2da44e "agentic review clean, human takes over"
+mk conveyor/human:needs-approval    cf222e "ready PR, awaiting the required human approval"
 mk conveyor/land:watching           006b75 "watching post-merge develop CI"
 mk conveyor/land:verified           0e8a16 "merge did not break develop"
 mk conveyor/land:broke-develop      cf222e "merge broke the base branch"
@@ -189,8 +192,9 @@ mk conveyor/land:needs-human        cf222e "post-merge decision parked for a hum
 mk conveyor:meta                    6f42c1 "workflow friction / skill-improvement item"
 ```
 
-Colours: `plan:*` blue, `impl:*` amber, `review:*` green, every `*:needs-human`
-red so a human-needed park stands out at a glance; `conveyor:meta` purple (it is
+Colours: `plan:*` blue, `impl:*` amber, `review:*` green, every park that needs a
+human (`*:needs-human` and `human:needs-approval`) red so it stands out at a glance;
+`conveyor:meta` purple (it is
 not a lifecycle label — it tags [feedback](#feedback-loop--improving-conveyor-from-use) issues about the workflow itself).
 
 Each skill **preflight-checks** that these labels exist before it queries or writes
@@ -217,7 +221,7 @@ so the URL lists every conveyor label OR-ed (a comma inside one `label:` qualifi
 OR; it returns issues **and** PRs, all states). Update it if you add a label:
 
 ```
-https://github.com/trezor/trezor-suite/issues?q=label%3A%22conveyor%2Fplan%3Adraft%22%2C%22conveyor%2Fplan%3Ain-review%22%2C%22conveyor%2Fplan%3Aneeds-human%22%2C%22conveyor%2Fplan%3Aready-to-implement%22%2C%22conveyor%2Fimpl%3Ain-progress%22%2C%22conveyor%2Fimpl%3Aneeds-human%22%2C%22conveyor%2Freview%3Aqueued%22%2C%22conveyor%2Freview%3Ain-progress%22%2C%22conveyor%2Freview%3Aneeds-human%22%2C%22conveyor%2Freview%3Apassed%22%2C%22conveyor%2Fland%3Awatching%22%2C%22conveyor%2Fland%3Averified%22%2C%22conveyor%2Fland%3Abroke-develop%22%2C%22conveyor%2Fland%3Aneeds-human%22%2C%22conveyor%3Ameta%22
+https://github.com/trezor/trezor-suite/issues?q=label%3A%22conveyor%2Fplan%3Adraft%22%2C%22conveyor%2Fplan%3Ain-review%22%2C%22conveyor%2Fplan%3Aneeds-human%22%2C%22conveyor%2Fplan%3Aready-to-implement%22%2C%22conveyor%2Fimpl%3Ain-progress%22%2C%22conveyor%2Fimpl%3Aneeds-human%22%2C%22conveyor%2Freview%3Aqueued%22%2C%22conveyor%2Freview%3Ain-progress%22%2C%22conveyor%2Freview%3Aneeds-human%22%2C%22conveyor%2Freview%3Apassed%22%2C%22conveyor%2Fhuman%3Aneeds-approval%22%2C%22conveyor%2Fland%3Awatching%22%2C%22conveyor%2Fland%3Averified%22%2C%22conveyor%2Fland%3Abroke-develop%22%2C%22conveyor%2Fland%3Aneeds-human%22%2C%22conveyor%3Ameta%22
 ```
 
 To find **orphans** — issues/PRs carrying NONE of the conveyor lifecycle labels (a
@@ -323,8 +327,20 @@ are optional decisions.
 - **Recorded** in a `## Team` block in the issue body, carried onto the PR.
 - **No early pings:** handles are stored **without a leading `@`** so nobody is
   notified up front. Each person is only actually requested/`@`-mentioned **at their
-  own gate** — the eng owner when implementation stalls, the reviewer when the PR is
-  flipped to "Ready for review", the tester at the test station.
+  own gate** — the eng owner when implementation stalls, the reviewer at the
+  human-review handoff (below), the tester at the test station.
+
+**The human-review handoff (draft→ready).** Conveyor never requests a human reviewer
+during the agentic phase. The reviewer gate opens only when a human verifies the clean
+`conveyor/review:passed` draft and **flips it to "Ready for review"**. At that flip the
+PR moves to `conveyor/human:needs-approval`, and **GitHub CODEOWNERS** auto-requests the
+owning reviewer — the required single approval, which the author cannot give. CODEOWNERS
+is the primary path (native, instant, free). When no CODEOWNERS entry matches the changed
+files, the **belt routine** backstops it on its next sweep by requesting the `## Team`
+reviewer (skipping the author). The label swap and the note are done by the
+`conveyor-human-handoff` GitHub Action — a template in
+[`workflows/`](workflows/conveyor-human-handoff.yml), installed as its own small PR; it is
+pure GitHub mechanics (no agent, no tokens, so it never touches the routine run budget).
 
 ## Feedback loop — improving Conveyor from use
 

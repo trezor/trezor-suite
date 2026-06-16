@@ -20,19 +20,21 @@ revert / forward-fix decision to the eng owner. That is its whole job.
 
 ## When to use
 
-- A fresh verify: a **recently merged** PR that carried `conveyor/review:passed` and
-  has **no** `conveyor/land:*` label yet. Find them with
-  `gh pr list --state merged --label conveyor/review:passed`, or pass a merged PR
-  number.
+- A fresh verify: a **recently merged** PR that carried the agentic-review / human-review
+  trail (`conveyor/human:needs-approval` — or `conveyor/review:passed` for a PR merged
+  without the human-handoff step) and has **no** `conveyor/land:*` label yet. Find them
+  with `gh pr list --state merged --label conveyor/human:needs-approval` and
+  `gh pr list --state merged --label conveyor/review:passed`, or pass a merged PR number.
 - A **drain run**: a PR labeled `conveyor/land:needs-human` where the human has
   ticked the answer checkboxes (see step 4) — re-run to read their choice (revert /
   forward-fix / flake) and act.
 
 ## Inputs
 
-- **Target PR.** A merged PR number; otherwise the oldest merged
-  `conveyor/review:passed` PR with no `conveyor/land:*` label, then the oldest
-  `conveyor/land:needs-human` PR whose `✅ Done` box is ticked.
+- **Target PR.** A merged PR number; otherwise the oldest merged PR carrying
+  `conveyor/human:needs-approval` (or `conveyor/review:passed`) with no
+  `conveyor/land:*` label, then the oldest `conveyor/land:needs-human` PR whose
+  `✅ Done` box is ticked.
 - **Mode.** Interactive (human at keyboard; watch the `develop` run live) or
   autonomous (routine; poll between wakes, never block, park to
   `conveyor/land:needs-human` when a regression needs a human).

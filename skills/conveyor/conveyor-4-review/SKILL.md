@@ -299,11 +299,15 @@ mid-transition leaves an extra findable label, never zero.
   unresolved real/security finding, branch fresh):
   add `conveyor/review:passed`, then remove `conveyor/review:in-progress`. **Record the
   reviewed SHA** (`git rev-parse HEAD`) as a `**Reviewed at:** <sha>` line in the
-  status comment — the review only vouches for *that* commit. Comment a summary, and
-  name the **reviewer from the PR's `## Team` block** as the one to request. The PR
-  stays a **draft** — a human now verifies, flips it to "Ready for review", and
-  requests that reviewer (the `@`-mention / review-request at that flip is the
-  intended notification — the reviewer's gate has arrived).
+  status comment — the review only vouches for *that* commit. Comment a summary. The
+  PR stays a **draft** — a human now verifies it and flips it to "Ready for review".
+  That flip is the **human-review handoff**: it moves the PR to
+  `conveyor/human:needs-approval` and GitHub's **CODEOWNERS** auto-requests the owning
+  reviewer — the required single approval, which the author cannot give. When no
+  CODEOWNERS entry matches these files, the belt falls back to requesting the
+  `## Team` reviewer. (Mechanised by the `conveyor-human-handoff` Action template +
+  the belt's human-review fallback — see the README.) Do **not** `@`-mention or
+  request a reviewer yourself here; the request is owned by that handoff, at the flip.
 - **Parked** (open findings remain): add `conveyor/review:needs-human`, then remove
   `conveyor/review:in-progress`. `conveyor/review:needs-human` is hands-off for other agents until a
   human resolves the open findings (then re-run `conveyor-4-review` to continue).

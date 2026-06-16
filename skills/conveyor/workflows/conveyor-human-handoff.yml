@@ -1,0 +1,64 @@
+# Conveyor — human-review handoff (template)
+#
+# Install by copying into .github/workflows/ in the product repo. That is a real CI
+# change, so open it as its own small PR for the team to review — do not enable it
+# silently. It is pure GitHub mechanics: NO Claude agent, NO tokens, so it never
+# touches the routine run budget.
+#
+# What it does: the moment a Conveyor PR that passed agentic review (label
+# conveyor/review:passed) is flipped from draft to "Ready for review", it swaps the
+# label to conveyor/human:needs-approval and posts a note. GitHub's own CODEOWNERS
+# auto-request decides WHO reviews — the required single approval, which the author
+# cannot give. When no CODEOWNERS entry matches (it is "not precise enough" for these
+# files), the Conveyor belt routine backstops it on its next sweep by requesting the
+# Team-block reviewer.
+#
+# Requires the label conveyor/human:needs-approval to exist (see README bootstrap).
+# Conveyor PRs come from origin branches (not forks), so the default GITHUB_TOKEN has
+# the write scope these steps need.
+#
+# The actions/github-script step is full-SHA pinned to match this repo's convention
+# (every action is SHA-pinned; .github/workflows is CODEOWNERS-owned). Before merging
+# the install PR, confirm the SHA still points at the version the repo standardizes on.
+# The "required single approval" is enforced by the repo's branch protection, not here.
+
+name: conveyor-human-handoff
+
+on:
+  pull_request:
+    types: [ready_for_review]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  handoff:
+    # Only PRs that already passed agentic review.
+    if: contains(github.event.pull_request.labels.*.name, 'conveyor/review:passed')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+            const issue_number = pr.number;
+
+            // add-before-remove: add the human-review label first, then drop review:passed.
+            await github.rest.issues.addLabels({
+              owner, repo, issue_number,
+              labels: ['conveyor/human:needs-approval'],
+            });
+            await github.rest.issues.removeLabel({
+              owner, repo, issue_number, name: 'conveyor/review:passed',
+            }).catch(() => {});
+
+            await github.rest.issues.createComment({
+              owner, repo, issue_number,
+              body: [
+                '🤖 Agentic review passed and this PR is now **ready for human review**.',
+                '',
+                'One human approval is required, and the author cannot self-approve. GitHub CODEOWNERS auto-requests the owning reviewer; if no CODEOWNERS entry matches these files, the Conveyor belt will request the `## Team` reviewer on its next sweep.',
+              ].join('\n'),
+            });
