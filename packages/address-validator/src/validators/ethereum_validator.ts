@@ -1,6 +1,7 @@
-import * as cryptoUtils from './crypto/utils';
-import { addressType } from './crypto/utils';
-import type { Currency, NetworkEnvironment } from './currency-types';
+import type { AddressValidator } from '../AddressValidator';
+import { addressType } from '../addressType';
+import * as cryptoUtils from '../crypto/utils';
+import type { NetworkSymbol } from '../networkTypes';
 
 function verifyChecksum(address: string): boolean {
     const stripped = address.replace('0x', '');
@@ -22,7 +23,7 @@ function verifyChecksum(address: string): boolean {
     return true;
 }
 
-export const isValidAddress = (address: string): boolean => {
+export const isAddressValid = (address: string, _symbol: NetworkSymbol): boolean => {
     if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
         // Check if it has the basic requirements of an address
         return false;
@@ -36,14 +37,29 @@ export const isValidAddress = (address: string): boolean => {
     return verifyChecksum(address);
 };
 
-export const getAddressType = (
-    address: string,
-    _currency?: Currency,
-    _network?: NetworkEnvironment,
-) => {
-    if (isValidAddress(address)) {
+export const getAddressType = (address: string, _symbol: NetworkSymbol) => {
+    if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
 
     return undefined;
+};
+
+const getSupportedCoins = (): NetworkSymbol[] => [
+    'eth',
+    'pol',
+    'bsc',
+    'arb',
+    'base',
+    'op',
+    'avax',
+    'etc',
+    'tsep',
+    'thod',
+];
+
+export const ethereumValidator: AddressValidator = {
+    isAddressValid,
+    getAddressType,
+    getSupportedCoins,
 };

@@ -1,6 +1,9 @@
-import * as cryptoUtils from './crypto/utils';
-import { addressType } from './crypto/utils';
-import type { Currency, NetworkEnvironment } from './currency-types';
+import type { AddressValidator } from '../AddressValidator';
+import { addressType } from '../addressType';
+import * as cryptoUtils from '../crypto/utils';
+import type { NetworkSymbol } from '../networkTypes';
+
+const TRON_ADDRESS_TYPE = 0x41;
 
 function decodeBase58Address(base58Sting: unknown): number[] | false {
     if (typeof base58Sting !== 'string') {
@@ -36,19 +39,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
     return false;
 }
 
-function getEnv(currency: any, network?: NetworkEnvironment): number {
-    let evn: NetworkEnvironment = network || 'prod';
-
-    if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
-
-    return currency.addressTypes[evn][0];
-}
-
-export const isValidAddress = (
-    mainAddress: string,
-    currency?: Currency,
-    network?: NetworkEnvironment,
-): boolean => {
+export const isAddressValid = (mainAddress: string, _symbol: NetworkSymbol): boolean => {
     const address = decodeBase58Address(mainAddress);
 
     if (!address) {
@@ -59,17 +50,21 @@ export const isValidAddress = (
         return false;
     }
 
-    return getEnv(currency, network) === address[0];
+    return TRON_ADDRESS_TYPE === address[0];
 };
 
-export const getAddressType = (
-    address: string,
-    currency?: Currency,
-    network?: NetworkEnvironment,
-) => {
-    if (isValidAddress(address, currency, network)) {
+export const getAddressType = (address: string, symbol: NetworkSymbol) => {
+    if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
 
     return undefined;
+};
+
+const getSupportedCoins = (): NetworkSymbol[] => ['trx', 'ttrx'];
+
+export const tronValidator: AddressValidator = {
+    isAddressValid,
+    getAddressType,
+    getSupportedCoins,
 };

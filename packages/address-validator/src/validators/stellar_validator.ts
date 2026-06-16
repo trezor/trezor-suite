@@ -1,9 +1,10 @@
 import { utils } from '@scure/base';
 import crc16xmodem from 'crc/calculators/crc16xmodem';
 
-import * as cryptoUtils from './crypto/utils';
-import { addressType } from './crypto/utils';
-import type { Currency, NetworkEnvironment } from './currency-types';
+import type { AddressValidator } from '../AddressValidator';
+import { addressType } from '../addressType';
+import * as cryptoUtils from '../crypto/utils';
+import type { NetworkSymbol } from '../networkTypes';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
@@ -31,7 +32,7 @@ function verifyChecksum(address: string): boolean {
     return computedChecksum === checksum;
 }
 
-export const isValidAddress = (address: string): boolean => {
+export const isAddressValid = (address: string, _symbol: NetworkSymbol): boolean => {
     if (regexp.test(address)) {
         return verifyChecksum(address);
     }
@@ -39,14 +40,18 @@ export const isValidAddress = (address: string): boolean => {
     return false;
 };
 
-export const getAddressType = (
-    address: string,
-    _currency?: Currency,
-    _network?: NetworkEnvironment,
-) => {
-    if (isValidAddress(address)) {
+export const getAddressType = (address: string, _symbol: NetworkSymbol) => {
+    if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
 
     return undefined;
+};
+
+const getSupportedCoins = (): NetworkSymbol[] => ['xlm', 'txlm'];
+
+export const stellarValidator: AddressValidator = {
+    isAddressValid,
+    getAddressType,
+    getSupportedCoins,
 };

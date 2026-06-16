@@ -20,7 +20,7 @@ import {
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
-import { validate } from '@trezor/address-validator';
+import { isAddressValid } from '@trezor/address-validator';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -218,7 +218,7 @@ export const useTradingReceiveAddress = ({
             let isValidForCurrentSymbol = false;
 
             try {
-                isValidForCurrentSymbol = validate(persistedReceiveAddress, symbol);
+                isValidForCurrentSymbol = isAddressValid(persistedReceiveAddress, symbol);
             } catch {
                 isValidForCurrentSymbol = false;
             }

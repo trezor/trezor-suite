@@ -2,8 +2,9 @@ import { useForm } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { validate } from '@trezor/address-validator';
+import { isAddressValid } from '@trezor/address-validator';
 import { Column, Input, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -44,7 +45,10 @@ export const TradingReceiveAddressModal = () => {
                 let isValid = true;
 
                 try {
-                    isValid = value ? validate(value, symbol) : true;
+                    isValid =
+                        value && symbol !== undefined && isNetworkSymbol(symbol)
+                            ? isAddressValid(value, symbol)
+                            : true;
                 } catch {
                     isValid = false;
                 }

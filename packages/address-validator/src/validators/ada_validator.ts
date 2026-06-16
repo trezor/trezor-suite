@@ -2,11 +2,24 @@ import { bech32 } from '@scure/base';
 import * as cbor from 'cbor';
 import crc32 from 'crc/calculators/crc32';
 
-import * as base58 from './crypto/base58';
-import { addressType } from './crypto/utils';
-import type { Currency, NetworkEnvironment } from './currency-types';
+import type { AddressValidator } from '../AddressValidator';
+import { addressType } from '../addressType';
+import * as base58 from '../crypto/base58';
+import type { NetworkEnvironment } from '../networkEnvironment';
+import type { NetworkSymbol } from '../networkTypes';
 
-const DEFAULT_NETWORK: NetworkEnvironment = 'prod';
+const CARDANO_HRP: Record<string, string> = { prod: 'addr', testnet: 'addr_test', stake: 'stake' };
+
+const getNetworkEnvironment = (address: string): NetworkEnvironment => {
+    if (address.startsWith('stake')) {
+        return 'stake';
+    }
+    if (address.startsWith('addr_test')) {
+        return 'testnet';
+    }
+
+    return 'prod';
+};
 
 function getDecoded(address: string): any {
     try {
@@ -40,15 +53,8 @@ function isValidLegacyAddress(address: string): boolean {
     return crc === validCrc;
 }
 
-function isValidBech32Address(
-    address: string,
-    currency: any,
-    network: NetworkEnvironment,
-): boolean {
-    if (!currency.segwitHrp) {
-        return false;
-    }
-    const hrp = currency.segwitHrp[network];
+function isValidBech32Address(address: string, network: NetworkEnvironment): boolean {
+    const hrp = CARDANO_HRP[network];
     if (!hrp) {
         return false;
     }
@@ -62,38 +68,31 @@ function isValidBech32Address(
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstWord: number = dec?.words[0];
-    if (
-        dec === null ||
-        dec.prefix !== hrp ||
-        dec.words.length < 1 ||
-        (firstWord > 16 && network !== 'stake')
-    ) {
+    if (dec?.prefix !== hrp || dec?.words.length < 1 || (firstWord > 16 && network !== 'stake')) {
         return false;
     }
 
     return true;
 }
 
-export const isValidAddress = (
-    address: string,
-    currency?: Currency,
-    network?: NetworkEnvironment,
-): boolean => {
-    const resolvedNetwork = network || DEFAULT_NETWORK;
+export const isAddressValid = (address: string, _symbol: NetworkSymbol): boolean => {
+    const resolvedNetwork = getNetworkEnvironment(address);
 
-    return (
-        isValidLegacyAddress(address) || isValidBech32Address(address, currency, resolvedNetwork)
-    );
+    return isValidLegacyAddress(address) || isValidBech32Address(address, resolvedNetwork);
 };
 
-export const getAddressType = (
-    address: string,
-    currency?: Currency,
-    network?: NetworkEnvironment,
-) => {
-    if (isValidAddress(address, currency, network)) {
+export const getAddressType = (address: string, symbol: NetworkSymbol) => {
+    if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
 
     return undefined;
+};
+
+const getSupportedCoins = (): NetworkSymbol[] => ['ada'];
+
+export const adaValidator: AddressValidator = {
+    isAddressValid,
+    getAddressType,
+    getSupportedCoins,
 };

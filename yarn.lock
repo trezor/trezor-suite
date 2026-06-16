@@ -15438,10 +15438,9 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@trezor/eslint": "workspace:*"
+    "@trezor/utils": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^4.3.2"
-  peerDependencies:
-    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 

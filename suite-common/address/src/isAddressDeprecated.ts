@@ -1,6 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-
-import { isAddressValid } from './isAddressValid';
+import { isAddressValid } from '@trezor/address-validator';
 
 export const isAddressDeprecated = (address: string, symbol: NetworkSymbol) => {
     // catch deprecated address formats

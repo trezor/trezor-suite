@@ -6,22 +6,12 @@ import { decode as base58Decode } from './base58';
 import Blake256 from './blake256';
 import Blake2B from './blake2b';
 import sha3 from './sha3';
+export { addressType } from '../addressType';
 
 // @ts-expect-error: indexing with noUncheckedIndexedAccess
 const keccak256Fn: (data: string) => string = (
     sha3 as unknown as Record<string, (data: string) => string>
 )['keccak256'];
-
-// Address types, compatible with Trezor
-export const addressType = {
-    ADDRESS: 'address',
-    P2PKH: 'p2pkh',
-    P2WPKH: 'p2wpkh',
-    P2WSH: 'p2wsh',
-    P2SH: 'p2sh',
-    P2TR: 'p2tr',
-    WITNESS_UNKNOWN: 'p2w-unknown',
-} as const;
 
 export function numberToHex(number: number, sizeInBytes: number): string {
     return Math.round(number)
