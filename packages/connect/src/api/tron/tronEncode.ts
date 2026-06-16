@@ -1,7 +1,7 @@
 import { create, toBinary } from '@bufbuild/protobuf';
 import { hexToBytes } from '@noble/hashes/utils.js';
 
-import type { TronContracts } from '@trezor/connect-common/src/types/api/tron';
+import type { TronContracts } from '@trezor/connect-common';
 import { protobufManager } from '@trezor/protobuf';
 import { TronRawContractType } from '@trezor/protobuf/src/definitions/messages-tron';
 

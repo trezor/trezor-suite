@@ -1,7 +1,7 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { type PermissionRequest } from '@trezor/connect-common';
-import { TronComposeTransaction as TronComposeTransactionSchema } from '@trezor/connect-common/src/types/api/tron';
+import { TronComposeTransaction as TronComposeTransactionSchema } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';

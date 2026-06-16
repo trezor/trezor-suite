@@ -1,11 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/stellarSignTx.js
 
+import type { StellarOperationMessage, StellarTransaction } from '@trezor/connect-common';
+import { StellarOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type {
-    StellarOperationMessage,
-    StellarTransaction,
-} from '@trezor/connect-common/src/types/api/stellar';
-import { StellarOperation } from '@trezor/connect-common/src/types/api/stellar';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { isNotUndefined, throwError } from '@trezor/utils';
