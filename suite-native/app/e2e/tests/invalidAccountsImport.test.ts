@@ -15,7 +15,8 @@ const goToBtcImportXpubScreen = async () => {
 
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
-describe('Import invalid accounts [@noDevice]', () => {
+// Skipping due to emulator crash
+describe.skip('Import invalid accounts [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await goToBtcImportXpubScreen();
