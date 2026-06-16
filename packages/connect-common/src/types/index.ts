@@ -15,7 +15,7 @@ export * from './api/ripple/common';
 export * from './api/ethereum/common';
 export * from './api/monero/common';
 export * from './api/solana/common';
-export * from './api/stellar';
+export * from './api/stellar/common';
 export * from './api/tezos';
 export * from './api/tron';
 export * from './api/nostr';
