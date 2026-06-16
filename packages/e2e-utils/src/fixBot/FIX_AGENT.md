@@ -184,9 +184,12 @@ Then use `git commit --fixup $FIRST_SHA` for all subsequent iterations.
 
 ---
 
-## Step 4 — Write the PR description and return the result
+## Step 4 — Verify the commit, write the PR description, return the result
 
 _Cost marker: run `echo fixagent-stage-finalize` before starting this step._
+
+Before reporting, reconcile your result with `git log --oneline origin/develop..HEAD` — a
+`pass` or `partial` result requires at least one commit; if the log is empty, commit your fix now.
 
 **`pr-description.md`** — write this file to the repo root (current directory) using the
 Write tool (see the section below for its contents).
@@ -207,8 +210,8 @@ Emit only the JSON object as your final answer, with no surrounding prose or cod
 }
 ```
 
-`pass` — all validations pass after fixes.
-`partial` — at least one passes, at least one fails.
+`pass` — all validations pass and the fix is committed.
+`partial` — at least one passes, at least one fails; the partial fix is committed.
 `fail` — zero validations pass after fixes.
 `not_duplicated` — all validations already passed in pre-flight; failure could not be reproduced.
 

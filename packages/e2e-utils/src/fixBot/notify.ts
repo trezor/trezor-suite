@@ -68,7 +68,21 @@ function buildMessage(
 
     // Header
     lines.push(`🤖 *Nightly Fix Agent — ${report.runDate}*  <${runUrl()}|GHA Run>`);
-    lines.push('');
+
+    // Cost summary
+    const fixCosts = summaries.map(s => s.costUsd).filter((c): c is number => c !== null);
+    const totalFixCost = fixCosts.reduce((a, b) => a + b, 0);
+    const hasCost = analyzeCost !== null || fixCosts.length > 0;
+
+    if (hasCost) {
+        const totalCost = (analyzeCost ?? 0) + totalFixCost;
+        const parts: string[] = [];
+
+        if (analyzeCost !== null) parts.push(`analysis ${formatCost(analyzeCost)}`);
+        if (fixCosts.length > 0) parts.push(`fixes ${formatCost(totalFixCost)}`);
+
+        lines.push(`💰 ~${formatCost(totalCost)} (${parts.join(' · ')})`);
+    }
 
     // Analyzer summary line
     const fixable = report.fixTasks.length;
@@ -125,23 +139,6 @@ function buildMessage(
             lines.push(`⛔ *${skip.reason}* — ${skip.rootCause}`);
             lines.push(formatTestRef(skip.validations));
         }
-    }
-
-    // Cost footer
-    const fixCosts = summaries.map(s => s.costUsd).filter((c): c is number => c !== null);
-    const totalFixCost = fixCosts.reduce((a, b) => a + b, 0);
-    const hasCost = analyzeCost !== null || fixCosts.length > 0;
-
-    if (hasCost) {
-        const totalCost = (analyzeCost ?? 0) + totalFixCost;
-        const parts: string[] = [];
-
-        if (analyzeCost !== null) parts.push(`analysis ${formatCost(analyzeCost)}`);
-        if (fixCosts.length > 0) parts.push(`fixes ${formatCost(totalFixCost)}`);
-
-        lines.push('');
-        lines.push(DIVIDER);
-        lines.push(`💰 ~${formatCost(totalCost)} (${parts.join(' · ')})`);
     }
 
     return lines.join('\n');

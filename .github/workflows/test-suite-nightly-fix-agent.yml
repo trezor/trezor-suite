@@ -1,6 +1,8 @@
 name: "[Test] Nightly Suite Fix Agent"
 
 on:
+  schedule:
+    - cron: "0 3 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -265,6 +267,7 @@ jobs:
         env:
           TASK_ID: ${{ matrix.task-id }}
         run: |
+          git fetch origin develop --depth=1
           BRANCH=$(jq -r --arg id "$TASK_ID" \
             'first(.fixTasks[] | select(.id == $id) | .branch) // empty' "report-download/report.json")
           if [ -z "$BRANCH" ]; then echo "Branch not found for task id: $TASK_ID" && exit 1; fi

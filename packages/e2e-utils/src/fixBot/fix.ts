@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { prettifyError } from 'zod';
 
@@ -99,6 +99,13 @@ function main(): void {
     }
 
     writeFileSync(join(root, 'fix-result.json'), `${JSON.stringify(fixResult.data, null, 2)}\n`);
+
+    const prDescriptionFile = join(root, 'pr-description.md');
+    if (existsSync(prDescriptionFile)) {
+        log(`PR description:\n\n${readFileSync(prDescriptionFile, 'utf-8')}`);
+    } else {
+        log('No pr-description.md written by the agent.');
+    }
 
     log('Agent done.');
     process.exit(status ?? 1);
