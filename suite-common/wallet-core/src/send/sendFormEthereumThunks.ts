@@ -268,31 +268,6 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         const { account, network, feeInfo } = composeContext;
         const { transactionData } = formState;
 
-        // If a custom nonce targets an existing pending tx (a replacement made outside the RBF
-        // flow), bump the fee to the RBF threshold so the node accepts it instead of rejecting it
-        // as "replacement transaction underpriced". RBF (speed-up / cancel) flows already pass a
-        // pre-bumped feeInfo, so they're skipped here.
-        const customNonce = formState.ethereumNonce?.trim();
-        const replacedPendingTx =
-            customNonce && !formState.rbfParams && account.networkType === 'ethereum'
-                ? (selectTransactions(getState())[account.key] ?? [])
-                      .filter(isPending)
-                      .filter(isSentTransaction)
-                      .find(tx => tx.ethereumSpecific?.nonce === Number(customNonce))
-                : undefined;
-        const replacedGas = replacedPendingTx?.ethereumSpecific;
-        const effectiveFeeInfo = replacedGas
-            ? getEthereumRbfFeeInfo(feeInfo, {
-                  gasPrice: replacedGas.gasPrice ? fromWei(replacedGas.gasPrice, 'gwei') : undefined,
-                  maxFeePerGas: replacedGas.maxFeePerGas
-                      ? fromWei(replacedGas.maxFeePerGas, 'gwei')
-                      : undefined,
-                  maxPriorityFeePerGas: replacedGas.maxPriorityFeePerGas
-                      ? fromWei(replacedGas.maxPriorityFeePerGas, 'gwei')
-                      : undefined,
-              })
-            : feeInfo;
-
         const isApproveTx = isEvmApprovalTx(transactionData);
         const { outputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -386,9 +361,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         }
 
         // FeeLevels are read-only
-        const levels = customFeeLimit
-            ? effectiveFeeInfo.levels.map(l => ({ ...l }))
-            : effectiveFeeInfo.levels;
+        const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
         const predefinedLevels = levels.filter(l => l.label !== 'custom');
         // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
         if (customFeeLimit.gt(0)) {
@@ -512,10 +485,7 @@ export const resolveEthereumNonce = async ({
                 accountInfoResponse?.success &&
                 accountInfoResponse.payload.misc?.confirmedNonce != null
             ) {
-                backendConfirmedNonce = parseInt(
-                    accountInfoResponse.payload.misc.confirmedNonce,
-                    10,
-                );
+                accountNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
             }
         } catch {
             // ignore — local derivation below
@@ -573,52 +543,31 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 
         // Re-check the backend right before signing: the confirmed nonce may have advanced since
         // the form was composed (e.g. another wallet/session spent it), so this returns the
-        // next available nonce. Store it so the review modal can display the exact value being
-        // signed without resolving it again (which would race this in-progress signing).
-        const { nonce } = await dispatch(
+        // next available nonce. When a custom nonce is provided, skip rbfParams so we get the
+        // actual confirmed nonce for validation instead of the RBF nonce.
+        const customNonce = formState.ethereumNonce;
+        const { nonce: resolvedNonce, confirmedNonce } = await dispatch(
             ethereumGetCurrentNonceThunk({
                 selectedAccount,
-                rbfParams: formState.rbfParams,
+                rbfParams: customNonce ? undefined : formState.rbfParams,
                 fetchConfirmedNonce: true,
             }),
         ).unwrap();
-        dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
 
-        const customNonce = formState.ethereumNonce?.trim();
-        let nonce: string;
-
+        let nonce = resolvedNonce;
         if (customNonce) {
-            // A custom nonce overrides even an RBF (speed-up / cancel) nonce — used to re-target a
-            // gapped tx at the gap nonce. Validate against the real confirmed/next nonce, resolved
-            // WITHOUT the RBF short-circuit (which would otherwise just echo the original nonce).
-            const { nonce: autoNonce, confirmedNonce } = await dispatch(
-                ethereumGetCurrentNonceThunk({ selectedAccount }),
-            ).unwrap();
-
-            const customBig = new BigNumber(customNonce);
-
-            if (customBig.lt(confirmedNonce)) {
+            if (parseInt(customNonce, 10) < parseInt(confirmedNonce, 10)) {
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
-                    message: `Custom nonce ${customNonce} is below the confirmed nonce ${confirmedNonce} and would be rejected by the network.`,
+                    message: `Custom nonce ${customNonce} is below the confirmed nonce ${confirmedNonce}.`,
                 });
             }
-
-            if (customBig.gt(autoNonce)) {
-                return rejectWithValue({
-                    error: 'sign-transaction-failed',
-                    message: `Custom nonce ${customNonce} would create a transaction gap. Next expected nonce: ${autoNonce}.`,
-                });
-            }
-
             nonce = customNonce;
-        } else {
-            // No override: reuse the RBF nonce (same-nonce replace) or the next nonce for a new send.
-            const { nonce: resolvedNonce } = await dispatch(
-                ethereumGetCurrentNonceThunk({ selectedAccount, rbfParams: formState.rbfParams }),
-            ).unwrap();
-            nonce = resolvedNonce;
         }
+
+        // Store the exact nonce being signed so the review modal can display it without resolving
+        // it again (which would race this in-progress signing).
+        dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
 
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
