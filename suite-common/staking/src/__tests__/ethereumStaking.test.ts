@@ -9,7 +9,7 @@ import { type SerializedError } from '@trezor/connect-common/src/constants/error
 import {
     type BlockchainEstimatedFee,
     type BlockchainEstimatedFeeLevel,
-} from '@trezor/connect-common/src/types/api/blockchainEstimateFee';
+} from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {

@@ -1,7 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { HDNodeResponse } from '@trezor/connect-common/src/types/api/getPublicKey';
+import type { HDNodeResponse } from '@trezor/connect-common/src/types/api/account/getPublicKey';
 import type {
     BitcoinNetworkInfo,
     CoinInfo,
