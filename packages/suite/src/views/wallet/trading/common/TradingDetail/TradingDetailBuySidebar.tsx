@@ -25,7 +25,6 @@ export const TradingDetailBuySidebar = ({
         <Column gap={24} padding={24}>
             <TradingInfoItem
                 account={receiveAccount}
-                type="buy"
                 label="TR_TRADING_YOU_GET"
                 currency={quoteAmounts.receiveCurrency}
                 amount={quoteAmounts.receiveAmount}

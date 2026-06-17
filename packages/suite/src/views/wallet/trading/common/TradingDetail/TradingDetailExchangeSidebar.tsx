@@ -62,7 +62,6 @@ export const TradingDetailExchangeSidebar = ({
             <Column gap={24} padding={24}>
                 <TradingInfoItem
                     account={sendAccount}
-                    type="exchange"
                     label="TR_TRADING_YOU_PAY"
                     currency={trade.send}
                     amount={trade.sendStringAmount}
@@ -72,7 +71,6 @@ export const TradingDetailExchangeSidebar = ({
 
                 <TradingInfoItem
                     account={receiveAccount}
-                    type="exchange"
                     label="TR_TRADING_YOU_GET"
                     currency={trade.receive}
                     amount={trade.receiveStringAmount}
