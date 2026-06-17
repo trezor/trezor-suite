@@ -119,11 +119,6 @@ type TradingVerifyAccountProps = (
     path?: string,
 ) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
 
-export type TradingBuyConfirmTradeProps = {
-    trade?: BuyTrade;
-    receiveAddress: string;
-};
-
 export interface TradingBuyFormContextProps
     extends
         UseFormReturn<TradingBuyFormProps>,
@@ -146,9 +141,6 @@ export interface TradingBuyFormContextProps
 
     selectQuote: (quote: BuyTrade) => Promise<void>;
     onQuoteSelected: (quote: BuyTrade) => void;
-    confirmTrade: ({
-        receiveAddress,
-    }: TradingBuyConfirmTradeProps) => Promise<BuyTrade | undefined>;
     verifyAddress: TradingVerifyAccountProps;
     setAmountLimits: (limits?: AmountLimitProps) => void;
     methods: UseFormReturn<TradingBuyFormProps>;
@@ -387,8 +379,10 @@ export interface TradingOfferCommonProps {
     paymentMethodName?: string;
 }
 
-export interface TradingOfferBuyProps extends TradingOfferCommonProps {
+export interface TradingOfferBuyProps {
     selectedQuote: BuyTrade;
+    isConfirmDisabled: boolean;
+    confirmTrade: () => Promise<BuyTrade | undefined>;
 }
 
 export interface TradingOfferSellProps extends TradingOfferCommonProps {
@@ -404,5 +398,6 @@ export interface TradingOfferExchangeProps extends Omit<
 
 export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {
     selectedAccount?: Account;
+    receiveAddress?: string;
     transactionId?: string;
 }

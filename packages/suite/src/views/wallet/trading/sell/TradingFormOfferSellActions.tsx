@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { TradingFormOfferKYCWarning } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferKYCWarning';
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
 import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
+import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 
 export const TradingFormOfferSellActions = () => {
     const dispatch = useDispatch();
@@ -68,7 +68,7 @@ export const TradingFormOfferSellActions = () => {
                 testId="@trading/form/sell-button"
             />
 
-            {quote && <TradingFormOfferKYCWarning />}
+            {quote && <TradingKYCWarning />}
 
             <TradingFormOfferOTC />
         </>

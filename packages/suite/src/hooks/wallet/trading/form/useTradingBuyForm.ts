@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BuyTrade, BuyTradeResponse } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -31,7 +31,6 @@ import {
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { isDesktop } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -43,11 +42,8 @@ import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/u
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
 import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
-import {
-    type TradingBuyConfirmTradeProps,
-    type TradingBuyFormContextProps,
-} from 'src/types/trading/tradingForm';
-import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
+import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
+import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingFiatValues } from './common/useTradingFiatValues';
@@ -159,47 +155,6 @@ export const useTradingBuyForm = ({
         setValue,
     });
 
-    const confirmTrade = async ({
-        trade,
-        receiveAddress,
-    }: TradingBuyConfirmTradeProps): Promise<BuyTrade | undefined> => {
-        const buyTrade = trade ?? selectedQuote;
-
-        if (!buyTrade) return;
-
-        const returnUrl = await createTxLink(buyTrade, account);
-
-        const processResponseData = (response: BuyTradeResponse) => {
-            if (response.tradeForm) {
-                dispatch(submitRequestForm(response.tradeForm.form));
-            }
-            if (isDesktop()) {
-                if (response.trade.paymentId) {
-                    dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
-                }
-                dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
-            }
-        };
-
-        const triggerAnalyticsTradeConfirmation = () => {
-            analytics.report({
-                type: events.tradeConfirmTradeEvent.name,
-                payload: { action: type },
-            });
-        };
-
-        return await dispatch(
-            buyThunks.confirmTradeThunk({
-                quote: buyTrade,
-                address: receiveAddress,
-                returnUrl,
-                account,
-                processResponseData,
-                triggerAnalyticsTradeConfirmation,
-            }),
-        ).unwrap();
-    };
-
     const selectQuote = async (quote: BuyTrade) => {
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
 
@@ -233,7 +188,7 @@ export const useTradingBuyForm = ({
                     dispatch(submitRequestForm(form));
                 },
                 nextStep: () => {
-                    confirmTrade({ trade: quote, receiveAddress });
+                    dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
                 },
             }),
         );
@@ -405,7 +360,6 @@ export const useTradingBuyForm = ({
         isAmountEmpty,
         selectQuote,
         onQuoteSelected,
-        confirmTrade,
         verifyAddress,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
             dispatch(tradingBuyActions.setAmountLimits(limits));

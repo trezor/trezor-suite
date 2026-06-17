@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 
-export const TradingFormOfferKYCWarning = () => (
+export const TradingKYCWarning = () => (
     <Banner
         intent="warning"
         icon="identificationCard"
