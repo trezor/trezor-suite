@@ -38,9 +38,6 @@
             "path": "../../packages/connect-common"
         },
         {
-            "path": "../../packages/connect-mobile"
-        },
-        {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/urls" },

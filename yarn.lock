@@ -12999,7 +12999,6 @@ __metadata:
     "@suite-native/tx-simulation": "workspace:*"
     "@trezor/connect": "workspace:^"
     "@trezor/connect-common": "workspace:^"
-    "@trezor/connect-mobile": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:^"
     "@trezor/urls": "workspace:*"
