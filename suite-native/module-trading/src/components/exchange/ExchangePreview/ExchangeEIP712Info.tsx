@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { type PropsWithChildren, memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -11,9 +11,9 @@ import { TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';
 
 export type ExchangeEIP712InfoProps = {
     exchange?: string;
-};
+} & PropsWithChildren;
 
-export const ExchangeEIP712Info = memo(({ exchange }: ExchangeEIP712InfoProps) => {
+export const ExchangeEIP712Info = memo(({ exchange, children }: ExchangeEIP712InfoProps) => {
     const provider = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, exchange, 'exchange'),
     );
@@ -42,6 +42,7 @@ export const ExchangeEIP712Info = memo(({ exchange }: ExchangeEIP712InfoProps) =
                         <Translation id="moduleTrading.tradingExchangePreviewScreen.eip712Info.bullet3" />
                     </BulletListItem>
                 </VStack>
+                {children}
             </TradeInfoRow>
         </Card>
     );

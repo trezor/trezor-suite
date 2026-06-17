@@ -61,7 +61,7 @@ describe('ExchangeFeePickerCard', () => {
     it('should render children inside FeePickerCard', () => {
         const { getByText } = renderExchangeFeePickerCard({
             quote: mercuryoFixedWorstQuote,
-            children: <Text testID="test-child">child content</Text>,
+            children: <Text>child content</Text>,
         });
 
         expect(getByText('child content')).toBeOnTheScreen();
