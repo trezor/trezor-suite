@@ -22,7 +22,7 @@ const ProviderStatusDevButtonsContent = () => {
                 <Button
                     intent="critical"
                     priority="secondary"
-                    size="small"
+                    size="medium"
                     onPress={() => {
                         dispatchHelper('window_closed_incomplete');
                     }}
@@ -32,7 +32,7 @@ const ProviderStatusDevButtonsContent = () => {
                 <Button
                     intent="info"
                     priority="secondary"
-                    size="small"
+                    size="medium"
                     onPress={() => {
                         dispatchHelper('window_closed_with_success');
                     }}
@@ -44,7 +44,7 @@ const ProviderStatusDevButtonsContent = () => {
                 <Button
                     intent="critical"
                     priority="primary"
-                    size="small"
+                    size="medium"
                     onPress={() => {
                         dispatchHelper('confirmation_failed');
                     }}
@@ -52,7 +52,7 @@ const ProviderStatusDevButtonsContent = () => {
                     failed
                 </Button>
                 <Button
-                    size="small"
+                    size="medium"
                     onPress={() => {
                         dispatchHelper('confirmation_success');
                     }}
@@ -62,7 +62,7 @@ const ProviderStatusDevButtonsContent = () => {
                 <Button
                     intent="warning"
                     priority="secondary"
-                    size="small"
+                    size="medium"
                     onPress={() => {
                         dispatchHelper('inactive');
                         dispatchHelper('window_opened');

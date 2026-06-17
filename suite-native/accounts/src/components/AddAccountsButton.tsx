@@ -53,6 +53,7 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
     return (
         <IconButton
             iconName="plus"
+            size="medium"
             onPress={
                 isSelectedDevicePortfolioTracker ? navigateToImportScreen : navigateToAddCoinAccount
             }
