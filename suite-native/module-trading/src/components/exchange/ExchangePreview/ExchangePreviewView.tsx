@@ -59,7 +59,9 @@ export const ExchangePreviewView = memo(
                     <ExchangeToAccountTradePreviewCard quote={quote} />
                     <ExchangeFiatDeviationWarning quote={quote} />
                     {hasEIP712SignData ? (
-                        <ExchangeEIP712Info exchange={quote?.exchange} />
+                        <ExchangeEIP712Info exchange={quote?.exchange}>
+                            <SlippagePicker quote={quote} />
+                        </ExchangeEIP712Info>
                     ) : (
                         <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError}>
                             <SlippagePicker quote={quote} />
