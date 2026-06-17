@@ -11413,6 +11413,16 @@ export const messages = defineMessages({
         defaultMessage:
             'To speed up your transactions, increase the fee on the oldest pending transaction in the queue (by nonce), as transactions must be confirmed in order. If you want to speed up this transaction specifically, open its detail and use the "Speed up" option. <a>Learn more</a>',
     },
+    TR_BUMP_FEE_NONCE_GAP_WARNING: {
+        id: 'TR_BUMP_FEE_NONCE_GAP_WARNING',
+        defaultMessage:
+            "There is a gap before this nonce, so it won't confirm. Re-send the transaction with nonce {nonce} to unblock it.",
+    },
+    TR_PENDING_NONCE_SUPERSEDED_WARNING: {
+        id: 'TR_PENDING_NONCE_SUPERSEDED_WARNING',
+        defaultMessage:
+            "This transaction's nonce was already used by a confirmed transaction, so it can't confirm. Re-send it with nonce {nonce}.",
+    },
     TR_TREZOR_CONNECT: {
         id: 'TR_TREZOR_CONNECT',
         defaultMessage: 'Trezor Connect',
