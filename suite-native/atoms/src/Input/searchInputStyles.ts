@@ -19,7 +19,7 @@ export const inputWrapperStyle = prepareNativeStyle<InputStyleProps>(
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: 48,
+        height: 40,
         borderWidth: utils.borders.widths.small,
         borderRadius: utils.borders.radii.r8,
         borderColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
