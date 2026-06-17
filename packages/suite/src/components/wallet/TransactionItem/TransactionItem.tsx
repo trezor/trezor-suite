@@ -9,17 +9,12 @@ import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
-    selectAccountTransactions,
+    selectAccountEvmNonceInfo,
     selectIsPhishingTransaction,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    formatNetworkAmount,
-    isPending as getIsPending,
-    isSentTransaction,
-    isTxFeePaid,
-} from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Icon, Link, Row, Tooltip } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
@@ -101,14 +96,14 @@ export const TransactionItem = memo(
             selectAccountEvmNonceInfo(state, accountKey),
         );
 
+        const evmNonce =
+            network.networkType === 'ethereum' ? transaction.ethereumSpecific?.nonce : undefined;
+
         // A pending EVM tx can be stuck two ways: its nonce is above the next free nonce (a lower
         // nonce is missing — a gap), or below the confirmed nonce (that slot was already mined by
         // another tx — superseded). Either way it won't confirm; `nextNonce` is the nonce to
         // re-send with to unblock it.
-        const pendingEvmNonce =
-            isPending && network.networkType === 'ethereum'
-                ? transaction.ethereumSpecific?.nonce
-                : undefined;
+        const pendingEvmNonce = isPending ? evmNonce : undefined;
 
         const isSuperseded = pendingEvmNonce !== undefined && pendingEvmNonce < confirmedNonce;
         const hasNonceGap = pendingEvmNonce !== undefined && pendingEvmNonce > nextNonce;
@@ -122,11 +117,38 @@ export const TransactionItem = memo(
                     />
                 );
             if (hasNonceGap)
-                return <Translation id="TR_BUMP_FEE_NONCE_GAP_WARNING" values={{ nonce: nextNonce }} />;
+                return (
+                    <Translation id="TR_BUMP_FEE_NONCE_GAP_WARNING" values={{ nonce: nextNonce }} />
+                );
 
             return null;
         };
         const nonceWarning = renderNonceWarning();
+
+        // The speed-up button's tooltip surfaces the EVM nonce so the user can tell which
+        // transaction in the queue this is, and when bumping is disabled it also explains why
+        // (the nonce is woven into the disabled message itself).
+        const renderBumpFeeTooltip = () => {
+            if (disableBumpFee)
+                return (
+                    <Translation
+                        id="TR_BUMP_FEE_DISABLED_TOOLTIP"
+                        values={{
+                            nonce: evmNonce,
+                            a: chunks => (
+                                <Link href={HELP_CENTER_REPLACE_BY_FEE_ETHEREUM}>{chunks}</Link>
+                            ),
+                        }}
+                    />
+                );
+            if (evmNonce !== undefined)
+                return (
+                    <Translation id="TR_TRANSACTION_NONCE_TOOLTIP" values={{ nonce: evmNonce }} />
+                );
+
+            return null;
+        };
+        const bumpFeeTooltip = renderBumpFeeTooltip();
 
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
@@ -185,22 +207,12 @@ export const TransactionItem = memo(
                                 <Row gap={12}>
                                     <Tooltip
                                         content={
-                                            <Translation
-                                                id="TR_BUMP_FEE_DISABLED_TOOLTIP"
-                                                values={{
-                                                    a: chunks => (
-                                                        <Link
-                                                            href={
-                                                                HELP_CENTER_REPLACE_BY_FEE_ETHEREUM
-                                                            }
-                                                        >
-                                                            {chunks}
-                                                        </Link>
-                                                    ),
-                                                }}
+                                            <EvmBumpFeeTooltip
+                                                isDisabled={disableBumpFee}
+                                                nonce={evmNonce}
                                             />
                                         }
-                                        isActive={disableBumpFee}
+                                        isActive={disableBumpFee || evmNonce !== undefined}
                                     >
                                         <Button
                                             intent="neutral"

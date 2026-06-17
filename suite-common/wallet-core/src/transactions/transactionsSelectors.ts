@@ -17,11 +17,13 @@ import type {
 } from '@suite-common/wallet-types';
 import {
     getConfirmations,
+    getEvmNonceInfo,
     getFiatRateKey,
     isCardanoStakingTx,
     isClaimTx,
     isNftTokenTransfer,
     isPending,
+    isSentTransaction,
     isStakeTx,
     isStakeTypeTx,
     isUnstakeTx,
@@ -86,6 +88,36 @@ export const selectAccountTransactionsWithNulls = (
 export const selectAccountTransactions = createMemoizedSelector(
     [selectAccountTransactionsWithNulls],
     transactions => returnStableArrayIfEmpty(transactions.filter(isNotNullOrUndefined)),
+);
+
+/**
+ * EVM nonce bounds for an account, derived once from its local tx list. Memoized per account so
+ * every pending `TransactionItem` can read the shared `{ confirmedNonce, nextNonce }` instead of
+ * each one subscribing to the full tx list and recomputing it. See `getEvmNonceInfo`.
+ */
+export const selectAccountEvmNonceInfo = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions => {
+        // Derive the confirmed nonce from the local tx list (heuristic for display; signing uses the
+        // authoritative backend nonce via fetchConfirmedNonce). Using max confirmed nonce + 1 avoids
+        // a dependency on account.misc.nonce so this selector stays tx-list-only.
+        const confirmedNonces = transactions
+            .filter(tx => !isPending(tx))
+            .filter(isSentTransaction)
+            .map(tx => tx.ethereumSpecific?.nonce)
+            .filter((n): n is number => typeof n === 'number');
+        const accountNonce = confirmedNonces.length ? Math.max(...confirmedNonces) + 1 : 0;
+        const pendingTxs = transactions.filter(isPending);
+
+        // accountNonce here is derived from the local confirmed-tx list, so it's already
+        // ground truth — unlike getEvmNonceInfo's other caller (resolveEthereumNonce), which
+        // feeds it a backend nonce that may overstate reality and needs clamping. Only reuse
+        // nextNonce from getEvmNonceInfo; keep confirmedNonce as the local ground truth so a
+        // stale pending tx below it is correctly flagged as superseded.
+        const { nextNonce } = getEvmNonceInfo(accountNonce, pendingTxs);
+
+        return { confirmedNonce: accountNonce, nextNonce };
+    },
 );
 
 export const selectPendingAccountAddresses = createMemoizedSelector(
