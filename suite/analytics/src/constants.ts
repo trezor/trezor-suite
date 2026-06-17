@@ -125,8 +125,6 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     TradeBuy = 'trade/buy',
     // eslint-disable-next-line local-rules/analytics-event-name
-    TradeCompareOffers = 'trade/compare-offers',
-    // eslint-disable-next-line local-rules/analytics-event-name
     TradeConfirmTrade = 'trade/confirm-trade',
     // eslint-disable-next-line local-rules/analytics-event-name
     TradeExchange = 'trade/exchange',
