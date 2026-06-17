@@ -15,14 +15,14 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
-import { Button, Icon, Link, Row, Tooltip } from '@trezor/components';
+import { Button, Icon, Row, Tooltip } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
-import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
+import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
 import { TransactionHeading } from './TransactionHeading';
 import { TransactionLayout } from './TransactionLayout';
 import { CoinjoinRow, DepositRow, FeeRow, WithdrawalRow } from './TransactionRow';
@@ -124,31 +124,6 @@ export const TransactionItem = memo(
             return null;
         };
         const nonceWarning = renderNonceWarning();
-
-        // The speed-up button's tooltip surfaces the EVM nonce so the user can tell which
-        // transaction in the queue this is, and when bumping is disabled it also explains why
-        // (the nonce is woven into the disabled message itself).
-        const renderBumpFeeTooltip = () => {
-            if (disableBumpFee)
-                return (
-                    <Translation
-                        id="TR_BUMP_FEE_DISABLED_TOOLTIP"
-                        values={{
-                            nonce: evmNonce,
-                            a: chunks => (
-                                <Link href={HELP_CENTER_REPLACE_BY_FEE_ETHEREUM}>{chunks}</Link>
-                            ),
-                        }}
-                    />
-                );
-            if (evmNonce !== undefined)
-                return (
-                    <Translation id="TR_TRANSACTION_NONCE_TOOLTIP" values={{ nonce: evmNonce }} />
-                );
-
-            return null;
-        };
-        const bumpFeeTooltip = renderBumpFeeTooltip();
 
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
