@@ -1,2 +1,2 @@
-export { OnboardingCard, onboardingCardVariants } from './OnboardingCard';
-export type { OnboardingCardProps, OnboardingCardVariant } from './OnboardingCard';
+export { OnboardingCard } from './OnboardingCard';
+export type { OnboardingCardProps } from './OnboardingCard';

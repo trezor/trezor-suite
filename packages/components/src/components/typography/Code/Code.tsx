@@ -12,7 +12,7 @@ const StyledCode = styled.code`
     font-weight: 400;
     letter-spacing: -0.4px;
     padding: 0 ${() => spacingsPx.xxxs};
-    background-color: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation1};
+    background-color: ${({ theme }) => theme.elementFillNeutralSoft};
     box-shadow: inset 0 0 0 1px ${({ theme }) => theme.borderNeutral};
     border-radius: ${() => borders.radii.xxs};
 `;

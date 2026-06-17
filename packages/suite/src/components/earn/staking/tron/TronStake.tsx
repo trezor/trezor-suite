@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { TRON_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { BulletList, type BulletListItemState, Column, Text } from '@trezor/components';
+import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
 
 import { TronStakeContext } from './TronStakeContext';
 import { TronStakeComplete } from './complete/TronStakeComplete';
@@ -20,7 +20,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
 
     const stakeSteps: readonly TronStakeStepId[] = TRON_FLOW_STEPS.stake;
     const currentStepIndex = stakeSteps.indexOf(step);
-    const getStepState = (stepId: TronStakeStepId): BulletListItemState => {
+    const getStepState = (stepId: TronStakeStepId): StepListItemState => {
         const stepIndex = stakeSteps.indexOf(stepId);
 
         if (stepIndex < currentStepIndex) {
@@ -48,20 +48,20 @@ export const TronStake = ({ account }: TronStakeProps) => {
                             <Text typographyStyle="headline-md">
                                 <Translation id="TR_EARN_TRON_STAKE_TITLE" />
                             </Text>
-                            <BulletList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
-                                <BulletList.Item
+                            <StepList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
+                                <StepList.Item
                                     state={getStepState('freeze')}
                                     title={<Translation id="TR_EARN_TRON_FREEZE_STEP_TITLE" />}
                                 >
                                     {step === 'freeze' && <TronFreezeStep />}
-                                </BulletList.Item>
-                                <BulletList.Item
+                                </StepList.Item>
+                                <StepList.Item
                                     state={getStepState('vote')}
                                     title={<Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />}
                                 >
                                     {step === 'vote' && <TronVoteStep />}
-                                </BulletList.Item>
-                            </BulletList>
+                                </StepList.Item>
+                            </StepList>
                         </>
                     )}
                 </Column>

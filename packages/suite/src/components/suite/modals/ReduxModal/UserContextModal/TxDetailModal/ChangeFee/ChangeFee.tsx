@@ -59,7 +59,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     return (
         <FormProvider {...methods}>
             <Card
-                fillType="flat"
+                type="contrast"
                 paddingType="small"
                 header={<Translation id="TR_BUMP_FEE_SUBTEXT" />}
             >

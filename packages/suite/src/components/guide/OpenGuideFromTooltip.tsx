@@ -22,7 +22,7 @@ const OpenGuideLink = styled.span`
     cursor: pointer;
 
     &:hover {
-        background: ${({ theme }) => transparentize(0.9, theme.legacyBackgroundAlertYellowBold)};
+        background: ${({ theme }) => transparentize(0.9, theme.elementFillWarningBold)};
     }
 `;
 

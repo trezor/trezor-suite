@@ -179,7 +179,7 @@ export const SecurityStep = () => {
                     iconName="warning"
                     heading={<Translation id="TR_WALLET_CREATED_NOT_SECURED" />}
                     description={<Translation id="TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION" />}
-                    variant="warning"
+                    intent="warning"
                     innerActions={
                         <OnboardingCard.Button
                             data-testid="@onboarding/continue-button"

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Row, SkeletonRectangle } from '@trezor/components';
+import { Row, Skeleton } from '@trezor/components';
 
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { type Discovery } from 'src/types/wallet';
@@ -30,7 +30,7 @@ export const PortfolioCardHeader = ({
             padding={{ vertical: 16, horizontal: 24 }}
         >
             {valueLoading ? (
-                <SkeletonRectangle width={140} height={53} />
+                <Skeleton width={140} height={53} />
             ) : (
                 <FiatHeader
                     data-testid="@dashboard/portfolio/fiat-amount"

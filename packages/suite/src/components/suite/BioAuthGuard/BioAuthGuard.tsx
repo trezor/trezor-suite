@@ -3,15 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Button, Icon, Paragraph, Row, Tooltip, useElevation } from '@trezor/components';
+import { Button, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import { borders, spacingsPx } from '@trezor/theme';
 
 import {
     Body,
@@ -23,14 +17,14 @@ import {
 import { useDispatch } from 'src/hooks/suite';
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 
-const Container = styled.div<{ $elevation: Elevation }>`
+const Container = styled.div`
     display: flex;
-    border: 1px solid ${mapElevationToBorder};
+    border: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
     gap: ${spacingsPx.xxs};
     align-items: center;
     width: 334px;
     height: 212px;
-    background: ${mapElevationToBackground};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     border-radius: ${borders.radii.lg};
     flex-direction: column;
     justify-content: space-between;
@@ -46,7 +40,6 @@ const BioAuthOverlay = ({
     onPrimaryButtonClick: () => void;
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const { elevation } = useElevation();
 
     return (
         <Wrapper ref={wrapperRef} data-testid="@suite-layout">
@@ -60,7 +53,7 @@ const BioAuthOverlay = ({
                                 alignItems="center"
                                 justifyContent="center"
                             >
-                                <Container $elevation={elevation}>
+                                <Container>
                                     <Icon name="lockFilled" />
                                     <Paragraph align="center" typographyStyle="headline-sm">
                                         <Translation id="TR_BIO_AUTH_LOCKED_HEADING" />

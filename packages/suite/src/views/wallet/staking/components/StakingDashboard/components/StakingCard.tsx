@@ -26,7 +26,7 @@ import {
     InfoItem,
     Paragraph,
     Row,
-    SkeletonRectangle,
+    Skeleton,
     Tooltip,
 } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -62,8 +62,8 @@ const Item = ({
     <InfoItem label={label} iconName={iconName}>
         {isLoading ? (
             <>
-                <SkeletonRectangle width="150px" height="32px" animate />
-                <SkeletonRectangle width="50px" height="18px" animate />
+                <Skeleton width={150} height={32} animate />
+                <Skeleton width={50} height={18} animate />
             </>
         ) : (
             <>

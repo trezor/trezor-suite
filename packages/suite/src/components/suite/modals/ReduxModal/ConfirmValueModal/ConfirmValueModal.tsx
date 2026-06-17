@@ -18,7 +18,6 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
     Box,
-    BulletList,
     Button,
     Card,
     Column,
@@ -30,6 +29,7 @@ import {
     type ModalProps,
     Paragraph,
     Row,
+    StepList,
     Text,
 } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
@@ -187,7 +187,7 @@ export const ConfirmValueModal = ({
                             }
                         />
                     )}
-                    <Card fillType="flat" paddingType="large">
+                    <Card paddingType="large">
                         <Row gap={32} alignItems="stretch" data-testid="@modal/output-address">
                             <Box aspectRatio="1" width={170} height={170}>
                                 <QrCode value={value} />
@@ -250,21 +250,21 @@ export const ConfirmValueModal = ({
                         </Row>
                     </Card>
                     {isAddress && (
-                        <Card>
-                            <Row gap={spacings.lg}>
-                                <IconCircle intent="info" size={32} name="warningFilled" />
+                        <Card type="contrast">
+                            <Row gap={20}>
+                                <IconCircle intent="neutral" size={32} name="warningFilled" />
                                 <H3>
                                     <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
                                 </H3>
                             </Row>
-                            <BulletList
+                            <StepList
                                 isOrdered
-                                margin={{ top: spacings.xxxl }}
-                                gap={spacings.xl}
-                                titleGap={spacings.zero}
-                                bulletGap={spacings.lg}
+                                margin={{ top: 32 }}
+                                gap={20}
+                                titleGap={0}
+                                bulletGap={20}
                             >
-                                <BulletList.Item
+                                <StepList.Item
                                     title={
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
                                     }
@@ -276,8 +276,8 @@ export const ConfirmValueModal = ({
                                     >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
                                     </Paragraph>
-                                </BulletList.Item>
-                                <BulletList.Item
+                                </StepList.Item>
+                                <StepList.Item
                                     title={
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
                                     }
@@ -289,8 +289,8 @@ export const ConfirmValueModal = ({
                                     >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
                                     </Paragraph>
-                                </BulletList.Item>
-                                <BulletList.Item
+                                </StepList.Item>
+                                <StepList.Item
                                     title={
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
                                     }
@@ -302,8 +302,8 @@ export const ConfirmValueModal = ({
                                     >
                                         <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
                                     </Paragraph>
-                                </BulletList.Item>
-                            </BulletList>
+                                </StepList.Item>
+                            </StepList>
                         </Card>
                     )}
                 </Column>

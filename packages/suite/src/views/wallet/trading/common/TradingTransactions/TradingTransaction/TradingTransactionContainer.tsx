@@ -21,7 +21,7 @@ export const TradingTransactionContainer = ({
     const { isBelowDesktop, isBelowMobile } = useLayoutSize();
 
     return (
-        <Card fillType="flat" margin={{ bottom: spacings.lg }} data-testid={dataTestId}>
+        <Card type="sunken" margin={{ bottom: spacings.lg }} data-testid={dataTestId}>
             <Row flexWrap={isBelowDesktop ? 'wrap' : undefined}>
                 <Column flex="auto" width={isBelowDesktop ? 'calc(100% - 180px)' : '100%'}>
                     {TradeDetail}

@@ -34,7 +34,7 @@ export const StepCard = ({
     const textPriority = state === 'confirmed' ? 'primary' : 'secondary';
 
     return (
-        <Card paddingType="none" fillType={state === 'pending' ? 'flat' : 'default'}>
+        <Card paddingType="none" type={state === 'pending' ? 'contrast' : 'raised'}>
             <Column>
                 <Row gap={8} padding={{ horizontal: 16, vertical: 12 }}>
                     <Icon

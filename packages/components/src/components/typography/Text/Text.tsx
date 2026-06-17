@@ -86,6 +86,12 @@ const getColorForText = ({
         `;
     }
 
+    if ($isDisabled) {
+        return css`
+            color: ${theme.contentDisabled};
+        `;
+    }
+
     if ($intent === undefined) {
         return css`
             color: inherit;
@@ -93,7 +99,7 @@ const getColorForText = ({
     }
 
     return css`
-        color: ${mapIntentToCSS($intent, $priority, Boolean($isDisabled), theme)};
+        color: ${mapIntentToCSS($intent, $priority, theme)};
     `;
 };
 
@@ -127,7 +133,7 @@ const StyledText = styled.span<StyledTextProps>`
             display: inline;
             padding: 0 ${spacingsPx.xxs};
             border-radius: ${borders.radii.xxs};
-            background-color: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
+            background-color: ${({ theme }) => theme.elementFillNeutralSoft};
             box-decoration-break: clone;
         `}
         ${withTextProps} ${withFrameProps};

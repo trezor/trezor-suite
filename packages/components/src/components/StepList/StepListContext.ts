@@ -2,19 +2,19 @@ import { createContext, useContext } from 'react';
 
 import { type SpacingValuesNew } from '@trezor/theme';
 
-import { type BulletLineWidth, type BulletListDirection, type BulletSize } from './types';
+import { type BulletSize, type StepLineWidth, type StepListDirection } from './types';
 
-type BulletListContextValue = {
+type StepListContextValue = {
     itemGap: SpacingValuesNew;
     titleGap: SpacingValuesNew;
     bulletGap: SpacingValuesNew;
     bulletSize: BulletSize;
-    lineWidth: BulletLineWidth;
+    lineWidth: StepLineWidth;
     isOrdered: boolean;
-    direction: BulletListDirection;
+    direction: StepListDirection;
 };
 
-export const BulletListContext = createContext<BulletListContextValue>({
+export const StepListContext = createContext<StepListContextValue>({
     itemGap: 32,
     titleGap: 8,
     bulletGap: 24,
@@ -24,4 +24,4 @@ export const BulletListContext = createContext<BulletListContextValue>({
     direction: 'vertical',
 });
 
-export const useBulletList = () => useContext(BulletListContext);
+export const useStepList = () => useContext(StepListContext);

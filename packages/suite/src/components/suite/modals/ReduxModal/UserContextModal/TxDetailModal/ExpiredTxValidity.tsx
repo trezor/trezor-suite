@@ -12,7 +12,7 @@ export const ExpiredTxValidity = ({ symbol }: ExpiredTxValidityProps) => {
     const networkName = getNetwork(symbol).name;
 
     return (
-        <Card fillType="flat">
+        <Card type="contrast">
             <Column gap={spacings.xs}>
                 <Box margin={{ bottom: spacings.md }}>
                     <IconCircle name="warning" size={112} intent="critical" />

@@ -1,22 +1,21 @@
 import styled, { css } from 'styled-components';
 
-import { type Elevation, borders, mapElevationToBackground, spacings } from '@trezor/theme';
+import { borders, spacings } from '@trezor/theme';
 
 import { useSubTabsContext } from './SubTabsContext';
 import { mapSizeToIconSize, mapSizeToTypography } from './utils';
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
 import { Icon, type IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
-const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`
+const Item = styled.div<{ $isActive: boolean }>`
     border-radius: ${borders.radii.full};
     transition:
         color 0.15s,
         background 0.15s;
     cursor: pointer;
-    background: ${mapElevationToBackground};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    background: ${({ theme }) => theme.elementFillElevated};
+    box-shadow: ${({ theme }) => theme.elementShadowElevated};
     color: ${({ theme }) => theme.contentPrimary};
 
     &:hover,
@@ -51,16 +50,10 @@ export const SubTabsItem = ({
     children,
 }: SubTabsItemProps) => {
     const { activeItemId, size } = useSubTabsContext();
-    const { elevation } = useElevation();
     const isActive = id === activeItemId;
 
     return (
-        <Item
-            $isActive={isActive}
-            $elevation={elevation}
-            onClick={onClick}
-            data-testid={dataTestId}
-        >
+        <Item $isActive={isActive} onClick={onClick} data-testid={dataTestId}>
             <Row gap={spacings.xs} padding={{ vertical: spacings.xs, horizontal: spacings.md }}>
                 {iconName && <Icon name={iconName} size={mapSizeToIconSize(size)} />}
                 <Text as="div" typographyStyle={mapSizeToTypography(size)} textWrap="nowrap">

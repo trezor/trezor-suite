@@ -52,6 +52,7 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                     vertical: spacings.md,
                 }}
                 borderWidth={{ bottom: borders.widths.large }}
+                borderColor="elementBorderNeutralSofter"
             >
                 <TrafficLightOffset>
                     <Row gap={spacings.sm} alignItems="center" justifyContent="space-between">

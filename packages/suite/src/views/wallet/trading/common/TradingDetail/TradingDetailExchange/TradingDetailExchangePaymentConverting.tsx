@@ -1,7 +1,7 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { type BulletListItemState, Card, Column } from '@trezor/components';
+import { Card, Column, type StepListItemState } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';
 
@@ -9,7 +9,7 @@ import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailStep } from '../TradingDetailStep';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
-const getState = (trade: ExchangeTrade, isDex?: boolean): BulletListItemState => {
+const getState = (trade: ExchangeTrade, isDex?: boolean): StepListItemState => {
     switch (trade.status) {
         case 'SUCCESS':
             return 'done';

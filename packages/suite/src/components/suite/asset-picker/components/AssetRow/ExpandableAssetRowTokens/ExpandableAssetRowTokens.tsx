@@ -48,7 +48,7 @@ export function ExpandableAssetRowTokens({
 }: ExpandableAssetRowTokensProps) {
     return (
         <Collapsible isOpen={expanded} data-testid={dataTestId}>
-            <Card fillType="flat" paddingType="none">
+            <Card type="contrast" paddingType="none">
                 <Collapsible.Toggle
                     onClick={() => {
                         // The operation will be probably expensive. Ask for fresh frame before switching the state.

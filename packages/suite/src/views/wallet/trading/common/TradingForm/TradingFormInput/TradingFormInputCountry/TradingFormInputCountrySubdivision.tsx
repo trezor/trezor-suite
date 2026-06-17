@@ -34,13 +34,7 @@ export const TradingFormInputCountrySubdivision = ({
     const subdivisionLabel = useMemo(() => {
         const resolvedLabel = subdivisionValue?.label ?? defaultSubdivision?.label;
 
-        return (
-            resolvedLabel ?? (
-                <Text color="contentSecondary">
-                    <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED" />
-                </Text>
-            )
-        );
+        return resolvedLabel ?? <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED" />;
     }, [subdivisionValue, defaultSubdivision]);
 
     return (
@@ -60,13 +54,20 @@ export const TradingFormInputCountrySubdivision = ({
                     data-testid="@trading/form/country-subdivision-select"
                 >
                     <Row justifyContent="space-between" padding={20}>
-                        <Text typographyStyle="body-md" align="start">
+                        <Text
+                            typographyStyle="body-md"
+                            align="start"
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             <Translation id="TR_TRADING_COUNTRY_SUBDIVISION" />
                         </Text>
                         <Row gap={16}>
                             <Text
                                 typographyStyle="body-md"
                                 data-testid="@trading/form/country-subdivision-select/value"
+                                intent="neutral"
+                                priority="secondary"
                             >
                                 {subdivisionLabel}
                             </Text>

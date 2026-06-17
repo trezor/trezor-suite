@@ -4,7 +4,7 @@ import { type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { type TradingTradeType } from '@suite-common/trading';
-import { CardList, Column, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { CardList, Column, Row, Skeleton, Text } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -76,7 +76,7 @@ const TradingOffersModalItemInner = ({ quote, onSelect }: TradingOffersModalItem
                         )}
                     </ProviderWrapper>
 
-                    {isFormLoading && <SkeletonRectangle animate width={200} />}
+                    {isFormLoading && <Skeleton animate width={200} />}
                     {!isFormLoading && formattedRate && (
                         <Text typographyStyle="body-sm-strong">{formattedRate}</Text>
                     )}

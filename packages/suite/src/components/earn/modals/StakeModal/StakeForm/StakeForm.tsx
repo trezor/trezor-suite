@@ -55,7 +55,7 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
                     </>
                 )}
 
-                <Card fillType="default" paddingType="small">
+                <Card type="raised" paddingType="small">
                     <Fees
                         feeInfo={feeInfo}
                         account={account}

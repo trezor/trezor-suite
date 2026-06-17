@@ -1,6 +1,6 @@
 import { type Network } from '@suite-common/wallet-config';
 import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { Column, Note, SkeletonRectangle } from '@trezor/components';
+import { Column, Note, Skeleton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -29,7 +29,7 @@ type AssetCoinNameSkeletonProps = {
 
 export const AssetCoinNameSkeleton = ({ animate }: AssetCoinNameSkeletonProps) => (
     <Column gap={spacings.xxxs}>
-        <SkeletonRectangle animate={animate} width={100} />
-        <SkeletonRectangle animate={animate} width={60} />
+        <Skeleton animate={animate} width={100} />
+        <Skeleton animate={animate} width={60} />
     </Column>
 );

@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
-import { BulletList, Divider } from '@trezor/components';
+import { Divider, StepList } from '@trezor/components';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
@@ -34,7 +34,7 @@ export const TronStakeInANutshellModal = ({
             heading: <Translation id="TR_EARN_STAKING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
-                <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
+                <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_TRON_FREEZE_TRANSACTION" />}
                         content={networkFeeBadge}
@@ -54,14 +54,14 @@ export const TronStakeInANutshellModal = ({
                             ),
                         }}
                     />
-                </BulletList>
+                </StepList>
             ),
         },
         {
             heading: <Translation id="TR_EARN_UNSTAKING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
-                <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
+                <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_SIGN_UNSTAKING_TRANSACTION" />}
                         content={networkFeeBadge}
@@ -81,7 +81,7 @@ export const TronStakeInANutshellModal = ({
                         heading={<Translation id="TR_EARN_SIGN_WITHDRAWAL_TRANSACTION" />}
                         content={networkFeeBadge}
                     />
-                </BulletList>
+                </StepList>
             ),
         },
     ];

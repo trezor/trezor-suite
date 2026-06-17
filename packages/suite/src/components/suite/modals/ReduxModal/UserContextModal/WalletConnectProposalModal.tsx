@@ -21,7 +21,6 @@ import {
     Banner,
     Card,
     Column,
-    ElevationUp,
     Modal,
     type Option,
     Row,
@@ -215,35 +214,28 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 </Text>
                 {selectableAccounts.length > 0 && (
                     <Card paddingType="none">
-                        {/* Wrapped to keep consistent styling */}
-                        <ElevationUp>
-                            <Select
-                                isSearchable={false}
-                                isClearable={false}
-                                size="large"
-                                value={selectedDefaultAccount}
-                                options={selectableAccounts}
-                                formatOptionLabel={(account: Account) => (
-                                    <Row gap={spacings.xs}>
-                                        {account.symbol && (
-                                            <CoinLogo
-                                                type="token"
-                                                symbol={account.symbol}
-                                                size={24}
-                                            />
-                                        )}
-                                        <AccountLabel
-                                            account={account}
-                                            key={account.descriptor}
-                                            showAccountTypeBadge
-                                            accountTypeBadgeSize="small"
-                                        />
-                                    </Row>
-                                )}
-                                onChange={(option: Option) => setSelectedDefaultAccount(option)}
-                                closeMenuOnScroll={false}
-                            />
-                        </ElevationUp>
+                        <Select
+                            isSearchable={false}
+                            isClearable={false}
+                            size="large"
+                            value={selectedDefaultAccount}
+                            options={selectableAccounts}
+                            formatOptionLabel={(account: Account) => (
+                                <Row gap={spacings.xs}>
+                                    {account.symbol && (
+                                        <CoinLogo type="token" symbol={account.symbol} size={24} />
+                                    )}
+                                    <AccountLabel
+                                        account={account}
+                                        key={account.descriptor}
+                                        showAccountTypeBadge
+                                        accountTypeBadgeSize="small"
+                                    />
+                                </Row>
+                            )}
+                            onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                            closeMenuOnScroll={false}
+                        />
                     </Card>
                 )}
 

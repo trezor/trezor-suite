@@ -1,13 +1,13 @@
 import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { type BulletListItemState, Card, Column, Paragraph } from '@trezor/components';
+import { Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailStep } from '../TradingDetailStep';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
-const getState = (trade: SellFiatTrade): BulletListItemState => {
+const getState = (trade: SellFiatTrade): StepListItemState => {
     switch (trade.status) {
         case 'SUCCESS':
             return 'active';

@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { valuablesBaseCurrencyCodes } from '@trezor/blockchain-link-types';
-import { SkeletonRectangle, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
+import { Skeleton, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { isArrayMember } from '@trezor/utils';
 
 import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
@@ -56,7 +56,7 @@ export const BaseCurrency = ({
     return shallDisplayBaseCurrency && customFiatValue !== undefined ? (
         <HiddenPlaceholder>
             {isLoading ? (
-                <SkeletonRectangle animate={shouldAnimate} />
+                <Skeleton animate={shouldAnimate} />
             ) : (
                 <BaseCurrencyAmountFormatter
                     value={customFiatValue}

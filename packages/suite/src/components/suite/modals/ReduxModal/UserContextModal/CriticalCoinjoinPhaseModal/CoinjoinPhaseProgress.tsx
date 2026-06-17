@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { RoundPhase } from '@trezor/coinjoin';
-import { BulletList, type BulletListItemState, Column } from '@trezor/components';
+import { Column, StepList, type StepListItemState } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
@@ -12,7 +12,7 @@ type CoinjoinPhaseProgressProps = {
     phaseDeadline: CoinjoinSession['roundPhaseDeadline'];
 };
 
-const getBulletListItemState = (phase: RoundPhase, roundPhase: RoundPhase): BulletListItemState => {
+const getStepListItemState = (phase: RoundPhase, roundPhase: RoundPhase): StepListItemState => {
     if (phase === roundPhase) return 'default';
     if (phase < roundPhase) return 'done';
 
@@ -24,15 +24,15 @@ export const CoinjoinPhaseProgress = ({
     phaseDeadline,
 }: CoinjoinPhaseProgressProps) => (
     <Column gap={spacings.md}>
-        <BulletList gap={spacings.md} bulletSize="medium">
+        <StepList gap={spacings.md} bulletSize="medium">
             {Object.values(RoundPhase).map(phase => (
-                <BulletList.Item
+                <StepList.Item
                     key={phase}
-                    state={getBulletListItemState(phase, roundPhase)}
+                    state={getStepListItemState(phase, roundPhase)}
                     title={<Translation id={ROUND_PHASE_MESSAGES[phase]} />}
                 />
             ))}
-        </BulletList>
+        </StepList>
         {phaseDeadline && (
             <CountdownTimer
                 isApproximate

@@ -12,6 +12,8 @@ import styled, { type CSSObject, type DefaultTheme, css } from 'styled-component
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
+import { commonFocusStyles } from '../../../utils/utils';
+
 type RangeMode = 'normal' | 'segments';
 
 type Segment = {
@@ -50,9 +52,7 @@ const getProgress = (
 };
 
 const getLinearGradient = (progress: number, theme: DefaultTheme, disabled?: boolean): string => {
-    const primaryColor = disabled
-        ? theme.elementFillBoldDisabled
-        : theme.legacyBackgroundPrimaryDefault;
+    const primaryColor = disabled ? theme.elementFillBoldDisabled : theme.elementFillFieldSelected;
     const secondaryColor = disabled ? theme.elementFillBoldDisabled : theme.elementFillNeutralBold;
 
     return `linear-gradient(90deg, ${primaryColor} ${progress}%, ${secondaryColor} ${progress}%)`;
@@ -107,11 +107,6 @@ const thumb = css<{ disabled?: boolean }>`
         `}
 `;
 
-const focusStyle = css`
-    border: ${({ theme }) => `1px solid ${theme.legacyBackgroundAlertBlueBold}`};
-    box-shadow: ${({ theme }) => theme.boxShadowFocused};
-`;
-
 const Input = styled.input<{
     $trackStyle?: CSSObject;
     disabled?: boolean;
@@ -152,11 +147,11 @@ const Input = styled.input<{
 
     &:focus-visible {
         &::-webkit-slider-thumb {
-            ${focusStyle}
+            ${commonFocusStyles}
         }
 
         ::-moz-range-thumb {
-            ${focusStyle}
+            ${commonFocusStyles}
         }
     }
 

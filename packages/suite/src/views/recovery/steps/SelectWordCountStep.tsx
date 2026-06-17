@@ -18,7 +18,7 @@ export const SelectWordCountStep = ({ setWordCount, wordCount }: SelectWordCount
                 {wordCounts.map(count => (
                     <RadioCard
                         key={count}
-                        isActive={wordCount === count}
+                        isSelected={wordCount === count}
                         onClick={() => setWordCount(count)}
                         dataTestId={`@recovery/select-count/${count}`}
                     >

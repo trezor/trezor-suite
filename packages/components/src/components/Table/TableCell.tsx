@@ -2,14 +2,13 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';
 import { type UIAlignment } from '../../config/types';
 import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { type FlexJustifyContent } from '../Flex/FlexProp';
 import { Text } from '../typography/Text/Text';
 
@@ -32,7 +31,6 @@ const mapAlignmentToJustifyContent = (align: UIAlignment): FlexJustifyContent =>
 };
 
 type CellProps = TransientProps<AllowedFrameProps> & {
-    $elevation: Elevation;
     $hasBorder: boolean;
 };
 
@@ -41,15 +39,6 @@ const Cell = styled.td<CellProps>`
     overflow: hidden;
 
     ${withFrameProps}
-
-    &:first-child {
-        position: sticky;
-        left: 0;
-        z-index: 2;
-        background: linear-gradient(to right, ${mapElevationToBackground} 90%, rgb(0 0 0 / 0%));
-
-        ${({ $hasBorder }) => !$hasBorder && 'padding-left: 0;'}
-    }
 
     &:last-child {
         ${({ $hasBorder }) => !$hasBorder && 'padding-right: 0;'}
@@ -78,7 +67,6 @@ export const TableCell = ({
 }: TableCellProps) => {
     const isHeader = useTableHeader();
     const { hasBorders, typographyStyle = 'body-md' } = useTable();
-    const { parentElevation } = useElevation();
 
     const defaultPadding = {
         vertical: hasBorders ? spacings.sm : spacings.xs,
@@ -89,7 +77,6 @@ export const TableCell = ({
         <Cell
             as={isHeader ? 'th' : 'td'}
             colSpan={colSpan}
-            $elevation={parentElevation}
             $padding={padding ?? defaultPadding}
             $maxWidth={maxWidth}
             $hasBorder={hasBorders}

@@ -2,14 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacings,
-    spacingsPx,
-} from '@trezor/theme';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { type FillType, type HeadingSize, type PaddingType } from './types';
 import {
@@ -19,11 +12,6 @@ import {
     mapSizeToIconSize,
     mapSizeToSubheadingTypography,
 } from './utils';
-import { Collapsible } from '../Collapsible/Collapsible';
-import { Column, Row } from '../Flex/Flex';
-import { type IconName, type IconProps, type IconSize } from '../Icon/Icon';
-import { Text } from '../typography/Text/Text';
-import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -31,6 +19,10 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
+import { Collapsible } from '../Collapsible/Collapsible';
+import { Column, Row } from '../Flex/Flex';
+import { type IconName, type IconProps, type IconSize } from '../Icon/Icon';
+import { Text } from '../typography/Text/Text';
 
 export const allowedCollapsibleBoxFrameProps = [
     'margin',
@@ -40,7 +32,6 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProp
 
 type ContainerProps = {
     $paddingType: PaddingType;
-    $elevation: Elevation;
     $fillType: FillType;
 };
 
@@ -50,7 +41,6 @@ type HeaderProps = {
 
 type ContentProps = {
     $paddingType: PaddingType;
-    $elevation: Elevation;
     $hasDivider: boolean;
 };
 
@@ -77,22 +67,20 @@ const Container = styled.section<TransientProps<AllowedFrameProps> & ContainerPr
     width: 100%;
     border-radius: ${borders.radii.sm};
     transition: background 0.3s;
-    background: ${mapElevationToBackground};
-    border: 1px solid ${mapElevationToBorder};
+    background: ${({ theme }) => theme.surfaceFillRaised};
+    outline: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
 
-    ${({ $paddingType, theme }) =>
+    ${({ $paddingType }) =>
         $paddingType === 'large' &&
         css`
             border-radius: ${borders.radii.md};
-            box-shadow: ${theme.boxShadowBase};
         `}
 
     ${({ $fillType }) =>
         $fillType === 'none' &&
         css`
             background: none;
-            border: none;
-            box-shadow: none;
+            outline: none;
         `}
 
     ${withFrameProps}
@@ -118,10 +106,10 @@ const Content = styled.div<ContentProps>`
     flex-direction: column;
     padding: ${mapPaddingTypeToContentPadding};
 
-    ${({ theme, $elevation, $hasDivider }) =>
+    ${({ theme, $hasDivider }) =>
         $hasDivider &&
         css`
-            border-top: 1px solid ${mapElevationToBorder({ $elevation, theme })};
+            border-top: 1px solid ${theme.surfaceBorderRaised};
         `}
 
     ${({ $paddingType, $hasDivider }) => css`
@@ -130,6 +118,7 @@ const Content = styled.div<ContentProps>`
     `}
 `;
 
+// TODO: Reuse Card internally
 export const CollapsibleBox = ({
     defaultIsOpen = false,
     toggleLabel,
@@ -149,7 +138,6 @@ export const CollapsibleBox = ({
     'data-testid': dataTest,
     ...rest
 }: CollapsibleBoxProps) => {
-    const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
     const frameProps = pickAndPrepareFrameProps(
         rest,
@@ -204,31 +192,20 @@ export const CollapsibleBox = ({
         <Container
             {...frameProps}
             $paddingType={paddingType}
-            $elevation={elevation}
             $fillType={fillType}
             data-testid={dataTest}
         >
             <Collapsible isOpen={isOpen}>
                 <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
-                    <Header $paddingType={paddingType}>
-                        {fillType === 'none' ? (
-                            headerContent
-                        ) : (
-                            <ElevationUp>{headerContent}</ElevationUp>
-                        )}
-                    </Header>
+                    <Header $paddingType={paddingType}>{headerContent}</Header>
                 </Collapsible.Toggle>
                 <Collapsible.Content
                     data-testid="@collapsible-box/body"
                     onAnimationComplete={onAnimationComplete}
                     overflow={frameProps.$overflow}
                 >
-                    <Content
-                        $elevation={elevation}
-                        $paddingType={paddingType}
-                        $hasDivider={hasDivider}
-                    >
-                        {fillType === 'none' ? children : <ElevationUp>{children}</ElevationUp>}
+                    <Content $paddingType={paddingType} $hasDivider={hasDivider}>
+                        {children}
                     </Content>
                 </Collapsible.Content>
             </Collapsible>

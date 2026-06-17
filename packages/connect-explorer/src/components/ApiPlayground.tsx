@@ -3,15 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { Object, type TSchema } from '@sinclair/typebox';
 import styled from 'styled-components';
 
-import { CollapsibleBox, Select, Switch, useElevation, variables } from '@trezor/components';
-import { type Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
 import { type MethodState } from '../reducers/methodCommon';
 
-const ApiPlaygroundWrapper = styled.div<{ $elevation: Elevation }>`
+const ApiPlaygroundWrapper = styled.div`
     display: block;
     position: fixed;
     z-index: 10;
@@ -23,8 +23,8 @@ const ApiPlaygroundWrapper = styled.div<{ $elevation: Elevation }>`
     overscroll-behavior: contain;
     border-radius: 1rem;
     padding: 0;
-    border: 1px solid ${mapElevationToBorder};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    border: 1px solid ${({ theme }) => theme.surfaceBorderFixed};
+    box-shadow: ${({ theme }) => theme.surfaceShadowFixed};
 
     @media (min-width: ${variables.SCREEN_SIZE.LG}) {
         left: 18rem;
@@ -63,7 +63,7 @@ const SelectWrapper = styled.div`
         border-color: ${({ theme }) => theme.borderNeutral};
 
         &:hover {
-            border-color: ${({ theme }) => theme.legacyBorderElevation2};
+            border-color: ${({ theme }) => theme.elementBorderFieldHovered};
         }
     }
 `;
@@ -82,8 +82,6 @@ interface ApiPlaygroundProps {
     )[];
 }
 export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
-    const { elevation } = useElevation();
-
     const [selectedOption, setSelectedOption] = useState(0);
     const method = useSelector(state => state.method);
     const actions = useActions({
@@ -120,7 +118,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     }, [options]);
 
     return (
-        <ApiPlaygroundWrapper $elevation={elevation}>
+        <ApiPlaygroundWrapper>
             <CollapsibleBox
                 heading="Method testing tool"
                 paddingType="large"

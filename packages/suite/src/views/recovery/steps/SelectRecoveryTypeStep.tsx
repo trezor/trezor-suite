@@ -21,7 +21,7 @@ export const SelectRecoveryTypeStep = ({
                 {recoveryTypes.map(type => (
                     <RadioCard
                         key={type}
-                        isActive={recoveryType === type}
+                        isSelected={recoveryType === type}
                         onClick={() => setRecoveryType(type)}
                         dataTestId={`@recovery/select-type/${type}`}
                     >

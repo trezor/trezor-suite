@@ -27,7 +27,7 @@ const Wrapper = styled.div`
     background: ${({ theme }) => theme.surfaceFillRaised};
     border: 1px solid ${({ theme }) => theme.borderNeutral};
     border-radius: ${borders.radii.sm};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    box-shadow: ${({ theme }) => theme.surfaceShadowFixed};
     z-index: ${zIndices.windowControls};
 `;
 

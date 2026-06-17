@@ -1,23 +1,13 @@
-import {
-    type CSSProperties,
-    type RefObject,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled, { type DefaultTheme } from 'styled-components';
 
-import { type Color, type Elevation, mapElevationToBackground } from '@trezor/theme';
-
-import { useElevation } from '../components/ElevationContext/ElevationContext';
+import { type Color } from '@trezor/theme';
 
 type GradientDirection = 'bottom' | 'top' | 'right' | 'left';
 
 interface GradientProps {
     $isVisible: boolean;
-    $elevation: Elevation;
     $backgroundColor?: Color;
     $direction: GradientDirection;
 }
@@ -25,19 +15,20 @@ interface GradientProps {
 type MapArgs = {
     $direction: GradientDirection;
     $backgroundColor?: Color;
-    $elevation: Elevation;
     theme: DefaultTheme;
+};
+
+type UseScrollShadowProps = {
+    externalRef?: RefObject<HTMLDivElement | null>;
+    backgroundColor?: Color;
 };
 
 export const mapDirectionToGradient = ({
     $direction,
     $backgroundColor,
-    $elevation,
     theme,
 }: MapArgs): string => {
-    const gradientColor = $backgroundColor
-        ? theme[$backgroundColor]
-        : mapElevationToBackground({ $elevation, theme });
+    const gradientColor = $backgroundColor ? theme[$backgroundColor] : theme.surfaceFillRaised;
     const gradientMap: Record<GradientDirection, GradientDirection> = {
         top: 'bottom',
         bottom: 'top',
@@ -66,12 +57,12 @@ const Gradient = styled.div<GradientProps>`
     position: absolute;
     pointer-events: none;
     opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
-    background: ${({ $direction, $backgroundColor, $elevation, theme }) =>
-        mapDirectionToGradient({ $direction, $backgroundColor, $elevation, theme })};
+    background: ${({ $direction, $backgroundColor, theme }) =>
+        mapDirectionToGradient({ $direction, $backgroundColor, theme })};
 `;
 
-export const useScrollShadow = (externalRef?: RefObject<HTMLDivElement | null>) => {
-    const internalRef = useRef<HTMLDivElement>(null);
+export const useScrollShadow = ({ externalRef, backgroundColor }: UseScrollShadowProps = {}) => {
+    const internalRef = useRef<HTMLDivElement | null>(null);
     const scrollElementRef = externalRef || internalRef;
 
     const [isScrolledToTop, setIsScrolledToTop] = useState(true);
@@ -91,8 +82,6 @@ export const useScrollShadow = (externalRef?: RefObject<HTMLDivElement | null>) 
         }
     }, [scrollElementRef]);
 
-    const { elevation } = useElevation();
-
     useEffect(() => {
         setShadows();
 
@@ -111,58 +100,48 @@ export const useScrollShadow = (externalRef?: RefObject<HTMLDivElement | null>) 
 
     const onScroll = useCallback(setShadows, [setShadows]);
 
-    type ShadowProps = { backgroundColor?: Color; style?: CSSProperties };
-
     const ShadowTop = useCallback(
-        ({ backgroundColor, style }: ShadowProps) => (
+        () => (
             <Gradient
                 $backgroundColor={backgroundColor}
-                $elevation={elevation}
-                style={style}
                 $isVisible={!isScrolledToTop}
                 $direction="top"
             />
         ),
-        [elevation, isScrolledToTop],
+        [backgroundColor, isScrolledToTop],
     );
 
     const ShadowBottom = useCallback(
-        ({ backgroundColor, style }: ShadowProps) => (
+        () => (
             <Gradient
                 $backgroundColor={backgroundColor}
-                $elevation={elevation}
-                style={style}
                 $isVisible={!isScrolledToBottom}
                 $direction="bottom"
             />
         ),
-        [elevation, isScrolledToBottom],
+        [backgroundColor, isScrolledToBottom],
     );
 
     const ShadowLeft = useCallback(
-        ({ backgroundColor, style }: ShadowProps) => (
+        () => (
             <Gradient
                 $backgroundColor={backgroundColor}
-                $elevation={elevation}
-                style={style}
                 $isVisible={!isScrolledToLeft}
                 $direction="left"
             />
         ),
-        [elevation, isScrolledToLeft],
+        [backgroundColor, isScrolledToLeft],
     );
 
     const ShadowRight = useCallback(
-        ({ backgroundColor, style }: ShadowProps) => (
+        () => (
             <Gradient
                 $backgroundColor={backgroundColor}
-                $elevation={elevation}
-                style={style}
                 $isVisible={!isScrolledToRight}
                 $direction="right"
             />
         ),
-        [elevation, isScrolledToRight],
+        [backgroundColor, isScrolledToRight],
     );
 
     return {

@@ -27,7 +27,7 @@ export const CharacterCount = ({ value, maxLength, characterCount }: CharacterCo
 
     return (
         <Box
-            backgroundColor="legacyBackgroundTertiaryDefaultOnElevation1"
+            backgroundColor="elementFillNeutralSoft"
             borderRadius={4}
             padding={{ horizontal: 4, vertical: 2 }}
         >

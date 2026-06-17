@@ -5,15 +5,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    Banner,
-    Card,
-    Radio,
-    motionAnimation,
-    motionEasing,
-    useElevation,
-} from '@trezor/components';
-import { type Elevation, mapElevationToBorder } from '@trezor/theme';
+import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/components';
 
 import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -33,8 +25,8 @@ const SetupOptions = styled.div`
     gap: 40px;
 `;
 
-const CustomSetup = styled.div<{ $elevation: Elevation }>`
-    border-top: 1px solid ${mapElevationToBorder};
+const CustomSetup = styled.div`
+    border-top: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -47,7 +39,6 @@ interface CoinjoinSetupProps {
 }
 
 export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
-    const { elevation } = useElevation();
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
 
     const dispatch = useDispatch();
@@ -97,7 +88,7 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                             {...motionAnimation.expand}
                             transition={{ duration: 0.4, ease: motionEasing.transition }}
                         >
-                            <CustomSetup $elevation={elevation}>
+                            <CustomSetup>
                                 <AnonymityLevelSetup
                                     accountKey={accountKey}
                                     targetAnonymity={coinjoinAccount.setup.targetAnonymity}

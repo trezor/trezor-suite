@@ -429,7 +429,6 @@
   "TR_BUMP_FEE_SUBTEXT": "藉由支付更高的費用來縮短交易被確認的時間。",
   "TR_BUY": "買",
   "TR_BUY_BUY": "買入",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "已經在 Trezor 裝置上確認了",
   "TR_BUY_DETAIL_ERROR_BUTTON": "回到購買頁面",
   "TR_BUY_DETAIL_ERROR_TEXT": "交易失敗或是被拒絕了，不會以指定的付款方式收費。",
   "TR_BUY_DETAIL_ERROR_TITLE": "交易失敗",

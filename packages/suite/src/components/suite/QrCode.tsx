@@ -1,36 +1,26 @@
 import { QRCodeSVG } from 'qrcode.react';
-import styled, { css } from 'styled-components';
+import { useTheme } from 'styled-components';
 
-import { borders, paletteV1, spacingsPx } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-
-    ${({ theme }) =>
-        theme.variant === 'dark' &&
-        css`
-            padding: ${spacingsPx.xs};
-            border-radius: ${borders.radii.xs};
-            background-color: ${paletteV1.lightWhiteAlpha1000};
-        `}
-`;
+import { Row } from '@trezor/components';
+import { type Color } from '@trezor/theme';
 
 type QrCodeProps = {
     value: string;
+    color?: Color;
 };
 
-export const QrCode = ({ value }: QrCodeProps) => (
-    <Wrapper>
-        <QRCodeSVG
-            bgColor="transparent"
-            fgColor={paletteV1.lightGray1000}
-            level="Q"
-            value={value}
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-        />
-    </Wrapper>
-);
+export const QrCode = ({ value, color = 'contentPrimary' }: QrCodeProps) => {
+    const theme = useTheme();
+
+    return (
+        <Row justifyContent="center" alignItems="center" width="100%" height="100%">
+            <QRCodeSVG
+                fgColor={theme[color]}
+                bgColor="transparent"
+                level="Q"
+                value={value}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+        </Row>
+    );
+};

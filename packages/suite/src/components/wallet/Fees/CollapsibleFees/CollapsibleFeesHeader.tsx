@@ -67,7 +67,7 @@ export function CollapsibleFeesHeader({
                 maxWidth={328}
                 content={<Translation id={feeTooltipTextId} values={{ br: <br /> }} />}
             >
-                <Text typographyStyle={typographyStyle}>
+                <Text typographyStyle={typographyStyle} intent="neutral" priority="secondary">
                     <Translation id={label ?? feeLabelId} />
                 </Text>
             </Tooltip>

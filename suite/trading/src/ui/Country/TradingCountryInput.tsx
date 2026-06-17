@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryCode, getDefaultCountry } from '@suite-common/trading';
-import { Flag, GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { Flag, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 
 import { CountrySelectModal } from './CountrySelectModal';
 import { useGetCountryName } from '../../hooks';
@@ -59,16 +59,18 @@ export const TradingCountryInput = ({
                             <Translation id={label} />
                         </Text>
                         {isLoading ? (
-                            <SkeletonRectangle animate />
+                            <Skeleton animate />
                         ) : (
-                            <Row gap={4}>
-                                {countryFlag && <Flag country={countryFlag} size={24} />}
-                                <Text
-                                    typographyStyle="body-md"
-                                    data-testid="@trading/form/country-select/value"
-                                >
-                                    {countryName}
-                                </Text>
+                            <Row gap={10}>
+                                <Row gap={8}>
+                                    {countryFlag && <Flag country={countryFlag} size={24} />}
+                                    <Text
+                                        typographyStyle="body-md"
+                                        data-testid="@trading/form/country-select/value"
+                                    >
+                                        {countryName}
+                                    </Text>
+                                </Row>
                                 <Icon
                                     name="caretRight"
                                     size={20}

@@ -7,7 +7,6 @@ import { TrezorAnimation } from './TrezorAnimation';
 import { useMutedVideoPlayer } from '../hooks/useMutedVideoPlayer';
 
 const connectDeviceAnimations = {
-    debug: require('../assets/connect-device-standard.mp4'),
     standard: require('../assets/connect-device-standard.mp4'),
     dark: require('../assets/connect-device-dark.mp4'),
 } as const satisfies Record<ThemeColorVariant, string>;

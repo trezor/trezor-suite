@@ -1,4 +1,4 @@
-import { Badge, BulletList, Paragraph, Row } from '@trezor/components';
+import { Badge, Paragraph, Row, StepList } from '@trezor/components';
 
 interface EarnInfoRowProps {
     heading: React.ReactNode;
@@ -10,7 +10,7 @@ interface EarnInfoRowProps {
 }
 
 export const EarnInfoRow = ({ heading, subheading, content }: EarnInfoRowProps) => (
-    <BulletList.Item
+    <StepList.Item
         title={
             <Row justifyContent="space-between" gap={16}>
                 {heading}
@@ -35,5 +35,5 @@ export const EarnInfoRow = ({ heading, subheading, content }: EarnInfoRowProps) 
                 {subheading}
             </Paragraph>
         )}
-    </BulletList.Item>
+    </StepList.Item>
 );

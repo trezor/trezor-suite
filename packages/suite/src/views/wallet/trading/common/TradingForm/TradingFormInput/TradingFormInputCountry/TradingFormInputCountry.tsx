@@ -58,17 +58,24 @@ export const TradingFormInputCountry = ({
                     data-testid="@trading/form/country-select"
                 >
                     <Row justifyContent="space-between" padding={20}>
-                        <Text typographyStyle="body-md" align="start">
+                        <Text
+                            typographyStyle="body-md"
+                            align="start"
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             {label && <Translation id={label} />}
                         </Text>
-                        <Row gap={4}>
-                            {countryFlag && <Flag country={countryFlag} size={24} />}
-                            <Text
-                                typographyStyle="body-md"
-                                data-testid="@trading/form/country-select/value"
-                            >
-                                {countryName}
-                            </Text>
+                        <Row gap={16}>
+                            <Row gap={8}>
+                                {countryFlag && <Flag country={countryFlag} size={24} />}
+                                <Text
+                                    typographyStyle="body-md"
+                                    data-testid="@trading/form/country-select/value"
+                                >
+                                    {countryName}
+                                </Text>
+                            </Row>
                             <Icon
                                 name="caretRight"
                                 size={20}

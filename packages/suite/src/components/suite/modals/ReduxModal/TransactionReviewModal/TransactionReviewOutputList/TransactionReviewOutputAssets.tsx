@@ -144,7 +144,7 @@ export const TransactionReviewOutputAssets = ({
     <>
         <Card
             paddingType="none"
-            fillType={state === 'confirmed' ? 'flat' : 'default'}
+            type={state === 'confirmed' ? 'contrast' : 'raised'}
             header={
                 <Row gap={spacings.sm} padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
                     <TransactionReviewOutputStatus state={state} />

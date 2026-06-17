@@ -14,7 +14,7 @@ import { GITHUB_MCP_DOCS_URL } from '@trezor/urls';
 const ConfigBox = styled.div`
     display: flex;
     flex-direction: column;
-    background: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
+    background: ${({ theme }) => theme.elementFillNeutralSofter};
     border-radius: 8px;
     padding: ${spacings.sm}px ${spacings.md}px;
     height: 180px;

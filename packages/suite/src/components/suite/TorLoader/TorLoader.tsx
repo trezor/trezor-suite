@@ -135,7 +135,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                 <H3>
                     <Translation id={getMessageId()} />
                 </H3>
-                <Card fillType="flat">
+                <Card type="contrast">
                     <Row gap={spacings.md}>
                         <ProgressBar value={isTorError ? 100 : progress} />
                         <Paragraph

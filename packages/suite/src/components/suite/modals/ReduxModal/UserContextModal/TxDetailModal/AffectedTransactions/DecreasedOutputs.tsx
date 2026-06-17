@@ -105,7 +105,7 @@ export const DecreasedOutputs = () => {
     };
 
     return (
-        <Card fillType="flat" paddingType="none">
+        <Card type="contrast" paddingType="none">
             <Row justifyContent="space-between" alignItems="center" padding={spacings.md}>
                 <Text typographyStyle="body-md">
                     <Translation id="TR_AMOUNT_REDUCED_TXS" />
@@ -145,7 +145,7 @@ export const DecreasedOutputs = () => {
                                           }
                                         : undefined
                                 }
-                                isActive={useRadio && isChecked}
+                                isSelected={useRadio && isChecked}
                             >
                                 <Row gap={spacings.sm}>
                                     <AmountItem

@@ -1,4 +1,4 @@
-import { boxShadows, colorVariants } from '@trezor/theme';
+import { colorVariants, mapBoxShadowsToCSS } from '@trezor/theme';
 
 // TODO: button hover color could be derived from its based color
 //       by applying something like opacity/darkening, same goes for gradients
@@ -34,16 +34,11 @@ export const intermediaryTheme = {
     light: {
         mode: 'light' as const,
         ...colorVariants.standard,
-        ...boxShadows.standard,
+        ...mapBoxShadowsToCSS(colorVariants.standard),
     },
     dark: {
         mode: 'dark' as const,
         ...colorVariants.dark,
-        ...boxShadows.dark,
-    },
-    debug: {
-        mode: 'light' as const,
-        ...colorVariants.debug,
-        ...boxShadows.standard,
+        ...mapBoxShadowsToCSS(colorVariants.dark),
     },
 };

@@ -1,7 +1,7 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Box, Column, GhostContainer, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { Box, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
@@ -9,7 +9,6 @@ import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/S
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { type Account, type AccountItemType } from 'src/types/wallet';
 
-import { AccountItemLogo } from './AccountItemLogo/AccountItemLogo';
 import { AccountItemContent } from './AccountRow/AccountItemContent/AccountItemContent';
 import { AccountRow } from './AccountRow/AccountRow';
 
@@ -105,29 +104,23 @@ export const AccountItem = ({
                 />
             </ExpandedSidebarOnly>
             <CollapsedSidebarOnly>
-                <Column alignItems="center">
-                    <Tooltip
-                        delayShow={TOOLTIP_DELAY_NORMAL}
-                        cursor="pointer"
-                        content={
-                            <Box padding={4}>
-                                <AccountItemContent {...commonProps} />
-                            </Box>
-                        }
-                        placement="right"
-                    >
-                        <GhostContainer
-                            isActive={isSelected}
-                            onClick={handleHeaderClick}
-                            tabIndex={0}
-                            padding={8}
-                            position={{ type: 'relative' }}
-                            zIndex={0}
-                        >
-                            <AccountItemLogo type={type} account={account} />
-                        </GhostContainer>
-                    </Tooltip>
-                </Column>
+                <Tooltip
+                    delayShow={TOOLTIP_DELAY_NORMAL}
+                    cursor="pointer"
+                    content={
+                        <Box padding={4}>
+                            <AccountItemContent {...commonProps} />
+                        </Box>
+                    }
+                    placement="right"
+                >
+                    <AccountRow
+                        {...commonProps}
+                        isSelected={isSelected}
+                        handleHeaderClick={handleHeaderClick}
+                        isCollapsed
+                    />
+                </Tooltip>
             </CollapsedSidebarOnly>
         </>
     );

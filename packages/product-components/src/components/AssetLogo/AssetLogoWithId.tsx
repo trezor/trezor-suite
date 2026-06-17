@@ -7,20 +7,13 @@ import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
-    ElevationUp,
     type FrameProps,
     type FramePropsKeys,
     type TransientProps,
     pickAndPrepareFrameProps,
-    useElevation,
     withFrameProps,
 } from '@trezor/components';
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-} from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
 import { AssetInitials } from './AssetInitials';
 import {
@@ -70,28 +63,17 @@ const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number
     ${withFrameProps}
 `;
 
-const Logo = styled.img<{ $size: number; $elevation: Elevation; $isBordered: boolean }>`
+const Logo = styled.img<{ $size: number; $isBordered: boolean }>`
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
     border-radius: ${borders.radii.full};
     ${({ $isBordered }) =>
         $isBordered &&
-        css<{ $elevation: Elevation }>`
-            box-shadow: inset 0 0 0 1px ${mapElevationToBorder};
-            background-color: ${mapElevationToBackground};
+        css`
+            box-shadow: ${({ theme }) => theme.elementShadowElevated};
+            background-color: ${({ theme }) => theme.elementFillElevated};
         `}
 `;
-
-interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-    $size: number;
-    $isBordered: boolean;
-}
-
-const ElevatedLogo = (props: LogoProps) => {
-    const { elevation } = useElevation();
-
-    return <Logo {...props} $elevation={elevation} />;
-};
 
 export const AssetLogoWithId = ({
     size,
@@ -237,20 +219,18 @@ export const AssetLogoWithId = ({
                 </AssetInitials>
             )}
             {!showPlaceholder && current && (
-                <ElevationUp>
-                    <ElevatedLogo
-                        src={current.src}
-                        srcSet={current.srcSet}
-                        loading="lazy"
-                        decoding="async"
-                        $size={size}
-                        $isBordered={isBordered}
-                        data-testid={dataTest}
-                        alt={placeholder}
-                        onLoad={handleOnLoad}
-                        onError={handleLoadError}
-                    />
-                </ElevationUp>
+                <Logo
+                    src={current.src}
+                    srcSet={current.srcSet}
+                    loading="lazy"
+                    decoding="async"
+                    $size={size}
+                    $isBordered={isBordered}
+                    data-testid={dataTest}
+                    alt={placeholder}
+                    onLoad={handleOnLoad}
+                    onError={handleLoadError}
+                />
             )}
         </>
     );

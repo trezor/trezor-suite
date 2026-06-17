@@ -1,7 +1,5 @@
 import { useRef, useState } from 'react';
 
-import styled, { css } from 'styled-components';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -11,15 +9,6 @@ import { Notifications } from 'src/components/suite/notifications/Notifications/
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
-
-const StyledNavigationItem = styled(NavigationItem)`
-    ${({ theme, isActive }) =>
-        isActive &&
-        css`
-            background: ${theme.legacyBackgroundTertiaryPressedOnElevation0};
-            box-shadow: ${theme.boxShadowBase};
-        `}
-`;
 
 export const NotificationDropdown = (props: NavigationItemProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -60,7 +49,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
             isOpen={isOpen}
             onOpenChange={handleToggleChange}
         >
-            <StyledNavigationItem
+            <NavigationItem
                 {...props}
                 isActive={isOpen}
                 onClick={() => popoverRef.current?.[isOpen ? 'close' : 'open']()}

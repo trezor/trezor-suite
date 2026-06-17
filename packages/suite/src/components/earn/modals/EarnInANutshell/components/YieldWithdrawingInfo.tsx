@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { BulletList } from '@trezor/components';
+import { StepList } from '@trezor/components';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
@@ -8,7 +8,7 @@ interface YieldWithdrawingInfoProps {
 }
 
 export const YieldWithdrawingInfo = ({ depositSymbol }: YieldWithdrawingInfoProps) => (
-    <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
+    <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
             heading={<Translation id="TR_EARN_SIGN_WITHDRAWAL_TRANSACTION" />}
             subheading={
@@ -28,5 +28,5 @@ export const YieldWithdrawingInfo = ({ depositSymbol }: YieldWithdrawingInfoProp
             }
             content={{ text: <Translation id="TR_EARN_INSTANTLY" /> }}
         />
-    </BulletList>
+    </StepList>
 );

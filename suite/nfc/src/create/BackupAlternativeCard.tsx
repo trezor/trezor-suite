@@ -32,7 +32,7 @@ export const BackupAlternativeCard = ({
     buttonPriority = 'primary',
     onClick,
 }: BackupAlternativeCardProps) => (
-    <Card paddingType="large" fillType="flat">
+    <Card paddingType="large" type="contrast">
         <Column gap={32} alignItems="center">
             <Badge intent={badgeIntent}>{badge}</Badge>
             <Column gap={16} alignItems="center">

@@ -42,7 +42,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
 
     return (
         <Card
-            fillType="flat"
+            type="contrast"
             paddingType="small"
             header={
                 <Row justifyContent="space-between">

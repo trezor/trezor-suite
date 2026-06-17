@@ -20,7 +20,7 @@ export const YieldApprovedAmountCard = ({
     hasError = false,
     onRevoke,
 }: YieldApprovedAmountCardProps) => (
-    <Card fillType="flat" paddingType="small">
+    <Card type="contrast" paddingType="small">
         <Row justifyContent="space-between" alignItems="center" width="100%">
             <Text typographyStyle="body-md">
                 <Translation id="TR_EARN_YIELD_APPROVED_AMOUNT" />

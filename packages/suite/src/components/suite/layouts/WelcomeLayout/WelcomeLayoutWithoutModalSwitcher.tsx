@@ -2,25 +2,14 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { DebugLegend } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { TrafficLightOffset } from '@suite/macos';
-import { selectThemeSettings } from '@suite/settings';
-import {
-    Column,
-    ElevationDown,
-    ElevationUp,
-    Modal,
-    Row,
-    useElevation,
-    variables,
-} from '@trezor/components';
-import { type Elevation, spacingsPx } from '@trezor/theme';
+import { Column, Modal, Row, variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { SuiteBanners } from 'src/components/suite/banners';
-import { useSelector } from 'src/hooks/suite';
 
 import { ContentContainer } from '../ContentContainer';
 import { PageHeader } from '../SuiteLayout';
@@ -28,7 +17,7 @@ import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
 import { Sidebar } from '../SuiteLayout/Sidebar/Sidebar';
 import { MainContent } from '../SuiteLayout/SuiteLayout';
 
-const Content = styled.div<{ $elevation: Elevation; $verticalCenter?: boolean }>`
+const Content = styled.div<{ $verticalCenter?: boolean }>`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -75,16 +64,12 @@ type RightContentProps = {
 };
 
 const RightSideContent = ({ showPureChildren, children }: RightContentProps) => {
-    const { elevation } = useElevation();
-
     if (showPureChildren) {
         return (
             <TrafficLightOffset>
                 <SuiteBanners />
-                <Content $elevation={elevation} $verticalCenter={true}>
-                    <PureChildrenWrapper>
-                        <ElevationUp>{children}</ElevationUp>
-                    </PureChildrenWrapper>
+                <Content $verticalCenter={true}>
+                    <PureChildrenWrapper>{children}</PureChildrenWrapper>
                 </Content>
             </TrafficLightOffset>
         );
@@ -100,9 +85,7 @@ const RightSideContent = ({ showPureChildren, children }: RightContentProps) => 
                     </BasicName>
                 </PageHeader>
             </WelcomePageHeaderWrapper>
-            <ContentContainer>
-                <ElevationUp>{children}</ElevationUp>
-            </ContentContainer>
+            <ContentContainer>{children}</ContentContainer>
         </>
     );
 };
@@ -114,37 +97,19 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
     hideSidebar,
     showPureChildren = false,
     showAccounts = true,
-}: WelcomeLayoutWithoutModalSwitcherProps) => {
-    const theme = useSelector(selectThemeSettings);
-
-    return (
-        <ElevationDown>
-            <Column height="100%" width="100%">
-                <Row
-                    height="100%"
-                    width="100%"
-                    data-testid="@welcome-layout/body"
-                    alignItems="normal"
-                >
-                    <Modal.Provider>
-                        {!hideSidebar ? (
-                            <ElevationDown>
-                                <Sidebar showAccounts={showAccounts} />
-                            </ElevationDown>
-                        ) : null}
-                        <MainContent>
-                            <RightSideContent showPureChildren={showPureChildren}>
-                                {children}
-                            </RightSideContent>
-                        </MainContent>
-                        <GuideButton />
-                        <GuideRouter />
-                    </Modal.Provider>
-                </Row>
-            </Column>
-            {theme.variant === 'debug' && (
-                <DebugLegend layout={WelcomeLayoutWithoutModalSwitcher.name} />
-            )}
-        </ElevationDown>
-    );
-};
+}: WelcomeLayoutWithoutModalSwitcherProps) => (
+    <Column height="100%" width="100%">
+        <Row height="100%" width="100%" data-testid="@welcome-layout/body" alignItems="normal">
+            <Modal.Provider>
+                {!hideSidebar ? <Sidebar showAccounts={showAccounts} /> : null}
+                <MainContent>
+                    <RightSideContent showPureChildren={showPureChildren}>
+                        {children}
+                    </RightSideContent>
+                </MainContent>
+                <GuideButton />
+                <GuideRouter />
+            </Modal.Provider>
+        </Row>
+    </Column>
+);

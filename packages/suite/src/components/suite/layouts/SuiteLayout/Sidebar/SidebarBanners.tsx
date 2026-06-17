@@ -14,7 +14,7 @@ import {
     SuiteSyncPromoBanner,
     selectShouldShowSuiteSyncPromoBanner,
 } from '@suite/metadata-migration';
-import { Box, ElevationContext } from '@trezor/components';
+import { Box } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -63,16 +63,14 @@ export const SidebarBanners = () => {
 
     return (
         <AnimatePresence>
-            <ElevationContext baseElevation={0}>
-                <Box
-                    padding={12}
-                    minWidth={280}
-                    position={{ type: 'relative' }}
-                    zIndex={zIndices.popover}
-                >
-                    {banner}
-                </Box>
-            </ElevationContext>
+            <Box
+                padding={12}
+                minWidth={280}
+                position={{ type: 'relative' }}
+                zIndex={zIndices.popover}
+            >
+                {banner}
+            </Box>
         </AnimatePresence>
     );
 };

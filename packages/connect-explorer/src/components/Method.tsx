@@ -167,7 +167,7 @@ export const MethodContent = styled.div<{ $manualMode?: boolean }>(
 
 const Container = styled.div`
     position: relative;
-    background: ${({ theme }) => theme.legacyBackgroundSurfaceElevation2};
+    background: ${({ theme }) => theme.surfaceFillSunken};
     border-radius: 12px;
     width: 100%;
     overflow-x: auto;

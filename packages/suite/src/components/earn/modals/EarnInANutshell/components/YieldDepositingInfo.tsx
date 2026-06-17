@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type YieldDto } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { BulletList } from '@trezor/components';
+import { StepList } from '@trezor/components';
 
 import { EarnYieldApyTooltip } from 'src/components/earn/dashboard/yield/EarnYieldApyTooltip';
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
@@ -23,7 +23,7 @@ export const YieldDepositingInfo = ({
     depositSymbol,
     vaultSymbol,
 }: YieldDepositingInfoProps) => (
-    <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
+    <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
             heading={
                 <Translation
@@ -71,5 +71,5 @@ export const YieldDepositingInfo = ({
                 }}
             />
         )}
-    </BulletList>
+    </StepList>
 );

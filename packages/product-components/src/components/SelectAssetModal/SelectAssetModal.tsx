@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Column, Modal, VirtualizedList, useScrollShadow } from '@trezor/components';
-import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { AssetItem } from './AssetItem';
 import { AssetItemNotFound } from './AssetItemNotFound';
@@ -33,11 +33,7 @@ export const SelectAssetModal = ({
 
     const [end, setEnd] = useState(options.length);
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
-        useScrollShadow();
-
-    const shadowColor = mapElevationToBackgroundToken({
-        $elevation: 0,
-    });
+        useScrollShadow({ backgroundColor: 'surfaceFillModal' });
 
     const onScrollEnd = useCallback(() => {
         setEnd(end + 1000);
@@ -95,7 +91,7 @@ export const SelectAssetModal = ({
                     />
                 ) : (
                     <ShadowContainer>
-                        <ShadowTop backgroundColor={shadowColor} />
+                        <ShadowTop />
                         <VirtualizedList
                             items={options}
                             ref={scrollElementRef}
@@ -105,7 +101,7 @@ export const SelectAssetModal = ({
                             listHeight={LIST_HEIGHT}
                             listMinHeight={LIST_MIN_HEIGHT}
                         />
-                        <ShadowBottom backgroundColor={shadowColor} />
+                        <ShadowBottom />
                     </ShadowContainer>
                 )}
             </Column>

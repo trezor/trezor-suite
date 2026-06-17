@@ -1,10 +1,9 @@
 import { type ReactNode, useRef, useState } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { DebugLegend } from '@suite/debug';
 import { ScrollContext } from '@suite/router';
-import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
+import { Modal, variables } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { Metadata } from 'src/components/suite/Metadata';
@@ -101,7 +100,6 @@ interface SuiteLayoutProps {
 }
 
 export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutProps) => {
-    const theme = useTheme();
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isBelowTablet } = useLayoutSize();
@@ -113,59 +111,52 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
 
     return (
         <ScrollContext.Provider value={{ scrollRef, topOffset }}>
-            <ElevationContext baseElevation={-1}>
-                <Wrapper ref={wrapperRef} data-testid="@suite-layout">
-                    <PageWrapper>
-                        <Modal.Provider>
-                            <Metadata title={title} />
+            <Wrapper ref={wrapperRef} data-testid="@suite-layout">
+                <PageWrapper>
+                    <Modal.Provider>
+                        <Metadata title={title} />
 
-                            <ModalSwitcher />
-                            <SwitchDeviceLayer />
-                            <AddPassphraseWalletFlow />
+                        <ModalSwitcher />
+                        <SwitchDeviceLayer />
+                        <AddPassphraseWalletFlow />
 
-                            <AppShortcuts />
-                            <PowerMonitorManager />
+                        <AppShortcuts />
+                        <PowerMonitorManager />
 
-                            {isBelowTablet && <CoinjoinBars />}
+                        {isBelowTablet && <CoinjoinBars />}
 
-                            <DiscoveryProgress />
+                        <DiscoveryProgress />
 
-                            <LayoutContext.Provider value={setLayoutPayload}>
-                                <Body data-testid="@suite-layout/body">
-                                    <Columns>
-                                        <ElevationDown>
-                                            <Sidebar />
-                                        </ElevationDown>
-                                        <MainContent>
-                                            {!isBelowTablet && <CoinjoinBars />}
-                                            <SuiteBanners />
-                                            <AppWrapper data-testid="@app" ref={scrollRef}>
-                                                <ElevationUp>
-                                                    {layoutHeader}
+                        <LayoutContext.Provider value={setLayoutPayload}>
+                            <Body data-testid="@suite-layout/body">
+                                <Columns>
+                                    <Sidebar />
+                                    <MainContent>
+                                        {!isBelowTablet && <CoinjoinBars />}
+                                        <SuiteBanners />
+                                        <AppWrapper data-testid="@app" ref={scrollRef}>
+                                            {layoutHeader}
 
-                                                    <ContentContainer
-                                                        data-testid={
-                                                            dataTest
-                                                                ? `${dataTest}/content`
-                                                                : '@app/content'
-                                                        }
-                                                    >
-                                                        {children}
-                                                    </ContentContainer>
-                                                </ElevationUp>
-                                            </AppWrapper>
-                                        </MainContent>
-                                    </Columns>
-                                </Body>
-                            </LayoutContext.Provider>
-                            {!isBelowTablet && <GuideButton />}
-                        </Modal.Provider>
-                    </PageWrapper>
+                                            <ContentContainer
+                                                data-testid={
+                                                    dataTest
+                                                        ? `${dataTest}/content`
+                                                        : '@app/content'
+                                                }
+                                            >
+                                                {children}
+                                            </ContentContainer>
+                                        </AppWrapper>
+                                    </MainContent>
+                                </Columns>
+                            </Body>
+                        </LayoutContext.Provider>
+                        {!isBelowTablet && <GuideButton />}
+                    </Modal.Provider>
+                </PageWrapper>
 
-                    <GuideRouter />
-                </Wrapper>
-                {theme.variant === 'debug' && <DebugLegend layout={SuiteLayout.name} />}
-            </ElevationContext>
+                <GuideRouter />
+            </Wrapper>
         </ScrollContext.Provider>
     );
 };

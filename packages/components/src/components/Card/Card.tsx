@@ -1,11 +1,11 @@
 import { type HTMLAttributes, type ReactNode } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { type Elevation, borders } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
-import { type CardVariant, type FillType, type PaddingType } from './types';
-import { mapFillTypeToCSS, mapPaddingTypeToPadding, mapVariantToColor } from './utils';
+import { type CardType, type PaddingType } from './types';
+import { mapCardTypeToCSS, mapPaddingTypeToPadding } from './utils';
 import { type AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 import {
     type FrameProps,
@@ -14,9 +14,9 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
+import { commonFocusStyles } from '../../utils/utils';
 import { Box } from '../Box/Box';
 import { Divider } from '../Divider/Divider';
-import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import { Text } from '../typography/Text/Text';
 
 export const allowedCardFrameProps = [
@@ -36,10 +36,9 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]
 type TransientAllowedFrameProps = TransientProps<AllowedFrameProps>;
 
 type ContainerProps = {
-    $elevation: Elevation;
-    $fillType: FillType;
+    $type: CardType;
     $isClickable: boolean;
-    $variant?: CardVariant;
+    $isSelected: boolean;
 };
 
 const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
@@ -50,25 +49,13 @@ const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
     border-radius: ${borders.radii.md};
     overflow: hidden;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
-    transition:
-        background 0.5s,
-        border 0.5s,
-        box-shadow 0.5s;
+    transition: 0.2s ease-in-out;
 
-    ${({ theme, $variant }) =>
-        $variant &&
-        css`
-            &::before {
-                content: '';
-                position: absolute;
-                border-radius: ${borders.radii.md};
-                inset: 0;
-                border-left: 2px solid ${mapVariantToColor({ theme, $variant })};
-                pointer-events: none;
-            }
-        `}
+    &:focus-visible {
+        ${commonFocusStyles}
+    }
 
-    ${mapFillTypeToCSS}
+    ${mapCardTypeToCSS}
     ${withFrameProps}
 `;
 
@@ -77,18 +64,18 @@ export type CardProps = AccessibilityProps &
         header?: ReactNode;
         footer?: ReactNode;
         paddingType?: PaddingType;
-        fillType?: FillType;
+        type?: CardType;
         onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
         onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
         onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
         children?: ReactNode;
-        variant?: CardVariant;
+        isSelected?: boolean;
         'data-testid'?: string;
     };
 
 export const Card = ({
     paddingType = 'normal',
-    fillType = 'default',
+    type = 'raised',
     header,
     footer,
     onClick,
@@ -96,19 +83,30 @@ export const Card = ({
     onMouseLeave,
     tabIndex,
     children,
-    variant,
+    isSelected = false,
     'data-testid': dataTest,
     ...rest
 }: CardProps) => {
-    const { elevation } = useElevation();
-    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(
         rest,
         allowedCardFrameProps,
     ) as TransientAllowedFrameProps;
+    const isClickable = Boolean(onClick);
 
-    const content = (
-        <>
+    return (
+        <Container
+            $type={type}
+            $isClickable={isClickable}
+            $isSelected={isClickable && isSelected}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            data-testid={dataTest}
+            {...frameProps}
+            {...withAccessibilityProps({
+                tabIndex: (tabIndex ?? Boolean(onClick)) ? 0 : undefined,
+            })}
+        >
             {header && (
                 <>
                     <Box
@@ -136,29 +134,6 @@ export const Card = ({
                     <Divider margin={{}} />
                     <Box padding={mapPaddingTypeToPadding({ paddingType })}>{footer}</Box>
                 </>
-            )}
-        </>
-    );
-
-    return (
-        <Container
-            $elevation={elevation}
-            $fillType={fillType}
-            $isClickable={Boolean(onClick)}
-            $variant={variant}
-            onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            data-testid={dataTest}
-            {...frameProps}
-            {...withAccessibilityProps({ tabIndex })}
-        >
-            {fillType === 'flat' ? (
-                <ElevationContext baseElevation={theme.variant === 'dark' ? 0 : -1}>
-                    {content}
-                </ElevationContext>
-            ) : (
-                <ElevationUp>{content}</ElevationUp>
             )}
         </Container>
     );

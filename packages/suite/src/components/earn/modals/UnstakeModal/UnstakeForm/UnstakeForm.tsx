@@ -85,7 +85,7 @@ export const UnstakeForm = () => {
                         </>
                     )}
 
-                    <Card fillType="default" paddingType="small">
+                    <Card type="raised" paddingType="small">
                         <Fees
                             feeInfo={feeInfo}
                             account={account}

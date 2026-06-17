@@ -16,21 +16,24 @@ export type TooltipBoxProps = {
 type TooltipBoxExtendedProps = TooltipBoxProps & Required<Pick<TooltipBoxProps, 'tooltipMaxWidth'>>;
 
 export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBoxExtendedProps) => {
-    const hasTitleOrAddon = title || addon;
+    const hasTitleOrAddon = !!title || !!addon;
 
     return (
         <Box
             maxWidth={tooltipMaxWidth}
             tabIndex={-1}
             borderRadius={TOOLTIP_BORDER_RADIUS}
-            backgroundColor="surfaceFillModeless"
+            backgroundColor="surfaceFillModelessNeutralDark"
+            borderColor="surfaceBorderModelessNeutralDark"
+            borderWidth={1}
+            shadow="surfaceShadowModeless"
             padding={hasTitleOrAddon ? 12 : { vertical: 6, horizontal: 8 }}
         >
             <Column gap={12}>
                 {hasTitleOrAddon && (
                     <Row gap={12} justifyContent="space-between">
                         {title && (
-                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <Text typographyStyle="body-sm" color="contentPrimaryInverse">
                                 {title}
                             </Text>
                         )}
@@ -38,7 +41,12 @@ export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBo
                     </Row>
                 )}
 
-                <Text typographyStyle="body-sm" as="div" intent="neutral" overflowWrap="anywhere">
+                <Text
+                    typographyStyle="body-sm"
+                    as="div"
+                    color="contentPrimary"
+                    overflowWrap="anywhere"
+                >
                     {content}
                 </Text>
             </Column>

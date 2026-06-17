@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import { type SpacingValuesNew } from '@trezor/theme';
 
-import { BulletListContext } from './BulletListContext';
-import { BulletListItem } from './BulletListItem';
-import { type BulletLineWidth, type BulletListDirection, type BulletSize } from './types';
+import { StepListContext } from './StepListContext';
+import { StepListItem } from './StepListItem';
+import { type BulletSize, type StepLineWidth, type StepListDirection } from './types';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -13,19 +13,17 @@ import {
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
 
-export type { BulletListItemState } from './types';
+export type { StepListItemState } from './types';
 
-export const allowedBulletListFrameProps = [
+export const allowedStepListFrameProps = [
     'margin',
     'width',
     'overflow',
     'flex',
 ] as const satisfies FramePropsKeys[];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedBulletListFrameProps)[number]>;
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedStepListFrameProps)[number]>;
 
-const Container = styled.ul<
-    TransientProps<AllowedFrameProps> & { $direction: BulletListDirection }
->`
+const Container = styled.ul<TransientProps<AllowedFrameProps> & { $direction: StepListDirection }>`
     display: flex;
     list-style-type: none;
     flex-direction: ${({ $direction }) => ($direction === 'vertical' ? 'column' : 'row')};
@@ -35,19 +33,19 @@ const Container = styled.ul<
     ${withFrameProps}
 `;
 
-export type BulletListProps = AllowedFrameProps & {
+export type StepListProps = AllowedFrameProps & {
     gap?: SpacingValuesNew;
     bulletGap?: SpacingValuesNew;
     titleGap?: SpacingValuesNew;
     isOrdered?: boolean;
     bulletSize?: BulletSize;
-    lineWidth?: BulletLineWidth;
-    direction?: BulletListDirection;
+    lineWidth?: StepLineWidth;
+    direction?: StepListDirection;
     children: React.ReactNode;
     'data-testid'?: string;
 };
 
-export const BulletList = ({
+export const StepList = ({
     gap = 32,
     bulletGap = 24,
     titleGap = 8,
@@ -58,11 +56,11 @@ export const BulletList = ({
     'data-testid': dataTestId,
     children,
     ...rest
-}: BulletListProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedBulletListFrameProps);
+}: StepListProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedStepListFrameProps);
 
     return (
-        <BulletListContext.Provider
+        <StepListContext.Provider
             value={{
                 itemGap: gap,
                 bulletGap,
@@ -76,8 +74,8 @@ export const BulletList = ({
             <Container data-testid={dataTestId} {...frameProps} $direction={direction}>
                 {children}
             </Container>
-        </BulletListContext.Provider>
+        </StepListContext.Provider>
     );
 };
 
-BulletList.Item = BulletListItem;
+StepList.Item = StepListItem;

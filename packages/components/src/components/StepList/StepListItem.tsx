@@ -1,15 +1,25 @@
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { type SpacingValuesNew, typography } from '@trezor/theme';
 
-import { useBulletList } from './BulletListContext';
+import { useStepList } from './StepListContext';
 import {
-    type BulletLineWidth,
-    type BulletListDirection,
-    type BulletListItemState,
     type BulletSize,
+    type StepLineWidth,
+    type StepListDirection,
+    type StepListItemState,
 } from './types';
-import { mapPropsToTypographyStyle, mapSizeToDimension, mapStateToTextColor } from './utils';
+import {
+    mapPropsToTypographyStyle,
+    mapSizeToCounterTypographyStyle,
+    mapSizeToDimension,
+    mapStateToBackgroundColor,
+    mapStateToBorderColor,
+    mapStateToBoxShadow,
+    mapStateToBulletColor,
+    mapStateToCounterColor,
+    mapStateToTitleColor,
+} from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';
 
@@ -17,7 +27,7 @@ const Item = styled.li<{
     $bulletGap: SpacingValuesNew;
     $titleGap: SpacingValuesNew;
     $size: BulletSize;
-    $direction: BulletListDirection;
+    $direction: StepListDirection;
 }>`
     display: grid;
     grid-template-columns: ${mapSizeToDimension}px 1fr;
@@ -37,7 +47,7 @@ const Item = styled.li<{
               `}
 `;
 
-const BulletWrapper = styled.div<{ $direction: BulletListDirection }>`
+const StepIndicatorWrapper = styled.div<{ $direction: StepListDirection }>`
     align-self: center;
     counter-increment: item-counter;
     position: relative;
@@ -51,11 +61,10 @@ const BulletWrapper = styled.div<{ $direction: BulletListDirection }>`
         `}
 `;
 
-const Bullet = styled.div<{
-    $state: BulletListItemState;
+const StepIndicator = styled.div<{
+    $state: StepListItemState;
     $isOrdered: boolean;
     $size: BulletSize;
-    $isDarkTheme: boolean;
 }>`
     display: flex;
     align-items: center;
@@ -63,49 +72,31 @@ const Bullet = styled.div<{
     width: ${mapSizeToDimension}px;
     height: ${mapSizeToDimension}px;
     border-radius: 50%;
-    background-color: ${({ theme, $isDarkTheme, $state }) =>
-        // eslint-disable-next-line no-nested-ternary
-        $state === 'active'
-            ? theme.legacyBackgroundPrimarySubtleOnElevation0
-            : $isDarkTheme
-              ? theme.contentPrimaryInverse
-              : theme.legacyBackgroundNeutralSubtleOnElevation0};
-    color: ${({ $state, theme }) => theme[mapStateToTextColor($state)]};
-    ${({ $size }) => ($size === 'small' ? typography['body-xs'] : typography['body-sm'])}
+    background-color: ${mapStateToBackgroundColor};
+    outline: 2px solid ${mapStateToBorderColor};
+    outline-offset: -2px;
+    color: ${mapStateToCounterColor};
+    box-shadow: ${mapStateToBoxShadow};
 
-    ${({ $state, $isOrdered, theme }) =>
-        $state === 'active' &&
-        $isOrdered &&
-        css`
-            background-color: ${theme.contentPrimaryInverse};
-            box-shadow: ${theme.boxShadowBase};
-        `}
+    ${({ $size }) => typography[mapSizeToCounterTypographyStyle({ $size })]}
 
     &::before {
-        ${({ $isOrdered, $isDarkTheme, $state, theme }) =>
+        ${({ $isOrdered, $state, theme }) =>
             $isOrdered
                 ? css`
                       content: counter(item-counter);
                   `
                 : css`
                       content: '';
-                      width: 50%;
-                      height: 50%;
+                      width: 25%;
+                      height: 25%;
                       border-radius: 50%;
-                      background-color: ${
-                          // eslint-disable-next-line no-nested-ternary
-                          $state === 'active'
-                              ? theme.legacyBackgroundPrimaryDefault
-                              : $isDarkTheme
-                                ? theme.elementFillBoldDisabled
-                                : theme.contentPrimaryInverse
-                      };
-                      box-shadow: ${!$isDarkTheme && $state !== 'active' && theme.boxShadowBase};
+                      background-color: ${mapStateToBulletColor({ $state, theme })};
                   `}
     }
 `;
 
-const Title = styled.div<{ $direction: BulletListDirection }>`
+const Title = styled.div<{ $direction: StepListDirection }>`
     align-self: center;
     overflow: hidden;
 
@@ -121,18 +112,18 @@ const Title = styled.div<{ $direction: BulletListDirection }>`
 `;
 
 const Line = styled.div<{
-    $size: BulletSize;
-    $direction: BulletListDirection;
+    $direction: StepListDirection;
     $bulletGap: SpacingValuesNew;
-    $lineWidth: BulletLineWidth;
+    $lineWidth: StepLineWidth;
 }>`
-    ${({ $direction, $bulletGap, $size, $lineWidth }) =>
+    ${({ $direction, $bulletGap, $lineWidth }) =>
         $direction === 'horizontal'
             ? css`
                   grid-column: 2;
                   grid-row: 1;
                   margin: 0 ${$bulletGap}px;
-                  border-top: ${$lineWidth}px dashed ${({ theme }) => theme.borderNeutral};
+                  border-top: ${$lineWidth}px dashed
+                      ${({ theme }) => theme.elementBorderNeutralSofter};
                   place-self: center stretch;
 
                   ${Item}:last-child & {
@@ -141,8 +132,9 @@ const Line = styled.div<{
               `
             : css`
                   place-self: stretch center;
-                  border-left: ${$lineWidth}px dashed ${({ theme }) => theme.borderNeutral};
-                  margin: calc(${mapSizeToDimension({ $size })}px * -0.5) 0;
+                  border-left: ${$lineWidth}px dashed
+                      ${({ theme }) => theme.elementBorderNeutralSofter};
+                  margin: ${$lineWidth}px 0;
 
                   ${Item}:last-child & {
                       opacity: 0;
@@ -162,23 +154,21 @@ const Content = styled.div<{ $itemGap: SpacingValuesNew; $titleGap: SpacingValue
     }
 `;
 
-export type BulletListItemProps = {
+export type StepListItemProps = {
     children?: React.ReactNode;
     title: React.ReactNode;
-    state?: BulletListItemState;
+    state?: StepListItemState;
     'data-testid'?: string;
 };
 
-export const BulletListItem = ({
+export const StepListItem = ({
     state = 'default',
     title,
     'data-testid': dataTestId,
     children,
-}: BulletListItemProps) => {
+}: StepListItemProps) => {
     const { itemGap, bulletGap, titleGap, bulletSize, isOrdered, direction, lineWidth } =
-        useBulletList();
-    const theme = useTheme();
-    const isDarkTheme = theme.variant === 'dark';
+        useStepList();
 
     return (
         <Item
@@ -188,7 +178,7 @@ export const BulletListItem = ({
             $direction={direction}
             data-testid={dataTestId}
         >
-            <BulletWrapper $direction={direction}>
+            <StepIndicatorWrapper $direction={direction}>
                 {state === 'done' ? (
                     <IconCircle
                         name="check"
@@ -196,30 +186,20 @@ export const BulletListItem = ({
                         intent="brand"
                     />
                 ) : (
-                    <Bullet
-                        $state={state}
-                        $isOrdered={isOrdered}
-                        $size={bulletSize}
-                        $isDarkTheme={isDarkTheme}
-                    />
+                    <StepIndicator $state={state} $isOrdered={isOrdered} $size={bulletSize} />
                 )}
-            </BulletWrapper>
+            </StepIndicatorWrapper>
             <Title $direction={direction}>
                 <Text
                     as="div"
                     typographyStyle={mapPropsToTypographyStyle(direction, state)}
-                    color={mapStateToTextColor(state)}
+                    color={mapStateToTitleColor(state)}
                     ellipsisLineCount={direction === 'vertical' ? 2 : undefined}
                 >
                     {title}
                 </Text>
             </Title>
-            <Line
-                $size={bulletSize}
-                $direction={direction}
-                $bulletGap={bulletGap}
-                $lineWidth={lineWidth}
-            />
+            <Line $direction={direction} $bulletGap={bulletGap} $lineWidth={lineWidth} />
             {direction === 'vertical' && (
                 <Content $itemGap={itemGap} $titleGap={titleGap}>
                     {children && (

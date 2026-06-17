@@ -911,10 +911,6 @@ export const messages = defineMessages({
         defaultMessage: 'Receive address',
         id: 'TR_BUY_RECEIVING_ADDRESS',
     },
-    TR_BUY_CONFIRMED_ON_TREZOR: {
-        defaultMessage: 'Confirmed on Trezor',
-        id: 'TR_BUY_CONFIRMED_ON_TREZOR',
-    },
     TR_BUY_NOT_TRANSACTIONS: {
         defaultMessage: 'No transactions',
         id: 'TR_BUY_NOT_TRANSACTIONS',

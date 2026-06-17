@@ -1,13 +1,13 @@
 import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { type BulletListItemState, Card, Column } from '@trezor/components';
+import { Card, Column, type StepListItemState } from '@trezor/components';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailStep } from '../TradingDetailStep';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
-const getState = (trade: BuyTrade): BulletListItemState => {
+const getState = (trade: BuyTrade): StepListItemState => {
     switch (trade.status) {
         case 'APPROVAL_PENDING':
             return 'active';

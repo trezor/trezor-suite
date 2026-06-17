@@ -4,6 +4,7 @@ import { type UseFormReturn } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { TRADING_FORM_AMOUNT_IN_CRYPTO, useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { Text } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -43,7 +44,11 @@ export const TradingFormInputFiatCrypto = memo(function TradingFormInputFiatCryp
         cryptoInputName,
         fiatInputName,
         cryptoSelectName,
-        labelLeft: showLabel ? <Translation id={amountLabels.inputLabel} /> : undefined,
+        labelLeft: showLabel ? (
+            <Text intent="neutral" priority="secondary">
+                <Translation id={amountLabels.inputLabel} />
+            </Text>
+        ) : undefined,
         labelRight: showLabel ? (
             <TradingFormSwitcherCryptoFiat
                 currency={!amountInCrypto ? displaySymbol : (currencySelectLabel ?? '')}

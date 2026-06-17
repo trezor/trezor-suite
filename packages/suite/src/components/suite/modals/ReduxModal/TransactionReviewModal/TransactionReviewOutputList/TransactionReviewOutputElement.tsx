@@ -8,20 +8,9 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
-import {
-    Box,
-    Card,
-    Column,
-    H4,
-    InfoItem,
-    Note,
-    Row,
-    Text,
-    TextButton,
-    useElevation,
-} from '@trezor/components';
+import { Box, Card, Column, H4, InfoItem, Note, Row, Text, TextButton } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
-import { type Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
+import { type Color, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -29,14 +18,14 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 import { type Account } from 'src/types/wallet';
 
-const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
+const DataWrapper = styled.p<{ $isExpanded: boolean; $fadeColor: Color }>`
     word-break: break-all;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
     cursor: pointer;
     position: relative;
 
-    ${({ $isExpanded, $elevation, theme }) =>
+    ${({ $isExpanded, $fadeColor, theme }) =>
         !$isExpanded &&
         css`
             max-height: 100px;
@@ -54,7 +43,7 @@ const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
                 background: linear-gradient(
                     to bottom,
                     rgb(0 0 0 / 0%) 0%,
-                    ${mapElevationToBackground({ theme, $elevation })} 100%
+                    ${theme[$fadeColor]} 100%
                 );
                 pointer-events: none;
             }
@@ -63,14 +52,20 @@ const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
 
 const MAX_COLLAPSED_DATA_LENGTH = 400;
 
-const Data = ({ value }: { value: string }) => {
+const Data = ({
+    value,
+    state,
+}: {
+    value: string;
+    state: TransactionReviewOutputElementProps['state'];
+}) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const { parentElevation } = useElevation();
     const isTooLong = value.length > MAX_COLLAPSED_DATA_LENGTH;
+    const fadeColor = state === 'confirmed' ? 'elementFillNeutralSofter' : 'surfaceFillRaised';
 
     if (!isTooLong) {
         return (
-            <DataWrapper $isExpanded $elevation={parentElevation}>
+            <DataWrapper $isExpanded $fadeColor={fadeColor}>
                 {value}
             </DataWrapper>
         );
@@ -81,7 +76,7 @@ const Data = ({ value }: { value: string }) => {
             <DataWrapper
                 onClick={() => setIsExpanded(!isExpanded)}
                 $isExpanded={isExpanded}
-                $elevation={parentElevation}
+                $fadeColor={fadeColor}
             >
                 {isExpanded ? value : value.slice(0, MAX_COLLAPSED_DATA_LENGTH)}
             </DataWrapper>
@@ -124,7 +119,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
         case 'note':
             return <Text>{value}</Text>;
         case 'data':
-            return <Data value={value} />;
+            return <Data value={value} state={state} />;
         case 'amount': {
             const formattedValue = token
                 ? convertAmountSubunitsToUnits(value, token.decimals)
@@ -192,7 +187,7 @@ export const TransactionReviewOutputElement = ({
     return (
         <Card
             paddingType="small"
-            fillType={state === 'confirmed' ? 'flat' : 'default'}
+            type={state === 'confirmed' ? 'contrast' : 'raised'}
             header={
                 <Row gap={spacings.sm}>
                     <TransactionReviewOutputStatus state={state} />

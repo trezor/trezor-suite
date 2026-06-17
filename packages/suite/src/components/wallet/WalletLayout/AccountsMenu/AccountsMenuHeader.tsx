@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
+import { Box, Column, Divider, Icon, Row, Skeleton, Tooltip } from '@trezor/components';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
@@ -16,10 +16,9 @@ import { CoinsFilter } from './CoinsFilter';
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 
 const Indicator = styled.div`
-    width: 11px;
-    height: 11px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    border: 3px solid ${({ theme }) => theme.legacyBorderElevation2};
     background-color: ${({ theme }) => theme.contentBrand};
     position: absolute;
     top: 0;
@@ -55,12 +54,7 @@ export const AccountsMenuHeader = () => {
                 <ExpandedSidebarOnly>
                     <Row gap={12} padding={{ right: !isEmpty ? 10 : 0 }}>
                         {isDiscoveryRunning ? (
-                            <SkeletonRectangle
-                                animate
-                                width="100%"
-                                height={20}
-                                margin={{ left: 4 }}
-                            />
+                            <Skeleton animate width="100%" height={20} margin={{ left: 4 }} />
                         ) : (
                             <>
                                 {!isEmpty && <AccountSearchBox />}
