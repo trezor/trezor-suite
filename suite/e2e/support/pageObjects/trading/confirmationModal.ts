@@ -20,6 +20,7 @@ export class TradingConfirmationModal {
     readonly copyTransactionIdButton: Locator;
     readonly finishButton: Locator;
     readonly confirmAndSendButton: Locator;
+    readonly buyButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -44,6 +45,7 @@ export class TradingConfirmationModal {
         this.confirmAndSendButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-and-send',
         );
+        this.buyButton = this.page.getByTestId('@trading/offer/buy-button');
     }
 
     @step()
