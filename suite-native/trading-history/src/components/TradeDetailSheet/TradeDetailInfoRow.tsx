@@ -12,7 +12,7 @@ type TradeDetailInfoRowProps = {
     borderBottom?: boolean;
 };
 
-export const DETAIL_INFO_ROW_MIN_HEIGHT = 66;
+const DETAIL_INFO_ROW_MIN_HEIGHT = 66;
 
 const wrapperStyle = prepareNativeStyle<{ borderBottom?: boolean }>((utils, { borderBottom }) => ({
     justifyContent: 'space-between',
