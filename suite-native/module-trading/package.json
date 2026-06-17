@@ -72,6 +72,7 @@
         "@suite-native/trading-provider-utils": "workspace:*",
         "@suite-native/trading-quote-utils": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
+        "@suite-native/trading-slippage": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",

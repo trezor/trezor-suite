@@ -81,6 +81,7 @@
         { "path": "../trading-provider-utils" },
         { "path": "../trading-quote-utils" },
         { "path": "../trading-residence" },
+        { "path": "../trading-slippage" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         {
