@@ -13,7 +13,7 @@ const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
 const mockFeeSelectorProps = jest.fn();
 jest.mock('@suite-native/transaction-management', () => ({
     ...jest.requireActual('@suite-native/transaction-management'),
-    FeeSelector: jest.fn(props => {
+    FeeSelectorRow: jest.fn(props => {
         mockFeeSelectorProps(props);
 
         return null;
