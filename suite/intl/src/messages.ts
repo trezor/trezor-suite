@@ -565,14 +565,6 @@ export const messages = defineMessages({
         defaultMessage: 'Approval transaction data',
         id: 'TR_APPROVAL_DATA',
     },
-    TR_EXCHANGE_APPROVAL_PROVIDER: {
-        defaultMessage: 'Provider',
-        id: 'TR_EXCHANGE_APPROVAL_PROVIDER',
-    },
-    TR_EXCHANGE_APPROVAL_SET_LIMIT: {
-        defaultMessage: 'Set limit',
-        id: 'TR_EXCHANGE_APPROVAL_SET_LIMIT',
-    },
     TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED: {
         defaultMessage: 'Swap offer',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED',
@@ -589,10 +581,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Limit how much the rate can change before the transaction fails. Network fees always apply.',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_INFO',
-    },
-    TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM: {
-        defaultMessage: 'Custom',
-        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_NOT_SET: {
         defaultMessage: 'Enter your desired slippage.',
@@ -7661,10 +7649,6 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
         defaultMessage: 'Support & Feedback',
     },
-    TR_GUIDE_ARTICLES: {
-        id: 'TR_GUIDE_ARTICLES',
-        defaultMessage: 'Articles',
-    },
     TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER: {
         id: 'TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER',
         defaultMessage: 'Suite Guide',
@@ -11610,14 +11594,6 @@ export const messages = defineMessages({
     TR_PERMISSION_CUSTOM_MESSAGE: {
         id: 'TR_PERMISSION_CUSTOM_MESSAGE',
         defaultMessage: 'Run custom operations',
-    },
-    TR_PERMISSION_COIN_GROUP: {
-        id: 'TR_PERMISSION_COIN_GROUP',
-        defaultMessage: '{coinLabel}: {permissions}',
-    },
-    TR_PERMISSION_DEVICE_GROUP: {
-        id: 'TR_PERMISSION_DEVICE_GROUP',
-        defaultMessage: 'Device: {permissions}',
     },
     TR_GRANT_PERMISSIONS: {
         id: 'TR_GRANT_PERMISSIONS',

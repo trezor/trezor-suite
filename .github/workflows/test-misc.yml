@@ -14,28 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  translations-unused:
-    runs-on: ubuntu-latest
-    if: github.repository == 'trezor/trezor-suite'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
-      - run: yarn workspace @suite/intl translations:list-unused
-
   media-duplicates:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
