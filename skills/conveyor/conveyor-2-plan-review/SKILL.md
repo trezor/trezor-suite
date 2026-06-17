@@ -79,7 +79,12 @@ Always run:
 - **Scope / product lens.** Is this the right problem, solving a real, evidenced
   need? Is the feature **complete** — anything missing that the feature needs to
   work properly? Are the stated non-goals genuinely out of this feature (not just
-  deferred work that is actually load-bearing)? Do **not** push to shrink the
+  deferred work that is actually load-bearing)? **And cut the opposite — speculative
+  scope:** gold-plating is a scope defect too (anti-regression guards for hypothetical
+  future mistakes, defensive checks, "while we're here" extras the stated problem did
+  not require). Flag those to **drop** — a taste decision *with a decline option* (see
+  the gate), never praised as "completeness". Complete = every **load-bearing** part the
+  feature needs, not every safeguard you can imagine. Do **not** push to shrink the
   conveyor/plan: the goal is a complete feature; splitting a large *cohesive* change
   into shippable pieces is the review station's job, not the plan's. **Check cohesion,
   though:** is this **one** feature, or several **independent** concerns bundled into
@@ -138,6 +143,16 @@ back) — it blocks promotion just like a P1.
 - **User-challenge** (the analysis concludes the developer's *stated* direction
   should change — drop a scoped feature, merge two things they wanted separate,
   add something they did not ask for): never auto-decide. Always surface.
+
+**Always offer "don't do it" for additive scope.** When a decision is about *adding*
+something optional — a safeguard, an anti-regression guard, an extra test beyond the
+acceptance criteria, defensive scope the core ask did not require — the options **must**
+include an explicit **decline** (e.g. `- [ ] (c) drop it — not worth the complexity`),
+and when the addition is speculative, **recommend declining**. Never present an additive
+proposal as a *how*-only choice ("unit test vs CI check") when *whether to add it at all*
+is the real question — that railroads the human into scope they may not want. Litmus: if
+the same reasoning ("someone might re-introduce X") would justify a guard for everything,
+the guard is opt-in, not assumed.
 
 **Decomposition gate — don't park a wall of checkboxes.** If gating would leave
 **more than ~6 open decisions**, or the scope lens found the plan **bundles ≥2
@@ -311,6 +326,7 @@ _Tick one box per decision (no tick = the ✅ recommended option), then tick Don
 **1. <title>** — [taste]
 - [ ] (a) <X> — <trade-off> ✅ recommended
 - [ ] (b) <Y> — <trade-off>
+- [ ] (c) drop it / don't add — *required option whenever the decision adds optional scope (a guard, an extra check); recommend this when the addition is speculative*
 
 **2. <title>** — ⚠️ user-challenge · changes stated scope · blocks promotion
 - [ ] (a) keep as planned
