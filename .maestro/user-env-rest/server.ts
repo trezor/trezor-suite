@@ -65,6 +65,40 @@ const routes: Record<string, Handler> = {
     '/stop-emu': () => TrezorUserEnvLink.stopEmu(),
     '/stop-bridge': () => TrezorUserEnvLink.stopBridge(),
     '/disconnect': () => TrezorUserEnvLink.disconnect(),
+    // Device interactions (used by passphrase / confirmation flows).
+    '/press-yes': () => TrezorUserEnvLink.pressYes(),
+    '/press-no': () => TrezorUserEnvLink.pressNo(),
+    '/swipe': body => TrezorUserEnvLink.swipeEmu(body.direction ?? 'up'),
+    '/input': body => TrezorUserEnvLink.inputEmu(body.value ?? ''),
+    // Read the current device screen text (debuglink) — for logging/diagnostics.
+    '/screen': () => TrezorUserEnvLink.getScreenContent(),
+    // Confirm the passphrase on the device, handling repeated prompts. The app
+    // can request the passphrase more than once (entry, then a verification /
+    // derivation pass) while its own UI stays on the loading screen, so we poll
+    // the device screen and confirm every passphrase prompt until it clears.
+    '/confirm-passphrase': async () => {
+        const screens: string[] = [];
+        let confirms = 0;
+        for (let i = 0; i < 30; i++) {
+            const content: any = await TrezorUserEnvLink.getScreenContent();
+            const screen = String(content?.body ?? '');
+            screens.push(screen.replace(/\s+/g, ' ').trim().slice(0, 80));
+
+            if (/passphrase/i.test(screen)) {
+                // Safe 5: scroll to reveal the value, then confirm.
+                await TrezorUserEnvLink.swipeEmu('up');
+                await TrezorUserEnvLink.swipeEmu('up');
+                await TrezorUserEnvLink.pressYes();
+                confirms += 1;
+            } else if (confirms > 0) {
+                // Device left the passphrase prompt after at least one confirm.
+                return { confirms, screens };
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        return { confirms, screens };
+    },
     // Escape hatch for flows that need WS messages not yet wrapped above
     // (e.g. press-yes, input, swipe). Body: { type: 'emulator-press-yes', ... }.
     '/raw': body => TrezorUserEnvLink.send(body),
@@ -103,6 +137,10 @@ const server = http.createServer(async (req, res) => {
     try {
         const body = await readBody(req);
         const result = await handler(body);
+        // Narrate each call so the shim terminal shows the device flow. /screen
+        // includes the rendered device text so we can see which prompt is up.
+        const detail = path === '/screen' ? `: ${JSON.stringify(result)}` : '';
+        console.log(`[user-env-rest] ${path}${detail}`);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, result: result ?? null }));
     } catch (error) {
