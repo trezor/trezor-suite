@@ -15,6 +15,7 @@ export function useTronStakingStats(
     });
 
     const maxApr = stats.data?.length ? Math.max(...stats.data.map(({ apr }) => apr)) : null;
+    const formattedMaxApr = maxApr ? Number(maxApr.toFixed(2)) : null;
 
-    return { stats, maxApr };
+    return { stats, maxApr, formattedMaxApr };
 }

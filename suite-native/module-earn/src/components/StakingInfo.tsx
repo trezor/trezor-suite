@@ -10,6 +10,8 @@ import { StakeClaimableCard } from './StakeClaimableCard';
 import { StakePendingCard } from './StakePendingCard';
 import { StakingBalancesOverviewCard } from './StakingBalancesOverviewCard';
 import { StakingUnavailableBottomSheet } from './StakingUnavailableBottomSheet';
+import { TronStakingUnstakeCard } from './TronStakingUnstakeCard';
+import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
 
 const sectionStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp8,
@@ -42,6 +44,9 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
             <StakeClaimableCard accountKey={accountKey} />
 
             <CardanoStakingInfoBanner accountKey={accountKey} />
+
+            <TronStakingWithdrawBanner accountKey={accountKey} />
+            <TronStakingUnstakeCard accountKey={accountKey} />
 
             <StakingBalancesOverviewCard
                 accountKey={accountKey}

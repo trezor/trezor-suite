@@ -13,6 +13,7 @@ import {
 } from './components/EarnInANutshellProcesses';
 import { EarnInfoRow } from './components/EarnInfoRow';
 
+// TODO: move to constants
 const TRON_UNSTAKING_PERIOD_DAYS = 14;
 
 interface TronStakeInANutshellModalProps {
