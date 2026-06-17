@@ -373,8 +373,10 @@ _Last updated by: conveyor-2-plan-review (<interactive|autonomous>)_
   resolution.
 - Read real code for the architecture lens; no speculative findings.
 - Do not promote to `conveyor/plan:ready-to-implement` while any P1 (even an auto-resolved
-  one), any unresolved open decision, a missing/empty acceptance-criteria section,
-  or **no assigned reviewer** remains. Every plan needs exactly one reviewer.
-- The `## Team` block: Product owner = issue creator (kept as-is); assign exactly
-  one reviewer (required); eng owner + tester are optional, by size.
+  one), any unresolved open decision, or a missing/empty acceptance-criteria section
+  remains. A reviewer does **not** block promotion — it is a non-blocking fallback
+  resolved at the PR's human-review handoff (CODEOWNERS-primary).
+- The `## Team` block: Product owner = issue creator (kept as-is); propose a
+  **non-blocking** reviewer fallback from CODEOWNERS (or the roster); eng owner +
+  tester are optional, by size.
 - Lenses run with fresh, independent context — do not let them share findings.
