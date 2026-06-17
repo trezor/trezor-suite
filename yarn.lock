@@ -14191,7 +14191,6 @@ __metadata:
     "@trezor/theme": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.3"
-    react-fela: "npm:^12.2.1"
     react-native: "npm:0.85.3"
   languageName: unknown
   linkType: soft
