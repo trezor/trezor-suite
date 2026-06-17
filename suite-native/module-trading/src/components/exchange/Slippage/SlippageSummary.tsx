@@ -40,13 +40,13 @@ export const SlippageSummary = ({ quote }: SlippageSummaryProps) => {
         <VStack spacing="sp12">
             <HStack justifyContent="space-between">
                 <Text variant="body-md" color="contentSecondary">
-                    <Translation id="moduleTrading.advancedSettings.slippage.summary.offered" />
+                    <Translation id="moduleTrading.slippage.summary.offered" />
                 </Text>
                 <Text variant="body-md">{formatCryptoValue(receiveStringAmount, receive)}</Text>
             </HStack>
             <HStack justifyContent="space-between">
                 <Text variant="body-md" color="contentSecondary">
-                    <Translation id="moduleTrading.advancedSettings.slippage.summary.deduction" />
+                    <Translation id="moduleTrading.slippage.summary.deduction" />
                 </Text>
                 <Text variant="body-md">
                     {formatCryptoValue(String(slippageDeduction), receive)}
@@ -55,7 +55,7 @@ export const SlippageSummary = ({ quote }: SlippageSummaryProps) => {
             <Divider />
             <HStack justifyContent="space-between">
                 <Text variant="body-md-strong" color="contentSecondary">
-                    <Translation id="moduleTrading.advancedSettings.slippage.summary.minimum" />
+                    <Translation id="moduleTrading.slippage.summary.minimum" />
                 </Text>
                 <Text variant="body-md-strong">
                     {formatCryptoValue(String(minimumReceive), receive)}

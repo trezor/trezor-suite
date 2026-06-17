@@ -29,16 +29,12 @@ export const useSlippageForm = (): UseSlippageFormRet => {
         () =>
             yup.object({
                 slippage: getSlippageFormValidationSchema({
-                    required: translate(
-                        'moduleTrading.advancedSettings.slippage.validation.required',
-                    ),
-                    notNumber: translate(
-                        'moduleTrading.advancedSettings.slippage.validation.notNumber',
-                    ),
-                    outOfRange: translate(
-                        'moduleTrading.advancedSettings.slippage.validation.outOfRange',
-                        { min: SLIPPAGE_MIN, max: SLIPPAGE_MAX },
-                    ),
+                    required: translate('moduleTrading.slippage.validation.required'),
+                    notNumber: translate('moduleTrading.slippage.validation.notNumber'),
+                    outOfRange: translate('moduleTrading.slippage.validation.outOfRange', {
+                        min: SLIPPAGE_MIN,
+                        max: SLIPPAGE_MAX,
+                    }),
                 }),
             }),
         [translate],

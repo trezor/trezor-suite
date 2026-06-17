@@ -24,7 +24,7 @@ export const SlippagePicker = ({ quote }: SlippagePickerProps) => {
         <>
             <TradeInfoRow onPress={showSheet} testID={SLIPPAGE_PICKER_TEST_ID}>
                 <Text variant="body-sm" color="contentSecondary">
-                    <Translation id="moduleTrading.advancedSettings.slippage.maxSlippageLabel" />
+                    <Translation id="moduleTrading.slippage.maxSlippageLabel" />
                 </Text>
                 <HStack alignItems="center" spacing="sp4">
                     <Text variant="body-sm" color="contentPrimary">

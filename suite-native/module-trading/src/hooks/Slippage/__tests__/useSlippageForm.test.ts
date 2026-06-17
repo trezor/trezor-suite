@@ -44,7 +44,7 @@ describe('useSlippageForm', () => {
             const { error } = result.current.form.getFieldState('slippage');
 
             expect(error?.message).toBe(
-                getTranslation('moduleTrading.advancedSettings.slippage.validation.required'),
+                getTranslation('moduleTrading.slippage.validation.required'),
             );
         });
     });
