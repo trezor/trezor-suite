@@ -74,14 +74,14 @@ export const TradingBuyFormInputs = () => {
         <Column gap={20}>
             <TradingFormCard>
                 <TradingFormSection>
+                    <TradingFormInputBuyAsset
+                        inputLabel="TR_TRADING_YOU_BUY"
+                        inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                        inputDisabled={hasBitcoinOnlyFirmware(device)}
+                        onAssetSelect={handleCryptoSelect}
+                        includedCryptoIds={buySupportedCryptoIds}
+                    />
                     <Column gap={8}>
-                        <TradingFormInputBuyAsset
-                            inputLabel="TR_TRADING_YOU_BUY"
-                            inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            inputDisabled={hasBitcoinOnlyFirmware(device)}
-                            onAssetSelect={handleCryptoSelect}
-                            includedCryptoIds={buySupportedCryptoIds}
-                        />
                         <TradingFormInputFiatCrypto
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}

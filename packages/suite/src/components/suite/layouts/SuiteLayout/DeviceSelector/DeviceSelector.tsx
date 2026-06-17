@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Tooltip } from '@trezor/components';
-import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
+import { commonFocusStyles, focusStyleTransition } from '@trezor/components/src/utils/utils';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
@@ -39,11 +39,13 @@ const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
             justify-content: center;
         `}
 
-    ${getFocusShadowStyle()};
+    &:focus-visible {
+        ${commonFocusStyles}
+    }
 
     &:hover {
         ${CaretContainer} {
-            background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
+            background: ${({ theme }) => theme.elementFillGhostPressed};
         }
     }
 `;

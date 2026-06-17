@@ -61,21 +61,27 @@ export const commonCheckInputStyles = css`
     transition: 0.1s ease-in-out;
 
     ${({ theme }) => css`
-        border-color: ${theme.contentSecondary};
-        background-color: ${theme.surfaceFillRaised};
+        border-color: ${theme.elementBorderField};
+        background-color: ${theme.elementFillField};
+
+        input:hover + & {
+            background-color: ${theme.elementFillFieldHovered};
+            border-color: ${theme.elementBorderFieldHovered};
+        }
 
         input:checked + & {
-            border-color: ${theme.legacyBackgroundPrimaryDefault};
+            border-color: ${theme.elementFillFieldSelected};
+            background-color: ${theme.elementFillFieldSelected};
+        }
+
+        input:checked:hover + & {
+            background-color: ${theme.elementFillFieldSelectedHovered};
+            border-color: ${theme.elementFillFieldSelectedHovered};
         }
 
         input:disabled:not(:checked) + & {
-            border-color: ${theme.borderNeutral};
-            background-color: ${theme.surfaceFillSunken};
-        }
-
-        label:hover > input:not(:disabled, :checked) + & {
-            border-color: ${theme.elementBorderFieldFocused};
-            background-color: ${theme.surfaceFillPage};
+            border-color: ${theme.elementBorderFieldDisabled};
+            background-color: ${theme.elementFillFieldDisabled};
         }
 
         input:focus-visible + & {

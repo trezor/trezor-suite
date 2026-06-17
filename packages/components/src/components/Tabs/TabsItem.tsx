@@ -30,7 +30,7 @@ const Item = styled.div<{ $isActive: boolean; $isDisabled: boolean; $size: TabsS
             opacity ${TRANSFORM_OPTIONS};
         pointer-events: none;
         z-index: 0;
-        background: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevation0};
+        background: ${({ theme }) => theme.elementFillGhostHovered};
     }
 
     &:hover::before,

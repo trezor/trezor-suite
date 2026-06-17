@@ -24,7 +24,6 @@ const Container = styled.div`
 
 const initial = {
     width: 279,
-    height: 70,
 };
 
 export const SwitchDeviceModal = ({
@@ -63,7 +62,6 @@ export const SwitchDeviceModal = ({
                             style={{
                                 originX: 0,
                                 originY: 0,
-                                overflow: 'hidden',
                             }}
                         >
                             {children}

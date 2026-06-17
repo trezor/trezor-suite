@@ -1,7 +1,6 @@
 import { type ReactNode, type RefObject, memo, useCallback, useState } from 'react';
 
 import { type BaseItemProps, VirtualizedList, useScrollShadow } from '@trezor/components';
-import { mapElevationToBackgroundToken } from '@trezor/theme';
 
 export interface AssetsListProps<T> {
     items: T[];
@@ -20,15 +19,17 @@ function AssetsListInner<T extends BaseItemProps>({
     minHeight = LIST_MIN_HEIGHT,
     ref,
 }: AssetsListProps<T>) {
-    const { onScroll, ShadowTop, ShadowBottom, ShadowContainer } = useScrollShadow(ref);
+    const { onScroll, ShadowTop, ShadowBottom, ShadowContainer } = useScrollShadow({
+        externalRef: ref,
+        backgroundColor: 'surfaceFillModal',
+    });
 
     const [end, setEnd] = useState(items.length);
     const onScrollEnd = useCallback(() => setEnd(end + 1000), [end]);
-    const shadowColor = mapElevationToBackgroundToken({ $elevation: 0 });
 
     return (
         <ShadowContainer>
-            <ShadowTop backgroundColor={shadowColor} />
+            <ShadowTop />
             <VirtualizedList
                 items={items}
                 padding={8}
@@ -43,7 +44,7 @@ function AssetsListInner<T extends BaseItemProps>({
                 loadMoreBufferCount={5}
                 resetScrollOnItemsChange={false}
             />
-            <ShadowBottom backgroundColor={shadowColor} />
+            <ShadowBottom />
         </ShadowContainer>
     );
 }

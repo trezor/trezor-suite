@@ -26,7 +26,7 @@ const PageItem = styled.div<{ $isActive?: boolean }>`
     height: ${spacingsPx.xxl};
     padding: ${spacingsPx.xxs} ${spacingsPx.xs};
     background: ${({ $isActive, theme }) =>
-        $isActive ? theme.legacyBackgroundSecondaryDefault : 'transparent'};
+        $isActive ? theme.elementFillBrandBold : 'transparent'};
     text-align: center;
     color: ${({ $isActive, theme }) => $isActive && theme.contentPrimaryInverse};
     border-radius: ${borders.radii.md};
@@ -40,7 +40,7 @@ const PageItem = styled.div<{ $isActive?: boolean }>`
         !$isActive &&
         css`
             &:hover {
-                background: ${theme.legacyBackgroundTertiaryDefaultOnElevation0};
+                background: ${theme.elementFillNeutralSofter};
                 color: ${theme.contentNeutral};
             }
         `};

@@ -2,22 +2,15 @@ import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useState } 
 
 import styled, { css } from 'styled-components';
 
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    nextElevation,
-    spacings,
-} from '@trezor/theme';
+import { borders, spacings } from '@trezor/theme';
 
 import { type SelectBarOrientation, type SelectBarSize } from './types';
 import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextIntent } from './utils';
 import { variables } from '../../../config';
 import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { useMediaQuery } from '../../../utils/useMediaQuery';
-import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { commonFocusStyles, focusStyleTransition } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
-import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Column, Flex } from '../../Flex/Flex';
 import { Grid } from '../../Grid/Grid';
 import { Text } from '../../typography/Text/Text';
@@ -32,8 +25,9 @@ const getTranslateValue = (index: number = 0) => `calc(${index * 100}% + ${index
 const getPuckDimension = (optionsCount: number) =>
     `calc((100% - ${(optionsCount - 1) * GAP}px) / ${optionsCount})`;
 
-const Options = styled.div<{ $elevation: Elevation }>`
-    background: ${mapElevationToBackground};
+const Options = styled.div`
+    background: ${({ theme }) => theme.elementFillNeutralSofter};
+    border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofterAlt};
     border-radius: ${borders.radii.lg};
     flex: 1;
     min-width: 0;
@@ -42,7 +36,6 @@ const Options = styled.div<{ $elevation: Elevation }>`
 const Puck = styled.div<{
     $optionsCount: number;
     $selectedIndex: number;
-    $elevation: Elevation;
     $orientation: SelectBarOrientation;
 }>`
     position: absolute;
@@ -50,15 +43,17 @@ const Puck = styled.div<{
     top: 0;
     bottom: 0;
     width: ${({ $optionsCount }) => getPuckDimension($optionsCount)};
-    background: ${mapElevationToBackground};
+    background: ${({ theme }) => theme.elementFillElevated};
     border-radius: ${borders.radii.full};
-    box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
+    box-shadow: ${({ theme }) => theme.elementShadowElevated};
     transform: ${({ $selectedIndex }) => `translateX(${getTranslateValue($selectedIndex)})`};
     transition:
         transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74),
         ${focusStyleTransition};
 
-    ${getFocusShadowStyle()}
+    &:focus-visible {
+        ${commonFocusStyles}
+    }
 
     ${({ $orientation, $selectedIndex, $optionsCount }) =>
         $orientation === 'vertical' &&
@@ -119,7 +114,6 @@ export const SelectBar = <V extends ValueTypes>({
     margin,
 }: SelectBarProps<V>) => {
     const [selectedOptionIn, setSelected] = useState<ValueTypes | undefined>(selectedOption);
-    const { elevation } = useElevation();
     const isBelowMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
 
     useEffect(() => {
@@ -198,12 +192,11 @@ export const SelectBar = <V extends ValueTypes>({
                 </Text>
             )}
 
-            <Options $elevation={elevation}>
+            <Options>
                 <Box margin={spacings.xxs} position={{ type: 'relative' }}>
                     <Puck
                         $optionsCount={options.length}
                         $selectedIndex={selectedIndex}
-                        $elevation={nextElevation[elevation]}
                         $orientation={isVertical ? 'vertical' : orientation}
                         tabIndex={0}
                         onKeyDown={handleKeyboardNav}

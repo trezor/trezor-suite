@@ -40,7 +40,7 @@ export const DataAnalytics = ({
                         />
                     </Text>
 
-                    <Card>
+                    <Card type="contrast">
                         <Column gap={spacings.lg}>
                             <List gap={spacings.md}>
                                 <List.Item bulletComponent={<Icon size={16} name="eyeSlash" />}>

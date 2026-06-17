@@ -14593,7 +14593,6 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-redux: "npm:9.3.0"
     styled-components: "npm:^6.3.9"

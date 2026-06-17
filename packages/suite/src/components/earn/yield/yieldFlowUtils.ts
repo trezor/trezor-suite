@@ -1,7 +1,7 @@
 import { type RewardDto } from '@suite-common/earn-stablecoin-api';
 import { YIELD_FLOW_STEPS, type YieldFlowStepId } from '@suite-common/wallet-core';
 import { getApyPercent } from '@suite-common/wallet-utils';
-import type { BulletListItemState } from '@trezor/components';
+import type { StepListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 export { getYieldApprovalAction, type YieldApprovalAction } from '@suite-common/wallet-core';
@@ -53,12 +53,12 @@ export const getApyBreakdown = (components: RewardDto[] | undefined): string =>
         .flatMap(([symbol, componentApy]) => [symbol, String(componentApy)])
         .join(',');
 
-export const getBulletListItemStates = (
+export const getStepListItemStates = (
     currentStep: YieldFlowStepId,
-): Record<YieldFlowStepId, BulletListItemState> => {
+): Record<YieldFlowStepId, StepListItemState> => {
     const currentStepIndex = YIELD_FLOW_STEPS.indexOf(currentStep);
 
-    const getStepState = (stepId: YieldFlowStepId): BulletListItemState => {
+    const getStepState = (stepId: YieldFlowStepId): StepListItemState => {
         const stepIndex = YIELD_FLOW_STEPS.indexOf(stepId);
 
         if (stepIndex < currentStepIndex) {
@@ -76,7 +76,7 @@ export const getBulletListItemStates = (
         approve: getStepState('approve'),
         action: getStepState('action'),
         complete: getStepState('complete'),
-    } satisfies Record<YieldFlowStepId, BulletListItemState>;
+    } satisfies Record<YieldFlowStepId, StepListItemState>;
 
     return stepStates;
 };

@@ -2,13 +2,7 @@ import React, { type HTMLAttributes } from 'react';
 
 import styled, { type DefaultTheme, css } from 'styled-components';
 
-import {
-    type Color,
-    type Elevation,
-    type SpacingValues,
-    type SpacingValuesNew,
-    mapElevationToBorder,
-} from '@trezor/theme';
+import { type Color, type SpacingValues, type SpacingValuesNew } from '@trezor/theme';
 
 import {
     type FlexAlignItems,
@@ -25,7 +19,6 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { type TransientProps, makePropsTransient } from '../../utils/transientProps';
-import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedFlexFrameProps = [
     'margin',
@@ -51,7 +44,6 @@ export const withDivider = ({
     $rowGap,
     $columnGap,
     $direction,
-    $elevation,
     $dividerColor,
 }: {
     theme: DefaultTheme;
@@ -59,7 +51,6 @@ export const withDivider = ({
     $columnGap: SpacingValues | SpacingValuesNew;
     $direction: FlexDirection;
     $dividerColor?: Color;
-    $elevation: Elevation;
 }) => css`
     & > * {
         position: relative;
@@ -76,14 +67,14 @@ export const withDivider = ({
         height: 1px;
         width: 100%;
         left: 0;
-        border-top: 1px solid ${$dividerColor ? theme[$dividerColor] : mapElevationToBorder({ theme, $elevation })};`}
+        border-top: 1px solid ${$dividerColor ? theme[$dividerColor] : theme.borderNeutral};`}
         ${$direction === 'row' &&
         `
         top: 0;
         height: 100%;
         width: 1px;
         left: -${$columnGap / 2}px;
-        border-left: 1px solid ${$dividerColor ? theme[$dividerColor] : mapElevationToBorder({ theme, $elevation })};`}
+        border-left: 1px solid ${$dividerColor ? theme[$dividerColor] : theme.borderNeutral};`}
     }
 `;
 
@@ -100,7 +91,6 @@ type ContainerProps = TransientProps<AllowedFrameProps> & {
     $isReversed: boolean;
     $hasDivider: boolean;
     $dividerColor?: Color;
-    $elevation: Elevation;
 };
 
 const Container = styled.div<ContainerProps>`
@@ -175,8 +165,6 @@ export const Flex = ({
 }: FlexProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedFlexFrameProps);
 
-    const { elevation } = useElevation();
-
     return (
         <Container
             data-testid={dataTestId}
@@ -193,7 +181,6 @@ export const Flex = ({
                 isReversed,
                 hasDivider,
                 dividerColor,
-                elevation,
             })}
             onClick={onClick}
             as={as}

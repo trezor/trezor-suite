@@ -5,23 +5,8 @@ import styled from 'styled-components';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type BackupType } from '@suite-common/suite-types';
-import {
-    Banner,
-    CollapsibleBox,
-    Column,
-    Divider,
-    Text,
-    useElevation,
-    variables,
-} from '@trezor/components';
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    spacings,
-    spacingsPx,
-    zIndices,
-} from '@trezor/theme';
+import { Banner, CollapsibleBox, Column, Divider, Text, variables } from '@trezor/components';
+import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { LegacyOptions } from './LegacyOptions';
@@ -38,11 +23,11 @@ const OptionGroupHeading = styled.div`
     padding: ${spacingsPx.xs} 0;
 `;
 
-const FloatingSelectionsWrapper = styled.div<{ $elevation: Elevation }>`
+const FloatingSelectionsWrapper = styled.div`
     z-index: ${zIndices.modal};
     border-radius: ${borders.radii.sm};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    background: ${mapElevationToBackground};
+    box-shadow: ${({ theme }) => theme.surfaceShadowModeless};
+    background: ${({ theme }) => theme.surfaceFillModeless};
     overflow-y: auto;
     padding: 0 ${spacingsPx.xxs};
 `;
@@ -109,13 +94,11 @@ const LegacyWarning = () => (
 
 export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
     ({ selected, onSelect, style, defaultType }, ref) => {
-        const { elevation } = useElevation();
-
         const isShamirBackupDefault = isShamirBackupType(defaultType);
         const legacyOptionsRef = useRef<HTMLDivElement>(null);
 
         return (
-            <FloatingSelectionsWrapper $elevation={elevation} ref={ref} style={style}>
+            <FloatingSelectionsWrapper ref={ref} style={style}>
                 <InnerScrollableWrapper>
                     <OptionGroupHeading>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">

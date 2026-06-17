@@ -90,7 +90,7 @@ const StoreBadgeWithQr = ({
                         backgroundColor="elementFillContrast"
                         borderRadius={6}
                     >
-                        <QrCode value={url} />
+                        <QrCode value={url} color="contentPrimaryInverse" />
                     </Box>
                 </Column>
             }

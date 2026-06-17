@@ -6,15 +6,14 @@ import { Translation, useTranslation } from '@suite/intl';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { Box, Column, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
-import { borders } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { type TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 
-interface TradingInfoItemProps {
+type TradingInfoItemProps = {
     account?: Account;
     label: TradingPayGetLabelType;
     currency?: CryptoId;
@@ -23,7 +22,7 @@ interface TradingInfoItemProps {
     receiveAddress?: string;
     cryptoAmountTestId?: string;
     accountInfoTestId?: string;
-}
+};
 
 export const TradingInfoItem = ({
     account,
@@ -94,15 +93,10 @@ export const TradingInfoItem = ({
                 )}
             </Row>
             {id !== currency ? (
-                <SkeletonRectangle width="100%" height={75} />
+                <Skeleton width="100%" height={75} />
             ) : (
-                <Box
-                    borderWidth={borders.widths.medium}
-                    borderRadius={borders.radii.sm}
-                    padding={16}
-                    backgroundColor="legacyBackgroundSurfaceElevation2"
-                >
-                    <Row gap={8} justifyContent="space-between">
+                <Card type="contrast" paddingType="none">
+                    <Row padding={16} gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
                             {isNativeToken ? (
                                 <CoinLogo
@@ -161,7 +155,7 @@ export const TradingInfoItem = ({
                             )}
                         </Column>
                     </Row>
-                </Box>
+                </Card>
             )}
         </Column>
     );

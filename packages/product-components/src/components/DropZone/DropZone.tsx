@@ -10,31 +10,17 @@ import {
 
 import styled from 'styled-components';
 
-import {
-    Column,
-    Icon,
-    type IconName,
-    Paragraph,
-    Row,
-    Text,
-    useElevation,
-} from '@trezor/components';
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacings,
-} from '@trezor/theme';
+import { Column, Icon, type IconName, Paragraph, Row, Text } from '@trezor/components';
+import { borders, spacings } from '@trezor/theme';
 
-const Wrapper = styled.div<{ $elevation: Elevation }>`
+const Wrapper = styled.div`
     border-radius: ${borders.radii.xs};
-    background: ${mapElevationToBackground};
+    background: ${({ theme }) => theme.elementFillField};
     cursor: pointer;
 
     &:hover,
     &.dragging {
-        outline: ${borders.widths.large} solid ${mapElevationToBorder};
+        outline: ${borders.widths.large} solid ${({ theme }) => theme.elementBorderFieldHovered};
         outline-offset: -${borders.widths.large};
     }
 
@@ -197,10 +183,9 @@ export const DropZone = ({
         onSelect,
         'data-testid': dataTestId,
     });
-    const { elevation } = useElevation();
 
     return (
-        <Wrapper {...getWrapperProps()} $elevation={elevation} data-testid={dataTestId}>
+        <Wrapper {...getWrapperProps()} data-testid={dataTestId}>
             <Column
                 padding={spacings.lg}
                 minHeight={150}

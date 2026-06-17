@@ -30,7 +30,7 @@ export interface AutodetectSettings {
 
 export interface SuiteSettingsState {
     theme: {
-        variant: Exclude<SuiteThemeVariant, 'system'> | 'debug';
+        variant: Exclude<SuiteThemeVariant, 'system'>;
     };
     language: Locale;
     torOnionLinks: boolean;

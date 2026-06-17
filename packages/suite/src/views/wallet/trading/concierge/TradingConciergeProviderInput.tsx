@@ -15,7 +15,7 @@ import {
     Icon,
     Modal,
     Row,
-    SkeletonRectangle,
+    Skeleton,
     Text,
 } from '@trezor/components';
 
@@ -83,9 +83,9 @@ export const TradingConciergeProviderInput = ({
                         <Translation id="TR_TRADING_PROVIDER" />
                     </Text>
                     {isLoading ? (
-                        <SkeletonRectangle animate />
+                        <Skeleton animate />
                     ) : (
-                        <Row gap={4}>
+                        <Row gap={10}>
                             <Text
                                 typographyStyle="body-md"
                                 data-testid="@trading/concierge/provider-select/value"

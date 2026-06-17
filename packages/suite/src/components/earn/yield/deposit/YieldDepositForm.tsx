@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
-import { Banner, BulletList, Button, Column, Row, Text } from '@trezor/components';
+import { Banner, Button, Column, Row, StepList, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
@@ -186,14 +186,14 @@ export const YieldDepositForm = () => {
                                 />
                             )}
 
-                            <BulletList
+                            <StepList
                                 isOrdered
                                 bulletSize="large"
                                 bulletGap={12}
                                 gap={24}
                                 titleGap={16}
                             >
-                                <BulletList.Item
+                                <StepList.Item
                                     state={approveStepState}
                                     title={
                                         <Column gap={8} width="100%">
@@ -268,9 +268,9 @@ export const YieldDepositForm = () => {
                                         onRevoke={handleOnRevoke}
                                         onPendingTxClick={openPendingTransaction}
                                     />
-                                </BulletList.Item>
+                                </StepList.Item>
 
-                                <BulletList.Item
+                                <StepList.Item
                                     state={actionStepState}
                                     title={
                                         <Column gap={8} width="100%">
@@ -336,8 +336,8 @@ export const YieldDepositForm = () => {
                                             onPendingTxClick={openPendingTransaction}
                                         />
                                     )}
-                                </BulletList.Item>
-                            </BulletList>
+                                </StepList.Item>
+                            </StepList>
                         </>
                     )}
                 </Column>

@@ -417,7 +417,6 @@
   "TR_BUMP_FEE_SUBTEXT": "Daha yüksek işlem ücreti ödeyerek bu işlem onayını hızlandırın.",
   "TR_BUY": "Satın al",
   "TR_BUY_BUY": "Satın al",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Trezor'da onaylandı",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Hesaba geri dön",
   "TR_BUY_DETAIL_ERROR_TEXT": "İşleminiz başarısız oldu veya reddedildi. Ödeme yönteminize ücret yansıtılmadı.",
   "TR_BUY_DETAIL_ERROR_TITLE": "İşlem başarısız",

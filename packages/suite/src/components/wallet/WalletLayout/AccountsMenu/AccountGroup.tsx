@@ -3,8 +3,8 @@ import { type ReactNode, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { Box, Column, Icon, Row, Text, useElevation } from '@trezor/components';
-import { type Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
+import { Box, Column, Icon, Row, Text } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { type Account } from 'src/types/wallet';
 
@@ -19,9 +19,7 @@ const IconWrapper = styled.div<{ $isActive: boolean }>`
     transform: ${({ $isActive }) => ($isActive ? 'rotate(0)' : 'rotate(-90deg)')};
 `;
 
-const Header = styled.header<{ $elevation: Elevation }>`
-    background-color: ${mapElevationToBackground};
-
+const Header = styled.header`
     &:hover {
         ${IconWrapper} {
             background: ${({ theme }) => theme.surfaceFillRaised};
@@ -68,7 +66,6 @@ export const AccountGroup = ({
     const [isOpen, setIsOpen] = useState(hasBalance || keepOpen);
     const [previouslyOpen, setPreviouslyOpen] = useState(isOpen); // used to follow props changes without unnecessary rerenders
     const [previouslyHasBalance, setPreviouslyHasBalance] = useState(hasBalance); // used to follow props changes without unnecessary rerenders
-    const { elevation } = useElevation();
 
     if (keepOpen && !previouslyOpen) {
         setPreviouslyOpen(true);
@@ -100,7 +97,6 @@ export const AccountGroup = ({
                     <Header
                         onClick={!keepOpen ? onClick : undefined}
                         data-testid={`@account-menu/${type}`}
-                        $elevation={elevation}
                     >
                         <Row
                             gap={spacings.sm}

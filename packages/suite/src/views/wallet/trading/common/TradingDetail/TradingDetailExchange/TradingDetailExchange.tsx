@@ -14,7 +14,7 @@ import {
     selectTradingDisplayComposedFee,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components';
+import { Box, Card, Column, H3, Paragraph, StepList } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
@@ -163,7 +163,7 @@ export const TradingDetailExchange = () => {
                                     account={trade.data.isDex ? sendAccount : undefined}
                                     isDex={trade.data.isDex}
                                 />
-                                <BulletList.Item
+                                <StepList.Item
                                     state="pending"
                                     title={<Translation id="TR_EXCHANGE_COMPLETE" />}
                                 />

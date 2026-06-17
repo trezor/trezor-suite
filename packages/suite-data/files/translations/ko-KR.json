@@ -487,7 +487,6 @@
   "TR_BUY": "구매",
   "TR_BUY_BUY": "구매",
   "TR_BUY_COMPLETE": "구매 완료",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Trezor에서 확인됨",
   "TR_BUY_DETAIL_ERROR_BUTTON": "구매 화면으로 돌아가기",
   "TR_BUY_DETAIL_ERROR_TEXT": "거래가 실패하거나 거부되었습니다. 결제 수단에는 청구되지 않았습니다.",
   "TR_BUY_DETAIL_ERROR_TITLE": "거래 실패",

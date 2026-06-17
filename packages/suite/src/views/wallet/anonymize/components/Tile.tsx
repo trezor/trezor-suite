@@ -13,7 +13,7 @@ const containerGridStyle = css`
 
 const Container = styled.div`
     padding: ${spacingsPx.md};
-    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.surfaceFillRaised};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${containerGridStyle}

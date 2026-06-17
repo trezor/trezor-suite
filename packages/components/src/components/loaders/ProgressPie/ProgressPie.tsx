@@ -2,8 +2,6 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type Elevation, mapElevationToBorder } from '@trezor/theme';
-
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -11,7 +9,6 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { type TransientProps } from '../../../utils/transientProps';
-import { useElevation } from '../../ElevationContext/ElevationContext';
 
 export const allowedProgressPieFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 
@@ -24,7 +21,6 @@ const Container = styled.div<
         $size: number;
         $color?: string;
         $backgroundColor?: string;
-        $elevation: Elevation;
     }
 >`
     display: flex;
@@ -33,9 +29,9 @@ const Container = styled.div<
     width: ${({ $size }) => `${$size}px`};
     height: ${({ $size }) => `${$size}px`};
     border-radius: 50%;
-    background: ${({ theme, $valueInPercents, $color, $backgroundColor, $elevation }) =>
-        `conic-gradient(${$color || theme.legacyBackgroundPrimaryDefault} ${3.6 * $valueInPercents}deg, ${
-            $backgroundColor || mapElevationToBorder({ $elevation, theme })
+    background: ${({ theme, $valueInPercents, $color, $backgroundColor }) =>
+        `conic-gradient(${$color || theme.contentBrand} ${3.6 * $valueInPercents}deg, ${
+            $backgroundColor || theme.borderNeutral
         } 0)`};
 
     ${withFrameProps}
@@ -57,7 +53,6 @@ export const ProgressPie = ({
     color,
     ...rest
 }: ProgressPieProps) => {
-    const { elevation } = useElevation();
     const frameProps = pickAndPrepareFrameProps(rest, allowedProgressPieFrameProps);
 
     return (
@@ -66,7 +61,6 @@ export const ProgressPie = ({
             $valueInPercents={valueInPercents}
             $backgroundColor={backgroundColor}
             $color={color}
-            $elevation={elevation}
             {...frameProps}
         >
             {children}

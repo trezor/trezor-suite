@@ -11,9 +11,8 @@ const Wrapper = styled.div<{ $shouldHighlight?: boolean }>`
         content: '';
         position: absolute;
         inset: -${spacingsPx.lg};
-        outline: solid ${borders.widths.large}
-            ${({ theme }) => theme.legacyBackgroundAlertYellowBold};
-        background: ${({ theme }) => theme.legacyBackgroundAlertYellowSubtleOnElevation1};
+        outline: solid ${borders.widths.large} ${({ theme }) => theme.elementFillWarningBold};
+        background: ${({ theme }) => theme.elementFillWarningSoft};
         transition: opacity 0.6s ease-in;
         transition-delay: 0.3s;
         opacity: 0;

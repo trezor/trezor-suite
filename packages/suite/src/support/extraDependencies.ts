@@ -357,12 +357,19 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadSuiteSettings: (state: SuiteSettingsState, { payload }: StorageLoadAction) => {
             if (!payload.suiteSettings?.settings) return state;
 
+            const loadedSettings = payload.suiteSettings.settings;
+            const theme =
+                (loadedSettings.theme?.variant as string | undefined) === 'debug'
+                    ? { ...loadedSettings.theme, variant: 'light' as const }
+                    : loadedSettings.theme;
+
             return {
                 ...state,
-                ...payload.suiteSettings.settings,
+                ...loadedSettings,
+                theme: theme ?? state.theme,
                 enabledSecurityChecks: {
                     ...state.enabledSecurityChecks,
-                    ...payload.suiteSettings.settings.enabledSecurityChecks,
+                    ...loadedSettings.enabledSecurityChecks,
                 },
             };
         },

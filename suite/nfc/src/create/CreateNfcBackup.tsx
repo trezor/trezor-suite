@@ -32,7 +32,7 @@ export const CreateNfcBackup = ({ onBack, onCreateBackup }: CreateNfcBackupProps
         }
     >
         <Column alignItems="center">
-            <Card paddingType="large" fillType="flat" maxWidth={530}>
+            <Card paddingType="large" type="contrast" maxWidth={530}>
                 <Column gap={32} alignItems="center">
                     <Text typographyStyle="headline-sm" align="center">
                         <Translation id="TR_NFC_BACKUP_RESILIENCE" />

@@ -3,11 +3,10 @@ import { type ReactNode, type UIEventHandler, createContext, useCallback, useSta
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { type Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
-const Wrapper = styled.div<{ $elevation: Elevation }>`
-    background: ${mapElevationToBackground};
-    border-left: 1px solid ${mapElevationToBorder};
+const Wrapper = styled.div`
+    background: ${({ theme }) => theme.surfaceFillSunken};
+    border-left: 1px solid ${({ theme }) => theme.surfaceBorderSunken};
     display: flex;
     height: 100%;
     flex-direction: column;
@@ -34,7 +33,7 @@ export const GuideViewWrapper = ({ children }: GuideViewWrapperProps) => {
     }, []);
 
     return (
-        <Wrapper $elevation={-1} onScroll={onScroll}>
+        <Wrapper onScroll={onScroll}>
             <ContentScrolledContext.Provider value={isScrolled}>
                 {children}
             </ContentScrolledContext.Provider>

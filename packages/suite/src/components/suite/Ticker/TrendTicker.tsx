@@ -5,7 +5,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
-import { Icon, type IconName, SkeletonRectangle } from '@trezor/components';
+import { Icon, type IconName, Skeleton } from '@trezor/components';
 import { type Color, spacingsPx, typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -84,7 +84,7 @@ export const TrendTicker = ({
     // isTokenKnown and never shows for native coins).
     const isFetching = !!currentRate?.isLoading || !!lastWeekRate?.isLoading;
     if (showLoadingSkeleton && isFetching) {
-        return <SkeletonRectangle animate={shouldAnimate} />;
+        return <Skeleton animate={shouldAnimate} />;
     }
 
     const percentageChange = isSuccessfullyFetched

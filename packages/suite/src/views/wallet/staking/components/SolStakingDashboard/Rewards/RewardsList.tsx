@@ -4,16 +4,7 @@ import { Translation } from '@suite/intl';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
-import {
-    Card,
-    Column,
-    Grid,
-    IconCircle,
-    Row,
-    SkeletonStack,
-    Text,
-    Tooltip,
-} from '@trezor/components';
+import { Card, Column, Grid, IconCircle, Row, Text, Tooltip } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
@@ -64,11 +55,11 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
         >
             <Column gap={32}>
                 {rewardsQueryResult.isLoading || rewardsQueryResult.data === undefined ? (
-                    <SkeletonStack $col $childMargin="0px 0px 16px 0px">
+                    <Column gap={16}>
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
-                    </SkeletonStack>
+                    </Column>
                 ) : (
                     <Column gap={40}>
                         {rewardsQueryResult.data.rewards.map(reward => (

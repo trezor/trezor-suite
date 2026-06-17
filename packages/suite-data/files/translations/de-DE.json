@@ -487,7 +487,6 @@
   "TR_BUY": "Kaufen",
   "TR_BUY_BUY": "Kaufen",
   "TR_BUY_COMPLETE": "Kauf abgeschlossen",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Auf Trezor bestätigt",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Zurück zum Kaufen",
   "TR_BUY_DETAIL_ERROR_TEXT": "Deine Transaktion ist fehlgeschlagen oder wurde abgelehnt. Deine Zahlungsmethode wurde noch nicht belastet.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Transaktion fehlgeschlagen",

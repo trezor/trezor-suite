@@ -487,7 +487,6 @@
   "TR_BUY": "购买",
   "TR_BUY_BUY": "购买",
   "TR_BUY_COMPLETE": "购买完毕",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "已在您的 Trezor 设备上确认",
   "TR_BUY_DETAIL_ERROR_BUTTON": "返回到“购买”页面",
   "TR_BUY_DETAIL_ERROR_TEXT": "您的交易失败或被拒绝。您的支付方式尚未被扣款。",
   "TR_BUY_DETAIL_ERROR_TITLE": "交易失败",

@@ -18,11 +18,11 @@ const mapProgressStateToBackground = ({
 }) => {
     switch ($progressState) {
         case 'active':
-            return theme.legacyBackgroundAlertYellowSubtleOnElevation2;
+            return theme.elementFillWarningSoft;
         case 'done':
-            return theme.legacyBackgroundPrimarySubtleOnElevation1;
+            return theme.elementFillBrandSoft;
         default:
-            return theme.legacyBackgroundSurfaceElevation2;
+            return theme.surfaceFillSunken;
     }
 };
 

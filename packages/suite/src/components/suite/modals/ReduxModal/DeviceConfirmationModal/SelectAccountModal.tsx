@@ -4,17 +4,7 @@ import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { onReceiveAccount } from '@suite/modal';
 import { selectAccounts } from '@suite-common/wallet-core';
-import {
-    Card,
-    Column,
-    Icon,
-    Modal,
-    Row,
-    SkeletonCircle,
-    SkeletonRectangle,
-    SubTabs,
-    Table,
-} from '@trezor/components';
+import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
 import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -158,13 +148,13 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                 {data.type !== 'end' && data.type !== 'complete' && (
                                     <Table.Row>
                                         <Table.Cell>
-                                            <SkeletonRectangle width="100px" animate />
+                                            <Skeleton width={100} animate />
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <SkeletonRectangle width="80px" animate />
+                                            <Skeleton width={80} animate />
                                         </Table.Cell>
                                         <Table.Cell align="end">
-                                            <SkeletonCircle size="24px" />
+                                            <Skeleton type="circle" size={24} />
                                         </Table.Cell>
                                     </Table.Row>
                                 )}

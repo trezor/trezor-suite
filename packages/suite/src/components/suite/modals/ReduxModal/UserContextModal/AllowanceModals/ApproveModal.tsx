@@ -11,7 +11,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import {
     Banner,
-    Box,
+    Card,
     CardList,
     CollapsibleBox,
     Column,
@@ -21,7 +21,6 @@ import {
 } from '@trezor/components';
 import { AssetLogo, NetworkIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
-import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -114,7 +113,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                             description={<Translation id="TR_APPROVAL_MODAL_APPROVE_BANNER" />}
                         />
                     )}
-                    <CardList borderRadius={borders.radii.sm}>
+                    <CardList>
                         <CardList.Item>
                             <Text typographyStyle="body-sm">
                                 <Translation id="TR_ACCOUNT" />
@@ -188,12 +187,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                     )}
 
                     <Column gap={12}>
-                        <Box
-                            padding={{ horizontal: 20, vertical: 12 }}
-                            borderWidth={borders.widths.small}
-                            borderRadius={borders.radii.sm}
-                            backgroundColor="surfaceFillRaised"
-                        >
+                        <Card>
                             <Fees
                                 label="TR_TX_FEE"
                                 feeInfo={feeInfo}
@@ -202,7 +196,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                                 changeFeeLevel={handleFeeChange}
                                 headerTypographyStyle="body-sm"
                             />
-                        </Box>
+                        </Card>
 
                         {composedLevelsError && (
                             <Banner

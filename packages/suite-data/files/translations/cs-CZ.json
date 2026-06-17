@@ -487,7 +487,6 @@
   "TR_BUY": "Koupit",
   "TR_BUY_BUY": "Koupit",
   "TR_BUY_COMPLETE": "Nákup dokončen",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Potvrzeno na Trezoru",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Zpět na nákup",
   "TR_BUY_DETAIL_ERROR_TEXT": "Vaše transakce selhala nebo byla zamítnuta. Nebylo možné strhnout prostředky prostřednictvím nastavené platební metody.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Transakce se nezdařila",

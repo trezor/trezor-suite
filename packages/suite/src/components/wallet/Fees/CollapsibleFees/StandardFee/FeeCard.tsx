@@ -5,7 +5,7 @@ import {
     Column,
     RadioCard,
     Row,
-    SkeletonRectangle,
+    Skeleton,
     TOOLTIP_DELAY_NORMAL,
     Text,
     Tooltip,
@@ -41,20 +41,18 @@ export const FeeCard = ({
 }: FeeCardProps) => (
     <Box data-testid={dataTestId} minWidth={FEE_CARD_MIN_WIDTH}>
         <Tooltip content={tooltipContent} delayShow={TOOLTIP_DELAY_NORMAL}>
-            <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
+            <RadioCard onClick={() => changeFeeLevel(value)} isSelected={isSelected}>
                 <Column>
                     <Row justifyContent="space-between">
                         <Text typographyStyle="body-md-strong">{topLeftChild}</Text>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                            {isLoading ? <SkeletonRectangle animate={true} /> : topRightChild}
+                            {isLoading ? <Skeleton animate={true} /> : topRightChild}
                         </Text>
                     </Row>
                     <Row justifyContent="space-between" height={24}>
-                        <Text>
-                            {isLoading ? <SkeletonRectangle animate={true} /> : bottomLeftChild}
-                        </Text>
+                        <Text>{isLoading ? <Skeleton animate={true} /> : bottomLeftChild}</Text>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                            {isLoading ? <SkeletonRectangle animate={true} /> : bottomRightChild}
+                            {isLoading ? <Skeleton animate={true} /> : bottomRightChild}
                         </Text>
                     </Row>
                 </Column>

@@ -480,7 +480,6 @@
   "TR_BUY": "Купить",
   "TR_BUY_BUY": "Купите",
   "TR_BUY_COMPLETE": "Покупка завершена",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Подтверждено на Trezor",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Назад к счету",
   "TR_BUY_DETAIL_ERROR_TEXT": "Извините, Ваша транзакция не прошла или была отклонена. С Вашего метода оплаты не было снято денег.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Транзакция не прошла",

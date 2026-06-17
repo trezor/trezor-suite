@@ -83,7 +83,7 @@ export const YieldFlowComplete = ({
                 </Text>
             </Column>
 
-            <Card fillType="flat" paddingType="none">
+            <Card type="contrast" paddingType="none">
                 <Column gap={0}>
                     <Row
                         justifyContent="space-between"

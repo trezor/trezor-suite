@@ -81,7 +81,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     };
 
     const ExpandedPassphraseContainer = () => (
-        <Card paddingType="none" fillType="flat">
+        <Card paddingType="none" type="contrast">
             <Column gap={12} padding={12}>
                 <Row alignItems="center" justifyContent="space-between">
                     <Text>

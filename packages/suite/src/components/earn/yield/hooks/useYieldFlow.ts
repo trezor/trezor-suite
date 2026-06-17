@@ -27,7 +27,7 @@ import {
     submitYieldRevokeThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import type { BulletListItemState } from '@trezor/components';
+import type { StepListItemState } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -41,7 +41,7 @@ import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import {
     type YieldApprovalAction,
-    getBulletListItemStates,
+    getStepListItemStates,
     getYieldApprovalAction,
     getYieldModifyAmountInput,
     isAmountGreaterThan,
@@ -56,7 +56,7 @@ type UseYieldFlowProps = {
 
 type UseYieldFlowStepsResult = {
     currentStep: YieldFlowStepId;
-    stepStates: Record<YieldFlowStepId, BulletListItemState>;
+    stepStates: Record<YieldFlowStepId, StepListItemState>;
     goToStep: (step: YieldFlowStepId) => void;
 };
 
@@ -300,7 +300,7 @@ export const useYieldFlow = ({
     const flow = useMemo(
         () => ({
             currentStep: session.step,
-            stepStates: getBulletListItemStates(session.step),
+            stepStates: getStepListItemStates(session.step),
             goToStep,
         }),
         [session.step, goToStep],

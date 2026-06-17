@@ -111,7 +111,7 @@ export const EnterPassphrase = ({
                                 </Collapsible.Toggle>
                                 <Collapsible.Content>
                                     <Card
-                                        fillType="flat"
+                                        type="contrast"
                                         paddingType="tiny"
                                         footer={
                                             <Row gap={spacings.sm} justifyContent="space-between">
@@ -158,7 +158,7 @@ export const EnterPassphrase = ({
                                     <Collapsible.Content>
                                         <Column gap={spacings.sm}>
                                             {[1, 2, 3].map(item => (
-                                                <Card fillType="flat" paddingType="tiny" key={item}>
+                                                <Card type="contrast" paddingType="tiny" key={item}>
                                                     <H4
                                                         typographyStyle="body-sm-strong"
                                                         intent="brand"

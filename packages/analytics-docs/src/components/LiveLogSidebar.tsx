@@ -63,7 +63,7 @@ const NewEventDot = styled.div<{ theme: SuiteThemeColors }>`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
+    background: ${({ theme }) => theme.elementFillBrandBold};
     flex: 0 0 auto;
 `;
 

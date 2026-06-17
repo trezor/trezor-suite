@@ -86,7 +86,7 @@ const CountContainer = styled.div<{ $size: AssetLogoSize }>`
     align-items: center;
     justify-content: center;
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.legacyBackgroundTertiaryDefaultOnElevationNegative};
+    background: ${({ theme }) => theme.elementFillNeutralSofter};
 `;
 
 export type CommonIconSetProps = {

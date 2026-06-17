@@ -8,7 +8,7 @@ import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-commo
 import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
-import { BulletList } from '@trezor/components';
+import { StepList } from '@trezor/components';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
@@ -193,8 +193,8 @@ export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
     if (!content) return null;
 
     return (
-        <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
+        <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
             {content}
-        </BulletList>
+        </StepList>
     );
 };

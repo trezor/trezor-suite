@@ -12,7 +12,7 @@ import {
     type TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { SkeletonRectangle } from '@trezor/components';
+import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
@@ -107,7 +107,7 @@ export const BaseCurrencyValue = ({
         (currentRate?.isLoading || isLoading);
 
     if (isLoadingSkeletonVisible) {
-        return <SkeletonRectangle animate={shouldAnimate} />;
+        return <Skeleton animate={shouldAnimate} />;
     }
 
     if (value) {

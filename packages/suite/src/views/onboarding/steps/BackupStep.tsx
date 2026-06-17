@@ -119,7 +119,7 @@ export const BackupStep = () => {
                         description={
                             <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
                         }
-                        variant="destructive"
+                        intent="critical"
                         innerActions={
                             <OnboardingCard.Button
                                 intent="critical"

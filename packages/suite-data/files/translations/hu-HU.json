@@ -429,7 +429,6 @@
   "TR_BUMP_FEE_SUBTEXT": "Gyorsítsd fel a tranzakció feldolgozását magasabb díj megfizetésével.",
   "TR_BUY": "Vásárlás",
   "TR_BUY_BUY": "Vásárlás",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Jóváhagyva a Trezoron",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Vissza a fiókhoz",
   "TR_BUY_DETAIL_ERROR_TEXT": "Sajnos a tranzakció sikertelen volt vagy vissza lett utasítva. Nem lett pénz levonva.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Sikertelen tranzakció",

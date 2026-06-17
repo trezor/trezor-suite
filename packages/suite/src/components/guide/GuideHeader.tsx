@@ -5,8 +5,8 @@ import styled, { css } from 'styled-components';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { H3, IconButton, Paragraph, useElevation } from '@trezor/components';
-import { type Elevation, mapElevationToBorder, zIndices } from '@trezor/theme';
+import { H3, IconButton, Paragraph } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
 import { ContentScrolledContext } from 'src/components/guide';
@@ -15,7 +15,6 @@ import { useDispatch } from 'src/hooks/suite';
 const HeaderWrapper = styled.div<{
     $noLabel?: boolean;
     $isScrolled: boolean;
-    $elevation: Elevation;
 }>`
     display: flex;
     align-items: center;
@@ -29,11 +28,11 @@ const HeaderWrapper = styled.div<{
     white-space: nowrap;
     z-index: ${zIndices.base}; /* Prevents search bar from overlapping when scrolling */
 
-    ${({ $isScrolled, $elevation, theme }) =>
+    ${({ $isScrolled, theme }) =>
         $isScrolled &&
         css`
-            box-shadow: ${({ theme }) => theme.boxShadowBase};
-            border-bottom: 1px solid ${mapElevationToBorder({ theme, $elevation })};
+            box-shadow: ${({ theme }) => theme.elementShadowElevated};
+            border-bottom: 1px solid ${theme.surfaceBorderSticky};
         `}
 
     ${({ $noLabel }) =>
@@ -50,7 +49,6 @@ interface GuideHeaderProps {
 
 export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { elevation } = useElevation();
     const dispatch = useDispatch();
     const isScrolled = useContext(ContentScrolledContext);
 
@@ -74,7 +72,7 @@ export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
     };
 
     return (
-        <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled} $elevation={elevation}>
+        <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled}>
             {back && (
                 <>
                     <IconButton

@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { paletteV1 } from '@trezor/theme';
+import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { RewardsList } from './rewardList';
@@ -158,21 +158,22 @@ export class StakingSection {
     async expectProgressIndicatorsToMatchPhase(
         phase: 'pendingTransaction' | 'addingToPool' | 'receivingRewards',
     ) {
+        const colors = colorVariants.standard;
         const phaseIndicatorColors = {
             pendingTransaction: {
-                transactionStep: paletteV1.lightAccentYellow300,
-                addingStep: paletteV1.lightGray100,
-                rewardsStep: paletteV1.lightGray100,
+                transactionStep: colors.elementFillWarningSoft,
+                addingStep: colors.surfaceFillSunken,
+                rewardsStep: colors.surfaceFillSunken,
             },
             addingToPool: {
-                transactionStep: paletteV1.lightPrimaryForest200,
-                addingStep: paletteV1.lightAccentYellow300,
-                rewardsStep: paletteV1.lightGray100,
+                transactionStep: colors.elementFillBrandSoft,
+                addingStep: colors.elementFillWarningSoft,
+                rewardsStep: colors.surfaceFillSunken,
             },
             receivingRewards: {
-                transactionStep: paletteV1.lightPrimaryForest200,
-                addingStep: paletteV1.lightPrimaryForest200,
-                rewardsStep: paletteV1.lightAccentYellow300,
+                transactionStep: colors.elementFillBrandSoft,
+                addingStep: colors.elementFillBrandSoft,
+                rewardsStep: colors.elementFillWarningSoft,
             },
         };
         const currentPhaseColors = phaseIndicatorColors[phase];

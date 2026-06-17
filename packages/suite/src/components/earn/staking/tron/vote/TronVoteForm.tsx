@@ -29,7 +29,7 @@ export const TronVoteForm = () => {
                     <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVE" />
                 </Text>
 
-                <Card fillType="flat" paddingType="none">
+                <Card type="contrast" paddingType="none">
                     <TronStakeInfoRow label={<Translation id="TR_TRON_VOTES" />}>
                         <Text typographyStyle="body-md-strong">{votes}</Text>
                     </TronStakeInfoRow>

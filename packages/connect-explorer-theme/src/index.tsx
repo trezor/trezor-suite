@@ -11,9 +11,6 @@ import './polyfill';
 import type { PageTheme } from 'nextra/normalize-pages';
 import { createGlobalStyle } from 'styled-components';
 
-import { ElevationContext } from '@trezor/components';
-import { type Elevation, mapElevationToBackground } from '@trezor/theme';
-
 import { Banner, Breadcrumb, Head, NavLinks, Navbar, Sidebar, SkipNavContent } from './components';
 import { DEFAULT_LOCALE } from './constants';
 import { ActiveAnchorProvider } from './contexts/active-anchor';
@@ -24,9 +21,9 @@ import { type PartialDocsThemeConfig } from './schema';
 import { patchedNormalizePages } from './utils/patch-normalize-pages';
 import { renderComponent } from './utils/render';
 
-const GlobalStyle = createGlobalStyle<{ $elevation: Elevation }>`
+const GlobalStyle = createGlobalStyle`
     body, .bg-page {
-        background: ${mapElevationToBackground}
+        background: ${({ theme }) => theme.surfaceFillPage}
     }
 `;
 interface BodyProps {
@@ -234,14 +231,10 @@ const InnerLayout = ({
 
 // eslint-disable-next-line import/no-default-export
 export default function Layout({ children, ...context }: NextraThemeLayoutProps): ReactElement {
-    const baseElevation = 0;
-
     return (
         <ConfigProvider value={context}>
-            <GlobalStyle $elevation={baseElevation} />
-            <ElevationContext baseElevation={baseElevation}>
-                <InnerLayout {...context.pageOpts}>{children}</InnerLayout>
-            </ElevationContext>
+            <GlobalStyle />
+            <InnerLayout {...context.pageOpts}>{children}</InnerLayout>
         </ConfigProvider>
     );
 }

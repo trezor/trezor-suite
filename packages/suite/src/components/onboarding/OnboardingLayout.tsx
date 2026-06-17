@@ -2,11 +2,9 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { DebugLegend } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
-import { selectThemeSettings } from '@suite/settings';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
@@ -16,7 +14,7 @@ import { OnboardingProgressBar } from 'src/components/onboarding/OnboardingProgr
 import { SuiteBanners } from 'src/components/suite/banners';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
-import { useFilteredModal, useSelector } from 'src/hooks/suite';
+import { useFilteredModal } from 'src/hooks/suite';
 
 import {
     OnboardingCancelButtonContext,
@@ -76,8 +74,6 @@ type OnboardingLayoutProps = {
 };
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
-    const theme = useSelector(selectThemeSettings);
-
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
 
@@ -109,7 +105,6 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                 <GuideButton />
                 <GuideRouter />
             </Row>
-            {theme.variant === 'debug' && <DebugLegend layout={OnboardingLayout.name} />}
         </>
     );
 };

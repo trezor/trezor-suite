@@ -105,6 +105,7 @@ export const Tooltip = ({
     }
 
     const delayConfiguration = { open: delayShow, close: delayHide };
+    const tooltipTheme = { variant: 'dark' as const, ...intermediaryTheme.dark };
 
     return (
         <TooltipFloatingUi
@@ -123,22 +124,31 @@ export const Tooltip = ({
                 </Content>
             </TooltipTrigger>
 
-            <TooltipContent
-                data-testid="@tooltip"
-                style={{ zIndex }}
-                arrowRender={hasArrow ? TooltipArrow : undefined}
-                appendTo={appendTo}
-                onClick={e => e.stopPropagation()}
-            >
-                <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
+            <ThemeProvider theme={tooltipTheme}>
+                <TooltipContent
+                    data-testid="@tooltip"
+                    style={{ zIndex }}
+                    arrowRender={
+                        hasArrow
+                            ? props => (
+                                  <TooltipArrow
+                                      {...props}
+                                      fill={tooltipTheme.surfaceFillModelessNeutralDark}
+                                  />
+                              )
+                            : undefined
+                    }
+                    appendTo={appendTo}
+                    onClick={e => e.stopPropagation()}
+                >
                     <TooltipBox
                         content={content}
                         addon={addon}
                         tooltipMaxWidth={tooltipMaxWidth}
                         title={title}
                     />
-                </ThemeProvider>
-            </TooltipContent>
+                </TooltipContent>
+            </ThemeProvider>
         </TooltipFloatingUi>
     );
 };

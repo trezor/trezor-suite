@@ -48,7 +48,7 @@ export const TradingReceiveAddress = () => {
                     horizontal: 20,
                 }}
             >
-                <Text typographyStyle="body-md" align="start">
+                <Text typographyStyle="body-md" align="start" intent="neutral" priority="secondary">
                     <Translation
                         id={
                             selectedAccount || !receiveAddress

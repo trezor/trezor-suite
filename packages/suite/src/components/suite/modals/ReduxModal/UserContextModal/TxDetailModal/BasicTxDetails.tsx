@@ -16,10 +16,9 @@ import {
     Link,
     Row,
     Text,
-    useElevation,
 } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
-import { type Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
@@ -28,18 +27,18 @@ import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
-const IconWrapper = styled.div<{ $elevation: Elevation }>`
+const IconWrapper = styled.div`
     display: flex;
     position: relative;
-    border: ${spacingsPx.xxs} solid ${mapElevationToBorder};
+    border: ${spacingsPx.xxs} solid ${({ theme }) => theme.elementBorderNeutralSofter};
     border-radius: ${borders.radii.full};
 `;
 
-const NestedIconWrapper = styled.div<{ $elevation: Elevation }>`
+const NestedIconWrapper = styled.div`
     position: absolute;
     top: -${spacingsPx.xxs};
     right: -${spacingsPx.xxs};
-    background: ${mapElevationToBorder};
+    background: ${({ theme }) => theme.elementFillElevated};
     border-radius: ${borders.radii.full};
     padding: ${spacingsPx.xxxs};
 `;
@@ -75,7 +74,6 @@ export const BasicTxDetails = ({
     explorerUrl,
     explorerUrlQueryString,
 }: BasicTxDetailsProps) => {
-    const { elevation } = useElevation();
     const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
     // all solana txs which are fetched are already confirmed
@@ -84,9 +82,9 @@ export const BasicTxDetails = ({
     return (
         <Card>
             <Row gap={spacings.sm}>
-                <IconWrapper $elevation={elevation}>
+                <IconWrapper>
                     <CoinLogo symbol={tx.symbol} size={48} type="tokenWithNetwork" />
-                    <NestedIconWrapper $elevation={elevation}>
+                    <NestedIconWrapper>
                         <Icon
                             size={14}
                             intent={tx.type === 'failed' ? 'critical' : 'neutral'}

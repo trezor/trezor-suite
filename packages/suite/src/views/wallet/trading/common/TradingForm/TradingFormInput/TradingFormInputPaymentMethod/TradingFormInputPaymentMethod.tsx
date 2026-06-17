@@ -11,7 +11,7 @@ import {
     selectTradingPaymentMethodsByType,
     selectTradingSelectedPaymentMethodByType,
 } from '@suite-common/trading';
-import { GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 
 import { FakeSelect } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -33,13 +33,13 @@ const TradingFormInputPaymentMethodValueContent = ({
     paymentMethod: TradingPaymentMethodProps;
 }) => {
     if (isFormLoading) {
-        return <SkeletonRectangle animate />;
+        return <Skeleton animate />;
     }
 
     return (
         <Row gap={16}>
-            <Row gap={4} alignItems="center">
-                <PaymentMethodIcon paymentMethod={paymentMethod} size={24} />
+            <Row gap={8} alignItems="center">
+                <PaymentMethodIcon paymentMethod={paymentMethod} size={20} />
                 <Text typographyStyle={hasPaymentMethods ? 'body-md' : undefined}>
                     {displayLabel}
                 </Text>
@@ -107,6 +107,8 @@ export const TradingFormInputPaymentMethod = ({
                             typographyStyle="body-md"
                             align="start"
                             data-testid="@trading/form/payment-method-select/value"
+                            intent="neutral"
+                            priority="secondary"
                         >
                             {label && <Translation id={label} />}
                         </Text>

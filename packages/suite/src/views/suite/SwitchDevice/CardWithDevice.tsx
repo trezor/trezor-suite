@@ -1,15 +1,23 @@
 import { type ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { Card, Column, motionAnimation } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, motionAnimation } from '@trezor/components';
+import { borders } from '@trezor/theme';
 
 import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { DeviceHeader } from './DeviceItem/DeviceHeader';
 import { NeedsAttentionBanner } from './NeedsAttentionBanner';
+
+const Container = styled.section`
+    border-radius: ${borders.radii.md};
+    background: ${({ theme }) => theme.surfaceFillModal};
+    outline: 1px solid ${({ theme }) => theme.surfaceBorderModal};
+    box-shadow: ${({ theme }) => theme.surfaceShadowModal};
+`;
 
 type CardWithDeviceProps = {
     children: ReactNode;
@@ -35,8 +43,8 @@ export const CardWithDevice = ({
     const isUnknown = device.type !== 'acquired';
 
     return (
-        <Card paddingType="none">
-            <Column gap={spacings.md} margin={spacings.xs}>
+        <Container>
+            <Column gap={16} padding={8}>
                 <DeviceHeader
                     onCancel={onCancel}
                     device={device}
@@ -59,6 +67,6 @@ export const CardWithDevice = ({
                     </AnimatePresence>
                 )}
             </Column>
-        </Card>
+        </Container>
     );
 };

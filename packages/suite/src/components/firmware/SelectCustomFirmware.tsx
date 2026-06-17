@@ -3,7 +3,7 @@ import { type Dispatch, type ReactNode, type SetStateAction } from 'react';
 import { useDevice } from '@suite/device';
 import { validateFirmware } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { BulletList, Button, Row } from '@trezor/components';
+import { Button, Row, StepList } from '@trezor/components';
 import { DropZone } from '@trezor/product-components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
@@ -31,16 +31,16 @@ export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmware
     };
 
     return (
-        <BulletList isOrdered>
-            <BulletList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}>
+        <StepList isOrdered>
+            <StepList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}>
                 <Row gap={6}>
                     <Translation id="TR_CUSTOM_FIRMWARE_GITHUB" />
                     <Button size="small" href={githubUrl} intent="neutral" priority="secondary">
                         github.com
                     </Button>
                 </Row>
-            </BulletList.Item>
-            <BulletList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}>
+            </StepList.Item>
+            <StepList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}>
                 <DropZone
                     data-testid="@firmware/input-area"
                     accept=".bin"
@@ -49,7 +49,7 @@ export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmware
                     fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
                     onSelect={onFirmwareUpload}
                 />
-            </BulletList.Item>
-        </BulletList>
+            </StepList.Item>
+        </StepList>
     );
 };

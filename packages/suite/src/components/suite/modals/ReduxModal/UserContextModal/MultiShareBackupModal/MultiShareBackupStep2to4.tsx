@@ -3,8 +3,6 @@ import { type ReactNode } from 'react';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
-    BulletList,
-    type BulletListItemState,
     Card,
     Flex,
     type FlexDirection,
@@ -14,6 +12,8 @@ import {
     Note,
     Paragraph,
     Row,
+    StepList,
+    type StepListItemState,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
@@ -46,11 +46,11 @@ type StepProps = {
     time: number;
     title: TranslationKey;
     children: ReactNode;
-    state: BulletListItemState;
+    state: StepListItemState;
 };
 
 const Step = ({ title, time, children, state }: StepProps) => (
-    <BulletList.Item
+    <StepList.Item
         title={
             <Row gap={spacings.sm}>
                 <Translation id={title} />
@@ -64,7 +64,7 @@ const Step = ({ title, time, children, state }: StepProps) => (
         state={state}
     >
         {state === 'default' && children}
-    </BulletList.Item>
+    </StepList.Item>
 );
 
 type MultiShareBackupStep2to4Props = {
@@ -72,7 +72,7 @@ type MultiShareBackupStep2to4Props = {
 };
 
 export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props) => (
-    <BulletList isOrdered margin={{ top: spacings.md }}>
+    <StepList isOrdered margin={{ top: spacings.md }}>
         <Step
             time={2}
             title="TR_VERIFY_TREZOR_OWNERSHIP"
@@ -123,5 +123,5 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
                 </InstructionItem>
             </Grid>
         </Step>
-    </BulletList>
+    </StepList>
 );

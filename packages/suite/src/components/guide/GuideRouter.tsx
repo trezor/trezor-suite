@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, ResizableBox, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
-import { borders, spacings, zIndices } from '@trezor/theme';
+import { spacings, zIndices } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { setWidth as setGuideWidth } from 'src/actions/suite/guideActions';
@@ -119,12 +119,7 @@ export const GuideRouter = () => {
                 onWidthResizeEnd={handleResizeEnd}
                 zIndex={zIndices.guide}
             >
-                <Box
-                    height="100dvh"
-                    maxWidth="100vw"
-                    overflow="hidden auto"
-                    borderWidth={{ left: borders.widths.small }}
-                >
+                <Box height="100dvh" maxWidth="100vw" overflow="hidden auto">
                     {activeView && getGuideContent(activeView)}
                 </Box>
             </ResizableBox>

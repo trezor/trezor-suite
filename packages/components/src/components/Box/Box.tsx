@@ -2,7 +2,7 @@ import { type HTMLProps } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { type BorderWidths, type Color, type Elevation, mapElevationToBorder } from '@trezor/theme';
+import { type BorderWidths, type BoxShadow, type Color } from '@trezor/theme';
 
 import {
     type FrameProps,
@@ -11,7 +11,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
-import { useElevation } from '../ElevationContext/ElevationContext';
+import { commonFocusStyles } from '../../utils/utils';
 
 const getValueWithUnit = (value: string | number) =>
     typeof value === 'number' ? `${value}px` : value;
@@ -42,19 +42,18 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
         $borderWidth?: BorderWidth;
-        $elevation: Elevation;
         $backgroundColor?: Color;
         $backgroundColorOnInteraction?: Color;
         $borderColor?: Color;
-        $shadow?: string;
+        $shadow?: BoxShadow;
     }
 >`
     background: unset;
     box-shadow: unset;
-    border: 0 solid
-        ${({ $borderColor, $elevation, theme }) =>
-            $borderColor ? theme[$borderColor] : mapElevationToBorder({ theme, $elevation })};
-    transition: 0.2s ease;
+    border-width: 0;
+    border-style: solid;
+    border-color: ${({ $borderColor, theme }) => theme[$borderColor ?? 'borderNeutral']};
+    transition: 0.2s ease-in-out;
 
     ${({ $borderWidth }) => {
         if ($borderWidth == null || $borderWidth === 0) return null;
@@ -90,12 +89,11 @@ const Container = styled.div<
     ${({ $shadow }) =>
         $shadow &&
         css`
-            box-shadow: ${$shadow};
+            box-shadow: ${({ theme }) => theme[$shadow]};
         `}
 
     &:focus-visible {
-        outline: 4px solid ${({ theme }) => theme.elementBorderFocusRing};
-        outline-offset: 2px;
+        ${commonFocusStyles}
     }
 
     ${withFrameProps};
@@ -122,7 +120,7 @@ export type BoxProps = Pick<
         backgroundColor?: Color;
         backgroundColorOnInteraction?: Color;
         borderColor?: Color;
-        shadow?: string;
+        shadow?: BoxShadow;
         'data-testid'?: string;
         'aria-hidden'?: boolean;
         as?: React.ElementType;
@@ -146,7 +144,6 @@ export const Box = ({
     ref,
     ...rest
 }: BoxProps) => {
-    const { elevation } = useElevation();
     const frameProps = pickAndPrepareFrameProps(rest, allowedBoxFrameProps);
 
     return (
@@ -158,7 +155,6 @@ export const Box = ({
             $backgroundColor={backgroundColor}
             $backgroundColorOnInteraction={backgroundColorOnInteraction}
             $borderColor={borderColor}
-            $elevation={elevation}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}

@@ -4,36 +4,36 @@ import { type Meta, type StoryObj } from '@storybook/react';
 
 import { spacingsNew } from '@trezor/theme';
 
-import { BulletList as BulletListComponent, allowedBulletListFrameProps } from './BulletList';
-import { bulletLineWidths, bulletListDirections, bulletSizes } from './types';
+import { StepList as StepListComponent, allowedStepListFrameProps } from './StepList';
+import { bulletSizes, stepLineWidths, stepListDirections } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta<typeof BulletListComponent> = {
-    title: 'BulletList',
+const meta: Meta<typeof StepListComponent> = {
+    title: 'StepList',
 };
 export default meta;
 
-export const BulletList: StoryObj<typeof BulletListComponent> = {
+export const StepList: StoryObj<typeof StepListComponent> = {
     render: props => (
-        <BulletListComponent {...props}>
-            <BulletListComponent.Item title="Lorem ipsum" state="done">
+        <StepListComponent {...props}>
+            <StepListComponent.Item title="Lorem ipsum" state="done">
                 Lorem ipsum odor amet, consectetuer adipiscing elit. Rutrum varius aptent sapien at
                 facilisis consectetur aliquam blandit.
-            </BulletListComponent.Item>
-            <BulletListComponent.Item title="Dolor sit" state="active">
+            </StepListComponent.Item>
+            <StepListComponent.Item title="Dolor sit" state="active">
                 Diam sociosqu mi nisl duis aliquet faucibus venenatis nullam. Leo lobortis semper
                 himenaeos cras facilisi ac consectetur. Netus vestibulum praesent feugiat nam
                 potenti cursus.
-            </BulletListComponent.Item>
-            <BulletListComponent.Item title="Facilisis consectetur" state="pending" />
-            <BulletListComponent.Item title="Lobortis semper" state="pending">
+            </StepListComponent.Item>
+            <StepListComponent.Item title="Facilisis consectetur" state="pending" />
+            <StepListComponent.Item title="Lobortis semper" state="pending">
                 Leo lobortis semper himenaeos cras facilisi ac consectetur. Netus vestibulum
                 praesent feugiat nam potenti cursus.
-            </BulletListComponent.Item>
-        </BulletListComponent>
+            </StepListComponent.Item>
+        </StepListComponent>
     ),
     args: {
-        ...getFramePropsStory(allowedBulletListFrameProps).args,
+        ...getFramePropsStory(allowedStepListFrameProps).args,
         gap: 32,
         titleGap: 8,
         bulletGap: 24,
@@ -75,17 +75,17 @@ export const BulletList: StoryObj<typeof BulletListComponent> = {
             },
         },
         lineWidth: {
-            options: bulletLineWidths,
+            options: stepLineWidths,
             control: {
                 type: 'select',
             },
         },
         direction: {
-            options: bulletListDirections,
+            options: stepListDirections,
             control: {
                 type: 'select',
             },
         },
-        ...getFramePropsStory(allowedBulletListFrameProps).argTypes,
+        ...getFramePropsStory(allowedStepListFrameProps).argTypes,
     },
 };

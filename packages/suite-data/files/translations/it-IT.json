@@ -417,7 +417,6 @@
   "TR_BUMP_FEE_SUBTEXT": "Accelera la conferma di questa transazione di approvazione con il pagamento di una commissione più alta.",
   "TR_BUY": "Acquista",
   "TR_BUY_BUY": "Acquista",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Confermato su Trezor",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Torna al conto",
   "TR_BUY_DETAIL_ERROR_TEXT": "La transazione di approvazione non è andata a buon fine o è stata rifiutata. Il tuo metodo di pagamento non è stato caricato.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Transazione non riuscita",

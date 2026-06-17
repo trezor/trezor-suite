@@ -7,7 +7,7 @@ import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
-import { Column, SkeletonStack } from '@trezor/components';
+import { Column } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
@@ -176,11 +176,11 @@ export const TransactionList = ({
                 {/* TODO: show this skeleton also while searching in txs */}
                 {isLoading ||
                 (!areAllTransactionsLoaded && searchQuery && searchedTransactions.length === 0) ? (
-                    <SkeletonStack $col $childMargin="0px 0px 16px 0px">
+                    <Column gap={16}>
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
-                    </SkeletonStack>
+                    </Column>
                 ) : (
                     <Column gap={40}>
                         {areTransactionsAvailable && <NoSearchResults />}

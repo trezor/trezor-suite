@@ -123,7 +123,7 @@ export const WalletInstance = ({
             onClick={handleClick}
             tabIndex={0}
             data-testid={dataTestBase}
-            variant={isSelected ? 'primary' : undefined}
+            isSelected={isSelected}
             {...rest}
         >
             <Box padding={{ vertical: 12, right: 12, left: 16 }}>

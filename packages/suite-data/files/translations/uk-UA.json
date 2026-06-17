@@ -487,7 +487,6 @@
   "TR_BUY": "Купити",
   "TR_BUY_BUY": "Купити",
   "TR_BUY_COMPLETE": "Купівлю завершено",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Підтверджено на Trezor",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Повернутися до рахунка",
   "TR_BUY_DETAIL_ERROR_TEXT": "На жаль, вашу транзакцію не вдалося було відхилено або не вдалося обробити. Ваш спосіб оплати не було використано.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Не вдалося виконати транзакцію",

@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Banner, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
+import { Banner, Row, Skeleton, Tooltip } from '@trezor/components';
 
 type EarnYieldClaimRewardsBannerProps = {
     value: BaseCurrencyAmount;
@@ -48,7 +48,7 @@ export const EarnYieldClaimRewardsBanner = ({
                         <Translation id="TR_EARN_CLAIM_REWARDS_LABEL" />:
                     </span>
                     {isValueLoading ? (
-                        <SkeletonRectangle width={50} height={16} animate />
+                        <Skeleton width={50} height={16} animate />
                     ) : (
                         <>
                             {!isClaimDisabled && '≈ '}

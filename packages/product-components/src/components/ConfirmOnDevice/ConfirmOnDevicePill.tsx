@@ -1,7 +1,6 @@
 import React, { type ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useTheme } from 'styled-components';
 
 import { Box } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
@@ -22,8 +21,6 @@ export type ConfirmOnDeviceProps = {
 };
 
 export const ConfirmOnDevicePill = ({ isConfirmed, ...props }: ConfirmOnDeviceProps) => {
-    const theme = useTheme();
-
     const isCancelable = !!props.onCancel;
 
     return (
@@ -43,8 +40,7 @@ export const ConfirmOnDevicePill = ({ isConfirmed, ...props }: ConfirmOnDevicePr
                     borderRadius={20}
                     borderWidth={1}
                     borderColor="surfaceBorderModeless"
-                    // TODO: Use new shadow tokens
-                    shadow={theme.boxShadowElevated}
+                    shadow="surfaceShadowModeless"
                     data-testid="@prompts/confirm-on-device"
                     onClick={e => e.stopPropagation()}
                     width="fit-content"

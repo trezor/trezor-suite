@@ -13,7 +13,7 @@ export const TronWithdrawSummaryCard = () => {
     const { amount } = form.methods.getValues();
 
     return (
-        <Card fillType="flat" paddingType="none">
+        <Card type="contrast" paddingType="none">
             <Column gap={0}>
                 <TronStakeInfoRow label={<Translation id="TR_EARN_YIELD_STATUS" />}>
                     <Row alignItems="center" gap={8}>

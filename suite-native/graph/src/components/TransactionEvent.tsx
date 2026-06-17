@@ -53,7 +53,6 @@ const variantToStylesMaps = {
             outerColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
         },
     },
-    debug: standard,
 } as const satisfies Record<
     ThemeColorVariant,
     Record<EventVariant, { innerColor: Color; outerColor: Color }>

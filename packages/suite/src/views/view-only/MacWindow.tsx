@@ -2,22 +2,16 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { ElevationContext, useElevation, variables } from '@trezor/components';
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import { variables } from '@trezor/components';
+import { borders, spacingsPx } from '@trezor/theme';
 
 const MAC_WINDOW_HEIGHT = '184px';
 
-const Window = styled.div<{ $elevation: Elevation }>`
+const Window = styled.div`
     min-width: 258px;
     height: ${MAC_WINDOW_HEIGHT};
-    border: 1px solid ${mapElevationToBorder};
-    background-color: ${mapElevationToBackground};
+    border: 1px solid ${({ theme }) => theme.surfaceBorderModeless};
+    background-color: ${({ theme }) => theme.surfaceFillModeless};
     border-bottom: 0;
     border-radius: ${borders.radii.sm} ${borders.radii.sm} 0 0;
     flex: 1 1 auto;
@@ -29,9 +23,9 @@ const Window = styled.div<{ $elevation: Elevation }>`
     }
 `;
 
-const WindowBar = styled.div<{ $elevation: Elevation }>`
+const WindowBar = styled.div`
     height: 22px;
-    border-bottom: 1px solid ${mapElevationToBorder};
+    border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderModeless};
 `;
 
 const WindowBarBullets = styled.div`
@@ -44,26 +38,22 @@ const WindowBarBullets = styled.div`
     margin-left: ${spacingsPx.xs};
 `;
 
-const WindowBullet = styled.div<{ $elevation: Elevation }>`
-    background-color: ${mapElevationToBorder};
+const WindowBullet = styled.div`
+    background-color: ${({ theme }) => theme.surfaceBorderModeless};
     border-radius: 100%;
     width: 7px;
     height: 7px;
 `;
 
-export const MacWindow = ({ children }: { children: ReactNode }) => {
-    const { elevation } = useElevation();
-
-    return (
-        <Window $elevation={elevation}>
-            <WindowBar $elevation={elevation}>
-                <WindowBarBullets>
-                    <WindowBullet $elevation={elevation} />
-                    <WindowBullet $elevation={elevation} />
-                    <WindowBullet $elevation={elevation} />
-                </WindowBarBullets>
-            </WindowBar>
-            <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
-        </Window>
-    );
-};
+export const MacWindow = ({ children }: { children: ReactNode }) => (
+    <Window>
+        <WindowBar>
+            <WindowBarBullets>
+                <WindowBullet />
+                <WindowBullet />
+                <WindowBullet />
+            </WindowBarBullets>
+        </WindowBar>
+        {children}
+    </Window>
+);

@@ -2,13 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import {
-    type Color,
-    type Elevation,
-    type SpacingValues,
-    mapElevationToBorder,
-    spacings,
-} from '@trezor/theme';
+import { type Color, type SpacingValues, spacings } from '@trezor/theme';
 
 import {
     type FrameProps,
@@ -17,7 +11,6 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
 
 export const allowedDividerFrameProps = [
@@ -40,7 +33,6 @@ export type DividerProps = AllowedFrameProps & {
 
 const Line = styled.div<
     {
-        $elevation: Elevation;
         $strokeWidth: DividerProps['strokeWidth'];
         $color: DividerProps['color'];
         $orientation: DividerOrientation;
@@ -59,8 +51,7 @@ const Line = styled.div<
                   min-height: ${$strokeWidth}px;
               `}
 
-    background: ${({ theme, $elevation, $color }) =>
-        $color ? theme[$color] : mapElevationToBorder({ theme, $elevation })};
+    background: ${({ theme, $color }) => theme[$color ?? 'borderNeutral']};
 
     ${withFrameProps}
 `;
@@ -107,8 +98,6 @@ export const Divider = ({
     gap = spacings.xxl,
     ...rest
 }: DividerProps) => {
-    const { elevation } = useElevation();
-
     const frameProps: AllowedFrameProps = {
         ...rest,
         margin: rest.margin ?? { top: spacings.md, bottom: spacings.md },
@@ -118,7 +107,6 @@ export const Divider = ({
 
     const line = (
         <Line
-            $elevation={elevation}
             $color={color}
             $strokeWidth={strokeWidth}
             $orientation={orientation}

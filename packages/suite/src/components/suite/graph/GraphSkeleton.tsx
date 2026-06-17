@@ -1,27 +1,17 @@
-import { type ComponentProps } from 'react';
-
-import styled from 'styled-components';
-
-import { SkeletonRectangle, SkeletonSpread, SkeletonStack, variables } from '@trezor/components';
+import { Column, Row, Skeleton } from '@trezor/components';
 
 import { useLoadingSkeleton } from 'src/hooks/suite';
 
-const SkeletonWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-self: flex-end;
-    margin: 20px;
-    overflow-x: hidden;
+const barProps = {
+    width: 12,
+    borderRadius: 2,
+    animate: false,
+} as const;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin: 20px 0;
-    }
-`;
-
-const SkeletonBar = (props: ComponentProps<typeof SkeletonRectangle>) => (
-    <SkeletonRectangle borderRadius={2} {...props} />
-);
+const labelProps = {
+    height: 10,
+    animate: false,
+} as const;
 
 interface GraphSkeletonProps {
     animate?: boolean;
@@ -32,52 +22,56 @@ export const GraphSkeleton = ({ animate, ...rest }: GraphSkeletonProps) => {
     const animationEnabled = animate ?? shouldAnimate;
 
     return (
-        <SkeletonWrapper {...rest}>
-            <SkeletonSpread $grow $alignItems="flex-end">
-                <SkeletonStack $childMargin="0px 4px" $alignItems="flex-end">
-                    <SkeletonBar width="12px" height="30px" animate={false} />
-                    <SkeletonBar width="12px" height="40px" animate={false} />
-                </SkeletonStack>
+        <Column width="100%" alignSelf="flex-end" margin={20} overflow="hidden" {...rest}>
+            <Row flex="1" alignItems="flex-end" justifyContent="space-between">
+                <Row gap={8} alignItems="flex-end">
+                    <Skeleton {...barProps} height={30} />
+                    <Skeleton {...barProps} height={40} />
+                </Row>
 
-                <SkeletonBar width="12px" height="80px" />
+                <Skeleton {...barProps} height={80} />
 
-                <SkeletonStack $childMargin="0px 4px" $alignItems="flex-end">
-                    <SkeletonBar width="12px" height="20px" animate={false} />
-                    <SkeletonBar width="12px" height="50px" animate={false} />
-                    <SkeletonBar width="12px" height="70px" animate={false} />
-                    <SkeletonBar width="12px" height="30px" animate={false} />
-                </SkeletonStack>
+                <Row gap={8} alignItems="flex-end">
+                    <Skeleton {...barProps} height={20} />
+                    <Skeleton {...barProps} height={50} />
+                    <Skeleton {...barProps} height={70} />
+                    <Skeleton {...barProps} height={30} />
+                </Row>
 
-                <SkeletonStack $childMargin="0px 4px" $alignItems="flex-end">
-                    <SkeletonBar width="12px" height="120px" animate={false} />
-                    <SkeletonBar width="12px" height="150px" animate={false} />
-                    <SkeletonBar width="12px" height="200px" animate={false} />
-                    <SkeletonBar width="12px" height="170px" animate={false} />
-                    <SkeletonBar width="12px" height="80px" animate={false} />
-                </SkeletonStack>
+                <Row gap={8} alignItems="flex-end">
+                    <Skeleton {...barProps} height={120} />
+                    <Skeleton {...barProps} height={150} />
+                    <Skeleton {...barProps} height={200} />
+                    <Skeleton {...barProps} height={170} />
+                    <Skeleton {...barProps} height={80} />
+                </Row>
 
-                <SkeletonStack $childMargin="0px 4px" $alignItems="flex-end">
-                    <SkeletonBar width="12px" height="100px" animate={false} />
-                    <SkeletonBar width="12px" height="180px" animate={false} />
-                    <SkeletonBar width="12px" height="30px" animate={false} />
-                    <SkeletonBar width="12px" height="10px" animate={false} />
-                </SkeletonStack>
-                <SkeletonBar width="12px" height="30px" />
-                <SkeletonStack $childMargin="0px 4px" $alignItems="flex-end">
-                    <SkeletonBar width="12px" height="10px" animate={false} />
-                    <SkeletonBar width="12px" height="30px" animate={false} />
-                    <SkeletonBar width="12px" height="70px" animate={false} />
-                </SkeletonStack>
-            </SkeletonSpread>
-            <SkeletonRectangle height="2px" width="100%" animate={animationEnabled} />
-            <SkeletonSpread $spaceAround $margin="12px 0px 50px 0px" $alignItems="flex-end">
-                <SkeletonRectangle height="10px" animate={false} />
-                <SkeletonRectangle height="10px" animate={false} />
-                <SkeletonRectangle height="10px" animate={false} />
-                <SkeletonRectangle height="10px" animate={false} />
-                <SkeletonRectangle height="10px" animate={false} />
-                <SkeletonRectangle height="10px" animate={false} />
-            </SkeletonSpread>
-        </SkeletonWrapper>
+                <Row gap={8} alignItems="flex-end">
+                    <Skeleton {...barProps} height={100} />
+                    <Skeleton {...barProps} height={180} />
+                    <Skeleton {...barProps} height={30} />
+                    <Skeleton {...barProps} height={10} />
+                </Row>
+                <Skeleton {...barProps} height={30} />
+                <Row gap={8} alignItems="flex-end">
+                    <Skeleton {...barProps} height={10} />
+                    <Skeleton {...barProps} height={30} />
+                    <Skeleton {...barProps} height={70} />
+                </Row>
+            </Row>
+            <Skeleton height={2} width="100%" animate={animationEnabled} />
+            <Row
+                justifyContent="space-around"
+                alignItems="flex-end"
+                margin={{ top: 12, bottom: 48 }}
+            >
+                <Skeleton {...labelProps} />
+                <Skeleton {...labelProps} />
+                <Skeleton {...labelProps} />
+                <Skeleton {...labelProps} />
+                <Skeleton {...labelProps} />
+                <Skeleton {...labelProps} />
+            </Row>
+        </Column>
     );
 };

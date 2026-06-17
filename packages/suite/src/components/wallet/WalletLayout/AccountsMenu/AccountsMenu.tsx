@@ -22,7 +22,9 @@ export const AccountsMenu = () => {
     const device = useSelector(selectSelectedDevice);
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
-        useScrollShadow();
+        useScrollShadow({
+            backgroundColor: 'surfaceFillSunken',
+        });
     const { isSidebarCollapsed } = useResponsiveContext();
 
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
@@ -45,11 +47,11 @@ export const AccountsMenu = () => {
         <ReduxAccountSearchProvider>
             <AccountsMenuHeader />
             <ShadowContainer>
-                <ShadowTop backgroundColor="surfaceFillSunken" />
+                <ShadowTop />
                 <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
                     <AccountsList />
                 </ScrollContainer>
-                <ShadowBottom backgroundColor="surfaceFillSunken" />
+                <ShadowBottom />
             </ShadowContainer>
         </ReduxAccountSearchProvider>
     );

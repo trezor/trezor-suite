@@ -1,5 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Column, GhostContainer, Row, Text } from '@trezor/components';
+import { Card, Column, GhostContainer, Row, Text } from '@trezor/components';
 
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { type AssetLogoProps } from '../AssetLogo/AssetLogoWithId';
@@ -29,15 +29,14 @@ export function TopAssets({
     'data-testid': dataTestId,
 }: TopAssetsProps) {
     return (
-        <Box
-            borderRadius={12}
-            borderWidth={1}
-            borderColor="elementBorderField"
+        <Card
+            type="flat"
             width="100%"
             overflow="hidden"
+            paddingType="none"
             data-testid={dataTestId}
         >
-            <Row hasDivider dividerColor="elementBorderField" alignItems="stretch">
+            <Row hasDivider alignItems="stretch">
                 {assets.map(asset => (
                     <GhostContainer
                         key={asset.id}
@@ -70,6 +69,6 @@ export function TopAssets({
                     </GhostContainer>
                 ))}
             </Row>
-        </Box>
+        </Card>
     );
 }

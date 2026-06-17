@@ -2,39 +2,48 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type Elevation, borders, mapElevationToBackground } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
 import { type InputSize } from './types';
 import { mapSizeToTypographyStyle } from './utils';
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { Text } from '../typography/Text/Text';
 
 const Wrapper = styled.div<{
-    $elevation: Elevation;
     $hasError?: boolean;
     $isDisabled?: boolean;
 }>`
     width: 100%;
     position: relative;
-    background: ${({ $elevation, theme, $hasError }) =>
-        $hasError
-            ? theme.legacyBackgroundAlertRedSubtleOnElevation1
-            : mapElevationToBackground({ theme, $elevation })};
+    background: ${({ theme, $hasError }) =>
+        $hasError ? theme.elementFillCriticalSofter : theme.elementFillField};
     border-radius: ${borders.radii.sm};
-    outline: ${borders.widths.large} solid
-        ${({ $hasError, theme }) => ($hasError ? theme.elementBorderFieldError : 'transparent')};
+    outline-offset: -${borders.widths.small};
+    outline: ${borders.widths.small} solid ${({ theme }) => theme.elementBorderField};
     transition:
-        outline-color,
-        background-color 0.1s;
+        outline 0.2s,
+        background-color 0.2s;
 
-    &:focus-within {
-        outline-color: ${({ theme }) => theme.elementBorderFieldFocused};
+    &:hover {
+        background: ${({ theme }) => theme.elementFillFieldHovered};
+        outline-color: ${({ theme }) => theme.elementBorderFieldHovered};
     }
+
+    ${({ $hasError, theme }) =>
+        $hasError
+            ? `
+            outline-color: ${theme.elementBorderFieldError};
+        `
+            : `
+            &:focus-within {
+                outline-color: ${theme.elementBorderFieldFocused};
+            }
+        `}
 
     ${({ $isDisabled, theme }) =>
         $isDisabled &&
         `
-            background: ${theme.elementFillBoldDisabled};
+            background: ${theme.elementFillFieldDisabled};
+            outline-color: ${theme.elementBorderFieldDisabled};
             pointer-events: none;
             cursor: default;
         `}
@@ -55,12 +64,11 @@ export const InputWrapper = ({
     size = 'large',
     children,
 }: InputWrapperProps) => {
-    const { elevation } = useElevation();
-
     const content = (
         <Text
             typographyStyle={mapSizeToTypographyStyle(size)}
             intent="neutral"
+            priority="secondary"
             isDisabled={isDisabled}
             as="div"
             width="100%"
@@ -72,7 +80,7 @@ export const InputWrapper = ({
     return isClean ? (
         content
     ) : (
-        <Wrapper $elevation={elevation} $hasError={hasError} $isDisabled={isDisabled}>
+        <Wrapper $hasError={hasError} $isDisabled={isDisabled}>
             {content}
         </Wrapper>
     );

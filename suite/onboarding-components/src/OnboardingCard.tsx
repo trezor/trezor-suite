@@ -9,11 +9,11 @@ import {
     Column,
     H2,
     IconCircle,
+    type IconCircleIntent,
     type IconName,
     Modal,
     Paragraph,
     Row,
-    type UIVariant,
 } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
@@ -22,25 +22,6 @@ import { zIndices } from '@trezor/theme';
 
 import { OnboardingCardButton } from './OnboardingCardButton';
 import { OnboardingCardSecondaryButton } from './OnboardingCardSecondaryButton';
-
-export const onboardingCardVariants = ['primary', 'warning', 'destructive', 'info'] as const;
-export type OnboardingCardVariant = Extract<UIVariant, (typeof onboardingCardVariants)[number]>;
-
-const mapVariantToIconCircleIntent = (variant: OnboardingCardVariant) => {
-    if (variant === 'destructive') {
-        return 'critical' as const;
-    }
-
-    if (variant === 'warning') {
-        return 'warning' as const;
-    }
-
-    if (variant === 'info') {
-        return 'info' as const;
-    }
-
-    return 'brand' as const;
-};
 
 export type OnboardingCardProps = {
     heading?: ReactNode;
@@ -53,7 +34,7 @@ export type OnboardingCardProps = {
     devicePrompt?: ReactNode;
     isActionAbortable?: boolean;
     children?: ReactNode;
-    variant?: OnboardingCardVariant;
+    intent?: IconCircleIntent;
     'data-testid'?: string;
 };
 
@@ -68,7 +49,7 @@ export const OnboardingCard = ({
     isConfirmedOnDevice = false,
     devicePrompt,
     children,
-    variant = 'primary',
+    intent = 'brand',
     'data-testid': dataTestId,
 }: OnboardingCardProps) => {
     const intl = useIntl();
@@ -136,11 +117,7 @@ export const OnboardingCard = ({
                         position={{ type: 'absolute', top: 0 }}
                         zIndex={isBackDropVisible ? zIndices.modal : undefined}
                     >
-                        <IconCircle
-                            name={iconName}
-                            size={96}
-                            intent={mapVariantToIconCircleIntent(variant)}
-                        />
+                        <IconCircle name={iconName} size={96} intent={intent} />
                     </Box>
                 )}
                 {outerActions && <Box zIndex={zIndices.onboardingForeground}>{outerActions}</Box>}

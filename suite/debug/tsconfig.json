@@ -14,7 +14,6 @@
         {
             "path": "../../packages/suite-desktop-api"
         },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/theme" }
     ]
 }

@@ -2,15 +2,7 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
-import {
-    Column,
-    Icon,
-    Paragraph,
-    Row,
-    SkeletonCircle,
-    SkeletonRectangle,
-    Text,
-} from '@trezor/components';
+import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
@@ -29,10 +21,10 @@ const AccountOverviewBalanceSkeleton = ({
     symbol,
 }: AccountOverviewBalanceSkeletonProps) => (
     <Column gap={4}>
-        <SkeletonRectangle width={100} height={50} animate={animate} />
+        <Skeleton width={100} height={50} animate={animate} />
         <Row gap={4}>
-            {symbol ? <CoinLogo size={16} symbol={symbol} /> : <SkeletonCircle size="20px" />}
-            <SkeletonRectangle height={20} animate={animate} />
+            {symbol ? <CoinLogo size={16} symbol={symbol} /> : <Skeleton type="circle" size={20} />}
+            <Skeleton height={20} animate={animate} />
         </Row>
     </Column>
 );

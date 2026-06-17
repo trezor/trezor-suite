@@ -1,7 +1,7 @@
 import { type ReactNode, useRef } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
-import { Column, SkeletonRectangle } from '@trezor/components';
+import { Column, Skeleton } from '@trezor/components';
 import { type PrimitiveType, exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -41,10 +41,10 @@ const WalletBody = ({ account, children }: WalletBodyProps) => {
             }
 
             return (
-                <SkeletonRectangle
+                <Skeleton
                     width="100%"
-                    height="300px"
-                    borderRadius="12px"
+                    height={300}
+                    borderRadius={12}
                     animate={loader === 'account-loading'}
                 />
             );

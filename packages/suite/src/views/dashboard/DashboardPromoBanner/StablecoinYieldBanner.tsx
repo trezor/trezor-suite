@@ -61,7 +61,7 @@ export const StablecoinYieldBanner = ({ onClose, onCTAClick }: StablecoinYieldBa
         <Box
             height={isVerticalLayout ? undefined : 213}
             padding={{ left: 24, top: isVerticalLayout ? 16 : 0 }}
-            backgroundColor="legacyBackgroundTertiaryDefaultOnElevation0"
+            backgroundColor="elementFillNeutralSofter"
         >
             <ContentFlex
                 height="100%"

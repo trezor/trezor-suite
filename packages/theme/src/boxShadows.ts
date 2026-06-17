@@ -1,20 +1,28 @@
+import { type Colors } from './colors';
 import { type CSSColor } from './types';
 
 export const boxShadows = {
-    standard: {
-        boxShadowFocused: '0px 0px 0px 3px rgba(0, 120, 172, 0.25)',
-        boxShadowBase: '0px 2px 4px 0px rgba(0, 0, 0, 0.04)',
-        boxShadowElevated: '0px 16px 32px -16px rgba(0, 0, 0, 0.16)',
-    },
-    dark: {
-        boxShadowFocused: '0px 0px 0px 3px rgba(89, 175, 211, 0.42)',
-        boxShadowBase: '0px 0 0px 0.5px rgba(255, 255, 255, 0.16)',
-        boxShadowElevated: '0px 0 0px 2px rgba(255, 255, 255, 0.16)',
-    },
-};
+    elementShadowElevated: ({ shadowKeyElevated, shadowAmbientElevated }: Colors) =>
+        `0px 2px 4px -2px ${shadowKeyElevated}, 0px 0px 2px 0px ${shadowAmbientElevated}`,
+    surfaceShadowAction: ({ shadowKeyAction, shadowAmbientAction }: Colors) =>
+        `0px 8px 16px -2px ${shadowKeyAction}, 0px 0px 8px 0px ${shadowAmbientAction}`,
+    surfaceShadowActionHovered: ({ shadowKeyActionHover, shadowAmbientActionHover }: Colors) =>
+        `0px 12px 20px -2px ${shadowKeyActionHover}, 0px 0px 12px 0px ${shadowAmbientActionHover}`,
+    surfaceShadowModeless: ({ shadowKeyModeless, shadowAmbientModeless }: Colors) =>
+        `0px 12px 20px -2px ${shadowKeyModeless}, 0px 0px 12px 0px ${shadowAmbientModeless}`,
+    surfaceShadowFixed: ({ shadowKeyFixed, shadowAmbientFixed }: Colors) =>
+        `0px 16px 24px -2px ${shadowKeyFixed}, 0px 0px 16px 0px ${shadowAmbientFixed}`,
+    surfaceShadowModal: ({ shadowKeyModal, shadowAmbientModal }: Colors) =>
+        `0px 32px 64px -4px ${shadowKeyModal}, 0px 0px 32px 0px ${shadowAmbientModal}`,
+} as const satisfies Record<string, (theme: Colors) => string>;
 
-export type BoxShadow = keyof typeof boxShadows.standard;
+export type BoxShadow = keyof typeof boxShadows;
 export type BoxShadows = Record<BoxShadow, string>;
+
+export const mapBoxShadowsToCSS = (theme: Colors): Record<BoxShadow, string> =>
+    Object.fromEntries(
+        Object.entries(boxShadows).map(([name, getBoxShadow]) => [name, getBoxShadow(theme)]),
+    ) as Record<BoxShadow, string>;
 
 interface NativeBoxShadowDefinition {
     elevation: number;

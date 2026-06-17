@@ -1,43 +1,8 @@
 // If you want to add of modify colors, please read README.md to find out more.
 
 import { colorsV2 } from './colorsV2';
-import { type Elevation } from './elevation';
 import { paletteV1 } from './paletteV1';
 import { type CSSColor } from './types';
-
-export type StyledComponentElevationProps = {
-    theme: Colors; // this package does not depend on styled-components
-    $elevation: Elevation;
-};
-
-const elevationToBackgroundTokenMap = {
-    [-1]: 'surfaceFillSunken',
-    0: 'surfaceFillPage',
-    1: 'surfaceFillRaised',
-    2: 'legacyBackgroundSurfaceElevation2',
-    3: 'legacyBackgroundSurfaceElevation3',
-} as const satisfies Record<Elevation, Color>;
-
-const elevationToBorderTokenMap = {
-    [-1]: 'legacyBorderElevationNegative',
-    0: 'legacyBorderElevation0',
-    1: 'legacyBorderElevation1',
-    2: 'legacyBorderElevation2',
-    3: 'legacyBorderElevation3',
-} as const satisfies Record<Elevation, Color>;
-
-export const mapElevationToBackgroundToken = ({ $elevation }: { $elevation: Elevation }): Color =>
-    elevationToBackgroundTokenMap[$elevation];
-
-export const mapElevationToBackground = ({
-    theme,
-    $elevation,
-}: StyledComponentElevationProps): CSSColor => theme[mapElevationToBackgroundToken({ $elevation })];
-
-export const mapElevationToBorder = ({
-    theme,
-    $elevation,
-}: StyledComponentElevationProps): CSSColor => theme[elevationToBorderTokenMap[$elevation]];
 
 // ---------------------------
 
@@ -104,28 +69,13 @@ const light = {
     ...colorsV2.light,
 };
 
-export type ThemeVariant = 'debug' | 'standard' | 'dark' | 'light';
-export type ThemeColorVariant = 'debug' | 'standard' | 'dark';
+export type ThemeVariant = 'standard' | 'dark' | 'light';
+export type ThemeColorVariant = 'standard' | 'dark';
 
 export type Color = keyof typeof light;
 export type Colors = Record<Color, CSSColor>;
 
 export const colorVariants: Record<ThemeColorVariant, Colors> = {
-    debug: {
-        ...light,
-        surfaceFillSunken: '#F09EA7',
-        surfaceFillPage: '#F6CA94',
-        surfaceFillRaised: '#C1EBC0',
-        legacyBackgroundSurfaceElevation2: '#9DB6F3',
-        legacyBackgroundSurfaceElevation3: '#a0a0a6',
-
-        legacyBorderElevationNegative: '#ED4456',
-        legacyBorderElevation0: '#FEB144',
-        legacyBorderElevation1: '#74DF74',
-        legacyBorderElevation2: '#3CA6EC',
-        legacyBorderElevation3: '#6A6A78',
-    } as Colors,
-
     standard: light as Colors,
 
     dark: {

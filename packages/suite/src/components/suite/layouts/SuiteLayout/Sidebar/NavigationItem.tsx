@@ -4,82 +4,43 @@ import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, goto, selectRouteName } from '@suite/router';
-import {
-    Icon,
-    type IconName,
-    type IconSize,
-    Paragraph,
-    Tooltip,
-    useElevation,
-} from '@trezor/components';
-import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import {
-    type Elevation,
-    type TypographyStyle,
-    borders,
-    mapElevationToBackground,
-    spacingsPx,
-} from '@trezor/theme';
+import { Icon, type IconName, Paragraph, Tooltip } from '@trezor/components';
+import { commonFocusStyles } from '@trezor/components/src/utils/utils';
+import { borders, spacingsPx } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
-export const NavigationItemBase = styled.div.attrs(() => ({
-    tabIndex: 0,
-}))`
+const Container = styled.button<{ $isActive?: boolean }>`
     flex: 1;
     display: flex;
-    flex-direction: row;
     align-items: center;
+    gap: ${spacingsPx.md};
     padding: ${spacingsPx.xs};
     border-radius: ${borders.radii.sm};
-    color: ${({ theme }) => theme.contentSecondary};
-    transition:
-        color 0.15s,
-        background 0.15s;
+    transition: 0.2s ease-in-out;
     cursor: pointer;
-    border: 1px solid transparent;
+    border: 0;
+    background: none;
     -webkit-app-region: no-drag;
-    ${getFocusShadowStyle()}
-`;
 
-const Container = styled(NavigationItemBase)<{
-    $elevation: Elevation;
-    $isActive?: boolean;
-    $isRounded?: boolean;
-    $typographyStyle?: TypographyStyle;
-}>`
-    gap: ${({ $typographyStyle }) =>
-        $typographyStyle === 'body-sm' ? spacingsPx.xs : spacingsPx.md};
-    ${({ theme, $isActive }) =>
-        $isActive
-            ? css<{ $elevation: Elevation }>`
-                  background-color: ${mapElevationToBackground};
-                  box-shadow: ${theme.boxShadowBase};
-                  color: ${theme.contentPrimary};
+    &:focus-visible {
+        ${commonFocusStyles}
+    }
 
-                  path {
-                      fill: ${theme.contentPrimary};
-                  }
-              `
-            : css`
-                  &:hover {
-                      color: ${theme.contentPrimary};
+    &:hover {
+        background: ${({ theme }) => theme.elementFillGhostHovered};
+    }
 
-                      path {
-                          fill: ${theme.contentPrimary};
-                      }
-                  }
-              `}
-    ${({ $isRounded }) =>
-        $isRounded &&
+    ${({ $isActive, theme }) =>
+        $isActive &&
         css`
-            border-radius: ${borders.radii.full};
-            padding: ${spacingsPx.xs} ${spacingsPx.md};
+            background: ${theme.elementFillElevated} !important;
+            box-shadow: ${theme.elementShadowElevated};
         `}
 `;
 
-export interface NavigationItemProps {
+export type NavigationItemProps = {
     nameId: TranslationKey;
     icon: IconName;
     expanded?: boolean;
@@ -90,12 +51,8 @@ export interface NavigationItemProps {
     'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
-    iconSize?: IconSize;
-    itemsCount?: number;
-    isRounded?: boolean;
-    typographyStyle?: TypographyStyle;
     onClick?: () => void;
-}
+};
 
 type TitleProps = {
     nameId: TranslationKey;
@@ -104,27 +61,19 @@ type TitleProps = {
 
 const Title = ({ nameId, values }: TitleProps) => <Translation id={nameId} values={values} />;
 
-export const NavItem = (props: NavigationItemProps) => {
-    const {
-        nameId,
-        icon,
-        expanded,
-        routes,
-        goToRoute,
-        isActive,
-        'data-testid': dataTest,
-        className,
-        values,
-        preserveParams,
-        iconSize = 24,
-        itemsCount,
-        isRounded = false,
-        typographyStyle = 'body-md',
-        onClick,
-    } = props;
-
+const NavItem = ({
+    nameId,
+    icon,
+    expanded,
+    routes,
+    goToRoute,
+    isActive,
+    'data-testid': dataTest,
+    values,
+    preserveParams,
+    onClick,
+}: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
-    const { elevation } = useElevation();
     const dispatch = useDispatch();
 
     const handleClick = (e: MouseEvent) => {
@@ -143,17 +92,14 @@ export const NavItem = (props: NavigationItemProps) => {
     };
 
     const isActiveRoute = routes?.some(route => route === activeRoute);
+    const isItemActive = isActive || isActiveRoute;
 
     return (
         <Container
-            $isActive={isActive || isActiveRoute}
+            $isActive={isItemActive}
             onClick={handleClick}
             data-testid={dataTest || `@suite/menu/${goToRoute}`}
-            className={className}
-            tabIndex={0}
-            $elevation={elevation}
-            $isRounded={isRounded}
-            $typographyStyle={typographyStyle}
+            type="button"
         >
             <Tooltip
                 cursor="pointer"
@@ -163,28 +109,20 @@ export const NavItem = (props: NavigationItemProps) => {
             >
                 <Icon
                     name={icon}
-                    size={iconSize}
+                    size={24}
                     intent="neutral"
-                    priority="secondary"
+                    priority={isItemActive ? 'primary' : 'secondary'}
                     pointerEvents="none"
                 />
             </Tooltip>
             {expanded && (
-                <>
-                    <Paragraph typographyStyle={typographyStyle}>
-                        <Translation id={nameId} values={values} />
-                    </Paragraph>
-
-                    {itemsCount && (
-                        <Paragraph
-                            intent="neutral"
-                            priority="secondary"
-                            typographyStyle={typographyStyle}
-                        >
-                            {itemsCount}
-                        </Paragraph>
-                    )}
-                </>
+                <Paragraph
+                    typographyStyle="body-md"
+                    intent="neutral"
+                    priority={isItemActive ? 'primary' : 'secondary'}
+                >
+                    <Translation id={nameId} values={values} />
+                </Paragraph>
             )}
         </Container>
     );

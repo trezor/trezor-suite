@@ -51,7 +51,7 @@ export const ReplaceByFeeFailedOriginalTxConfirmed = ({
     const link = helpLink[networkType]?.[type];
 
     return (
-        <Card fillType="flat">
+        <Card type="contrast">
             <Column gap={spacings.xs}>
                 <Box margin={{ bottom: spacings.md }}>
                     <IconCircle name="warning" size={112} intent="critical" />

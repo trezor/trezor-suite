@@ -487,7 +487,6 @@
   "TR_BUY": " 購入",
   "TR_BUY_BUY": " 購入",
   "TR_BUY_COMPLETE": "購入完了",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Trezorで確認済",
   "TR_BUY_DETAIL_ERROR_BUTTON": "購入に戻る",
   "TR_BUY_DETAIL_ERROR_TEXT": "トランザクションが失敗または拒否されました。お支払い方法への請求が行われていませんでした。",
   "TR_BUY_DETAIL_ERROR_TITLE": "トランザクションに失敗しました",

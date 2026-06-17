@@ -23,7 +23,7 @@ export const DeviceDifferentStep = () => {
                     <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2" />
                 </>
             }
-            variant="warning"
+            intent="warning"
             innerActions={
                 <OnboardingCard.Button
                     onClick={() => {

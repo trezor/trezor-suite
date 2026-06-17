@@ -487,7 +487,6 @@
   "TR_BUY": "Comprar",
   "TR_BUY_BUY": "Comprar",
   "TR_BUY_COMPLETE": "Compra concluída",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Confirmado no Trezor",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Voltar à Compra",
   "TR_BUY_DETAIL_ERROR_TEXT": "A sua transação falhou ou foi rejeitada. Seu método de pagamento não foi cobrado.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Falha na transação",

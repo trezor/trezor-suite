@@ -487,7 +487,6 @@
   "TR_BUY": "Beli",
   "TR_BUY_BUY": "Beli",
   "TR_BUY_COMPLETE": "Pembelian selesai",
-  "TR_BUY_CONFIRMED_ON_TREZOR": "Dikonfirmasi di Trezor",
   "TR_BUY_DETAIL_ERROR_BUTTON": "Kembali ke Beli",
   "TR_BUY_DETAIL_ERROR_TEXT": "Transaksi Anda gagal atau ditolak. Metode pembayaran Anda belum dikenakan biaya.",
   "TR_BUY_DETAIL_ERROR_TITLE": "Transaksi gagal",

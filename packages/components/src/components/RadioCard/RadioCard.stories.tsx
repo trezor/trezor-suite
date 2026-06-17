@@ -15,7 +15,7 @@ export default meta;
 
 export const RadioCard: StoryObj<RadioCardProps> = {
     args: {
-        isActive: true,
+        isSelected: true,
         isDisabled: false,
         children: 'Content',
         ...getFramePropsStory(allowedRadioCardFrameProps).args,
@@ -26,7 +26,7 @@ export const RadioCard: StoryObj<RadioCardProps> = {
                 type: 'boolean',
             },
         },
-        isActive: {
+        isSelected: {
             control: {
                 type: 'boolean',
             },

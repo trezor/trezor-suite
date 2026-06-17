@@ -21,7 +21,7 @@ const Container = styled.div`
     cursor: pointer;
     ${mediaQueries.hover} {
         :hover {
-            background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
+            background: ${({ theme }) => theme.surfaceFillRaised};
         }
     }
 `;
