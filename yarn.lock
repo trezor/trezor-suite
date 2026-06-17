@@ -12940,6 +12940,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/schemas": "workspace:*"
     "@suite-common/staking": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

@@ -7,18 +7,12 @@ import { isRejected } from '@reduxjs/toolkit';
 import {
     type FormDraftRootState,
     type StablecoinYieldRootState,
+    type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
-    type YieldWithdrawInputUnit,
-    buildEvmSelectedFee,
     selectFormDraft,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
-import {
-    type EvmSelectedFee,
-    type FormState,
-    type PrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
-} from '@suite-common/wallet-types';
+import { type FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import type {
     StackNavigationProps,
@@ -27,26 +21,29 @@ import type {
 } from '@suite-native/navigation';
 import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
 
-import { type YieldReviewActionStatus, type YieldReviewStatus } from '../types';
+import {
+    type YieldReviewActionStatus,
+    type YieldReviewSigningResult,
+    type YieldReviewStatus,
+} from '../types';
 import { isUserCancelledSignError } from '../utils';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
-import {
-    getYieldWithdrawFormDraftKey,
-    getYieldWithdrawInputToken,
-} from '../utils/yieldWithdrawUtils';
+import { getSelectedEvmFeeFromPrecomposedTransaction } from '../utils/yieldSelectedFeeUtils';
+import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
 
 type UseYieldWithdrawReviewParams = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
     onReviewLeave?: () => void;
-    withdrawInputUnit: YieldWithdrawInputUnit;
+    reviewToken: YieldFlowDisplayToken;
 };
 
 type UseYieldWithdrawReviewResult = {
-    handleSubmitWithdrawReview: () => Promise<void>;
     handleWithdrawSubmitted: () => Promise<void>;
+    leaveReviewFromDeviceCancel: () => void;
+    startWithdrawReview: () => Promise<YieldReviewSigningResult>;
     withdrawStatus: YieldReviewStatus;
 };
 
@@ -55,40 +52,11 @@ type NavigationProps = StackNavigationProps<
     YieldStackRoutes.YieldWithdrawReview
 >;
 
-const getSelectedEvmFee = (
-    precomposedTransaction: PrecomposedTransactionFinal | undefined,
-): EvmSelectedFee | null => {
-    if (!precomposedTransaction?.feeLimit) {
-        return null;
-    }
-
-    if (precomposedTransaction.maxFeePerGas && precomposedTransaction.maxPriorityFeePerGas) {
-        return buildEvmSelectedFee({
-            feeLevel: {
-                feePerUnit: precomposedTransaction.feePerByte,
-                maxFeePerGas: precomposedTransaction.maxFeePerGas,
-                maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
-                baseFeePerGas: '0',
-            },
-            gasLimit: precomposedTransaction.feeLimit,
-        });
-    }
-
-    if (precomposedTransaction.feePerByte) {
-        return buildEvmSelectedFee({
-            feeLevel: { feePerUnit: precomposedTransaction.feePerByte },
-            gasLimit: precomposedTransaction.feeLimit,
-        });
-    }
-
-    return null;
-};
-
 export const useYieldWithdrawReview = ({
     flowData,
     flowKey,
     onReviewLeave,
-    withdrawInputUnit,
+    reviewToken,
 }: UseYieldWithdrawReviewParams): UseYieldWithdrawReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
@@ -112,7 +80,7 @@ export const useYieldWithdrawReview = ({
         : undefined;
     const selectedFee = useMemo(
         () =>
-            getSelectedEvmFee(
+            getSelectedEvmFeeFromPrecomposedTransaction(
                 isFinalPrecomposedTransaction(selectedFeeTransaction)
                     ? selectedFeeTransaction
                     : undefined,
@@ -123,15 +91,23 @@ export const useYieldWithdrawReview = ({
         txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
     const withdrawStatus: YieldReviewStatus =
         withdrawActionStatus === 'idle' && isWithdrawSigned ? 'signed' : withdrawActionStatus;
-    const reviewToken = getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
-    const { markReviewNavigationSuccess } = useYieldActionReviewBackNavigation({
-        onReviewLeave,
-        reviewStatus: withdrawStatus,
-    });
+    const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
+        useYieldActionReviewBackNavigation({
+            onReviewLeave,
+            reviewStatus: withdrawStatus,
+        });
 
-    const handleSubmitWithdrawReview = useCallback(async () => {
+    const startWithdrawReview = useCallback(async (): Promise<YieldReviewSigningResult> => {
+        if (withdrawStatus === 'signed') {
+            return 'signed';
+        }
+
+        if (withdrawStatus === 'signing' || withdrawStatus === 'sending') {
+            return 'already-running';
+        }
+
         if (withdrawStatus !== 'idle') {
-            return;
+            return 'not-ready';
         }
 
         setWithdrawActionStatus('signing');
@@ -153,15 +129,23 @@ export const useYieldWithdrawReview = ({
         if (!deviceAccessResponse.success) {
             showSignTransactionFailedAlert();
 
-            return;
+            return 'failed';
         }
 
         const signResponse = deviceAccessResponse.payload;
         const isSignRejected = isRejected(signResponse);
 
-        if (isSignRejected && !isUserCancelledSignError(signResponse.payload)) {
-            showSignTransactionFailedAlert();
+        if (isSignRejected && isUserCancelledSignError(signResponse.payload)) {
+            return 'cancelled';
         }
+
+        if (isSignRejected) {
+            showSignTransactionFailedAlert();
+
+            return 'failed';
+        }
+
+        return 'signed';
     }, [
         dispatch,
         flowData,
@@ -216,8 +200,9 @@ export const useYieldWithdrawReview = ({
     ]);
 
     return {
-        handleSubmitWithdrawReview,
         handleWithdrawSubmitted,
+        leaveReviewFromDeviceCancel,
+        startWithdrawReview,
         withdrawStatus,
     };
 };

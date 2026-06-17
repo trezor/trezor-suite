@@ -9,6 +9,7 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
 
+import { buildApprovalTransactionData } from '../ethUtils';
 import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
@@ -26,8 +27,15 @@ const LIFI_SWAP_DATA = `0x5fd9ae2e${'00'.repeat(32 * 4)}`;
 // ERC-20 transfer (global selector a9059cbb) — works on any contract
 const ERC20_TRANSFER_DATA = `0xa9059cbb${'00'.repeat(32 * 2)}`;
 
-// ERC-20 approve (global selector 095ea7b3)
-const ERC20_APPROVE_DATA = `0x095ea7b3${'00'.repeat(32 * 2)}`;
+const ERC20_APPROVE_SPENDER = '0x0000000000000000000000000000000000001234';
+const ERC20_APPROVE_DATA = buildApprovalTransactionData({
+    amount: '1',
+    spender: ERC20_APPROVE_SPENDER,
+});
+const ERC20_REVOKE_DATA = buildApprovalTransactionData({
+    amount: '0',
+    spender: ERC20_APPROVE_SPENDER,
+});
 
 const buildTrading = (overrides: Partial<FormStateTrading> = {}): FormStateTrading => ({
     activeSection: 'exchange',
@@ -77,9 +85,11 @@ const buildUpdatedDevice = () =>
     });
 
 const buildPrecomposedTransaction = ({
+    isTokenKnown = true,
     to,
     token,
 }: {
+    isTokenKnown?: boolean;
     to: string;
     token?: TokenInfo;
 }): GeneralPrecomposedTransactionFinal =>
@@ -90,7 +100,7 @@ const buildPrecomposedTransaction = ({
         feePerByte: '1',
         token,
         useNativeRbf: false,
-        isTokenKnown: true,
+        isTokenKnown,
     }) as unknown as GeneralPrecomposedTransactionFinal;
 
 const usdcToken: TokenInfo = {
@@ -216,4 +226,41 @@ describe('constructTransactionReviewOutputs', () => {
             ]),
         );
     });
+
+    it.each([
+        { transactionData: ERC20_APPROVE_DATA, transactionType: 'approve' },
+        { transactionData: ERC20_REVOKE_DATA, transactionType: 'revoke' },
+    ])(
+        'does not render unknown token contract before supported $transactionType rows',
+        ({ transactionData }) => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                decreaseOutputId: undefined,
+                device,
+                precomposedForm: buildFormState({
+                    transactionData,
+                }),
+                precomposedTx: buildPrecomposedTransaction({
+                    isTokenKnown: false,
+                    to: '0x0000000000000000000000000000000000001234',
+                    token: usdcToken,
+                }),
+                vaultName: 'USDC Vault',
+            });
+
+            expect(outputs).toEqual([
+                expect.objectContaining({ type: 'address' }),
+                expect.objectContaining({ type: 'contract', value: 'USDC Vault' }),
+                expect.objectContaining({ type: 'approve_data' }),
+            ]);
+            expect(outputs).not.toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        type: 'contract',
+                        value: usdcToken.contract,
+                    }),
+                ]),
+            );
+        },
+    );
 });
