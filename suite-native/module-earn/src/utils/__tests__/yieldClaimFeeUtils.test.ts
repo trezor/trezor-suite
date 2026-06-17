@@ -1,10 +1,6 @@
 import { type FeeInfo, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 
-import {
-    buildYieldClaimFeeLevels,
-    getYieldClaimFee,
-    getYieldClaimUnsignedTransactionFee,
-} from '../yieldClaimFeeUtils';
+import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../yieldClaimFeeUtils';
 
 const feeInfo = {
     blockHeight: 1,
@@ -60,30 +56,5 @@ describe('yieldClaimFeeUtils', () => {
         });
 
         expect(feeLevels.normal?.type).toBe('error');
-    });
-
-    it('calculates maximum fee from unsigned claim transaction', () => {
-        expect(
-            getYieldClaimUnsignedTransactionFee({
-                to: '0x0000000000000000000000000000000000000001',
-                data: '0x1234',
-                chainId: 1,
-                gasLimit: '21000',
-                maxFeePerGas: '20000000000',
-                maxPriorityFeePerGas: '2000000000',
-                nonce: '1',
-            }),
-        ).toBe('420000000000000');
-
-        expect(
-            getYieldClaimUnsignedTransactionFee({
-                to: '0x0000000000000000000000000000000000000001',
-                data: '0x1234',
-                chainId: 1,
-                gasLimit: '21000',
-                gasPrice: '1000000000',
-                nonce: '1',
-            }),
-        ).toBe('21000000000000');
     });
 });

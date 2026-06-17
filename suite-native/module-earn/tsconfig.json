@@ -33,6 +33,9 @@
         { "path": "../../suite-common/schemas" },
         { "path": "../../suite-common/staking" },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         {

@@ -2903,20 +2903,21 @@ export const messages = {
             backToOverview: 'Back to overview',
         },
         yieldReview: {
-            depositCard: {
-                title: 'Deposit',
-            },
-            withdrawCard: {
-                title: 'Withdraw',
-            },
-            claimRewardsCard: {
-                title: 'Rewards',
-            },
-            receiveCard: {
-                title: 'Receive',
-            },
-            transactionDetailsCard: {
-                title: 'Transaction details',
+            outputs: {
+                claimTitle: 'Claim rewards from',
+                depositAmount: 'Deposit amount',
+                depositDescription: 'Review details to deposit to vault.',
+                depositTitle: 'Deposit',
+                depositTo: 'Deposit to',
+                redeemAmount: 'Redeem amount',
+                redeemDescription: 'Review details to redeem from vault.',
+                redeemFrom: 'Redeem from',
+                redeemTitle: 'Redeem',
+                rewardTokens: 'Reward tokens',
+                withdrawAmount: 'Withdraw amount',
+                withdrawDescription: 'Review details to withdraw from vault.',
+                withdrawFrom: 'Withdraw from',
+                withdrawTitle: 'Withdraw',
             },
             alerts: {
                 primaryButton: 'Go to homepage',
