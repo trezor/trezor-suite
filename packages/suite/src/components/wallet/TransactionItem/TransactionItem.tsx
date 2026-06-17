@@ -9,12 +9,18 @@ import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
+    selectAccountTransactions,
     selectIsPhishingTransaction,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
-import { Button, Link, Row, Tooltip } from '@trezor/components';
+import {
+    formatNetworkAmount,
+    isPending as getIsPending,
+    isSentTransaction,
+    isTxFeePaid,
+} from '@suite-common/wallet-utils';
+import { Button, Icon, Link, Row, Tooltip } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
@@ -89,6 +95,39 @@ export const TransactionItem = memo(
             networkFeatures?.includes('rbf') &&
             !transaction?.deadline;
 
+        // Nonce bounds are derived once per account (memoized) and shared by every pending
+        // TransactionItem, instead of each item subscribing to the full tx list and recomputing.
+        const { confirmedNonce, nextNonce } = useSelector(state =>
+            selectAccountEvmNonceInfo(state, accountKey),
+        );
+
+        // A pending EVM tx can be stuck two ways: its nonce is above the next free nonce (a lower
+        // nonce is missing — a gap), or below the confirmed nonce (that slot was already mined by
+        // another tx — superseded). Either way it won't confirm; `nextNonce` is the nonce to
+        // re-send with to unblock it.
+        const pendingEvmNonce =
+            isPending && network.networkType === 'ethereum'
+                ? transaction.ethereumSpecific?.nonce
+                : undefined;
+
+        const isSuperseded = pendingEvmNonce !== undefined && pendingEvmNonce < confirmedNonce;
+        const hasNonceGap = pendingEvmNonce !== undefined && pendingEvmNonce > nextNonce;
+
+        const renderNonceWarning = () => {
+            if (isSuperseded)
+                return (
+                    <Translation
+                        id="TR_PENDING_NONCE_SUPERSEDED_WARNING"
+                        values={{ nonce: nextNonce }}
+                    />
+                );
+            if (hasNonceGap)
+                return <Translation id="TR_BUMP_FEE_NONCE_GAP_WARNING" values={{ nonce: nextNonce }} />;
+
+            return null;
+        };
+        const nonceWarning = renderNonceWarning();
+
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
             dispatch(
@@ -115,7 +154,16 @@ export const TransactionItem = memo(
                 <OutlineHighlight shouldHighlight={shouldHighlight}>
                     <TransactionLayout
                         onClick={() => openTxDetailsModal({ flow: 'detail' })}
-                        timestamp={<TransactionTimestamp transaction={transaction} />}
+                        timestamp={
+                            <Row gap={4}>
+                                <TransactionTimestamp transaction={transaction} />
+                                {nonceWarning && (
+                                    <Tooltip content={nonceWarning}>
+                                        <Icon name="warning" size={16} intent="warning" />
+                                    </Tooltip>
+                                )}
+                            </Row>
+                        }
                         heading={
                             <TransactionHeading
                                 transaction={transaction}
