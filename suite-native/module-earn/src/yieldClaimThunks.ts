@@ -1,9 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
 import { createThunk } from '@suite-common/redux-utils';
-import { type EvmFeeHex, type EvmHexString } from '@suite-common/schemas/src/evm';
 import {
-    type StablecoinYieldClaimUnsignedTransaction,
     formDraftActions,
     selectAddressDisplayType,
     selectDeepCopyOfFormDraft,
@@ -16,9 +14,10 @@ import { type Account, AddressDisplayOptions, type FormState } from '@suite-comm
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
 
 import { EARN_MODULE_PREFIX } from './constants';
+import { getSelectedFeeFromUnsignedClaimTransaction } from './utils/yieldClaimFeeUtils';
+import { buildYieldClaimRewards } from './utils/yieldClaimReviewUtils';
 import { getPushErrorType } from './yieldTransactionThunks';
 import type { YieldPushTransactionError } from './yieldTransactionThunks';
 
@@ -33,49 +32,6 @@ type YieldClaimSignTransactionError = {
     error: 'sign-transaction-failed';
     errorCode?: string;
     message?: string;
-};
-
-const decimalStringToHex = (value: string): EvmHexString => {
-    if (value.startsWith('0x')) {
-        return value as EvmHexString;
-    }
-
-    const number = new BigNumber(value);
-
-    if (number.isNaN() || !number.isFinite()) {
-        throw new Error('Claim transaction fee data is invalid.');
-    }
-
-    return `0x${number.toString(16)}` as EvmHexString;
-};
-
-const getSelectedFeeFromUnsignedClaimTransaction = ({
-    gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-}: StablecoinYieldClaimUnsignedTransaction): EvmFeeHex => {
-    const gasLimitHex = decimalStringToHex(gasLimit);
-
-    if (maxFeePerGas && maxPriorityFeePerGas) {
-        return {
-            type: 'eip1559',
-            gasLimit: gasLimitHex,
-            maxFeePerGas: decimalStringToHex(maxFeePerGas),
-            maxPriorityFeePerGas: decimalStringToHex(maxPriorityFeePerGas),
-            baseFeePerGas: '0x0' as EvmHexString,
-        };
-    }
-
-    if (gasPrice) {
-        return {
-            type: 'legacy',
-            gasLimit: gasLimitHex,
-            gasPrice: decimalStringToHex(gasPrice),
-        };
-    }
-
-    throw new Error('Claim transaction fee data is missing.');
 };
 
 export const updateYieldClaimSelectedFeeLevelThunk = createThunk(
@@ -145,20 +101,9 @@ export const signYieldClaimReviewThunk = createThunk<
 
         try {
             transactionReview = buildClaimTransactionReview({
-                unsignedTransaction: review.unsignedTransaction,
+                rewards: buildYieldClaimRewards(review),
                 selectedFee: getSelectedFeeFromUnsignedClaimTransaction(review.unsignedTransaction),
-                rewards: review.rewards.flatMap(reward =>
-                    reward.token.contractAddress
-                        ? [
-                              {
-                                  token: {
-                                      address: reward.token.contractAddress,
-                                      symbol: reward.token.symbol,
-                                  },
-                              },
-                          ]
-                        : [],
-                ),
+                unsignedTransaction: review.unsignedTransaction,
             });
         } catch (error) {
             const message =

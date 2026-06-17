@@ -1,33 +1,27 @@
-import { type StablecoinYieldActionReviewState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { useTranslate } from '@suite-native/intl';
 
 import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
-import { YieldReviewList } from './YieldReviewList';
-import { buildYieldClaimReviewCards } from './YieldReviewListPresets';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
+import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
 import { useYieldClaimReview } from '../hooks/useYieldClaimReview';
+import { useYieldReviewActiveStep } from '../hooks/useYieldReviewActiveStep';
 import {
     useYieldReviewScreenControls,
     useYieldReviewSheetAutoStart,
 } from '../hooks/useYieldReviewScreenControls';
-
-type ClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim' }>;
+import { type YieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 
 type YieldClaimReviewContentProps = {
     account: Account;
-    fee: string;
     flowKey: string;
-    review: ClaimReview;
+    preview: YieldReviewPreview;
 };
 
 export const YieldClaimReviewContent = ({
     account,
-    fee,
     flowKey,
-    review,
+    preview,
 }: YieldClaimReviewContentProps) => {
-    const { translate } = useTranslate();
     const {
         closeSheet,
         confirmOnTrezorRef,
@@ -43,6 +37,7 @@ export const YieldClaimReviewContent = ({
         });
     const isClaimSigned = claimStatus === 'signed' || claimStatus === 'sending';
     const isSendingClaim = claimStatus === 'sending';
+    const activeStep = useYieldReviewActiveStep(account.symbol);
 
     useYieldReviewSheetAutoStart({
         closeSheet,
@@ -69,17 +64,11 @@ export const YieldClaimReviewContent = ({
                 ) : undefined
             }
         >
-            <YieldReviewList
-                cards={buildYieldClaimReviewCards(
-                    {
-                        accountKey: account.key,
-                        fee,
-                        rewards: review.rewards,
-                    },
-                    translate,
-                )}
+            <YieldTransactionReviewOutputList
+                accountKey={account.key}
+                activeStep={activeStep}
                 isSigned={isClaimSigned}
-                networkSymbol={account.symbol}
+                preview={preview}
             />
         </YieldReviewScreenLayout>
     );

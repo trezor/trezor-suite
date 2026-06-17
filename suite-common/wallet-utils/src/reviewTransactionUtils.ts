@@ -553,7 +553,8 @@ const constructNewFlow = ({
                     !precomposedTx.isTokenKnown &&
                     !isSolana &&
                     !isStellar &&
-                    !isTron
+                    !isTron &&
+                    !(isEvmApproval && isApprovalFlowSupported)
                 ) {
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });

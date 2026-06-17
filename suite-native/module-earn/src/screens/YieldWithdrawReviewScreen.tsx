@@ -3,21 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type FormDraftRootState,
     type StablecoinYieldRootState,
-    type YieldFlowResolvedData,
-    type YieldWithdrawInputUnit,
     selectFormDraft,
     selectStablecoinYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
-import {
-    type FormState,
-    isFinalPrecomposedTransaction,
-    toTokenSymbol,
-} from '@suite-common/wallet-types';
-import { Button } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { type FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -25,18 +18,14 @@ import {
 } from '@suite-native/navigation';
 import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
 
-import { EarnReviewSubmittedCard } from '../components/EarnReviewSubmittedCard';
-import { YieldReviewList } from '../components/YieldReviewList';
-import { buildYieldWithdrawReviewCards } from '../components/YieldReviewListPresets';
-import { YieldReviewScreenLayout } from '../components/YieldReviewScreenLayout';
+import { YieldWithdrawReviewContent } from '../components/YieldWithdrawReviewContent';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
-import { useYieldReviewScreenControls } from '../hooks/useYieldReviewScreenControls';
-import { useYieldWithdrawReview } from '../hooks/useYieldWithdrawReview';
+import { buildYieldReviewPreview } from '../utils/yieldReviewOutputUtils';
+import { getSelectedEvmFeeFromPrecomposedTransaction } from '../utils/yieldSelectedFeeUtils';
 import {
     getYieldWithdrawFormDraftKey,
     getYieldWithdrawInputToken,
 } from '../utils/yieldWithdrawUtils';
-import { buildYieldDepositFeePreview } from '../yieldDepositFeeUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawReview>;
 type NavigationProps = StackNavigationProps<
@@ -44,93 +33,11 @@ type NavigationProps = StackNavigationProps<
     YieldStackRoutes.YieldWithdrawReview
 >;
 
-type WithdrawReviewContentProps = {
-    fee: string;
-    flowData: YieldFlowResolvedData;
-    flowKey: string;
-    review: {
-        amount: string;
-    };
-    withdrawInputUnit: YieldWithdrawInputUnit;
-};
-
-const WithdrawReviewContent = ({
-    fee,
-    flowData,
-    flowKey,
-    review,
-    withdrawInputUnit,
-}: WithdrawReviewContentProps) => {
-    const { translate } = useTranslate();
-    const { closeSheet, confirmOnTrezorRef, revealConfirmOnTrezorSheet } =
-        useYieldReviewScreenControls();
-    const { withdrawStatus, handleSubmitWithdrawReview, handleWithdrawSubmitted } =
-        useYieldWithdrawReview({
-            flowData,
-            flowKey,
-            withdrawInputUnit,
-        });
-    const isSigningWithdraw = withdrawStatus === 'signing';
-    const isWithdrawSigned = withdrawStatus === 'signed' || withdrawStatus === 'sending';
-    const isSendingWithdraw = withdrawStatus === 'sending';
-    const isSubmitDisabled = withdrawStatus !== 'idle';
-
-    const reviewToken = getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
-
-    useEffect(() => {
-        if (isSigningWithdraw) {
-            revealConfirmOnTrezorSheet();
-        } else {
-            closeSheet();
-        }
-    }, [closeSheet, isSigningWithdraw, revealConfirmOnTrezorSheet]);
-
-    return (
-        <YieldReviewScreenLayout
-            confirmOnTrezorRef={confirmOnTrezorRef}
-            titleTranslationId="earn.yieldWithdrawReviewScreen.title"
-            submittedCard={
-                isWithdrawSigned ? (
-                    <EarnReviewSubmittedCard
-                        buttonTranslationId="earn.yieldWithdrawReviewScreen.submitButton"
-                        isButtonLoading={isSendingWithdraw}
-                        messageTranslationId="earn.yieldWithdrawReviewScreen.successMessage"
-                        onButtonPress={handleWithdrawSubmitted}
-                    />
-                ) : undefined
-            }
-        >
-            <YieldReviewList
-                cards={buildYieldWithdrawReviewCards(
-                    {
-                        accountKey: flowData.account.key,
-                        amount: review.amount,
-                        fee,
-                        tokenSymbol: toTokenSymbol(reviewToken.symbol.toUpperCase()),
-                    },
-                    translate,
-                )}
-                footer={
-                    <Button
-                        isDisabled={isSubmitDisabled}
-                        isLoading={isSigningWithdraw}
-                        onPress={handleSubmitWithdrawReview}
-                    >
-                        <Translation id="generic.buttons.continue" />
-                    </Button>
-                }
-                isFooterVisible={!isSigningWithdraw && !isWithdrawSigned}
-                isSigned={isWithdrawSigned}
-                networkSymbol={flowData.account.symbol}
-            />
-        </YieldReviewScreenLayout>
-    );
-};
-
 export const YieldWithdrawReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const { flowData, flowKey, resolutionStatus } = useResolvedYieldFlowData(route.params);
+    const device = useSelector(selectSelectedDevice);
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, 'withdraw', flowKey),
     );
@@ -139,17 +46,49 @@ export const YieldWithdrawReviewScreen = () => {
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
-    const review = session?.action.review?.type === 'withdraw' ? session.action.review : null;
-    const feePreview = useMemo(
-        () => (review ? buildYieldDepositFeePreview(review.unsignedTransaction) : null),
-        [review],
+    const actionReview = session?.action.review;
+    const review = useMemo(
+        () =>
+            actionReview?.type === 'withdraw'
+                ? {
+                      ...actionReview,
+                      type: 'withdraw' as const,
+                  }
+                : null,
+        [actionReview],
     );
+    const withdrawInputUnit = route.params.withdrawInputUnit ?? 'asset';
+    const reviewToken = useMemo(() => {
+        if (!flowData) {
+            return null;
+        }
+
+        return getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
+    }, [flowData, withdrawInputUnit]);
     const selectedFeePreview = formDraft?.selectedFee
         ? feeLevels[formDraft.selectedFee]
         : undefined;
-    const reviewFee = isFinalPrecomposedTransaction(selectedFeePreview)
-        ? selectedFeePreview.fee
-        : feePreview?.fee;
+    const selectedFee = useMemo(
+        () =>
+            getSelectedEvmFeeFromPrecomposedTransaction(
+                isFinalPrecomposedTransaction(selectedFeePreview) ? selectedFeePreview : undefined,
+            ),
+        [selectedFeePreview],
+    );
+    const preview = useMemo(() => {
+        if (!review || !device || !flowData || !reviewToken) {
+            return null;
+        }
+
+        return buildYieldReviewPreview({
+            device,
+            flowData,
+            review,
+            reviewToken,
+            selectedFee,
+            type: 'withdraw',
+        });
+    }, [device, flowData, review, reviewToken, selectedFee]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
@@ -167,17 +106,16 @@ export const YieldWithdrawReviewScreen = () => {
         }
     }, [navigation, resolutionStatus, review, route.params, session?.step]);
 
-    if (resolutionStatus !== 'resolved' || !review || !feePreview || !reviewFee) {
+    if (resolutionStatus !== 'resolved' || !flowData || !review || !reviewToken || !preview) {
         return null;
     }
 
     return (
-        <WithdrawReviewContent
-            fee={reviewFee}
+        <YieldWithdrawReviewContent
             flowData={flowData}
             flowKey={flowKey}
-            review={review}
-            withdrawInputUnit={route.params.withdrawInputUnit ?? 'asset'}
+            preview={preview}
+            reviewToken={reviewToken}
         />
     );
 };
