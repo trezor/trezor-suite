@@ -5,6 +5,7 @@ import type {
     ButtonIntent,
     ButtonPriority,
     ButtonSize,
+    DeprecatedIconButtonSize,
     InverseKey,
     TextButtonSize,
 } from './types';
@@ -145,18 +146,13 @@ const backgroundMapPressed = {
 } as const satisfies Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>>;
 
 export const buttonSizeToDimensionsMap = {
-    small: {
-        paddingVertical: nativeSpacings.sp4,
-        paddingHorizontal: nativeSpacings.sp10,
-        borderRadius: nativeBorders.radii.r8,
-    },
     medium: {
-        paddingVertical: nativeSpacings.sp8,
+        paddingVertical: nativeSpacings.sp10,
         paddingHorizontal: nativeSpacings.sp16,
         borderRadius: 10,
     },
     large: {
-        paddingVertical: nativeSpacings.sp10,
+        paddingVertical: nativeSpacings.sp12,
         paddingHorizontal: nativeSpacings.sp20,
         borderRadius: nativeBorders.radii.r12,
     },
@@ -166,19 +162,16 @@ export const buttonSizeToDimensionsMap = {
 >;
 
 export const buttonGapMap = {
-    small: 0,
     medium: nativeSpacings.sp2,
     large: nativeSpacings.sp4,
 } as const satisfies Record<ButtonSize, number>;
 
 export const buttonToTextSizeMap = {
-    small: 'body-sm-strong',
     medium: 'body-sm-strong',
     large: 'body-md-strong',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 export const buttonToIconSizeMap = {
-    small: 'medium',
     medium: 'medium',
     large: 'mediumLarge',
 } as const;
@@ -187,19 +180,19 @@ export const iconButtonToIconSizeMap = {
     small: 'medium',
     medium: 'medium',
     large: 'mediumLarge',
-} as const satisfies Record<ButtonSize, (typeof buttonToIconSizeMap)[ButtonSize]>;
+} as const satisfies Record<DeprecatedIconButtonSize, (typeof buttonToIconSizeMap)[ButtonSize]>;
 
 export const iconButtonPaddingMap = {
     small: nativeSpacings.sp6,
-    medium: nativeSpacings.sp10,
-    large: nativeSpacings.sp12,
-} as const satisfies Record<ButtonSize, number>;
+    medium: nativeSpacings.sp12,
+    large: 14,
+} as const satisfies Record<DeprecatedIconButtonSize, number>;
 
 export const iconButtonBorderRadiusMap = {
     small: nativeBorders.radii.r8,
     medium: 10,
     large: nativeBorders.radii.r12,
-} as const satisfies Record<ButtonSize, number>;
+} as const satisfies Record<DeprecatedIconButtonSize, number>;
 
 const textButtonColorMap = {
     normal: {

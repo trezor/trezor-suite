@@ -11,8 +11,13 @@ export type ButtonIntent = (typeof BUTTON_INTENTS)[number];
 export const BUTTON_PRIORITIES = ['primary', 'secondary'] as const;
 export type ButtonPriority = (typeof BUTTON_PRIORITIES)[number];
 
-export const BUTTON_SIZES = ['small', 'medium', 'large'] as const;
+export const BUTTON_SIZES = ['medium', 'large'] as const;
 export type ButtonSize = (typeof BUTTON_SIZES)[number];
+
+/**
+ * The `small` size is deprecated and should not be used. Use `medium` or `large` instead.
+ */
+export type DeprecatedIconButtonSize = 'small' | 'medium' | 'large';
 
 export const TEXT_BUTTON_SIZES = ['large', 'small'] as const;
 export type TextButtonSize = (typeof TEXT_BUTTON_SIZES)[number];

@@ -114,7 +114,7 @@ export const StakingManagementReadyToClaimCard = ({
                         <InlineAlertBox variant="warning" title={claimingMessageContent} />
                     )}
                     <Button
-                        size="small"
+                        size="medium"
                         isFullWidth
                         onPress={handleClaimPress}
                         isDisabled={isClaimingDisabled}

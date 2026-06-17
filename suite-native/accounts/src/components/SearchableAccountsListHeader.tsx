@@ -31,9 +31,7 @@ type SearchableAccountsListHeaderProps = {
 const HEADER_ANIMATION_DURATION = 100;
 
 const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
-    height: 48,
     marginBottom: spacings.sp8,
-    paddingTop: spacings.sp4,
 }));
 
 export const SearchableAccountsListHeader = ({
@@ -100,6 +98,7 @@ export const SearchableAccountsListHeader = ({
                             <IconButton
                                 iconName="magnifyingGlass"
                                 onPress={() => onSearchActiveChange(true)}
+                                size="medium"
                                 intent="neutral"
                                 priority="secondary"
                             />
@@ -117,6 +116,7 @@ export const SearchableAccountsListHeader = ({
                                 <View>
                                     <IconButton
                                         iconName="funnelSimple"
+                                        size="medium"
                                         onPress={onFilterPress}
                                         intent="neutral"
                                         priority="secondary"
