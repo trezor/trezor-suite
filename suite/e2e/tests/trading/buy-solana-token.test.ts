@@ -54,9 +54,17 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
             await expect(tradingPage.quotes.provider).toHaveText(provider);
         });
 
+        await test.step('Continue to the preview', async () => {
+            await tradingPage.buyBestOfferButton.click();
+
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+        });
+
         await test.step('Confirm the trade', async () => {
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.confirmation.buyButton.click();
 
             await expect
                 .soft(tradeRequestPromise)

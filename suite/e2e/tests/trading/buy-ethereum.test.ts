@@ -43,10 +43,16 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await expect(tradingPage.quotes.bestOfferAmount).toContainText('0.018615 ETH');
         });
 
-        await test.step('Confirm Trade', async () => {
+        await test.step('Continue to preview and confirm the trade', async () => {
             await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeEthereum);
 
             await tradingPage.buyBestOfferButton.click();
+
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(provider);
+
+            await tradingPage.confirmation.buyButton.click();
         });
 
         await tradingPage.waitForRedirectCompletion();

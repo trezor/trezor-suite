@@ -46,12 +46,16 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
             await tradingPage.quotes.selectedProvider.click();
         });
 
-        await test.step('Select second offer from modal', async () => {
-            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
+        await test.step('Select second offer from modal and continue to preview', async () => {
             await tradingPage.quotes.selectQuoteByProvider(
                 capitalizeFirstLetter(secondOfferQuote?.exchange ?? ''),
             );
             await tradingPage.buyBestOfferButton.click();
+        });
+
+        await test.step('Confirm the compared offer from the preview', async () => {
+            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
+            await tradingPage.confirmation.buyButton.click();
             await expect(tradeRequestPromise).toHavePayload(
                 { trade: { ...secondOfferQuote, receiveAddress } },
                 { omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'] },
@@ -69,12 +73,24 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
             });
         });
 
-        await test.step('Confirm button shows provider name and KYC warning is visible', async () => {
-            await expect(tradingPage.buyBestOfferButton).toHaveTranslation('TR_TRADING_BUY_VIA', {
-                values: { providerName: bestBuyProviderCompanyName },
-            });
-            await expect(tradingPage.buyBestOfferButton.locator('svg')).toBeVisible();
+        await test.step('Form CTA shows Continue', async () => {
+            await expect(tradingPage.buyBestOfferButton).toHaveTranslation('TR_CONTINUE');
+        });
+
+        await test.step('Continue to the preview showing provider name and KYC warning', async () => {
+            await tradingPage.buyBestOfferButton.click();
+            await expect(tradingPage.confirmation.buyButton).toHaveTranslation(
+                'TR_TRADING_BUY_VIA',
+                {
+                    values: { providerName: bestBuyProviderCompanyName },
+                },
+            );
+            await expect(tradingPage.confirmation.buyButton.locator('svg')).toBeVisible();
             await expect(tradingPage.kycWarning).toBeVisible();
+
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(bestBuyCryptoAmount);
+            await expect(tradingPage.confirmation.provider).toHaveText(bestBuyProvider);
         });
 
         await page.clock.install();
@@ -84,7 +100,7 @@ test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
 
-            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.confirmation.buyButton.click();
 
             await expect.soft(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
