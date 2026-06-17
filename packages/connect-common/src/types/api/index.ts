@@ -1,9 +1,6 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { nostrGetPublicKey } from './nostrGetPublicKey';
-import type { nostrSignEvent } from './nostrSignEvent';
-
 import { TrezorConnectAccount } from './account';
 import { TrezorConnectBitcoin } from './bitcoin';
 import { TrezorConnectBlockchain } from './blockchain';
@@ -14,6 +11,7 @@ import { TrezorConnectEthereum } from './ethereum';
 import { TrezorConnectEvolu } from './evolu';
 import { TrezorConnectManagement } from './management';
 import { TrezorConnectMonero } from './monero';
+import { TrezorConnectNostr } from './nostr';
 import { TrezorConnectRipple } from './ripple';
 import { TrezorConnectSolana } from './solana';
 import { TrezorConnectStellar } from './stellar';
@@ -31,22 +29,13 @@ export {
     TrezorConnectEvolu,
     TrezorConnectManagement,
     TrezorConnectMonero,
+    TrezorConnectNostr,
     TrezorConnectRipple,
     TrezorConnectSolana,
     TrezorConnectStellar,
     TrezorConnectTezos,
     TrezorConnectTron,
 };
-
-// Nostr protocol operations
-export const TrezorConnectNostr = Type.Object({
-    // For internal use, no public documentation.
-    nostrGetPublicKey: Type.Unsafe<typeof nostrGetPublicKey>(),
-
-    // For internal use, no public documentation.
-    nostrSignEvent: Type.Unsafe<typeof nostrSignEvent>(),
-});
-export type TrezorConnectNostr = Static<typeof TrezorConnectNostr>;
 
 // Experimental methods — each requires `__experimental: true` in its params.
 export const TrezorConnectExperimental = Type.Composite([TrezorConnectNostr]);

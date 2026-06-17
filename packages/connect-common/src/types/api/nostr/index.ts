@@ -1,20 +1,11 @@
-import type { Static } from '@trezor/schema-utils';
-import { Type } from '@trezor/schema-utils';
+import { type Static, Type } from '@trezor/schema-utils';
 
-import { DerivationPath } from '../../params';
+import type { nostrGetPublicKey } from './nostrGetPublicKey';
+import type { nostrSignEvent } from './nostrSignEvent';
 
-export type NostrTag = Static<typeof NostrTag>;
-export const NostrTag = Type.Object({
-    key: Type.String(),
-    value: Type.Optional(Type.String()),
-    extra: Type.Array(Type.String()),
+// Nostr protocol operations
+export const TrezorConnectNostr = Type.Object({
+    nostrGetPublicKey: Type.Unsafe<typeof nostrGetPublicKey>(),
+    nostrSignEvent: Type.Unsafe<typeof nostrSignEvent>(),
 });
-
-export type NostrSignEvent = Static<typeof NostrSignEvent>;
-export const NostrSignEvent = Type.Object({
-    path: DerivationPath,
-    created_at: Type.Number(),
-    kind: Type.Number(),
-    tags: Type.Array(NostrTag),
-    content: Type.String(),
-});
+export type TrezorConnectNostr = Static<typeof TrezorConnectNostr>;
