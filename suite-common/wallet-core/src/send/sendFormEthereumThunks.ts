@@ -34,12 +34,11 @@ import {
     getApprovalComposeOutput,
     getCryptoMaxAmountWithReserve,
     getEthereumEstimateFeeParams,
+    getEvmNonceInfo,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
     isEip1559,
     isEvmApprovalTx,
-    isPending,
-    isSentTransaction,
     prepareEthereumTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
@@ -73,8 +72,7 @@ export const getEthereumRbfFeeInfo = (
     // feeInfo.levels are already in Gwei — do NOT call getConvertedOrDefaultFeeInfo here,
     // that would double-convert and produce near-zero values.
     const { levels } = feeInfo;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstLevel: (typeof levels)[number] = levels[0];
+    const firstLevel: FeeLevel | undefined = levels[0];
     if (!firstLevel) return feeInfo;
 
     if (isEip1559(originalGasParams) && isEip1559(firstLevel)) {
@@ -464,13 +462,6 @@ export const resolveEthereumNonce = async ({
         return { nonce: rbfNonce, confirmedNonce: rbfNonce };
     }
 
-    const sentNonces = (predicate: (tx: WalletAccountTransaction) => boolean) =>
-        accountTransactions
-            .filter(predicate)
-            .filter(isSentTransaction)
-            .map(tx => tx.ethereumSpecific?.nonce)
-            .filter((nonce): nonce is number => typeof nonce === 'number');
-
     // Optionally fetch blockbook's confirmed (mined-only) nonce (trezor/blockbook#1562). It's an
     // extra backend call, so we only make it when the caller opts in; otherwise the confirmed nonce
     // is derived purely from the local tx list. When available the backend value is authoritative and
@@ -493,16 +484,10 @@ export const resolveEthereumNonce = async ({
         }
     }
 
-    const localConfirmedNonces = sentNonces(tx => !isPending(tx));
-    const confirmedNonce =
-        backendConfirmedNonce ??
-        (localConfirmedNonces.length ? Math.max(...localConfirmedNonces) + 1 : 0);
-
-    // Next free nonce: advance past contiguous pending txs from the confirmed nonce, stopping at the
-    // first gap, so a stuck/gapped tx far above the confirmed nonce doesn't inflate the suggestion.
-    const pendingNonceSet = new Set(sentNonces(isPending));
-    let nextNonce = confirmedNonce;
-    while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
+    const { nextNonce, confirmedNonce } = getEvmNonceInfo(
+        accountTransactions,
+        backendConfirmedNonce,
+    );
 
     return { nonce: nextNonce.toString(), confirmedNonce: confirmedNonce.toString() };
 };
