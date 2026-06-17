@@ -83,7 +83,6 @@ export const TradingOfferExchange = ({
             <TradingInfoItem
                 key={amountLabels.sendLabel}
                 account={sendAccount}
-                type={type}
                 label={amountLabels.sendLabel}
                 currency={quoteAmounts?.sendCurrency as CryptoId}
                 amount={quoteAmounts?.sendAmount}
@@ -92,7 +91,6 @@ export const TradingOfferExchange = ({
             <TradingInfoItem
                 key={amountLabels.receiveLabel}
                 account={receiveAccount}
-                type={type}
                 label={amountLabels.receiveLabel}
                 currency={quoteAmounts?.receiveCurrency}
                 amount={quoteAmounts?.receiveAmount}

@@ -1165,7 +1165,15 @@ export const messages = defineMessages({
     },
     TR_TRADING_BUY_VIA: {
         id: 'TR_TRADING_BUY_VIA',
-        defaultMessage: 'Buy with {providerName}',
+        defaultMessage: 'Buy via {providerName}',
+    },
+    TR_TRADING_BUY_CONFIRM_TITLE: {
+        id: 'TR_TRADING_BUY_CONFIRM_TITLE',
+        defaultMessage: 'Complete your buy with {providerName}',
+    },
+    TR_TRADING_BUY_CONFIRM_DESCRIPTION: {
+        id: 'TR_TRADING_BUY_CONFIRM_DESCRIPTION',
+        defaultMessage: "You'll be redirected to provider's website to finish the payment.",
     },
     TR_TRADING_SELL_VIA: {
         id: 'TR_TRADING_SELL_VIA',
@@ -1173,7 +1181,7 @@ export const messages = defineMessages({
     },
     TR_TRADING_KYC_REQUIRED_WARNING: {
         id: 'TR_TRADING_KYC_REQUIRED_WARNING',
-        defaultMessage: 'KYC is required.',
+        defaultMessage: 'Identity verification will be required.',
     },
     TR_TRADING_RATE: {
         id: 'TR_TRADING_RATE',
