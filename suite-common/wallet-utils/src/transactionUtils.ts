@@ -72,6 +72,42 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
 export const isSentTransaction = (tx: WalletAccountTransaction | AccountTransaction) =>
     ['sent', 'self'].includes(tx.type);
 
+/**
+ * Derives EVM nonce bounds from an account's local transaction list.
+ *
+ * - `confirmedNonce` = on-chain transaction count (the next mined nonce). When the backend's
+ *   mined-only nonce (trezor/blockbook#1562) is supplied it's authoritative; otherwise it's the
+ *   highest confirmed outgoing nonce + 1 (nonces are sequential from 0).
+ * - `nextNonce` = `confirmedNonce` advanced past any *contiguous* outgoing pending txs, stopping
+ *   at the first gap — the nonce to sign the next tx with. A stuck/gapped pending tx far above the
+ *   confirmed nonce does not inflate it.
+ *
+ * A pending tx is then stuck if its nonce is above `nextNonce` (a lower nonce is missing — a gap)
+ * or below `confirmedNonce` (that slot was already mined by another tx — superseded).
+ */
+export const getEvmNonceInfo = (
+    accountTransactions: WalletAccountTransaction[],
+    backendConfirmedNonce?: number,
+): { confirmedNonce: number; nextNonce: number } => {
+    const sentNonces = (predicate: (tx: WalletAccountTransaction) => boolean) =>
+        accountTransactions
+            .filter(predicate)
+            .filter(isSentTransaction)
+            .map(tx => tx.ethereumSpecific?.nonce)
+            .filter((nonce): nonce is number => typeof nonce === 'number');
+
+    const localConfirmedNonces = sentNonces(tx => !isPending(tx));
+    const confirmedNonce =
+        backendConfirmedNonce ??
+        (localConfirmedNonces.length ? Math.max(...localConfirmedNonces) + 1 : 0);
+
+    const pendingNonceSet = new Set(sentNonces(isPending));
+    let nextNonce = confirmedNonce;
+    while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
+
+    return { confirmedNonce, nextNonce };
+};
+
 export const isRbfTransaction = (
     tx: GeneralPrecomposedTransactionFinal,
 ): tx is PrecomposedTransactionFinalBumpFeeRbf | PrecomposedTransactionFinalCancelRbf =>
