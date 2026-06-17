@@ -77,6 +77,33 @@ jobs:
       - name: Unit Tests - Native
         run: yarn test:unit:all --exclude='@trezor/*,@suite/*,@suite-common/*' -- --silent
 
+  test-fuzz:
+    # Randomized property/fuzz tests are excluded from the unit suite and run
+    # here on the nightly schedule (and on demand via workflow_dispatch). A fresh
+    # seed each night widens the explored interleavings over time; a failure
+    # prints the seed + shrunk counterexample for deterministic reproduction.
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
+        with:
+          mode: firewall-free
+          job-summary: errors
+          firewall-version: 1.11.0
+      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+      - name: Fuzz Tests - Transport sessions lock
+        run: yarn workspace @trezor/transport-common test:fuzz
+
   test-unit-windows:
     runs-on: windows-latest
     if: github.repository == 'trezor/trezor-suite'
