@@ -62,16 +62,16 @@ rec {
     export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${pkgs.aapt}/bin/aapt2"
 
     # Setup Android emulator device if it doesn't exist
-    if [ ! -d "$HOME/.android/avd/Pixel_6_API_34.avd" ]; then
-      avdmanager create avd -n Pixel_6_API_34 -d pixel_6 --package "system-images;android-34;google_apis;x86_64"
+    if [ ! -d "$HOME/.android/avd/Pixel_6_API_35.avd" ]; then
+      avdmanager create avd -n Pixel_6_API_35 -d pixel_6 --package "system-images;android-35;google_apis;x86_64"
 
       # enable GPU acceleration, this option is not available in avdmanager
       sed -i \
         -e 's/^hw\.gpu\.enabled=no$/hw.gpu.enabled=yes/' \
         -e 's/^hw\.gpu\.mode=auto$/hw.gpu.mode=host/' \
-        $HOME/.android/avd/Pixel_6_API_34.avd/config.ini
+        $HOME/.android/avd/Pixel_6_API_35.avd/config.ini
 
-      echo "✓ Created Android emulator device: Pixel_6_API_34"
+      echo "✓ Created Android emulator device: Pixel_6_API_35"
     fi
 
     echo "- Java $(java -version 2>&1 | head -n1)"
