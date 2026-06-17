@@ -49,7 +49,7 @@ export const GetTrezorCard = () => {
                         <VStack spacing="sp10">
                             {bulletPointValues.map(({ icon, textId }) => (
                                 <HStack key={icon} spacing="sp8" alignItems="center">
-                                    <Icon name={icon} size="medium" color="contentNeutral" />
+                                    <Icon name={icon} size="medium" color="contentSecondary" />
                                     <Text variant="body-xs" color="contentSecondary">
                                         <Translation id={textId} />
                                     </Text>
