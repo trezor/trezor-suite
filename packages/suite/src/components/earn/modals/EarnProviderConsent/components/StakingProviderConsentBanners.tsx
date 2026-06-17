@@ -68,6 +68,8 @@ export const StakingProviderConsentBanners = ({
                     />
                 </>
             );
+        case 'tron':
+            return null;
         default:
             return exhaustive(networkType);
     }

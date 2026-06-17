@@ -59,6 +59,12 @@ import {
     getSolStakingAccountsInfo,
     isSupportedSolStakingNetworkSymbol,
 } from './solanaStakingUtils';
+import {
+    getTronAccountTotalStakingBalance,
+    getTronStakingRewards,
+    getTronUnstakingBalance,
+    isSupportedTronStakingNetworkSymbol,
+} from './tronStakingUtils';
 
 export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
@@ -72,6 +78,7 @@ const STAKING_BALANCE_BY_TYPE = {
     ethereum: getEthAccountTotalStakingBalance,
     solana: getSolAccountTotalStakingBalance,
     cardano: getAdaAccountTotalStakingBalance,
+    tron: getTronAccountTotalStakingBalance,
 } satisfies Record<StakingNetworkType, (a: Account) => string | null>;
 
 export const getAccountTotalStakingBalance = (account: Account) =>
@@ -82,7 +89,8 @@ export const getAccountTotalStakingBalance = (account: Account) =>
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) ||
     isSupportedSolStakingNetworkSymbol(symbol) ||
-    isSupportedAdaStakingNetworkSymbol(symbol);
+    isSupportedAdaStakingNetworkSymbol(symbol) ||
+    isSupportedTronStakingNetworkSymbol(symbol);
 
 export const isSupportedNativeStakingManagementSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
@@ -126,6 +134,9 @@ export const getStakingLimitsByNetworkSymbol = (
                 MIN_BALANCE_FOR_FEE_BUFFER: MIN_ETH_BALANCE_FOR_FEE_BUFFER,
                 MIN_BALANCE_FOR_STAKING: MIN_CARDANO_BALANCE_FOR_STAKING,
             };
+
+        case 'trx':
+            return null;
 
         default:
             return exhaustive(symbol);
@@ -195,6 +206,23 @@ export const getStakingDataForNetwork = (
                 canClaim: false,
             };
         }
+
+        case 'tron': {
+            const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '';
+
+            return {
+                autocompoundBalance: stakedBalance,
+                claimableAmount: '',
+                depositedBalance: stakedBalance,
+                pendingBalance: '',
+                pendingDepositedBalance: '',
+                totalPendingStakeBalance: '',
+                restakedReward: getTronStakingRewards(account),
+                withdrawTotalAmount: getTronUnstakingBalance(account),
+                canClaim: false,
+            };
+        }
+
         default:
             return exhaustive(account.networkType);
     }
@@ -215,6 +243,11 @@ export const getUnstakingPeriodInDays = (
 
     if (networkType === 'cardano') {
         return CARDANO_EPOCH_DAYS;
+    }
+
+    if (networkType === 'tron') {
+        // TODO: move to constants
+        return 14;
     }
 
     if (typeof withdrawTime !== 'number' || typeof exitTime !== 'number') {

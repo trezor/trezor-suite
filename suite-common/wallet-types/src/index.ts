@@ -2,6 +2,7 @@ export * from './account';
 export type * from './allowance';
 export type * from './backend';
 export * from './cardanoStaking';
+export * from './tronStaking';
 export type * from './discovery';
 export * from './fiatRates';
 export type * from './form';

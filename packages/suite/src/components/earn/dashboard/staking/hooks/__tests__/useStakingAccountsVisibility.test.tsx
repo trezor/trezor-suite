@@ -26,7 +26,7 @@ const createMockAccount = (overrides: Partial<Account>): Account =>
     }) as Account;
 
 const defaultProps = {
-    currentRates: { eth: 2000, sol: 100, ada: 0.5, thod: 2000, dsol: 100 },
+    currentRates: { eth: 2000, sol: 100, ada: 0.5, thod: 2000, dsol: 100, trx: 0.3 },
     ethNotActivated: false,
     solNotActivated: false,
     adaNotActivated: false,

@@ -27,6 +27,7 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
     const ethCurrentRate = useCryptoCurrentRate('eth');
     const solCurrentRate = useCryptoCurrentRate('sol');
     const adaCurrentRate = useCryptoCurrentRate('ada');
+    const trxCurrentRate = useCryptoCurrentRate('trx');
 
     const currentRates: Record<StakingNetworkSymbol, number | undefined> = useMemo(
         () => ({
@@ -35,8 +36,9 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
             ada: adaCurrentRate,
             thod: ethCurrentRate,
             dsol: solCurrentRate,
+            trx: trxCurrentRate,
         }),
-        [ethCurrentRate, solCurrentRate, adaCurrentRate],
+        [ethCurrentRate, solCurrentRate, adaCurrentRate, trxCurrentRate],
     );
 
     const accounts = useSelector(selectVisibleDeviceAccounts);

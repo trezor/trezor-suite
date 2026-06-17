@@ -15,6 +15,8 @@ export const EarnInANutshellWithdrawalBadge = ({
         case 'ethereum':
         case 'solana':
             return <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />;
+        case 'tron':
+            return null;
         default:
             return exhaustive(networkType);
     }

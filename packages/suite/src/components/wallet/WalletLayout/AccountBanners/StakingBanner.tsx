@@ -70,6 +70,8 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             case 'cardano':
                 dispatch(setFlag({ key: 'stakeCardanoBannerClosed', value: true }));
                 break;
+            case 'tron':
+                break;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
                     exhaustive(
@@ -110,6 +112,8 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 return stakeSolBannerClosed;
             case 'cardano':
                 return stakeCardanoBannerClosed;
+            case 'tron':
+                return true;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
                     exhaustive(
