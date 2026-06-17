@@ -8,8 +8,6 @@ import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
 import { selectFirmware } from './firmwareReducer';
 import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
-export const INVALID_HASH_ERROR = 'Invalid hash';
-
 export type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
     binary?: ArrayBuffer;
