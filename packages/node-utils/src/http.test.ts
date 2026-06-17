@@ -582,6 +582,58 @@ describe('HttpServer', () => {
         expect(newAddress.port).toEqual(address.port);
     });
 
+    // Regression for #28825: a multi-port instance that is stopped and then restarted
+    // must advance to the next queued port instead of re-selecting the cached `this.port`.
+    // With the previous `this.port || this.ports.shift()` selection a restart kept picking
+    // the original port; when that port was occupied the onError retry recomputed the same
+    // port and looped forever, so start() never settled.
+    //
+    // Stage 1 (the clean regression gate) asserts the corrected port selection directly and
+    // fails fast on the old code — so a revert surfaces here as an immediate failed assertion
+    // and never reaches the occupied-port stage that would otherwise loop. Stage 2 then proves
+    // the headline scenario (original port occupied) settles on the fallback port; it is bounded
+    // by a deadline so it can only ever be a failed assertion, never an indefinitely pending test.
+    test('port negotiation - restart prefers the fallback queue and does not loop on an occupied original port', async () => {
+        const freePorts = await getFreePort(2);
+        const freePort1 = freePorts[0] ?? 0;
+        const freePort2 = freePorts[1] ?? 0;
+
+        // Stage 1: restart advances to the next queued port (old code would re-bind freePort1).
+        server = new HttpServer<Events>({
+            logger: muteLogger,
+            ports: [freePort1, freePort2],
+        });
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({ port: freePort1 });
+        await server.stop();
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({ port: freePort2 });
+        await server.stop();
+
+        // Stage 2: with the original port now occupied, a restart still settles on the
+        // fallback port rather than looping on the occupied one.
+        server = new HttpServer<Events>({
+            logger: muteLogger,
+            ports: [freePort1, freePort2],
+        });
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({ port: freePort1 });
+        await server.stop();
+
+        const blocker = new HttpServer<Events>({ logger: muteLogger, port: freePort1 });
+        await blocker.start();
+        try {
+            const deadline = new Promise<'timeout'>(resolve => {
+                setTimeout(() => resolve('timeout'), 5000);
+            });
+            const result = await Promise.race([server.start(), deadline]);
+            expect(result).not.toEqual('timeout');
+            expect(server.getServerAddress()).toMatchObject({ port: freePort2 });
+        } finally {
+            await blocker.stop();
+        }
+    });
+
     describe('route matching logic (express.js-like)', () => {
         test('unregistered route does not match any registered route', async () => {
             const handler1 = jest.fn((_request, response) => {
