@@ -7,3 +7,4 @@ export * from './FeeSummaryCard';
 export * from './TronFeeSummaryCard/TronFeeSummaryCard';
 export * from './CustomFee/CustomFeeContent';
 export * from './FeeSelector';
+export * from './FeeSelectorRow';
