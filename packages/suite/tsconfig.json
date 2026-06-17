@@ -198,6 +198,7 @@
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
         { "path": "../../suite/settings" },
+        { "path": "../../suite/skeleton" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },
         { "path": "../../suite/tor" },

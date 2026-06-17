@@ -4,6 +4,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
+import { SkeletonTransactionItem } from '@suite/skeleton';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -17,7 +18,6 @@ import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountL
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { NoSearchResults } from './NoSearchResults';
-import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { TransactionGroupedList } from './TransactionGroupedList';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';

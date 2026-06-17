@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
+import { SkeletonTransactionItem } from '@suite/skeleton';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
@@ -21,7 +22,6 @@ import { Pagination } from 'src/components/wallet';
 import { TransactionTargetLayout } from 'src/components/wallet/TransactionItem/TransactionTargetLayout';
 import { type UsePagination } from 'src/hooks/general/usePagination';
 import { type Account } from 'src/types/wallet';
-import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
 import { RewardsEmpty } from './RewardsEmpty';
 

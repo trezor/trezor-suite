@@ -4,7 +4,6 @@ export { useLayoutSize } from './useLayoutSize';
 export { useGraph } from './useGraph';
 export { useAccountSearch } from './useAccountSearch';
 export { useSelector } from './useSelector';
-export { useLoadingSkeleton } from './useLoadingSkeleton';
 export { useOnboarding } from './useOnboarding';
 export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';

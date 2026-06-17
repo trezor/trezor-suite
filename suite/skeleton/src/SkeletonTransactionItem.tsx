@@ -11,5 +11,3 @@ export const SkeletonTransactionItem = () => (
         <SkeletonRectangle width="100%" height="70px" animate />
     </SkeletonStack>
 );
-
-export default SkeletonTransactionItem;
