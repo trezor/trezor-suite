@@ -10,12 +10,7 @@ import { useReceiveDisabled } from '@suite/receive';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
-import {
-    HELP_CENTER_BIP32_URL,
-    HELP_CENTER_XPUB_URL,
-    TREZOR_GLOSSARY_NONCE_URL,
-    type Url,
-} from '@trezor/urls';
+import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
@@ -170,7 +165,6 @@ const Details = () => {
                         <DetailsRow
                             title="TR_ACCOUNT_DETAILS_NONCE_HEADER"
                             description={<Translation id="TR_ACCOUNT_DETAILS_NONCE_DESC" />}
-                            learnMoreUrl={TREZOR_GLOSSARY_NONCE_URL}
                         >
                             <AccountNonce account={account} />
                         </DetailsRow>
