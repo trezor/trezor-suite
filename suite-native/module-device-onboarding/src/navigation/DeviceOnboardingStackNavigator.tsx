@@ -33,7 +33,7 @@ import { WalletCreationScreen } from '../screens/WalletCreationScreen';
 import { WalletRecoveryRecapScreen } from '../screens/WalletRecoveryRecapScreen';
 import { WalletRecoveryScreen } from '../screens/WalletRecoveryScreen';
 
-export const DeviceOnboardingStack = createNativeStackNavigator<DeviceOnboardingStackParamList>();
+const DeviceOnboardingStack = createNativeStackNavigator<DeviceOnboardingStackParamList>();
 
 export const DeviceOnboardingStackNavigator = () => {
     const reportStepViewed = useReportOnboardingStepViewedAnalytics();
