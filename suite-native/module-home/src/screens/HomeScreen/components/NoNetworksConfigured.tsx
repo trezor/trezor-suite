@@ -32,6 +32,7 @@ export const NoNetworksConfigured = () => {
                 <CenteredTitleHeader
                     title={<Translation id="moduleHome.emptyState.initializedDevice.title" />}
                     subtitle={<Translation id="moduleHome.emptyState.initializedDevice.subtitle" />}
+                    alignSelf="stretch"
                 />
                 <Button onPress={navigateToNetworkConfiguration} testID="@home/get-started-button">
                     <Translation id="moduleHome.emptyState.initializedDevice.button" />
