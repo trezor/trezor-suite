@@ -1,11 +1,14 @@
 import { type ComponentProps } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
-import { selectShouldAnimateLoadingSkeleton } from '@suite/skeleton';
 import { SkeletonRectangle, SkeletonSpread, SkeletonStack, variables } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import {
+    type LoadingSkeletonRootState,
+    selectShouldAnimateLoadingSkeleton,
+} from './selectShouldAnimateLoadingSkeleton';
 
 const SkeletonWrapper = styled.div`
     display: flex;
@@ -29,7 +32,9 @@ interface GraphSkeletonProps {
 }
 
 export const GraphSkeleton = ({ animate, ...rest }: GraphSkeletonProps) => {
-    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
+    const shouldAnimate = useSelector((state: LoadingSkeletonRootState) =>
+        selectShouldAnimateLoadingSkeleton(state),
+    );
     const animationEnabled = animate ?? shouldAnimate;
 
     return (

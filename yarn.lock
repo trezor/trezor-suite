@@ -14963,6 +14963,8 @@ __metadata:
     "@suite/modal": "workspace:*"
     "@trezor/components": "workspace:*"
     react: "npm:19.2.4"
+    react-redux: "npm:9.2.0"
+    styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
 

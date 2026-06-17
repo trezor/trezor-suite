@@ -3,6 +3,7 @@ import { memo, useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { GraphSkeleton } from '@suite/skeleton';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -26,7 +27,7 @@ import { breakpoints } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { DashboardSection } from 'src/components/dashboard';
-import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
+import { GraphRangeSelector } from 'src/components/suite';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';

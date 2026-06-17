@@ -3,11 +3,11 @@ import { memo, useEffect, useState } from 'react';
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
+import { GraphSkeleton } from '@suite/skeleton';
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
 import { typography, zIndices } from '@trezor/theme';
 
-import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
 import type { TransactionsGraphProps } from 'src/components/suite/graph/types';
 import { useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
