@@ -10,6 +10,7 @@ test.describe('Google API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
     test.beforeEach(async ({ metadataMock }) => {
         await metadataMock.start(MetadataProvider.GOOGLE);
     });
+
     test(
         'Malformed token',
         {

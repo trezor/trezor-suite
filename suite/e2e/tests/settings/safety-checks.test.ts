@@ -22,6 +22,7 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(settingsPage.safetyChecksRadioButtonCheck(true)).toHaveCount(1);
             await expect(settingsPage.safetyChecksRadioButtonCheck(false)).toHaveCount(1);
         });
+
         await test.step('Verify after clicking the unchecked option, the selection flips', async () => {
             await settingsPage.safetyChecksRadioButtonCheck(false).click();
             await expect(settingsPage.safetyChecksRadioButtonCheck(true)).toHaveCount(1);
@@ -63,11 +64,13 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
                 return targetValue;
             });
+
         await test.step('Apply the change and confirm on the device', async () => {
             await settingsPage.safetyChecksConfirmButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
         });
+
         await test.step('Reopen the modal and verify the change', async () => {
             await settingsPage.safetyChecksButton.click();
             await expect(page.getByTestId(targetTestId).locator('input')).toBeChecked();

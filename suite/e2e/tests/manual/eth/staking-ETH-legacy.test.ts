@@ -67,6 +67,7 @@ test.describe.skip('Ethereum staking legacy FW', { tag: ['@group=manual'] }, () 
         },
         async () => {},
     );
+
     test(
         'Ethereum claiming legacy FW',
         {

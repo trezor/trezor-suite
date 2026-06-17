@@ -7,9 +7,11 @@ const passphrase = 'secret passphrase A';
 
 test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });
+
     test.slow();
 
     test('verify cardano address behind passphrase', async ({

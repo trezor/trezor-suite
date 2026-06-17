@@ -54,6 +54,7 @@ test.use({ startEmulator: false });
 testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundColor }) => {
     test.describe('Language and theme detection', { tag: ['@noDevice'] }, () => {
         test.use(userPreferences);
+
         test(
             testName,
             {

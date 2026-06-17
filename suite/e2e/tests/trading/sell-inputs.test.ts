@@ -13,8 +13,10 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
+
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage, solanaStakingMock }) => {
         await onboardingPage.completeOnboarding();
+
         await test.step('Mock Solana account to have 5 SOL', async ({}) => {
             await solanaStakingMock.replaceRoute('getBalance', {
                 predicate: params => params?.[0] === solanaBalanceAddress,
@@ -26,6 +28,7 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 },
             });
         });
+
         await test.step('Enable Bitcoin and Solana', async () => {
             await settingsPage.changeNetworks({ enableNetworks: ['btc', 'sol'] });
             await dashboardPage.deviceSwitchingOpenButton.click();

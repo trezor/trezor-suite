@@ -2,6 +2,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Suite Guide', { tag: ['@noDevice'] }, () => {
     test.use({ startEmulator: false });
+
     /**
      * Test case:
      * 1. Go to Bug section in Suite Guide

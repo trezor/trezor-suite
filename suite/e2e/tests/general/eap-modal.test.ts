@@ -4,6 +4,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.use({ startEmulator: false });
+
 test(
     'Join early access',
     {

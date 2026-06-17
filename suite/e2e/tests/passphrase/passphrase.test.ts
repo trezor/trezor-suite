@@ -11,6 +11,7 @@ const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
 
 test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
@@ -75,6 +76,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Open receive address of wallet #2', async () => {
                 await walletPage.receiveButton.click();
+
                 await test.step('Verify no address is yet in table', async () => {
                     await expect(walletPage.usedAddress(0)).toBeHidden();
                 });

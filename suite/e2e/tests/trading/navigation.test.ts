@@ -3,6 +3,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({

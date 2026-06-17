@@ -5,6 +5,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 test.describe('Coin balance', { tag: ['@T3W1', '@T3T1'] }, () => {
     const address = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
     });
@@ -22,6 +23,7 @@ test.describe('Coin balance', { tag: ['@T3W1', '@T3T1'] }, () => {
                 atIndex: 0,
             });
             await trezorUserEnv.sendToAddressAndMineBlock({ address, btc_amount: 1 });
+
             await test.step('Regtest discovered with non zero value', async () => {
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });

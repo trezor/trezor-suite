@@ -5,6 +5,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
     test.use({ setupEmulator: false });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
     });

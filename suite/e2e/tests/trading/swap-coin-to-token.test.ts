@@ -24,6 +24,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
+
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
             await test.step('Mocking responses', async () => {
@@ -33,6 +34,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
                 await tradingMock.routeSwapTrade(swapTradeSolanaUSDC);
                 await tradingMock.routeSolanaSendRequests();
             });
+
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({ enableNetworks: ['sol', 'eth'] });
             await dashboardPage.deviceSwitchingOpenButton.click();

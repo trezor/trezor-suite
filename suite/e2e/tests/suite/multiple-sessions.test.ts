@@ -23,6 +23,7 @@ const stealBridgeSession = async () => {
 
 test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { passphrase_protection: true } });
+
     test(
         'Session overtaken by another',
         {
@@ -34,6 +35,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
         async ({ page, onboardingPage, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
+
             await test.step('Bridge session taken by another suite session', async () => {
                 await stealBridgeSession();
                 await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE');
