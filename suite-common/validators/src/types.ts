@@ -1,4 +1,4 @@
-import { type AnySchema } from 'yup';
+export {};
 
 declare module 'yup' {
     interface StringSchema {
@@ -6,6 +6,3 @@ declare module 'yup' {
         isHex(): StringSchema;
     }
 }
-
-// Type the yup schema shape
-export type ValidationSchema<T> = Record<keyof T, AnySchema>;
