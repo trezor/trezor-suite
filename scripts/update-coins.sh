@@ -29,6 +29,12 @@ $SRC/cointool.py dump -p -o $DIST/coins.json \
     -e bitcore \
     -e confidential_assets \
     -e negative_fee \
+    -e extra_data \
+    -e overwintered \
+    -e timestamp \
+    -e is_testnet \
+    -e xpub_magic_multisig_segwit_native \
+    -e xpub_magic_multisig_segwit_p2sh \
     -E eth \
     -E erc20 \
 
@@ -53,6 +59,7 @@ $SRC/cointool.py dump -p -o $DIST/coins-eth.json \
     -e bitcore \
     -e confidential_assets \
     -e negative_fee \
+    -e is_testnet \
     -E erc20 \
     -E bitcoin \
     -E misc \
