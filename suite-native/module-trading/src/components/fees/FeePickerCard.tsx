@@ -9,7 +9,7 @@ import { Card, Divider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
-import { FeeSelector } from '@suite-native/transaction-management';
+import { FeeSelectorRow } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { updateTradingSelectedFeeLevelThunk } from '../../thunks';
@@ -39,7 +39,7 @@ export const FeePickerCard = ({ trade, accountKey, tradingType }: FeePickerCardP
             />
             {trade && <ProviderReceiveAddress trade={trade} />}
             <Divider style={applyStyle(dividerStyle)} />
-            <FeeSelector
+            <FeeSelectorRow
                 accountKey={accountKey}
                 updateThunk={updateTradingSelectedFeeLevelThunk}
                 selectedFee={(formDraft?.selectedFee as FeeLevelLabel | undefined) ?? 'normal'}

@@ -11,7 +11,8 @@
         "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest:native",
-        "test:unit:watch": "yarn g:jest --watch"
+        "test:unit:coverage": "yarn g:jest:native --coverage",
+        "test:unit:watch": "yarn g:jest:native --watch"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
