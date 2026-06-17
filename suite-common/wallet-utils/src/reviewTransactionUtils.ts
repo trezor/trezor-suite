@@ -344,9 +344,8 @@ const constructNewFlow = ({
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
     const isTron = account.networkType === 'tron';
-    const isTronStakeFreeze = isTron && Boolean(precomposedForm.tronStakeResource);
-    const isTronStakeVote = isTron && precomposedForm.tronStakeVotes !== undefined;
-    const isTronStakeWithdraw = isTron && Boolean(precomposedForm.tronStakeWithdraw);
+    const tronStaking = isTron ? precomposedForm.tronStaking : undefined;
+    const isTronStakeFreeze = tronStaking?.kind === 'freeze' || tronStaking?.kind === 'unstake';
     const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
     const stakeType = getStakeType(precomposedForm, outputs);
@@ -392,13 +391,13 @@ const constructNewFlow = ({
         return outputs;
     }
 
-    if (isTronStakeVote) {
+    if (tronStaking?.kind === 'vote') {
         precomposedTx.outputs.forEach(o => {
             if ('address' in o && typeof o.address === 'string') {
                 outputs.push({
                     type: 'tron-vote',
                     value: o.address,
-                    value2: precomposedForm.tronStakeVotes,
+                    value2: tronStaking.votes,
                 });
             }
         });
@@ -406,7 +405,7 @@ const constructNewFlow = ({
         return outputs;
     }
 
-    if (isTronStakeWithdraw) {
+    if (tronStaking?.kind === 'withdraw') {
         outputs.push({ type: 'tron-withdraw', value: account.descriptor });
 
         return outputs;

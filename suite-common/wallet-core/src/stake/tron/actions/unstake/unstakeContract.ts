@@ -59,7 +59,7 @@ export const buildUnstakeReviewForm = (resourceType: TronResourceType): FormStat
     feePerUnit: '0',
     feeLimit: '',
     options: ['broadcast'],
-    tronStakeResource: resourceType,
+    tronStaking: { kind: 'unstake', resource: resourceType },
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],

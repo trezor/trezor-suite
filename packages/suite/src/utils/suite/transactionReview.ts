@@ -114,16 +114,19 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_EARN_TRON_WITHDRAW_TITLE' };
     }
 
-    if (precomposedForm.tronStakeResource) {
+    if (
+        precomposedForm.tronStaking?.kind === 'freeze' ||
+        precomposedForm.tronStaking?.kind === 'unstake'
+    ) {
         return {
             id:
-                routeName === 'earn-tron-unstake'
+                precomposedForm.tronStaking.kind === 'unstake'
                     ? 'TR_EARN_TRON_UNSTAKE_TITLE'
                     : 'TR_EARN_TRON_FREEZE',
         };
     }
 
-    if (precomposedForm.tronStakeVotes !== undefined) {
+    if (precomposedForm.tronStaking?.kind === 'vote') {
         return { id: 'TR_EARN_TRON_VOTE' };
     }
 

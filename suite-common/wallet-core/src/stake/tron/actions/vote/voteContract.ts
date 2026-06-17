@@ -54,7 +54,7 @@ export const buildVoteReviewForm = (votes: number): FormState => ({
     feePerUnit: '0',
     feeLimit: '',
     options: ['broadcast'],
-    tronStakeVotes: String(votes),
+    tronStaking: { kind: 'vote', votes: String(votes) },
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],

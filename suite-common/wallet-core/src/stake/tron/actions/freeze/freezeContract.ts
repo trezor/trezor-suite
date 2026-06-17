@@ -59,7 +59,7 @@ export const buildFreezeReviewForm = (resourceType: TronResourceType): FormState
     feePerUnit: '0',
     feeLimit: '',
     options: ['broadcast'],
-    tronStakeResource: resourceType,
+    tronStaking: { kind: 'freeze', resource: resourceType },
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],
