@@ -14,6 +14,7 @@ const swcConfig = require('./jest.config.swc-transform');
 
 module.exports = {
     rootDir: process.cwd(),
+    passWithNoTests: true,
     moduleFileExtensions,
     testMatch,
     testPathIgnorePatterns,
