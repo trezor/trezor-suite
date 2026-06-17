@@ -110,6 +110,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice'] }, () =>
                 await tradingPage.inputs.cryptoAmount.fill(amount);
                 await tradingPage.quotes.waitForSync();
             });
+
             // The form is now fully filled, so the read-only assertions about its
             // resulting state (ticker, amount, offer, provider, fees) all run together.
             await test.step(`[${asset.label}] Verify filled form state`, async () => {

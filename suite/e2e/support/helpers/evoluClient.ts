@@ -102,5 +102,6 @@ export class EvoluClient extends BaseEvoluClient {
 
 export const wipeAndRestartEvoluServer = async () => {
     await checkEvoluRelayServerRunning();
+
     await test.step('Wipe and restart Evolu Relay server', wipeAndRestartEvoluRelayServer);
 };

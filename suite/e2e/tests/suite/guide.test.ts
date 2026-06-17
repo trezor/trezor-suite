@@ -5,6 +5,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Guide without device', { tag: ['@webOnly', '@noDevice'] }, () => {
     test.use({ startEmulator: false });
+
     test(
         'open / close guide',
         {

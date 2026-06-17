@@ -21,6 +21,7 @@ test.describe(
         test.use({
             deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
         });
+
         test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
@@ -28,6 +29,51 @@ test.describe(
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE_LIVE!);
 
             await walletPage.openSwapTrading({ symbol: 'sol', atIndex: 1 });
+        });
+
+        test.afterEach(async ({ tradingPage, devicePrompt, walletPage }) => {
+            await walletPage.openAccount({ symbol: 'sol', atIndex: 1 });
+            const balanceText = await walletPage.topPanelBalance.innerText();
+            const solBalance = parseFloat(balanceText);
+            if (solBalance < 0.1) {
+                return;
+            }
+
+            const swapBackAmount = (solBalance - 0.05).toFixed(6);
+
+            await walletPage.openSwapTrading({ symbol: 'sol', atIndex: 1 });
+
+            await test.step('Fill in a Swap form', async () => {
+                await tradingPage.fillSwapForm({
+                    amount: swapBackAmount,
+                    sellAsset: {
+                        searchFilter: 'Solana #2',
+                        networkSymbol: 'sol',
+                    },
+                    buyAsset: {
+                        searchFilter: sendTokenSymbol,
+                        networkFilter: 'sol',
+                        networkSymbol: 'sol',
+                        tokenSymbol: sendTokenSymbol,
+                    },
+                    selectReceiveAddress: async () => {
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
+                    },
+                });
+            });
+
+            await test.step('Confirm the Swap trade', async () => {
+                await expect(tradingPage.quotes.bestOfferAmount).toContainText(sendTokenSymbol);
+                await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
+            });
+
+            await test.step('Initiate send', async () => {
+                await tradingPage.confirmation.initiateSendConfirmation();
+            });
+
+            await test.step('Send crypto to provider', async () => {
+                await devicePrompt.sendButton.click();
+            });
         });
 
         test('Swap USDT to SOL via CEX', async ({ tradingPage, page, devicePrompt }) => {
@@ -49,6 +95,7 @@ test.describe(
             });
 
             let receiveAmount: string;
+
             await test.step('Confirm the Swap trade', async () => {
                 await expect(tradingPage.quotes.bestOfferAmount).toContainText(receiveCoinSymbol);
                 const [amount] = (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ');
@@ -123,50 +170,6 @@ test.describe(
                 await expect(
                     page.getByTestId('@trading/menu/wallet-trading-transactions'),
                 ).toBeVisible();
-            });
-        });
-
-        test.afterEach(async ({ tradingPage, devicePrompt, walletPage }) => {
-            await walletPage.openAccount({ symbol: 'sol', atIndex: 1 });
-            const balanceText = await walletPage.topPanelBalance.innerText();
-            const solBalance = parseFloat(balanceText);
-            if (solBalance < 0.1) {
-                return;
-            }
-
-            const swapBackAmount = (solBalance - 0.05).toFixed(6);
-
-            await walletPage.openSwapTrading({ symbol: 'sol', atIndex: 1 });
-            await test.step('Fill in a Swap form', async () => {
-                await tradingPage.fillSwapForm({
-                    amount: swapBackAmount,
-                    sellAsset: {
-                        searchFilter: 'Solana #2',
-                        networkSymbol: 'sol',
-                    },
-                    buyAsset: {
-                        searchFilter: sendTokenSymbol,
-                        networkFilter: 'sol',
-                        networkSymbol: 'sol',
-                        tokenSymbol: sendTokenSymbol,
-                    },
-                    selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
-                    },
-                });
-            });
-
-            await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.quotes.bestOfferAmount).toContainText(sendTokenSymbol);
-                await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
-            });
-
-            await test.step('Initiate send', async () => {
-                await tradingPage.confirmation.initiateSendConfirmation();
-            });
-
-            await test.step('Send crypto to provider', async () => {
-                await devicePrompt.sendButton.click();
             });
         });
     },

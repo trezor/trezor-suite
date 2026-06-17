@@ -4,6 +4,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
 test.describe(
     'Suite works with Electrum server',
     { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },

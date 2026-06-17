@@ -4,7 +4,7 @@ export class PaginationControl {
     readonly page: Page;
     readonly goToNextPage: Locator;
     readonly goToPreviousPage: Locator;
-    readonly pageButtonSelector = (pageNumber: number) =>
+    readonly paginationButton = (pageNumber: number) =>
         this.page.getByTestId(`@wallet/accounts/pagination/${pageNumber}`);
     readonly transactionAddress = (id: string) =>
         this.page
@@ -26,12 +26,12 @@ export class PaginationControl {
     }
 
     async checkIfPageIsActive(pageNumber: number) {
-        const pageButton = this.pageButtonSelector(pageNumber);
+        const pageButton = this.paginationButton(pageNumber);
         await expect(pageButton).toHaveAttribute('data-test-activated', 'true');
     }
 
     async checkIfPageIsInactive(pageNumber: number) {
-        const pageButton = this.pageButtonSelector(pageNumber);
+        const pageButton = this.paginationButton(pageNumber);
         await expect(pageButton).toHaveAttribute('data-test-activated', 'false');
     }
 }

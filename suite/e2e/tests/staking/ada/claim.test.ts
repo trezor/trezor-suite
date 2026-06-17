@@ -86,6 +86,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 atIndex: 0,
                 subAccount: 'staking',
             });
+
             await test.step('Verify staked account with rewards', async () => {
                 await page.clock.install();
                 await expect(stakingAccountItemInLeftSection).toBeVisible();

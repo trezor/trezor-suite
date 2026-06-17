@@ -7,8 +7,10 @@ test.describe(
     { tag: ['@T3T1', '@T3W1', '@desktopOnly'] },
     () => {
         test.use({ electronConf: { exposeConnectWs: true } });
+
         test.beforeEach(async ({ onboardingPage }) => {
             await onboardingPage.completeOnboarding();
+
             await test.step('Initialize TrezorConnect', async () => {
                 await TrezorConnect.init({
                     manifest: {

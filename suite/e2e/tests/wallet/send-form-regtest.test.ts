@@ -8,6 +8,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'mnemonic_all',
         },
     });
+
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, trezorUserEnv }) => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });

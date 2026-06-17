@@ -12,6 +12,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

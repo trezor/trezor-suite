@@ -13,6 +13,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });
+
     test.beforeEach(
         async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
             await page.context().route('**/staking/v1**', async route => {

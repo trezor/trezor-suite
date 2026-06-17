@@ -11,6 +11,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
     test.beforeEach(async ({ metadataMock }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
     });
+
     test(
         'Malformed token',
         {
