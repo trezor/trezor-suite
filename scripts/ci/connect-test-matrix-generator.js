@@ -222,7 +222,13 @@ const filterCartesianResultByArgs = () => {
     return cartesian.filter(m => {
         return Object.keys(m).every(key => {
             const filterBy = parsedArgs[key];
-            if (filterBy === 'all') return true;
+            if (filterBy === 'all') {
+                // experimental methods are opt-in; they never run as part of `all`
+                if (key === 'groups' && getValue(m[key]) === 'experimental') {
+                    return false;
+                }
+                return true;
+            }
             if (Array.isArray(filterBy)) {
                 return filterBy.includes(getValue(m[key]));
             }
