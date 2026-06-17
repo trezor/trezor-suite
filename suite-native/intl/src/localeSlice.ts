@@ -25,7 +25,7 @@ export const localePersistWhitelist: Array<keyof LocaleState> = [
     'systemLocaleCode',
 ];
 
-export const localeSlice = createSlice({
+const localeSlice = createSlice({
     name: 'locale',
     initialState: localeInitialState,
     reducers: {
@@ -43,8 +43,7 @@ export const localeReducer = localeSlice.reducer;
 
 export const selectAppLocaleCode = (state: LocaleSliceRootState) => state.locale.appLocaleCode;
 
-export const selectSystemLocaleCode = (state: LocaleSliceRootState) =>
-    state.locale.systemLocaleCode;
+const selectSystemLocaleCode = (state: LocaleSliceRootState) => state.locale.systemLocaleCode;
 
 export const selectLocale = (state: LocaleSliceRootState) => {
     const userSelectedLocaleCode = selectAppLocaleCode(state);
