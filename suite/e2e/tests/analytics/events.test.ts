@@ -13,6 +13,7 @@ test.describe(
     () => {
         const firmwareVersion = findLatestVersionForModel(Model.T3T1); // Specific firmware is needed to have predictable firmware version in analytics and unfortunately I can't get the PW project defined device model here, so this test is limited to T3T1 only.
         test.use({ firmwareVersion });
+
         test.beforeEach(async ({ analytics, onboardingPage }) => {
             await analytics.interceptAnalytics();
             await onboardingPage.completeOnboarding();
@@ -102,6 +103,7 @@ test.describe(
 
 test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({ startEmulator: false });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
         await onboardingPage.disableAuthenticityCheck();

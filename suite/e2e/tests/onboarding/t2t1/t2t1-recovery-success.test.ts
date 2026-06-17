@@ -7,6 +7,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
     test.use({
         setupEmulator: false,
     });
+
     test.beforeEach(async ({ analyticsSection, onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
         await analyticsSection.passThroughAnalytics();

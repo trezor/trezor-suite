@@ -126,6 +126,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             await base.step('Device startup', async () => {
                 await trezorUserEnvStuckProtection(startDevicePromise);
             });
+
             await use(device);
 
             await base.step('Logging test-end to Device logs', async () => {

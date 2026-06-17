@@ -3,6 +3,7 @@ import { devices } from '@playwright/test';
 import { expect, test } from '../../support/fixtures';
 
 test.use({ startEmulator: false, ...devices['Desktop Firefox'], channel: 'firefox' });
+
 test.describe('Firefox', { tag: ['@webOnly', '@noDevice'] }, () => {
     test('Suite does support Firefox', async ({ page, onboardingPage }) => {
         await onboardingPage.verifySuiteIsLoaded();

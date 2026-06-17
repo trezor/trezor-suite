@@ -118,6 +118,7 @@ test.describe(
 
                         return metadataOutputLabel.textContent();
                     });
+
                 if (!originalTxLabel) {
                     throw new Error('Original transaction label is empty');
                 }
@@ -138,6 +139,7 @@ test.describe(
                     await TrezorUserEnvLink.stopBridge();
                     await TrezorUserEnvLink.startBridge();
                     await page.goto(`${suiteDevInstance}/${migrateToVersion}`);
+
                     // PR#26782 No coins activated after onboarding
                     await test.step('Verify "wallet is ready"', async () => {
                         await dashboardPage.discoveryEmptyHeader.waitFor({
@@ -147,12 +149,14 @@ test.describe(
 
                         await dashboardPage.verifyDiscoveryEmpty();
                     });
+
                     await test.step('Get started - Enable BTC coin', async () => {
                         await dashboardPage.discoveryEmptyPrimaryButton.click();
                         await assetsSection.enableNetworkViaActivateAssetsModal('btc');
 
                         await dashboardPage.verifyDiscoveryFailed();
                     });
+
                     await page.getByTestId('@account-menu/btc/normal/0').click();
                     await walletPage.openAccount({ symbol: 'btc' });
                     await dashboardPage.openDeviceSwitcher();

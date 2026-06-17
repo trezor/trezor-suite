@@ -39,6 +39,7 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
         await onboardingPage.completeOnboarding();
         await context.grantPermissions(['storage-access']);
     });
+
     test(
         'TrezorConnect.getAddress',
         {

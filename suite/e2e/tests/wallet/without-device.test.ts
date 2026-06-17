@@ -6,6 +6,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(
         async ({ page, onboardingPage, settingsPage, trezorUserEnv, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
+
             await test.step('Enable regtest network with balance', async () => {
                 await settingsPage.navigateTo('application');
                 await settingsPage.toggleDebugModeInSettings();

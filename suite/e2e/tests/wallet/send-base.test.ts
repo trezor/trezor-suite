@@ -55,6 +55,7 @@ test.describe(
                 4, // beware of decimal places rounding
                 BigNumber.ROUND_UP,
             );
+
             await test.step('Fill in a Send form', async () => {
                 await walletPage.openSendFormButton.click();
                 // Race condition 1:5, if input is filled before form completely loads then
@@ -152,6 +153,7 @@ test.describe(
                 await tradingPage.sendAddressInput.fill(sendAddress);
                 await tradingPage.sendAmountInput.fill(sendAmount);
             });
+
             const {
                 gasLimit,
                 maxFeePerGas,

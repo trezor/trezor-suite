@@ -13,6 +13,7 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

@@ -15,6 +15,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
         //TODO: Mock is not handling request for instant unstake information. Fix me
         exceptionLogger: skipFixture,
     });
+
     test.beforeEach(
         async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
             await onboardingPage.completeOnboarding();

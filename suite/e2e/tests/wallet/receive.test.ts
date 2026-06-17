@@ -11,6 +11,7 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             permissions: ['clipboard-read', 'clipboard-write'],
         },
     });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

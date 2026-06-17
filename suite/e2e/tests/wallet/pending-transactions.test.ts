@@ -20,6 +20,7 @@ test.describe(
     { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
     () => {
         test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
         test.beforeEach(async ({ page, onboardingPage, settingsPage, trezorUserEnv }) => {
             await test.step('Mine on regtest network', async () => {
                 const payments = [

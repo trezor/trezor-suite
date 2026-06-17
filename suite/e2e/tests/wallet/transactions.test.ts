@@ -13,6 +13,7 @@ const rangeData: { range: graphRangeOptions; label: string }[] = [
 
 test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });

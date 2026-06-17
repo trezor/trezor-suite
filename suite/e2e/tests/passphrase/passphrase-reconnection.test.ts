@@ -5,6 +5,7 @@ const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 
 test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
@@ -52,9 +53,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await dashboardPage.deviceSwitchingOpenButton.click();
             // Clicking on the device switcher button should either open the modal or show the "Unavailable while loading" message
             await Promise.race([
-                // eslint-disable-next-line playwright/missing-playwright-await
                 expect(dashboardPage.deviceSwitcherModal).toBeVisible(),
-                // eslint-disable-next-line playwright/missing-playwright-await
                 expect(page.getByText('Unavailable while loading')).toBeVisible(),
             ]);
             const deviceSwitchUnavailable = page.getByText('Unavailable while loading').isVisible();

@@ -9,6 +9,7 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             passphrase_protection: true,
         },
     });
+
     test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();

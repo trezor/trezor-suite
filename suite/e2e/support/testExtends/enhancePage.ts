@@ -74,6 +74,7 @@ export const enhancePage = (page: Page): Page => {
     // High-Level Helpers
     page.discoveryShouldFinish = async function () {
         const discoveryBar = page.getByTestId('@wallet/discovery-progress-bar');
+
         await test.step('Wait for discovery to finish', async () => {
             await expect(async () => {
                 if (await discoveryBar.isVisible()) {

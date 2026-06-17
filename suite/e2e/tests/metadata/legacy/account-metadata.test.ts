@@ -6,6 +6,7 @@ import { MetadataProvider } from '../../../support/mocks/metadataMock';
 // Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow
 test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
     test.beforeEach(async ({ metadataMock }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
     });

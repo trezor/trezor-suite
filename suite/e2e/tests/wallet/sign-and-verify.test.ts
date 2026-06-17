@@ -10,6 +10,7 @@ const ELECTRUM_SIGNATURE =
 
 test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
     test.beforeEach(async ({ page, walletPage, onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });

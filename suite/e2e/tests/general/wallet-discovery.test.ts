@@ -4,10 +4,12 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
 test.beforeEach(async ({ onboardingPage, settingsPage }) => {
     await onboardingPage.completeOnboarding();
     await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
 });
+
 test.describe('Wallet discover tests', { tag: ['@T3W1', '@T3T1'] }, () => {
     test(
         'Discover a standard wallet',

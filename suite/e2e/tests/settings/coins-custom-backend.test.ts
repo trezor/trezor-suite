@@ -56,11 +56,13 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                     await settingsPage.coinsTab.enableNetwork(coin);
                     await settingsPage.coinsTab.expectNetworkEnabled(coin);
                 });
+
                 await test.step(`Enable custom ${backendType} server`, async () => {
                     await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
                     await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlRight);
                     await settingsPage.coinsTab.expectCustomBackendIndicator(coin);
                 });
+
                 await test.step('Refresh coins', async () => {
                     await settingsPage.coinsTab.activateCoinsButton.click();
                     await Promise.all([
@@ -68,6 +70,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                         page.discoveryShouldFinish(),
                     ]);
                 });
+
                 await test.step(`Open ${coin.toUpperCase()} account & verify it is loaded successfully`, async () => {
                     await walletPage.openAccount({ symbol: coin });
                     await expect(walletPage.emptyAccount).toContainTranslation(
@@ -93,11 +96,13 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                     await settingsPage.coinsTab.enableNetwork(coin);
                     await settingsPage.coinsTab.expectNetworkEnabled(coin);
                 });
+
                 await test.step(`Enable custom ${backendType} server`, async () => {
                     await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
                     await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlWrong);
                     await settingsPage.coinsTab.expectCustomBackendIndicator(coin);
                 });
+
                 await test.step('Refresh coins', async () => {
                     await settingsPage.coinsTab.activateCoinsButton.click();
                     await Promise.all([
@@ -105,6 +110,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                         page.discoveryShouldFinish(),
                     ]);
                 });
+
                 await test.step(`Open ${coin.toUpperCase()} account & verify it errors to load`, async () => {
                     await walletPage.accountButton({ symbol: coin }).click();
                     await expect(walletPage.accountNotLoaded).toContainTranslation(

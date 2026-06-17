@@ -108,6 +108,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
                 await expect.soft(row.date).toHaveText(expectedDate);
             }
         });
+
         const detailStatusTranslationKeys = {
             SUCCESS: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
             ERROR: 'TR_EXCHANGE_DETAIL_ERROR_TITLE',

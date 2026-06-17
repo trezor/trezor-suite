@@ -37,7 +37,7 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Go to page with pagination button', async () => {
-                await paginationControl.pageButtonSelector(5).click();
+                await paginationControl.paginationButton(5).click();
                 await paginationControl.checkIfPageIsActive(5);
                 await paginationControl.checkIfPageIsInactive(1);
 

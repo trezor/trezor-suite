@@ -14,6 +14,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
 
             wcUri = result.uri;
         });
+
         await test.step('Onboarding', async () => {
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
