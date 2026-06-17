@@ -24,7 +24,7 @@ export const selectCoinDefinitions = (state: TokenDefinitionsRootState, symbol: 
 export const selectNftDefinitions = (state: TokenDefinitionsRootState, symbol: NetworkSymbol) =>
     state.tokenDefinitions?.[symbol]?.nft;
 
-export const selectCoinDefinition = (
+const selectCoinDefinition = (
     state: TokenDefinitionsRootState,
     symbol: NetworkSymbol,
     contractAddress: TokenAddress,
