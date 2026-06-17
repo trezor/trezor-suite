@@ -46,7 +46,7 @@ describe('SlippagePicker', () => {
         const { getByText, getByTestId } = await renderSlippagePicker();
 
         expect(
-            getByText(getTranslation('moduleTrading.advancedSettings.slippage.maxSlippageLabel')),
+            getByText(getTranslation('moduleTrading.slippage.maxSlippageLabel')),
         ).toBeOnTheScreen();
         expect(
             within(getByTestId(SLIPPAGE_PICKER_TEST_ID)).getByText(

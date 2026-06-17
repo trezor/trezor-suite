@@ -67,13 +67,13 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
     return (
         <BottomSheetModal
             ref={bottomSheetRef}
-            title={<Translation id="moduleTrading.advancedSettings.slippage.title" />}
+            title={<Translation id="moduleTrading.slippage.title" />}
             onDismiss={onClose}
         >
             <Form form={form}>
                 <VStack spacing="sp24" paddingBottom="sp24">
                     <Text>
-                        <Translation id="moduleTrading.advancedSettings.slippage.description" />
+                        <Translation id="moduleTrading.slippage.description" />
                     </Text>
                     <VStack spacing="sp8">
                         <TextInputField
@@ -82,9 +82,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
                             keyboardType="numeric"
                             valueTransformer={decimalTransformer}
                             asBottomSheetInput
-                            accessibilityLabel={translate(
-                                'moduleTrading.advancedSettings.slippage.inputLabel',
-                            )}
+                            accessibilityLabel={translate('moduleTrading.slippage.inputLabel')}
                         />
                         <HStack spacing="sp4">
                             {SLIPPAGE_PRESETS.map(preset => (

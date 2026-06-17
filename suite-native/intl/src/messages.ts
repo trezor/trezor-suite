@@ -3461,24 +3461,22 @@ export const messages = {
             },
             nonTradeable: '+ {count} non-tradeable {count, plural, one{token} other{tokens}}',
         },
-        advancedSettings: {
-            slippage: {
-                title: 'Maximum slippage',
-                description:
-                    "Set the maximum difference you're willing to accept. Higher means more likely to succeed, while lower may fail but protects your price.",
-                confirm: 'Confirm custom slippage',
-                inputLabel: 'Slippage',
-                maxSlippageLabel: 'Max. slippage',
-                validation: {
-                    required: 'Slippage is required.',
-                    notNumber: 'Slippage must be a number.',
-                    outOfRange: 'Slippage must be between {min}% and {max}%.',
-                },
-                summary: {
-                    offered: 'Swap offer',
-                    deduction: 'Maximum slippage',
-                    minimum: 'Minimum received',
-                },
+        slippage: {
+            title: 'Maximum slippage',
+            description:
+                'Limit how much the rate can change before the transaction fails. Network fees always apply.',
+            confirm: 'Confirm custom slippage',
+            inputLabel: 'Slippage',
+            maxSlippageLabel: 'Max. slippage',
+            validation: {
+                required: 'Slippage is required.',
+                notNumber: 'Slippage must be a number.',
+                outOfRange: 'Slippage must be between {min}% and {max}%.',
+            },
+            summary: {
+                offered: 'Swap offer',
+                deduction: 'Maximum slippage',
+                minimum: 'Minimum received',
             },
         },
         browser: {

@@ -57,7 +57,7 @@ describe('SlippageBottomSheet', () => {
         const { getByLabelText } = await renderSlippageBottomSheet(store);
 
         expect(
-            getByLabelText(getTranslation('moduleTrading.advancedSettings.slippage.inputLabel')),
+            getByLabelText(getTranslation('moduleTrading.slippage.inputLabel')),
         ).toHaveDisplayValue('1');
     });
 
@@ -79,7 +79,7 @@ describe('SlippageBottomSheet', () => {
         await act(() => Promise.resolve());
 
         expect(
-            getByLabelText(getTranslation('moduleTrading.advancedSettings.slippage.inputLabel')),
+            getByLabelText(getTranslation('moduleTrading.slippage.inputLabel')),
         ).toHaveDisplayValue('3');
     });
 
