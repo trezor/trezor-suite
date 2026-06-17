@@ -28,6 +28,11 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
     const currentRouteName = useSelector(selectRouteName);
     const activeSection = useSelector(selectTradingActiveSection);
 
+    const isFormRoute =
+        currentRouteName === 'wallet-trading-buy' ||
+        currentRouteName === 'wallet-trading-sell' ||
+        currentRouteName === 'wallet-trading-exchange';
+
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto({ routeName: route, preserveParams: true }));
     };
@@ -35,15 +40,17 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
     return (
         <PageHeader>
             <Row width="100%" gap={spacings.md}>
-                <IconButton
-                    icon="caretLeft"
-                    intent="neutral"
-                    priority="secondary"
-                    size="large"
-                    onClick={goToRoute(getBackRoute(currentRouteName, activeSection))}
-                    data-testid="@account-subpage/back"
-                    tooltip={{ content: <Translation id="TR_BACK" /> }}
-                />
+                {!isFormRoute && (
+                    <IconButton
+                        icon="caretLeft"
+                        intent="neutral"
+                        priority="secondary"
+                        size="large"
+                        onClick={goToRoute(getBackRoute(currentRouteName, activeSection))}
+                        data-testid="@account-subpage/back"
+                        tooltip={{ content: <Translation id="TR_BACK" /> }}
+                    />
+                )}
                 <BasicName>
                     <Translation id={fallbackTitle} />
                 </BasicName>
