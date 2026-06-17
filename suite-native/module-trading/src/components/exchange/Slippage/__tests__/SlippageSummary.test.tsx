@@ -32,13 +32,13 @@ describe('SlippageSummary', () => {
         const { getByText } = renderSlippageSummary();
 
         expect(
-            getByText(getTranslation('moduleTrading.advancedSettings.slippage.summary.offered')),
+            getByText(getTranslation('moduleTrading.slippage.summary.offered')),
         ).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.advancedSettings.slippage.summary.deduction')),
+            getByText(getTranslation('moduleTrading.slippage.summary.deduction')),
         ).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.advancedSettings.slippage.summary.minimum')),
+            getByText(getTranslation('moduleTrading.slippage.summary.minimum')),
         ).toBeOnTheScreen();
     });
 
