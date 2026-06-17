@@ -11411,7 +11411,7 @@ export const messages = defineMessages({
     TR_BUMP_FEE_DISABLED_TOOLTIP: {
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
         defaultMessage:
-            'To speed up your transactions, increase the fee on the oldest pending transaction in the queue (by nonce), as transactions must be confirmed in order. If you want to speed up this transaction specifically, open its detail and use the "Speed up" option. <a>Learn more</a>',
+            'Nonce: {nonce}. To speed up your transactions, increase the fee on the oldest pending transaction in the queue (by nonce), as transactions must be confirmed in order. If you want to speed up this transaction specifically, open its detail and use the "Speed up" option. <a>Learn more</a>',
     },
     TR_BUMP_FEE_NONCE_GAP_WARNING: {
         id: 'TR_BUMP_FEE_NONCE_GAP_WARNING',
@@ -11422,6 +11422,10 @@ export const messages = defineMessages({
         id: 'TR_PENDING_NONCE_SUPERSEDED_WARNING',
         defaultMessage:
             "This transaction's nonce was already used by a confirmed transaction, so it can't confirm. Re-send it with nonce {nonce}.",
+    },
+    TR_TRANSACTION_NONCE_TOOLTIP: {
+        id: 'TR_TRANSACTION_NONCE_TOOLTIP',
+        defaultMessage: 'Nonce: {nonce}',
     },
     TR_TREZOR_CONNECT: {
         id: 'TR_TREZOR_CONNECT',
