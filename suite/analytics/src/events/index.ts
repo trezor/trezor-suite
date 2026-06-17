@@ -98,7 +98,6 @@ export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
 export { switchDeviceRememberEvent } from './switchDeviceRememberEvent';
 export { tradeApprovalEvent } from './tradeApprovalEvent';
 export { tradeBuyEvent } from './tradeBuyEvent';
-export { tradeCompareOffersEvent } from './tradeCompareOffersEvent';
 export { tradeConfirmTradeEvent } from './tradeConfirmTradeEvent';
 export { tradeExchangeEvent } from './tradeExchangeEvent';
 export { tradeNavigateEvent } from './tradeNavigateEvent';
