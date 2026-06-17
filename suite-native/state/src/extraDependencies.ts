@@ -23,8 +23,16 @@ import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
+<<<<<<< Updated upstream
 import TrezorConnect from '@trezor/connect';
 import { BridgeTransport } from '@trezor/transport';
+=======
+import TrezorConnect, { initLog, type ConnectSettings } from '@trezor/connect';
+// Deep import bypasses the `@trezor/transport` barrel so Metro does not
+// resolve sibling node-only modules (`UdpTransport`/`dgram`,
+// `NodeUsbTransport`/`usb`).
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+>>>>>>> Stashed changes
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { ok } from '@trezor/type-utils';
@@ -97,7 +105,8 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                 appUrl: '@trezor/suite',
             },
         },
-        connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+      connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+      createLogger: (prefix: string) => initLog(prefix, toGetter(deps.getState, selectorForIsDebugEnabled)),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

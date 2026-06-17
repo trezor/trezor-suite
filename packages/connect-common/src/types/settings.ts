@@ -42,6 +42,7 @@ export type ConnectSettingsTransport =
     | (new (...args: any[]) => Transport);
 
 export type CreateLogger = (prefix: string) => Logger;
+export type CreateLoggerDep = { createLogger: CreateLogger};
 
 export interface ConnectSettingsPublic {
     manifest?: Manifest;

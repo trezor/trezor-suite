@@ -8,7 +8,7 @@ export class LogsManager {
         this.colors = colors;
     }
 
-    initLog(prefix: string, enabled?: boolean, logWriter?: LogWriter) {
+    initLog(prefix: string, enabled?: () => boolean, logWriter?: LogWriter) {
         const instanceWriter = logWriter || this.writer;
         const instance = new Log(prefix, !!enabled, instanceWriter);
         if (this.colors) {

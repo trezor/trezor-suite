@@ -20,6 +20,7 @@ import {
     type ConnectSettings,
     type Manifest,
     type StaticSessionId,
+    type CreateLoggetDeps,
 } from '@trezor/connect';
 
 import { type ConnectInitHooks } from './connectInitHooksType';
@@ -42,7 +43,8 @@ export type CommonServices = SuiteSyncDep &
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
     } & ReportSecurityCheckDep &
-    MigrateSuiteSyncLabelsForRbfTransactionDep;
+    MigrateSuiteSyncLabelsForRbfTransactionDep &
+    CreateLoggetDeps;
 
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */
