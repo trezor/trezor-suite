@@ -209,9 +209,11 @@ A worker "with tokens" finds an open station by filtering the board:
 gh issue list --label conveyor/plan:draft               # plans waiting for first review
 gh issue list --label conveyor/plan:needs-human         # plan decisions to drain
 gh issue list --label conveyor/plan:ready-to-implement  # plans waiting to be built
+gh issue list --label conveyor/plan:in-review           # plan reviews in flight (check for stale takeover)
 gh issue list --label conveyor/impl:in-progress         # claimed but not yet on a PR (check for stale)
 gh pr list --label conveyor/impl:in-progress            # in-flight implementations (check for stale)
 gh pr list --label conveyor/review:queued               # green PRs waiting for agentic review
+gh pr list --label conveyor/review:in-progress          # agentic reviews in flight (check for stale takeover)
 gh pr list --label conveyor/impl:needs-human            # stuck implementations
 gh pr list --label conveyor/review:needs-human          # review findings waiting for a human
 ```

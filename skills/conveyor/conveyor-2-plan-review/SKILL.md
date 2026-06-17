@@ -145,11 +145,22 @@ independent concerns** (separable, share no code, each shippable alone), the pla
 **too broad to be one plan**. Do **not** park the long list. Surface a single
 **decomposition user-challenge** instead: propose splitting it into N **named
 sub-plans** — each a cohesive feature with its own scope + acceptance criteria — in
-dependency order, with your recommendation. On the human's approval (drain), spin each
-sub-plan off as its own `conveyor-1-plan-create` issue (carry the decisions relevant to
-each) and reduce this issue to a tracking/epic (or close it). A cohesive feature that
-merely has many *small* decisions is **not** this case — split on **independence**, not
-on count alone (the >6 count is the tripwire to *look*, not the verdict).
+dependency order. Like the review station's split, it is **decline-by-default** —
+options `- [ ] (a) keep as one plan ✅ recommended` / `- [ ] (b) approve decomposition
+(sub-plans below)` — so a drain with **no box ticked is a no-op** (stays one plan); the
+spin-off runs **only** on an explicit `approve` tick. Split on **independence**, not on
+count alone (the >6 count is the tripwire to *look*, not the verdict): a cohesive
+feature with many *small* decisions is not this case.
+
+**Executing an approved decomposition is interactive-only — never unattended.**
+Creating issues and closing the parent are structural actions, so in **autonomous** mode
+(and any routine-driven drain) **park the proposal and exit**; even once `approve` is
+ticked, a routine drain must **not** spin anything off — it notes "decomposition approved
+— run `/conveyor-2-plan-review` interactively to execute" and stays parked. Only an
+**interactive** run, on the `approve` tick, performs it: create each sub-plan as its own
+`conveyor-1-plan-create` issue (carry the relevant decisions to each), then **close the
+parent** — remove its `conveyor/plan:*` label and post a closing comment linking the N
+sub-plans (closing is reversible). Do not invent a tracking/epic label.
 
 **Security carve-out.** Never classify a signing, key-handling, persistence, or
 privacy plan edit as **mechanical** — route it to taste or user-challenge so a
@@ -216,6 +227,11 @@ The human has been ticking boxes since the last run. Resolve from the ticked sta
     "no box ticked — applied recommended" in Resolved.
   - **more than one ticked** → ambiguous; re-surface just that decision (clear its
     ticks, untick Done) and do **not** promote until it is resolved.
+- **Decomposition exception.** An `approve decomposition` tick is executed **only by
+  an interactive run** (it creates the sub-plan issues and closes the parent — see the
+  gate). An **autonomous / routine** drain that finds it ticked must **not** execute:
+  note "decomposition approved — run `/conveyor-2-plan-review` interactively to execute"
+  and leave it parked.
 
 #### Interactive
 Write all open decisions as the checkbox batch in the status comment (so they stay
@@ -235,10 +251,12 @@ mechanical resolutions to the body as usual, add `conveyor/plan:needs-human` the
 remove `conveyor/plan:in-review`, and exit with a summary of what was parked. A
 human ticks the boxes later; the next drain run picks it up.
 
-**After resolving (any mode):** record each resolved decision under "Resolved
-decisions" (what, which option, who/what decided, why), **reconsolidate the issue
-body** (including the `## Team` block — keep it), and **assemble the team** (below).
-Then:
+**After resolving (any mode):** if the resolved decision was an **approved
+decomposition** just executed (interactive only — see the gate), the parent issue is
+now closed with its sub-plans linked — **stop here**, the steps below do not apply.
+Otherwise: record each resolved decision under "Resolved decisions" (what, which
+option, who/what decided, why), **reconsolidate the issue body** (including the
+`## Team` block — keep it), and **assemble the team** (below). Then:
 - If no open decisions remain, no lens left a P1 (including an auto-resolved one),
   the acceptance-criteria gate passes, **and a reviewer is assigned** → add
   `conveyor/plan:ready-to-implement` then remove `conveyor/plan:in-review`, update
