@@ -42,7 +42,10 @@ working state lives on the **PR**, mirroring the issue model one station back:
   `conveyor/review:passed` PR whose branch HEAD has advanced past its `Reviewed at:`
   SHA (a **stale** review to re-open — see §0's staleness gate). A
   `conveyor/review:passed` PR still at its reviewed SHA is fresh — skip it with a
-  single `headRefOid`-vs-SHA compare, no re-review.
+  single `headRefOid`-vs-SHA compare, no re-review. Finally, any
+  `conveyor/review:in-progress` PR whose branch **and** status comment have gone stale
+  (a crashed review lock — see §9's stale-takeover) — reconcile and take it over; a
+  scan that skips the in-progress lock state leaves a crashed claim stuck forever.
 - **Mode.** Interactive (human at keyboard) or autonomous (routine; never blocks).
 
 ## Process

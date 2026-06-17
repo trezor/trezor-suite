@@ -17,8 +17,12 @@ human, batched.** Everything else is auto-decided and logged.
 ## Inputs
 
 - **Target issue.** Either a passed issue number, or — if none given — pick the
-  highest-priority issue from the queue:
-  `conveyor/plan:needs-human` first (a human is needed to drain it), then `conveyor/plan:draft`.
+  highest-priority issue from the queue: `conveyor/plan:needs-human` first (a human is
+  needed to drain it), then `conveyor/plan:draft`, then any **`conveyor/plan:in-review`
+  whose claim is stale** (the status comment / issue has not been updated for a while =
+  a previous run crashed mid-claim) — reconcile and take it over (step 0). A scan that
+  only lists draft + needs-human leaves a crashed in-review lock stuck forever; sweep
+  it.
 - **Mode.**
   - **Interactive** (default): a human is at the keyboard; resolve decisions live.
   - **Autonomous**: triggered by a routine / overnight run; never block on a
@@ -76,8 +80,12 @@ Always run:
   need? Is the feature **complete** — anything missing that the feature needs to
   work properly? Are the stated non-goals genuinely out of this feature (not just
   deferred work that is actually load-bearing)? Do **not** push to shrink the
-  conveyor/plan: the goal is a complete feature; splitting a large change into shippable
-  pieces is the review station's job, not the plan's.
+  conveyor/plan: the goal is a complete feature; splitting a large *cohesive* change
+  into shippable pieces is the review station's job, not the plan's. **Check cohesion,
+  though:** is this **one** feature, or several **independent** concerns bundled into
+  one issue (separable deliverables that share no code and each ship on their own)?
+  Don't shrink a cohesive feature — but a bundle is not a single plan; flag it for
+  **decomposition** (the gate, step 2). Decompose on independence, never on raw size.
 - **Architecture lens.** Does the approach fit the codebase? Coupling, shared
   code blast radius, data flow, failure modes, security/privacy/signing
   implications (hardware wallet — take this seriously), test surface, backward
@@ -130,6 +138,18 @@ back) — it blocks promotion just like a P1.
 - **User-challenge** (the analysis concludes the developer's *stated* direction
   should change — drop a scoped feature, merge two things they wanted separate,
   add something they did not ask for): never auto-decide. Always surface.
+
+**Decomposition gate — don't park a wall of checkboxes.** If gating would leave
+**more than ~6 open decisions**, or the scope lens found the plan **bundles ≥2
+independent concerns** (separable, share no code, each shippable alone), the plan is
+**too broad to be one plan**. Do **not** park the long list. Surface a single
+**decomposition user-challenge** instead: propose splitting it into N **named
+sub-plans** — each a cohesive feature with its own scope + acceptance criteria — in
+dependency order, with your recommendation. On the human's approval (drain), spin each
+sub-plan off as its own `conveyor-1-plan-create` issue (carry the decisions relevant to
+each) and reduce this issue to a tracking/epic (or close it). A cohesive feature that
+merely has many *small* decisions is **not** this case — split on **independence**, not
+on count alone (the >6 count is the tripwire to *look*, not the verdict).
 
 **Security carve-out.** Never classify a signing, key-handling, persistence, or
 privacy plan edit as **mechanical** — route it to taste or user-challenge so a
@@ -250,6 +270,15 @@ final names into the `## Team` block **without a leading `@`** (no notification)
 each person is only actually requested/assigned at their own gate downstream.
 
 ### 4. Status comment shape
+
+**Locate it idempotently — exactly one.** The dashboard is the `## 🤖 Plan review
+status` comment, and **the plan-create placeholder IS that comment** — adopt and
+**rewrite it in place**, never post a second. Find it by heading among the issue's
+comments: exactly one → edit that one; zero → create from the template; more than one
+(a crashed re-run, or a placeholder that a prior run failed to adopt) → keep the
+newest and **delete the stale duplicates**. A duplicate stale `State: draft / none
+yet / Last updated by: plan-create` placeholder sitting above the real dashboard is a
+bug — never blindly post a new status comment.
 
 Keep the status comment as the single dashboard. After a run it should look like:
 
