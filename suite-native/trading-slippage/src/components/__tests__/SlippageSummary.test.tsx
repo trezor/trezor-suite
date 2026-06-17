@@ -6,7 +6,7 @@ import { Form, useForm } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
-import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
+import { renderWithSlippageTestProvider } from '../../__tests__/testUtils';
 import { SlippageSummary } from '../SlippageSummary';
 
 const validationSchema = yup.object({ slippage: yup.string() });
@@ -24,8 +24,8 @@ const TestWrapper = ({ slippage = '1' }: { slippage?: string }) => {
     );
 };
 
-const renderSlippageSummary = (slippage?: string, quote?: ExchangeTrade) =>
-    renderWithSlippageTestProvider(<TestWrapper slippage={slippage} quote={quote} />);
+const renderSlippageSummary = (slippage?: string) =>
+    renderWithSlippageTestProvider(<TestWrapper slippage={slippage} />);
 
 describe('SlippageSummary', () => {
     it('should render all row labels', () => {

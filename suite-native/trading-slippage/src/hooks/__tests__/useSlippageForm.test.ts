@@ -2,12 +2,12 @@ import { SLIPPAGE_PRESETS } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 
-import { renderHookWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderHookWithSlippageTestProvider } from '../../__tests__/testUtils';
 import { useSlippageForm } from '../useSlippageForm';
 
 describe('useSlippageForm', () => {
     const renderUseSlippageForm = async () => {
-        const ret = renderHookWithTradingProvider(() => useSlippageForm());
+        const ret = renderHookWithSlippageTestProvider(() => useSlippageForm());
         // wait for form validation
         await act(() => Promise.resolve());
 

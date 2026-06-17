@@ -10,12 +10,12 @@ import {
     act,
     createLightStore,
     createStaticReducer,
-    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils-store';
 import { tradingSlice } from '@suite-native/trading-state';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
+import { renderWithSlippageTestProvider } from '../../__tests__/testUtils';
 import { SlippageBottomSheet } from '../SlippageBottomSheet';
 
 jest.mock('@suite-native/link', () => ({
@@ -37,9 +37,9 @@ describe('SlippageBottomSheet', () => {
     } as const;
 
     const renderSlippageBottomSheet = async (store: TestStore) => {
-        const result = renderWithStoreProvider(
+        const result = renderWithSlippageTestProvider(
             <SlippageBottomSheet isVisible={false} onClose={mockOnClose} />,
-            { store },
+            store,
         );
 
         await act(() => Promise.resolve());
