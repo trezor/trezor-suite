@@ -1,4 +1,5 @@
-import { FadeIn, FadeOut } from 'react-native-reanimated';
+import { Platform } from 'react-native';
+import { FadeIn, FadeOut, StretchInY, StretchOutY } from 'react-native-reanimated';
 
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AnimatedPressable, Card } from '@suite-native/atoms';
@@ -39,8 +40,8 @@ export const TronFeeSummaryCard = ({
     if (onPress) {
         return (
             <AnimatedPressable
-                exiting={FadeOut}
-                entering={FadeIn}
+                entering={Platform.OS === 'android' ? StretchInY : FadeIn}
+                exiting={Platform.OS === 'android' ? StretchOutY : FadeOut}
                 onPress={onPress}
                 testID={testID}
             >
