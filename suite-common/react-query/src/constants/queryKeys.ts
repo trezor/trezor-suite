@@ -2,7 +2,6 @@ import type { AllowedQueryKey } from '../types';
 
 export const commonQueryKeys = {
     networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
-    depositTxSimulation: (input?: any) => ['tx-simulation-deposit', input],
     dappScan: (url?: string) => ['dapp-scan', url],
     validatorsQueue: (accountKey: string | undefined, timestamp?: number) => [
         'everstake',
@@ -24,8 +23,6 @@ export const desktopQueryKeys = {
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
 } as const satisfies Record<string, AllowedQueryKey>;
-
-export const mobileQueryKeys = {} as const satisfies Record<string, AllowedQueryKey>;
 
 export const tradingQueryKeys = {
     otcData: () => ['trading', 'otc-data'],
