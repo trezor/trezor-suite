@@ -312,7 +312,7 @@ for a given feature it **assembles a team** of the humans accountable at the few
 | Role | Owns | When assigned |
 | --- | --- | --- |
 | **Product owner** | the spec + plan decisions | always — it is the **issue creator** (set at `conveyor-1-plan-create`) |
-| **Reviewer** | the final human review | always — **exactly one, required**; a plan can't reach `ready-to-implement` without one |
+| **Reviewer** | the required single approval at the PR | **resolved at the PR handoff** (CODEOWNERS-primary); **non-blocking** for the plan — plan review only pins a fallback from CODEOWNERS |
 | **Eng owner** | the technical approach; pulled in when implementation parks to `impl:needs-human` | optional — only for large / architecturally significant changes |
 | **Tester** | the test/QA sign-off (future station) | optional — only when there is a real test/QA surface |
 
@@ -322,9 +322,12 @@ creator + one reviewer), large pulls in specialists. The agent proposes from a
 roster and the human confirms via the same async checkboxes; eng owner and tester
 are optional decisions.
 
-- **Roster:** `.github/conveyor-team.yml` maps people → roles (`product|eng|review|qa`)
-  → areas, matched to the plan's "Affected areas". It is **optional** — without it,
-  Product owner still defaults to the creator and the rest is asked of the human.
+- **Candidate source:** the optional roster `.github/conveyor-team.yml` (people → roles
+  `product|eng|review|qa` → areas), else **CODEOWNERS** as the repo's de-facto roster
+  (owners of the Affected areas, or the nearest parent path's, minus the author), else
+  ask the human. The **Reviewer is non-blocking** — branch protection + CODEOWNERS
+  enforce the real approval at the PR; plan review only pins a fallback (set the issue
+  Assignee when CODEOWNERS won't cover the area).
   See [`conveyor-team.example.yml`](conveyor-team.example.yml).
 - **Recorded** in a `## Team` block in the issue body, carried onto the PR.
 - **No early pings:** handles are stored **without a leading `@`** so nobody is

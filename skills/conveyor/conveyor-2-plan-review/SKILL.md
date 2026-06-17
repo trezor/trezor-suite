@@ -273,23 +273,34 @@ Otherwise: record each resolved decision under "Resolved decisions" (what, which
 option, who/what decided, why), **reconsolidate the issue body** (including the
 `## Team` block — keep it), and **assemble the team** (below). Then:
 - If no open decisions remain, no lens left a P1 (including an auto-resolved one),
-  the acceptance-criteria gate passes, **and a reviewer is assigned** → add
-  `conveyor/plan:ready-to-implement` then remove `conveyor/plan:in-review`, update
-  the status comment state, report done.
+  and the acceptance-criteria gate passes → add `conveyor/plan:ready-to-implement`
+  then remove `conveyor/plan:in-review`, update the status comment state, report done.
+  (A reviewer does **not** block promotion — the required approval is enforced at the
+  PR's human-review handoff; see the Reviewer note below.)
 - Otherwise → keep `conveyor/plan:needs-human` and report what is still parked.
 
 #### Assemble the team
 The plan body carries a `## Team` block (seeded by `conveyor-1-plan-create` with the
 **Product owner** = issue creator). Fill in the rest, scaled to the plan's size and
-"Affected areas". Read the roster at `.github/conveyor-team.yml` if present (maps
-people → roles `product|eng|review|qa` → areas); **if absent, ask the human** for
-the handles instead of proposing.
+"Affected areas". Candidate sources, in order: the roster at `.github/conveyor-team.yml`
+if present (maps people → roles `product|eng|review|qa` → areas); otherwise **CODEOWNERS**
+— the repo's de-facto roster (the owners of the Affected areas, or the **nearest parent
+path's** owners if an area is uncovered, always excluding the Product owner/author). Only
+if neither yields a candidate do you ask the human.
 
-- **Reviewer — required, exactly one.** Always assign one (a roster member whose
-  `review` role + areas best match; not the Product owner if avoidable). A plan
-  cannot reach `ready-to-implement` without a reviewer, so this is a blocking
-  decision: surface it as a checkbox option set if the roster offers candidates,
-  or ask the human if there is no roster.
+- **Reviewer — non-blocking; the PR handoff is the real gate.** The required single
+  approval is enforced at the PR by branch protection + CODEOWNERS, so a reviewer does
+  **not** block plan promotion. Still propose one as a **fallback** (used by the belt's
+  human-review handoff only when CODEOWNERS matches nothing): surface the candidate
+  owners (from the source above) as **checkboxes**, plus a `- [ ] None now — a reviewer
+  is requested at the PR` option (recommend this when CODEOWNERS already covers the
+  Affected areas). **Report the coverage** so the human chooses informed — e.g.
+  "CODEOWNERS covers `packages/connect` (auto-requests its owners) but **not**
+  `packages/connect-data` — pin a fallback below". If CODEOWNERS yields no usable
+  candidate at all, tell the human to **set the issue Assignee** to the intended
+  reviewer (a native one-click action; the drain reads it from
+  `gh issue view --json assignees`). Whoever is chosen goes into the `## Team` Reviewer
+  line (without `@`); they are requested at the PR only if CODEOWNERS did not.
 - **Eng owner — optional.** Propose one only when the change is **large or
   architecturally significant** (multi-package, new infra, signing/transport).
   They own the technical approach and are the human `conveyor-3-implement` pulls in

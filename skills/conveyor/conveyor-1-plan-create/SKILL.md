@@ -116,7 +116,7 @@ and add it to Open questions.
 ```markdown
 ## Team
 - **Product owner:** <issue creator's handle, no leading @> — owns the spec and the plan decisions
-- **Reviewer:** _required — assigned in review_
+- **Reviewer:** _resolved at the PR handoff (CODEOWNERS); optional fallback pinned in review_
 - **Eng owner:** _optional — assigned in review if the change is large_
 - **Tester:** _optional — assigned in review if there is a real test/QA surface_
 
