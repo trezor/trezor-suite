@@ -1,12 +1,9 @@
 import { getTranslation } from '@suite-native/intl';
 import { userEvent, within } from '@suite-native/test-utils';
-import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import {
-    getWalletState,
-    mercuryoDexQuote,
-    mercuryoFixedWorstQuote,
-} from '@suite-native/trading-fixtures';
+import { act } from '@suite-native/test-utils-store';
+import { mercuryoDexQuote, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
+import { renderWithSlippageTestProvider } from '../../__tests__/testUtils';
 import { SLIPPAGE_PICKER_TEST_ID, SlippagePicker } from '../SlippagePicker';
 
 const mockShowSheet = jest.fn();
@@ -27,9 +24,7 @@ describe('SlippagePicker', () => {
     });
 
     const renderSlippagePicker = async (quote = mercuryoDexQuote) => {
-        const result = renderWithStoreProvider(<SlippagePicker quote={quote} />, {
-            preloadedState: { wallet: getWalletState() },
-        });
+        const result = renderWithSlippageTestProvider(<SlippagePicker quote={quote} />);
 
         await act(async () => {});
 
