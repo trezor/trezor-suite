@@ -14,20 +14,24 @@
 import fs from 'fs';
 import path from 'path';
 
-import { type TranslationId, messages } from '@suite/intl';
+import { typedObjectKeys } from '@trezor/utils';
 
-const root = path.join(__dirname, '../../../../');
+import { messages } from '../src/messages';
+
+const root = path.join(__dirname, '../../../');
 const targetPath = path.join(root, 'suite/intl/src/messages.ts');
 const sourcePath = path.join(root, 'packages/suite-data/files/translations/en-US.json');
 
-const source: Record<TranslationId, string> = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+const source: Record<string, string> = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
-Object.entries(source).forEach(([key, value]) => {
-    if (!messages[key]) {
+typedObjectKeys(messages).forEach(key => {
+    const override = source[key];
+    if (override === undefined) {
         return;
     }
 
-    messages[key].defaultMessage = value.replace(/\n$/, '');
+    // defaultMessage is literal-typed; widen to string for the in-place rewrite.
+    (messages[key] as { defaultMessage: string }).defaultMessage = override.replace(/\n$/, '');
 });
 
 fs.writeFileSync(

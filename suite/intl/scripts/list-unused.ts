@@ -1,13 +1,14 @@
+/* eslint-disable no-console */
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-import { messages } from '@suite/intl';
-import { getGrepCommandOfTranslationKey } from '@suite-common/suite-utils';
+import { findUsedTranslationKeys } from './findUsedTranslationKeys';
+import { messages } from '../src/messages';
 
 console.log('unused messages: ');
 
-const rootDir = path.join(__dirname, '..', '..', '..', '..');
+const rootDir = path.join(__dirname, '..', '..', '..');
 
 function execLocal(cmd: string) {
     return execSync(cmd, {
@@ -16,24 +17,16 @@ function execLocal(cmd: string) {
     });
 }
 
-const unused: string[] = [];
+// Dynamic messages have no literal key in the codebase – their identifiers come
+// from an API server at runtime, so grep can't find them and they'd be reported
+// as false positives.
+const searchableKeys = Object.entries(messages)
+    .filter(([, definition]) => !(definition as { dynamic?: boolean }).dynamic)
+    .map(([key]) => key);
 
-for (const message in messages) {
-    if (Object.prototype.hasOwnProperty.call(messages, message)) {
-        // some messages might be 'dynamic' which means they are not present
-        // in the codebase but their identifiers are returned from some API server instead
-        if (messages[message].dynamic) {
-            continue;
-        }
-        const cmd = getGrepCommandOfTranslationKey(message);
+const usedKeys = findUsedTranslationKeys(searchableKeys, rootDir);
 
-        try {
-            execLocal(cmd);
-        } catch {
-            unused.push(message);
-        }
-    }
-}
+const unused = searchableKeys.filter(key => !usedKeys.has(key));
 
 if (unused.length) {
     console.log('there are unused messages:');
@@ -43,17 +36,7 @@ if (unused.length) {
 
     if (process.argv.includes('--cleanup')) {
         console.log('cleaning up...');
-        const pathToMessages = path.join(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            '..',
-            'suite',
-            'intl',
-            'src',
-            'messages.ts',
-        );
+        const pathToMessages = path.join(__dirname, '..', 'src', 'messages.ts');
         let messagesContent = fs.readFileSync(pathToMessages, 'utf-8');
 
         for (const message of unused) {

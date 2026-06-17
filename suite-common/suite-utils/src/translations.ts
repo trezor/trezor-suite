@@ -33,3 +33,26 @@ export const getGrepCommandOfTranslationKey = (message: string) => {
 
     return `grep ${includeExtensions} ${excludeDir} --exclude=messages.ts -r "${message}" -w ./`;
 };
+
+// Builds the grep arguments for a single pass that finds every used translation
+// key at once.
+export const getGrepArgsForTranslationKeys = () => {
+    const includeExtensions = TRANSLATED_FILE_EXTENSIONS.map(
+        extension => `--include=*${extension}`,
+    );
+    const excludeDirs = IGNORED_TRANSLATION_PATHS.map(folder => `--exclude-dir=${folder}`);
+
+    return [
+        '-r', // recursive
+        '-h', // omit file names from the output
+        '-o', // print only the matched key, not the whole line
+        '-F', // keys are fixed strings, not regular expressions
+        '-w', // whole-word match (same as the per-key grep)
+        ...includeExtensions,
+        '--exclude=messages.ts',
+        ...excludeDirs,
+        '-f',
+        '-', // read the list of keys from stdin
+        './',
+    ];
+};
