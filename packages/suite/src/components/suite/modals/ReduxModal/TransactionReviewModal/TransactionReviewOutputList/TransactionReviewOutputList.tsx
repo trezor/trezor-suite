@@ -116,7 +116,10 @@ export const TransactionReviewOutputList = ({
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
     );
 
-    const isTronStakeFreeze = networkType === 'tron' && Boolean(precomposedForm.tronStakeResource);
+    const isTronStakeFreeze =
+        networkType === 'tron' &&
+        (precomposedForm.tronStaking?.kind === 'freeze' ||
+            precomposedForm.tronStaking?.kind === 'unstake');
 
     const nativeToken =
         account.accountType === 'placeholder' && 'nativeToken' in precomposedTx

@@ -201,9 +201,13 @@ export const TransactionReviewTotalOutput = ({
     }
 
     const { networkType } = account;
-    const isTronStakeFreeze = networkType === 'tron' && Boolean(precomposedForm.tronStakeResource);
+    const { tronStaking } = precomposedForm;
+    const isTronStakeFreeze =
+        networkType === 'tron' &&
+        (tronStaking?.kind === 'freeze' || tronStaking?.kind === 'unstake');
     const tronResourceLabel =
-        precomposedForm.tronStakeResource === 'energy'
+        (tronStaking?.kind === 'freeze' || tronStaking?.kind === 'unstake') &&
+        tronStaking.resource === 'energy'
             ? translationString('TR_TRON_ENERGY')
             : translationString('TR_TRON_BANDWIDTH');
     const nativeToken =
