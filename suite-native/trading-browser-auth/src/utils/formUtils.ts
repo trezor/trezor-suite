@@ -17,7 +17,7 @@ type RequestFormSourceReturnType = {
     html?: string;
 };
 
-export type BuildTradingUrlProps = {
+type BuildTradingUrlProps = {
     actionType: 'quote' | 'trade';
     tradeType: TradingType;
     orderId: string | undefined;
