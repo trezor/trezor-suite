@@ -6,5 +6,3 @@ export const evmHexString = z
     .transform(s => s as `0x${string}`);
 
 export type EvmHexString = z.infer<typeof evmHexString>;
-
-export const evmNumberLike = z.union([z.number(), evmHexString]);
