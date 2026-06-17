@@ -6,4 +6,5 @@ export { isBech32AddressUppercase } from './isBech32AddressUppercase';
 export { isBitcoinCashAddressUppercase } from './isBitcoinCashAddressUppercase';
 export { isTaprootAddress } from './isTaprootAddress';
 
+export * from './evmChecksumUtils';
 export * from './getFirstFreshAddress';
