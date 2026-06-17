@@ -9,6 +9,7 @@ import codepoints from '@suite-common/icons/iconFontsMobile/TrezorSuiteIcons.jso
 import { useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor, type Color, type Colors } from '@trezor/theme';
 
+export type { CSSColor };
 export type IconColor = Color | CSSColor;
 export type AnimatedIconColor = Color | CSSColor | SharedValue<CSSColor>;
 

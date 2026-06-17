@@ -3,13 +3,14 @@ import { useDispatch } from 'react-redux';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, Card, HStack, PressableOpacity, Text, TextButton, VStack } from '@suite-native/atoms';
+import { Box, Card, HStack, Text, TextButton, VStack } from '@suite-native/atoms';
 import { setIsGetTrezorBannerClosed } from '@suite-native/banner-flags';
 import { TwoSidedTS7Image } from '@suite-native/device';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useGetTrezorEshopCta } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { GetTrezorCardCloseIcon } from './GetTrezorCardCloseIcon';
 
 const CONTAINER_SIZE = 80;
 const IMAGE_SIZE = 53;
@@ -61,7 +62,7 @@ export const GetTrezorCard = () => {
                     </Text>
                     <HStack>
                         <TextButton
-                            size="small"
+                            size="large"
                             intent="neutral"
                             priority="secondary"
                             iconRight="arrowLineUpRight"
@@ -73,13 +74,7 @@ export const GetTrezorCard = () => {
                         </TextButton>
                     </HStack>
                 </VStack>
-                <PressableOpacity
-                    onPress={handleClose}
-                    testID="@home/get-trezor-cta/close"
-                    hitSlop={10}
-                >
-                    <Icon name="x" size="mediumLarge" color="contentNeutral" />
-                </PressableOpacity>
+                <GetTrezorCardCloseIcon onPress={handleClose} />
             </HStack>
         </Card>
     );
