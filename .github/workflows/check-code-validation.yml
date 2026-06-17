@@ -189,6 +189,8 @@ jobs:
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
         run: yarn workspace @suite/intl translations:list-duplicates
+      - name: Translation Unused
+        run: yarn workspace @suite/intl translations:list-unused
       - name: Check mobile translation source changes
         uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
         id: native-intl-changes

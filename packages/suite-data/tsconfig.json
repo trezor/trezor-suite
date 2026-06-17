@@ -12,7 +12,6 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        { "path": "../../suite/intl" },
         { "path": "../eslint" }
     ]
 }

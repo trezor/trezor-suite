@@ -14763,7 +14763,9 @@ __metadata:
   dependencies:
     "@crowdin/cli": "npm:4.13.0"
     "@formatjs/cli": "npm:6.12.2"
+    "@suite-common/suite-utils": "workspace:*"
     "@trezor/type-utils": "workspace:^"
+    "@trezor/utils": "workspace:^"
     react: "npm:19.2.4"
     react-intl: "npm:^8.1.3"
   languageName: unknown
@@ -16449,7 +16451,6 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
-    "@suite/intl": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
     autoprefixer: "npm:^10.4.24"

@@ -22,7 +22,6 @@
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
-        "@suite/intl": "workspace:*",
         "semver": "^7.7.1"
     },
     "devDependencies": {
