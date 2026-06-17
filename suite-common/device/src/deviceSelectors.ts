@@ -26,10 +26,10 @@ import {
 import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
+    type FirmwareVersionString,
     getFirmwareRevision,
     getFirmwareVersion,
     getFirmwareVersionArray,
-    type FirmwareVersionString,
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
@@ -683,7 +683,6 @@ export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
         return result;
     },
 );
-
 
 export const selectIsReconnectRequested = createMemoizedSelector(
     [selectSelectedDevice],
