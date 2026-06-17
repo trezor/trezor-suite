@@ -43,6 +43,8 @@ export const YieldProviderConsentBanners = ({
                     />
                 </>
             );
+        case 'tron':
+            return null;
         default:
             return exhaustive(networkType);
     }

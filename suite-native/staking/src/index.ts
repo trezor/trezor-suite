@@ -22,3 +22,13 @@ export {
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
 } from './cardanoStakingSelectors';
+export {
+    selectTronAccountHasStaked,
+    selectTronAvailableVotingPowerByAccountKey,
+    selectTronPendingUnstakeBalanceByAccountKey,
+    selectTronRewardsBalanceByAccountKey,
+    selectTronStakedBalanceByAccountKey,
+    selectTronTotalVotingPowerByAccountKey,
+    selectTronUnstakedBalanceByAccountKey,
+    selectTronVotesByAccountKey,
+} from './tronStakingSelectors';

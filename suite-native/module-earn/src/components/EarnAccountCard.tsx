@@ -1,6 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import {
+    formatTronApr,
+    getTronVotedApr,
+    useTronStakingStats,
+} from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     isSupportedSolStakingNetworkSymbol,
@@ -15,6 +20,8 @@ import {
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
     selectIsCardanoStakedOutsideEverstake,
+    selectTronAvailableVotingPowerByAccountKey,
+    selectTronVotesByAccountKey,
     useSelector as useStakingSelector,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -24,6 +31,7 @@ import { EarnClaimAlert } from './EarnClaimAlert';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { useSolanaStakingFlag } from '../hooks/useSolanaStakingFlag';
 import { type EarnDepositsCardActiveItem } from '../types';
+import { EarnTronVotingAlert } from './EarnTronVotingAlert';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp16,
@@ -74,13 +82,35 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isSolanaStakingEnabled = useSolanaStakingFlag();
 
+    const symbol = isStakingItem ? item.symbol : item.networkSymbol;
+
     const apy = useStakingSelector(state =>
         isStakingItem
             ? selectApy(state, { accountKey: item.accountKey, networkSymbol: item.symbol })
             : null,
     );
 
-    const apyValue = isStakingItem ? apy : item.apy;
+    const { stats: tronStats, formattedMaxApr: tronMaxApr } = useTronStakingStats({
+        enabled: isStakingItem && item.symbol === 'trx',
+    });
+
+    const tronVotes = useStakingSelector(state =>
+        selectTronVotesByAccountKey(state, item.accountKey),
+    );
+
+    const votedTronApr = getTronVotedApr(
+        tronStats.data,
+        tronVotes.map(({ address }) => address),
+    );
+
+    const tronApr = formatTronApr(votedTronApr ?? tronMaxApr);
+
+    const resolvedApy = symbol === 'trx' ? tronApr : apy;
+    const apyValue = isStakingItem ? resolvedApy : item.apy;
+
+    const availableTronVotingPower = useStakingSelector(state =>
+        selectTronAvailableVotingPowerByAccountKey(state, item.accountKey),
+    );
 
     const isAdaStakedOutsideEverstake = useStakingSelector(state =>
         selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
@@ -102,7 +132,9 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const showClaimAlert =
         canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice && !isSolClaimHidden;
 
-    const symbol = isStakingItem ? item.symbol : item.networkSymbol;
+    const showTronVotingAlert =
+        isStakingItem && item.symbol === 'trx' && availableTronVotingPower !== '0';
+
     const contractAddress = isStablecoinYieldItem ? item.tokenContractAddress : undefined;
     const secondaryDescription = isStablecoinYieldItem
         ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
@@ -146,12 +178,17 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                     <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
                 </Box>
             </PressableOpacity>
+
             {showClaimAlert && (
                 <EarnClaimAlert
                     claimableAmount={claimableAmount}
                     symbol={symbol}
                     onClaimPress={onClaimPress}
                 />
+            )}
+
+            {showTronVotingAlert && (
+                <EarnTronVotingAlert votesRemaining={availableTronVotingPower} />
             )}
         </Card>
     );

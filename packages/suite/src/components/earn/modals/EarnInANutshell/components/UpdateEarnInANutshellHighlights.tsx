@@ -61,6 +61,8 @@ export const UpdateEarnInANutshellHighlights = ({
         case 'cardano':
         case 'solana':
             return <EarnInANutshellHighlights items={highlights} />;
+        case 'tron':
+            return null;
         default:
             return exhaustive(networkType);
     }

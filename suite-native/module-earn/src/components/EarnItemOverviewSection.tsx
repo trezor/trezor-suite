@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import {
     selectFormattedAccountType,
     selectHasRunningDiscovery,
@@ -81,13 +82,20 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
         }),
     );
 
+    const { formattedMaxApr: tronMaxApr } = useTronStakingStats({
+        enabled: item.type === 'staking' && item.symbol === 'trx',
+    });
+
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const isAdaStakedOutsideEverstake = useNativeStakingSelector(state =>
         accountKey ? selectIsCardanoStakedOutsideEverstake(state, accountKey) : false,
     );
 
-    const apyValue = item.type === 'staking' ? apy : item.apy;
+    const symbol = item.type === 'staking' ? item.symbol : item.networkSymbol;
+
+    const resolvedApy = symbol === 'trx' ? tronMaxApr : apy;
+    const apyValue = item.type === 'staking' ? resolvedApy : item.apy;
 
     const iconProps =
         item.type === 'staking'

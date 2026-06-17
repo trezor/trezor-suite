@@ -113,6 +113,8 @@ export const StakingEarnInANutshellHighlights = ({
                         ),
                     },
                 ];
+            case 'tron':
+                return [];
             default:
                 return exhaustive(networkType);
         }
