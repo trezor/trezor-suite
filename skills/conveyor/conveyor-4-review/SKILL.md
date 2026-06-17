@@ -227,11 +227,14 @@ Gate for noise, then classify each finding by who resolves it (same model as
 - **Auto-fix** — only when **all** hold: confidence is high (≥ 8/10), the fix is
   clear and mechanical, it is low-risk, and it does not change intended behaviour
   or the spec. Never classify a signing / key-handling / persistence / privacy
-  finding as mechanical — those always route to a human (park). **A behavioural fix
-  (not pure style) must ship a regression test** that fails before the fix and
-  passes after (`// Regression: #<issue>`) — a behavioural fix without one is not
-  low-risk, so **park it** instead. Apply it, commit (conventional commit; for a bug
-  in a specific earlier commit prefer `--fixup`).
+  finding as mechanical — those always route to a human (park). **For a behavioural
+  fix, add a regression test only where it adds real signal — survey existing coverage
+  first** (see CONVENTIONS "Tests"): extend a test that already exercises the path
+  rather than duplicate, and if the suite already guards the behaviour, none is needed.
+  Use a `// Regression: #<issue>` guard for a genuine, easily-reintroduced bug. Do
+  **not** auto-park a clean low-risk fix merely for lacking a brand-new test; park when
+  the fix is risky **and** genuinely uncovered. Apply it, commit (conventional commit;
+  for a bug in a specific earlier commit prefer `--fixup`).
   Before pushing: `git fetch origin <branch>`; if it advanced with a commit you
   did NOT author, STOP (a human or a repo bot pushed — never clobber it) and
   reconcile. Otherwise `git push --force-with-lease`; a non-fast-forward / lease

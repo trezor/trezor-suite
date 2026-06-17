@@ -146,10 +146,14 @@ Readiness requires every check green except those documented as broken-in-develo
 — and that explicitly includes the **proof-of-concept gates**: the
 dev-environment build and the e2e tests. A PoC is only proven when those are
 green; a feature that builds units but does not stand up a dev environment or
-pass e2e has not yet earned the review station. **Readiness also requires at
-least one NEW e2e / integration test that actually exercises the new feature —
-and you must watch THAT test pass.** The existing suite staying green is not
-proof the feature works.
+pass e2e has not yet earned the review station. **Cover the change where a test
+adds real signal — but survey first and never by quota** (see CONVENTIONS
+"Tests"): search the affected package's existing tests and prefer **extending**
+what is there over writing new ones. Add a test only where it genuinely de-risks
+the change, and watch it pass. A behaviour-preserving refactor, a deletion, or a
+docs/process change may correctly need **no** new test — there the green existing
+suite is the proof, and an invariant/unit check named in the acceptance criteria
+is enough. Do not bolt on a low-signal e2e to satisfy a mandate.
 
 ### 4. Keep the branch fresh (aggressive rebase)
 

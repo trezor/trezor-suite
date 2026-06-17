@@ -142,7 +142,7 @@ and add it to Open questions.
 <technical constraints, compat, security/privacy/signing implications>
 
 ## Acceptance criteria / Definition of done
-<a few testable criteria that prove the feature is done, phrased so implementation can write an e2e/integration test against them — observable behaviour, not "code merged". conveyor-3-implement must land ≥1 new e2e covering these.>
+<a few testable criteria that prove the feature is done — observable behaviour, not "code merged". They define what "done" means; they do **not** mandate new tests. Implementation covers them where a test adds real signal (surveying existing coverage first — see CONVENTIONS "Tests"); a refactor / deletion / docs change may be proven by the existing green suite or an invariant check, with no new test.>
 
 ## Open questions
 <anything unresolved the review should settle>
@@ -202,8 +202,9 @@ can run `conveyor-2-plan-review` on it (`gh issue list --label conveyor/plan:dra
 - Search for an existing issue/PR before creating anything; if a match exists,
   point the developer at it rather than opening a duplicate.
 - Every plan must carry an `## Acceptance criteria / Definition of done` section
-  with testable criteria — never leave it `_TBD_`; this is what implementation
-  writes its required new e2e against.
+  with testable criteria — never leave it `_TBD_`; it defines "done", and
+  implementation covers it with tests **only where they add signal** (survey first;
+  no test mandate — see CONVENTIONS "Tests").
 - Never invent product or UX behaviour the developer did not state. If you do not
   know, it is an Open question, not a guess. (No speculative state machines /
   phases / flows.)

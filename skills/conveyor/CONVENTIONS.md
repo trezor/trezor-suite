@@ -81,6 +81,22 @@ process steps — this file is the canonical *what/always*.
   surface security/privacy findings **regardless of confidence** (they bypass the
   noise gate, like a P1).
 
+## Tests — survey first, signal not mandate
+
+The repo already has extensive tests. Before writing any test, **survey what exists**
+(grep the affected package's test dir / sibling specs) and **extend or reuse** rather
+than duplicate. Add a test **only where it adds real signal** — never by blanket
+mandate ("every feature needs a new e2e", "every fix needs a regression test" are
+**not** rules here). A behaviour-preserving refactor, a deletion, a docs/process
+change, or a path the existing suite already covers may correctly need **zero** new
+tests — there the green existing suite (or an invariant/unit check named in the
+acceptance criteria) is the proof. Match the existing test style and altitude. A wall
+of low-signal tests is as much a scope defect as a missing one — **testing fatigue is
+a real cost** (same spirit as the "decline additive scope / don't gold-plate" rule in
+plan review). When unsure whether a test earns its keep, prefer **not** to add it and
+say why. Genuine, easily-reintroduced, uncovered behavioural risk is where a test
+truly pays — spend the effort there, not everywhere.
+
 ## Team handles
 
 - Store team handles in the `## Team` block **without a leading `@`** — nobody is
