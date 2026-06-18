@@ -2212,13 +2212,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@craftzdog/react-native-buffer@npm:^6.0.5":
-  version: 6.1.1
-  resolution: "@craftzdog/react-native-buffer@npm:6.1.1"
+"@craftzdog/react-native-buffer@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "@craftzdog/react-native-buffer@npm:6.1.2"
   dependencies:
     ieee754: "npm:^1.2.1"
-    react-native-quick-base64: "npm:^2.2.2"
-  checksum: 10/a78a74d8c63597f601b79e3b14e809508d481a407b35041bd46e50a245f4c98382af574d2e9f01adaa77e26a5683ec2c47c7bf2392b49afeabdc37a1a5bfbac5
+    react-native-quick-base64: "npm:^3.0.0"
+  checksum: 10/c424beec79d6438ea305c07177f39ef737dc0e6fded31dd81f47b7b26f7a34acacd40d7cc1a0f3601c840cd695c8812fad2a73ae437e7641d1f6f367c68a7112
   languageName: node
   linkType: hard
 
@@ -11650,7 +11650,7 @@ __metadata:
     react-native-nitro-modules: "npm:^0.35.7"
     react-native-performance: "npm:^5.1.4"
     react-native-permissions: "npm:5.4.4"
-    react-native-quick-crypto: "npm:0.7.17"
+    react-native-quick-crypto: "npm:1.1.5"
     react-native-reanimated: "npm:~4.2.1"
     react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:5.6.2"
@@ -39931,26 +39931,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-quick-base64@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "react-native-quick-base64@npm:2.2.2"
+"react-native-quick-base64@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "react-native-quick-base64@npm:3.0.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/aeebf6f520830dc042201e2a72a381fb29d1376fe0acdf9e266c8a7e3499f45534b11b27b2241bf6cf007ff82874b6def9fa52d62f0027953fc2e6f8d0009266
+  checksum: 10/ee3d44bb4f034a3077412d69c050415fbce99a7dc4a0e1001443841a9d3d88f1307b9979d5ac4ce9eea37996b858d3f0dad409700c5920577b87043b27dc2297
   languageName: node
   linkType: hard
 
-"react-native-quick-crypto@npm:0.7.17":
-  version: 0.7.17
-  resolution: "react-native-quick-crypto@npm:0.7.17"
+"react-native-quick-crypto@npm:1.1.5":
+  version: 1.1.5
+  resolution: "react-native-quick-crypto@npm:1.1.5"
   dependencies:
-    "@craftzdog/react-native-buffer": "npm:^6.0.5"
-    events: "npm:^3.3.0"
-    readable-stream: "npm:^4.5.2"
+    "@craftzdog/react-native-buffer": "npm:^6.1.2"
+    events: "npm:3.3.0"
+    readable-stream: "npm:4.7.0"
+    safe-buffer: "npm:^5.2.1"
     string_decoder: "npm:^1.3.0"
-    util: "npm:^0.12.5"
-  checksum: 10/3a51c4cdee05c2906f12be28f983873598325284e0f06d5248000b49cd57afe53de318ad53fec0e10923b31540a7506ca57764eca7869f0948996165a990d6a6
+    util: "npm:0.12.5"
+  peerDependencies:
+    expo: ">=48.0.0"
+    expo-build-properties: "*"
+    react: "*"
+    react-native: "*"
+    react-native-nitro-modules: ">=0.31.2"
+    react-native-quick-base64: ">=3.0.0"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+    expo-build-properties:
+      optional: true
+  checksum: 10/c3c0d6bd10de8a4496184ad20dbe0aabf894cc5fa4b19904ad8bab4be463be3f57d191351a41d478edd1c66a32db102aef5dcef3ae0e9b392b9947e661bb6745
   languageName: node
   linkType: hard
 
@@ -40408,6 +40421,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"readable-stream@npm:4.7.0, readable-stream@npm:^4.0.0":
+  version: 4.7.0
+  resolution: "readable-stream@npm:4.7.0"
+  dependencies:
+    abort-controller: "npm:^3.0.0"
+    buffer: "npm:^6.0.3"
+    events: "npm:^3.3.0"
+    process: "npm:^0.11.10"
+    string_decoder: "npm:^1.3.0"
+  checksum: 10/bdf096c8ff59452ce5d08f13da9597f9fcfe400b4facfaa88e74ec057e5ad1fdfa140ffe28e5ed806cf4d2055f0b812806e962bca91dce31bc4cef08e53be3a4
+  languageName: node
+  linkType: hard
+
 "readable-stream@npm:^2.0.2, readable-stream@npm:^2.0.5, readable-stream@npm:^2.3.8, readable-stream@npm:~2.3.6":
   version: 2.3.8
   resolution: "readable-stream@npm:2.3.8"
@@ -40420,19 +40446,6 @@ __metadata:
     string_decoder: "npm:~1.1.1"
     util-deprecate: "npm:~1.0.1"
   checksum: 10/8500dd3a90e391d6c5d889256d50ec6026c059fadee98ae9aa9b86757d60ac46fff24fafb7a39fa41d54cb39d8be56cc77be202ebd4cd8ffcf4cb226cbaa40d4
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:^4.0.0, readable-stream@npm:^4.5.2":
-  version: 4.7.0
-  resolution: "readable-stream@npm:4.7.0"
-  dependencies:
-    abort-controller: "npm:^3.0.0"
-    buffer: "npm:^6.0.3"
-    events: "npm:^3.3.0"
-    process: "npm:^0.11.10"
-    string_decoder: "npm:^1.3.0"
-  checksum: 10/bdf096c8ff59452ce5d08f13da9597f9fcfe400b4facfaa88e74ec057e5ad1fdfa140ffe28e5ed806cf4d2055f0b812806e962bca91dce31bc4cef08e53be3a4
   languageName: node
   linkType: hard
 
@@ -45745,7 +45758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"util@npm:^0.12.4, util@npm:^0.12.5":
+"util@npm:0.12.5, util@npm:^0.12.4, util@npm:^0.12.5":
   version: 0.12.5
   resolution: "util@npm:0.12.5"
   dependencies:
