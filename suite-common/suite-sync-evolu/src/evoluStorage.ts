@@ -1,6 +1,11 @@
 import { type Evolu, createOwnerWebSocketTransport } from '@evolu/common';
 
-import { type CreateSuiteStorage, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import {
+    type CreateSuiteStorage,
+    type SuiteSyncStorage,
+    createSuiteSyncDeleteLocalDataError,
+} from '@suite-common/suite-sync-storage';
+import { err, ok } from '@trezor/type-utils';
 
 import { type CreateEvoluInstanceDep } from './createEvoluInstance';
 import { type AccountTableSchema, EvoluAccountTable } from './data/accountTable';
@@ -49,6 +54,22 @@ export const createEvoluStorageFactory =
             },
 
             updateRelayUrl,
+            deleteLocalData: () => {
+                try {
+                    evolu.deleteDatabase();
+                } catch (error) {
+                    const message =
+                        error instanceof Error
+                            ? error.message
+                            : 'Failed to delete Suite Sync local data.';
+
+                    return Promise.resolve(
+                        err(createSuiteSyncDeleteLocalDataError(message, error)),
+                    );
+                }
+
+                return Promise.resolve(ok());
+            },
             dispose: async () => {
                 await evolu[Symbol.asyncDispose]();
             },

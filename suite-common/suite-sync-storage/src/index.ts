@@ -1,8 +1,10 @@
 export type {
+    SuiteSyncDeleteLocalDataError,
     SuiteSyncStorage,
     CreateSuiteStorage,
     CreateSuiteStorageDep,
 } from './SuiteSyncStorage';
+export { createSuiteSyncDeleteLocalDataError } from './SuiteSyncStorage';
 export {
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,

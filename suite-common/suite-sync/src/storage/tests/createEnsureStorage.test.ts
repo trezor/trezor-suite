@@ -34,6 +34,7 @@ describe(createEnsureStorage.name, () => {
                 get: () => existingStorage,
                 set: null,
                 delete: null,
+                deleteLocalData: null,
             },
             createSuiteStorage: null,
             ensureSuiteSyncKeys: null,
@@ -66,6 +67,7 @@ describe(createEnsureStorage.name, () => {
                 get: () => existingStorage,
                 set: null,
                 delete: null,
+                deleteLocalData: null,
             },
             createSuiteStorage: null,
             ensureSuiteSyncKeys: () =>
@@ -94,6 +96,7 @@ describe(createEnsureStorage.name, () => {
                 get: () => null,
                 set: null,
                 delete: null,
+                deleteLocalData: null,
             },
             createSuiteStorage: null,
             ensureSuiteSyncKeys: null,
@@ -124,6 +127,7 @@ describe(createEnsureStorage.name, () => {
                 get: () => null,
                 set: null,
                 delete: null,
+                deleteLocalData: null,
             },
             createSuiteStorage: null,
             ensureSuiteSyncKeys: () => Promise.resolve(refreshError),
@@ -155,6 +159,7 @@ describe(createEnsureStorage.name, () => {
                 get: () => null,
                 set: mock(() => {}),
                 delete: null,
+                deleteLocalData: null,
             },
             createSuiteStorage: () => Promise.resolve(newStorage),
             ensureSuiteSyncKeys: () =>
@@ -189,6 +194,7 @@ describe(createEnsureStorage.name, () => {
                 get: () => null,
                 set: mock(() => {}),
                 delete: null,
+                deleteLocalData: null,
             },
             createSuiteStorage: () => Promise.resolve(newStorage),
             ensureSuiteSyncKeys: () =>
@@ -226,6 +232,7 @@ describe(createEnsureStorage.name, () => {
                 get: () => null,
                 set: mock(() => {}),
                 delete: null,
+                deleteLocalData: null,
             },
             createSuiteStorage: () => Promise.resolve(newStorage),
             ensureSuiteSyncKeys: () =>

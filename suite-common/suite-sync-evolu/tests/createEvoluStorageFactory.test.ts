@@ -9,9 +9,11 @@ import {
     type SuiteSyncWallet,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
+    createSuiteSyncDeleteLocalDataError,
 } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { asWalletDescriptor } from '@trezor/device-utils';
+import { err } from '@trezor/type-utils';
 import { createDeferred } from '@trezor/utils';
 
 import { testCreateRunWithEvoluDeps } from '../mocks/testCreateRunWithEvoluDeps';
@@ -32,6 +34,33 @@ const createTestStorage = async (run: Run<EvoluPlatformDeps>) => {
 };
 
 describe(createEvoluStorageFactory.name, () => {
+    it('returns error when deleting local data fails', async () => {
+        const deleteDatabaseError = new Error('Delete database failed');
+        const deleteDatabase = jest.fn(() => {
+            throw deleteDatabaseError;
+        });
+
+        const storage = await createEvoluStorageFactory({
+            createEvoluInstance: () =>
+                Promise.resolve({
+                    deleteDatabase,
+                    [Symbol.asyncDispose]: jest.fn(),
+                } as any),
+        })({ suiteSyncOwner });
+
+        const result = await storage.deleteLocalData();
+
+        expect(result).toEqual(
+            err(
+                createSuiteSyncDeleteLocalDataError(
+                    deleteDatabaseError.message,
+                    deleteDatabaseError,
+                ),
+            ),
+        );
+        expect(deleteDatabase).toHaveBeenCalledTimes(1);
+    });
+
     it('stores wallet data and notifies subscribers', async () => {
         await using run = await testCreateRunWithEvoluDeps({
             createWebSocket: testCreateWebSocket({ throwOnCreate: true }),

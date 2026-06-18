@@ -20,6 +20,7 @@ describe(createChangeRelayUrl.name, () => {
                 outputs: {} as any,
                 wallets: {} as any,
             },
+            deleteLocalData: mockNotExpected('deleteLocalData'),
             dispose: mockNotExpected('dispose'),
             updateRelayUrl: jest.fn(),
         };
@@ -29,6 +30,7 @@ describe(createChangeRelayUrl.name, () => {
             dispatch: (action: any) => actions.push(action),
             suiteSyncStorageRepository: {
                 delete: mockNotExpected('delete'),
+                deleteLocalData: mockNotExpected('deleteLocalData'),
                 get: jest.fn(() => mockStorage),
                 set: mockNotExpected('set'),
             },

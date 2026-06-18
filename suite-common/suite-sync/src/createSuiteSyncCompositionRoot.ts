@@ -53,6 +53,7 @@ import { createRetrieveSuiteSyncOwner } from './owner/createRetrieveSuiteSyncOwn
 import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
 import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
 import { isUsingTrezorServer } from './relay/isUsingTrezorServer';
+import { createDeleteSuiteSyncLocalData } from './storage/createDeleteSuiteSyncLocalData';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOnUncontrolled } from './storage/createEnsureWalletSuiteSyncOnUncontrolled';
@@ -220,6 +221,9 @@ export const createSuiteSyncCompositionRoot = (
     const updateAddressLabel = createUpdateAddressLabel(labelingDeps);
 
     return {
+        deleteSuiteSyncLocalData: createDeleteSuiteSyncLocalData({
+            suiteSyncStorageRepository,
+        }),
         changeRelayUrl: createChangeRelayUrl({
             suiteSyncStorageRepository,
             getAllDeviceSessionIds,
