@@ -71,7 +71,7 @@ export interface TradingState {
     verifiedAddress: TradingVerifiedAddress;
     settings: TradingSettingsState;
     currentProviderMetadata?: ProviderMetadata;
-    favouriteAssets: Record<CryptoId, true>;
+    favouriteAssets: Partial<Record<string, true>>;
     quoteRefetchingState: QuoteRefetchingState;
 }
 
