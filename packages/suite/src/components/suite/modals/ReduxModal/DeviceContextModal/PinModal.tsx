@@ -1,15 +1,30 @@
-import { Translation } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { usePin } from '@suite-common/device';
-import { Modal } from '@trezor/components';
-import { ConfirmOnDevicePill } from '@trezor/product-components';
 
-import { PinMatrix } from 'src/components/suite/PinMatrix/PinMatrix';
 import { useSelector } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 
+import { PinModalView } from './PinModalView';
+
 type PinModalProps = {
     device: TrezorDevice;
+};
+
+const getHeadingId = (device: TrezorDevice): TranslationKey => {
+    const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
+    switch (pinRequestType?.code) {
+        case 'PinMatrixRequestType_NewFirst':
+            return 'TR_ENTER_NEW_PIN';
+        case 'PinMatrixRequestType_NewSecond':
+            return 'TR_RE_ENTER_NEW_PIN';
+        case 'PinMatrixRequestType_WipeCodeFirst':
+            return 'TR_ENTER_WIPECODE';
+        case 'PinMatrixRequestType_WipeCodeSecond':
+            return 'TR_RE_ENTER_WIPECODE';
+        default:
+            return 'TR_ENTER_PIN';
+    }
 };
 
 export const PinModal = ({ device }: PinModalProps) => {
@@ -26,66 +41,16 @@ export const PinModal = ({ device }: PinModalProps) => {
     } = usePin(device.buttonRequests, requestId);
     if (!device.features) return null;
 
-    const getHeading = () => {
-        const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
-
-        switch (pinRequestType?.code) {
-            case 'PinMatrixRequestType_NewFirst':
-                return 'TR_ENTER_NEW_PIN';
-            case 'PinMatrixRequestType_NewSecond':
-                return 'TR_RE_ENTER_NEW_PIN';
-            case 'PinMatrixRequestType_WipeCodeFirst':
-                return 'TR_ENTER_WIPECODE';
-            case 'PinMatrixRequestType_WipeCodeSecond':
-                return 'TR_RE_ENTER_WIPECODE';
-            default:
-                return 'TR_ENTER_PIN';
-        }
-    };
-
     return (
-        <Modal.Backdrop>
-            <ConfirmOnDevicePill
-                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                deviceModelInternal={device.features?.internal_model}
-                deviceUnitColor={device?.features?.unit_color}
-                onCancel={onCancel}
-            />
-            <Modal.ModalBase
-                heading={<Translation id={getHeading()} />}
-                onCancel={onCancel}
-                data-testid="@modal/pin"
-                width={400}
-                bottomContent={
-                    <>
-                        <Modal.Button
-                            onClick={handlePinSubmit}
-                            data-testid="@pin/submit-button"
-                            isDisabled={submitted}
-                            flex="1"
-                        >
-                            <Translation id="TR_CONFIRM" />
-                        </Modal.Button>
-                        <Modal.Button
-                            onClick={onCancel}
-                            intent="neutral"
-                            priority="secondary"
-                            flex="1"
-                        >
-                            <Translation id="TR_CANCEL" />
-                        </Modal.Button>
-                    </>
-                }
-            >
-                <PinMatrix
-                    pin={pin}
-                    setPin={setPin}
-                    onSubmit={handlePinSubmit}
-                    // show explanation when either setting a new pin or wipe code or entering existing pin but has at least one invalid attempt
-                    showExplanation={isSettingNewPin || isSettingNewWipeCode || hasInvalidAttempts}
-                    isDisabled={submitted}
-                />
-            </Modal.ModalBase>
-        </Modal.Backdrop>
+        <PinModalView
+            device={device}
+            pin={pin}
+            setPin={setPin}
+            onSubmit={handlePinSubmit}
+            onCancel={onCancel}
+            headingId={getHeadingId(device)}
+            submitted={submitted}
+            showExplanation={isSettingNewPin || isSettingNewWipeCode || hasInvalidAttempts}
+        />
     );
 };

@@ -160,7 +160,6 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('callId-bearing UI events are swallowed by the global listener', async () => {
-        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         await store.dispatch(connectInitThunk());
         const actionsBefore = store.getActions().length;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
@@ -191,9 +190,6 @@ describe('TrezorConnect Actions', () => {
         expect(pendingCount).toBe(1);
         expect(fulfilledCount).toBe(1);
         expect(buttonActionCount).toBe(1);
-        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('callId=scoped-call-id'));
-
-        warnSpy.mockRestore();
     });
 
     it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {

@@ -1,0 +1,39 @@
+export { createConnect } from './connect';
+export type { SubProcess, UiSubProcess, Augmentation } from './connect';
+export { normalizeError } from './errors';
+export { createConnectService } from './createConnectService';
+export { createProcessGroup } from './processGroup';
+export type { ProcessGroup, RunnableProcess } from './processGroup';
+export { createTrezorConnectMock } from './mock';
+export type { TrezorConnectMock } from './mock';
+export { UI_REQUEST, UI_RESPONSE } from './trezorConnectLike';
+export type {
+    ConnectResult,
+    GetAddressParams,
+    GetAddressResult,
+    GetDeviceStateParams,
+    PopupEventMessage,
+    TrezorConnectLike,
+    UiEvent,
+    UiEventListener,
+    UiEventMessage,
+    UiResponseEvent,
+} from './trezorConnectLike';
+export { SUBPROCESS_TYPE } from './types';
+export type {
+    AddressResult,
+    AnySubProcess,
+    ConnectService,
+    CreateWalletOptions,
+    GetAddressOptions,
+    GetAddressSubProcess,
+    Process,
+    RequestConfirmationSubProcess,
+    RequestPassphraseSubProcess,
+    RequestPinSubProcess,
+    SubProcessBase,
+    SubProcessType,
+    UiNotificationSubProcess,
+    WalletResult,
+    WalletSubProcess,
+} from './types';

@@ -31,6 +31,7 @@ import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
+import { getCurrentCallId } from './callIdStash';
 import { type ConnectKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
@@ -79,10 +80,6 @@ export const connectInitThunk = createThunk<void, void, void>(
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
             if ('callId' in action && action.callId) {
-                console.warn(
-                    `[connect-init] UI_EVENT ${action.type} (callId=${action.callId}) swallowed in global scope — handled by a scoped flow.`,
-                );
-
                 return;
             }
             dispatch(defaultTrezorUIEventHandlerThunk(action));
@@ -117,8 +114,18 @@ export const connectInitThunk = createThunk<void, void, void>(
                             : key.startsWith('cardano');
                     const cardanoEnabled = enabledNetworks.includes('ada') || isCardanoMethod;
 
+                    // Auto-stamp callId from the runConnect stash when the caller
+                    // didn't supply one, so a scoped connect-flow picker that calls
+                    // TrezorConnect.<method>(...) synchronously gets its callId
+                    // without threading it through. Explicit params.callId wins.
+                    const stashedCallId = getCurrentCallId();
+                    const paramsWithCallId =
+                        stashedCallId && params && typeof params === 'object' && !params.callId
+                            ? { ...params, callId: stashedCallId }
+                            : params;
+
                     const result = await synchronize(() =>
-                        original({ ...params, useCardanoDerivation: cardanoEnabled }),
+                        original({ ...paramsWithCallId, useCardanoDerivation: cardanoEnabled }),
                     );
 
                     dispatch(lockDevice(false));
