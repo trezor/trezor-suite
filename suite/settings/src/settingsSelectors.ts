@@ -16,8 +16,6 @@ export const selectTorOnionLinks = (state: SuiteSettingsRootState) =>
     state.suiteSettings.torOnionLinks;
 export const selectIsCoinjoinReceiveWarningHidden = (state: SuiteSettingsRootState) =>
     state.suiteSettings.isCoinjoinReceiveWarningHidden;
-export const selectIsDebugModeActive = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.debug.showDebugMenu;
 export const selectIsUnlockedBootloaderAllowed = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isUnlockedBootloaderAllowed;
 export const selectDebugTransports = (state: SuiteSettingsRootState) =>

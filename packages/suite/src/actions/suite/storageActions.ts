@@ -445,6 +445,11 @@ export const saveSuiteSettings =
         return result.then(() => {});
     };
 
+export const saveDebugSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+    await db.addItem('debug', getState().debug, 'debug', true);
+};
+
 export const saveTokenManagement =
     (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
     async (_dispatch: Dispatch, getState: GetState) => {

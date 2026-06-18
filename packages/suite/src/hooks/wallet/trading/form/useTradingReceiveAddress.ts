@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
 
-import { selectIsDebugModeActive } from '@suite/settings';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type TradingType,

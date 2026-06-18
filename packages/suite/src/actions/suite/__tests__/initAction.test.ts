@@ -1,5 +1,6 @@
 import { createMemoryHistory } from 'history';
 
+import { debugInitialState } from '@suite/debug';
 import { prepareFlagsReducer } from '@suite/flags';
 import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
@@ -83,6 +84,7 @@ const getInitialState = (initialRun?: boolean) => {
     return {
         suite: suiteReducer(undefined, EMPTY_ACTION),
         suiteSettings: suiteSettingsInitialState,
+        debug: debugInitialState,
         flags: {
             ...(initialRun !== undefined
                 ? { ...initialFlagsState, initialRun }

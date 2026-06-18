@@ -2,6 +2,7 @@ import { type FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
+import { type DebugState } from '@suite/debug';
 import type { FlagsState } from '@suite/flags';
 import type { ReceiveAccountState } from '@suite/receive';
 import type { SuiteSettingsState } from '@suite/settings';
@@ -210,5 +211,9 @@ export interface SuiteDBSchema extends DBSchema {
     discreetMode: {
         key: 'discreetMode';
         value: DiscreetModeState;
+    };
+    debug: {
+        key: 'debug';
+        value: DebugState;
     };
 }

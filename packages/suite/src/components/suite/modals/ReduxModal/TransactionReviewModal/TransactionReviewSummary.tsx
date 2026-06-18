@@ -1,7 +1,6 @@
 import { AccountLabel } from '@suite/account';
-import { DebugOnlyBadge } from '@suite/debug';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';

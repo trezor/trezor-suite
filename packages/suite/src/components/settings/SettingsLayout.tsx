@@ -2,9 +2,9 @@ import { type ReactNode, useMemo } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { Box, Column, motionEasing } from '@trezor/components';
 
 import {

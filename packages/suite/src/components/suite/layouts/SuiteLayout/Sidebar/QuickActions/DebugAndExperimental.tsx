@@ -1,6 +1,7 @@
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
-import { selectIsDebugModeActive, selectIsExperimentalEnabled } from '@suite/settings';
+import { selectIsExperimentalEnabled } from '@suite/settings';
 import { Box, Column, Icon } from '@trezor/components';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 

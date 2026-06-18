@@ -2,6 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import type { backupActions } from '@suite/backup';
+import { type debugActions } from '@suite/debug';
 import type { desktopUpdateActions } from '@suite/desktop-update';
 import { type featureFeedbackSlice } from '@suite/feature-feedback';
 import type { flagsActions } from '@suite/flags';
@@ -134,6 +135,7 @@ type DiscreetModeAction = ReturnType<
     (typeof discreetModeActions)[keyof typeof discreetModeActions]
 >;
 type TorAction = ReturnType<(typeof torActions)[keyof typeof torActions]>;
+type DebugAction = ReturnType<(typeof debugActions)[keyof typeof debugActions]>;
 type DesktopUpdateAction = ReturnType<
     (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
 >;
@@ -142,6 +144,7 @@ type DesktopUpdateAction = ReturnType<
 export type Action =
     | AnalyticsAction
     | BackupAction
+    | DebugAction
     | DiscreetModeAction
     | BioAuthAction
     | BluetoothAction

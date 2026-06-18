@@ -9,6 +9,7 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
+        { "path": "../../suite/debug" },
         {
             "path": "../../suite/platform-encryption-webauthn"
         },

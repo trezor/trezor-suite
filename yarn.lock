@@ -14589,6 +14589,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/debug@workspace:suite/debug"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.2"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/settings": "workspace:*"
@@ -16544,6 +16546,7 @@ __metadata:
     "@sentry/electron": "npm:^7.13.0"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/debug": "workspace:*"
     "@suite/desktop-update": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/github": "workspace:*"
@@ -16609,6 +16612,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/debug": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:^"
     "@suite/labeling": "workspace:*"
@@ -16661,6 +16665,7 @@ __metadata:
   dependencies:
     "@sentry/browser": "npm:10.53.1"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite/debug": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"

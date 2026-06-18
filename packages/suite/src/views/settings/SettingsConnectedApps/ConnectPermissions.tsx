@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import {
     connectPopupActions,
     groupPermissionsByCoin,
