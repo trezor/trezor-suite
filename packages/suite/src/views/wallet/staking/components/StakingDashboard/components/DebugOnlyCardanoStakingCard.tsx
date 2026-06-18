@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
-import { DebugOnlyBadge } from '@suite/debug';
-import { selectIsDebugModeActive } from '@suite/settings';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {

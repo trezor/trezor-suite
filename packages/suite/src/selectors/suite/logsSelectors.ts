@@ -1,3 +1,4 @@
+import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
 import {
     type DesktopUpdateRootState,
     selectDesktopUpdateAllowPrerelease,
@@ -10,7 +11,6 @@ import {
 import {
     selectAutodetectLanguage,
     selectAutodetectTheme,
-    selectIsDebugModeActive,
     selectLanguage,
     selectTheme,
     selectTorOnionLinks,
@@ -30,6 +30,7 @@ export type SuiteLogsApplicationInfoRootState = SuiteRootState &
     TorRootState &
     MetadataRootState &
     DesktopUpdateRootState &
+    DebugRootState &
     LogsApplicationInfoRootState;
 
 const selectRedactedWallets = (

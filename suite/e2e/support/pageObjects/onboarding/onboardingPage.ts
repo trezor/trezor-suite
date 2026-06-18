@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { debugActions } from '@suite/debug/src/debugSlice';
 import { setFlag } from '@suite/flags';
 import { suiteSettingsActions } from '@suite/settings';
 import type { BackupType } from '@suite-common/suite-types';
@@ -184,8 +185,8 @@ export class OnboardingPage {
                     payload: false,
                 },
                 {
-                    type: suiteSettingsActions.setDebugMode.type,
-                    payload: { showDebugMenu: true },
+                    type: debugActions.setShowDebugMenu.type,
+                    payload: true,
                 },
             ],
         );
@@ -195,8 +196,8 @@ export class OnboardingPage {
     async disableDebugMode() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: suiteSettingsActions.setDebugMode.type,
-            payload: { showDebugMenu: false },
+            type: debugActions.setShowDebugMenu.type,
+            payload: false,
         });
     }
 

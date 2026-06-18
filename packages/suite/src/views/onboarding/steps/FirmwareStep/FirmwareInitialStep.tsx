@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import {
     FirmwareWarningsList,
@@ -8,7 +9,6 @@ import {
 } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDevices } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';

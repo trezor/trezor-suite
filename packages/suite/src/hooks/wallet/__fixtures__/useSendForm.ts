@@ -1,5 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { debugInitialState } from '@suite/debug';
 import { locksReducer } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
@@ -284,6 +285,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             () => ({}),
         ),
         suiteSettings: createReducer(suiteSettingsInitialState, state => state),
+        debug: createReducer(debugInitialState, state => state),
         discreetMode: createReducer({ isActive: false }, () => {}),
         tor: torReducer,
         locks: locksReducer,

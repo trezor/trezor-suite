@@ -1,3 +1,4 @@
+import { debugInitialState } from '@suite/debug';
 import { lockDevice } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
@@ -21,6 +22,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
         ...suite,
     },
     suiteSettings: suiteSettingsInitialState,
+    debug: debugInitialState,
     device: {
         ...deviceReducerInitialState,
         devices: device?.devices || [],

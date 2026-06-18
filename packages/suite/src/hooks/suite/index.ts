@@ -11,7 +11,6 @@ export { usePreferredModal } from './usePreferredModal';
 export { useFormattersConfig } from './useFormattersConfig';
 export { useAnonymityStatus } from './useAnonymityStatus';
 export { useDispatch } from './useDispatch';
-export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
 export { useDisplayMode } from './useDisplayMode';
 
 // replaced in suite-native

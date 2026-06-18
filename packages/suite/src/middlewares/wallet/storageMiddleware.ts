@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
+import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
 import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
@@ -384,6 +385,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
                 case suiteSettingsActions.setIsCoinsFilterVisible.type:
                     api.dispatch(storageActions.saveSuiteSettings());
+                    break;
+                case debugActions.setShowDebugMenu.type:
+                    api.dispatch(storageActions.saveDebugSettings());
                     break;
                 case suiteSettingsActions.setCoinjoinReceiveWarningHidden.type: {
                     const device = selectSelectedDevice(api.getState());

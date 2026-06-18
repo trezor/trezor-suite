@@ -16,7 +16,6 @@ export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
-    showDebugMenu: boolean;
     transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
@@ -75,7 +74,6 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     debug: {
         invityServerEnvironment: undefined,
         earnYieldWorkerBaseUrl: undefined,
-        showDebugMenu: false,
         transports: [],
         isUnlockedBootloaderAllowed: false,
         showConnectLogs: false,

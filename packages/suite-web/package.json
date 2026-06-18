@@ -18,6 +18,7 @@
     "dependencies": {
         "@sentry/browser": "10.53.1",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite/debug": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*",

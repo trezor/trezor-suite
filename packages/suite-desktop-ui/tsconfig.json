@@ -10,6 +10,7 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite/analytics" },
+        { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/flags" },
         { "path": "../../suite/github" },

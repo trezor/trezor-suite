@@ -16,6 +16,7 @@
         "@sentry/electron": "^7.13.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/github": "workspace:*",

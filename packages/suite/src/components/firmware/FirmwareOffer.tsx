@@ -1,7 +1,6 @@
-import { DebugOnlyBadge } from '@suite/debug';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { getSuiteFirmwareTypeString, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import {
     getChangelogUrl,
     getFwUpdateVersion,

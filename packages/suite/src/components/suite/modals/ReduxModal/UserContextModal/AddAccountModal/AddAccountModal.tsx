@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
-import { selectHasExperimentalFeature, selectIsDebugModeActive } from '@suite/settings';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {

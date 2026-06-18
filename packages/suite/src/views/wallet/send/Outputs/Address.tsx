@@ -3,12 +3,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { openDeferredModal } from '@suite/modal';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import {
     type AddressCorrection,

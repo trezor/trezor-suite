@@ -1,12 +1,8 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import {
-    selectAutodetectTheme,
-    selectIsDebugModeActive,
-    selectThemeSettings,
-    suiteSettingsActions,
-} from '@suite/settings';
+import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';

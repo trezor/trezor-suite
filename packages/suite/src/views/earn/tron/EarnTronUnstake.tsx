@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { goto } from '@suite/router';
-import { selectIsDebugModeActive } from '@suite/settings';
 
 import { TronStakePageHeader, TronUnstake } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
