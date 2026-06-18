@@ -7,7 +7,7 @@ import {
     selectTradingProviderConfirmationStatus,
 } from '@suite-native/trading-state';
 
-import { TradeInfo } from '../../fees/TradeInfo';
+import { TradeInfo } from '../../general/TradeInfo/TradeInfo';
 
 export type SellInfoProps = {
     quote?: SellFiatTrade;
