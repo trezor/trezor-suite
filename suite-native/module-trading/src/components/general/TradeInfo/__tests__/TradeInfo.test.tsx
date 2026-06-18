@@ -5,7 +5,7 @@ import { type TradingExchangeType, type TradingSellType } from '@suite-common/tr
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 
-import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { TradeInfo } from '../TradeInfo';
 
 const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
