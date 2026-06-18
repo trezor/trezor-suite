@@ -81,4 +81,4 @@ runs:
           cd ./packages/${{ inputs.packageName }}
         fi
         yarn build:lib
-        yarn npm publish --tag ${{ inputs.deploymentType }} --access public
+        yarn npm publish --tag ${{ inputs.deploymentType }} --access public --provenance
