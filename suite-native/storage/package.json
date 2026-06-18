@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@scure/base": "^2.0.0",
         "@sentry/react-native": "8.12.0",
         "@suite-common/device": "workspace:*",
