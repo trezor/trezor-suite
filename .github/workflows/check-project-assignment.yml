@@ -132,3 +132,47 @@ jobs:
 
           echo "Pass: PR is assigned to a project and all required fields are filled (when applicable)."
           exit 0
+
+  check-pr-description:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR description has at least one section filled (Description / Notes for QA / Screenshots)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The PR description must contain meaningful information for QA.
+          # We require at least one of these sections to be filled in, ignoring the
+          # template's HTML comment placeholders. CI-generated content (preview
+          # deployments, Currents, quarantine list) lives under its own "##" headings,
+          # so it is never counted as content of the "Screenshots" section.
+          PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} -R ${{ github.repository }} --json body --jq '.body // ""')
+          printf '%s' "$PR_BODY" > pr_body.md
+
+          # Sections where at least one must be filled in by the author
+          REQUIRED_SECTIONS=("Description" "Notes for QA" "Screenshots")
+
+          FILLED=""
+          for section in "${REQUIRED_SECTIONS[@]}"; do
+            # Capture everything between this heading and the next "## " heading,
+            # strip HTML comments and whitespace, then check if anything remains.
+            CONTENT=$(awk -v h="$section" '
+              $0 ~ "^##[[:space:]]+" h "[[:space:]]*:?[[:space:]]*$" { capture=1; next }
+              capture && /^##[[:space:]]/ { capture=0 }
+              capture { print }
+            ' pr_body.md | perl -0777 -pe 's/<!--.*?-->//gs' | tr -d '[:space:]')
+
+            if [ -n "$CONTENT" ]; then
+              echo "Pass: Section '$section' is filled in."
+              FILLED="yes"
+            fi
+          done
+
+          if [ -z "$FILLED" ]; then
+            echo "Error: The PR description must have at least one of these sections filled in: 'Description', 'Notes for QA' or 'Screenshots'."
+            echo "Please describe your changes so the QA team can test them effectively."
+            exit 1
+          fi
+
+          echo "Pass: The PR description has at least one required section filled in."
+          exit 0
