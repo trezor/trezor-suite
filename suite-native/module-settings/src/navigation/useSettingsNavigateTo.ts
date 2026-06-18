@@ -13,7 +13,9 @@ export const useSettingsNavigateTo = () => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     return useCallback(
-        (routeName: SettingsStackRoutes): void => {
+        (
+            routeName: Exclude<SettingsStackRoutes, SettingsStackRoutes.SettingsNetworkBackends>,
+        ): void => {
             navigation.navigate(RootStackRoutes.SettingsScreenStack, { screen: routeName });
         },
         [navigation],

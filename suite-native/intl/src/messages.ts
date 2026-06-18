@@ -1279,6 +1279,42 @@ export const messages = {
             subtitle:
                 'Enable coins to buy or receive assets. Disable unused coins to improve loading speed.',
         },
+        networkBackends: {
+            title: '{networkName} backend',
+            description: 'Connect to a custom backend server for enhanced privacy.',
+            servers: {
+                title: 'Backend server',
+                status: {
+                    connected: 'Connected',
+                    disconnected: 'Disconnected',
+                },
+                serverType: 'Server',
+                serverTypeDefault: 'Trezor (default)',
+                serverAddress: 'Server address',
+                connectButton: 'Connect',
+                invalidFormat:
+                    'Invalid format. Enter the server address in this format: host:port:[t|s].',
+                unableToConnect: {
+                    clearnet: 'Unable to connect to the server. Check the address and connection.',
+                    tor: 'Can’t connect to the server. Check the address and make sure Orbot is running.',
+                },
+            },
+            closeAction: {
+                title: 'Discard changes?',
+                description: 'Any unsaved changes will be lost.',
+                discardButton: 'Discard',
+                continueEditingButton: 'Keep editing',
+            },
+            connectionInfo: {
+                title: 'Connection info',
+                connectedTo: 'Connected to',
+                blockHash: 'Block hash',
+                blockHeight: 'Block height',
+                backendVersion: 'Backend version',
+                disconnected:
+                    'Connection to the backend server failed. Check your internet connection, verify your custom backend address, reconnect your device, and make sure {networkName} is enabled in Settings.',
+            },
+        },
         coinEnabling: {
             unsupportedSubtitle: 'Not supported on this device',
             labels: {

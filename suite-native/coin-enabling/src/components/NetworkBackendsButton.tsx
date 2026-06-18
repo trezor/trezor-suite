@@ -44,7 +44,8 @@ export const NetworkBackendsButton = ({ symbol }: NetworkBackendsButtonProps) =>
 
     const navigateToNetworkBackends = () =>
         navigation.navigate(RootStackRoutes.SettingsScreenStack, {
-            screen: SettingsStackRoutes.BitcoinBackends,
+            screen: SettingsStackRoutes.SettingsNetworkBackends,
+            params: { networkSymbol: symbol },
         });
 
     return (
