@@ -74,7 +74,7 @@ process steps — this file is the canonical *what/always*.
   in GitHub, and a next-station skill refusing a ticked-but-not-drained item
   instead of pointing at the drain.
 
-## Async clarifications (inline code threads)
+## Async clarifications & directives (inline code threads)
 
 A checkbox is for a **decision** — a finite set of options you have already weighed.
 But sometimes you instead need a **clarification**: an open question you genuinely
@@ -84,6 +84,10 @@ decision (checkbox) or a clarification (inline). Guessing silently is the failur
 this prevents; do not jam an open question into checkboxes, and do not park a whole PR
 when one line needs a one-sentence answer.
 
+This inline channel runs **both ways**: you can ask the human (a `conveyor:clarify`
+thread you start), and the human can direct you (an `@conveyor` comment they start on a
+line). Both are drained the same way on your next run.
+
 - **Ask inline, tagged.** Post a GitHub inline review comment on the exact line,
   opened with a marker so future runs can find it:
 
@@ -91,6 +95,13 @@ when one line needs a one-sentence answer.
   > &lt;the specific question / what you cannot resolve and why&gt;
 
   The human replies **in that thread**, on the diff, with no agent running.
+- **Pick up the human's directives.** A human can also start a thread to **tell you
+  what to do**, anchored to a line. A human inline comment whose **first line starts
+  with `@conveyor`** (case-insensitive; a leading `conveyor:` is also accepted) is an
+  **actionable instruction for you** — distinct from ordinary team-discussion comments,
+  which you **never** touch or resolve. You apply it on the next run (see Drain). If the
+  instruction is ambiguous, do **not** guess — reply on that same thread with your
+  clarifying question and leave it open.
 - **Drain on the next run.** Before doing other work on the PR, query its review
   **threads** with GraphQL — the thread node id you need to resolve is **not**
   derivable from a REST comment id:
@@ -102,15 +113,22 @@ when one line needs a one-sentence answer.
   } } }
   ```
 
-  Take each **unresolved** thread whose **first** comment body contains
-  `<!-- conveyor:clarify -->`. A thread is **answered** only when a **human** (a
-  non-bot `author.login` that is not you and not Copilot) has replied *after* your
-  question with an actual answer — **a reply that is itself a question is not an
-  answer**; leave that thread open and respond to it. For an answered thread:
-  **incorporate the answer**, reply `✅ applied — <what changed>`, then **resolve it**
-  by passing that thread's `id` to the `resolveReviewThread` mutation. A thread with no
-  human reply yet is still waiting — leave it open, and never resolve a thread the
-  human is still actively discussing.
+  Act on each **unresolved** thread that is for you — identified by its **first**
+  comment:
+  - **(a) your `conveyor:clarify` thread** (first comment contains
+    `<!-- conveyor:clarify -->`) — ready only once a **human** (a non-bot
+    `author.login` that is not you and not Copilot) has replied with an actual
+    **answer**; a reply that is itself a question is not an answer. Incorporate it.
+  - **(b) a human directive** (first comment, by a non-bot human, starts with
+    `@conveyor` / `conveyor:`) — ready immediately; the instruction *is* the first
+    comment. Apply it; if it is ambiguous, reply with your clarifying question and
+    leave the thread open (do not guess).
+
+  Ignore every other thread — ordinary team-discussion comments are not yours, never
+  touch or resolve them. After acting on (a) or (b): reply `✅ applied — <what changed>`,
+  then **resolve** the thread by passing its `id` to the `resolveReviewThread` mutation.
+  Leave open: an unanswered clarify thread, a directive you replied to with a question,
+  and any thread the human is still actively discussing.
 - **Parking.** Open decisions **and** open clarify threads gate the same
   `*-needs-human` state. When you park, note in the status comment "N decisions + M
   inline clarifications open — answer the inline ones on the diff" so the human looks

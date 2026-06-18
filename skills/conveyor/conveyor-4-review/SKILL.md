@@ -88,10 +88,11 @@ the skill happens to be re-invoked. For a passed PR still at its `Reviewed at:` 
 the check is a single `headRefOid`-vs-SHA compare — fresh, skip with no work.
 
 **Drain run (entered at `conveyor/review:needs-human`).** The human has been ticking
-answer checkboxes and/or replying to inline clarify threads since the last run. **First
-drain your inline `conveyor:clarify` threads** (CONVENTIONS "Async clarifications"):
-for each that now has a human reply, incorporate it, reply `✅ applied — <what changed>`,
-and resolve the thread. Then skip fresh lens work (unless the diff changed since the
+answer checkboxes and/or leaving inline comments since the last run. **First drain the
+inline threads** (CONVENTIONS "Async clarifications & directives"): your own
+`conveyor:clarify` threads that now have a human answer, **and** any thread a human
+started with `@conveyor` (a directive) — apply each, reply `✅ applied — <what changed>`,
+and resolve it. Then skip fresh lens work (unless the diff changed since the
 parked findings were written) and resolve from the ticked state exactly as in step 6's
 "Resolve from ticked boxes": apply each finding's chosen option, honour an
 approved/declined split, then re-run the readiness checks. If the `✅ Done` box is not
