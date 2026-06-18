@@ -39,7 +39,7 @@ export type {
     AuthenticateDeviceParams,
     AuthenticateDeviceResult,
 } from './api/management/authenticateDevice';
-export { CipherKeyValue } from './api/cipherKeyValue';
+export { CipherKeyValue } from './api/device/cipherKeyValue';
 export { ApplySettings } from './api/management/applySettings';
 export { AuthorizeCoinjoin } from './api/bitcoin/authorizeCoinjoin';
 export * from './api/core/uiResponse';
@@ -61,13 +61,13 @@ export {
     type DiscoverAccountsProgress,
     CARDANO_DERIVATIONS,
 } from './api/discoverAccounts';
-export { type FirmwareUpdateResponse } from './api/firmwareUpdate';
+export { type FirmwareUpdateResponse } from './api/device/firmwareUpdate';
 export { type UpdateConnectSettings } from './api/core/updateConnectSettings';
-export { GetOwnershipId } from './api/getOwnershipId';
-export { GetOwnershipProof } from './api/getOwnershipProof';
+export { GetOwnershipId } from './api/device/getOwnershipId';
+export { GetOwnershipProof } from './api/device/getOwnershipProof';
 export { PushTransaction } from './api/pushTransaction';
-export { RequestLoginSchema } from './api/requestLogin';
-export { UnlockPathParams } from './api/unlockPath';
+export { RequestLoginSchema } from './api/device/requestLogin';
+export { UnlockPathParams } from './api/device/unlockPath';
 export { FirmwareType } from '@trezor/device-utils';
 
 export type {

@@ -2,8 +2,8 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { BundledParams, Params, Response } from '../params';
-import { DerivationPath } from '../params';
+import type { BundledParams, Params, Response } from '../../params';
+import { DerivationPath } from '../../params';
 
 export type GetOwnershipProof = Static<typeof GetOwnershipProof>;
 export const GetOwnershipProof = Type.Object({
