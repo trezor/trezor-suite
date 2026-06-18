@@ -138,7 +138,7 @@ graph TD
     trading-debug --> trading-state
     trading-slippage -.-> trading-fixtures
     trading-slippage --> trading-atoms
-    trading-slippage -.-> trading-state
+    trading-slippage --> trading-state
     trading-atoms -.-> trading-fixtures
     trading-fixtures --> trading-consts
     trading-fixtures -.-> trading-types

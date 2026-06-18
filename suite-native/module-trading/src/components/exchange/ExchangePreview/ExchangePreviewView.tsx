@@ -60,11 +60,11 @@ export const ExchangePreviewView = memo(
                     <ExchangeFiatDeviationWarning quote={quote} />
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
-                            <SlippagePicker quote={quote} />
+                            <SlippagePicker />
                         </ExchangeEIP712Info>
                     ) : (
                         <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError}>
-                            <SlippagePicker quote={quote} />
+                            <SlippagePicker />
                         </ExchangeFeePickerCard>
                     )}
                     {hasKycPolicyWarning(kycPolicy) && (

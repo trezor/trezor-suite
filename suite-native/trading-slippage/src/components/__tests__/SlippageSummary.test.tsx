@@ -1,4 +1,4 @@
-import { type ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import type { SlippageFormValues } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
@@ -19,13 +19,13 @@ const TestWrapper = ({ slippage = '1' }: { slippage?: string }) => {
 
     return (
         <Form form={form}>
-            <SlippageSummary quote={quote} />
+            <SlippageSummary />
         </Form>
     );
 };
 
-const renderSlippageSummary = (slippage?: string) =>
-    renderWithSlippageTestProvider(<TestWrapper slippage={slippage} />);
+const renderSlippageSummary = (slippage?: string, quote?: ExchangeTrade) =>
+    renderWithSlippageTestProvider(<TestWrapper slippage={slippage} />, { quote });
 
 describe('SlippageSummary', () => {
     it('should render all row labels', () => {

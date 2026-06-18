@@ -17,7 +17,6 @@ type UseSlippageFormRet = {
     isValid: SlippageForm['formState']['isValid'];
     handlePresetPress: (preset: string) => void;
     handleSubmit: SlippageForm['handleSubmit'];
-    reset: SlippageForm['reset'];
     form: SlippageForm;
 };
 
@@ -50,7 +49,6 @@ export const useSlippageForm = (): UseSlippageFormRet => {
         trigger,
         formState: { isValid },
         handleSubmit,
-        reset,
     } = form;
 
     const handlePresetPress = useCallback(
@@ -61,5 +59,5 @@ export const useSlippageForm = (): UseSlippageFormRet => {
         [setValue, trigger],
     );
 
-    return { isValid, handlePresetPress, handleSubmit, reset, form };
+    return { isValid, handlePresetPress, handleSubmit, form };
 };
