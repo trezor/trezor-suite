@@ -88,12 +88,15 @@ the skill happens to be re-invoked. For a passed PR still at its `Reviewed at:` 
 the check is a single `headRefOid`-vs-SHA compare — fresh, skip with no work.
 
 **Drain run (entered at `conveyor/review:needs-human`).** The human has been ticking
-answer checkboxes since the last run. Skip fresh lens work (unless the diff changed
-since the parked findings were written) and resolve from the ticked state exactly
-as in step 6's "Resolve from ticked boxes": apply each finding's chosen option,
-honour an approved/declined split, then re-run the readiness checks. If the
-`✅ Done` box is not ticked, the human is not finished — report "still waiting" and
-exit without changing the lifecycle label.
+answer checkboxes and/or replying to inline clarify threads since the last run. **First
+drain your inline `conveyor:clarify` threads** (CONVENTIONS "Async clarifications"):
+for each that now has a human reply, incorporate it, reply `✅ applied — <what changed>`,
+and resolve the thread. Then skip fresh lens work (unless the diff changed since the
+parked findings were written) and resolve from the ticked state exactly as in step 6's
+"Resolve from ticked boxes": apply each finding's chosen option, honour an
+approved/declined split, then re-run the readiness checks. If the `✅ Done` box is not
+ticked **or** any clarify thread is still unanswered, the human is not finished —
+report "still waiting" and exit without changing the lifecycle label.
 
 ### 1. Triage the diff
 
@@ -250,6 +253,12 @@ Gate for noise, then classify each finding by who resolves it (same model as
   `- [ ] fix this way`, `- [ ] fix that way`, `- [ ] accept as-is`) with your
   `✅ recommended`, under one shared `✅ Done` box — so the human resolves it by
   **ticking a box in the GitHub web UI** (async, no agent running). Never auto-apply.
+- **Clarify inline when it is an open question, not a finite choice.** If a finding is
+  really an open question about specific code that only the author can answer (not a
+  pick-one-of-N decision), post it as an inline `conveyor:clarify` thread on that line
+  instead of a checkbox (see CONVENTIONS "Async clarifications"); the next drain reads
+  the reply, applies it, and resolves the thread. Evaluate which you need before
+  defaulting to checkboxes.
 - **After an auto-fix push, re-watch CI.** Poll `gh pr checks` (0 = all pass, 8 =
   some pending, 1 = some failed) and keep polling while anything is pending. If
   the fix breaks a check, only count a fix attempt against a check whose

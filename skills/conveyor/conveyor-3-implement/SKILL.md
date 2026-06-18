@@ -79,6 +79,14 @@ compare-and-swap). The **real lock is the branch on `origin`** plus
 
 - Read the issue body — it is the consolidated plan and the single source of
   truth for what to build.
+- **When the plan is genuinely ambiguous about a specific line you are writing,
+  ask — do not guess.** Evaluate which you need: a *decision* (finite options you
+  weighed → park a checkbox at step 6) or a *clarification* (an open question anchored
+  to specific code → post an inline `conveyor:clarify` thread on that line; see
+  CONVENTIONS "Async clarifications"). A one-line uncertainty deserves a one-line
+  inline question, not a silent guess and not parking the whole feature. On a **drain
+  run** (resuming an `impl:needs-human` PR), drain your open clarify threads first —
+  incorporate the replies and resolve them — before continuing.
 - **Load project learnings** (`.github/conveyor-learnings.md`, see CONVENTIONS) for
   the issue's Affected areas before you start; when one shapes your approach,
   annotate `Applied prior learning: <key>` in the PR.
@@ -214,6 +222,12 @@ Then:
   `- [ ] (c) relax constraint Z in the plan`, `- [ ] (d) bounce back to planning`.
   The human ticks a box in the GitHub web UI (async, no agent running), never works
   out the options themselves.
+- **If a blocker is an open question about specific code** (not a finite decision),
+  post it as an inline `conveyor:clarify` thread on that line instead of — or
+  alongside — the checkbox options (see CONVENTIONS "Async clarifications"), and say in
+  the diagnosis how many inline clarifications are open so the human answers them on
+  the diff. The next drain reads the replies, incorporates them, and resolves the
+  threads.
 - **Pull in the eng owner — this is their gate.** If the `## Team` block names an
   eng owner, request/assign them now and `@`-mention them in the diagnosis comment
   (a notification here is intended — implementation is stuck and needs them). If

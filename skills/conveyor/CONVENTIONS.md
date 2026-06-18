@@ -74,6 +74,35 @@ process steps — this file is the canonical *what/always*.
   in GitHub, and a next-station skill refusing a ticked-but-not-drained item
   instead of pointing at the drain.
 
+## Async clarifications (inline code threads)
+
+A checkbox is for a **decision** — a finite set of options you have already weighed.
+But sometimes you instead need a **clarification**: an open question you genuinely
+cannot resolve from the code, the spec, or reasonable inference, anchored to a
+**specific line** of the diff. **Before you ever guess, evaluate which you need** — a
+decision (checkbox) or a clarification (inline). Guessing silently is the failure mode
+this prevents; do not jam an open question into checkboxes, and do not park a whole PR
+when one line needs a one-sentence answer.
+
+- **Ask inline, tagged.** Post a GitHub inline review comment on the exact line,
+  opened with a marker so future runs can find it:
+
+  > 🟡 **Conveyor — clarify** `<!-- conveyor:clarify -->`
+  > &lt;the specific question / what you cannot resolve and why&gt;
+
+  The human replies **in that thread**, on the diff, with no agent running.
+- **Drain on the next run.** Before doing other work on the PR, list its review
+  comments, find your `<!-- conveyor:clarify -->` ones, and for each that now has a
+  human reply: **incorporate the answer**, then reply `✅ applied — <what changed>` and
+  **resolve the thread** (a reply alone does not resolve — call the GraphQL
+  `resolveReviewThread` mutation). A clarify thread with no reply yet is still
+  waiting — leave it open.
+- **Parking.** Open decisions **and** open clarify threads gate the same
+  `*-needs-human` state. When you park, note in the status comment "N decisions + M
+  inline clarifications open — answer the inline ones on the diff" so the human looks
+  in both places. (Inline clarify is a PR-stage tool — it needs a diff; issue-stage
+  plan review has no code lines, so it stays checkbox-only.)
+
 ## Security carve-out
 
 - Never classify a **signing / key-handling / persistence / privacy** change as
