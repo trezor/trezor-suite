@@ -1,8 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectIsDebugModeActive, suiteSettingsActions } from '@suite/settings';
 import { desktopApi } from '@trezor/suite-desktop-api';
+
+import { selectIsDebugModeActive } from './debugSelectors';
+import { debugActions } from './debugSlice';
 
 const DEBUG_MODE_ACTIVATION_CLICK_COUNT = 5;
 
@@ -25,7 +27,7 @@ export const useDebugModeActivator = () => {
 
         const shouldEnableDebugMode = !isDebugModeActive;
 
-        dispatch(suiteSettingsActions.setDebugMode({ showDebugMenu: shouldEnableDebugMode }));
+        dispatch(debugActions.setShowDebugMenu(shouldEnableDebugMode));
 
         if (desktopApi.available) {
             desktopApi.configLogger(

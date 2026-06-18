@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectIsDebugModeActive } from '@suite/settings';
+import { selectIsDebugModeActive } from './debugSelectors';
 
 type DebugOnlyProps = {
     children: ReactNode;

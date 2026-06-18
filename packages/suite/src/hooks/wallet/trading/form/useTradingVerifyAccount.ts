@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { openModal } from '@suite/modal';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     cryptoIdToSymbol,

@@ -1,4 +1,5 @@
-import { selectHasExperimentalFeature, selectIsDebugModeActive } from '@suite/settings';
+import { selectIsDebugModeActive } from '@suite/debug';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';

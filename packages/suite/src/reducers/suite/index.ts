@@ -1,3 +1,4 @@
+import { prepareDebugReducer } from '@suite/debug';
 import { desktopUpdateReducer } from '@suite/desktop-update';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
 import { prepareFlagsReducer } from '@suite/flags';
@@ -30,6 +31,7 @@ const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const device = deviceSlice.prepareReducer(extraDependencies);
 const flags = prepareFlagsReducer(extraDependencies);
 const suiteSettings = prepareSuiteSettingsReducer(extraDependencies);
+const debug = prepareDebugReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
@@ -38,6 +40,7 @@ export default {
     discreetMode: discreetModeReducer,
     tor: torReducer,
     suiteSettings,
+    debug,
     flags,
     locks: locksReducer,
     router: routerReducer,

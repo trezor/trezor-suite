@@ -1,9 +1,8 @@
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { DebugOnlyBadge } from '@suite/debug';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';

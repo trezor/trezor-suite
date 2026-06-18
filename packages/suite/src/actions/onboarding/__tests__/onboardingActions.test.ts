@@ -1,3 +1,4 @@
+import { debugInitialState } from '@suite/debug';
 import { recoveryReducer } from '@suite/recovery';
 import { suiteSettingsInitialState } from '@suite/settings';
 
@@ -38,6 +39,7 @@ const getInitialState = (custom?: any) => {
             ...suite,
         },
         suiteSettings: suiteSettingsInitialState,
+        debug: debugInitialState,
         device: device ?? {},
     };
 };

@@ -2,16 +2,13 @@ import { useMemo } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import {
-    selectExperimentalFeatures,
-    selectIsDebugModeActive,
-    suiteSettingsActions,
-} from '@suite/settings';
+import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';

@@ -1,4 +1,4 @@
-import { selectIsDebugModeActive } from '@suite/settings';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { isDesktop } from '@trezor/env-utils';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';

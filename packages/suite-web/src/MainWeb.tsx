@@ -5,6 +5,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
+import { useDebugLanguageShortcut } from '@suite/debug';
 import { ServicesProvider } from '@suite-common/dependency-injection';
 
 import {
@@ -14,7 +15,6 @@ import {
     Preloader,
     ToasterProvider,
 } from 'src/components/suite';
-import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';

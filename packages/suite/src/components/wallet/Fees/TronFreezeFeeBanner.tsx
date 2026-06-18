@@ -1,7 +1,7 @@
 import { selectSelectedAccount } from '@suite/account';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { calculateTronFreezeSuggestion } from '@suite-common/wallet-utils';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';

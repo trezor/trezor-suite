@@ -1,4 +1,5 @@
 import type { BackupState } from '@suite/backup';
+import { debugInitialState } from '@suite/debug';
 import { desktopUpdateInitialState } from '@suite/desktop-update';
 import { initialState as featureFeedbackInitialState } from '@suite/feature-feedback';
 import { flagsInitialState } from '@suite/flags';
@@ -31,6 +32,7 @@ export const initialAppState: AppState = {
         torBootstrap: null,
     },
     suiteSettings: suiteSettingsInitialState,
+    debug: debugInitialState,
     flags: flagsInitialState,
     locks: locksInitialState,
     device: initialState,

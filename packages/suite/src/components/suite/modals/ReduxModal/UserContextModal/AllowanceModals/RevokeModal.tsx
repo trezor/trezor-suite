@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
-import { DebugOnlyBadge } from '@suite/debug';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited, shouldShowRevokeAllowanceBanner } from '@suite-common/wallet-utils';
