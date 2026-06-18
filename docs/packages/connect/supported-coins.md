@@ -13,10 +13,7 @@ These files are the source of truth. They are committed to this repository and e
 
 ## Editing the definitions
 
-1. Edit the relevant file directly: `packages/connect-data/files/coins.json` for Bitcoin-like and miscellaneous coins, or `packages/connect-data/files/coins-eth.json` for Ethereum networks.
-2. Keep the existing field shape — the in-memory schema is hand-maintained in `packages/connect-common/src/types/coinInfo.ts`, and the parser in `packages/connect/src/data/coinInfo.ts` reads the files as-is.
-3. Run `yarn prettier --write packages/connect-data/files/coins.json packages/connect-data/files/coins-eth.json` to keep the formatting consistent.
-4. Make sure the corresponding [connect support](https://github.com/trezor/trezor-firmware/blob/main/common/defs/support.json) expectations still hold for any coin you add or change.
+Edit the relevant file directly: `packages/connect-data/files/coins.json` for Bitcoin-like and miscellaneous coins, or `packages/connect-data/files/coins-eth.json` for Ethereum networks.
 
 > Warning: the retired pipeline used to drop any coin whose `support` map was `false` for every device model. Nothing filters those out anymore, so a coin present in the JSON is parsed by `packages/connect/src/data/coinInfo.ts` and surfaces in `getAllNetworks()` regardless of its `support` values. When adding a coin, make sure its `support` map reflects reality — a coin unsupported on all models should not be added.
 
