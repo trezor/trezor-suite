@@ -65,6 +65,7 @@
         "@suite-native/device-bootloader-mode": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/formatters-config": "workspace:*",
+        "@suite-native/formatters-experiment": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/message-system": "workspace:*",

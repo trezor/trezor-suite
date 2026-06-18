@@ -47,6 +47,7 @@
         { "path": "../device-bootloader-mode" },
         { "path": "../feature-flags" },
         { "path": "../formatters-config" },
+        { "path": "../formatters-experiment" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../message-system" },

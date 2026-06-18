@@ -11576,6 +11576,7 @@ __metadata:
     "@suite-native/device-bootloader-mode": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters-config": "workspace:*"
+    "@suite-native/formatters-experiment": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/message-system": "workspace:*"
@@ -12270,6 +12271,20 @@ __metadata:
     expo-localization: "npm:~55.0.8"
     react: "npm:19.2.4"
     react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/formatters-experiment@workspace:*, @suite-native/formatters-experiment@workspace:suite-native/formatters-experiment":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/formatters-experiment@workspace:suite-native/formatters-experiment"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    react: "npm:19.2.4"
+    react-native: "npm:0.83.2"
   languageName: unknown
   linkType: soft
 
