@@ -11,6 +11,7 @@ import type { ClusterUrl, RpcTransportFromClusterUrl, RpcTransportMainnet } from
 
 const DEFAULT_MAX_RPS = 4; // Default maximum requests per second
 const DEFAULT_INTERVAL = 1000; // Default interval in milliseconds (1 second)
+const DEFAULT_REQUEST_TIMEOUT = 15_000; // Default per-request timeout in milliseconds
 const THROTTLE_OPTIONS: ThrottledTransportOptions = {
     maxRps: 4,
     interval: 100,
@@ -23,7 +24,12 @@ type QueuedRequest<TClusterUrl extends ClusterUrl, TResponse = unknown> = Readon
     resolve: (value: TResponse | PromiseLike<TResponse>) => void;
 }>;
 
-type ThrottledTransportOptions = { maxRps?: number; interval?: number; debug?: boolean };
+type ThrottledTransportOptions = {
+    maxRps?: number;
+    interval?: number;
+    debug?: boolean;
+    timeout?: number;
+};
 
 /**
  * Throttled RPC transport for Solana.
@@ -40,6 +46,7 @@ const getThrottledTransport = <TClusterUrl extends ClusterUrl>(
         maxRps = DEFAULT_MAX_RPS,
         interval = DEFAULT_INTERVAL,
         debug = false,
+        timeout = DEFAULT_REQUEST_TIMEOUT,
     }: ThrottledTransportOptions = {},
 ): RpcTransportFromClusterUrl<TClusterUrl> => {
     /**
@@ -83,7 +90,13 @@ const getThrottledTransport = <TClusterUrl extends ClusterUrl>(
             /**
              * When a request's slot comes up, delegate it to the underlying transport.
              */
-            originalTransport(request.config).then(request.resolve).catch(request.reject);
+            const timeoutSignal = AbortSignal.timeout(timeout);
+            const signal = request.config.signal
+                ? AbortSignal.any([request.config.signal, timeoutSignal])
+                : timeoutSignal;
+            originalTransport({ ...request.config, signal })
+                .then(request.resolve)
+                .catch(request.reject);
             requestBudgetRemaining--;
             if (pendingQueueRunTimerId === undefined) {
                 if (debug) {
@@ -131,17 +144,17 @@ const getThrottledTransport = <TClusterUrl extends ClusterUrl>(
     return throttledTransport as RpcTransportFromClusterUrl<TClusterUrl>;
 };
 
-export const getApi = (url: string, userAgent: string) => {
+export const getApi = (url: string, userAgent: string, timeout = DEFAULT_REQUEST_TIMEOUT) => {
     const clusterUrl = mainnet(url);
     const transport = createDefaultRpcTransport({
         url: clusterUrl,
         headers: { 'User-Agent': userAgent },
     });
 
-    const throttledTransport = getThrottledTransport(
-        transport,
-        THROTTLE_OPTIONS,
-    ) as RpcTransportMainnet;
+    const throttledTransport = getThrottledTransport(transport, {
+        ...THROTTLE_OPTIONS,
+        timeout,
+    }) as RpcTransportMainnet;
     const throttledRpc = createSolanaRpcFromTransport(throttledTransport);
 
     const api = {
