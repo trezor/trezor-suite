@@ -1,3 +1,9 @@
+import {
+    type BrowserOptions,
+    browserProfilingIntegration,
+    browserTracingIntegration,
+    captureConsoleIntegration,
+} from '@sentry/browser';
 import type { ErrorEvent, Options } from '@sentry/core';
 
 import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG, redactSentryEvent } from '@suite-common/sentry';
@@ -90,3 +96,15 @@ export const SENTRY_CONFIG = {
         },
     },
 } satisfies Options;
+
+export const SENTRY_BROWSER_CONFIG = {
+    ...SENTRY_CONFIG,
+    profileSessionSampleRate: isCodesignBuild() ? 0.1 : 1,
+    tracesSampleRate: isCodesignBuild() ? 0.1 : 1,
+    profileLifecycle: 'trace',
+    integrations: [
+        captureConsoleIntegration({ levels: ['error'] }),
+        browserProfilingIntegration(),
+        browserTracingIntegration(),
+    ],
+} satisfies BrowserOptions;
