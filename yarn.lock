@@ -4227,14 +4227,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^5.2.2":
-  version: 5.2.2
-  resolution: "@hookform/resolvers@npm:5.2.2"
+"@hookform/resolvers@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "@hookform/resolvers@npm:5.4.0"
   dependencies:
     "@standard-schema/utils": "npm:^0.3.0"
   peerDependencies:
     react-hook-form: ^7.55.0
-  checksum: 10/93447287dc89827c517c72dc61e3be0217d3a5d9cbdb532317e5f5fd176c3eedb2ccd62d3c51fb403812939c9b7a4ebcaca35659a9bfb90e16ec38a2092d13a2
+  checksum: 10/c56e03d3707999bf0bebdcf1a8c5fc1cbbca527425d893e2402ead09e3644681581b8d2ad76eec62f72270534f5dc38159e2d6ee4001a0152363b8eddfedfcab
   languageName: node
   linkType: hard
 
@@ -12261,7 +12261,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:^5.2.2"
+    "@hookform/resolvers": "npm:^5.4.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -15033,7 +15033,7 @@ __metadata:
   dependencies:
     "@evolu/common": "npm:8.0.0-next.5"
     "@evolu/web": "npm:3.0.0-next.1"
-    "@hookform/resolvers": "npm:^5.2.2"
+    "@hookform/resolvers": "npm:^5.4.0"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
@@ -16651,7 +16651,7 @@ __metadata:
   dependencies:
     "@floating-ui/react": "npm:^0.27.17"
     "@formatjs/intl": "npm:4.1.2"
-    "@hookform/resolvers": "npm:^5.2.2"
+    "@hookform/resolvers": "npm:^5.4.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@sentry/core": "npm:10.53.1"
