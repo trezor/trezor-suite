@@ -22,7 +22,6 @@ import type { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
 import type { cardanoGetPublicKey } from './cardanoGetPublicKey';
 import type { cardanoSignMessage } from './cardanoSignMessage';
 import type { cardanoSignTransaction } from './cardanoSignTransaction';
-import type { cipherKeyValue } from './cipherKeyValue';
 import type { discoverAccounts } from './discoverAccounts';
 import type { ethereumGetAddress } from './ethereumGetAddress';
 import type { ethereumGetPublicKey } from './ethereumGetPublicKey';
@@ -33,14 +32,9 @@ import type { ethereumVerifyMessage } from './ethereumVerifyMessage';
 import type { evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 import type { evoluGetNode } from './evoluGetNode';
 import type { evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
-import type { firmwareUpdate } from './firmwareUpdate';
 import type { getAccountInfo } from './getAccountInfo';
 import type { getAddress } from './getAddress';
 import type { getCoinInfo } from './getCoinInfo';
-import type { getDeviceState } from './getDeviceState';
-import type { getFeatures } from './getFeatures';
-import type { getOwnershipId } from './getOwnershipId';
-import type { getOwnershipProof } from './getOwnershipProof';
 import type { getPublicKey } from './getPublicKey';
 import type { moneroGetAddress } from './moneroGetAddress';
 import type { moneroGetWatchKey } from './moneroGetWatchKey';
@@ -49,10 +43,8 @@ import type { moneroSignTransaction } from './moneroSignTransaction';
 import type { nostrGetPublicKey } from './nostrGetPublicKey';
 import type { nostrSignEvent } from './nostrSignEvent';
 import type { pushTransaction } from './pushTransaction';
-import type { requestLogin } from './requestLogin';
 import type { rippleGetAddress } from './rippleGetAddress';
 import type { rippleSignTransaction } from './rippleSignTransaction';
-import type { showDeviceTutorial } from './showDeviceTutorial';
 import type { signMessage } from './signMessage';
 import type { solanaComposeTransaction } from './solanaComposeTransaction';
 import type { solanaGetAddress } from './solanaGetAddress';
@@ -66,45 +58,14 @@ import type { tezosSignTransaction } from './tezosSignTransaction';
 import type { tronComposeTransaction } from './tronComposeTransaction';
 import type { tronGetAddress } from './tronGetAddress';
 import type { tronSignTransaction } from './tronSignTransaction';
-import type { unlockPath } from './unlockPath';
 import type { verifyMessage } from './verifyMessage';
 
 import { TrezorConnectBitcoin } from './bitcoin';
 import { TrezorConnectCore } from './core';
+import { TrezorConnectDevice } from './device';
 import { TrezorConnectManagement } from './management';
 
-export { TrezorConnectBitcoin, TrezorConnectCore, TrezorConnectManagement };
-
-// Device configuration, firmware, security, and hardware control
-export const TrezorConnectDevice = Type.Object({
-    // https://connect.trezor.io/9/methods/device/getFeatures/
-    getFeatures: Type.Unsafe<typeof getFeatures>(),
-
-    // https://connect.trezor.io/9/methods/device/getDeviceState/
-    getDeviceState: Type.Unsafe<typeof getDeviceState>(),
-
-    // https://connect.trezor.io/9/methods/device/firmwareUpdate/
-    firmwareUpdate: Type.Unsafe<typeof firmwareUpdate>(),
-
-    // https://connect.trezor.io/9/methods/device/showDeviceTutorial/
-    showDeviceTutorial: Type.Unsafe<typeof showDeviceTutorial>(),
-
-    // https://connect.trezor.io/9/methods/other/requestLogin/
-    requestLogin: Type.Unsafe<typeof requestLogin>(),
-
-    // https://connect.trezor.io/9/methods/other/cipherKeyValue/
-    cipherKeyValue: Type.Unsafe<typeof cipherKeyValue>(),
-
-    // todo: link docs
-    unlockPath: Type.Unsafe<typeof unlockPath>(),
-
-    // https://connect.trezor.io/9/methods/other/getOwnershipId/
-    getOwnershipId: Type.Unsafe<typeof getOwnershipId>(),
-
-    // https://connect.trezor.io/9/methods/other/getOwnershipProof/
-    getOwnershipProof: Type.Unsafe<typeof getOwnershipProof>(),
-});
-export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
+export { TrezorConnectBitcoin, TrezorConnectCore, TrezorConnectDevice, TrezorConnectManagement };
 
 // Blockchain backend operations (no device needed)
 export const TrezorConnectBlockchain = Type.Object({

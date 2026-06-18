@@ -8,7 +8,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { Params, Response } from '../params';
+import type { Params, Response } from '../../params';
 
 export type LoginChallenge = Static<typeof LoginChallenge>;
 export const LoginChallenge = Type.Object({

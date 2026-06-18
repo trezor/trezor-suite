@@ -1,5 +1,5 @@
-import type { DeviceState } from '../device';
-import type { CommonParams, Response } from '../params';
+import type { DeviceState } from '../../device';
+import type { CommonParams, Response } from '../../params';
 
 export interface DeviceStateResponse {
     state: DeviceState;
