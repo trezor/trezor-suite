@@ -208,11 +208,12 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     it('should render transaction details section', () => {
-        const { result } = renderTradingExchangePreviewScreen();
+        const {
+            result: { getByText },
+        } = renderTradingExchangePreviewScreen();
 
-        expect(
-            result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
-        ).toBeOnTheScreen();
+        // 1st line of trade info is provider
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
     describe('Error Alert Functionality', () => {
