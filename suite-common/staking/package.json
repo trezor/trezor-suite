@@ -23,6 +23,6 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "viem": "^2.48.1"
+        "viem": "^2.52.2"
     }
 }
