@@ -7,6 +7,7 @@ import type {
     TrezorConnectDevice,
     TrezorConnectEthereum,
     TrezorConnectEvolu,
+    TrezorConnectManagement,
     TrezorConnectMonero,
     TrezorConnectNostr,
     TrezorConnectRipple,
@@ -19,6 +20,7 @@ import type {
 type AssertNever<T extends never> = T;
 
 type ConnectCallableMethodGroups = {
+    management: readonly (keyof TrezorConnectManagement)[];
     device: readonly (keyof TrezorConnectDevice)[];
     blockchain: readonly (keyof TrezorConnectBlockchain)[];
     account: readonly (keyof TrezorConnectAccount)[];
@@ -36,11 +38,8 @@ type ConnectCallableMethodGroups = {
 };
 
 const connectCallableMethodGroups = {
-    device: [
-        'getFeatures',
-        'getDeviceState',
+    management: [
         'getFirmwareHash',
-        'firmwareUpdate',
         'resetDevice',
         'loadDevice',
         'recoveryDevice',
@@ -54,17 +53,24 @@ const connectCallableMethodGroups = {
         'authenticateDevice',
         'setBusy',
         'setBrightness',
-        'showDeviceTutorial',
         'bleUnpair',
+        'thpGetCredentials',
+        'thpRemoveCredentials',
+        'telemetryGet',
+        'pingDevice',
+        'getNonce',
+        'getSettings',
+    ],
+    device: [
+        'getFeatures',
+        'getDeviceState',
+        'firmwareUpdate',
+        'showDeviceTutorial',
         'requestLogin',
         'cipherKeyValue',
         'unlockPath',
         'getOwnershipId',
         'getOwnershipProof',
-        'thpGetCredentials',
-        'thpRemoveCredentials',
-        'telemetryGet',
-        'pingDevice',
     ],
     blockchain: [
         'blockchainSubscribe',
@@ -83,7 +89,6 @@ const connectCallableMethodGroups = {
         'blockchainSubscribeFiatRates',
         'blockchainUnsubscribeFiatRates',
         'pushTransaction',
-        'getNonce',
     ],
     account: [
         'getAddress',
@@ -92,7 +97,6 @@ const connectCallableMethodGroups = {
         'discoverAccounts',
         'signMessage',
         'verifyMessage',
-        'getSettings',
         'getCoinInfo',
     ],
     bitcoin: [

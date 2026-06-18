@@ -102,7 +102,7 @@ import type { verifyMessage } from './verifyMessage';
 import type { wipeDevice } from './wipeDevice';
 
 // Initialization, lifecycle, events, and settings
-export const TrezorConnectManagement = Type.Object({
+export const TrezorConnectCore = Type.Object({
     // For internal use, no public documentation.
     dispose: Type.Unsafe<typeof dispose>(),
 
@@ -124,21 +124,12 @@ export const TrezorConnectManagement = Type.Object({
     // For internal use, no public documentation.
     updateConnectSettings: Type.Unsafe<typeof updateConnectSettings>(),
 });
-export type TrezorConnectManagement = Static<typeof TrezorConnectManagement>;
+export type TrezorConnectCore = Static<typeof TrezorConnectCore>;
 
 // Device configuration, firmware, security, and hardware control
-export const TrezorConnectDevice = Type.Object({
-    // https://connect.trezor.io/9/methods/device/getFeatures/
-    getFeatures: Type.Unsafe<typeof getFeatures>(),
-
-    // https://connect.trezor.io/9/methods/device/getDeviceState/
-    getDeviceState: Type.Unsafe<typeof getDeviceState>(),
-
+export const TrezorConnectManagement = Type.Object({
     // https://connect.trezor.io/9/methods/device/getFirmwareHash/
     getFirmwareHash: Type.Unsafe<typeof getFirmwareHash>(),
-
-    // https://connect.trezor.io/9/methods/device/firmwareUpdate/
-    firmwareUpdate: Type.Unsafe<typeof firmwareUpdate>(),
 
     // https://connect.trezor.io/9/methods/device/resetDevice/
     resetDevice: Type.Unsafe<typeof resetDevice>(),
@@ -178,11 +169,41 @@ export const TrezorConnectDevice = Type.Object({
 
     setBrightness: Type.Unsafe<typeof setBrightness>(),
 
-    // https://connect.trezor.io/9/methods/device/showDeviceTutorial/
-    showDeviceTutorial: Type.Unsafe<typeof showDeviceTutorial>(),
-
     // https://connect.trezor.io/9/methods/device/bleUnpair/
     bleUnpair: Type.Unsafe<typeof bleUnpair>(),
+
+    // https://connect.trezor.io/9/methods/device/thpGetCredentials/
+    thpGetCredentials: Type.Unsafe<typeof thpGetCredentials>(),
+
+    // https://connect.trezor.io/9/methods/device/thpRemoveCredentials/
+    thpRemoveCredentials: Type.Unsafe<typeof thpRemoveCredentials>(),
+
+    telemetryGet: Type.Unsafe<typeof telemetryGet>(),
+
+    // https://connect.trezor.io/9/methods/device/pingDevice/
+    pingDevice: Type.Unsafe<typeof pingDevice>(),
+
+    // For internal use, no public documentation.
+    getNonce: Type.Unsafe<typeof getNonce>(),
+
+    // todo: link docs
+    getSettings: Type.Unsafe<typeof getSettings>(),
+});
+export type TrezorConnectManagement = Static<typeof TrezorConnectManagement>;
+
+// Device configuration, firmware, security, and hardware control
+export const TrezorConnectDevice = Type.Object({
+    // https://connect.trezor.io/9/methods/device/getFeatures/
+    getFeatures: Type.Unsafe<typeof getFeatures>(),
+
+    // https://connect.trezor.io/9/methods/device/getDeviceState/
+    getDeviceState: Type.Unsafe<typeof getDeviceState>(),
+
+    // https://connect.trezor.io/9/methods/device/firmwareUpdate/
+    firmwareUpdate: Type.Unsafe<typeof firmwareUpdate>(),
+
+    // https://connect.trezor.io/9/methods/device/showDeviceTutorial/
+    showDeviceTutorial: Type.Unsafe<typeof showDeviceTutorial>(),
 
     // https://connect.trezor.io/9/methods/other/requestLogin/
     requestLogin: Type.Unsafe<typeof requestLogin>(),
@@ -198,17 +219,6 @@ export const TrezorConnectDevice = Type.Object({
 
     // https://connect.trezor.io/9/methods/other/getOwnershipProof/
     getOwnershipProof: Type.Unsafe<typeof getOwnershipProof>(),
-
-    // https://connect.trezor.io/9/methods/device/thpGetCredentials/
-    thpGetCredentials: Type.Unsafe<typeof thpGetCredentials>(),
-
-    // https://connect.trezor.io/9/methods/device/thpRemoveCredentials/
-    thpRemoveCredentials: Type.Unsafe<typeof thpRemoveCredentials>(),
-
-    telemetryGet: Type.Unsafe<typeof telemetryGet>(),
-
-    // https://connect.trezor.io/9/methods/device/pingDevice/
-    pingDevice: Type.Unsafe<typeof pingDevice>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 
@@ -261,9 +271,6 @@ export const TrezorConnectBlockchain = Type.Object({
 
     // https://connect.trezor.io/9/methods/bitcoin/pushTransaction/
     pushTransaction: Type.Unsafe<typeof pushTransaction>(),
-
-    // For internal use, no public documentation.
-    getNonce: Type.Unsafe<typeof getNonce>(),
 });
 export type TrezorConnectBlockchain = Static<typeof TrezorConnectBlockchain>;
 
@@ -286,9 +293,6 @@ export const TrezorConnectAccount = Type.Object({
 
     // https://connect.trezor.io/9/methods/bitcoin/verifyMessage/
     verifyMessage: Type.Unsafe<typeof verifyMessage>(),
-
-    // todo: link docs
-    getSettings: Type.Unsafe<typeof getSettings>(),
 
     // https://connect.trezor.io/9/methods/other/getCoinInfo/
     getCoinInfo: Type.Unsafe<typeof getCoinInfo>(),
@@ -459,6 +463,7 @@ export type TrezorConnectExperimental = Static<typeof TrezorConnectExperimental>
 
 // Runtime schema for key access
 export const TrezorConnectSchema = Type.Composite([
+    TrezorConnectCore,
     TrezorConnectManagement,
     TrezorConnectDevice,
     TrezorConnectBlockchain,
@@ -479,6 +484,7 @@ export const TrezorConnectSchema = Type.Composite([
 // Type-level interface for precise function types.
 export interface TrezorConnect
     extends
+        TrezorConnectCore,
         TrezorConnectManagement,
         TrezorConnectDevice,
         TrezorConnectBlockchain,
