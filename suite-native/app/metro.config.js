@@ -74,6 +74,7 @@ const config = {
                 '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
                 'crc/calculators/crc32': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc32.js`,
                 'crc/calculators/crc16xmodem': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc16xmodem.js`,
+                'bignumber.js': `${rootNodeModulesPath}/bignumber.js/dist/bignumber.cjs`,
                 uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
 
                 // web3-validator package is by default trying to use non-existing minified index file. This fixes that.
