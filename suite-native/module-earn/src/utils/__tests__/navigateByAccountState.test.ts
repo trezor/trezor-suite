@@ -68,6 +68,29 @@ describe('navigateByAccountState', () => {
         });
     });
 
+    it('navigates to StakingManagement when a Solana account has a balance but no stake', () => {
+        const account = createMockAccount({ symbol: 'sol' });
+        mockGetAccountTotalStakingBalance.mockReturnValue('0');
+
+        navigateByAccountState(account, mockNavigate);
+
+        // Solana onboards through its dashboard, not the stake form.
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
+            accountKey: account.key,
+        });
+    });
+
+    it('navigates to StakingManagement when a Solana account has insufficient balance and no stake', () => {
+        const account = createMockAccount({ symbol: 'sol', availableBalance: '100' });
+        mockGetAccountTotalStakingBalance.mockReturnValue(null);
+
+        navigateByAccountState(account, mockNavigate);
+
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
+            accountKey: account.key,
+        });
+    });
+
     it('navigates to StakingDetail when a Cardano account has staked balance', () => {
         const account = createMockAccount({ symbol: 'ada' });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000');

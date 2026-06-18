@@ -3,6 +3,7 @@ import {
     formatNetworkAmount,
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import {
     type RootStackParamList,
@@ -20,8 +21,9 @@ type StakingNavigateFn = StackNavigationProps<
 
 export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn) => {
     const stakedBalance = getAccountTotalStakingBalance(account);
+    const hasStakedBalance = !!stakedBalance && stakedBalance !== '0';
 
-    if (stakedBalance && stakedBalance !== '0') {
+    if (isSupportedSolStakingNetworkSymbol(account.symbol) || hasStakedBalance) {
         navigate(resolveStakingTargetRoute(account.symbol), {
             accountKey: account.key,
         });
