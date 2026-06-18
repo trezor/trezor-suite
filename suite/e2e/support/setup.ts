@@ -82,7 +82,10 @@ export const electronTeardown = async (
     await closePromise;
 };
 
-export const webSetup = async (browserContext: BrowserContext) => {
+export const webSetup = async (
+    browserContext: BrowserContext,
+    options?: { sentryProfiling?: boolean },
+) => {
     await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
     // Need to allow this to be able to access bridge on localhost
@@ -98,6 +101,13 @@ export const webSetup = async (browserContext: BrowserContext) => {
     await page.context().addInitScript(() => {
         window.Playwright = true;
     });
+    // Must run before navigation: the app reads this flag at bootstrap to init Sentry with the
+    // dedicated e2e profiling config and expose window.uiProfiler.
+    if (options?.sentryProfiling) {
+        await page.context().addInitScript(() => {
+            window.__SENTRY_E2E_PROFILING__ = true;
+        });
+    }
     await page.goto('./');
     await mockRemoteMessageSystem(page);
 

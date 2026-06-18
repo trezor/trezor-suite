@@ -23,7 +23,7 @@ import { useConnectPopupWebextension } from 'src/support/suite/useConnectPopupWe
 import { useTor } from 'src/support/suite/useTor';
 
 import { createSuiteWebCompositionRoot } from './createSuiteWebCompositionRoot';
-import { initSentry } from './sentry';
+import { initSentry, initSentryE2E } from './sentry';
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
 
@@ -48,7 +48,11 @@ const MainWeb = () => {
 };
 
 export const init = async (container: HTMLElement) => {
-    if (!window.Playwright) {
+    if (window.__SENTRY_E2E_PROFILING__) {
+        // Playwright e2e profiling run: init Sentry with the dedicated e2e config and expose
+        // window.uiProfiler for the harness to drive. See suite/sentry SENTRY_E2E_CONFIG.
+        initSentryE2E();
+    } else if (!window.Playwright) {
         initSentry();
     }
 

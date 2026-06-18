@@ -42,6 +42,8 @@ declare global {
         // Needed for Cypress and Playwright
         Playwright?: any;
         store?: any;
+        // Set before navigation to make the app init Sentry with the dedicated e2e profiling config.
+        __SENTRY_E2E_PROFILING__?: boolean;
     }
 }
 

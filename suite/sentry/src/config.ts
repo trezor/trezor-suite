@@ -102,6 +102,7 @@ export const SENTRY_BROWSER_CONFIG = {
     ...SENTRY_CONFIG,
     profileSessionSampleRate: isCodesignBuild() ? 0.1 : 1,
     tracesSampleRate: isCodesignBuild() ? 0.1 : 1,
+    // 'trace' = real user sessions are profiled automatically around sampled transactions.
     profileLifecycle: 'trace',
     integrations: [
         captureConsoleIntegration({ levels: ['error'] }),
@@ -109,4 +110,22 @@ export const SENTRY_BROWSER_CONFIG = {
         browserTracingIntegration(),
         elementTimingIntegration(),
     ],
+} satisfies BrowserOptions;
+
+/**
+ * Dedicated Sentry config for Playwright e2e profiling runs. See `initSentryE2E` in
+ * packages/suite-web/src/sentry.ts and the `sentryProfiling` fixture in suite/e2e.
+ *
+ * Differences from SENTRY_BROWSER_CONFIG:
+ * - `enabled: true` so profiles are sent even when the app is not a production build.
+ * - `environment: 'e2e-web'` so e2e data can be filtered out from real user data in Sentry
+ *   (a future desktop e2e PoC would use 'e2e-desktop').
+ * - `profileLifecycle: 'manual'` so each test explicitly starts/stops the profiler around its own
+ *   user flow via uiProfiler.startProfiler()/stopProfiler().
+ */
+export const SENTRY_E2E_CONFIG = {
+    ...SENTRY_BROWSER_CONFIG,
+    enabled: true,
+    environment: 'e2e-web',
+    profileLifecycle: 'manual',
 } satisfies BrowserOptions;

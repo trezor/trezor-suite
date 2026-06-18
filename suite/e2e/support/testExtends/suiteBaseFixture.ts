@@ -33,6 +33,7 @@ type SuiteBaseFixture = {
     jsExceptionWatcher: void;
     toastErrorWatcher: void;
     coverageMapCollector: void;
+    sentryProfiler: void;
 };
 
 // This is the base Suite text fixture containing all the necessary setup and core page object
@@ -54,6 +55,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
     target: [PlaywrightTarget.Web, { option: true }],
     model: [undefined, { option: true }],
     firmwareVersion: [undefined, { option: true }],
+    sentryProfiling: [true, { option: true }],
     startEmulator: true,
     setupEmulator: true,
     deviceSetup: {},
@@ -161,13 +163,13 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         }
     },
 
-    page: async ({ target, context, electronApp }, use) => {
+    page: async ({ target, context, electronApp, sentryProfiling }, use) => {
         if (isDesktopProject(target)) {
             const window = await electronApp!.firstWindow();
             enhancePage(window);
             await use(window);
         } else {
-            const page = await webSetup(context);
+            const page = await webSetup(context, { sentryProfiling });
             enhancePage(page);
             await use(page);
         }
@@ -181,6 +183,40 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         async ({ page }, use, testInfo) => {
             await use();
             await collectCoverageMap(page, testInfo);
+        },
+        { auto: true },
+    ],
+
+    // Profiles the whole test (incl. beforeEach setup) via Sentry's manual uiProfiler, wrapping it in
+    // a named transaction tagged with the test name so each flow is filterable in Sentry. Enabled for
+    // all web tests by default (sentryProfiling); disabled for desktop (no window.uiProfiler there).
+    // Best-effort: profiling must never fail a test, so every profiler interaction is defensive — if
+    // window.uiProfiler never appears (e.g. app built without the change), profiling is skipped.
+    sentryProfiler: [
+        async ({ target, page, sentryProfiling }, use, testInfo) => {
+            if (!sentryProfiling || isDesktopProject(target)) {
+                await use();
+
+                return;
+            }
+
+            const meta = { test: testInfo.title, file: testInfo.titlePath.join(' › ') };
+            // window.uiProfiler is exposed by the app's initSentryE2E once Sentry has initialized.
+            const profiling = await page
+                .waitForFunction(() => Boolean((window as any).uiProfiler), undefined, {
+                    timeout: 5_000,
+                })
+                .then(() => page.evaluate(m => (window as any).uiProfiler.startProfiler(m), meta))
+                .then(() => true)
+                .catch(() => false);
+
+            await use();
+
+            if (profiling) {
+                await page
+                    .evaluate(() => (window as any).uiProfiler?.stopProfiler())
+                    .catch(() => undefined);
+            }
         },
         { auto: true },
     ],
