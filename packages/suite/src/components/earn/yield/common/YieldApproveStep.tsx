@@ -2,9 +2,9 @@ import type { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import type {
-    YieldActionFlowType,
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
+    YieldPositionFlowType,
 } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
 
@@ -19,6 +19,10 @@ const approveStepTranslationMap = {
         balanceLabelTranslationId: 'TR_BALANCE',
     },
     withdraw: {
+        amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
+        balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
+    },
+    redeem: {
         amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
         balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
     },
@@ -58,7 +62,7 @@ const getApproveButtonTranslationId = ({
 };
 
 export type YieldApproveStepProps = {
-    flowType: YieldActionFlowType;
+    flowType: YieldPositionFlowType;
     token: YieldFlowDisplayToken;
     variant: 'active' | 'done';
     summaryValue: ReactNode;

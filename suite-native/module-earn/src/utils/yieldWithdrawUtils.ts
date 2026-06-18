@@ -1,5 +1,3 @@
-export { getYieldWithdrawInputToken } from '@suite-common/wallet-core';
-
 import { EARN_MODULE_PREFIX } from '../constants';
 
 export const getYieldWithdrawFormDraftKey = (flowKey: string) =>

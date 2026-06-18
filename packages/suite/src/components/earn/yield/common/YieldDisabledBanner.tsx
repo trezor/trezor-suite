@@ -14,6 +14,7 @@ type YieldDisabledBannerProps = {
 const yieldDisabledMessageMap = {
     deposit: 'TR_EARN_YIELD_DEPOSIT_DISABLED',
     withdraw: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
+    redeem: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
     claim: 'TR_EARN_YIELD_CLAIM_DISABLED',
 } as const;
 

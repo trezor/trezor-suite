@@ -6,7 +6,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     STABLECOIN_YIELD_PREFIX,
     type YieldFlowResolvedData,
-    type YieldWithdrawInputUnit,
+    type YieldWithdrawFlowType,
     setYieldGenericError,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
@@ -18,17 +18,15 @@ type SubmitYieldWithdrawPayload = {
     flowKey: string;
     flowData: YieldFlowResolvedData;
     amount: string;
-    withdrawInputUnit?: YieldWithdrawInputUnit;
+    flowType: YieldWithdrawFlowType;
 };
 
 export const submitYieldWithdrawThunk = createThunk(
     `${STABLECOIN_YIELD_PREFIX}/thunk/submitWithdraw`,
     async (
-        { flowKey, flowData, amount, withdrawInputUnit = 'asset' }: SubmitYieldWithdrawPayload,
+        { flowKey, flowData, amount, flowType }: SubmitYieldWithdrawPayload,
         { dispatch, getState, extra },
     ) => {
-        const flowType = 'withdraw' as const;
-
         try {
             if (flowData.account.networkType !== 'ethereum') {
                 throw new Error('Yield actions currently support only EVM accounts.');
@@ -42,7 +40,7 @@ export const submitYieldWithdrawThunk = createThunk(
                 account,
                 flowData,
                 amount,
-                withdrawInputUnit,
+                flowType,
                 dispatch,
                 getState,
             });
@@ -62,6 +60,7 @@ export const submitYieldWithdrawThunk = createThunk(
                 type: events.yieldWithdrawEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',
+                    operation: flowType,
                     action: userAcceptedTxSimulation?.value === false ? 'cancel' : 'continue',
                     networkSymbol: account.symbol,
                     vaultId: flowData.vault.id,
@@ -73,8 +72,7 @@ export const submitYieldWithdrawThunk = createThunk(
             }
 
             const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
-            const isSharesInput = withdrawInputUnit === 'shares';
-            const reviewToken = isSharesInput ? flowData.receiptToken : flowData.token;
+            const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
                 account,
@@ -93,6 +91,7 @@ export const submitYieldWithdrawThunk = createThunk(
                     type: events.yieldWithdrawEvent.name,
                     payload: {
                         type: 'error',
+                        operation: flowType,
                         action: 'continue',
                         networkSymbol: account.symbol,
                         vaultId: flowData.vault.id,
@@ -129,6 +128,7 @@ export const submitYieldWithdrawThunk = createThunk(
                 type: events.yieldWithdrawEvent.name,
                 payload: {
                     type: 'error',
+                    operation: flowType,
                     action: 'continue',
                     networkSymbol: flowData.account.symbol,
                     vaultId: flowData.vault.id,

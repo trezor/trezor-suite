@@ -19,6 +19,7 @@ const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']):
         case 'deposit':
             return 'TR_EARN_YIELD_PENDING_DEPOSIT';
         case 'withdraw':
+        case 'redeem':
             return 'TR_EARN_YIELD_PENDING_WITHDRAW';
         case 'claim':
             return 'TR_EARN_YIELD_PENDING_CLAIM';

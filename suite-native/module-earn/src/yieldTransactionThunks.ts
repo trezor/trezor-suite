@@ -4,7 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
-    type YieldFlowType,
+    type YieldPositionFlowType,
     selectAddressDisplayType,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -22,7 +22,7 @@ const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`
 type YieldActionReviewThunkPayload = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
-    flowType: Extract<YieldFlowType, 'deposit' | 'withdraw'>;
+    flowType: YieldPositionFlowType;
     reviewToken?: YieldFlowDisplayToken;
     selectedFee?: EvmSelectedFee | null;
 };

@@ -8,12 +8,13 @@ import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constan
 import {
     type FeesRootState,
     type FormDraftRootState,
-    type YieldWithdrawInputUnit,
+    type YieldWithdrawFlowType,
     buildEvmSelectedFee,
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
     ethereumGetCurrentNonceThunk,
     formDraftActions,
+    getYieldWithdrawInputToken,
     selectConvertedNetworkFeeInfo,
     selectFormDraft,
 } from '@suite-common/wallet-core';
@@ -36,21 +37,18 @@ import { useDebounce } from '@trezor/react-utils';
 
 import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
-import {
-    getYieldWithdrawFormDraftKey,
-    getYieldWithdrawInputToken,
-} from '../utils/yieldWithdrawUtils';
+import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 
 type UseYieldWithdrawFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string;
+    flowType: YieldWithdrawFlowType;
     isEnabled: boolean;
-    withdrawInputUnit: YieldWithdrawInputUnit;
 };
 
 type PreparedYieldWithdrawAction = {
     amount: string;
+    flowType: YieldWithdrawFlowType;
     unsignedTransaction: string;
-    withdrawInputUnit: YieldWithdrawInputUnit;
 };
 
 type WithdrawFlowData = NonNullable<ResolvedYieldFlowData['flowData']>;
@@ -71,8 +69,8 @@ type UseYieldWithdrawFeesResult = {
 // re-trigger the effect — most importantly the fee draft that the compose itself writes.
 type ComposeWithdrawFeeParams = {
     amount: string;
+    flowType: YieldWithdrawFlowType;
     formDraftKey: string;
-    withdrawInputUnit: YieldWithdrawInputUnit;
 };
 
 type ComposeYieldWithdrawTransactionParams = {
@@ -80,7 +78,7 @@ type ComposeYieldWithdrawTransactionParams = {
     dispatch: ReturnType<typeof useDispatch>;
     feeInfo: FeeInfo;
     flowData: WithdrawFlowData;
-    withdrawInputUnit: YieldWithdrawInputUnit;
+    flowType: YieldWithdrawFlowType;
 };
 
 type BuildYieldWithdrawFeeLevelsParams = {
@@ -142,7 +140,7 @@ const composeYieldWithdrawTransaction = async ({
     dispatch,
     feeInfo,
     flowData,
-    withdrawInputUnit,
+    flowType,
 }: ComposeYieldWithdrawTransactionParams) => {
     const { account, receiptToken, vault } = flowData;
 
@@ -163,7 +161,7 @@ const composeYieldWithdrawTransaction = async ({
         flowData,
         ownerAddress,
         receiverAddress: ownerAddress,
-        withdrawInputUnit,
+        flowType,
     });
 
     const [{ nonce }, estimatedFee] = await Promise.all([
@@ -230,10 +228,10 @@ const buildYieldWithdrawFeeLevels = ({
 
 export const useYieldWithdrawFees = ({
     amount,
+    flowType,
     flowData,
     flowKey,
     isEnabled,
-    withdrawInputUnit,
 }: UseYieldWithdrawFeesParams): UseYieldWithdrawFeesResult => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
@@ -283,7 +281,7 @@ export const useYieldWithdrawFees = ({
             const { amount: withdrawAmount, formDraftKey: withdrawFormDraftKey } = params;
             const withdrawFlowData = flowDataRef.current;
             const withdrawFeeInfo = feeInfoRef.current;
-            const currentWithdrawInputUnit = params.withdrawInputUnit;
+            const currentFlowType = params.flowType;
             const { customFee: withdrawCustomFee, selectedFee: withdrawSelectedFee } =
                 feeStateRef.current;
 
@@ -307,7 +305,7 @@ export const useYieldWithdrawFees = ({
                     dispatch,
                     feeInfo: withdrawFeeInfo,
                     flowData: withdrawFlowData,
-                    withdrawInputUnit: currentWithdrawInputUnit,
+                    flowType: currentFlowType,
                 });
 
                 if (requestId !== requestIdRef.current) {
@@ -316,7 +314,7 @@ export const useYieldWithdrawFees = ({
 
                 const reviewToken = getYieldWithdrawInputToken({
                     flowData: withdrawFlowData,
-                    withdrawInputUnit: currentWithdrawInputUnit,
+                    flowType: currentFlowType,
                 });
                 const { formState: baseFormState } = buildStablecoinYieldTransactionReview({
                     amount: withdrawAmount,
@@ -381,8 +379,8 @@ export const useYieldWithdrawFees = ({
                 );
                 setPreparedAction({
                     amount: withdrawAmount,
+                    flowType: currentFlowType,
                     unsignedTransaction,
-                    withdrawInputUnit: currentWithdrawInputUnit,
                 });
             } catch {
                 if (requestId === requestIdRef.current) {
@@ -419,8 +417,8 @@ export const useYieldWithdrawFees = ({
                 void composeWithdrawFee(
                     {
                         amount,
+                        flowType,
                         formDraftKey,
-                        withdrawInputUnit,
                     },
                     requestId,
                 ),
@@ -431,10 +429,10 @@ export const useYieldWithdrawFees = ({
         debounce,
         dispatch,
         feeInfoRevision,
+        flowType,
         formDraftKey,
         hasFeeInfo,
         isEnabled,
-        withdrawInputUnit,
     ]);
 
     return {

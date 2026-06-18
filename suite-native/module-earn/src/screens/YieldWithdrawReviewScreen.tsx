@@ -7,6 +7,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import {
     type FormDraftRootState,
     type StablecoinYieldRootState,
+    getYieldWithdrawInputToken,
     selectFormDraft,
     selectStablecoinYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
@@ -22,10 +23,7 @@ import { YieldWithdrawReviewContent } from '../components/YieldWithdrawReviewCon
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { buildYieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 import { getSelectedEvmFeeFromPrecomposedTransaction } from '../utils/yieldSelectedFeeUtils';
-import {
-    getYieldWithdrawFormDraftKey,
-    getYieldWithdrawInputToken,
-} from '../utils/yieldWithdrawUtils';
+import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawReview>;
 type NavigationProps = StackNavigationProps<
@@ -38,8 +36,9 @@ export const YieldWithdrawReviewScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const { flowData, flowKey, resolutionStatus } = useResolvedYieldFlowData(route.params);
     const device = useSelector(selectSelectedDevice);
+    const flowType = route.params.withdrawFlowType ?? 'withdraw';
     const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, 'withdraw', flowKey),
+        selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
     );
     const formDraftKey = flowKey ? getYieldWithdrawFormDraftKey(flowKey) : '';
     const formDraft = useSelector((state: FormDraftRootState) =>
@@ -57,14 +56,13 @@ export const YieldWithdrawReviewScreen = () => {
                 : null,
         [actionReview],
     );
-    const withdrawInputUnit = route.params.withdrawInputUnit ?? 'asset';
     const reviewToken = useMemo(() => {
         if (!flowData) {
             return null;
         }
 
-        return getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
-    }, [flowData, withdrawInputUnit]);
+        return getYieldWithdrawInputToken({ flowData, flowType });
+    }, [flowData, flowType]);
     const selectedFeePreview = formDraft?.selectedFee
         ? feeLevels[formDraft.selectedFee]
         : undefined;
@@ -114,6 +112,7 @@ export const YieldWithdrawReviewScreen = () => {
         <YieldWithdrawReviewContent
             flowData={flowData}
             flowKey={flowKey}
+            flowType={flowType}
             preview={preview}
             reviewToken={reviewToken}
         />

@@ -1,10 +1,12 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 
+import type { YieldPendingTransactionState } from '../stablecoinYieldTypes';
 import {
     buildEvmSelectedFee,
     buildYieldDepositCalldata,
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
+    splitYieldPendingTransaction,
 } from '../stablecoinYieldUtils';
 
 const ACCOUNT_DESCRIPTOR = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
@@ -44,7 +46,7 @@ describe('stablecoinYieldUtils', () => {
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
                 receiverAddress: ACCOUNT_DESCRIPTOR,
-                withdrawInputUnit: 'asset',
+                flowType: 'withdraw',
             });
 
             expect(Calldata.evm.erc4626.withdraw.decode(calldata)).toEqual({
@@ -60,7 +62,7 @@ describe('stablecoinYieldUtils', () => {
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
                 receiverAddress: ACCOUNT_DESCRIPTOR,
-                withdrawInputUnit: 'shares',
+                flowType: 'redeem',
             });
 
             expect(Calldata.evm.erc4626.redeem.decode(calldata)).toEqual({
@@ -79,9 +81,62 @@ describe('stablecoinYieldUtils', () => {
                         typeof buildYieldWithdrawCalldata
                     >[0]['ownerAddress'],
                     receiverAddress: ACCOUNT_DESCRIPTOR,
-                    withdrawInputUnit: 'asset',
+                    flowType: 'withdraw',
                 }),
             ).toThrow('Failed to encode withdraw calldata');
+        });
+    });
+
+    describe('splitYieldPendingTransaction', () => {
+        const mockPendingTx = (
+            type: YieldPendingTransactionState['type'],
+        ): YieldPendingTransactionState => ({
+            type,
+            txid: '0xabc',
+            amount: '10',
+        });
+
+        it('matches a redeem tx only for the redeem flow', () => {
+            const redeemTx = mockPendingTx('redeem');
+
+            expect(splitYieldPendingTransaction(redeemTx, 'redeem')).toEqual({
+                approvalPendingTransaction: undefined,
+                actionPendingTransaction: redeemTx,
+            });
+        });
+
+        it('does not treat a redeem tx as a withdraw action', () => {
+            expect(splitYieldPendingTransaction(mockPendingTx('redeem'), 'withdraw')).toEqual({
+                approvalPendingTransaction: undefined,
+                actionPendingTransaction: undefined,
+            });
+        });
+
+        it('matches a withdraw tx only for the withdraw flow', () => {
+            const withdrawTx = mockPendingTx('withdraw');
+
+            expect(splitYieldPendingTransaction(withdrawTx, 'withdraw')).toEqual({
+                approvalPendingTransaction: undefined,
+                actionPendingTransaction: withdrawTx,
+            });
+        });
+
+        it('matches a deposit tx only for the deposit flow', () => {
+            const depositTx = mockPendingTx('deposit');
+
+            expect(splitYieldPendingTransaction(depositTx, 'deposit')).toEqual({
+                approvalPendingTransaction: undefined,
+                actionPendingTransaction: depositTx,
+            });
+        });
+
+        it('classifies an approve tx as the approval tx', () => {
+            const approveTx = mockPendingTx('approve');
+
+            expect(splitYieldPendingTransaction(approveTx, 'withdraw')).toEqual({
+                approvalPendingTransaction: approveTx,
+                actionPendingTransaction: undefined,
+            });
         });
     });
 

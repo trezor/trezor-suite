@@ -5,7 +5,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type YieldFlowResolvedData,
-    type YieldWithdrawInputUnit,
+    type YieldWithdrawFlowType,
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
     selectRawNetworkFeeInfo,
@@ -21,7 +21,7 @@ export type ComposeYieldWithdrawTransactionParams = {
     account: Account & { networkType: 'ethereum' };
     flowData: YieldFlowResolvedData;
     amount: string;
-    withdrawInputUnit: YieldWithdrawInputUnit;
+    flowType: YieldWithdrawFlowType;
     dispatch: Dispatch;
     getState: () => AppState;
 };
@@ -30,7 +30,7 @@ export const composeYieldWithdrawTransaction = async ({
     account,
     flowData,
     amount,
-    withdrawInputUnit,
+    flowType,
     dispatch,
     getState,
 }: ComposeYieldWithdrawTransactionParams): Promise<string> => {
@@ -60,7 +60,7 @@ export const composeYieldWithdrawTransaction = async ({
         flowData,
         ownerAddress,
         receiverAddress: ownerAddress,
-        withdrawInputUnit,
+        flowType,
     });
 
     const nonceTask = dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: account })).unwrap();

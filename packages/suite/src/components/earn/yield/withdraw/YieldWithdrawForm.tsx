@@ -31,11 +31,11 @@ export const YieldWithdrawForm = () => {
         inputTokenSymbol,
         otherUnitTokenSymbol,
         canToggleWithdrawUnit,
-        withdrawInputUnit,
+        flowType,
         completedInput,
         completedOutput,
         setAmountInput,
-        toggleWithdrawInputUnit,
+        toggleWithdrawFlowType,
         submitAction,
         openPendingTransaction,
         flow,
@@ -43,8 +43,9 @@ export const YieldWithdrawForm = () => {
 
     const { actionPendingTransaction: withdrawPendingTransaction } = splitYieldPendingTransaction(
         pendingTransaction,
-        'withdraw',
+        flowType,
     );
+    const withdrawInputUnit = flowType === 'redeem' ? 'shares' : 'asset';
 
     const handleOnWithdraw = () => {
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
@@ -52,6 +53,7 @@ export const YieldWithdrawForm = () => {
             type: events.yieldWithdrawEvent.name,
             payload: {
                 type: 'withdraw',
+                operation: flowType,
                 action: 'continue',
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
@@ -75,7 +77,7 @@ export const YieldWithdrawForm = () => {
             },
         });
 
-        toggleWithdrawInputUnit();
+        toggleWithdrawFlowType();
     };
 
     // Fire once per form mount when the user first hits the insufficient-funds banner
@@ -136,8 +138,8 @@ export const YieldWithdrawForm = () => {
                         )}
 
                         <YieldActionStep
-                            flowType="withdraw"
-                            token={withdrawInputUnit === 'shares' ? receiptToken : token}
+                            flowType={flowType}
+                            token={flowType === 'redeem' ? receiptToken : token}
                             summaryValue={
                                 <FormattedCryptoAmount
                                     value={maxAmount}
