@@ -5,6 +5,7 @@ import type {
 } from '@trezor/blockchain-link';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
+    ComposeChangeAddress as ComposeChangeAddressBase,
     ComposeInput as ComposeInputBase,
     ComposeOutput as ComposeOutputBase,
     ComposeResultError as ComposeResultErrorBase,
@@ -15,12 +16,20 @@ import type {
 
 import type { Params, Response } from '../params';
 
-// for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api
-export type ComposeOutputPayment = Omit<Extract<ComposeOutputBase, { type: 'payment' }>, 'type'> & {
+type OmitScript<T> = T extends unknown ? Omit<T, 'script'> : never;
+
+// for convenience ComposeOutput `type: "payment"` field is not required by the @trezor/connect api
+// `script` field is not required by the @trezor/connect api
+export type ComposeOutputPayment = Omit<
+    Extract<ComposeOutputBase, { type: 'payment' }>,
+    'type' | 'script'
+> & {
     type?: 'payment';
 };
 
-export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | ComposeOutputPayment;
+export type ComposeOutput =
+    | OmitScript<Exclude<ComposeOutputBase, { type: 'payment' }>>
+    | ComposeOutputPayment;
 
 export type ComposeParams = {
     outputs: ComposeOutput[];
@@ -73,7 +82,7 @@ export type ComposeResultError =
 export type ComposeResultFinal = ComposeResultFinalBase<
     ComposedInputs,
     ComposeOutputBase,
-    AccountAddress
+    AccountAddress & ComposeChangeAddressBase
 >;
 
 export type ComposeResultNonFinal = ComposeResultNonFinalBase<ComposedInputs>;

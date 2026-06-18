@@ -14,7 +14,7 @@ import type {
     ComposeOutput,
     TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
-import { composeTx, networks } from '@trezor/utxo-lib';
+import { INPUT_SCRIPT_LENGTH, address, composeTx, networks } from '@trezor/utxo-lib';
 
 import type { Blockchain } from '../../backend/BlockchainLink';
 import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
@@ -65,14 +65,16 @@ export class TransactionComposer {
                   .concat(addresses.unused)
                   .concat(addresses.change)
                   .map(a => a.address);
+        const txType = options.account.type || 'p2pkh';
         this.utxos = options.utxos.flatMap(u => {
             // exclude amounts lower than dust limit if they are NOT required
             if (!u.required && new BigNumber(u.amount).lte(this.coinInfo.dustLimit)) return [];
 
             return {
                 ...u,
-                coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false, // decide it it can be spent immediately (false) or after 100 conf (true)
-                own: allAddresses.includes(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
+                coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false,
+                own: allAddresses.includes(u.address),
+                script: { length: INPUT_SCRIPT_LENGTH[txType] },
             };
         });
     }
@@ -170,6 +172,10 @@ export class TransactionComposer {
         const lastChange: (typeof addresses.change)[number] =
             addresses.change[addresses.change.length - 1];
         const changeAddress = addresses.change.find(a => !a.transfers) || lastChange;
+        const composeChangeAddress = {
+            ...changeAddress,
+            script: address.toOutputScript(changeAddress.address, coinInfo.network),
+        };
         // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
 
         let feePolicy: ComposeFeePolicy | undefined;
@@ -186,8 +192,7 @@ export class TransactionComposer {
             feeRate,
             longTermFeeRate: this.feeLevels.longTermFeeRate,
             sortingStrategy: this.sortingStrategy,
-            network: coinInfo.network,
-            changeAddress,
+            changeAddress: composeChangeAddress,
             dustThreshold: coinInfo.dustLimit,
             baseFee,
             feePolicy,

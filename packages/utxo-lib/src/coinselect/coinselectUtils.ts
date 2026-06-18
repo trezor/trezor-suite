@@ -5,6 +5,7 @@ import {
     type CoinSelectOutput,
     type CoinSelectOutputFinal,
     type CoinSelectPaymentType,
+    type CoinSelectScript,
 } from '../types';
 
 export const ZERO = 0n;
@@ -39,8 +40,8 @@ const DUST_RELAY_FEE_RATE = 3; // 3000 sat/kB https://github.com/bitcoin/bitcoin
 /** Coinbase transaction must have at least 100 confirmations to be spendable.*/
 export const MINIMAL_COINBASE_CONFIRMATIONS = 100;
 
-type Vin = { type: CoinSelectInput['type']; script: { length: number }; weight?: number };
-type VinVout = { script: { length: number }; weight?: number };
+type Vin = { type: CoinSelectPaymentType; script: CoinSelectScript; weight?: number };
+type VinVout = { script: CoinSelectScript; weight?: number };
 
 export function getVarIntSize(length: number) {
     if (length < 253) return 1;

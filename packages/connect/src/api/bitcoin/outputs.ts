@@ -8,7 +8,12 @@ import type {
     ProtoWithDerivationPath,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
+import {
+    type ComposeOutput as ComposeOutputBase,
+    OUTPUT_SCRIPT_LENGTH,
+    address,
+    payments,
+} from '@trezor/utxo-lib';
 
 import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
@@ -79,8 +84,8 @@ export const validateHDOutput = (
     output: ComposeOutput,
     coinInfo: BitcoinNetworkInfo,
 ): ComposeOutputBase => {
-    const validateAddress = (address?: string) => {
-        if (!address || !isValidAddress(address, coinInfo)) {
+    const validateAddress = (addr?: string) => {
+        if (!addr || !isValidAddress(addr, coinInfo)) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
                 `Invalid ${coinInfo.label} output address format`,
@@ -95,6 +100,8 @@ export const validateHDOutput = (
             return {
                 type: 'opreturn',
                 dataHex: output.dataHex,
+                script: payments.embed({ data: [Buffer.from(output.dataHex, 'hex')] })
+                    .output as Buffer,
             };
 
         case 'send-max':
@@ -104,6 +111,7 @@ export const validateHDOutput = (
             return {
                 type: 'send-max',
                 address: output.address,
+                script: address.toOutputScript(output.address, coinInfo.network),
             };
 
         case 'payment-noaddress':
@@ -112,11 +120,13 @@ export const validateHDOutput = (
             return {
                 type: 'payment-noaddress',
                 amount: output.amount,
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
             };
 
         case 'send-max-noaddress':
             return {
                 type: 'send-max-noaddress',
+                script: { length: OUTPUT_SCRIPT_LENGTH.p2pkh },
             };
 
         default:
@@ -130,6 +140,7 @@ export const validateHDOutput = (
                 type: 'payment',
                 address: output.address,
                 amount: output.amount,
+                script: address.toOutputScript(output.address, coinInfo.network),
             };
     }
 };

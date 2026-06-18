@@ -1,24 +1,17 @@
 import type { ComposeRequest } from '../src';
+import { CHANGE_ADDRESS, UTXO } from './__fixtures__/compose';
 import { validateAndParseRequest as validate } from '../src/compose/request';
-import * as NETWORKS from '../src/networks';
-
-const UTXO = {
-    coinbase: false,
-    own: true,
-    confirmations: 100,
-    amount: '50000',
-};
 
 const PAYMENT = {
     type: 'send-max-noaddress',
+    script: { length: 25 },
 };
 
 const REQUEST: ComposeRequest<any, any, any> = {
     utxos: [UTXO],
     outputs: [PAYMENT],
     feeRate: 1,
-    network: NETWORKS.bitcoin,
-    changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
+    changeAddress: CHANGE_ADDRESS,
     dustThreshold: 526,
     sortingStrategy: 'bip69',
 };
@@ -131,29 +124,29 @@ describe('validateAndParseRequest', () => {
             message: 'Unknown output type at index 0',
         });
 
-        // invalid address
-        expect(getRequest([{ type: 'send-max', address: 'weird-address' }])).toEqual({
-            ...expectedError,
-            message: 'weird-address has no matching Script at index 0',
-        });
-
         // missing amount
-        expect(getRequest([{ type: 'payment-noaddress' }])).toEqual({
+        expect(getRequest([{ type: 'payment-noaddress', script: { length: 25 } }])).toEqual({
             ...expectedError,
             message: 'Invalid amount at index 0',
         });
         // invalid amount field (NaN)
-        expect(getRequest([{ type: 'payment-noaddress', amount: 'abcd' }])).toEqual({
+        expect(
+            getRequest([{ type: 'payment-noaddress', amount: 'abcd', script: { length: 25 } }]),
+        ).toEqual({
             ...expectedError,
             message: 'Invalid amount at index 0',
         });
         // invalid amount field (float)
-        expect(getRequest([{ type: 'payment-noaddress', amount: '1.1' }])).toEqual({
+        expect(
+            getRequest([{ type: 'payment-noaddress', amount: '1.1', script: { length: 25 } }]),
+        ).toEqual({
             ...expectedError,
             message: 'Invalid amount at index 0',
         });
         // invalid amount field (number)
-        expect(getRequest([{ type: 'payment-noaddress', amount: 1 }])).toEqual({
+        expect(
+            getRequest([{ type: 'payment-noaddress', amount: 1, script: { length: 25 } }]),
+        ).toEqual({
             ...expectedError,
             message: 'Invalid amount at index 0',
         });

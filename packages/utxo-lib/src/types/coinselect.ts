@@ -2,6 +2,10 @@ import type { ComposeFeePolicy, TransactionInputOutputSortingStrategy } from './
 
 export type CoinSelectPaymentType = 'p2pkh' | 'p2sh' | 'p2tr' | 'p2wpkh' | 'p2wsh';
 
+// Bitcoin script value is not relevant for coin selection,
+// we only need its length to calculate the transaction size and fee.
+export type CoinSelectScript = { length: number };
+
 export interface CoinSelectOptions {
     txType: CoinSelectPaymentType;
     changeOutput?: CoinSelectOutput;
@@ -25,7 +29,7 @@ export interface CoinSelectOptions {
 export interface CoinSelectInput {
     type: CoinSelectPaymentType;
     i: number;
-    script: { length: number };
+    script: CoinSelectScript;
     value: bigint;
     confirmations: number;
     coinbase?: boolean;
@@ -35,13 +39,13 @@ export interface CoinSelectInput {
 }
 
 export interface CoinSelectOutput {
-    script: { length: number };
+    script: CoinSelectScript;
     value?: bigint;
     weight?: number;
 }
 
 export interface CoinSelectOutputFinal {
-    script: { length: number };
+    script: CoinSelectScript;
     value: bigint;
 }
 
