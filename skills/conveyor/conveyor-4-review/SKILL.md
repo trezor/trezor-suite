@@ -350,6 +350,7 @@ and take it over — never leave it a silent dead PR.
 
 ### Open findings (need a human)
 _Tick one box per finding (no tick = the ✅ recommended option), then tick Done. Do it in the GitHub web UI — no agent needed._
+_Inline clarifications open: <M> — answer them on the diff (an open `conveyor:clarify` thread gates needs-human alongside the boxes here). "0" when none._
 
 **1. <title>** — <file:line> — [taste | risky | changes-spec]
 - [ ] (a) <fix this way> ✅ recommended

@@ -235,10 +235,15 @@ Then:
 - Swap labels on the **PR** add-before-remove: add `conveyor/impl:needs-human` first, then
   remove `conveyor/impl:in-progress`.
 - Exit. `conveyor/impl:needs-human` means hands-off for other agents until a human
-  acts. **Resume path (drain):** the human ticks a box + the `✅ Done` box; re-run
-  `conveyor-3-implement` on the PR — it reads the ticked choice (exactly one = that
-  option; none = the recommended one; Done unticked = still waiting) and acts on it
-  (retry the chosen approach, or bounce the plan back to planning).
+  acts. **Resume path (drain):** the human ticks a box + the `✅ Done` box and/or
+  replies to inline `conveyor:clarify` threads; re-run `conveyor-3-implement` on the
+  PR. It **first drains the clarify threads** (incorporate each answered reply, reply
+  `✅ applied`, resolve it — see CONVENTIONS "Async clarifications"), then reads the
+  ticked choice (exactly one = that option; none = the recommended one). It is
+  **finished only when `✅ Done` is ticked AND every clarify thread is answered**; if
+  Done is unticked **or** any clarify thread is still unanswered, it is still waiting —
+  act on what is ready, then exit without changing the label. Otherwise act on the
+  choice (retry the chosen approach, or bounce the plan back to planning).
 
 ## Modes
 

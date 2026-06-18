@@ -91,12 +91,26 @@ when one line needs a one-sentence answer.
   > &lt;the specific question / what you cannot resolve and why&gt;
 
   The human replies **in that thread**, on the diff, with no agent running.
-- **Drain on the next run.** Before doing other work on the PR, list its review
-  comments, find your `<!-- conveyor:clarify -->` ones, and for each that now has a
-  human reply: **incorporate the answer**, then reply `✅ applied — <what changed>` and
-  **resolve the thread** (a reply alone does not resolve — call the GraphQL
-  `resolveReviewThread` mutation). A clarify thread with no reply yet is still
-  waiting — leave it open.
+- **Drain on the next run.** Before doing other work on the PR, query its review
+  **threads** with GraphQL — the thread node id you need to resolve is **not**
+  derivable from a REST comment id:
+
+  ```graphql
+  pullRequest(number: N) { reviewThreads(first: 50) { nodes {
+    id  isResolved
+    comments(first: 20) { nodes { databaseId author { login } body } }
+  } } }
+  ```
+
+  Take each **unresolved** thread whose **first** comment body contains
+  `<!-- conveyor:clarify -->`. A thread is **answered** only when a **human** (a
+  non-bot `author.login` that is not you and not Copilot) has replied *after* your
+  question with an actual answer — **a reply that is itself a question is not an
+  answer**; leave that thread open and respond to it. For an answered thread:
+  **incorporate the answer**, reply `✅ applied — <what changed>`, then **resolve it**
+  by passing that thread's `id` to the `resolveReviewThread` mutation. A thread with no
+  human reply yet is still waiting — leave it open, and never resolve a thread the
+  human is still actively discussing.
 - **Parking.** Open decisions **and** open clarify threads gate the same
   `*-needs-human` state. When you park, note in the status comment "N decisions + M
   inline clarifications open — answer the inline ones on the diff" so the human looks
