@@ -24,6 +24,7 @@
         "@suite-common/calldata": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/fee-types": "workspace:*",
         "@suite-common/flags": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",

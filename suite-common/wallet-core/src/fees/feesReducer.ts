@@ -1,14 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
 
+import { type FeeInfo, type FeesState, type FeesStatus } from '@suite-common/fee-types';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import {
-    type FeeInfo,
-    type FeeLevelLabel,
-    type FeesState,
-    type FeesStatus,
-} from '@suite-common/wallet-types';
+import { type FeeLevelLabel } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo, isEip1559 } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 

@@ -10496,6 +10496,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/fee-types@workspace:*, @suite-common/fee-types@workspace:suite-common/fee-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/fee-types@workspace:suite-common/fee-types"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/fee@workspace:*, @suite-common/fee@workspace:suite-common/fee":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/fee@workspace:suite-common/fee"
+  dependencies:
+    "@suite-common/fee-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/feedback@workspace:*, @suite-common/feedback@workspace:suite-common/feedback":
   version: 0.0.0-use.local
   resolution: "@suite-common/feedback@workspace:suite-common/feedback"
@@ -11040,6 +11063,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
@@ -11123,6 +11147,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/device": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -11225,6 +11250,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/react-query": "workspace:*"
@@ -11266,6 +11292,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
@@ -11287,6 +11314,7 @@ __metadata:
     "@suite-common/address": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -12976,6 +13004,7 @@ __metadata:
     "@suite-common/earn-stablecoin": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/mev": "workspace:*"
@@ -13168,6 +13197,7 @@ __metadata:
     "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -13339,6 +13369,7 @@ __metadata:
     "@suite-common/calldata": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
@@ -14321,6 +14352,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -14653,6 +14685,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/fee@workspace:*, @suite/fee@workspace:suite/fee":
+  version: 0.0.0-use.local
+  resolution: "@suite/fee@workspace:suite/fee"
+  dependencies:
+    "@suite-common/fee": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/external-links": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.4"
+    react-hook-form: "npm:^7.71.2"
+    react-redux: "npm:9.2.0"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
 "@suite/firmware-upgrade@workspace:*, @suite/firmware-upgrade@workspace:suite/firmware-upgrade":
   version: 0.0.0-use.local
   resolution: "@suite/firmware-upgrade@workspace:suite/firmware-upgrade"
@@ -14684,6 +14738,18 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/formatters@workspace:*, @suite/formatters@workspace:suite/formatters":
+  version: 0.0.0-use.local
+  resolution: "@suite/formatters@workspace:suite/formatters"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -16664,6 +16730,8 @@ __metadata:
     "@suite-common/earn-stablecoin": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/fee": "workspace:*"
+    "@suite-common/fee-types": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -16717,8 +16785,10 @@ __metadata:
     "@suite/experimental": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/feature-feedback": "workspace:*"
+    "@suite/fee": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/formatters": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"

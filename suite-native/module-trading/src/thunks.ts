@@ -2,6 +2,7 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
 import { Calldata } from '@suite-common/calldata';
+import { type FeeInfo } from '@suite-common/fee-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -33,7 +34,6 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
-    type FeeInfo,
     type FeeLevelLabel,
     type PrecomposedTransactionFinal,
     type TokenAddress,

@@ -1,5 +1,5 @@
+import { type FeesStatus } from '@suite-common/fee-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type FeesStatus } from '@suite-common/wallet-types';
 import {
     type TestStore,
     createStoreFromPreloadedState,

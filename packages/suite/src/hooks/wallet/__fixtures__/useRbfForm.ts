@@ -1,6 +1,6 @@
+import { type FeesState } from '@suite-common/fee-types';
 import {
     type ChainedTransactions,
-    type FeesState,
     type SelectedAccountLoaded,
     type WalletAccountTransaction,
     type WalletAccountTransactionWithRequiredRbfParams,

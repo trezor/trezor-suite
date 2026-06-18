@@ -14,6 +14,7 @@ import type {
 } from 'invity-api';
 
 import type { TranslationKey } from '@suite/intl';
+import { type FeeInfo } from '@suite-common/fee-types';
 import type {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
@@ -45,11 +46,7 @@ import type {
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type AccountsState } from '@suite-common/wallet-core';
-import {
-    type FeeInfo,
-    type PrecomposedLevels,
-    type PrecomposedLevelsCardano,
-} from '@suite-common/wallet-types';
+import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
 import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';

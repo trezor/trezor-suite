@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { FeesContext, type FeesContextType, useTransactionMaxFee } from '@suite-common/fee';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
@@ -14,8 +15,6 @@ import {
 import { CustomFee } from './CustomFee/CustomFee';
 import { CustomFeeTron } from './CustomFee/CustomFeeTron';
 import { StandardFee } from './StandardFee/StandardFee';
-import { FeesContext, type FeesContextType } from '../context/FeesContext';
-import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesProps = {
     networkSymbol: NetworkSymbol;

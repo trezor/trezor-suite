@@ -8,6 +8,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/fee-types"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {

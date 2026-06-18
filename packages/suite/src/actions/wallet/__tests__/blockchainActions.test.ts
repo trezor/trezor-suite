@@ -1,4 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
+import { type FeesState } from '@suite-common/fee-types';
 import { filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     createNotificationsReducer,
@@ -17,7 +18,6 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { type FeesState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { typedObjectKeys } from '@trezor/utils';
 

@@ -1,11 +1,11 @@
 import { type Dispatch, type SetStateAction } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { type FeeInfo } from '@suite-common/fee-types';
 import { type Network } from '@suite-common/wallet-config';
 import {
     type Account,
     type ExcludedUtxos,
-    type FeeInfo,
     type FormOptions,
     type FormState,
     type Output,

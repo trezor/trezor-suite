@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 
+import { useFiatFromCryptoValue } from '@suite/formatters';
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import {
@@ -25,7 +26,6 @@ import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {

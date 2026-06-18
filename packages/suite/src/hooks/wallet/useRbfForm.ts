@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { type FeeInfo } from '@suite-common/fee-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
@@ -12,7 +13,6 @@ import { DEFAULT_FEE_INFO, selectRawNetworkFeeInfo } from '@suite-common/wallet-
 import {
     type Account,
     type ChainedTransactions,
-    type FeeInfo,
     type FormOptions,
     type FormState,
     type RbfTransactionParams,

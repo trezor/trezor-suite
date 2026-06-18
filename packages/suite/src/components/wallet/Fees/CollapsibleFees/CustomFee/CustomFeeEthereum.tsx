@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import { type CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from '@suite/fee';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useFeesContext } from '@suite-common/fee';
 import { type FormState } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
@@ -12,10 +14,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
 import { validateDecimals } from 'src/utils/suite/validation';
-
-import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
-import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
-import { useFeesContext } from '../../context/FeesContext';
 
 const MAX_FEE_PER_GAS = 'maxFeePerGas' satisfies keyof FormState;
 const MAX_PRIORITY_FEE_PER_GAS = 'maxPriorityFeePerGas' satisfies keyof FormState;

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { asEvmAddress } from '@suite-common/calldata';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { type FeeInfo } from '@suite-common/fee-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
@@ -18,7 +19,6 @@ import {
     selectFormDraft,
 } from '@suite-common/wallet-core';
 import {
-    type FeeInfo,
     type FeeLevelLabel,
     type FormState,
     type PrecomposedLevels,

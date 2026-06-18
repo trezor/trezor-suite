@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { type FeeInfo } from '@suite-common/fee-types';
 import {
     composeTronFreezeFeeLevelsThunk,
     composeTronUnstakeFeeLevelsThunk,
@@ -7,7 +8,7 @@ import {
     composeTronWithdrawFeeLevelsThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
+import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 

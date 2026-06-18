@@ -1,7 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
+import { type FeeInfo } from '@suite-common/fee-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type FeeInfo } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
 

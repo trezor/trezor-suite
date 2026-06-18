@@ -12,11 +12,11 @@ import { useDispatch } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { type TranslationKey, isTranslationKey, useTranslation } from '@suite/intl';
+import { type FeeInfo } from '@suite-common/fee-types';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     type ExcludedUtxos,
-    type FeeInfo,
     type FormState,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,

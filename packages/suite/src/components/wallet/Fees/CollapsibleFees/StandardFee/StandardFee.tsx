@@ -1,8 +1,8 @@
+import { useFeesContext, useNetworkFeeOptions } from '@suite-common/fee';
+
 import { BitcoinFeeCards } from './BitcoinFeeCards';
 import { EthereumFeeCards } from './EthereumFeeCards';
 import { MiscFeeCards } from './MiscFeeCards';
-import { useNetworkFeeOptions } from './hooks/useNetworkFeeOptions';
-import { useFeesContext } from '../../context/FeesContext';
 
 export const StandardFee = () => {
     const { feeInfo, networkType, networkSymbol, selectedFeeLevel, composedLevels } =

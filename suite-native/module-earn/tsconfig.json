@@ -18,6 +18,9 @@
             "path": "../../suite-common/earn-staking-api"
         },
         {
+            "path": "../../suite-common/fee-types"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {

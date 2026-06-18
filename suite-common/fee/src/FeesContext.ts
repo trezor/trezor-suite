@@ -1,11 +1,8 @@
 import { createContext, useContext } from 'react';
 
+import { type FeeInfo } from '@suite-common/fee-types';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import {
-    type FeeInfo,
-    type PrecomposedLevels,
-    type PrecomposedLevelsCardano,
-} from '@suite-common/wallet-types';
+import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { type FeeLevel } from '@trezor/connect';
 import { throwError } from '@trezor/utils';

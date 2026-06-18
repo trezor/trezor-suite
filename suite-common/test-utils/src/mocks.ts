@@ -1,5 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import { type FeeInfo } from '@suite-common/fee-types';
 import {
     type Action,
     type GuideArticle,
@@ -10,7 +11,6 @@ import {
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     type BlockchainNetworks,
-    type FeeInfo,
     type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';

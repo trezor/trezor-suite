@@ -1,4 +1,6 @@
+import { CustomFeeTooLowBanner } from '@suite/fee';
 import { Translation, useTranslation } from '@suite/intl';
+import { useFeesContext } from '@suite-common/fee';
 import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -6,8 +8,6 @@ import { spacings } from '@trezor/theme';
 import { CurrentFee } from './CurrentFee';
 import { CustomFeeEthereum } from './CustomFeeEthereum';
 import { CustomFeeMisc } from './CustomFeeMisc';
-import { CustomFeeTooLowBanner } from './CustomFeeTooLowBanner';
-import { useFeesContext } from '../../context/FeesContext';
 
 type CustomFeeProps = {
     showCurrentFee: boolean;

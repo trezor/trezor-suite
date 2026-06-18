@@ -2,11 +2,11 @@ import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsDebugModeActive } from '@suite/settings';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { type FeeInfo } from '@suite-common/fee-types';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
-    type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
     type SendFormDraftKey,
     type StakeType,

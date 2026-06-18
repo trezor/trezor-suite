@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useFeesContext } from '@suite-common/fee';
 import { Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
-
-import { useFeesContext } from '../context/FeesContext';
 
 export interface CollapsibleFeesHeaderProps {
     label?: TranslationKey;

@@ -1,9 +1,9 @@
+import { type FeeInfo } from '@suite-common/fee-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type Account,
-    type FeeInfo,
     type FeeLevelLabel,
     type PrecomposedLevels,
 } from '@suite-common/wallet-types';

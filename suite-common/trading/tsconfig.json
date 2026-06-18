@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../device" },
+        { "path": "../fee-types" },
         { "path": "../geolocation" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },

@@ -3,6 +3,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { locksReducer } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
+import { type FeesState } from '@suite-common/fee-types';
 import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
@@ -15,7 +16,6 @@ import {
     stakeInitialState,
 } from '@suite-common/wallet-core';
 import {
-    type FeesState,
     type FormState,
     type SelectedAccountStatus,
     type SendFormDraftKey,

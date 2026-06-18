@@ -9,6 +9,7 @@ import {
 
 import { padLeft } from 'web3-utils';
 
+import type { FeeInfo } from '@suite-common/fee-types';
 import {
     type Network,
     type NetworkSymbol,
@@ -27,7 +28,6 @@ import type {
     BaseCurrencyOption,
     EthTransactionData,
     ExternalOutput,
-    FeeInfo,
     FormState,
     FormStateTrading,
     FormStateTradingExchange,
