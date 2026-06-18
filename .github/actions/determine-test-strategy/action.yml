@@ -1,9 +1,9 @@
 name: "Determine E2E Test Strategy"
 description: >
   Classifies PR changes into one of three strategies:
-  specific-tests (only e2e test files changed),
-  run-everything (e2e framework, mixed, or CI-only changes),
-  or analyze (production code changed → LLM analysis needed).
+  run-everything (e2e framework changed, mixed framework+production, or CI-only changes),
+  analyze (production code changed → LLM analysis needed),
+  or specific-tests (only e2e test files changed).
 outputs:
   strategy:
     description: "specific-tests | run-everything | analyze"
@@ -39,10 +39,21 @@ runs:
           exit 0
         fi
 
-        # If all changes are in .github/ (workflows/actions), no analysis needed
-        NON_CI=$(echo "$CHANGED" | grep -v '^\.github/' || true)
-        if [[ -z "$NON_CI" ]]; then
-          echo "Only CI workflow/action files changed — running everything, skipping analysis."
+        # Any CI file change means we can't trust LLM analysis — run everything
+        CI_CHANGED=$(echo "$CHANGED" | grep '^\.github/' || true)
+        if [[ -n "$CI_CHANGED" ]]; then
+          echo "CI workflow/action files changed — running everything, skipping analysis."
+          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        NON_CI="$CHANGED"
+
+        # Check if any e2e framework files changed (takes priority over production analysis)
+        OUTSIDE_TESTS=$(echo "$NON_CI" | grep '^suite/e2e/' | grep -v '^suite/e2e/tests/' || true)
+        if [[ -n "$OUTSIDE_TESTS" ]]; then
+          echo "E2E framework files changed — running everything."
           echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
           echo "spec-list=" >> "$GITHUB_OUTPUT"
           exit 0
@@ -53,15 +64,6 @@ runs:
         if [[ -n "$OUTSIDE_E2E" ]]; then
           echo "Production code changed — proceeding to LLM analysis."
           echo "strategy=analyze" >> "$GITHUB_OUTPUT"
-          echo "spec-list=" >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
-
-        # All non-CI files are under suite/e2e/ — check if any are outside tests/
-        OUTSIDE_TESTS=$(echo "$NON_CI" | grep '^suite/e2e/' | grep -v '^suite/e2e/tests/' || true)
-        if [[ -n "$OUTSIDE_TESTS" ]]; then
-          echo "E2E framework files changed — running everything."
-          echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
           echo "spec-list=" >> "$GITHUB_OUTPUT"
           exit 0
         fi
