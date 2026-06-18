@@ -1,4 +1,4 @@
-const actualReselect = require('../../../../node_modules/reselect/dist/cjs/reselect.cjs');
+const actualReselect = require('../../../../node_modules/reselect/dist/cjs/reselect.development.cjs');
 
 const IDENTITY_FUNCTION_CHECK_MESSAGE =
     'The result function returned its own inputs without modification.';
