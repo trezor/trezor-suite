@@ -6,7 +6,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
-import { FeePickerCard } from '../FeePickerCard';
+import { TradeInfo } from '../TradeInfo';
 
 const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
 
@@ -21,17 +21,17 @@ jest.mock('@suite-native/transaction-management', () => ({
     }),
 }));
 
-describe('FeePickerCard', () => {
+describe('TradeInfo', () => {
     const defaultProps = {
         trade: undefined,
         accountKey: btc1AccountKey,
         tradingType: 'exchange' as TradingExchangeType | TradingSellType,
     };
 
-    const renderFeePickerCard = (props = {}) => {
+    const renderTradeInfo = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithTradingProvider(<FeePickerCard {...finalProps} />);
+        return renderWithTradingProvider(<TradeInfo {...finalProps} />);
     };
 
     beforeEach(() => {
@@ -39,7 +39,7 @@ describe('FeePickerCard', () => {
     });
 
     it('should render the details title', () => {
-        const { getByText } = renderFeePickerCard();
+        const { getByText } = renderTradeInfo();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
@@ -47,7 +47,7 @@ describe('FeePickerCard', () => {
     });
 
     it('should pass correct props to FeeSelector', () => {
-        renderFeePickerCard();
+        renderTradeInfo();
 
         expect(mockFeeSelectorProps).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -58,7 +58,7 @@ describe('FeePickerCard', () => {
     });
 
     it('should render children', () => {
-        const { getByText } = renderFeePickerCard({
+        const { getByText } = renderTradeInfo({
             children: <Text>child content</Text>,
         });
 

@@ -20,14 +20,14 @@ const dividerStyle = prepareNativeStyle(utils => ({
     borderBottomColor: utils.colors.borderNeutral,
 }));
 
-type FeePickerCardProps = {
+type TradeInfoProps = {
     trade: ExchangeTrade | SellFiatTrade | undefined;
     accountKey: AccountKey;
     tradingType: TradingSellType | TradingExchangeType;
     children?: ReactNode;
 };
 
-export const FeePickerCard = ({ trade, accountKey, tradingType, children }: FeePickerCardProps) => {
+export const TradeInfo = ({ trade, accountKey, tradingType, children }: TradeInfoProps) => {
     const { applyStyle } = useNativeStyles();
     const formDraftKey = getFormDraftKeyByTradeType(tradingType);
     const formDraft = useSelector((state: FormDraftRootState) =>

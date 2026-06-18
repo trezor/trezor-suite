@@ -5,7 +5,7 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { FeePickerCard } from '../../fees/FeePickerCard';
+import { TradeInfo } from '../../fees/TradeInfo';
 
 export type ExchangeInfoProps = {
     quote?: ExchangeTrade;
@@ -20,8 +20,8 @@ export const ExchangeInfo = ({ quote, isTxnError, children }: ExchangeInfoProps)
     }
 
     return (
-        <FeePickerCard trade={quote} accountKey={fromAccount.key} tradingType="exchange">
+        <TradeInfo trade={quote} accountKey={fromAccount.key} tradingType="exchange">
             {children}
-        </FeePickerCard>
+        </TradeInfo>
     );
 };
