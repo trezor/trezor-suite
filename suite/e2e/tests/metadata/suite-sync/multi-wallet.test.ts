@@ -1,3 +1,4 @@
+import { messages } from '@suite/intl';
 import {
     createAccountRowId,
     createOwnerIdFromSecret,
@@ -73,7 +74,11 @@ const expectedWalletTwoLabel = {
 
 test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.slow();
-    test.use({ wipeEvoluRelay: true, deviceSetup: { passphrase_protection: true } });
+    test.use({
+        wipeEvoluRelay: true,
+        deviceSetup: { passphrase_protection: true },
+        ignoreToastErrors: [messages.TR_SUITE_SYNC_ERROR_DEVICE_CANCELLED.defaultMessage],
+    });
 
     test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
         await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });

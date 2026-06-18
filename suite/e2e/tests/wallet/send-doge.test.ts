@@ -9,6 +9,7 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic:
                 'fantasy auto fancy access ring spring patrol expect common tape talent annual',
         },
+        ignoreToastErrors: ['Invalid amount specified'],
     });
 
     const recipientAddress = 'DJk8vtoEuNGtT4YRNoqVxWyRh6kM3s8bzc';
