@@ -15,6 +15,6 @@
         "@braintree/sanitize-url": "^7.1.2",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "ajv": "^8.18.0"
+        "ajv": "^8.20.0"
     }
 }
