@@ -101,13 +101,6 @@ export class MetadataPage {
             this.settingsPage.metadataSelectInputOption('legacy'),
         );
         await this.passThroughInitMetadata(provider);
-        await this.closeLegacyUpgradeNotification();
-    }
-
-    @step()
-    async closeLegacyUpgradeNotification() {
-        await expect(this.legacyNotification).toBeVisible();
-        await this.closeLegacyNotificationButton.click();
     }
 
     @step()
