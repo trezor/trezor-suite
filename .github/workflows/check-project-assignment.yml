@@ -58,7 +58,7 @@ jobs:
           fi
 
           # Project fields that must be filled in once a PR is assigned to the Suite project
-          REQUIRED_FIELDS=("Platform" "Team" "Release")
+          REQUIRED_FIELDS=("Platform" "Team")
           REQUIRED_FIELDS_PROJECT="Suite"
 
           # Fetch associated project items together with their populated field names.
@@ -126,7 +126,7 @@ jobs:
           done
 
           if [ -n "$HAS_ERROR" ]; then
-            echo "Please fill in Platform, Team and Release in the '$REQUIRED_FIELDS_PROJECT' project before merging."
+            echo "Please fill in Platform and Team in the '$REQUIRED_FIELDS_PROJECT' project before merging."
             exit 1
           fi
 
