@@ -1,3 +1,4 @@
+import { messages } from '@suite/intl';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
@@ -7,6 +8,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
     test.use({
         setupEmulator: false,
         electronConf: { offlineMode: true },
+        ignoreToastErrors: [messages.TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR.defaultMessage],
     });
 
     test.beforeEach(async ({ onboardingPage }) => {

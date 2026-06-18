@@ -13,7 +13,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
         //TODO: Mock is not handling request for instant unstake information. Fix me
-        exceptionLogger: skipFixture,
+        jsExceptionWatcher: skipFixture,
     });
 
     test.beforeEach(

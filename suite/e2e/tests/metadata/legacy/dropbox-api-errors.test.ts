@@ -6,6 +6,9 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
+        ignoreToastErrors: [
+            'Failed to save labeling data: Error in call to API function "files/upload": The given OAuth 2 access token is malformed.',
+        ],
     });
 
     test.beforeEach(async ({ metadataMock }) => {

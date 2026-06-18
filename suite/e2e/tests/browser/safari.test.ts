@@ -20,7 +20,7 @@ test.use({
     startEmulator: false,
     ...devices['Desktop Safari'],
     channel: 'webkit',
-    exceptionLogger: skipFixture,
+    jsExceptionWatcher: skipFixture,
 });
 
 test.describe('Safari', { tag: ['@webOnly', '@noDevice'] }, () => {

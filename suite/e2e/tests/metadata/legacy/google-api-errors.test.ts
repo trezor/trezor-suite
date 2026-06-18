@@ -5,6 +5,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 test.describe('Google API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all' },
+        ignoreToastErrors: ['Failed to connect to labeling provider: Invalid Credentials'],
     });
 
     test.beforeEach(async ({ metadataMock }) => {

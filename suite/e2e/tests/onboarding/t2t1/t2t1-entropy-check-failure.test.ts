@@ -6,6 +6,7 @@ import { expect, test } from '../../../support/fixtures';
 test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }, () => {
     test.use({
         setupEmulator: false,
+        ignoreToastErrors: ['SIMULATED ERROR', 'device disconnected during action'],
     });
 
     test.beforeEach(async ({ onboardingPage, analyticsSection }) => {
