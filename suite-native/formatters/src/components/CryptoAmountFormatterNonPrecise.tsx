@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { G } from '@mobily/ts-belt';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -12,7 +10,7 @@ import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 
-type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
+type CryptoAmountFormatterNonPreciseProps = FormatterProps<string | null | number> &
     TextProps & {
         symbol: NetworkSymbol | TokenSymbol;
         isBalance?: boolean;
@@ -23,7 +21,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         sign?: '+' | '-' | null;
     };
 
-export const CryptoAmountFormatter = ({
+export const CryptoAmountFormatterNonPrecise = ({
     value,
     symbol,
     isBalance = true,
@@ -34,8 +32,8 @@ export const CryptoAmountFormatter = ({
     sign = null,
     decimals,
     ...otherProps
-}: CryptoToFiatAmountFormatterProps) => {
-    const { CryptoAmountFormatter: formatter } = useFormatters();
+}: CryptoAmountFormatterNonPreciseProps) => {
+    const { CryptoAmountFormatterNonPrecise: formatter } = useFormatters();
 
     if (value === null || isLoading) {
         return <EmptyAmountSkeleton variant={variant} />;

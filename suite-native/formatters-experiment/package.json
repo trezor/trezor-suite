@@ -17,6 +17,7 @@
         "@suite-native/formatters": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles-native": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.2.4",
         "react-native": "0.83.2"
     }

@@ -8,6 +8,8 @@ export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';
 export { BaseCurrencyAmountFormatter } from './components/BaseCurrencyAmountFormatter';
 export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
+export { CryptoAmountFormatterFast } from './components/CryptoAmountFormatterFast';
+export { CryptoAmountFormatterNonPrecise } from './components/CryptoAmountFormatterNonPrecise';
 export { NetworkDisplaySymbolNameFormatter } from './components/NetworkDisplaySymbolNameFormatter';
 export { TokenAmountFormatter } from './components/TokenAmountFormatter';
 export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';

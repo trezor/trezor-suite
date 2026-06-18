@@ -19,6 +19,8 @@ import {
     type CryptoAmountFormatterInputValue,
     prepareCryptoAmountFormatter,
 } from './formatters/prepareCryptoAmountFormatter';
+import { prepareCryptoAmountFormatterFast } from './formatters/prepareCryptoAmountFormatterFast';
+import { prepareCryptoAmountFormatterNonPrecise } from './formatters/prepareCryptoAmountFormatterNonPrecise';
 import { prepareDateFormatter } from './formatters/prepareDateFormatter';
 import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
 import {
@@ -42,6 +44,16 @@ export type Formatters = {
         string,
         CryptoAmountFormatterDataContext
     >;
+    CryptoAmountFormatterFast: Formatter<
+        CryptoAmountFormatterInputValue,
+        string,
+        CryptoAmountFormatterDataContext
+    >;
+    CryptoAmountFormatterNonPrecise: Formatter<
+        CryptoAmountFormatterInputValue,
+        string,
+        CryptoAmountFormatterDataContext
+    >;
     DisplaySymbolFormatter: Formatter<NetworkSymbol, string, DisplaySymbolFormatterDataContext>;
     NetworkNameFormatter: Formatter<NetworkSymbol, string>;
     SignValueFormatter: Formatter<SignValue | undefined, string>;
@@ -60,6 +72,8 @@ export const FormatterProviderContext = createContext<Formatters>({} as Formatte
 
 export const getFormatters = (config: FormatterConfig): Formatters => {
     const CryptoAmountFormatter = prepareCryptoAmountFormatter(config);
+    const CryptoAmountFormatterFast = prepareCryptoAmountFormatterFast(config);
+    const CryptoAmountFormatterNonPrecise = prepareCryptoAmountFormatterNonPrecise(config);
     const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
     const BaseCurrencyAmountFormatter = prepareBaseCurrencyAmountFormatter(config);
     const DateFormatter = prepareDateFormatter(config);
@@ -69,6 +83,8 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
     return {
         AddressFormatter,
         CryptoAmountFormatter,
+        CryptoAmountFormatterFast,
+        CryptoAmountFormatterNonPrecise,
         DisplaySymbolFormatter,
         NetworkNameFormatter,
         BaseCurrencyAmountFormatter,

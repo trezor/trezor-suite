@@ -23,7 +23,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         sign?: '+' | '-' | null;
     };
 
-export const CryptoAmountFormatter = ({
+export const CryptoAmountFormatterFast = ({
     value,
     symbol,
     isBalance = true,
