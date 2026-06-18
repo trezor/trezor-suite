@@ -36,6 +36,7 @@ export const SheetHeaderTitle = ({
                 onPress={onRightButtonPress}
                 intent="neutral"
                 priority="secondary"
+                size="medium"
                 accessibilityRole="button"
                 accessibilityLabel={rightButtonA11yLabel}
             />

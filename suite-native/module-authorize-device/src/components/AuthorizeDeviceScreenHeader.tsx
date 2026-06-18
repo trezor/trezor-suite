@@ -20,6 +20,7 @@ export const AuthorizeDeviceScreenHeader = () => {
                 iconName="x"
                 intent="neutral"
                 priority="secondary"
+                size="medium"
                 accessibilityRole="button"
                 accessibilityLabel="close"
                 onPress={handleCancel}

@@ -29,6 +29,7 @@ export const GoBackIcon = ({ closeActionType = 'back', closeAction, testID }: Go
             iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
             intent="neutral"
             priority="secondary"
+            size="medium"
             onPress={handleGoBack}
             accessibilityRole="button"
             accessibilityLabel="Go back"
