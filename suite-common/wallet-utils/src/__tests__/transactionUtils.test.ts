@@ -9,6 +9,7 @@ import {
     findChainedTransactions,
     generateTransactionMonthKey,
     getAccountTransactions,
+    getEvmNonceInfo,
     getRbfParams,
     getTransactionWithLowestNonce,
     groupJointTransactions,
@@ -386,6 +387,48 @@ describe('transaction utils', () => {
                     })),
                 ).toEqual(f.result.others);
             });
+        });
+    });
+
+    describe('getEvmNonceInfo', () => {
+        const pendingSentTx = (nonce: number) =>
+            getWalletTransaction({
+                blockHeight: -1,
+                type: 'sent',
+                ethereumSpecific: { nonce } as any,
+            });
+
+        it('no pending txs: nextNonce = accountNonce', () => {
+            expect(getEvmNonceInfo(41, [])).toEqual({ confirmedNonce: 41, nextNonce: 41 });
+        });
+
+        it('contiguous pending txs: nextNonce advances past all of them', () => {
+            const pending = [pendingSentTx(41), pendingSentTx(42), pendingSentTx(43)];
+            expect(getEvmNonceInfo(41, pending)).toEqual({ confirmedNonce: 41, nextNonce: 44 });
+        });
+
+        it('gap in pending: nextNonce stops at the gap, confirmedNonce at the lowest pending nonce', () => {
+            const pending = [pendingSentTx(41), pendingSentTx(43)];
+            expect(getEvmNonceInfo(41, pending)).toEqual({ confirmedNonce: 41, nextNonce: 42 });
+        });
+
+        it('accountNonce is blockbook pending count (higher than actual confirmed): uses lowest local pending nonce as confirmedNonce', () => {
+            // misc.nonce = 44 (node saw txs 41-43 in mempool), but locally only 41 and 43 are known.
+            // confirmedNonce must be 41 (the lowest locally-known pending nonce), not 44.
+            const pending = [pendingSentTx(41), pendingSentTx(43)];
+            expect(getEvmNonceInfo(44, pending)).toEqual({ confirmedNonce: 41, nextNonce: 42 });
+        });
+
+        it('accountNonce is blockbook pending count with no gap: nextNonce equals accountNonce', () => {
+            // misc.nonce = 44 (all of 41-43 are in the mempool, all locally known too)
+            const pending = [pendingSentTx(41), pendingSentTx(42), pendingSentTx(43)];
+            expect(getEvmNonceInfo(44, pending)).toEqual({ confirmedNonce: 41, nextNonce: 44 });
+        });
+
+        it('single pending tx above accountNonce (gap at the bottom): nextNonce = accountNonce', () => {
+            // Pending tx at 43 but confirmed nonce is 41 — gap at 41 and 42
+            const pending = [pendingSentTx(43)];
+            expect(getEvmNonceInfo(41, pending)).toEqual({ confirmedNonce: 41, nextNonce: 41 });
         });
     });
 

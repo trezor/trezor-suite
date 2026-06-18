@@ -1,8 +1,11 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { confirmedNonces, ethAccount, evmTx } from './evmFixtures';
+import { type EthAccount, ethAccount, evmTx } from './evmFixtures';
 import { ethereumGetCurrentNonceThunk } from '../../src/send/sendFormEthereumThunks';
+
+const accountWithNonce = (nonce: number): EthAccount =>
+    ({ ...ethAccount, misc: { nonce: nonce.toString() } }) as EthAccount;
 
 const storeWithTxs = (accountTransactions: ReturnType<typeof evmTx>[]) =>
     configureMockStore({
@@ -26,21 +29,21 @@ describe(ethereumGetCurrentNonceThunk.name, () => {
 
     afterEach(() => jest.restoreAllMocks());
 
-    it('resolves the nonce from the account transactions in the store', async () => {
-        const store = storeWithTxs([...confirmedNonces(6), evmTx(13, { confirmed: false })]);
+    it('uses account nonce and ignores a gapped pending tx', async () => {
+        const store = storeWithTxs([evmTx(13, { confirmed: false })]);
 
         const result = await store
-            .dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: ethAccount }))
+            .dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: accountWithNonce(6) }))
             .unwrap();
 
         expect(result).toEqual({ nonce: '6', confirmedNonce: '6' });
     });
 
-    it('returns zero when the account has no transactions', async () => {
+    it('returns zero when the account has no transactions and nonce is 0', async () => {
         const store = storeWithTxs([]);
 
         const result = await store
-            .dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: ethAccount }))
+            .dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: accountWithNonce(0) }))
             .unwrap();
 
         expect(result).toEqual({ nonce: '0', confirmedNonce: '0' });
