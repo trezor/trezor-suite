@@ -106,7 +106,7 @@
         "@trezor/utxo-lib": "workspace:*",
         "cross-fetch": "^4.1.0",
         "jws": "^4.0.1",
-        "viem": "^2.48.1"
+        "viem": "^2.52.2"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.29.7",

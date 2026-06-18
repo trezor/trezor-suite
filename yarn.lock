@@ -10167,7 +10167,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/address-validator": "workspace:*"
-    viem: "npm:^2.48.1"
+    viem: "npm:^2.52.2"
   languageName: unknown
   linkType: soft
 
@@ -10249,7 +10249,7 @@ __metadata:
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    viem: "npm:^2.48.1"
+    viem: "npm:^2.52.2"
   languageName: unknown
   linkType: soft
 
@@ -10783,7 +10783,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    viem: "npm:^2.48.1"
+    viem: "npm:^2.52.2"
   languageName: unknown
   linkType: soft
 
@@ -15668,7 +15668,7 @@ __metadata:
     html-webpack-plugin: "npm:5.6.7"
     socks-proxy-agent: "npm:8.0.5"
     tiny-worker: "npm:^2.3.0"
-    viem: "npm:^2.48.1"
+    viem: "npm:^2.52.2"
     webpack: "npm:5.107.2"
   peerDependencies:
     tslib: ^2.6.2
@@ -16049,7 +16049,7 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
-    viem: "npm:^2.48.1"
+    viem: "npm:^2.52.2"
     vite-plugin-node-polyfills: "npm:^0.26.0"
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.4"
@@ -37675,9 +37675,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ox@npm:0.14.20":
-  version: 0.14.20
-  resolution: "ox@npm:0.14.20"
+"ox@npm:0.14.29":
+  version: 0.14.29
+  resolution: "ox@npm:0.14.29"
   dependencies:
     "@adraffy/ens-normalize": "npm:^1.11.0"
     "@noble/ciphers": "npm:^1.3.0"
@@ -37692,7 +37692,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/96526073193f3a6dd2ccd21bcc255e82c7226d6de63fa17a2021c75232fdc9bc969e75e2cbc0c8d5163d88c575e08dc4c75dec7333b1727f080585f07fc6c1ed
+  checksum: 10/ac267c34e63c2e2e8b7a4e64f4a3635bb11ddaa58f8f7d4140dafbf921dc61379f3c27411d110fdb97a7b9c0b4c8cc420ea2336e055cae4ab351d4708fa0112e
   languageName: node
   linkType: hard
 
@@ -45983,9 +45983,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.48.1":
-  version: 2.48.4
-  resolution: "viem@npm:2.48.4"
+"viem@npm:^2.52.2":
+  version: 2.52.2
+  resolution: "viem@npm:2.52.2"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -45993,14 +45993,14 @@ __metadata:
     "@scure/bip39": "npm:1.6.0"
     abitype: "npm:1.2.3"
     isows: "npm:1.0.7"
-    ox: "npm:0.14.20"
-    ws: "npm:8.18.3"
+    ox: "npm:0.14.29"
+    ws: "npm:8.20.1"
   peerDependencies:
     typescript: ">=5.0.4"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/79ab1c8941013e1b4d12ef0bd7fcca6108cfc078b669cc02ae5a08c94d4e3b6de182071cfb40fb4e33ddc40b3aa997f3ebb50d269c85512cefcefdce49b193a0
+  checksum: 10/755530dd313edfc433d3c48492940871a122647e5cbed7eaffd0622064fa91aab6ae1b06617af751dcdcb4b60aac782b83f7a8d5960d77c2655a75c552d980d9
   languageName: node
   linkType: hard
 
@@ -46928,9 +46928,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.18.3":
-  version: 8.18.3
-  resolution: "ws@npm:8.18.3"
+"ws@npm:8.20.1":
+  version: 8.20.1
+  resolution: "ws@npm:8.20.1"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -46939,7 +46939,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/725964438d752f0ab0de582cd48d6eeada58d1511c3f613485b5598a83680bedac6187c765b0fe082e2d8cc4341fc57707c813ae780feee82d0c5efe6a4c61b6
+  checksum: 10/8c4d2b06dc65381b6bfab1f2e584275dabd30a99a5ce058b4dc76f3d03fad1921cef3a21d8f53127d30a808cfd1864aa2fe6890a5d43359f682457315baec873
   languageName: node
   linkType: hard
 
