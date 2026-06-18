@@ -85,7 +85,7 @@ this prevents; do not jam an open question into checkboxes, and do not park a wh
 when one line needs a one-sentence answer.
 
 This inline channel runs **both ways**: you can ask the human (a `conveyor:clarify`
-thread you start), and the human can direct you (an `@conveyor` comment they start on a
+thread you start), and the human can direct you (a `conveyor:` comment they start on a
 line). Both are drained the same way on your next run.
 
 - **Ask inline, tagged.** Post a GitHub inline review comment on the exact line,
