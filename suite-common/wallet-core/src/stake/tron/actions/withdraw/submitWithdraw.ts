@@ -1,6 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    asAmountUnit,
+    getAccountIdentity,
+    getTronWithdrawableBalance,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -11,7 +16,6 @@ import { TRON_STAKE_MODULE } from '../../shared/constants';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakeReducer';
 import { type TronFlow } from '../../tronStakeTypes';
-import { getWithdrawableAmount } from '../../tronStakeUtils';
 
 interface SubmitWithdrawThunkArguments extends WithdrawThunkArguments {
     device: TrezorDevice;
@@ -141,7 +145,10 @@ export const submitTronWithdrawThunk = createThunk<void, SubmitWithdrawThunkArgu
                     type: 'self',
                     target: {
                         addresses: [account.descriptor],
-                        amount: getWithdrawableAmount(account),
+                        amount: unitsToSubunits({
+                            value: asAmountUnit(new BigNumber(getTronWithdrawableBalance(account))),
+                            symbol: account.symbol,
+                        }).toString(),
                     },
                     tronSpecific: {
                         contractType: 'WithdrawExpireUnfreezeContract',

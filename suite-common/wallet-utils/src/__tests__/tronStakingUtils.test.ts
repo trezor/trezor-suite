@@ -1,11 +1,14 @@
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
+    type TronAccountExtraData,
     type TronStakingInfo,
     type TronUnstakingBatch,
     type TronVote,
 } from '@trezor/blockchain-link-types';
 
 import {
+    calculateTronFreezeSuggestion,
+    getResourceGain,
     getTronAccountTotalStakingBalance,
     getTronAvailableVotingPower,
     getTronCryptoBalanceWithStaking,
@@ -279,5 +282,121 @@ describe('getTronAvailableVotingPower', () => {
             stakingInfo: buildStakingInfo({ availableVotingPower: '7' }),
         });
         expect(getTronAvailableVotingPower(account)).toBe('7');
+    });
+});
+
+const resourceGainResources = {
+    totalEnergyLimit: 100,
+    totalEnergyWeight: 10,
+    totalBandwidthLimit: 200,
+    totalBandwidthWeight: 50,
+} as TronAccountExtraData;
+
+describe(getResourceGain.name, () => {
+    it('computes energy gain (amount × limit / weight)', () => {
+        expect(getResourceGain('5', 'energy', resourceGainResources)).toBe(50);
+    });
+
+    it('computes bandwidth gain', () => {
+        expect(getResourceGain('5', 'bandwidth', resourceGainResources)).toBe(20);
+    });
+
+    it('returns null when resources are missing', () => {
+        expect(getResourceGain('5', 'energy', undefined)).toBeNull();
+    });
+
+    it('returns null when the relevant global is missing or zero', () => {
+        expect(
+            getResourceGain('5', 'energy', { totalEnergyWeight: 0 } as TronAccountExtraData),
+        ).toBeNull();
+        expect(getResourceGain('5', 'energy', {} as TronAccountExtraData)).toBeNull();
+        expect(
+            getResourceGain('5', 'energy', { totalEnergyWeight: 10 } as TronAccountExtraData),
+        ).toBeNull();
+    });
+
+    it.each(['', '0', '-1', 'abc'])('returns null for invalid amount %p', amount => {
+        expect(getResourceGain(amount, 'energy', resourceGainResources)).toBeNull();
+    });
+});
+
+const makeTrc20Tx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
+    ({
+        type: 'nonfinal',
+        feePerByte: '100',
+        feeLimit: '100000',
+        bytes: 300,
+        energyConsumed: 1000,
+        token: { name: 'USDT', symbol: 'USDT', decimals: 6, balance: '100000000' },
+        totalSpent: '0',
+        inputs: [],
+        ...overrides,
+    }) as unknown as GeneralPrecomposedTransaction;
+
+const makeFreezeResources = (
+    overrides: Partial<TronAccountExtraData> = {},
+): TronAccountExtraData => ({
+    availableStakedBandwidth: 0,
+    totalStakedBandwidth: 0,
+    availableFreeBandwidth: 300,
+    totalFreeBandwidth: 300,
+    availableEnergy: 0,
+    totalEnergy: 0,
+    totalEnergyLimit: 0,
+    totalEnergyWeight: 0,
+    totalBandwidthLimit: 0,
+    totalBandwidthWeight: 0,
+    ...overrides,
+});
+
+describe(calculateTronFreezeSuggestion.name, () => {
+    it('energy covered — no suggestion', () => {
+        expect(
+            calculateTronFreezeSuggestion(
+                makeTrc20Tx(),
+                makeFreezeResources({ availableEnergy: 1000 }),
+            ),
+        ).toBeNull();
+    });
+
+    it('energy short — returns the TRX to freeze for energy', () => {
+        // deficit: 1000 energy; limit 1000, weight 100 → 1000 * 100 / 1000 = 100 TRX
+        expect(
+            calculateTronFreezeSuggestion(
+                makeTrc20Tx(),
+                makeFreezeResources({
+                    availableEnergy: 0,
+                    totalEnergyLimit: 1000,
+                    totalEnergyWeight: 100,
+                }),
+            ),
+        ).toBe('100');
+    });
+
+    it('energy short — rounds the freeze amount up to whole TRX', () => {
+        // deficit: 1000 energy; limit 300, weight 100 → 333.33 → 334 TRX
+        expect(
+            calculateTronFreezeSuggestion(
+                makeTrc20Tx(),
+                makeFreezeResources({
+                    availableEnergy: 0,
+                    totalEnergyLimit: 300,
+                    totalEnergyWeight: 100,
+                }),
+            ),
+        ).toBe('334');
+    });
+
+    it('missing energy conversion params — no suggestion', () => {
+        expect(
+            calculateTronFreezeSuggestion(
+                makeTrc20Tx(),
+                makeFreezeResources({ availableEnergy: 0 }),
+            ),
+        ).toBeNull();
+    });
+
+    it('no resources data — no suggestion', () => {
+        expect(calculateTronFreezeSuggestion(makeTrc20Tx(), undefined)).toBeNull();
     });
 });

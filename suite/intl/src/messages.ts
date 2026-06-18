@@ -5467,6 +5467,15 @@ export const messages = defineMessages({
         id: 'TR_TRON_FEE_LIMIT_BELOW_RECOMMENDED',
         defaultMessage: 'Fee limit too low',
     },
+    TR_TRON_FREEZE_FEE_BANNER_ENERGY: {
+        id: 'TR_TRON_FREEZE_FEE_BANNER_ENERGY',
+        defaultMessage:
+            'Avoid paying TRX. Freeze {amount} to get enough energy for this transaction.',
+    },
+    TR_TRON_FREEZE_FEE_BANNER_CTA: {
+        id: 'TR_TRON_FREEZE_FEE_BANNER_CTA',
+        defaultMessage: 'Freeze TRX',
+    },
     TR_TRON_NOTE: {
         id: 'TR_TRON_NOTE',
         defaultMessage: 'Note',

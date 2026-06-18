@@ -1,6 +1,3 @@
-export const TRON_RESOURCE_TYPES = ['bandwidth', 'energy'] as const;
-export type TronResourceType = (typeof TRON_RESOURCE_TYPES)[number];
-
 export const TRON_FLOWS = ['stake', 'vote', 'unstake', 'withdraw'] as const;
 export type TronFlow = (typeof TRON_FLOWS)[number];
 

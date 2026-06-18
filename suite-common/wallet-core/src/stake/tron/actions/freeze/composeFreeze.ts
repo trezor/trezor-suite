@@ -4,6 +4,7 @@ import {
     type Account,
     type PrecomposedLevels,
     type PrecomposedTransactionFinal,
+    type TronResourceType,
 } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -19,7 +20,7 @@ import {
     TRON_DUMMY_BLOCK_HEIGHT,
     TRON_STAKE_MODULE,
 } from '../../shared/constants';
-import { type TronResourceType, type TronStakeError } from '../../tronStakeTypes';
+import { type TronStakeError } from '../../tronStakeTypes';
 
 export interface FreezeThunkArguments {
     account: Account;

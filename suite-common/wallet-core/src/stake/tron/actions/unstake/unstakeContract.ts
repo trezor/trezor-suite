@@ -1,11 +1,10 @@
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account, type FormState } from '@suite-common/wallet-types';
+import { type Account, type FormState, type TronResourceType } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { tronUtils } from '@trezor/blockchain-link-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { tronResourceTypeToCode } from '../../shared/tronResourceCode';
-import { type TronResourceType } from '../../tronStakeTypes';
 
 interface BuildUnfreezeBalanceV2ContractParams {
     ownerHex: string;

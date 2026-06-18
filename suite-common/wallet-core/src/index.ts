@@ -80,7 +80,6 @@ export { submitTronUnstakeThunk } from './stake/tron/actions/unstake/submitUnsta
 export { composeTronWithdrawFeeLevelsThunk } from './stake/tron/actions/withdraw/composeWithdraw';
 export { submitTronWithdrawThunk } from './stake/tron/actions/withdraw/submitWithdraw';
 export * from './stake/tron/tronStakeTypes';
-export * from './stake/tron/tronStakeUtils';
 export * from './token/stellarTokenThunks';
 export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
