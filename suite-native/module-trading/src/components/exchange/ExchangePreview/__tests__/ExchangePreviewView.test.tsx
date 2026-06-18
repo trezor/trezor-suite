@@ -1,4 +1,5 @@
 import { getTranslation } from '@suite-native/intl';
+import { within } from '@suite-native/test-utils';
 import {
     btc1NormalAccount,
     cexdirectFloatingQuote,
@@ -72,11 +73,9 @@ describe('ExchangePreviewView', () => {
             quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
-        expect(getByTestId('@trading/exchange-preview/eip712-info-header')).toHaveTextContent(
-            getTranslation('moduleTrading.tradingExchangePreviewScreen.eip712Info.title', {
-                providerName: '1inch Fusion+',
-            }),
-        );
+        expect(
+            within(getByTestId('@trading/exchange-preview/eip712-info')).getByText('1inch Fusion+'),
+        ).toBeOnTheScreen();
     });
 
     it('should not render transaction fee for quotes with EIP-712 sign data', () => {
@@ -94,7 +93,7 @@ describe('ExchangePreviewView', () => {
             quote: oneInchFusionPlusWithoutEip712SignDataQuote,
         });
 
-        expect(queryByTestId('@trading/exchange-preview/eip712-info-header')).toBeNull();
+        expect(queryByTestId('@trading/exchange-preview/eip712-info')).toBeNull();
     });
 
     it('should render KYC warning for provider with "KYC-required"', () => {
