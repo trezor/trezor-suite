@@ -2,9 +2,9 @@ import type { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import type {
-    YieldActionFlowType,
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
+    YieldPositionFlowType,
 } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 
@@ -22,10 +22,15 @@ const actionStepTranslationMap = {
         submitTranslationId: 'TR_EARN_YIELD_WITHDRAW',
         balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
     },
+    redeem: {
+        amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
+        submitTranslationId: 'TR_EARN_YIELD_WITHDRAW',
+        balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
+    },
 } as const;
 
 export type YieldActionStepProps = {
-    flowType: YieldActionFlowType;
+    flowType: YieldPositionFlowType;
     token: YieldFlowDisplayToken;
     summaryValue: ReactNode;
     isDisabled?: boolean;

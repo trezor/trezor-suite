@@ -16,7 +16,7 @@ import type {
     YieldFlowResolvedData,
     YieldFlowType,
     YieldPendingTransactionState,
-    YieldWithdrawInputUnit,
+    YieldWithdrawFlowType,
 } from './stablecoinYieldTypes';
 
 type TokenLike = {
@@ -74,7 +74,7 @@ type BuildYieldWithdrawCalldataParams = {
     flowData: YieldFlowResolvedData;
     ownerAddress: EvmAddress;
     receiverAddress: EvmAddress;
-    withdrawInputUnit: YieldWithdrawInputUnit;
+    flowType: YieldWithdrawFlowType;
 };
 
 type BuildYieldDepositCalldataParams = {
@@ -106,30 +106,32 @@ export const getStablecoinYieldFlowKey = ({
 }: GetStablecoinYieldFlowKeyParams) =>
     `${accountKey}:${yieldId}:${tokenContract?.toLowerCase() ?? ''}`;
 
+export const isYieldWithdrawFlow = (flowType: YieldFlowType): flowType is YieldWithdrawFlowType =>
+    flowType === 'withdraw' || flowType === 'redeem';
+
 export const getYieldWithdrawInputToken = ({
     flowData,
-    withdrawInputUnit,
+    flowType,
 }: {
     flowData: YieldFlowResolvedData;
-    withdrawInputUnit: YieldWithdrawInputUnit;
-}): YieldFlowDisplayToken =>
-    withdrawInputUnit === 'shares' ? flowData.receiptToken : flowData.token;
+    flowType: YieldWithdrawFlowType;
+}): YieldFlowDisplayToken => (flowType === 'redeem' ? flowData.receiptToken : flowData.token);
 
 export const buildYieldWithdrawCalldata = ({
     amount,
     flowData,
     ownerAddress,
     receiverAddress,
-    withdrawInputUnit,
+    flowType,
 }: BuildYieldWithdrawCalldataParams) => {
-    const isSharesInput = withdrawInputUnit === 'shares';
-    const inputToken = getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
+    const isRedeem = flowType === 'redeem';
+    const inputToken = getYieldWithdrawInputToken({ flowData, flowType });
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
         decimals: inputToken.decimals,
     });
 
-    const builderResult = isSharesInput
+    const builderResult = isRedeem
         ? Calldata.evm.erc4626.redeem.encode(
               {
                   shares: amountSubunits,

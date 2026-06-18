@@ -117,7 +117,7 @@ export type YieldDepositRevokeReviewParams = YieldFlowParams & {
 };
 
 export type YieldWithdrawParams = YieldFlowParams & {
-    withdrawInputUnit?: 'asset' | 'shares';
+    withdrawFlowType?: 'withdraw' | 'redeem';
 };
 
 export type YieldStackParamList = {

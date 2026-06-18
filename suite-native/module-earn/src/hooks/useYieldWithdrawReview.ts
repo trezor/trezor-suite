@@ -9,6 +9,7 @@ import {
     type StablecoinYieldRootState,
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
+    type YieldWithdrawFlowType,
     selectFormDraft,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
@@ -36,6 +37,7 @@ import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yield
 type UseYieldWithdrawReviewParams = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
+    flowType: YieldWithdrawFlowType;
     onReviewLeave?: () => void;
     reviewToken: YieldFlowDisplayToken;
 };
@@ -55,6 +57,7 @@ type NavigationProps = StackNavigationProps<
 export const useYieldWithdrawReview = ({
     flowData,
     flowKey,
+    flowType,
     onReviewLeave,
     reviewToken,
 }: UseYieldWithdrawReviewParams): UseYieldWithdrawReviewResult => {
@@ -117,7 +120,7 @@ export const useYieldWithdrawReview = ({
                 signYieldActionReviewThunk({
                     flowData,
                     flowKey,
-                    flowType: 'withdraw',
+                    flowType,
                     reviewToken,
                     selectedFee,
                 }),
@@ -150,6 +153,7 @@ export const useYieldWithdrawReview = ({
         dispatch,
         flowData,
         flowKey,
+        flowType,
         reviewToken,
         selectedFee,
         showSignTransactionFailedAlert,
@@ -167,7 +171,7 @@ export const useYieldWithdrawReview = ({
             pushYieldActionReviewThunk({
                 flowData,
                 flowKey,
-                flowType: 'withdraw',
+                flowType,
             }),
         );
 
@@ -192,6 +196,7 @@ export const useYieldWithdrawReview = ({
         dispatch,
         flowData,
         flowKey,
+        flowType,
         markReviewNavigationSuccess,
         navigation,
         showPendingTransactionConflictAlert,

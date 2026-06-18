@@ -791,7 +791,7 @@
         },
         "yieldFlowType": {
             "type": "string",
-            "enum": ["deposit", "withdraw", "claim"]
+            "enum": ["deposit", "withdraw", "redeem", "claim"]
         }
     }
 }

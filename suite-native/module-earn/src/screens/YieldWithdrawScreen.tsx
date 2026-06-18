@@ -6,9 +6,10 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    type YieldWithdrawInputUnit,
+    type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getWithdrawRequestAmount,
+    getYieldWithdrawInputToken,
     splitYieldPendingTransaction,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
@@ -49,7 +50,6 @@ import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransa
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldWithdrawFees } from '../hooks/useYieldWithdrawFees';
-import { getYieldWithdrawInputToken } from '../utils/yieldWithdrawUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdraw>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldWithdraw>;
@@ -65,6 +65,10 @@ const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
 }));
 
+const getYieldWithdrawFlowTypeByInputView = (
+    activeView: 'primary' | 'secondary',
+): YieldWithdrawFlowType => (activeView === 'secondary' ? 'redeem' : 'withdraw');
+
 export const YieldWithdrawScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
@@ -77,8 +81,10 @@ export const YieldWithdrawScreen = () => {
     const [assetAmount, setAssetAmount] = useState('');
     const [sharesAmount, setSharesAmount] = useState('');
     const [isMaxSelected, setIsMaxSelected] = useState(false);
-    const [withdrawInputUnit, setWithdrawInputUnit] = useState<YieldWithdrawInputUnit>('asset');
-    const isSharesInput = withdrawInputUnit === 'shares';
+    const [flowType, setFlowType] = useState<YieldWithdrawFlowType>(
+        route.params.withdrawFlowType ?? 'withdraw',
+    );
+    const isSharesInput = flowType === 'redeem';
     const amount = isSharesInput ? sharesAmount : assetAmount;
     const {
         bottomSheetRef: infoBottomSheetRef,
@@ -139,10 +145,10 @@ export const YieldWithdrawScreen = () => {
         updateFeeLevelThunk: updateWithdrawFeeLevelThunk,
     } = useYieldWithdrawFees({
         amount,
+        flowType,
         flowData,
         flowKey,
         isEnabled: resolutionStatus === 'resolved' && !!amount && !isAmountTooHigh,
-        withdrawInputUnit,
     });
     const feeFiatConverters = useCryptoFiatConverters({
         symbol: account?.symbol ?? null,
@@ -152,10 +158,10 @@ export const YieldWithdrawScreen = () => {
             return undefined;
         }
 
-        const inputToken = getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
+        const inputToken = getYieldWithdrawInputToken({ flowData, flowType });
 
         return inputToken.contractAddress ? toTokenAddress(inputToken.contractAddress) : undefined;
-    }, [flowData, withdrawInputUnit]);
+    }, [flowData, flowType]);
 
     const amountFiatConverters = useCryptoFiatConverters({
         symbol: account?.symbol ?? null,
@@ -168,7 +174,7 @@ export const YieldWithdrawScreen = () => {
             !withdrawFee ||
             resolutionStatus !== 'resolved' ||
             preparedAction?.amount !== amount ||
-            preparedAction.withdrawInputUnit !== withdrawInputUnit
+            preparedAction.flowType !== flowType
         ) {
             return false;
         }
@@ -189,25 +195,22 @@ export const YieldWithdrawScreen = () => {
         preparedAction,
         resolutionStatus,
         withdrawFee,
-        withdrawInputUnit,
+        flowType,
     ]);
 
     const isWithdrawReviewReady =
         !!amount &&
         preparedAction?.amount === amount &&
-        preparedAction.withdrawInputUnit === withdrawInputUnit &&
+        preparedAction.flowType === flowType &&
         !!withdrawFeeFormDraft;
 
     const session = useYieldSession({
         flowKey,
-        flowType: 'withdraw',
+        flowType,
         shouldDisposeOnGoBack: true,
     });
     const pendingTransaction = session?.action.pendingTransaction ?? null;
-    const { actionPendingTransaction } = splitYieldPendingTransaction(
-        pendingTransaction,
-        'withdraw',
-    );
+    const { actionPendingTransaction } = splitYieldPendingTransaction(pendingTransaction, flowType);
     const isWithdrawPending = !!actionPendingTransaction;
     const { explorerUrl, openInBlockchain } = useTransactionDetails({
         accountKey: account?.key ?? null,
@@ -224,14 +227,14 @@ export const YieldWithdrawScreen = () => {
     useShowYieldTransactionFailureAlert({
         error: session?.error,
         flowKey,
-        flowType: 'withdraw',
+        flowType,
         isEnabled: isFocused,
     });
 
     useYieldPendingTransactionTracking({
         account,
         flowKey,
-        flowType: 'withdraw',
+        flowType,
         pendingTransaction: actionPendingTransaction,
     });
 
@@ -250,17 +253,17 @@ export const YieldWithdrawScreen = () => {
             return;
         }
 
-        dispatch(stablecoinYieldActions.skipApprovalStep({ flowType: 'withdraw', flowKey }));
-    }, [dispatch, flowKey, resolutionStatus, session?.step]);
+        dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
+    }, [dispatch, flowKey, flowType, resolutionStatus, session?.step]);
 
     useEffect(() => {
         if (session?.step === 'complete') {
             navigation.replace(YieldStackRoutes.YieldWithdrawComplete, {
                 ...route.params,
-                withdrawInputUnit,
+                withdrawFlowType: flowType,
             });
         }
-    }, [navigation, route.params, session?.step, withdrawInputUnit]);
+    }, [flowType, navigation, route.params, session?.step]);
 
     const getSharesAmountFromAssetAmount = useCallback(
         (value: string) => {
@@ -349,7 +352,7 @@ export const YieldWithdrawScreen = () => {
     }, [closeInfoBottomSheet, isWithdrawPending, openPendingBottomSheet]);
 
     const handleInputSwitch = useCallback((activeView: 'primary' | 'secondary') => {
-        setWithdrawInputUnit(activeView === 'secondary' ? 'shares' : 'asset');
+        setFlowType(getYieldWithdrawFlowTypeByInputView(activeView));
     }, []);
 
     const handleContinue = useCallback(() => {
@@ -362,23 +365,23 @@ export const YieldWithdrawScreen = () => {
             stablecoinYieldActions.storeActionReviewData({
                 amount: preparedAction.amount,
                 flowKey,
-                flowType: 'withdraw',
+                flowType,
                 receiptAmount: preparedAction.amount,
                 unsignedTransaction: preparedAction.unsignedTransaction,
             }),
         );
         navigation.navigate(YieldStackRoutes.YieldWithdrawReview, {
             ...route.params,
-            withdrawInputUnit,
+            withdrawFlowType: flowType,
         });
     }, [
         dispatch,
+        flowType,
         flowKey,
         isWithdrawReviewReady,
         navigation,
         preparedAction,
         route.params,
-        withdrawInputUnit,
     ]);
 
     if (resolutionStatus !== 'resolved') {
@@ -388,7 +391,7 @@ export const YieldWithdrawScreen = () => {
     const underlyingTokenSymbol = toTokenSymbol(flowData.token.symbol.toUpperCase());
     const vaultTokenSymbol = toTokenSymbol(flowData.receiptToken.symbol.toUpperCase());
 
-    const activeInputToken = getYieldWithdrawInputToken({ flowData, withdrawInputUnit });
+    const activeInputToken = getYieldWithdrawInputToken({ flowData, flowType });
     const activeUnitSymbol = toTokenSymbol(activeInputToken.symbol.toUpperCase());
     const activeUnitTokenContract = activeInputToken.contractAddress
         ? toTokenAddress(activeInputToken.contractAddress)

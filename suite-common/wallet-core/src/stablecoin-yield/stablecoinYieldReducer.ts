@@ -11,12 +11,12 @@ import { isSafeObjectKey } from '@trezor/utils';
 
 import type {
     StablecoinYieldClaimUnsignedTransaction,
-    YieldActionFlowType,
     YieldApproveModalState,
     YieldFlowCompleteRewardItem,
     YieldFlowStepId,
     YieldFlowType,
     YieldPendingTransactionState,
+    YieldPositionFlowType,
 } from './stablecoinYieldTypes';
 import { transactionsActions } from '../transactions/transactionsActions';
 
@@ -29,7 +29,7 @@ type StablecoinYieldSerializedTx = {
 
 export type StablecoinYieldActionReviewState =
     | {
-          type: YieldActionFlowType;
+          type: YieldPositionFlowType;
           amount: string;
           receiptAmount: string;
           unsignedTransaction: string;
@@ -42,7 +42,7 @@ export type StablecoinYieldActionReviewState =
 
 type StablecoinYieldStoreActionReviewDataPayload =
     | (StablecoinYieldSessionActionPayload & {
-          flowType: YieldActionFlowType;
+          flowType: YieldPositionFlowType;
           amount: string;
           receiptAmount: string;
           unsignedTransaction: string;
@@ -145,6 +145,7 @@ export const initialStablecoinYieldTxReviewState: StablecoinYieldTxReviewState =
 export const initialStablecoinYieldState: StablecoinYieldState = {
     deposit: Object.create(null),
     withdraw: Object.create(null),
+    redeem: Object.create(null),
     claim: Object.create(null),
     txReview: initialStablecoinYieldTxReviewState,
 };
@@ -499,7 +500,7 @@ export const stablecoinYieldSlice = createSlice({
     extraReducers: builder => {
         builder.addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
             const { txid: prevTxid, tx } = payload;
-            (['deposit', 'withdraw', 'claim'] as const).forEach(flowType => {
+            (['deposit', 'withdraw', 'redeem', 'claim'] as const).forEach(flowType => {
                 const bucket = state[flowType];
                 Object.values(bucket).forEach(session => {
                     if (session.action.pendingTransaction?.txid === prevTxid) {

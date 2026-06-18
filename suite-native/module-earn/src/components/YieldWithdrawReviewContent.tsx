@@ -1,4 +1,8 @@
-import { type YieldFlowDisplayToken, type YieldFlowResolvedData } from '@suite-common/wallet-core';
+import {
+    type YieldFlowDisplayToken,
+    type YieldFlowResolvedData,
+    type YieldWithdrawFlowType,
+} from '@suite-common/wallet-core';
 
 import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
@@ -14,6 +18,7 @@ import { type YieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 type YieldWithdrawReviewContentProps = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
+    flowType: YieldWithdrawFlowType;
     preview: YieldReviewPreview;
     reviewToken: YieldFlowDisplayToken;
 };
@@ -21,6 +26,7 @@ type YieldWithdrawReviewContentProps = {
 export const YieldWithdrawReviewContent = ({
     flowData,
     flowKey,
+    flowType,
     preview,
     reviewToken,
 }: YieldWithdrawReviewContentProps) => {
@@ -39,6 +45,7 @@ export const YieldWithdrawReviewContent = ({
     } = useYieldWithdrawReview({
         flowData,
         flowKey,
+        flowType,
         onReviewLeave: markReviewLeave,
         reviewToken,
     });

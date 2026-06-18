@@ -28,7 +28,7 @@ import { buildYieldClaimRewards } from './yieldClaimReviewUtils';
 
 type YieldActionReview = Extract<
     StablecoinYieldActionReviewState,
-    { type: 'deposit' | 'withdraw' }
+    { type: 'deposit' | 'withdraw' | 'redeem' }
 >;
 type YieldDepositReview = YieldActionReview & { type: 'deposit' };
 type YieldWithdrawReview = YieldActionReview & { type: 'withdraw' };

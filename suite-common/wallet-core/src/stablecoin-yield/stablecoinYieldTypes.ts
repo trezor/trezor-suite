@@ -3,18 +3,16 @@ import type { EvmHexString } from '@suite-common/schemas/src/evm';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
-export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'claim'] as const;
+export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'redeem', 'claim'] as const;
 export const YIELD_FLOW_STEPS = ['approve', 'action', 'complete'] as const;
-export const YIELD_WITHDRAW_INPUT_UNITS = ['asset', 'shares'] as const;
 
 export type YieldFlowType = (typeof YIELD_FLOW_TYPES)[number];
-export type YieldActionFlowType = Exclude<YieldFlowType, 'claim'>;
+export type YieldPositionFlowType = Exclude<YieldFlowType, 'claim'>;
+export type YieldWithdrawFlowType = Extract<YieldFlowType, 'withdraw' | 'redeem'>;
 export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];
-export type YieldWithdrawInputUnit = (typeof YIELD_WITHDRAW_INPUT_UNITS)[number];
 
 export type YieldFlowFormValues = {
     amountInput: string;
-    withdrawInputUnit: YieldWithdrawInputUnit;
 };
 
 export type YieldFlowDisplayToken = {
@@ -70,7 +68,7 @@ export type YieldApproveModalState = {
 };
 
 export type YieldPendingTransactionState = {
-    type: 'approve' | 'revoke' | 'revoke-only' | 'deposit' | 'withdraw' | 'claim';
+    type: 'approve' | 'revoke' | 'revoke-only' | 'deposit' | 'withdraw' | 'redeem' | 'claim';
     txid: string;
     amount: string;
     fee?: string;

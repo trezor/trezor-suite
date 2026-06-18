@@ -39,18 +39,19 @@ export const YieldWithdrawCompleteScreen = () => {
     const { account, apy, flowKey, resolutionStatus, vault } = useResolvedYieldFlowData(
         route.params,
     );
+    const flowType = route.params.withdrawFlowType ?? 'withdraw';
     const session = useSelector((state: StablecoinYieldRootState) =>
-        selectStablecoinYieldSessionByFlowKey(state, 'withdraw', flowKey),
+        selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
     );
-    const isSharesInput = route.params.withdrawInputUnit === 'shares';
+    const isSharesInput = flowType === 'redeem';
 
     const handleExit = useCallback(() => {
         if (flowKey) {
-            dispatch(stablecoinYieldActions.disposeSession({ flowType: 'withdraw', flowKey }));
+            dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
         }
 
         navigateToInitialScreen();
-    }, [dispatch, flowKey, navigateToInitialScreen]);
+    }, [dispatch, flowKey, flowType, navigateToInitialScreen]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

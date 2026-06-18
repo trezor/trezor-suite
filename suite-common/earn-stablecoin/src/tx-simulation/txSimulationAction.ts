@@ -28,7 +28,7 @@ const claimUnsignedTxBase = {
 
 const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
     z.strictObject({
-        flow: z.union([z.literal('deposit'), z.literal('withdraw')]),
+        flow: z.union([z.literal('deposit'), z.literal('withdraw'), z.literal('redeem')]),
         account: partialAccount,
         unsignedTx: z.string(),
     }),
@@ -56,6 +56,7 @@ function composeUnsignedEvmTx(
 ): EthereumSignTransaction['transaction'] {
     switch (params.flow) {
         case 'deposit':
+        case 'redeem':
         case 'withdraw': {
             const {
                 to,

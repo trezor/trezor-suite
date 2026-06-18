@@ -11,7 +11,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { STABLECOIN_YIELD_PREFIX, stablecoinYieldActions } from './stablecoinYieldReducer';
 import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
-import type { YieldActionFlowType, YieldFlowResolvedData } from './stablecoinYieldTypes';
+import type { YieldFlowResolvedData, YieldPositionFlowType } from './stablecoinYieldTypes';
 import { getAllowanceSpender, getWithdrawRequestAmount } from './stablecoinYieldUtils';
 import { fetchAllowance } from '../allowance/fetchAllowance';
 
@@ -19,7 +19,7 @@ const YIELD_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 const YIELD_GENERIC_ERROR = 'TR_EARN_YIELD_ERROR_GENERIC';
 
 export type YieldSessionPayload = {
-    flowType: YieldActionFlowType;
+    flowType: YieldPositionFlowType;
     flowKey: string;
 };
 
@@ -41,7 +41,7 @@ type SetYieldGenericErrorParams = YieldSessionPayload & {
 };
 
 type GetApprovalContractAddressParams = {
-    flowType: YieldActionFlowType;
+    flowType: YieldPositionFlowType;
     flowData: YieldFlowResolvedData;
 };
 
