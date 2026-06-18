@@ -10720,7 +10720,7 @@ __metadata:
   resolution: "@suite-common/react-query@workspace:suite-common/react-query"
   dependencies:
     "@tanstack/react-query": "npm:5.101.0"
-    "@tanstack/react-query-devtools": "npm:5.99.0"
+    "@tanstack/react-query-devtools": "npm:5.101.0"
     react: "npm:19.2.4"
   languageName: unknown
   linkType: soft
@@ -15384,22 +15384,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-devtools@npm:5.99.0":
-  version: 5.99.0
-  resolution: "@tanstack/query-devtools@npm:5.99.0"
-  checksum: 10/a2d93446ae44b40df819692942ce2541285951d396f82890535d8884216b503b1c529b7284a0f891a9f41235ae434b80acfc9106cd2d8fbe13bc233dca5b2a70
+"@tanstack/query-devtools@npm:5.101.0":
+  version: 5.101.0
+  resolution: "@tanstack/query-devtools@npm:5.101.0"
+  checksum: 10/71675872f6243cc99e15f898667224003caf162e2ac80ae8d5b0be5919f3c38030032064b7b06afaf526b62d99628cc66cc351fbefb3b125a2e6be494b4fe210
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-devtools@npm:5.99.0":
-  version: 5.99.0
-  resolution: "@tanstack/react-query-devtools@npm:5.99.0"
+"@tanstack/react-query-devtools@npm:5.101.0":
+  version: 5.101.0
+  resolution: "@tanstack/react-query-devtools@npm:5.101.0"
   dependencies:
-    "@tanstack/query-devtools": "npm:5.99.0"
+    "@tanstack/query-devtools": "npm:5.101.0"
   peerDependencies:
-    "@tanstack/react-query": ^5.99.0
+    "@tanstack/react-query": ^5.101.0
     react: ^18 || ^19
-  checksum: 10/aa164b54b57809f1b76eee6faddba4a56a1a52bcb60879a90e0381b168e476e5f71d1e278533ccf43738d8240a7a85ae07569e667e3e7e150156107e606af6f8
+  checksum: 10/c59b4a25556aac0cce93ee823864f5133dd449eccc148ad23127a51861c28c02c52eb0f21c7117bfda299fdd5d3a9399003aa5c39b3c384fe08e42083e530a6b
   languageName: node
   linkType: hard
 
