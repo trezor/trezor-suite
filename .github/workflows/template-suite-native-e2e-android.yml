@@ -179,6 +179,17 @@ jobs:
           docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log "$LOG_DIR/trezor-user-env-tropic_model.log" || true
           docker cp trezor-user-env.unix:/trezor-user-env/docker/version.txt "$LOG_DIR/trezor-user-env-version.txt" || true
           docker logs trezor-user-env-regtest > "$LOG_DIR/electrum-regtest.txt" || true
+          # Emulator crash DB written by QEMU to the host filesystem on abnormal termination
+          find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
+            | while IFS= read -r -d '' db; do
+              cp "$db" "$LOG_DIR/$(basename "$db")" || true
+              sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
+            done || true
+          # Android tombstones (only available if the emulator is still reachable via ADB)
+          mkdir -p "$LOG_DIR/tombstones"
+          adb shell ls /data/tombstones/ 2>/dev/null \
+            && adb pull /data/tombstones/. "$LOG_DIR/tombstones" \
+            || true
           docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
           docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 
