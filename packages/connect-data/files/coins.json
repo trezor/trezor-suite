@@ -1914,6 +1914,23 @@
             }
         },
         {
+            "blockchain_link": null,
+            "curve": "ed25519",
+            "decimals": 0,
+            "is_testnet": false,
+            "name": "Nostr",
+            "shortcut": "NOSTR",
+            "slip44": 1237,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.8.1",
+                "T2T1": "2.8.1",
+                "T3B1": "2.8.1",
+                "T3T1": "2.8.1",
+                "T3W1": "2.8.1"
+            }
+        },
+        {
             "blockchain_link": {
                 "type": "ripple",
                 "url": [

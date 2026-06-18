@@ -172,6 +172,7 @@ export const coinSymbols = [
     'bnb',
     'dsol',
     'maid',
+    'nostr',
     'omni',
     'sol',
     'tada',
