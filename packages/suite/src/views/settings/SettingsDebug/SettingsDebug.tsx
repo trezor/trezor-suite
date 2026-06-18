@@ -1,4 +1,3 @@
-import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
@@ -11,7 +10,7 @@ import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
@@ -24,6 +23,7 @@ import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { EarnApi } from './EarnApi';
 import { FirmwareUpdateEnvironmentSelect } from './FirmwareUpdateEnvironmentSelect';
+import { Flags } from './Flags';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
 import { MessageSystemConfigSourceSelect } from './MessageSystem/MessageSystemConfigSourceSelect';
@@ -33,7 +33,6 @@ import { N4w1Backup } from './N4w1Backup';
 import { OAuthApi } from './OAuthApi';
 import { PingDevice } from './PingDevice';
 import { PlatformEncryption } from './PlatformEncryption';
-import { PreField } from './PreField';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
 import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
@@ -50,7 +49,6 @@ import { WipeData } from './WipeData';
 export const SettingsDebug = () => {
     const dispatch = useDispatch();
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
-    const flags = useSelector(selectFlags);
 
     const handleWipeSuiteSyncLabelsError = ({
         error,
@@ -124,8 +122,8 @@ export const SettingsDebug = () => {
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Backends">
                 <Backends />
             </SettingsSection>
-            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Flags JSON">
-                <PreField>{JSON.stringify(flags)}</PreField>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Flags">
+                <Flags />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Metadata">
                 <Metadata />
