@@ -10339,6 +10339,87 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_STAKED',
         defaultMessage: 'Staked',
     },
+    TR_EARN_TRON_REMAINING_VOTES: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES',
+        defaultMessage: '{remaining}/{total} remaining votes',
+    },
+    TR_EARN_TRON_VOTES_TO_ALLOCATE: {
+        id: 'TR_EARN_TRON_VOTES_TO_ALLOCATE',
+        defaultMessage: '{count} remaining votes',
+    },
+    TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP: {
+        id: 'TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP',
+        defaultMessage: 'Assign all votes to earn more rewards.',
+    },
+    TR_EARN_TRON_UNSTAKING: {
+        id: 'TR_EARN_TRON_UNSTAKING',
+        defaultMessage: 'Unstaking (~{days} days)',
+    },
+    TR_EARN_TRON_VOTING_REWARDS: {
+        id: 'TR_EARN_TRON_VOTING_REWARDS',
+        defaultMessage: 'Voting rewards',
+    },
+    TR_EARN_TRON_WITHDRAW_READY: {
+        id: 'TR_EARN_TRON_WITHDRAW_READY',
+        defaultMessage: '{amount} unstaked & ready to be withdrawn',
+    },
+    TR_EARN_TRON_HOW_IT_WORKS: {
+        id: 'TR_EARN_TRON_HOW_IT_WORKS',
+        defaultMessage: 'How does TRX staking work?',
+    },
+    TR_EARN_TRON_MY_ENERGY: {
+        id: 'TR_EARN_TRON_MY_ENERGY',
+        defaultMessage: 'My energy',
+    },
+    TR_EARN_TRON_MY_BANDWIDTH: {
+        id: 'TR_EARN_TRON_MY_BANDWIDTH',
+        defaultMessage: 'My bandwidth',
+    },
+    TR_EARN_TRON_RESOURCE_FROM_STAKING: {
+        id: 'TR_EARN_TRON_RESOURCE_FROM_STAKING',
+        defaultMessage: 'From staking',
+    },
+    TR_EARN_TRON_RESOURCE_FREE: {
+        id: 'TR_EARN_TRON_RESOURCE_FREE',
+        defaultMessage: 'Free',
+    },
+    TR_EARN_TRON_RESOURCE_DELEGATED_TO_OTHERS: {
+        id: 'TR_EARN_TRON_RESOURCE_DELEGATED_TO_OTHERS',
+        defaultMessage: 'Delegated to others',
+    },
+    TR_EARN_TRON_FREE_BANDWIDTH_TOOLTIP: {
+        id: 'TR_EARN_TRON_FREE_BANDWIDTH_TOOLTIP',
+        defaultMessage:
+            'Each account includes free bandwidth. For any transaction, you can use free or earned bandwidth, not both.',
+    },
+    TR_EARN_TRON_TOTAL_ENERGY: {
+        id: 'TR_EARN_TRON_TOTAL_ENERGY',
+        defaultMessage: 'Total energy',
+    },
+    TR_EARN_TRON_TOTAL_BANDWIDTH: {
+        id: 'TR_EARN_TRON_TOTAL_BANDWIDTH',
+        defaultMessage: 'Total bandwidth',
+    },
+    TR_EARN_TRON_AVAILABLE_NOW: {
+        id: 'TR_EARN_TRON_AVAILABLE_NOW',
+        defaultMessage: 'Available now',
+    },
+    TR_EARN_TRON_ENERGY_BALANCE_NOTE: {
+        id: 'TR_EARN_TRON_ENERGY_BALANCE_NOTE',
+        defaultMessage: 'Energy balances may change with network activity and reward rates.',
+    },
+    TR_EARN_TRON_BANDWIDTH_BALANCE_NOTE: {
+        id: 'TR_EARN_TRON_BANDWIDTH_BALANCE_NOTE',
+        defaultMessage: 'Bandwidth balances may change with network activity and reward rates.',
+    },
+    TR_EARN_TRON_RESOURCES: {
+        id: 'TR_EARN_TRON_RESOURCES',
+        defaultMessage: 'Resources',
+    },
+    TR_EARN_TRON_GET_MORE: {
+        id: 'TR_EARN_TRON_GET_MORE',
+        defaultMessage: 'Get more',
+    },
     TR_EARN_TRON_RESOURCE_REDUCTION: {
         id: 'TR_EARN_TRON_RESOURCE_REDUCTION',
         defaultMessage: 'Resource reduction',
