@@ -7,16 +7,12 @@ import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { FeePickerCard } from '../../fees/FeePickerCard';
 
-export type ExchangeFeePickerCardProps = {
+export type ExchangeInfoProps = {
     quote?: ExchangeTrade;
     isTxnError: boolean;
 } & PropsWithChildren;
 
-export const ExchangeFeePickerCard = ({
-    quote,
-    isTxnError,
-    children,
-}: ExchangeFeePickerCardProps) => {
+export const ExchangeInfo = ({ quote, isTxnError, children }: ExchangeInfoProps) => {
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
 
     if (!fromAccount || !quote?.send || isTxnError) {
