@@ -8,7 +8,7 @@ import { launchSuite, launchSuiteElectronApp } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({ exceptionLogger: skipFixture, startEmulator: false, setupEmulator: false });
+    test.use({ jsExceptionWatcher: skipFixture, startEmulator: false, setupEmulator: false });
 
     test.beforeEach(async ({ trezorUserEnv, page }) => {
         await page.close();

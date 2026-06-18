@@ -92,7 +92,7 @@ export const Toast = ({
     );
 
     return (
-        <Container data-testid={dataTestBase} $variant={intent}>
+        <Container data-testid={dataTestBase} data-toast-intent={intent} $variant={intent}>
             <Row gap={spacings.sm} justifyContent="space-between" flex="1">
                 {showIcon && (
                     <Icon
