@@ -31,6 +31,6 @@
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0",
-        "reselect": "5.1.1"
+        "reselect": "5.2.0"
     }
 }
