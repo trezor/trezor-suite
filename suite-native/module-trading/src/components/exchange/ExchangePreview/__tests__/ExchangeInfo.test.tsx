@@ -50,7 +50,7 @@ describe('ExchangeInfo', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render FeePickerCard otherwise', () => {
+    it('should render TradeInfo otherwise', () => {
         const { getByText } = renderExchangeInfo({ quote: mercuryoFixedWorstQuote });
 
         expect(
@@ -58,7 +58,7 @@ describe('ExchangeInfo', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render children inside FeePickerCard', () => {
+    it('should render children inside TradeInfo', () => {
         const { getByText } = renderExchangeInfo({
             quote: mercuryoFixedWorstQuote,
             children: <Text>child content</Text>,

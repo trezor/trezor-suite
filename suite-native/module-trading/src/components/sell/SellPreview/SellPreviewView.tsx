@@ -8,8 +8,8 @@ import { selectTradingSellFormStep } from '@suite-common/trading';
 import { AnimatedVStack, InlineAlertBox } from '@suite-native/atoms';
 
 import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
-import { SellFeePickerCard } from './SellFeePickerCard';
 import { SellFromAccountTradePreviewCard } from './SellFromAccountTradePreviewCard';
+import { SellInfo } from './SellInfo';
 import { SellToFiatTradePreviewCard } from './SellToFiatTradePreviewCard';
 
 export type SellPreviewViewProps = {
@@ -45,7 +45,7 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
             )}
             <SellFromAccountTradePreviewCard quote={quote} />
             <SellToFiatTradePreviewCard quote={quote} />
-            <SellFeePickerCard quote={quote} isTxnError={isTxnError} />
+            <SellInfo quote={quote} isTxnError={isTxnError} />
             {showBankAccountPicker && (
                 <SellBankAccountPicker
                     orderId={quote?.orderId}

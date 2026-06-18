@@ -5,7 +5,7 @@ import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/tradi
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
-import { SellFeePickerCard, type SellFeePickerCardProps } from '../SellFeePickerCard';
+import { SellInfo, type SellInfoProps } from '../SellInfo';
 
 // Mock FeeSelector to avoid deep dependency chain
 jest.mock('@suite-native/transaction-management', () => ({
@@ -13,13 +13,13 @@ jest.mock('@suite-native/transaction-management', () => ({
     FeeSelector: jest.fn(() => null),
 }));
 
-describe('SellFeePickerCard', () => {
-    const renderSellFeePickerCard = (
-        props: Partial<SellFeePickerCardProps> = {},
+describe('SellInfo', () => {
+    const renderSellInfo = (
+        props: Partial<SellInfoProps> = {},
         tradingAccountKey: AccountKey = eth1NormalAccount.key,
         providerConfirmationStatus: ProviderConfirmationStatus = 'confirmation_success',
     ) =>
-        renderWithTradingProvider(<SellFeePickerCard isTxnError={false} {...props} />, {
+        renderWithTradingProvider(<SellInfo isTxnError={false} {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -32,7 +32,7 @@ describe('SellFeePickerCard', () => {
         });
 
     it('should render nothing when isTxnError', () => {
-        const { toJSON } = renderSellFeePickerCard({
+        const { toJSON } = renderSellInfo({
             quote: banxaCreditCardSellQuote,
             isTxnError: true,
         });
@@ -41,7 +41,7 @@ describe('SellFeePickerCard', () => {
     });
 
     it('should render nothing when there is no quote', () => {
-        const { toJSON } = renderSellFeePickerCard({});
+        const { toJSON } = renderSellInfo({});
 
         expect(toJSON()).toBeNull();
     });
@@ -51,13 +51,13 @@ describe('SellFeePickerCard', () => {
             ...banxaCreditCardSellQuote,
             cryptoCurrency: undefined,
         };
-        const { toJSON } = renderSellFeePickerCard({ quote: quoteWithoutCrypto });
+        const { toJSON } = renderSellInfo({ quote: quoteWithoutCrypto });
 
         expect(toJSON()).toBeNull();
     });
 
     it('should render nothing when account is not found', () => {
-        const { toJSON } = renderSellFeePickerCard(
+        const { toJSON } = renderSellInfo(
             { quote: banxaCreditCardSellQuote },
             mockAccountKey({ descriptor: 'unknownAccountKey' }),
         );
@@ -66,7 +66,7 @@ describe('SellFeePickerCard', () => {
     });
 
     it('should render nothing when providerConfirmationStatus is not in "confirmation_success" state', () => {
-        const { toJSON } = renderSellFeePickerCard(
+        const { toJSON } = renderSellInfo(
             { quote: banxaCreditCardSellQuote },
             eth1NormalAccount.key,
             'window_closed_with_success',
@@ -75,8 +75,8 @@ describe('SellFeePickerCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render FeePickerCard otherwise', () => {
-        const { getByText } = renderSellFeePickerCard({ quote: banxaCreditCardSellQuote });
+    it('should render TradeInfo otherwise', () => {
+        const { getByText } = renderSellInfo({ quote: banxaCreditCardSellQuote });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
