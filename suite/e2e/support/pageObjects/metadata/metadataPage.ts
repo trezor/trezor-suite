@@ -106,6 +106,14 @@ export class MetadataPage {
 
     @step()
     async closeLegacyUpgradeNotification() {
+        // Firmware update banner has higher priority than the legacy-labeling-upgrade banner.
+        // If visible, dismiss it first so the legacy notification can appear.
+        const updateBannerCloseButton = this.page.getByTestId(
+            '@notification/update-notification-banner/close-button',
+        );
+        if (await updateBannerCloseButton.isVisible()) {
+            await updateBannerCloseButton.click();
+        }
         await expect(this.legacyNotification).toBeVisible();
         await this.closeLegacyNotificationButton.click();
     }
