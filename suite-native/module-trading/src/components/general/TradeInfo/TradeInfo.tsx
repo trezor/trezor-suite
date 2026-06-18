@@ -13,8 +13,8 @@ import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import { FeeSelectorRow } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { updateTradingSelectedFeeLevelThunk } from '../../thunks';
-import { ProviderReceiveAddress } from '../general/ProviderReceiveAddress';
+import { updateTradingSelectedFeeLevelThunk } from '../../../thunks';
+import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
 
 const dividerStyle = prepareNativeStyle(utils => ({
     borderBottomColor: utils.colors.borderNeutral,
