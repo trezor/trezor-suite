@@ -15,9 +15,9 @@ import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-pro
 import { SlippagePicker } from '@suite-native/trading-slippage';
 
 import { ExchangeEIP712Info } from './ExchangeEIP712Info';
-import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
 import { ExchangeFiatDeviationWarning } from './ExchangeFiatDeviationWarning';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
+import { ExchangeInfo } from './ExchangeInfo';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
@@ -63,9 +63,9 @@ export const ExchangePreviewView = memo(
                             <SlippagePicker />
                         </ExchangeEIP712Info>
                     ) : (
-                        <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError}>
+                        <ExchangeInfo quote={quote} isTxnError={isTxnError}>
                             <SlippagePicker />
-                        </ExchangeFeePickerCard>
+                        </ExchangeInfo>
                     )}
                     {hasKycPolicyWarning(kycPolicy) && (
                         <InlineAlertBox
