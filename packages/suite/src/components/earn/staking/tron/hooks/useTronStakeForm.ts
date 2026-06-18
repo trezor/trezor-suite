@@ -3,8 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from '@suite/intl';
 import { isAddressValid } from '@suite-common/address';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type TronResourceType } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
 import {

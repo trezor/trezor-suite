@@ -1,7 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { TRON_RESOURCE_TYPES, type TronResourceType } from '@suite-common/wallet-core';
+import { TRON_RESOURCE_TYPES, type TronResourceType } from '@suite-common/wallet-types';
 import { Column, SelectBar, Text } from '@trezor/components';
 
 import { useTronStakeContext } from '../TronStakeContext';

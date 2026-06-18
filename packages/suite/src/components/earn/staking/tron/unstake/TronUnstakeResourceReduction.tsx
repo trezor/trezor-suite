@@ -1,7 +1,8 @@
 import { useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type TronResourceType, getResourceGain } from '@suite-common/wallet-core';
+import { type TronResourceType } from '@suite-common/wallet-types';
+import { getResourceGain } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

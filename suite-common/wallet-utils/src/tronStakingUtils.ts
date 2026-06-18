@@ -1,7 +1,9 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
+    type GeneralPrecomposedTransaction,
     type SupportedTronNetworkSymbols,
+    type TronResourceType,
     supportedTronNetworkSymbols,
 } from '@suite-common/wallet-types';
 import {
@@ -98,3 +100,46 @@ export const getTronTotalVotingPower = (account?: Account): string =>
 
 export const getTronAvailableVotingPower = (account?: Account): string =>
     getTronStakingInfo(account)?.availableVotingPower ?? '0';
+
+export const getResourceGain = (
+    amount: string,
+    resourceType: TronResourceType,
+    resources: TronAccountExtraData | undefined,
+): number | null => {
+    const trx = new BigNumber(amount);
+
+    if (!trx.isFinite() || trx.lte(0) || !resources) return null;
+
+    const [limit, weight] =
+        resourceType === 'energy'
+            ? [resources.totalEnergyLimit, resources.totalEnergyWeight]
+            : [resources.totalBandwidthLimit, resources.totalBandwidthWeight];
+
+    if (!limit || !weight) return null;
+
+    return trx.times(limit).div(weight).toNumber();
+};
+
+const getRequiredFreezeTrx = (deficit: number, limit: number, weight: number): string | null =>
+    deficit > 0 && limit && weight
+        ? new BigNumber(deficit)
+              .times(weight)
+              .div(limit)
+              .integerValue(BigNumber.ROUND_CEIL)
+              .toString()
+        : null;
+
+export const calculateTronFreezeSuggestion = (
+    tx: GeneralPrecomposedTransaction | undefined,
+    resources: TronAccountExtraData | undefined,
+): string | null => {
+    if (!tx || tx.type === 'error' || !('bytes' in tx) || !resources) return null;
+
+    const energyConsumed = 'energyConsumed' in tx ? (tx.energyConsumed ?? 0) : 0;
+
+    return getRequiredFreezeTrx(
+        energyConsumed - resources.availableEnergy,
+        resources.totalEnergyLimit,
+        resources.totalEnergyWeight,
+    );
+};

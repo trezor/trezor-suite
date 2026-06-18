@@ -1,6 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { getWithdrawableAmount, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -14,7 +15,7 @@ export const TronWithdrawSubmitButton = () => {
     const { account, actions } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
 
-    const hasWithdrawableAmount = new BigNumber(getWithdrawableAmount(account)).gt(0);
+    const hasWithdrawableAmount = new BigNumber(getTronWithdrawableBalance(account)).gt(0);
     const isDeviceUnavailable = !!device?.connected && !!device?.available && isLocked();
 
     return (
