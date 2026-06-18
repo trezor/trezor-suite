@@ -1,3 +1,4 @@
+export * from './backends';
 export * from './earnRewardsProvider';
 export * from './networksConfig';
 export * from './stakingProviders';

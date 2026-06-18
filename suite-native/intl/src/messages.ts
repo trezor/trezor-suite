@@ -1288,12 +1288,16 @@ export const messages = {
                     connected: 'Connected',
                     disconnected: 'Disconnected',
                 },
-                serverType: 'Server',
-                serverTypeDefault: 'Trezor (default)',
-                serverAddress: 'Server address',
+                serverType: {
+                    label: 'Server type',
+                    defaultLabel: 'Trezor (default)',
+                },
+                serverAddress: {
+                    label: 'Server address',
+                    hint: 'Format: {example}',
+                },
                 connectButton: 'Connect',
-                invalidFormat:
-                    'Invalid format. Enter the server address in this format: host:port:[t|s].',
+                invalidFormat: "Server address format isn't valid.",
                 unableToConnect: {
                     clearnet: 'Unable to connect to the server. Check the address and connection.',
                     tor: 'Can’t connect to the server. Check the address and make sure Orbot is running.',
