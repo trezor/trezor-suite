@@ -5838,7 +5838,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.9.7, @noble/curves@npm:^1.0.0, @noble/curves@npm:^1.9.7, @noble/curves@npm:~1.9.0":
+"@noble/curves@npm:1.9.7, @noble/curves@npm:^1.0.0, @noble/curves@npm:^1.9.6, @noble/curves@npm:~1.9.0":
   version: 1.9.7
   resolution: "@noble/curves@npm:1.9.7"
   dependencies:
@@ -9758,43 +9758,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/js-xdr@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@stellar/js-xdr@npm:4.0.0"
-  checksum: 10/d300c723e18f9d99c666499f8744a31981390ef8d780b2a321e019cbd23436a2de5b3d999e7af5e9ed334b14801497c0a19ad86ab052aff420415f2d89785a7b
+"@stellar/js-xdr@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "@stellar/js-xdr@npm:3.1.2"
+  checksum: 10/96b5c52088bb2f2cc11a04ee1766ceb9431bdb0195058b9bc8d60cd1459772c2be6a9aa1bf69ba8b7589cfaf71beef96890e60d7fd7de0332c11ae1917f95440
   languageName: node
   linkType: hard
 
-"@stellar/stellar-base@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@stellar/stellar-base@npm:15.0.0"
+"@stellar/stellar-base@npm:^14.0.4":
+  version: 14.0.4
+  resolution: "@stellar/stellar-base@npm:14.0.4"
   dependencies:
-    "@noble/curves": "npm:^1.9.7"
-    "@stellar/js-xdr": "npm:^4.0.0"
+    "@noble/curves": "npm:^1.9.6"
+    "@stellar/js-xdr": "npm:^3.1.2"
     base32.js: "npm:^0.1.0"
     bignumber.js: "npm:^9.3.1"
     buffer: "npm:^6.0.3"
     sha.js: "npm:^2.4.12"
-  checksum: 10/7a0a485395a27082adba4ab601311a25933eced065c81abbbec6d1bdf184ef9f5d42c3393fdf55f00f061da672e2511820436261c4dcc4b4eed4f3766a0b9c6c
+  checksum: 10/3408a6e6196a10c21e63b1f671ef28b4b7e85a39a52728bfd6fcb91f7f5fa79adcb8af78a6f2ede82a23ccfb76fc5c02bbf1542fc9abafe195fb2ff5c9f3fb9b
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:15.1.0":
-  version: 15.1.0
-  resolution: "@stellar/stellar-sdk@npm:15.1.0"
+"@stellar/stellar-sdk@npm:14.5.0":
+  version: 14.5.0
+  resolution: "@stellar/stellar-sdk@npm:14.5.0"
   dependencies:
-    "@stellar/stellar-base": "npm:^15.0.0"
-    axios: "npm:1.15.0"
+    "@stellar/stellar-base": "npm:^14.0.4"
+    axios: "npm:^1.13.3"
     bignumber.js: "npm:^9.3.1"
-    commander: "npm:^14.0.3"
+    commander: "npm:^14.0.2"
     eventsource: "npm:^2.0.2"
     feaxios: "npm:^0.0.23"
     randombytes: "npm:^2.1.0"
     toml: "npm:^3.0.0"
-    urijs: "npm:^1.19.11"
+    urijs: "npm:^1.19.1"
   bin:
     stellar-js: bin/stellar-js
-  checksum: 10/5c1138eddf1a4c261f578853aa9a2600d7e8f3e413f90f8b1bd48279d1c3f599315aff0a0876fca840deb3116a00518ac5ea7554a94015e8f1d2a60aa904b024
+  checksum: 10/2e6b5e762df1963e7165fd07a84bdb9ff17452c757d23e6ed9c85f46f5bb38ab8373132fae9f8f88b8c051dc5e6b8b05017caa7f72361d2693912b87308f86c2
   languageName: node
   linkType: hard
 
@@ -15749,7 +15749,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/coins-stellar@workspace:coins/coins-stellar"
   dependencies:
-    "@stellar/stellar-sdk": "npm:15.1.0"
+    "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -20414,17 +20414,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.15.0":
-  version: 1.15.0
-  resolution: "axios@npm:1.15.0"
-  dependencies:
-    follow-redirects: "npm:^1.15.11"
-    form-data: "npm:^4.0.5"
-    proxy-from-env: "npm:^2.1.0"
-  checksum: 10/d39a2c0ebc7ff4739401b282e726cc2673377949d6c46d60eb619458f8d7a2f7eadbcada7097f4dbc7d5c59abb4d3bf6fac33d474412bc3415d3f5aa7ed45530
-  languageName: node
-  linkType: hard
-
 "axios@npm:1.16.0":
   version: 1.16.0
   resolution: "axios@npm:1.16.0"
@@ -20436,7 +20425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.13.6, axios@npm:^1.16.0":
+"axios@npm:^1.13.3, axios@npm:^1.13.6, axios@npm:^1.16.0":
   version: 1.17.0
   resolution: "axios@npm:1.17.0"
   dependencies:
@@ -28066,7 +28055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:1.16.0, follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.11, follow-redirects@npm:^1.16.0":
+"follow-redirects@npm:1.16.0, follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.16.0":
   version: 1.16.0
   resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
@@ -45648,7 +45637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"urijs@npm:^1.19.11":
+"urijs@npm:^1.19.1":
   version: 1.19.11
   resolution: "urijs@npm:1.19.11"
   checksum: 10/2aa5547b53c37ebee03a8ad70feae1638a37cc4c7e543abbffb14fc86b17f84f303d08e45c501441410c025bab22aa84673c97604b7b2619967f1dd49f69931f
