@@ -25,7 +25,7 @@ import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { initLog } from '@trezor/connect';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
@@ -103,6 +103,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             },
         },
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        createLogger: (prefix: string) => initLog(prefix, false),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
