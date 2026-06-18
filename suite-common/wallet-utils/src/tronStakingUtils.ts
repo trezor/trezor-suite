@@ -23,7 +23,7 @@ export function isSupportedTronStakingNetworkSymbol(
     return isArrayMember(symbol, supportedTronNetworkSymbols);
 }
 
-const sunToTrx = (sun: string, symbol: NetworkSymbol) =>
+export const sunToTrx = (sun: string, symbol: NetworkSymbol) =>
     subunitsToUnits({
         value: asAmountSubunit(new BigNumber(sun)),
         symbol,
