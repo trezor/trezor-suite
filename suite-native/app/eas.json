@@ -6,7 +6,7 @@
     },
     "build": {
         "base": {
-            "node": "24.11.1",
+            "node": "24.17.0",
             "env": {
                 "EAS_NO_FROZEN_LOCKFILE": "1"
             }
