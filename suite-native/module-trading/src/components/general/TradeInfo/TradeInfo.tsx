@@ -7,14 +7,12 @@ import { type TradingExchangeType, type TradingSellType } from '@suite-common/tr
 import { type FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
 import { type AccountKey, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { Card, Divider } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { TradeInfoHeader } from '@suite-native/trading-atoms';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import { FeeSelectorRow } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ProviderInfoRow } from './ProviderInfoRow';
 import { updateTradingSelectedFeeLevelThunk } from '../../../thunks';
-import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
 
 const dividerStyle = prepareNativeStyle(utils => ({
     borderBottomColor: utils.colors.borderNeutral,
@@ -36,10 +34,7 @@ export const TradeInfo = ({ trade, accountKey, tradingType, children }: TradeInf
 
     return (
         <Card noPadding>
-            <TradeInfoHeader
-                title={<Translation id="moduleTrading.tradingExchangePreviewScreen.details" />}
-            />
-            {trade && <ProviderReceiveAddress trade={trade} />}
+            <ProviderInfoRow exchange={trade?.exchange} tradingType={tradingType} noBorder />
             <Divider style={applyStyle(dividerStyle)} />
             <FeeSelectorRow
                 accountKey={accountKey}

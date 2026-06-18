@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
+import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
 import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
 import { TradeInfo } from '../TradeInfo';
@@ -23,7 +24,7 @@ jest.mock('@suite-native/transaction-management', () => ({
 
 describe('TradeInfo', () => {
     const defaultProps = {
-        trade: undefined,
+        trade: mercuryoDexQuote,
         accountKey: btc1AccountKey,
         tradingType: 'exchange' as TradingExchangeType | TradingSellType,
     };
@@ -38,12 +39,11 @@ describe('TradeInfo', () => {
         jest.clearAllMocks();
     });
 
-    it('should render the details title', () => {
+    it('should render provider', () => {
         const { getByText } = renderTradeInfo();
 
-        expect(
-            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
-        ).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
+        expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
     it('should pass correct props to FeeSelector', () => {
