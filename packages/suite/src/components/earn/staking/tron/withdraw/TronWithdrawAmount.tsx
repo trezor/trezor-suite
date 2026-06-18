@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
-import { getWithdrawableAmount } from '@suite-common/wallet-core';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { Card, Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
@@ -12,7 +11,7 @@ import { TronStakeInfoRow } from '../TronStakeInfoRow';
 
 export const TronWithdrawAmount = () => {
     const { account } = useTronStakeContext();
-    const amount = formatNetworkAmount(getWithdrawableAmount(account), account.symbol);
+    const amount = getTronWithdrawableBalance(account);
 
     return (
         <Card paddingType="none">

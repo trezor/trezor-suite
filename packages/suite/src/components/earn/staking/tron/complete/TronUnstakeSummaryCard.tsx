@@ -1,5 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type TronResourceType, getResourceGain } from '@suite-common/wallet-core';
+import { type TronResourceType } from '@suite-common/wallet-types';
+import { getResourceGain } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 

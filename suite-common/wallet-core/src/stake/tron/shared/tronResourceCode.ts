@@ -1,6 +1,5 @@
+import { type TronResourceType } from '@suite-common/wallet-types';
 import { MessagesSchema } from '@trezor/protobuf';
-
-import { type TronResourceType } from '../tronStakeTypes';
 
 export const tronResourceTypeToCode = (
     resourceType: TronResourceType,

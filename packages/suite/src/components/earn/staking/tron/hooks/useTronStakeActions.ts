@@ -5,7 +5,6 @@ import {
     type TronStakeError,
     type TronStakeStepId,
     composeTronFreezeFeeLevelsThunk,
-    getWithdrawableAmount,
     selectTronStakeSession,
     submitTronFreezeThunk,
     submitTronUnstakeThunk,
@@ -14,7 +13,11 @@ import {
     tronStakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { asAmountSubunit, formatNetworkAmount, subunitsToUnits } from '@suite-common/wallet-utils';
+import {
+    asAmountSubunit,
+    getTronWithdrawableBalance,
+    subunitsToUnits,
+} from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -153,10 +156,7 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'withdraw':
-                form.methods.setValue(
-                    'amount',
-                    formatNetworkAmount(getWithdrawableAmount(account), account.symbol),
-                );
+                form.methods.setValue('amount', getTronWithdrawableBalance(account));
                 dispatch(
                     submitTronWithdrawThunk({
                         account,
