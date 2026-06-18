@@ -3,6 +3,7 @@ import {
     browserProfilingIntegration,
     browserTracingIntegration,
     captureConsoleIntegration,
+    elementTimingIntegration,
 } from '@sentry/browser';
 import type { ErrorEvent, Options } from '@sentry/core';
 
@@ -106,5 +107,6 @@ export const SENTRY_BROWSER_CONFIG = {
         captureConsoleIntegration({ levels: ['error'] }),
         browserProfilingIntegration(),
         browserTracingIntegration(),
+        elementTimingIntegration(),
     ],
 } satisfies BrowserOptions;
