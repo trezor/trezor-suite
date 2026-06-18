@@ -6,7 +6,13 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { yup } from '@suite-common/validators';
-import { type BackendType } from '@suite-common/wallet-config';
+import {
+    type BackendType,
+    type Network,
+    type ServerType,
+    getServerAddressExample,
+    validateServerAddress,
+} from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
     blockchainActions,
@@ -18,18 +24,13 @@ import { type SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
-import { parseElectrumUrl } from '@trezor/utils';
-
-const symbol = 'btc';
-
-export type ServerType = BackendType | 'default';
 
 type FormValues = {
     serverType: ServerType;
     serverAddress: string;
 };
 
-export const useBackendServersForm = () => {
+export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -39,26 +40,36 @@ export const useBackendServersForm = () => {
         backends: { selected, urls },
     } = useSelector((state: BlockchainRootState) => selectNetworkBlockchainInfo(state, symbol));
 
-    const serverTypes = useMemo<SelectItemType<ServerType>[]>(
-        () => [
-            {
-                value: 'default',
-                label: translate('moduleSettings.networkBackends.servers.serverTypeDefault'),
-            },
+    const serverTypes = useMemo(() => {
+        const defaultItem: SelectItemType<ServerType> = {
+            value: 'default',
+            label: translate('moduleSettings.networkBackends.servers.serverType.defaultLabel'),
+        };
+        const supportedItems: SelectItemType<BackendType>[] = [
+            { value: 'blockbook', label: 'Blockbook' },
             { value: 'electrum', label: 'Electrum' },
-        ],
-        [translate],
-    );
+            { value: 'ripple', label: 'Ripple' },
+            { value: 'blockfrost', label: 'Blockfrost' },
+            { value: 'solana', label: 'Solana' },
+            { value: 'stellar', label: 'Stellar' },
+            { value: 'evm-rpc', label: 'RPC' },
+        ];
+        const availableItems = supportedItems.filter(({ value }) =>
+            backendOptions.some(({ type }) => type === value),
+        );
+
+        return symbol !== 'regtest' ? [defaultItem, ...availableItems] : availableItems;
+    }, [translate, symbol, backendOptions]);
 
     const defaultValues = useMemo<FormValues>(
         () => ({
             serverType: selected ?? 'default',
-            serverAddress: urls?.electrum?.[0] ?? '',
+            serverAddress: (selected && urls?.[selected]?.[0]) ?? '',
         }),
         [selected, urls],
     );
 
-    const form = useForm({
+    const form = useForm<FormValues>({
         validation: yup.object({
             serverType: yup
                 .string<ServerType>()
@@ -69,13 +80,24 @@ export const useBackendServersForm = () => {
                 .test(
                     'format',
                     translate('moduleSettings.networkBackends.servers.invalidFormat'),
-                    value => !!value && !!parseElectrumUrl(value),
+                    (value, context) =>
+                        !!value &&
+                        validateServerAddress(context.resolve(yup.ref('serverType')), value),
                 ),
         }),
         defaultValues,
         mode: 'onSubmit',
     });
 
+    const setServerType = (value: ServerType) => {
+        form.clearErrors();
+        form.setValue('serverType', value, { shouldDirty: true });
+        if (value !== 'default') {
+            form.setValue('serverAddress', urls?.[value]?.[0] ?? '', { shouldDirty: true });
+        }
+    };
+
+    const selectedServerType = form.watch('serverType');
     const isOnionAddress = form.watch('serverAddress').includes('.onion:');
     const [isConnecting, setIsConnecting] = useState(false);
 
@@ -84,7 +106,7 @@ export const useBackendServersForm = () => {
             blockchainActions.setBackend({
                 symbol,
                 type: serverType,
-                urls: serverType === 'electrum' ? [serverAddress] : [],
+                urls: serverType !== 'default' ? [serverAddress] : [],
             }),
         );
         dispatch(reconnectBlockchainThunk({ symbol }));
@@ -142,6 +164,9 @@ export const useBackendServersForm = () => {
     return {
         form,
         serverTypes,
+        selectedServerType,
+        setServerType,
+        serverAddressExample: getServerAddressExample(symbol, selectedServerType),
         isConnected: connected,
         isConnecting,
         submit,

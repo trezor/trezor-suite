@@ -63,6 +63,7 @@ export const TREZOR_CONNECT_BACKENDS = [
 export type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];
 type NonStandardBackendType = 'coinjoin';
 export type BackendType = TrezorConnectBackendType | NonStandardBackendType;
+export type ServerType = BackendType | 'default';
 
 export type BackendOption = {
     type: BackendType;

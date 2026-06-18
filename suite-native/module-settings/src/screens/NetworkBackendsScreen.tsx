@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { type ServerType, getNetwork } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
 import { Button, Card, HStack, InlineAlertText, Select, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
@@ -15,7 +15,7 @@ import {
 } from '@suite-native/navigation';
 
 import { ConnectionInfoButton } from '../components/ConnectionInfoButton';
-import { type ServerType, useBackendServersForm } from '../hooks/useBackendServersForm';
+import { useBackendServersForm } from '../hooks/useBackendServersForm';
 
 export const NetworkBackendsScreen = ({
     route,
@@ -25,13 +25,19 @@ export const NetworkBackendsScreen = ({
     const navigation = useNavigation();
 
     const network = getNetwork(route.params.networkSymbol);
-    const { form, serverTypes, isConnected, isConnecting, submit, discard } =
-        useBackendServersForm();
+    const {
+        form,
+        serverTypes,
+        selectedServerType,
+        setServerType,
+        serverAddressExample,
+        isConnected,
+        isConnecting,
+        submit,
+        discard,
+    } = useBackendServersForm(network);
 
     const { isDirty } = form.formState;
-    const serverType = form.watch('serverType');
-    const setServerType = (value: ServerType) =>
-        form.setValue('serverType', value, { shouldDirty: true });
 
     const discardChanges = () => {
         discard();
@@ -99,18 +105,22 @@ export const NetworkBackendsScreen = ({
                     <Form form={form}>
                         <Select<ServerType>
                             title={
-                                <Translation id="moduleSettings.networkBackends.servers.serverType" />
+                                <Translation id="moduleSettings.networkBackends.servers.serverType.label" />
                             }
                             items={serverTypes}
-                            value={serverType}
+                            value={selectedServerType}
                             onSelectItem={setServerType}
                             isLabelShown
                         />
-                        {serverType === 'electrum' && (
+                        {selectedServerType !== 'default' && (
                             <TextInputField
                                 name="serverAddress"
                                 label={translate(
-                                    'moduleSettings.networkBackends.servers.serverAddress',
+                                    'moduleSettings.networkBackends.servers.serverAddress.label',
+                                )}
+                                hint={translate(
+                                    'moduleSettings.networkBackends.servers.serverAddress.hint',
+                                    { example: serverAddressExample },
                                 )}
                                 autoCapitalize="none"
                                 keyboardType="url"

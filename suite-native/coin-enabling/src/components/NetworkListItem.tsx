@@ -74,7 +74,7 @@ export const NetworkListItem = ({
                             )}
                         </VStack>
                         <HStack spacing="sp16" alignItems="center">
-                            {symbol === 'btc' && <NetworkBackendsButton symbol={symbol} />}
+                            <NetworkBackendsButton symbol={symbol} />
                             {accessory}
                         </HStack>
                     </HStack>
