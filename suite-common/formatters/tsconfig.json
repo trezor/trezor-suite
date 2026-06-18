@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../base-currency" },
         { "path": "../discreet-mode" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },

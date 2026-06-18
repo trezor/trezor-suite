@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../base-currency" },
         { "path": "../address" },
         { "path": "../calldata" },
         { "path": "../earn-staking-api" },

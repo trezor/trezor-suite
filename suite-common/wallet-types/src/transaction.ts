@@ -1,5 +1,5 @@
+import { type BaseCurrencyOption } from '@suite-common/base-currency';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type {
     AccountAddress,
     AccountTransaction,
@@ -72,7 +72,7 @@ type PrecomposedTransactionCardanoNonFinal =
         token?: TokenInfo;
     };
 
-export type BaseCurrencyOption = { value: BaseCurrencyCode | ''; label: string };
+export type { BaseCurrencyOption } from '@suite-common/base-currency';
 
 /**
  * Target is the unified term for both Inputs and Outputs on the transaction.

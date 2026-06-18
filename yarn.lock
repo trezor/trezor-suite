@@ -10243,6 +10243,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/base-currency@workspace:*, @suite-common/base-currency@workspace:suite-common/base-currency":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/base-currency@workspace:suite-common/base-currency"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/bip329-types@workspace:*, @suite-common/bip329-types@workspace:suite-common/bip329-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/bip329-types@workspace:suite-common/bip329-types"
@@ -10576,6 +10587,7 @@ __metadata:
   dependencies:
     "@formatjs/intl": "npm:4.1.2"
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/base-currency": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11220,6 +11232,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/base-currency": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -11266,6 +11279,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
+    "@suite-common/base-currency": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
@@ -11284,6 +11298,7 @@ __metadata:
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
     "@scure/base": "npm:^2.0.0"
+    "@suite-common/base-currency": "workspace:*"
     "@suite-common/address": "workspace:*"
     "@suite-common/calldata": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"

@@ -1,5 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
+import { isBaseCurrencyWithSats } from '@suite-common/base-currency';
 import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import {
     createReducerWithExtraDeps,
@@ -13,7 +14,6 @@ import {
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { AddressDisplayOptions, type WalletSettings } from '@suite-common/wallet-types';
-import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
 import * as walletSettingsActions from './walletSettingsActions';
