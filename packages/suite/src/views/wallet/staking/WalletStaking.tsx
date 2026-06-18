@@ -7,6 +7,7 @@ import { useSelector } from 'src/hooks/suite';
 import { AdaStakingDashboard } from './components/AdaStakingDashboard/AdaStakingDashboard';
 import { EthStakingDashboard } from './components/EthStakingDashboard/EthStakingDashboard';
 import { SolStakingDashboard } from './components/SolStakingDashboard/SolStakingDashboard';
+import { TronStakingDashboard } from './components/TronStakingDashboard/TronStakingDashboard';
 
 export const WalletStaking = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -23,6 +24,8 @@ export const WalletStaking = () => {
                 return <EthStakingDashboard selectedAccount={selectedAccount} />;
             case 'solana':
                 return <SolStakingDashboard selectedAccount={selectedAccount} />;
+            case 'tron':
+                return <TronStakingDashboard selectedAccount={selectedAccount} />;
             // no default
         }
     }
