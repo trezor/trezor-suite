@@ -59,6 +59,7 @@ export const YieldDepositFlowScreenHeader = ({
                 <IconButton
                     intent="neutral"
                     priority="secondary"
+                    size="medium"
                     iconName="info"
                     onPress={onInfoPress}
                 />

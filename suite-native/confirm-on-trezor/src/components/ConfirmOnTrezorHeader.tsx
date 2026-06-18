@@ -37,6 +37,7 @@ export const ConfirmOnTrezorHeader = ({
                 <IconButton
                     intent="neutral"
                     priority="secondary"
+                    size="medium"
                     iconName="caretUpDown"
                     onPress={onToggleSheet}
                 />
