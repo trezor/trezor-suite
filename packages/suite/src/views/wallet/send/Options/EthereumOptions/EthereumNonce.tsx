@@ -6,8 +6,7 @@ import { fromWei } from 'web3-utils';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { selectTransactions } from '@suite-common/wallet-core';
-import { getEthereumRbfFeeInfo } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
+import { getEthereumRbfFeeInfo, selectTransactions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { isEip1559, isInteger, isPending, isSentTransaction } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Note, Row, TextButton } from '@trezor/components';
@@ -109,12 +108,16 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
             .filter(isSentTransaction)
             .find(tx => tx.ethereumSpecific?.nonce === Number(nonceValue))?.ethereumSpecific;
 
+        // The pending tx may have been confirmed between form-open and clicking "Apply fee bump"
+        // (stale displayNonce props). Guard here so we don't silently bump from zero.
+        if (!replacedGas) return;
+
         const bumpedLevel = getEthereumRbfFeeInfo(feeInfo, {
-            gasPrice: replacedGas?.gasPrice ? fromWei(replacedGas.gasPrice, 'gwei') : undefined,
-            maxFeePerGas: replacedGas?.maxFeePerGas
+            gasPrice: replacedGas.gasPrice ? fromWei(replacedGas.gasPrice, 'gwei') : undefined,
+            maxFeePerGas: replacedGas.maxFeePerGas
                 ? fromWei(replacedGas.maxFeePerGas, 'gwei')
                 : undefined,
-            maxPriorityFeePerGas: replacedGas?.maxPriorityFeePerGas
+            maxPriorityFeePerGas: replacedGas.maxPriorityFeePerGas
                 ? fromWei(replacedGas.maxPriorityFeePerGas, 'gwei')
                 : undefined,
         }).levels[0];
@@ -159,7 +162,10 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
                     name={'ethereumNonce' satisfies keyof FormState}
                     locale={locale}
                     hasError={!!error}
-                    onChange={() => composeTransaction()}
+                    onChange={() => {
+                        setBumpedNonce(undefined);
+                        composeTransaction();
+                    }}
                     rules={rules}
                     maxLength={formInputsMaxLength.ethereumNonce}
                     placeholder={displayNonce}
