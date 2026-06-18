@@ -1,13 +1,13 @@
 import {
     ExperimentalMethod,
     GetPublicKey as GetPublicKeySchema,
-    type MethodPermission,
     type PROTO,
 } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../core/AbstractMethod';
 import { AbstractMethod } from '../../core/AbstractMethod';
+import { getMiscNetwork } from '../../data/coinInfo';
 import { validatePath } from '../../utils/pathUtils';
 
 export default class NostrGetPublicKey extends AbstractMethod<
@@ -25,10 +25,11 @@ export default class NostrGetPublicKey extends AbstractMethod<
         };
 
         super(message, params);
+        this.requiredFirmwareCoins = [getMiscNetwork('Nostr')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions() {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     get info() {
