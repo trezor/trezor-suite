@@ -15,7 +15,7 @@
     },
     "dependencies": {
         "@react-navigation/native": "7.1.28",
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/trading": "workspace:*",

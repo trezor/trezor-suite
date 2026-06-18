@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@noble/curves": "^2.0.1",
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
