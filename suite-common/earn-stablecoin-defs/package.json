@@ -15,7 +15,7 @@
         "api:update": "yarn api:generate && yarn lint:js --fix && yarn format"
     },
     "devDependencies": {
-        "orval": "8.8.0",
+        "orval": "8.15.0",
         "prettier": "^3.8.3"
     },
     "dependencies": {
