@@ -18,6 +18,7 @@ import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
     type ConnectSettings,
+    type CreateLoggerDep,
     type Manifest,
     type StaticSessionId,
 } from '@trezor/connect';
@@ -42,7 +43,8 @@ export type CommonServices = SuiteSyncDep &
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
     } & ReportSecurityCheckDep &
-    MigrateSuiteSyncLabelsForRbfTransactionDep;
+    MigrateSuiteSyncLabelsForRbfTransactionDep &
+    CreateLoggerDep;
 
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */

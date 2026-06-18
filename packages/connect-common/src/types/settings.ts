@@ -43,6 +43,8 @@ export type ConnectSettingsTransport =
 
 export type CreateLogger = (prefix: string) => Logger;
 
+export type CreateLoggerDep = { createLogger?: CreateLogger };
+
 export interface ConnectSettingsPublic {
     manifest?: Manifest;
     // Enables connect logs. NOTE: connect core no longer uses this to gate its COMPONENT loggers
