@@ -130,6 +130,11 @@ line). Both are drained the same way on your next run.
   then **resolve** the thread by passing its `id` to the `resolveReviewThread` mutation.
   Leave open: an unanswered clarify thread, a directive you replied to with a question,
   and any thread the human is still actively discussing.
+- **Idempotency — your `✅ applied` reply is the "handled" marker, not the resolved
+  flag.** A crash can land between your push and the resolve. So **before acting on any
+  thread, skip it if it already carries your own `✅ applied` reply** — do not re-apply;
+  just resolve it if it is still unresolved (cleanup, safe to retry). This keeps a
+  directive or answer from being applied twice across a partial run.
 - **Parking.** Open decisions **and** open clarify threads gate the same
   `*-needs-human` state. When you park, note in the status comment "N decisions + M
   inline clarifications open — answer the inline ones on the diff" so the human looks
