@@ -75,7 +75,7 @@ export const ExchangeConfirmationInfo = ({
                         </VStack>
                     </TradeInfoRow>
                 )}
-                <ProviderInfoRow exchange={exchange} />
+                <ProviderInfoRow exchange={exchange} tradingType="exchange" />
                 {flowType === 'approve' && <LimitInfoRow testID="ExchangeApproval/LimitPicker" />}
             </Card>
             <FeeSummaryCard

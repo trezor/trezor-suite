@@ -53,9 +53,8 @@ describe('ExchangeInfo', () => {
     it('should render TradeInfo otherwise', () => {
         const { getByText } = renderExchangeInfo({ quote: mercuryoFixedWorstQuote });
 
-        expect(
-            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
-        ).toBeOnTheScreen();
+        // 1st line of trade info is provider
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
     it('should render children inside TradeInfo', () => {

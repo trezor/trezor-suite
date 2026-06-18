@@ -44,7 +44,7 @@ export const ExchangeRevokeDetails = ({ exchange }: ExchangeRevokeDetailsProps) 
                 account={account}
                 title={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
             >
-                <ProviderInfoRow exchange={exchange} />
+                <ProviderInfoRow exchange={exchange} tradingType="exchange" />
                 <RevokeLimitInfoRow />
             </NetworkAndAccountCard>
 

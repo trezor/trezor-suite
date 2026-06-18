@@ -78,8 +78,7 @@ describe('SellInfo', () => {
     it('should render TradeInfo otherwise', () => {
         const { getByText } = renderSellInfo({ quote: banxaCreditCardSellQuote });
 
-        expect(
-            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
-        ).toBeOnTheScreen();
+        // 1st line of trade info is provider
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 });

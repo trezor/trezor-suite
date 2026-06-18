@@ -12,9 +12,12 @@ describe('ProviderInfoRow', () => {
             }),
         };
 
-        return renderWithStoreProvider(<ProviderInfoRow exchange="mercuryo" {...props} />, {
-            preloadedState,
-        });
+        return renderWithStoreProvider(
+            <ProviderInfoRow exchange="mercuryo" tradingType="exchange" {...props} />,
+            {
+                preloadedState,
+            },
+        );
     };
 
     it('should render provider', () => {

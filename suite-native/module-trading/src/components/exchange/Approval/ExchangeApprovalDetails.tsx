@@ -51,7 +51,7 @@ export const ExchangeApprovalDetails = ({
                 account={account}
                 title={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
             >
-                <ProviderInfoRow exchange={exchange} />
+                <ProviderInfoRow exchange={exchange} tradingType="exchange" />
                 <OriginalLimit />
                 <LimitPicker onApprovalTypeChange={onApprovalTypeChange} />
             </NetworkAndAccountCard>
