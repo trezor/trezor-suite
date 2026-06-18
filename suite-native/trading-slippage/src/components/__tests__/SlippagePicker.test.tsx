@@ -1,3 +1,5 @@
+import type { ExchangeTrade } from 'invity-api';
+
 import { getTranslation } from '@suite-native/intl';
 import { userEvent, within } from '@suite-native/test-utils';
 import { act } from '@suite-native/test-utils-store';
@@ -23,8 +25,8 @@ describe('SlippagePicker', () => {
         jest.clearAllMocks();
     });
 
-    const renderSlippagePicker = async (quote = mercuryoDexQuote) => {
-        const result = renderWithSlippageTestProvider(<SlippagePicker quote={quote} />);
+    const renderSlippagePicker = async (quote: ExchangeTrade = mercuryoDexQuote) => {
+        const result = renderWithSlippageTestProvider(<SlippagePicker />, { quote });
 
         await act(async () => {});
 

@@ -1,8 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import type { ExchangeTrade } from 'invity-api';
-
 import {
     SLIPPAGE_PRESETS,
     type SlippageFormValues,
@@ -31,14 +29,13 @@ import { useSlippageForm } from '../hooks/useSlippageForm';
 type SlippageBottomSheetProps = {
     isVisible: boolean;
     onClose: () => void;
-    quote?: ExchangeTrade;
 };
 
-export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBottomSheetProps) => {
+export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetProps) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { handleSubmit, reset, isValid, handlePresetPress, form } = useSlippageForm();
+    const { handleSubmit, isValid, handlePresetPress, form } = useSlippageForm();
     const openLink = useOpenLink();
 
     useEffect(() => {
@@ -52,22 +49,21 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
             dispatch(tradingSettingsActions.setMaxSlippagePercentage(String(slippage)));
             closeModal();
             onClose();
-            reset();
         },
-        [dispatch, closeModal, onClose, reset],
+        [dispatch, closeModal, onClose],
     );
 
     const handleCancel = useCallback(() => {
         closeModal();
         onClose();
-        reset();
-    }, [closeModal, onClose, reset]);
+    }, [closeModal, onClose]);
 
     return (
         <BottomSheetModal
             ref={bottomSheetRef}
             title={<Translation id="moduleTrading.slippage.title" />}
             onDismiss={onClose}
+            isCloseDisplayed
         >
             <Form form={form}>
                 <VStack spacing="sp24" paddingBottom="sp24">
@@ -98,7 +94,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose, quote }: SlippageBotto
                             ))}
                         </HStack>
                     </VStack>
-                    {quote && <SlippageSummary quote={quote} />}
+                    <SlippageSummary />
                     <Box alignSelf="flex-start">
                         <TextButton
                             onPress={() => openLink(TREZOR_TRADING_DEX_SLIPPAGE_URL)}
