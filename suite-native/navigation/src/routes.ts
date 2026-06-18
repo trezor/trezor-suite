@@ -285,13 +285,13 @@ export enum SettingsStackRoutes {
     SettingsSupport = 'SettingsSupport',
     SettingsAppLog = 'SettingsAppLog',
     SettingsNetworks = 'SettingsNetworks',
+    SettingsNetworkBackends = 'SettingsNetworkBackends',
     SettingsSuiteSync = 'SettingsSuiteSync',
     SettingsAdvanced = 'SettingsAdvanced',
     SettingsDustPhishing = 'SettingsDustPhishing',
     SettingsExperimental = 'SettingsExperimental',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
-    BitcoinBackends = 'BitcoinBackends',
     SettingsTradingLocation = 'SettingsTradingLocation',
 }
 

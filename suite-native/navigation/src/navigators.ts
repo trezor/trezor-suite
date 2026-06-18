@@ -156,13 +156,15 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsSupport]: undefined;
     [SettingsStackRoutes.SettingsAppLog]: undefined;
     [SettingsStackRoutes.SettingsNetworks]: undefined;
+    [SettingsStackRoutes.SettingsNetworkBackends]: {
+        networkSymbol: NetworkSymbol;
+    };
     [SettingsStackRoutes.SettingsSuiteSync]: undefined;
     [SettingsStackRoutes.SettingsAdvanced]: undefined;
     [SettingsStackRoutes.SettingsDustPhishing]: undefined;
     [SettingsStackRoutes.SettingsExperimental]: undefined;
     [SettingsStackRoutes.TurnOffDeviceAuthenticityCheck]: undefined;
     [SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck]: undefined;
-    [SettingsStackRoutes.BitcoinBackends]: undefined;
     [SettingsStackRoutes.SettingsTradingLocation]: undefined;
 };
 

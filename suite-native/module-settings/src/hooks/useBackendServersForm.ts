@@ -43,9 +43,7 @@ export const useBackendServersForm = () => {
         () => [
             {
                 value: 'default',
-                label: translate(
-                    'moduleSettings.advanced.bitcoinBackends.servers.serverTypeDefault',
-                ),
+                label: translate('moduleSettings.networkBackends.servers.serverTypeDefault'),
             },
             { value: 'electrum', label: 'Electrum' },
         ],
@@ -70,7 +68,7 @@ export const useBackendServersForm = () => {
                 .string()
                 .test(
                     'format',
-                    translate('moduleSettings.advanced.bitcoinBackends.servers.invalidFormat'),
+                    translate('moduleSettings.networkBackends.servers.invalidFormat'),
                     value => !!value && !!parseElectrumUrl(value),
                 ),
         }),
@@ -117,8 +115,8 @@ export const useBackendServersForm = () => {
                 form.setError('serverAddress', {
                     message: translate(
                         isOnionAddress
-                            ? 'moduleSettings.advanced.bitcoinBackends.servers.unableToConnect.tor'
-                            : 'moduleSettings.advanced.bitcoinBackends.servers.unableToConnect.clearnet',
+                            ? 'moduleSettings.networkBackends.servers.unableToConnect.tor'
+                            : 'moduleSettings.networkBackends.servers.unableToConnect.clearnet',
                     ),
                 });
                 setIsConnecting(false);

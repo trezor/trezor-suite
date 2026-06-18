@@ -1,6 +1,7 @@
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { type Network } from '@suite-common/wallet-config';
 import { type BlockchainRootState, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
@@ -10,6 +11,10 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
+
+type ConnectionInfoButtonProps = {
+    network: Network;
+};
 
 type InfoLineProps = {
     title: TxKeyPath;
@@ -25,11 +30,11 @@ const InfoLine = ({ title, value }: InfoLineProps) => (
     </VStack>
 );
 
-export const ConnectionInfoButton = () => {
+export const ConnectionInfoButton = ({ network }: ConnectionInfoButtonProps) => {
     const { bottomSheetRef, openModal } = useBottomSheetModal();
 
     const { connected, url, blockHash, blockHeight, version } = useSelector(
-        (state: BlockchainRootState) => selectNetworkBlockchainInfo(state, 'btc'),
+        (state: BlockchainRootState) => selectNetworkBlockchainInfo(state, network.symbol),
     );
 
     const openBottomSheet = () => {
@@ -47,34 +52,35 @@ export const ConnectionInfoButton = () => {
             />
             <BottomSheetModal
                 ref={bottomSheetRef}
-                title={
-                    <Translation id="moduleSettings.advanced.bitcoinBackends.connectionInfo.title" />
-                }
+                title={<Translation id="moduleSettings.networkBackends.connectionInfo.title" />}
                 isCloseDisplayed
             >
                 <VStack marginHorizontal="sp8" spacing="sp16">
                     {connected ? (
                         <>
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.connectedTo"
+                                title="moduleSettings.networkBackends.connectionInfo.connectedTo"
                                 value={url}
                             />
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.blockHash"
+                                title="moduleSettings.networkBackends.connectionInfo.blockHash"
                                 value={blockHash}
                             />
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.blockHeight"
+                                title="moduleSettings.networkBackends.connectionInfo.blockHeight"
                                 value={blockHeight}
                             />
                             <InfoLine
-                                title="moduleSettings.advanced.bitcoinBackends.connectionInfo.backendVersion"
+                                title="moduleSettings.networkBackends.connectionInfo.backendVersion"
                                 value={version}
                             />
                         </>
                     ) : (
                         <Text>
-                            <Translation id="moduleSettings.advanced.bitcoinBackends.connectionInfo.disconnected" />
+                            <Translation
+                                id="moduleSettings.networkBackends.connectionInfo.disconnected"
+                                values={{ networkName: network.name }}
+                            />
                         </Text>
                     )}
                 </VStack>
