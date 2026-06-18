@@ -1,6 +1,5 @@
 import {
     ExperimentalMethod,
-    type MethodPermission,
     NostrSignEvent as NostrSignEventSchema,
     type PROTO,
 } from '@trezor/connect-common';
@@ -8,6 +7,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../core/AbstractMethod';
 import { AbstractMethod } from '../../core/AbstractMethod';
+import { getMiscNetwork } from '../../data/coinInfo';
 import { validatePath } from '../../utils/pathUtils';
 
 export default class NostrSignEvent extends AbstractMethod<'nostrSignEvent', PROTO.NostrSignEvent> {
@@ -26,10 +26,11 @@ export default class NostrSignEvent extends AbstractMethod<'nostrSignEvent', PRO
         };
 
         super(message, params);
+        this.requiredFirmwareCoins = [getMiscNetwork('Nostr')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['write'];
+    get requiredPermissions() {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {
