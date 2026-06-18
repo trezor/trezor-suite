@@ -26,6 +26,13 @@ const ELECTRON_MAIN_SENTRY_CONFIG = {
 
     ipcMode: IPCMode.Classic,
     getSessions: () => [session.defaultSession],
+    // Required for renderer (browser) profiling: the renderer collects profiles via
+    // browserProfilingIntegration and ships them to the main process over IPC, but they are
+    // only re-attached to transaction envelopes (and thus actually sent to Sentry) when the
+    // main process runs rendererProfilingIntegration, which is added by this flag. Enabling it
+    // also makes the SDK inject the `Document-Policy: js-profiling` response header required by
+    // the JS Self-Profiling API into every session returned by getSessions().
+    enableRendererProfiling: true,
 } as ElectronMainOptions;
 
 export const initSentry = ({ mainThreadEmitter, store }: InitSentryParams) => {
