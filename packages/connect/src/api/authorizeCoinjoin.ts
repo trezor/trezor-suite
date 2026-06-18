@@ -40,7 +40,7 @@ export default class AuthorizeCoinjoin extends AbstractMethod<
     }
 
     get requiredPermissions(): PermissionRequest[] {
-        return [this.coinPerm('management', this.requiredFirmwareCoins[0])];
+        return [this.coinPerm('internal', this.requiredFirmwareCoins[0])];
     }
 
     async run() {
