@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-06-17T00:00:00+00:00",
-    "sequence": 143,
+    "timestamp": "2026-06-18T00:00:00+00:00",
+    "sequence": 144,
     "actions": [
         {
             "conditions": [
@@ -1151,6 +1151,41 @@
                     "uk": "У нас виникли тимчасові проблеми з синхронізацією мережі INPUT HERE, що може спричинити затримки або помилки. Ваші активи INPUT HERE у цілковитій безпеці. Дякуємо за терпіння."
                 }
             }
+        },
+        {
+            "message": {
+                "id": "d41518e0-a21f-43ce-872c-4bf250f59d90",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "info",
+                "category": "context",
+                "content": {
+                    "en": "Minimum amount to stake has changed to 1 SOL.",
+                    "es": "La cantidad mínima para hacer staking ha cambiado a 1 SOL.",
+                    "cs": "Minimální částka pro staking je nyní 1 SOL.",
+                    "ru": "Минимальная сумма для стейкинга изменилась на 1 SOL.",
+                    "ja": "ステーキングの最小額が1 SOLに変更されました",
+                    "hu": "A stakeléshez szükséges minimális összeg 1 SOL-ra változott.",
+                    "it": "L'importo minimo per lo staking è passato a 1 SOL.",
+                    "fr": "Le montant minimum pour le staking est passé à 1 SOL.",
+                    "de": "Der Mindestbetrag für das Staking hat sich auf 1 SOL geändert.",
+                    "tr": "Stake etmek için minimum miktar 1 SOL olarak değişti.",
+                    "pt": "O valor mínimo para staking mudou para 1 SOL.",
+                    "uk": "Мінімальна сума для стейкінгу змінилася на 1 SOL."
+                },
+                "context": {
+                    "domain": "accounts.sol.staking"
+                }
+            },
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ]
         },
         {
             "conditions": [
