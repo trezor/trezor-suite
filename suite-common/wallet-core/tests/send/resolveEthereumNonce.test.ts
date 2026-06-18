@@ -1,11 +1,14 @@
 import { type RbfTransactionParams } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { confirmedNonces, ethAccount, evmTx } from './evmFixtures';
+import { type EthAccount, ethAccount, evmTx } from './evmFixtures';
 import { resolveEthereumNonce } from '../../src/send/sendFormEthereumThunks';
 
 const rbf = (ethereumNonce: number) =>
     ({ type: 'ethereum', ethereumNonce }) as unknown as RbfTransactionParams;
+
+const accountWithNonce = (nonce: number): EthAccount =>
+    ({ ...ethAccount, misc: { nonce: nonce.toString() } }) as EthAccount;
 
 describe('resolveEthereumNonce', () => {
     let getAccountInfo: jest.SpyInstance;
@@ -23,27 +26,26 @@ describe('resolveEthereumNonce', () => {
         const result = await resolveEthereumNonce({
             selectedAccount: ethAccount,
             rbfParams: rbf(7),
-            accountTransactions: confirmedNonces(3),
+            accountTransactions: [],
         });
 
         expect(result).toEqual({ nonce: '7', confirmedNonce: '7' });
         expect(getAccountInfo).not.toHaveBeenCalled();
     });
 
-    it('returns 0 when there are no sent txs', async () => {
+    it('returns account nonce when there are no pending txs', async () => {
         const result = await resolveEthereumNonce({
-            selectedAccount: ethAccount,
+            selectedAccount: accountWithNonce(0),
             accountTransactions: [],
         });
 
         expect(result).toEqual({ nonce: '0', confirmedNonce: '0' });
     });
 
-    it('uses the confirmed count when there are no pending txs', async () => {
-        // confirmed nonces 0..4 -> confirmed count 5, next 5
+    it('uses account nonce as the confirmed nonce baseline', async () => {
         const result = await resolveEthereumNonce({
-            selectedAccount: ethAccount,
-            accountTransactions: confirmedNonces(5),
+            selectedAccount: accountWithNonce(5),
+            accountTransactions: [],
         });
 
         expect(result).toEqual({ nonce: '5', confirmedNonce: '5' });
@@ -51,9 +53,8 @@ describe('resolveEthereumNonce', () => {
 
     it('walks past contiguous pending txs to the next free nonce', async () => {
         const result = await resolveEthereumNonce({
-            selectedAccount: ethAccount,
+            selectedAccount: accountWithNonce(5),
             accountTransactions: [
-                ...confirmedNonces(5),
                 evmTx(5, { confirmed: false }),
                 evmTx(6, { confirmed: false }),
                 evmTx(7, { confirmed: false }),
@@ -65,8 +66,8 @@ describe('resolveEthereumNonce', () => {
 
     it('ignores a gapped pending tx and suggests filling the gap', async () => {
         const result = await resolveEthereumNonce({
-            selectedAccount: ethAccount,
-            accountTransactions: [...confirmedNonces(6), evmTx(13, { confirmed: false })],
+            selectedAccount: accountWithNonce(6),
+            accountTransactions: [evmTx(13, { confirmed: false })],
         });
 
         expect(result).toEqual({ nonce: '6', confirmedNonce: '6' });
@@ -74,37 +75,34 @@ describe('resolveEthereumNonce', () => {
 
     it('ignores received transactions', async () => {
         const result = await resolveEthereumNonce({
-            selectedAccount: ethAccount,
-            accountTransactions: [
-                ...confirmedNonces(3),
-                evmTx(99, { confirmed: false, type: 'recv' }),
-            ],
+            selectedAccount: accountWithNonce(3),
+            accountTransactions: [evmTx(99, { confirmed: false, type: 'recv' })],
         });
 
         expect(result).toEqual({ nonce: '3', confirmedNonce: '3' });
     });
 
-    it('still derives locally when the backend fetch fails', async () => {
+    it('falls back to account nonce when the backend fetch fails', async () => {
         getAccountInfo.mockResolvedValue({ success: false } as any);
 
         const result = await resolveEthereumNonce({
-            selectedAccount: ethAccount,
-            accountTransactions: confirmedNonces(5),
+            selectedAccount: accountWithNonce(5),
+            accountTransactions: [],
+            fetchConfirmedNonce: true,
         });
 
         expect(result).toEqual({ nonce: '5', confirmedNonce: '5' });
     });
 
     it('prefers the backend confirmed nonce when blockbook provides it', async () => {
-        // backend reports confirmed 10; the (incomplete) local tx list would only derive 3
         getAccountInfo.mockResolvedValue({
             success: true,
             payload: { misc: { nonce: '10', confirmedNonce: '9' } },
         } as any);
 
         const result = await resolveEthereumNonce({
-            selectedAccount: ethAccount,
-            accountTransactions: confirmedNonces(3),
+            selectedAccount: accountWithNonce(3),
+            accountTransactions: [],
             fetchConfirmedNonce: true,
         });
 

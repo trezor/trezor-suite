@@ -73,35 +73,28 @@ export const isSentTransaction = (tx: WalletAccountTransaction | AccountTransact
     ['sent', 'self'].includes(tx.type);
 
 /**
- * Derives EVM nonce bounds from an account's local transaction list.
- *
- * - `confirmedNonce` = on-chain transaction count (the next mined nonce). When the backend's
- *   mined-only nonce (trezor/blockbook#1562) is supplied it's authoritative; otherwise it's the
- *   highest confirmed outgoing nonce + 1 (nonces are sequential from 0).
- * - `nextNonce` = `confirmedNonce` advanced past any *contiguous* outgoing pending txs, stopping
- *   at the first gap — the nonce to sign the next tx with. A stuck/gapped pending tx far above the
- *   confirmed nonce does not inflate it.
- *
- * A pending tx is then stuck if its nonce is above `nextNonce` (a lower nonce is missing — a gap)
- * or below `confirmedNonce` (that slot was already mined by another tx — superseded).
+ * Returns the next EVM nonce to use, walking past any contiguous outgoing pending txs starting
+ * from `accountNonce`. Stops at the first gap so a stuck/gapped tx does not inflate the result.
  */
 export const getEvmNonceInfo = (
-    accountTransactions: WalletAccountTransaction[],
-    backendConfirmedNonce?: number,
+    accountNonce: number,
+    pendingTxs: WalletAccountTransaction[],
 ): { confirmedNonce: number; nextNonce: number } => {
-    const sentNonces = (predicate: (tx: WalletAccountTransaction) => boolean) =>
-        accountTransactions
-            .filter(predicate)
+    const pendingNonceSet = new Set(
+        pendingTxs
             .filter(isSentTransaction)
             .map(tx => tx.ethereumSpecific?.nonce)
-            .filter((nonce): nonce is number => typeof nonce === 'number');
+            .filter((nonce): nonce is number => typeof nonce === 'number'),
+    );
 
-    const localConfirmedNonces = sentNonces(tx => !isPending(tx));
-    const confirmedNonce =
-        backendConfirmedNonce ??
-        (localConfirmedNonces.length ? Math.max(...localConfirmedNonces) + 1 : 0);
+    // accountNonce may be blockbook's pending nonce (eth_getTransactionCount("pending")), which
+    // already advances past consecutive mempool txs — including ones Suite doesn't know about
+    // (sent from another wallet). A locally-known pending tx at nonce N proves the chain hasn't
+    // confirmed N yet, so the true confirmed nonce can't exceed the lowest pending nonce we see.
+    const lowestPendingNonce =
+        pendingNonceSet.size > 0 ? Math.min(...pendingNonceSet) : accountNonce;
+    const confirmedNonce = Math.min(accountNonce, lowestPendingNonce);
 
-    const pendingNonceSet = new Set(sentNonces(isPending));
     let nextNonce = confirmedNonce;
     while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
 

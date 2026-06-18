@@ -39,6 +39,7 @@ import {
     getTxStakeNameByDataHex,
     isEip1559,
     isEvmApprovalTx,
+    isPending,
     prepareEthereumTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
@@ -433,15 +434,11 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
  * Resolves the nonce to use for the next Ethereum transaction.
  *
  * For RBF (cancel / speed-up) the original tx's nonce is reused. Otherwise:
- *  - `confirmedNonce` = the backend's mined-only nonce (trezor/blockbook#1562), i.e. the on-chain
- *    transaction count. Lower bound for custom-nonce validation. Falls back to the highest confirmed
- *    (mined) outgoing nonce + 1 from the local tx list when the backend doesn't provide it. (Nonces
- *    are sequential from 0, so the latest confirmed outgoing tx's nonce + 1 is the confirmed count.)
+ *  - `confirmedNonce` = the account's current nonce from the backend (account.misc.nonce), or the
+ *    mined-only nonce from blockbook when `fetchConfirmedNonce` is true (trezor/blockbook#1562).
  *  - `nonce` (signing default) = `confirmedNonce` advanced past any *contiguous* outgoing pending
  *    txs. Gapped pending txs (e.g. a stuck tx far above the confirmed nonce) are ignored, so the
  *    suggestion fills the gap instead of queueing behind an unmineable tx.
- *
- * Reads Redux/network only via TrezorConnect; the caller still passes the tx list in.
  */
 export const resolveEthereumNonce = async ({
     selectedAccount,
@@ -462,11 +459,10 @@ export const resolveEthereumNonce = async ({
         return { nonce: rbfNonce, confirmedNonce: rbfNonce };
     }
 
-    // Optionally fetch blockbook's confirmed (mined-only) nonce (trezor/blockbook#1562). It's an
-    // extra backend call, so we only make it when the caller opts in; otherwise the confirmed nonce
-    // is derived purely from the local tx list. When available the backend value is authoritative and
-    // doesn't depend on the local tx list being complete.
-    let backendConfirmedNonce: number | undefined;
+    // Use the account's nonce from the last sync as the base. Optionally override with blockbook's
+    // mined-only nonce (trezor/blockbook#1562) when the caller opts in — it costs an extra backend
+    // call but is authoritative and unaffected by local pending-tx state.
+    let accountNonce = parseInt(selectedAccount.misc?.nonce ?? '0', 10);
     if (fetchConfirmedNonce) {
         const accountInfoResponse = await TrezorConnect.getAccountInfo({
             coin: selectedAccount.symbol,
@@ -480,14 +476,12 @@ export const resolveEthereumNonce = async ({
             accountInfoResponse.success &&
             accountInfoResponse.payload.misc?.confirmedNonce != null
         ) {
-            backendConfirmedNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
+            accountNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
         }
     }
 
-    const { nextNonce, confirmedNonce } = getEvmNonceInfo(
-        accountTransactions,
-        backendConfirmedNonce,
-    );
+    const pendingTxs = accountTransactions.filter(isPending);
+    const { nextNonce, confirmedNonce } = getEvmNonceInfo(accountNonce, pendingTxs);
 
     return { nonce: nextNonce.toString(), confirmedNonce: confirmedNonce.toString() };
 };
