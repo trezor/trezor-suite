@@ -35,7 +35,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.4",
-        "react-redux": "9.2.0"
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*"

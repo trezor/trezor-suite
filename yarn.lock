@@ -10291,7 +10291,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -10362,7 +10362,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -10372,7 +10372,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.2"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -10496,7 +10496,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -10514,7 +10514,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -10576,7 +10576,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -10641,7 +10641,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -10671,7 +10671,7 @@ __metadata:
     json-schema-to-typescript: "npm:^15.0.4"
     jws: "npm:^4.0.1"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     semver: "npm:^7.7.1"
     tsx: "npm:^4.21.0"
   languageName: unknown
@@ -10745,7 +10745,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     lodash: "npm:^4.18.1"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
     reselect: "npm:5.1.1"
@@ -10872,7 +10872,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11013,7 +11013,7 @@ __metadata:
     core-js: "npm:^3.49.0"
     fake-indexeddb: "npm:^6.2.5"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
   languageName: unknown
@@ -11105,7 +11105,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11215,7 +11215,7 @@ __metadata:
     lodash: "npm:^4.18.1"
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11342,7 +11342,7 @@ __metadata:
     react-hook-form: "npm:^7.71.2"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11372,7 +11372,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11398,7 +11398,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11645,7 +11645,7 @@ __metadata:
     react-native-svg: "npm:15.15.3"
     react-native-tcp-socket: "npm:6.4.1"
     react-native-worklets: "npm:~0.7.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux-persist: "npm:6.0.0"
     set.prototype.difference: "npm:^1.1.7"
     set.prototype.intersection: "npm:^1.1.7"
@@ -11696,7 +11696,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11736,7 +11736,7 @@ __metadata:
     react-native-reanimated: "npm:~4.2.1"
     react-native-safe-area-context: "npm:5.6.2"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     storybook: "npm:^10.3.4"
     type-fest: "npm:5.5.0"
@@ -11768,7 +11768,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11796,7 +11796,7 @@ __metadata:
     expo-sharing: "npm:~55.0.20"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11813,7 +11813,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11842,7 +11842,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-permissions: "npm:5.4.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11881,7 +11881,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11932,7 +11932,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11967,7 +11967,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11983,7 +11983,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12019,7 +12019,7 @@ __metadata:
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
     react-native-safe-area-context: "npm:5.6.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12098,7 +12098,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.31.1"
     react-native-reanimated: "npm:~4.2.1"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     semver: "npm:^7.7.1"
     type-fest: "npm:5.5.0"
   languageName: unknown
@@ -12132,7 +12132,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12159,7 +12159,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12171,7 +12171,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12212,7 +12212,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12225,7 +12225,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     expo-localization: "npm:~55.0.8"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12253,7 +12253,7 @@ __metadata:
     expo-localization: "npm:~55.0.8"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12315,7 +12315,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux-persist: "npm:6.0.0"
   languageName: unknown
   linkType: soft
@@ -12337,7 +12337,7 @@ __metadata:
     expo-sharing: "npm:~55.0.20"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12373,7 +12373,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-common/message-system": "workspace:*"
     expo-store-review: "npm:~55.0.8"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12394,7 +12394,7 @@ __metadata:
     react: "npm:19.2.4"
     react-intl: "npm:^8.1.3"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12416,7 +12416,7 @@ __metadata:
     "@suite-native/suite-sync": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12462,7 +12462,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12512,7 +12512,7 @@ __metadata:
     react-hook-form: "npm:^7.71.2"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12576,7 +12576,7 @@ __metadata:
     react-hook-form: "npm:^7.71.2"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12608,7 +12608,7 @@ __metadata:
     expo-linear-gradient: "npm:~55.0.8"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12631,7 +12631,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12676,7 +12676,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12708,7 +12708,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     react: "npm:19.2.4"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12748,7 +12748,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12813,7 +12813,7 @@ __metadata:
     expo: "npm:~55.0.3"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12871,7 +12871,7 @@ __metadata:
     react-native-reanimated: "npm:~4.2.1"
     react-native-safe-area-context: "npm:5.6.2"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12914,7 +12914,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -12985,7 +12985,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13044,7 +13044,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.31.1"
     react-native-reanimated: "npm:~4.2.1"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13082,7 +13082,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13110,7 +13110,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13174,7 +13174,7 @@ __metadata:
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13240,7 +13240,7 @@ __metadata:
     react-intl: "npm:^8.1.3"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13279,7 +13279,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13373,7 +13373,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.31.1"
     react-native-reanimated: "npm:~4.2.1"
     react-native-safe-area-context: "npm:5.6.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13414,7 +13414,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13453,7 +13453,7 @@ __metadata:
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-reanimated: "npm:~4.2.1"
     react-native-safe-area-context: "npm:5.6.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     type-fest: "npm:5.5.0"
   languageName: unknown
   linkType: soft
@@ -13483,7 +13483,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13507,7 +13507,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-qr-code: "npm:2.0.18"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13569,7 +13569,7 @@ __metadata:
     react-native: "npm:0.83.2"
     react-native-gesture-handler: "npm:2.31.1"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     type-fest: "npm:5.5.0"
   languageName: unknown
   linkType: soft
@@ -13666,7 +13666,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13729,7 +13729,7 @@ __metadata:
     expo-device: "npm:55.0.17"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"
   languageName: unknown
@@ -13826,7 +13826,7 @@ __metadata:
     expo-sqlite: "npm:~55.0.16"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13857,7 +13857,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13919,7 +13919,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-keyboard-controller: "npm:1.20.7"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -13969,7 +13969,7 @@ __metadata:
     "@suite-native/trading-fixtures": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14042,7 +14042,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14073,7 +14073,7 @@ __metadata:
     "@suite-native/trading-types": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14131,7 +14131,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-safe-area-context: "npm:5.6.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14158,7 +14158,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14181,7 +14181,7 @@ __metadata:
     "@types/invity-api": "npm:^1.1.15"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14214,7 +14214,7 @@ __metadata:
     react-native: "npm:0.83.2"
     react-native-safe-area-context: "npm:5.6.2"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14243,7 +14243,7 @@ __metadata:
     "@types/invity-api": "npm:^1.1.15"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14344,7 +14344,7 @@ __metadata:
     react-hook-form: "npm:^7.71.2"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14391,7 +14391,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-svg: "npm:15.15.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14439,7 +14439,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14464,7 +14464,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
@@ -14493,7 +14493,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     styled-components: "npm:^6.3.9"
   languageName: unknown
@@ -14556,7 +14556,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
@@ -14581,7 +14581,7 @@ __metadata:
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
   languageName: unknown
@@ -14601,7 +14601,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
   languageName: unknown
@@ -14613,7 +14613,7 @@ __metadata:
   dependencies:
     "@suite-common/discreet-mode": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
@@ -14637,7 +14637,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -14654,7 +14654,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     styled-components: "npm:^6.3.9"
   languageName: unknown
   linkType: soft
@@ -14675,7 +14675,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     semver: "npm:^7.7.1"
     styled-components: "npm:^6.3.9"
@@ -14762,7 +14762,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     react-select: "npm:^5.10.2"
     redux: "npm:^5.0.1"
   languageName: unknown
@@ -14816,7 +14816,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux-thunk: "npm:^3.1.0"
   languageName: unknown
   linkType: soft
@@ -14859,7 +14859,7 @@ __metadata:
     dropbox: "npm:^10.34.0"
     immer: "npm:11.0.0"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
     styled-components: "npm:^6.3.9"
@@ -14951,7 +14951,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
@@ -14992,7 +14992,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     history: "npm:^5.3.0"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -15063,7 +15063,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-hook-form: "npm:^7.71.2"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -15084,7 +15084,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     history: "npm:^5.3.0"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -15106,7 +15106,7 @@ __metadata:
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.4"
     react-intl: "npm:^8.1.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
@@ -15171,7 +15171,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     react: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -15926,7 +15926,7 @@ __metadata:
     react-inspector: "npm:^6.0.2"
     react-markdown: "npm:^10.1.0"
     react-medium-image-zoom: "npm:^5.4.0"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     redux-logger: "npm:^3.0.6"
     redux-thunk: "npm:^3.1.0"
@@ -16526,7 +16526,7 @@ __metadata:
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     styled-components: "npm:^6.3.9"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
@@ -16637,7 +16637,7 @@ __metadata:
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.2.4"
     react-dom: "npm:19.2.4"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     rimraf: "npm:^6.1.2"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
@@ -16814,7 +16814,7 @@ __metadata:
     react-helmet-async: "npm:^2.0.5"
     react-hook-form: "npm:^7.71.2"
     react-intl: "npm:^8.1.3"
-    react-redux: "npm:9.2.0"
+    react-redux: "npm:9.3.0"
     react-select: "npm:^5.10.2"
     react-toastify: "npm:^11.0.5"
     react-use: "npm:^17.6.0"
@@ -37697,6 +37697,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ox@npm:0.14.29":
+  version: 0.14.29
+  resolution: "ox@npm:0.14.29"
+  dependencies:
+    "@adraffy/ens-normalize": "npm:^1.11.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/curves": "npm:1.9.1"
+    "@noble/hashes": "npm:^1.8.0"
+    "@scure/bip32": "npm:^1.7.0"
+    "@scure/bip39": "npm:^1.6.0"
+    abitype: "npm:^1.2.3"
+    eventemitter3: "npm:5.0.1"
+  peerDependencies:
+    typescript: ">=5.4.0"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/ac267c34e63c2e2e8b7a4e64f4a3635bb11ddaa58f8f7d4140dafbf921dc61379f3c27411d110fdb97a7b9c0b4c8cc420ea2336e055cae4ab351d4708fa0112e
+  languageName: node
+  linkType: hard
+
 "ox@npm:0.9.3":
   version: 0.9.3
   resolution: "ox@npm:0.9.3"
@@ -40152,9 +40173,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:9.2.0":
-  version: 9.2.0
-  resolution: "react-redux@npm:9.2.0"
+"react-redux@npm:9.3.0":
+  version: 9.3.0
+  resolution: "react-redux@npm:9.3.0"
   dependencies:
     "@types/use-sync-external-store": "npm:^0.0.6"
     use-sync-external-store: "npm:^1.4.0"
@@ -40167,7 +40188,7 @@ __metadata:
       optional: true
     redux:
       optional: true
-  checksum: 10/b3d2f89f469169475ab0a9f8914d54a336ac9bc6a31af6e8dcfe9901e6fe2cfd8c1a3f6ce7a2f7f3e0928a93fbab833b668804155715598b7f2ad89927d3ff50
+  checksum: 10/3384e98e382ddb2f2a8f35bc7145fabd60f2fb0ccd999df5587bd926de9590f52cd3a29c4a01fe191d710a9c8f9d7293efff8d5fc32debc84de25c911b70fc45
   languageName: node
   linkType: hard
 
