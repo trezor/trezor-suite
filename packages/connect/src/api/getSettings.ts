@@ -13,7 +13,7 @@ export default class GetSettings extends AbstractMethod<'getSettings'> {
         this.useUi = false;
     }
     get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'internal' }];
+        return [{ permission: 'management' }];
     }
 
     run() {
