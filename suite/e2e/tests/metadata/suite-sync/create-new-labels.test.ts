@@ -66,11 +66,6 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
                 .toHaveText(expectedAddress.label);
         });
 
-        await test.step('Close Suite Sync feedback notification', async () => {
-            await expect(metadataPage.suiteSyncNotification).toBeVisible();
-            await metadataPage.closeSuiteSyncNotificationButton.click();
-        });
-
         await test.step('Change output label', async () => {
             await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
             await metadataPage.output.changeLabel({
