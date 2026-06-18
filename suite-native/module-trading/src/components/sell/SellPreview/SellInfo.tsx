@@ -7,14 +7,14 @@ import {
     selectTradingProviderConfirmationStatus,
 } from '@suite-native/trading-state';
 
-import { FeePickerCard } from '../../fees/FeePickerCard';
+import { TradeInfo } from '../../fees/TradeInfo';
 
-export type SellFeePickerCardProps = {
+export type SellInfoProps = {
     quote?: SellFiatTrade;
     isTxnError: boolean;
 };
 
-export const SellFeePickerCard = ({ quote, isTxnError }: SellFeePickerCardProps) => {
+export const SellInfo = ({ quote, isTxnError }: SellInfoProps) => {
     const fromAccount = useSelector(selectSellSelectedSendAccount);
     const providerConfirmationStatus = useSelector(selectTradingProviderConfirmationStatus);
 
@@ -24,5 +24,5 @@ export const SellFeePickerCard = ({ quote, isTxnError }: SellFeePickerCardProps)
         return null;
     }
 
-    return <FeePickerCard trade={quote} accountKey={fromAccount.key} tradingType="sell" />;
+    return <TradeInfo trade={quote} accountKey={fromAccount.key} tradingType="sell" />;
 };
