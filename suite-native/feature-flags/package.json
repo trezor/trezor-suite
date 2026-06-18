@@ -16,6 +16,6 @@
         "@suite-native/config": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "react-native": "0.83.2",
-        "react-redux": "9.2.0"
+        "react-redux": "9.3.0"
     }
 }

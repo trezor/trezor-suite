@@ -22,7 +22,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.4",
-        "react-redux": "9.2.0",
+        "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "semver": "^7.7.1",
         "styled-components": "^6.3.9"

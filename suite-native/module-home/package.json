@@ -61,7 +61,7 @@
         "react-native-gesture-handler": "2.31.1",
         "react-native-reanimated": "~4.2.1",
         "react-native-svg": "15.15.3",
-        "react-redux": "9.2.0"
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*",
