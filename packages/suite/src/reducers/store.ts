@@ -45,6 +45,7 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
+import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
 import {
     createSuiteServicesCompositionRoot,
     extraDependencies,
@@ -128,7 +129,7 @@ type RootReducerShape = typeof rootReducer;
 export type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export type SuiteStoreDeps = HistoryDep & PlatformEncryptionDep;
+export type SuiteStoreDeps = HistoryDep & PlatformEncryptionDep & CreateConnectLoggerFactoryDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -157,6 +158,7 @@ export const initStore = (
             dispatch: api.dispatch,
             history: deps.history,
             platformEncryption: deps.platformEncryption,
+            createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
         }),
     });
 

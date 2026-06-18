@@ -60,7 +60,7 @@ import {
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
-import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
+import TrezorConnect, { type CreateLoggerDep, type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageActions';
@@ -90,7 +90,7 @@ export type StoreAPIDep = {
     dispatch: Dispatch;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep;
+export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep & CreateLoggerDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
@@ -165,6 +165,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         connectInitHooks,
+        createLogger: deps.createLogger,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
