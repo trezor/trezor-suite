@@ -21,25 +21,15 @@ describe('ExchangeEIP712Info', () => {
     it('should render the provider name for Fusion+', () => {
         const { getByText } = renderExchangeEIP712Info('1inchfusionplus');
 
-        expect(
-            getByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.eip712Info.title', {
-                    providerName: exchangeOneInchFusionPlus.companyName,
-                }),
-            ),
-        ).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
+        expect(getByText(exchangeOneInchFusionPlus.companyName)).toBeOnTheScreen();
     });
 
     it('should render the provider name for Fusion', () => {
         const { getByText } = renderExchangeEIP712Info('1inchfusion');
 
-        expect(
-            getByText(
-                getTranslation('moduleTrading.tradingExchangePreviewScreen.eip712Info.title', {
-                    providerName: exchangeOneInchFusion.companyName,
-                }),
-            ),
-        ).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
+        expect(getByText(exchangeOneInchFusion.companyName)).toBeOnTheScreen();
     });
 
     it('should render all three bullet points', () => {
