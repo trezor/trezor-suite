@@ -14991,6 +14991,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/sentry@workspace:suite/sentry"
   dependencies:
+    "@sentry/browser": "npm:10.53.1"
     "@sentry/core": "npm:10.53.1"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
