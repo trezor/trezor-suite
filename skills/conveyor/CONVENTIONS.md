@@ -97,11 +97,12 @@ line). Both are drained the same way on your next run.
   The human replies **in that thread**, on the diff, with no agent running.
 - **Pick up the human's directives.** A human can also start a thread to **tell you
   what to do**, anchored to a line. A human inline comment whose **first line starts
-  with `@conveyor`** (case-insensitive; a leading `conveyor:` is also accepted) is an
+  with `conveyor:`** (case-insensitive — e.g. `conveyor: drop this param`) is an
   **actionable instruction for you** — distinct from ordinary team-discussion comments,
-  which you **never** touch or resolve. You apply it on the next run (see Drain). If the
-  instruction is ambiguous, do **not** guess — reply on that same thread with your
-  clarifying question and leave it open.
+  which you **never** touch or resolve. Use a plain `conveyor:` prefix, **never**
+  `@conveyor` — `conveyor` is a real GitHub org, so an `@`-mention would ping it. You
+  apply it on the next run (see Drain). If the instruction is ambiguous, do **not**
+  guess — reply on that same thread with your clarifying question and leave it open.
 - **Drain on the next run.** Before doing other work on the PR, query its review
   **threads** with GraphQL — the thread node id you need to resolve is **not**
   derivable from a REST comment id:
@@ -120,9 +121,9 @@ line). Both are drained the same way on your next run.
     `author.login` that is not you and not Copilot) has replied with an actual
     **answer**; a reply that is itself a question is not an answer. Incorporate it.
   - **(b) a human directive** (first comment, by a non-bot human, starts with
-    `@conveyor` / `conveyor:`) — ready immediately; the instruction *is* the first
-    comment. Apply it; if it is ambiguous, reply with your clarifying question and
-    leave the thread open (do not guess).
+    `conveyor:`) — ready immediately; the instruction *is* the first comment. Apply it;
+    if it is ambiguous, reply with your clarifying question and leave the thread open
+    (do not guess).
 
   Ignore every other thread — ordinary team-discussion comments are not yours, never
   touch or resolve them. After acting on (a) or (b): reply `✅ applied — <what changed>`,

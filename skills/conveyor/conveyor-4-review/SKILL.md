@@ -91,7 +91,7 @@ the check is a single `headRefOid`-vs-SHA compare — fresh, skip with no work.
 answer checkboxes and/or leaving inline comments since the last run. **First drain the
 inline threads** (CONVENTIONS "Async clarifications & directives"): your own
 `conveyor:clarify` threads that now have a human answer, **and** any thread a human
-started with `@conveyor` (a directive) — apply each, reply `✅ applied — <what changed>`,
+started with `conveyor:` (a directive) — apply each, reply `✅ applied — <what changed>`,
 and resolve it. Then skip fresh lens work (unless the diff changed since the
 parked findings were written) and resolve from the ticked state exactly as in step 6's
 "Resolve from ticked boxes": apply each finding's chosen option, honour an

@@ -86,7 +86,7 @@ compare-and-swap). The **real lock is the branch on `origin`** plus
   CONVENTIONS "Async clarifications"). A one-line uncertainty deserves a one-line
   inline question, not a silent guess and not parking the whole feature. On a **drain
   run** (resuming an `impl:needs-human` PR), drain the inline threads first — your
-  answered `conveyor:clarify` threads **and** any `@conveyor` directives a human left —
+  answered `conveyor:clarify` threads **and** any `conveyor:` directives a human left —
   incorporate/apply and resolve them before continuing.
 - **Load project learnings** (`.github/conveyor-learnings.md`, see CONVENTIONS) for
   the issue's Affected areas before you start; when one shapes your approach,
@@ -239,7 +239,7 @@ Then:
   acts. **Resume path (drain):** the human ticks a box + the `✅ Done` box and/or
   replies to inline `conveyor:clarify` threads; re-run `conveyor-3-implement` on the
   PR. It **first drains the inline threads** (its answered `conveyor:clarify` threads
-  **and** any `@conveyor` directives a human left — apply each, reply `✅ applied`,
+  **and** any `conveyor:` directives a human left — apply each, reply `✅ applied`,
   resolve it — see CONVENTIONS "Async clarifications & directives"), then reads the
   ticked choice (exactly one = that option; none = the recommended one). It is
   **finished only when `✅ Done` is ticked AND every clarify thread is answered**; if
