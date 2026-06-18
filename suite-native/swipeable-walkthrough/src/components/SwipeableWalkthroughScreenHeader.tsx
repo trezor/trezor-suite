@@ -53,6 +53,7 @@ const SwipeableWalkthroughBackButton = ({
                 iconName="caretLeft"
                 intent="neutral"
                 priority="secondary"
+                size="medium"
                 onPress={onPressBack}
                 accessibilityRole="button"
                 accessibilityLabel="Go back"
