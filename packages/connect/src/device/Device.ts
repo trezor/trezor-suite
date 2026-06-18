@@ -668,14 +668,14 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             payload,
         );
         this._updateFeatures(message);
-        this._updateCurrentRelease(message);
+        await this._updateCurrentRelease(message);
         this.setState({ deriveCardano: payload?.derive_cardano });
     }
 
     async getFeatures() {
         const { message } = await this.getCurrentSession().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
-        this._updateCurrentRelease(message);
+        await this._updateCurrentRelease(message);
     }
 
     getAuthenticityChecks() {
@@ -788,14 +788,18 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 feat,
                 getFirmwareType(feat),
             );
-            // Here we update `currentRelease` in case of a release JSON that was bundled.
-            // In case it was not bundled it will be fetched after `_updateFeatures` by `_updateCurrentRelease`.
-            this._currentRelease = getReleaseAsset(
-                feat.internal_model,
-                newVersion,
-                getFirmwareType(feat),
-            );
-            this.availableTranslations = this._currentRelease?.translations ?? {};
+            // Bundled release JSONs are production assets, so only seed `currentRelease`
+            // from them on production-like channels. On other channels the
+            // channel-appropriate release is fetched from remote immediately after,
+            // by the awaited `_updateCurrentRelease`.
+            if (isProductionFirmwareChannel(settingsStore.get('firmwareChannel'))) {
+                this._currentRelease = getReleaseAsset(
+                    feat.internal_model,
+                    newVersion,
+                    getFirmwareType(feat),
+                );
+                this.availableTranslations = this._currentRelease?.translations ?? {};
+            }
         }
 
         this._features = feat;
