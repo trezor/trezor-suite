@@ -1,22 +1,18 @@
-import type { ExchangeTrade } from 'invity-api';
+import { useSelector } from 'react-redux';
 
-import { type SlippageFormValues } from '@suite-common/trading';
+import { type SlippageFormValues, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useFormatCryptoValue } from '@suite-native/trading-atoms';
-import type { MaxSlippageFormValues } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-type SlippageSummaryProps = {
-    quote: ExchangeTrade;
-};
-
-export const SlippageSummary = ({ quote }: SlippageSummaryProps) => {
+export const SlippageSummary = () => {
     const { watch, formState } = useFormContext<SlippageFormValues>();
     const formatCryptoValue = useFormatCryptoValue();
+    const { receive, receiveStringAmount, swapSlippage } =
+        useSelector(selectTradingExchangeSelectedQuote) ?? {};
 
-    const { receive, receiveStringAmount, swapSlippage } = quote;
     const slippageValue = watch('slippage');
 
     if (swapSlippage === undefined) {
@@ -30,7 +26,7 @@ export const SlippageSummary = ({ quote }: SlippageSummaryProps) => {
     const previewSlippage =
         !formState.errors.slippage && slippageValue !== ''
             ? BigNumber(slippageValue)
-            : BigNumber(quote.swapSlippage);
+            : BigNumber(swapSlippage);
 
     const receiveAmount = BigNumber(receiveStringAmount);
     const slippageDeduction = previewSlippage.dividedBy(100).multipliedBy(receiveAmount).negated();

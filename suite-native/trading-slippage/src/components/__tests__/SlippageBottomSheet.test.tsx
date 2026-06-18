@@ -1,21 +1,10 @@
-import { combineReducers } from '@reduxjs/toolkit';
-
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { getTranslation, localeReducer } from '@suite-native/intl';
+import { getTranslation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
-    type TestStore,
-    act,
-    createLightStore,
-    createStaticReducer,
-    userEvent,
-} from '@suite-native/test-utils-store';
-import { tradingSlice } from '@suite-native/trading-state';
+import { type TestStore, act, userEvent } from '@suite-native/test-utils-store';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
-import { renderWithSlippageTestProvider } from '../../__tests__/testUtils';
+import { createSlippageTestStore, renderWithSlippageTestProvider } from '../../__tests__/testUtils';
 import { SlippageBottomSheet } from '../SlippageBottomSheet';
 
 jest.mock('@suite-native/link', () => ({
@@ -28,18 +17,10 @@ const mockOpenLink = jest.fn();
 const mockOnClose = jest.fn();
 
 describe('SlippageBottomSheet', () => {
-    const reducer = {
-        locale: localeReducer,
-        wallet: combineReducers({
-            settings: createStaticReducer(initialWalletSettingsState),
-            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
-        }),
-    } as const;
-
     const renderSlippageBottomSheet = async (store: TestStore) => {
         const result = renderWithSlippageTestProvider(
             <SlippageBottomSheet isVisible={false} onClose={mockOnClose} />,
-            store,
+            { store },
         );
 
         await act(() => Promise.resolve());
@@ -53,7 +34,7 @@ describe('SlippageBottomSheet', () => {
     });
 
     it('should show default slippage value initially', async () => {
-        const store = createLightStore({ reducer });
+        const store = createSlippageTestStore();
         const { getByLabelText } = await renderSlippageBottomSheet(store);
 
         expect(
@@ -62,7 +43,7 @@ describe('SlippageBottomSheet', () => {
     });
 
     it('should show preset buttons', async () => {
-        const store = createLightStore({ reducer });
+        const store = createSlippageTestStore();
         const { getByText } = await renderSlippageBottomSheet(store);
 
         expect(getByText('0.1%')).toBeOnTheScreen();
@@ -72,7 +53,7 @@ describe('SlippageBottomSheet', () => {
     });
 
     it('should update input value when preset button is pressed', async () => {
-        const store = createLightStore({ reducer });
+        const store = createSlippageTestStore();
         const { getByLabelText, getByText } = await renderSlippageBottomSheet(store);
 
         await userEvent.press(getByText('3%'));
@@ -84,7 +65,7 @@ describe('SlippageBottomSheet', () => {
     });
 
     it('should dispatch setMaxSlippagePercentage and call onClose when confirm is pressed', async () => {
-        const store = createLightStore({ reducer });
+        const store = createSlippageTestStore();
         const { getByText } = await renderSlippageBottomSheet(store);
 
         await userEvent.press(getByText('3%'));
@@ -96,7 +77,7 @@ describe('SlippageBottomSheet', () => {
     });
 
     it('should not dispatch and call onClose when cancel is pressed', async () => {
-        const store = createLightStore({ reducer });
+        const store = createSlippageTestStore();
         const { getByText } = await renderSlippageBottomSheet(store);
 
         await userEvent.press(getByText('3%'));
@@ -108,7 +89,7 @@ describe('SlippageBottomSheet', () => {
     });
 
     it('should render confirm and cancel buttons', async () => {
-        const store = createLightStore({ reducer });
+        const store = createSlippageTestStore();
         const { getByText } = await renderSlippageBottomSheet(store);
 
         expect(getByText(getTranslation('generic.buttons.confirm'))).toBeOnTheScreen();
@@ -116,7 +97,7 @@ describe('SlippageBottomSheet', () => {
     });
 
     it('should open DEX slippage URL when learn more is pressed', async () => {
-        const store = createLightStore({ reducer });
+        const store = createSlippageTestStore();
         const { getByText } = await renderSlippageBottomSheet(store);
 
         await userEvent.press(getByText(getTranslation('generic.buttons.learnMore')));
