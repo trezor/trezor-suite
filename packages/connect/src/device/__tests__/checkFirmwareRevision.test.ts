@@ -1,5 +1,3 @@
-import { FetchError } from 'node-fetch';
-
 import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/src/types/device';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
@@ -101,11 +99,22 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
         {
             it: 'errors with a specific error message when the check cannot be performed because the revision is not found locally and the user is offline',
             httpRequestMock: () => {
-                throw new FetchError('You are offline!', 'network', {
-                    code: 'ENOTFOUND',
-                    name: 'FetchError',
-                    message: 'You are offline!',
+                // Native `fetch` throws `TypeError: fetch failed` with the underlying
+                // system error exposed on `cause`.
+                throw new TypeError('fetch failed', {
+                    cause: Object.assign(new Error('You are offline!'), { code: 'ENOTFOUND' }),
                 });
+            },
+            params: createDeviceParams({
+                expectedRevision: undefined, // firmware not known by local releases.json file
+            }),
+            expected: { success: false, error: 'cannot-perform-check-offline' },
+        },
+        {
+            it: 'errors with a specific error message when the check cannot be performed because the revision is not found locally and the browser is offline',
+            httpRequestMock: () => {
+                // Browser/Chromium `fetch` throws `TypeError: Failed to fetch` for offline failures.
+                throw new TypeError('Failed to fetch');
             },
             params: createDeviceParams({
                 expectedRevision: undefined, // firmware not known by local releases.json file

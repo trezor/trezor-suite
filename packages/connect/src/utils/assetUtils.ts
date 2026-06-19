@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 import { firmwareAssets } from '@trezor/connect-data';
 import connectDataCoinsEth from '@trezor/connect-data/files/coins-eth.json';
 import connectDataCoins from '@trezor/connect-data/files/coins.json';

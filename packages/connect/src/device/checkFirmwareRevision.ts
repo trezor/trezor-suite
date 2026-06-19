@@ -14,9 +14,50 @@ import { HttpRequestError } from '../utils/assetUtils';
 const isNotFoundError = (e: unknown): boolean =>
     e instanceof HttpRequestError && e.response.status === 404;
 
-const isNodeJSOfflineError = (e: Error) => ['FetchError', 'AbortError'].includes(e.name);
+// System error codes that signify a missing connection or unreachable host.
+const NODEJS_NETWORK_ERROR_CODES = [
+    'ENOTFOUND',
+    'ECONNREFUSED',
+    'ECONNRESET',
+    'EAI_AGAIN',
+    'ENETUNREACH',
+    'EHOSTUNREACH',
+    'ETIMEDOUT',
+];
+
+// Native `fetch` (undici) reports connectivity failures as `TypeError: fetch failed` and attaches
+// the underlying system error on the `cause` chain, so we walk it to find the error code.
+const getNodeJSErrorCode = (e: unknown): string | undefined => {
+    if (typeof e !== 'object' || e === null) {
+        return undefined;
+    }
+    if ('code' in e && typeof e.code === 'string') {
+        return e.code;
+    }
+    if ('cause' in e) {
+        return getNodeJSErrorCode(e.cause);
+    }
+
+    return undefined;
+};
+
+const isNodeJSOfflineError = (e: Error) => {
+    if (e instanceof TypeError && e.message.includes('fetch failed')) {
+        return true;
+    }
+
+    const code = getNodeJSErrorCode(e);
+
+    return code !== undefined && NODEJS_NETWORK_ERROR_CODES.includes(code);
+};
+
 const isReactNativeOfflineError = (e: Error) =>
     e.name === 'TypeError' && e.message.includes('Network request failed');
+
+// Browser/Chromium `fetch` throws `TypeError: Failed to fetch` when the request never completes.
+const isBrowserOfflineError = (e: Error) =>
+    e instanceof TypeError && e.message.includes('Failed to fetch');
+
 const isAbortControllerTimeout = (e: Error) =>
     e.message.includes('Aborted') ||
     e.name === 'AbortError' ||
@@ -24,15 +65,19 @@ const isAbortControllerTimeout = (e: Error) =>
 
 /**
  * Check if an error signifies a missing fetch response (meaning network connection loss or unavailable host).
- * This can only by correctly identified in nodeJS or React native runtimes (i.e. Suite Desktop main process, or Suite Mobile).
- * In browser runtime (Suite Web), all fetch errors are lumped together as CORS errors, therefore indistinguishable.
- * (even a request that had no response is CORS error, since a non-existent response does not have CORS headers).
+ * Each runtime surfaces this differently: nodeJS/undici as `fetch failed` (with a system error code on
+ * the `cause` chain), React native as `Network request failed`, and browser/Chromium as `Failed to fetch`.
  * Additionally, AbortController timeouts are also considered to be network issues.
  */
 const isOfflineError = (e: unknown): boolean => {
     if (!(e instanceof Error)) return false;
 
-    return isNodeJSOfflineError(e) || isReactNativeOfflineError(e) || isAbortControllerTimeout(e);
+    return (
+        isNodeJSOfflineError(e) ||
+        isReactNativeOfflineError(e) ||
+        isBrowserOfflineError(e) ||
+        isAbortControllerTimeout(e)
+    );
 };
 
 const failFirmwareRevisionCheck = (
