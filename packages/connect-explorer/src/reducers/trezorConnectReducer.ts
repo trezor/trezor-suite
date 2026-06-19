@@ -2,7 +2,6 @@ import type { ConnectOptions, MethodAction, TrezorConnectAction } from '../types
 import {
     ON_CHANGE_CONNECT_OPTION,
     ON_CHANGE_CONNECT_OPTIONS,
-    ON_HANDSHAKE_CONFIRMED,
     ON_INIT_ERROR,
 } from '../types/actions';
 import type { Field } from '../types/common';
@@ -11,14 +10,12 @@ type Action = MethodAction | TrezorConnectAction;
 
 export type ConnectState = {
     options?: ConnectOptions;
-    isHandshakeConfirmed: boolean;
     isInitSuccess: boolean;
     initError?: string;
 };
 
 const initialState: ConnectState = {
     options: undefined,
-    isHandshakeConfirmed: false,
     isInitSuccess: false,
     initError: undefined,
 };
@@ -53,11 +50,6 @@ export default function connect(state: ConnectState = initialState, action: Acti
                 initError: undefined,
                 isInitSuccess: true,
                 options: action.payload,
-            };
-        case ON_HANDSHAKE_CONFIRMED:
-            return {
-                ...state,
-                isHandshakeConfirmed: true,
             };
         case ON_INIT_ERROR:
             return {

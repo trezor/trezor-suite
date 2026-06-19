@@ -28,7 +28,6 @@ export const Settings = () => {
 
     const initError = useSelector(state => state.connect?.initError);
     const isInitSuccess = useSelector(state => state.connect?.isInitSuccess || false);
-    const isHandshakeConfirmed = useSelector(state => state.connect?.isHandshakeConfirmed || false);
     const actions = useActions({
         onSubmitInit: trezorConnectActions.onSubmitInit,
         onFieldChange: trezorConnectActions.onConnectOptionChange,
@@ -64,11 +63,6 @@ export const Settings = () => {
             {isInitSuccess && (
                 <ConfirmationMessage data-testid="@settings/init-success">
                     Init success!
-                </ConfirmationMessage>
-            )}
-            {isHandshakeConfirmed && (
-                <ConfirmationMessage data-testid="@settings/handshake-confirmed">
-                    Handshake confirmed!
                 </ConfirmationMessage>
             )}
         </SettingsContent>

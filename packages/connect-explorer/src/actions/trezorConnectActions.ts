@@ -1,13 +1,11 @@
-import { WEBEXTENSION } from '@trezor/connect-common/src/constants/webextension';
 import TrezorConnectMobile from '@trezor/connect-mobile';
-import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect-web';
+import TrezorConnect from '@trezor/connect-web';
 
 import type { Dispatch, Field, GetState } from '../types';
 import {
     type ConnectOptions,
     ON_CHANGE_CONNECT_OPTION,
     ON_CHANGE_CONNECT_OPTIONS,
-    ON_HANDSHAKE_CONFIRMED,
     ON_INIT_ERROR,
 } from '../types/actions';
 
@@ -25,23 +23,6 @@ export const init =
     (options: ConnectOptions = {}) =>
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
-
-        // The event `WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM` is coming from @trezor/connect-webextension/proxy
-        // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
-        // so Typescript cannot recognize it.
-        // @ts-expect-error
-        TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, (event: { type: string }) => {
-            if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
-                dispatch({ type: ON_HANDSHAKE_CONFIRMED });
-            }
-        });
-
-        TrezorConnect.on(DEVICE_EVENT, event => {
-            dispatch({
-                type: event.type,
-                device: event.payload,
-            });
-        });
 
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
