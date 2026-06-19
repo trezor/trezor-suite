@@ -18,7 +18,6 @@ export * from './formDraftUtils';
 export * from './getMyInputsFromTransaction';
 export * from './localizeNumberUtils';
 export * from './localizePercentage';
-export * from './networkUtils';
 export * from './reviewTransactionUtils';
 export * from './sendFormUtils';
 export * from './settingsUtils';
