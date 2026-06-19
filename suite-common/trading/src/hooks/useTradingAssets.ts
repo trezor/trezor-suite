@@ -316,5 +316,3 @@ export function useTradingAssets() {
 
     return { buildAssetOptions, createAssetOptionFromCryptoId, resolveAssetTokenOption };
 }
-
-export type UseTradingAssets = ReturnType<typeof useTradingAssets>;
