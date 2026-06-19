@@ -1,6 +1,7 @@
+import { base58 } from '@scure/base';
+
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
-import * as base58 from '../crypto/base58';
 import type { NetworkSymbol } from '../networkTypes';
 
 export const isAddressValid = (address: string, _symbol: NetworkSymbol): boolean => {

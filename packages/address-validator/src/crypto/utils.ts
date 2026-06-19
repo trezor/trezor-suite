@@ -1,4 +1,3 @@
-import { decode as base58Decode } from './base58';
 export { addressType } from '../addressType';
 
 export function numberToHex(number: number, sizeInBytes: number): string {
@@ -102,5 +101,3 @@ export function bigNumberToBuffer(bignumber: number | string, size?: number): Bu
 
     return Buffer.from(padding + hex, 'hex');
 }
-
-export const base58 = base58Decode;
