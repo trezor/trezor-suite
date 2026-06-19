@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    compareEarnByAmountDesc,
+    getFiatRateKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
@@ -54,29 +58,34 @@ export const useEarnDepositsCardData = ({
 
     const stakingRows = useMemo(
         () =>
-            stakingActiveItems.flatMap(item => {
-                if (item.accountKey === null || item.balance === null || item.balance === '0') {
-                    return [];
-                }
+            stakingActiveItems
+                .flatMap(item => {
+                    if (item.accountKey === null || item.balance === null || item.balance === '0') {
+                        return [];
+                    }
 
-                const fiatRateKey = getFiatRateKey(item.symbol, fiatCurrency);
-                const fiatRate = currentFiatRates?.[fiatRateKey]?.rate;
-                const fiatAmount = asBaseCurrencyAmount(
-                    new BigNumber(toFiatCurrency({ amount: item.balance, rate: fiatRate }) ?? '0'),
-                );
+                    const fiatRateKey = getFiatRateKey(item.symbol, fiatCurrency);
+                    const fiatRate = currentFiatRates?.[fiatRateKey]?.rate;
+                    const fiatAmount = asBaseCurrencyAmount(
+                        new BigNumber(
+                            toFiatCurrency({ amount: item.balance, rate: fiatRate }) ?? '0',
+                        ),
+                    );
 
-                return [
-                    {
-                        id: item.id,
-                        type: 'staking',
-                        title: item.accountLabel ?? getNetworkDisplaySymbolName(item.symbol),
-                        symbol: item.symbol,
-                        accountKey: item.accountKey,
-                        balance: item.balance,
-                        fiatAmount,
-                    } satisfies EarnDepositsCardActiveItem,
-                ];
-            }),
+                    return [
+                        {
+                            id: item.id,
+                            type: 'staking',
+                            title: item.accountLabel ?? getNetworkDisplaySymbolName(item.symbol),
+                            symbol: item.symbol,
+                            accountKey: item.accountKey,
+                            balance: item.balance,
+                            fiatAmount,
+                        } satisfies EarnDepositsCardActiveItem,
+                    ];
+                })
+                // Active positions are ordered by fiat value, highest first (matches desktop).
+                .sort(compareEarnByAmountDesc(row => row.fiatAmount)),
         [currentFiatRates, fiatCurrency, stakingActiveItems],
     );
 

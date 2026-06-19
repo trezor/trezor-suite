@@ -8,17 +8,17 @@ import {
     selectDeviceSupportedNetworks,
 } from '@suite-common/wallet-core';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
-import { getApyPercent } from '@suite-common/wallet-utils';
+import {
+    compareEarnByAmountDesc,
+    compareEarnByApyDesc,
+    compareEarnByNetwork,
+    compareEarnByNetworkTokenOrder,
+    getApyPercent,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-import {
-    compareYieldRowsByAvailableBalanceDesc,
-    compareYieldRowsByDepositedAmountDesc,
-    compareYieldRowsByNetworkOnly,
-    compareYieldRowsByTokenNetworkOrder,
-} from '../../utils/earnYieldUtils';
 import {
     type YieldAccountOpportunity,
     type YieldInactiveVaultOpportunity,
@@ -99,6 +99,19 @@ const getYieldOpportunityData = ({
     };
 };
 
+const getAvailableBalanceForSorting = (opportunity: YieldAccountOpportunity) =>
+    opportunity.matchedInputToken
+        ? opportunity.additionalDepositAmount
+        : (opportunity.account?.formattedBalance ?? '0');
+
+const toNetworkTokenSortKey = (opportunity: YieldAccountOpportunity) =>
+    opportunity.account && {
+        symbol: opportunity.account.symbol,
+        tokenSymbol: opportunity.depositedSymbol,
+        accountType: opportunity.account.accountType,
+        index: opportunity.account.index,
+    };
+
 type UseYieldTableDataProps = {
     availableVaults: YieldDto[];
     visibleAccounts: Account[];
@@ -161,12 +174,14 @@ export const useYieldTableData = ({
 
         return [
             ...activeOpportunities
-                .toSorted(compareYieldRowsByDepositedAmountDesc)
-                .toSorted(compareYieldRowsByNetworkOnly),
+                .toSorted(compareEarnByAmountDesc(opportunity => opportunity.depositedAmount))
+                .toSorted(compareEarnByNetwork(opportunity => opportunity.account?.symbol)),
             ...depositableOpportunities
-                .toSorted(compareYieldRowsByAvailableBalanceDesc)
-                .toSorted(compareYieldRowsByTokenNetworkOrder),
-            ...noBalanceOpportunities.toSorted(compareYieldRowsByTokenNetworkOrder),
+                .toSorted(compareEarnByAmountDesc(getAvailableBalanceForSorting))
+                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey)),
+            ...noBalanceOpportunities.toSorted(
+                compareEarnByNetworkTokenOrder(toNetworkTokenSortKey),
+            ),
         ];
     }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
 
@@ -196,7 +211,9 @@ export const useYieldTableData = ({
             ];
         });
 
-        return opportunities;
+        return opportunities.toSorted(
+            compareEarnByApyDesc(opportunity => opportunity.apyPercentage),
+        );
     }, [availableVaults, deviceSupportedNetworkSymbols, visibleAccountSymbols]);
 
     const isYieldActive = useMemo(

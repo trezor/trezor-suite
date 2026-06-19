@@ -3,8 +3,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
+    compareEarnByAmountDesc,
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
+    isStakingSymbol,
     sortByCoin,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -31,42 +33,21 @@ export const useStakingAccountsVisibility = ({
         setIsExpanded(prev => !prev);
     }, []);
 
-    const sortAccountsByStakedAmount = useCallback(
-        (a: Account, b: Account) => {
-            const getAccountStakedAmountInFiat = (account: Account) => {
-                const stakedAmountInCrypto = getAccountTotalStakingBalance(account) ?? '0';
-                const fiatCurrency = toFiatCurrency({
-                    amount: stakedAmountInCrypto,
-                    rate: currentRates[account.symbol as StakingNetworkSymbol],
-                });
-
-                return new BigNumber(fiatCurrency ?? '0');
-            };
-
-            const aStakedAmount = getAccountStakedAmountInFiat(a);
-            const bStakedAmount = getAccountStakedAmountInFiat(b);
-
-            return bStakedAmount.minus(aStakedAmount).toNumber();
-        },
+    const getAccountStakedAmountInFiat = useCallback(
+        (account: Account) =>
+            toFiatCurrency({
+                amount: getAccountTotalStakingBalance(account) ?? '0',
+                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+            }) ?? '0',
         [currentRates],
     );
 
-    const sortAccountsByBalance = useCallback(
-        (a: Account, b: Account) => {
-            const getAccountBalanceInFiat = (account: Account) => {
-                const fiatCurrency = toFiatCurrency({
-                    amount: account.formattedBalance,
-                    rate: currentRates[account.symbol as StakingNetworkSymbol],
-                });
-
-                return new BigNumber(fiatCurrency ?? '0');
-            };
-
-            const aAccountBalance = getAccountBalanceInFiat(a);
-            const bAccountBalance = getAccountBalanceInFiat(b);
-
-            return bAccountBalance.minus(aAccountBalance).toNumber();
-        },
+    const getAccountBalanceInFiat = useCallback(
+        (account: Account) =>
+            toFiatCurrency({
+                amount: account.formattedBalance,
+                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+            }) ?? '0',
         [currentRates],
     );
 
@@ -95,14 +76,16 @@ export const useStakingAccountsVisibility = ({
 
     const alwaysVisibleAccounts = useMemo(
         () => [
-            ...accountsStakingActive.toSorted(sortAccountsByStakedAmount),
-            ...accountsSufficientFunds.toSorted(sortAccountsByBalance),
+            ...accountsStakingActive.toSorted(
+                compareEarnByAmountDesc(getAccountStakedAmountInFiat),
+            ),
+            ...accountsSufficientFunds.toSorted(compareEarnByAmountDesc(getAccountBalanceInFiat)),
         ],
         [
             accountsStakingActive,
             accountsSufficientFunds,
-            sortAccountsByStakedAmount,
-            sortAccountsByBalance,
+            getAccountStakedAmountInFiat,
+            getAccountBalanceInFiat,
         ],
     );
 
@@ -117,7 +100,7 @@ export const useStakingAccountsVisibility = ({
 
         if (!hasEthBaseAccount && !ethNotActivated) {
             const account = sortedInsufficientFundsAccounts.find(
-                account => account.symbol === 'eth',
+                insufficientAccount => insufficientAccount.symbol === 'eth',
             );
 
             if (account) additionalAccounts.push(account);
@@ -125,7 +108,7 @@ export const useStakingAccountsVisibility = ({
 
         if (!hasSolBaseAccount && !solNotActivated) {
             const account = sortedInsufficientFundsAccounts.find(
-                account => account.symbol === 'sol',
+                insufficientAccount => insufficientAccount.symbol === 'sol',
             );
 
             if (account) additionalAccounts.push(account);
@@ -133,7 +116,7 @@ export const useStakingAccountsVisibility = ({
 
         if (!hasAdaBaseAccount && !adaNotActivated) {
             const account = sortedInsufficientFundsAccounts.find(
-                account => account.symbol === 'ada',
+                insufficientAccount => insufficientAccount.symbol === 'ada',
             );
 
             if (account) additionalAccounts.push(account);
