@@ -15,11 +15,15 @@ import {
 
 export const getPaymentRequestOutputs = createThunk<
     PaymentRequestOutput[],
-    { network: Network; composedLevels: GeneralPrecomposedTransactionFinal },
+    {
+        network: Network;
+        composedLevels: GeneralPrecomposedTransactionFinal;
+        destinationTag?: string;
+    },
     { rejectValue: TradingSendRejectedProps }
 >(
     `${TRADING_THUNK_PREFIX}/getPaymentRequestOutputs`,
-    async ({ network, composedLevels }, { rejectWithValue, fulfillWithValue }) => {
+    async ({ network, composedLevels, destinationTag }, { rejectWithValue, fulfillWithValue }) => {
         const outputs: PaymentRequestOutput[] = [];
 
         for (const output of composedLevels.outputs) {
@@ -52,7 +56,11 @@ export const getPaymentRequestOutputs = createThunk<
 
                 outputs.push({
                     amount,
-                    address: formatSlip24AddressByNetwork({ address: sendAddress, network }),
+                    address: formatSlip24AddressByNetwork({
+                        address: sendAddress,
+                        network,
+                        destinationTag,
+                    }),
                 });
             }
 

@@ -262,6 +262,7 @@ export const recomposeAndSignTxThunk = createThunk<
                       account,
                       composedLevels: precomposedToSign,
                       formattedMaxAmount,
+                      destinationTag,
                   }),
               ).unwrap()
             : [];

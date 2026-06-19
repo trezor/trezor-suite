@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../address" },
         { "path": "../device" },
         { "path": "../geolocation" },
         { "path": "../react-query" },

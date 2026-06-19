@@ -1,6 +1,9 @@
 import { type CryptoId, type ExchangeProviderInfo, type SellProviderInfo } from 'invity-api';
 
+import { type Network } from '@suite-common/wallet-config';
+
 import {
+    formatSlip24AddressByNetwork,
     tradingExchangeCreatePaymentRequest,
     tradingSellCreatePaymentRequest,
 } from '../signatureUtils';
@@ -25,6 +28,61 @@ jest.mock('../../../utils', () => ({
 }));
 
 describe('signatureUtils', () => {
+    describe('formatSlip24AddressByNetwork', () => {
+        const createNetwork = (networkType: Network['networkType']) =>
+            ({
+                networkType,
+            }) as Network;
+
+        it('checksums ethereum addresses', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: '0x52908400098527886e0f7030069857d2e4169ee7',
+                    network: createNetwork('ethereum'),
+                }),
+            ).toBe('0x52908400098527886E0F7030069857D2E4169EE7');
+        });
+
+        it('appends canonical ripple destination tags', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '0007',
+                }),
+            ).toBe('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh?dt=7');
+        });
+
+        it('treats ripple destination tag zero as absent', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '0',
+                }),
+            ).toBe('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh');
+        });
+
+        it('rejects invalid ripple destination tags', () => {
+            expect(() =>
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '1e3',
+                }),
+            ).toThrow('Invalid Ripple destination tag: 1e3');
+        });
+
+        it('returns other network addresses unchanged', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+                    network: createNetwork('bitcoin'),
+                }),
+            ).toBe('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh');
+        });
+    });
+
     describe('tradingExchangeCreatePaymentRequest', () => {
         const mockTrade = {
             send: 'bitcoin' as CryptoId,
