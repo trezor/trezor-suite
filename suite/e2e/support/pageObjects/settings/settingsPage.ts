@@ -96,6 +96,7 @@ export class SettingsPage {
     readonly settingsLoader: Locator;
     readonly experimentalFeaturesSwitch: Locator;
     readonly resetAppButton: Locator;
+    readonly autoEjectWalletSwitch: Locator;
 
     constructor(
         private readonly page: Page,
@@ -148,6 +149,7 @@ export class SettingsPage {
             '@settings/experimental-features/toggle-switch',
         );
         this.resetAppButton = this.page.getByTestId('@settings/reset-app-button');
+        this.autoEjectWalletSwitch = this.page.getByTestId('@settings/auto-eject-switch');
     }
 
     @step()

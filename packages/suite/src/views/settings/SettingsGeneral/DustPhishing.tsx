@@ -83,7 +83,7 @@ export const DustPhishing = () => {
                             <Switch
                                 isChecked={dustPhishingIsEnabled}
                                 onChange={onSwitchChange}
-                                data-testid="@settings/auto-eject-switch"
+                                data-testid="@settings/dust-phishing-switch"
                             />
                         </ActionColumn>
                     </SectionItem>
