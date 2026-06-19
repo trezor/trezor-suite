@@ -287,10 +287,34 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
     ]);
 };
 
-export const saveAccounts = (accounts: SuccessfulAccount[]) => {
+// The 'accounts' store keys records by these fields (its IndexedDB keyPath). `satisfies` ensures
+// they stay valid account fields, so a rename/typo is a compile error here rather than at runtime.
+const ACCOUNT_KEY_PATH_FIELDS = [
+    'descriptor',
+    'symbol',
+    'deviceState',
+] as const satisfies readonly (keyof SuccessfulAccount)[];
+
+export const saveAccounts = async (accounts: SuccessfulAccount[]) => {
     if (!db.isAccessible()) return;
 
-    return db.addItems('accounts', accounts, true);
+    try {
+        return await db.addItems('accounts', accounts, true);
+    } catch (error) {
+        // IndexedDB throws an opaque "Evaluating the object store's key path did not yield a value"
+        // DataError when a keyPath field is missing. Report only WHICH key fields are missing - never
+        // their values (descriptor / deviceState etc. are sensitive and must not reach Sentry/logs).
+        const missingKeyPathFields = ACCOUNT_KEY_PATH_FIELDS.filter(field =>
+            accounts.some(account => !account[field]),
+        );
+
+        throw new Error(
+            missingKeyPathFields.length
+                ? `Cannot save account(s) to storage, missing keyPath field(s): ${missingKeyPathFields.join(', ')}`
+                : `Cannot save account(s) to storage: ${error?.message ?? ''}`,
+            { cause: error },
+        );
+    }
 };
 
 export const saveTradingTrade = (trade: TradingTransaction) => {
