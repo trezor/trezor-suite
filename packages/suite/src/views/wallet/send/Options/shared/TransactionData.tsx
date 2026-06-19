@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { isHexValid } from '@suite-common/wallet-utils';
-import { Card, Column, H4, IconButton, Row, Textarea } from '@trezor/components';
+import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -70,9 +70,12 @@ export const TransactionData = ({ maxBytes, close }: TransactionDataProps) => {
         <Card>
             <Column gap={12}>
                 <Row justifyContent="space-between">
-                    <H4 typographyStyle="body-md">
-                        <Translation id="DATA" />
-                    </H4>
+                    <Tooltip hasIcon content={<Translation id="DATA_ADD_TOOLTIP" />}>
+                        <H4 typographyStyle="body-md">
+                            <Translation id="DATA" />
+                        </H4>
+                    </Tooltip>
+
                     <IconButton
                         intent="neutral"
                         priority="secondary"
