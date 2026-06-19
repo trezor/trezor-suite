@@ -1,6 +1,6 @@
 import { type AccountType, networkSymbolCollection, networks } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 type YieldRowWithAvailableBalance = {
     additionalDepositAmount: string;
@@ -69,7 +69,11 @@ export const compareYieldRowsByTokenNetworkOrder = (
     }
 
     const network = networks[a.account.symbol];
-    const orderedAccountTypes = Object.keys(network.accountTypes) as AccountType[];
+    // `network` is a union over all networks (some declare `accountTypes: {}`), which would collapse
+    // `keyof` to `never`; widening to the field's declared keyset yields `AccountType[]` soundly.
+    const orderedAccountTypes = typedObjectKeys(
+        network.accountTypes as Partial<Record<AccountType, unknown>>,
+    );
     const aAccountTypeIndex = orderedAccountTypes.indexOf(a.account.accountType);
     const bAccountTypeIndex = orderedAccountTypes.indexOf(b.account.accountType);
     if (aAccountTypeIndex !== bAccountTypeIndex) return aAccountTypeIndex - bAccountTypeIndex;

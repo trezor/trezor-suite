@@ -1,4 +1,5 @@
 import { createIpcProxy } from '@trezor/ipc-proxy';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { bluetoothIpc } from './client/bluetooth-ipc-renderer';
 import { type BluetoothIpcApi } from './client/types';
@@ -20,7 +21,7 @@ const proxyState = () => {
 
 // create ipcProxy and wrap each bluetoothIpc method
 const getProxy = proxyState();
-(Object.keys(bluetoothIpc) as (keyof BluetoothIpcApi)[]).forEach(key => {
+typedObjectKeys(bluetoothIpc).forEach(key => {
     (bluetoothIpc[key] as unknown) = (...args: any[]) =>
         getProxy().then(p => (p[key] as any)(...args));
 });
