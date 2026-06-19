@@ -6,7 +6,7 @@ import {
 } from 'invity-api';
 
 import type { Network } from '@suite-common/wallet-config';
-import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import { asAmountUnit, toChecksumAddress, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type PROTO } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
@@ -29,6 +29,22 @@ export const formatSlip24SendAmountByNetwork = ({
         bytesLength,
     });
 };
+
+/**
+ * Normalizes an output address to the exact string the firmware hashes into the
+ * SLIP-24 outputs digest. For EVM chains the firmware re-derives the recipient as
+ * an EIP-55 checksummed address (`address_from_bytes`), so the address signed by
+ * the trade API must be checksummed too, otherwise the device rejects the payment
+ * request with "Invalid signature in payment request". Non-EVM addresses are
+ * canonical already and pass through unchanged.
+ */
+export const formatSlip24AddressByNetwork = ({
+    address,
+    network,
+}: {
+    address: string;
+    network: Network;
+}): string => (network.networkType === 'ethereum' ? toChecksumAddress(address) : address);
 
 type TradingExchangeCreatePaymentRequestProps = {
     trade: ExchangeTradeSigned;
