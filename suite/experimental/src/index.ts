@@ -12,7 +12,8 @@ export type ExperimentalFeature =
     | 'slip24'
     | 'experimental-networks'
     | 'mcp-server'
-    | 'gap-limit';
+    | 'gap-limit'
+    | 'dapp-browser';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
@@ -26,6 +27,7 @@ export const experimentalFeatureSet: ReadonlySet<ExperimentalFeature> =
         'nft-section',
         'slip24',
         'experimental-networks',
+        'dapp-browser',
     ]);
 
 /**
@@ -40,6 +42,7 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     slip24: 'TR_EXPERIMENTAL_SLIP24',
     'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',
+    'dapp-browser': 'TR_EXPERIMENTAL_DAPP_BROWSER',
 };
 
 export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';
