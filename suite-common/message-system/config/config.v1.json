@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-06-18T00:00:00+00:00",
-    "sequence": 144,
+    "timestamp": "2026-06-19T00:00:00+00:00",
+    "sequence": 145,
     "actions": [
         {
             "conditions": [
@@ -1160,18 +1160,18 @@
                 "variant": "info",
                 "category": "context",
                 "content": {
-                    "en": "Minimum amount to stake has changed to 1 SOL.",
-                    "es": "La cantidad mínima para hacer staking ha cambiado a 1 SOL.",
-                    "cs": "Minimální částka pro staking je nyní 1 SOL.",
-                    "ru": "Минимальная сумма для стейкинга изменилась на 1 SOL.",
-                    "ja": "ステーキングの最小額が1 SOLに変更されました",
-                    "hu": "A stakeléshez szükséges minimális összeg 1 SOL-ra változott.",
-                    "it": "L'importo minimo per lo staking è passato a 1 SOL.",
-                    "fr": "Le montant minimum pour le staking est passé à 1 SOL.",
-                    "de": "Der Mindestbetrag für das Staking hat sich auf 1 SOL geändert.",
-                    "tr": "Stake etmek için minimum miktar 1 SOL olarak değişti.",
-                    "pt": "O valor mínimo para staking mudou para 1 SOL.",
-                    "uk": "Мінімальна сума для стейкінгу змінилася на 1 SOL."
+                    "en": "The minimum amount you can stake is 1 SOL.",
+                    "es": "La cantidad mínima que puede poner en staking es 1 SOL.",
+                    "cs": "Minimální částka pro staking je 1 SOL.",
+                    "ru": "Минимальная сумма, которую вы можете отправить в стейкинг, составляет 1 SOL.",
+                    "ja": "ステーキングできる最小額は1 SOLです。",
+                    "hu": "A legkisebb összeg, amit stakelhet, az 1 SOL.",
+                    "it": "L'importo minimo che puoi mettere in staking è 1 SOL.",
+                    "fr": "Le montant minimum que vous pouvez mettre en staking est de 1 SOL.",
+                    "de": "Der Mindestbetrag, den Sie staken können, beträgt 1 SOL.",
+                    "tr": "Stake edebileceğiniz minimum miktar 1 SOL'dur.",
+                    "pt": "O valor mínimo que você pode colocar em staking é 1 SOL.",
+                    "uk": "Мінімальна сума, яку ви можете відправити у стейкінг, становить 1 SOL."
                 },
                 "context": {
                     "domain": "accounts.sol.staking"
