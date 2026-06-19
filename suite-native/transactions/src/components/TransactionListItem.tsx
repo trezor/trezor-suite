@@ -26,7 +26,7 @@ import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
-import { getTransactionValueSign, groupTargetOutputs } from '../utils';
+import { getTransactionValueSign, groupTargetOutputs, isTokenTransferTransaction } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 import { TransactionTarget } from './TransactionTarget';
@@ -130,14 +130,31 @@ export const TransactionListItem = ({
     const includedCoinsCount = transaction.tokens.length;
 
     const firstToken = transaction.tokens[0];
-    const isTokenOnlyTransaction = transaction.amount === '0' && firstToken !== undefined;
 
     const allOutputs = useMemo(
         () => (account !== null ? groupTargetOutputs(createTargets({ transaction, account })) : []),
         [transaction, account],
     );
 
-    if (isTokenOnlyTransaction)
+    const stakeOperationType = getTxStakeType(transaction);
+
+    // Self transactions move no net value (only a network fee is paid), so we show an empty amount
+    // instead of the redundant dust/change output. Staking self-transactions keep their amount.
+    if (transaction.type === 'self' && !stakeOperationType)
+        return (
+            <TransactionListItemContainer
+                transaction={transaction}
+                transactionType={transaction.type}
+                accountKey={accountKey}
+                includedCoinsCount={includedCoinsCount}
+                isFirst={isFirst}
+                isLast={isLast}
+            >
+                <EmptyAmountText />
+            </TransactionListItemContainer>
+        );
+
+    if (firstToken !== undefined && isTokenTransferTransaction(transaction))
         return (
             <TokenTransferListItem
                 transaction={transaction}
@@ -148,8 +165,6 @@ export const TransactionListItem = ({
                 isLast={isLast}
             />
         );
-
-    const stakeOperationType = getTxStakeType(transaction);
 
     return (
         <TransactionListItemContainer
