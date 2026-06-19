@@ -114,56 +114,7 @@ env:
                 retryTapIfNoChange: true
             - waitForAnimationToEnd
 
-# --- Warm reload: measure graph + fiat-rate render from persisted state ---
-# Back to Home. AccountDetail hides the bottom tab bar, so pop back to Accounts
-# first, then switch to the Home tab (the auto-eject/view-only prompt fires via a
-# Home focus effect). Token accounts (e.g. ETH) have an extra AccountAssets level,
-# so pop that too when present.
-- pressKey: "back"
-- waitForAnimationToEnd
-- runFlow:
-    when:
-      visible:
-        id: "@screen/AccountAssets"
-    commands:
-      - pressKey: "back"
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: "@screen/Accounts"
-    timeout: 15000
-- tapOn:
-    id: "@tabBar/HomeStack"
-    retryTapIfNoChange: true
-- extendedWaitUntil:
-    visible:
-      id: "@screen/Home"
-    timeout: 30000
-
-# Disconnect the device. View-only is on by default, so balances stay visible; the
-# auto-eject prompt appears — keep balances by pressing the primary button
-# (secondary would enable auto-eject and drop the wallet).
-- runScript: ../onboard-and-connect/teardownDevice.js
-- extendedWaitUntil:
-    visible:
-      id: "@home/alert/view-only"
-    timeout: 30000
-- tapOn:
-    id: "@alert-sheet/primary-button"
-    retryTapIfNoChange: true
-
-# Restart WITHOUT clearing state — the app loads persisted accounts (and, once
-# implemented, persisted fiat rates). No device is connected, so there is no
-# re-discovery: the reload time is essentially graph + fiat-rate rendering.
-# stopApp: true (Maestro's default, made explicit) force-stops the running process
-# first, so this is a genuine cold process restart, not just a foreground.
-- launchApp:
-    clearState: false
-    stopApp: true
-
-# Measured endpoint: the fiat balance is fully rendered (the loading Skeleton has
-# been replaced by the real @home/portfolio/fiat-balance-header amount).
-- extendedWaitUntil:
-    visible:
-      id: "@home/portfolio/fiat-balance-header"
-    timeout: 120000
+# Measured endpoint: the whole passphrase flow up to the scrolled transaction list.
+# Persisting the wallet for the warm-reload measurement (back to Home, disconnect,
+# keep view-only) lives in _persist.yaml — kept OUT of this flow so the measured
+# scenario contains no app restart/disconnect (which crash Flashlight's profiler).

@@ -50,12 +50,18 @@ const routes: Record<string, Handler> = {
         }),
     '/setup-emu': body =>
         TrezorUserEnvLink.setupEmu({
-            label: body.label,
+            // label must be set — user-env throws KeyError('label') without it.
+            label: body.label ?? 'Safe 5 - Tester',
             // accepts a raw mnemonic or a MNEMONICS key; setupEmu resolves keys itself
             mnemonic: body.mnemonic ?? MNEMONICS.mnemonic_immune,
             passphrase_protection: body.passphrase_protection ?? false,
         }),
     '/start-bridge': async body => {
+        // Guarantee a single clean bridge: boot-time auto-starts and extra dashboard/noVNC
+        // WS clients can leave duplicate node-bridge processes fighting over 21328, which
+        // makes /enumerate hang or return []. Stop any existing bridge, then start one.
+        await TrezorUserEnvLink.stopBridge();
+        await new Promise(resolve => setTimeout(resolve, 1000));
         await TrezorUserEnvLink.startBridge(body.version ?? 'node-bridge');
         await waitForBridgeReady();
         await waitForDeviceEnumerated();
