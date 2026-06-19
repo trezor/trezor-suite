@@ -296,6 +296,11 @@ const bitcoinIsAddressValidCases: BitcoinIsAddressValidCase[] = [
         expected: true,
     },
     {
+        address: 'ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc',
+        symbol: 'ltc',
+        expected: true,
+    },
+    {
         address: 'DPpJVPpvPNP6i6tMj4rTycAGh8wReTqaSU',
         symbol: 'doge',
         expected: true,
@@ -772,6 +777,11 @@ const bitcoinAddressTypeCases: BitcoinAddressTypeCase[] = [
         address: 'ltc1qajkrze8gc5qdx2ehldsmd596a2gprnn50a53mj3xxvy0zgtdq6gqumv03a',
         symbol: 'ltc',
         expectedAddressType: addressType.P2WSH,
+    },
+    {
+        address: 'ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc',
+        symbol: 'ltc',
+        expectedAddressType: addressType.P2WPKH,
     },
     {
         address: 'DMqRVLrhbam3Kcfddpxd6EYvEBbpi3bEpP',

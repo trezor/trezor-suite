@@ -1,8 +1,8 @@
 import { sha256 } from '@noble/hashes/sha2.js';
+import { base58 } from '@scure/base';
 
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
-import * as cryptoUtils from '../crypto/utils';
 import type { NetworkSymbol } from '../networkTypes';
 
 const TRON_ADDRESS_TYPE = 0x41;
@@ -17,7 +17,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
 
     let address: number[];
     try {
-        address = cryptoUtils.base58(base58Sting);
+        address = Array.from(base58.decode(base58Sting));
     } catch {
         return false;
     }
