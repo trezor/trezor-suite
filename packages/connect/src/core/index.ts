@@ -456,7 +456,6 @@ const onDeviceButtonHandler =
     (device: Device, context: CoreContext, method?: AbstractMethod<any>) =>
     ({ payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
-        const addressRequest = request.code === 'ButtonRequest_Address';
         const data =
             typeof method?.getButtonRequestData === 'function' && request.code
                 ? method?.getButtonRequestData(request.code, request.name)
@@ -472,9 +471,6 @@ const onDeviceButtonHandler =
                 data,
             }),
         );
-        if (addressRequest && !method?.useUi) {
-            sendCoreMessage(createUiMessage(UI_REQUEST.ADDRESS_VALIDATION, data));
-        }
     };
 
 const onDevicePinHandler =

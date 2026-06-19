@@ -52,7 +52,6 @@ export const UI_REQUEST = {
     REQUEST_WORD: 'ui-request_word',
 
     BUNDLE_PROGRESS: 'ui-bundle_progress',
-    ADDRESS_VALIDATION: 'ui-address_validation',
     REQUEST_DISCOVERY_ACCOUNTS: 'ui-request_discovery_accounts',
 } as const;
 
@@ -141,11 +140,6 @@ export interface UiRequestButton {
     payload: DeviceButtonRequest['payload'] & {
         data?: UiRequestButtonData;
     };
-}
-
-export interface UiRequestAddressValidation {
-    type: typeof UI_REQUEST.ADDRESS_VALIDATION;
-    payload: UiRequestButtonData | undefined;
 }
 
 export interface UiRequestConfirmation {
@@ -310,7 +304,6 @@ export type UiEvent =
     | FirmwareException
     | FirmwareReconnect
     | FirmwareDisconnect
-    | UiRequestAddressValidation
     | UiRequestFirmwareDownloaded
     | UiRequestDiscoveryAccounts;
 
