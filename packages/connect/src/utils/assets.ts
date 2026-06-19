@@ -1,12 +1,7 @@
-import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 
 import { httpRequest as browserHttpRequest, tryLocalAssetRequire } from './assetUtils';
 import type { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
-
-if (global && typeof global.fetch !== 'function') {
-    global.fetch = fetch;
-}
 
 /**
  * Http request wrapper for Suite Web & Desktop, that first tries to read files locally (unless forced to skip),

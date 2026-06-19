@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 import { MessagesSchema, protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';

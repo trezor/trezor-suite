@@ -104,7 +104,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "cross-fetch": "^4.1.0",
         "jws": "^4.0.1",
         "viem": "^2.48.1"
     },

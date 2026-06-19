@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 import type { EthereumNetworkInfoDefinitionValues } from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { protobufManager } from '@trezor/protobuf';

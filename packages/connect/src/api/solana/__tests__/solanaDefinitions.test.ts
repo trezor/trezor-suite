@@ -1,14 +1,15 @@
-import fetch from 'cross-fetch';
-
 import { loadProtobufModules } from '../../../data/protobufLoader';
 import { decodeSolanaTokenDefinition, getSolanaTokenDefinition } from '../solanaDefinitions';
 
-jest.mock('cross-fetch');
-
-const mockedFetch = fetch as jest.MockedFunction<typeof fetch>;
+const mockedFetch = jest.fn();
+global.fetch = mockedFetch as unknown as typeof fetch;
 
 describe('getSolanaTokenDefinition', () => {
     const mintAddress = 'fakeMintAddress';
+
+    beforeEach(() => {
+        mockedFetch.mockReset();
+    });
 
     it('should return ArrayBuffer when fetch is successful', async () => {
         const mockArrayBuffer = new ArrayBuffer(10);
