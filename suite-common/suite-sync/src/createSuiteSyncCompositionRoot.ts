@@ -74,10 +74,6 @@ export type SuiteSyncAnalyticsDep = {
 
 type SubscribeSuiteSyncInternalErrorHandler = (errorHandler: SuiteSyncInternalErrorHandler) => void;
 
-export type SubscribeSuiteSyncInternalErrorHandlerDep = {
-    subscribeError: SubscribeSuiteSyncInternalErrorHandler;
-};
-
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => WithSuiteSyncAndDeviceState &
         WithSuiteSyncQuotaManagerState &
