@@ -8,7 +8,7 @@ import {
     address,
     appendTransactionMessageInstruction,
     appendTransactionMessageInstructions,
-    assertTransactionIsFullySigned,
+    assertIsFullySignedTransaction,
     createNoopSigner,
     createTransactionMessage,
     decompileTransactionMessageFetchingLookupTables,
@@ -16,8 +16,8 @@ import {
     getCompiledTransactionMessageDecoder,
     getSignatureFromTransaction,
     getTransactionDecoder,
-    isDurableNonceTransaction,
     isSolanaError,
+    isTransactionMessageWithDurableNonceLifetime,
     lamports,
     prependTransactionMessageInstructions,
     sendAndConfirmTransactionFactory,
@@ -345,11 +345,11 @@ export const buildTokenTransferTransaction = async (
 const preparePushTransaction = async (rawTx: string, api: SolanaAPI) => {
     const txByteArray = getBase16Encoder().encode(rawTx);
     const transaction = getTransactionDecoder().decode(txByteArray);
-    assertTransactionIsFullySigned(transaction);
+    assertIsFullySignedTransaction(transaction);
 
     const compiledMessage = getCompiledTransactionMessageDecoder().decode(transaction.messageBytes);
     const message = await decompileTransactionMessageFetchingLookupTables(compiledMessage, api.rpc);
-    if (isDurableNonceTransaction(message)) {
+    if (isTransactionMessageWithDurableNonceLifetime(message)) {
         // TODO: Handle durable nonce transactions.
         throw new Error('Unimplemented: Confirming durable nonce transactions');
     }
