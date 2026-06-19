@@ -5,7 +5,6 @@ import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
-import { OnOffSwitcher } from '../OnOffSwitcher';
 import { TransactionData } from '../shared/TransactionData';
 
 export const EthereumOptions = () => {
@@ -14,14 +13,12 @@ export const EthereumOptions = () => {
     const options = getDefaultValue('options', []);
     const dataEnabled = options.includes('transactionData');
     const tokenValue = getDefaultValue<string, string | undefined>('outputs.0.token', undefined);
-    const broadcastEnabled = options.includes('broadcast');
 
     const toggle = (option: FormOptions) => {
         toggleOption(option);
         composeTransaction();
     };
     const toggleData = () => toggle('transactionData');
-    const toggleBroadcast = () => toggle('broadcast');
 
     return (
         <Column gap={16}>
@@ -39,20 +36,6 @@ export const EthereumOptions = () => {
                         </Button>
                     </Tooltip>
                 )}
-                <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
-                    <Button
-                        intent="neutral"
-                        priority="secondary"
-                        iconLeft="broadcast"
-                        data-testid="send/broadcast"
-                        onClick={toggleBroadcast}
-                    >
-                        <Row>
-                            <Translation id="BROADCAST" />
-                            <OnOffSwitcher isOn={broadcastEnabled} />
-                        </Row>
-                    </Button>
-                </Tooltip>
             </Row>
 
             {dataEnabled && (
