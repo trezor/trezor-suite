@@ -70,7 +70,7 @@ const TransactionListItemValues = ({
                         <SignValueFormatter value={operation} />
                     )}
                     <CryptoToFiatAmountFormatter
-                        value={amount || transaction.amount}
+                        value={amount}
                         symbol={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate
@@ -81,7 +81,7 @@ const TransactionListItemValues = ({
             )}
 
             <CryptoAmountFormatter
-                value={amount || transaction.amount}
+                value={amount}
                 symbol={transaction.symbol}
                 isBalance={false}
                 numberOfLines={1}
@@ -116,14 +116,13 @@ export const TransactionTarget = ({
         if (isSolanaUnstakeTx) return null;
         switch (type) {
             case 'target':
-                return transaction.amount;
             case 'internal':
             case 'token':
                 return payload.amount;
             default:
                 return exhaustive(type);
         }
-    }, [type, payload, transaction, isSolanaUnstakeTx]);
+    }, [type, payload, isSolanaUnstakeTx]);
 
     const operation = useMemo(() => {
         switch (type) {
