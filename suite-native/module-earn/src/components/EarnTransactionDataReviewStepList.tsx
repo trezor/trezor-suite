@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import {
+    asAmountUnit,
+    isSupportedSolStakingNetworkSymbol,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -73,6 +77,14 @@ export const EarnTransactionDataReviewStepList = ({
         symbol: accountSymbol,
     }).toString();
 
+    const isSolanaStake = isSupportedSolStakingNetworkSymbol(accountSymbol);
+    const displayedAmountInBaseUnits =
+        isSolanaStake && selectedPrecomposed
+            ? new BigNumber(selectedPrecomposed.totalSpent)
+                  .minus(selectedPrecomposed.fee)
+                  .toFixed(0)
+            : amountInBaseUnits;
+
     return (
         <View>
             <VStack spacing={LIST_VERTICAL_SPACING}>
@@ -84,7 +96,7 @@ export const EarnTransactionDataReviewStepList = ({
 
                 <EarnSummaryOutputItem
                     accountKey={accountKey}
-                    amount={amountInBaseUnits}
+                    amount={displayedAmountInBaseUnits}
                     fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
                     outputState={summaryOutput?.state ?? (isLastStep ? 'active' : undefined)}
                     onLayout={event => handleReadListItemHeight(event, 1)}
