@@ -80,7 +80,6 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         super(message, params);
 
         this.hasBundle = hasBundle;
-        this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
         this.confirmMissingBackup = true;
     }
