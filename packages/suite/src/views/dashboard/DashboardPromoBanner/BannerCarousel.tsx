@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, type Variants, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Column, Grid, motionEasing } from '@trezor/components';
+import { Column, Grid, Row, motionEasing } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
 import { CarouselIndicator } from './CarouselIndicator';
-import { bannerAnimationConfig } from '../banner-animations';
 
 const Slide = styled(motion.div)`
     grid-area: 1 / 1;
@@ -76,34 +75,34 @@ export const BannerCarousel = ({ banners, onClose, onCTAClick }: BannerCarouselP
     };
 
     return (
-        <motion.div {...bannerAnimationConfig}>
-            <Column alignItems="center" width="100%">
-                <Grid columns="1fr" width="100%" borderRadius={borders.radii.sm} overflow="hidden">
-                    <AnimatePresence initial={false} custom={direction}>
-                        <Slide
-                            key={activeBanner.key}
-                            custom={direction}
-                            variants={slideVariants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            transition={slideTransition}
-                        >
-                            {activeBanner.render({
-                                onClose: handleClose,
-                                onCTAClick: handleCTAClick,
-                            })}
-                        </Slide>
-                    </AnimatePresence>
-                </Grid>
-                {banners.length > 1 && (
+        <Column alignItems="center" width="100%">
+            <Grid columns="1fr" width="100%" borderRadius={borders.radii.sm} overflow="hidden">
+                <AnimatePresence initial={false} custom={direction}>
+                    <Slide
+                        key={activeBanner.key}
+                        custom={direction}
+                        variants={slideVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={slideTransition}
+                    >
+                        {activeBanner.render({
+                            onClose: handleClose,
+                            onCTAClick: handleCTAClick,
+                        })}
+                    </Slide>
+                </AnimatePresence>
+            </Grid>
+            {banners.length > 1 && (
+                <Row margin={{ top: 16, bottom: 12 }}>
                     <CarouselIndicator
                         count={banners.length}
                         activeIndex={safeActiveIndex}
                         onSelect={handleSelect}
                     />
-                )}
-            </Column>
-        </motion.div>
+                </Row>
+            )}
+        </Column>
     );
 };
