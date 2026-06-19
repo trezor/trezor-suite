@@ -11,11 +11,12 @@ import {
     wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
 import { Schema } from '@suite-common/suite-sync-evolu';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { step } from '../common';
 
 type TableName = keyof typeof Schema;
-const allTables = Object.keys(Schema) as TableName[];
+const allTables = typedObjectKeys(Schema);
 
 export class EvoluClient extends BaseEvoluClient {
     @step()

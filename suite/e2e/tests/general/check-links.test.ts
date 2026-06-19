@@ -2,6 +2,7 @@ import { Page, TestInfo } from '@playwright/test';
 
 import { routes } from '@suite/router-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -196,10 +197,7 @@ test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () 
         ignoreJSExceptions: ['Aborted by signal', 'Failed to fetch'],
     });
 
-    for (const [section, paths] of Object.entries(SECTIONS) as [
-        keyof typeof SECTIONS,
-        string[],
-    ][]) {
+    for (const [section, paths] of typedObjectEntries(SECTIONS)) {
         test(
             `${section} links return 200`,
             {

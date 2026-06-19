@@ -4,7 +4,8 @@ import { type Meta, type StoryObj } from '@storybook/react';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { type IconName, icons } from '@suite-common/icons/src/icons';
+import { icons } from '@suite-common/icons/src/icons';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     IconCircle as IconCircleComponent,
@@ -44,7 +45,7 @@ export const IconCircle: StoryObj<typeof meta> = {
             control: {
                 type: 'select',
             },
-            options: Object.keys(icons) as IconName[],
+            options: typedObjectKeys(icons),
         },
         ...getFramePropsStory(allowedIconCircleFrameProps).argTypes,
     },

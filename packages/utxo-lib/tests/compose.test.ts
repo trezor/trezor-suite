@@ -1,4 +1,4 @@
-import { getRandomInt } from '@trezor/utils';
+import { getRandomInt, typedObjectKeys } from '@trezor/utils';
 
 import { verifyTxBytes } from './compose.utils';
 import { composeTx } from '../src/compose';
@@ -206,7 +206,7 @@ describe('composeTx addresses cross-check', () => {
         p2wsh: '101500',
     };
 
-    const addrKeys = Object.keys(addrTypes) as Array<keyof typeof addrTypes>;
+    const addrKeys = typedObjectKeys(addrTypes);
 
     fixturesCrossCheck.forEach(f => {
         txTypes.forEach(txType => {
