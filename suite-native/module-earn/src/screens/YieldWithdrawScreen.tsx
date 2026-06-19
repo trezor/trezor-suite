@@ -458,6 +458,7 @@ export const YieldWithdrawScreen = () => {
                             renderPrimary={({ inputRef, isDisabled, onPress }) => (
                                 <Input
                                     ref={inputRef}
+                                    labelType="noLabel"
                                     value={assetAmount}
                                     placeholder="0"
                                     keyboardType="numeric"
@@ -481,6 +482,7 @@ export const YieldWithdrawScreen = () => {
                             renderSecondary={({ inputRef, isDisabled, onPress }) => (
                                 <Input
                                     ref={inputRef}
+                                    labelType="noLabel"
                                     value={sharesAmount}
                                     placeholder="0"
                                     keyboardType="numeric"

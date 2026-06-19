@@ -5417,24 +5417,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lottiefiles/dotlottie-react@npm:^0.13.5":
-  version: 0.13.5
-  resolution: "@lottiefiles/dotlottie-react@npm:0.13.5"
-  dependencies:
-    "@lottiefiles/dotlottie-web": "npm:0.44.0"
-  peerDependencies:
-    react: ^17 || ^18 || ^19
-  checksum: 10/fd11cabf0b82bbaf82f4473b70b77a198273145c2515f9f043ac4e272de098410621d0e3916ee68e0eb8668066eda46def904fcaafa542a73cc52d5d39329208
-  languageName: node
-  linkType: hard
-
-"@lottiefiles/dotlottie-web@npm:0.44.0":
-  version: 0.44.0
-  resolution: "@lottiefiles/dotlottie-web@npm:0.44.0"
-  checksum: 10/d8349ff353da858fcdd3df307f2f0cdf7e1d629f87454d8f221917ea199dbb26e46213e5c50abf0bf04a935aa31fe2bc535d3f605d64e1688666d3d0e4f0c252
-  languageName: node
-  linkType: hard
-
 "@malept/cross-spawn-promise@npm:^2.0.0":
   version: 2.0.0
   resolution: "@malept/cross-spawn-promise@npm:2.0.0"
@@ -12332,7 +12314,6 @@ __metadata:
     react-hook-form: "npm:^7.71.2"
     react-native: "npm:0.83.2"
     react-native-reanimated: "npm:~4.2.1"
-    type-fest: "npm:5.5.0"
     yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
@@ -13834,7 +13815,6 @@ __metadata:
   resolution: "@suite-native/storybook@workspace:suite-native/storybook"
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.2.8"
-    "@lottiefiles/dotlottie-react": "npm:^0.13.5"
     "@react-native-community/datetimepicker": "npm:^8.6.0"
     "@react-native-community/slider": "npm:^5.1.2"
     "@shopify/react-native-skia": "npm:2.5.1"

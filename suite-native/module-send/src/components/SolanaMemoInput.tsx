@@ -83,6 +83,7 @@ export const SolanaMemoInput = () => {
                 <VStack spacing="sp16">
                     <VStack spacing="sp4">
                         <Input
+                            labelType="noLabel"
                             value={localMemo}
                             onChangeText={setLocalMemo}
                             placeholder={translate(

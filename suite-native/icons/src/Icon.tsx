@@ -27,6 +27,9 @@ export const MAX_FONT_SIZE_MULTIPLIER = 1.5;
 export type IconName = keyof typeof codepoints;
 export const ICON_NAMES = Object.keys(codepoints) as IconName[];
 
+export const isIconName = (value: unknown): value is IconName =>
+    typeof value === 'string' && value in icons;
+
 export const iconSizes = {
     extraSmall: 8,
     small: 12,
