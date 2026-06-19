@@ -3,7 +3,17 @@ import { useEffect } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Card, Column, H4, Icon, IconButton, Row, Text, Textarea } from '@trezor/components';
+import {
+    Card,
+    Column,
+    H4,
+    Icon,
+    IconButton,
+    Row,
+    Text,
+    Textarea,
+    Tooltip,
+} from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -46,10 +56,12 @@ export const TronNote = ({ close }: TronNoteProps) => {
         <Card>
             <Column gap={12}>
                 <Row alignItems="start" justifyContent="space-between">
-                    <Column gap={2}>
-                        <H4 typographyStyle="body-md">
-                            <Translation id="TR_TRON_NOTE" />
-                        </H4>
+                    <Column gap={2} alignItems="start">
+                        <Tooltip hasIcon content={<Translation id="TR_TRON_NOTE_ADD_TOOLTIP" />}>
+                            <H4 typographyStyle="body-md">
+                                <Translation id="TR_TRON_NOTE" />
+                            </H4>
+                        </Tooltip>
 
                         <Row gap={4}>
                             <Icon name="info" size={20} intent="neutral" priority="secondary" />
