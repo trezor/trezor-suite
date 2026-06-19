@@ -2,12 +2,42 @@
 
 Maestro flows for Suite Native scenarios, runnable directly or as Flashlight test commands.
 
+## View the committed reports
+
+Recorded results are committed to the branch — to view them you only need
+[`flashlight`](https://docs.flashlight.dev) installed (no emulator, build, or setup).
+From the repo root:
+
+```bash
+flashlight report flashlight-onboard-connect.json flashlight-reload-onboard-connect.json
+```
+
+Opens the web report (FPS / CPU / RAM over time + the synced screen recordings) for the
+onboard + connect scenario and its warm reload. Pass a single `.json` to view just one, or
+multiple to compare them side by side. The matching `.mp4` files must sit next to the JSONs
+(they're committed alongside).
+
+Everything below is only needed to **re-run / generate** measurements.
+
 ## Prerequisites
 
 - Android emulator running, with the app build installed (`io.trezor.suite.develop`).
 - `adb`, `docker`, [`maestro`](https://maestro.mobile.dev) (tested on 2.6.1), and [`flashlight`](https://docs.flashlight.dev) on `PATH`.
 
-## Setup (once per session)
+## Setup
+
+### 1. Build & install the develop app on the emulator
+
+```bash
+cd suite-native/app
+EXPO_PUBLIC_ENVIRONMENT=develop yarn android --variant release   # installs io.trezor.suite.develop
+```
+
+Release-like build = representative perf and it can drive the emulated Trezor. (A debug
+build + Metro also works for iterating — `yarn start` && `yarn android` — but debug perf
+is not representative; point the flow `appId` / `--bundleId` at whichever build you run.)
+
+### 2. Start the device environment
 
 ```bash
 # Map the emulator's localhost to the host bridge.
@@ -17,74 +47,55 @@ adb reverse tcp:21328 tcp:21328
 docker run -d --name user-env -e SDL_VIDEODRIVER=dummy \
   -p 9001:9001 -p 9002:9002 -p 21328:21328 \
   ghcr.io/trezor/trezor-user-env:latest
-
-# Wait until ready.
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:9002   # -> 200
 
-# Start the HTTP->WebSocket shim (run from the repo root; leave running).
+# HTTP->WebSocket shim — run from the repo root, in its own terminal, leave running.
 yarn tsx .maestro/user-env-rest/server.ts
 ```
 
-To watch the device screen, instead of the `docker run` above start user-env from a
-[trezor-user-env](https://github.com/trezor/trezor-user-env) clone — same ports, plus noVNC:
+To watch the device screen (noVNC), start user-env from a
+[trezor-user-env](https://github.com/trezor/trezor-user-env) clone instead — same ports:
 
 ```bash
 cd ~/path/to/trezor-user-env && ./run.sh -r
-# after an emulator starts, open: http://127.0.0.1:6080/vnc.html?autoconnect=true&resize=scale
+# after an emulator starts: open http://127.0.0.1:6080/vnc.html?autoconnect=true&resize=scale
 ```
 
 Cleanup when done: `docker rm -f user-env` and stop the shim (`kill $(lsof -ti :9011)`).
 
 ## Run
 
-Each flow runs directly with Maestro, or wrapped in Flashlight for a measurement.
-Keep `--duration` just above the flow's wall-clock (`time maestro test <flow>`).
-
-### Portfolio tracker (watch-only, no device)
+### Run all measurements
 
 ```bash
-maestro test .maestro/portfolio-tracker-device/import-btc-dev-xpub.yaml
-
-flashlight test --bundleId io.trezor.suite.develop \
-  --testCommand "maestro test .maestro/portfolio-tracker-device/import-btc-dev-xpub.yaml" \
-  --duration 120000 --resultsFilePath flashlight-portfolio-tracker-import.json --record
+.maestro/measure-all.sh
 ```
 
-### Onboard + connect + full discovery (Safe 5)
+Runs, in order, writing `flashlight-*.json` (+ `.mp4`) to the repo root:
+
+| Measurement                          | Output                                   |
+| ------------------------------------ | ---------------------------------------- |
+| Portfolio tracker (watch-only)       | `flashlight-portfolio.json`              |
+| Onboard + connect — scenario         | `flashlight-onboard-connect.json`        |
+| Onboard + connect — warm reload      | `flashlight-reload-onboard-connect.json` |
+| Passphrase `<variant>` — scenario    | `flashlight-passphrase-<variant>.json`   |
+| Passphrase `<variant>` — warm reload | `flashlight-reload-<variant>.json`       |
+
+Subsets (each = scenario + warm reload):
 
 ```bash
-maestro test .maestro/onboard-and-connect/onboard-and-connect.yaml
-
-flashlight test --bundleId io.trezor.suite.develop \
-  --testCommand "maestro test .maestro/onboard-and-connect/onboard-and-connect.yaml" \
-  --duration 180000 --iterationCount 1 --resultsFilePath flashlight-onboard-connect.json --record
+.maestro/onboard-and-connect/measure.sh       # onboard + connect
+.maestro/passphrase-wallet/measure-all.sh     # all passphrase variants
+.maestro/passphrase-wallet/measure.sh eth     # one passphrase variant (btc | eth | sol | btc-eth-sol)
 ```
 
-### Passphrase wallet + warm reload (Safe 5), per coin set
+Run a flow on its own (no measurement) with `maestro test <flow.yaml>`.
 
-```bash
-# SOL
-flashlight test --bundleId io.trezor.suite.develop \
-  --testCommand "maestro test .maestro/passphrase-wallet/open-passphrase-sol.yaml" \
-  --duration 120000 --iterationCount 1 --resultsFilePath flashlight-passphrase-sol.json --record
-
-# BTC
-flashlight test --bundleId io.trezor.suite.develop \
-  --testCommand "maestro test .maestro/passphrase-wallet/open-passphrase-btc.yaml" \
-  --duration 120000 --iterationCount 1 --resultsFilePath flashlight-passphrase-btc.json --record
-
-# ETH
-flashlight test --bundleId io.trezor.suite.develop \
-  --testCommand "maestro test .maestro/passphrase-wallet/open-passphrase-eth.yaml" \
-  --duration 210000 --iterationCount 1 --resultsFilePath flashlight-passphrase-eth.json --record
-
-# BTC + ETH + SOL
-flashlight test --bundleId io.trezor.suite.develop \
-  --testCommand "maestro test .maestro/passphrase-wallet/open-passphrase-btc-eth-sol.yaml" \
-  --duration 135000 --iterationCount 1 --resultsFilePath flashlight-passphrase-btc-eth-sol.json --record
-
-flashlight report flashlight-passphrase-sol.json
-```
+Device+discovery scenarios and their warm reload are measured as **separate** Flashlight
+runs — the profiler crashes on a mid-measurement app restart/disconnect, so the persist
+step (`passphrase-wallet/_persist.yaml`: Home → disconnect → keep view-only) runs
+unmeasured between a scenario and its reload. Durations live in the scripts; tighten with
+`time maestro test <flow>`.
 
 ## Notes
 
@@ -92,5 +103,14 @@ flashlight report flashlight-passphrase-sol.json
   ships a compiled bundle; source changes need a rebuilt develop APK, or the debug build
   (`io.trezor.suite.debug`) + Metro (`yarn start` && `yarn android` from `suite-native/app`).
   Match the flow `appId` / `--bundleId` to the build. Debug builds are not representative for perf.
-- Run exactly one user-env instance and one shim, or the bridge thrashes and discovery stalls.
+- Run exactly one user-env instance and one shim, and close extra dashboard/noVNC browser
+  tabs — each adds a WS client that triggers a `bridge-start` and can leave duplicate bridges
+  fighting over `21328` (→ discovery stalls / `enumerate` hangs).
+- **Device won't connect?** Confirm the bridge sees it:
+  `curl -s -X POST http://127.0.0.1:21328/enumerate` should list a device, not `[]`. If `[]`
+  while noVNC shows a running Safe 5, restart user-env (one instance), re-add `adb reverse`,
+  restart the shim, and retry.
 - Flows re-seed the device each run (`/start-emu wipe`), so they're self-contained and repeatable.
+- Scenario `--duration`s live in the scripts; if a Flashlight run idles long after the flow
+  ends, lower it (`time maestro test <flow>` + ~15s). Very long scenarios (all-coin discovery)
+  can exceed Flashlight's atrace capture — measure those with `time` and keep Flashlight for the reload.

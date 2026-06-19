@@ -43,13 +43,24 @@ tags:
       visible:
           id: '@screen/Home'
       timeout: 35000
-- tapOn:
-      id: '@home/get-started-button'
-      retryTapIfNoChange: true
+- waitForAnimationToEnd
+# Coin enabling opens via Get started, unless a connected device routed straight to it.
+- runFlow:
+      when:
+          notVisible:
+              id: '@screen/CoinEnablingInit'
+      commands:
+          - extendedWaitUntil:
+                visible:
+                    id: '@home/get-started-button'
+                timeout: 20000
+          - tapOn:
+                id: '@home/get-started-button'
+                retryTapIfNoChange: true
 - extendedWaitUntil:
       visible:
           id: '@screen/CoinEnablingInit'
-      timeout: 20000
+      timeout: 30000
 - runFlow:
       file: enableAllCoins.yaml
 - tapOn:
@@ -124,5 +135,6 @@ tags:
                           retryTapIfNoChange: true
                     - waitForAnimationToEnd
 
-# Teardown (mirrors jest.perTestFile.teardown)
-- runScript: teardownDevice.js
+# Measured endpoint: transaction list scrolled. No teardown here — persisting for the
+# warm reload (Home -> disconnect -> keep view-only) runs between measurements via
+# passphrase-wallet/_persist.yaml, so this measured flow has no app restart/disconnect.
