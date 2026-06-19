@@ -8,7 +8,10 @@ import TrezorConnect from '@trezor/connect';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingSendRejectedProps } from '../../types';
-import { formatSlip24SendAmountByNetwork } from '../../utils/signature/signatureUtils';
+import {
+    formatSlip24AddressByNetwork,
+    formatSlip24SendAmountByNetwork,
+} from '../../utils/signature/signatureUtils';
 
 export const getPaymentRequestOutputs = createThunk<
     PaymentRequestOutput[],
@@ -49,7 +52,7 @@ export const getPaymentRequestOutputs = createThunk<
 
                 outputs.push({
                     amount,
-                    address: sendAddress,
+                    address: formatSlip24AddressByNetwork({ address: sendAddress, network }),
                 });
             }
 
@@ -71,7 +74,10 @@ export const getPaymentRequestOutputs = createThunk<
 
                 outputs.push({
                     amount: formatSlip24SendAmountByNetwork({ value: output.amount, network }),
-                    address: getAddress.payload.address,
+                    address: formatSlip24AddressByNetwork({
+                        address: getAddress.payload.address,
+                        network,
+                    }),
                 });
             }
         }
