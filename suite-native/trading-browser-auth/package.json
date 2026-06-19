@@ -44,6 +44,6 @@
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
-        "@types/invity-api": "^1.1.15"
+        "@types/invity-api": "^1.1.19"
     }
 }

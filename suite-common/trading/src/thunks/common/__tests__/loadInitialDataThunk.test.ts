@@ -86,6 +86,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         Promise.resolve({
             coins: {},
             platforms: {},
+            config: {},
         });
 
     const getCurrentAccountDescriptorMock = jest.spyOn(invityAPI, 'getCurrentAccountDescriptor');
