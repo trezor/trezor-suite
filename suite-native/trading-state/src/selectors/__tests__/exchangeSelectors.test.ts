@@ -21,6 +21,8 @@ import {
     selectTradingExchange,
 } from '../exchangeSelectors';
 
+const supportedCoins = ['btc', 'eth', 'base'];
+
 describe('exchangeSelectors', () => {
     let state: TradingRootState & AccountsRootState & FeatureFlagsRootState;
 
@@ -111,7 +113,7 @@ describe('exchangeSelectors', () => {
 
     describe('selectExchangeBuyTradeableAssets', () => {
         it('should select only coins with exchange set to true', () => {
-            expect(selectExchangeBuyTradeableAssets(state)).toEqual([
+            expect(selectExchangeBuyTradeableAssets(state, supportedCoins)).toEqual([
                 expect.objectContaining({
                     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                 }),
@@ -121,8 +123,8 @@ describe('exchangeSelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectExchangeBuyTradeableAssets(state);
-            const second = selectExchangeBuyTradeableAssets(state);
+            const first = selectExchangeBuyTradeableAssets(state, supportedCoins);
+            const second = selectExchangeBuyTradeableAssets(state, supportedCoins);
 
             expect(first).toBe(second);
         });
@@ -130,18 +132,19 @@ describe('exchangeSelectors', () => {
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectExchangeBuyTradeableAssets(state)).toEqual([]);
+            expect(selectExchangeBuyTradeableAssets(state, supportedCoins)).toEqual([]);
         });
 
         it('should be empty array when cryptoIds are not set', () => {
             state.wallet.trading.exchange.exchangeInfo = undefined;
 
-            expect(selectExchangeBuyTradeableAssets(state)).toEqual([]);
+            expect(selectExchangeBuyTradeableAssets(state, supportedCoins)).toEqual([]);
         });
 
         it('should filter out forbidden cryptoId', () => {
             const result = selectExchangeBuyTradeableAssets(
                 state,
+                supportedCoins,
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             );
             expect(result).toEqual([
@@ -171,7 +174,7 @@ describe('exchangeSelectors', () => {
                 },
             };
 
-            const result = selectExchangeBuyTradeableAssets(state);
+            const result = selectExchangeBuyTradeableAssets(state, supportedCoins);
 
             expect(result).toEqual([
                 expect.objectContaining({ cryptoId: 'ethereum' }),

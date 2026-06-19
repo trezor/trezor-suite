@@ -4,7 +4,7 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../../network-module/suite-types/tsconfig.lib.json"
+            "path": "../../network-module/suite-types"
         }
     ]
 }

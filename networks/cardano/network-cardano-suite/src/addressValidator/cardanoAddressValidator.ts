@@ -1,12 +1,7 @@
-import {
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
-import { bech32 } from '@scure/base';
+import { type AddressValidator, addressType } from '@network-module/suite-types';
+import { base58, bech32 } from '@scure/base';
 import * as cbor from 'cbor';
 import crc32 from 'crc/calculators/crc32';
-
-import * as base58 from './crypto/base58';
 
 type NetworkEnvironment = 'prod' | 'testnet' | 'regtest' | 'stake';
 
@@ -91,7 +86,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: AddressValidator['getSupportedCoins'] = () => ['ada'];
+const getSupportedCoins: () => string[] = () => ['ada'];
 
 export const adaValidator: AddressValidator = {
     isAddressValid,

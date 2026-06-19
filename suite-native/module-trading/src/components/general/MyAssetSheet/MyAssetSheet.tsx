@@ -1,6 +1,8 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { type TradingType } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
@@ -42,8 +44,17 @@ const renderItem = (
 
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
+        const { addressValidator } = useServices(selectAddressValidatorDep);
+        const supportedCoins = useMemo(
+            () => addressValidator.getSupportedCoins(),
+            [addressValidator],
+        );
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
-            selectAccountsWithTokensToSellSectionCondensedListByTradingType(state, tradingType),
+            selectAccountsWithTokensToSellSectionCondensedListByTradingType(
+                state,
+                tradingType,
+                supportedCoins,
+            ),
         );
 
         const {

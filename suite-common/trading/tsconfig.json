@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../address" },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../geolocation" },
         { "path": "../react-query" },
@@ -18,9 +19,6 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
-        {
-            "path": "../../packages/address-validator"
-        },
         {
             "path": "../../packages/blockchain-link-types"
         },

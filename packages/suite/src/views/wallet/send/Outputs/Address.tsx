@@ -13,8 +13,8 @@ import {
     autocorrectAddress,
     checkAddressChecksum,
     isAddressDeprecated,
-    isAddressValid,
     isTaprootAddress,
+    selectAddressValidatorDep,
     toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
@@ -84,7 +84,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics, addressValidator } = useServices(
+        selectDesktopAnalyticsDep,
+        selectAddressValidatorDep,
+    );
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -168,7 +171,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 return;
             }
 
-            if (isAddressValid(uri, symbol)) {
+            if (addressValidator.isAddressValid(uri, symbol)) {
                 setValue(inputName, uri, { shouldValidate: true });
 
                 composeTransaction(inputName);
@@ -235,6 +238,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         outputId,
         setValue,
         symbol,
+        addressValidator,
     ]);
 
     if (device?.state?.staticSessionId === undefined) {
@@ -329,7 +333,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         required: translationString('RECIPIENT_IS_NOT_SET'),
         validate: {
             deprecated: (value: string) => {
-                const url = isAddressDeprecated(value, symbol);
+                const url = isAddressDeprecated({ addressValidator, address: value, symbol });
                 if (url) {
                     setAddressDeprecatedUrl(url);
 
@@ -337,7 +341,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             addressCorrection: (value: string) => {
-                const correction = autocorrectAddress(value, symbol);
+                const correction = autocorrectAddress({ addressValidator, address: value, symbol });
                 if (correction) {
                     setValue(inputName, correction.corrected, { shouldValidate: true });
                     composeTransaction();
@@ -349,7 +353,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             valid: (value: string) => {
-                if (!isAddressValid(value, symbol)) {
+                if (!addressValidator.isAddressValid(value, symbol)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },
@@ -357,7 +361,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             firmware: (value: string) => {
                 if (
                     networkType === 'bitcoin' &&
-                    isTaprootAddress(value, symbol) &&
+                    isTaprootAddress({ addressValidator, address: value, symbol }) &&
                     device?.unavailableCapabilities?.taproot
                 ) {
                     return translationString('RECIPIENT_REQUIRES_UPDATE');

@@ -1,20 +1,16 @@
-import {
-    type AddressType,
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
+import { type AddressType, addressType } from '@network-module/suite-types';
 
 import { ethereumValidator } from '../ethereumAddressValidator';
 
 type EthereumIsAddressValidCase = {
     address: string;
-    symbol: Parameters<AddressValidator['isAddressValid']>[1];
+    symbol: string;
     expected: boolean;
 };
 
 type EthereumAddressTypeCase = {
     address: string;
-    symbol: Parameters<AddressValidator['isAddressValid']>[1];
+    symbol: string;
     expectedAddressType: AddressType | undefined;
 };
 
@@ -37,6 +33,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
     {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
         symbol: 'thod',
+        expected: true,
+    },
+    {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
+        symbol: 'rhc',
         expected: true,
     },
     {

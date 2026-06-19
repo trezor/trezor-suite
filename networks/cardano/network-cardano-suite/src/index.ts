@@ -1,1 +1,1 @@
-export { createCardanoNetworkModule, type CardanoNetworkModule } from './CardanoNetworkModule';
+export { createCardanoNetworkModule } from './CardanoNetworkModule';

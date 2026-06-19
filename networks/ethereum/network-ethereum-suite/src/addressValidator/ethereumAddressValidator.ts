@@ -1,13 +1,10 @@
-import {
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
-
-import * as cryptoUtils from './crypto/utils';
+import { type AddressValidator, addressType } from '@network-module/suite-types';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 
 function verifyChecksum(address: string): boolean {
     const stripped = address.replace('0x', '');
-    const addressHash = cryptoUtils.keccak256(stripped.toLowerCase());
+    const addressHash = bytesToHex(keccak_256(utf8ToBytes(stripped.toLowerCase())));
 
     for (let i = 0; i < 40; i++) {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -47,13 +44,14 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: AddressValidator['getSupportedCoins'] = () => [
+const getSupportedCoins: () => string[] = () => [
     'eth',
     'pol',
     'bsc',
     'arb',
     'base',
     'op',
+    'rhc',
     'avax',
     'etc',
     'tsep',

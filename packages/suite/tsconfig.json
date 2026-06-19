@@ -213,7 +213,6 @@
         { "path": "../../suite/tx-simulation" },
         { "path": "../../suite/ui-animations" },
         { "path": "../../suite/wallet" },
-        { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
         { "path": "../asset-utils" },
         { "path": "../blockchain-link-types" },

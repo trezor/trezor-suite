@@ -1,1 +1,1 @@
-export { createSolanaNetworkModule, type SolanaNetworkModule } from './SolanaNetworkModule';
+export { createSolanaNetworkModule } from './SolanaNetworkModule';

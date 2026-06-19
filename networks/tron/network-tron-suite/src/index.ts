@@ -1,1 +1,1 @@
-export { createTronNetworkModule, type TronNetworkModule } from './TronNetworkModule';
+export { createTronNetworkModule } from './TronNetworkModule';

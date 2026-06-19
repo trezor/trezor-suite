@@ -1,6 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useDevice } from '@suite/device';
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -36,8 +38,8 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
-    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
     const quotes = useSelector(selectTradingBuyQuotes);
+    const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const { device } = useDevice();
     const { setAmountLimits, getValues, setValue } = context;
@@ -64,6 +66,11 @@ export const TradingBuyFormInputs = () => {
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
         },
         [dispatch, setAmountLimitsRef, setValueRef],
+    );
+
+    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const buySupportedCryptoIds = useSelector(state =>
+        selectTradingBuySupportedCryptoIds(state, supportedCoins),
     );
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
