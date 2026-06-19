@@ -1,9 +1,9 @@
 import { typedObjectKeys } from '@trezor/utils';
+import { type Network, address as utxoAddress, networks as utxoNetworks } from '@trezor/utxo-lib';
 
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
 import * as base58 from '../crypto/base58';
-import * as bech32 from '../crypto/bech32';
 import type { HashFunction } from '../crypto/types';
 import * as cryptoUtils from '../crypto/utils';
 import type { NetworkEnvironment } from '../networkEnvironment';
@@ -27,6 +27,25 @@ const BITCOIN_NETWORK_CONFIG = {
         regtest: ['6f', 'c4', '3c', '26'],
     },
 };
+
+const UTXO_NETWORKS: Partial<Record<NetworkSymbol, Partial<Record<NetworkEnvironment, Network>>>> =
+    {
+        btc: {
+            prod: utxoNetworks.bitcoin,
+            testnet: utxoNetworks.testnet,
+            regtest: utxoNetworks.regtest,
+        },
+        test: {
+            testnet: utxoNetworks.testnet,
+        },
+        regtest: {
+            regtest: utxoNetworks.regtest,
+        },
+        ltc: {
+            prod: utxoNetworks.litecoin,
+            testnet: utxoNetworks.litecoinTest,
+        },
+    };
 
 const BITCOIN_CURRENCIES: Partial<Record<NetworkSymbol, BitcoinCurrency>> = {
     btc: {
@@ -191,6 +210,19 @@ function isValidPayToScriptHashAddress(
     return idx !== null && idx > 0;
 }
 
+function getUtxoAddressType(
+    address: string,
+    currency: BitcoinCurrency,
+    network: NetworkEnvironment,
+) {
+    const utxoNetwork = UTXO_NETWORKS[currency.symbol]?.[network];
+    if (!utxoNetwork) {
+        return 'unknown';
+    }
+
+    return utxoAddress.getAddressType(address, utxoNetwork);
+}
+
 function isValidPayToWitnessScriptHashAddress(
     address: string,
     currency: BitcoinCurrency,
@@ -206,9 +238,7 @@ function isValidPayToWitnessScriptHashAddress(
             return false;
         }
 
-        const decoded = bech32.decode(hrp, address);
-
-        return !!(decoded?.version === 0 && decoded.program.length === 32);
+        return getUtxoAddressType(address, currency, network) === 'p2wsh';
     } catch {
         return false;
     }
@@ -229,9 +259,7 @@ function isValidPayToWitnessPublicKeyHashAddress(
             return false;
         }
 
-        const decoded = bech32.decode(hrp, address);
-
-        return !!(decoded?.version === 0 && decoded.program.length === 20);
+        return getUtxoAddressType(address, currency, network) === 'p2wpkh';
     } catch {
         return false;
     }
@@ -252,9 +280,7 @@ function isValidPayToTaprootAddress(
             return false;
         }
 
-        const decoded = bech32.decode(hrp, address, true);
-
-        return !!(decoded?.version === 1 && decoded.program.length === 32);
+        return getUtxoAddressType(address, currency, network) === 'p2tr';
     } catch {
         return false;
     }
@@ -272,22 +298,8 @@ function isValidSegwitAddress(
     if (!hrp) {
         return false;
     }
-    let ret = bech32.decode(hrp, address, false);
-    if (ret) {
-        if (ret.version === 0 || ret.program.length === 20 || ret.program.length === 32) {
-            return false;
-        } else {
-            return address.toLowerCase() === bech32.encode(hrp, ret.version, ret.program, false);
-        }
-    }
-    ret = bech32.decode(hrp, address, true);
-    if (ret) {
-        if (ret.version > 1 || ret.program.length !== 32) {
-            return address.toLowerCase() === bech32.encode(hrp, ret.version, ret.program, true);
-        }
-    }
 
-    return false;
+    return getUtxoAddressType(address, currency, network) === 'p2w-unknown';
 }
 
 const getAddressTypeForNetwork = (
