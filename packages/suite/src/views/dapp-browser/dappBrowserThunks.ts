@@ -1,4 +1,9 @@
-import { RPC_ERROR, sendTransactionParamsSchema } from '@suite/dapp-browser';
+import {
+    RPC_ERROR,
+    personalSignParamsSchema,
+    sendTransactionParamsSchema,
+    signTypedDataParamsSchema,
+} from '@suite/dapp-browser';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
@@ -8,9 +13,12 @@ import { ethereumGetCurrentNonceThunk, selectAccounts } from '@suite-common/wall
 import { getAccountIdentity, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type CallMethodResponse,
+    type EthereumSignTypedData,
+    type EthereumSignTypedDataTypes,
     type EthereumTransaction,
     type EthereumTransactionEIP1559,
 } from '@trezor/connect';
+import { isAscii, isHex } from '@trezor/utils';
 
 const ACTION_PREFIX = '@suite/dapp-browser';
 
@@ -164,6 +172,94 @@ export const handleDappRequestThunk = createThunk<DappRequestResult, DappRequest
                     }
 
                     return { result: pushResponse.payload.txid };
+                }
+                case 'personal_sign': {
+                    const parsed = personalSignParamsSchema.safeParse(params);
+
+                    if (!parsed.success) {
+                        return {
+                            error: { code: RPC_ERROR.INVALID_PARAMS, message: 'Invalid params' },
+                        };
+                    }
+
+                    const [message] = parsed.data;
+                    const messageDecoded = message.startsWith('0x')
+                        ? Buffer.from(message.slice(2), 'hex').toString('utf8')
+                        : message;
+                    const messageHex = isHex(message, { prefix: 'optional', allowEmpty: false })
+                        ? sanitizeHex(message)
+                        : Buffer.from(message, 'utf8').toString('hex');
+                    const isReadable = isAscii(messageDecoded);
+
+                    dispatch(
+                        trezorConnectPopupActions.connectPopupCallThunk({
+                            source,
+                            method: 'ethereumSignMessage',
+                            payload: {
+                                path: account.path,
+                                message: isReadable ? messageDecoded : messageHex,
+                                hex: !isReadable,
+                            },
+                        }),
+                    );
+                    const response =
+                        await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+
+                    if (!response.success) {
+                        return {
+                            error: { code: RPC_ERROR.USER_REJECTED, message: 'Signing rejected' },
+                        };
+                    }
+
+                    const signed = response.payload as CallMethodResponse<'ethereumSignMessage'>;
+
+                    return { result: sanitizeHex(signed.signature) };
+                }
+                case 'eth_signTypedData_v4': {
+                    const parsed = signTypedDataParamsSchema.safeParse(params);
+
+                    if (!parsed.success) {
+                        return {
+                            error: { code: RPC_ERROR.INVALID_PARAMS, message: 'Invalid params' },
+                        };
+                    }
+
+                    const [, data] = parsed.data;
+                    const typedData: unknown = typeof data === 'string' ? JSON.parse(data) : data;
+
+                    // @trezor/connect computes EIP-712 hashes internally (incl. the
+                    // T1B1 path) since Connect 10 — pass the data through for every
+                    // model. Firmware that lacks typed-data support surfaces a clear
+                    // error from the device, mapped below.
+                    const payload: EthereumSignTypedData<EthereumSignTypedDataTypes> = {
+                        path: account.path,
+                        data: typedData as EthereumSignTypedData<EthereumSignTypedDataTypes>['data'],
+                        metamask_v4_compat: true,
+                    };
+
+                    dispatch(
+                        trezorConnectPopupActions.connectPopupCallThunk({
+                            source,
+                            method: 'ethereumSignTypedData',
+                            payload,
+                        }),
+                    );
+                    const response =
+                        await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+
+                    if (!response.success) {
+                        return {
+                            error: {
+                                code: RPC_ERROR.USER_REJECTED,
+                                message:
+                                    'Typed-data signing was rejected or is unsupported by this Trezor firmware',
+                            },
+                        };
+                    }
+
+                    const signed = response.payload as CallMethodResponse<'ethereumSignTypedData'>;
+
+                    return { result: sanitizeHex(signed.signature) };
                 }
                 default:
                     return {
