@@ -1,6 +1,10 @@
 import * as mdx from 'eslint-plugin-mdx';
 
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import {
+    eslint,
+    globalNoExtraneousDependenciesDevDependencies,
+    noCastedObjectHelpersSyntax,
+} from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -30,7 +34,8 @@ export default [
         rules: {
             'no-console': 'off',
             'import/no-default-export': 'off', // Todo: shall be fixed
-            'no-restricted-syntax': 'off', // Todo: shall be fixed
+            // keep the casted-Object-helper ban active; the rest of no-restricted-syntax stays off (legacy getState/state-as-any debt)
+            'no-restricted-syntax': ['error', ...noCastedObjectHelpersSyntax],
             '@typescript-eslint/no-restricted-imports': 'off',
             '@typescript-eslint/no-shadow': 'off', // Todo: shall be fixed
             'react/jsx-filename-extension': [
@@ -48,6 +53,14 @@ export default [
                     ],
                 },
             ],
+        },
+    },
+    {
+        // the catch-all override above has no `files` key, so it re-enables no-restricted-syntax
+        // for .mdx too; keep MDX exempt (it intentionally disables the whole rule)
+        files: ['**/*.mdx'],
+        rules: {
+            'no-restricted-syntax': 'off',
         },
     },
 ];
