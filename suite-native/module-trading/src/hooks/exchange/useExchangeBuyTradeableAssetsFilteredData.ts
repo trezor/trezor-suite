@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectAddressValidatorDep } from '@suite-common/address';
@@ -16,7 +15,7 @@ export const useExchangeBuyTradeableAssetsFilteredData = () => {
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const { watch } = useExchangeFormContext();
     const sendAsset = watch('sendAsset');
-    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const supportedCoins = addressValidator.getSupportedCoins();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectExchangeBuyTradeableAssets(state, supportedCoins, sendAsset?.cryptoId),
     );

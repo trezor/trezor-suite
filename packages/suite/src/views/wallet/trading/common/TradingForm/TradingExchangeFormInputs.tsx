@@ -131,7 +131,7 @@ export const TradingExchangeFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
 
-    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const supportedCoins = addressValidator.getSupportedCoins();
     const exchangeBuySupportedCryptoIds = useSelector(state =>
         selectTradingExchangeBuyCryptoIds(state, supportedCoins),
     );
