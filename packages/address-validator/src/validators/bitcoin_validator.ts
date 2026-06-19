@@ -10,10 +10,11 @@ import { typedObjectKeys } from '@trezor/utils';
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
 import * as bech32 from '../crypto/bech32';
-import type { HashFunction } from '../crypto/types';
 import type { NetworkEnvironment } from '../networkEnvironment';
 import { bchValidator } from './bch_validator';
 import type { NetworkSymbol } from '../networkTypes';
+
+type HashFunction = 'sha256' | 'blake256' | 'blake256keccak256' | 'keccak256';
 
 type BitcoinCurrency = {
     symbol: NetworkSymbol;
