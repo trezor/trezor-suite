@@ -1,8 +1,6 @@
-import styled from 'styled-components';
-
 import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -15,23 +13,17 @@ import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanne
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xl};
-`;
-
 export const Dashboard = () => {
     useLayout('Home', <PageHeader />);
     useNotificationForDisconnectedDevice();
 
     return (
-        <Column gap={32} data-testid="@dashboard/index">
-            <Container>
+        <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
+            <Column gap={spacings.xl}>
                 <OutOfQuotaBanner />
                 <ContextMessage context={Context.getGeneral('dashboard')} />
                 <PortfolioCard />
-            </Container>
+            </Column>
             <DashboardPromoBanner />
             <AssetsView />
             <DashboardFooter />
