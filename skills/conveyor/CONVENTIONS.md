@@ -31,7 +31,16 @@ process steps — this file is the canonical *what/always*.
 
   </details>
   ```
-
+- **One dashboard comment, edited in place.** A station's status/dashboard comment
+  (the `## 🤖 …` one) is **a single comment you keep current by editing it** — record
+  its id when you create it and `gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -F body=@file`
+  on every update (the `in-progress` state and the final state are the **same comment**,
+  not two posts). Find it by its heading; if a prior run left duplicates, keep the
+  newest and **delete the rest** (`gh api -X DELETE …/issues/comments/<id>`). You have
+  `gh`, so editing always works — **never** post a second dashboard, and **never** claim
+  you cannot edit it. A "this run is on the GitHub MCP, cannot edit in place" note is
+  **false** — do not invent it; if a `gh` call genuinely fails, fix the call, don't
+  double-post.
 ## Locking & pushes
 
 - The `*-in-progress` label is **advisory** — two agents can race the

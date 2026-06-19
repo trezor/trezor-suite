@@ -284,11 +284,18 @@ Keep the review status comment current (template below). It is the human's
 one-stop dashboard for "what did the agents find, what did they fix, what is left
 for me".
 
-**Locate it idempotently — there must be exactly one.** Find your status comment
-by matching the `## 🤖 Review status` heading among the PR's comments. If zero
-match, create it; if exactly one matches, edit that one in place; if more than one
-matches (a crashed re-run double-posted), reconcile by keeping the newest and
-deleting the rest. Never blindly post a new comment.
+**Locate it idempotently — exactly one, edited in place** (see CONVENTIONS "One
+dashboard comment"). Find your status comment by the `## 🤖 Review status` heading;
+**remember its comment id when you create it**, and on every later update **edit that
+same comment** — `gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -F body=@file`.
+The intermediate `State: in-progress` dashboard and the final `passed` / `needs-human`
+dashboard are the **same comment updated**, never a second post. If zero match, create
+one; if more than one matches (a prior run double-posted), keep the newest and
+**delete the rest** (`gh api -X DELETE repos/.../issues/comments/<id>`). You always
+have `gh` here, so editing is a plain PATCH — **never** post a second `🤖 Review
+status` comment, and **never** claim you cannot edit it. A "this run is on the GitHub
+MCP / cannot edit a comment in place" note is **false** — do not write it; if a `gh`
+call ever truly fails, fix the call, do not double-post.
 
 ### 8. Freshness check (before any clean hand-off)
 
