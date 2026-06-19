@@ -15696,10 +15696,8 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    cross-fetch: "npm:^4.1.0"
     golomb: "npm:1.2.0"
     n64: "npm:^0.2.10"
-    node-fetch: "npm:^3.3.2"
     socks-proxy-agent: "npm:8.0.5"
     ws: "npm:^8.20.0"
   languageName: unknown
