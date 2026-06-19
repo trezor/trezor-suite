@@ -31,6 +31,7 @@ import {
     classifyMethod,
     eip1193RequestSchema,
     getCatalogEntryById,
+    switchChainParamsSchema,
 } from '@suite/dapp-browser';
 
 import { dappBrowserRpcEndpoints } from '../config';
@@ -80,12 +81,39 @@ const handleStateMethod = (method: string, grant: DappGrant | undefined): Provid
             return { ok: true, result: [{ parentCapability: 'eth_accounts' }] };
         case 'wallet_getPermissions':
             return { ok: true, result: grant ? [{ parentCapability: 'eth_accounts' }] : [] };
-        case 'wallet_switchEthereumChain':
-            // M6 implements switching; until then only the connected chain exists.
-            return denied(RPC_ERROR.UNRECOGNIZED_CHAIN, 'Chain switching is not yet supported');
         default:
             return denied(RPC_ERROR.UNSUPPORTED_METHOD, `${method} is not supported`);
     }
+};
+
+// wallet_switchEthereumChain (§6, EIP-3326): switch only to a chain Suite has a
+// bundled RPC endpoint for, else 4902. PoC ships Ethereum mainnet only, so any
+// other chain self-limits the dApp — a clean demo of the deny path.
+const handleSwitchChain = (params: unknown): ProviderResult => {
+    const parsed = switchChainParamsSchema.safeParse(params);
+
+    if (!parsed.success) {
+        return denied(RPC_ERROR.INVALID_PARAMS, 'Invalid params');
+    }
+
+    const targetChainId = parseInt(parsed.data[0].chainId, 16);
+
+    if (!dappBrowserRpcEndpoints[targetChainId]) {
+        return denied(RPC_ERROR.UNRECOGNIZED_CHAIN, `Chain ${targetChainId} is not available`);
+    }
+
+    if (activeDapp) {
+        activeDapp.grant = {
+            address: activeDapp.grant?.address ?? '',
+            chainId: targetChainId,
+        };
+        activeDapp.view.webContents.send(DAPP_PROVIDER_IPC.EVENT, {
+            event: 'chainChanged',
+            data: toHexChainId(targetChainId),
+        });
+    }
+
+    return { ok: true, result: null };
 };
 
 // node lane (§10): forward the read raw to a Suite-bundled per-chain JSON-RPC
@@ -151,7 +179,9 @@ const handleProviderRequest = (
 
     switch (lane) {
         case 'state':
-            return handleStateMethod(method, activeDapp?.grant);
+            return method === 'wallet_switchEthereumChain'
+                ? handleSwitchChain(params)
+                : handleStateMethod(method, activeDapp?.grant);
         case 'node':
             return handleNodeMethod(method, params, activeDapp?.grant?.chainId ?? 1);
         case 'device':
