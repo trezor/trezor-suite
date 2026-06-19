@@ -233,5 +233,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         dappBrowserReload: () => ipcRenderer.invoke('dapp-browser/reload'),
         dappBrowserGoBack: () => ipcRenderer.invoke('dapp-browser/go-back'),
         dappBrowserGoForward: () => ipcRenderer.invoke('dapp-browser/go-forward'),
+        dappBrowserDispatchResponse: response =>
+            ipcRenderer.invoke('dapp-browser/dispatch-response', response),
     };
 };

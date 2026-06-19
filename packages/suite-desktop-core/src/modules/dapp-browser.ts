@@ -19,6 +19,7 @@
  * Navigation is hard-locked to the catalog origin; in-view popups are denied and
  * external links open in the OS browser.
  */
+import { randomUUID } from 'crypto';
 import { WebContentsView, ipcMain as electronIpcMain, session, shell } from 'electron';
 import path from 'path';
 
@@ -41,6 +42,9 @@ export const SERVICE_NAME = 'dapp-browser';
 // Ephemeral session — no `persist:` prefix, so nothing the dApp stores survives
 // a restart (§8). Isolated from the Suite renderer's default session.
 const DAPP_SESSION_PARTITION = 'dapp-browser';
+
+// A device-lane request can sit on the on-device confirmation for a while.
+const DEVICE_REQUEST_TIMEOUT_MS = 5 * 60 * 1000;
 
 /** Visibility grant pushed from the renderer — never a signing approval (§8). */
 type DappGrant = {
@@ -129,7 +133,12 @@ const handleNodeMethod = async (
     }
 };
 
-const handleProviderRequest = (payload: unknown): ProviderResult | Promise<ProviderResult> => {
+type DispatchDevice = (method: string, params: unknown) => Promise<ProviderResult>;
+
+const handleProviderRequest = (
+    payload: unknown,
+    dispatchDevice: DispatchDevice,
+): ProviderResult | Promise<ProviderResult> => {
     // Validate the untrusted request envelope at the boundary (§7, §12).
     const parsed = eip1193RequestSchema.safeParse(payload);
 
@@ -146,8 +155,8 @@ const handleProviderRequest = (payload: unknown): ProviderResult | Promise<Provi
         case 'node':
             return handleNodeMethod(method, params, activeDapp?.grant?.chainId ?? 1);
         case 'device':
-            // On-device signing lands in M4 (eth_sendTransaction) and M5 (sign/typed).
-            return denied(RPC_ERROR.INTERNAL_ERROR, `${method} is not yet supported`);
+            // Relayed to the Suite renderer for on-device signing (Invariant 0).
+            return dispatchDevice(method, params);
         case 'deny':
             return denied(RPC_ERROR.UNSUPPORTED_METHOD, `${method} is not supported`);
         default:
@@ -166,6 +175,42 @@ export const isAllowedDappNavigation = (contents: Electron.WebContents, origin: 
 export const init: ModuleInit = ({ mainWindowProxy }) => {
     const { logger } = global;
 
+    // device-lane requests awaiting a response from the Suite renderer.
+    const pendingDeviceRequests = new Map<string, (result: ProviderResult) => void>();
+
+    const dispatchDeviceRequest: DispatchDevice = (method, params) =>
+        new Promise(resolve => {
+            const mainWindow = mainWindowProxy.getInstance();
+
+            if (!mainWindow || !activeDapp?.grant) {
+                resolve(denied(RPC_ERROR.UNAUTHORIZED, 'No connected account'));
+
+                return;
+            }
+
+            const requestId = randomUUID();
+            const timeout = setTimeout(() => {
+                if (pendingDeviceRequests.delete(requestId)) {
+                    resolve(denied(RPC_ERROR.USER_REJECTED, 'Request timed out'));
+                }
+            }, DEVICE_REQUEST_TIMEOUT_MS);
+
+            pendingDeviceRequests.set(requestId, result => {
+                clearTimeout(timeout);
+                resolve(result);
+            });
+
+            mainWindow.webContents.send('dapp-browser/dispatch-request', {
+                requestId,
+                method,
+                params,
+                address: activeDapp.grant.address,
+                chainId: activeDapp.grant.chainId,
+                origin: activeDapp.entry.origin,
+                appName: activeDapp.entry.name,
+            });
+        });
+
     const closeDapp = () => {
         if (!activeDapp) {
             return;
@@ -173,6 +218,12 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
 
         const { view } = activeDapp;
         activeDapp = undefined;
+
+        // Fail any in-flight signing requests rather than leaving them hanging.
+        pendingDeviceRequests.forEach(resolve =>
+            resolve(denied(RPC_ERROR.DISCONNECTED, 'dApp closed')),
+        );
+        pendingDeviceRequests.clear();
 
         try {
             mainWindowProxy.getInstance()?.contentView.removeChildView(view);
@@ -288,9 +339,19 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
         activeDapp?.view.webContents.navigationHistory.goForward();
     });
 
+    // Suite renderer returns the result of a relayed device-lane request.
+    ipcMain.handle('dapp-browser/dispatch-response', (_, { requestId, result, error }) => {
+        const resolve = pendingDeviceRequests.get(requestId);
+
+        if (resolve) {
+            pendingDeviceRequests.delete(requestId);
+            resolve(error ? { ok: false, error } : { ok: true, result });
+        }
+    });
+
     // dApp-only provider bridge (raw channel from the dApp preload).
     electronIpcMain.handle(DAPP_PROVIDER_IPC.REQUEST, (_event, payload) =>
-        handleProviderRequest(payload),
+        handleProviderRequest(payload, dispatchDeviceRequest),
     );
 
     // Tear down if the main window goes away.
