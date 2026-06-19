@@ -16,7 +16,6 @@ export const TRADING_SELL_THUNK_PREFIX = `${TRADING_SELL_PREFIX}/thunk`;
 
 export const TRADING_DEFAULT_CRYPTO_CURRENCY = 'btc' satisfies NetworkSymbol;
 export const TRADING_DEFAULT_PAYMENT_METHOD = 'creditCard' as const;
-export const TRADING_DEFAULT_FIAT_CURRENCY = 'eur' as const;
 export const TRADING_DEFAULT_SELL_FLOWS: SellFiatFlowType[] = ['BANK_ACCOUNT', 'PAYMENT_GATE'];
 
 export const TRADING_EXCHANGE_RATE = 'rateType';
@@ -73,14 +72,3 @@ export const CRYPTO_PLATFORM_SEPARATOR = '--';
  * Used for L2 networks (e.g. base, op)
  */
 export const CONTRACT_ADDRESS_FOR_NATIVE_TOKEN = '0x0000000000000000000000000000000000000000';
-
-export const TOKEN_SELECT_SELECTABLE_NETWORKS: NetworkSymbol[] = [
-    'eth',
-    'sol',
-    'pol',
-    'bsc',
-    'base',
-    'op',
-    'avax',
-    'arb',
-];
