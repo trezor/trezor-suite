@@ -48,7 +48,7 @@
         "@solana-program/compute-budget": "^0.15.0",
         "@solana-program/memo": "^0.7.0",
         "@solana-program/stake": "^0.6.1",
-        "@solana-program/system": "^0.7.0",
+        "@solana-program/system": "^0.12.2",
         "@solana-program/token": "^0.5.1",
         "@solana-program/token-2022": "^0.4.2",
         "@solana/kit": "^6.9.0",

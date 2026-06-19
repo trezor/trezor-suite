@@ -9191,12 +9191,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana-program/system@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@solana-program/system@npm:0.7.0"
+"@solana-program/system@npm:^0.12.2":
+  version: 0.12.2
+  resolution: "@solana-program/system@npm:0.12.2"
   peerDependencies:
-    "@solana/kit": ^2.1.0
-  checksum: 10/d17bd89d9fa8ef5b25e453b945a243075b5bb45d2cc0bf83e43651112b9eb2e494415f655cb412c483644d671fed1d47b22548717a17dea209e6a6e73c7ba691
+    "@solana/kit": ^6.4.0
+  checksum: 10/d4651276c46e256f3384b5f852c3effae82d6610bd4709dfff47c6dab0fb3bb70fc7a820c24f9c0a7ad7c1d6510f09b1163be8d1561d3af98ff74290adbae5d0
   languageName: node
   linkType: hard
 
@@ -16007,7 +16007,7 @@ __metadata:
     "@solana-program/compute-budget": "npm:^0.15.0"
     "@solana-program/memo": "npm:^0.7.0"
     "@solana-program/stake": "npm:^0.6.1"
-    "@solana-program/system": "npm:^0.7.0"
+    "@solana-program/system": "npm:^0.12.2"
     "@solana-program/token": "npm:^0.5.1"
     "@solana-program/token-2022": "npm:^0.4.2"
     "@solana/kit": "npm:^6.9.0"
