@@ -5426,6 +5426,10 @@ export const messages = defineMessages({
         id: 'TR_DAPP_BROWSER_RELOAD',
         defaultMessage: 'Reload',
     },
+    TR_DAPP_BROWSER_WALLETCONNECT: {
+        id: 'TR_DAPP_BROWSER_WALLETCONNECT',
+        defaultMessage: 'WalletConnect',
+    },
     TR_DAPP_BROWSER_CONSENT_HEADING: {
         id: 'TR_DAPP_BROWSER_CONSENT_HEADING',
         defaultMessage: 'Open {dappName}?',

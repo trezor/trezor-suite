@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { type DappCatalogEntry } from '@suite/dapp-browser';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import {
     Button,
     Column,
@@ -15,6 +16,8 @@ import {
 } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings, spacingsPx } from '@trezor/theme';
+
+import { useDispatch } from 'src/hooks/suite';
 
 const Bar = styled.div`
     display: flex;
@@ -69,6 +72,16 @@ export const DappTopBar = ({
     onSelectAccount,
     onClose,
 }: DappTopBarProps) => {
+    const dispatch = useDispatch();
+
+    // §5: the user copies the dApp's wc: URI, then this reads the clipboard and
+    // hands it to Suite's existing WalletConnect pairing flow (which validates
+    // and toasts on an invalid URI).
+    const handleWalletConnect = async () => {
+        const uri = await desktopApi.dappBrowserReadClipboard();
+        dispatch(walletConnectPairThunk({ uri }));
+    };
+
     const accountItems = accounts.map(account => ({
         label: accountLabel(account),
         onClick: () => onSelectAccount(account.descriptor),
@@ -127,6 +140,15 @@ export const DappTopBar = ({
                 </Text>
                 <Dropdown items={accountItems} iconName="caretDown" />
             </AccountControl>
+
+            <Button
+                intent="neutral"
+                priority="secondary"
+                size="small"
+                onClick={handleWalletConnect}
+            >
+                <Translation id="TR_DAPP_BROWSER_WALLETCONNECT" />
+            </Button>
 
             <Button intent="neutral" priority="secondary" size="small" onClick={onClose}>
                 <Translation id="TR_DAPP_BROWSER_CLOSE" />

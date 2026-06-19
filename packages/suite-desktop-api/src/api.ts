@@ -203,6 +203,7 @@ export interface InvokeChannels {
         result?: unknown;
         error?: { code: number; message: string };
     }) => void;
+    'dapp-browser/read-clipboard': () => string;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -303,4 +304,5 @@ export type DesktopApi = {
     dappBrowserGoBack: DesktopApiInvoke<'dapp-browser/go-back'>;
     dappBrowserGoForward: DesktopApiInvoke<'dapp-browser/go-forward'>;
     dappBrowserDispatchResponse: DesktopApiInvoke<'dapp-browser/dispatch-response'>;
+    dappBrowserReadClipboard: DesktopApiInvoke<'dapp-browser/read-clipboard'>;
 };

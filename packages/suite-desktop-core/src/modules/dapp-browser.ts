@@ -20,7 +20,7 @@
  * external links open in the OS browser.
  */
 import { randomUUID } from 'crypto';
-import { WebContentsView, ipcMain as electronIpcMain, session, shell } from 'electron';
+import { WebContentsView, clipboard, ipcMain as electronIpcMain, session, shell } from 'electron';
 import path from 'path';
 
 import {
@@ -338,6 +338,10 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
     ipcMain.handle('dapp-browser/go-forward', () => {
         activeDapp?.view.webContents.navigationHistory.goForward();
     });
+
+    // WalletConnect shortcut (§5): the user copies a wc: URI, then this reads it.
+    // User-initiated only — never on a timer.
+    ipcMain.handle('dapp-browser/read-clipboard', () => clipboard.readText());
 
     // Suite renderer returns the result of a relayed device-lane request.
     ipcMain.handle('dapp-browser/dispatch-response', (_, { requestId, result, error }) => {
