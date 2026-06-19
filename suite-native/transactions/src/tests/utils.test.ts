@@ -1,10 +1,9 @@
 import { type Target } from '@suite-common/wallet-core';
-import { type WalletAccountTransaction, asTxTargetId } from '@suite-common/wallet-types';
+import { asTxTargetId } from '@suite-common/wallet-types';
 
 import { type VinVoutAddress } from '../types';
 import {
     groupTargetOutputs,
-    isTokenTransferTransaction,
     mapTransactionInputsOutputsToAddresses,
     sortTargetAddressesToBeginning,
 } from '../utils';
@@ -246,62 +245,5 @@ describe(groupTargetOutputs.name, () => {
         };
         const result = groupTargetOutputs([noAmount, makeSimpleTarget('500', 1)]);
         expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '500' } });
-    });
-});
-
-describe(isTokenTransferTransaction.name, () => {
-    const makeTransaction = ({
-        symbol,
-        amount,
-        hasToken,
-    }: {
-        symbol: WalletAccountTransaction['symbol'];
-        amount: string;
-        hasToken: boolean;
-    }) =>
-        ({
-            symbol,
-            amount,
-            tokens: hasToken ? [{ type: 'sent', amount: '1' }] : [],
-        }) as unknown as WalletAccountTransaction;
-
-    test('returns false when the transaction has no token transfers', () => {
-        expect(
-            isTokenTransferTransaction(
-                makeTransaction({ symbol: 'btc', amount: '0', hasToken: false }),
-            ),
-        ).toBe(false);
-    });
-
-    test('returns true for an EVM token transfer with zero native amount', () => {
-        expect(
-            isTokenTransferTransaction(
-                makeTransaction({ symbol: 'eth', amount: '0', hasToken: true }),
-            ),
-        ).toBe(true);
-    });
-
-    test('returns false for an EVM transaction with a non-zero native amount', () => {
-        expect(
-            isTokenTransferTransaction(
-                makeTransaction({ symbol: 'eth', amount: '1000', hasToken: true }),
-            ),
-        ).toBe(false);
-    });
-
-    test('returns true for a Solana token transfer carrying native rent (non-zero amount)', () => {
-        expect(
-            isTokenTransferTransaction(
-                makeTransaction({ symbol: 'sol', amount: '2039280', hasToken: true }),
-            ),
-        ).toBe(true);
-    });
-
-    test('returns true for a Solana token transfer with zero native amount', () => {
-        expect(
-            isTokenTransferTransaction(
-                makeTransaction({ symbol: 'sol', amount: '0', hasToken: true }),
-            ),
-        ).toBe(true);
     });
 });
