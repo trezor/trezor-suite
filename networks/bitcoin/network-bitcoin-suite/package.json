@@ -8,9 +8,13 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@network-module/suite-types": "workspace:*"
+        "@network-module/suite-types": "workspace:*",
+        "@noble/hashes": "^2.0.1",
+        "@scure/base": "^2.0.0",
+        "@trezor/utils": "workspace:*"
     }
 }

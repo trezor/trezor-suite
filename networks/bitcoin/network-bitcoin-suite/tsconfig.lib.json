@@ -7,7 +7,7 @@
             "path": "../../network-module/suite-types/tsconfig.lib.json"
         },
         {
-            "path": "../../../packages/crypto-utils/tsconfig.lib.json"
+            "path": "../../../packages/utils/tsconfig.lib.json"
         }
     ]
 }

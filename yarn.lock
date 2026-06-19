@@ -5728,6 +5728,9 @@ __metadata:
   resolution: "@network-module/bitcoin-suite@workspace:coins/bitcoin/bitcoin-suite"
   dependencies:
     "@network-module/suite-types": "workspace:*"
+    "@noble/hashes": "npm:^2.0.1"
+    "@scure/base": "npm:^2.0.0"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5736,6 +5739,9 @@ __metadata:
   resolution: "@network-module/cardano-suite@workspace:coins/cardano/cardano-suite"
   dependencies:
     "@network-module/suite-types": "workspace:*"
+    "@scure/base": "npm:^2.0.0"
+    cbor: "npm:^10.0.12"
+    crc: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 
@@ -5752,6 +5758,8 @@ __metadata:
   resolution: "@network-module/ripple-suite@workspace:coins/ripple/ripple-suite"
   dependencies:
     "@network-module/suite-types": "workspace:*"
+    "@noble/hashes": "npm:^2.0.1"
+    "@scure/base": "npm:^2.0.0"
   languageName: unknown
   linkType: soft
 
@@ -5768,6 +5776,8 @@ __metadata:
   resolution: "@network-module/stellar-suite@workspace:coins/stellar/stellar-suite"
   dependencies:
     "@network-module/suite-types": "workspace:*"
+    "@scure/base": "npm:^2.0.0"
+    crc: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 
@@ -5784,6 +5794,7 @@ __metadata:
   resolution: "@network-module/tron-suite@workspace:coins/tron/tron-suite"
   dependencies:
     "@network-module/suite-types": "workspace:*"
+    "@noble/hashes": "npm:^2.0.1"
   languageName: unknown
   linkType: soft
 
@@ -10215,6 +10226,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/address@workspace:suite-common/address"
   dependencies:
+    "@network-module/suite-types": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/address-validator": "workspace:*"
@@ -10821,6 +10834,7 @@ __metadata:
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -11089,6 +11103,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/networks": "workspace:*"
@@ -13818,6 +13833,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@rozenite/redux-devtools-plugin": "npm:^1.4.0"
+    "@suite-common/address": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/bip329": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
@@ -13829,6 +13845,7 @@ __metadata:
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption-native": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
@@ -28978,12 +28995,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-tsconfig@npm:^4.14.0, get-tsconfig@npm:^4.7.5":
+"get-tsconfig@npm:^4.14.0":
   version: 4.14.0
   resolution: "get-tsconfig@npm:4.14.0"
   dependencies:
     resolve-pkg-maps: "npm:^1.0.0"
   checksum: 10/f5626971905ca386c9ddeb302504e8a2301b9c05641803267223ebd50b7c81aaf9324d29cf9f4e4ff3f245632c3392aa83719dc6cb3e98b4e4a1702a27c5cc5d
+  languageName: node
+  linkType: hard
+
+"get-tsconfig@npm:^4.7.5":
+  version: 4.7.6
+  resolution: "get-tsconfig@npm:4.7.6"
+  dependencies:
+    resolve-pkg-maps: "npm:^1.0.0"
+  checksum: 10/32da95a89f3ddbabd2a2e36f2a4add51a5e3c2b28f32e3c81494fcdbd43b7d9b42baea77784e62d10f87bb564c5ee908416aabf4c5ca9cdbb2950aa3c247f124
   languageName: node
   linkType: hard
 
@@ -44470,7 +44496,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyglobby@npm:^0.2.11, tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.14, tinyglobby@npm:^0.2.15, tinyglobby@npm:^0.2.16, tinyglobby@npm:^0.2.9":
+"tinyglobby@npm:^0.2.11, tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.14, tinyglobby@npm:^0.2.15, tinyglobby@npm:^0.2.9":
+  version: 0.2.15
+  resolution: "tinyglobby@npm:0.2.15"
+  dependencies:
+    fdir: "npm:^6.5.0"
+    picomatch: "npm:^4.0.3"
+  checksum: 10/d72bd826a8b0fa5fa3929e7fe5ba48fceb2ae495df3a231b6c5408cd7d8c00b58ab5a9c2a76ba56a62ee9b5e083626f1f33599734bed1ffc4b792406408f0ca2
+  languageName: node
+  linkType: hard
+
+"tinyglobby@npm:^0.2.16":
   version: 0.2.17
   resolution: "tinyglobby@npm:0.2.17"
   dependencies:

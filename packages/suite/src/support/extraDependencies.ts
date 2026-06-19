@@ -26,6 +26,7 @@ import {
     selectLanguage,
 } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
@@ -166,6 +167,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
+    const networks = createNetworksCompositionRoot();
+    const addressValidator = createAddressValidator({ networks });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
@@ -181,7 +184,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 
     return {
-        networks: createNetworksCompositionRoot(),
+        networks,
+        addressValidator,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

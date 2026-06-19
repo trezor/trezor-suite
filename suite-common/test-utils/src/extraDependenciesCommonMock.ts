@@ -1,3 +1,4 @@
+import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
 import type { NetworksServiceDep } from '@suite-common/networks';
@@ -57,6 +58,12 @@ const platformEncryptionMock: PlatformEncryption = {
 
 const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
 
+const addressValidatorMock: AddressValidator = {
+    isAddressValid: () => false,
+    getAddressType: () => undefined,
+    getSupportedCoins: () => [],
+};
+
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
     manifest: {
@@ -78,6 +85,7 @@ export const extraDependenciesCommonMock: ExtraDependenciesCommonMock = {
         forgetBluetoothDevice: notImplementedThunk('forgetBluetoothDevice'),
     },
     services: {
+        addressValidator: addressValidatorMock,
         suiteSync: suiteSyncMock,
         bip329: bip329Mock,
         ensureDelegatedIdentityKey: () =>

@@ -5,9 +5,6 @@
     "references": [
         {
             "path": "../../network-module/suite-types/tsconfig.lib.json"
-        },
-        {
-            "path": "../../../packages/crypto-utils/tsconfig.lib.json"
         }
     ]
 }
