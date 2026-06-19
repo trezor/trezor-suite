@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -25,7 +26,7 @@ import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
-import { getTransactionValueSign } from '../utils';
+import { getTransactionValueSign, groupTargetOutputs } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 import { TransactionTarget } from './TransactionTarget';
@@ -131,7 +132,10 @@ export const TransactionListItem = ({
     const firstToken = transaction.tokens[0];
     const isTokenOnlyTransaction = transaction.amount === '0' && firstToken !== undefined;
 
-    const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
+    const allOutputs = useMemo(
+        () => (account !== null ? groupTargetOutputs(createTargets({ transaction, account })) : []),
+        [transaction, account],
+    );
 
     if (isTokenOnlyTransaction)
         return (
