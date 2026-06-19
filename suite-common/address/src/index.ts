@@ -1,3 +1,12 @@
+export type {
+    AddressType,
+    AddressValidator,
+} from '@network-module/suite-types/src/AddressValidator';
+export {
+    createAddressValidator,
+    type AddressValidatorDep,
+    type AddressValidatorDeps,
+} from './AddressValidator';
 export { autocorrectAddress, type AddressCorrection } from './autocorrectAddress';
 export { hasBitcoinCashAddressPrefix } from './hasBitcoinCashAddressPrefix';
 export { isAddressDeprecated } from './isAddressDeprecated';

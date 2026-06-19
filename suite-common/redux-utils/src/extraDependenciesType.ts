@@ -4,6 +4,7 @@ import {
     type ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
+import type { AddressValidatorDep } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
@@ -39,6 +40,7 @@ export type ConnectInitSettings = {
 } & Partial<ConnectSettings>;
 
 export type CommonServices = SuiteSyncDep &
+    AddressValidatorDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep & {

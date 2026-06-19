@@ -2,9 +2,11 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
+import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
+import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
     type ExtraDependenciesStatic,
@@ -79,8 +81,11 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
+    const networks = createNetworksCompositionRoot();
+    const addressValidator = createAddressValidator({ networks });
 
     return {
+        addressValidator,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,
