@@ -1,3 +1,5 @@
+import { sha256 } from '@noble/hashes/sha2.js';
+
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
 import * as cryptoUtils from '../crypto/utils';
@@ -24,9 +26,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
     const offset = len - 4;
     const checkSum = address.slice(offset);
     address = address.slice(0, offset);
-    const hash0 = cryptoUtils.sha256(cryptoUtils.byteArray2hexStr(address));
-    const hash1 = cryptoUtils.hexStr2byteArray(cryptoUtils.sha256(hash0));
-    const checkSum1 = hash1.slice(0, 4);
+    const checkSum1 = Array.from(sha256(sha256(Uint8Array.from(address))).slice(0, 4));
     if (
         checkSum[0] === checkSum1[0] &&
         checkSum[1] === checkSum1[1] &&

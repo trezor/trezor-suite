@@ -1,8 +1,9 @@
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 import { base58xrp } from '@scure/base';
 
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
-import * as cryptoUtils from '../crypto/utils';
 import type { NetworkSymbol } from '../networkTypes';
 
 const ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
@@ -11,8 +12,8 @@ const regexp = new RegExp('^r[' + ALLOWED_CHARS + ']{27,35}$');
 
 function verifyChecksum(address: string): boolean {
     const bytes = base58xrp.decode(address);
-    const computedChecksum = cryptoUtils.sha256Checksum(cryptoUtils.toHex(bytes.slice(0, -4)));
-    const checksum = cryptoUtils.toHex(bytes.slice(-4));
+    const computedChecksum = bytesToHex(sha256(sha256(bytes.slice(0, -4)))).slice(0, 8);
+    const checksum = bytesToHex(bytes.slice(-4));
 
     return computedChecksum === checksum;
 }
