@@ -9200,13 +9200,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana-program/token-2022@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "@solana-program/token-2022@npm:0.4.2"
+"@solana-program/token-2022@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@solana-program/token-2022@npm:0.9.0"
   peerDependencies:
-    "@solana/kit": ^2.1.0
-    "@solana/sysvars": ^2.1.0
-  checksum: 10/77c3aed4b1557aea51bcb41df4c78f0a3cbcd0e1e4331d8ada22ae222f8fc80247c3cbe2fb2ad4a5b918edb1f7f53c19c2cd701e895ca21f2eb94ba847883331
+    "@solana/kit": ^6.0.0
+    "@solana/sysvars": ^5.0
+  checksum: 10/b899997080d5a68685d50bd25eab1e171f083ffc65bc0e82f6f8bca85f27e92c7fb725e67aff656f5941529ff05d848d8bc9e3520b671ee6c42b97eb94a7ca22
   languageName: node
   linkType: hard
 
@@ -16011,7 +16011,7 @@ __metadata:
     "@solana-program/stake": "npm:^0.6.1"
     "@solana-program/system": "npm:^0.12.2"
     "@solana-program/token": "npm:^0.13.0"
-    "@solana-program/token-2022": "npm:^0.4.2"
+    "@solana-program/token-2022": "npm:^0.9.0"
     "@solana/kit": "npm:^6.9.0"
     "@solana/rpc-api": "npm:^6.9.0"
     "@solana/rpc-types": "npm:^6.9.0"
