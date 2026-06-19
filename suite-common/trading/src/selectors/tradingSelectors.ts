@@ -12,11 +12,7 @@ import {
 
 import { type DeviceRootState, selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import {
-    type NetworkSymbolExtended,
-    type NetworkType,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccounts,
@@ -27,6 +23,7 @@ import { getSupportedCoins } from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 import { unique } from '@trezor/utils';
 
+import { TRADING_SLIP24_SUPPORTED_NETWORK_TYPES } from '../constants';
 import {
     EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
     type GroupedTradingExchangeQuotes,
@@ -888,9 +885,9 @@ export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndA
         if (!account) return false;
 
         const isFirmwareVersionSlip24Compatible = !unavailableCapabilities?.['slip24'];
-        // TODO: slip24 - can be removed when slip24 is enabled for all networks
-        const supportedNetworks: NetworkType[] = ['bitcoin', 'ethereum', 'solana', 'stellar'];
-        const isNetworkSupported = supportedNetworks.includes(account.networkType);
+        const isNetworkSupported = TRADING_SLIP24_SUPPORTED_NETWORK_TYPES.includes(
+            account.networkType,
+        );
 
         return isSlip24Active && isFirmwareVersionSlip24Compatible && isNetworkSupported;
     },
