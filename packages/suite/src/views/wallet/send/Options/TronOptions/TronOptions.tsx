@@ -53,20 +53,6 @@ export const TronOptions = () => {
                         </Button>
                     </Tooltip>
                 )}
-
-                {!isDataEnabled && !token && (
-                    <Tooltip content={<Translation id="DATA_ADD_TOOLTIP" />} cursor="pointer">
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            iconLeft="database"
-                            data-testid="send/open-tron-data"
-                            onClick={toggleData}
-                        >
-                            <Translation id="DATA_ADD" />
-                        </Button>
-                    </Tooltip>
-                )}
             </Row>
 
             {isNoteEnabled && <TronNote close={toggleNote} />}
