@@ -99,6 +99,15 @@ export const SendHeader = () => {
             isHidden: networkType !== 'ethereum' && networkType !== 'tron',
         },
         {
+            onClick: () => {
+                toggleOption('destinationTag');
+                composeTransaction();
+            },
+            closeOnClick: true,
+            label: <Translation id={networkType === 'tron' ? 'TR_TRON_NOTE_ADD' : 'MEMO_SWITCH'} />,
+            isHidden: networkType !== 'tron' && networkType !== 'solana',
+        },
+        {
             'data-testid': '@send/header-dropdown/broadcast',
             onClick: () => {
                 toggleOption('broadcast');

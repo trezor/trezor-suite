@@ -11057,6 +11057,10 @@ export const messages = defineMessages({
         id: 'TR_SOLANA_LIMIT_HISTORY_DESCRIPTION',
         defaultMessage: 'For the full history, view on the blockchain explorer.',
     },
+    TR_SOLANA_MEMO_TOOLTIP: {
+        id: 'TR_SOLANA_MEMO_TOOLTIP',
+        defaultMessage: 'Add a memo to the transaction.',
+    },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
         defaultMessage: 'Got it',

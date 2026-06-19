@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { Card, Column, H4, IconButton, Row, Textarea } from '@trezor/components';
+import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -37,9 +37,12 @@ export const SolanaMemo = ({ close }: SolanaMemoProps) => {
         <Card>
             <Column gap={12}>
                 <Row justifyContent="space-between">
-                    <H4 typographyStyle="body-md">
-                        <Translation id="MEMO" />
-                    </H4>
+                    <Tooltip hasIcon content={<Translation id="TR_SOLANA_MEMO_TOOLTIP" />}>
+                        <H4 typographyStyle="body-md">
+                            <Translation id="MEMO" />
+                        </H4>
+                    </Tooltip>
+
                     <IconButton
                         intent="neutral"
                         priority="secondary"
