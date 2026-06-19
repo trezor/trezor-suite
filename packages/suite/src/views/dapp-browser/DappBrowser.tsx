@@ -15,6 +15,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { ConsentInterstitial } from './ConsentInterstitial';
 import { DappViewport } from './DappViewport';
 import { useDappConnection } from './useDappConnection';
+import { useDappRequestHandler } from './useDappRequestHandler';
 
 const Centered = styled.div`
     display: flex;
@@ -33,6 +34,8 @@ type DappBrowserSessionProps = {
 const DappBrowserSession = ({ entry }: DappBrowserSessionProps) => {
     const dispatch = useDispatch();
     const { accounts, selectedAddress, connect, selectAccount } = useDappConnection(entry);
+
+    useDappRequestHandler();
 
     const [stage, setStage] = useState<Stage>('consent');
     const [isOpening, setIsOpening] = useState(false);

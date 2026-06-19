@@ -109,6 +109,18 @@ export interface RendererChannels {
     'bio-auth/validation-status-changed': boolean;
     'bio-auth/bio-auth-availability-changed': boolean;
     'bio-auth/settings-changed': BioAuthSettings;
+
+    // dApp browser: a `device`-lane request relayed to the Suite renderer for
+    // on-device signing (it owns redux + TrezorConnect; Invariant 0).
+    'dapp-browser/dispatch-request': {
+        requestId: string;
+        method: string;
+        params?: unknown;
+        address: string;
+        chainId: number;
+        origin: string;
+        appName: string;
+    };
 }
 
 // Invocation from renderer process
@@ -191,6 +203,11 @@ export interface InvokeChannels {
     'dapp-browser/reload': () => void;
     'dapp-browser/go-back': () => void;
     'dapp-browser/go-forward': () => void;
+    'dapp-browser/dispatch-response': (response: {
+        requestId: string;
+        result?: unknown;
+        error?: { code: number; message: string };
+    }) => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -290,4 +307,5 @@ export type DesktopApi = {
     dappBrowserReload: DesktopApiInvoke<'dapp-browser/reload'>;
     dappBrowserGoBack: DesktopApiInvoke<'dapp-browser/go-back'>;
     dappBrowserGoForward: DesktopApiInvoke<'dapp-browser/go-forward'>;
+    dappBrowserDispatchResponse: DesktopApiInvoke<'dapp-browser/dispatch-response'>;
 };
