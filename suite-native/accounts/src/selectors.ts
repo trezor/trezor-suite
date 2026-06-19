@@ -40,6 +40,7 @@ import {
     type RatesByKey,
     type TokenAddress,
     type TokenInfoBranded,
+    asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import {
@@ -57,6 +58,7 @@ import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-nat
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { type AccountListSection, type GroupedByTypeAccounts } from './types';
 import {
@@ -181,7 +183,7 @@ export const selectNetworkFilterOptions = createMemoizedSelector(
     },
 );
 
-export const selectAccountFiatBalance = createMemoizedSelector(
+const selectAccountFiatBalanceValue = createMemoizedSelector(
     [
         selectCurrentFiatRates,
         selectAccountByKey,
@@ -197,7 +199,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
     ],
     (fiatRates, account, localCurrency, shouldIncludeStaking, shouldIncludeTokens) => {
         if (!account) {
-            return BASE_CURRENCY_ZERO;
+            return BASE_CURRENCY_ZERO.toFixed();
         }
 
         const totalBalance = getAccountFiatBalance({
@@ -209,11 +211,16 @@ export const selectAccountFiatBalance = createMemoizedSelector(
         });
 
         if (!totalBalance) {
-            return BASE_CURRENCY_ZERO;
+            return BASE_CURRENCY_ZERO.toFixed();
         }
 
-        return totalBalance;
+        return totalBalance.toFixed();
     },
+);
+
+export const selectAccountFiatBalance = createMemoizedSelector(
+    [selectAccountFiatBalanceValue],
+    fiatBalance => asBaseCurrencyAmount(new BigNumber(fiatBalance)),
 );
 
 export const selectAccountTokenFiatBalance = createMemoizedSelector(
