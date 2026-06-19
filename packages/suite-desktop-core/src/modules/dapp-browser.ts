@@ -1,5 +1,5 @@
 /**
- * dApp-browser host module (M1).
+ * dApp-browser host module (M1 + M2).
  *
  * Owns a single sandboxed `WebContentsView` that renders a catalog dApp origin
  * "below" the Suite-rendered top bar. A `WebContentsView` is a native layer
@@ -8,13 +8,29 @@
  * the view with `setBounds`. The view starts hidden and is revealed only once
  * the first bounds arrive, to avoid a full-window flash.
  *
- * Navigation is hard-locked to the catalog origin; in-view popups are denied
- * and external links are opened in the OS browser. No EIP-1193 provider is
- * injected yet — that (and its dedicated preload) lands in M2.
+ * The view loads a dApp-only preload that injects an EIP-1193 / EIP-6963
+ * provider and bridges its requests here over `DAPP_PROVIDER_IPC.REQUEST`. This
+ * module classifies each request (§7) and answers the `state` lane from the
+ * ephemeral grant the renderer pushes via `set-grant` (the selected address and
+ * chainId). The `node` and `device` lanes land in M3 and M4/M5. Provider events
+ * (accountsChanged / chainChanged) are pushed back to the page over
+ * `DAPP_PROVIDER_IPC.EVENT`.
+ *
+ * Navigation is hard-locked to the catalog origin; in-view popups are denied and
+ * external links open in the OS browser.
  */
-import { WebContentsView, session, shell } from 'electron';
+import { WebContentsView, ipcMain as electronIpcMain, session, shell } from 'electron';
+import path from 'path';
 
-import { type DappCatalogEntry, getCatalogEntryById } from '@suite/dapp-browser';
+import {
+    DAPP_PROVIDER_IPC,
+    type DappCatalogEntry,
+    type ProviderResult,
+    RPC_ERROR,
+    classifyMethod,
+    eip1193RequestSchema,
+    getCatalogEntryById,
+} from '@suite/dapp-browser';
 
 import { ipcMain } from '../typed-electron';
 import type { ModuleInit } from './module';
@@ -25,12 +41,72 @@ export const SERVICE_NAME = 'dapp-browser';
 // a restart (§8). Isolated from the Suite renderer's default session.
 const DAPP_SESSION_PARTITION = 'dapp-browser';
 
+/** Visibility grant pushed from the renderer — never a signing approval (§8). */
+type DappGrant = {
+    address: string;
+    chainId: number;
+};
+
 type ActiveDapp = {
     view: WebContentsView;
     entry: DappCatalogEntry;
+    grant?: DappGrant;
 };
 
 let activeDapp: ActiveDapp | undefined;
+
+const toHexChainId = (chainId: number) => `0x${chainId.toString(16)}`;
+
+const denied = (code: number, message: string): ProviderResult => ({
+    ok: false,
+    error: { code, message },
+});
+
+const handleStateMethod = (method: string, grant: DappGrant | undefined): ProviderResult => {
+    switch (method) {
+        case 'eth_requestAccounts':
+        case 'eth_accounts':
+            return { ok: true, result: grant ? [grant.address] : [] };
+        case 'eth_chainId':
+            return { ok: true, result: grant ? toHexChainId(grant.chainId) : '0x1' };
+        case 'net_version':
+            return { ok: true, result: grant ? String(grant.chainId) : '1' };
+        case 'wallet_requestPermissions':
+            return { ok: true, result: [{ parentCapability: 'eth_accounts' }] };
+        case 'wallet_getPermissions':
+            return { ok: true, result: grant ? [{ parentCapability: 'eth_accounts' }] : [] };
+        case 'wallet_switchEthereumChain':
+            // M6 implements switching; until then only the connected chain exists.
+            return denied(RPC_ERROR.UNRECOGNIZED_CHAIN, 'Chain switching is not yet supported');
+        default:
+            return denied(RPC_ERROR.UNSUPPORTED_METHOD, `${method} is not supported`);
+    }
+};
+
+const handleProviderRequest = (payload: unknown): ProviderResult => {
+    // Validate the untrusted request envelope at the boundary (§7, §12).
+    const parsed = eip1193RequestSchema.safeParse(payload);
+
+    if (!parsed.success) {
+        return denied(RPC_ERROR.INVALID_PARAMS, 'Invalid request');
+    }
+
+    const { method } = parsed.data;
+    const lane = classifyMethod('eip155', method);
+
+    switch (lane) {
+        case 'state':
+            return handleStateMethod(method, activeDapp?.grant);
+        case 'node':
+        case 'device':
+            // node → M3 (read-RPC forwarder), device → M4/M5 (on-device signing).
+            return denied(RPC_ERROR.INTERNAL_ERROR, `${method} is not yet supported`);
+        case 'deny':
+            return denied(RPC_ERROR.UNSUPPORTED_METHOD, `${method} is not supported`);
+        default:
+            return denied(RPC_ERROR.UNSUPPORTED_METHOD, `${method} is not supported`);
+    }
+};
 
 /**
  * Consulted by the global `will-navigate` guard in `app.ts` so the dApp view may
@@ -85,7 +161,7 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
                 sandbox: true,
                 nodeIntegration: false,
                 webSecurity: true,
-                // No preload in M1 — the EIP-1193 provider is injected in M2.
+                preload: path.join(__dirname, 'dapp-provider-preload.js'),
             },
         });
 
@@ -140,6 +216,35 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
     ipcMain.handle('dapp-browser/set-visible', (_, { visible }) => {
         activeDapp?.view.setVisible(visible);
     });
+
+    // Renderer pushes the current visibility grant (selected address + chainId).
+    ipcMain.handle('dapp-browser/set-grant', (_, grant) => {
+        if (activeDapp) {
+            activeDapp.grant = grant;
+        }
+    });
+
+    // Renderer pushes a provider event (accountsChanged / chainChanged) to the dApp.
+    ipcMain.handle('dapp-browser/emit-event', (_, payload) => {
+        activeDapp?.view.webContents.send(DAPP_PROVIDER_IPC.EVENT, payload);
+    });
+
+    ipcMain.handle('dapp-browser/reload', () => {
+        activeDapp?.view.webContents.reload();
+    });
+
+    ipcMain.handle('dapp-browser/go-back', () => {
+        activeDapp?.view.webContents.navigationHistory.goBack();
+    });
+
+    ipcMain.handle('dapp-browser/go-forward', () => {
+        activeDapp?.view.webContents.navigationHistory.goForward();
+    });
+
+    // dApp-only provider bridge (raw channel from the dApp preload).
+    electronIpcMain.handle(DAPP_PROVIDER_IPC.REQUEST, (_event, payload) =>
+        handleProviderRequest(payload),
+    );
 
     // Tear down if the main window goes away.
     mainWindowProxy.on('destroy', closeDapp);

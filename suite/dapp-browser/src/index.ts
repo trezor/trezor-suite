@@ -13,3 +13,5 @@ export * from './constants';
 export * from './schemas';
 export * from './methodClassification';
 export * from './catalog';
+export * from './provider/messages';
+export * from './provider/injectedProvider';
