@@ -3,6 +3,7 @@ import { type ComponentType } from 'react';
 import { type PageName } from '@suite/router';
 
 import { ConnectPopup } from 'src/views/connect-popup';
+import { DappBrowserView } from 'src/views/dapp-browser';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
 import {
@@ -96,6 +97,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-trading-transactions': TradingTransactions,
 
     'password-manager-index': PasswordManagerView,
+    'dapp-browser-index': DappBrowserView,
 
     'settings-index': DesktopSettingsGeneral,
     'settings-coins': SettingsCoins,

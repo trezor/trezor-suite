@@ -5640,6 +5640,49 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         defaultMessage: 'Migrate Dropbox passwords',
     },
+    TR_EXPERIMENTAL_DAPP_BROWSER: {
+        id: 'TR_EXPERIMENTAL_DAPP_BROWSER',
+        defaultMessage: 'dApp browser',
+    },
+    TR_EXPERIMENTAL_DAPP_BROWSER_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_DAPP_BROWSER_DESCRIPTION',
+        defaultMessage:
+            'Open a curated set of EVM applications inside Suite and connect them to your Trezor account. Every signature is confirmed on your device.',
+    },
+    TR_DAPP_BROWSER: {
+        id: 'TR_DAPP_BROWSER',
+        defaultMessage: 'dApp browser',
+    },
+    TR_DAPP_BROWSER_DESKTOP_ONLY: {
+        id: 'TR_DAPP_BROWSER_DESKTOP_ONLY',
+        defaultMessage: 'The dApp browser is available only in Trezor Suite for desktop.',
+    },
+    TR_DAPP_BROWSER_CLOSE: {
+        id: 'TR_DAPP_BROWSER_CLOSE',
+        defaultMessage: 'Close',
+    },
+    TR_DAPP_BROWSER_CONSENT_HEADING: {
+        id: 'TR_DAPP_BROWSER_CONSENT_HEADING',
+        defaultMessage: 'Open {dappName}?',
+    },
+    TR_DAPP_BROWSER_CONSENT_DISCLAIMER: {
+        id: 'TR_DAPP_BROWSER_CONSENT_DISCLAIMER',
+        defaultMessage:
+            "This application isn't operated by Trezor. Trezor is not responsible for any loss of funds or quality of service of such application.",
+    },
+    TR_DAPP_BROWSER_CONSENT_VERIFY: {
+        id: 'TR_DAPP_BROWSER_CONSENT_VERIFY',
+        defaultMessage:
+            'Always make sure to carefully verify with information displayed on your Trezor device.',
+    },
+    TR_DAPP_BROWSER_CONSENT_CONTINUE: {
+        id: 'TR_DAPP_BROWSER_CONSENT_CONTINUE',
+        defaultMessage: 'I understand, continue',
+    },
+    TR_DAPP_BROWSER_CONSENT_CANCEL: {
+        id: 'TR_DAPP_BROWSER_CONSENT_CANCEL',
+        defaultMessage: 'Cancel',
+    },
     TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:

@@ -222,5 +222,11 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
 
         // Browser Window
         reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
+
+        // dApp browser
+        dappBrowserOpen: params => ipcRenderer.invoke('dapp-browser/open', params),
+        dappBrowserClose: () => ipcRenderer.invoke('dapp-browser/close'),
+        dappBrowserSetBounds: bounds => ipcRenderer.invoke('dapp-browser/set-bounds', bounds),
+        dappBrowserSetVisible: params => ipcRenderer.invoke('dapp-browser/set-visible', params),
     };
 };

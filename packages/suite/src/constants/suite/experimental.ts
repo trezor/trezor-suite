@@ -90,6 +90,12 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             await desktopApi.mcpSetEnabled(newValue);
         },
     },
+    'dapp-browser': {
+        title: { id: 'TR_EXPERIMENTAL_DAPP_BROWSER' },
+        description: { id: 'TR_EXPERIMENTAL_DAPP_BROWSER_DESCRIPTION' },
+        routeName: 'dapp-browser-index',
+        isDisabled: () => !isDesktop(),
+    },
     'gap-limit': {
         title: { id: 'TR_EXPERIMENTAL_GAP_LIMIT' },
         description: { id: 'TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION' },

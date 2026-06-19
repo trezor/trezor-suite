@@ -175,6 +175,17 @@ export interface InvokeChannels {
 
     // Browser Window
     'browser-window/reload': () => void;
+
+    // dApp browser
+    'dapp-browser/open': (params: { entryId: string }) => InvokeResult;
+    'dapp-browser/close': () => void;
+    'dapp-browser/set-bounds': (bounds: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    }) => void;
+    'dapp-browser/set-visible': (params: { visible: boolean }) => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -263,4 +274,10 @@ export type DesktopApi = {
 
     // Browser Window
     reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
+
+    // dApp browser
+    dappBrowserOpen: DesktopApiInvoke<'dapp-browser/open'>;
+    dappBrowserClose: DesktopApiInvoke<'dapp-browser/close'>;
+    dappBrowserSetBounds: DesktopApiInvoke<'dapp-browser/set-bounds'>;
+    dappBrowserSetVisible: DesktopApiInvoke<'dapp-browser/set-visible'>;
 };

@@ -197,6 +197,13 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         () => import(/* webpackChunkName: "password-manager" */ 'src/views/password-manager'),
     ),
 
+    // dapp-browser (desktop-only; the view renders a "desktop only" notice on web)
+    'dapp-browser-index': lazy(() =>
+        import(/* webpackChunkName: "dapp-browser" */ 'src/views/dapp-browser').then(
+            ({ DappBrowserView }) => ({ default: DappBrowserView }),
+        ),
+    ),
+
     // settings
     'settings-index': lazy(() =>
         import(

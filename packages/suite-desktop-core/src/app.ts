@@ -25,8 +25,9 @@ import { initSentry } from './libs/sentry';
 import { Store, type WinBoundsCoords } from './libs/store';
 import { clearAppCache, clearUserDataOptimistically, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
-// todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
+import { isAllowedDappNavigation } from './modules/dapp-browser';
+// todo: why is this separated here? shoudlnt it be part of modules?
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
 import { ipcMain } from './typed-electron';
@@ -165,7 +166,12 @@ const init = async () => {
 
             const parsedUrl = new URL(navigationUrl);
 
-            if (parsedUrl.origin !== 'https://trezor.io') {
+            // The dApp-browser view is allowed to navigate within its own
+            // allow-listed catalog origin; everything else is locked to trezor.io.
+            if (
+                parsedUrl.origin !== 'https://trezor.io' &&
+                !isAllowedDappNavigation(contents, parsedUrl.origin)
+            ) {
                 logger.error('electron', `Prevented unexpected redirect to: ${navigationUrl}`);
                 event.preventDefault();
             }
