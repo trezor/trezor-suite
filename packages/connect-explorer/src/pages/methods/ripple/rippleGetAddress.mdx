@@ -67,23 +67,6 @@ TrezorConnect.rippleGetAddress({
 });
 ```
 
-Validate address using custom UI inside of your application:
-
-```javascript
-import TrezorConnect, { UI } from '@trezor/connect';
-
-TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
-    console.log('Handle button request', data.address, data.serializedPath);
-    // here you can display custom UI inside of your app
-});
-
-const result = await TrezorConnect.rippleGetAddress({
-    path: "m/44'/144'/0'/0/0",
-    address: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
-});
-// dont forget to hide your custom UI after you get the result!
-```
-
 ### Result
 
 [Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/params.ts)

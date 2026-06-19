@@ -67,23 +67,6 @@ TrezorConnect.stellarGetAddress({
 });
 ```
 
-Validate address using custom UI inside of your application:
-
-```javascript
-import TrezorConnect, { UI } from '@trezor/connect';
-
-TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
-    console.log('Handle button request', data.address, data.serializedPath);
-    // here you can display custom UI inside of your app
-});
-
-const result = await TrezorConnect.stellarGetAddress({
-    path: "m/44'/148'/0'/0/0",
-    address: 'GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV',
-});
-// dont forget to hide your custom UI after you get the result!
-```
-
 ### Result
 
 [Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/params.ts)

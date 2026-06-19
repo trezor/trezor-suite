@@ -260,28 +260,6 @@ TrezorConnect.cardanoGetAddress({
 });
 ```
 
-Validate address using custom UI inside of your application:
-
-```javascript
-import TrezorConnect, { UI } from '@trezor/connect';
-
-TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
-    console.log('Handle button request', data.address, data.serializedPath);
-    // here you can display custom UI inside of your app
-});
-
-const result = await TrezorConnect.cardanoGetAddress({
-    addressParameters: {
-        addressType: 8,
-        path: "m/44'/1815'/0'/0/0",
-    },
-    protocolMagic: 764824073,
-    networkId: 0,
-    address: 'Ae2tdPwUPEZ5YUb8sM3eS8JqKgrRLzhiu71crfuH2MFtqaYr5ACNRdsswsZ',
-});
-// don't forget to hide your custom UI after you get the result!
-```
-
 ### Result
 
 [CardanoAddress type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/cardano/common.ts)
