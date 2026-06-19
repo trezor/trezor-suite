@@ -5,8 +5,6 @@
         {
             "path": "../../network-module/suite-types"
         },
-        {
-            "path": "../../../packages/utils"
-        }
+        { "path": "../../../packages/utils" }
     ]
 }

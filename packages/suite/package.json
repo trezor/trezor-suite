@@ -119,7 +119,6 @@
         "@suite/wallet": "workspace:*",
         "@tanstack/react-query": "5.101.0",
         "@testing-library/jest-dom": "6.9.1",
-        "@trezor/address-validator": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",

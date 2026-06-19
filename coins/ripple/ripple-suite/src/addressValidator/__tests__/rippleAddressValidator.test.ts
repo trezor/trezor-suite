@@ -1,20 +1,16 @@
-import {
-    type AddressType,
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
+import { type AddressType, addressType } from '@network-module/suite-types';
 
 import { rippleValidator } from '../rippleAddressValidator';
 
 type RippleIsAddressValidCase = {
     address: string;
-    symbol: Parameters<AddressValidator['isAddressValid']>[1];
+    symbol: string;
     expected: boolean;
 };
 
 type RippleAddressTypeCase = {
     address: string;
-    symbol: Parameters<AddressValidator['isAddressValid']>[1];
+    symbol: string;
     expectedAddressType: AddressType | undefined;
 };
 

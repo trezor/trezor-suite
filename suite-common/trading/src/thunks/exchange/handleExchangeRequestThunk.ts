@@ -1,11 +1,11 @@
 import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
+import type { AddressValidator } from '@suite-common/address';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { isAddressValid } from '@trezor/address-validator';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -73,11 +73,12 @@ export const getQuoteRequestData = ({
 };
 
 const isReceiveAddressValid = (
+    addressValidator: AddressValidator,
     receiveAddress: string,
     receiveSymbol: NonNullable<ReturnType<typeof cryptoIdToSymbol>>,
 ): boolean => {
     try {
-        return isAddressValid(receiveAddress, receiveSymbol);
+        return addressValidator.isAddressValid(receiveAddress, receiveSymbol);
     } catch {
         return false;
     }
@@ -91,11 +92,13 @@ const isReceiveAddressCoherent = ({
     receiveCryptoSelectId,
     receiveAccountKey,
     state,
+    addressValidator,
 }: {
     receiveAddress: string | undefined;
     receiveCryptoSelectId: ExchangeTradeQuoteRequest['receive'];
     receiveAccountKey: AccountKey | undefined;
     state: Parameters<typeof selectAccountByKey>[0];
+    addressValidator: AddressValidator;
 }): boolean => {
     if (!receiveAddress) {
         return true;
@@ -106,7 +109,7 @@ const isReceiveAddressCoherent = ({
         return false;
     }
 
-    if (!isReceiveAddressValid(receiveAddress, receiveSymbol)) {
+    if (!isReceiveAddressValid(addressValidator, receiveAddress, receiveSymbol)) {
         return false;
     }
 
@@ -134,7 +137,7 @@ export const handleExchangeRequestThunk = createThunk<
             shouldSendInSats,
             composeRequestCallback,
         }: HandleExchangeRequestThunkProps,
-        { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
+        { dispatch, getState, fulfillWithValue, rejectWithValue, signal, extra },
     ) => {
         const requestData = getQuoteRequestData({
             formValues,
@@ -154,6 +157,7 @@ export const handleExchangeRequestThunk = createThunk<
                 receiveCryptoSelectId: requestData.receive,
                 receiveAccountKey: formValues.receiveAccountKey,
                 state: getState(),
+                addressValidator: extra.services.addressValidator,
             })
         ) {
             dispatch(tradingActions.stopRefetchQuotes());

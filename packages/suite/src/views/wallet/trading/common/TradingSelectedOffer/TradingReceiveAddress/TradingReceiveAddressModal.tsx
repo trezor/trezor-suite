@@ -1,10 +1,11 @@
 import { useForm } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { isAddressValid } from '@trezor/address-validator';
 import { Column, Input, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -20,6 +21,7 @@ export const TradingReceiveAddressModal = () => {
     const modalControls = useReceiveAddressModalControls();
 
     const { translationString } = useTranslation();
+    const { addressValidator } = useServices(selectAddressValidatorDep);
     const { cryptoIdToPlatformName, cryptoIdToCoinName, cryptoIdToNativeCoinSymbol } =
         useTradingUtils();
 
@@ -47,7 +49,7 @@ export const TradingReceiveAddressModal = () => {
                 try {
                     isValid =
                         value && symbol !== undefined && isNetworkSymbol(symbol)
-                            ? isAddressValid(value, symbol)
+                            ? addressValidator.isAddressValid(value, symbol)
                             : true;
                 } catch {
                     isValid = false;

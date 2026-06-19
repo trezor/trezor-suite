@@ -1,5 +1,3 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
 export const addressType = {
     ADDRESS: 'address',
     P2PKH: 'p2pkh',
@@ -13,11 +11,11 @@ export const addressType = {
 export type AddressType = (typeof addressType)[keyof typeof addressType];
 
 export type AddressValidator = {
-    isAddressValid: (address: string, symbol: NetworkSymbol) => boolean;
+    isAddressValid: (address: string, symbol: string) => boolean;
 
-    getAddressType: (address: string, symbol: NetworkSymbol) => AddressType | undefined;
+    getAddressType: (address: string, symbol: string) => AddressType | undefined;
 
-    getSupportedCoins: () => NetworkSymbol[];
+    getSupportedCoins: () => string[];
 };
 
 export type AddressValidatorDep = {

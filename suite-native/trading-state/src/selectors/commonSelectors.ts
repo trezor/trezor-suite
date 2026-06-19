@@ -230,8 +230,11 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectTokenDefinitions,
             selectCurrentFiatRates,
             selectBaseCurrency,
-            (state: CombinedSelectorsRootState, tradingType: TradingType) =>
-                selectTradingSupportedSymbols(state, tradingType),
+            (
+                state: CombinedSelectorsRootState,
+                tradingType: TradingType,
+                supportedCoins: string[],
+            ) => selectTradingSupportedSymbols(state, tradingType, supportedCoins),
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,

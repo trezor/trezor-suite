@@ -1,20 +1,16 @@
-import {
-    type AddressType,
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
+import { type AddressType, addressType } from '@network-module/suite-types';
 
 import { bitcoinValidator } from '../bitcoinAddressValidator';
 
 type BitcoinIsAddressValidCase = {
     address: string;
-    symbol: Parameters<AddressValidator['isAddressValid']>[1];
+    symbol: string;
     expected: boolean;
 };
 
 type BitcoinAddressTypeCase = {
     address: string;
-    symbol: Parameters<AddressValidator['isAddressValid']>[1];
+    symbol: string;
     expectedAddressType: AddressType | undefined;
 };
 
@@ -296,6 +292,11 @@ const bitcoinIsAddressValidCases: BitcoinIsAddressValidCase[] = [
     },
     {
         address: 'ltc1qajkrze8gc5qdx2ehldsmd596a2gprnn50a53mj3xxvy0zgtdq6gqumv03a',
+        symbol: 'ltc',
+        expected: true,
+    },
+    {
+        address: 'ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc',
         symbol: 'ltc',
         expected: true,
     },
@@ -776,6 +777,11 @@ const bitcoinAddressTypeCases: BitcoinAddressTypeCase[] = [
         address: 'ltc1qajkrze8gc5qdx2ehldsmd596a2gprnn50a53mj3xxvy0zgtdq6gqumv03a',
         symbol: 'ltc',
         expectedAddressType: addressType.P2WSH,
+    },
+    {
+        address: 'ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc',
+        symbol: 'ltc',
+        expectedAddressType: addressType.P2WPKH,
     },
     {
         address: 'DMqRVLrhbam3Kcfddpxd6EYvEBbpi3bEpP',

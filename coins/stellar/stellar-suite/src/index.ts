@@ -1,1 +1,1 @@
-export { createStellarNetworkModule, type StellarNetworkModule } from './StellarNetworkModule';
+export { createStellarNetworkModule } from './StellarNetworkModule';

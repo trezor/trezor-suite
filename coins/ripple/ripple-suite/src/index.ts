@@ -1,1 +1,1 @@
-export { createRippleNetworkModule, type RippleNetworkModule } from './RippleNetworkModule';
+export { createRippleNetworkModule } from './RippleNetworkModule';

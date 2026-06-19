@@ -1,10 +1,7 @@
 // CashAddr address format spec:
 // https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md
 
-import {
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
+import { type AddressValidator, addressType } from '@network-module/suite-types';
 
 const CASHADDR_REGEXP = /^[qQpP]{1}[0-9a-zA-Z]{41}$/;
 
@@ -109,7 +106,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: AddressValidator['getSupportedCoins'] = () => ['bch'];
+const getSupportedCoins: () => string[] = () => ['bch'];
 
 export const bchValidator: AddressValidator = {
     isAddressValid,

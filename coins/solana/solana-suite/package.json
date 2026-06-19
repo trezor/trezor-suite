@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@network-module/suite-types": "workspace:*"
+        "@network-module/suite-types": "workspace:*",
+        "@scure/base": "^2.0.0"
     }
 }

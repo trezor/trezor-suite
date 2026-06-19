@@ -4,7 +4,7 @@
     "include": ["./src"],
     "references": [
         {
-            "path": "../../../suite-common/wallet-config/tsconfig.lib.json"
+            "path": "../../../suite-common/wallet-config"
         }
     ]
 }

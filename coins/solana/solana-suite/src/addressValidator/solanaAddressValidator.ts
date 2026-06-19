@@ -1,9 +1,5 @@
-import {
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
-
-import * as base58 from './crypto/base58';
+import { type AddressValidator, addressType } from '@network-module/suite-types';
+import { base58 } from '@scure/base';
 
 export const isAddressValid = (address: string, _symbol: string): boolean => {
     try {
@@ -23,7 +19,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: AddressValidator['getSupportedCoins'] = () => ['sol', 'dsol'];
+const getSupportedCoins: () => string[] = () => ['sol', 'dsol'];
 
 export const solanaValidator: AddressValidator = {
     isAddressValid,

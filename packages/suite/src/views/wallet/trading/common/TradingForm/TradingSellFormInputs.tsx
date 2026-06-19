@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -41,7 +43,7 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
     const quotes = useSelector(selectTradingSellQuotes);
-    const sellSupportedCryptoIds = useSelector(selectTradingSellSupportedCryptoIds);
+    const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const {
         feeInfo,
@@ -85,6 +87,11 @@ export const TradingSellFormInputs = () => {
             await onCryptoCurrencyChangeRef.current(asset);
         },
         [onCryptoCurrencyChangeRef],
+    );
+
+    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const sellSupportedCryptoIds = useSelector(state =>
+        selectTradingSellSupportedCryptoIds(state, supportedCoins),
     );
 
     const selectedCountry = countrySelect ?? defaultCountry;

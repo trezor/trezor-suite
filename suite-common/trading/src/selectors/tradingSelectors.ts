@@ -23,7 +23,6 @@ import {
     type AccountKey,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
-import { getSupportedCoins } from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 import { unique } from '@trezor/utils';
 
@@ -64,8 +63,6 @@ import {
 } from '../utils/infoUtils';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
-
-const supportedAddressValidatorSymbols = new Set(getSupportedCoins());
 
 type SelectedAccountRootState = {
     wallet: {
@@ -495,12 +492,14 @@ const getFilteredCryptoIds = (
     supportedCryptoIds: CryptoId[],
     coins: Coins | undefined,
     platforms: Platforms | undefined,
+    supportedCoins: string[],
 ) => {
     if (!coins || !platforms) {
         return [];
     }
 
     const uniqueSupportedCryptoIds = unique(supportedCryptoIds);
+    const supportedAddressValidatorSymbols = new Set(supportedCoins);
 
     return uniqueSupportedCryptoIds
         .filter(cryptoId => !!coins[cryptoId])
@@ -527,9 +526,10 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.buy.buyInfo?.supportedCryptoCurrencies,
             ),
+        (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
     ],
-    (coins, platforms, supportedCryptoIds) =>
-        getFilteredCryptoIds(supportedCryptoIds, coins, platforms),
+    (coins, platforms, supportedCryptoIds, supportedCoins) =>
+        getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
 export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
@@ -540,9 +540,10 @@ export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
             ),
+        (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
     ],
-    (coins, platforms, supportedCryptoIds) =>
-        getFilteredCryptoIds(supportedCryptoIds, coins, platforms),
+    (coins, platforms, supportedCryptoIds, supportedCoins) =>
+        getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
 const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') =>
@@ -552,8 +553,10 @@ const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') 
             ({ wallet }) => wallet.trading.info.platforms,
             ({ wallet }) =>
                 returnStableArrayIfEmpty<CryptoId>(wallet.trading.exchange.exchangeInfo?.[key]),
+            (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
         ],
-        (coins, platforms, cryptoIds) => getFilteredCryptoIds(cryptoIds, coins, platforms),
+        (coins, platforms, cryptoIds, supportedCoins) =>
+            getFilteredCryptoIds(cryptoIds, coins, platforms, supportedCoins),
     );
 
 export const selectTradingExchangeSellCryptoIds = createExchangeCryptoIdsSelector('sellCryptoIds');
@@ -564,12 +567,14 @@ export const selectTradingSellSellCryptoIds = createMemoizedSelector(
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) => wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
+        (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
     ],
-    (coins, platforms, supportedCryptoIds) =>
+    (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(
             returnStableArrayIfEmpty<CryptoId>(supportedCryptoIds),
             coins,
             platforms,
+            supportedCoins,
         ),
 );
 
@@ -860,9 +865,12 @@ export const selectTradingActiveSection = (state: TradingRootState) =>
 
 export const selectTradingSupportedSymbols = createMemoizedSelector(
     [
-        selectTradingBuySupportedCryptoIds,
-        selectTradingExchangeSellCryptoIds,
-        selectTradingSellSupportedCryptoIds,
+        (state: TradingRootState, _type: TradingType, supportedCoins: string[]) =>
+            selectTradingBuySupportedCryptoIds(state, supportedCoins),
+        (state: TradingRootState, _type: TradingType, supportedCoins: string[]) =>
+            selectTradingExchangeSellCryptoIds(state, supportedCoins),
+        (state: TradingRootState, _type: TradingType, supportedCoins: string[]) =>
+            selectTradingSellSupportedCryptoIds(state, supportedCoins),
         (_: TradingRootState, type: TradingType) => type,
     ],
     (buyCryptoIds, exchangeCryptoIds, sellCryptoIds, type) => {

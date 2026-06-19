@@ -1,19 +1,21 @@
-import type {
-    AddressType,
-    AddressValidator,
-} from '@network-module/suite-types/src/AddressValidator';
+import type { AddressType, AddressValidator } from '@network-module/suite-types';
 
 import type { NetworksServiceDep } from '@suite-common/networks';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type AddressValidatorDeps = NetworksServiceDep;
+
+export type { AddressValidator };
 
 export type AddressValidatorDep = {
     addressValidator: AddressValidator;
 };
 
+export const selectAddressValidatorDep = (services: any): AddressValidatorDep => ({
+    addressValidator: services.addressValidator,
+});
+
 export const createAddressValidator = ({ networks }: AddressValidatorDeps): AddressValidator => {
-    const validatorByNetworkSymbol = new Map<NetworkSymbol, AddressValidator>();
+    const validatorByNetworkSymbol = new Map<string, AddressValidator>();
 
     networks.networkModules.forEach(({ addressValidator }) => {
         addressValidator.getSupportedCoins().forEach(networkSymbol => {
@@ -21,17 +23,14 @@ export const createAddressValidator = ({ networks }: AddressValidatorDeps): Addr
         });
     });
 
-    const getAddressType = (
-        address: string,
-        networkSymbol: NetworkSymbol,
-    ): AddressType | undefined =>
+    const getAddressType = (address: string, networkSymbol: string): AddressType | undefined =>
         validatorByNetworkSymbol.get(networkSymbol)?.getAddressType(address, networkSymbol);
 
-    const isAddressValid = (address: string, networkSymbol: NetworkSymbol): boolean =>
+    const isAddressValid = (address: string, networkSymbol: string): boolean =>
         validatorByNetworkSymbol.get(networkSymbol)?.isAddressValid(address, networkSymbol) ??
         false;
 
-    const getSupportedCoins = (): NetworkSymbol[] => Array.from(validatorByNetworkSymbol.keys());
+    const getSupportedCoins = (): string[] => Array.from(validatorByNetworkSymbol.keys());
 
     return {
         isAddressValid,

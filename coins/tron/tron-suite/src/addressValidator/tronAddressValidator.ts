@@ -1,9 +1,6 @@
-import {
-    type AddressValidator,
-    addressType,
-} from '@network-module/suite-types/src/AddressValidator';
-
-import * as cryptoUtils from './crypto/utils';
+import { type AddressValidator, addressType } from '@network-module/suite-types';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { base58 } from '@scure/base';
 
 const TRON_ADDRESS_TYPE = 0x41;
 
@@ -17,7 +14,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
 
     let address: number[];
     try {
-        address = cryptoUtils.base58(base58Sting);
+        address = Array.from(base58.decode(base58Sting));
     } catch {
         return false;
     }
@@ -26,9 +23,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
     const offset = len - 4;
     const checkSum = address.slice(offset);
     address = address.slice(0, offset);
-    const hash0 = cryptoUtils.sha256(cryptoUtils.byteArray2hexStr(address));
-    const hash1 = cryptoUtils.hexStr2byteArray(cryptoUtils.sha256(hash0));
-    const checkSum1 = hash1.slice(0, 4);
+    const checkSum1 = Array.from(sha256(sha256(Uint8Array.from(address))).slice(0, 4));
     if (
         checkSum[0] === checkSum1[0] &&
         checkSum[1] === checkSum1[1] &&
@@ -63,7 +58,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: AddressValidator['getSupportedCoins'] = () => ['trx', 'ttrx'];
+const getSupportedCoins: () => string[] = () => ['trx', 'ttrx'];
 
 export const tronValidator: AddressValidator = {
     isAddressValid,

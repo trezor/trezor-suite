@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@network-module/suite-types": "workspace:*",
-        "@noble/hashes": "^2.0.1"
+        "@noble/hashes": "^2.0.1",
+        "@scure/base": "^2.0.0"
     }
 }

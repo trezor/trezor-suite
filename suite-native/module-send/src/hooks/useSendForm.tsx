@@ -7,6 +7,8 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { selectAddressValidatorDep } from '@suite-common/address';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceUnavailableCapabilities,
     selectIsDeviceRemembered,
@@ -114,6 +116,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
+    const { addressValidator } = useServices(selectAddressValidatorDep);
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
@@ -172,6 +175,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         // If the form is prefilled with the draft values, we want to revalidate the draft on every change.
         mode: sendFormDraft ? 'onChange' : 'onTouched',
         context: {
+            addressValidator,
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,

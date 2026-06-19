@@ -27,6 +27,8 @@ import {
     selectValidTradingBuyQuotesNative,
 } from '../buySelectors';
 
+const supportedCoins = ['btc', 'eth', 'base'];
+
 describe('buySelectors', () => {
     let state: TradingRootState & AccountsRootState & FeatureFlagsRootState;
 
@@ -87,7 +89,7 @@ describe('buySelectors', () => {
 
     describe('selectBuyTradeableAssets', () => {
         it('should select only coins with buy set to true', () => {
-            expect(selectBuyTradeableAssets(state)).toEqual([
+            expect(selectBuyTradeableAssets(state, supportedCoins)).toEqual([
                 expect.objectContaining({
                     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                 }),
@@ -100,8 +102,8 @@ describe('buySelectors', () => {
         });
 
         it('should be stable', () => {
-            const first = selectBuyTradeableAssets(state);
-            const second = selectBuyTradeableAssets(state);
+            const first = selectBuyTradeableAssets(state, supportedCoins);
+            const second = selectBuyTradeableAssets(state, supportedCoins);
 
             expect(first).toBe(second);
         });
@@ -109,7 +111,7 @@ describe('buySelectors', () => {
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectBuyTradeableAssets(state)).toEqual([]);
+            expect(selectBuyTradeableAssets(state, supportedCoins)).toEqual([]);
         });
 
         describe.skip('debug-only networks', () => {
