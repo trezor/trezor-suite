@@ -100,7 +100,7 @@ describe('InvityAPI', () => {
 
         const info = await invityAPI.getInfo();
         expect(consoleSpy).toHaveBeenCalled();
-        expect(info).toEqual({ platforms: {}, coins: {} });
+        expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
     });
 
     describe('getInfo', () => {
@@ -108,6 +108,7 @@ describe('InvityAPI', () => {
             const mockInfo: InfoResponse = {
                 coins,
                 platforms,
+                config: {},
             };
             (global.fetch as jest.Mock).mockResolvedValueOnce({
                 ok: true,
@@ -125,7 +126,7 @@ describe('InvityAPI', () => {
             });
 
             const info = await invityAPI.getInfo();
-            expect(info).toEqual({ platforms: {}, coins: {} });
+            expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
         });
 
         it('should handle fetch info when there is error', async () => {
@@ -133,7 +134,7 @@ describe('InvityAPI', () => {
 
             const info = await invityAPI.getInfo();
             expect(consoleSpy).toHaveBeenCalledWith('[getInfo]', error);
-            expect(info).toEqual({ platforms: {}, coins: {} });
+            expect(info).toEqual({ platforms: {}, coins: {}, config: {} });
         });
     });
 

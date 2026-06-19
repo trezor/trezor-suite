@@ -74,6 +74,7 @@ const symbolsInfo: InfoResponse = {
             },
         },
     },
+    config: {},
 };
 
 const composedTransactionInfo: TradingComposedTransactionInfo = {
