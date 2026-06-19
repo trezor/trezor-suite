@@ -42,12 +42,9 @@ type CallApi = {
 };
 type TrezorConnectCoreMethods = keyof TrezorConnectCore;
 
-// necessary part of CallMethod which shouldn't be exposed to the consumers
-type SupportParams = { useEventListener?: boolean };
-
 export type CallMethodKeys = Exclude<keyof CallApi, TrezorConnectCoreMethods>;
 export type CallMethodUnion = CallApi[CallMethodKeys];
-export type CallMethodPayload = Parameters<CallMethodUnion>[0] & SupportParams;
+export type CallMethodPayload = Parameters<CallMethodUnion>[0];
 export type CallMethodParams<M extends CallMethodKeys> = Parameters<CallApi[M]>[0];
 export type CallMethodResponse<M extends CallMethodKeys> = UnwrappedResponse<
     ReturnType<CallApi[M]>
