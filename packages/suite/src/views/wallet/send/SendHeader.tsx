@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
@@ -31,6 +32,8 @@ export const SendHeader = () => {
         control,
         account: { networkType },
         formState: { isDirty },
+        watch,
+        resetDefaultValue,
         toggleOption,
 
         addOpReturn,
@@ -48,6 +51,17 @@ export const SendHeader = () => {
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
     const locktimeEnabled = enabledFormOptions.includes('bitcoinLocktime');
     const broadcastEnabled = enabledFormOptions.includes('broadcast');
+    const dataEnabled = enabledFormOptions.includes('transactionData');
+    const token = watch('outputs.0.token');
+
+    useEffect(() => {
+        // disable data option if sending Tron token
+        if (networkType === 'tron' && token && dataEnabled) {
+            toggleOption('transactionData');
+            resetDefaultValue('transactionData');
+        }
+    }, [networkType, dataEnabled, token, toggleOption, resetDefaultValue]);
+
     const options: Array<DropdownMenuItemProps> = [
         {
             'data-testid': '@send/header-dropdown/import',
@@ -73,6 +87,16 @@ export const SendHeader = () => {
             label: <Translation id="LOCKTIME_ADD" />,
             isDisabled: !!locktimeEnabled,
             isHidden: networkType !== 'bitcoin',
+        },
+        {
+            onClick: () => {
+                toggleOption('transactionData');
+                composeTransaction();
+            },
+            closeOnClick: true,
+            label: <Translation id="DATA_ADD" />,
+            isDisabled: networkType === 'tron' && !!token,
+            isHidden: networkType !== 'ethereum' && networkType !== 'tron',
         },
         {
             'data-testid': '@send/header-dropdown/broadcast',
