@@ -1,9 +1,18 @@
 import { type ComponentType, type JSX } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
+import { type ErrorCode } from 'invity-api';
+
+import {
+    type ExtendedMessageDescriptor,
+    Translation,
+    type TranslationKey,
+    useTranslation,
+} from '@suite/intl';
+import { TRADING_ERROR_MESSAGE } from '@suite/trading';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
+import { getTradingErrorDisplay } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -62,6 +71,7 @@ export const NotificationRenderer = ({
     render,
 }: NotificationRendererProps): JSX.Element => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    const { translationString } = useTranslation();
 
     const { type } = notification;
 
@@ -228,6 +238,37 @@ export const NotificationRenderer = ({
                 message: 'TOAST_GENERIC_ERROR',
                 values: { error: notification.error },
             });
+
+        case 'trading-error': {
+            const display = getTradingErrorDisplay(notification);
+            const entry =
+                TRADING_ERROR_MESSAGE[notification.errorCode as ErrorCode] ??
+                TRADING_ERROR_MESSAGE.unknown;
+
+            if (display.kind === 'detailed' && entry.detailed) {
+                return renderNotificationView(render, notification, {
+                    variant: 'error',
+                    message: entry.detailed,
+                    values: display.values,
+                });
+            }
+
+            if (display.kind === 'base' && display.message) {
+                return renderNotificationView(render, notification, {
+                    variant: 'error',
+                    message: 'TR_TRADING_ERROR_WITH_PARTNER_MESSAGE',
+                    values: {
+                        base: translationString(entry.base),
+                        partnerMessage: display.message,
+                    },
+                });
+            }
+
+            return renderNotificationView(render, notification, {
+                variant: 'error',
+                message: entry.base,
+            });
+        }
 
         case 'cannot-open-bluetooth-settings-error':
             return renderNotificationView(render, notification, {

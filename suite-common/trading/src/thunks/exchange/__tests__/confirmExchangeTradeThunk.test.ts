@@ -317,29 +317,30 @@ describe('confirmExchangeTradeThunk', () => {
         it.each([
             [
                 'when response.error is defined',
-                {
-                    error: 'Server error',
-                },
+                { error: 'Server error' },
+                { code: 'unknown', message: 'Server error' },
             ],
+            ['when response.state is undefined', { status: undefined }, { code: 'unknown' }],
+            ['when response.orderId is undefined', { orderId: undefined }, { code: 'unknown' }],
+            ['when response.status is ERROR', { status: 'ERROR' }, { code: 'unknown' }],
             [
-                'when response.state is undefined',
-                {
-                    status: undefined,
-                },
-            ],
-            [
-                'when response.orderId is undefined',
-                {
-                    orderId: undefined,
-                },
-            ],
-            [
-                'when response.status is ERROR',
+                'when response has errorDetails but no error string',
                 {
                     status: 'ERROR',
+                    errorDetails: {
+                        origin: 'partner',
+                        externalCode: '-100',
+                        code: 'invalid_amount',
+                        amount: { key: 'BTC', value: '0.00001', min: '0.001', max: '5' },
+                    },
+                },
+                {
+                    code: 'invalid_amount',
+                    message: '-100',
+                    values: { min: '0.001', max: '5' },
                 },
             ],
-        ])(`%s`, async (_, mockResponse) => {
+        ])(`%s`, async (_, mockResponse, expectedErrorMessage) => {
             const {
                 store,
                 returnUrl,
@@ -375,10 +376,7 @@ describe('confirmExchangeTradeThunk', () => {
 
             expect(actionToast?.payload).toEqual({
                 tradingType: 'exchange',
-                errorMessage:
-                    'error' in mockResponse
-                        ? mockResponse?.error
-                        : 'Error response from the server',
+                errorMessage: expectedErrorMessage,
             });
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
