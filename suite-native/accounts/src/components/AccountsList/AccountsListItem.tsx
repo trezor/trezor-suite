@@ -15,15 +15,15 @@ import { Translation } from '@suite-native/intl';
 import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
-import { AccountLabel } from '../AccountLabel';
-import { AccountsListItemBase } from './AccountsListItemBase';
-import { StakingBadge } from './StakingBadge';
 import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
     selectActiveAndDefiTokensCount,
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
+import { AccountLabel } from '../AccountLabel';
+import { AccountsListItemBase } from './AccountsListItemBase';
+import { StakingBadge } from './StakingBadge';
 
 type AccountListItemProps = {
     account: Account;
@@ -57,7 +57,7 @@ const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
     );
 });
 
-export const AccountsListItem = ({
+const AccountsListItemComponent = ({
     account,
     onPress,
     disabled,
@@ -178,3 +178,7 @@ export const AccountsListItem = ({
         />
     );
 };
+
+export const AccountsListItem = React.memo(AccountsListItemComponent);
+
+AccountsListItem.displayName = 'AccountsListItem';
