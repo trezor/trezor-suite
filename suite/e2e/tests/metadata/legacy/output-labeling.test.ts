@@ -36,7 +36,22 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
 
             await test.step('Go to legacy account 6, it has txs with multiple outputs', async () => {
                 await page.getByTestId('@account-menu/legacy').click();
-                await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 5 });
+                // The 'Legacy accounts' section header uses position:sticky top:0 z-index:30,
+                // which means it permanently sits above the account buttons in the stacking
+                // context. Playwright's coordinate-based click() always ends up intercepted
+                // by the sticky header regardless of scroll position.
+                // Fix: use native HTMLElement.click() via evaluate, which dispatches the
+                // click event directly on the target node, bypassing pointer-events and z-index.
+                await page
+                    .getByTestId('@account-menu/btc/legacy/5')
+                    .waitFor({ state: 'visible' });
+                await page.evaluate(() => {
+                    const el = document.querySelector(
+                        '[data-testid="@account-menu/btc/legacy/5"]',
+                    ) as HTMLElement;
+                    el.click();
+                });
+                await expect(walletPage.fiatAmount).toBeVisible({ timeout: 25_000 });
             });
 
             await test.step('Add label to output 3 and verify', async () => {
@@ -51,7 +66,17 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
             });
 
             await test.step('Label "send to myself tx"', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 9 });
+                // Same sticky-header interception issue as above — use native click.
+                await page
+                    .getByTestId('@account-menu/btc/legacy/9')
+                    .waitFor({ state: 'visible' });
+                await page.evaluate(() => {
+                    const el = document.querySelector(
+                        '[data-testid="@account-menu/btc/legacy/9"]',
+                    ) as HTMLElement;
+                    el.click();
+                });
+                await expect(walletPage.fiatAmount).toBeVisible({ timeout: 25_000 });
                 await metadataPage.output.changeLabel({
                     outputId: OutputLabelId.BitcoinLegacy10,
                     txNumber: 0,
