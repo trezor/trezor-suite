@@ -1,14 +1,5 @@
-import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
-import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
-
 import { decode as base58Decode } from './base58';
-import sha3 from './sha3';
 export { addressType } from '../addressType';
-
-// @ts-expect-error: indexing with noUncheckedIndexedAccess
-const keccak256Fn: (data: string) => string = (
-    sha3 as unknown as Record<string, (data: string) => string>
-)['keccak256'];
 
 export function numberToHex(number: number, sizeInBytes: number): string {
     return Math.round(number)
@@ -94,28 +85,6 @@ export function toHex(arrayOfBytes: ArrayLike<number>): string {
     }
 
     return hex;
-}
-
-export function sha256(hexPayload: string): string {
-    return bytesToHex(nobleSha256(hexToBytes(hexPayload)));
-}
-
-export function sha256x2(hexPayload: string): string {
-    return sha256(sha256(hexPayload));
-}
-
-export function sha256Checksum(hexPayload: string): string {
-    return sha256(sha256(hexPayload)).slice(0, 8);
-}
-
-export function keccak256(hexString: string): string {
-    return keccak256Fn(hexString);
-}
-
-export function keccak256Checksum(payload: string | Buffer | Uint8Array): string {
-    return keccak256Fn(payload as any)
-        .toString()
-        .slice(0, 8);
 }
 
 export function bigNumberToBuffer(bignumber: number | string, size?: number): Buffer {

@@ -1,11 +1,13 @@
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
-import * as cryptoUtils from '../crypto/utils';
 import type { NetworkSymbol } from '../networkTypes';
 
 function verifyChecksum(address: string): boolean {
     const stripped = address.replace('0x', '');
-    const addressHash = cryptoUtils.keccak256(stripped.toLowerCase());
+    const addressHash = bytesToHex(keccak_256(utf8ToBytes(stripped.toLowerCase())));
 
     for (let i = 0; i < 40; i++) {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
