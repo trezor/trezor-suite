@@ -1,4 +1,4 @@
-import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { CORE_CALL, type CallMethod, POPUP } from '@trezor/connect-common/src/events';
 import { createErrorMessage } from '@trezor/connect-common/src/events';
 import { factory } from '@trezor/connect-common/src/factory';
@@ -40,13 +40,6 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
             },
         });
     }
-
-    _channel.port.onMessage.addListener((message: { type: string }) => {
-        if (message.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
-            // @ts-expect-error
-            eventEmitter.emit(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, message);
-        }
-    });
 
     const reconnect = () => {
         // By connecting again we keep the service worker active.
