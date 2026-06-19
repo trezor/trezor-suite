@@ -5,8 +5,9 @@ import {
     type SellProviderInfo,
 } from 'invity-api';
 
+import { toChecksumAddress } from '@suite-common/address';
 import type { Network } from '@suite-common/wallet-config';
-import { asAmountUnit, toChecksumAddress, unitsToSubunits } from '@suite-common/wallet-utils';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type PROTO } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: extract pathUtils to a shared location and remove this exception (see #27376 deferred work)
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
@@ -32,19 +33,50 @@ export const formatSlip24SendAmountByNetwork = ({
 
 /**
  * Normalizes an output address to the exact string the firmware hashes into the
- * SLIP-24 outputs digest. For EVM chains the firmware re-derives the recipient as
- * an EIP-55 checksummed address (`address_from_bytes`), so the address signed by
- * the trade API must be checksummed too, otherwise the device rejects the payment
- * request with "Invalid signature in payment request". Non-EVM addresses are
- * canonical already and pass through unchanged.
+ * SLIP-24 outputs digest, otherwise the device rejects the payment request with
+ * "Invalid signature in payment request".
+ *   - ethereum: the firmware re-derives the recipient as an EIP-55 checksummed
+ *     address (`address_from_bytes`), so the address signed by the trade API must
+ *     be checksummed too.
+ *   - ripple: the firmware appends `?dt=<destinationTag>` to the destination when
+ *     a destination tag is set (ripple/sign_tx.py), so the signed address must
+ *     carry the same suffix.
+ * Other networks hash a canonical/provided address and pass through unchanged.
  */
 export const formatSlip24AddressByNetwork = ({
     address,
     network,
+    destinationTag,
 }: {
     address: string;
     network: Network;
-}): string => (network.networkType === 'ethereum' ? toChecksumAddress(address) : address);
+    destinationTag?: string;
+}): string => {
+    switch (network.networkType) {
+        case 'ethereum':
+            return toChecksumAddress(address);
+        case 'ripple': {
+            // Mirror the firmware: it renders the destination_tag uint32 (`f"?dt={tag}"`)
+            // and only appends it when the tag is truthy, so 0/empty tags are treated as absent.
+            if (destinationTag === undefined || destinationTag === '') {
+                return address;
+            }
+
+            if (!/^\d+$/.test(destinationTag)) {
+                throw new Error(`Invalid Ripple destination tag: ${destinationTag}`);
+            }
+
+            const tag = Number(destinationTag);
+            if (!Number.isSafeInteger(tag) || tag > 0xffffffff) {
+                throw new Error(`Invalid Ripple destination tag: ${destinationTag}`);
+            }
+
+            return tag ? `${address}?dt=${tag}` : address;
+        }
+        default:
+            return address;
+    }
+};
 
 type TradingExchangeCreatePaymentRequestProps = {
     trade: ExchangeTradeSigned;

@@ -9,7 +9,6 @@ export {
     hasBitcoinCashAddressPrefix,
     isBitcoinCashAddressUppercase,
     isBech32AddressUppercase,
-    toChecksumAddress,
 } from '@suite-common/address';
 
 export const isDecimalsValid = (value: string, decimals: number) => {
