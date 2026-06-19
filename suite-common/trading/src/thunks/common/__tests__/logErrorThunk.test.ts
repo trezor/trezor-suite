@@ -1,4 +1,5 @@
 import { type TradingType } from '../../../types';
+import { type ResolvedTradeError } from '../../../utils/exchange/resolveExchangeTradeError';
 import { logErrorThunk } from '../logErrorThunk';
 
 jest.mock('@suite-common/toast-notifications', () => {
@@ -92,6 +93,67 @@ describe('logErrorThunk', () => {
         expect(dispatch).toHaveBeenCalledWith({
             type: 'mockedSetLastErrorMessageByTradingTypeAction',
             payload: { errorMessage: 'Test error message', tradingType: 'buy' },
+        });
+    });
+
+    it('should add a trading-error toast for a resolved trade error', async () => {
+        const errorMessage: ResolvedTradeError = {
+            code: 'invalid_pair',
+            values: { send: 'BTC', receive: 'ETH' },
+            message: 'Invalid currency',
+        };
+        const tradingType: TradingType = 'buy';
+
+        const thunk = logErrorThunk({
+            errorMessage,
+            tradingType,
+        });
+        await thunk(dispatch, getState, extra);
+
+        expect(dispatch).toHaveBeenCalledWith({
+            type: 'mockedAddToastAction',
+            payload: {
+                type: 'trading-error',
+                errorCode: 'invalid_pair',
+                values: { send: 'BTC', receive: 'ETH' },
+                message: 'Invalid currency',
+            },
+        });
+    });
+
+    it('should set the resolved message as the last error message', async () => {
+        const errorMessage: ResolvedTradeError = {
+            code: 'invalid_pair',
+            values: { send: 'BTC', receive: 'ETH' },
+            message: 'Invalid currency',
+        };
+        const tradingType: TradingType = 'buy';
+
+        const thunk = logErrorThunk({
+            errorMessage,
+            tradingType,
+        });
+        await thunk(dispatch, getState, extra);
+
+        expect(dispatch).toHaveBeenCalledWith({
+            type: 'mockedSetLastErrorMessageByTradingTypeAction',
+            payload: { errorMessage: 'Invalid currency', tradingType: 'buy' },
+        });
+    });
+
+    it('should default the last error message to an empty string when the resolved error has no message', async () => {
+        const errorMessage: ResolvedTradeError = { code: 'unknown' };
+        const tradingType: TradingType = 'buy';
+
+        const thunk = logErrorThunk({
+            errorMessage,
+            tradingType,
+        });
+        await thunk(dispatch, getState, extra);
+
+        expect(dispatch).toHaveBeenCalledWith({
+            type: 'mockedSetLastErrorMessageByTradingTypeAction',
+            payload: { errorMessage: '', tradingType: 'buy' },
         });
     });
 });

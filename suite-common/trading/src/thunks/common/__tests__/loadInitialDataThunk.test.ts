@@ -151,6 +151,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
             payload: {
                 coins: {},
                 platforms: {},
+                config: {},
             },
         },
         { type: buyThunks.loadInfoThunk.pending.type, payload: undefined },

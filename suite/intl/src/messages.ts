@@ -335,6 +335,98 @@ export const messages = defineMessages({
         defaultMessage: 'Missing fee level',
         id: 'TR_TRADING_MISSING_FEE_LEVEL',
     },
+    TR_TRADING_ERROR_WITH_PARTNER_MESSAGE: {
+        defaultMessage: '{base} Message from partner: {partnerMessage}',
+        id: 'TR_TRADING_ERROR_WITH_PARTNER_MESSAGE',
+    },
+    TR_TRADING_ERROR_UNKNOWN: {
+        defaultMessage: 'An unexpected error occurred. Please try again.',
+        id: 'TR_TRADING_ERROR_UNKNOWN',
+    },
+    TR_TRADING_ERROR_INVALID_AMOUNT: {
+        defaultMessage: 'The amount is out of range.',
+        id: 'TR_TRADING_ERROR_INVALID_AMOUNT',
+    },
+    TR_TRADING_ERROR_INVALID_AMOUNT_DETAILED: {
+        defaultMessage: 'The amount is out of range. Minimum {min}, maximum {max}.',
+        id: 'TR_TRADING_ERROR_INVALID_AMOUNT_DETAILED',
+    },
+    TR_TRADING_ERROR_INVALID_PAIR: {
+        defaultMessage: 'This trading pair is not supported.',
+        id: 'TR_TRADING_ERROR_INVALID_PAIR',
+    },
+    TR_TRADING_ERROR_INVALID_PAIR_DETAILED: {
+        defaultMessage: 'This trading pair ({send} → {receive}) is not supported.',
+        id: 'TR_TRADING_ERROR_INVALID_PAIR_DETAILED',
+    },
+    TR_TRADING_ERROR_INVALID_ADDRESS: {
+        defaultMessage: 'The provided address is invalid.',
+        id: 'TR_TRADING_ERROR_INVALID_ADDRESS',
+    },
+    TR_TRADING_ERROR_INVALID_ADDRESS_DETAILED: {
+        defaultMessage: 'The provided {key} address is invalid.',
+        id: 'TR_TRADING_ERROR_INVALID_ADDRESS_DETAILED',
+    },
+    TR_TRADING_ERROR_UNAVAILABLE: {
+        defaultMessage: 'This service is currently unavailable.',
+        id: 'TR_TRADING_ERROR_UNAVAILABLE',
+    },
+    TR_TRADING_ERROR_UNAVAILABLE_DETAILED: {
+        defaultMessage: '{entityType} {entityValue} is currently unavailable.',
+        id: 'TR_TRADING_ERROR_UNAVAILABLE_DETAILED',
+    },
+    TR_TRADING_ERROR_INVALID_INPUT: {
+        defaultMessage: 'There was a problem with the trade parameters.',
+        id: 'TR_TRADING_ERROR_INVALID_INPUT',
+    },
+    TR_TRADING_ERROR_INVALID_INPUT_DETAILED: {
+        defaultMessage: 'Invalid trade parameters: {inputs}.',
+        id: 'TR_TRADING_ERROR_INVALID_INPUT_DETAILED',
+    },
+    TR_TRADING_ERROR_INVALID_RESPONSE: {
+        defaultMessage: 'Invalid response from the exchange.',
+        id: 'TR_TRADING_ERROR_INVALID_RESPONSE',
+    },
+    TR_TRADING_ERROR_INVALID_RESPONSE_DETAILED: {
+        defaultMessage: 'Invalid response from the exchange: {errors}.',
+        id: 'TR_TRADING_ERROR_INVALID_RESPONSE_DETAILED',
+    },
+    TR_TRADING_ERROR_NO_RESPONSE: {
+        defaultMessage: 'No response from the exchange. Please try again.',
+        id: 'TR_TRADING_ERROR_NO_RESPONSE',
+    },
+    TR_TRADING_ERROR_TRADE_NOT_FOUND: {
+        defaultMessage: 'The trade could not be found.',
+        id: 'TR_TRADING_ERROR_TRADE_NOT_FOUND',
+    },
+    TR_TRADING_ERROR_TRADE_NOT_FOUND_DETAILED: {
+        defaultMessage: 'Trade {id} could not be found.',
+        id: 'TR_TRADING_ERROR_TRADE_NOT_FOUND_DETAILED',
+    },
+    TR_TRADING_ERROR_TRADE_EXPIRED: {
+        defaultMessage: 'The trade expired. Please start a new one.',
+        id: 'TR_TRADING_ERROR_TRADE_EXPIRED',
+    },
+    TR_TRADING_ERROR_TRADE_EXPIRED_DETAILED: {
+        defaultMessage: 'The trade expired (order ID {orderId}). Please start a new one.',
+        id: 'TR_TRADING_ERROR_TRADE_EXPIRED_DETAILED',
+    },
+    TR_TRADING_ERROR_TRADE_FAILED: {
+        defaultMessage: 'The trade failed. Please contact support.',
+        id: 'TR_TRADING_ERROR_TRADE_FAILED',
+    },
+    TR_TRADING_ERROR_TRADE_FAILED_DETAILED: {
+        defaultMessage: 'The trade failed. Please contact support with order ID {orderId}.',
+        id: 'TR_TRADING_ERROR_TRADE_FAILED_DETAILED',
+    },
+    TR_TRADING_ERROR_TRADE_REFUNDED: {
+        defaultMessage: 'The trade failed and will be refunded.',
+        id: 'TR_TRADING_ERROR_TRADE_REFUNDED',
+    },
+    TR_TRADING_ERROR_TRADE_REFUNDED_DETAILED: {
+        defaultMessage: 'The trade failed and will be refunded. Order ID {orderId}.',
+        id: 'TR_TRADING_ERROR_TRADE_REFUNDED_DETAILED',
+    },
     TR_TRADING_CANNOT_CREATE_TRANSACTION: {
         defaultMessage: 'Unable to create transaction',
         id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',

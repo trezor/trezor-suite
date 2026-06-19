@@ -154,6 +154,12 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
       }
     | ErrorToastPayload
     | {
+          type: 'trading-error';
+          errorCode: string;
+          values?: Record<string, string | number | boolean | undefined>;
+          message?: string;
+      }
+    | {
           type: 'auto-updater-error';
           state: DesktopAppUpdateState;
       }
