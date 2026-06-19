@@ -103,11 +103,11 @@ export interface CoinjoinDebugSettings {
     coinjoinConfigOverride?: PartialRecord<NetworkSymbol, Partial<CoinjoinNetworksConfig>>;
 }
 
-export interface CoinjoinConfig {
+export type CoinjoinConfig = {
     averageAnonymityGainPerRound: number;
     roundsFailRateBuffer: number;
     roundsDurationInHours: number;
     maxMiningFeeModifier: number;
     maxFeePerVbyte?: number;
     legalDocumentsVersion: string;
-}
+};

@@ -12358,6 +12358,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
     expo-image: "npm:~55.0.5"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
@@ -16835,6 +16836,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/wallet-config": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
