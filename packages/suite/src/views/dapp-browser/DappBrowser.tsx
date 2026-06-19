@@ -2,16 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { DAPP_CATALOG, type DappCatalogEntry } from '@suite/dapp-browser';
+import { type DappCatalogEntry } from '@suite/dapp-browser';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
 import { Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacingsPx } from '@trezor/theme';
 
-import { useDispatch } from 'src/hooks/suite';
-
+import { CatalogGrid } from './CatalogGrid';
 import { ConsentInterstitial } from './ConsentInterstitial';
 import { DappViewport } from './DappViewport';
 import { useDappConnection } from './useDappConnection';
@@ -29,10 +27,10 @@ type Stage = 'consent' | 'open';
 
 type DappBrowserSessionProps = {
     entry: DappCatalogEntry;
+    onExit: () => void;
 };
 
-const DappBrowserSession = ({ entry }: DappBrowserSessionProps) => {
-    const dispatch = useDispatch();
+const DappBrowserSession = ({ entry, onExit }: DappBrowserSessionProps) => {
     const { accounts, selectedAddress, connect, selectAccount } = useDappConnection(entry);
 
     useDappRequestHandler();
@@ -40,7 +38,7 @@ const DappBrowserSession = ({ entry }: DappBrowserSessionProps) => {
     const [stage, setStage] = useState<Stage>('consent');
     const [isOpening, setIsOpening] = useState(false);
 
-    // Always tear the native view down when leaving the page.
+    // Always tear the native view down when the session unmounts.
     useEffect(() => () => void desktopApi.dappBrowserClose(), []);
 
     const handleContinue = useCallback(async () => {
@@ -55,15 +53,6 @@ const DappBrowserSession = ({ entry }: DappBrowserSessionProps) => {
         }
     }, [entry.id, connect]);
 
-    const handleCancel = useCallback(() => {
-        dispatch(goto({ routeName: 'suite-index' }));
-    }, [dispatch]);
-
-    const handleClose = useCallback(async () => {
-        await desktopApi.dappBrowserClose();
-        setStage('consent');
-    }, []);
-
     if (stage === 'open') {
         return (
             <DappViewport
@@ -71,7 +60,7 @@ const DappBrowserSession = ({ entry }: DappBrowserSessionProps) => {
                 accounts={accounts}
                 selectedAddress={selectedAddress}
                 onSelectAccount={selectAccount}
-                onClose={handleClose}
+                onClose={onExit}
             />
         );
     }
@@ -81,14 +70,13 @@ const DappBrowserSession = ({ entry }: DappBrowserSessionProps) => {
             entry={entry}
             isLoading={isOpening}
             onContinue={handleContinue}
-            onCancel={handleCancel}
+            onCancel={onExit}
         />
     );
 };
 
 export const DappBrowser = () => {
-    // M1/M2 open a single hard-coded catalog dApp; the full catalog grid is M6.
-    const entry = DAPP_CATALOG[0];
+    const [selectedEntry, setSelectedEntry] = useState<DappCatalogEntry | undefined>();
 
     if (!isDesktop()) {
         return (
@@ -100,9 +88,9 @@ export const DappBrowser = () => {
         );
     }
 
-    if (!entry) {
-        return null;
+    if (!selectedEntry) {
+        return <CatalogGrid onSelect={setSelectedEntry} />;
     }
 
-    return <DappBrowserSession entry={entry} />;
+    return <DappBrowserSession entry={selectedEntry} onExit={() => setSelectedEntry(undefined)} />;
 };
