@@ -1,10 +1,9 @@
-import { bech32 } from '@scure/base';
+import { base58, bech32 } from '@scure/base';
 import * as cbor from 'cbor';
 import crc32 from 'crc/calculators/crc32';
 
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
-import * as base58 from '../crypto/base58';
 import type { NetworkEnvironment } from '../networkEnvironment';
 import type { NetworkSymbol } from '../networkTypes';
 

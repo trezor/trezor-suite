@@ -3,12 +3,12 @@ import { blake2b } from '@noble/hashes/blake2.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
+import { base58 } from '@scure/base';
 
 import { typedObjectKeys } from '@trezor/utils';
 
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
-import * as base58 from '../crypto/base58';
 import * as bech32 from '../crypto/bech32';
 import type { HashFunction } from '../crypto/types';
 import * as cryptoUtils from '../crypto/utils';
@@ -104,7 +104,7 @@ const getNetworkEnvironments = (
 
 function getDecoded(address: string): number[] | null {
     try {
-        return base58.decode(address);
+        return Array.from(base58.decode(address));
     } catch {
         // if decoding fails, assume invalid address
         return null;
