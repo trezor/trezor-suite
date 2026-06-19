@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { Row } from '@trezor/components';
+import { Row, commonFocusStyles } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
 const Pill = styled.button<{ $isActive: boolean }>`
@@ -12,6 +12,7 @@ const Pill = styled.button<{ $isActive: boolean }>`
     cursor: pointer;
     display: flex;
     align-items: center;
+    border-radius: ${borders.radii.full};
 
     &::before {
         content: '';
@@ -30,12 +31,7 @@ const Pill = styled.button<{ $isActive: boolean }>`
     }
 
     &:focus-visible {
-        outline: none;
-    }
-
-    &:focus-visible::before {
-        outline: 2px solid ${({ theme }) => theme.elementBorderFocusRing};
-        outline-offset: 2px;
+        ${commonFocusStyles}
     }
 
     ${({ $isActive, theme }) =>
@@ -54,18 +50,15 @@ type CarouselIndicatorProps = {
 };
 
 export const CarouselIndicator = ({ count, activeIndex, onSelect }: CarouselIndicatorProps) => (
-    <Row
-        gap={4}
-        data-testid="@dashboard/promo-banner/carousel-indicator"
-        margin={{ top: 16, bottom: 12 }}
-    >
+    <Row gap={4} data-testid="@dashboard/promo-banner/carousel-indicator">
         {Array.from({ length: count }).map((_, index) => (
             <Pill
                 key={index}
                 type="button"
                 $isActive={index === activeIndex}
                 onClick={() => onSelect(index)}
-                aria-current={index === activeIndex ? 'true' : undefined}
+                aria-label={`Show promo banner ${index + 1} of ${count}`}
+                aria-current={index === activeIndex ? 'page' : undefined}
             />
         ))}
     </Row>

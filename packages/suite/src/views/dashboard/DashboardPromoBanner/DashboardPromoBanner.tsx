@@ -1,4 +1,4 @@
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
@@ -13,9 +13,9 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 import { BannerCarousel, type CarouselBanner } from './BannerCarousel';
 import { type DashboardBannerType, isDashboardBannerType } from './dashboardBannerTypes';
 import { DASHBOARD_BANNERS } from './dashboardBanners';
+import { bannerAnimationConfig } from '../banner-animations';
 
-const isCarouselBannerKey = (key: string): key is DashboardBannerType =>
-    isDashboardBannerType(key) && key !== null;
+const isCarouselBannerKey = (key: string): key is DashboardBannerType => isDashboardBannerType(key);
 
 export const DashboardPromoBanner = () => {
     const dispatch = useDispatch();
@@ -103,11 +103,13 @@ export const DashboardPromoBanner = () => {
     return (
         <AnimatePresence>
             {shouldRender && (
-                <BannerCarousel
-                    banners={carouselBanners}
-                    onClose={handleBannerClose}
-                    onCTAClick={handleBannerCTAClick}
-                />
+                <motion.div key="dashboard-promo-banner" {...bannerAnimationConfig}>
+                    <BannerCarousel
+                        banners={carouselBanners}
+                        onClose={handleBannerClose}
+                        onCTAClick={handleBannerCTAClick}
+                    />
+                </motion.div>
             )}
         </AnimatePresence>
     );
