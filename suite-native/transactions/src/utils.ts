@@ -1,6 +1,7 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
 import { type SignValue } from '@suite-common/suite-types';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type Target as ProcessedTarget, createSimpleTargetId } from '@suite-common/wallet-core';
 import { type TransactionType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
@@ -79,18 +80,29 @@ export const groupTargetOutputs = (outputs: ProcessedTarget[]): ProcessedTarget[
     );
     const otherOutputs = outputs.filter(o => o.type !== 'target');
 
-    if (targetOutputs.length === 0) return otherOutputs;
+    const [firstTarget] = targetOutputs;
+    if (firstTarget === undefined) return otherOutputs;
 
     const aggregatedAmount = targetOutputs
         .reduce((sum, o) => sum.plus(o.payload.amount ?? '0'), new BigNumber(0))
         .toFixed();
 
-    const [firstTarget] = targetOutputs;
-
     return [
         { ...firstTarget, payload: { ...firstTarget.payload, amount: aggregatedAmount } },
         ...otherOutputs,
     ];
+};
+
+// Decides whether a transaction should be summarized by its token transfer rather than its native
+// coin movement. EVM token transfers always have a zero native amount, but Solana SPL transfers
+// carry a non-zero native amount (token-account rent + fee) that is not user value — so any Solana
+// transaction that includes a token transfer is treated as a token transfer.
+export const isTokenTransferTransaction = (
+    transaction: Pick<WalletAccountTransaction, 'tokens' | 'amount' | 'symbol'>,
+): boolean => {
+    if (transaction.tokens.length === 0) return false;
+
+    return transaction.amount === '0' || getNetworkType(transaction.symbol) === 'solana';
 };
 
 export const getUnstakeTxAmount = (tx: WalletAccountTransaction) => {
