@@ -1,7 +1,6 @@
 import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 
-import * as base32Module from './base32';
 import { decode as base58Decode } from './base58';
 import Blake256 from './blake256';
 import Blake2B from './blake2b';
@@ -154,4 +153,3 @@ export function bigNumberToBuffer(bignumber: number | string, size?: number): Bu
 }
 
 export const base58 = base58Decode;
-export const base32 = base32Module;
