@@ -60,7 +60,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
         this.requiredFirmwareCoins = params.map(({ network }) => network);
         this.hasBundle = hasBundle;
-        this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }

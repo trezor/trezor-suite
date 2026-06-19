@@ -211,22 +211,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.confirmMissingBackup = false;
     }
 
-    // Used in *getAddress methods
-    protected getUseUi(
-        params: { address?: string; proto: { show_display?: boolean } }[],
-        useEventListener: boolean | undefined,
-    ) {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstParam: (typeof params)[number] = params[0];
-        const notUseUi =
-            useEventListener &&
-            params.length === 1 &&
-            typeof firstParam.address === 'string' &&
-            firstParam.proto.show_display;
-
-        return !notUseUi;
-    }
-
     public setDevice(device: Device) {
         this.device = device;
     }
