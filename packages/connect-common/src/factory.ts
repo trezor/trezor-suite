@@ -1,5 +1,4 @@
 import { connectCallableMethods } from './callableMethods';
-import { UI_REQUEST } from './events';
 import type { CallMethod } from './events/call';
 import { type Manifest, type TrezorConnect } from './types';
 import type { ConnectEmitter } from './types/emitter';
@@ -39,14 +38,7 @@ export const factory = <
     const callableMethods = Object.fromEntries(
         connectCallableMethods.map(method => [
             method,
-            (params: any) =>
-                call({
-                    ...params,
-                    method,
-                    useEventListener: method.toLowerCase().endsWith('getaddress')
-                        ? eventEmitter.listenerCount(UI_REQUEST.ADDRESS_VALIDATION) > 0
-                        : undefined,
-                }),
+            (params: any) => call({ ...params, method }),
         ]),
     ) as Pick<TrezorConnect, (typeof connectCallableMethods)[number]>;
 
