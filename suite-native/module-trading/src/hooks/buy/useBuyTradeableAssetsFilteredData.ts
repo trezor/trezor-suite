@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectAddressValidatorDep } from '@suite-common/address';
@@ -11,7 +10,7 @@ import { useTradeableAssetsFilteredData } from '../general/useTradeableAssetsFil
 
 export const useBuyTradeableAssetsFilteredData = () => {
     const { addressValidator } = useServices(selectAddressValidatorDep);
-    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const supportedCoins = addressValidator.getSupportedCoins();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectBuyTradeableAssets(state, supportedCoins),
     );

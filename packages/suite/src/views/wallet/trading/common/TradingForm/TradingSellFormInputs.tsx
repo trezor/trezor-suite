@@ -91,7 +91,7 @@ export const TradingSellFormInputs = () => {
         [onCryptoCurrencyChangeRef],
     );
 
-    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const supportedCoins = addressValidator.getSupportedCoins();
     const sellSupportedCryptoIds = useSelector(state =>
         selectTradingSellSupportedCryptoIds(state, supportedCoins),
     );

@@ -27,7 +27,7 @@ export const BuyTradeableAssetPicker = () => {
         useSheetControls(form, 'asset');
     const { addressValidator } = useServices(selectAddressValidatorDep);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const supportedCoins = addressValidator.getSupportedCoins();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectBuyTradeableAssets(state, supportedCoins),
     );

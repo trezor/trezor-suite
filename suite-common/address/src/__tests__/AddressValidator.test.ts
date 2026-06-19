@@ -37,6 +37,7 @@ describe(createAddressValidator.name, () => {
         expect(addressValidator.isAddressValid(btcAddress, 'btc')).toBe(true);
         expect(addressValidator.getAddressType(ethAddress, 'eth')).toBe('address');
         expect(addressValidator.getSupportedCoins()).toEqual(['btc', 'eth']);
+        expect(addressValidator.getSupportedCoins()).toBe(addressValidator.getSupportedCoins());
 
         expect(bitcoinValidator.getSupportedCoins).toHaveBeenCalledTimes(1);
         expect(ethereumValidator.getSupportedCoins).toHaveBeenCalledTimes(1);

@@ -23,6 +23,8 @@ export const createAddressValidator = ({ networks }: AddressValidatorDeps): Addr
         });
     });
 
+    const supportedCoins = Array.from(validatorByNetworkSymbol.keys());
+
     const getAddressType = (address: string, networkSymbol: string): AddressType | undefined =>
         validatorByNetworkSymbol.get(networkSymbol)?.getAddressType(address, networkSymbol);
 
@@ -30,7 +32,7 @@ export const createAddressValidator = ({ networks }: AddressValidatorDeps): Addr
         validatorByNetworkSymbol.get(networkSymbol)?.isAddressValid(address, networkSymbol) ??
         false;
 
-    const getSupportedCoins = (): string[] => Array.from(validatorByNetworkSymbol.keys());
+    const getSupportedCoins = (): string[] => supportedCoins;
 
     return {
         isAddressValid,

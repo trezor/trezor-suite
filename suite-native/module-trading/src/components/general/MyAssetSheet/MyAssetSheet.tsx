@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectAddressValidatorDep } from '@suite-common/address';
@@ -45,10 +45,7 @@ const renderItem = (
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
         const { addressValidator } = useServices(selectAddressValidatorDep);
-        const supportedCoins = useMemo(
-            () => addressValidator.getSupportedCoins(),
-            [addressValidator],
-        );
+        const supportedCoins = addressValidator.getSupportedCoins();
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
             selectAccountsWithTokensToSellSectionCondensedListByTradingType(
                 state,

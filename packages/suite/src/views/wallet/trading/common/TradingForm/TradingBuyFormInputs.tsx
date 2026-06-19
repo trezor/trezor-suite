@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { selectAddressValidatorDep } from '@suite-common/address';
@@ -68,7 +68,7 @@ export const TradingBuyFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef],
     );
 
-    const supportedCoins = useMemo(() => addressValidator.getSupportedCoins(), [addressValidator]);
+    const supportedCoins = addressValidator.getSupportedCoins();
     const buySupportedCryptoIds = useSelector(state =>
         selectTradingBuySupportedCryptoIds(state, supportedCoins),
     );
