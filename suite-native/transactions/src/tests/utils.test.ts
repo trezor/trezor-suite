@@ -1,7 +1,12 @@
+import { type Target } from '@suite-common/wallet-core';
 import { asTxTargetId } from '@suite-common/wallet-types';
 
 import { type VinVoutAddress } from '../types';
-import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from '../utils';
+import {
+    groupTargetOutputs,
+    mapTransactionInputsOutputsToAddresses,
+    sortTargetAddressesToBeginning,
+} from '../utils';
 import {
     transactionWithChangeAddress,
     transactionWithTargetInOutputs,
@@ -171,5 +176,74 @@ describe(sortTargetAddressesToBeginning.name, () => {
         expect(sortTargetAddressesToBeginning(outputAddresses, targetAddresses)).toEqual(
             expectedResult,
         );
+    });
+});
+
+describe(groupTargetOutputs.name, () => {
+    const makeSimpleTarget = (amount: string, n: number): Target => ({
+        type: 'target',
+        targetId: asTxTargetId(String(n)),
+        payload: { n, addresses: [`address${n}`], isAddress: true, amount },
+    });
+
+    const makeInternalTarget = (amount: string, n: number): Target => ({
+        type: 'internal',
+        targetId: asTxTargetId(String(n)),
+        payload: { type: 'sent', amount, from: 'from', to: 'to' },
+    });
+
+    test('returns empty array for empty input', () => {
+        expect(groupTargetOutputs([])).toEqual([]);
+    });
+
+    test('returns single target unchanged', () => {
+        const targets = [makeSimpleTarget('1000', 0)];
+        expect(groupTargetOutputs(targets)).toEqual(targets);
+    });
+
+    test('aggregates multiple target outputs into a single summed entry', () => {
+        const result = groupTargetOutputs([
+            makeSimpleTarget('1000', 0),
+            makeSimpleTarget('2000', 1),
+            makeSimpleTarget('3000', 2),
+        ]);
+        expect(result).toHaveLength(1);
+        expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '6000' } });
+    });
+
+    test('preserves metadata of the first target in the aggregated entry', () => {
+        const first = makeSimpleTarget('1000', 0);
+        const result = groupTargetOutputs([first, makeSimpleTarget('500', 1)]);
+        expect(result[0]).toMatchObject({
+            targetId: first.targetId,
+            payload: { ...first.payload, amount: '1500' },
+        });
+    });
+
+    test('keeps non-target outputs individually after the aggregated target', () => {
+        const internal = makeInternalTarget('500', 10);
+        const result = groupTargetOutputs([
+            makeSimpleTarget('1000', 0),
+            makeSimpleTarget('2000', 1),
+            internal,
+        ]);
+        expect(result).toHaveLength(2);
+        expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '3000' } });
+        expect(result[1]).toBe(internal);
+    });
+
+    test('returns non-target outputs as-is when no target outputs are present', () => {
+        const inputs = [makeInternalTarget('100', 0), makeInternalTarget('200', 1)];
+        expect(groupTargetOutputs(inputs)).toEqual(inputs);
+    });
+
+    test('treats missing target amount as zero', () => {
+        const noAmount: Target = {
+            type: 'target',
+            targetId: asTxTargetId('0'),
+            payload: { n: 0, isAddress: true },
+        };
+        const result = groupTargetOutputs([noAmount, makeSimpleTarget('500', 1)]);
+        expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '500' } });
     });
 });
