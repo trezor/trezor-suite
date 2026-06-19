@@ -14767,6 +14767,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/dapp-browser@workspace:suite/dapp-browser":
+  version: 0.0.0-use.local
+  resolution: "@suite/dapp-browser@workspace:suite/dapp-browser"
+  dependencies:
+    zod: "npm:4.3.6"
+  languageName: unknown
+  linkType: soft
+
 "@suite/debug@workspace:*, @suite/debug@workspace:suite/debug":
   version: 0.0.0-use.local
   resolution: "@suite/debug@workspace:suite/debug"
