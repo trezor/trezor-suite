@@ -8,6 +8,11 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import {
+    compareEarnByAmountDesc,
+    compareEarnByApyDesc,
+    compareEarnByNetwork,
+} from '@suite-common/wallet-utils';
 
 import {
     type EarnPromoListDataItem,
@@ -138,13 +143,22 @@ export const useStablecoinYieldListData = () => {
             }
         }
 
+        // Opportunities the user has no position in are ordered by APY (highest first); items
+        // without an APY are pushed to the end.
+        const sortedPromoItems = [...promoItems].sort(compareEarnByApyDesc(item => item.apy));
+
+        // Active positions are grouped by network (canonical coin order), highest balance first.
+        const sortedActiveItems = [...activeItems]
+            .sort(compareEarnByAmountDesc(item => item.tokenBalance ?? '0'))
+            .sort(compareEarnByNetwork(item => item.networkSymbol));
+
         const promoListData: EarnPromoListDataItem[] = [
             'stablecoin-yield',
-            ...promoItems,
-            ...(promoItems.length > 0 ? [MORPHO_PROVIDER_LIST_ITEM] : []),
+            ...sortedPromoItems,
+            ...(sortedPromoItems.length > 0 ? [MORPHO_PROVIDER_LIST_ITEM] : []),
         ];
 
-        return { activeItems, promoListData, isLoading };
+        return { activeItems: sortedActiveItems, promoListData, isLoading };
     }, [accounts, yieldOpportunities, isLoading]);
 
     const stablecoinYieldClaimSummariesState = useStablecoinYieldClaimSummaries({

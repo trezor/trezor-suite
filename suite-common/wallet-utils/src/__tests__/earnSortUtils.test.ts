@@ -1,11 +1,12 @@
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import {
-    compareYieldRowsByAvailableBalanceDesc,
-    compareYieldRowsByDepositedAmountDesc,
-    compareYieldRowsByNetworkOnly,
-    compareYieldRowsByTokenNetworkOrder,
-} from '../earnYieldUtils';
+    compareEarnByAmountDesc,
+    compareEarnByApyDesc,
+    compareEarnByNetwork,
+    compareEarnByNetworkTokenOrder,
+} from '../earnSortUtils';
 
 type Row = {
     id: string;
@@ -15,9 +16,9 @@ type Row = {
 
 const row = (
     id: string,
-    symbol: Account['symbol'],
+    symbol: NetworkSymbol,
     index: number,
-    accountType: Account['accountType'] = 'normal',
+    accountType: AccountType = 'normal',
     depositedSymbol?: string,
 ): Row => ({
     id,
@@ -25,14 +26,24 @@ const row = (
     depositedSymbol,
 });
 
-describe('compareYieldRowsByNetworkOnly', () => {
+const getRowSymbol = (r: Row) => r.account?.symbol;
+
+const getRowNetworkTokenKey = (r: Row) =>
+    r.account && {
+        symbol: r.account.symbol,
+        tokenSymbol: r.depositedSymbol,
+        accountType: r.account.accountType,
+        index: r.account.index,
+    };
+
+describe('compareEarnByNetwork', () => {
     it('groups rows by network in networkSymbolCollection order', () => {
         const sorted = [
             row('op-0', 'op', 0),
             row('eth-0', 'eth', 0),
             row('op-1', 'op', 1),
             row('eth-1', 'eth', 1),
-        ].toSorted(compareYieldRowsByNetworkOnly);
+        ].toSorted(compareEarnByNetwork(getRowSymbol));
 
         const symbols = sorted.map(r => r.account?.symbol);
         expect(symbols.lastIndexOf('eth')).toBeLessThan(symbols.indexOf('op'));
@@ -43,12 +54,12 @@ describe('compareYieldRowsByNetworkOnly', () => {
             row('eth-3', 'eth', 3),
             row('eth-0', 'eth', 0),
             row('eth-2', 'eth', 2),
-        ].toSorted(compareYieldRowsByNetworkOnly);
+        ].toSorted(compareEarnByNetwork(getRowSymbol));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-3', 'eth-0', 'eth-2']);
     });
 
-    it('keeps depositedAmount-desc within each network when chained with compareYieldRowsByDepositedAmountDesc', () => {
+    it('keeps amount-desc within each network when chained with compareEarnByAmountDesc', () => {
         const rows = [
             {
                 id: 'eth-0-50',
@@ -73,8 +84,8 @@ describe('compareYieldRowsByNetworkOnly', () => {
         ];
 
         const sorted = rows
-            .toSorted(compareYieldRowsByDepositedAmountDesc)
-            .toSorted(compareYieldRowsByNetworkOnly);
+            .toSorted(compareEarnByAmountDesc(r => r.depositedAmount))
+            .toSorted(compareEarnByNetwork(r => r.account.symbol));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-1-100', 'eth-0-50', 'op-0-75', 'op-1-25']);
     });
@@ -87,13 +98,13 @@ describe('compareYieldRowsByNetworkOnly', () => {
             row('eth-1', 'eth', 1),
         ];
 
-        const sorted = rows.toSorted(compareYieldRowsByNetworkOnly);
+        const sorted = rows.toSorted(compareEarnByNetwork(getRowSymbol));
 
         expect(sorted.map(r => r.id)).toEqual(['a', 'eth-0', 'b', 'eth-1']);
     });
 });
 
-describe('compareYieldRowsByTokenNetworkOrder', () => {
+describe('compareEarnByNetworkTokenOrder', () => {
     it('groups by network → token → accountType → index so legacy/ledger rows stay with normal rows on the same token', () => {
         const sorted = [
             row('eth-1-legacy-usdc', 'eth', 1, 'legacy', 'usdc'),
@@ -102,7 +113,7 @@ describe('compareYieldRowsByTokenNetworkOrder', () => {
             row('eth-1-normal-usdc', 'eth', 1, 'normal', 'usdc'),
             row('eth-9-ledger-usdt', 'eth', 9, 'ledger', 'usdt'),
             row('eth-1-normal-usdt', 'eth', 1, 'normal', 'usdt'),
-        ].toSorted(compareYieldRowsByTokenNetworkOrder);
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
 
         // ETH accountTypes config: { ledger, legacy }. 'normal' indexOf returns -1 → sorts first.
         // Token (alphabetical) → accountType (normal → ledger → legacy) → index.
@@ -122,7 +133,7 @@ describe('compareYieldRowsByTokenNetworkOrder', () => {
         const sorted = [
             row('eth-1-legacy-usdt', 'eth', 1, 'legacy', 'usdt'),
             row('eth-9-normal-usdt', 'eth', 9, 'normal', 'usdt'),
-        ].toSorted(compareYieldRowsByTokenNetworkOrder);
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-9-normal-usdt', 'eth-1-legacy-usdt']);
     });
@@ -131,7 +142,7 @@ describe('compareYieldRowsByTokenNetworkOrder', () => {
         const sorted = [
             row('eth-1-legacy-usdt', 'eth', 1, 'legacy', 'usdt'),
             row('eth-9-ledger-usdt', 'eth', 9, 'ledger', 'usdt'),
-        ].toSorted(compareYieldRowsByTokenNetworkOrder);
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
 
         expect(sorted.map(r => r.id)).toEqual(['eth-9-ledger-usdt', 'eth-1-legacy-usdt']);
     });
@@ -142,7 +153,7 @@ describe('compareYieldRowsByTokenNetworkOrder', () => {
             row('eth-1-normal-usdc', 'eth', 1, 'normal', 'usdc'),
             row('eth-1-normal-usdt', 'eth', 1, 'normal', 'usdt'),
             row('eth-5-normal-usdc', 'eth', 5, 'normal', 'usdc'),
-        ].toSorted(compareYieldRowsByTokenNetworkOrder);
+        ].toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
 
         expect(sorted.map(r => r.id)).toEqual([
             'eth-1-normal-usdc',
@@ -151,10 +162,46 @@ describe('compareYieldRowsByTokenNetworkOrder', () => {
             'eth-3-normal-usdt',
         ]);
     });
+
+    it('treats rows without an account as equal (no reordering)', () => {
+        const rows: Row[] = [
+            { id: 'a' },
+            row('eth-0', 'eth', 0, 'normal', 'usdc'),
+            { id: 'b' },
+            row('eth-1', 'eth', 1, 'normal', 'usdc'),
+        ];
+
+        const sorted = rows.toSorted(compareEarnByNetworkTokenOrder(getRowNetworkTokenKey));
+
+        expect(sorted.map(r => r.id)).toEqual(['a', 'eth-0', 'b', 'eth-1']);
+    });
 });
 
-describe('yield table 3-bucket ordering', () => {
-    it('renders deposited (depositedAmount-desc by network), then depositable + no-balance (both share network → accountType → token → index)', () => {
+describe('compareEarnByApyDesc', () => {
+    it('orders opportunities by APY descending', () => {
+        const sorted = [
+            { id: 'a', apy: 3 },
+            { id: 'b', apy: 10 },
+            { id: 'c', apy: 5 },
+        ].toSorted(compareEarnByApyDesc(item => item.apy));
+
+        expect(sorted.map(item => item.id)).toEqual(['b', 'c', 'a']);
+    });
+
+    it('puts null/undefined APY last and keeps their relative order stable', () => {
+        const sorted = [
+            { id: 'a', apy: null },
+            { id: 'b', apy: 10 },
+            { id: 'c', apy: undefined },
+            { id: 'd', apy: 5 },
+        ].toSorted(compareEarnByApyDesc(item => item.apy));
+
+        expect(sorted.map(item => item.id)).toEqual(['b', 'd', 'a', 'c']);
+    });
+});
+
+describe('yield bucket ordering', () => {
+    it('renders deposited (amount-desc by network), then depositable + no-balance (both share network → token → accountType → index)', () => {
         const depositedBaseRow = (
             id: string,
             symbol: 'eth' | 'op',
@@ -169,7 +216,7 @@ describe('yield table 3-bucket ordering', () => {
         const depositableBaseRow = (
             id: string,
             symbol: 'eth' | 'op',
-            accountType: Account['accountType'],
+            accountType: AccountType,
             index: number,
             depositedSymbol: string,
             additionalDepositAmount: string,
@@ -180,6 +227,26 @@ describe('yield table 3-bucket ordering', () => {
             additionalDepositAmount,
             matchedInputToken: {},
         });
+
+        const getAvailableBalance = (r: {
+            matchedInputToken?: unknown;
+            additionalDepositAmount?: string;
+            account?: { formattedBalance?: string };
+        }) =>
+            r.matchedInputToken
+                ? (r.additionalDepositAmount ?? '0')
+                : (r.account?.formattedBalance ?? '0');
+
+        const toNetworkTokenKey = (r: {
+            account?: { symbol: NetworkSymbol; accountType: AccountType; index: number };
+            depositedSymbol?: string;
+        }) =>
+            r.account && {
+                symbol: r.account.symbol,
+                tokenSymbol: r.depositedSymbol,
+                accountType: r.account.accountType,
+                index: r.account.index,
+            };
 
         const depositedRows = [
             depositedBaseRow('eth-2-deposited-200', 'eth', 2, '200'),
@@ -203,16 +270,16 @@ describe('yield table 3-bucket ordering', () => {
 
         const ordered = [
             ...depositedRows
-                .toSorted(compareYieldRowsByDepositedAmountDesc)
-                .toSorted(compareYieldRowsByNetworkOnly),
+                .toSorted(compareEarnByAmountDesc(r => r.depositedAmount))
+                .toSorted(compareEarnByNetwork(r => r.account.symbol)),
             ...depositableRows
-                .toSorted(compareYieldRowsByAvailableBalanceDesc)
-                .toSorted(compareYieldRowsByTokenNetworkOrder),
-            ...noBalanceRows.toSorted(compareYieldRowsByTokenNetworkOrder),
+                .toSorted(compareEarnByAmountDesc(getAvailableBalance))
+                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenKey)),
+            ...noBalanceRows.toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenKey)),
         ];
 
         expect(ordered.map(r => r.id)).toEqual([
-            // deposited (group 1): depositedAmount-desc within network
+            // deposited (group 1): amount-desc within network
             'eth-0-deposited-500',
             'eth-2-deposited-200',
             'op-3-deposited-100',
