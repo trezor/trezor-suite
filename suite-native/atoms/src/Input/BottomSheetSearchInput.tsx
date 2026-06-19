@@ -8,7 +8,6 @@ import { useNativeStyles } from '@trezor/styles-native';
 import { noop } from '@trezor/utils';
 
 import { Box } from '../Box';
-import { type SurfaceElevation } from '../types';
 import { SearchInputClearButton } from './SearchInputClearButton';
 import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
 import { inputStyle, inputWrapperStyle } from './searchInputStyles';
@@ -20,7 +19,6 @@ export type BottomSheetSearchInputProps = {
     testId?: string;
     isDisabled?: boolean;
     maxLength?: number;
-    elevation?: SurfaceElevation;
     onFocus?: () => void;
     onBlur?: () => void;
     value?: string;
@@ -39,7 +37,6 @@ export const BottomSheetSearchInput = forwardRef<
             placeholder,
             maxLength,
             isDisabled = false,
-            elevation = '0',
             onFocus = noop,
             onBlur = noop,
             value,
@@ -65,7 +62,7 @@ export const BottomSheetSearchInput = forwardRef<
 
         return (
             <Pressable onPress={handleInputFocus}>
-                <Box style={applyStyle(inputWrapperStyle, { isFocused, elevation })}>
+                <Box style={applyStyle(inputWrapperStyle, { isFocused })}>
                     <SearchInputMagnifyingGlass />
                     <BottomSheetTextInput
                         ref={searchInputRef}

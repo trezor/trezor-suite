@@ -4,7 +4,6 @@ import { Pressable, TextInput } from 'react-native';
 import { useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
-import { type SurfaceElevation } from '../types';
 import { SearchInputClearButton } from './SearchInputClearButton';
 import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
 import { inputStyle, inputWrapperStyle } from './searchInputStyles';
@@ -16,24 +15,11 @@ export type BaseSearchInputProps = {
     autoFocus?: boolean;
     isDisabled?: boolean;
     maxLength?: number;
-    elevation?: SurfaceElevation;
     onFocus?: () => void;
     onBlur?: () => void;
 };
 export const BaseSearchInput = forwardRef<TextInput, BaseSearchInputProps>(
-    (
-        {
-            onChange,
-            placeholder,
-            maxLength,
-            autoFocus,
-            isDisabled = false,
-            elevation = '0',
-            onFocus,
-            onBlur,
-        },
-        ref,
-    ) => {
+    ({ onChange, placeholder, maxLength, autoFocus, isDisabled = false, onFocus, onBlur }, ref) => {
         const { applyStyle, utils } = useNativeStyles();
 
         const {
@@ -47,7 +33,7 @@ export const BaseSearchInput = forwardRef<TextInput, BaseSearchInputProps>(
 
         return (
             <Pressable onPress={handleInputFocus}>
-                <Box style={applyStyle(inputWrapperStyle, { isFocused, elevation })}>
+                <Box style={applyStyle(inputWrapperStyle, { isFocused })}>
                     <SearchInputMagnifyingGlass />
 
                     <TextInput

@@ -18,24 +18,15 @@ export const SearchInput: SearchInputStory = {
     name: 'SearchInput',
     args: {
         placeholder: 'Search for something',
-        isDisabled: false,
         maxLength: 100,
-        elevation: '0',
         onChange: () => {},
     },
     argTypes: {
         placeholder: {
             control: { type: 'text' },
         },
-        isDisabled: {
-            control: { type: 'boolean' },
-        },
         maxLength: {
             control: { type: 'number' },
-        },
-        elevation: {
-            control: { type: 'select' },
-            options: ['0', '1'],
         },
     },
 };
