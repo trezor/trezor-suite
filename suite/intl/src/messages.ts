@@ -6430,10 +6430,6 @@ export const messages = defineMessages({
         id: 'BROADCAST',
         defaultMessage: 'Broadcast',
     },
-    BROADCAST_TOOLTIP: {
-        id: 'BROADCAST_TOOLTIP',
-        defaultMessage: 'Broadcast the transaction to the network.',
-    },
     IMPORT_CSV: {
         id: 'IMPORT_CSV',
         description: 'item in dropdown menu',
