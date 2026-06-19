@@ -1,9 +1,9 @@
+import { bytesToHex } from '@noble/hashes/utils.js';
 import { utils } from '@scure/base';
 import crc16xmodem from 'crc/calculators/crc16xmodem';
 
 import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
-import * as cryptoUtils from '../crypto/utils';
 import type { NetworkSymbol } from '../networkTypes';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -19,6 +19,11 @@ function swap16(number: number): number {
     return (lower << 8) | upper;
 }
 
+const numberToHex = (number: number, sizeInBytes: number): string =>
+    Math.round(number)
+        .toString(16)
+        .padStart(sizeInBytes * 2, '0');
+
 function verifyChecksum(address: string): boolean {
     const bytes = base32.decode(address);
     if (bytes[0] !== ed25519PublicKeyVersionByte) {
@@ -26,8 +31,8 @@ function verifyChecksum(address: string): boolean {
     }
 
     const payload = bytes.slice(0, -2);
-    const checksum = cryptoUtils.toHex(bytes.slice(-2));
-    const computedChecksum = cryptoUtils.numberToHex(swap16(crc16xmodem(payload)), 2);
+    const checksum = bytesToHex(Uint8Array.from(bytes.slice(-2)));
+    const computedChecksum = numberToHex(swap16(crc16xmodem(payload)), 2);
 
     return computedChecksum === checksum;
 }
