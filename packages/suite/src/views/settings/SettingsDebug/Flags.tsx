@@ -1,16 +1,15 @@
-import { type FlagsState, selectFlags, setFlag } from '@suite/flags';
+import { selectFlags, setFlag } from '@suite/flags';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-type FlagKey = keyof FlagsState;
 
 export const Flags = () => {
     const dispatch = useDispatch();
     const flags = useSelector(selectFlags);
 
-    const entries = Object.entries(flags) as [FlagKey, FlagsState[FlagKey]][];
+    const entries = typedObjectEntries(flags);
 
     return (
         <>

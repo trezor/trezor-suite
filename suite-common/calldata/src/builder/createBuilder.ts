@@ -30,6 +30,7 @@ export const createBuilder = <
     ExtractContext<Config>,
     ExtractEncoderOutput<E>
 > => {
+    // eslint-disable-next-line no-restricted-syntax -- typedObjectKeys can only yield `keyof Config`; the param keys are narrowed to `ExtractParamNames<E>` by the generic constraint, which TS cannot infer on its own
     const paramNames = Object.keys(config.params) as ExtractParamNames<E>[];
 
     return (

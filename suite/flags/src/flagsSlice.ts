@@ -3,7 +3,7 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
 
-export interface FlagsState {
+export type FlagsState = {
     initialRun: boolean;
     taprootBannerClosed: boolean;
     firmwareTypeBannerClosed: boolean;
@@ -30,7 +30,7 @@ export interface FlagsState {
     hasSeenDisconnectTooltip: boolean;
     showNoDeviceEshopSidebarBanner: boolean;
     areNoDeviceEshopBannersDisabled: boolean;
-}
+};
 
 export type FlagsRootState = { flags: FlagsState };
 

@@ -67,6 +67,24 @@ export const javascriptConfig = [
                     message:
                         'Use `undefined` (or `never` in discriminated unions) instead of `typeof undefined` in type position.',
                 },
+                {
+                    selector:
+                        "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='keys']",
+                    message:
+                        'Use typedObjectKeys from @trezor/utils instead of casting the result of Object.keys(). The `as` assertion just re-spells `keyof typeof`, which typedObjectKeys provides safely.',
+                },
+                {
+                    selector:
+                        "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='entries']",
+                    message:
+                        'Use typedObjectEntries from @trezor/utils instead of casting the result of Object.entries(). The `as` assertion just re-spells the entry tuple type, which typedObjectEntries provides safely.',
+                },
+                {
+                    selector:
+                        "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='values']",
+                    message:
+                        'Use typedObjectValues from @trezor/utils instead of casting the result of Object.values(). The `as` assertion just re-spells the value type, which typedObjectValues provides safely.',
+                },
             ],
             'object-shorthand': [
                 'error',
