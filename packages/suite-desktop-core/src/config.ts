@@ -54,3 +54,14 @@ export const allowedDesktopUpdateDomains = [
     'sldev.cz', // Test environment, available only with VPN
     ...localhostDomains, // Allowed for local testing
 ];
+/**
+ * Per-chain JSON-RPC endpoints used by the dApp browser's `node` lane (§10).
+ * Reads are forwarded raw to a Suite-bundled endpoint — never to an RPC URL the
+ * dApp supplies. PoC ships Ethereum mainnet only (chainId 1).
+ *
+ * NOTE (prod hardening): these requests should be routed through Tor and the
+ * request interceptor; for the PoC they go out over the main-process `fetch`.
+ */
+export const dappBrowserRpcEndpoints: Record<number, string> = {
+    1: 'https://cloudflare-eth.com',
+};
