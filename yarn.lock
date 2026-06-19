@@ -16089,7 +16089,6 @@ __metadata:
     crypto-browserify: "npm:3.12.1"
     jest: "npm:29.7.0"
     jws: "npm:^4.0.1"
-    node-fetch: "npm:^3.3.2"
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
