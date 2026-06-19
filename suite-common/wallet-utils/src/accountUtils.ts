@@ -42,7 +42,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
-import { BigNumber, arrayDistinct, bufferUtils } from '@trezor/utils';
+import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -277,7 +277,11 @@ export const sortByCoin = <T extends Account>(accounts: T[]) =>
 
         // when it is sorted by network, sort by order of accountType keys within the same network
         const network = networks[a.symbol];
-        const orderedAccountTypes = Object.keys(network.accountTypes) as AccountType[];
+        // `network` is a union over all networks (some declare `accountTypes: {}`), which would collapse
+        // `keyof` to `never`; widening to the field's declared keyset yields `AccountType[]` soundly.
+        const orderedAccountTypes = typedObjectKeys(
+            network.accountTypes as Partial<Record<AccountType, unknown>>,
+        );
         const aAccountTypeIndex = orderedAccountTypes.indexOf(a.accountType);
         const bAccountTypeIndex = orderedAccountTypes.indexOf(b.accountType);
 

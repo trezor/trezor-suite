@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-syntax -- this file *is* the typed Object.keys/entries/values
+   wrappers, so the very casts the rule warns about live here on purpose — the whole point is
+   that nobody else has to write them. */
 import { type KeysOfUnion, type NarrowObjectWithKey } from '@trezor/type-utils';
 
 export const typedObjectEntries = <T extends Record<string, unknown>>(
