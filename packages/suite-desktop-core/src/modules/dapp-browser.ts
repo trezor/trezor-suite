@@ -32,6 +32,7 @@ import {
     getCatalogEntryById,
 } from '@suite/dapp-browser';
 
+import { dappBrowserRpcEndpoints } from '../config';
 import { ipcMain } from '../typed-electron';
 import type { ModuleInit } from './module';
 
@@ -83,7 +84,52 @@ const handleStateMethod = (method: string, grant: DappGrant | undefined): Provid
     }
 };
 
-const handleProviderRequest = (payload: unknown): ProviderResult => {
+// node lane (§10): forward the read raw to a Suite-bundled per-chain JSON-RPC
+// endpoint. The dApp can never influence which endpoint is used.
+const handleNodeMethod = async (
+    method: string,
+    params: unknown,
+    chainId: number,
+): Promise<ProviderResult> => {
+    const url = dappBrowserRpcEndpoints[chainId];
+
+    if (!url) {
+        return denied(
+            RPC_ERROR.UNRECOGNIZED_CHAIN,
+            `No RPC endpoint configured for chain ${chainId}`,
+        );
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params: params ?? [] }),
+        });
+        const json = (await response.json()) as {
+            result?: unknown;
+            error?: { code?: number; message?: string };
+        };
+
+        if (json.error) {
+            return {
+                ok: false,
+                error: {
+                    code: json.error.code ?? RPC_ERROR.INTERNAL_ERROR,
+                    message: json.error.message ?? 'RPC error',
+                },
+            };
+        }
+
+        return { ok: true, result: json.result };
+    } catch (error) {
+        global.logger.warn(SERVICE_NAME, `node RPC ${method} failed: ${error}`);
+
+        return denied(RPC_ERROR.INTERNAL_ERROR, 'RPC request failed');
+    }
+};
+
+const handleProviderRequest = (payload: unknown): ProviderResult | Promise<ProviderResult> => {
     // Validate the untrusted request envelope at the boundary (§7, §12).
     const parsed = eip1193RequestSchema.safeParse(payload);
 
@@ -91,15 +137,16 @@ const handleProviderRequest = (payload: unknown): ProviderResult => {
         return denied(RPC_ERROR.INVALID_PARAMS, 'Invalid request');
     }
 
-    const { method } = parsed.data;
+    const { method, params } = parsed.data;
     const lane = classifyMethod('eip155', method);
 
     switch (lane) {
         case 'state':
             return handleStateMethod(method, activeDapp?.grant);
         case 'node':
+            return handleNodeMethod(method, params, activeDapp?.grant?.chainId ?? 1);
         case 'device':
-            // node → M3 (read-RPC forwarder), device → M4/M5 (on-device signing).
+            // On-device signing lands in M4 (eth_sendTransaction) and M5 (sign/typed).
             return denied(RPC_ERROR.INTERNAL_ERROR, `${method} is not yet supported`);
         case 'deny':
             return denied(RPC_ERROR.UNSUPPORTED_METHOD, `${method} is not supported`);
