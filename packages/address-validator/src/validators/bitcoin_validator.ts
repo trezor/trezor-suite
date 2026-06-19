@@ -11,7 +11,6 @@ import type { AddressValidator } from '../AddressValidator';
 import { addressType } from '../addressType';
 import * as bech32 from '../crypto/bech32';
 import type { HashFunction } from '../crypto/types';
-import * as cryptoUtils from '../crypto/utils';
 import type { NetworkEnvironment } from '../networkEnvironment';
 import { bchValidator } from './bch_validator';
 import type { NetworkSymbol } from '../networkTypes';
@@ -111,6 +110,8 @@ function getDecoded(address: string): number[] | null {
     }
 }
 
+const toHex = (bytes: number[]): string => bytesToHex(Uint8Array.from(bytes));
+
 function getChecksum(hashFunction: HashFunction, payload: string): string {
     // Each currency may implement different hashing algorithm
     switch (hashFunction) {
@@ -147,13 +148,11 @@ function getAddressTypeHex(address: string, currency: BitcoinCurrency): string |
             }
         }
 
-        const checksum = cryptoUtils.toHex(decoded.slice(length - 4, length));
-        const body = cryptoUtils.toHex(decoded.slice(0, length - 4));
+        const checksum = toHex(decoded.slice(length - 4, length));
+        const body = toHex(decoded.slice(0, length - 4));
         const goodChecksum = getChecksum(hashFunction, body);
 
-        return checksum === goodChecksum
-            ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24))
-            : null;
+        return checksum === goodChecksum ? toHex(decoded.slice(0, expectedLength - 24)) : null;
     }
 
     return null;
