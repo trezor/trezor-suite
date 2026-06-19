@@ -1,4 +1,5 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
+import { typedObjectEntries } from '@trezor/utils';
 
 import type { AttributeDoc, EventDoc } from '../types';
 import { normalizeChangelog } from './normalizeChangelog';
@@ -21,11 +22,8 @@ type NormalizableEvent = (
 ) & { platform?: string; attributes?: Record<string, AttributeDef<unknown>> };
 
 const toEventDoc = (event: NormalizableEvent): [string, EventDoc] => {
-    const attributes = Object.fromEntries(
-        (Object.entries(event.attributes ?? {}) as [string, AttributeDef<unknown>][]).map(
-            toAttributeDoc,
-        ),
-    );
+    const eventAttributes: Record<string, AttributeDef<unknown>> = event.attributes ?? {};
+    const attributes = Object.fromEntries(typedObjectEntries(eventAttributes).map(toAttributeDoc));
 
     const eventChangelogEntries = event.changelog ?? [];
     const attributeChangelogEntries = Object.values(attributes).flatMap(

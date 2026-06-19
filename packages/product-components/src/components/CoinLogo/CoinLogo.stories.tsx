@@ -3,6 +3,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { isCryptoIconSymbol, networkIconSymbolMap } from '@suite-common/icons/src/iconUtils';
 import { networksCollection } from '@suite-common/wallet-config';
 import { Column, Grid, H2, Paragraph } from '@trezor/components';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     COIN_LOGO_TYPE,
@@ -13,9 +14,7 @@ import {
     allowedCoinLogoSizes,
 } from './CoinLogo';
 
-const NETWORK_ICON_SYMBOLS = Object.keys(
-    networkIconSymbolMap,
-) as (keyof typeof networkIconSymbolMap)[];
+const NETWORK_ICON_SYMBOLS = typedObjectKeys(networkIconSymbolMap);
 const TOKEN_WITH_NETWORK_SYMBOLS = networksCollection
     .filter(network => network.settlementLayer)
     .map(network => network.symbol)

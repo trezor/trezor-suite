@@ -7,6 +7,7 @@ import {
 } from 'react';
 
 import { Banner, type BannerIntent } from '@trezor/components';
+import { typedObjectKeys } from '@trezor/utils';
 
 // The displayed Banner intent is determined by an emoji at the start of the markdown quote.
 // The mapping is exhaustive over BannerIntent so Guide hints support every Banner intent.
@@ -18,7 +19,7 @@ const INTENT_EMOJI = {
     neutral: '📝',
 } as const satisfies Record<BannerIntent, string>;
 
-const HINT_INTENTS = Object.keys(INTENT_EMOJI) as BannerIntent[];
+const HINT_INTENTS = typedObjectKeys(INTENT_EMOJI);
 const EMOJI_REGEX = new RegExp(`^(${Object.values(INTENT_EMOJI).join('|')})\\s*`);
 
 // This is a hack to sneak a bit more complex component into the generated markup.

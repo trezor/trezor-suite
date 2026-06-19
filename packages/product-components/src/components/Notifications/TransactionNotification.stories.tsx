@@ -1,6 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { type IconName, Toast, type ToastProps } from '@trezor/components';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     TransactionNotification,
@@ -194,9 +195,7 @@ export const InToast: StoryObj<TransactionToastStoryArgs> = {
             control: {
                 type: 'select',
             },
-            options: Object.keys(
-                transactionNotificationConfig,
-            ) as (keyof typeof transactionNotificationConfig)[],
+            options: typedObjectKeys(transactionNotificationConfig),
         },
     },
     render: ({ notificationType }) => {
