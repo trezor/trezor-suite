@@ -166,13 +166,17 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
 
     const stakeTranslationId = stakeType ? getStakeTransactionMessage(stakeType, isPending) : null;
 
+    // The contract method name (e.g. "Transfer") must not override the "self" label for
+    // self-transactions, otherwise sending to your own account shows up as a generic transfer.
+    const ethNameToDisplay = transaction.type === 'self' ? undefined : ethName;
+
     return (
         <Text variant={variant}>
             {stakeTranslationId ? (
                 <Translation id={stakeTranslationId} />
             ) : (
                 // use name of eth txns, but not for recv or sent Transfer
-                ethName || <Translation id={getTransactionName(transaction, isPending)} />
+                ethNameToDisplay || <Translation id={getTransactionName(transaction, isPending)} />
             )}
         </Text>
     );
