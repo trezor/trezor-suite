@@ -186,6 +186,11 @@ export interface InvokeChannels {
         height: number;
     }) => void;
     'dapp-browser/set-visible': (params: { visible: boolean }) => void;
+    'dapp-browser/set-grant': (grant: { address: string; chainId: number }) => void;
+    'dapp-browser/emit-event': (payload: { event: string; data?: unknown }) => void;
+    'dapp-browser/reload': () => void;
+    'dapp-browser/go-back': () => void;
+    'dapp-browser/go-forward': () => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -280,4 +285,9 @@ export type DesktopApi = {
     dappBrowserClose: DesktopApiInvoke<'dapp-browser/close'>;
     dappBrowserSetBounds: DesktopApiInvoke<'dapp-browser/set-bounds'>;
     dappBrowserSetVisible: DesktopApiInvoke<'dapp-browser/set-visible'>;
+    dappBrowserSetGrant: DesktopApiInvoke<'dapp-browser/set-grant'>;
+    dappBrowserEmitEvent: DesktopApiInvoke<'dapp-browser/emit-event'>;
+    dappBrowserReload: DesktopApiInvoke<'dapp-browser/reload'>;
+    dappBrowserGoBack: DesktopApiInvoke<'dapp-browser/go-back'>;
+    dappBrowserGoForward: DesktopApiInvoke<'dapp-browser/go-forward'>;
 };

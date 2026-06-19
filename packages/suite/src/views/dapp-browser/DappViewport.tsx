@@ -3,27 +3,15 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { type DappCatalogEntry } from '@suite/dapp-browser';
-import { Translation } from '@suite/intl';
-import { Button } from '@trezor/components';
+import { type Account } from '@suite-common/wallet-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacingsPx } from '@trezor/theme';
+
+import { DappTopBar } from './DappTopBar';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-`;
-
-const Toolbar = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: ${spacingsPx.sm};
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
-`;
-
-const Title = styled.span`
-    font-weight: 600;
 `;
 
 // The native WebContentsView is painted on top of the window content (it ignores
@@ -36,10 +24,19 @@ const ViewSlot = styled.div`
 
 type DappViewportProps = {
     entry: DappCatalogEntry;
+    accounts: Account[];
+    selectedAddress: string | undefined;
+    onSelectAccount: (address: string) => void;
     onClose: () => void;
 };
 
-export const DappViewport = ({ entry, onClose }: DappViewportProps) => {
+export const DappViewport = ({
+    entry,
+    accounts,
+    selectedAddress,
+    onSelectAccount,
+    onClose,
+}: DappViewportProps) => {
     const slotRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -76,12 +73,13 @@ export const DappViewport = ({ entry, onClose }: DappViewportProps) => {
 
     return (
         <Wrapper>
-            <Toolbar>
-                <Title>{entry.name}</Title>
-                <Button size="small" intent="neutral" priority="secondary" onClick={onClose}>
-                    <Translation id="TR_DAPP_BROWSER_CLOSE" />
-                </Button>
-            </Toolbar>
+            <DappTopBar
+                entry={entry}
+                accounts={accounts}
+                selectedAddress={selectedAddress}
+                onSelectAccount={onSelectAccount}
+                onClose={onClose}
+            />
             <ViewSlot ref={slotRef} />
         </Wrapper>
     );

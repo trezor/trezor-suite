@@ -5661,6 +5661,18 @@ export const messages = defineMessages({
         id: 'TR_DAPP_BROWSER_CLOSE',
         defaultMessage: 'Close',
     },
+    TR_DAPP_BROWSER_BACK: {
+        id: 'TR_DAPP_BROWSER_BACK',
+        defaultMessage: 'Back',
+    },
+    TR_DAPP_BROWSER_FORWARD: {
+        id: 'TR_DAPP_BROWSER_FORWARD',
+        defaultMessage: 'Forward',
+    },
+    TR_DAPP_BROWSER_RELOAD: {
+        id: 'TR_DAPP_BROWSER_RELOAD',
+        defaultMessage: 'Reload',
+    },
     TR_DAPP_BROWSER_CONSENT_HEADING: {
         id: 'TR_DAPP_BROWSER_CONSENT_HEADING',
         defaultMessage: 'Open {dappName}?',
