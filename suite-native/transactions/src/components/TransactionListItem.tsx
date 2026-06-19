@@ -26,7 +26,7 @@ import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
-import { getTransactionValueSign, groupTargetOutputs, isTokenTransferTransaction } from '../utils';
+import { getTransactionValueSign, groupTargetOutputs } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 import { TransactionTarget } from './TransactionTarget';
@@ -138,8 +138,8 @@ export const TransactionListItem = ({
 
     const stakeOperationType = getTxStakeType(transaction);
 
-    // Self transactions move no net value (only a network fee is paid), so we show an empty amount
-    // instead of the redundant dust/change output. Staking self-transactions keep their amount.
+    // Self transactions don't change the account balance (only a network fee is paid), so we show
+    // an empty amount instead of the redundant/dust output. Staking self-transactions keep theirs.
     if (transaction.type === 'self' && !stakeOperationType)
         return (
             <TransactionListItemContainer
@@ -154,7 +154,10 @@ export const TransactionListItem = ({
             </TransactionListItemContainer>
         );
 
-    if (firstToken !== undefined && isTokenTransferTransaction(transaction))
+    // Any non-self transaction carrying a token transfer is summarized by its token (e.g. an ERC20
+    // transfer, or a swap that also moves native coin). The native amount — rent on Solana, swap
+    // value on EVM — is dropped here; the detail screen still shows the full breakdown.
+    if (firstToken !== undefined)
         return (
             <TokenTransferListItem
                 transaction={transaction}
