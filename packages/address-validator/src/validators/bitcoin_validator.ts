@@ -1,3 +1,7 @@
+import { blake256 as nobleBlake256 } from '@noble/hashes/blake1.js';
+import { blake2b as nobleBlake2b } from '@noble/hashes/blake2.js';
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
+
 import { typedObjectKeys } from '@trezor/utils';
 
 import type { AddressValidator } from '../AddressValidator';
@@ -110,12 +114,12 @@ function getChecksum(hashFunction: HashFunction, payload: string): string {
     switch (hashFunction) {
         // blake then keccak hash chain
         case 'blake256keccak256': {
-            const blake = cryptoUtils.blake2b256(payload);
+            const blake = bytesToHex(nobleBlake2b(hexToBytes(payload), { dkLen: 32 }));
 
             return cryptoUtils.keccak256Checksum(Buffer.from(blake, 'hex'));
         }
         case 'blake256':
-            return cryptoUtils.blake256Checksum(payload);
+            return bytesToHex(nobleBlake256(nobleBlake256(hexToBytes(payload)))).slice(0, 8);
         case 'keccak256':
             return cryptoUtils.keccak256Checksum(payload);
         case 'sha256':

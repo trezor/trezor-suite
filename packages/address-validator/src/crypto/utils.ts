@@ -2,8 +2,6 @@ import { sha256 as nobleSha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 
 import { decode as base58Decode } from './base58';
-import Blake256 from './blake256';
-import Blake2B from './blake2b';
 import sha3 from './sha3';
 export { addressType } from '../addressType';
 
@@ -110,18 +108,6 @@ export function sha256Checksum(hexPayload: string): string {
     return sha256(sha256(hexPayload)).slice(0, 8);
 }
 
-export function blake256(hexString: string): string {
-    return new (Blake256 as any)().update(hexString, 'hex').digest('hex');
-}
-
-export function blake256Checksum(payload: string): string {
-    return blake256(blake256(payload)).slice(0, 8);
-}
-
-export function blake2b(hexString: string, outlen: number): string {
-    return new (Blake2B as any)(outlen).update(Buffer.from(hexString, 'hex')).digest('hex');
-}
-
 export function keccak256(hexString: string): string {
     return keccak256Fn(hexString);
 }
@@ -130,10 +116,6 @@ export function keccak256Checksum(payload: string | Buffer | Uint8Array): string
     return keccak256Fn(payload as any)
         .toString()
         .slice(0, 8);
-}
-
-export function blake2b256(hexString: string): string {
-    return new (Blake2B as any)(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
 }
 
 export function bigNumberToBuffer(bignumber: number | string, size?: number): Buffer {
