@@ -362,6 +362,12 @@ export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
 export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote;
 
+export const selectTradingExchangeSelectedQuoteSwapSlippage = (state: TradingRootState) =>
+    state.wallet.trading.exchange.selectedQuote?.swapSlippage;
+
+export const selectTradingExchangeSelectedQuoteIsDex = (state: TradingRootState) =>
+    state.wallet.trading.exchange.selectedQuote?.isDex;
+
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
 

@@ -69,6 +69,8 @@ import {
     selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
+    selectTradingExchangeSelectedQuoteIsDex,
+    selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
     selectTradingIsSlip24Allowed,
     selectTradingLastErrorMessageByTradeType,
@@ -657,6 +659,18 @@ describe('tradingSelectors', () => {
     it('selectTradingExchangeSelectedQuote should return correct data', () => {
         expect(selectTradingExchangeSelectedQuote(state)).toBe(
             state.wallet.trading.exchange.selectedQuote,
+        );
+    });
+
+    it('selectTradingExchangeSelectedQuoteSwapSlippage should return correct data', () => {
+        expect(selectTradingExchangeSelectedQuoteSwapSlippage(state)).toBe(
+            state.wallet.trading.exchange.selectedQuote?.swapSlippage,
+        );
+    });
+
+    it('selectTradingExchangeSelectedQuoteIsDex should return correct data', () => {
+        expect(selectTradingExchangeSelectedQuoteIsDex(state)).toBe(
+            state.wallet.trading.exchange.selectedQuote?.isDex,
         );
     });
 
