@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import {
     SLIPPAGE_PRESETS,
     type SlippageFormValues,
-    tradingSettingsActions,
+    tradingExchangeActions,
 } from '@suite-common/trading';
 import {
     BottomSheetModal,
@@ -46,7 +46,7 @@ export const SlippageBottomSheet = ({ isVisible, onClose }: SlippageBottomSheetP
 
     const handleConfirm = useCallback(
         ({ slippage }: SlippageFormValues) => {
-            dispatch(tradingSettingsActions.setMaxSlippagePercentage(String(slippage)));
+            dispatch(tradingExchangeActions.setSelectedQuoteSwapSlippage(String(slippage)));
             closeModal();
             onClose();
         },

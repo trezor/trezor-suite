@@ -1,4 +1,4 @@
-import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuoteSwapSlippage } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { type TestStore, act, userEvent } from '@suite-native/test-utils-store';
@@ -64,7 +64,7 @@ describe('SlippageBottomSheet', () => {
         ).toHaveDisplayValue('3');
     });
 
-    it('should dispatch setMaxSlippagePercentage and call onClose when confirm is pressed', async () => {
+    it('should update selected quote swapSlippage and call onClose when confirm is pressed', async () => {
         const store = createSlippageTestStore();
         const { getByText } = await renderSlippageBottomSheet(store);
 
@@ -72,11 +72,11 @@ describe('SlippageBottomSheet', () => {
         await act(() => Promise.resolve());
         await userEvent.press(getByText(getTranslation('generic.buttons.confirm')));
 
-        expect(selectTradingMaxSlippagePercentage(store.getState())).toBe('3');
+        expect(selectTradingExchangeSelectedQuoteSwapSlippage(store.getState())).toBe('3');
         expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
 
-    it('should not dispatch and call onClose when cancel is pressed', async () => {
+    it('should not update selected quote swapSlippage and call onClose when cancel is pressed', async () => {
         const store = createSlippageTestStore();
         const { getByText } = await renderSlippageBottomSheet(store);
 
@@ -84,7 +84,7 @@ describe('SlippageBottomSheet', () => {
         await act(() => Promise.resolve());
         await userEvent.press(getByText(getTranslation('generic.buttons.cancel')));
 
-        expect(selectTradingMaxSlippagePercentage(store.getState())).toBe('1');
+        expect(selectTradingExchangeSelectedQuoteSwapSlippage(store.getState())).toBe('1');
         expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
 

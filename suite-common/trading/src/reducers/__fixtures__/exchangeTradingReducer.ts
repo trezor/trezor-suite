@@ -39,7 +39,7 @@ const quotesRequest = {
     dex: 'enable',
 };
 
-const changellyExchangeQuote: ExchangeTrade = {
+export const changellyExchangeQuote: ExchangeTrade = {
     send: 'litecoin' as CryptoId,
     sendStringAmount: '12',
     receive: 'bitcoin' as CryptoId,
@@ -188,6 +188,7 @@ export const exchangeTradingFixtures = [
             selectedQuote: changellyExchangeQuote,
         },
     },
+
     {
         description: 'should set status whether is from redirect',
         initialState: exchangeInitialState,
