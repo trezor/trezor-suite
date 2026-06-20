@@ -105,10 +105,12 @@ describe('RequestPrioritizedDeviceAccess', () => {
         // Execute prioritized task.
         await requestPrioritizedDeviceAccess(deviceAccessCallbackMock);
 
-        // The prioritized task should be put at the beginning of the queue, so after its execution,
-        // so there should be still the rest of the tasks in the queue.
+        // The prioritized task was put at the beginning of the queue (position 0), so it ran
+        // right after task 0 finished, skipping all previously queued tasks.
+        // After the prioritized task finishes: task 1 has been dequeued and is running,
+        // tasks 2, 3, 4 remain in the queue.
         expect(deviceAccessMutex.isLocked).toBe(true);
-        expect(deviceAccessMutex.taskQueue.length).toBe(2);
+        expect(deviceAccessMutex.taskQueue.length).toBe(3);
     });
 });
 
