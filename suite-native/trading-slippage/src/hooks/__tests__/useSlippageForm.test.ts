@@ -1,4 +1,7 @@
-import { SLIPPAGE_PRESETS } from '@suite-common/trading';
+import {
+    SLIPPAGE_PRESETS,
+    TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
+} from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 
@@ -14,10 +17,12 @@ describe('useSlippageForm', () => {
         return ret;
     };
 
-    it('should initialize slippage with the default value', async () => {
+    it('should initialize slippage with the static default value', async () => {
         const { result } = await renderUseSlippageForm();
 
-        expect(result.current.form.getValues('slippage')).toBe('1');
+        expect(result.current.form.getValues('slippage')).toBe(
+            TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
+        );
     });
 
     it('should set slippage to preset value when handlePresetPress is called', async () => {

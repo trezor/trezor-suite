@@ -6,7 +6,6 @@ import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 import {
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
-    selectTradingMaxSlippagePercentage,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
@@ -15,7 +14,6 @@ import {
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
 
-import { applyMaxSlippageToExchangeQuote } from '../../../utils/exchange/applyMaxSlippageToExchangeQuote';
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 
 export const useApprovalFlow = () => {
@@ -25,7 +23,6 @@ export const useApprovalFlow = () => {
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
-    const swapSlippage = useSelector(selectTradingMaxSlippagePercentage);
     const receiveAddress = getReceiveAccountAddressText(toAccount);
 
     const [isConfirming, setIsConfirming] = useState(false);
@@ -41,14 +38,9 @@ export const useApprovalFlow = () => {
             setError(null);
 
             try {
-                const quoteWithSlippage = applyMaxSlippageToExchangeQuote(
-                    quoteToConfirm,
-                    swapSlippage,
-                );
-
                 const response = await dispatch(
                     exchangeThunks.confirmApprovalThunk({
-                        trade: quoteWithSlippage,
+                        trade: quoteToConfirm,
                         receiveAddress,
                         account: sendAccount,
                         processResponseData: () => {},
@@ -71,7 +63,7 @@ export const useApprovalFlow = () => {
                 setIsConfirming(false);
             }
         },
-        [dispatch, receiveAddress, sendAccount, swapSlippage, translate],
+        [dispatch, receiveAddress, sendAccount, translate],
     );
 
     const isReady = !!sendAccount && !!receiveAddress;
