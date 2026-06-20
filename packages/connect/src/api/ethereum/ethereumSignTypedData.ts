@@ -164,7 +164,7 @@ export function getFieldType(
 
         return {
             data_type: type === 'uint' ? PROTO.EthereumDataType.UINT : PROTO.EthereumDataType.INT,
-            size: Math.floor(parseInt(bits, 10) / 8),
+            size: Math.floor((parseInt(bits, 10) || 256) / 8),
         };
     }
 
