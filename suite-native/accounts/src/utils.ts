@@ -45,8 +45,8 @@ export const isFilterValueMatchingAccount = (
         formattedAccountTypeMap[account.networkType]?.[account.accountType]?.toLowerCase();
 
     const isMatchingAccountType =
-        (lowercasedSectionHeader?.includes(filterValue) ||
-            (isBitcoinNetworkType && lowerCasedAccountType?.includes(filterValue))) ??
+        (lowercasedSectionHeader?.includes(lowerCaseFilterValue) ||
+            (isBitcoinNetworkType && lowerCasedAccountType?.includes(lowerCaseFilterValue))) ??
         false;
 
     if (isMatchingAccountType) return true;
