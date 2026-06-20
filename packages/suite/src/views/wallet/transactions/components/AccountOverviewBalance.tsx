@@ -77,7 +77,11 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
     const shouldDisplayBaseCurrency = baseCurrency !== symbol;
     const isMainnet = !isTestnet(symbol);
     const hasTokens = !!account.tokens?.length;
-    const balanceExcludesTranslationId = getBalanceExcludesTranslationId(hasTokens, hasStaking);
+    const hasStakingExcludedFromBalance = hasStaking && account.networkType !== 'cardano';
+    const balanceExcludesTranslationId = getBalanceExcludesTranslationId(
+        hasTokens,
+        hasStakingExcludedFromBalance,
+    );
 
     return (
         <Row gap={16} justifyContent="space-between" alignItems="flex-end" flexWrap="wrap">
