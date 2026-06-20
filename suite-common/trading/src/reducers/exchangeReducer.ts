@@ -88,6 +88,11 @@ const tradingExchangeSlice = createSlice({
         saveSelectedQuote(state, action: PayloadAction<ExchangeTrade | undefined>) {
             state.selectedQuote = action.payload;
         },
+        setSelectedQuoteSwapSlippage(state, action: PayloadAction<string>) {
+            if (state.selectedQuote?.isDex) {
+                state.selectedQuote.swapSlippage = action.payload;
+            }
+        },
         setIsFromRedirect(state, action: PayloadAction<boolean>) {
             state.isFromRedirect = action.payload;
         },
