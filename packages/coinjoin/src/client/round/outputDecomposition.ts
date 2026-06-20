@@ -230,7 +230,7 @@ const findCredentialsForTarget = (
     maxValue: number,
 ): [middleware.Credentials, middleware.Credentials] | undefined => {
     // sort descending. higher possibility for match
-    const sorted = credentials.sort((a, b) => (a.Value > b.Value ? -1 : 1));
+    const sorted = credentials.sort((a, b) => b.Value - a.Value);
 
     // find one Credential big enough to cover requested target
     const bigCredential = sorted.find(cre => cre.Value >= target);
@@ -361,7 +361,7 @@ const createOutputsCredentials = async (params: CreateOutputsCredentials): Promi
             options.logger.info(`Vsize dust: ${vsizeDust}`);
             options.logger.info('Decomposition completed');
 
-            return result.sort((a, b) => (a.amount > b.amount ? -1 : 1));
+            return result.sort((a, b) => b.amount - a.amount);
         }
 
         // try to create another output

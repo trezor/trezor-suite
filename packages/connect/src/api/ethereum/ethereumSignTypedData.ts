@@ -112,7 +112,7 @@ export function encodeData(typeName: string, data: any) {
     if (numberMatch) {
         const intType = numberMatch[1] ?? '';
         const bits = numberMatch[2] ?? '';
-        const bytes = Math.ceil(parseInt(bits, 10) / 8);
+        const bytes = Math.ceil((parseInt(bits, 10) || 256) / 8);
 
         return intToHex(data, bytes, intType === 'int');
     }
