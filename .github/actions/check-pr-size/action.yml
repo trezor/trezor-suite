@@ -2,7 +2,7 @@
 name: "Check PR Size"
 description: >
   Determines whether a PR is small enough for LLM test selection.
-  Small PR = max 500 total lines changed.
+  Small PR = max 1000 total lines changed.
 inputs:
   additions:
     description: "Number of line additions (github.event.pull_request.additions)"
@@ -25,7 +25,7 @@ runs:
         DELETIONS: ${{ inputs.deletions }}
       run: |
         TOTAL_CHANGES=$(( ADDITIONS + DELETIONS ))
-        if [ "$TOTAL_CHANGES" -le 500 ]; then
+        if [ "$TOTAL_CHANGES" -le 1000 ]; then
           echo "is_small_pr=true" >> "$GITHUB_OUTPUT"
           echo "Small PR: $TOTAL_CHANGES lines changed"
         else
