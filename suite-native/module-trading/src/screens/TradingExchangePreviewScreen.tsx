@@ -36,7 +36,7 @@ import {
 } from '../components/exchange/ExchangePreview';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
-import { useSlippageChange } from '../hooks/exchange/useSlippageChange';
+import { useSlippageLifecycle } from '../hooks/exchange/useSlippageLifecycle';
 import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
@@ -109,7 +109,7 @@ const TradingExchangePreviewScreenContent = ({
         }
     }, [confirmTrade, debounce, fetchFeesAndCompose, store, quote, toAccount]);
 
-    useSlippageChange(handleConfirmTrade);
+    useSlippageLifecycle(handleConfirmTrade);
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;
