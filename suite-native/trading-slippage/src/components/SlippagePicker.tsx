@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import {
+    selectTradingExchangeSelectedQuoteIsDex,
+    selectTradingExchangeSelectedQuoteSwapSlippage,
+} from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, selectLocale } from '@suite-native/intl';
@@ -18,7 +21,8 @@ const slippagePickerStyle = prepareNativeStyle(({ spacings }) => ({
 
 export const SlippagePicker = () => {
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
-    const { isDex, swapSlippage } = useSelector(selectTradingExchangeSelectedQuote) ?? {};
+    const isDex = useSelector(selectTradingExchangeSelectedQuoteIsDex);
+    const swapSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
     const locale = useSelector(selectLocale);
     const { applyStyle } = useNativeStyles();
 
