@@ -10,7 +10,6 @@ import {
     type TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
-    selectTradingMaxSlippagePercentage,
 } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type TxKeyPath } from '@suite-native/intl';
@@ -23,7 +22,6 @@ import {
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { applyMaxSlippageToExchangeQuote } from '../../utils/exchange/applyMaxSlippageToExchangeQuote';
 import {
     type TradingTransactionSignAndSendProps,
     useTradingTransaction,
@@ -60,7 +58,6 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const device = useSelector(selectSelectedDevice);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
-    const swapSlippage = useSelector(selectTradingMaxSlippagePercentage);
 
     const { openBrowserForFormData } = useBrowserAuth('exchange');
     const quoteStatus = quote?.status;
@@ -160,7 +157,6 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
 
             const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData } =
                 commonFunctions;
-            const tradeWithSlippage = applyMaxSlippageToExchangeQuote(trade, swapSlippage);
 
             const promiseAction = dispatch(
                 exchangeThunks.confirmTradeThunk({
@@ -168,7 +164,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
                     receiveAddress,
                     account: sendAccount,
                     extraField,
-                    trade: tradeWithSlippage,
+                    trade,
                     approvalFlow,
                     triggerAnalyticsTradeConfirmation,
                     processResponseData,
@@ -179,7 +175,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
 
             return !!(await promiseAction.unwrap());
         },
-        [getCommonFunctions, sendAccount, dispatch, swapSlippage],
+        [getCommonFunctions, sendAccount, dispatch],
     );
 
     const abortConfirmTrade = useCallback(() => {

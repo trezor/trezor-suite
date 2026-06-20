@@ -7,7 +7,6 @@ import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
-    invityDexQuote,
 } from '@suite-native/trading-fixtures';
 
 import { createTradingTestStore } from '../../../__tests__/tradingTestUtils';
@@ -46,17 +45,11 @@ const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2') });
 describe('useExchangeFlow', () => {
     const getMockAccounts = () => [btc1Account, btc2Account];
 
-    const getInitializedStore = ({
-        maxSlippagePercentage,
-        withDevice = false,
-    }: { maxSlippagePercentage?: string; withDevice?: boolean } = {}) => {
+    const getInitializedStore = ({ withDevice = false }: { withDevice?: boolean } = {}) => {
         const tradingState = getInitializedTradingStateWithQuotes();
         tradingState.exchange.tradingAccountKey = btc1Account.key;
         tradingState.exchange.receiveAccountKey = btc2Account.key;
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
-        if (maxSlippagePercentage) {
-            tradingState.settings.maxSlippagePercentage = maxSlippagePercentage;
-        }
 
         return createTradingTestStore({
             tradeType: 'exchange',
@@ -159,31 +152,6 @@ describe('useExchangeFlow', () => {
                 },
                 unwrap: expect.any(Function),
             });
-        });
-
-        it('should call confirmTradeThunk with maxSlippage value for dex trade', async () => {
-            const store = getInitializedStore({ maxSlippagePercentage: '2.5' });
-            const mockNextStep = jest.fn();
-
-            const { result } = renderUseExchangeFlow({ store });
-
-            await act(async () => {
-                await result.current.confirmTrade({
-                    receiveAddress: 'test-address',
-                    trade: invityDexQuote,
-                    approvalFlow: false,
-                    nextStep: mockNextStep,
-                });
-            });
-
-            expect(mockConfirmTradeThunk).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    trade: expect.objectContaining({
-                        quoteId: invityDexQuote.quoteId,
-                        swapSlippage: '2.5',
-                    }),
-                }),
-            );
         });
 
         it('should return false when confirmTradeThunk returns false', async () => {
