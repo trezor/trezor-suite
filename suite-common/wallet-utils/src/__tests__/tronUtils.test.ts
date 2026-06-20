@@ -1,7 +1,7 @@
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 
-import { calculateTronFeeBreakdown } from '../tronUtils';
+import { calculateTronFeeBreakdown, computeBandwidthFeeLevel } from '../tronUtils';
 
 const makeTrc20Tx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
     ({
@@ -61,6 +61,20 @@ describe(calculateTronFeeBreakdown.name, () => {
         );
         expect(result?.trxBurned.toString()).toBe('0.3');
         expect(result?.coveredBandwidth.toNumber()).toBe(0);
+    });
+
+    it('native TRX: combined staked + free bandwidth covers the tx — 0 TRX burned', () => {
+        // Tx: bandwidth: 300
+        // Account: staked 200 + free 200 = 400 (neither pool alone is enough)
+        // Expected: trxBurned: 0 TRX, coveredBandwidth: 300
+        // Regression: Math.max(200, 200) = 200 < 300 would wrongly burn 0.3 TRX.
+        const result = calculateTronFeeBreakdown(
+            makeNativeTrxTx(),
+            makeTronResources({ availableStakedBandwidth: 200, availableFreeBandwidth: 200 }),
+            'trx',
+        );
+        expect(result?.trxBurned.toNumber()).toBe(0);
+        expect(result?.coveredBandwidth.toNumber()).toBe(300);
     });
 
     it('TRC-20: has bandwidth, has energy — 0 TRX burned', () => {
@@ -157,5 +171,28 @@ describe(calculateTronFeeBreakdown.name, () => {
         expect(result?.trxBurned.toString()).toBe('1');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
         expect(result?.coveredEnergy.toNumber()).toBe(1000);
+    });
+});
+
+describe(computeBandwidthFeeLevel.name, () => {
+    it('sums staked and free bandwidth — no fee when the combined pools cover the tx', () => {
+        // staked 200 + free 200 = 400 >= 300 bytes.
+        // Regression: Math.max(200, 200) = 200 < 300 would charge a bandwidth fee.
+        const fee = computeBandwidthFeeLevel({
+            availableStakedBandwidth: 200,
+            availableFreeBandwidth: 200,
+            bytes: 300,
+        });
+        expect(fee.feePerTx).toBe('0');
+    });
+
+    it('charges the bandwidth cost when the combined pools fall short', () => {
+        // staked 100 + free 100 = 200 < 300 bytes -> 300 * 1000 sun
+        const fee = computeBandwidthFeeLevel({
+            availableStakedBandwidth: 100,
+            availableFreeBandwidth: 100,
+            bytes: 300,
+        });
+        expect(fee.feePerTx).toBe('300000');
     });
 });

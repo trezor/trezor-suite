@@ -20,7 +20,7 @@ export const computeBandwidthFeeLevel = ({
     availableFreeBandwidth: number;
     bytes: number;
 }): TronFeeLevel => {
-    const availableBandwidth = Math.max(availableStakedBandwidth, availableFreeBandwidth);
+    const availableBandwidth = availableStakedBandwidth + availableFreeBandwidth;
     const feeInSun = availableBandwidth < bytes ? bytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE : 0;
 
     return {
@@ -52,8 +52,7 @@ export const calculateTronFeeBreakdown = (
     const energyConsumed = 'energyConsumed' in tx ? (tx.energyConsumed ?? 0) : 0;
     const bandwidthBytes = tx.bytes ?? 0;
 
-    const isBandwidthCovered =
-        Math.max(availableStakedBandwidth, availableFreeBandwidth) >= bandwidthBytes;
+    const isBandwidthCovered = availableStakedBandwidth + availableFreeBandwidth >= bandwidthBytes;
     const coveredBandwidth = new BigNumber(isBandwidthCovered ? bandwidthBytes : 0);
     const coveredEnergy = new BigNumber(Math.min(availableEnergy, energyConsumed));
 
