@@ -47,7 +47,9 @@ const update = (state: Account[], account: Account) => {
 const remove = (state: Account[], accounts: Account[]) => {
     accounts.forEach(a => {
         const index = state.findIndex(accountEqualTo(a));
-        state.splice(index, 1);
+        if (index !== -1) {
+            state.splice(index, 1);
+        }
     });
 };
 

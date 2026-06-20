@@ -24,7 +24,9 @@ export type SearchResult = {
 
 const getPreview = (markdown: string, query: string, index: number) => {
     const previewStart = markdown.substring(0, Math.max(index - 10, 0)).lastIndexOf(' ') + 1;
-    const previewEnd = markdown.indexOf(' ', index + query.length + 20);
+    const previewEndIndex = markdown.indexOf(' ', index + query.length + 20);
+    // indexOf returns -1 when no space is found; slice(n, -1) would drop the last character
+    const previewEnd = previewEndIndex === -1 ? undefined : previewEndIndex;
 
     return {
         content: markdown.slice(previewStart, previewEnd),

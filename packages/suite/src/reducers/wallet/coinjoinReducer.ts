@@ -239,7 +239,7 @@ const addTxCandidate = (
     if (!account.transactionCandidates) {
         account.transactionCandidates = [];
     }
-    if (!account.transactionCandidates.some(tx => tx.roundId !== payload.roundId)) {
+    if (!account.transactionCandidates.some(tx => tx.roundId === payload.roundId)) {
         account.transactionCandidates.push({ roundId: payload.roundId });
     }
 };
