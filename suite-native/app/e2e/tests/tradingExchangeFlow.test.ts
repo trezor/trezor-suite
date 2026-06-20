@@ -37,8 +37,7 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
     });
 
-    // Skipping due to emulator crash
-    describe.skip('with device disconnected [@T3T1]', () => {
+    describe('with device disconnected [@T3T1]', () => {
         beforeAll(() => {
             if (!passphrase) {
                 throw new Error(
@@ -78,8 +77,7 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
     });
 
-    // Skipping due to emulator crash
-    describe.skip('with device connected [@T3T1]', () => {
+    describe('with device connected [@T3T1]', () => {
         beforeAll(() => {
             if (!passphrase) {
                 throw new Error(
