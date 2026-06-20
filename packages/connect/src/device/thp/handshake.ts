@@ -75,9 +75,11 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
 
     const settings = settingsStore.get('thp');
     // sort credentials by autoconnect field
-    const knownCredentials = (settings?.knownCredentials || []).sort(cre =>
-        cre.autoconnect ? -1 : 1,
-    );
+    const knownCredentials = (settings?.knownCredentials || []).sort((a, b) => {
+        if (a.autoconnect === b.autoconnect) return 0;
+
+        return a.autoconnect ? -1 : 1;
+    });
     const tryToUnlock = unlockPin ? 1 : 0;
 
     // 1. Generate a new ephemeral X25519 key pair (host_ephemeral_privkey, host_ephemeral_pubkey).
