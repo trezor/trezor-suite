@@ -104,14 +104,18 @@ export const groupAccountsByNetworkAccountType = A.groupBy((account: Account) =>
 
 export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(accounts: readonly T[]) =>
     A.sort(accounts, (a, b) => {
-        const aOrder = networkSymbolCollection.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
-        const bOrder = networkSymbolCollection.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
+        const aOrder = aSymbolIndex >= 0 ? aSymbolIndex : Number.MAX_SAFE_INTEGER;
+        const bSymbolIndex = networkSymbolCollection.indexOf(b.symbol);
+        const bOrder = bSymbolIndex >= 0 ? bSymbolIndex : Number.MAX_SAFE_INTEGER;
 
         if (aOrder === bOrder) {
+            const aAccountTypeIndex = orderedAccountTypes.indexOf(a.accountType);
             const aAccountTypeOrder =
-                orderedAccountTypes.indexOf(a.accountType) ?? Number.MAX_SAFE_INTEGER;
+                aAccountTypeIndex >= 0 ? aAccountTypeIndex : Number.MAX_SAFE_INTEGER;
+            const bAccountTypeIndex = orderedAccountTypes.indexOf(b.accountType);
             const bAccountTypeOrder =
-                orderedAccountTypes.indexOf(b.accountType) ?? Number.MAX_SAFE_INTEGER;
+                bAccountTypeIndex >= 0 ? bAccountTypeIndex : Number.MAX_SAFE_INTEGER;
 
             return aAccountTypeOrder - bAccountTypeOrder;
         }

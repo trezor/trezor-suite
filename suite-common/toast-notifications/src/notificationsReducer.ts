@@ -34,7 +34,9 @@ export function createNotificationsReducer<
                 const arr = !Array.isArray(payload) ? [payload] : payload;
                 arr.forEach(item => {
                     const index = state.findIndex(n => n.id === item.id);
-                    state.splice(index, 1);
+                    if (index !== -1) {
+                        state.splice(index, 1);
+                    }
                 });
             })
             .addMatcher(
