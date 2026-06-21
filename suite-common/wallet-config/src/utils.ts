@@ -64,24 +64,11 @@ export const getTestnets = ({
 export const getTestnetSymbols = () => getTestnets({ useTestnetNetworks: true }).map(n => n.symbol);
 
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
-    networks[symbol]?.backendTypes.some(backend => backend === 'blockbook');
+    networks[symbol]?.backendOptions.some(option => option.type === 'blockbook');
 
-// TODO: move to networksConfig
-export const externalBackendTypeNetworks: NetworkSymbol[] = [
-    'bsc',
-    'pol',
-    'op',
-    'arb',
-    'base',
-    'avax',
-];
-
-export const isTrezorInfraBasedNetwork = (symbol: NetworkSymbol) =>
-    // https://github.com/trezor/trezor-suite/issues/18843
-    networks[symbol]?.backendTypes.some(
-        backend =>
-            ['blockbook', 'stellar'].includes(backend) &&
-            !externalBackendTypeNetworks.includes(symbol),
+export const isNetworkUsingExternalBackend = (symbol: NetworkSymbol) =>
+    !!networks[symbol]?.backendOptions.some(
+        option => 'isExternalBackend' in option && option.isExternalBackend,
     );
 
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;

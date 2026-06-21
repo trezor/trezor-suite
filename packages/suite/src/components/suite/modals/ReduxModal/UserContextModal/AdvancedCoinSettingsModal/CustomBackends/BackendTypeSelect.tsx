@@ -40,7 +40,7 @@ const useBackendOptions = (network: Network, isDebugModeActive: boolean) => {
 
     return useMemo(
         () =>
-            ['default', ...network.backendTypes]
+            ['default', ...network.backendOptions.map(option => option.type)]
                 .filter(backend => {
                     switch (backend) {
                         case 'default':

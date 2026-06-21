@@ -18,6 +18,7 @@ const DEFAULT_ACCOUNT = {
     networkType: 'bitcoin',
     descriptor: 'xpub',
     key: 'xpub-btc-deviceState',
+    visible: true,
     history: {
         total: 0,
     },
@@ -342,6 +343,28 @@ export const onBlock = analyzeTransactions
             block: BLOCK,
             state: {
                 accounts: [],
+            },
+            result: [blockchainActions.synced.type],
+        },
+        {
+            description: 'external backend network is skipped without a custom backend',
+            block: { coin: { shortcut: 'pol' } },
+            state: {
+                accounts: [{ ...DEFAULT_ACCOUNT, symbol: 'pol', networkType: 'ethereum' }],
+            },
+        },
+        {
+            description: 'external backend network syncs when a custom backend is configured',
+            block: { coin: { shortcut: 'pol' } },
+            state: {
+                accounts: [
+                    { ...DEFAULT_ACCOUNT, symbol: 'pol', networkType: 'ethereum', visible: false },
+                ],
+                blockchain: {
+                    pol: {
+                        backends: { selected: 'blockbook', urls: { blockbook: ['http://url'] } },
+                    },
+                },
             },
             result: [blockchainActions.synced.type],
         },

@@ -3,10 +3,9 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
-    externalBackendTypeNetworks,
     getNetworkOptional,
     isNetworkSymbol,
-    isTrezorInfraBasedNetwork,
+    isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
 import type { Account, CustomBackend } from '@suite-common/wallet-types';
 import {
@@ -32,7 +31,11 @@ import type { TimerId } from '@trezor/type-utils';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
-import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
+import {
+    selectBlockchainState,
+    selectIsCustomBackendConfigured,
+    selectNetworkBlockchainInfo,
+} from './blockchainReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import { fetchAndUpdateAccountThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
@@ -239,13 +242,12 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);
 
-        // Only Trezor infra networks sync, and only when app window is active
+        // Sync only when the app window is active
         const shouldSync = isWindowVisible;
 
         if (shouldSync) {
-            // non-blockbook + networks using external nodes will not update periodically if not visible in UI (sidebar)
             const visibleAccounts = findAccountsByNetwork(symbol, accounts).filter(
-                account => isTrezorInfraBasedNetwork(symbol) || account.visible,
+                account => account.visible,
             );
 
             await Promise.all(
@@ -285,18 +287,21 @@ export const onBlockchainConnectThunk = createThunk(
 
 export const onBlockMinedThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
-    (block: BlockchainBlock, { dispatch }) => {
+    (block: BlockchainBlock, { dispatch, getState }) => {
         const symbol = block.coin.shortcut.toLowerCase();
-        const network = getNetworkOptional(symbol);
 
         if (!isNetworkSymbol(symbol)) {
             return;
         }
 
-        // Don't sync fast networks because a new block is emitted every few seconds.
-        // Accounts are updated via account subscription or also by the timer in syncAccountsWithBlockchainThunk.
-        // Solana - new block every ~333ms, EVMs 0.3s-3s
-        if (network?.networkType === 'solana' || externalBackendTypeNetworks.includes(symbol)) {
+        // Don't sync fast networks running on our metered external backend because a new block is
+        // emitted every few seconds (Solana ~333ms, EVMs 0.3s-3s); the periodic timer in
+        // syncAccountsWithBlockchainThunk and account subscriptions keep them updated instead.
+        // A custom backend is the user's own infrastructure, so the metered concern no longer applies.
+        if (
+            isNetworkUsingExternalBackend(symbol) &&
+            !selectIsCustomBackendConfigured(getState(), symbol)
+        ) {
             return;
         }
 
