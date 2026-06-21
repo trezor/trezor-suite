@@ -64,6 +64,12 @@ export type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];
 type NonStandardBackendType = 'coinjoin';
 export type BackendType = TrezorConnectBackendType | NonStandardBackendType;
 
+export type BackendOption = {
+    type: BackendType;
+    // Backend whose nodes run on third-party infrastructure Trezor pays for, not Trezor's own.
+    isExternalBackend?: boolean;
+};
+
 export type NetworkFeature =
     | 'rbf'
     | 'nfts'
@@ -130,7 +136,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     isHidden?: boolean; // not used here, but supported elsewhere
     chainId?: number;
     features: NetworkFeature[];
-    backendTypes: BackendType[];
+    backendOptions: BackendOption[];
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     isExperimentalOnlyNetwork?: boolean;

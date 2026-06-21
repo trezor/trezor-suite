@@ -15,7 +15,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://mempool.space', 'bitcoin'),
         features: ['rbf', 'sign-verify', 'amount-unit', 'graph'],
-        backendTypes: ['blockbook', 'electrum'],
+        backendOptions: [{ type: 'blockbook' }, { type: 'electrum' }],
         accountTypes: {
             coinjoin: {
                 accountType: 'coinjoin',
@@ -65,7 +65,7 @@ export const networks = {
             'graph',
             'claim-rewards',
         ],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook' }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -106,7 +106,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -141,7 +141,7 @@ export const networks = {
             'mev-protection',
             'graph',
         ],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -178,7 +178,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -215,7 +215,7 @@ export const networks = {
             'mev-protection',
             'graph',
         ],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -252,7 +252,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -288,7 +288,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -319,7 +319,7 @@ export const networks = {
             [DeviceModelInternal.T3T1]: '2.0.0',
             [DeviceModelInternal.T3W1]: '2.0.0',
         },
-        backendTypes: ['solana'],
+        backendOptions: [{ type: 'solana', isExternalBackend: true }],
         accountTypes: {
             ledger: {
                 // bip44Change - Ledger Live
@@ -351,7 +351,7 @@ export const networks = {
             [DeviceModelInternal.T3T1]: '2.11.0',
             [DeviceModelInternal.T3W1]: '2.11.0',
         },
-        backendTypes: ['blockbook'],
+        backendOptions: [{ type: 'blockbook' }],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -383,7 +383,7 @@ export const networks = {
             [DeviceModelInternal.T3T1]: '2.0.0',
             [DeviceModelInternal.T3W1]: '2.0.0',
         },
-        backendTypes: ['blockfrost'],
+        backendOptions: [{ type: 'blockfrost' }],
         accountTypes: {
             legacy: {
                 // icarus-trezor derivation, differs from default just for 24 words seed
@@ -413,7 +413,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://etc.trezor.io', 'ethereum'),
         features: ['sign-verify', 'tokens', 'coin-definitions', 'graph'],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook' }, { type: 'evm-rpc' }],
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
         tradeCryptoId: 'ethereum-classic',
@@ -429,7 +429,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://xrpscan.com', 'ripple'),
         features: [],
-        backendTypes: ['ripple'],
+        backendOptions: [{ type: 'ripple' }],
         accountTypes: {},
         coingeckoId: 'ripple',
         tradeCryptoId: 'ripple',
@@ -445,7 +445,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://stellar.expert/explorer/public', 'stellar'),
         features: ['tokens', 'coin-definitions'],
-        backendTypes: ['stellar'],
+        backendOptions: [{ type: 'stellar' }],
         accountTypes: {},
         coingeckoId: 'stellar',
         tradeCryptoId: 'stellar',
@@ -462,7 +462,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://blockchair.com/litecoin', 'bitcoin'),
         features: ['sign-verify', 'graph'],
-        backendTypes: ['blockbook'],
+        backendOptions: [{ type: 'blockbook' }],
         accountTypes: {
             segwit: {
                 accountType: 'segwit',
@@ -488,7 +488,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://blockchair.com/bitcoin-cash', 'bitcoin'),
         features: ['sign-verify', 'graph'],
-        backendTypes: ['blockbook'],
+        backendOptions: [{ type: 'blockbook' }],
         accountTypes: {},
         coingeckoId: 'bitcoin-cash',
         tradeCryptoId: 'bitcoin-cash',
@@ -504,7 +504,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://blockchair.com/dogecoin', 'bitcoin'),
         features: ['sign-verify', 'graph'],
-        backendTypes: ['blockbook'],
+        backendOptions: [{ type: 'blockbook' }],
         accountTypes: {},
         coingeckoId: 'dogecoin',
         tradeCryptoId: 'dogecoin',
@@ -521,7 +521,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://blockchair.com/zcash', 'bitcoin'),
         features: ['sign-verify', 'graph'],
-        backendTypes: ['blockbook'],
+        backendOptions: [{ type: 'blockbook' }],
         accountTypes: {},
         coingeckoId: 'zcash',
         tradeCryptoId: 'zcash',
@@ -538,7 +538,7 @@ export const networks = {
         testnet: true,
         explorer: getExplorerUrls('https://mempool.space/testnet4', 'bitcoin'),
         features: ['rbf', 'sign-verify', 'amount-unit', 'graph'],
-        backendTypes: ['blockbook', 'electrum'],
+        backendOptions: [{ type: 'blockbook' }, { type: 'electrum' }],
         accountTypes: {
             coinjoin: {
                 accountType: 'coinjoin',
@@ -575,7 +575,7 @@ export const networks = {
         testnet: true,
         explorer: getExplorerUrls('http://localhost:19121', 'bitcoin'),
         features: ['rbf', 'sign-verify', 'amount-unit', 'graph'],
-        backendTypes: ['blockbook', 'electrum'],
+        backendOptions: [{ type: 'blockbook' }, { type: 'electrum' }],
         accountTypes: {
             coinjoin: {
                 accountType: 'coinjoin',
@@ -613,7 +613,7 @@ export const networks = {
         testnet: true,
         explorer: getExplorerUrls('https://sepolia.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'eip1559', 'graph'],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook' }, { type: 'evm-rpc' }],
         accountTypes: {
             legacy: {
                 accountType: 'legacy',
@@ -636,7 +636,7 @@ export const networks = {
         testnet: true,
         explorer: getExplorerUrls('https://hoodi.etherscan.io/', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'eip1559', 'graph'],
-        backendTypes: ['blockbook', 'evm-rpc'],
+        backendOptions: [{ type: 'blockbook' }, { type: 'evm-rpc' }],
         accountTypes: {
             legacy: {
                 accountType: 'legacy',
@@ -665,7 +665,7 @@ export const networks = {
             [DeviceModelInternal.T3T1]: '2.0.0',
             [DeviceModelInternal.T3W1]: '2.0.0',
         },
-        backendTypes: ['solana'],
+        backendOptions: [{ type: 'solana', isExternalBackend: true }],
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: undefined,
@@ -682,7 +682,7 @@ export const networks = {
         testnet: true,
         explorer: getExplorerUrls('https://test.bithomp.com', 'ripple'),
         features: ['tokens'],
-        backendTypes: [],
+        backendOptions: [],
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: 'test-ripple', // fake, coingecko does not have testnets
@@ -698,7 +698,7 @@ export const networks = {
         testnet: true,
         explorer: getExplorerUrls('https://stellar.expert/explorer/testnet', 'stellar'),
         features: ['tokens'],
-        backendTypes: ['stellar'],
+        backendOptions: [{ type: 'stellar' }],
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: undefined,
@@ -715,7 +715,7 @@ export const networks = {
         testnet: true,
         features: ['tokens', 'graph', 'nfts'],
         explorer: getExplorerUrls('https://nile.tronscan.org/#', 'tron'),
-        backendTypes: ['blockbook'],
+        backendOptions: [{ type: 'blockbook' }],
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: 'test-tron',

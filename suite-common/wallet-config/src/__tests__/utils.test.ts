@@ -1,6 +1,12 @@
 import { networks } from '../networksConfig';
 import { type NetworkSymbol } from '../types';
-import { getMainnets, getTestnets, isAccountBasedNetwork, isAccountOfNetwork } from '../utils';
+import {
+    getMainnets,
+    getTestnets,
+    isAccountBasedNetwork,
+    isAccountOfNetwork,
+    isNetworkUsingExternalBackend,
+} from '../utils';
 
 const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
 
@@ -72,4 +78,20 @@ describe('isAccountBasedNetwork', () => {
     it('returns throw for unknown network type', () => {
         expect(() => isAccountBasedNetwork('unknown' as NetworkSymbol)).toThrow();
     });
+});
+
+describe(isNetworkUsingExternalBackend.name, () => {
+    it.each<NetworkSymbol>(['bsc', 'pol', 'op', 'arb', 'base', 'avax', 'sol', 'dsol'])(
+        'returns true for %s',
+        symbol => {
+            expect(isNetworkUsingExternalBackend(symbol)).toBe(true);
+        },
+    );
+
+    it.each<NetworkSymbol>(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])(
+        'returns false for %s',
+        symbol => {
+            expect(isNetworkUsingExternalBackend(symbol)).toBe(false);
+        },
+    );
 });
