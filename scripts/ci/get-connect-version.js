@@ -1,7 +1,5 @@
-/* eslint-disable camelcase */
-
-import path from 'node:path';
 import fs from 'node:fs';
+import path from 'node:path';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 

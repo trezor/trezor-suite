@@ -102,9 +102,7 @@ const inputs = [
 
     {
         key: 'firmware',
-        value: ({ model }) => {
-            return model === 'T1B1' ? firmwares1 : firmwares2;
-        },
+        value: ({ model }) => (model === 'T1B1' ? firmwares1 : firmwares2),
     },
     {
         key: 'transport',
@@ -112,14 +110,14 @@ const inputs = [
     },
     {
         key: 'groups',
-        value: ({ model, firmware }) => {
-            return Object.values(groups).filter(group => {
+        value: ({ model, firmware }) =>
+            Object.values(groups).filter(group => {
                 if (group.name === 'thp') {
                     return firmware !== '2.3.0' && model === 'T3W1';
                 }
+
                 return true;
-            });
-        },
+            }),
     },
     {
         key: 'env',
@@ -186,6 +184,7 @@ const createCartesian = inputs => {
     const create = (index, current) => {
         if (index === keys.length) {
             results.push(current);
+
             return;
         }
 
@@ -201,6 +200,7 @@ const createCartesian = inputs => {
     };
 
     create(0, {});
+
     return results;
 };
 
@@ -216,25 +216,28 @@ const filterCartesianResultByArgs = () => {
         if (typeof input === 'object') {
             return input.name;
         }
+
         return input;
     };
 
-    return cartesian.filter(m => {
-        return Object.keys(m).every(key => {
+    return cartesian.filter(m =>
+        Object.keys(m).every(key => {
             const filterBy = parsedArgs[key];
             if (filterBy === 'all') {
                 // experimental methods are opt-in; they never run as part of `all`
                 if (key === 'groups' && getValue(m[key]) === 'experimental') {
                     return false;
                 }
+
                 return true;
             }
             if (Array.isArray(filterBy)) {
                 return filterBy.includes(getValue(m[key]));
             }
+
             return getValue(m[key]) === filterBy;
-        });
-    });
+        }),
+    );
 };
 
 const filtered = filterCartesianResultByArgs();
