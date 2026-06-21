@@ -24,21 +24,21 @@ acquire -> (handshake/getFeatures/initialize) -> firmware/language checks
 
 State fields that form the concurrency surface (`Device.ts:124-178`):
 
-| field | role |
-| --- | --- |
-| `runPromise?: Promise<void>` | the single in-flight run; presence ⇒ device busy |
-| `runAbort?: AbortController` | abort handle for the in-flight run |
-| `acquirePromise?` | in-flight `transport.acquire(...)` |
-| `releasePromise?` | in-flight `transport.release(...)` |
-| `sessionAcquired: Session \| null` | the session this instance owns (null ⇒ not held here) |
-| `keepTransportSession: boolean` | suppresses `release()` until a `keepSession:false` call |
-| `currentSession?: DeviceCurrentSession` | per-acquire transport call wrapper |
-| `sessionDfd?: Deferred<Session \| null>` | resolves on the next descriptor session change |
+| field                                    | role                                                    |
+| ---------------------------------------- | ------------------------------------------------------- |
+| `runPromise?: Promise<void>`             | the single in-flight run; presence ⇒ device busy        |
+| `runAbort?: AbortController`             | abort handle for the in-flight run                      |
+| `acquirePromise?`                        | in-flight `transport.acquire(...)`                      |
+| `releasePromise?`                        | in-flight `transport.release(...)`                      |
+| `sessionAcquired: Session \| null`       | the session this instance owns (null ⇒ not held here)   |
+| `keepTransportSession: boolean`          | suppresses `release()` until a `keepSession:false` call |
+| `currentSession?: DeviceCurrentSession`  | per-acquire transport call wrapper                      |
+| `sessionDfd?: Deferred<Session \| null>` | resolves on the next descriptor session change          |
 
 **`run(fn, options)` — `Device.ts:419-455`**
 
 - Re-entrancy guard: `if (this.runPromise) throw Device_CallInProgress`.
-  This is the *only* gate for "at most one run live per device".
+  This is the _only_ gate for "at most one run live per device".
 - Creates a fresh `runAbort`; `runPromise` is
   `Promise.race([_runInner(fn, options, signal), abortRejectPromise])`.
   The abort branch rejects with `signal.reason` when `runAbort.abort(reason)`
@@ -116,19 +116,19 @@ So `interrupt` waits for the targeted run to settle before returning.
 ### 1.3 Core method dispatch (`core/index.ts`)
 
 - `onCall` (`:186-259`): `methodSynchronize` (a `getSynchronize()` mutex,
-  `:777`) serializes method *loading*; then `resolveWaitForFirstMethod()` and
+  `:777`) serializes method _loading_; then `resolveWaitForFirstMethod()` and
   `callMethods.push(method)`.
 - `onCallDevice` (`:262-427`):
-  - `selectDevice` loop until a device is found.
-  - finds `previousCall` = other pending `callMethods` for the **same device
-    path** (`:307-312`).
-  - **override path** (`:313-330`): if `overridePreviousCall`, marks each
-    pending call `overridden = true`, then `await device.interrupt(Method_Override)`.
-    If *this* method was itself overridden meanwhile, responds false and throws.
-  - else if `device.currentRun` (`:331-344`): if `isUnacquired()` await
-    `currentRun` (corner case: first-load self-release), otherwise respond
-    `Device_CallInProgress`.
-  - `device.run(innerAction, { keepSession, skipFinalReload, useCardanoDerivation })`.
+    - `selectDevice` loop until a device is found.
+    - finds `previousCall` = other pending `callMethods` for the **same device
+      path** (`:307-312`).
+    - **override path** (`:313-330`): if `overridePreviousCall`, marks each
+      pending call `overridden = true`, then `await device.interrupt(Method_Override)`.
+      If _this_ method was itself overridden meanwhile, responds false and throws.
+    - else if `device.currentRun` (`:331-344`): if `isUnacquired()` await
+      `currentRun` (corner case: first-load self-release), otherwise respond
+      `Device_CallInProgress`.
+    - `device.run(innerAction, { keepSession, skipFinalReload, useCardanoDerivation })`.
 - `sendCoreMessage` (`:790-801`): on a RESPONSE event, splices the method out of
   `callMethods`; when the array empties, re-arms `waitForFirstMethod`.
 - `onCallCancel` / `abortController` reject in-flight work on cancel/dispose.
@@ -146,14 +146,14 @@ So `interrupt` waits for the targeted run to settle before returning.
 ### 1.5 Shared device registry (`device/DeviceList.ts`)
 
 - `devices: Device[]` (`:114`) is mutated from event handlers:
-  - `onDeviceConnected` (`:176-228`, **async**): creates a `Device`, runs its
-    `handshake()` under `handshakeLock` (a `getSynchronize()` mutex serializing
-    handshakes, `:149`), and — only if `stillConnected` — `devices.push(device)`
-    and wires lifecycle listeners. The `DEVICE.DISCONNECT` lifecycle handler
-    (`:219-225`) splices the device back out.
-  - `enumerate` (`:388-397`): per transport, `await transport.enumerate()` then
-    `transport.handleDescriptorsChange(payload)` (which in turn fans out
-    connect/disconnect/session-changed device events).
+    - `onDeviceConnected` (`:176-228`, **async**): creates a `Device`, runs its
+      `handshake()` under `handshakeLock` (a `getSynchronize()` mutex serializing
+      handshakes, `:149`), and — only if `stillConnected` — `devices.push(device)`
+      and wires lifecycle listeners. The `DEVICE.DISCONNECT` lifecycle handler
+      (`:219-225`) splices the device back out.
+    - `enumerate` (`:388-397`): per transport, `await transport.enumerate()` then
+      `transport.handleDescriptorsChange(payload)` (which in turn fans out
+      connect/disconnect/session-changed device events).
 - Lookups (`getDeviceByPath`, `getOnlyDevice`, `getDeviceByStaticState`,
   `getPrioritizedDevices`) all read the live `devices` array.
 
@@ -212,7 +212,7 @@ Under interleaved connect / disconnect / enumerate / session-change events:
 
 ## 3. Seams flagged for the harness (non-speculative)
 
-Concrete interleaving points worth driving — listed as *questions to verify*,
+Concrete interleaving points worth driving — listed as _questions to verify_,
 not as asserted bugs:
 
 1. **`release()` no-op returns `undefined`.** Callers that `await this.release()`
@@ -224,7 +224,7 @@ not as asserted bugs:
    no window where `runPromise` is still set when the override's `run()` is
    issued (would throw `Device_CallInProgress`).
 3. **Single `sessionDfd` shared by acquire & release.** Both `acquire()` and
-   `release()` arm/await the *same* `sessionDfd` slot (`getSessionChangePromise`,
+   `release()` arm/await the _same_ `sessionDfd` slot (`getSessionChangePromise`,
    `Device.ts:224-235`). Verify overlapping acquire/release (e.g. interrupt mid-
    acquire) cannot resolve the wrong waiter or drop a session-change.
 4. **`usedElsewhere()` during an in-flight `acquire()`.** `usedElsewhere` nulls
@@ -241,15 +241,47 @@ not as asserted bugs:
 
 ---
 
-## 4. Harness plan (PHASE 2/3, summary)
+## 4. Harness (PHASE 2 — implemented)
 
-Build a deterministic mock transport whose `acquire`/`release`/`call`/`send`/
-`enumerate` resolve **on command** (controllable deferreds), so the test drives
-every interleaving. Use `fast-check` to generate sequences of operations —
-*run method*, *override with a second run*, *abort via signal*,
-*disconnect/reconnect*, *toggle keepSession* — and their interleavings, then
-assert INV-1..INV-5 after each step and at quiescence. Follow the existing
-mock-transport conventions (`global.JestMocks.createTestTransport`, jest). For
-each distinct violation: shrink, commit a minimal deterministic repro + a note
-(invariant, interleaving, suspected root cause), and only commit a fix if it is
-obviously correct and all existing tests pass.
+A deterministic mock transport whose `acquire`/`release`/`call`/`send`/`receive`/
+`enumerate` settle **on command** (controllable deferreds) so the test drives
+every interleaving. `fast-check` generates operation sequences and the harness
+asserts the invariants after every step and at quiescence.
+
+- `__tests__/support/controllableTransport.ts` — `ControllableTransport extends
+AbstractTransport`. The transport methods the `Device` calls park their result
+  in a FIFO of deferreds; `completeAcquire`/`completeRelease`/`completeMessage`
+  settle them on command. Session transitions go through the **real**
+  `handleDescriptorsChange`, so `getSessionChangePromise`/`waitAndCompareSession`
+  run exactly as in production. (`init()`/`listen()` must run first — otherwise
+  `handleDescriptorsChange` short-circuits on `stopped` and no
+  `DEVICE_SESSION_CHANGED` ever fans out.)
+- `__tests__/deviceConcurrency.fuzz.test.ts` — drives `run` / `completeAcquire`
+  (+`Fail`) / `completeFn` / `completeRelease` / `completeMessage` / `interrupt`
+  with a `keepSession` toggle, then drains to quiescence. Asserts INV-1
+  (`live`/`activeFn` ≤ 1), INV-2 (drain reaches quiescence within a bound), INV-3
+  (releases never exceed acquires), INV-4 (post-quiescence the device accepts a
+  fresh `run`). The firmware/handshake/feature-reload middle of `_runInner` is
+  stubbed so only the queue + session mechanics are exercised. Run via
+  `yarn workspace @trezor/connect test:fuzz` (env `FUZZ_RUNS` / `FUZZ_SEED`).
+
+**Faithfulness note.** The generated `fn` body honors the run's abort signal,
+mirroring a real method whose in-flight `typedCall` is aborted by `interrupt`.
+An earlier abort-agnostic `fn` produced a spurious "two fn bodies concurrent"
+INV-1 report — a harness artifact, not a Device bug — which is why the body must
+model prompt abort response.
+
+### Deferred to PHASE 3
+
+- The externally-driven `requestRelease` / `externalSession` (`usedElsewhere`)
+  ops are implemented in the harness `step()` but held out of the generator. They
+  open the **acquire-vs-session-change** race where `updateDescriptor` awaits a
+  rejecting `acquirePromise` (`Device.ts:385`) on an event-handler path with no
+  `catch` → a candidate unhandled rejection. This must be confirmed against real
+  Device semantics (not the mock) before being asserted on.
+- INV-5 (`DeviceList` consistency) needs a `DeviceList`/`Core`-level harness, not
+  a single `Device`; it is out of scope for this file.
+
+For each distinct, **verified** violation: shrink, commit a minimal deterministic
+repro + a note (invariant, interleaving, suspected root cause), and only commit a
+fix if it is obviously correct and all existing tests pass.
