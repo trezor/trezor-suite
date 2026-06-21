@@ -40,10 +40,7 @@ import {
 import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
 import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
-import {
-    selectDustPhishingIsEnabled,
-    selectDustPhishingThreshold,
-} from '../phishing/phishingSelectors';
+import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
 import { isAccountStakingActive } from '../stake/stakeUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -207,9 +204,7 @@ export const selectIsPhishingTransaction = (
     const { tokenDefinitions, txsMarkedAsNotScam, historicRates } =
         selectPhishingTransactionsContext(state, accountKey, transaction.symbol);
 
-    const dustPhishingIsEnabled = selectDustPhishingIsEnabled(state);
-    const dustPhishingThreshold = selectDustPhishingThreshold(state);
-    const dustThreshold = dustPhishingIsEnabled ? dustPhishingThreshold : undefined;
+    const dustThreshold = selectActiveDustPhishingThreshold(state);
 
     return isPhishingTransaction({
         transaction,
