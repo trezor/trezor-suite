@@ -483,7 +483,7 @@ const fixtures: {
                     symbol: 'TKNNME',
                     contract: '0x0',
                     balance: '1',
-                    decimals: 0,
+                    decimals: 18,
                 },
             ],
         },
