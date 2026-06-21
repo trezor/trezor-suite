@@ -118,6 +118,8 @@ export type HandleMessageResponse<P> = P extends { type: infer T }
 export interface SessionsBackgroundInterface {
     on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
     on(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
+    off(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
+    off(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
     handleMessage<M extends HandleMessageParams>(message: M): Promise<HandleMessageResponse<M>>;
     dispose(): void;
 }

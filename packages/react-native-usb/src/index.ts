@@ -162,13 +162,18 @@ export async function getDevices(): Promise<any> {
 }
 
 export class WebUSB {
+    private _onConnectSubscription?: EventSubscription;
+    private _onDisconnectSubscription?: EventSubscription;
+
     public getDevices = getDevices;
 
-    set onconnect(listener: (event: OnConnectEvent) => void) {
-        onDeviceConnected(listener);
+    set onconnect(listener: ((event: OnConnectEvent) => void) | null) {
+        this._onConnectSubscription?.remove();
+        this._onConnectSubscription = listener ? onDeviceConnected(listener) : undefined;
     }
-    set ondisconnect(listener: (event: OnConnectEvent) => void) {
-        onDeviceDisconnect(listener);
+    set ondisconnect(listener: ((event: OnConnectEvent) => void) | null) {
+        this._onDisconnectSubscription?.remove();
+        this._onDisconnectSubscription = listener ? onDeviceDisconnect(listener) : undefined;
     }
 
     // TODO: implement these commented out properties, because they are part of WebUSB specs, but very low priority we are not using them anywhere

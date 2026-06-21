@@ -11,6 +11,8 @@ import {
     ON_INIT_ERROR,
 } from '../types/actions';
 
+let _deeplinkChannel: BroadcastChannel | undefined;
+
 export const onConnectOptionChange = (option: Field<any>, value: any) => ({
     type: ON_CHANGE_CONNECT_OPTION,
     payload: {
@@ -70,8 +72,9 @@ export const init =
                         (process.env.CONNECT_EXPLORER_FULL_URL || window.location.origin) +
                         '/callback',
                 });
-                const bc = new BroadcastChannel('trezor_connect_callback');
-                bc.onmessage = e => {
+                _deeplinkChannel?.close();
+                _deeplinkChannel = new BroadcastChannel('trezor_connect_callback');
+                _deeplinkChannel.onmessage = e => {
                     if (e.data.type === 'popup_callback') {
                         TrezorConnectMobile.handleDeeplink(e.data.url);
                     }

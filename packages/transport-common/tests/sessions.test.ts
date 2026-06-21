@@ -199,48 +199,43 @@ describe('sessions', () => {
         });
     });
 
-    // CURRENTLY LEAKS — see PR #27978 for the fix.
-    //
-    // SessionsClient subscribes to 'descriptors' and 'releaseRequest' on the background in
-    // its constructor. SessionsClient.dispose() removes its own listeners and triggers a
-    // 'dispose' request to the background, but it does not call background.off() to remove
-    // the constructor-registered handlers from the background itself. A real shared
-    // SessionsBackground masks this via its destructive dispose() (which calls
-    // removeAllListeners() unconditionally) — so this test uses a minimal mock to isolate
-    // the SessionsClient -> SessionsBackgroundInterface contract.
-    //
-    // When the fix lands SessionsBackgroundInterface gains an off() method and
-    // SessionsClient.dispose() uses it to remove its own handler refs.
-    test('client.dispose() leaks listeners on shared background (TODO: fix in #27978)', () => {
+    // Previously this test pinned the leak (see #27981): `SessionsClient.dispose()` did
+    // not call `background.off()` for its constructor-registered handlers, so a shared
+    // `SessionsBackground` accumulated handler refs across client lifecycles. The fix in
+    // this PR adds `off()` to `SessionsBackgroundInterface` and uses it on dispose. Test
+    // asserts the fixed behavior across 15 cycles with an isolated mock.
+    test('client.dispose() removes its background listeners via off() without disposing background', () => {
         const listeners = {
             descriptors: [] as ((d: any) => void)[],
             releaseRequest: [] as ((d: any) => void)[],
         };
-        const mockBackground = {
-            on: (event: 'descriptors' | 'releaseRequest', listener: (d: any) => void) => {
+        let disposeCalls = 0;
+        const mockBackground: SessionsBackgroundInterface = {
+            on: (event, listener) => {
                 listeners[event].push(listener);
             },
-            // off() is not part of the current SessionsBackgroundInterface; included on the
-            // mock so the test can detect whether dispose() reaches for it once the fix lands.
-            off: (event: 'descriptors' | 'releaseRequest', listener: (d: any) => void) => {
+            off: (event, listener) => {
                 const idx = listeners[event].indexOf(listener);
                 if (idx >= 0) listeners[event].splice(idx, 1);
             },
-            handleMessage: () =>
-                Promise.resolve({ success: true, payload: undefined, id: 0 } as any),
-            dispose: () => {},
-        } as unknown as SessionsBackgroundInterface;
+            handleMessage: async params => {
+                if ((params as any).type === 'dispose') disposeCalls++;
 
-        const client = new SessionsClient(mockBackground);
-        expect(listeners.descriptors.length).toBe(1);
-        expect(listeners.releaseRequest.length).toBe(1);
+                return { success: true, payload: undefined, id: 0 } as any;
+            },
+            dispose: () => {
+                disposeCalls++;
+            },
+        };
 
-        client.dispose();
+        for (let i = 0; i < 15; i++) {
+            const client = new SessionsClient(mockBackground);
+            expect(listeners.descriptors.length).toBe(1);
+            expect(listeners.releaseRequest.length).toBe(1);
 
-        // TODO(#27978): after the fix lands, both counts must be 0 here because
-        // SessionsClient.dispose() will call background.off() for each handler it
-        // registered in the constructor. Update the expectations below.
-        expect(listeners.descriptors.length).toBe(1); // leaked: dispose() does not call background.off
-        expect(listeners.releaseRequest.length).toBe(1); // leaked
+            client.dispose();
+            expect(listeners.descriptors.length).toBe(0);
+            expect(listeners.releaseRequest.length).toBe(0);
+        }
     });
 });
