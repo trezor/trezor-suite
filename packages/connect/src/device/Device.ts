@@ -394,7 +394,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private async updateDescriptor(descriptor: Descriptor) {
         this.sessionDfd?.resolve(descriptor.session);
 
-        await Promise.all([this.acquirePromise, this.releasePromise]);
+        // Only wait for any in-flight acquire/release to settle before reading
+        // `sessionAcquired` below; their outcome is irrelevant here and a rejecting
+        // `acquirePromise` (e.g. SESSION_WRONG_PREVIOUS when the session was taken
+        // elsewhere mid-acquire) is already handled by the run path. `Promise.all`
+        // would re-raise that rejection on this uncaught event-handler path.
+        await Promise.allSettled([this.acquirePromise, this.releasePromise]);
 
         // TODO improve these conditions
 

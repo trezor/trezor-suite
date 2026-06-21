@@ -273,15 +273,47 @@ model prompt abort response.
 
 ### Deferred to PHASE 3
 
-- The externally-driven `requestRelease` / `externalSession` (`usedElsewhere`)
-  ops are implemented in the harness `step()` but held out of the generator. They
-  open the **acquire-vs-session-change** race where `updateDescriptor` awaits a
-  rejecting `acquirePromise` (`Device.ts:385`) on an event-handler path with no
-  `catch` → a candidate unhandled rejection. This must be confirmed against real
-  Device semantics (not the mock) before being asserted on.
 - INV-5 (`DeviceList` consistency) needs a `DeviceList`/`Core`-level harness, not
-  a single `Device`; it is out of scope for this file.
+  a single `Device`; it is out of scope for this file. The `requestRelease`
+  (`usedElsewhere`) op remains implemented in `step()` but out of the generator
+  (next hunt target).
 
 For each distinct, **verified** violation: shrink, commit a minimal deterministic
 repro + a note (invariant, interleaving, suspected root cause), and only commit a
 fix if it is obviously correct and all existing tests pass.
+
+---
+
+## 5. PHASE 3 findings
+
+### Finding 1 — INV-2: leaked unhandled rejection from `updateDescriptor` (FIXED)
+
+**Invariant:** INV-2 (liveness — no rejection escapes the device layer
+unhandled).
+
+**Interleaving (shrunk):** `run` → `externalSession` → (drain). A `run()` reaches
+`transport.acquire()`; before that acquire settles, an external client takes the
+device, so a `DEVICE_SESSION_CHANGED` for a **different** session arrives. The
+acquire's `waitAndCompareSession` then rejects with `SESSION_WRONG_PREVIOUS`
+(`Device.ts:242-246, 279`).
+
+**Root cause:** `updateDescriptor` (the `onTransportDeviceEvent` handler, invoked
+**fire-and-forget** — its returned promise is discarded by `EventEmitter.emit`)
+did `await Promise.all([this.acquirePromise, this.releasePromise])`. It only needs
+those to **settle** before reading `sessionAcquired`, but `Promise.all` re-raises
+the acquire rejection — and there is no `catch` on the event path, so it leaks as
+an unhandled rejection (one per session-changed event that observed the still-
+pending acquire; the shrunk case produces two). The **run** path already handles
+the same rejection (`run().catch` + `await this.acquirePromise`), so the event
+path must not re-raise it.
+
+**Fix (applied — obviously correct):** `Promise.allSettled` in `updateDescriptor`
+(`Device.ts:390`). Behavior is otherwise unchanged: the post-await session
+reconciliation (`usedElsewhere` / `keepTransportSession` reset / `DEVICE.CHANGED`)
+now also runs in the taken-elsewhere case, which is the intended handling.
+
+**Tests:** `deviceSessionRace.repro.test.ts` (minimal deterministic repro — fails
+pre-fix with 2 rejections, passes post-fix). The fuzz harness now generates
+`externalSession` and asserts no `updateDescriptor` promise rejects
+(`checkDescriptorRejections`); it reds without the fix (counterexample
+`run, externalSession, completeFn`) and is green with it across 2000 runs.
