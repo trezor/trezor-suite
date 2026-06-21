@@ -5,3 +5,8 @@ export const selectDustPhishingThreshold = (state: PhishingRootState) =>
 
 export const selectDustPhishingIsEnabled = (state: PhishingRootState) =>
     state.wallet.phishing.dustPhishing.isEnabled;
+
+// The dust threshold that phishing detection should actually use, or undefined when dust phishing is
+// disabled (passing it to isPhishingTransaction is what enables the dust value detector).
+export const selectActiveDustPhishingThreshold = (state: PhishingRootState) =>
+    selectDustPhishingIsEnabled(state) ? selectDustPhishingThreshold(state) : undefined;
