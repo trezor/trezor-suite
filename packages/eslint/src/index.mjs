@@ -33,7 +33,6 @@ export const eslint = [
             '**/build-webextension/*',
             '**/node_modules/*',
             '**/public/*',
-            '**/ci/',
             '**/.expo/*',
             '**/.cache/*',
             '**/playwright-report/*',

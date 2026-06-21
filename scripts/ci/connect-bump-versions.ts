@@ -1,14 +1,14 @@
-import path from 'node:path';
 import fs from 'node:fs';
-
+import path from 'node:path';
 import { promisify } from 'node:util';
+
 import {
-    getPackageDependencies,
-    gettingNpmDistributionTags,
-    exec,
-    commit,
     comment,
+    commit,
+    exec,
+    getPackageDependencies,
     getTrezorPackageDir,
+    gettingNpmDistributionTags,
 } from './helpers';
 
 const readFile = promisify(fs.readFile);
@@ -139,6 +139,7 @@ const bumpConnect = async () => {
             mainPackages.map(async pkg => {
                 const result = await getPackageDependencies(pkg);
                 console.log(`${pkg} dependencies to update:`, result);
+
                 return result.update;
             }),
         );
@@ -303,6 +304,7 @@ const bumpConnect = async () => {
 
             if (!connectGitLogText) {
                 console.info('no changelog for @trezor/connect');
+
                 return;
             }
 

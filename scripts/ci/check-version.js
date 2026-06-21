@@ -1,9 +1,7 @@
-/* eslint-disable camelcase */
-
-import semver from 'semver';
 import child_process from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import semver from 'semver';
 
 const args = process.argv.slice(2);
 

@@ -17,7 +17,7 @@ const OUTPUT_DIR = path.join(ROOT_DIR, 'tmp/packed-packages');
 const walkFiles = async (directory: string): Promise<string[]> => {
     const entries = await fs.promises.readdir(directory, { withFileTypes: true });
     const files = await Promise.all(
-        entries.map(async entry => {
+        entries.map(entry => {
             const fullPath = path.join(directory, entry.name);
             if (entry.isDirectory()) {
                 return walkFiles(fullPath);
