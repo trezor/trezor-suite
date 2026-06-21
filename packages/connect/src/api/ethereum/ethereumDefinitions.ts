@@ -39,7 +39,7 @@ export const getEthereumDefinitions = async ({
         if (networkDefinition.status === 200) {
             definitions.encoded_network = await networkDefinition.arrayBuffer();
         } else if (networkDefinition.status !== 404) {
-            throw new Error(`unexpected status: $${networkDefinition.status}`);
+            throw new Error(`unexpected status: ${networkDefinition.status}`);
         }
     } catch (err) {
         console.warn(`unable to download or parse ${chainId} definition. detail: ${err.message}`);
@@ -56,7 +56,7 @@ export const getEthereumDefinitions = async ({
             if (tokenDefinition.status === 200) {
                 definitions.encoded_token = await tokenDefinition.arrayBuffer();
             } else if (tokenDefinition.status !== 404) {
-                throw new Error(`unexpected status: $${tokenDefinition.status}`);
+                throw new Error(`unexpected status: ${tokenDefinition.status}`);
             }
         }
     } catch (err) {

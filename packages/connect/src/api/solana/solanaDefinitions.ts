@@ -19,7 +19,7 @@ export const getSolanaTokenDefinition = async ({ mintAddress }: GetSolanaTokenDe
 
                 return arrayBuffer;
             } else if (tokenDefinition.status !== 404) {
-                throw new Error(`unexpected status: $${tokenDefinition.status}`);
+                throw new Error(`unexpected status: ${tokenDefinition.status}`);
             }
         }
     } catch (err) {
