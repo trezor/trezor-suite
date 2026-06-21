@@ -89,7 +89,7 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
                 };
             }
 
-            // Find the latest account balance before or at the fiatRatePoint time
+            // Find the first known account balance at or after the fiatRatePoint time
             const accountBalancePoint = balanceHistory.find(
                 point => point.time >= fiatRatePoint.time,
             );

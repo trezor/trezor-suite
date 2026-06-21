@@ -9,7 +9,7 @@ import { validJws } from '@suite-common/message-system/src/__fixtures__/messageS
 import { type TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { Model } from '@trezor/trezor-user-env-link';
-import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
+import { BigNumber, splitStringEveryNCharacters, versionUtils } from '@trezor/utils';
 
 import { PlaywrightTarget } from './testExtends/suiteTestOptions';
 import { PercentageOfBalanceParams } from './types';
@@ -99,8 +99,13 @@ export const findLatestVersionForModel = (model: Model): string => {
     const firmwareVersions = releases.firmware;
     const versions = Object.keys(firmwareVersions);
 
-    // Sort versions in descending order
-    versions.sort((a, b) => (a > b ? -1 : 1));
+    // Sort versions in descending order (semantic, not lexicographic)
+    versions.sort((a, b) => {
+        if (versionUtils.isNewer(a, b)) return -1;
+        if (versionUtils.isNewer(b, a)) return 1;
+
+        return 0;
+    });
 
     // Find the latest version supporting our model
     for (const version of versions) {
