@@ -7,7 +7,7 @@ import type { DeepPartial } from '@trezor/type-utils';
 
 const token = {
     amount: '',
-    decimals: 0,
+    decimals: 18,
 };
 
 const tOut = {
@@ -16,7 +16,7 @@ const tOut = {
     symbol: 'TN',
     contract: '0x0',
     amount: '0',
-    decimals: 0,
+    decimals: 18,
     from: undefined,
     to: undefined,
 };
