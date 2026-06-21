@@ -7,6 +7,7 @@ import {
     fetchTransactionsPageThunk,
     selectAccountTotalTransactions,
     selectAccountTransactionsWithNulls,
+    selectActiveDustPhishingThreshold,
     selectIsLoadingAccountTransactions,
     selectPhishingTransactionsContext,
 } from '@suite-common/wallet-core';
@@ -174,6 +175,7 @@ export const useVisibleTransactions = ({
     const { tokenDefinitions, txsMarkedAsNotScam, historicRates } = useSelector(state =>
         selectPhishingTransactionsContext(state, account.key, account.symbol),
     );
+    const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
 
     const visibleTransactions = useMemo(
         () =>
@@ -185,10 +187,18 @@ export const useVisibleTransactions = ({
                               tokenDefinitions,
                               txsMarkedAsNotScam,
                               historicRates,
+                              dustThreshold,
                           }).isPhishing,
                   )
                 : allTransactions,
-        [enableFiltering, allTransactions, tokenDefinitions, txsMarkedAsNotScam, historicRates],
+        [
+            enableFiltering,
+            allTransactions,
+            tokenDefinitions,
+            txsMarkedAsNotScam,
+            historicRates,
+            dustThreshold,
+        ],
     );
 
     const perPage = getTxsPerPage(account.networkType);
