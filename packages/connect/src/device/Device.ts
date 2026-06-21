@@ -534,6 +534,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         const acquireNeeded = !this.isUsedHere() || this.currentSession?.isDisposed();
         if (acquireNeeded) {
+            // If the run was already aborted while parked above (e.g. interrupted
+            // while waiting on a previous release), bail before acquiring: the
+            // run's catch handler has already run its release path against the
+            // session state it saw at abort time, so a session acquired here would
+            // never be released — a leaked transport session.
+            if (abortSignal.aborted) throw abortSignal.reason;
             // acquire session
             await this.acquire();
         }

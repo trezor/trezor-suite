@@ -275,8 +275,9 @@ model prompt abort response.
 
 - INV-5 (`DeviceList` consistency) needs a `DeviceList`/`Core`-level harness, not
   a single `Device`; it is out of scope for this file. The `requestRelease`
-  (`usedElsewhere`) op remains implemented in `step()` but out of the generator
-  (next hunt target).
+  (`usedElsewhere`) op is now generated together with `externalSession`; with the
+  strengthened INV-3 quiescence check (`checkSessionBalanceAtQuiescence`) it
+  surfaced Finding 2 below.
 
 For each distinct, **verified** violation: shrink, commit a minimal deterministic
 repro + a note (invariant, interleaving, suspected root cause), and only commit a
@@ -317,3 +318,53 @@ pre-fix with 2 rejections, passes post-fix). The fuzz harness now generates
 `externalSession` and asserts no `updateDescriptor` promise rejects
 (`checkDescriptorRejections`); it reds without the fix (counterexample
 `run, externalSession, completeFn`) and is green with it across 2000 runs.
+
+### Finding 2 — INV-3: leaked session from a run aborted before it acquires (FIXED)
+
+**Invariant:** INV-3 (session balance — `acquire`/`release` paired; a session is
+held only deliberately via `keepTransportSession`).
+
+**Interleaving (shrunk):** `run, completeFn, completeAcquire, requestRelease, run,
+interrupt` (fast-check seed 99; the two-`interrupt` variant `run, completeFn,
+completeAcquire, interrupt, run, interrupt, completeFn` reproduces it equally).
+Step by step:
+
+1. Run A acquires `s0`, runs its `fn`, then issues its final `release()` (release
+   in-flight) and is awaiting it inside `_runInner`.
+2. Run A is aborted (`DEVICE_REQUEST_RELEASE → usedElsewhere`, or an `interrupt`).
+   The `Promise.race` abort branch settles run A's `runPromise`; its `catch`
+   handler runs `release()` — a **no-op** because a release is already pending —
+   and clears `runPromise`. Run A's `_runInner` is **still suspended** at
+   `await this.releasePromise`.
+3. Run B starts (allowed: `runPromise` is clear) and parks at the **same**
+   `await this.releasePromise`.
+4. Run B is aborted before it ever reaches `acquire()`. At abort time its
+   `acquirePromise` is `undefined`, so run B's `catch` handler awaits nothing and
+   releases nothing.
+5. The pending release settles. Run B's orphaned `_runInner` resumes past the
+   park, sees `acquireNeeded` and calls `acquire()` — for an already-finished run.
+   The acquire succeeds and sets `sessionAcquired = s1`, but nothing releases it.
+
+**Root cause:** `_runInner` only checked `abortSignal.aborted` **after**
+`acquire()` (`Device.ts:513`). A run aborted while parked **before** the acquire
+decision keeps running in the background — it merely lost the `Promise.race`, it
+was not cancelled — and proceeds to `acquire()` a session the already-settled run
+can never release. The leaked session keeps the device's transport interface
+occupied with `keepTransportSession === false`, contradicting INV-3.
+
+**Fix (applied — obviously correct):** check `abortSignal.aborted` **before**
+`acquire()` in `_runInner` (`Device.ts:508`). This only adds an early throw on an
+already-aborted signal — identical in spirit to the existing post-acquire check,
+just moved ahead of the acquire — so a non-aborted run is unaffected and an
+aborted run no longer acquires a session it would leak. (The post-acquire window
+remains safe: if abort fires _during_ `await this.acquire()`, `acquirePromise` is
+set, so run's `catch` awaits it and releases.)
+
+**Tests:** `deviceRunInterruptLeak.repro.test.ts` (minimal deterministic repro —
+fails pre-fix with `sessionAcquired === 's1'`, passes post-fix) is the primary
+regression guard for this finding. The fuzz harness gained
+`checkSessionBalanceAtQuiescence` (INV-3: no session held after drain unless
+`keepTransportSession`); the assertion has teeth, but this abort-before-acquire
+interleaving is rare and the harness does not reliably rediscover it at the
+committed default `FUZZ_SEED`/`FUZZ_RUNS` — raise `FUZZ_RUNS` or rotate seeds to
+hunt it. Treat the deterministic repro, not the fuzz, as the guard for INV-3.
