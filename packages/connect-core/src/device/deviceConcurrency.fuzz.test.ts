@@ -58,13 +58,14 @@ type Op =
     | { t: 'requestRelease' }
     | { t: 'externalSession' };
 
-// PHASE 2 alphabet: the per-device run-queue core (run / acquire / fn / release /
-// interrupt / keepSession). The externally-driven `requestRelease` and
-// `externalSession` transitions are implemented in `step()` but deliberately held
-// out of the generator for now: they open the acquire-vs-session-change race
-// (Device.updateDescriptor awaiting a rejecting acquirePromise) which is the
-// subject of PHASE 3 hunting and must be verified as a real bug — not a mock
-// artifact — before being asserted on.
+// Alphabet: the per-device run-queue core (run / acquire / fn / release /
+// interrupt / keepSession) plus the externally-driven `externalSession`
+// transition. `externalSession` opens the acquire-vs-session-change race
+// (`Device.updateDescriptor` awaiting a rejecting `acquirePromise`) — confirmed
+// in PHASE 3 as a real unhandled-rejection bug (see
+// `deviceSessionRace.repro.test.ts`) and fixed via `Promise.allSettled`. It is
+// now generated so the fix is exercised under arbitrary interleavings, with the
+// "no leaked updateDescriptor rejection" check below asserting INV-2.
 const opArb: fc.Arbitrary<Op> = fc.oneof(
     fc.record({ t: fc.constant('run' as const), keepSession: fc.boolean() }),
     fc.constant({ t: 'completeAcquire' as const }),
@@ -73,6 +74,7 @@ const opArb: fc.Arbitrary<Op> = fc.oneof(
     fc.constant({ t: 'completeRelease' as const }),
     fc.constant({ t: 'completeMessage' as const }),
     fc.constant({ t: 'interrupt' as const }),
+    fc.constant({ t: 'externalSession' as const }),
 );
 
 const flush = () => new Promise(resolve => setImmediate(resolve));
@@ -90,6 +92,13 @@ class Harness {
     private session = 0;
     /** invariant violations recorded during the program (asserted by the test) */
     readonly violations: string[] = [];
+    /**
+     * Every promise the transport-event handler (`updateDescriptor`) returns.
+     * It is invoked fire-and-forget from `onTransportDeviceEvent`, so any
+     * rejection escapes the device layer unhandled (INV-2). The drain checks that
+     * none of these reject.
+     */
+    private readonly descriptorPromises: Promise<unknown>[] = [];
 
     constructor() {
         this.transport = createControllableTransport(PATH);
@@ -98,6 +107,13 @@ class Harness {
             transport: this.transport,
             descriptor: { path: PATH, type: 1, session: null, apiType: 'usb' } as any,
             createLogger: noopCreateLogger,
+        });
+        const origUpdate = (this.device as any).updateDescriptor.bind(this.device);
+        jest.spyOn(this.device as any, 'updateDescriptor').mockImplementation((...a: any[]) => {
+            const p = origUpdate(...a) as Promise<unknown>;
+            this.descriptorPromises.push(p);
+
+            return p;
         });
         // getFeatures / initialize would issue real transport messages; the
         // queue invariants do not depend on their result.
@@ -194,6 +210,23 @@ class Harness {
         }
     }
 
+    /**
+     * INV-2: no `updateDescriptor` (fire-and-forget transport-event handler)
+     * rejected. A rejection here is an unhandled rejection escaping the device.
+     */
+    async checkDescriptorRejections() {
+        const rejected = (await Promise.allSettled(this.descriptorPromises)).filter(
+            r => r.status === 'rejected',
+        );
+        if (rejected.length) {
+            this.violations.push(
+                `INV-2: ${rejected.length} updateDescriptor promise(s) rejected — ${rejected
+                    .map(r => String((r as PromiseRejectedResult).reason?.message))
+                    .join(', ')}`,
+            );
+        }
+    }
+
     /** Drive everything to settle; returns false on a liveness/deadlock failure. */
     async drain() {
         for (let i = 0; i < 300; i++) {
@@ -273,6 +306,9 @@ describe('Device run-queue concurrency (fuzz)', () => {
                 expect(recovered).toBe(true);
                 const drainedAgain = await h.drain();
                 expect(drainedAgain).toBe(true);
+
+                // INV-2: no fire-and-forget updateDescriptor rejection leaked.
+                await h.checkDescriptorRejections();
 
                 // INV-1/INV-3 recorded during the run.
                 expect(h.violations).toEqual([]);
