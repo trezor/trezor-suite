@@ -13,10 +13,20 @@
  * queue of deferreds. The test resolves them on command, which is what makes the
  * interleavings deterministic and fully under the harness's control.
  */
-import { AbstractTransport, type Descriptor, type Session } from '@trezor/transport-common';
+import {
+    AbstractTransport,
+    type Descriptor,
+    type Session,
+    TRANSPORT_ERROR,
+} from '@trezor/transport-common';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 type Path = Descriptor['path'];
+
+// The real transport reports this exact value (not the SCREAMING_CASE key) when a
+// device vanishes mid-op; `Device.handshake` matches on the value to decide
+// `stillConnected`, so the mock must use the value verbatim.
+const DISCONNECTED_CODE = TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION;
 
 type Pending<T> = {
     kind: 'acquire' | 'release' | 'call' | 'send' | 'receive';
@@ -114,12 +124,57 @@ export class ControllableTransport extends AbstractTransport {
     /**
      * Drive a transport-level session change. Uses the *real*
      * `handleDescriptorsChange` so the proper `DEVICE_SESSION_CHANGED` /
-     * `DEVICE_DISCONNECTED` events fan out to the Device.
+     * `DEVICE_DISCONNECTED` events fan out to the Device. Descriptors for *other*
+     * paths are preserved so a multi-device harness can change one device's
+     * session without spuriously disconnecting the rest.
      */
     setSession(path: Path, session: string | null) {
+        const next = this.descriptors.map(d =>
+            d.path === path ? ({ ...d, session: asSession(session) } as Descriptor) : d,
+        );
+        if (!next.some(d => d.path === path)) {
+            next.push({ path, session: asSession(session), type: 1 } as Descriptor);
+        }
+        this.handleDescriptorsChange(next);
+    }
+
+    /** Add a new path to the descriptor set → fans out `DEVICE_CONNECTED`. */
+    connectPath(path: Path) {
+        if (this.descriptors.some(d => d.path === path)) return;
         this.handleDescriptorsChange([
-            { path, session: asSession(session), type: 1 } as Descriptor,
+            ...this.descriptors,
+            { path, session: null, type: 1, apiType: 'usb' } as Descriptor,
         ]);
+    }
+
+    /** Remove a path from the descriptor set → fans out `DEVICE_DISCONNECTED`. */
+    disconnectPath(path: Path) {
+        if (!this.descriptors.some(d => d.path === path)) return;
+        this.handleDescriptorsChange(this.descriptors.filter(d => d.path !== path));
+        // A physically-gone device fails any in-flight transport op against it
+        // (the real transport rejects acquire/release with
+        // DEVICE_DISCONNECTED_DURING_ACTION). Modelling that is essential: a stale
+        // acquire settled as *success* after disconnect would re-add the
+        // descriptor (via setSession) and fake the device back into existence.
+        this.failPending(path);
+    }
+
+    /** Fail (success:false) every parked transport op for a path. */
+    private failPending(path: Path) {
+        for (let i = this.pending.length - 1; i >= 0; i--) {
+            const op = this.pending[i];
+            if (op?.path !== path) continue;
+            this.pending.splice(i, 1);
+            op.dfd.resolve({
+                success: false,
+                error: { code: DISCONNECTED_CODE },
+            } as any);
+        }
+    }
+
+    /** Paths currently present at the transport level (live descriptors). */
+    livePaths(): Path[] {
+        return this.descriptors.map(d => d.path);
     }
 
     /** Emit a raw device event (used to model REQUEST_RELEASE / disconnect). */
@@ -127,16 +182,30 @@ export class ControllableTransport extends AbstractTransport {
         this.deviceEvents.emit(path, event);
     }
 
-    private firstPending(kind: Pending<any>['kind']) {
-        const idx = this.pending.findIndex(p => p.kind === kind);
+    private firstPending(kind: Pending<any>['kind'], path?: Path) {
+        const idx = this.pending.findIndex(
+            p => p.kind === kind && (path === undefined || p.path === path),
+        );
 
         return idx === -1 ? undefined : this.pending.splice(idx, 1)[0];
     }
 
     /** Settle the oldest in-flight acquire as success and advance the session. */
-    completeAcquire(session: string) {
-        const op = this.firstPending('acquire');
+    completeAcquire(session: string, path?: Path) {
+        const op = this.firstPending('acquire', path);
         if (!op) return false;
+        // A path with no live descriptor cannot be acquired — the real transport
+        // rejects (device gone). This matters when a handshake queued behind the
+        // global handshakeLock runs *after* its device disconnected: it must fail,
+        // not succeed-and-resurrect the descriptor.
+        if (!this.descriptors.some(d => d.path === op.path)) {
+            op.dfd.resolve({
+                success: false,
+                error: { code: DISCONNECTED_CODE },
+            } as any);
+
+            return true;
+        }
         this.acquiredCount += 1;
         op.dfd.resolve({ success: true, payload: asSession(session) as Session });
         this.setSession(op.path, session);
@@ -151,15 +220,15 @@ export class ControllableTransport extends AbstractTransport {
         // so Device.acquire's `throw new Error(result.error.code)` path is faithful.
         op.dfd.resolve({
             success: false,
-            error: { code: 'DEVICE_DISCONNECTED_DURING_ACTION' },
+            error: { code: DISCONNECTED_CODE },
         } as any);
 
         return true;
     }
 
     /** Settle the oldest in-flight release as success and clear the session. */
-    completeRelease() {
-        const op = this.firstPending('release');
+    completeRelease(path?: Path) {
+        const op = this.firstPending('release', path);
         if (!op) return false;
         this.releasedCount += 1;
         op.dfd.resolve({ success: true, payload: null });
