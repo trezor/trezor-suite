@@ -271,13 +271,27 @@ An earlier abort-agnostic `fn` produced a spurious "two fn bodies concurrent"
 INV-1 report — a harness artifact, not a Device bug — which is why the body must
 model prompt abort response.
 
-### Deferred to PHASE 3
+### INV-5 harness (`DeviceList` registry consistency)
 
-- INV-5 (`DeviceList` consistency) needs a `DeviceList`/`Core`-level harness, not
-  a single `Device`; it is out of scope for this file. The `requestRelease`
-  (`usedElsewhere`) op is now generated together with `externalSession`; with the
-  strengthened INV-3 quiescence check (`checkSessionBalanceAtQuiescence`) it
-  surfaced Finding 2 below.
+`__tests__/deviceListConsistency.fuzz.test.ts` drives the shared
+`DeviceList.devices` registry directly. It wires a `ControllableTransport`'s
+`DEVICE_CONNECTED` event to `DeviceList.onDeviceConnected` exactly as
+`initializeTransport` does (fire-and-forget), and lets `Device.handshake()` run
+**for real** against the transport (acquire → `getFeatures` (stubbed) → release),
+so a disconnect arriving mid-handshake interrupts the run and makes `handshake()`
+return `false` — the production signal that gates `devices.push`. `fast-check`
+generates connect/disconnect/acquire/release sequences over a small path set;
+after every step it asserts **no duplicate path** and at full quiescence
+**present iff connected** (no _lost_ device — connected but absent — and no
+_leaked_ device — present but disconnected). It surfaced Finding 3 below.
+
+The harness's faithfulness rests on the transport modelling a physically-gone
+device correctly: `disconnectPath` fails any in-flight op for that path, and
+`completeAcquire` fails (rather than succeeds-and-resurrects) a path with no live
+descriptor — otherwise a stale acquire settled as success would fake the device
+back into existence and produce spurious findings. The disconnect error code must
+be the verbatim value (`'device disconnected during action'`), not the
+SCREAMING_CASE key, because `Device.handshake` matches on the value.
 
 For each distinct, **verified** violation: shrink, commit a minimal deterministic
 repro + a note (invariant, interleaving, suspected root cause), and only commit a
@@ -368,3 +382,44 @@ regression guard for this finding. The fuzz harness gained
 interleaving is rare and the harness does not reliably rediscover it at the
 committed default `FUZZ_SEED`/`FUZZ_RUNS` — raise `FUZZ_RUNS` or rotate seeds to
 hunt it. Treat the deterministic repro, not the fuzz, as the guard for INV-3.
+
+### Finding 3 — INV-2/INV-5: `handshakeLock` deadlock from a disconnected device's queued handshake (FIXED)
+
+**Invariant:** INV-2 (liveness — no promise hangs after flush) and INV-5
+(`DeviceList` consistency — a connected device is registered exactly once).
+
+**Interleaving (shrunk):** `connect '1'` → `connect '2'` → `disconnect '2'` →
+`connect '2'` → (drain). Device `'1'` starts handshaking and holds
+`DeviceList`'s global `handshakeLock` (`DeviceList.ts:190`); device `'2'`'s
+handshake is **queued** behind it. `'2'` then disconnects (while still queued) and
+reconnects on the same path.
+
+**Root cause:** `Device.disconnect()` removes the instance's
+`onTransportDeviceEvent` listener (`Device.ts:917`) but the queued handshake
+closure (`resolveAfter(...).then(() => device.handshake())`, already inside
+`handshakeLock`) survives — `interrupt()` is a no-op because the run never
+started (`runAbort` is `undefined`). When the lock reaches it, the **stale**
+`'2'` instance runs `handshake()` → `run()` → `acquire()`; the reconnected path is
+live, so the acquire succeeds, but `waitAndCompareSession` then awaits a
+`sessionDfd` that only the now-removed listener (`updateDescriptor`) would resolve
+(`Device.ts:242`, `224-235`). It hangs **forever**, holding `handshakeLock`, so
+every later device's handshake — including the reconnected `'2'` — is starved.
+The auth-penalty delay before each handshake
+(`resolveAfter(penalty && penalty + 501)`, seconds when penalized) widens the
+queued window substantially.
+
+**Fix (applied — obviously correct):** mark a `Device` terminal on
+`disconnect()` (`this.disconnected = true`, `Device.ts`) and bail before doing any
+transport work: `run()` throws `Device_Disconnected` and `handshake()` returns
+`false` when `disconnected`. A disconnected instance is already terminal (listeners
+torn down, replaced by a fresh `Device` on reconnect), and `core` only dispatches
+to registry devices, so nothing legitimately runs a disconnected device — the
+guard only short-circuits the stale queued handshake, releasing the lock so the
+reconnected device handshakes and registers normally.
+
+**Tests:** `deviceListHandshakeLockDeadlock.repro.test.ts` (minimal deterministic
+repro — pre-fix the reconnected `'2'` is never registered; passes post-fix). The
+`deviceListConsistency.fuzz.test.ts` harness asserts no-duplicate + present-iff-
+connected; it reds without the fix (counterexample
+`connect 1, connect 3, disconnect 3, connect 3, connect 1`) and is green with it
+across 1600 runs × seeds 1/7/42/99.

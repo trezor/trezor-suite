@@ -187,6 +187,13 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private sessionDfd?: Deferred<Session | null>;
 
+    // Terminal flag: set once `disconnect()` has torn down this instance's
+    // transport listeners. A disconnected Device must never start a new run — its
+    // `onTransportDeviceEvent` listener is gone, so `acquire()`'s
+    // `waitAndCompareSession` would await a `sessionDfd` nothing ever resolves and
+    // hang forever (see CONCURRENCY_MODEL.md Finding 3).
+    private disconnected = false;
+
     constructor({ id, transport, descriptor, createLogger }: DeviceParams) {
         super();
 
@@ -357,6 +364,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     // call only once, right after device creation
     async handshake() {
+        // Disconnected while queued behind DeviceList's handshakeLock: report
+        // not-connected so DeviceList skips the push and the lock is released for
+        // the next device (see CONCURRENCY_MODEL.md Finding 3).
+        if (this.disconnected) {
+            return false;
+        }
         if (this.isUsedElsewhere()) {
             return true;
         }
@@ -450,6 +463,13 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options: RunOptions = {}) {
+        if (this.disconnected) {
+            // A handshake queued behind DeviceList's handshakeLock can reach this
+            // point after the device disconnected; acquiring now would hang on a
+            // sessionDfd no listener resolves, stalling the lock for every later
+            // device (see CONCURRENCY_MODEL.md Finding 3).
+            throw ERRORS.TypedError('Device_Disconnected');
+        }
         if (this.runPromise) {
             this.logger.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
@@ -960,6 +980,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private disconnect() {
         this.logger.debug('Disconnect cleanup');
 
+        this.disconnected = true;
         this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
         this.transport.deviceEvents.off(this.descriptor.path, this.onTransportDeviceEvent);
         this.removeAllListeners();
