@@ -23,6 +23,6 @@
         "@suite-common/platform-encryption": "workspace:*",
         "@suite/tor": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "electron": "42.2.0"
+        "electron": "42.5.0"
     }
 }
