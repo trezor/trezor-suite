@@ -101,10 +101,13 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                                 <CardanoMinAmountInfo />
                                             )}
                                             <TronNewAccountInfo />
-                                            <DestinationTag networkSymbol={symbol} />
                                         </Column>
                                     )}
                                 </Card>
+
+                                {output.type !== 'opreturn' && (
+                                    <DestinationTag networkSymbol={symbol} />
+                                )}
                             </Column>
                         </motion.div>
                     ))}
