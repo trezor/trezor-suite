@@ -8,7 +8,6 @@ import {
     TRADING_EXTENDED_PREFIX,
     TRADING_PREFIX,
     TRADING_SELL_PREFIX,
-    TRADING_SETTINGS_PREFIX,
 } from '../constants';
 import { buyThunks } from '../thunks/buy';
 import { exchangeThunks } from '../thunks/exchange';
@@ -17,7 +16,6 @@ import { type TradingTransaction } from '../types';
 import { tradingBuyReducer } from './buyReducer';
 import { tradingExchangeReducer } from './exchangeReducer';
 import { tradingSellReducer } from './sellReducer';
-import { tradingSettingsReducer } from './settingsReducer';
 import { initialState, tradingCommonReducer } from './tradingCommonReducer';
 
 type StorageActionPayload = {
@@ -88,12 +86,6 @@ const tradingSlice = createSliceWithExtraDeps({
             .addCase(exchangeThunks.confirmTradeThunk.rejected, state => {
                 state.exchange.isLoading = false;
             })
-            .addMatcher(
-                action => action.type.startsWith(TRADING_SETTINGS_PREFIX),
-                (state, action) => {
-                    tradingSettingsReducer(state.settings, action);
-                },
-            )
             .addMatcher(
                 action => action.type.startsWith(TRADING_BUY_PREFIX),
                 (state, action) => {

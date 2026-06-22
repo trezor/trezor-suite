@@ -15,7 +15,6 @@ import { type TradingBuyState, buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
 import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
 import { type TradingSellState, sellInitialState } from './sellReducer';
-import { type TradingSettingsState, settingsInitialState } from './settingsReducer';
 
 type TradingComposedTransactionInfoOutputs = {
     outputs?: PROTO.TxOutputType[] | CardanoOutput[];
@@ -69,7 +68,6 @@ export interface TradingState {
     activeSection: TradingType;
     prefilledFromAccount: TradingPrefilledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
-    settings: TradingSettingsState;
     currentProviderMetadata?: ProviderMetadata;
     favouriteAssets: Partial<Record<string, true>>;
     quoteRefetchingState: QuoteRefetchingState;
@@ -101,7 +99,6 @@ export const initialState: TradingState = {
         key: undefined,
     },
     verifiedAddress: undefined,
-    settings: settingsInitialState,
     favouriteAssets: {},
     quoteRefetchingState: {
         remainingRefetches: REFETCH_QUOTES_MAX_COUNT,
