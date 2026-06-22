@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { FormattedRelativeTime } from 'react-intl';
 
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
@@ -54,6 +55,9 @@ const autocorrectTranslationKeys: Record<NonNullable<AddressCorrection>['type'],
     lowercase: 'TR_CONVERTED_TO_LOWERCASE',
     bchPrefix: 'TR_ADDED_BITCOINCASH_PREFIX',
 };
+
+const blockTimeToRelativeSeconds = (blockTime: number) =>
+    Math.floor((blockTime * 1000 - Date.now()) / 1000);
 
 type AddressProps = {
     outputId: number;
@@ -112,11 +116,18 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
+    const [isUnusedAddressWarningDismissed, setIsUnusedAddressWarningDismissed] = useState(false);
+    const [recipientLastActivity, setRecipientLastActivity] = useState<{
+        total: number;
+        lastTransferRelativeSeconds?: number;
+    } | null>(null);
 
     const isExternalAddressCheckEnabled = ['ethereum', 'solana', 'tron'].includes(networkType);
 
     useEffect(() => {
         setIsExternalAddressCheckWarningDismissed(false);
+        setIsUnusedAddressWarningDismissed(false);
+        setRecipientLastActivity(null);
     }, [address]);
 
     useEffect(() => {
@@ -267,6 +278,19 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         learnMoreUrl: HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
                     };
                 }
+                if (!isUnusedAddressWarningDismissed) {
+                    return {
+                        buttonProps: {
+                            onClick: async () => {
+                                setIsUnusedAddressWarningDismissed(true);
+                                await trigger(inputName);
+                                clearErrors(inputName);
+                                composeTransaction();
+                            },
+                            text: translationString('TR_I_UNDERSTAND_THE_RISK'),
+                        },
+                    };
+                }
 
                 return {};
             case 'solAssociatedAccountCheck':
@@ -282,6 +306,19 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             text: translationString('TR_I_UNDERSTAND_THE_RISK'),
                         },
                         learnMoreUrl: HELP_CENTER_SOLANA_HELP_URL,
+                    };
+                }
+                if (!isUnusedAddressWarningDismissed) {
+                    return {
+                        buttonProps: {
+                            onClick: async () => {
+                                setIsUnusedAddressWarningDismissed(true);
+                                await trigger(inputName);
+                                clearErrors(inputName);
+                                composeTransaction();
+                            },
+                            text: translationString('TR_I_UNDERSTAND_THE_RISK'),
+                        },
                     };
                 }
 
@@ -361,6 +398,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 const result = await TrezorConnect.getAccountInfo({
                     descriptor: address,
                     coin: symbol,
+                    details: 'txs',
+                    pageSize: 1,
+                });
+
+                console.log('[evmChecks] getAccountInfo result:', {
+                    address,
+                    coin: symbol,
+                    success: result.success,
+                    history: result.success ? result.payload.history : null,
+                    transactions: result.success ? result.payload.history.transactions : null,
+                    misc: result.success ? result.payload.misc : null,
                 });
 
                 if (!result.success) {
@@ -383,11 +431,32 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     }
                 }
 
+                const lastTx = payload.history.transactions?.[0];
+                console.log('[evmChecks] activity:', {
+                    total: payload.history.total,
+                    lastTx,
+                    lastBlockTime: lastTx?.blockTime,
+                });
+                setRecipientLastActivity({
+                    total: payload.history.total,
+                    lastTransferRelativeSeconds: lastTx?.blockTime
+                        ? blockTimeToRelativeSeconds(lastTx.blockTime)
+                        : undefined,
+                });
+
                 if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
                     const isContract = payload.misc?.contractInfo;
                     if (isContract) {
+                        console.log('[evmChecks] contract detected');
+
                         return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
                     }
+                }
+
+                if (!isUnusedAddressWarningDismissed && payload.history.total === 0) {
+                    console.log('[evmChecks] unused address warning');
+
+                    return translationString('TR_ADDRESS_NEVER_USED_WARNING');
                 }
             },
             solAssociatedAccountCheck: async (value: string) => {
@@ -399,17 +468,47 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     const result = await TrezorConnect.getAccountInfo({
                         descriptor: value,
                         coin: symbol,
-                        details: 'basic',
+                        details: 'txs',
+                        pageSize: 1,
+                    });
+
+                    console.log('[solAssociatedAccountCheck] getAccountInfo result:', {
+                        address: value,
+                        coin: symbol,
+                        success: result.success,
+                        history: result.success ? result.payload.history : null,
+                        transactions: result.success ? result.payload.history.transactions : null,
                     });
 
                     if (!result.success) {
                         return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
+                    const lastTx = result.payload.history.transactions?.[0];
+                    console.log('[solAssociatedAccountCheck] activity:', {
+                        total: result.payload.history.total,
+                        lastTx,
+                        lastBlockTime: lastTx?.blockTime,
+                    });
+                    setRecipientLastActivity({
+                        total: result.payload.history.total,
+                        lastTransferRelativeSeconds: lastTx?.blockTime
+                            ? blockTimeToRelativeSeconds(lastTx.blockTime)
+                            : undefined,
+                    });
+
                     if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
                         if (isProgramDerivedAccount(result.payload)) {
+                            console.log('[solAssociatedAccountCheck] program-derived account');
+
                             return translationString('TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT');
                         }
+                    }
+
+                    if (!isUnusedAddressWarningDismissed && result.payload.history.total === 0) {
+                        console.log('[solAssociatedAccountCheck] unused address warning');
+
+                        return translationString('TR_ADDRESS_NEVER_USED_WARNING');
                     }
                 }
             },
@@ -439,6 +538,26 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return <InputError message={addressError.message} {...getInputErrorProps()} />;
         }
 
+        if (
+            recipientLastActivity?.total &&
+            recipientLastActivity.lastTransferRelativeSeconds !== undefined
+        ) {
+            return (
+                <Translation
+                    id="TR_ADDRESS_LAST_TRANSFER"
+                    values={{
+                        time: (
+                            <FormattedRelativeTime
+                                value={recipientLastActivity.lastTransferRelativeSeconds}
+                                numeric="auto"
+                                updateIntervalInSeconds={60}
+                            />
+                        ),
+                    }}
+                />
+            );
+        }
+
         if (hasAddressChecksummed) {
             return (
                 <Translation
@@ -460,6 +579,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const getBottomTextIconComponent = () => {
         if (addressError) {
             return <Icon name="warningCircle" size={16} intent="critical" />;
+        }
+
+        if (
+            recipientLastActivity?.total &&
+            recipientLastActivity.lastTransferRelativeSeconds !== undefined
+        ) {
+            return <Icon name="check" size={16} intent="info" />;
         }
 
         if (hasAddressChecksummed) {

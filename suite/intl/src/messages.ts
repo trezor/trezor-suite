@@ -2020,6 +2020,15 @@ export const messages = defineMessages({
         defaultMessage: "You're sending funds to a contract address.",
         id: 'TR_EVM_ADDRESS_IS_CONTRACT',
     },
+    TR_ADDRESS_NEVER_USED_WARNING: {
+        defaultMessage:
+            'Recipient address has never received funds. Verify you copied the correct address before sending.',
+        id: 'TR_ADDRESS_NEVER_USED_WARNING',
+    },
+    TR_ADDRESS_LAST_TRANSFER: {
+        defaultMessage: 'Last transfer {time}',
+        id: 'TR_ADDRESS_LAST_TRANSFER',
+    },
     TR_I_UNDERSTAND_THE_RISK: {
         defaultMessage: 'I understand',
         id: 'TR_I_UNDERSTAND_THE_RISK',
