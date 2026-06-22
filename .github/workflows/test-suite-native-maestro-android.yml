@@ -123,41 +123,7 @@ jobs:
           disable-animations: true
           cores: 4
           heap-size: 512M
-          script: |
-            set -euo pipefail
-            mkdir -p artifacts/maestro/debug artifacts/maestro/screenshots
-
-            yarn tsx .maestro/user-env-rest/server.ts > artifacts/user-env-rest.log 2>&1 &
-            SHIM_PID=$!
-
-            cleanup() {
-              curl --silent --show-error --request POST http://127.0.0.1:9011/cleanup || true
-              kill "$SHIM_PID" || true
-              wait "$SHIM_PID" || true
-            }
-            trap cleanup EXIT
-
-            for attempt in {1..30}; do
-              if curl --fail --silent http://127.0.0.1:9011/health > /dev/null; then
-                break
-              fi
-              if [ "$attempt" -eq 30 ]; then
-                cat artifacts/user-env-rest.log
-                exit 1
-              fi
-              sleep 1
-            done
-
-            adb install -r suite-native/app/android/app/build/outputs/apk/release/app-release.apk
-            adb reverse tcp:21328 tcp:21328
-
-            maestro test \
-              --format JUNIT \
-              --output artifacts/maestro/junit.xml \
-              --debug-output artifacts/maestro/debug \
-              --flatten-debug-output \
-              --test-output-dir artifacts/maestro/screenshots \
-              .maestro/tests
+          script: yarn tsx .maestro/run-android-ci.ts
 
       - name: Extract trezor-user-env logs
         if: ${{ !cancelled() }}
