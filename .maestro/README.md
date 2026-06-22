@@ -49,3 +49,19 @@ If the flow is interrupted before its teardown script runs, clean up the device 
 curl -fsS -X POST http://127.0.0.1:9011/cleanup
 docker compose -f docker/docker-compose.suite-native-ci.yml down
 ```
+
+## Screen recording
+
+In CI (`yarn tsx .maestro/run-android-ci.ts`) the emulator screen is recorded while the Maestro
+flow runs and saved to `artifacts/maestro/recording.mp4`, uploaded alongside the JUnit report and
+screenshots. Because `adb shell screenrecord` caps a single file at 180 seconds, longer runs are
+split into `recording-0.mp4`, `recording-1.mp4`, … Recording is best-effort and never fails the
+test run.
+
+To capture the same recording locally while a flow runs:
+
+```bash
+adb shell screenrecord --bit-rate 4000000 /sdcard/recording.mp4
+# run the flow in another shell, then Ctrl+C the screenrecord above
+adb pull /sdcard/recording.mp4
+```

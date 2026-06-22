@@ -3,6 +3,8 @@ import { type FileHandle, mkdir, open } from 'node:fs/promises';
 
 const ARTIFACT_DIR = 'artifacts/maestro';
 const SHIM_URL = 'http://127.0.0.1:9011';
+const RECORDING_DEVICE_PREFIX = '/sdcard/maestro-recording';
+const RECORDING_BIT_RATE = '4000000';
 
 type ProcessResult = {
     code: number | null;
@@ -14,6 +16,11 @@ type ShimProcess = {
     childProcess: ChildProcess;
     completion: Promise<ProcessResult>;
     logFile: FileHandle;
+};
+
+type Recorder = {
+    stop: () => void;
+    loop: Promise<string[]>;
 };
 
 const waitForCompletion = (childProcess: ChildProcess): Promise<ProcessResult> =>
@@ -50,6 +57,66 @@ const runCommand = async (command: string, args: string[]): Promise<void> => {
 
     if (result.code !== 0) {
         throw new Error(formatProcessFailure({ command: `${command} ${args.join(' ')}`, result }));
+    }
+};
+
+const tryRunAdb = async (args: string[]): Promise<boolean> => {
+    const childProcess = spawn('adb', args, { stdio: 'inherit' });
+    const result = await waitForCompletion(childProcess);
+
+    return result.code === 0;
+};
+
+// Records the emulator screen for the duration of the Maestro flow. `adb shell screenrecord`
+// caps a single file at 180 seconds, so we chain segments in a host-controlled loop and stop it
+// on teardown. Recording is best-effort diagnostics and never fails the test run.
+const startRecording = (): Recorder => {
+    let active = true;
+
+    const loop = (async (): Promise<string[]> => {
+        const segments: string[] = [];
+
+        for (let index = 0; active; index++) {
+            const devicePath = `${RECORDING_DEVICE_PREFIX}-${index}.mp4`;
+            const childProcess = spawn(
+                'adb',
+                ['shell', 'screenrecord', '--bit-rate', RECORDING_BIT_RATE, devicePath],
+                { stdio: 'inherit' },
+            );
+            segments.push(devicePath);
+            const result = await waitForCompletion(childProcess);
+
+            // adb or screenrecord is unavailable; stop trying so we don't spin forever.
+            if (result.error) {
+                console.error(formatProcessFailure({ command: 'adb shell screenrecord', result }));
+                break;
+            }
+        }
+
+        return segments;
+    })();
+
+    return {
+        stop: () => {
+            active = false;
+        },
+        loop,
+    };
+};
+
+const stopRecording = async (recorder: Recorder): Promise<void> => {
+    recorder.stop();
+
+    // Interrupt the in-progress segment so its MP4 is finalized and playable.
+    await tryRunAdb(['shell', 'pkill', '-INT', 'screenrecord']);
+
+    const segments = await recorder.loop;
+    const singleSegment = segments.length === 1;
+
+    for (const [index, devicePath] of segments.entries()) {
+        const fileName = singleSegment ? 'recording.mp4' : `recording-${index}.mp4`;
+        await tryRunAdb(['pull', devicePath, `${ARTIFACT_DIR}/${fileName}`]);
+        await tryRunAdb(['shell', 'rm', '-f', devicePath]);
     }
 };
 
@@ -147,19 +214,26 @@ const run = async (): Promise<void> => {
             'suite-native/app/android/app/build/outputs/apk/release/app-release.apk',
         ]);
         await runCommand('adb', ['reverse', 'tcp:21328', 'tcp:21328']);
-        await runCommand('maestro', [
-            'test',
-            '--format',
-            'JUNIT',
-            '--output',
-            `${ARTIFACT_DIR}/junit.xml`,
-            '--debug-output',
-            `${ARTIFACT_DIR}/debug`,
-            '--flatten-debug-output',
-            '--test-output-dir',
-            `${ARTIFACT_DIR}/screenshots`,
-            '.maestro/tests',
-        ]);
+
+        const recorder = startRecording();
+
+        try {
+            await runCommand('maestro', [
+                'test',
+                '--format',
+                'JUNIT',
+                '--output',
+                `${ARTIFACT_DIR}/junit.xml`,
+                '--debug-output',
+                `${ARTIFACT_DIR}/debug`,
+                '--flatten-debug-output',
+                '--test-output-dir',
+                `${ARTIFACT_DIR}/screenshots`,
+                '.maestro/tests',
+            ]);
+        } finally {
+            await stopRecording(recorder);
+        }
     } finally {
         await cleanup(shimProcess);
     }
