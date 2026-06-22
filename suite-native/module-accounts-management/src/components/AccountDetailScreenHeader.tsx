@@ -1,9 +1,10 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite-native/accounts';
-import { HStack, IconButton, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
     type AccountsStackParamList,
     type RootStackParamList,
@@ -24,11 +25,21 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
-    <HStack alignItems="center">
-        <CryptoIcon symbol={account.symbol} size="small" />
-        <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
-            <AccountLabel account={account} />
-        </Text>
+    <HStack alignItems="center" flexShrink={1}>
+        <CryptoIconWithNetwork symbol={account.symbol} size="small" />
+        <VStack spacing={0} flexShrink={1}>
+            <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
+                {getNetworkDisplaySymbolName(account.symbol)}
+            </Text>
+            <AccountLabel
+                account={account}
+                variant="body-xs"
+                color="contentSecondary"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                showAccountTypeBadge
+            />
+        </VStack>
     </HStack>
 );
 

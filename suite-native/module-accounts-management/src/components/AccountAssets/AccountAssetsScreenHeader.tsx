@@ -7,7 +7,7 @@ import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
 } from '@suite-native/accounts';
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { HStack, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon } from '@suite-native/icons';
 import { ScreenHeader } from '@suite-native/navigation';
@@ -31,9 +31,13 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'
         <HStack alignItems="center" spacing="sp8">
             <CryptoIcon symbol={account.symbol} size="small" />
             <VStack spacing={0} alignItems="flex-start">
-                <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
-                    <AccountLabel account={account} />
-                </Text>
+                <AccountLabel
+                    account={account}
+                    variant="body-md-strong"
+                    adjustsFontSizeToFit
+                    numberOfLines={1}
+                    showAccountTypeBadge
+                />
                 <BaseCurrencyAmountFormatter
                     value={fiatBalance}
                     variant="body-sm"
