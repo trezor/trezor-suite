@@ -45,6 +45,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const dispatch = useDispatch();
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
+    const isGraphDataLoaded = intervalGraphData.length > 0;
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -154,6 +155,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                 localCurrency={baseCurrencyCode}
                 account={account}
                 isLoading={isLoading}
+                isGraphDataLoaded={isGraphDataLoaded}
             />
         </Column>
     );
