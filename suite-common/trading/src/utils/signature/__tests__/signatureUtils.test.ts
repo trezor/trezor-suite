@@ -109,7 +109,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade send is missing', () => {
             const propsWithoutSend = {
                 ...defaultProps,
-                trade: { ...mockTrade, send: undefined as any },
+                trade: { ...mockTrade, send: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutSend);
@@ -132,7 +132,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receive is missing', () => {
             const propsWithoutReceive = {
                 ...defaultProps,
-                trade: { ...mockTrade, receive: undefined as any },
+                trade: { ...mockTrade, receive: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceive);
@@ -143,7 +143,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receiveStringAmount is missing', () => {
             const propsWithoutReceiveAmount = {
                 ...defaultProps,
-                trade: { ...mockTrade, receiveStringAmount: undefined as any },
+                trade: { ...mockTrade, receiveStringAmount: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAmount);
@@ -154,7 +154,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receiveAddress is missing', () => {
             const propsWithoutReceiveAddress = {
                 ...defaultProps,
-                trade: { ...mockTrade, receiveAddress: undefined as any },
+                trade: { ...mockTrade, receiveAddress: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAddress);
@@ -165,7 +165,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade refundAddress is missing', () => {
             const propsWithoutRefundAddress = {
                 ...defaultProps,
-                trade: { ...mockTrade, refundAddress: undefined as any },
+                trade: { ...mockTrade, refundAddress: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutRefundAddress);
@@ -306,7 +306,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade refundAddress is missing', () => {
             const propsWithoutRefundAddress = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, refundAddress: undefined as any },
+                trade: { ...mockSellTrade, refundAddress: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutRefundAddress);
@@ -328,7 +328,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade cryptoStringAmount is missing', () => {
             const propsWithoutAmount = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, cryptoStringAmount: undefined as any },
+                trade: { ...mockSellTrade, cryptoStringAmount: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutAmount);
@@ -339,7 +339,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade cryptoCurrency is missing', () => {
             const propsWithoutCurrency = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, cryptoCurrency: undefined as any },
+                trade: { ...mockSellTrade, cryptoCurrency: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutCurrency);

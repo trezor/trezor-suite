@@ -29,7 +29,7 @@ export class EvoluClient extends BaseEvoluClient {
         table: T,
         object: MutationValues<(typeof Schema)[T], 'upsert'>,
     ) {
-        super.writeTo(table, object as any);
+        super.writeTo(table, object);
     }
 
     @step()

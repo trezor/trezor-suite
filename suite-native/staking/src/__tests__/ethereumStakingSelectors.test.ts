@@ -106,7 +106,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return staking pool for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumStakingPoolByAccountKey(testState as any, eth1Key);
+            const result = selectEthereumStakingPoolByAccountKey(testState, eth1Key);
 
             expect(result).toEqual({
                 name: 'Everstake',
@@ -126,7 +126,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return undefined for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumStakingPoolByAccountKey(testState as any, eth2Key);
+            const result = selectEthereumStakingPoolByAccountKey(testState, eth2Key);
 
             expect(result).toBeUndefined();
         });
@@ -134,7 +134,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return null for non-existent account', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumStakingPoolByAccountKey(testState as any, nonExistentKey);
+            const result = selectEthereumStakingPoolByAccountKey(testState, nonExistentKey);
 
             expect(result).toBeNull();
         });
@@ -162,7 +162,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return true for account with pending stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumIsStakePendingByAccountKey(testState as any, eth3Key);
+            const result = selectEthereumIsStakePendingByAccountKey(testState, eth3Key);
 
             expect(result).toBe(true);
         });
@@ -170,7 +170,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without pending stake', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumIsStakePendingByAccountKey(testState as any, eth1Key);
+            const result = selectEthereumIsStakePendingByAccountKey(testState, eth1Key);
 
             expect(result).toBe(true);
         });
@@ -178,7 +178,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumIsStakePendingByAccountKey(testState as any, eth2Key);
+            const result = selectEthereumIsStakePendingByAccountKey(testState, eth2Key);
 
             expect(result).toBe(false);
         });
@@ -188,7 +188,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return staked balance for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumStakedBalanceByAccountKey(testState as any, eth1Key);
+            const result = selectEthereumStakedBalanceByAccountKey(testState, eth1Key);
 
             expect(result).toBe('2');
         });
@@ -196,7 +196,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumStakedBalanceByAccountKey(testState as any, eth2Key);
+            const result = selectEthereumStakedBalanceByAccountKey(testState, eth2Key);
 
             expect(result).toBe('0');
         });
@@ -206,7 +206,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return rewards balance for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumRewardsBalanceByAccountKey(testState as any, eth1Key);
+            const result = selectEthereumRewardsBalanceByAccountKey(testState, eth1Key);
 
             expect(result).toBe('0.05');
         });
@@ -214,7 +214,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumRewardsBalanceByAccountKey(testState as any, eth2Key);
+            const result = selectEthereumRewardsBalanceByAccountKey(testState, eth2Key);
 
             expect(result).toBe('0');
         });
@@ -224,7 +224,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return pending stake balance for account with pending stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumTotalStakePendingByAccountKey(testState as any, eth3Key);
+            const result = selectEthereumTotalStakePendingByAccountKey(testState, eth3Key);
 
             expect(result).toBe('1');
         });
@@ -232,7 +232,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumTotalStakePendingByAccountKey(testState as any, eth2Key);
+            const result = selectEthereumTotalStakePendingByAccountKey(testState, eth2Key);
 
             expect(result).toBe('0');
         });
@@ -242,7 +242,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return claimable amount for account with claimable stake', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumClaimableAmountByAccountKey(testState as any, eth1Key);
+            const result = selectEthereumClaimableAmountByAccountKey(testState, eth1Key);
 
             expect(result).toBe('0.5');
         });
@@ -250,7 +250,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without claimable stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumClaimableAmountByAccountKey(testState as any, eth3Key);
+            const result = selectEthereumClaimableAmountByAccountKey(testState, eth3Key);
 
             expect(result).toBe('0');
         });
@@ -258,7 +258,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumClaimableAmountByAccountKey(testState as any, eth2Key);
+            const result = selectEthereumClaimableAmountByAccountKey(testState, eth2Key);
 
             expect(result).toBe('0');
         });
@@ -268,7 +268,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return true for account with claimable stake', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumCanClaimByAccountKey(testState as any, eth1Key);
+            const result = selectEthereumCanClaimByAccountKey(testState, eth1Key);
 
             expect(result).toBe(true);
         });
@@ -276,7 +276,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without claimable stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumCanClaimByAccountKey(testState as any, eth3Key);
+            const result = selectEthereumCanClaimByAccountKey(testState, eth3Key);
 
             expect(result).toBe(false);
         });
@@ -284,7 +284,7 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumCanClaimByAccountKey(testState as any, eth2Key);
+            const result = selectEthereumCanClaimByAccountKey(testState, eth2Key);
 
             expect(result).toBe(false);
         });

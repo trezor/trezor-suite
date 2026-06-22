@@ -521,7 +521,7 @@ describe('HttpServer', () => {
     // start/stop cycles. Two cycles cover both halves: cleanup after stop() and
     // non-accumulation across the next start().
     test('repeated start()/stop() does not leak connection/error listeners on the underlying http.Server', async () => {
-        const underlyingServer = (server as any).server;
+        const underlyingServer = server.server;
         const connectionBaseline = underlyingServer.listenerCount('connection');
 
         await server.start();

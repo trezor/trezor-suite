@@ -27,7 +27,7 @@ afterAll(async () => {
     let timer: ReturnType<typeof setTimeout>;
     const timeoutPromise = new Promise<void>(resolve => {
         timer = setTimeout(resolve, TEARDOWN_TIMEOUT);
-        (timer as any).unref?.();
+        timer.unref?.();
     });
     await Promise.race([teardownPromises(), timeoutPromise]);
 });

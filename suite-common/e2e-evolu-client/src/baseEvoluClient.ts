@@ -106,7 +106,7 @@ export class BaseEvoluClient {
 
     writeTo<T extends TableName>(table: T, object: MutationValues<(typeof Schema)[T], 'upsert'>) {
         console.log(`[EvoluClient] writeTo table=${table}:`, JSON.stringify(object));
-        this.evolu.upsert(table, object as any);
+        this.evolu.upsert(table, object);
     }
 
     async subscribeToTable(table: TableName) {

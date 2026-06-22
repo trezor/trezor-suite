@@ -44,8 +44,7 @@ export const connectPopupCallThunkInner = createThunk<
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ method, payload, source }, { dispatch, getState, extra }) => {
         try {
-            if (!connectCallableMethods.includes(method as any))
-                throw TypedError('Method_Unsupported');
+            if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
             const methodInfo = await TrezorConnect.call({
                 ...payload,
