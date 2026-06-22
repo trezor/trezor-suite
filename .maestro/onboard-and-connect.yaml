@@ -1,0 +1,49 @@
+appId: io.trezor.suite.debug
+name: Onboard and connect an emulated Trezor
+tags:
+    - suite-native
+    - android
+    - device
+---
+- runScript: scripts/setupDevice.js
+
+- launchApp:
+      clearState: true
+
+- extendedWaitUntil:
+      visible:
+          id: '@onboarding/Welcome/nextBtn'
+      timeout: 35000
+- tapOn:
+      id: '@onboarding/Welcome/nextBtn'
+      retryTapIfNoChange: true
+- tapOn:
+      id: '@onboarding/AnalyticsConsent/nextBtn'
+      retryTapIfNoChange: true
+- tapOn:
+      id: '@onboarding/Biometrics/skipBtn'
+      retryTapIfNoChange: true
+
+- runFlow:
+      when:
+          visible:
+              id: '@trading-residence'
+      commands:
+          - tapOn:
+                text: 'Not now'
+                retryTapIfNoChange: true
+
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 35000
+- scrollUntilVisible:
+      element:
+          id: '@home/get-started-button'
+      direction: DOWN
+      timeout: 20000
+      visibilityPercentage: 75
+- assertVisible:
+      id: '@home/get-started-button'
+
+- runScript: scripts/cleanupDevice.js
