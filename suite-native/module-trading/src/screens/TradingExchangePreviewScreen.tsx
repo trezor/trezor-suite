@@ -22,6 +22,7 @@ import {
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { Footer } from '@suite-native/trading-provider-utils';
+import { useSlippageLifecycle } from '@suite-native/trading-slippage';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -36,7 +37,6 @@ import {
 } from '../components/exchange/ExchangePreview';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
-import { useSlippageLifecycle } from '../hooks/exchange/useSlippageLifecycle';
 import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
