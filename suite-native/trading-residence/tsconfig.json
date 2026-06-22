@@ -23,6 +23,9 @@
             "path": "../../packages/analytics-uploader"
         },
         {
+            "path": "../../packages/styles-native"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {
