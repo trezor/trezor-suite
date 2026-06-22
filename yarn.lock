@@ -14261,6 +14261,7 @@ __metadata:
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.15"
