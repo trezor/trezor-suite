@@ -15,8 +15,13 @@ import {
     selectCurrentFiatRates,
     selectHasRunningDiscovery,
     selectVisibleDeviceAccounts,
+    selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type BaseCurrencyAmount,
+    asBaseCurrencyAmount,
+} from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
 import {
     type NativeStakingRootState,
@@ -129,6 +134,24 @@ export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSy
     const asset = assets.find(a => a.symbol === symbol);
 
     return asset?.assetBalance ?? '0';
+};
+
+export const selectHasMultipleDeviceAccountsForNetworkSymbol = (
+    state: AssetsRootState,
+    symbol: NetworkSymbol,
+) => selectVisibleDeviceAccountsByNetworkSymbol(state, symbol).length > 1;
+
+// Returns a primitive (key or null) so a plain `useSelector` (`===`) only re-renders when it
+// actually flips - which happens once, when the account count crosses 1<->2.
+export const selectSingleDeviceAccountKeyForNetworkSymbol = (
+    state: AssetsRootState,
+    symbol: NetworkSymbol,
+): AccountKey | null => {
+    if (selectHasMultipleDeviceAccountsForNetworkSymbol(state, symbol)) {
+        return null;
+    }
+
+    return selectVisibleDeviceAccountsByNetworkSymbol(state, symbol)[0]?.key ?? null;
 };
 
 export const selectAssetFiatValue = createMemoizedSelector(
