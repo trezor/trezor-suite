@@ -6,15 +6,21 @@ import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, selectLocale } from '@suite-native/intl';
 import { TradeInfoRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SlippageBottomSheet } from './SlippageBottomSheet';
 
 export const SLIPPAGE_PICKER_TEST_ID = '@trading/exchange/slippage-picker';
 
+const slippagePickerStyle = prepareNativeStyle(({ spacings }) => ({
+    height: spacings.sp56,
+}));
+
 export const SlippagePicker = () => {
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const { isDex, swapSlippage } = useSelector(selectTradingExchangeSelectedQuote) ?? {};
     const locale = useSelector(selectLocale);
+    const { applyStyle } = useNativeStyles();
 
     const percentFormatter = useMemo(
         () =>
@@ -33,7 +39,11 @@ export const SlippagePicker = () => {
 
     return (
         <>
-            <TradeInfoRow onPress={showSheet} testID={SLIPPAGE_PICKER_TEST_ID}>
+            <TradeInfoRow
+                onPress={showSheet}
+                testID={SLIPPAGE_PICKER_TEST_ID}
+                style={applyStyle(slippagePickerStyle)}
+            >
                 <Text variant="body-sm" color="contentSecondary">
                     <Translation id="moduleTrading.slippage.maxSlippageLabel" />
                 </Text>
