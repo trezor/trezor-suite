@@ -231,10 +231,14 @@ export class OnboardingPage {
     @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
-        if (this.device.hasCanaryFirmware) {
+
+        // Canary firmware is not officialy released, so it cannot possibly pass FW revision check (unrecognized revision).
+        // Tenv T1B1 has correct FW revisions, but mismatched bootloader revisions, so it does not pass FW revision check.
+        if (this.device.hasCanaryFirmware || this.device.model === Model.T1B1) {
             await this.disableFirmwareRevisionCheck();
         }
 
+        // TODO https://github.com/trezor/trezor-suite/issues/22765
         if (this.device.model === Model.T3W1) {
             await this.disableAuthenticityCheck();
         }

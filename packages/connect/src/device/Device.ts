@@ -718,9 +718,11 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         const result = await checkFirmwareRevision({
             internalModel: this.features.internal_model,
-            deviceRevision: this.features.revision,
             firmwareVersion,
+            deviceRevision: this.features.revision,
             expectedRevision: release?.firmware_revision,
+            deviceBootloaderHash: this.features.bootloader_hash,
+            expectedBootloaderHash: release?.bootloader_hash,
             firmwareType: this.firmwareType,
         });
         this.authenticityChecks = {

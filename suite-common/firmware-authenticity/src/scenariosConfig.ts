@@ -41,6 +41,12 @@ export const revisionCheckErrorScenarios = {
         shouldNotify: false,
         isConclusive: true,
     },
+    'bootloader-hash-mismatch': {
+        type: 'hardModal',
+        shouldReport: true,
+        shouldNotify: false,
+        isConclusive: true,
+    },
     // Note that in native, a banner is displayed, but with special handling, see useIsOfflineBannerVisible
     'cannot-perform-check-offline': {
         type: 'softWarning',

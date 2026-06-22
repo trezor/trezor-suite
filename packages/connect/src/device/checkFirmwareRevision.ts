@@ -94,6 +94,8 @@ export type CheckFirmwareRevisionParams = {
     internalModel: PROTO.DeviceModelInternal;
     deviceRevision: string | null;
     expectedRevision: string | undefined;
+    deviceBootloaderHash: string | null;
+    expectedBootloaderHash: string | undefined;
     firmwareType: FirmwareType;
 };
 
@@ -125,8 +127,15 @@ export const checkFirmwareRevision = async ({
     internalModel,
     deviceRevision,
     expectedRevision,
+    deviceBootloaderHash,
+    expectedBootloaderHash,
     firmwareType,
 }: CheckFirmwareRevisionParams): Promise<FirmwareRevisionCheckResult> => {
+    // checking bootloader_hash is optional and only for T1B1, so check for failure first if available, or ignore and continue
+    if (expectedBootloaderHash && deviceBootloaderHash !== expectedBootloaderHash) {
+        return failFirmwareRevisionCheck('bootloader-hash-mismatch');
+    }
+
     if (expectedRevision === undefined) {
         if (!versionUtils.isVersionArray(firmwareVersion)) {
             return failFirmwareRevisionCheck('firmware-version-unknown');
@@ -141,6 +150,15 @@ export const checkFirmwareRevision = async ({
 
             if (onlineRelease?.firmware_revision === undefined) {
                 return failFirmwareRevisionCheck('firmware-version-unknown');
+            }
+
+            // again, check bootloader_hash in case it became available in the online release
+            const expectedOnlineBootloaderHash = onlineRelease.bootloader_hash;
+            if (
+                expectedOnlineBootloaderHash &&
+                deviceBootloaderHash !== expectedOnlineBootloaderHash
+            ) {
+                return failFirmwareRevisionCheck('bootloader-hash-mismatch');
             }
 
             if (
