@@ -7,7 +7,6 @@ export const TRADING_EXTENDED_PREFIX = `${TRADING_PREFIX}-extended`;
 export const TRADING_BUY_PREFIX = `${TRADING_PREFIX}-buy`;
 export const TRADING_EXCHANGE_PREFIX = `${TRADING_PREFIX}-exchange`;
 export const TRADING_SELL_PREFIX = `${TRADING_PREFIX}-sell`;
-export const TRADING_SETTINGS_PREFIX = `${TRADING_PREFIX}-settings`;
 
 export const TRADING_THUNK_PREFIX = `${TRADING_PREFIX}/thunk`;
 export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;

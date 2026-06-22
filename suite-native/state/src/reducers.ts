@@ -136,9 +136,9 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
-        persistedKeys: ['favouriteAssets', 'trades', 'settings', 'residence', 'tradingEnvironment'],
+        persistedKeys: ['favouriteAssets', 'trades', 'residence', 'tradingEnvironment'],
         key: 'trading',
-        version: 2,
+        version: 3,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState) return oldState;
@@ -147,6 +147,13 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     ...oldState,
                     residence: tradingInitialState.residence,
                 };
+            },
+            3: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                const { settings: _settings, ...rest } = oldState;
+
+                return rest;
             },
         },
         storage: deps.mmkvStorage,
