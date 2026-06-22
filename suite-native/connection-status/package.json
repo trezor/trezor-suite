@@ -11,7 +11,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@react-native-community/netinfo": "^11.5.2",
+        "@react-native-community/netinfo": "^12.0.1",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device": "workspace:*",

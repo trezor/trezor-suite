@@ -14,7 +14,7 @@ import { ThemeColorVariant, prepareNativeTheme } from '@trezor/theme';
 const renderer = createRenderer();
 
 const storyContainerStyle = prepareNativeStyle(_ => ({
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
 }));
 
 const ThemeWrapper = ({ children }: { children: React.ReactNode }) => {

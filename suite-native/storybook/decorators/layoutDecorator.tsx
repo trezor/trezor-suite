@@ -11,7 +11,7 @@ const storyContainerStyle = prepareNativeStyle<{ disablePaddingHorizontal: boole
         paddingTop: utils.spacings.sp32,
         paddingHorizontal: disablePaddingHorizontal ? 0 : utils.spacings.sp16,
         backgroundColor: utils.colors.surfaceFillPage,
-        ...StyleSheet.absoluteFillObject,
+        ...StyleSheet.absoluteFill,
     }),
 );
 
