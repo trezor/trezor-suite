@@ -181,14 +181,16 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
         tokenProgramName,
     );
 
-    const txInstruction = getCreateAssociatedTokenInstruction({
-        ata: associatedTokenAccountAddress,
-        mint: address(tokenMintAddress),
-        owner: address(newOwnerAddress),
-        payer: createNoopSigner(address(funderAddress)),
-    });
-    // @ts-expect-error - we are overriding this due to FW compatibility issue, it expects [] instead of [0]
-    txInstruction.data = new Uint8Array([]);
+    const txInstruction = {
+        ...getCreateAssociatedTokenInstruction({
+            ata: associatedTokenAccountAddress,
+            mint: address(tokenMintAddress),
+            owner: address(newOwnerAddress),
+            payer: createNoopSigner(address(funderAddress)),
+        }),
+        // Override data due to FW compatibility issue: expects [] instead of [0]
+        data: new Uint8Array([]),
+    };
 
     return [txInstruction, associatedTokenAccountAddress] as const;
 };
