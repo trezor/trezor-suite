@@ -38,10 +38,15 @@ adb reverse tcp:21328 tcp:21328
 maestro test .maestro/tests
 ```
 
-The command runs every flow in `.maestro/tests`. The initial flow creates a T3T1 emulator
-running firmware `2-latest`, configures it with the existing `mnemonic_immune` test seed,
-starts node-bridge, completes app onboarding, and checks that the dashboard's **Get
-started** action is reachable.
+The command runs every flow in `.maestro/tests`. Reusable sub-flows referenced via
+`runFlow` live in `subflows/` so Maestro does not discover them as standalone tests.
+
+The initial flow creates a T3T1 emulator running firmware `2-latest`, configures it with the
+`mnemonic_all` ("all all all …") test seed — which has populated accounts so discovery finds
+balances and history — and starts node-bridge. It then completes app onboarding, enables every
+mainnet coin (`subflows/enableAllCoins.yaml`), and waits for the device to connect and discovery
+to finish (the portfolio graph on **Home**). Finally it opens the first discovered account,
+waits for its transaction list to render, and scrolls through the history.
 
 If the flow is interrupted before its teardown script runs, clean up the device explicitly:
 

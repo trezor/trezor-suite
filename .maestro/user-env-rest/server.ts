@@ -75,7 +75,9 @@ const routes: Record<string, Handler> = {
         });
         await TrezorUserEnvLink.setupEmu({
             label: 'Safe 5 - Maestro',
-            mnemonic: MNEMONICS.mnemonic_immune,
+            // The "all all all ..." seed has populated accounts, so discovery has
+            // balances and history to find once the app connects to the device.
+            mnemonic: MNEMONICS.mnemonic_all,
             passphrase_protection: false,
         });
     },
