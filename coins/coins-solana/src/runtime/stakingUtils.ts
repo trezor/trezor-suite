@@ -48,6 +48,7 @@ import type {
     Connection,
     Fee,
     Instruction,
+    LegacyCompiledTransactionMessage,
     Params,
     Rpc,
     RpcMainnet,
@@ -60,6 +61,7 @@ import type {
     TransactionMessageWithFeePayer,
     TransactionWithLifetime,
     TransactionWithinSizeLimit,
+    V0CompiledTransactionMessage,
 } from '../types';
 
 const FILTER_DATA_SIZE = 200n;
@@ -167,7 +169,9 @@ export const getFeeSummary = (
         TransactionMessageWithFeePayer &
         TransactionMessageWithBlockhashLifetime,
 ) => {
-    const compiledMessage = compileTransactionMessage(transactionMessage);
+    const compiledMessage = compileTransactionMessage(transactionMessage) as
+        | LegacyCompiledTransactionMessage
+        | V0CompiledTransactionMessage;
 
     const baseFeeLamports = SOL_BASE_FEE * BigInt(compiledMessage.header.numSignerAccounts);
 
