@@ -138,7 +138,7 @@ describe('useTradeableAssetsFilteredData', () => {
             // We create an asset with symbol exactly 'USD' to compare against 'USDC'.
             const usdExactAsset: TradeableAsset = {
                 ...unknownAsset,
-                symbol: 'USD' as any,
+                symbol: 'USD',
                 name: 'US Dollar',
             };
             const assets = [usdcAsset, usdExactAsset];

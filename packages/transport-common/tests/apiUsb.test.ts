@@ -257,7 +257,7 @@ describe('api/usb', () => {
         // emit change
         const disconnectPromise = usbInterface.ondisconnect?.({
             device: createMockedDevice({ serialNumber }),
-        } as any); // partial WebUSB event
+        }); // partial WebUSB event
 
         if (!serialNumber) {
             expect(enumerateSpy).toHaveBeenCalledTimes(1);

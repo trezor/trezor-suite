@@ -58,7 +58,7 @@ describe('IDB Version Encoding', () => {
     it('rejects invalid revision values', () => {
         expect(() => encodeIDBVersion('1.2.3.-1')).toThrow();
         expect(() => encodeIDBVersion('1.2.3.256')).toThrow();
-        expect(() => encodeIDBVersion('1.2.3.foo' as any)).toThrow();
-        expect(() => encodeIDBVersion('1.2.3.1.1' as any)).toThrow();
+        expect(() => encodeIDBVersion('1.2.3.foo')).toThrow();
+        expect(() => encodeIDBVersion('1.2.3.1.1')).toThrow();
     });
 });

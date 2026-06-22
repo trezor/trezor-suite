@@ -29,7 +29,7 @@ export const cloneObject = <T>(obj: T, seen = new WeakMap<object, any>()): T => 
                 continue;
             }
 
-            (clone as any)[key] = cloneObject(value, seen);
+            clone[key] = cloneObject(value, seen);
         }
     }
 

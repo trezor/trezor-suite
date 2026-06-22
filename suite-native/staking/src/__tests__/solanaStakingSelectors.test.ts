@@ -554,7 +554,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(testState as any, sol1Key);
+            const result = selectSolanaClaimableAmountByAccountKey(testState, sol1Key);
 
             expect(result).toBe('0');
         });
@@ -564,7 +564,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithDeactivatedStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(testState as any, sol4Key);
+            const result = selectSolanaClaimableAmountByAccountKey(testState, sol4Key);
 
             expect(result).toBe('3');
         });
@@ -574,7 +574,7 @@ describe('selectors', () => {
                 accounts: [solAccountNoStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(testState as any, sol2Key);
+            const result = selectSolanaClaimableAmountByAccountKey(testState, sol2Key);
 
             expect(result).toBe('0');
         });
@@ -596,7 +596,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, sol1Key);
+            const result = selectSolanaCanClaimByAccountKey(testState, sol1Key);
 
             expect(result).toBe(false);
         });
@@ -606,7 +606,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithDeactivatedStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, sol4Key);
+            const result = selectSolanaCanClaimByAccountKey(testState, sol4Key);
 
             expect(result).toBe(true);
         });
@@ -616,7 +616,7 @@ describe('selectors', () => {
                 accounts: [solAccountNoStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, sol2Key);
+            const result = selectSolanaCanClaimByAccountKey(testState, sol2Key);
 
             expect(result).toBe(false);
         });
@@ -626,7 +626,7 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, nonExistentKey2);
+            const result = selectSolanaCanClaimByAccountKey(testState, nonExistentKey2);
 
             expect(result).toBe(false);
         });
