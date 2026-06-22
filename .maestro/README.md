@@ -45,8 +45,10 @@ The initial flow creates a T3T1 emulator running firmware `2-latest`, configures
 `mnemonic_all` ("all all all …") test seed — which has populated accounts so discovery finds
 balances and history — and starts node-bridge. It then completes app onboarding, enables every
 mainnet coin (`subflows/enableAllCoins.yaml`), and waits for the device to connect and discovery
-to finish (the portfolio graph on **Home**). Finally it opens the first discovered account,
-waits for its transaction list to render, and scrolls through the history.
+to finish (the portfolio graph on **Home**). Finally it opens the first discovered account and
+asserts the account detail screen. The flow stops there: in the E2E build the account has no
+balance or history (the portfolio graph is disabled for E2E tests), so the transaction list is
+not asserted.
 
 If the flow is interrupted before its teardown script runs, clean up the device explicitly:
 

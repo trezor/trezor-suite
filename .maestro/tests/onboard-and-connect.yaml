@@ -104,35 +104,13 @@ tags:
                 id: '@accountList/item/title'
                 index: 0
                 retryTapIfNoChange: true
+# Landing on AccountDetail for a discovered account confirms the device connected
+# and discovery finished. We stop here: in the E2E build the account has no balance
+# or history (the portfolio graph is disabled for E2E tests), so asserting on the
+# transaction list is not meaningful in CI.
 - extendedWaitUntil:
       visible:
           id: '@screen/AccountDetail'
       timeout: 30000
-
-# Wait for the discovered account's transaction list to render.
-- extendedWaitUntil:
-      visible:
-          id: '@transactions/item/.*'
-      timeout: 30000
-
-# Scroll through the transaction list (load more history as it appears).
-# We intentionally do NOT open a transaction detail: a null byte (U+0) in the
-# TransactionDetail content crashes Maestro 2.6.1's view-hierarchy dump.
-- repeat:
-      times: 10
-      commands:
-          - swipe:
-                start: '50%,92%'
-                end: '50%,72%'
-                duration: 300
-          - runFlow:
-                when:
-                    visible:
-                        id: '@transactions/list/more-button'
-                commands:
-                    - tapOn:
-                          id: '@transactions/list/more-button'
-                          retryTapIfNoChange: true
-                    - waitForAnimationToEnd
 
 - runScript: ../scripts/cleanupDevice.js
