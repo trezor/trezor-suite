@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -17,6 +17,4 @@ const StyledCode = styled.code`
     border-radius: ${() => borders.radii.xxs};
 `;
 
-export const Code: React.FC<{ children: ReactNode }> = ({ children }) => (
-    <StyledCode>{children}</StyledCode>
-);
+export const Code = ({ children }: { children: ReactNode }) => <StyledCode>{children}</StyledCode>;
