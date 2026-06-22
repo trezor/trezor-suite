@@ -160,9 +160,13 @@ export const AccountsListItem = ({
             disabled={disabled}
             icon={icon}
             title={title}
+            titleBadge={
+                !isNativeCoinOnly && formattedAccountType ? (
+                    <Badge label={formattedAccountType} size="small" />
+                ) : undefined
+            }
             badges={
                 <>
-                    {formattedAccountType && <Badge label={formattedAccountType} size="small" />}
                     {shouldShowStakingBadge && (
                         <StakingBadge networkSymbol={account.symbol} account={account} />
                     )}

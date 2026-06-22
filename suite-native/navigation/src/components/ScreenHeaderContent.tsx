@@ -11,7 +11,11 @@ export type ScreenHeaderContentProps = {
 
 export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderContentProps) => {
     if (customContent) {
-        return <Box alignItems="center">{customContent}</Box>;
+        return (
+            <Box alignItems="center" flexShrink={1}>
+                {customContent}
+            </Box>
+        );
     }
 
     if (title) {
