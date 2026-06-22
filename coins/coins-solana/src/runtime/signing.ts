@@ -109,7 +109,7 @@ export const getDecompiledMessage = (serializedTx: string, serialize: boolean) =
     const baseFee = new BigNumber(SOLANA_BASE_FEE).multipliedBy(
         compiledMessage.header.numSignerAccounts,
     );
-    const instructions = message.instructions.map(parseInstruction);
+    const instructions = (message.instructions as readonly Instruction[]).map(parseInstruction);
 
     return { message, baseFee, instructions };
 };

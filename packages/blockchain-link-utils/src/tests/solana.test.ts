@@ -147,7 +147,10 @@ describe('solana/utils', () => {
         fixtures.transformTokenInfo.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 expect(
-                    transformTokenInfo(input.accountInfo as ApiTokenAccount[], input.map),
+                    transformTokenInfo(
+                        input.accountInfo as unknown as ApiTokenAccount[],
+                        input.map,
+                    ),
                 ).toEqual(expectedOutput);
             });
         });

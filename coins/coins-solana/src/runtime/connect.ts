@@ -9,6 +9,7 @@ import {
     appendTransactionMessageInstruction,
     appendTransactionMessageInstructions,
     assertIsFullySignedTransaction,
+    assertIsSendableTransaction,
     createNoopSigner,
     createTransactionMessage,
     decompileTransactionMessageFetchingLookupTables,
@@ -349,6 +350,7 @@ const preparePushTransaction = async (rawTx: string, api: SolanaAPI) => {
     const txByteArray = getBase16Encoder().encode(rawTx);
     const transaction = getTransactionDecoder().decode(txByteArray);
     assertIsFullySignedTransaction(transaction);
+    assertIsSendableTransaction(transaction);
 
     const compiledMessage = getCompiledTransactionMessageDecoder().decode(transaction.messageBytes);
     const message = await decompileTransactionMessageFetchingLookupTables(compiledMessage, api.rpc);
