@@ -16,25 +16,13 @@ import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
-import { fromHardenedPathPart, getHDPath } from '@trezor/crypto-utils';
+import { getAddressPathIndex } from '@trezor/crypto-utils';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const DEFAULT_LIMIT = 10;
-
-const getAddressPathIndex = (path: string) => {
-    const result = getHDPath(path);
-
-    if (!result.success) {
-        return undefined;
-    }
-
-    const lastPathPart = result.payload[result.payload.length - 1];
-
-    return lastPathPart === undefined ? undefined : fromHardenedPathPart(lastPathPart);
-};
 
 type ItemProps = {
     index: number;
