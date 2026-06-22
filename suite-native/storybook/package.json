@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.8",
+        "@lottiefiles/dotlottie-react": "0.13.5",
         "@react-native-community/datetimepicker": "^8.6.0",
         "@react-native-community/slider": "^5.1.2",
         "@shopify/react-native-skia": "2.5.1",
