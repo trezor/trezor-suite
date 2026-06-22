@@ -4,6 +4,7 @@ import { TRON_MEMO_FEE_SUN, asAmountUnit, unitsToSubunits } from '@suite-common/
 import { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import { getContractCallFeeFields } from './getContractCallFeeFields';
 import { type EstimateFeeLevel } from './types';
 
 export const calculateTrc20Transfer = (
@@ -15,7 +16,8 @@ export const calculateTrc20Transfer = (
     bytes: number,
     hasMemo: boolean,
 ): PrecomposedTransaction => {
-    const baseFeeInSun = feeLevel.feePerTx || '0';
+    const feeFields = getContractCallFeeFields(feeLevel);
+    const baseFeeInSun = feeFields.fee;
     const memoFeeInSun = hasMemo ? TRON_MEMO_FEE_SUN : 0;
     const totalFeeInSun = new BigNumber(baseFeeInSun).plus(memoFeeInSun).toString();
     const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
@@ -41,19 +43,12 @@ export const calculateTrc20Transfer = (
         } as const;
     }
 
-    const energyConsumed =
-        feeLevel.feePerTx && feeLevel.feePerUnit && !new BigNumber(feeLevel.feePerUnit).isZero()
-            ? new BigNumber(feeLevel.feePerTx).dividedToIntegerBy(feeLevel.feePerUnit).toNumber()
-            : 0;
     const payloadData = {
         type: 'nonfinal' as const,
         totalSpent: amount,
         max,
-        fee: baseFeeInSun,
         memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit, // energy cap in energy units; fee_limit in the signed tx uses the equivalent in SUN (feeLimit × feePerUnit)
-        energyConsumed,
+        ...feeFields, // fee, feeLimit (SUN cap), feePerByte, energyConsumed
         bytes,
         inputs: [],
         token,
