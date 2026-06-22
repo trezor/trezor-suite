@@ -14,6 +14,9 @@
         { "path": "../link" },
         { "path": "../trading-atoms" },
         { "path": "../trading-state" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
