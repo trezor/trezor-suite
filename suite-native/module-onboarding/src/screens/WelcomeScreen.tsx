@@ -52,7 +52,7 @@ export const WelcomeScreen = ({
         <Box flex={1} style={applyStyle(screenContainerStyle)}>
             <ImageBackground
                 source={require('../assets/welcomeScreenBackground.jpeg')}
-                style={StyleSheet.absoluteFillObject}
+                style={StyleSheet.absoluteFill}
                 resizeMode="cover"
                 fadeDuration={0}
             >

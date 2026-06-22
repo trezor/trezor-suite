@@ -11,7 +11,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.2.8",
+        "@gorhom/bottom-sheet": "5.2.9",
         "@react-navigation/native": "7.1.28",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/formatters": "workspace:*",

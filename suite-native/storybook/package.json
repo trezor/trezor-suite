@@ -14,7 +14,7 @@
         "storybook:web:build": "yarn setup-skia-web && yarn storybook build -c .storybook -o .build-storybook"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.2.8",
+        "@gorhom/bottom-sheet": "5.2.9",
         "@lottiefiles/dotlottie-react": "0.13.5",
         "@react-native-community/datetimepicker": "^8.6.0",
         "@react-native-community/slider": "^5.1.2",
