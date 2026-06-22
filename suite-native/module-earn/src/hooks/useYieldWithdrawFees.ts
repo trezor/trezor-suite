@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { asEvmAddress } from '@suite-common/calldata';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
@@ -16,6 +17,7 @@ import {
     formDraftActions,
     getYieldWithdrawInputToken,
     selectConvertedNetworkFeeInfo,
+    selectDeepCopyOfFormDraft,
     selectFormDraft,
 } from '@suite-common/wallet-core';
 import {
@@ -23,11 +25,13 @@ import {
     type FeeLevelLabel,
     type FormState,
     type PrecomposedLevels,
+    type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import {
     type NativeSendRootState,
+    type UpdateSelectedFeeLevelThunkParams,
     getFeeAvailability,
     selectFeeLevels,
     transactionManagementActions,
@@ -35,7 +39,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
-import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
+import { EARN_MODULE_PREFIX } from '../constants';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 
@@ -61,7 +65,7 @@ type UseYieldWithdrawFeesResult = {
     isFeeUnavailable: boolean;
     preparedAction: PreparedYieldWithdrawAction | null;
     selectedFee: FeeLevelLabel;
-    updateFeeLevelThunk: typeof updateEarnSelectedFeeLevelThunk;
+    updateFeeLevelThunk: typeof updateYieldWithdrawSelectedFeeLevelThunk;
 };
 
 // Only the inputs that should trigger a fresh (network) fee composition. The fee context
@@ -91,6 +95,78 @@ type BuildYieldWithdrawFeeLevelsParams = {
 };
 
 const FEE_LEVEL_LABELS_BY_PRICE: FeeLevelLabel[] = ['economy', 'low', 'normal', 'high'];
+
+const getYieldWithdrawSelectedFeeFields = (
+    selectedFeeTransaction: PrecomposedTransactionFinal,
+): Pick<FormState, 'feePerUnit' | 'feeLimit' | 'maxFeePerGas' | 'maxPriorityFeePerGas'> => ({
+    feePerUnit: selectedFeeTransaction.feePerByte,
+    feeLimit: selectedFeeTransaction.feeLimit ?? '',
+    maxFeePerGas: selectedFeeTransaction.maxFeePerGas,
+    maxPriorityFeePerGas: selectedFeeTransaction.maxPriorityFeePerGas,
+});
+
+export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk(
+    `${EARN_MODULE_PREFIX}/updateYieldWithdrawSelectedFeeLevelThunk`,
+    (
+        {
+            feeLevelLabel,
+            feePerUnit,
+            feeLimit,
+            formDraftKey,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        }: UpdateSelectedFeeLevelThunkParams,
+        { dispatch, getState },
+    ) => {
+        if (!formDraftKey) return;
+
+        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey);
+
+        if (!formDraft) {
+            return;
+        }
+
+        formDraft.selectedFee = feeLevelLabel;
+
+        if (feeLevelLabel === 'custom') {
+            if (feePerUnit) {
+                formDraft.feePerUnit = feePerUnit;
+            }
+
+            if (feeLimit) {
+                formDraft.feeLimit = feeLimit;
+            }
+
+            if (maxFeePerGas) {
+                formDraft.maxFeePerGas = maxFeePerGas;
+            }
+
+            if (maxPriorityFeePerGas) {
+                formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
+            }
+
+            dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
+
+            return;
+        }
+
+        const selectedFeeTransaction = selectFeeLevels(getState())[feeLevelLabel];
+
+        if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
+            return;
+        }
+
+        dispatch(
+            formDraftActions.storeDraft({
+                key: formDraftKey,
+                formDraft: {
+                    ...formDraft,
+                    ...getYieldWithdrawSelectedFeeFields(selectedFeeTransaction),
+                },
+            }),
+        );
+    },
+);
 
 const getFeeLevelForUnsignedTransaction = (feeInfo: FeeInfo) =>
     FEE_LEVEL_LABELS_BY_PRICE.map(label =>
@@ -370,10 +446,7 @@ export const useYieldWithdrawFees = ({
                         formDraft: {
                             ...mergedFormState,
                             selectedFee: resolvedSelectedFee,
-                            feePerUnit: selectedFeeTransaction.feePerByte,
-                            feeLimit: selectedFeeTransaction.feeLimit,
-                            maxFeePerGas: selectedFeeTransaction.maxFeePerGas,
-                            maxPriorityFeePerGas: selectedFeeTransaction.maxPriorityFeePerGas,
+                            ...getYieldWithdrawSelectedFeeFields(selectedFeeTransaction),
                         },
                     }),
                 );
@@ -443,6 +516,6 @@ export const useYieldWithdrawFees = ({
         isFeeUnavailable,
         preparedAction,
         selectedFee,
-        updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
+        updateFeeLevelThunk: updateYieldWithdrawSelectedFeeLevelThunk,
     };
 };

@@ -66,6 +66,13 @@ export const signYieldActionReviewThunk = createThunk<
             });
         }
 
+        if (flowType === 'withdraw' && !selectedFee) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Fee information is missing for the transaction.',
+            });
+        }
+
         let transactionReview: ReturnType<typeof buildStablecoinYieldTransactionReview>;
 
         try {
