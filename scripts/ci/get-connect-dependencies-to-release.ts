@@ -1,81 +1,59 @@
 // This script should check what packages from the repository have a higher version than in NPM
 // and stdout out those to be used by GitHub workflow.
 
-import fs from 'node:fs';
-import util from 'node:util';
 import path from 'node:path';
 import semver from 'semver';
 
-import { getNpmRemoteGreatestVersion, getTrezorPackageDir } from './helpers';
+import {
+    computePublishClosure,
+    createReadWorkspaceDeps,
+    getWorkspaceDirectoryMap,
+    readPackageJson,
+} from '@trezor/requirements';
 
-const readFile = util.promisify(fs.readFile);
+import { getNpmRemoteGreatestVersion } from './helpers';
 
-const nonReleaseDependencies: string[] = [];
+const ROOT = path.join(import.meta.dirname, '..', '..');
+const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);
+const workspaceDirs = getWorkspaceDirectoryMap(ROOT);
 
-const checkNonReleasedDependencies = async (packageName: string) => {
-    const rawPackageJSON = await readFile(
-        path.join(getTrezorPackageDir(packageName), 'package.json'),
-        'utf-8',
-    );
+// The connect distribution packages. Used both as BFS roots to compute the
+// @trezor/* dep closure, and as the exclude list for the output — these four
+// are released by `deploy-npm-connect` (a hardcoded matrix), not by
+// `deploy-npm-connect-dependencies` (which consumes this script's output).
+//
+// Kept in sync with `CONNECT_PUBLISH_ROOTS` in
+// `scripts/ci/gen-workflow-paths.ts`. If they diverge, either one or both
+// should justify it inline; if they stay identical for long enough, extract
+// to a shared module.
+const CONNECT_PUBLISH_ROOTS = ['connect', 'connect-web', 'connect-mobile', 'connect-webextension'];
 
-    const packageJSON = JSON.parse(rawPackageJSON);
-    const {
-        version: localVersion,
-        dependencies,
-        // devDependencies // We should ignore devDependencies.
-    } = packageJSON;
+const isPackageBumped = async (packageName: string): Promise<boolean> => {
+    const dir = workspaceDirs.get(`@trezor/${packageName}`);
+    if (dir === undefined) {
+        throw new Error(`Closure references @trezor/${packageName} but no such workspace exists.`);
+    }
 
+    const { version: localVersion } = readPackageJson<{ version: string }>(dir);
     const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
 
-    // If local version is greatest than the greatest one in NPM we add it to the release.
-    if (!remoteGreatestVersion || semver.gt(localVersion, remoteGreatestVersion as string)) {
-        const index = nonReleaseDependencies.indexOf(packageName);
-        if (index > -1) {
-            nonReleaseDependencies.splice(index, 1);
-        }
-        nonReleaseDependencies.push(packageName);
-    }
-
-    if (!dependencies || !Object.keys(dependencies)) {
-        return;
-    }
-
-    // eslint-disable-next-line no-restricted-syntax
-    for await (const [dependency] of Object.entries(dependencies)) {
-        // is not a dependency released from monorepo. we don't care
-        if (!dependency.startsWith('@trezor')) {
-            // eslint-disable-next-line no-continue
-            continue;
-        }
-        const name = dependency.split('/')[1];
-        if (!name) {
-            continue;
-        }
-
-        await checkNonReleasedDependencies(name);
-    }
+    // A missing remote version means the package was never published, so it needs releasing.
+    return !remoteGreatestVersion || semver.gt(localVersion, remoteGreatestVersion as string);
 };
 
 const getConnectDependenciesToRelease = async () => {
-    // We check what dependencies need to be released because they have version bumped locally
-    // and remote greatest version is lower than the local one.
-    await checkNonReleasedDependencies('connect');
-    await checkNonReleasedDependencies('connect-web');
-    await checkNonReleasedDependencies('connect-mobile');
-    await checkNonReleasedDependencies('connect-webextension');
-    await checkNonReleasedDependencies('connect-plugin-stellar');
-    await checkNonReleasedDependencies('connect-plugin-ethereum');
+    const closure = computePublishClosure(CONNECT_PUBLISH_ROOTS, readWorkspaceDeps);
 
-    // We do not want to include `connect`, `connect-web` and `connect-webextension` since we want
-    // to release those separately and we always want to release them.
-    const onlyDependenciesToRelease = nonReleaseDependencies.filter(item => {
-        return !['connect', 'connect-web', 'connect-webextension', 'connect-mobile'].includes(item);
-    });
+    const candidates = [...closure].filter(pkg => !CONNECT_PUBLISH_ROOTS.includes(pkg));
 
-    // We use `onlyDependenciesToRelease` to trigger NPM releases
-    const dependenciesToRelease = JSON.stringify(onlyDependenciesToRelease);
+    const dependenciesToRelease: string[] = [];
+    for (const pkg of candidates) {
+        if (await isPackageBumped(pkg)) {
+            dependenciesToRelease.push(pkg);
+        }
+    }
 
-    process.stdout.write(dependenciesToRelease);
+    process.stdout.write(JSON.stringify(dependenciesToRelease));
 };
 
 getConnectDependenciesToRelease();

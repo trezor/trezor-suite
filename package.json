@@ -57,6 +57,8 @@
         "requirements:verify": "yarn workspace @trezor/requirements requirements:verify",
         "requirements:fix": "yarn workspace @trezor/requirements requirements:fix",
         "verify-project-references": "yarn update-project-references --test",
+        "gen:workflow-paths": "yarn tsx ./scripts/ci/gen-workflow-paths.ts",
+        "gen:workflow-paths:check": "yarn tsx ./scripts/ci/gen-workflow-paths.ts --check",
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "build:libs:verify": "yarn nx affected --target=build:lib",
         "validate": "yarn verify-project-references && yarn lint:js:fix && yarn lint:styles && yarn build:libs:verify && yarn type-check && yarn check-workspace-resolutions && yarn depcheck",
