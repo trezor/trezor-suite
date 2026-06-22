@@ -1,16 +1,14 @@
-import React from 'react';
+import { memo } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
-import { Badge, Box, Text } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
+import { Badge, Box } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsStackRoutes,
@@ -25,14 +23,12 @@ import {
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
 import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
-import { BigNumber } from '@trezor/utils';
 
-import {
-    type AssetsRootState,
-    selectAssetCryptoValue,
-    selectAssetFiatValue,
-    selectAssetFiatValuePercentage,
-} from '../assetsSelectors';
+import { type AssetsRootState } from '../assetsSelectors';
+import { AccountsCount } from './AccountsCount';
+import { CryptoAmount } from './CryptoAmount';
+import { FiatAmount } from './FiatAmount';
+import { PercentageIcon } from './PercentageIcon';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -44,59 +40,16 @@ type NavigationType = TabToStackCompositeNavigationProp<
     RootStackParamList
 >;
 
-type AssetItemSubComponentProps = { symbol: NetworkSymbol };
-
-const CryptoAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
-    const cryptoValue = useSelector((state: AssetsRootState) =>
-        selectAssetCryptoValue(state, symbol),
-    );
-
-    return (
-        <CryptoAmountFormatter
-            value={cryptoValue}
-            symbol={symbol}
-            // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
-            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-            testID={`@assets/cryptoAmount/${symbol}`}
-        />
-    );
-});
-
-const FiatAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
-    const fiatValue = useSelector((state: AssetsRootState) => selectAssetFiatValue(state, symbol));
-
-    return (
-        <BaseCurrencyAmountFormatter
-            symbol={symbol}
-            value={fiatValue !== null ? asBaseCurrencyAmount(new BigNumber(fiatValue)) : null}
-        />
-    );
-});
-
-const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {
-    const assetPercentages = useSelector((state: AssetsRootState) =>
-        selectAssetFiatValuePercentage(state, symbol),
-    );
-
-    return (
-        <CryptoIconWithPercentage
-            iconName={symbol}
-            percentage={assetPercentages.fiatPercentage}
-            percentageOffset={assetPercentages.fiatPercentageOffset}
-        />
-    );
-});
-
-export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
+// Memoized because `Assets` re-renders every time a newly discovered network grows the list.
+// Without this, each new network would re-render every existing row; with it, unchanged rows bail.
+// `cryptoCurrencySymbol` is a stable primitive, so the memo is never silently defeated.
+// The sub-components are intentionally NOT memoized - they each subscribe to their own value and
+// re-render only when it changes, and this component rarely re-renders, so memoizing them adds
+// no benefit (and a leaf memo can't hide an unstable selector anyway - that fires regardless).
+export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
     const store = useStore<AssetsRootState>();
     const { NetworkNameFormatter } = useFormatters();
-    // Subscribe only to the count (a number, compared with `===`) so the row chrome re-renders
-    // when an account is added/removed, not on every balance tick during discovery.
-    const accountsPerAsset = useSelector(
-        (state: AssetsRootState) =>
-            selectVisibleDeviceAccountsByNetworkSymbol(state, cryptoCurrencySymbol).length,
-    );
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
@@ -134,9 +87,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol }: AssetItemProps) =
                     <Box>
                         <Icon size="medium" color="contentSecondary" name="wallet" />
                     </Box>
-                    <Text variant="body-sm" color="contentSecondary">
-                        {accountsPerAsset}
-                    </Text>
+                    <AccountsCount symbol={cryptoCurrencySymbol} />
                     {hasAnyAccountsWithStaking && (
                         <StakingBadge networkSymbol={cryptoCurrencySymbol} />
                     )}
