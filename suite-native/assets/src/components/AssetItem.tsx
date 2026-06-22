@@ -1,11 +1,10 @@
 import { memo } from 'react';
-import { useSelector, useStore } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectVisibleDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
 import { Badge, Box } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -24,7 +23,10 @@ import {
 } from '@suite-native/staking';
 import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 
-import { type AssetsRootState } from '../assetsSelectors';
+import {
+    type AssetsRootState,
+    selectSingleDeviceAccountKeyForNetworkSymbol,
+} from '../assetsSelectors';
 import { AccountsCount } from './AccountsCount';
 import { CryptoAmount } from './CryptoAmount';
 import { FiatAmount } from './FiatAmount';
@@ -48,8 +50,10 @@ type NavigationType = TabToStackCompositeNavigationProp<
 // no benefit (and a leaf memo can't hide an unstable selector anyway - that fires regardless).
 export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
-    const store = useStore<AssetsRootState>();
     const { NetworkNameFormatter } = useFormatters();
+    const singleAccountKey = useSelector((state: AssetsRootState) =>
+        selectSingleDeviceAccountKeyForNetworkSymbol(state, cryptoCurrencySymbol),
+    );
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
@@ -58,15 +62,10 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     );
 
     const handleAssetPress = () => {
-        // Read the accounts lazily at press time to avoid subscribing the whole array to the store.
-        const networkAccounts = selectVisibleDeviceAccountsByNetworkSymbol(
-            store.getState(),
-            cryptoCurrencySymbol,
-        );
-
-        if (networkAccounts.length === 1 && !hasAnyTokens && !hasAnyAccountsWithStaking) {
+        // A single tokenless account opens its detail directly; anything else opens the list.
+        if (singleAccountKey && !hasAnyTokens && !hasAnyAccountsWithStaking) {
             navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: networkAccounts[0]?.key,
+                accountKey: singleAccountKey,
                 closeActionType: 'back',
             });
         } else {
