@@ -7,7 +7,12 @@ import {
     pipe,
 } from '@solana/kit';
 
-import type { CompilableTransactionMessage, SignatureBytes, Transaction } from '../types';
+import type {
+    SignatureBytes,
+    Transaction,
+    TransactionMessage,
+    TransactionMessageWithFeePayer,
+} from '../types';
 
 const createTransactionShimCommon = (transaction: Transaction) => ({
     addSignature: (signerPubKey: string, signatureHex: string) => {
@@ -26,7 +31,9 @@ const createTransactionShimCommon = (transaction: Transaction) => ({
     serialize: () => pipe(transaction, getTransactionEncoder().encode, getBase16Codec().decode),
 });
 
-export function createTransactionShim(message: CompilableTransactionMessage) {
+export function createTransactionShim(
+    message: TransactionMessage & TransactionMessageWithFeePayer,
+) {
     const transaction = compileTransaction(message);
 
     return createTransactionShimCommon(transaction);
