@@ -13,12 +13,12 @@ export type MessageResponse<T extends MessageKey = MessageKey> = T extends any
     : never;
 
 export type TypedCall = {
-    <T extends MessageKey, R extends MessageKey[]>(
+    <T extends WireInMessage, R extends WireOutMessage[]>(
         type: T,
         resType: R,
         message?: MessagePayload<T>,
     ): Promise<MessageResponse<R[number]>>;
-    <T extends MessageKey, R extends MessageKey>(
+    <T extends WireInMessage, R extends WireOutMessage>(
         type: T,
         resType: R,
         message?: MessagePayload<T>,
