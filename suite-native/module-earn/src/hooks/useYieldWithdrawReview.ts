@@ -13,14 +13,13 @@ import {
     selectFormDraft,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
-import { type FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import type {
     StackNavigationProps,
     YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
 
 import {
     type YieldReviewActionStatus,
@@ -30,7 +29,7 @@ import {
 import { isUserCancelledSignError } from '../utils';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
-import { getSelectedEvmFeeFromPrecomposedTransaction } from '../utils/yieldSelectedFeeUtils';
+import { getSelectedEvmFeeFromFormDraft } from '../utils/yieldSelectedFeeUtils';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
 
@@ -77,19 +76,7 @@ export const useYieldWithdrawReview = ({
     const formDraft = useSelector((state: FormDraftRootState) =>
         selectFormDraft<FormState>(state, formDraftKey),
     );
-    const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
-    const selectedFeeTransaction = formDraft?.selectedFee
-        ? feeLevels[formDraft.selectedFee]
-        : undefined;
-    const selectedFee = useMemo(
-        () =>
-            getSelectedEvmFeeFromPrecomposedTransaction(
-                isFinalPrecomposedTransaction(selectedFeeTransaction)
-                    ? selectedFeeTransaction
-                    : undefined,
-            ),
-        [selectedFeeTransaction],
-    );
+    const selectedFee = useMemo(() => getSelectedEvmFeeFromFormDraft(formDraft), [formDraft]);
     const isWithdrawSigned =
         txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
     const withdrawStatus: YieldReviewStatus =

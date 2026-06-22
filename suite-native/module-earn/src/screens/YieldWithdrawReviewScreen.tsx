@@ -11,18 +11,17 @@ import {
     selectFormDraft,
     selectStablecoinYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
-import { type FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
 
 import { YieldWithdrawReviewContent } from '../components/YieldWithdrawReviewContent';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { buildYieldReviewPreview } from '../utils/yieldReviewOutputUtils';
-import { getSelectedEvmFeeFromPrecomposedTransaction } from '../utils/yieldSelectedFeeUtils';
+import { getSelectedEvmFeeFromFormDraft } from '../utils/yieldSelectedFeeUtils';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawReview>;
@@ -44,7 +43,6 @@ export const YieldWithdrawReviewScreen = () => {
     const formDraft = useSelector((state: FormDraftRootState) =>
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
-    const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const actionReview = session?.action.review;
     const review = useMemo(
         () =>
@@ -63,18 +61,9 @@ export const YieldWithdrawReviewScreen = () => {
 
         return getYieldWithdrawInputToken({ flowData, flowType });
     }, [flowData, flowType]);
-    const selectedFeePreview = formDraft?.selectedFee
-        ? feeLevels[formDraft.selectedFee]
-        : undefined;
-    const selectedFee = useMemo(
-        () =>
-            getSelectedEvmFeeFromPrecomposedTransaction(
-                isFinalPrecomposedTransaction(selectedFeePreview) ? selectedFeePreview : undefined,
-            ),
-        [selectedFeePreview],
-    );
+    const selectedFee = useMemo(() => getSelectedEvmFeeFromFormDraft(formDraft), [formDraft]);
     const preview = useMemo(() => {
-        if (!review || !device || !flowData || !reviewToken) {
+        if (!review || !device || !flowData || !reviewToken || !selectedFee) {
             return null;
         }
 
@@ -99,10 +88,10 @@ export const YieldWithdrawReviewScreen = () => {
             return;
         }
 
-        if (!review || session?.step !== 'action') {
+        if (!review || !selectedFee || session?.step !== 'action') {
             navigation.navigate(YieldStackRoutes.YieldWithdraw, route.params);
         }
-    }, [navigation, resolutionStatus, review, route.params, session?.step]);
+    }, [navigation, resolutionStatus, review, route.params, selectedFee, session?.step]);
 
     if (resolutionStatus !== 'resolved' || !flowData || !review || !reviewToken || !preview) {
         return null;

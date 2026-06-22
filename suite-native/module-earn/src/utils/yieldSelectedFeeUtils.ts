@@ -1,29 +1,36 @@
 import { buildEvmSelectedFee } from '@suite-common/wallet-core';
-import { type EvmSelectedFee, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type EvmSelectedFee, type FormState } from '@suite-common/wallet-types';
 
-export const getSelectedEvmFeeFromPrecomposedTransaction = (
-    precomposedTransaction: PrecomposedTransactionFinal | undefined,
+type FormDraftEvmFeeFields = Pick<
+    FormState,
+    'feeLimit' | 'feePerUnit' | 'maxFeePerGas' | 'maxPriorityFeePerGas'
+>;
+
+export const getSelectedEvmFeeFromFormDraft = (
+    formDraft: FormDraftEvmFeeFields | null | undefined,
 ): EvmSelectedFee | null => {
-    if (!precomposedTransaction?.feeLimit) {
+    if (!formDraft?.feeLimit) {
         return null;
     }
 
-    if (precomposedTransaction.maxFeePerGas && precomposedTransaction.maxPriorityFeePerGas) {
+    const { feeLimit, feePerUnit, maxFeePerGas, maxPriorityFeePerGas } = formDraft;
+
+    if (maxFeePerGas && maxPriorityFeePerGas) {
         return buildEvmSelectedFee({
             feeLevel: {
-                feePerUnit: precomposedTransaction.feePerByte,
-                maxFeePerGas: precomposedTransaction.maxFeePerGas,
-                maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
+                feePerUnit: feePerUnit || maxFeePerGas,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
                 baseFeePerGas: '0',
             },
-            gasLimit: precomposedTransaction.feeLimit,
+            gasLimit: feeLimit,
         });
     }
 
-    if (precomposedTransaction.feePerByte) {
+    if (feePerUnit) {
         return buildEvmSelectedFee({
-            feeLevel: { feePerUnit: precomposedTransaction.feePerByte },
-            gasLimit: precomposedTransaction.feeLimit,
+            feeLevel: { feePerUnit },
+            gasLimit: feeLimit,
         });
     }
 
