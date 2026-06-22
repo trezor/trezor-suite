@@ -3,13 +3,13 @@ import {
     selectTradingExchangeSelectedQuoteSwapSlippage,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
-import {
-    getInitializedTradingStateWithQuotes,
-    mercuryoDexQuote,
-} from '@suite-native/trading-fixtures';
+import { act } from '@suite-native/test-utils-store';
+import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
-import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
+import {
+    createSlippageTestStore,
+    renderHookWithSlippageTestProvider,
+} from '../../__tests__/testUtils';
 import { useSlippageLifecycle } from '../useSlippageLifecycle';
 
 const renderUseSlippageLifecycle = ({
@@ -17,19 +17,11 @@ const renderUseSlippageLifecycle = ({
 }: {
     onSlippageChanged: (slippage: string | undefined) => void;
 }) => {
-    const tradingState = getInitializedTradingStateWithQuotes();
-    tradingState.exchange.selectedQuote = {
-        ...mercuryoDexQuote,
-        swapSlippage: undefined,
-    };
-    const store = createTradingLightStore({
-        tradeType: 'exchange',
-        overrides: { wallet: { trading: tradingState } },
-    });
-
-    const { result } = renderHookWithStoreProvider(() => useSlippageLifecycle(onSlippageChanged), {
-        store,
-    });
+    const store = createSlippageTestStore({ ...mercuryoDexQuote, swapSlippage: undefined });
+    const { result } = renderHookWithSlippageTestProvider(
+        () => useSlippageLifecycle(onSlippageChanged),
+        { store },
+    );
 
     return { store, result };
 };
