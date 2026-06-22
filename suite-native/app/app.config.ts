@@ -322,6 +322,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                     : ['applinks:dev.suite.sldev.cz', 'applinks:dev.trezorio.sldev.cz'],
         },
         plugins: getPlugins(),
+        experiments: {
+            reactCompiler: true,
+        },
         extra: {
             // FIXME: Fingerprint is always changed between commits because of this. We need to find a better solution.
             commitHash:
