@@ -103,9 +103,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
     }
 
     async typedCall(
-        type: Messages.MessageKey,
-        expectedType: Messages.MessageKey | Messages.MessageKey[],
-        msg: Messages.MessagePayload = {},
+        type: Messages.WireInMessage,
+        expectedType: Messages.WireOutMessage | Messages.WireOutMessage[],
+        msg: Messages.MessagePayload<Messages.WireInMessage> = {},
     ) {
         const deviceSessionId =
             this.device.getThpState()?.sessionId || this.device?.features?.session_id;
