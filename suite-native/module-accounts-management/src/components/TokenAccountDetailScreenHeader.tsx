@@ -5,6 +5,8 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -21,7 +23,7 @@ import { type RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-n
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
 
-import { selectAssetTabOfAccountToken } from '../selectors';
+import { selectAssetTabOfAccountToken, selectIsUnrecognizedToken } from '../selectors';
 import { TokenScreenHeaderSettings } from './TokenScreenHeaderSettings';
 
 type TokenAccountDetailScreenHeaderProps = {
@@ -54,6 +56,10 @@ export const TokenAccountDetailScreenHeader = ({
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
+    const isUnrecognizedToken = useSelector(
+        (state: TokenDefinitionsRootState & AccountsRootState) =>
+            selectIsUnrecognizedToken(state, accountKey, tokenContract),
+    );
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
@@ -83,19 +89,24 @@ export const TokenAccountDetailScreenHeader = ({
         return null;
     }
 
+    // Unrecognized tokens use their contract/mint address as the name, which is too long
+    // for the header, so shorten it the same way the desktop app does.
+    const tokenName = token?.name ?? '';
+    const displayTokenName = isUnrecognizedToken ? getDisplaySymbol(tokenName) : tokenName;
+
     return (
         <ScreenHeader
             customContent={
-                <Box alignItems="center">
-                    <HStack alignItems="center">
+                <Box alignItems="center" flexShrink={1}>
+                    <HStack alignItems="center" flexShrink={1}>
                         <CryptoIconWithNetwork
                             symbol={symbol}
                             contractAddress={tokenContract}
                             size="small"
                         />
-                        <VStack spacing={0}>
+                        <VStack spacing={0} flexShrink={1}>
                             <Text ellipsizeMode="tail" numberOfLines={1}>
-                                {token?.name}
+                                {displayTokenName}
                             </Text>
 
                             <HStack alignItems="center" spacing="sp4">
