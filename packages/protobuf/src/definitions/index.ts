@@ -65,8 +65,6 @@ import {
 import {
     ButtonAck,
     ButtonRequest,
-    Deprecated_PassphraseStateAck,
-    Deprecated_PassphraseStateRequest,
     Failure,
     PassphraseAck,
     PassphraseRequest,
@@ -345,8 +343,6 @@ export const MessageType = Type.Object(
         PinMatrixAck,
         PassphraseRequest,
         PassphraseAck,
-        Deprecated_PassphraseStateRequest,
-        Deprecated_PassphraseStateAck,
         PaymentRequest,
         GetPublicKey,
         PublicKey,
@@ -734,6 +730,17 @@ export type WireInMessage =
     | 'EvoluIndexManagement'
     | 'MoneroGetAddress'
     | 'MoneroGetWatchKey'
+    | 'MoneroTransactionInitRequest'
+    | 'MoneroTransactionSetInputRequest'
+    | 'MoneroTransactionInputViniRequest'
+    | 'MoneroTransactionAllInputsSetRequest'
+    | 'MoneroTransactionSetOutputRequest'
+    | 'MoneroTransactionAllOutSetRequest'
+    | 'MoneroTransactionSignInputRequest'
+    | 'MoneroTransactionFinalRequest'
+    | 'MoneroKeyImageExportInitRequest'
+    | 'MoneroKeyImageSyncStepRequest'
+    | 'MoneroKeyImageSyncFinalRequest'
     | 'MoneroGetTxKeyRequest'
     | 'MoneroLiveRefreshStartRequest'
     | 'MoneroLiveRefreshStepRequest'
@@ -844,27 +851,16 @@ export type WireOutMessage =
     | 'EvoluIndexManagementResponse'
     | 'MoneroAddress'
     | 'MoneroWatchKey'
-    | 'MoneroTransactionInitRequest'
     | 'MoneroTransactionInitAck'
-    | 'MoneroTransactionSetInputRequest'
     | 'MoneroTransactionSetInputAck'
-    | 'MoneroTransactionInputViniRequest'
     | 'MoneroTransactionInputViniAck'
-    | 'MoneroTransactionAllInputsSetRequest'
     | 'MoneroTransactionAllInputsSetAck'
-    | 'MoneroTransactionSetOutputRequest'
     | 'MoneroTransactionSetOutputAck'
-    | 'MoneroTransactionAllOutSetRequest'
     | 'MoneroTransactionAllOutSetAck'
-    | 'MoneroTransactionSignInputRequest'
     | 'MoneroTransactionSignInputAck'
-    | 'MoneroTransactionFinalRequest'
     | 'MoneroTransactionFinalAck'
-    | 'MoneroKeyImageExportInitRequest'
     | 'MoneroKeyImageExportInitAck'
-    | 'MoneroKeyImageSyncStepRequest'
     | 'MoneroKeyImageSyncStepAck'
-    | 'MoneroKeyImageSyncFinalRequest'
     | 'MoneroKeyImageSyncFinalAck'
     | 'MoneroGetTxKeyAck'
     | 'MoneroLiveRefreshStartAck'
