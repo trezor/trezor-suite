@@ -22,8 +22,11 @@ interface AddWalletButtonProps {
 }
 
 export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButtonProps) => {
-    // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
-    const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
+    // Standard wallet = useEmptyPassphrase not explicitly false (true, or undefined when not yet authorized).
+    // Mirrors useWalletLabel so the list and this button agree on what counts as a standard wallet.
+    const emptyPassphraseWalletExists = instances.find(
+        d => d.useEmptyPassphrase !== false && d.state,
+    );
 
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
