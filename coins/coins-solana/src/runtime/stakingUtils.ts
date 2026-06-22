@@ -45,7 +45,6 @@ import type {
     Address,
     Base58EncodedBytes,
     Blockhash,
-    CompilableTransactionMessage,
     Connection,
     Fee,
     Instruction,
@@ -55,7 +54,12 @@ import type {
     SolanaRpcApiMainnet,
     StakeStateAccount,
     StakeStateV2,
+    Transaction,
+    TransactionMessage,
     TransactionMessageWithBlockhashLifetime,
+    TransactionMessageWithFeePayer,
+    TransactionWithLifetime,
+    TransactionWithinSizeLimit,
 } from '../types';
 
 const FILTER_DATA_SIZE = 200n;
@@ -118,11 +122,15 @@ export const baseTx = async (
     connection: Connection,
     sender: string,
     params?: Params<Blockhash>,
-): Promise<CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime> => {
+): Promise<
+    TransactionMessage & TransactionMessageWithFeePayer & TransactionMessageWithBlockhashLifetime
+> => {
     const finalLatestBlockhash =
         params?.finalLatestBlockhash || (await connection.getLatestBlockhash().send()).value;
 
-    let transactionMessage: CompilableTransactionMessage = pipe(
+    let transactionMessage: TransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithBlockhashLifetime = pipe(
         createTransactionMessage({ version: 0 }),
         tx => setTransactionMessageFeePayer(address(sender), tx),
         tx => setTransactionMessageLifetimeUsingBlockhash(finalLatestBlockhash, tx),
@@ -155,7 +163,9 @@ export const baseTx = async (
 };
 
 export const getFeeSummary = (
-    transactionMessage: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime,
+    transactionMessage: TransactionMessage &
+        TransactionMessageWithFeePayer &
+        TransactionMessageWithBlockhashLifetime,
 ) => {
     const compiledMessage = compileTransactionMessage(transactionMessage);
 
@@ -336,11 +346,17 @@ export const getDelegations = async (
     }
 };
 
-// Type guard to check if transaction is of type CompilableTransactionMessage
+// Type guard to check if a value is a transaction message with a fee payer (vs a compiled Transaction)
 export function isCompilableTransactionMessage(
-    tx: TransactionMessageWithBlockhashLifetime | CompilableTransactionMessage,
-): tx is CompilableTransactionMessage {
-    return (tx as CompilableTransactionMessage).feePayer !== undefined;
+    tx:
+        | (TransactionMessage &
+              TransactionMessageWithFeePayer &
+              TransactionMessageWithBlockhashLifetime)
+        | (Transaction & TransactionWithinSizeLimit & TransactionWithLifetime),
+): tx is TransactionMessage &
+    TransactionMessageWithFeePayer &
+    TransactionMessageWithBlockhashLifetime {
+    return (tx as TransactionMessageWithFeePayer).feePayer !== undefined;
 }
 
 export const getStakingParams = (estimatedFee?: Fee) =>

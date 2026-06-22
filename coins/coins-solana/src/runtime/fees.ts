@@ -23,7 +23,6 @@ import { COMPUTE_BUDGET_PROGRAM_ID, SOL_BASE_FEE, STAKE_ACCOUNT_V2_SIZE } from '
 import type {
     Address,
     Base64EncodedWireTransaction,
-    CompilableTransactionMessage,
     CompiledTransactionMessage,
     GetFeeForMessageApi,
     GetRecentPrioritizationFeesApi,
@@ -32,8 +31,10 @@ import type {
     SimulateTransactionApi,
     SolanaAPI,
     TokenProgramName,
+    TransactionMessage,
     TransactionMessageBytes,
     TransactionMessageBytesBase64,
+    TransactionMessageWithFeePayer,
 } from '../types';
 
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = BigInt(300_000); // micro-lamports, value taken from other wallets
@@ -88,7 +89,7 @@ const getBaseFee = async (api: Rpc<GetFeeForMessageApi>, message: CompiledTransa
 // https://solana.com/developers/guides/advanced/how-to-use-priority-fees#how-do-i-estimate-priority-fees
 const getPriorityFee = async (
     api: Rpc<GetRecentPrioritizationFeesApi & SimulateTransactionApi>,
-    decompiledMessage: CompilableTransactionMessage,
+    decompiledMessage: TransactionMessage & TransactionMessageWithFeePayer,
     compiledMessage: CompiledTransactionMessage,
     signatures: SignaturesMap,
 ) => {

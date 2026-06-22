@@ -38,10 +38,10 @@ import { BigNumber } from '@trezor/utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '../constants';
 import type {
     Blockhash,
-    CompilableTransactionMessage,
     SolanaAPI,
     TokenProgramName,
     TransactionMessage,
+    TransactionMessageWithFeePayer,
 } from '../types';
 import { createTransactionShim } from './shim';
 
@@ -111,7 +111,7 @@ export const buildTransferTransaction = (
         }),
         messageWithLifetime,
     );
-    let messageWithFees: CompilableTransactionMessage = addPriorityFees(
+    let messageWithFees: TransactionMessage & TransactionMessageWithFeePayer = addPriorityFees(
         messageWithTransfer,
         priorityFees,
     );
@@ -261,7 +261,10 @@ export const buildTokenTransferTransaction = async (
         },
         messageBase,
     );
-    let message: CompilableTransactionMessage = addPriorityFees(messageWithLifetime, priorityFees);
+    let message: TransactionMessage & TransactionMessageWithFeePayer = addPriorityFees(
+        messageWithLifetime,
+        priorityFees,
+    );
 
     // Token transaction building logic
 
