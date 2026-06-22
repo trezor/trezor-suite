@@ -44,6 +44,7 @@ type SummaryCardProps = {
     localCurrency: BaseCurrencyCode;
     account: Account;
     isLoading?: boolean;
+    isGraphDataLoaded?: boolean;
 };
 
 const DateWrapper = styled.span`
@@ -64,6 +65,7 @@ export const SummaryCards = ({
     localCurrency,
     account,
     isLoading,
+    isGraphDataLoaded,
 }: SummaryCardProps) => {
     const { isBelowDesktop } = useLayoutSize();
     const { BaseCurrencyAmountFormatter } = useFormatters();
@@ -71,8 +73,12 @@ export const SummaryCards = ({
 
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
-    // aggregate values from shown graph data
-    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
+    // Aggregate values from shown graph data.
+    const txsFromData = data.reduce((acc, d) => (acc += d.txs), 0);
+    // only fall back to account.history.total before graph data has loaded.
+    const numOfTransactions = isGraphDataLoaded
+        ? txsFromData
+        : txsFromData || account.history.total;
 
     // on some networks it is not easy to get total number of txs (e.g. Ripple & Stellar)
     if (numOfTransactions === -1) {
