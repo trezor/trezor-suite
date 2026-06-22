@@ -4,15 +4,24 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectDeviceMainnetAccounts,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountWithNetworkType,
+    asAccountDescriptor,
+    asCryptoBaseCurrencyCode,
+    asTimestamp,
+} from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import {
     selectDeviceHistoryIgnoredNetworkSymbols,
     selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning,
+    selectPortfolioGraphTotalFiatBalance,
 } from '../selectors';
 
 // Mock the dependencies
@@ -35,7 +44,76 @@ const mockSelectHasRunningDiscovery = selectHasRunningDiscovery as jest.MockedFu
 type TestState = DeviceRootState &
     AccountsRootState &
     DiscoveryRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState &
     TokenDefinitionsRootState;
+
+const TEST_SESSION_ID = 'address@hash:0' as const;
+
+const buildPortfolioGraphBalanceState = (account: Account) =>
+    ({
+        device: {
+            selectedDevice: {
+                state: { staticSessionId: TEST_SESSION_ID },
+            },
+        },
+        wallet: {
+            accounts: [account],
+            settings: {
+                localCurrency: 'usd',
+            },
+            fiat: {
+                current: {
+                    [asCryptoBaseCurrencyCode(`${account.symbol}-usd`)]: {
+                        rate: 10,
+                        lastTickerTimestamp: asTimestamp(1),
+                        lastSuccessfulFetchTimestamp: asTimestamp(1),
+                        isLoading: false,
+                        error: null,
+                        ticker: { symbol: 'btc' },
+                    },
+                },
+            },
+        },
+        tokenDefinitions: {},
+    }) as unknown as TestState;
+
+const buildBalanceAccount = (formattedBalance: string) =>
+    mockWalletAccount({
+        symbol: 'btc',
+        descriptor: asAccountDescriptor('btc'),
+        deviceState: TEST_SESSION_ID,
+        formattedBalance,
+    });
+
+const buildEthereumClassicAccountWithStakingData = (): AccountWithNetworkType<'ethereum'> => ({
+    ...mockWalletAccount({
+        symbol: 'etc',
+        descriptor: asAccountDescriptor('etc'),
+        deviceState: TEST_SESSION_ID,
+        formattedBalance: '2',
+    }),
+    networkType: 'ethereum',
+    marker: undefined,
+    stellarCursor: undefined,
+    page: { index: 1, size: 25, total: 1 },
+    misc: {
+        nonce: '0',
+        stakingPools: [
+            {
+                contract: '0x0',
+                name: 'Everstake',
+                autocompoundBalance: '5',
+                pendingBalance: '0',
+                pendingDepositedBalance: '0',
+                depositedBalance: '0',
+                withdrawTotalAmount: '0',
+                claimableAmount: '0',
+                restakedReward: '0',
+            },
+        ],
+    },
+});
 
 describe('selectDeviceHistoryIgnoredNetworkSymbols', () => {
     let mockState: TestState;
@@ -164,5 +242,59 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
                 tokensFilter: [],
             },
         ]);
+    });
+});
+
+describe('selectPortfolioGraphTotalFiatBalance', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('returns the same reference when updated account objects have the same fiat balance', () => {
+        mockSelectHasRunningDiscovery.mockReturnValue(false);
+
+        const firstBalance = selectPortfolioGraphTotalFiatBalance(
+            buildPortfolioGraphBalanceState(buildBalanceAccount('2')),
+        );
+        const secondBalance = selectPortfolioGraphTotalFiatBalance(
+            buildPortfolioGraphBalanceState(buildBalanceAccount('2')),
+        );
+
+        expect(firstBalance?.toFixed()).toBe('20');
+        expect(firstBalance).toBe(secondBalance);
+    });
+
+    it('returns a new reference when the fiat balance changes', () => {
+        mockSelectHasRunningDiscovery.mockReturnValue(false);
+
+        const firstBalance = selectPortfolioGraphTotalFiatBalance(
+            buildPortfolioGraphBalanceState(buildBalanceAccount('2')),
+        );
+        const secondBalance = selectPortfolioGraphTotalFiatBalance(
+            buildPortfolioGraphBalanceState(buildBalanceAccount('3')),
+        );
+
+        expect(secondBalance?.toFixed()).toBe('30');
+        expect(secondBalance).not.toBe(firstBalance);
+    });
+
+    it('returns undefined while discovery is running', () => {
+        mockSelectHasRunningDiscovery.mockReturnValue(true);
+
+        expect(
+            selectPortfolioGraphTotalFiatBalance(
+                buildPortfolioGraphBalanceState(buildBalanceAccount('2')),
+            ),
+        ).toBeUndefined();
+    });
+
+    it('keeps native staking inclusion semantics for unsupported staking symbols', () => {
+        mockSelectHasRunningDiscovery.mockReturnValue(false);
+
+        const totalFiatBalance = selectPortfolioGraphTotalFiatBalance(
+            buildPortfolioGraphBalanceState(buildEthereumClassicAccountWithStakingData()),
+        );
+
+        expect(totalFiatBalance?.toFixed()).toBe('20');
     });
 });

@@ -42,8 +42,6 @@ import {
     selectAccountsByDeviceState,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceAccounts,
-    selectHasRunningDiscovery,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
 import {
@@ -149,15 +147,6 @@ const getTotalFiatBalanceNative = ({
 
     return asBaseCurrencyAmount(instanceBalance);
 };
-
-export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
-    [selectDeviceAccounts, selectCurrentFiatRates, selectBaseCurrency, selectHasRunningDiscovery],
-    (deviceAccounts, rates, localCurrency, hasRunningDiscovery) =>
-        // do not return any value before discovery is finished to prevent unnecessary rerenders of portfolio graph.
-        hasRunningDiscovery
-            ? undefined
-            : getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
-);
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
     [selectAccountsByDeviceState, selectCurrentFiatRates, selectBaseCurrency],

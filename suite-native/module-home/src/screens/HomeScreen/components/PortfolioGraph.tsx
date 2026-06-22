@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Text, VStack } from '@suite-native/atoms';
-import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
     Graph,
     selectDeviceHistoryIgnoredNetworkSymbols,
     selectHasDeviceHistoryEnabledAccounts,
+    selectPortfolioGraphTotalFiatBalance,
     useGraphAtoms,
     useGraphForAllDeviceAccounts,
 } from '@suite-native/graph';
@@ -48,7 +48,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
-    const totalFiatBalance = useSelector(selectSelectedDeviceTotalFiatBalance);
+    const totalFiatBalance = useSelector(selectPortfolioGraphTotalFiatBalance);
 
     const { graphPoints, error, isLoading, isAnyMainnetAccountPresent, refetch } =
         useGraphForAllDeviceAccounts({

@@ -11,17 +11,36 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectAccountByKey,
+    selectBaseCurrency,
+    selectCurrentFiatRates,
+    selectDeviceAccounts,
     selectDeviceMainnetAccounts,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type TokenAddress,
+    asBaseCurrencyAmount,
+} from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
+import { getPortfolioGraphTotalFiatBalance } from './portfolioGraphBalanceUtils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;
 type PortfolioGraphRootState = GraphCommonRootState & DiscoveryRootState;
+type PortfolioGraphBalanceRootState = DeviceRootState &
+    AccountsRootState &
+    DiscoveryRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<GraphCommonRootState>();
+const createPortfolioGraphBalanceSelector =
+    createWeakMapSelector.withTypes<PortfolioGraphBalanceRootState>();
 
 export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): AccountItem[] => {
     const accounts = selectDeviceMainnetAccounts(state);
@@ -51,6 +70,30 @@ export const selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning = (
 
     return selectPortfolioGraphAccountItems(state);
 };
+
+// Use a primitive decimal string as the memoization boundary. Recalculating an unchanged balance
+// creates a new BigNumber instance, which would trigger useSelector subscribers by reference.
+// BigNumber.toFixed() preserves the full decimal value without converting through a JS number.
+const selectPortfolioGraphTotalFiatBalanceValue = createPortfolioGraphBalanceSelector(
+    [selectDeviceAccounts, selectCurrentFiatRates, selectBaseCurrency, selectHasRunningDiscovery],
+    (deviceAccounts, fiatRates, baseCurrencyCode, hasRunningDiscovery) =>
+        // Do not return any value before discovery is finished to prevent unnecessary graph rerenders.
+        hasRunningDiscovery
+            ? undefined
+            : getPortfolioGraphTotalFiatBalance({
+                  deviceAccounts,
+                  fiatRates,
+                  baseCurrencyCode,
+              }).toFixed(),
+);
+
+export const selectPortfolioGraphTotalFiatBalance = createPortfolioGraphBalanceSelector(
+    [selectPortfolioGraphTotalFiatBalanceValue],
+    totalFiatBalanceValue =>
+        totalFiatBalanceValue === undefined
+            ? undefined
+            : asBaseCurrencyAmount(new BigNumber(totalFiatBalanceValue)),
+);
 
 export const selectHasDeviceHistoryEnabledAccounts = createMemoizedSelector(
     [selectDeviceMainnetAccounts],
