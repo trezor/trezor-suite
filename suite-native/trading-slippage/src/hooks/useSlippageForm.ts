@@ -40,21 +40,20 @@ export const useSlippageForm = (): UseSlippageFormRet => {
     const form = useForm<SlippageFormValues>({
         defaultValues: { slippage: TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT },
         validation: validationSchema,
+        mode: 'onChange',
     });
 
     const {
         setValue,
-        trigger,
         formState: { isValid },
         handleSubmit,
     } = form;
 
     const handlePresetPress = useCallback(
         (preset: string) => {
-            setValue('slippage', preset);
-            trigger('slippage');
+            setValue('slippage', preset, { shouldValidate: true });
         },
-        [setValue, trigger],
+        [setValue],
     );
 
     return { isValid, handlePresetPress, handleSubmit, form };
