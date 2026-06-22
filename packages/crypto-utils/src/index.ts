@@ -1,4 +1,5 @@
 export { comparePath } from './bipPath/comparePath';
+export { getAddressPathIndex } from './bipPath/getAddressPathIndex';
 export { getHDPath } from './bipPath/getHDPath';
 export {
     HD_HARDENED_PATH_PART,
