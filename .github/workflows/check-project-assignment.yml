@@ -3,6 +3,7 @@ name: "[Check] Project/Issue Assignment"
 on:
   pull_request:
     types:
+      - opened
       - ready_for_review
       - labeled
       - synchronize
@@ -126,7 +127,7 @@ jobs:
           done
 
           if [ -n "$HAS_ERROR" ]; then
-            echo "Please fill in Platform and Team in the '$REQUIRED_FIELDS_PROJECT' project before merging."
+            echo "Please fill in the following field(s) in the '$REQUIRED_FIELDS_PROJECT' project before merging: ${REQUIRED_FIELDS[*]}."
             exit 1
           fi
 
