@@ -1,6 +1,6 @@
 import { createIntl } from 'react-intl';
 
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/base-currency';
 import { PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

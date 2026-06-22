@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl';
 
 import type { FormatNumberOptions } from '@formatjs/intl';
 
+import type { BaseCurrencyAmount } from '@suite-common/base-currency';
 import type { SignValue } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { AddressFormatter, type AddressFormatterDataContext } from './formatters/AddressFormatter';
 import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';

@@ -22,7 +22,6 @@ import {
 import type {
     Account,
     AccountKey,
-    BaseCurrencyOption,
     EthTransactionData,
     ExternalOutput,
     FeeInfo,
@@ -36,11 +35,6 @@ import type {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import {
-    type BaseCurrencyCode,
-    baseCurrencies,
-    isBaseCurrencyCode,
-} from '@trezor/blockchain-link-types';
-import {
     type ComposeOutput,
     type EthereumTransaction,
     type EthereumTransactionEIP1559,
@@ -48,16 +42,21 @@ import {
     type PROTO,
     type TokenInfo,
 } from '@trezor/connect';
-import { BigNumber, typedObjectKeys } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils';
 
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     networkAmountToSmallestUnit,
 } from './amountUtils';
-import { isBaseCurrencyWithSats } from './baseCurrency';
 import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
 import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
+
+export {
+    buildCurrencyLongOption,
+    buildCurrencyOptions,
+    buildCurrencyShortOption,
+} from '@suite-common/base-currency';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -532,66 +531,6 @@ export const getDefaultValues = (
         outputs: [{ ...DEFAULT_PAYMENT, currency }],
         selectedUtxos: [],
     };
-};
-
-type BuildCurrencyOptionParams = {
-    currency: BaseCurrencyCode | '' | undefined;
-    areSatsDisplayed: boolean;
-};
-
-export const buildCurrencyShortOption = ({
-    currency,
-    areSatsDisplayed,
-}: BuildCurrencyOptionParams): BaseCurrencyOption => {
-    if (!currency || !isBaseCurrencyCode(currency)) return { value: '', label: '' };
-
-    return {
-        value: currency,
-        label:
-            isBaseCurrencyWithSats(currency) && areSatsDisplayed ? 'sat' : currency.toUpperCase(),
-    };
-};
-
-export const buildCurrencyLongOption = ({
-    currency,
-    areSatsDisplayed,
-}: BuildCurrencyOptionParams): BaseCurrencyOption => {
-    const shortOption = buildCurrencyShortOption({ currency, areSatsDisplayed });
-
-    if (!currency || !isBaseCurrencyCode(currency)) return shortOption;
-    else {
-        return {
-            value: shortOption.value,
-            label:
-                shortOption.label +
-                ' · ' +
-                (isBaseCurrencyWithSats(currency) && areSatsDisplayed
-                    ? 'Satoshis'
-                    : baseCurrencies[currency].label),
-        };
-    }
-};
-
-type BuildCurrencyOptionsParams = {
-    selected: BaseCurrencyOption;
-    areSatsDisplayed: boolean;
-};
-
-export const buildCurrencyOptions = ({
-    selected,
-    areSatsDisplayed,
-}: BuildCurrencyOptionsParams): BaseCurrencyOption[] => {
-    const result: BaseCurrencyOption[] = [];
-
-    typedObjectKeys(baseCurrencies).forEach(currency => {
-        if (selected.value === currency) {
-            return;
-        }
-
-        result.push(buildCurrencyLongOption({ currency, areSatsDisplayed }));
-    });
-
-    return result;
 };
 
 export const getSendFormDraftKey = (

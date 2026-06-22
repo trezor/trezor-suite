@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
+import { type BaseCurrencyAmount, toFiatCurrency } from '@suite-common/base-currency';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 type ConvertInput = {
     amount: string | null;
