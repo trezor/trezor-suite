@@ -118,12 +118,15 @@ const TradingExchangePreviewScreenContent = ({
 
     useFocusEffect(
         useCallback(() => {
+            if (quote?.isDex && !quote.swapSlippage) {
+                return;
+            }
             if (!hasRequestedTradeConfirmation.current && !isFinalized) {
                 hasRequestedTradeConfirmation.current = true;
 
                 handleConfirmTrade();
             }
-        }, [handleConfirmTrade, isFinalized]),
+        }, [handleConfirmTrade, isFinalized, quote]),
     );
 
     useEffect(() => {
