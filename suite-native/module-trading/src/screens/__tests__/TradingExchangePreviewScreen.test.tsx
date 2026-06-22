@@ -17,6 +17,7 @@ import {
     exchangeQuotes,
     getBtcAccount,
     getEthAccount,
+    mercuryoDexQuote,
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
@@ -453,5 +454,24 @@ describe('TradingExchangePreviewScreen', () => {
             expect(result.getByText('Transaction error occurred')).toBeOnTheScreen();
             expect(result.queryByText('Quote error message')).toBeNull();
         });
+    });
+
+    it('should not confirm DEX quote without slippage', async () => {
+        const testStore = createStore({ ...mercuryoDexQuote, swapSlippage: undefined });
+
+        renderTradingExchangePreviewScreen(false, testStore);
+
+        await waitFor(() => {
+            expect(mockConfirmTrade).toHaveBeenCalled();
+        });
+
+        expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
+        expect(mockConfirmTrade).toHaveBeenCalledWith(
+            expect.objectContaining({
+                trade: expect.objectContaining({
+                    swapSlippage: '1',
+                }),
+            }),
+        );
     });
 });

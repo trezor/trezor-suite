@@ -29,7 +29,7 @@ export const SlippagePicker = () => {
         [locale],
     );
 
-    if (!isDex) {
+    if (!isDex || !swapSlippage) {
         return null;
     }
 
