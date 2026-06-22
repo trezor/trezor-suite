@@ -19,6 +19,7 @@ const revisionCheckMessages: Record<
     TranslationKey
 > = {
     'cannot-perform-check-offline': 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
+    'bootloader-hash-mismatch': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
     'revision-mismatch': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
     'firmware-version-unknown': 'TR_FIRMWARE_REVISION_CHECK_FAILED',
 };

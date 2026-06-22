@@ -96,6 +96,7 @@ export type FirmwareRelease = {
     min_bootloader_version: VersionArray;
     translations: Record<string, string>;
     firmware_revision?: string;
+    bootloader_hash?: string;
     fingerprint: string;
     changelog?: string;
 };
