@@ -157,7 +157,7 @@ jobs:
               --debug-output artifacts/maestro/debug \
               --flatten-debug-output \
               --test-output-dir artifacts/maestro/screenshots \
-              .maestro/onboard-and-connect.yaml
+              .maestro/tests
 
       - name: Extract trezor-user-env logs
         if: ${{ !cancelled() }}

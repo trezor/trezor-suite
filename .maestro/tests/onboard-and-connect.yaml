@@ -5,7 +5,7 @@ tags:
     - android
     - device
 ---
-- runScript: scripts/setupDevice.js
+- runScript: ../scripts/setupDevice.js
 
 - launchApp:
       clearState: true
@@ -46,4 +46,4 @@ tags:
 - assertVisible:
       id: '@home/get-started-button'
 
-- runScript: scripts/cleanupDevice.js
+- runScript: ../scripts/cleanupDevice.js
