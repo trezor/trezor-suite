@@ -122,8 +122,8 @@ export const sendChunkedHexString = async (
     typedCall: PROTO.TypedCall,
     data: string,
     chunkSize: number,
-    messageType: PROTO.MessageKey,
-    responseType: PROTO.MessageKey = 'CardanoTxItemAck',
+    messageType: PROTO.WireInMessage,
+    responseType: PROTO.WireOutMessage = 'CardanoTxItemAck',
 ) => {
     let processedSize = 0;
     while (processedSize < data.length) {
