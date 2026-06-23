@@ -229,10 +229,10 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         dappBrowserSetBounds: bounds => ipcRenderer.invoke('dapp-browser/set-bounds', bounds),
         dappBrowserSetVisible: params => ipcRenderer.invoke('dapp-browser/set-visible', params),
         dappBrowserSetGrant: grant => ipcRenderer.invoke('dapp-browser/set-grant', grant),
-        dappBrowserEmitEvent: payload => ipcRenderer.invoke('dapp-browser/emit-event', payload),
         dappBrowserReload: () => ipcRenderer.invoke('dapp-browser/reload'),
         dappBrowserGoBack: () => ipcRenderer.invoke('dapp-browser/go-back'),
         dappBrowserGoForward: () => ipcRenderer.invoke('dapp-browser/go-forward'),
+        dappBrowserToggleDevTools: () => ipcRenderer.invoke('dapp-browser/toggle-devtools'),
         dappBrowserDispatchResponse: response =>
             ipcRenderer.invoke('dapp-browser/dispatch-response', response),
         dappBrowserReadClipboard: () => ipcRenderer.invoke('dapp-browser/read-clipboard'),

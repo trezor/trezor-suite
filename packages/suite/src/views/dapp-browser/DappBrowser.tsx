@@ -31,7 +31,7 @@ type DappBrowserSessionProps = {
 };
 
 const DappBrowserSession = ({ entry, onExit }: DappBrowserSessionProps) => {
-    const { accounts, selectedAddress, connect, selectAccount } = useDappConnection(entry);
+    const { accounts, selectedAddress, chainId, selectAccount } = useDappConnection(entry);
 
     useDappRequestHandler();
 
@@ -43,15 +43,18 @@ const DappBrowserSession = ({ entry, onExit }: DappBrowserSessionProps) => {
 
     const handleContinue = useCallback(async () => {
         setIsOpening(true);
-        const result = await desktopApi.dappBrowserOpen({ entryId: entry.id });
+        // Auto-connect (§4): the grant travels with `open` so it is set before the
+        // page loads and the provider's first eth_accounts already resolves.
+        const result = await desktopApi.dappBrowserOpen({
+            entryId: entry.id,
+            grant: selectedAddress ? { address: selectedAddress, chainId } : undefined,
+        });
         setIsOpening(false);
 
         if (result.success) {
-            // Auto-connect: push the grant before the page's provider asks (§4).
-            connect();
             setStage('open');
         }
-    }, [entry.id, connect]);
+    }, [entry.id, selectedAddress, chainId]);
 
     if (stage === 'open') {
         return (
@@ -69,6 +72,7 @@ const DappBrowserSession = ({ entry, onExit }: DappBrowserSessionProps) => {
         <ConsentInterstitial
             entry={entry}
             isLoading={isOpening}
+            hasAccount={!!selectedAddress}
             onContinue={handleContinue}
             onCancel={onExit}
         />

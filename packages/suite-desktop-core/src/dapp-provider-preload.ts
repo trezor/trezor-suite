@@ -31,14 +31,38 @@ const providerSource = createInjectedProviderSource({
     },
     requestTarget: PROVIDER_MESSAGE_TARGET.REQUEST,
     inpageTarget: PROVIDER_MESSAGE_TARGET.INPAGE,
+    // Temporary: trace provider discovery/connection into the dApp console
+    // (forwarded to Suite's `dapp-browser/console` log) to diagnose connection.
+    debug: true,
 });
 
-// Inject the provider into the page's main world. The preload runs before the
-// page's own scripts, so `window.ethereum` exists by the time they do.
-const script = document.createElement('script');
-script.textContent = providerSource;
-(document.head || document.documentElement).appendChild(script);
-script.remove();
+// Inject the provider into the page's MAIN world before the page's own scripts
+// run, so `window.ethereum` exists by the time they do. A sandboxed preload can
+// execute before <html> is parsed (document.documentElement is null then), so
+// guard the container and, if it isn't there yet, inject the instant it appears
+// — still ahead of the page's scripts.
+const injectProvider = () => {
+    const container = document.head || document.documentElement;
+
+    if (!container) {
+        return false;
+    }
+
+    const script = document.createElement('script');
+    script.textContent = providerSource;
+    container.prepend(script);
+
+    return true;
+};
+
+if (!injectProvider()) {
+    const observer = new MutationObserver(() => {
+        if (injectProvider()) {
+            observer.disconnect();
+        }
+    });
+    observer.observe(document, { childList: true, subtree: true });
+}
 
 const postToPage = (message: unknown) => window.postMessage(message, '*');
 
@@ -48,39 +72,33 @@ const isProviderRequest = (data: unknown): data is ProviderRequestMessage =>
     (data as ProviderRequestMessage).target === PROVIDER_MESSAGE_TARGET.REQUEST &&
     (data as ProviderRequestMessage).nonce === nonce;
 
-// Bridge: main-world provider request → main process → response back to page.
-window.addEventListener('message', async event => {
+// Bridge: main-world provider request → main process. Fire-and-forget `send`
+// (not `invoke`): the host replies on the RESPONSE channel via the WebContents,
+// so a reply that arrives after the dApp frame navigated/reloaded never indexes
+// a destroyed frame. The page-side request id is the correlation key.
+window.addEventListener('message', event => {
     if (event.source !== window || !isProviderRequest(event.data)) {
         return;
     }
 
     const { id, method, params } = event.data;
+    ipcRenderer.send(DAPP_PROVIDER_IPC.REQUEST, { requestId: id, method, params });
+});
 
-    const respond = (payload: { result?: unknown; error?: { code: number; message: string } }) =>
+// Relay request responses main → page, matched to the page-side request id.
+ipcRenderer.on(
+    DAPP_PROVIDER_IPC.RESPONSE,
+    (_event, payload: { requestId: number; outcome: ProviderResult }) => {
+        const { requestId, outcome } = payload;
         postToPage({
             target: PROVIDER_MESSAGE_TARGET.INPAGE,
             nonce,
             kind: 'response',
-            id,
-            ...payload,
+            id: requestId,
+            ...(outcome.ok ? { result: outcome.result } : { error: outcome.error }),
         });
-
-    try {
-        const outcome: ProviderResult = await ipcRenderer.invoke(DAPP_PROVIDER_IPC.REQUEST, {
-            method,
-            params,
-        });
-
-        respond(outcome.ok ? { result: outcome.result } : { error: outcome.error });
-    } catch (error) {
-        respond({
-            error: {
-                code: -32603,
-                message: error instanceof Error ? error.message : 'Internal error',
-            },
-        });
-    }
-});
+    },
+);
 
 // Relay provider events (accountsChanged / chainChanged / …) main → page.
 ipcRenderer.on(DAPP_PROVIDER_IPC.EVENT, (_event, payload: { event: string; data?: unknown }) => {

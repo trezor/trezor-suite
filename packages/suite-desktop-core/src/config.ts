@@ -63,5 +63,8 @@ export const allowedDesktopUpdateDomains = [
  * request interceptor; for the PoC they go out over the main-process `fetch`.
  */
 export const dappBrowserRpcEndpoints: Record<number, string> = {
-    1: 'https://cloudflare-eth.com',
+    // cloudflare-eth.com was sunset and now answers every call with a JSON-RPC
+    // error, which silently breaks dApp reads (e.g. revoke.cash's allowance
+    // scan). publicnode is a working keyless mainnet endpoint with eth_getLogs.
+    1: 'https://ethereum-rpc.publicnode.com',
 };

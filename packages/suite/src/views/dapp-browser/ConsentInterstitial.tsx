@@ -29,6 +29,9 @@ const Actions = styled.div`
 type ConsentInterstitialProps = {
     entry: DappCatalogEntry;
     isLoading: boolean;
+    // Whether an account is available to connect with. Opening without one would
+    // leave the dApp permanently disconnected, so Continue is gated on it.
+    hasAccount: boolean;
     onContinue: () => void;
     onCancel: () => void;
 };
@@ -38,6 +41,7 @@ type ConsentInterstitialProps = {
 export const ConsentInterstitial = ({
     entry,
     isLoading,
+    hasAccount,
     onContinue,
     onCancel,
 }: ConsentInterstitialProps) => (
@@ -56,12 +60,21 @@ export const ConsentInterstitial = ({
                 <Paragraph>
                     <Translation id="TR_DAPP_BROWSER_CONSENT_VERIFY" />
                 </Paragraph>
+                {!hasAccount && (
+                    <Paragraph intent="warning">
+                        <Translation id="TR_DAPP_BROWSER_NO_ACCOUNT" />
+                    </Paragraph>
+                )}
             </Card>
             <Actions>
                 <Button intent="neutral" priority="secondary" onClick={onCancel}>
                     <Translation id="TR_DAPP_BROWSER_CONSENT_CANCEL" />
                 </Button>
-                <Button onClick={onContinue} isLoading={isLoading} isDisabled={isLoading}>
+                <Button
+                    onClick={onContinue}
+                    isLoading={isLoading}
+                    isDisabled={isLoading || !hasAccount}
+                >
                     <Translation id="TR_DAPP_BROWSER_CONSENT_CONTINUE" />
                 </Button>
             </Actions>

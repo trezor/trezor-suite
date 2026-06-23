@@ -5673,9 +5673,18 @@ export const messages = defineMessages({
         id: 'TR_DAPP_BROWSER_RELOAD',
         defaultMessage: 'Reload',
     },
+    TR_DAPP_BROWSER_DEVTOOLS: {
+        id: 'TR_DAPP_BROWSER_DEVTOOLS',
+        defaultMessage: 'Toggle developer tools',
+    },
     TR_DAPP_BROWSER_WALLETCONNECT: {
         id: 'TR_DAPP_BROWSER_WALLETCONNECT',
         defaultMessage: 'WalletConnect',
+    },
+    TR_DAPP_BROWSER_WALLETCONNECT_NO_URI: {
+        id: 'TR_DAPP_BROWSER_WALLETCONNECT_NO_URI',
+        defaultMessage:
+            'Copy the WalletConnect link from the dApp first, then click WalletConnect.',
     },
     TR_DAPP_BROWSER_CONSENT_HEADING: {
         id: 'TR_DAPP_BROWSER_CONSENT_HEADING',
@@ -5698,6 +5707,11 @@ export const messages = defineMessages({
     TR_DAPP_BROWSER_CONSENT_CANCEL: {
         id: 'TR_DAPP_BROWSER_CONSENT_CANCEL',
         defaultMessage: 'Cancel',
+    },
+    TR_DAPP_BROWSER_NO_ACCOUNT: {
+        id: 'TR_DAPP_BROWSER_NO_ACCOUNT',
+        defaultMessage:
+            'No Ethereum account is available to connect. Add one in your wallet first.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',

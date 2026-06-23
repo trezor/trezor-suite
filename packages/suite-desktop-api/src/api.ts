@@ -189,7 +189,12 @@ export interface InvokeChannels {
     'browser-window/reload': () => void;
 
     // dApp browser
-    'dapp-browser/open': (params: { entryId: string }) => InvokeResult;
+    'dapp-browser/open': (params: {
+        entryId: string;
+        // The initial visibility grant, set before the page loads so the
+        // provider's first eth_accounts/eth_chainId already resolve (auto-connect).
+        grant?: { address: string; chainId: number };
+    }) => InvokeResult;
     'dapp-browser/close': () => void;
     'dapp-browser/set-bounds': (bounds: {
         x: number;
@@ -199,10 +204,10 @@ export interface InvokeChannels {
     }) => void;
     'dapp-browser/set-visible': (params: { visible: boolean }) => void;
     'dapp-browser/set-grant': (grant: { address: string; chainId: number }) => void;
-    'dapp-browser/emit-event': (payload: { event: string; data?: unknown }) => void;
     'dapp-browser/reload': () => void;
     'dapp-browser/go-back': () => void;
     'dapp-browser/go-forward': () => void;
+    'dapp-browser/toggle-devtools': () => void;
     'dapp-browser/dispatch-response': (response: {
         requestId: string;
         result?: unknown;
@@ -304,10 +309,10 @@ export type DesktopApi = {
     dappBrowserSetBounds: DesktopApiInvoke<'dapp-browser/set-bounds'>;
     dappBrowserSetVisible: DesktopApiInvoke<'dapp-browser/set-visible'>;
     dappBrowserSetGrant: DesktopApiInvoke<'dapp-browser/set-grant'>;
-    dappBrowserEmitEvent: DesktopApiInvoke<'dapp-browser/emit-event'>;
     dappBrowserReload: DesktopApiInvoke<'dapp-browser/reload'>;
     dappBrowserGoBack: DesktopApiInvoke<'dapp-browser/go-back'>;
     dappBrowserGoForward: DesktopApiInvoke<'dapp-browser/go-forward'>;
+    dappBrowserToggleDevTools: DesktopApiInvoke<'dapp-browser/toggle-devtools'>;
     dappBrowserDispatchResponse: DesktopApiInvoke<'dapp-browser/dispatch-response'>;
     dappBrowserReadClipboard: DesktopApiInvoke<'dapp-browser/read-clipboard'>;
 };

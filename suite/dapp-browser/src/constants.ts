@@ -46,8 +46,11 @@ export const DAPP_BROWSER_PROVIDER_INFO = {
 
 /** IPC channel names for the narrow, dApp-only provider bridge (host ⇄ preload). */
 export const DAPP_PROVIDER_IPC = {
-    /** dApp → host: an EIP-1193 request awaiting a response. */
+    /** dApp → host: an EIP-1193 request (fire-and-forget, correlated by requestId). */
     REQUEST: 'dapp-browser/provider-request',
+    /** host → dApp: the response to a request, sent via the WebContents so it is
+     *  never tied to a frame that may have navigated/reloaded. */
+    RESPONSE: 'dapp-browser/provider-response',
     /** host → dApp: a provider event (accountsChanged, chainChanged, …). */
     EVENT: 'dapp-browser/provider-event',
 } as const;
