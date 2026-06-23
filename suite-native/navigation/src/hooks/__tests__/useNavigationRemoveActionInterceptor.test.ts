@@ -17,7 +17,13 @@ jest.mock('@react-navigation/native', () => ({
 const mockedUsePreventRemove = jest.mocked(usePreventRemove);
 
 const triggerPreventRemoveAction = (action: NavigationAction) => {
-    const [, onPreventRemove] = mockedUsePreventRemove.mock.calls[0];
+    const preventRemoveCall = mockedUsePreventRemove.mock.calls[0];
+
+    if (!preventRemoveCall) {
+        throw new Error('Expected usePreventRemove to be called');
+    }
+
+    const [, onPreventRemove] = preventRemoveCall;
 
     onPreventRemove({ data: { action } } as Parameters<typeof onPreventRemove>[0]);
 };

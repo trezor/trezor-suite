@@ -42,7 +42,7 @@ const renderUseNavigationRemoveInterceptorAlert = ({
     );
 
 const getPreventNavigationRemoveProps = () =>
-    mockedUseNavigationRemoveActionInterceptor.mock.calls[0][0];
+    mockedUseNavigationRemoveActionInterceptor.mock.calls.at(-1)?.[0];
 
 describe('useNavigationRemoveInterceptorAlert', () => {
     beforeEach(() => {
@@ -62,7 +62,7 @@ describe('useNavigationRemoveInterceptorAlert', () => {
             alertOptions,
         });
 
-        getPreventNavigationRemoveProps().onInterceptedAction?.({ type: 'GO_BACK' });
+        getPreventNavigationRemoveProps()?.onInterceptedAction?.({ type: 'GO_BACK' });
 
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledTimes(1);
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledWith({
@@ -75,7 +75,7 @@ describe('useNavigationRemoveInterceptorAlert', () => {
     it('should hide stay on screen alert on allowed remove action', () => {
         renderUseNavigationRemoveInterceptorAlert();
 
-        getPreventNavigationRemoveProps().onAllowedAction?.({ type: 'PUSH' });
+        getPreventNavigationRemoveProps()?.onAllowedAction?.({ type: 'PUSH' });
 
         expect(mockHideStayOnScreenAlert).toHaveBeenCalledTimes(1);
     });
