@@ -53,7 +53,7 @@ const shakeTriggerStyle = prepareNativeStyle(_ => ({
 const sheetOverlayStyle = prepareNativeStyle(_ => ({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
 }));
 
 export const AlertSheet = ({ alert }: AlertSheetProps) => {
