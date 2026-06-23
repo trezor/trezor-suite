@@ -9973,6 +9973,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER',
         defaultMessage: 'Update to Everstake and earn ~{apy}% APY',
     },
+    TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES: {
+        id: 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES',
+        defaultMessage: 'Vote with all votes to earn ~{apr}% APR',
+    },
     TR_STAKING_BANNER_DETAIL_TITLE: {
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
         defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',

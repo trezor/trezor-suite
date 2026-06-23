@@ -6,6 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
+    getTronAvailableVotingPower,
     isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -18,7 +19,8 @@ export type StakingAccountStatus =
     | 'staking-inactive'
     | 'staking-max'
     | 'staked-but-insufficient-funds'
-    | 'staking-outdated-provider';
+    | 'staking-outdated-provider'
+    | 'staking-remaining-votes';
 
 export const useStakingAccountStatus = (account: Account): StakingAccountStatus => {
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
@@ -40,6 +42,14 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
             isNewProviderBannerEnabled
         ) {
             return 'staking-outdated-provider';
+        }
+
+        if (account.symbol === 'trx' && stakingBalance !== '0') {
+            const remainingVotes = getTronAvailableVotingPower(account);
+
+            if (remainingVotes !== '0') {
+                return 'staking-remaining-votes';
+            }
         }
 
         if (

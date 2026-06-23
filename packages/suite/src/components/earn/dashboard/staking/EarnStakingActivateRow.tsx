@@ -1,21 +1,20 @@
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useStakingYield } from 'src/hooks/earn/useStakingYield';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { EarnInactiveNetworkOpportunity } from '../common/EarnInactiveNetworkOpportunity';
 
-export const EarnStakingActivateRow = ({
-    symbol,
-    isCardLayout,
-}: {
+interface EarnStakingActivateRowProps {
     symbol: NetworkSymbol;
     isCardLayout: boolean;
-}) => {
-    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: symbol }));
+}
+
+export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActivateRowProps) => {
+    const { apy } = useStakingYield({ symbol });
+
     const { isStakingDisabled } = useMessageSystemStaking(symbol);
 
     if (isStakingDisabled) return null;
