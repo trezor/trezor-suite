@@ -9,7 +9,6 @@ import {
 import {
     type NetworkSymbol,
     getNetwork,
-    getNetworkType,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { AddressDisplayOptions, type WalletSettings } from '@suite-common/wallet-types';
@@ -125,11 +124,6 @@ export const selectIsAnyNetworkEnabled = (state: WalletSettingsRootState) =>
 export const selectIsBitcoinEnabled = createMemoizedSelector(
     [selectEnabledNetworks],
     enabledNetworks => enabledNetworks.includes('btc'),
-);
-
-export const selectIsAnyNonBitcoinLikeNetworkEnabled = createMemoizedSelector(
-    [selectEnabledNetworks],
-    enabledNetworks => enabledNetworks.some(network => getNetworkType(network) !== 'bitcoin'),
 );
 
 export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {
