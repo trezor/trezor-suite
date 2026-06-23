@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-06-23T00:00:00+00:00",
-    "sequence": 146,
+    "timestamp": "2026-06-23T12:00:00+00:00",
+    "sequence": 147,
     "actions": [
         {
             "conditions": [
@@ -1180,7 +1180,7 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "*",
+                        "desktop": "<26.7.1",
                         "mobile": "!",
                         "web": "*"
                     }
