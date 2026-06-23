@@ -24,6 +24,20 @@ Everything below is only needed to **re-run / generate** measurements.
 - Android emulator running, with the app build installed (`io.trezor.suite.develop`).
 - `adb`, `docker`, [`maestro`](https://maestro.mobile.dev) (tested on 2.6.1), and [`flashlight`](https://docs.flashlight.dev) on `PATH`.
 
+> **Apple Silicon (M-series) Macs:** Flashlight's C++ profiler (`BAMPerfProfiler`) segfaults
+> on x86_64 emulators that report `arm64-v8a` via translation. You must use a native arm64
+> system image. Create it once, then start it before running any measurement:
+>
+> ```bash
+> sdkmanager "system-images;android-34;google_apis;arm64-v8a"
+> avdmanager create avd -n Pixel_6_API_34_arm64 \
+>   -k "system-images;android-34;google_apis;arm64-v8a" -d pixel_6
+> emulator -avd Pixel_6_API_34_arm64 &
+> ```
+>
+> This AVD is also wired up as the `android.emu.{debug,release}.arm64` Detox configurations
+> in `suite-native/app/.detoxrc.js`.
+
 ## Setup
 
 ### 1. Build & install the develop app on the emulator

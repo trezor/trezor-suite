@@ -50,6 +50,19 @@ module.exports = {
             },
             bootArgs: '-no-metrics',
         },
+        // arm64 AVD for Apple Silicon (M-series) Macs — avoids the BAMPerfProfiler
+        // segfault that occurs when Flashlight runs on an x86_64 emulator with arm64
+        // ABI translation. Create once with:
+        //   sdkmanager "system-images;android-34;google_apis;arm64-v8a"
+        //   avdmanager create avd -n Pixel_6_API_34_arm64 \
+        //     -k "system-images;android-34;google_apis;arm64-v8a" -d pixel_6
+        'emulator-arm64': {
+            type: 'android.emulator',
+            device: {
+                avdName: 'Pixel_6_API_34_arm64',
+            },
+            bootArgs: '-no-metrics',
+        },
     },
     configurations: {
         'ios.sim.debug': {
@@ -66,6 +79,14 @@ module.exports = {
         },
         'android.emu.release': {
             device: 'emulator',
+            app: 'android.release',
+        },
+        'android.emu.debug.arm64': {
+            device: 'emulator-arm64',
+            app: 'android.debug',
+        },
+        'android.emu.release.arm64': {
+            device: 'emulator-arm64',
             app: 'android.release',
         },
     },
