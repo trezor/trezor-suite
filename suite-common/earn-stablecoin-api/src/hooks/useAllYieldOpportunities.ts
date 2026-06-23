@@ -2,7 +2,7 @@ import { type YieldDto } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { YIELD_OPPORTUNITIES_DEFAULT_LIMIT, queriesStaleTime } from '../config';
-import { useGetYieldOpportunities } from './useGetYieldOpportunities';
+import { getYields } from '../services';
 
 type UseAllYieldOpportunitiesProps = {
     limit?: number;
@@ -15,14 +15,15 @@ export const useAllYieldOpportunities = ({
     limit = YIELD_OPPORTUNITIES_DEFAULT_LIMIT,
     enabled = true,
 }: UseAllYieldOpportunitiesProps = {}) => {
-    const { mutateAsync } = useGetYieldOpportunities({});
-
     const queryResult = useQuery({
         queryKey: commonQueryKeys.yieldOpportunities({ limit }),
-        queryFn: async () => {
-            const response = await mutateAsync({ offset: 0, limit });
+        queryFn: async ({ signal }) => {
+            const { items } = await getYields({
+                params: { offset: 0, limit, sort: 'statusEnterDesc' },
+                signal,
+            });
 
-            return response.items;
+            return items ?? stableEmptyArray;
         },
         enabled,
         staleTime: queriesStaleTime.getYieldOpportunities,
