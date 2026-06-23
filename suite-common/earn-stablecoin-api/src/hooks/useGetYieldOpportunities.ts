@@ -19,7 +19,7 @@ export function useGetYieldOpportunities({
     enabled = true,
 }: UseGetYieldOpportunitiesProps = {}) {
     return useInfiniteQuery({
-        queryKey: commonQueryKeys.yieldOpportunities('pages', { limit, sort }),
+        queryKey: commonQueryKeys.yieldOpportunitiesPages({ limit, sort }),
         queryFn: ({ pageParam, signal }) =>
             getYields({ params: { offset: pageParam, limit, sort }, signal }),
         initialPageParam: 0,

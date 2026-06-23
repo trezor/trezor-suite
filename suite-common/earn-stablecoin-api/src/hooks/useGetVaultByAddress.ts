@@ -10,7 +10,7 @@ interface GetVaultByAddressProps {
 export function useGetVaultByAddress({ enabled, outputToken }: GetVaultByAddressProps) {
     return useQuery({
         enabled: Boolean(enabled && outputToken),
-        queryKey: commonQueryKeys.yieldOpportunities(outputToken),
+        queryKey: commonQueryKeys.yieldOpportunitiesByAddress(outputToken),
         async queryFn() {
             const { items } = await getYields({
                 params: {
