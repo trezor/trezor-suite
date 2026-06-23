@@ -1,6 +1,7 @@
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Column, Row, Skeleton } from '@trezor/components';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const barProps = {
     width: 12,
@@ -18,7 +19,7 @@ interface GraphSkeletonProps {
 }
 
 export const GraphSkeleton = ({ animate, ...rest }: GraphSkeletonProps) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const animationEnabled = animate ?? shouldAnimate;
 
     return (

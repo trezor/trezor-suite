@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
@@ -22,7 +23,7 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
@@ -233,7 +234,7 @@ export const AssetCard = ({
 };
 
 export const AssetCardSkeleton = (props: { animate?: boolean }) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const animate = props.animate ?? shouldAnimate;
 
     return (

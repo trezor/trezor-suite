@@ -1,11 +1,12 @@
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Column, Row, Skeleton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 export const AccountItemSkeleton = () => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const { isSidebarCollapsed } = useResponsiveContext();
 
     if (isSidebarCollapsed) {
