@@ -49,7 +49,7 @@ export const useStablecoinYieldListData = () => {
     const { data: yieldOpportunities, isLoading } = useAllYieldOpportunities();
 
     const listData = useMemo(() => {
-        if (isLoading) {
+        if (isLoading || !yieldOpportunities) {
             const promoListData: EarnPromoListDataItem[] = [
                 'stablecoin-yield',
                 ...STABLECOIN_SKELETON_ITEMS,

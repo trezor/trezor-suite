@@ -215,6 +215,8 @@ export const resolveYieldFlowData = ({
     };
 };
 
+const emptyYieldOpportunities: YieldDto[] = [];
+
 export const useResolvedYieldFlowData = ({
     accountKey,
     tokenContract,
@@ -236,7 +238,7 @@ export const useResolvedYieldFlowData = ({
                 account,
                 tokenContract,
                 yieldId,
-                yieldOpportunities,
+                yieldOpportunities: yieldOpportunities ?? emptyYieldOpportunities,
             }),
         [account, tokenContract, yieldId, yieldOpportunities],
     );

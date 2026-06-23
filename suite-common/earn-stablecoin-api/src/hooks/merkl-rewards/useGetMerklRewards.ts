@@ -70,7 +70,12 @@ export function useGetMerklRewards<Address extends string>(
     }, [queryClient, queryEntriesRef, chainsRewardsRef]);
 
     return {
-        ...queryResult,
+        data: queryResult.data,
+        error: queryResult.error,
+        isError: queryResult.isError,
+        isLoading: queryResult.isLoading,
+        isSuccess: queryResult.isSuccess,
+        refetch: queryResult.refetch,
         waitForMerklToResolveClaim,
     };
 }
