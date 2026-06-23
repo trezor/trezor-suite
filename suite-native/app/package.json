@@ -19,7 +19,7 @@
         "test:e2e": "node ./scripts/cleanArtifacts.js && tsx e2e/trezorDetoxRunner/index.ts",
         "test:e2e:android": "node ./scripts/cleanArtifacts.js && tsx e2e/trezorDetoxRunner/index.ts --config=e2e/trezorDetoxRunner/config/runner-android.config.js",
         "test:e2e:ios": "node ./scripts/cleanArtifacts.js && tsx e2e/trezorDetoxRunner/index.ts --config=e2e/trezorDetoxRunner/config/runner-ios.config.js",
-        "start:e2e": "NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo start --dev-client",
+        "start:e2e": "EXPO_UNSTABLE_HEADLESS=1 NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo start --dev-client",
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21328 tcp:21328 && adb reverse tcp:19121 tcp:19121",
         "github:report:manual": "jest --config=./e2e/jest.config.reporter.js",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
@@ -199,6 +199,7 @@
         "babel-jest": "29.7.0",
         "babel-plugin-transform-remove-console": "^6.9.4",
         "babel-preset-expo": "~56.0.13",
+        "cross-fetch": "^4.1.0",
         "detox": "20.45.1",
         "dotenv": "17.2.3",
         "expo-atlas": "0.4.3",

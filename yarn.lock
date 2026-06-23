@@ -11807,6 +11807,7 @@ __metadata:
     babel-plugin-transform-remove-console: "npm:^6.9.4"
     babel-preset-expo: "npm:~56.0.13"
     browserify-zlib: "npm:^0.2.0"
+    cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.1"
     detox: "npm:20.45.1"
     dotenv: "npm:17.2.3"
