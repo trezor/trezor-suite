@@ -23,8 +23,6 @@ export type AccountListBaseItemProps = {
 
 type TextColor = 'contentPrimary' | 'contentSecondary';
 
-export const ACCOUNT_LIST_ITEM_HEIGHT = 68 as const;
-
 const labelTextStyle = prepareNativeStyle<{ textColor: TextColor; flex: number }>(
     ({ colors }, { textColor, flex }) => ({
         color: colors[textColor],
