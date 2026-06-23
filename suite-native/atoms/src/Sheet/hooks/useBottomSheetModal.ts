@@ -1,10 +1,8 @@
 import { useCallback, useRef } from 'react';
 import { KeyboardController } from 'react-native-keyboard-controller';
 
-import {
-    type BottomSheetModal,
-    useBottomSheetModal as useGorhomBottomSheetModal,
-} from '@gorhom/bottom-sheet';
+import { useBottomSheetModal as useGorhomBottomSheetModal } from '@gorhom/bottom-sheet';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 type BottomSheetModalProps = {
     isNestedSheet?: boolean;
@@ -12,7 +10,7 @@ type BottomSheetModalProps = {
 
 export const useBottomSheetModal = ({ isNestedSheet = false }: BottomSheetModalProps = {}) => {
     const { dismiss, dismissAll } = useGorhomBottomSheetModal();
-    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const bottomSheetRef = useRef<BottomSheetModalMethods>(null);
 
     const openModal = useCallback(() => {
         if (!isNestedSheet) {
