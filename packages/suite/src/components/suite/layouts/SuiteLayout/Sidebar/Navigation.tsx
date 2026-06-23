@@ -1,7 +1,9 @@
-import { type FC, useMemo } from 'react';
+import { type FC, useCallback, useMemo } from 'react';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsInitialRun } from '@suite/flags';
 import { type Route } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Column } from '@trezor/components';
 
@@ -25,11 +27,23 @@ type NavigationProps = {
 
 export const Navigation = ({ children }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const isInitialRun = useSelector(selectIsInitialRun);
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+
+    const reportSwapNavigation = useCallback(() => {
+        analytics.report({
+            type: events.tradeNavigateEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'exchange',
+                from: 'sidebar',
+            },
+        });
+    }, [analytics]);
 
     const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
         useMemo(
@@ -47,6 +61,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                               icon: 'repeat',
                               goToRoute: 'wallet-trading-exchange',
                               routes: ['wallet-trading-exchange'],
+                              onClick: reportSwapNavigation,
                           } as NavigationItemProps,
                           {
                               nameId: 'TR_EARN',
@@ -79,7 +94,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     'data-testid': '@suite/menu/settings',
                 },
             ],
-            [startRoute, isBtcOnly],
+            [startRoute, isBtcOnly, reportSwapNavigation],
         );
 
     return (

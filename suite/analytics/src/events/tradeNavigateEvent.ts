@@ -6,6 +6,8 @@ type Attributes = {
     action: AttributeDef<'navigate' | 'cancel'>;
     type: AttributeDef<'exchange' | 'buy' | 'sell' | 'buy/sell' | 'concierge'>;
     from: AttributeDef<
+        | 'sidebar'
+        | 'otc-banner'
         | 'dashboard/header'
         | 'dashboard/assets'
         | 'dashboard/empty-wallet'
@@ -43,6 +45,8 @@ export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> =
                 { version: '25.5.2', notes: 'added' },
                 { version: '26.3.0', notes: 'added `dashboard/empty-wallet` value' },
                 { version: '26.5.2', notes: 'added `earn-dashboard` value' },
+                { version: '26.7.0', notes: 'added `sidebar` value' },
+                { version: '26.7.0', notes: 'added `otc-banner` value' },
             ],
             description:
                 'Location where the user initiated the trading action (e.g., `dashboard/header`, `account/tradebox`, `dashboard/assets`)',
