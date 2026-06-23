@@ -389,6 +389,63 @@ describe('confirmExchangeTradeThunk', () => {
         });
     });
 
+    it('should route a failed trade with orderId to the detail page instead of a toast', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+
+        const dateString = new Date().toISOString();
+        jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
+
+        const mockResponse = {
+            status: 'ERROR',
+            orderId: 'orderId',
+            error: 'Server error',
+        };
+        const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
+
+        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+        const response = await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade,
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
+
+        const toastAction = store
+            .getActions()
+            .find(action => action.type === 'mockedLogErrorThunk');
+
+        expect(toastAction).toBeUndefined();
+        expect(exchange.transactionId).toBe(mockResponse.orderId);
+        expect(mockNextStep).toHaveBeenCalledTimes(1);
+        expect(trading.trades[0]).toEqual({
+            tradeType: 'exchange',
+            date: dateString,
+            data: tradeResponse,
+            key: mockResponse.orderId,
+        });
+        expect(!!response).toBeFalsy();
+    });
+
     describe('should return true from confirmation for approval and sign transaction', () => {
         it.each([
             [
