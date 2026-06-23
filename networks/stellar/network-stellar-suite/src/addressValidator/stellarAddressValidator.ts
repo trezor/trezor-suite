@@ -50,10 +50,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: () => string[] = () => ['xlm', 'txlm'];
-
 export const stellarValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };

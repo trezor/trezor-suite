@@ -346,18 +346,7 @@ export const isAddressValid = (address: string, symbol: string): boolean => {
     return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
 };
 
-const getSupportedCoins: () => string[] = () => [
-    'btc',
-    'test',
-    'regtest',
-    'ltc',
-    'doge',
-    'zec',
-    'bch',
-];
-
 export const bitcoinValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };

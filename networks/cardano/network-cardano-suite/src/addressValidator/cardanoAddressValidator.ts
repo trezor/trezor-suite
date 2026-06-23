@@ -86,10 +86,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: () => string[] = () => ['ada'];
-
 export const adaValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };

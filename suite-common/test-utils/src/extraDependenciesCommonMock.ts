@@ -62,6 +62,7 @@ const addressValidatorMock: AddressValidator = {
     isAddressValid: () => false,
     getAddressType: () => undefined,
     getSupportedCoins: () => [],
+    isSupportedCoin: (_symbol: string): _symbol is string => false,
 };
 
 const connectInitSettings: ConnectInitSettings = {

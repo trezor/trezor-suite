@@ -19,10 +19,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: () => string[] = () => ['sol', 'dsol'];
-
 export const solanaValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };

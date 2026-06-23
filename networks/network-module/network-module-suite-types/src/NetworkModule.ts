@@ -1,3 +1,9 @@
-import type { AddressValidatorDep } from './AddressValidator';
+import type { AddressValidator } from './AddressValidator';
 
-export type NetworkModule = AddressValidatorDep;
+export type NetworkModule = {
+    addressValidator: AddressValidator;
+
+    getSupportedCoins: () => string[];
+
+    isSupportedCoin: (symbol: string) => symbol is string;
+};

@@ -1,7 +1,8 @@
-export type { AddressType, AddressValidator } from '@network-module/suite-types';
+export type { AddressType } from '@network-module/suite-types';
 export {
     createAddressValidator,
     selectAddressValidatorDep,
+    type AddressValidator,
     type AddressValidatorDep,
     type AddressValidatorDeps,
 } from './AddressValidator';

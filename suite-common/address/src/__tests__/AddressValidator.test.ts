@@ -1,4 +1,7 @@
-import type { AddressValidator, NetworkModule } from '@network-module/suite-types';
+import type {
+    AddressValidator as NetworkAddressValidator,
+    NetworkModule,
+} from '@network-module/suite-types';
 
 import { createAddressValidator } from '../AddressValidator';
 
@@ -6,41 +9,48 @@ describe(createAddressValidator.name, () => {
     const btcAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
     const ethAddress = '0x52908400098527886E0F7030069857D2E4169EE7';
 
-    const createNetworkModule = (addressValidator: AddressValidator): NetworkModule => ({
+    const createNetworkModule = (
+        addressValidator: NetworkAddressValidator,
+        supportedCoins: string[],
+    ): NetworkModule => ({
         addressValidator,
+        getSupportedCoins: jest.fn(() => supportedCoins),
+        isSupportedCoin: (symbol: string): symbol is string => supportedCoins.includes(symbol),
     });
 
     it('builds validator lookup once during composition', () => {
-        const bitcoinValidator: AddressValidator = {
+        const bitcoinValidator: NetworkAddressValidator = {
             isAddressValid: jest.fn(() => true),
             getAddressType: jest.fn(() => 'p2wpkh'),
-            getSupportedCoins: jest.fn(() => ['btc']),
         };
-        const ethereumValidator: AddressValidator = {
+        const ethereumValidator: NetworkAddressValidator = {
             isAddressValid: jest.fn(() => true),
             getAddressType: jest.fn(() => 'address'),
-            getSupportedCoins: jest.fn(() => ['eth']),
         };
+        const bitcoinModule = createNetworkModule(bitcoinValidator, ['btc']);
+        const ethereumModule = createNetworkModule(ethereumValidator, ['eth']);
 
         const addressValidator = createAddressValidator({
             networks: {
                 networkModules: new Map([
-                    ['bitcoin', createNetworkModule(bitcoinValidator)],
-                    ['ethereum', createNetworkModule(ethereumValidator)],
+                    ['bitcoin', bitcoinModule],
+                    ['ethereum', ethereumModule],
                 ]),
             },
         });
 
-        expect(bitcoinValidator.getSupportedCoins).toHaveBeenCalledTimes(1);
-        expect(ethereumValidator.getSupportedCoins).toHaveBeenCalledTimes(1);
+        expect(bitcoinModule.getSupportedCoins).toHaveBeenCalledTimes(1);
+        expect(ethereumModule.getSupportedCoins).toHaveBeenCalledTimes(1);
 
         expect(addressValidator.isAddressValid(btcAddress, 'btc')).toBe(true);
         expect(addressValidator.getAddressType(ethAddress, 'eth')).toBe('address');
         expect(addressValidator.getSupportedCoins()).toEqual(['btc', 'eth']);
         expect(addressValidator.getSupportedCoins()).toBe(addressValidator.getSupportedCoins());
+        expect(addressValidator.isSupportedCoin('btc')).toBe(true);
+        expect(addressValidator.isSupportedCoin('ada')).toBe(false);
 
-        expect(bitcoinValidator.getSupportedCoins).toHaveBeenCalledTimes(1);
-        expect(ethereumValidator.getSupportedCoins).toHaveBeenCalledTimes(1);
+        expect(bitcoinModule.getSupportedCoins).toHaveBeenCalledTimes(1);
+        expect(ethereumModule.getSupportedCoins).toHaveBeenCalledTimes(1);
     });
 
     it('returns invalid result for unsupported symbol', () => {

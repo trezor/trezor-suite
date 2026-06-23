@@ -58,10 +58,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: () => string[] = () => ['trx', 'ttrx'];
-
 export const tronValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };

@@ -106,10 +106,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: () => string[] = () => ['bch'];
-
 export const bchValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };

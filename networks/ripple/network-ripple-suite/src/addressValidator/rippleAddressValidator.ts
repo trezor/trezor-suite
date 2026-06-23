@@ -31,10 +31,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: () => string[] = () => ['xrp', 'txrp'];
-
 export const rippleValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };
