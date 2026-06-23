@@ -89,6 +89,16 @@ const tests = [
                     ...baseFeatures,
                 },
             },
+            {
+                rules: ['<2.3.1'], // < 2.3.0 features missing some fields same as < 1.10.3
+                success: true,
+                payload: {
+                    ...baseFeatures,
+                    auto_lock_delay_ms: null,
+                    fw_vendor: null,
+                    safety_checks: null,
+                },
+            },
         ],
     },
     {
