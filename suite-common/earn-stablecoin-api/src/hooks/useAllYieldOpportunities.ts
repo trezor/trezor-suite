@@ -14,9 +14,9 @@ const stableEmptyArray: YieldDto[] = [];
 export const useAllYieldOpportunities = ({
     limit = YIELD_OPPORTUNITIES_DEFAULT_LIMIT,
     enabled = true,
-}: UseAllYieldOpportunitiesProps = {}) => {
-    const queryResult = useQuery({
-        queryKey: commonQueryKeys.yieldOpportunities({ limit }),
+}: UseAllYieldOpportunitiesProps = {}) =>
+    useQuery({
+        queryKey: commonQueryKeys.yieldOpportunitiesList({ limit }),
         queryFn: async ({ signal }) => {
             const { items } = await getYields({
                 params: { offset: 0, limit, sort: 'statusEnterDesc' },
@@ -28,9 +28,3 @@ export const useAllYieldOpportunities = ({
         enabled,
         staleTime: queriesStaleTime.getYieldOpportunities,
     });
-
-    return {
-        ...queryResult,
-        data: queryResult.data ?? stableEmptyArray,
-    };
-};
