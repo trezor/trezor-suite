@@ -16,9 +16,6 @@
             "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/suite-utils"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         { "path": "../../suite-common/trading" },

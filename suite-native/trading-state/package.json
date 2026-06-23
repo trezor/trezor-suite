@@ -21,7 +21,6 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

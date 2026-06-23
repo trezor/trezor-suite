@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 import type { BuyTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingCountryCode,
     type TradingPaymentMethodProps,
@@ -49,7 +48,9 @@ export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccount
         }
 
         const account = selectAccountByKey(state, tradingAccountKey);
-        invariant(account, `Unknown tradingAccountKey: [${tradingAccountKey}]`);
+        if (!account) {
+            return undefined;
+        }
 
         return getReceiveAccountFromAccountAndAddressString(account, receiveAddress);
     },
