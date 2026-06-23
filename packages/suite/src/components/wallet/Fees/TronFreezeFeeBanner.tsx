@@ -1,5 +1,4 @@
 import { selectSelectedAccount } from '@suite/account';
-import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
@@ -21,11 +20,10 @@ export const TronFreezeFeeBanner = ({
 }: TronFreezeFeeBannerProps) => {
     const dispatch = useDispatch();
     const account = useSelector(selectSelectedAccount);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const freezeAmount = calculateTronFreezeSuggestion(composedLevels?.normal, tronResources);
 
-    if (!account || !isDebugModeActive || !freezeAmount) {
+    if (!account || !freezeAmount) {
         return null;
     }
 
