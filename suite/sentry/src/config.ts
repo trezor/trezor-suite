@@ -79,6 +79,8 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     return breadcrumb;
 };
 
+const isProd = isCodesignBuild();
+
 export const SENTRY_CONFIG = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
 
@@ -86,7 +88,7 @@ export const SENTRY_CONFIG = {
     enabled: !isDevEnv, // set to true to enable Sentry logging while testing locally
     maxValueLength: 500, // default 250 is not enough for some errors
     release: process.env.SENTRY_RELEASE,
-    environment: isCodesignBuild() ? 'production' : 'develop',
+    environment: isProd ? 'production' : 'develop',
     normalizeDepth: 4,
     maxBreadcrumbs: 40,
     beforeBreadcrumb,
@@ -100,13 +102,13 @@ export const SENTRY_CONFIG = {
 
 export const SENTRY_BROWSER_CONFIG = {
     ...SENTRY_CONFIG,
-    profileSessionSampleRate: isCodesignBuild() ? 0.1 : 1,
-    tracesSampleRate: isCodesignBuild() ? 0.1 : 1,
+    profileSessionSampleRate: isProd ? 0.1 : 1,
+    tracesSampleRate: isProd ? 0.1 : 1,
     profileLifecycle: 'trace',
     integrations: [
         captureConsoleIntegration({ levels: ['error'] }),
-        browserProfilingIntegration(),
-        browserTracingIntegration(),
-        elementTimingIntegration(),
-    ],
+        !isProd && browserProfilingIntegration(),
+        !isProd && browserTracingIntegration(),
+        !isProd && elementTimingIntegration(),
+    ].filter((item): item is Exclude<typeof item, false> => Boolean(item)),
 } satisfies BrowserOptions;
