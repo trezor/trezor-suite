@@ -3,7 +3,6 @@ import { A, pipe } from '@mobily/ts-belt';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type BackupType,
-    type FirmwareRevision,
     LANGUAGES,
     type Locale,
     type TrezorDevice,
@@ -26,7 +25,6 @@ import {
 import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
-    type FirmwareVersionString,
     getFirmwareRevision,
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -636,52 +634,6 @@ export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(
     [selectPersistentDeviceData, (_state, deviceId: string) => deviceId],
     (persistentDeviceData, deviceId) =>
         persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
-);
-
-type DeviceUtmParams = {
-    utm_model?: DeviceModelInternal;
-    utm_fw?: FirmwareVersionString;
-    utm_rev?: FirmwareRevision;
-    utm_passphrase?: 'true' | 'false';
-};
-
-export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
-    [
-        selectDeviceInternalModel,
-        selectDeviceFirmwareVersion,
-        selectDeviceFirmwareRevision,
-        selectIsDeviceProtectedByPassphrase,
-        selectIsPortfolioTrackerDevice,
-    ],
-    (
-        deviceModel,
-        firmwareVersion,
-        firmwareRevision,
-        isDeviceProtectedByPassphrase,
-        isPortfolioTrackerDevice,
-    ) => {
-        const result: DeviceUtmParams = {};
-
-        if (isPortfolioTrackerDevice) {
-            return result;
-        }
-
-        if (deviceModel) {
-            result.utm_model = deviceModel;
-        }
-
-        if (firmwareVersion) {
-            result.utm_fw = firmwareVersion;
-        }
-
-        if (firmwareRevision) {
-            result.utm_rev = firmwareRevision;
-        }
-
-        result.utm_passphrase = isDeviceProtectedByPassphrase ? 'true' : 'false';
-
-        return result;
-    },
 );
 
 export const selectIsReconnectRequested = createMemoizedSelector(
