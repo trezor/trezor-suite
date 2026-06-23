@@ -1788,6 +1788,14 @@ export const messages = defineMessages({
         defaultMessage: 'Coins',
         id: 'TR_COINS',
     },
+    TR_SEARCH_NETWORK: {
+        defaultMessage: 'Search networks',
+        id: 'TR_SEARCH_NETWORK',
+    },
+    TR_NO_NETWORKS_FOUND: {
+        defaultMessage: 'No networks found',
+        id: 'TR_NO_NETWORKS_FOUND',
+    },
     TR_HIDDEN: {
         defaultMessage: 'Hidden',
         id: 'TR_HIDDEN',
@@ -3456,7 +3464,7 @@ export const messages = defineMessages({
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
     },
     TR_TESTNET_COINS: {
-        defaultMessage: 'Testnet',
+        defaultMessage: 'Testnet networks',
         id: 'TR_TESTNET_COINS',
     },
     TR_TESTNET_COINS_LABEL: {

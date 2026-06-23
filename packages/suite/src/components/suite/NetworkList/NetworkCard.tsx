@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconButton, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -11,7 +11,6 @@ import { type BackendStatus } from './getBackendStatus';
 type NetworkCardProps = {
     symbol: NetworkSymbol;
     name: string;
-    label?: TranslationKey;
     backendStatus?: BackendStatus;
     isEnabled: boolean;
     isDisabled: boolean;
@@ -24,7 +23,6 @@ type NetworkCardProps = {
 export const NetworkCard = ({
     symbol,
     name,
-    label,
     backendStatus,
     isEnabled,
     isDisabled,
@@ -44,11 +42,6 @@ export const NetworkCard = ({
                 <CoinLogo size={24} symbol={symbol} type="network" />
                 <Column flex="1" minHeight={32} justifyContent="center">
                     <Text typographyStyle="body-sm-strong">{name}</Text>
-                    {label && (
-                        <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
-                            <Translation id={label} />
-                        </Text>
-                    )}
                 </Column>
                 <Row gap={12} onClick={e => e.stopPropagation()}>
                     {onSettings && (
