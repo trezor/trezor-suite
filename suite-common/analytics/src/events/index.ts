@@ -9,6 +9,7 @@ export { settingsAppLogExportedEvent } from './settingsAppLogExportedEvent';
 export { settingsDeviceChangeLabelEvent } from './settingsDeviceChangeLabelEvent';
 export { settingsDeviceWipeEvent } from './settingsDeviceWipeEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
+export { settingsNetworkSearchUsedEvent } from './settingsNetworkSearchUsedEvent';
 export { walletConnectInitEvent } from './walletConnectInitEvent';
 export { walletConnectPairedEvent } from './walletConnectPairedEvent';
 export { walletConnectProposalApprovedEvent } from './walletConnectProposalApprovedEvent';

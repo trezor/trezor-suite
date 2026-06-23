@@ -27,7 +27,7 @@ export const useNetworkSupport = () => {
         deviceSupportedNetworkSymbols.includes(network.symbol);
 
     const [supportedMainnets, unsupportedMainnets] = arrayPartition(mainnets, isNetworkSupported);
-    const supportedTestnets = testnets.filter(isNetworkSupported);
+    const [supportedTestnets, unsupportedTestnets] = arrayPartition(testnets, isNetworkSupported);
 
     const showUnsupportedCoins =
         device?.features?.internal_model === DeviceModelInternal.T1B1 &&
@@ -37,6 +37,7 @@ export const useNetworkSupport = () => {
         supportedMainnets,
         unsupportedMainnets,
         supportedTestnets,
+        unsupportedTestnets,
         showUnsupportedCoins,
     };
 };
