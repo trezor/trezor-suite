@@ -42,7 +42,7 @@ export const TradingFormOfferExchangeActions = () => {
     const fee = composedTransactionInfo?.composed?.fee;
     const isFeeRequiredButMissingValue = fee === undefined || fee === '';
 
-    const { outputs, sendCryptoSelect } = watch();
+    const { outputs, sendCryptoSelect, receiveCryptoSelect } = watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
@@ -63,6 +63,9 @@ export const TradingFormOfferExchangeActions = () => {
     const isReceiveAddressSelected = !!tradingReceiveAddress.receiveAddress;
     const shouldShowApprovalStep = quote !== undefined && requiresTokenApproval(quote);
     const isQuoteOutdated = quote?.send !== sendCryptoSelect?.id;
+    const isQuoteForSelectedReceive =
+        quote?.receive === receiveCryptoSelect?.id &&
+        quote?.receiveAddress === tradingReceiveAddress.receiveAddress;
     const amountTooHigh = isAmountTooHigh({
         amount,
         contractAddress: tokenAddress,
@@ -79,7 +82,11 @@ export const TradingFormOfferExchangeActions = () => {
 
     useEffect(() => {
         const initConfirmTrade = async () => {
-            if (shouldShowApprovalStep && tradingReceiveAddress.receiveAddress) {
+            if (
+                shouldShowApprovalStep &&
+                tradingReceiveAddress.receiveAddress &&
+                isQuoteForSelectedReceive
+            ) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
                 const { receiveAddress } = tradingReceiveAddress;
 
@@ -96,7 +103,12 @@ export const TradingFormOfferExchangeActions = () => {
 
         initConfirmTrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quote, shouldShowApprovalStep, tradingReceiveAddress.receiveAddress]);
+    }, [
+        quote,
+        shouldShowApprovalStep,
+        tradingReceiveAddress.receiveAddress,
+        isQuoteForSelectedReceive,
+    ]);
 
     const onSelectQuote = async () => {
         if (!quote || !tradingReceiveAddress.receiveAddress) return;
