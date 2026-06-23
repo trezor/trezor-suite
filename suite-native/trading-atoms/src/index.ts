@@ -20,6 +20,7 @@ export * from './components/BottomSheetSectionList';
 export * from './components/CardTitle';
 export * from './components/EmptyComponent';
 export * from './components/FilterTabs';
+export * from './components/IconByCryptoId';
 export * from './components/NetworkBadge';
 export * from './components/OverviewRow';
 export * from './components/OverviewValueSkeleton';
