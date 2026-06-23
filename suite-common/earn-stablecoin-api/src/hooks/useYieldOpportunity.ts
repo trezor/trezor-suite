@@ -1,5 +1,3 @@
-import { useMemo, useRef } from 'react';
-
 import { type YieldDto } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
@@ -9,32 +7,18 @@ interface UseYieldOpportunityProps<T extends YieldDto[keyof YieldDto] | YieldDto
     select?: (yieldOpportunity: YieldDto) => T;
 }
 
-const defaultSelect = <T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto>(
-    yieldOpportunity: YieldDto,
-): T => yieldOpportunity as T;
-
 export function useYieldOpportunity<T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto>(
     vaultId: string | undefined,
-    { select = defaultSelect }: UseYieldOpportunityProps<T> = {},
+    { select }: UseYieldOpportunityProps<T> = {},
 ) {
-    const queryResult = useQuery({
+    return useQuery({
         enabled: Boolean(vaultId),
-        queryKey: commonQueryKeys.yieldOpportunities(vaultId),
+        queryKey: commonQueryKeys.yieldOpportunity(vaultId),
         queryFn: ({ signal }) =>
             getYield({
                 routeParams: { vaultId: vaultId! },
                 signal,
             }),
+        select,
     });
-
-    const selectRef = useRef(select);
-    const selectedData = useMemo(
-        () => (queryResult.data ? selectRef.current(queryResult.data) : undefined),
-        [queryResult.data],
-    );
-
-    return {
-        ...queryResult,
-        data: selectedData,
-    };
 }
