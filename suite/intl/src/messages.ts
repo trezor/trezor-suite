@@ -1123,18 +1123,6 @@ export const messages = defineMessages({
             '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} } • {totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
         id: 'TR_TRADING_TRADE_HISTORY_COUNTER',
     },
-    TR_TRADING_POPULAR_CURRENCIES: {
-        defaultMessage: 'Popular currencies',
-        id: 'TR_TRADING_POPULAR_CURRENCIES',
-    },
-    TR_TRADING_OTHER_CURRENCIES: {
-        defaultMessage: 'Other currencies',
-        id: 'TR_TRADING_OTHER_CURRENCIES',
-    },
-    TR_TRADING_NETWORK_TOKENS: {
-        defaultMessage: '{networkName} tokens',
-        id: 'TR_TRADING_NETWORK_TOKENS',
-    },
     TR_TRADING_TOKEN_NETWORK: {
         defaultMessage: '{tokenName} on {networkName} network',
         id: 'TR_TRADING_TOKEN_NETWORK',
@@ -11274,10 +11262,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Create a sentence only you would come up with—avoid quotes and famous lines.',
         dynamic: true,
-    },
-    TR_UNRECOGNIZED: {
-        id: 'TR_UNRECOGNIZED',
-        defaultMessage: 'Unrecognized',
     },
     TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE: {
         id: 'TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE',

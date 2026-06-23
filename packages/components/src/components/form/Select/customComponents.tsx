@@ -235,7 +235,7 @@ export const ValueContainer = ({
     );
 
 export const SingleValue = ({ children }: SingleValueProps<OptionType>) => (
-    <Text ellipsisLineCount={1} as="div" maxWidth="100%">
+    <Text ellipsisLineCount={1} as="div" maxWidth="100%" intent="neutral" priority="primary">
         {children}
     </Text>
 );

@@ -32,9 +32,6 @@
             "path": "../../suite-common/wallet-core"
         },
         {
-            "path": "../../suite-common/wallet-types"
-        },
-        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../asset-utils" },

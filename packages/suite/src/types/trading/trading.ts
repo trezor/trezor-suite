@@ -14,7 +14,6 @@ import type {
     TradingExchangeType,
     TradingPaymentMethodType,
     TradingProviderInfo,
-    TradingSelectAssetOptionGroupProps,
     TradingSellInfoSelector,
     TradingSellType,
     TradingStateSelector,
@@ -25,7 +24,7 @@ import type {
     TradingType,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { type AssetLogoProps, type AssetOptionBaseProps } from '@trezor/product-components';
+import { type AssetLogoProps } from '@trezor/product-components';
 
 export type TradingPageType = 'form' | 'confirm' | 'retry';
 
@@ -142,14 +141,3 @@ export interface TradingCryptoAmountProps {
     receiveCurrency: CryptoId | undefined;
     className?: string;
 }
-
-export interface SelectAssetOptionCurrencyProps extends AssetOptionBaseProps {
-    type: 'currency';
-    label?: string;
-    balance?: string;
-    networkName?: string;
-}
-
-export type SelectAssetOptionProps =
-    | SelectAssetOptionCurrencyProps
-    | TradingSelectAssetOptionGroupProps;

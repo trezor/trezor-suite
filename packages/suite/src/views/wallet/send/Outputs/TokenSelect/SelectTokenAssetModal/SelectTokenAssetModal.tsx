@@ -1,29 +1,39 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-import { Translation, useTranslation } from '@suite/intl';
+import { useTranslation } from '@suite/intl';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import {
-    type AssetOptionBaseProps,
-    SearchAsset,
-    SelectAssetModal,
-    type TokenTab,
-    TokenTabs,
-} from '@trezor/product-components';
+import { Box, Divider } from '@trezor/components';
+import { SearchAsset } from '@trezor/product-components';
 
-import { TokenBalance } from 'src/components/wallet/TokenBalance';
+import {
+    AssetRowAccountWithBalance,
+    AssetRowToken,
+    AssetsList,
+    AssetsListEmpty,
+    AssetsModal,
+    ExpandableAssetRowTokens,
+} from 'src/components/suite/asset-picker/components';
+import {
+    type AssetPickerListItem,
+    useExpandableAccountGroups,
+    useFilterAccountsWithTokens,
+    useListScrollReset,
+} from 'src/components/suite/asset-picker/hooks';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
-import { useBuildOptionsForTabs } from './hooks/useBuildOptionsForTabs';
-import { useOptionsSearch } from './hooks/useOptionsSearch';
+import { useBuildTokenOptions } from './hooks/useBuildTokenOptions';
 
 interface SelectTokenAssetModalProps {
     onModalClose: () => void;
     outputId: number;
     tokenInputName: `outputs.${number}.token`;
 }
+
+const LIST_HEIGHT = 480;
 
 export function SelectTokenAssetModal({
     onModalClose,
@@ -46,7 +56,10 @@ export function SelectTokenAssetModal({
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
 
-    const [activeTokenTab, setActiveTokenTab] = useState<TokenTab['tab']>('tokens');
+    const [search, setSearch] = useState('');
+    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
+        useExpandableAccountGroups();
+    const listRef = useRef<HTMLDivElement>(null);
 
     const dataEnabled = getDefaultValue('options', []).includes('transactionData');
 
@@ -56,66 +69,129 @@ export function SelectTokenAssetModal({
 
     const currencyValue = watch(currencyInputName);
 
-    const optionsForAllTabs = useBuildOptionsForTabs(account);
-    const { filteredOptions, setSearch, search } = useOptionsSearch(
-        optionsForAllTabs[activeTokenTab],
+    const options = useBuildTokenOptions({
+        account,
+        expandedHiddenTokensGroups: expandedAccountTokensGroups,
+    });
+    const filteredOptions = useFilterAccountsWithTokens(options, search);
+
+    useListScrollReset(listRef, search);
+
+    const handleSelectChange = useCallback(
+        async (newlySelectedToken?: TokensWithRates) => {
+            resetDraft();
+
+            setValue(tokenInputName, newlySelectedToken?.contract || null, {
+                shouldDirty: true,
+            });
+            setValue(amountInputName, '', {
+                shouldDirty: true,
+            });
+            setValue(fiatInputName, '', {
+                shouldDirty: true,
+            });
+
+            const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
+
+            if (isSetMaxActive) {
+                setMax(outputId, isSetMaxActive);
+            }
+
+            onModalClose();
+
+            await dispatch(
+                updateFiatRatesThunk({
+                    tickers: [
+                        {
+                            symbol: account.symbol,
+                            tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
+                            protocols: newlySelectedToken?.protocols,
+                        },
+                    ],
+                    baseCurrencyCode: currencyValue.value as BaseCurrencyCode,
+                    rateType: 'current',
+                    fetchAttemptTimestamp: Date.now() as Timestamp,
+                }),
+            );
+            // Clear errors in Amount input.
+            clearErrors(amountInputName);
+            // Remove Amount if set max or ETH data options are enabled.
+            if (isSetMaxActive || dataEnabled) setAmount(outputId, '');
+            // Remove ETH data option.
+            if (dataEnabled) toggleOption('transactionData');
+            // Compose, which can be prevented by Amount re-validation above.
+            composeTransaction(amountInputName);
+        },
+        [
+            account.symbol,
+            amountInputName,
+            clearErrors,
+            composeTransaction,
+            currencyValue.value,
+            dataEnabled,
+            dispatch,
+            fiatInputName,
+            getDefaultValue,
+            onModalClose,
+            outputId,
+            resetDraft,
+            setAmount,
+            setMax,
+            setValue,
+            toggleOption,
+            tokenInputName,
+        ],
     );
 
-    const handleSelectChange = async (selectedAsset: AssetOptionBaseProps) => {
-        const newlySelectedToken = account.tokens?.find(
-            token => token.contract === selectedAsset.contractAddress,
-        );
+    const renderItem = useCallback(
+        (item: AssetPickerListItem) => {
+            switch (item.type) {
+                case 'account':
+                    return (
+                        <AssetRowAccountWithBalance
+                            dataTestId={`@asset-picker/send-token/option/${item.account.symbol}`}
+                            account={item.account}
+                            onClick={() => handleSelectChange()}
+                        />
+                    );
 
-        resetDraft();
+                case 'token':
+                    return (
+                        <AssetRowToken
+                            dataTestId={`@asset-picker/send-token/option/${item.account.symbol}/${item.token.symbol}`}
+                            token={item.token}
+                            account={item.account}
+                            onClick={handleSelectChange}
+                        />
+                    );
 
-        setValue(tokenInputName, newlySelectedToken?.contract || null, {
-            shouldDirty: true,
-        });
-        setValue(amountInputName, '', {
-            shouldDirty: true,
-        });
-        setValue(fiatInputName, '', {
-            shouldDirty: true,
-        });
+                case 'hidden-tokens':
+                    return (
+                        <ExpandableAssetRowTokens
+                            label="TR_HIDDEN_TOKENS"
+                            account={item.account}
+                            tokens={item.tokens}
+                            expanded={item.expanded}
+                            height={item.height}
+                            onExpandToggle={updateExpandableAccountGroups}
+                            onTokenClick={handleSelectChange}
+                            dataTestId={`@asset-picker/send-token/option/hidden-tokens/${item.account.symbol}`}
+                            showTokensPreview
+                        />
+                    );
 
-        const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
-
-        if (isSetMaxActive) {
-            setMax(outputId, isSetMaxActive);
-        }
-
-        onModalClose();
-
-        await dispatch(
-            updateFiatRatesThunk({
-                tickers: [
-                    {
-                        symbol: account.symbol,
-                        tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
-                        protocols: newlySelectedToken?.protocols,
-                    },
-                ],
-                baseCurrencyCode: currencyValue.value as BaseCurrencyCode,
-                rateType: 'current',
-                fetchAttemptTimestamp: Date.now() as Timestamp,
-            }),
-        );
-        // clear errors in Amount input
-        clearErrors(amountInputName);
-        // remove Amount if isSetMaxActive or ETH data options are enabled
-        if (isSetMaxActive || dataEnabled) setAmount(outputId, '');
-        // remove ETH data option
-        if (dataEnabled) toggleOption('transactionData');
-        // compose (could be prevented because of Amount error from re-validation above)
-        composeTransaction(amountInputName);
-    };
+                case 'group-label':
+                case 'group-space':
+                case 'non-tradable-tokens':
+                    return null;
+            }
+        },
+        [handleSelectChange, updateExpandableAccountGroups],
+    );
 
     return (
-        <SelectAssetModal
-            options={filteredOptions}
-            onSelectAsset={handleSelectChange}
-            onClose={onModalClose}
-            searchInput={
+        <AssetsModal heading={{ id: 'TR_SELECT_TOKEN' }} onClose={onModalClose}>
+            <Box padding={{ horizontal: 16 }}>
                 <SearchAsset
                     searchPlaceholder={translationString('TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL')}
                     search={search}
@@ -123,35 +199,23 @@ export function SelectTokenAssetModal({
                     // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus
                 />
-            }
-            noItemsAvailablePlaceholder={{
-                heading: <Translation id="TR_TOKEN_NOT_FOUND" />,
-                body: search ? <Translation id="TR_TOKEN_TRY_DIFFERENT_SEARCH" /> : undefined,
-            }}
-            filterTabs={
-                <TokenTabs
-                    tabs={[
-                        {
-                            tab: 'tokens',
-                            label: <Translation id="TR_TOKENS" />,
-                        },
-                        {
-                            tab: 'hidden',
-                            label: <Translation id="TR_HIDDEN" />,
-                        },
-                    ]}
-                    activeTokenTab={activeTokenTab}
-                    setActiveTokenTab={setActiveTokenTab}
+            </Box>
+
+            <Divider margin={{ top: 16 }} />
+
+            <AssetsListEmpty
+                isEmpty={filteredOptions.length === 0}
+                heading="TR_TOKEN_NOT_FOUND"
+                description={search ? 'TR_TOKEN_TRY_DIFFERENT_SEARCH' : undefined}
+                height={LIST_HEIGHT}
+            >
+                <AssetsList
+                    items={filteredOptions}
+                    renderItem={renderItem}
+                    height={LIST_HEIGHT}
+                    ref={listRef}
                 />
-            }
-            renderOptionBalance={option =>
-                option.tokenBalance && option.contractAddress ? (
-                    <TokenBalance
-                        contractAddress={option.contractAddress}
-                        tokenBalance={option.tokenBalance}
-                    />
-                ) : null
-            }
-        />
+            </AssetsListEmpty>
+        </AssetsModal>
     );
 }

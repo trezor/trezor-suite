@@ -17,7 +17,7 @@ export function AssetsModal({
     heading,
     description,
     onClose,
-    width = 480,
+    width = 600,
     bottomContent,
 }: AssetsModalProps) {
     return (
