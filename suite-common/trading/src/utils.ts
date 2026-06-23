@@ -19,7 +19,12 @@ import {
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
 } from '@suite-common/wallet-config';
-import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet-types';
+import type {
+    Account,
+    AccountKey,
+    FormStateTrading,
+    TokenAddress,
+} from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -45,7 +50,7 @@ import { getCountrySubdivisionByCode } from './utils/countryUtils';
 
 type NetworkAndContractAddress = {
     network: Network | undefined;
-    contractAddress: string | undefined;
+    contractAddress: TokenAddress | undefined;
 };
 
 type TradingGetFormStateSellProps = {
@@ -91,8 +96,11 @@ export const isExchangeProvider = (provider: TradingProviderInfo) =>
 export const parseCryptoId = (cryptoId: CryptoId): TradingParsedCryptoIdProps => {
     const parts = cryptoId.split(CRYPTO_PLATFORM_SEPARATOR);
 
-    // TODO: This casting doesn't make any sense. Return new type called `NetworkId` instead of `CryptoId`
-    return { networkId: parts[0] as CryptoId, contractAddress: parts[1] };
+    return {
+        // TODO: This casting doesn't make any sense. Return new type called `NetworkId` instead of `CryptoId`
+        networkId: parts[0] as CryptoId,
+        contractAddress: parts[1] as TokenAddress | undefined,
+    };
 };
 
 export function composeCryptoId(coingeckoId: string, contractAddress?: string | null): CryptoId {

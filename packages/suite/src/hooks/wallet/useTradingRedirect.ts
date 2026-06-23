@@ -78,8 +78,9 @@ const getTokenInfo = (cryptoId: CryptoId): TokenInfo | undefined => {
 
     if (!contractAddress) return;
 
+    // TODO this conversion is not valid, not all required fields are present
     return {
-        contract: contractAddress,
+        contract: contractAddress as string,
     } as TokenInfo;
 };
 

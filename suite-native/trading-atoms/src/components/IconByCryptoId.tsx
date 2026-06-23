@@ -1,18 +1,21 @@
 import type { CryptoId } from 'invity-api';
 
-import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
-import { CryptoIcon, type CryptoIconSize } from '@suite-native/icons';
+import { CryptoIcon, type CryptoIconSize, CryptoIconWithNetwork } from '@suite-native/icons';
 
 export type IconByCryptoIdProps = {
     cryptoId: CryptoId;
-    size?: CryptoIconSize | number;
+    size?: CryptoIconSize;
+    withNetwork?: boolean;
 };
 
-export const IconByCryptoId = ({ cryptoId, size }: IconByCryptoIdProps) => {
+export const IconByCryptoId = ({ cryptoId, size, withNetwork = false }: IconByCryptoIdProps) => {
     const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
-    invariant(symbol, `Network symbol not found for cryptoId: ${cryptoId}`);
+
+    if (!symbol) {
+        return null;
+    }
 
     // when there is no contract address, we want to use display symbol instead
     // this way we can present ETH icon for EVMs instead of network icon
@@ -20,5 +23,9 @@ export const IconByCryptoId = ({ cryptoId, size }: IconByCryptoIdProps) => {
         ? symbol
         : (getDisplaySymbol(symbol) as NetworkDisplaySymbol);
 
-    return <CryptoIcon symbol={adjustedSymbol} contractAddress={contractAddress} size={size} />;
+    return withNetwork ? (
+        <CryptoIconWithNetwork symbol={symbol} contractAddress={contractAddress} size={size} />
+    ) : (
+        <CryptoIcon symbol={adjustedSymbol} contractAddress={contractAddress} size={size} />
+    );
 };

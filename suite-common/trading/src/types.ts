@@ -30,6 +30,7 @@ import {
     type BaseCurrencyOption,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -104,7 +105,7 @@ export type TradingUtilsProvidersProps = {
 
 export type TradingParsedCryptoIdProps = {
     networkId: CryptoId;
-    contractAddress: string | undefined;
+    contractAddress: TokenAddress | undefined;
 };
 
 export type TradingFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
