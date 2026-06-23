@@ -10,7 +10,8 @@ import {
 import {
     percentageChangeAtom,
     referencePointAtom,
-    selectedPointAtom,
+    selectedPointFiatValueAtom,
+    selectedPointTimestampAtom,
 } from '../portfolioGraphAtoms';
 
 type PortfolioHeaderProps = {
@@ -25,7 +26,8 @@ export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeader
         <Box testID="@home/portfolio/header">
             <VStack spacing="sp4" alignItems="center">
                 <GraphBaseCurrencyBalance
-                    selectedPointAtom={selectedPointAtom}
+                    selectedPointFiatValueAtom={selectedPointFiatValueAtom}
+                    selectedPointTimestampAtom={selectedPointTimestampAtom}
                     referencePointAtom={referencePointAtom}
                     percentageChangeAtom={percentageChangeAtom}
                     showChange={hasDeviceHistoryEnabledAccounts}

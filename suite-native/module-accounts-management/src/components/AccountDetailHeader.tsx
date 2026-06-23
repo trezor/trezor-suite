@@ -34,6 +34,8 @@ import {
     percentageChangeAtom,
     referencePointAtom,
     selectedPointAtom,
+    selectedPointFiatValueAtom,
+    selectedPointTimestampAtom,
 } from '../accountDetailGraphAtoms';
 
 type AccountBalanceProps = {
@@ -104,7 +106,8 @@ export const AccountDetailHeader = ({
             )}
 
             <GraphBaseCurrencyBalance
-                selectedPointAtom={selectedPointAtom}
+                selectedPointFiatValueAtom={selectedPointFiatValueAtom}
+                selectedPointTimestampAtom={selectedPointTimestampAtom}
                 referencePointAtom={referencePointAtom}
                 percentageChangeAtom={percentageChangeAtom}
                 showChange={isHistoryEnabledAccount}

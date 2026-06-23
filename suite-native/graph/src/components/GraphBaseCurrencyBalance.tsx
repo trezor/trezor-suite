@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Atom, useAtomValue } from 'jotai';
@@ -14,12 +15,9 @@ import { BigNumber } from '@trezor/utils';
 import { GraphDateFormatter } from './GraphDateFormatter';
 import { PriceChangeIndicator } from './PriceChangeIndicator';
 
-type BalanceProps = {
-    selectedPointAtom: Atom<FiatGraphPoint | null>;
-    latestValue?: BaseCurrencyAmount;
-};
-
-type GraphFiatBalanceProps = BalanceProps & {
+type GraphFiatBalanceProps = {
+    selectedPointFiatValueAtom: Atom<string>;
+    selectedPointTimestampAtom: Atom<number | null>;
     referencePointAtom: Atom<FiatGraphPoint | null>;
     percentageChangeAtom: Atom<number>;
     showChange?: boolean;
@@ -40,26 +38,44 @@ const Skeleton = () => (
     </VStack>
 );
 
-const Balance = ({ selectedPointAtom, latestValue }: BalanceProps) => {
-    const point = useAtomValue(selectedPointAtom);
+const FormattedBalance = ({ value }: { value: BaseCurrencyAmount }) => (
+    <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
+        <BaseCurrencyAmountLargeFormatter
+            value={value}
+            testID="@home/portfolio/fiat-balance-header"
+        />
+    </DiscreetTextTrigger>
+);
 
-    const baseCurrencyValue =
-        latestValue ??
-        point?.valueLatestTotal ??
-        asBaseCurrencyAmount(new BigNumber(point?.value ? String(point.value) : '0'));
-
-    return (
-        <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
-            <BaseCurrencyAmountLargeFormatter
-                value={baseCurrencyValue}
-                testID="@home/portfolio/fiat-balance-header"
-            />
-        </DiscreetTextTrigger>
+const SelectedPointFiatBalance = ({
+    selectedPointFiatValueAtom,
+}: Pick<GraphFiatBalanceProps, 'selectedPointFiatValueAtom'>) => {
+    const selectedPointFiatValue = useAtomValue(selectedPointFiatValueAtom);
+    const selectedPointFiatBalance = useMemo(
+        () => asBaseCurrencyAmount(new BigNumber(selectedPointFiatValue)),
+        [selectedPointFiatValue],
     );
+
+    return <FormattedBalance value={selectedPointFiatBalance} />;
+};
+
+const Balance = ({
+    selectedPointFiatValueAtom,
+    latestValue,
+}: {
+    selectedPointFiatValueAtom: Atom<string>;
+    latestValue?: BaseCurrencyAmount;
+}) => {
+    if (latestValue !== undefined) {
+        return <FormattedBalance value={latestValue} />;
+    }
+
+    return <SelectedPointFiatBalance selectedPointFiatValueAtom={selectedPointFiatValueAtom} />;
 };
 
 export const GraphBaseCurrencyBalance = ({
-    selectedPointAtom,
+    selectedPointFiatValueAtom,
+    selectedPointTimestampAtom,
     referencePointAtom,
     percentageChangeAtom,
     showChange = true,
@@ -82,7 +98,7 @@ export const GraphBaseCurrencyBalance = ({
         return (
             <Box style={applyStyle(wrapperStyle)}>
                 <Balance
-                    selectedPointAtom={selectedPointAtom}
+                    selectedPointFiatValueAtom={selectedPointFiatValueAtom}
                     latestValue={totalBaseCurrencyBalance}
                 />
                 {showChange && (
@@ -103,12 +119,12 @@ export const GraphBaseCurrencyBalance = ({
 
     return (
         <Box style={applyStyle(wrapperStyle)}>
-            <Balance selectedPointAtom={selectedPointAtom} />
+            <Balance selectedPointFiatValueAtom={selectedPointFiatValueAtom} />
             {showChange && (
                 <HStack alignItems="center">
                     <GraphDateFormatter
                         firstPointDate={firstGraphPoint.date}
-                        selectedPointAtom={selectedPointAtom}
+                        selectedPointTimestampAtom={selectedPointTimestampAtom}
                     />
                     <PriceChangeIndicator percentageChangeAtom={percentageChangeAtom} />
                 </HStack>

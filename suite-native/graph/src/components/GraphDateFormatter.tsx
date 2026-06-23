@@ -1,41 +1,48 @@
 import { type Atom, useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type FiatGraphPoint } from '@suite-common/graph';
 import { Text } from '@suite-native/atoms';
 
-type SelectedPointAtom = Atom<FiatGraphPoint | null>;
+type SelectedPointTimestampAtom = Atom<number | null>;
 
 type GraphDateFormatterProps = {
     firstPointDate: Date;
-    selectedPointAtom: SelectedPointAtom;
+    selectedPointTimestampAtom: SelectedPointTimestampAtom;
 };
 
-const WeekFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
+const WeekFormatter = ({
+    selectedPointTimestampAtom,
+}: {
+    selectedPointTimestampAtom: SelectedPointTimestampAtom;
+}) => {
     const { DateTimeFormatter } = useFormatters();
-    const selectedPoint = useAtomValue(selectedPointAtom);
+    const selectedPointTimestamp = useAtomValue(selectedPointTimestampAtom);
 
     // Empty space to prevent layout shift
-    if (!selectedPoint) return <Text> </Text>;
+    if (selectedPointTimestamp === null) return <Text> </Text>;
 
-    return <DateTimeFormatter value={selectedPoint.date} />;
+    return <DateTimeFormatter value={new Date(selectedPointTimestamp)} />;
 };
 
-const OtherDateFormatter = ({ selectedPointAtom }: { selectedPointAtom: SelectedPointAtom }) => {
+const OtherDateFormatter = ({
+    selectedPointTimestampAtom,
+}: {
+    selectedPointTimestampAtom: SelectedPointTimestampAtom;
+}) => {
     const { DateFormatter } = useFormatters();
 
-    const selectedPoint = useAtomValue(selectedPointAtom);
+    const selectedPointTimestamp = useAtomValue(selectedPointTimestampAtom);
 
-    if (!selectedPoint) return null;
+    if (selectedPointTimestamp === null) return null;
 
-    return <DateFormatter value={selectedPoint.date} />;
+    return <DateFormatter value={new Date(selectedPointTimestamp)} />;
 };
 
 const millisecondsPerTwoWeek = 1209600000;
 
 export const GraphDateFormatter = ({
     firstPointDate,
-    selectedPointAtom,
+    selectedPointTimestampAtom,
 }: GraphDateFormatterProps) => {
     const millisecondElapsedFromFistPoint = new Date().getTime() - firstPointDate.getTime();
     // this check is significantly faster than using date-fns/differenceInWeeks(days)
@@ -45,7 +52,7 @@ export const GraphDateFormatter = ({
 
     return (
         <Text variant="body-sm" color="contentSecondary">
-            <Formatter selectedPointAtom={selectedPointAtom} />
+            <Formatter selectedPointTimestampAtom={selectedPointTimestampAtom} />
         </Text>
     );
 };
