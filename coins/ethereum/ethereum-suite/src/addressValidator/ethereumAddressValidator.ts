@@ -44,21 +44,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-const getSupportedCoins: () => string[] = () => [
-    'eth',
-    'pol',
-    'bsc',
-    'arb',
-    'base',
-    'op',
-    'avax',
-    'etc',
-    'tsep',
-    'thod',
-];
-
 export const ethereumValidator: AddressValidator = {
     isAddressValid,
     getAddressType,
-    getSupportedCoins,
 };

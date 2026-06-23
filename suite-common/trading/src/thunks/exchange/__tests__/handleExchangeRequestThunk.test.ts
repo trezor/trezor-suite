@@ -43,6 +43,7 @@ describe('handleExchangeRequestThunk', () => {
                     addressValidator: {
                         getAddressType: jest.fn(),
                         getSupportedCoins: jest.fn(() => ['eth']),
+                        isSupportedCoin: (symbol: string): symbol is string => symbol === 'eth',
                         isAddressValid: jest.fn(
                             (address, symbol) => address === validEthAddress && symbol === 'eth',
                         ),

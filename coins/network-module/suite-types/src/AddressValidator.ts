@@ -14,10 +14,4 @@ export type AddressValidator = {
     isAddressValid: (address: string, symbol: string) => boolean;
 
     getAddressType: (address: string, symbol: string) => AddressType | undefined;
-
-    getSupportedCoins: () => string[];
-};
-
-export type AddressValidatorDep = {
-    addressValidator: AddressValidator;
 };
