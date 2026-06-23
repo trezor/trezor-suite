@@ -106,13 +106,31 @@ export const confirmExchangeTradeThunk = createThunk(
             !response.orderId ||
             response.status === 'ERROR'
         ) {
+            dispatch(tradingExchangeActions.saveSelectedQuote(response));
+
+            if (response.status === 'ERROR' && response.orderId) {
+                dispatch(
+                    tradingActions.saveTrade({
+                        tradeType: 'exchange',
+                        date: new Date().toISOString(),
+                        key: response.orderId,
+                        data: response,
+                        sendAccountKey,
+                        receiveAccountKey,
+                    }),
+                );
+                dispatch(tradingExchangeActions.saveTransactionId(response.orderId));
+                nextStep?.();
+
+                return undefined;
+            }
+
             dispatch(
                 logErrorThunk({
                     errorMessage: response.error || 'Error response from the server',
                     tradingType: 'exchange',
                 }),
             );
-            dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
             return undefined;
         }
