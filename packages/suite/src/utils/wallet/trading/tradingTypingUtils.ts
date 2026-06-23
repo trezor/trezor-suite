@@ -8,7 +8,6 @@ import {
     type TradingExchangeType,
     type TradingFiatCurrencyOption,
     type TradingSellType,
-    type TradingTradeMapProps,
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
@@ -124,16 +123,6 @@ export const getFiatCurrenciesProps = (
     }
 
     return null;
-};
-
-export const getSelectQuoteTyped = (
-    context: TradingFormContextValues<TradingType>,
-): ((quote: TradingTradeMapProps[typeof context.type]) => void) => {
-    const selectQuote = context.selectQuote as (
-        quote: TradingTradeMapProps[typeof context.type],
-    ) => void;
-
-    return selectQuote;
 };
 
 export const getSelectedCryptoId = (
