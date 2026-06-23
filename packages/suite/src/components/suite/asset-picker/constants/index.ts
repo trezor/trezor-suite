@@ -7,6 +7,4 @@ export const ASSET_ROW_HEIGHTS_BY_SIZE = {
     lg: 32,
 } as const satisfies Record<AssetGroupSpaceSize, number>;
 
-// Includes 2px below the header so the flat card's bottom border (drawn with an
-// outline outside the box) is not overlapped by the following virtualized row.
-export const EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT = 46;
+export const EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT = 50;

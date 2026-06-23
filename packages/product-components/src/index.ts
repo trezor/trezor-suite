@@ -1,11 +1,4 @@
-export {
-    ITEM_HEIGHT,
-    SelectAssetModal,
-    type AssetProps,
-    type AssetOptionBaseProps,
-    type AssetTokenBalance,
-} from './components/SelectAssetModal/SelectAssetModal';
-export { SearchAsset } from './components/SelectAssetModal/SearchAsset';
+export { SearchAsset } from './components/SearchAsset/SearchAsset';
 export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
 export { mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
 export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';
@@ -17,7 +10,6 @@ export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShare
 export * from './components/TokenIconSet/TokenIconSet';
 export * from './components/NetworkIconSet/NetworkIconSet';
 export { NetworkIcon, type NetworkIconProps } from './components/NetworkIcon/NetworkIcon';
-export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTabs';
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';

@@ -92,9 +92,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     );
 
     const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
-    const onOpenSelectAssetModal = !hasNoStandardTokens
-        ? () => setIsTokensModalActive(true)
-        : undefined;
+    const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
 
     const networkTokenContractAddress =
         selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
@@ -111,7 +109,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 />
             )}
 
-            <Card type="raised" paddingType="normal" onClick={onOpenSelectAssetModal}>
+            <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={spacings.sm}>
                         {selectedToken ? (

@@ -33,7 +33,7 @@ export const commonInputStyles = css`
     border: none;
     background: transparent;
     outline: none;
-    color: inherit;
+    color: ${({ theme }) => theme.contentPrimary};
     font-size: inherit;
     letter-spacing: inherit;
     font-weight: inherit;
