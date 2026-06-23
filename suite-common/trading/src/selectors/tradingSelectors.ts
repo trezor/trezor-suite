@@ -492,7 +492,7 @@ const getFilteredCryptoIds = (
     supportedCryptoIds: CryptoId[],
     coins: Coins | undefined,
     platforms: Platforms | undefined,
-    supportedCoins: string[],
+    supportedCoins: readonly string[],
 ) => {
     if (!coins || !platforms) {
         return [];
@@ -526,7 +526,7 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.buy.buyInfo?.supportedCryptoCurrencies,
             ),
-        (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
+        (_: TradingRootState, supportedCoins: readonly string[]) => supportedCoins,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
@@ -540,7 +540,7 @@ export const selectTradingSellSupportedCryptoIds = createMemoizedSelector(
             returnStableArrayIfEmpty<CryptoId>(
                 wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
             ),
-        (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
+        (_: TradingRootState, supportedCoins: readonly string[]) => supportedCoins,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
@@ -553,7 +553,7 @@ const createExchangeCryptoIdsSelector = (key: 'buyCryptoIds' | 'sellCryptoIds') 
             ({ wallet }) => wallet.trading.info.platforms,
             ({ wallet }) =>
                 returnStableArrayIfEmpty<CryptoId>(wallet.trading.exchange.exchangeInfo?.[key]),
-            (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
+            (_: TradingRootState, supportedCoins: readonly string[]) => supportedCoins,
         ],
         (coins, platforms, cryptoIds, supportedCoins) =>
             getFilteredCryptoIds(cryptoIds, coins, platforms, supportedCoins),
@@ -567,7 +567,7 @@ export const selectTradingSellSellCryptoIds = createMemoizedSelector(
         selectTradingCoins,
         ({ wallet }) => wallet.trading.info.platforms,
         ({ wallet }) => wallet.trading.sell.sellInfo?.supportedCryptoCurrencies,
-        (_: TradingRootState, supportedCoins: string[]) => supportedCoins,
+        (_: TradingRootState, supportedCoins: readonly string[]) => supportedCoins,
     ],
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(
@@ -865,11 +865,11 @@ export const selectTradingActiveSection = (state: TradingRootState) =>
 
 export const selectTradingSupportedSymbols = createMemoizedSelector(
     [
-        (state: TradingRootState, _type: TradingType, supportedCoins: string[]) =>
+        (state: TradingRootState, _type: TradingType, supportedCoins: readonly string[]) =>
             selectTradingBuySupportedCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: string[]) =>
+        (state: TradingRootState, _type: TradingType, supportedCoins: readonly string[]) =>
             selectTradingExchangeSellCryptoIds(state, supportedCoins),
-        (state: TradingRootState, _type: TradingType, supportedCoins: string[]) =>
+        (state: TradingRootState, _type: TradingType, supportedCoins: readonly string[]) =>
             selectTradingSellSupportedCryptoIds(state, supportedCoins),
         (_: TradingRootState, type: TradingType) => type,
     ],

@@ -8,7 +8,7 @@ import type { NetworksServiceDep } from '@suite-common/networks';
 export type AddressValidatorDeps = NetworksServiceDep;
 
 export type AddressValidator = NetworkAddressValidator & {
-    getSupportedCoins: () => string[];
+    getSupportedCoins: () => readonly string[];
     isSupportedCoin: (symbol: string) => symbol is string;
 };
 
@@ -41,7 +41,7 @@ export const createAddressValidator = ({ networks }: AddressValidatorDeps): Addr
         validatorByNetworkSymbol.get(networkSymbol)?.isAddressValid(address, networkSymbol) ??
         false;
 
-    const getSupportedCoins = (): string[] => supportedCoins;
+    const getSupportedCoins = (): readonly string[] => supportedCoins;
 
     const isSupportedCoin = (symbol: string): symbol is string =>
         validatorByNetworkSymbol.has(symbol);
