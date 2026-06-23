@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { type PressableProps } from 'react-native';
+import { type PressableProps, type ViewStyle } from 'react-native';
+import { type AnimatedStyle } from 'react-native-reanimated';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import {
@@ -9,6 +10,8 @@ import {
     useNativeStyles,
 } from '@trezor/styles-native';
 
+import { Loader } from '../Loader';
+import { AnimatedPressable } from '../Pressable';
 import { type ButtonStyleProps, buttonStyle } from './Button';
 import { type ButtonColorProps, type ButtonSize } from './types';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
@@ -18,8 +21,6 @@ import {
     iconButtonPaddingMap,
     iconButtonToIconSizeMap,
 } from './utils';
-import { Loader } from '../Loader';
-import { AnimatedPressable } from '../Pressable';
 
 export type IconButtonProps = Omit<
     PressableProps,
@@ -27,7 +28,7 @@ export type IconButtonProps = Omit<
 > & {
     iconName: IconName;
     size?: ButtonSize;
-    style?: NativeStyleObject;
+    style?: NativeStyleObject | AnimatedStyle<ViewStyle>;
     isLoading?: boolean;
     isDisabled?: boolean;
 } & ButtonColorProps;

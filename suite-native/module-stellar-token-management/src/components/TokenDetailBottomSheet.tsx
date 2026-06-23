@@ -1,6 +1,6 @@
 import { type RefObject } from 'react';
 
-import { type BottomSheetModal as GorhomBottomSheetModal } from '@gorhom/bottom-sheet';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -8,7 +8,7 @@ import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 type TokenDetailBottomSheetProps = {
-    bottomSheetRef: RefObject<GorhomBottomSheetModal | null>;
+    bottomSheetRef: RefObject<BottomSheetModalMethods | null>;
     tokenName: string;
     assetCode: string;
     issuerDomain: string;
