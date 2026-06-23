@@ -14,7 +14,12 @@ import {
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
 import { mapPaddingTypeToPadding } from '@trezor/components/src/components/Card/utils';
-import { AssetLogo, CoinLogo, isCoinSymbol } from '@trezor/product-components';
+import {
+    AssetLogo,
+    CoinLogo,
+    isCoinSymbol,
+    shouldShowNetworkIcon,
+} from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -60,16 +65,17 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
         if (contractAddress) {
             return (
                 <AssetLogo
-                    size={20}
+                    size={24}
                     symbol={symbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol ?? ''}
+                    showNetworkIcon={shouldShowNetworkIcon(symbol, contractAddress)}
                 />
             );
         }
 
         if (isCoinSymbol(symbol)) {
-            return <CoinLogo size={20} symbol={symbol} type="tokenWithNetwork" />;
+            return <CoinLogo size={24} symbol={symbol} type="tokenWithNetwork" />;
         }
 
         return null;
