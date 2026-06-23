@@ -5,9 +5,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
-import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Box, buttonSizeToDimensionsMap } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
+import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
@@ -61,12 +61,6 @@ export const TradeableAssetButton = ({
         [dominantAssetColor],
     );
 
-    // when there is no contract address, we want to use display symbol instead
-    // this way we can present ETH icon for EVMs instead of network icon
-    const adjustedSymbol = contractAddress
-        ? networkSymbol
-        : (getDisplaySymbol(networkSymbol) as NetworkDisplaySymbol);
-
     const symbolTestID = testID ? `${testID}/symbol` : undefined;
 
     return (
@@ -84,7 +78,7 @@ export const TradeableAssetButton = ({
                 accessibilityLabel={accessibilityLabel}
                 testID={testID}
             >
-                <CryptoIcon symbol={adjustedSymbol} contractAddress={contractAddress} size="tiny" />
+                <IconByCryptoId cryptoId={cryptoId} size="tiny" />
                 <NetworkSymbolExtendedFormatter
                     symbol={symbol}
                     variant="body-sm-strong"
