@@ -1,13 +1,13 @@
 import { AccountLabel } from '@suite/account';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { goto, selectSettingsBackRoute } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type TronStakePageHeaderProps = {
@@ -18,9 +18,10 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
+    const previousRoute = useSelector(selectSettingsBackRoute);
 
     const onBackClick = () => {
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(goto({ routeName: previousRoute.name, params: previousRoute.params }));
     };
 
     const onHowItWorksClick = () => {
