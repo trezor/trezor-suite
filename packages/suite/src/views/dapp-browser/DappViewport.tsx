@@ -1,10 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { type DappCatalogEntry } from '@suite/dapp-browser';
+import { selectHasActiveModal } from '@suite/modal';
 import { type Account } from '@suite-common/wallet-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { DappTopBar } from './DappTopBar';
 
@@ -39,6 +42,33 @@ export const DappViewport = ({
 }: DappViewportProps) => {
     const slotRef = useRef<HTMLDivElement>(null);
 
+    // The native view ignores DOM z-index and paints over the Suite renderer, so
+    // any on-top Suite overlay — the account menu here, a WalletConnect (or any
+    // Redux) modal — would otherwise be drawn behind it. Hide the native view
+    // while one is open.
+    const hasActiveModal = useSelector(selectHasActiveModal);
+    const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+    const shouldHideView = hasActiveModal || isAccountMenuOpen;
+
+    // Only push on an actual change. The first reveal is owned by the bounds
+    // report (avoids a full-window flash), so don't emit the initial `visible:
+    // true`; do emit if an overlay is somehow already up on mount.
+    const prevShouldHideRef = useRef<boolean | null>(null);
+    useEffect(() => {
+        if (prevShouldHideRef.current === shouldHideView) {
+            return;
+        }
+
+        const isInitial = prevShouldHideRef.current === null;
+        prevShouldHideRef.current = shouldHideView;
+
+        if (isInitial && !shouldHideView) {
+            return;
+        }
+
+        desktopApi.dappBrowserSetVisible({ visible: !shouldHideView });
+    }, [shouldHideView]);
+
     useEffect(() => {
         const slot = slotRef.current;
 
@@ -60,13 +90,12 @@ export const DappViewport = ({
 
         const resizeObserver = new ResizeObserver(reportBounds);
         resizeObserver.observe(slot);
-        window.addEventListener('resize', reportBounds);
         // Layout can shift on scroll inside the page chrome.
+        // TODO: use requestAnimationFrame to avoid flooding the main process with events, throttling or ideally observer
         window.addEventListener('scroll', reportBounds, true);
 
         return () => {
             resizeObserver.disconnect();
-            window.removeEventListener('resize', reportBounds);
             window.removeEventListener('scroll', reportBounds, true);
         };
     }, []);
@@ -78,6 +107,8 @@ export const DappViewport = ({
                 accounts={accounts}
                 selectedAddress={selectedAddress}
                 onSelectAccount={onSelectAccount}
+                isAccountMenuOpen={isAccountMenuOpen}
+                onAccountMenuOpenChange={setIsAccountMenuOpen}
                 onClose={onClose}
             />
             <ViewSlot ref={slotRef} />

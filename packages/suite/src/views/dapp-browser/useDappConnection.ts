@@ -28,22 +28,22 @@ export const useDappConnection = (entry: DappCatalogEntry) => {
         }
     }, [accounts, selectedAddress]);
 
-    // Auto-connect (§4): push the selected account as the grant. Opening the
-    // dApp is the connection consent; this grants visibility only, never signing.
-    const connect = useCallback(() => {
-        if (selectedAddress) {
-            desktopApi.dappBrowserSetGrant({ address: selectedAddress, chainId });
-        }
-    }, [selectedAddress, chainId]);
-
+    // Re-point the dApp at another account: update the grant, then reload the
+    // view so the dApp re-initialises and connects to the newly selected account
+    // (set-grant must land before the reload, hence the await chain).
     const selectAccount = useCallback(
-        (address: string) => {
+        async (address: string) => {
+            // Re-selecting the current account would reload the view for nothing.
+            if (address === selectedAddress) {
+                return;
+            }
+
             setSelectedAddress(address);
-            desktopApi.dappBrowserSetGrant({ address, chainId });
-            desktopApi.dappBrowserEmitEvent({ event: 'accountsChanged', data: [address] });
+            await desktopApi.dappBrowserSetGrant({ address, chainId });
+            await desktopApi.dappBrowserReload();
         },
-        [chainId],
+        [chainId, selectedAddress],
     );
 
-    return { accounts, selectedAddress, chainId, connect, selectAccount };
+    return { accounts, selectedAddress, chainId, selectAccount };
 };

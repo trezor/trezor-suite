@@ -134,7 +134,7 @@ export const handleDappRequestThunk = createThunk<DappRequestResult, DappRequest
                                   maxFeePerGas: transaction.maxFeePerGas ?? '0x0',
                                   maxPriorityFeePerGas: transaction.maxPriorityFeePerGas ?? '0x0',
                               }),
-                    } as EthereumTransaction | EthereumTransactionEIP1559;
+                    } satisfies EthereumTransaction | EthereumTransactionEIP1559;
 
                     dispatch(
                         trezorConnectPopupActions.connectPopupCallThunk({
