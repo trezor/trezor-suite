@@ -23,6 +23,7 @@ export const EarnStakingTable = () => {
         ethNotActivated,
         adaNotActivated,
         solNotActivated,
+        trxNotActivated,
         isExpandable,
         isExpanded,
         toggleExpanded,
@@ -60,6 +61,9 @@ export const EarnStakingTable = () => {
                                 {solNotActivated && (
                                     <EarnStakingActivateRow symbol="sol" isCardLayout />
                                 )}
+                                {trxNotActivated && (
+                                    <EarnStakingActivateRow symbol="trx" isCardLayout />
+                                )}
                             </Column>
                         ) : (
                             <Card paddingType="none">
@@ -92,6 +96,12 @@ export const EarnStakingTable = () => {
                                         {solNotActivated && (
                                             <EarnStakingActivateRow
                                                 symbol="sol"
+                                                isCardLayout={false}
+                                            />
+                                        )}
+                                        {trxNotActivated && (
+                                            <EarnStakingActivateRow
+                                                symbol="trx"
                                                 isCardLayout={false}
                                             />
                                         )}

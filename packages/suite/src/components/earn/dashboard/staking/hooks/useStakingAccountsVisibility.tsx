@@ -18,6 +18,7 @@ interface UseAccountVisibilityProps {
     ethNotActivated: boolean;
     solNotActivated: boolean;
     adaNotActivated: boolean;
+    trxNotActivated: boolean;
 }
 
 export const useStakingAccountsVisibility = ({
@@ -26,6 +27,7 @@ export const useStakingAccountsVisibility = ({
     ethNotActivated,
     solNotActivated,
     adaNotActivated,
+    trxNotActivated,
 }: UseAccountVisibilityProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -93,6 +95,7 @@ export const useStakingAccountsVisibility = ({
         const hasEthBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'eth');
         const hasSolBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'sol');
         const hasAdaBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'ada');
+        const hasTrxBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'trx');
 
         const sortedInsufficientFundsAccounts = sortByCoin([...accountsInsufficientFunds]);
 
@@ -122,6 +125,14 @@ export const useStakingAccountsVisibility = ({
             if (account) additionalAccounts.push(account);
         }
 
+        if (!hasTrxBaseAccount && !trxNotActivated) {
+            const account = sortedInsufficientFundsAccounts.find(
+                account => account.symbol === 'trx',
+            );
+
+            if (account) additionalAccounts.push(account);
+        }
+
         return sortByCoin([...additionalAccounts]);
     }, [
         alwaysVisibleAccounts,
@@ -129,6 +140,7 @@ export const useStakingAccountsVisibility = ({
         ethNotActivated,
         solNotActivated,
         adaNotActivated,
+        trxNotActivated,
     ]);
 
     const collapsedAccounts = [...alwaysVisibleAccounts, ...collapsedInsufficientFundsAccounts];

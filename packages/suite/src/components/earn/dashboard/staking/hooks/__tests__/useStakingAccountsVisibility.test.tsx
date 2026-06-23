@@ -30,6 +30,7 @@ const defaultProps = {
     ethNotActivated: false,
     solNotActivated: false,
     adaNotActivated: false,
+    trxNotActivated: false,
 };
 
 describe('useStakingAccountsVisibility', () => {

@@ -16,6 +16,7 @@ type EarnStakingActionButtonsProps = {
     onStake: (event: MouseEvent<HTMLButtonElement>) => void;
     onStakeNow: (event: MouseEvent<HTMLButtonElement>) => void;
     onUpdateProvider: (event: MouseEvent<HTMLButtonElement>) => void;
+    onVote: (event: MouseEvent<HTMLButtonElement>) => void;
     onClaim: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -30,6 +31,7 @@ export const EarnStakingActionButtons = ({
     onStake,
     onStakeNow,
     onUpdateProvider,
+    onVote,
     onClaim,
 }: EarnStakingActionButtonsProps) => (
     <>
@@ -93,6 +95,20 @@ export const EarnStakingActionButtons = ({
                     onClick={onUpdateProvider}
                 >
                     <Translation id="TR_EARN_UPDATE_PROVIDER" />
+                </Button>
+            </Tooltip>
+        )}
+
+        {stakingStatus === 'staking-remaining-votes' && (
+            <Tooltip content={stakingMessageContent}>
+                <Button
+                    intent="brand"
+                    size="small"
+                    isDisabled={isStakingDisabled}
+                    iconLeft={isStakingDisabled ? 'info' : undefined}
+                    onClick={onVote}
+                >
+                    <Translation id="TR_EARN_TRON_VOTE" />
                 </Button>
             </Tooltip>
         )}

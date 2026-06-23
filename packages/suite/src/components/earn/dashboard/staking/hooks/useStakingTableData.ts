@@ -17,6 +17,7 @@ type UseStakingTableDataResult = {
     ethNotActivated: boolean;
     adaNotActivated: boolean;
     solNotActivated: boolean;
+    trxNotActivated: boolean;
     isExpandable: boolean;
     isExpanded: boolean;
     toggleExpanded: () => void;
@@ -44,7 +45,11 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
     const stakingAccounts = accounts.filter(
-        account => account.symbol === 'eth' || account.symbol === 'sol' || account.symbol === 'ada',
+        account =>
+            account.symbol === 'eth' ||
+            account.symbol === 'sol' ||
+            account.symbol === 'ada' ||
+            account.symbol === 'trx',
     );
 
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
@@ -61,6 +66,10 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
         deviceSupportedNetworkSymbols.includes('ada') &&
         !stakingAccounts.some(account => account.symbol === 'ada');
 
+    const trxNotActivated =
+        deviceSupportedNetworkSymbols.includes('trx') &&
+        !stakingAccounts.some(account => account.symbol === 'trx');
+
     const { displayedAccounts, isExpandable, isExpanded, toggleExpanded, hasAnyRewardsData } =
         useStakingAccountsVisibility({
             stakingAccounts,
@@ -68,6 +77,7 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
             ethNotActivated,
             solNotActivated,
             adaNotActivated,
+            trxNotActivated,
         });
 
     return {
@@ -75,6 +85,7 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
         ethNotActivated,
         adaNotActivated,
         solNotActivated,
+        trxNotActivated,
         isExpandable,
         isExpanded,
         toggleExpanded,
