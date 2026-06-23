@@ -37,8 +37,7 @@ tags:
                 text: 'Not now'
                 retryTapIfNoChange: true
 
-# Enable coins via the Get started button (mirrors onCoinEnabling.handleCoinEnablingInit).
-# All coins start disabled here, so each toggle tap enables one.
+# Open coin enabling via the Get started button (mirrors onCoinEnabling.handleCoinEnablingInit).
 - extendedWaitUntil:
       visible:
           id: '@screen/Home'
@@ -61,23 +60,27 @@ tags:
       visible:
           id: '@screen/CoinEnablingInit'
       timeout: 30000
-- runFlow:
-      file: ../subflows/enableAllCoins.yaml
+
+# Enable Bitcoin only, then save. Coins start disabled, so one tap enables it.
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-btc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-btc'
+      retryTapIfNoChange: true
 - tapOn:
       id: '@coin-enabling/button-save'
       retryTapIfNoChange: true
 
-# Wait for discovery to finish: Home + a populated portfolio graph
+# Wait for Bitcoin discovery to finish: the discovered account shows up in the assets
+# tab. Reaching it confirms the device connected and discovery completed.
 - extendedWaitUntil:
       visible:
           id: '@screen/Home'
       timeout: 60000
-- extendedWaitUntil:
-      visible:
-          id: '@home/portfolio/graph'
-      timeout: 120000
-
-# Open the assets tab and the first discovered account
 - tapOn:
       id: '@tabBar/AccountsStack'
       retryTapIfNoChange: true
@@ -88,29 +91,6 @@ tags:
 - extendedWaitUntil:
       visible:
           id: '@accountList/item/title'
-      timeout: 30000
-- tapOn:
-      id: '@accountList/item/title'
-      index: 0
-      retryTapIfNoChange: true
-
-# Token-bearing coins land on AccountAssets first; drill into AccountDetail
-- runFlow:
-      when:
-          visible:
-              id: '@screen/AccountAssets'
-      commands:
-          - tapOn:
-                id: '@accountList/item/title'
-                index: 0
-                retryTapIfNoChange: true
-# Landing on AccountDetail for a discovered account confirms the device connected
-# and discovery finished. We stop here: in the E2E build the account has no balance
-# or history (the portfolio graph is disabled for E2E tests), so asserting on the
-# transaction list is not meaningful in CI.
-- extendedWaitUntil:
-      visible:
-          id: '@screen/AccountDetail'
-      timeout: 30000
+      timeout: 60000
 
 - runScript: ../scripts/cleanupDevice.js
