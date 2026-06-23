@@ -4,7 +4,6 @@ import { useStore } from 'react-redux';
 import type { DeviceRootState } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { AddressFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { useReceiveAmountMultiplier } from '@suite-native/trading-quote-utils';
 import { type ReviewOutputItemListProps } from '@suite-native/transaction-management';
@@ -15,7 +14,7 @@ import { CryptoAmountRow } from '../../components/general/CryptoAmountRow';
 type ContentBuilderFunction = NonNullable<ReviewOutputItemListProps['contentBuilder']>;
 
 const flexStyle = prepareNativeStyle(() => ({
-    flex: 1,
+    flexShrink: 1,
 }));
 
 export const useTradingContentBuilder = (): ContentBuilderFunction => {
@@ -50,21 +49,17 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
                             withNetworkIcon
                         />
                         {!!account && (
-                            <HStack
-                                justifyContent="space-between"
-                                alignItems="flex-start"
-                                spacing="sp8"
-                            >
+                            <HStack justifyContent="space-between" spacing="sp16">
                                 <Text variant="body-sm" color="contentPrimary">
                                     <Translation id="moduleTrading.tradingReviewOutputs.tradedAssets.recipient" />
                                 </Text>
-                                <AddressFormatter
-                                    value={account.descriptor}
-                                    format="full"
-                                    variant="body-sm"
-                                    textAlign="right"
+                                <Text
+                                    variant="body-sm-strong"
+                                    color="contentPrimary"
                                     style={applyStyle(flexStyle)}
-                                />
+                                >
+                                    {account.descriptor}
+                                </Text>
                             </HStack>
                         )}
                     </VStack>
