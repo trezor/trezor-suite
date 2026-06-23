@@ -4,6 +4,7 @@ import type { FormatNumberOptions } from '@formatjs/intl';
 import styled from 'styled-components';
 
 import { HiddenPlaceholder, type HiddenPlaceholderProps } from '@suite/discreet-mode';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
@@ -15,7 +16,7 @@ import {
 import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
@@ -74,7 +75,7 @@ export const BaseCurrencyValue = ({
     isLoading,
     rateType,
 }: BaseCurrencyValueProps) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
     const { baseCurrencyCode, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,

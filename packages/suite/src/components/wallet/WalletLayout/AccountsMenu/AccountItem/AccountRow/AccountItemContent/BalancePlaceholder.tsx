@@ -1,16 +1,17 @@
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Skeleton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type BalancePlaceholderProps = {
     networkSymbol: NetworkSymbol;
 };
 
 export function BalancePlaceholder({ networkSymbol }: BalancePlaceholderProps) {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 
     return (
         <Column gap={spacings.xs}>

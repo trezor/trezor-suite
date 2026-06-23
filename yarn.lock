@@ -15198,6 +15198,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/ui-animations@workspace:*, @suite/ui-animations@workspace:suite/ui-animations":
+  version: 0.0.0-use.local
+  resolution: "@suite/ui-animations@workspace:suite/ui-animations"
+  dependencies:
+    "@suite-common/device": "workspace:*"
+    "@suite/modal": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/wallet@workspace:*, @suite/wallet@workspace:suite/wallet":
   version: 0.0.0-use.local
   resolution: "@suite/wallet@workspace:suite/wallet"
@@ -16789,6 +16798,7 @@ __metadata:
     "@suite/tor": "workspace:*"
     "@suite/trading": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
+    "@suite/ui-animations": "workspace:*"
     "@suite/wallet": "workspace:*"
     "@tanstack/react-query": "npm:5.101.0"
     "@testing-library/jest-dom": "npm:6.9.1"

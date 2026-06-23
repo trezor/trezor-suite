@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -9,7 +10,7 @@ import { Icon, type IconName, Skeleton } from '@trezor/components';
 import { type Color, spacingsPx, typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { NoRatesTooltip } from './NoRatesTooltip';
 
@@ -61,7 +62,7 @@ export const TrendTicker = ({
     noEmptyStateTooltip,
     showLoadingSkeleton = true,
 }: TickerProps) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const locale = useSelector(selectLanguage);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);

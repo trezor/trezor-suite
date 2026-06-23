@@ -1,9 +1,10 @@
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Column, Skeleton } from '@trezor/components';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const EmptyWalletSkeleton = () => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 
     return (
         <Column gap={24} data-testid="@dashboard/empty-wallet-skeleton" alignItems="center">

@@ -1,6 +1,7 @@
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Row, Skeleton, Table } from '@trezor/components';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { AssetCoinLogoSkeleton } from '../AssetCoinLogo';
 
@@ -9,7 +10,7 @@ type AssetRowSkeletonProps = {
 };
 
 export const AssetRowSkeleton = ({ isAnimating }: AssetRowSkeletonProps) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 
     const animate = isAnimating ?? shouldAnimate;
 

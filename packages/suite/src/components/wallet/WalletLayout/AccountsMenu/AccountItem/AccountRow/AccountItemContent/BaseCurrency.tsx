@@ -1,5 +1,6 @@
 import { type JSX } from 'react';
 
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -14,7 +15,7 @@ import { Skeleton, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/compo
 import { isArrayMember } from '@trezor/utils';
 
 import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
@@ -38,7 +39,7 @@ export const BaseCurrency = ({
 }: BaseCurrencyProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
     const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
 
