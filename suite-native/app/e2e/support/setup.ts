@@ -1,4 +1,5 @@
 import { expect as jestExpect } from '@jest/globals';
+import fetch from 'cross-fetch';
 import { resolveConfig } from 'detox/internals';
 
 import { LaunchArguments } from '@suite-native/config';
