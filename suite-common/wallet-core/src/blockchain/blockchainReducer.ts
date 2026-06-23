@@ -23,15 +23,6 @@ import {
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
 
-/*
-  get url suffix from default network and generate url for selected network
-  regex source: https://www.oreilly.com/library/view/regular-expressions-cookbook/9780596802837/ch07s12.html
-*/
-export const getBlockExplorerUrlSuffix = (url: string) =>
-    url.match(/^([a-z][a-z0-9+\-.]*:(\/\/[^/?#]+)?)?([a-z0-9\-._~%!$&'()*+,;=:@/]*)/)!.pop();
-
-export const isHttpProtocol = (url: string) => /^https?:\/\//.test(url);
-
 export type BlockchainState = BlockchainNetworks;
 
 const initialStatePredefined: Partial<BlockchainState> = {};
