@@ -6,6 +6,7 @@
     "min_firmware_version": [1, 6, 2],
     "bootloader_version": [1, 10, 0],
     "firmware_revision": "85a26d2c9593bcdf858c2d718d79951ca927a0c3",
+    "bootloader_hash": "7447a41717022e3eb32011b00b2a68ebb9c7f603cdc730e7307850a3f4d62a5c",
     "translations": {},
     "url": "firmware/t1b1/trezor-t1b1-1.11.1.bin",
     "fingerprint": "f7c60d0b8c2853afd576867c6562aba5ea52bdc2ce34d0dbb8751f52867c3665",
