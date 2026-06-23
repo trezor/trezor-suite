@@ -661,8 +661,19 @@ export const selectTradingComposedTransactionInfo = (state: TradingRootState) =>
 export const selectTradingDisplayComposedFee = (
     state: TradingRootState,
     quote: ExchangeTrade | undefined,
-): string | undefined =>
-    getDisplayNetworkFee(quote, state.wallet.trading.composedTransactionInfo.composed?.fee);
+): string | undefined => {
+    const { composed } = state.wallet.trading.composedTransactionInfo;
+    // Tron contract-calls (TRC20 transfers, raw calls) cap the on-chain fee_limit above the
+    // bare energy estimate (dynamic-energy margin). Show that cap so the trading fee matches
+    // the device's fee_limit and the "Maximum fee" row. `energyConsumed` is Tron-only, so EVM
+    // and other networks keep `composed.fee` (their real charged fee).
+    const fee =
+        composed && 'energyConsumed' in composed && composed.feeLimit
+            ? composed.feeLimit
+            : composed?.fee;
+
+    return getDisplayNetworkFee(quote, fee);
+};
 
 export const selectTradingAccountAccordingActiveSection =
     createMemoizedSelectorWithDeviceAndAccounts(

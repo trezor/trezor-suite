@@ -184,7 +184,11 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         }
 
         if (calldata.data !== null && tx.type !== 'error') {
-            tx.estimatedFeeLimit = tx.fee;
+            // Surface the on-chain fee_limit cap (incl. dynamic-energy margin) as the
+            // estimated/maximum fee, so the displayed "Maximum fee", the recommended custom
+            // limit, and the value shown on the device all agree. The user is still charged
+            // actual energy used; this is the ceiling, not the expected cost.
+            tx.estimatedFeeLimit = tx.feeLimit;
         }
 
         return { normal: tx };

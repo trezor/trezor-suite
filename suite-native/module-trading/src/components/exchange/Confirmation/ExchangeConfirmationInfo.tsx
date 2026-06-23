@@ -5,7 +5,9 @@ import type { ExchangeFee } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
+    type TradingRootState,
     cryptoIdToNetworkAndContractAddress,
+    selectTradingDisplayComposedFee,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { AnimatedVStack, Card, Text, VStack } from '@suite-native/atoms';
@@ -43,6 +45,11 @@ export const ExchangeConfirmationInfo = ({
 
     const date = transaction?.blockTime ? new Date(transaction.blockTime * 1000) : null;
     const quote = useSelector(selectTradingExchangeSelectedQuote);
+    // Same source/number as desktop: the precomposed network fee (fee_limit cap for Tron
+    // contract-calls), read from the shared composedTransactionInfo state.
+    const composedFee = useSelector((state: TradingRootState) =>
+        selectTradingDisplayComposedFee(state, quote),
+    );
 
     if (!quote?.send) {
         return null;
@@ -55,7 +62,9 @@ export const ExchangeConfirmationInfo = ({
         return null;
     }
 
-    const fee = getFee(transaction?.fee, quote.fee);
+    // Prefer the realized on-chain fee once broadcast; before that show the precomposed
+    // network fee (matches desktop), falling back to the quote fee.
+    const fee = getFee(transaction?.fee ?? composedFee, quote.fee);
 
     return (
         <AnimatedVStack spacing="sp16" paddingVertical="sp16" layout={LinearTransition}>

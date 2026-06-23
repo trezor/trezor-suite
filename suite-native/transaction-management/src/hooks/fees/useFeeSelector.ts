@@ -43,6 +43,7 @@ export const useFeeSelector = ({
         fee,
         feeLevels,
         selectedFeeLevel,
+        selectedFeeLevelTransaction,
         areFeesLoading,
         isSubmittable,
         symbol,
@@ -109,7 +110,15 @@ export const useFeeSelector = ({
         [isTrc20, accountKey, tokenContract, dispatch, handleFeeLevelChange, handleCustomFeeSet],
     );
 
-    const feeLimitSunOverride = isTrc20 ? form.watch('customFeeLimit') : undefined;
+    // Show the fee_limit cap (energy estimate + dynamic-energy margin) by default, matching
+    // desktop; the user's custom limit overrides it. estimatedFeeLimit already carries the cap.
+    const estimatedFeeLimit =
+        selectedFeeLevelTransaction && 'estimatedFeeLimit' in selectedFeeLevelTransaction
+            ? selectedFeeLevelTransaction.estimatedFeeLimit
+            : undefined;
+    const feeLimitSunOverride = isTrc20
+        ? form.watch('customFeeLimit') || estimatedFeeLimit
+        : undefined;
 
     return {
         form,
