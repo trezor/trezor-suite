@@ -129,14 +129,16 @@ export const useBackendServersForm = () => {
 
     useFocusEffect(
         useCallback(() => {
-            TrezorConnect.on(BLOCKCHAIN.CONNECT, onConnectionSuccess);
-            TrezorConnect.on(BLOCKCHAIN.ERROR, onConnectionError);
+            if (isConnecting) {
+                TrezorConnect.on(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+                TrezorConnect.on(BLOCKCHAIN.ERROR, onConnectionError);
 
-            return () => {
-                TrezorConnect.off(BLOCKCHAIN.CONNECT, onConnectionSuccess);
-                TrezorConnect.off(BLOCKCHAIN.ERROR, onConnectionError);
-            };
-        }, [onConnectionSuccess, onConnectionError]),
+                return () => {
+                    TrezorConnect.off(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+                    TrezorConnect.off(BLOCKCHAIN.ERROR, onConnectionError);
+                };
+            }
+        }, [isConnecting, onConnectionSuccess, onConnectionError]),
     );
 
     return {
