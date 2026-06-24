@@ -47,7 +47,11 @@ const update = (state: Account[], account: Account) => {
 const remove = (state: Account[], accounts: Account[]) => {
     accounts.forEach(a => {
         const index = state.findIndex(accountEqualTo(a));
-        state.splice(index, 1);
+        // a missing account yields index -1, and splice(-1, 1) would delete the
+        // last, unrelated account instead of being a no-op
+        if (index !== -1) {
+            state.splice(index, 1);
+        }
     });
 };
 
