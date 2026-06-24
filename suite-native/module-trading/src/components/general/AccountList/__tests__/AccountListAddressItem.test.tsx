@@ -39,7 +39,6 @@ const createAccount = (
         addrTxCount: undefined,
     },
     metadata: { key: '' },
-    ts: 0,
     networkType: 'ripple',
     marker: undefined,
     stellarCursor: undefined,

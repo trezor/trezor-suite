@@ -204,8 +204,6 @@ export type AccountBase = {
      * IMPORTANT: This is relevant only for Mobile App.
      */
     accountLabel?: string;
-
-    ts: number;
 };
 
 export type Account = AccountBase &

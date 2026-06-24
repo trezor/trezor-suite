@@ -95,7 +95,6 @@ const createAccount = createAction(
                 }),
                 utxo: enhanceUtxo(utxo, networkType, index),
                 metadata: { key: metadataKey },
-                ts: Date.now(),
                 ...getAccountSpecific(accountInfo, networkType),
             };
 
@@ -143,23 +142,15 @@ const updateAccount = createAction(
                     utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
                     addresses: enhanceAddresses(accountInfo, account),
                     tokens: enhanceTokens(accountInfo.tokens),
-                    ts: Date.now(),
                     ...getAccountSpecific(accountInfo, account.networkType),
                 },
             };
         }
 
         return {
-            payload: { ...account, ts: Date.now() },
+            payload: account,
         };
     },
-);
-
-const updateAccountRefreshTimestamp = createAction(
-    `${ACCOUNTS_MODULE_PREFIX}/updateAccountRefreshTimestamp`,
-    (account: Account): { payload: Account } => ({
-        payload: { ...account, ts: Date.now() },
-    }),
 );
 
 const renameAccount = createAction(
@@ -207,7 +198,6 @@ export const accountsActions = {
     createAccount,
     createAccountFromAccountInfo,
     updateAccount,
-    updateAccountRefreshTimestamp,
     renameAccount,
     updateSelectedAccount,
     changeAccountVisibility,

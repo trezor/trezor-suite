@@ -94,7 +94,6 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                 metadata: {
                     key: 'xpub6CEBKQ1jXhweie3b5UMEG7CSLcsyhWucYmiMdz1oPW55kkDhmizrAtThxdLFLKHCTWBhZeJY1G2XuFdgRLKkYssVbiLAxnTy6yM5Lzt5YMc',
                 },
-                ts: 1760446304591,
                 networkType: 'bitcoin',
                 page: {
                     index: 1,

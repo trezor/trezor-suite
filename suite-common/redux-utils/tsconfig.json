@@ -25,6 +25,7 @@
         },
         {
             "path": "../../packages/transport-common"
-        }
+        },
+        { "path": "../../packages/utils" }
     ]
 }

@@ -39,7 +39,6 @@ import {
     type TokenDefinitionsState,
     prepareTokenDefinitionsReducer,
 } from '@suite-common/token-definitions';
-import { accountsActions } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -119,7 +118,7 @@ const rootReducer = combineReducers({
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
-const loggerExcludedActions = [addLog.type, accountsActions.updateAccountRefreshTimestamp.type];
+const loggerExcludedActions = [addLog.type];
 
 const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
     const middleware = [

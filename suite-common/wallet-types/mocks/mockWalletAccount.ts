@@ -154,7 +154,6 @@ export const mockWalletAccount = (
         utxo: undefined,
         addresses: undefined,
         metadata: { key: 'xpub' },
-        ts: 0,
         ...account,
 
         // This is mandatory to pass to enforce consistency

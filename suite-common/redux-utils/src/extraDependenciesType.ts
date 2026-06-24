@@ -33,6 +33,7 @@ import {
     type ThpSettings,
 } from '@trezor/connect';
 import type { Transport } from '@trezor/transport-common';
+import { type KeyedThrottle } from '@trezor/utils';
 
 import { type ConnectInitHooks } from './connectInitHooksType';
 import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
@@ -76,6 +77,7 @@ export type CommonServices = SuiteSyncDep &
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
+        accountRefreshThrottle: KeyedThrottle<AccountKey>;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
