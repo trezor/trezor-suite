@@ -1160,18 +1160,18 @@
                 "variant": "info",
                 "category": "context",
                 "content": {
-                    "en": "The minimum amount you can stake is 1 SOL.",
-                    "es": "La cantidad mínima que puede poner en staking es 1 SOL.",
-                    "cs": "Minimální částka pro staking je 1 SOL.",
-                    "ru": "Минимальная сумма, которую вы можете отправить в стейкинг, составляет 1 SOL.",
-                    "ja": "ステーキングできる最小額は1 SOLです。",
-                    "hu": "A legkisebb összeg, amit stakelhet, az 1 SOL.",
-                    "it": "L'importo minimo che puoi mettere in staking è 1 SOL.",
-                    "fr": "Le montant minimum que vous pouvez mettre en staking est de 1 SOL.",
-                    "de": "Der Mindestbetrag, den Sie staken können, beträgt 1 SOL.",
-                    "tr": "Stake edebileceğiniz minimum miktar 1 SOL'dur.",
-                    "pt": "O valor mínimo que você pode colocar em staking é 1 SOL.",
-                    "uk": "Мінімальна сума, яку ви можете відправити у стейкінг, становить 1 SOL."
+                    "en": "The minimum amount you can stake is 0.1 SOL.",
+                    "es": "La cantidad mínima que puede poner en staking es 0.1 SOL.",
+                    "cs": "Minimální částka pro staking je 0.1 SOL.",
+                    "ru": "Минимальная сумма, которую вы можете отправить в стейкинг, составляет 0.1 SOL.",
+                    "ja": "ステーキングできる最小額は0.1 SOLです。",
+                    "hu": "A legkisebb összeg, amit stakelhet, az 0.1 SOL.",
+                    "it": "L'importo minimo che puoi mettere in staking è 0.1 SOL.",
+                    "fr": "Le montant minimum que vous pouvez mettre en staking est de 0.1 SOL.",
+                    "de": "Der Mindestbetrag, den Sie staken können, beträgt 0.1 SOL.",
+                    "tr": "Stake edebileceğiniz minimum miktar 0.1 SOL'dur.",
+                    "pt": "O valor mínimo que você pode colocar em staking é 0.1 SOL.",
+                    "uk": "Мінімальна сума, яку ви можете відправити у стейкінг, становить 0.1 SOL."
                 },
                 "context": {
                     "domain": "accounts.sol.staking"
