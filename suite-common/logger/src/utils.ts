@@ -2,7 +2,7 @@ import { deviceActions } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getBrowserName, getBrowserVersion, getOsVersion } from '@suite-common/suite-utils';
 import { accountsActions } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { DEVICE } from '@trezor/connect';
 import {
     getCommitHash,
@@ -82,6 +82,30 @@ export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
               }
             : undefined,
         metadata: device.metadata ? REDACTED_REPLACEMENT : undefined,
+    };
+};
+
+type RedactedPassphraseDuplicateDiscoveryStatus = Omit<
+    Extract<DiscoveryStatus, { status: 'passphrase-duplicate' }>,
+    'duplicateDeviceStaticSessionId'
+> & {
+    duplicateDeviceStaticSessionId: string;
+};
+
+export type RedactedDiscoveryStatus =
+    | Exclude<DiscoveryStatus, { status: 'passphrase-duplicate' }>
+    | RedactedPassphraseDuplicateDiscoveryStatus;
+
+export const redactDiscovery = (
+    discovery: DiscoveryStatus | undefined,
+): RedactedDiscoveryStatus | undefined => {
+    if (discovery?.status !== 'passphrase-duplicate') {
+        return discovery;
+    }
+
+    return {
+        ...discovery,
+        duplicateDeviceStaticSessionId: REDACTED_REPLACEMENT,
     };
 };
 
