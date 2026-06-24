@@ -6,7 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { getNetwork } from '@suite-common/wallet-config';
 import { getYieldApprovalAction, stablecoinYieldActions } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -293,6 +293,17 @@ export const YieldDepositApprovalScreen = () => {
                                 tokenSymbol={tokenSymbol}
                             />
                         </Box>
+
+                        {footerApprovalAction === 'revoke' && (
+                            <Box paddingHorizontal="sp16">
+                                <FullAlertBox
+                                    variant="warning"
+                                    title={
+                                        <Translation id="earn.yieldDepositFlowScreen.alerts.approvalIncreaseRequiresRevoke.title" />
+                                    }
+                                />
+                            </Box>
+                        )}
 
                         <Box paddingHorizontal="sp16">
                             <FeeSelector
