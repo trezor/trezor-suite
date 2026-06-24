@@ -69,8 +69,8 @@ export const YieldDepositApprovalScreen = () => {
         flowKey,
         token,
         tokenSymbol,
-        vault,
         vaultTokenSymbol,
+        vaultTokenName,
         resolutionStatus,
     } = resolvedFlowData;
     const session = useYieldSession({
@@ -248,7 +248,7 @@ export const YieldDepositApprovalScreen = () => {
                     closeAction={handleCloseApproval}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                 />
             }
             footer={
@@ -335,7 +335,7 @@ export const YieldDepositApprovalScreen = () => {
                     title={
                         <Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />
                     }
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}
                 />
             )}

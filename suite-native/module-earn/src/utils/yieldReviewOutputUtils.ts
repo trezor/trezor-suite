@@ -72,6 +72,7 @@ type BuildYieldDepositReviewPreviewParams = {
     flowData: YieldFlowResolvedData;
     review: YieldDepositReview;
     type: 'deposit';
+    vaultName: string;
 };
 
 type BuildYieldWithdrawReviewPreviewParams = {
@@ -81,6 +82,7 @@ type BuildYieldWithdrawReviewPreviewParams = {
     reviewToken: YieldFlowDisplayToken;
     selectedFee?: EvmSelectedFee | null;
     type: 'withdraw';
+    vaultName: string;
 };
 
 type BuildYieldClaimReviewPreviewParams = {
@@ -212,7 +214,7 @@ export const buildYieldReviewPreview = (
                     device: params.device,
                     formState,
                     precomposedTransaction,
-                    vaultName: params.flowData.vault.metadata.name,
+                    vaultName: params.vaultName,
                 });
             }
             case 'withdraw': {
@@ -231,7 +233,7 @@ export const buildYieldReviewPreview = (
                     device: params.device,
                     formState,
                     precomposedTransaction,
-                    vaultName: params.flowData.vault.metadata.name,
+                    vaultName: params.vaultName,
                 });
             }
             case 'claim': {

@@ -106,6 +106,7 @@ export const YieldWithdrawScreen = () => {
         depositedSharesAmount: resolvedDepositedSharesAmount,
         vault,
         vaultTokenSymbol: resolvedVaultTokenSymbol,
+        vaultTokenName,
     } = useResolvedYieldFlowData(route.params);
 
     const depositedAmount = useMemo(() => {
@@ -428,7 +429,7 @@ export const YieldWithdrawScreen = () => {
                     closeAction={handleClose}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={headerTokenContract}
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                 />
             }
             footer={
@@ -555,7 +556,7 @@ export const YieldWithdrawScreen = () => {
                     onExplorePress={openInBlockchain}
                     submittedAt={new Date(actionPendingTransaction.submittedAt ?? 0)}
                     title={<Translation id="earn.yieldWithdrawFlowScreen.withdrawPendingTitle" />}
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                     vaultTokenContract={vaultTokenContract}
                 />
             )}
