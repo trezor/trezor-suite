@@ -9,6 +9,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
 import { applicationInit } from '@suite-native/app-init';
@@ -20,12 +21,14 @@ import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { initSentry } from '@suite-native/sentry';
+import { selectMMKVStorageDep } from '@suite-native/services';
 import {
     type PreloadedState,
     StoreProvider,
     initStore,
     selectIsAppReady,
 } from '@suite-native/state';
+import { initHistoricRatesStorage } from '@suite-native/transactions';
 
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
@@ -34,6 +37,7 @@ import { InitRosenitePlugin } from './devtools/InitRoseniteDevTools';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { disableRTL } from './rtl';
+import { configureTanStackQueryManagers } from './utils/configureTanStackQueryManagers';
 
 // Base time to measure app loading time.
 // The constant has to be placed at the beginning of this file to be initialized as soon as possible.
@@ -56,6 +60,7 @@ SplashScreen.preventAutoHideAsync();
 // Calling this will stop all previously added listeners on NetInfo from being called again.
 // https://github.com/react-native-netinfo/react-native-netinfo?tab=readme-ov-file#configure
 configureNetInfo();
+configureTanStackQueryManagers();
 
 // preloadedState has to be cast to PreloadedState type because it is passed from Detox as `string` (serialized object)
 // but the `react-native-launch-arguments` library does converts it to JavaScript object in the background.
@@ -67,6 +72,7 @@ const AppComponent = () => {
     const isApplicationInitDispatchedRef = useRef(false);
     const isAppReady = useSelector(selectIsAppReady);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
+    const { getMMKVStorage } = useServices(selectMMKVStorageDep);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
@@ -76,6 +82,10 @@ const AppComponent = () => {
             isApplicationInitDispatchedRef.current = true;
         }
     }, [dispatch]);
+
+    useEffect(() => {
+        getMMKVStorage().then(initHistoricRatesStorage).catch(console.error);
+    }, [getMMKVStorage]);
 
     useEffect(() => {
         if (isAppReady) {

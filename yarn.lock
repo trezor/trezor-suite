@@ -8184,6 +8184,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rozenite/agent-bridge@npm:1.12.0":
+  version: 1.12.0
+  resolution: "@rozenite/agent-bridge@npm:1.12.0"
+  dependencies:
+    "@rozenite/agent-shared": "npm:1.12.0"
+    "@rozenite/plugin-bridge": "npm:1.12.0"
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    react: ">=17"
+  checksum: 10/135190ab2f4e4fe82d85b0fa0e9ee099f182413ae68ef7e445c72070988f5d03770a9b37d55bd9247591fcba26161dd91f9670ee530835669bbc980213cfdb87
+  languageName: node
+  linkType: hard
+
+"@rozenite/agent-shared@npm:1.12.0":
+  version: 1.12.0
+  resolution: "@rozenite/agent-shared@npm:1.12.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  checksum: 10/7e72c35c371c0a6033d3d1d8eb47d52683f4e80abb8789f7c51c0879b164ea4ec50d08c5ba966fda8120a9ddc55e4d91f7ee99af9e7ba3b06edcf6384da6dd86
+  languageName: node
+  linkType: hard
+
 "@rozenite/metro@npm:^1.4.0":
   version: 1.4.0
   resolution: "@rozenite/metro@npm:1.4.0"
@@ -8250,6 +8272,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rozenite/plugin-bridge@npm:1.12.0":
+  version: 1.12.0
+  resolution: "@rozenite/plugin-bridge@npm:1.12.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    react: ">=17"
+  checksum: 10/e15c0e787654946204cad1d1e16408d2eed1c4eab2b5bd67bf1db60cb8dda399e5a5b22e2ac123647a2bd60e13310aa78f3bfc2891827d028b2fa5436a779da5
+  languageName: node
+  linkType: hard
+
 "@rozenite/plugin-bridge@npm:1.4.0":
   version: 1.4.0
   resolution: "@rozenite/plugin-bridge@npm:1.4.0"
@@ -8295,6 +8328,22 @@ __metadata:
   dependencies:
     tslib: "npm:^2.3.0"
   checksum: 10/84d328a39e16f45fdf9f020d0e1bb3a069d3b6b808893722b5a91d63d679f98a75f606e70e4fd720fa8b28d3e6b5dfcefb4db4c1a0b62d0d2155df8bcb0de7bc
+  languageName: node
+  linkType: hard
+
+"@rozenite/tanstack-query-plugin@npm:^1.4.0":
+  version: 1.12.0
+  resolution: "@rozenite/tanstack-query-plugin@npm:1.12.0"
+  dependencies:
+    "@rozenite/agent-bridge": "npm:1.12.0"
+    "@rozenite/agent-shared": "npm:1.12.0"
+    "@rozenite/plugin-bridge": "npm:1.12.0"
+    fast-deep-equal: "npm:^3.1.3"
+  peerDependencies:
+    "@tanstack/react-query": ^5.0.0
+    react: "*"
+    react-native: "*"
+  checksum: 10/d0ede88fa9553e8461416c00fac57d576c3600e1aff7d43676722e17acbb810e4ab93dc074d1f72771d4ad92a4a4cb49e77726dd0e2ca1c6b44d811cf9c3cb82
   languageName: node
   linkType: hard
 
@@ -11524,6 +11573,7 @@ __metadata:
     "@rozenite/network-activity-plugin": "npm:^1.4.0"
     "@rozenite/performance-monitor-plugin": "npm:^1.4.0"
     "@rozenite/redux-devtools-plugin": "npm:^1.4.0"
+    "@rozenite/tanstack-query-plugin": "npm:^1.4.0"
     "@sentry/react-native": "npm:8.12.0"
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.5.1"
@@ -11589,6 +11639,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
+    "@suite-native/transactions": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -12503,6 +12554,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -14383,6 +14435,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -14414,6 +14467,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
+    react-native-mmkv: "npm:~4.3.0"
     react-native-svg: "npm:15.15.3"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -39891,7 +39945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-mmkv@npm:~4.3.1":
+"react-native-mmkv@npm:~4.3.0, react-native-mmkv@npm:~4.3.1":
   version: 4.3.1
   resolution: "react-native-mmkv@npm:4.3.1"
   peerDependencies:

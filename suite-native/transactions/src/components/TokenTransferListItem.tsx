@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -5,7 +6,6 @@ import {
     type FiatRatesRootState,
     type PhishingRootState,
     type TransactionsRootState,
-    type WalletSettingsRootState,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -13,7 +13,7 @@ import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { selectTransactionFiatRate } from '../selectors';
+import { useTxFiatRate } from '../hooks/useTxFiatRate';
 import { getTransactionValueSign } from '../utils';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 
@@ -37,9 +37,7 @@ export const TokenTransferListItemValues = ({
     transaction,
     accountKey,
 }: TokenTransferListItemValuesProps) => {
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
-    );
+    const historicRate = useTxFiatRate(transaction, tokenTransfer?.contract);
 
     const { isPhishing: isPhishingTransaction } = useSelector(
         (
@@ -94,31 +92,33 @@ type TokenTransferListItemProps = {
     isLast?: boolean;
 };
 
-export const TokenTransferListItem = ({
-    accountKey,
-    transaction,
-    tokenTransfer,
-    includedCoinsCount = 0,
-    isFirst,
-    isLast,
-}: TokenTransferListItemProps) => {
-    const isFailedTxn = transaction.type === 'failed';
+export const TokenTransferListItem = memo(
+    ({
+        accountKey,
+        transaction,
+        tokenTransfer,
+        includedCoinsCount = 0,
+        isFirst,
+        isLast,
+    }: TokenTransferListItemProps) => {
+        const isFailedTxn = transaction.type === 'failed';
 
-    return (
-        <TransactionListItemContainer
-            tokenTransfer={tokenTransfer}
-            transactionType={isFailedTxn ? 'failed' : tokenTransfer.type}
-            transaction={transaction}
-            includedCoinsCount={includedCoinsCount}
-            accountKey={accountKey}
-            isFirst={isFirst}
-            isLast={isLast}
-        >
-            <TokenTransferListItemValues
+        return (
+            <TransactionListItemContainer
                 tokenTransfer={tokenTransfer}
+                transactionType={isFailedTxn ? 'failed' : tokenTransfer.type}
                 transaction={transaction}
+                includedCoinsCount={includedCoinsCount}
                 accountKey={accountKey}
-            />
-        </TransactionListItemContainer>
-    );
-};
+                isFirst={isFirst}
+                isLast={isLast}
+            >
+                <TokenTransferListItemValues
+                    tokenTransfer={tokenTransfer}
+                    transaction={transaction}
+                    accountKey={accountKey}
+                />
+            </TransactionListItemContainer>
+        );
+    },
+);

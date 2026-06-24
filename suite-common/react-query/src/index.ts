@@ -1,7 +1,10 @@
 export {
     QueryClient,
     QueryClientProvider,
+    focusManager,
+    onlineManager,
     useQuery,
+    useInfiniteQuery,
     useMutation,
     useQueryClient,
     type MutationOptions,

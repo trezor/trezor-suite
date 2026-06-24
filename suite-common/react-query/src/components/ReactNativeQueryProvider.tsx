@@ -35,7 +35,7 @@ export const ReactNativeQueryProvider = ({ children }: PropsWithChildren) => {
                         retry: failureCount => failureCount < MAX_RETRY_COUNT,
                         refetchOnWindowFocus: false,
                         refetchOnMount: false,
-                        refetchOnReconnect: false,
+                        staleTime: 16_000,
                     },
                 },
             }),

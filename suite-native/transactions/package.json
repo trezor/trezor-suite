@@ -19,6 +19,7 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/staking": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -50,6 +51,7 @@
         "@trezor/utils": "workspace:*",
         "react": "19.2.4",
         "react-native": "0.83.2",
+        "react-native-mmkv": "~4.3.0",
         "react-native-svg": "15.15.3",
         "react-redux": "9.3.0"
     }

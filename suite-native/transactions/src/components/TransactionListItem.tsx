@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -7,7 +7,6 @@ import {
     type FiatRatesRootState,
     type PhishingRootState,
     type TransactionsRootState,
-    type WalletSettingsRootState,
     createTargets,
     selectAccountByKey,
     selectIsPhishingTransaction,
@@ -25,7 +24,7 @@ import {
 import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { selectTransactionFiatRate } from '../selectors';
+import { useTxFiatRate } from '../hooks/useTxFiatRate';
 import { getTransactionValueSign, groupTargetOutputs } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
@@ -71,9 +70,7 @@ export const TransactionListItemValues = ({
 
     const { applyStyle } = useNativeStyles();
 
-    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
-        selectTransactionFiatRate(state, transaction),
-    );
+    const historicRate = useTxFiatRate(transaction);
     const isFailedTx = transaction.type === 'failed';
     const sign = getTransactionValueSign(transaction.type);
 
@@ -109,87 +106,85 @@ export const TransactionListItemValues = ({
     );
 };
 
-export const TransactionListItem = ({
-    transaction,
-    accountKey,
-    isFirst = false,
-    isLast = false,
-}: TransactionListItemProps) => {
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const { isPhishing: isPhishingTransaction } = useSelector(
-        (
-            state: TokenDefinitionsRootState &
-                TransactionsRootState &
-                FiatRatesRootState &
-                PhishingRootState,
-        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
-    );
+export const TransactionListItem = memo(
+    ({ transaction, accountKey, isFirst = false, isLast = false }: TransactionListItemProps) => {
+        const account = useSelector((state: AccountsRootState) =>
+            selectAccountByKey(state, accountKey),
+        );
+        const { isPhishing: isPhishingTransaction } = useSelector(
+            (
+                state: TokenDefinitionsRootState &
+                    TransactionsRootState &
+                    FiatRatesRootState &
+                    PhishingRootState,
+            ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
+        );
 
-    const includedCoinsCount = transaction.tokens.length;
+        const includedCoinsCount = transaction.tokens.length;
 
-    const firstToken = transaction.tokens[0];
+        const firstToken = transaction.tokens[0];
 
-    const allOutputs = useMemo(
-        () => (account !== null ? groupTargetOutputs(createTargets({ transaction, account })) : []),
-        [transaction, account],
-    );
+        const allOutputs = useMemo(
+            () =>
+                account !== null ? groupTargetOutputs(createTargets({ transaction, account })) : [],
+            [transaction, account],
+        );
 
-    const stakeOperationType = getTxStakeType(transaction);
+        const stakeOperationType = getTxStakeType(transaction);
 
-    // Self transactions don't change the account balance (only a network fee is paid), so we show
-    // an empty amount instead of the redundant/dust output. Staking self-transactions keep theirs.
-    if (transaction.type === 'self' && !stakeOperationType)
+        // Self transactions don't change the account balance (only a network fee is paid), so we show
+        // an empty amount instead of the redundant/dust output. Staking self-transactions keep theirs.
+        if (transaction.type === 'self' && !stakeOperationType)
+            return (
+                <TransactionListItemContainer
+                    transaction={transaction}
+                    transactionType={transaction.type}
+                    accountKey={accountKey}
+                    includedCoinsCount={includedCoinsCount}
+                    isFirst={isFirst}
+                    isLast={isLast}
+                >
+                    <EmptyAmountText />
+                </TransactionListItemContainer>
+            );
+
+        // Any non-self transaction carrying a token transfer is summarized by its token (e.g. an ERC20
+        // transfer, or a swap that also moves native coin). The native amount — rent on Solana, swap
+        // value on EVM — is dropped here; the detail screen still shows the full breakdown.
+        if (firstToken !== undefined)
+            return (
+                <TokenTransferListItem
+                    transaction={transaction}
+                    accountKey={accountKey}
+                    tokenTransfer={firstToken}
+                    includedCoinsCount={transaction.tokens.length - 1}
+                    isFirst={isFirst}
+                    isLast={isLast}
+                />
+            );
+
         return (
             <TransactionListItemContainer
                 transaction={transaction}
                 transactionType={transaction.type}
+                stakeOperationType={stakeOperationType}
                 accountKey={accountKey}
                 includedCoinsCount={includedCoinsCount}
                 isFirst={isFirst}
                 isLast={isLast}
             >
-                <EmptyAmountText />
+                {allOutputs.map((target, i) => (
+                    <TransactionTarget
+                        key={i}
+                        accountKey={accountKey}
+                        isPhishingTransaction={isPhishingTransaction}
+                        transaction={transaction}
+                        {...target}
+                    />
+                ))}
             </TransactionListItemContainer>
         );
-
-    // Any non-self transaction carrying a token transfer is summarized by its token (e.g. an ERC20
-    // transfer, or a swap that also moves native coin). The native amount — rent on Solana, swap
-    // value on EVM — is dropped here; the detail screen still shows the full breakdown.
-    if (firstToken !== undefined)
-        return (
-            <TokenTransferListItem
-                transaction={transaction}
-                accountKey={accountKey}
-                tokenTransfer={firstToken}
-                includedCoinsCount={transaction.tokens.length - 1}
-                isFirst={isFirst}
-                isLast={isLast}
-            />
-        );
-
-    return (
-        <TransactionListItemContainer
-            transaction={transaction}
-            transactionType={transaction.type}
-            stakeOperationType={stakeOperationType}
-            accountKey={accountKey}
-            includedCoinsCount={includedCoinsCount}
-            isFirst={isFirst}
-            isLast={isLast}
-        >
-            {allOutputs.map((target, i) => (
-                <TransactionTarget
-                    key={i}
-                    accountKey={accountKey}
-                    isPhishingTransaction={isPhishingTransaction}
-                    transaction={transaction}
-                    {...target}
-                />
-            ))}
-        </TransactionListItemContainer>
-    );
-};
+    },
+);
 
 TransactionListItem.displayName = 'TransactionListItem';
