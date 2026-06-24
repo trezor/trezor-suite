@@ -20,12 +20,8 @@ import getAccountInfo from '../../../data/methods/common/getAccountInfo';
             legacyConfig: getAccountInfo[2],
         },
         {
-            title: 'GetAccountInfo (discovery)',
-            legacyConfig: getAccountInfo[3],
-        },
-        {
             title: 'GetAccountInfo (advanced)',
-            legacyConfig: getAccountInfo[4],
+            legacyConfig: getAccountInfo[3],
         },
     ]}
 />
@@ -44,13 +40,6 @@ export const UsingPubkeySchema = Type.Object({
     descriptor: Type.String({
         description: 'public key or address of account',
     }),
-    coin: Type.String({
-        description:
-            'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
-    }),
-});
-
-export const UsingDiscoverySchema = Type.Object({
     coin: Type.String({
         description:
             'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
@@ -99,7 +88,7 @@ export const OtherParamsSchema = Type.Object({
 });
 
 export const GetAccountInfoSchema = Type.Intersect([
-    Type.Union([UsingPathSchema, UsingPubkeySchema, UsingDiscoverySchema]),
+    Type.Union([UsingPathSchema, UsingPubkeySchema]),
     OtherParamsSchema,
 ]);
 
@@ -115,7 +104,7 @@ export const paramDescriptions = {
     contractFilter: 'Ethereum-like accounts only: get ERC20 token info and balance',
     marker: 'XRP accounts only, transaction history page marker',
     defaultAccountType:
-        'Bitcoin-like accounts only: specify which account group is displayed as default in popup, subject of `Using discovery`',
+        'Bitcoin-like accounts only: specify which account group is displayed as default in popup',
     suppressBackupWarning:
         'By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.',
 };
@@ -140,12 +129,6 @@ const result = await TrezorConnect.getAccountInfo(params);
 
 <ParamsTable schema={UsingPubkeySchema} />
 
-#### Using discovery
-
-BIP-0044 account discovery is performed and user is presented with a list of accounts. Result is returned after account selection.
-
-<ParamsTable schema={UsingDiscoverySchema} />
-
 ### Other optional params
 
 params are forwarded to [BlockBook backend](https://github.com/trezor/blockbook/blob/master/docs/api.md#api-v2) using `@trezor/blockchain-link` package
@@ -169,14 +152,6 @@ Get info about account using public key (device is not used)
 TrezorConnect.getAccountInfo({
     descriptor:
         'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
-    coin: 'btc',
-});
-```
-
-Get info about account using BIP-0044 account discovery
-
-```javascript
-TrezorConnect.getAccountInfo({
     coin: 'btc',
 });
 ```

@@ -1,37 +1,31 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
+import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
 import type {
     AccountInfo,
     AccountUtxo,
     CoinInfo,
     DerivationPath,
-    DiscoveryAccount,
     GetAccountInfo as GetAccountInfoParams,
     PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
-import { resolveAfter } from '@trezor/utils/src/resolveAfter';
-import { unique } from '@trezor/utils/src/unique';
 
-import { type Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { Discovery } from './common/Discovery';
 import { bundlify, validateParams } from './common/paramsValidator';
-import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
-import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
+import { getScriptType, validatePath } from '../utils/pathUtils';
 
 type Request = GetAccountInfoParams & { address_n: number[]; coinInfo: CoinInfo };
 
 export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Request[]> {
     disposed = false;
     hasBundle?: boolean;
-    discovery?: Discovery;
 
     constructor(message: MethodMessage<'getAccountInfo'>) {
         // assume that device will not be used
@@ -81,11 +75,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 willUseDevice = typeof batch.descriptor !== 'string';
             }
             if (!batch.path && !batch.descriptor) {
-                if (payload.bundle.length > 1) {
-                    throw Error('Discovery for multiple coins in not supported');
-                }
-                // device will be used in Discovery
-                willUseDevice = true;
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    'GetAccountInfo: path or descriptor is required',
+                );
             }
 
             return {
@@ -114,68 +107,44 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     get confirmation() {
-        const { params } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstParam: (typeof params)[number] = params[0];
-        if (this.params.length === 1 && !firstParam.path && !firstParam.descriptor) {
-            return {
-                view: 'export-account-info' as const,
-                label: `Export info for ${firstParam.coinInfo.label} account of your selection`,
-                customConfirmButton: {
-                    label: 'Proceed to account selection',
-                    className: 'not-empty-css',
-                },
-            };
-        } else {
-            const keys: {
-                [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
-            } = {};
-            this.params.forEach(b => {
-                if (!keys[b.coinInfo.label]) {
-                    keys[b.coinInfo.label] = {
-                        coinInfo: b.coinInfo,
-                        values: [],
-                    };
+        const keys: {
+            [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
+        } = {};
+        this.params.forEach(b => {
+            if (!keys[b.coinInfo.label]) {
+                keys[b.coinInfo.label] = {
+                    coinInfo: b.coinInfo,
+                    values: [],
+                };
+            }
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const entry: (typeof keys)[string] = keys[b.coinInfo.label];
+            entry.values.push(b.descriptor || b.address_n);
+        });
+
+        // prepare html for popup
+        const str: string[] = [];
+        Object.keys(keys).forEach((k, _i, _a) => {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const details: (typeof keys)[string] = keys[k];
+            details.values.forEach(acc => {
+                str.push(k);
+                str.push(' ');
+                if (typeof acc === 'string') {
+                    str.push(acc);
+                } else {
+                    str.push(getAccountLabel(acc, details.coinInfo));
                 }
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const entry: (typeof keys)[string] = keys[b.coinInfo.label];
-                entry.values.push(b.descriptor || b.address_n);
             });
+        });
 
-            // prepare html for popup
-            const str: string[] = [];
-            Object.keys(keys).forEach((k, _i, _a) => {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const details: (typeof keys)[string] = keys[k];
-                details.values.forEach(acc => {
-                    // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';
-                    // if (i > 0) str += ', ';
-                    str.push(k);
-                    str.push(' ');
-                    if (typeof acc === 'string') {
-                        str.push(acc);
-                    } else {
-                        str.push(getAccountLabel(acc, details.coinInfo));
-                    }
-                });
-            });
-
-            return {
-                view: 'export-account-info' as const,
-                label: `Export info for: ${str.join('')}`,
-            };
-        }
+        return {
+            view: 'export-account-info' as const,
+            label: `Export info for: ${str.join('')}`,
+        };
     }
 
     async run(context: MethodContext) {
-        // address_n and descriptor are not set. use discovery
-        const { params } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstRequest: (typeof params)[number] = params[0];
-        if (this.params.length === 1 && !firstRequest.path && !firstRequest.descriptor) {
-            return this.discover(firstRequest, context);
-        }
-
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (progress: number, response: AccountInfo | null, error?: string) => {
@@ -323,169 +292,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         return this.hasBundle ? responses : responses[0]!;
     }
 
-    private async discover(request: Request, context: MethodContext) {
-        const { coinInfo, identity } = request;
-        const blockchain = await initBlockchain(coinInfo, context.sendCoreMessage, identity);
-
-        // Try to get existing accounts from the host (e.g. Suite) to skip device discovery
-        const existingAccounts = await requestExistingAccounts({
-            postMessage: context.sendCoreMessage,
-            createUiPromise: context.createUiPromise,
-            device: this.getDevice(),
-            coinInfo,
-        });
-
-        if (existingAccounts) {
-            return this.selectExistingAccount(existingAccounts, request, blockchain, context);
-        }
-
-        return this.runDiscovery(request, blockchain, context);
-    }
-
-    private async selectExistingAccount(
-        accounts: DiscoveryAccount[],
-        request: Request,
-        blockchain: Blockchain,
-        context: MethodContext,
-    ) {
-        const { coinInfo, defaultAccountType } = request;
-        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
-
-        context.sendCoreMessage(
-            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
-                type: 'complete',
-                accountTypes: unique(accounts.map(a => a.type)),
-                defaultAccountType,
-                coinInfo,
-                accounts,
-            }),
-        );
-
-        const uiResp = await dfd.promise;
-        const indexPayload = uiResp.payload;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const account: (typeof accounts)[number] = accounts[indexPayload];
-
-        return this.fetchAccountInfo(account, request, blockchain);
-    }
-
-    private async runDiscovery(request: Request, blockchain: Blockchain, context: MethodContext) {
-        const { coinInfo, defaultAccountType, derivationType } = request;
-        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
-
-        const discovery = new Discovery({
-            blockchain,
-            getDescriptor: path =>
-                this.getDevice().getCommands().getAccountDescriptor(coinInfo, path, derivationType),
-        });
-
-        discovery.on('progress', accounts => {
-            context.sendCoreMessage(
-                createUiMessage(
-                    UI_REQUEST.SELECT_ACCOUNT,
-                    {
-                        type: 'progress',
-                        coinInfo,
-                        accounts,
-                    },
-                    { requestId: dfd.requestId },
-                ),
-            );
-        });
-        discovery.on('complete', () => {
-            context.sendCoreMessage(
-                createUiMessage(
-                    UI_REQUEST.SELECT_ACCOUNT,
-                    {
-                        type: 'end',
-                        coinInfo,
-                    },
-                    { requestId: dfd.requestId },
-                ),
-            );
-        });
-        // catch error from discovery process
-        discovery.start().catch(error => {
-            dfd.reject(error);
-        });
-
-        // set select account view
-        // this view will be updated from discovery events
-        context.sendCoreMessage(
-            createUiMessage(
-                UI_REQUEST.SELECT_ACCOUNT,
-                {
-                    type: 'start',
-                    accountTypes: discovery.types.map(t => t.type),
-                    defaultAccountType,
-                    coinInfo,
-                },
-                { requestId: dfd.requestId },
-            ),
-        );
-
-        // wait for user action
-        const uiResp = await dfd.promise;
-        discovery.stop();
-
-        const { accounts } = discovery;
-        const payloadIndex = uiResp.payload;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const account: (typeof accounts)[number] = accounts[payloadIndex];
-
-        if (!discovery.completed) {
-            await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"
-        }
-
-        return this.fetchAccountInfo(account, request, blockchain);
-    }
-
-    private async fetchAccountInfo(
-        account: DiscoveryAccount,
-        request: Request,
-        blockchain: Blockchain,
-    ) {
-        const { coinInfo } = request;
-
-        // get account info from backend
-        const info = await blockchain.getAccountInfo({
-            descriptor: account.descriptor,
-            details: request.details,
-            tokens: request.tokens,
-            page: request.page,
-            pageSize: request.pageSize,
-            pageCursor: request.pageCursor,
-            from: request.from,
-            to: request.to,
-            contractFilter: request.contractFilter,
-            gap: request.gap,
-            marker: request.marker,
-            protocols: request.protocols,
-            confirmedNonce: request.confirmedNonce,
-        });
-
-        let utxo: AccountUtxo[] | undefined;
-        if (
-            isUtxoBased(coinInfo) &&
-            typeof request.details === 'string' &&
-            request.details !== 'basic'
-        ) {
-            utxo = await blockchain.getAccountUtxo(account.descriptor);
-        }
-
-        return {
-            path: getSerializedPath(account.address_n),
-            ...info,
-            utxo,
-        };
-    }
-
     dispose() {
         this.disposed = true;
-        const { discovery } = this;
-        if (discovery) {
-            discovery.removeAllListeners();
-            discovery.stop();
-        }
     }
 }

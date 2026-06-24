@@ -89,19 +89,6 @@ export default [
         submitButton: 'Get account info',
 
         fields: [
-            {
-                name: 'coin',
-                type: 'select',
-                value: 'test',
-                data: select,
-            },
-        ],
-    },
-    {
-        name,
-        submitButton: 'Get account info',
-
-        fields: [
             ...batch,
             {
                 name: 'details',
