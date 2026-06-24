@@ -4,6 +4,7 @@ import { useTranslation } from '@suite/intl';
 import { isAddressValid } from '@suite-common/address';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
+import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 
 import {
@@ -40,10 +41,23 @@ export const useTronStakeForm = ({ account }: UseTronStakeFormProps) => {
         },
     });
 
+    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
+    const minStakingAmount = stakingLimits?.MIN_AMOUNT_FOR_STAKING;
+
+    const { displaySymbol } = getNetwork(account.symbol);
+
     const amountRules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
+            minStakingAmount: (value: string) => {
+                if (value && minStakingAmount?.isGreaterThan(value)) {
+                    return translationString('TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE', {
+                        amount: minStakingAmount.toString(),
+                        displaySymbol,
+                    });
+                }
+            },
             decimals: validateDecimals(translationString, {
                 decimals: getNetwork(account.symbol).decimals,
             }),
