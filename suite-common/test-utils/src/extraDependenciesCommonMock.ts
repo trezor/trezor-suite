@@ -113,6 +113,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         ),
         selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: notImplementedSelector('selectTradingEnvironment', 'localhost'),
+        selectTradedAccountKeys: notImplementedSelector('selectTradedAccountKeys', []),
         selectIsViewOnlyByDefaultEnabled: notImplementedSelector(
             'selectIsViewOnlyByDefaultEnabled',
             true,

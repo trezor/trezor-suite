@@ -1,7 +1,10 @@
+import { events } from '@suite-common/analytics';
 import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
@@ -20,6 +23,10 @@ import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect
 import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
+import {
+    getAccountInfoAnalyticsPayload,
+    isAccountActiveForAnalytics,
+} from './accountsInfoAnalytics';
 import { selectAccountByKey } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
@@ -76,6 +83,29 @@ export const reportWalletBalanceThunk = createThunk(
         reportWalletBalanceDebounced({
             getState,
             analytics: extra.services.analytics,
+        });
+    },
+);
+
+export const reportAccountInfoThunk = createThunk(
+    `${ACCOUNTS_MODULE_PREFIX}/reportAccountInfo`,
+    (accountKey: AccountKey, { getState, extra }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account || !isAccountActiveForAnalytics(account)) return;
+
+        const tokenDefinitions = selectCoinDefinitions(getState(), account.symbol);
+        // wait for token definitions before reporting, otherwise the account would be deduped with an
+        // incorrect token list with phishing tokens could be reported
+        const requiresTokenDefinitions = getNetworkFeatures(account.symbol).includes(
+            'coin-definitions',
+        );
+        if (requiresTokenDefinitions && !tokenDefinitions?.data) return;
+
+        const hasTraded = extra.selectors.selectTradedAccountKeys(getState()).includes(account.key);
+
+        extra.services.analytics.report({
+            type: events.accountsInfoEvent.name,
+            payload: getAccountInfoAnalyticsPayload(account, tokenDefinitions, hasTraded),
         });
     },
 );
@@ -220,6 +250,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 customTokens.length > 0
             ) {
                 dispatch(accountsActions.updateAccount(account, payload));
+                dispatch(reportAccountInfoThunk(account.key));
             } else {
                 dispatch(accountsActions.updateAccountRefreshTimestamp(account));
             }

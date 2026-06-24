@@ -26,8 +26,7 @@ export enum EventType {
     WalletConnectProposalApproved = 'wallet-connect/proposal-approved',
     WalletConnectProposalRejected = 'wallet-connect/proposal-rejected',
     WalletConnectSessionRequest = 'wallet-connect/session-request',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    CoinDiscovery = 'coin_discovery',
+    AccountsInfo = 'accounts/info',
     AccountsBalance = 'accounts/balance',
     OnboardingStepViewed = 'onboarding/step-viewed',
     OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',

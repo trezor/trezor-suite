@@ -47,6 +47,7 @@ import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
+import { selectTradedAccountKeys } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainState,
@@ -193,6 +194,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
         selectTradingEnvironment: selectInvityServerEnvironment,
+        selectTradedAccountKeys,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
         selectThpSettings: (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName

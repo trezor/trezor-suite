@@ -21,7 +21,12 @@ import { type FeesState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';
+import {
+    accountsReducer,
+    blockchainReducer,
+    tradingReducer,
+    transactionsReducer,
+} from 'src/reducers/wallet';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from '../__fixtures__/blockchainActions';
@@ -59,6 +64,7 @@ const getInitialState = (
             ...feesReducer(undefined, action),
             ...fees,
         },
+        trading: tradingReducer(undefined, action),
         settings: {
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         },

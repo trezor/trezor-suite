@@ -30,6 +30,7 @@ import {
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
     selectGroupedTradingExchangeQuotes,
+    selectTradedAccountKeys,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
@@ -681,6 +682,18 @@ describe('tradingSelectors', () => {
 
     it('selectTradingTrades should return correct data', () => {
         expect(selectTradingTrades(state)).toBe(state.wallet.trading.trades);
+    });
+
+    describe(selectTradedAccountKeys.name, () => {
+        it('should return unique account keys across all trades (send, receive, selected)', () => {
+            expect(selectTradedAccountKeys(state)).toEqual([accountEth.key, accountBtc.key]);
+        });
+
+        it('should be empty when there are no trades', () => {
+            state.wallet.trading.trades = [];
+
+            expect(selectTradedAccountKeys(state)).toEqual([]);
+        });
     });
 
     describe(selectDeviceTradingTradesOrderedByDate.name, () => {
