@@ -64,6 +64,7 @@ import {
     type SendState,
     type TransactionsState,
     type WalletSettingsState,
+    createAccountRefreshThrottle,
     selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
@@ -193,6 +194,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         connectInitHooks,
+        accountRefreshThrottle: createAccountRefreshThrottle(),
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,

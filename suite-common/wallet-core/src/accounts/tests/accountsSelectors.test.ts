@@ -83,7 +83,6 @@ const mockState: AccountsRootState & DeviceRootState = {
                 },
                 networkType: 'bitcoin',
                 page: { index: 1, size: 25, total: 1 },
-                ts: 0,
             },
             {
                 symbol: 'eth',
@@ -120,7 +119,6 @@ const mockState: AccountsRootState & DeviceRootState = {
                 misc: { nonce: '1' },
                 marker: undefined,
                 stellarCursor: undefined,
-                ts: 0,
             },
         ],
     },

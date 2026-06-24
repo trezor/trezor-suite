@@ -114,7 +114,8 @@ export const reportAccountInfoThunk = createThunk(
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState, extra }) => {
+        const { accountRefreshThrottle } = extra.services;
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -151,7 +152,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
         // stop here if account is not outdated and there are no pending transactions
 
         if (!accountOutdated && !accountTxs.some(isPending)) {
-            dispatch(accountsActions.updateAccountRefreshTimestamp(account));
+            // refreshed, nothing changed - restart the throttle window (old code bumped account.ts)
+            accountRefreshThrottle.markRun(accountKey);
 
             return;
         }
@@ -249,10 +251,12 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 isAccountOutdated(account, payload) ||
                 customTokens.length > 0
             ) {
+                // updateAccount restarts the throttle window via the middleware (mirrors old account.ts)
                 dispatch(accountsActions.updateAccount(account, payload));
                 dispatch(reportAccountInfoThunk(account.key));
             } else {
-                dispatch(accountsActions.updateAccountRefreshTimestamp(account));
+                // refreshed, nothing changed - restart the throttle window directly
+                accountRefreshThrottle.markRun(accountKey);
             }
 
             dispatch(reportWalletBalanceThunk());
