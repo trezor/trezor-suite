@@ -183,7 +183,7 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
     },
 );
 
-const selectDeviceButtonRequests = createMemoizedSelector(
+export const selectDeviceButtonRequests = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.buttonRequests ?? [],
 );

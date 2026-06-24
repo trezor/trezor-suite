@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
-import { type DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/device';
+import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountKey,
@@ -10,7 +11,10 @@ import {
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 
+import { PAYMENT_REQUEST_BUTTON_NAMES } from './sendFormConstants';
 import { type SendRootState } from './sendFormReducer';
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
@@ -43,26 +47,36 @@ export const selectSendFormDraftOutputsByAccountKey = (
     return draft?.outputs ?? null;
 };
 
-export const selectSendFormButtonRequestCodes = (state: DeviceRootState, symbol: NetworkSymbol) => {
-    const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
+export const selectSendFormButtonRequestCodes = createMemoizedSelector(
+    [selectDeviceButtonRequests, (_state: DeviceRootState, symbol: NetworkSymbol) => symbol],
+    (buttonRequests, symbol) => {
+        const networkType = getNetworkType(symbol);
 
-    const networkType = getNetworkType(symbol);
+        const isCardano = networkType === 'cardano';
+        const isEthereum = networkType === 'ethereum';
+        const isStellar = networkType === 'stellar';
 
-    const isCardano = networkType === 'cardano';
-    const isEthereum = networkType === 'ethereum';
-    const isStellar = networkType === 'stellar';
-
-    return buttonRequestCodes.filter(
-        code =>
-            code === 'ButtonRequest_ConfirmOutput' ||
-            code === 'ButtonRequest_SignTx' ||
-            isCardano ||
-            (isEthereum && code === 'ButtonRequest_Other') ||
-            // This is a special case for T1B1 devices (Stellar).
-            // See https://github.com/trezor/trezor-firmware/issues/5120
-            (isStellar && (code === 'ButtonRequest_Other' || code === 'ButtonRequest_ProtectCall')),
-    );
-};
+        return returnStableArrayIfEmpty(
+            buttonRequests
+                .filter(
+                    ({ code, name }) =>
+                        code === 'ButtonRequest_ConfirmOutput' ||
+                        code === 'ButtonRequest_SignTx' ||
+                        isCardano ||
+                        (isEthereum && code === 'ButtonRequest_Other') ||
+                        (code === 'ButtonRequest_Other' &&
+                            name !== undefined &&
+                            PAYMENT_REQUEST_BUTTON_NAMES.includes(name)) ||
+                        // This is a special case for T1B1 devices (Stellar).
+                        // See https://github.com/trezor/trezor-firmware/issues/5120
+                        (isStellar &&
+                            (code === 'ButtonRequest_Other' ||
+                                code === 'ButtonRequest_ProtectCall')),
+                )
+                .map(({ code }) => code),
+        );
+    },
+);
 
 export const selectSendFormReviewButtonRequestsCount = (
     state: DeviceRootState,
@@ -76,15 +90,18 @@ export const selectSendFormReviewButtonRequestsCount = (
 
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 
+    let count = sendFormReviewRequest.length;
+
     // While confirming decrease amount in RBF, 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount).
+    // Drop one from the count (without mutating the memoized array).
     if (
         G.isNumber(decreaseOutputId) &&
         sendFormReviewRequest.filter(code => code === 'ButtonRequest_ConfirmOutput').length > 1
     ) {
-        sendFormReviewRequest.splice(-1, 1);
+        count -= 1;
     }
 
-    return isCardano ? sendFormReviewRequest.length - 1 : sendFormReviewRequest.length;
+    return isCardano ? Math.max(0, count - 1) : count;
 };
 
 export const selectSendFormReviewLastButtonCode = (
