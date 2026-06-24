@@ -39,6 +39,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const remainingVotes = getTronAvailableVotingPower(account);
     const totalVotes = getTronTotalVotingPower(account);
     const hasRemainingVotes = new BigNumber(remainingVotes).gt(0);
+    const shouldShowRemainingVotes = new BigNumber(remainingVotes).plus(totalVotes).gt(0);
 
     const goToFlow = (routeName: 'earn-tron-stake' | 'earn-tron-unstake' | 'earn-tron-vote') =>
         dispatch(
@@ -131,12 +132,16 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                         </Row>
                     </Tooltip>
                 ) : (
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <Translation
-                            id="TR_EARN_TRON_REMAINING_VOTES"
-                            values={{ remaining: remainingVotes, total: totalVotes }}
-                        />
-                    </Text>
+                    <>
+                        {shouldShowRemainingVotes && (
+                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                                <Translation
+                                    id="TR_EARN_TRON_REMAINING_VOTES"
+                                    values={{ remaining: remainingVotes, total: totalVotes }}
+                                />
+                            </Text>
+                        )}
+                    </>
                 )}
             </Row>
         </Card>
