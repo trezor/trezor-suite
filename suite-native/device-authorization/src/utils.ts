@@ -51,4 +51,8 @@ export const isSuiteSyncButtonRequest = (action: UnknownAction) =>
     typeof action.payload === 'object' &&
     isNotNullOrUndefined(action.payload) &&
     'name' in action.payload &&
-    action.payload.name === 'secure_sync';
+    typeof action.payload.name === 'string' &&
+    [
+        'suite_sync',
+        'secure_sync', // Older firmwares use this name.
+    ].includes(action.payload.name);
