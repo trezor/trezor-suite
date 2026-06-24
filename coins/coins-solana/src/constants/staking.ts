@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-export const MIN_SOL_AMOUNT_FOR_STAKING = new BigNumber(0.01);
+export const MIN_SOL_AMOUNT_FOR_STAKING = new BigNumber(1);
 export const MAX_SOL_AMOUNT_FOR_STAKING = new BigNumber(10_000_000);
 export const MIN_SOL_FOR_WITHDRAWALS = new BigNumber(0.02);
 export const MIN_SOL_BALANCE_FOR_FEE_BUFFER = new BigNumber(0.005);
