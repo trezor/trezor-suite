@@ -2,6 +2,10 @@
 import TrezorConnect from '@trezor/connect';
 import { UI_REQUEST, UI_RESPONSE } from '@trezor/connect-common';
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
+// Deep import bypasses the `@trezor/transport` barrel so vitest's web project
+// does not pull node-only `usb`/`dgram` (imported by `NodeUsbTransport` /
+// `UdpTransport`, which the barrel re-exports) into the browser build.
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
@@ -225,7 +229,7 @@ export const initTrezorConnect = async (
             appUrl: 'tests.connect.trezor.io',
             email: 'tests@connect.trezor.io',
         },
-        transports: ['BridgeTransport'],
+        transports: [new BridgeTransport({ id: 'bridge', port: 21328 })],
         debug: true,
         pendingTransportEvent: true,
         transportReconnect: false,

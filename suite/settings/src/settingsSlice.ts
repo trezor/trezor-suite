@@ -6,17 +6,25 @@ import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import { type ConnectSettings } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
 
+// String identifiers for the debug transport switcher UI, shared by the web and
+// desktop-renderer builds. Intentionally local to settings and NOT derived from
+// @trezor/connect's public types, so this package need not depend on @trezor/connect.
+export type DebugTransport =
+    | 'BridgeTransport'
+    | 'NodeUsbTransport'
+    | 'UdpTransport'
+    | 'WebUsbTransport';
+
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
-    transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
+    transports: DebugTransport[];
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
     isN4w1BackupEnabled: boolean;
@@ -30,7 +38,7 @@ export interface AutodetectSettings {
 
 export interface SuiteSettingsState {
     theme: {
-        variant: Exclude<SuiteThemeVariant, 'system'>;
+        variant: Exclude<SuiteThemeVariant, 'system'> | 'debug';
     };
     language: Locale;
     torOnionLinks: boolean;
