@@ -71,8 +71,8 @@ export const YieldDepositScreen = () => {
         flowKey,
         token,
         tokenSymbol,
-        vault,
         vaultTokenSymbol,
+        vaultTokenName,
         resolutionStatus,
     } = resolvedFlowData;
 
@@ -254,7 +254,7 @@ export const YieldDepositScreen = () => {
                     closeAction={handleCloseDeposit}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                 />
             }
             footer={
@@ -341,7 +341,7 @@ export const YieldDepositScreen = () => {
                     onExplorePress={pendingModalProps.onExplorePress}
                     submittedAt={pendingModalProps.submittedAt}
                     title={<Translation id="earn.yieldDepositFlowScreen.depositPendingTitle" />}
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}
                 />
             )}

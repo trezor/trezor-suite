@@ -20,7 +20,9 @@ type RouteProps = ApprovalReviewRouteProps | RevokeReviewRouteProps;
 
 export const YieldDepositApprovalTransactionDataReviewScreen = () => {
     const route = useRoute<RouteProps>();
-    const { flowData, flowKey, resolutionStatus } = useResolvedYieldFlowData(route.params);
+    const { flowData, flowKey, resolutionStatus, vaultTokenName } = useResolvedYieldFlowData(
+        route.params,
+    );
     const device = useSelector(selectSelectedDevice);
     const isRevokeReview = route.name === YieldStackRoutes.YieldDepositRevokeReview;
     const transactionType = isRevokeReview ? 'revoke' : 'approve';
@@ -37,6 +39,7 @@ export const YieldDepositApprovalTransactionDataReviewScreen = () => {
             flowData={flowData}
             flowKey={flowKey}
             transactionType={transactionType}
+            vaultTokenName={vaultTokenName}
         />
     );
 };

@@ -33,7 +33,9 @@ type NavigationProps = StackNavigationProps<
 export const YieldWithdrawReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { flowData, flowKey, resolutionStatus } = useResolvedYieldFlowData(route.params);
+    const { flowData, flowKey, resolutionStatus, vaultTokenName } = useResolvedYieldFlowData(
+        route.params,
+    );
     const device = useSelector(selectSelectedDevice);
     const flowType = route.params.withdrawFlowType ?? 'withdraw';
     const session = useSelector((state: StablecoinYieldRootState) =>
@@ -63,7 +65,14 @@ export const YieldWithdrawReviewScreen = () => {
     }, [flowData, flowType]);
     const selectedFee = useMemo(() => getSelectedEvmFeeFromFormDraft(formDraft), [formDraft]);
     const preview = useMemo(() => {
-        if (!review || !device || !flowData || !reviewToken || !selectedFee) {
+        if (
+            !review ||
+            !device ||
+            !flowData ||
+            !reviewToken ||
+            !selectedFee ||
+            vaultTokenName === null
+        ) {
             return null;
         }
 
@@ -74,8 +83,9 @@ export const YieldWithdrawReviewScreen = () => {
             reviewToken,
             selectedFee,
             type: 'withdraw',
+            vaultName: vaultTokenName,
         });
-    }, [device, flowData, review, reviewToken, selectedFee]);
+    }, [device, flowData, review, reviewToken, selectedFee, vaultTokenName]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
