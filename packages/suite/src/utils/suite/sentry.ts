@@ -36,6 +36,7 @@ export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) 
     const instanceId = selectAnalyticsInstanceId(getState());
     const enabledNetworks = selectEnabledNetworks(getState());
     const device = selectSelectedDevice(getState());
+    // Although discoveryReducer contains sensitive information (staticSessionId), this is a discovery status selected for a particular device (no id there)
     const discovery = selectDiscoveryForSelectedDevice(getState());
     const redactedActionsLog = selectRedactedActionsLog(getState(), true);
 
