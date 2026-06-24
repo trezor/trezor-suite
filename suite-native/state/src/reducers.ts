@@ -18,6 +18,7 @@ import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import {
+    accountsRefreshTimeReducer,
     feesReducer,
     formDraftReducer,
     prepareAccountsReducer,
@@ -221,6 +222,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const walletReducers = combineReducers({
         accounts: accountsReducer,
+        accountsRefreshTime: accountsRefreshTimeReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerReducer,
         fiat: fiatRatesReducer,

@@ -4,6 +4,7 @@ import { selectedAccountReducer } from '@suite/account';
 import { type CoinjoinAction, type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
 import { type TradingState, prepareTradingReducer } from '@suite-common/trading';
 import {
+    type AccountsRefreshTimeState,
     type AccountsState,
     type ExplorerConfig,
     type FiatRatesState,
@@ -14,6 +15,7 @@ import {
     type StakeState,
     type TransactionsState,
     type TronStakeReducerState,
+    accountsRefreshTimeReducer,
     feesReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
@@ -62,6 +64,7 @@ export type WalletState = {
     phishing: PhishingState;
     discovery: Discovery;
     accounts: AccountsState;
+    accountsRefreshTime: AccountsRefreshTimeState;
     selectedAccount: SelectedAccountStatus;
     fees: FeesState;
     blockchain: BlockchainNetworks;
@@ -88,6 +91,7 @@ export const walletReducers: Reducer<
     phishing: phishingReducer,
     discovery: discoveryReducer,
     accounts: accountsReducer,
+    accountsRefreshTime: accountsRefreshTimeReducer,
     selectedAccount: selectedAccountReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,

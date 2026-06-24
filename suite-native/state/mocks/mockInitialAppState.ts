@@ -12,6 +12,7 @@ import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import {
     accountsInitialState,
+    accountsRefreshTimeInitialState,
     blockchainInitialState,
     discoveryInitialState,
     explorerInitialState,
@@ -79,6 +80,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
 
     wallet: {
         accounts: accountsInitialState,
+        accountsRefreshTime: accountsRefreshTimeInitialState,
         blockchain: blockchainInitialState,
         explorer: explorerInitialState,
         fiat: fiatRatesInitialState,

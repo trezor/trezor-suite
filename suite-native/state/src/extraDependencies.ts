@@ -125,7 +125,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                         return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
                 }
             }),
-        accountRefreshThrottle: createAccountRefreshThrottle(),
+        accountRefreshThrottle: createAccountRefreshThrottle(deps.getState),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
