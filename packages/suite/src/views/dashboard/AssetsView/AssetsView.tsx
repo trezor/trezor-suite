@@ -26,6 +26,7 @@ import {
     getFiatRateKey,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
@@ -154,7 +155,8 @@ export const AssetsView = () => {
             stakingAccounts: accounts.filter(
                 account =>
                     isSupportedEthStakingNetworkSymbol(account.symbol) ||
-                    isSupportedSolStakingNetworkSymbol(account.symbol),
+                    isSupportedSolStakingNetworkSymbol(account.symbol) ||
+                    isSupportedTronStakingNetworkSymbol(account.symbol),
             ),
             accounts,
             isStakeNetwork: getNetworkFeatures(symbol).includes('staking'),
