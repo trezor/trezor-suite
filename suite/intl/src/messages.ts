@@ -7687,6 +7687,10 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_SUPPORT_CONSENT_BUTTON',
         defaultMessage: 'Contact Trezor Support',
     },
+    TR_GUIDE_SUPPORT_DEVICE_DISCONNECTED: {
+        id: 'TR_GUIDE_SUPPORT_DEVICE_DISCONNECTED',
+        defaultMessage: 'Trezor disconnected',
+    },
     TR_GUIDE_FORUM: {
         id: 'TR_GUIDE_FORUM',
         defaultMessage: 'Trezor Forum',

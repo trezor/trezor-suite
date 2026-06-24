@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { UpdateState } from '@suite/desktop-update';
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -19,6 +19,12 @@ import {
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
+const StatusText = ({ id }: { id: TranslationKey }) => (
+    <Text typographyStyle="body-sm" intent="neutral" priority="secondary" as="div">
+        <Translation id={id} />
+    </Text>
+);
+
 export const SupportFeedbackSelection = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -28,12 +34,18 @@ export const SupportFeedbackSelection = () => {
     const appUpToDate =
         isDesktop() &&
         [UpdateState.Checking, UpdateState.NotAvailable].includes(desktopUpdate.state);
+    const appUpdateAvailable =
+        isDesktop() &&
+        [UpdateState.Available, UpdateState.Downloading, UpdateState.Ready].includes(
+            desktopUpdate.state,
+        );
     const appVersion = `${process.env.VERSION}${isDevEnv ? '-dev' : ''}`;
 
+    const isDeviceConnected = !!device?.features;
     const firmwareUpToDate = device?.firmware === 'valid';
     const getFirmwareVersionLabel = () => {
         if (!device?.features) {
-            return <Translation id="TR_DEVICE_NOT_CONNECTED" />;
+            return '-/-';
         }
 
         const version = getFirmwareVersion(device);
@@ -44,6 +56,33 @@ export const SupportFeedbackSelection = () => {
 
         return <Translation id="TR_YOUR_CURRENT_VERSION" values={{ version }} />;
     };
+
+    const getAppStatusId = (): TranslationKey | null => {
+        if (appUpToDate) {
+            return 'TR_UP_TO_DATE';
+        }
+
+        if (appUpdateAvailable) {
+            return 'TR_UPDATE_AVAILABLE';
+        }
+
+        return null;
+    };
+
+    const getFirmwareStatusId = (): TranslationKey | null => {
+        if (firmwareUpToDate) {
+            return 'TR_UP_TO_DATE';
+        }
+
+        if (!isDeviceConnected) {
+            return 'TR_GUIDE_SUPPORT_DEVICE_DISCONNECTED';
+        }
+
+        return null;
+    };
+
+    const appStatusId = getAppStatusId();
+    const firmwareStatusId = getFirmwareStatusId();
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
     const handleBugButtonClick = () => {
@@ -198,59 +237,45 @@ export const SupportFeedbackSelection = () => {
                     </Box>
                     <CardList margin={{ bottom: 16 }}>
                         <CardList.Item data-testid="@guide/support/version" paddingType="medium">
-                            <Column gap={4} alignItems="flex-start" overflow="hidden">
-                                <Text typographyStyle="body-md" as="div" maxWidth="100%">
-                                    <Translation id="TR_APPLICATION" />
-                                </Text>
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    as="div"
-                                    maxWidth="100%"
-                                >
-                                    <Translation
-                                        id="TR_YOUR_CURRENT_VERSION"
-                                        values={{ version: appVersion }}
-                                    />
-                                </Text>
-                            </Column>
-                            {appUpToDate && (
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    as="div"
-                                >
-                                    <Translation id="TR_UP_TO_DATE" />
-                                </Text>
-                            )}
+                            <Row justifyContent="space-between" width="100%" alignItems="flex-end">
+                                <Column gap={4} alignItems="flex-start" overflow="hidden">
+                                    <Text typographyStyle="body-md" as="div" maxWidth="100%">
+                                        <Translation id="TR_APPLICATION" />
+                                    </Text>
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        as="div"
+                                        maxWidth="100%"
+                                    >
+                                        <Translation
+                                            id="TR_YOUR_CURRENT_VERSION"
+                                            values={{ version: appVersion }}
+                                        />
+                                    </Text>
+                                </Column>
+                                {!!appStatusId && <StatusText id={appStatusId} />}
+                            </Row>
                         </CardList.Item>
                         <CardList.Item data-testid="@guide/support/firmware" paddingType="medium">
-                            <Column gap={4} alignItems="flex-start" overflow="hidden">
-                                <Text typographyStyle="body-md" as="div" maxWidth="100%">
-                                    <Translation id="TR_FIRMWARE" />
-                                </Text>
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    as="div"
-                                    maxWidth="100%"
-                                >
-                                    {getFirmwareVersionLabel()}
-                                </Text>
-                            </Column>
-                            {firmwareUpToDate && (
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    as="div"
-                                >
-                                    <Translation id="TR_UP_TO_DATE" />
-                                </Text>
-                            )}
+                            <Row justifyContent="space-between" width="100%" alignItems="flex-end">
+                                <Column gap={4} alignItems="flex-start" overflow="hidden">
+                                    <Text typographyStyle="body-md" as="div" maxWidth="100%">
+                                        <Translation id="TR_FIRMWARE" />
+                                    </Text>
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        as="div"
+                                        maxWidth="100%"
+                                    >
+                                        {getFirmwareVersionLabel()}
+                                    </Text>
+                                </Column>
+                                {!!firmwareStatusId && <StatusText id={firmwareStatusId} />}
+                            </Row>
                         </CardList.Item>
                     </CardList>
                 </Column>
