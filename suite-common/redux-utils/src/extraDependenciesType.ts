@@ -17,11 +17,7 @@ import {
     type UserContextPayload,
 } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type AccountKey,
-    type SelectedAccountStatus,
-} from '@suite-common/wallet-types';
+import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
@@ -77,7 +73,7 @@ export type CommonServices = SuiteSyncDep &
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
-        accountRefreshThrottle: KeyedThrottle<AccountKey>;
+        accountRefreshThrottle: KeyedThrottle<Account['key']>;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &

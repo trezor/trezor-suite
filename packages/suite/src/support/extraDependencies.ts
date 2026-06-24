@@ -194,7 +194,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         connectInitHooks,
-        accountRefreshThrottle: createAccountRefreshThrottle(),
+        accountRefreshThrottle: createAccountRefreshThrottle(deps.getState),
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,

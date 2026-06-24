@@ -9,69 +9,38 @@ describe('createKeyedThrottle', () => {
         jest.useRealTimers();
     });
 
-    describe('canRun', () => {
-        it('is true for an id that never ran', () => {
-            const throttle = createKeyedThrottle(1000);
-            expect(throttle.canRun('a')).toBe(true);
-        });
-
-        it('is false right after markRun and until the interval elapses', () => {
-            const throttle = createKeyedThrottle(1000);
-            throttle.markRun('a');
-
-            expect(throttle.canRun('a')).toBe(false);
-            jest.advanceTimersByTime(999);
-            expect(throttle.canRun('a')).toBe(false);
-            jest.advanceTimersByTime(1); // exactly at the boundary
-            expect(throttle.canRun('a')).toBe(true);
-        });
-
-        it('tracks ids independently', () => {
-            const throttle = createKeyedThrottle(1000);
-            throttle.markRun('a');
-
-            expect(throttle.canRun('a')).toBe(false);
-            expect(throttle.canRun('b')).toBe(true);
-        });
-
-        it('re-marking extends the window', () => {
-            const throttle = createKeyedThrottle(1000);
-            throttle.markRun('a');
-            jest.advanceTimersByTime(800);
-            throttle.markRun('a');
-            jest.advanceTimersByTime(800); // 1600 since first mark, 800 since second
-
-            expect(throttle.canRun('a')).toBe(false);
-        });
+    it('canRun is true for an id that never ran (getLastRun returns undefined)', () => {
+        const throttle = createKeyedThrottle(1000, () => undefined);
+        expect(throttle.canRun('a')).toBe(true);
     });
 
-    describe('reset / resetAll', () => {
-        it('reset makes only that id runnable again', () => {
-            const throttle = createKeyedThrottle(1000);
-            throttle.markRun('a');
-            throttle.markRun('b');
+    it('canRun is false until the interval elapses since the last run', () => {
+        const lastRun: Record<string, number> = {};
+        const throttle = createKeyedThrottle(1000, id => lastRun[id]);
 
-            throttle.reset('a');
+        lastRun.a = Date.now();
 
-            expect(throttle.canRun('a')).toBe(true);
-            expect(throttle.canRun('b')).toBe(false);
-        });
+        expect(throttle.canRun('a')).toBe(false);
+        jest.advanceTimersByTime(999);
+        expect(throttle.canRun('a')).toBe(false);
+        jest.advanceTimersByTime(1); // exactly at the boundary
+        expect(throttle.canRun('a')).toBe(true);
+    });
 
-        it('reset on an unknown id is a no-op', () => {
-            const throttle = createKeyedThrottle(1000);
-            expect(() => throttle.reset('nope')).not.toThrow();
-            expect(throttle.canRun('nope')).toBe(true);
-        });
+    it('reads each id independently from getLastRun', () => {
+        const lastRun: Record<string, number> = { a: Date.now() };
+        const throttle = createKeyedThrottle(1000, id => lastRun[id]);
 
-        it('resetAll makes every id runnable again', () => {
-            const throttle = createKeyedThrottle(1000);
-            throttle.markRun('a');
-            throttle.markRun('b');
+        expect(throttle.canRun('a')).toBe(false);
+        expect(throttle.canRun('b')).toBe(true);
+    });
 
-            throttle.resetAll();
+    it('reflects live changes from getLastRun', () => {
+        const lastRun: Record<string, number> = {};
+        const throttle = createKeyedThrottle(1000, id => lastRun[id]);
 
-            expect(throttle.canRun('a')).toBe(true);
-            expect(throttle.canRun('b')).toBe(true);
-        });
+        expect(throttle.canRun('a')).toBe(true);
+        lastRun.a = Date.now(); // e.g. the store recorded a refresh
+        expect(throttle.canRun('a')).toBe(false);
     });
 });
