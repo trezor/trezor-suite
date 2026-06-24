@@ -4,13 +4,12 @@ import { Translation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { blockchainActions } from '@suite-common/wallet-core';
+import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { useCustomBackends } from 'src/hooks/settings/backends';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
@@ -21,7 +20,8 @@ type DisableTorModalProps = Omit<Extract<UserContextPayload, { type: 'disable-to
 export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) => {
     const dispatch = useDispatch();
     const [symbol, setSymbol] = useState<NetworkSymbol>();
-    const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
+    const customBackends = useSelector(selectCustomBackends);
+    const onionBackends = customBackends.filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
         onionBackends.forEach(({ symbol, type, urls }) =>
