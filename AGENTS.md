@@ -24,6 +24,12 @@
 - [Tests Native](skills/tests-native/SKILL.md) – TDD practices for suite-native packages
 - [TypeScript](skills/typescript/SKILL.md) – TypeScript-specific conventions
 
+# Confidential data — never send it off the device
+
+Account/device confidential data must never leave the device to any external sink (analytics, Sentry, off-device logging, breadcrumbs, request URLs, any remote endpoint). Trace the actual value at the call site, not just the field type, and check the whole repo for outbound reporting.
+
+Confidential (see `redactAccount`/`redactDevice` in `suite-common/logger/src/utils.ts`): device id/label/state, static session id, `session_id`; account descriptor/xpub/key, addresses, UTXOs, txids; exact balances/amounts; labels and free-form user text; passphrase/seed/PIN/wipe code.
+
 # Other Notes
 
 - **Build times**: Initial setup takes 15-20 minutes; builds can take 10-15 minutes
