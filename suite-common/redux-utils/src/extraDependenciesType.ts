@@ -13,7 +13,11 @@ import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/s
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { type ReportSecurityCheckDep, type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type SelectedAccountStatus,
+} from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
@@ -76,6 +80,7 @@ export type ExtraDependenciesStatic = {
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
+        selectTradedAccountKeys: SuiteCompatibleSelector<AccountKey[]>;
         selectIsViewOnlyByDefaultEnabled: SuiteCompatibleSelector<boolean>;
         selectThpSettings: SuiteCompatibleSelector<NonNullable<ConnectSettings['thp']>>;
         selectAllowPrerelease: SuiteCompatibleSelector<boolean>;

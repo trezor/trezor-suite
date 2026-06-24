@@ -3,7 +3,12 @@ import {
     type TokenDefinition,
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetworkDisplaySymbol,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
+import { type Account, type TokenSymbol } from '@suite-common/wallet-types';
 import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -94,4 +99,21 @@ export const getTokens = <T extends EnhancedTokenInfo | TokenInfo = EnhancedToke
         unverifiedWithBalance,
         unverifiedWithoutBalance,
     };
+};
+
+export const getAccountAnalyticsTokenSymbols = (
+    account: Account,
+    tokenDefinitions: TokenDefinition | undefined,
+): TokenSymbol[] => {
+    const { symbol } = account;
+
+    const nativeTokenSymbol = new BigNumber(account.balance).gt(0)
+        ? (getNetworkDisplaySymbol(symbol) as TokenSymbol)
+        : undefined;
+
+    const tokenSymbols = getTokens({ tokens: account.tokens ?? [], symbol, tokenDefinitions })
+        .shownWithBalance.map(token => token.symbol)
+        .filter((tokenSymbol): tokenSymbol is TokenSymbol => !!tokenSymbol);
+
+    return [...new Set(nativeTokenSymbol ? [nativeTokenSymbol, ...tokenSymbols] : tokenSymbols)];
 };

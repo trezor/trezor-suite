@@ -24,7 +24,7 @@ import { reportSecurityCheck } from '@suite-native/sentry';
 import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
-import { selectTradingEnvironment } from '@suite-native/trading-state';
+import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect, { initLog } from '@trezor/connect';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
@@ -121,6 +121,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
             transports,
         }),
         selectTradingEnvironment,
+        selectTradedAccountKeys,
         // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
         //  and without defining the selector, it would use extraDependenciesMock value there
         selectSelectedAccount: () => ({

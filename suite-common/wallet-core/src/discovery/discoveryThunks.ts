@@ -1,6 +1,5 @@
 import { type ThunkDispatch } from '@reduxjs/toolkit';
 
-import { events } from '@suite-common/analytics';
 import {
     deviceActions,
     selectDeviceByStaticSessionId,
@@ -22,24 +21,8 @@ import {
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
-import {
-    type Bip43Path,
-    type NetworkSymbol,
-    type TrezorConnectBackendType,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
-import {
-    type Account,
-    type DiscoveryCallIds,
-    type DiscoveryStatus,
-    type TokenSymbol,
-    toTokenAddress,
-} from '@suite-common/wallet-types';
-import {
-    getAccountTotalStakingBalance,
-    getAccountsWithSomeTransactionHistory,
-    getStakingProvidersForAnalytics,
-} from '@suite-common/wallet-utils';
+import { type Bip43Path, type TrezorConnectBackendType } from '@suite-common/wallet-config';
+import { type DiscoveryCallIds, type DiscoveryStatus } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
     type BundleProgress,
@@ -50,14 +33,13 @@ import TrezorConnect, {
     UI_RESPONSE,
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
-import { BigNumber, typedObjectEntries } from '@trezor/utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
-import { reportWalletBalanceThunk } from '../accounts/accountsThunks';
+import { reportAccountInfoThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
 import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
 
@@ -258,64 +240,10 @@ const applyDeviceStateErrorThunk = createThunk(
     },
 );
 
-const trackCompleteDiscoveryResult = (
-    deviceStaticSessionId: StaticSessionId,
-    {
-        getState,
-        analytics,
-    }: { getState: () => any; analytics: ExtraDependencies['services']['analytics'] },
-) => {
-    const discoveredAccounts = selectAccountsByDeviceState(getState(), deviceStaticSessionId);
-
-    const accountsBySymbol = discoveredAccounts.reduce<Record<NetworkSymbol, Account[]>>(
-        (agg, account) => {
-            const { symbol } = account;
-            if (!agg[symbol]) {
-                agg[symbol] = [];
-            }
-            agg[symbol].push(account);
-
-            return agg;
-        },
-        {} as Record<NetworkSymbol, Account[]>,
-    );
-
-    typedObjectEntries(accountsBySymbol).forEach(([symbol, accounts]) => {
-        if (isNetworkSymbol(symbol)) {
-            analytics.report({
-                type: events.coinDiscoveryEvent.name,
-                payload: {
-                    discoveryId: deviceStaticSessionId,
-                    symbol,
-                    numberOfAccounts: getAccountsWithSomeTransactionHistory(accounts).length,
-                    numberOfNonZeroAccounts: accounts.filter(account => !account.empty).length,
-                    tokenSymbols: accounts.flatMap(
-                        account =>
-                            account.tokens
-                                ?.map(token => token.symbol)
-                                .filter(
-                                    (tokenSymbol): tokenSymbol is TokenSymbol => !!tokenSymbol,
-                                ) ?? [],
-                    ),
-                    tokenAddresses: accounts.flatMap(
-                        account =>
-                            account.tokens?.map(token => toTokenAddress(token.contract)) ?? [],
-                    ),
-                    numberOfStakedAccounts: accounts.filter(account =>
-                        new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
-                    ).length,
-                    stakingProviders: getStakingProvidersForAnalytics(accounts),
-                },
-            });
-        }
-    });
-};
-
 const completeDiscovery = (
     devicePath: DeviceUniquePath,
     deviceState: TrezorDeviceWithState['state'],
     {
-        analytics,
         dispatch,
         fetchAndSaveMetadata,
         getState,
@@ -323,19 +251,17 @@ const completeDiscovery = (
         getState: () => any;
         dispatch: ThunkDispatch<any, ExtraDependencies, AnyAction>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
-        analytics: ExtraDependencies['services']['analytics'];
     },
 ) => {
     dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, devicePath));
     dispatch(fetchAndSaveMetadata(deviceState.staticSessionId));
     dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
 
-    trackCompleteDiscoveryResult(deviceState.staticSessionId, {
-        getState,
-        analytics,
-    });
-
     dispatch(reportWalletBalanceThunk());
+
+    selectAccountsByDeviceState(getState(), deviceState.staticSessionId).forEach(account =>
+        dispatch(reportAccountInfoThunk(account.key)),
+    );
 };
 
 export const cancelDiscoveryThunk = createThunk(
@@ -569,7 +495,6 @@ export const runDiscoveryThunk = createThunk(
 
             if (!isAddingHiddenWallet) {
                 completeDiscovery(device.path, deviceState, {
-                    analytics: extra.services.analytics,
                     dispatch,
                     getState,
                     fetchAndSaveMetadata: extra.thunks.fetchAndSaveMetadata,
@@ -584,7 +509,6 @@ export const runDiscoveryThunk = createThunk(
             // there is at least one account with balance - passphrase is not empty
             if (!allAccountsEmpty) {
                 completeDiscovery(device.path, deviceState, {
-                    analytics: extra.services.analytics,
                     dispatch,
                     getState,
                     fetchAndSaveMetadata: extra.thunks.fetchAndSaveMetadata,
@@ -647,7 +571,6 @@ export const runDiscoveryThunk = createThunk(
             );
 
             completeDiscovery(device.path, deviceState, {
-                analytics: extra.services.analytics,
                 dispatch,
                 getState,
                 fetchAndSaveMetadata: extra.thunks.fetchAndSaveMetadata,
@@ -708,7 +631,7 @@ export const startDiscoveryThunk = createThunk(
 
 export const runAdditionalDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId: StaticSessionId, { dispatch, getState, extra }): Promise<void> => {
+    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -818,12 +741,11 @@ export const runAdditionalDiscoveryThunk = createThunk(
         dispatch(deviceActions.setDiscovered(staticSessionId, result.success));
 
         if (result.success) {
-            trackCompleteDiscoveryResult(staticSessionId, {
-                getState,
-                analytics: extra.services.analytics,
-            });
-
             dispatch(reportWalletBalanceThunk());
+
+            selectAccountsByDeviceState(getState(), staticSessionId).forEach(account =>
+                dispatch(reportAccountInfoThunk(account.key)),
+            );
         }
     },
 );
