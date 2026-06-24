@@ -240,44 +240,24 @@ env:
       visible:
           id: '@screen/AccountDetail'
       timeout: 30000
-- extendedWaitUntil:
-      visible:
-          id: '@transactions/item/.*'
-      timeout: 30000
-- repeat:
-      times: 10
-      commands:
-          - swipe:
-                start: '50%,92%'
-                end: '50%,72%'
-                duration: 300
-          - runFlow:
-                when:
-                    visible:
-                        id: '@transactions/list/more-button'
-                commands:
-                    - tapOn:
-                          id: '@transactions/list/more-button'
-                          retryTapIfNoChange: true
-                    - waitForAnimationToEnd
+- swipe:
+      start: '50%,88%'
+      end: '50%,40%'
+      duration: 500
 - scrollUntilVisible:
       element:
           id: '@transactions/item/.*'
-      direction: DOWN
-      timeout: 10000
+      direction: UP
+      timeout: 30000
       visibilityPercentage: 50
-- tapOn:
-      id: '@transactions/item/.*'
-      retryTapIfNoChange: true
-- extendedWaitUntil:
-      visible:
-          id: '@screen/TransactionDetail'
-      timeout: 15000
-- pressKey: 'back'
-- extendedWaitUntil:
-      visible:
-          id: '@screen/AccountDetail'
-      timeout: 15000
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
 - pressKey: 'back'
 - extendedWaitUntil:
       visible:
@@ -306,44 +286,24 @@ env:
       visible:
           id: '@screen/AccountDetail'
       timeout: 30000
-- extendedWaitUntil:
-      visible:
-          id: '@transactions/item/.*'
-      timeout: 30000
-- repeat:
-      times: 10
-      commands:
-          - swipe:
-                start: '50%,92%'
-                end: '50%,72%'
-                duration: 300
-          - runFlow:
-                when:
-                    visible:
-                        id: '@transactions/list/more-button'
-                commands:
-                    - tapOn:
-                          id: '@transactions/list/more-button'
-                          retryTapIfNoChange: true
-                    - waitForAnimationToEnd
+- swipe:
+      start: '50%,88%'
+      end: '50%,40%'
+      duration: 500
 - scrollUntilVisible:
       element:
           id: '@transactions/item/.*'
-      direction: DOWN
-      timeout: 10000
+      direction: UP
+      timeout: 30000
       visibilityPercentage: 50
-- tapOn:
-      id: '@transactions/item/.*'
-      retryTapIfNoChange: true
-- extendedWaitUntil:
-      visible:
-          id: '@screen/TransactionDetail'
-      timeout: 15000
-- pressKey: 'back'
-- extendedWaitUntil:
-      visible:
-          id: '@screen/AccountDetail'
-      timeout: 15000
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
 - pressKey: 'back'
 - extendedWaitUntil:
       visible:
@@ -381,32 +341,26 @@ env:
       visible:
           id: '@transactions/item/.*'
       timeout: 30000
-- repeat:
-      times: 10
-      commands:
-          - swipe:
-                start: '50%,92%'
-                end: '50%,72%'
-                duration: 300
-          - runFlow:
-                when:
-                    visible:
-                        id: '@transactions/list/more-button'
-                commands:
-                    - tapOn:
-                          id: '@transactions/list/more-button'
-                          retryTapIfNoChange: true
-                    - waitForAnimationToEnd
+- swipe:
+      start: '50%,88%'
+      end: '50%,40%'
+      duration: 500
 - scrollUntilVisible:
       element:
           id: '@transactions/item/.*'
-      direction: DOWN
-      timeout: 10000
+      direction: UP
+      timeout: 30000
       visibilityPercentage: 50
-- tapOn:
-      id: '@transactions/item/.*'
-      retryTapIfNoChange: true
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
+- pressKey: 'back'
 - extendedWaitUntil:
       visible:
-          id: '@screen/TransactionDetail'
+          id: '@screen/AccountAssets'
       timeout: 15000

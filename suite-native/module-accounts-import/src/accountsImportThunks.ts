@@ -1,5 +1,6 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     getSupportedDefinitionTypes,
     getTokenDefinitionThunk,
@@ -16,6 +17,7 @@ import {
 import {
     accountsActions,
     selectAccountsByNetworkAndDeviceState,
+    transactionsActions,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
@@ -77,6 +79,29 @@ export const importAccountThunk = createThunk(
                 }),
             );
         }
+        // Seed the Redux transaction store from the already-fetched accountInfo so
+        // AccountDetail renders the first page of transactions immediately without
+        // waiting for useAccountTransactionsPageQuery to make a second network call.
+        const initialTransactions = accountInfo.history.transactions;
+        if (initialTransactions && initialTransactions.length > 0) {
+            const updatedAccounts = selectAccountsByNetworkAndDeviceState(
+                getState(),
+                deviceState,
+                symbol,
+            );
+            const account = updatedAccounts.find(a => a.descriptor === accountInfo.descriptor);
+            if (account) {
+                dispatch(
+                    transactionsActions.addTransaction({
+                        transactions: initialTransactions,
+                        account,
+                        page: 1,
+                        perPage: getTxsPerPage(account.networkType),
+                    }),
+                );
+            }
+        }
+
         dispatch(periodicCheckTokenDefinitionsThunk());
     },
 );

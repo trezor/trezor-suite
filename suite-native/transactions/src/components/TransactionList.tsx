@@ -1,20 +1,16 @@
-import { type JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { type JSX, useCallback, useMemo, useRef, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { mobileQueryKeys, useQueryClient } from '@suite-common/react-query';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
     fetchAndUpdateAccountThunk,
-    fetchTransactionsPageThunk,
     selectAreAllAccountTransactionsLoaded,
-    selectBaseCurrency,
-    selectIsLoadingAccountTransactions,
-    selectIsPageAlreadyFetched,
-    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -30,11 +26,22 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
 
+// Pre-fetch rates for this many data items beyond the last visible one.
+const RATE_PREFETCH_BUFFER = 30;
+
+// Stable reference — a new object on every render resets FlashList's internal viewability state.
+const VIEWABILITY_CONFIG = {
+    minimumViewTime: 200,
+    itemVisiblePercentThreshold: 50,
+};
+
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
+import { useAccountTransactionsPageQuery } from '../hooks/useAccountTransactionsPageQuery';
+import { useFiatRatesForTransactionsQuery } from '../hooks/useFiatRatesForTransactionsQuery';
 
 type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
@@ -133,6 +140,7 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const {
@@ -140,10 +148,6 @@ export const TransactionList = ({
         utils: { colors },
     } = useNativeStyles();
 
-    const localCurrency = useSelector(selectBaseCurrency);
-    const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
-        selectIsLoadingAccountTransactions(state, accountKey),
-    );
     const shouldDeferEmptyState = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
             stakingOnly && !selectAreAllAccountTransactionsLoaded(state, accountKey),
@@ -157,54 +161,14 @@ export const TransactionList = ({
 
     const txnsPerPage = getTxsPerPage(account.networkType);
 
-    const isFirstPageAlreadyFetched = useSelector((state: TransactionsRootState) =>
-        selectIsPageAlreadyFetched(state, accountKey, 1, txnsPerPage),
-    );
-
-    const initialPageNumber = Math.ceil((transactions.length || 1) / txnsPerPage);
-    const [page, setPage] = useState(initialPageNumber);
-
-    const { scrollDivider, handleScroll } = useScrollDivider();
-
-    useEffect(() => {
-        // We need to check manually if the first page was already fetched, because fetchTransactionsPageThunk will
-        // always force refetch the first page, but we want to save resources and not do that if it's not necessary.
-        if (!isFirstPageAlreadyFetched) {
-            dispatch(fetchTransactionsPageThunk({ accountKey, page: 1, perPage: txnsPerPage }));
-        }
-    }, [dispatch, accountKey, isFirstPageAlreadyFetched, txnsPerPage]);
-
-    const handleOnLoadMore = useCallback(async () => {
-        try {
-            await dispatch(
-                fetchTransactionsPageThunk({ accountKey, page: page + 1, perPage: txnsPerPage }),
-            );
-            setPage((currentPage: number) => currentPage + 1);
-        } catch {
-            // TODO handle error state (show retry button or something
-        }
-    }, [dispatch, accountKey, page, txnsPerPage]);
-
-    const handleOnRefresh = useCallback(async () => {
-        try {
-            setIsRefreshing(true);
-            await Promise.allSettled([
-                dispatch(fetchAndUpdateAccountThunk({ accountKey })),
-                dispatch(
-                    fetchTransactionsPageThunk({
-                        accountKey,
-                        page: 1,
-                        perPage: txnsPerPage,
-                        forceRefetch: true,
-                    }),
-                ),
-            ]);
-        } catch {
-            // Do nothing
-        }
-        // It's usually too fast so loading indicator only flashes for a moment, which is not nice
-        setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey, txnsPerPage]);
+    const {
+        isLoading: isLoadingTransactions,
+        isFetchingNextPage,
+        fetchNextPage,
+    } = useAccountTransactionsPageQuery({
+        accountKey,
+        perPage: txnsPerPage,
+    });
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
@@ -247,11 +211,82 @@ export const TransactionList = ({
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
 
-    useEffect(() => {
-        if (data.length > 0) {
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey }));
+    // Tracks the highest data-array index that has ever been visible. Using a ref to
+    // avoid triggering re-renders on every scroll event; state is only updated when
+    // the index actually increases so the derived memo stays stable.
+    const lastVisibleIndexRef = useRef(0);
+    const [lastVisibleIndex, setLastVisibleIndex] = useState(0);
+
+    const handleViewableItemsChanged = useCallback(
+        ({ viewableItems }: { viewableItems: { index: number | null }[] }) => {
+            const max = viewableItems.reduce((m, { index }) => Math.max(m, index ?? 0), 0);
+            if (max > lastVisibleIndexRef.current) {
+                lastVisibleIndexRef.current = max;
+                setLastVisibleIndex(max);
+            }
+        },
+        [],
+    );
+
+    // Extract unique WalletAccountTransaction objects for items up to the current
+    // viewport + prefetch buffer. Rates for off-screen items are fetched lazily as
+    // the user scrolls toward them.
+    const transactionsForRates = useMemo(() => {
+        const visibleWindow = data.slice(0, lastVisibleIndex + RATE_PREFETCH_BUFFER + 1);
+        const seen = new Set<string>();
+        const result: WalletAccountTransaction[] = [];
+        for (const item of visibleWindow) {
+            if (typeof item === 'string') continue;
+            const tx =
+                'originalTransaction' in item
+                    ? item.originalTransaction
+                    : (item as WalletAccountTransaction);
+            if (!seen.has(tx.txid)) {
+                seen.add(tx.txid);
+                result.push(tx);
+            }
         }
-    }, [data, dispatch, localCurrency, accountKey]);
+
+        return result;
+    }, [data, lastVisibleIndex]);
+
+    useFiatRatesForTransactionsQuery({
+        accountKey,
+        transactions: transactionsForRates,
+        enabled: transactionsForRates.length > 0,
+    });
+
+    const { scrollDivider, handleScroll } = useScrollDivider();
+
+    const handleOnLoadMore = useCallback(() => {
+        fetchNextPage();
+    }, [fetchNextPage]);
+
+    const handleOnRefresh = useCallback(async () => {
+        try {
+            setIsRefreshing(true);
+            await Promise.allSettled([
+                dispatch(fetchAndUpdateAccountThunk({ accountKey })),
+                // resetQueries clears all cached pages so the infinite query restarts from page 1.
+                queryClient.resetQueries({
+                    queryKey: mobileQueryKeys.accountTransactions(accountKey, txnsPerPage),
+                }),
+            ]);
+        } catch {
+            // Do nothing
+        }
+        // It's usually too fast so loading indicator only flashes for a moment, which is not nice
+        setTimeout(() => setIsRefreshing(false), 1500);
+    }, [dispatch, accountKey, queryClient, txnsPerPage]);
+
+    const keyExtractor = useCallback((item: TransactionListItem): string => {
+        if (typeof item === 'string') return `month:${item}`;
+        if ('originalTransaction' in item) {
+            return `token:${item.originalTransaction.txid}:${item.contract}`;
+        }
+
+        return `tx:${item.txid}`;
+    }, []);
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
@@ -295,20 +330,24 @@ export const TransactionList = ({
             <FlashList<TransactionListItem>
                 data={data}
                 renderItem={renderItem}
+                keyExtractor={keyExtractor}
+                estimatedItemSize={80}
+                viewabilityConfig={VIEWABILITY_CONFIG}
+                onViewableItemsChanged={handleViewableItemsChanged}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
                 ListEmptyComponent={
-                    shouldDeferEmptyState ? null : (
+                    shouldDeferEmptyState || isLoadingTransactions ? null : (
                         <TransactionsEmptyState accountKey={accountKey} />
                     )
                 }
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
-                        accountKey={accountKey}
-                        isLoading={isLoadingTransactions}
-                        onButtonPress={handleOnLoadMore}
+                        isLoading={isLoadingTransactions || isFetchingNextPage}
                     />
                 }
+                onEndReached={handleOnLoadMore}
+                onEndReachedThreshold={0.5}
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefreshing}

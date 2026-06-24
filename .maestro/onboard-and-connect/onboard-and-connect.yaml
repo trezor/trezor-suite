@@ -109,32 +109,30 @@ tags:
           id: '@screen/AccountDetail'
       timeout: 30000
 
-# Wait for the discovered account's transaction list to render.
-- extendedWaitUntil:
-      visible:
+# Swipe from below the graph chart first — scrollUntilVisible lands on the graph
+# and the chart intercepts the gesture. One swipe from the bottom clears it.
+- swipe:
+      start: '50%,88%'
+      end: '50%,40%'
+      duration: 500
+- scrollUntilVisible:
+      element:
           id: '@transactions/item/.*'
+      direction: UP
       timeout: 30000
+      visibilityPercentage: 50
 
-# Scroll through the transaction list (load more history as it appears).
+# Scroll through the transaction list (infinite scroll loads more history).
 # We intentionally do NOT open a transaction detail: a null byte (U+0) in the
 # TransactionDetail content crashes Maestro 2.6.1's view-hierarchy dump.
-- repeat:
-      times: 10
-      commands:
-          - swipe:
-                start: '50%,92%'
-                end: '50%,72%'
-                duration: 300
-          - runFlow:
-                when:
-                    visible:
-                        id: '@transactions/list/more-button'
-                commands:
-                    - tapOn:
-                          id: '@transactions/list/more-button'
-                          retryTapIfNoChange: true
-                    - waitForAnimationToEnd
-
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
+- swipe:
+      start: '50%,80%'
+      end: '50%,20%'
+      duration: 1500
 # Measured endpoint: transaction list scrolled. No teardown here — persisting for the
 # warm reload (Home -> disconnect -> keep view-only) runs between measurements via
 # passphrase-wallet/_persist.yaml, so this measured flow has no app restart/disconnect.
