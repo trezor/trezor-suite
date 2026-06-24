@@ -1,14 +1,12 @@
+import { useIntl } from 'react-intl';
+
 import { useFormatters } from '@suite-common/formatters';
 import { Text, type TextProps } from '@suite-native/atoms';
 
-type NumberValues = number;
 type PercentageDifferenceFormatterProps = {
-    oldValue: NumberValues;
-    newValue: NumberValues;
+    oldValue: number;
+    newValue: number;
 } & TextProps;
-
-const calculatePercentageDifference = (a: number, b: number) =>
-    Math.abs(Math.round(((a - b) / a) * 100));
 
 export const PercentageDifferenceFormatter = ({
     oldValue,
@@ -16,13 +14,19 @@ export const PercentageDifferenceFormatter = ({
     ...rest
 }: PercentageDifferenceFormatterProps) => {
     const { SignValueFormatter } = useFormatters();
+    const intl = useIntl();
 
     const hasPriceIncreased = oldValue < newValue;
+    const ratio = oldValue === 0 ? 0 : Math.abs((newValue - oldValue) / oldValue);
+    const formattedPercentage = intl.formatNumber(ratio, {
+        style: 'percent',
+        maximumFractionDigits: 0,
+    });
 
     return (
         <Text color={hasPriceIncreased ? 'contentBrand' : 'contentCritical'} {...rest}>
             <SignValueFormatter value={hasPriceIncreased ? 'positive' : 'negative'} />
-            {calculatePercentageDifference(oldValue, newValue)}%
+            {formattedPercentage}
         </Text>
     );
 };
