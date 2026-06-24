@@ -72,7 +72,6 @@ jobs:
           path: |
             node_modules
             suite-native/app/node_modules
-            .yarn/install-state.gz
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install Socket Firewall
