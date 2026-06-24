@@ -7,7 +7,7 @@ export type CardListItemPaddingType = (typeof cardListItemPaddingTypes)[number];
 
 const paddingMap: Record<CardListItemPaddingType, Padding> = {
     normal: { vertical: 16, horizontal: 20 },
-    medium: { vertical: 12, horizontal: 20 },
+    medium: { vertical: 12, horizontal: 16 },
     small: { vertical: 8, horizontal: 12 },
 };
 
