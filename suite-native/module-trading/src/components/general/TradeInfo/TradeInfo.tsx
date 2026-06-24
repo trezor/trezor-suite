@@ -12,6 +12,7 @@ import { FeeSelectorRow } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ProviderInfoRow } from './ProviderInfoRow';
+import { useComposeTradingTransaction } from '../../../hooks/general/useComposeTradingTransaction';
 import { updateTradingSelectedFeeLevelThunk } from '../../../thunks';
 
 const dividerStyle = prepareNativeStyle(utils => ({
@@ -27,6 +28,7 @@ type TradeInfoProps = {
 
 export const TradeInfo = ({ trade, accountKey, tradingType, children }: TradeInfoProps) => {
     const { applyStyle } = useNativeStyles();
+    const { composeTradingTransaction } = useComposeTradingTransaction({ tradeType: tradingType });
     const formDraftKey = getFormDraftKeyByTradeType(tradingType);
     const formDraft = useSelector((state: FormDraftRootState) =>
         selectDeepCopyOfFormDraft(state, formDraftKey),
@@ -43,6 +45,7 @@ export const TradeInfo = ({ trade, accountKey, tradingType, children }: TradeInf
                 selectedFeePerUnit={formDraft?.feePerUnit}
                 formDraft={formDraft}
                 formDraftKey={formDraftKey}
+                onFeeConfirmed={composeTradingTransaction}
             />
             {children}
         </Card>
