@@ -69,8 +69,7 @@ const TradingExchangePreviewScreenContent = ({
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 
-    const { txnErrorString, confirmTrade, abortConfirmTrade, fetchFeesAndCompose } =
-        useExchangeFlow();
+    const { txnErrorString, confirmTrade, abortConfirmTrade, composeRequest } = useExchangeFlow();
     const store = useStore<TradingRootState>();
 
     const [isConfirmationErrorRequested, setIsConfirmationErrorRequested] =
@@ -97,7 +96,7 @@ const TradingExchangePreviewScreenContent = ({
             if (success) {
                 const currentFormStep = selectTradingExchangeFormStep(store.getState());
                 if (currentFormStep !== 'SIGN_DATA') {
-                    await fetchFeesAndCompose();
+                    await composeRequest();
                 }
             }
         } catch (e) {
@@ -107,7 +106,7 @@ const TradingExchangePreviewScreenContent = ({
 
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, debounce, fetchFeesAndCompose, store, quote, toAccount]);
+    }, [confirmTrade, debounce, composeRequest, store, quote, toAccount]);
 
     useSlippageLifecycle(handleConfirmTrade);
 

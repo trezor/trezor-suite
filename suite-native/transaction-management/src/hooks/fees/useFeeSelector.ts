@@ -9,13 +9,13 @@ import {
 } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 
+import { getFeeAvailability } from './feeAvailability';
+import { type CustomFeeParams } from './useFeeSelection';
+import { useFeesManagement } from './useFeesManagement';
 import { type FeesFormValues } from '../../feesFormSchema';
 import { updateFeeLimitThunk } from '../../thunks';
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 import { usePrecomposedTransactionError } from '../usePrecomposedTransactionError';
-import { getFeeAvailability } from './feeAvailability';
-import { type CustomFeeParams } from './useFeeSelection';
-import { useFeesManagement } from './useFeesManagement';
 
 export type UseFeeSelectorParams = {
     accountKey: AccountKey;
@@ -26,6 +26,7 @@ export type UseFeeSelectorParams = {
     selectedSetMaxOutputId?: number;
     formDraft: FormState | null | undefined;
     formDraftKey?: string;
+    onFeeConfirmed?: () => void | Promise<void>;
 };
 
 export const useFeeSelector = ({
@@ -37,6 +38,7 @@ export const useFeeSelector = ({
     selectedSetMaxOutputId,
     formDraft,
     formDraftKey,
+    onFeeConfirmed,
 }: UseFeeSelectorParams) => {
     const {
         form,
@@ -88,11 +90,14 @@ export const useFeeSelector = ({
     }, [form, openModal]);
 
     const handleConfirm = useCallback(
-        (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => {
+        async (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => {
             if (feeLevel === 'custom') {
-                if (!customParams) return;
+                if (!customParams) {
+                    return;
+                }
+
                 if (isTrc20 && customParams.customFeeLimit) {
-                    dispatch(
+                    await dispatch(
                         updateFeeLimitThunk({
                             accountKey,
                             tokenContract,
@@ -100,13 +105,23 @@ export const useFeeSelector = ({
                         }),
                     );
                 } else {
-                    handleCustomFeeSet(customParams);
+                    await handleCustomFeeSet(customParams);
                 }
             } else {
-                handleFeeLevelChange(feeLevel);
+                await handleFeeLevelChange(feeLevel);
             }
+
+            await onFeeConfirmed?.();
         },
-        [isTrc20, accountKey, tokenContract, dispatch, handleFeeLevelChange, handleCustomFeeSet],
+        [
+            isTrc20,
+            accountKey,
+            tokenContract,
+            dispatch,
+            handleFeeLevelChange,
+            handleCustomFeeSet,
+            onFeeConfirmed,
+        ],
     );
 
     const feeLimitSunOverride = isTrc20 ? form.watch('customFeeLimit') : undefined;

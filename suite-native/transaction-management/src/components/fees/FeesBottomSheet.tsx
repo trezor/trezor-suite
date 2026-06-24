@@ -42,7 +42,7 @@ type FeesBottomSheetProps = {
     formDraft: FormState | null | undefined;
     snapshotRef: RefObject<FeesFormValues | undefined>;
     confirmedRef: MutableRefObject<boolean>;
-    onConfirm: (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => void;
+    onConfirm: (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => void | Promise<void>;
     closeModal: () => void;
 };
 
