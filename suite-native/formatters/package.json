@@ -30,10 +30,12 @@
         "@trezor/utils": "workspace:*",
         "expo-localization": "~55.0.8",
         "react": "19.2.4",
+        "react-intl": "^8.1.3",
         "react-native": "0.83.2",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*"
     }
 }
