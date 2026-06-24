@@ -162,7 +162,15 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                validatePaymentRequestSignature({ paymentRequest, sendSlip44, outputs });
+                validatePaymentRequestSignature({
+                    paymentRequest,
+                    sendSlip44,
+                    outputs,
+                    sentAsset: {
+                        network: sendNetwork.symbol,
+                        isToken: !!composedLevels.token,
+                    },
+                });
 
                 return fulfillWithValue([paymentRequest]);
             }
@@ -251,7 +259,15 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                validatePaymentRequestSignature({ paymentRequest, sendSlip44, outputs });
+                validatePaymentRequestSignature({
+                    paymentRequest,
+                    sendSlip44,
+                    outputs,
+                    sentAsset: {
+                        network: sendNetwork.symbol,
+                        isToken: !!composedLevels.token,
+                    },
+                });
 
                 return fulfillWithValue([paymentRequest]);
             }
