@@ -1,9 +1,5 @@
-import { getCustomBackends } from '@suite-common/wallet-utils';
+import { selectCustomBackends } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
 
-export const useCustomBackends = () => {
-    const blockchains = useSelector(state => state.wallet.blockchain);
-
-    return getCustomBackends(blockchains);
-};
+export const useCustomBackends = () => useSelector(selectCustomBackends);
