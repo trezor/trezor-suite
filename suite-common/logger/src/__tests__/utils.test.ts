@@ -1,8 +1,9 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type DiscoveryStatus, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/connect';
 
-import { REDACTED_REPLACEMENT, redactAccount, redactDevice } from '../utils';
+import { REDACTED_REPLACEMENT, redactAccount, redactDevice, redactDiscovery } from '../utils';
 
 describe('logsUtils', () => {
     const account = mockWalletAccount({
@@ -48,6 +49,35 @@ describe('logsUtils', () => {
                     label: REDACTED_REPLACEMENT,
                 },
             });
+        });
+    });
+
+    describe(redactDiscovery.name, () => {
+        it('redacts duplicate static session id for duplicate passphrase discovery', () => {
+            const duplicateDeviceStaticSessionId: StaticSessionId = 'session@device-id:1';
+            const discovery: DiscoveryStatus = {
+                status: 'passphrase-duplicate',
+                duplicateDeviceStaticSessionId,
+            };
+
+            expect(redactDiscovery(discovery)).toEqual({
+                ...discovery,
+                duplicateDeviceStaticSessionId: REDACTED_REPLACEMENT,
+            });
+        });
+
+        it('keeps other discovery statuses unchanged', () => {
+            const discovery: DiscoveryStatus = {
+                status: 'progress',
+                progress: 1,
+                total: 3,
+            };
+
+            expect(redactDiscovery(discovery)).toEqual(discovery);
+        });
+
+        it('keeps undefined value', () => {
+            expect(redactDiscovery(undefined)).toEqual(undefined);
         });
     });
 });
