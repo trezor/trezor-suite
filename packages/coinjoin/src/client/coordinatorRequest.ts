@@ -73,12 +73,17 @@ export const coordinatorRequest = async <R = void>(
             // catch errors from:
             // - nodejs http module (by e.code) like "socket hang up" or "socket disconnected before secure TLS connection was established" (see ./node_modules/@types/node/*/http.d.ts)
             // - socks module (by e.type and e.message) like "Socks5 proxy rejected connection" or "Proxy connection timed out" (see ./node_modules/socks/build/common/constants)
+            // native fetch (undici) wraps network failures as `TypeError: fetch failed` and exposes the
+            // underlying error (carrying `code`/`type`/`message`) on `e.cause`; node-fetch put them on `e`.
+            // A reset connection is `ECONNRESET` under node-fetch but `UND_ERR_SOCKET` ("other side
+            // closed") under undici; both should reset the TOR circuit and retry.
+            const err = e.cause ?? e;
             const socksErrors = ['Socks5', 'Proxy'];
             const shouldSwitchIdentity =
-                ('code' in e && e.code === 'ECONNRESET') ||
-                ('type' in e &&
-                    e.type === 'system' &&
-                    socksErrors.some(se => e.message.includes(se)));
+                ('code' in err && (err.code === 'ECONNRESET' || err.code === 'UND_ERR_SOCKET')) ||
+                ('type' in err &&
+                    err.type === 'system' &&
+                    socksErrors.some(se => err.message.includes(se)));
 
             if (shouldSwitchIdentity) {
                 switchIdentity();
