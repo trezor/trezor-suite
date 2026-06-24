@@ -9,9 +9,16 @@ export type CryptoAmountRowProps = {
     amount?: string;
     direction: 'from' | 'to';
     style?: BoxProps['style'];
+    withNetworkIcon?: boolean;
 };
 
-export const CryptoAmountRow = ({ cryptoId, amount, direction, style }: CryptoAmountRowProps) => {
+export const CryptoAmountRow = ({
+    cryptoId,
+    amount,
+    direction,
+    style,
+    withNetworkIcon,
+}: CryptoAmountRowProps) => {
     const formatCryptoValue = useFormatCryptoValue();
     if (!cryptoId || !amount) {
         return null;
@@ -24,7 +31,11 @@ export const CryptoAmountRow = ({ cryptoId, amount, direction, style }: CryptoAm
     return (
         <HStack justifyContent="space-between" alignItems="center" flex={1} style={style}>
             <HStack alignItems="center">
-                <IconByCryptoId cryptoId={cryptoId} size="extraSmall" />
+                <IconByCryptoId
+                    cryptoId={cryptoId}
+                    size="extraSmall"
+                    withNetwork={withNetworkIcon}
+                />
                 {formattedAmount && (
                     <Text variant="body-sm" color={color}>
                         {prefix + formattedAmount}
