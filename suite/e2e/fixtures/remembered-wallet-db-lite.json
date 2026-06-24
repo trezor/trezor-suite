@@ -15611,6 +15611,7 @@
                         "stakeEthBannerClosed": false,
                         "stakeSolBannerClosed": false,
                         "stakeCardanoBannerClosed": false,
+                        "stakeTronBannerClosed": false,
                         "showDashboardStakingPromoBanner": true,
                         "suspiciousTransactionsTooltipClosed": false,
                         "showCopyAddressModal": true,

@@ -8,7 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApy } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
@@ -21,6 +21,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useStakingYield } from 'src/hooks/earn/useStakingYield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type StakingBannerProps = {
@@ -31,10 +32,14 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
-        useSelector(selectFlags);
+    const {
+        stakeEthBannerClosed,
+        stakeSolBannerClosed,
+        stakeCardanoBannerClosed,
+        stakeTronBannerClosed,
+    } = useSelector(selectFlags);
     const { route } = useSelector(state => state.router);
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const { apy } = useStakingYield({ symbol: account.symbol, accountKey: account.key });
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const displaySymbol = getDisplaySymbol(account.symbol);
@@ -71,6 +76,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 dispatch(setFlag({ key: 'stakeCardanoBannerClosed', value: true }));
                 break;
             case 'tron':
+                dispatch(setFlag({ key: 'stakeTronBannerClosed', value: true }));
                 break;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
@@ -113,7 +119,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             case 'cardano':
                 return stakeCardanoBannerClosed;
             case 'tron':
-                return true;
+                return stakeTronBannerClosed;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
                     exhaustive(

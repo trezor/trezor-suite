@@ -19,6 +19,7 @@ export type FlagsState = {
     stakeEthBannerClosed: boolean;
     stakeSolBannerClosed: boolean;
     stakeCardanoBannerClosed: boolean;
+    stakeTronBannerClosed: boolean;
     showDashboardStakingPromoBanner: boolean;
     suspiciousTransactionsTooltipClosed: boolean;
     showUnhideTokenModal: boolean;
@@ -50,6 +51,7 @@ export const flagsInitialState: FlagsState = {
     stakeEthBannerClosed: false,
     stakeSolBannerClosed: false,
     stakeCardanoBannerClosed: false,
+    stakeTronBannerClosed: false,
     showDashboardStakingPromoBanner: true,
     suspiciousTransactionsTooltipClosed: false,
     showCopyAddressModal: true,
