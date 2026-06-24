@@ -2880,6 +2880,9 @@ export const messages = {
                     title: 'Approval is too low. Change approval or lower amount to supply.',
                     primaryButton: 'Change approval',
                 },
+                approvalIncreaseRequiresRevoke: {
+                    title: 'To increase your approval, you must first revoke the current allowance.',
+                },
                 transactionFailed: {
                     title: 'Transaction failed',
                     description:
