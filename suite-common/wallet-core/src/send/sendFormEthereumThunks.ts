@@ -42,6 +42,7 @@ import {
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
@@ -263,6 +264,15 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                     ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
                     : ETH_TRANSFER_BACKUP_GAS_LIMIT,
             );
+
+            reportEthereumFeeEstimationFailed({
+                account,
+                formState,
+                tokenInfo,
+                estimateTarget: ethereumEstimateFeeParams.to,
+                error: estimatedFee.error,
+            });
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'estimated-fee-error',
