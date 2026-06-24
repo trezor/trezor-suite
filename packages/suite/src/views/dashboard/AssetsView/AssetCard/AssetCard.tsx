@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -25,10 +24,10 @@ import {
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
 
-import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
-import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
+import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
+import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 
 type AmountComponentProps = {
     failed: boolean;
