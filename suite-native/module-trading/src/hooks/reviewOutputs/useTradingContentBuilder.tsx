@@ -41,11 +41,13 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
                             direction="from"
                             amount={send.amount}
                             cryptoId={send.cryptoId}
+                            withNetworkIcon
                         />
                         <CryptoAmountRow
                             direction="to"
                             amount={receiveAmountMultiplier(receive.amount)}
                             cryptoId={receive.cryptoId}
+                            withNetworkIcon
                         />
                         {!!account && (
                             <HStack
