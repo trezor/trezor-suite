@@ -4,12 +4,12 @@ import { Translation } from '@suite/intl';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { Button, Card, Checkbox, Column, Paragraph, Popover, variables } from '@trezor/components';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
 // To match the width of the trigger button in the SupportFeedbackSelection component at minimum guide width.
-const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_MIN_WIDTH - 1}px - 2 * ${spacingsPx.lg})`;
+const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_DEFAULT_WIDTH}px - 33px)`;
 
 type SupportConsentPopoverProps = {
     children: ReactNode;
