@@ -16092,7 +16092,6 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/w3c-web-usb": "npm:^1.0.14"
     "@vitest/browser-playwright": "npm:^4.1.6"
-    cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.1"
     jest: "npm:29.7.0"
     jws: "npm:^4.0.1"
