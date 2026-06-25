@@ -56,8 +56,7 @@ export type UseTradingTransactionProps = {
 
 export type UseTradingTransactionReturnProps = {
     txnErrorString: ReactNode;
-    composeRequest: () => Promise<unknown>;
-    fetchFeesAndCompose: () => Promise<void>;
+    composeTradingTransaction: () => Promise<unknown>;
     signAndSendTransaction: (props: TradingTransactionSignAndSendProps) => Promise<boolean>;
     signAndPushSendFormTransaction: (
         props: TradingSignAndPushSendFormTransactionProps,
@@ -137,17 +136,6 @@ export const useTradingTransaction = ({
 
     // cancel txn signing on unmount
     useEffect(() => () => TrezorConnect.cancel(), []);
-
-    // this is called when we want to fetch fees and compose a transaction
-    const fetchFeesAndCompose = useCallback(async () => {
-        if (!sendAccount) {
-            console.error('Send account is required to fetch fees and compose transaction');
-
-            return;
-        }
-
-        await composeTradingTransaction();
-    }, [sendAccount, composeTradingTransaction]);
 
     // this is the reusable signAndPushSendFormTransaction function
     // waitForPushApproval is used so that we can wait for the user to approve the transaction before sending it
@@ -251,8 +239,7 @@ export const useTradingTransaction = ({
 
     return {
         txnErrorString,
-        composeRequest: composeTradingTransaction,
-        fetchFeesAndCompose,
+        composeTradingTransaction,
         signAndSendTransaction,
         signAndPushSendFormTransaction,
         serializedTx,

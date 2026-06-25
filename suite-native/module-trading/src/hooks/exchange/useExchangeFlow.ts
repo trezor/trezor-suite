@@ -119,8 +119,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
 
     const {
         txnErrorString,
-        composeRequest,
-        fetchFeesAndCompose,
+        composeTradingTransaction,
         signAndSendTransaction,
         serializedTx,
         resolveTransactionSendConsent,
@@ -226,8 +225,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
         confirmTrade,
         abortConfirmTrade,
         signDataAndConfirm,
-        composeRequest,
-        fetchFeesAndCompose,
+        composeTradingTransaction,
         signAndSendTransaction,
         serializedTx,
         resolveTransactionSendConsent,

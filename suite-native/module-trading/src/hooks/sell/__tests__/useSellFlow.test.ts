@@ -55,8 +55,7 @@ jest.mock('expo-web-browser', () => {
 jest.mock('../../general/useTradingTransaction', () => ({
     useTradingTransaction: () => ({
         txnErrorString: null,
-        composeRequest: jest.fn(),
-        fetchFeesAndCompose: jest.fn(),
+        composeTradingTransaction: jest.fn(),
         signAndSendTransaction: jest.fn(),
         serializedTx: undefined,
         resolveTransactionSendConsent: jest.fn(),

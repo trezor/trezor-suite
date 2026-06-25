@@ -120,28 +120,14 @@ describe('useTradingTransaction', () => {
         });
     });
 
-    describe('composeRequest', () => {
+    describe('composeTradingTransaction', () => {
         it('should call composeTradingTransaction', async () => {
             const store = getInitializedStore();
 
             const { result } = renderUseTradingTransaction({ store });
 
             await act(async () => {
-                await result.current.composeRequest();
-            });
-
-            expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('fetchFeesAndCompose', () => {
-        it('should call composeTradingTransaction', async () => {
-            const store = getInitializedStore();
-
-            const { result } = renderUseTradingTransaction({ store });
-
-            await act(async () => {
-                await result.current.fetchFeesAndCompose();
+                await result.current.composeTradingTransaction();
             });
 
             expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
