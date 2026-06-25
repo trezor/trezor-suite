@@ -5,7 +5,7 @@ import { borders } from '@trezor/theme';
 
 const Pill = styled.button<{ $isActive: boolean }>`
     width: 30px;
-    height: 12px;
+    height: 24px;
     padding: 0;
     border: none;
     background: transparent;

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { AnimatePresence, type Variants, motion } from 'framer-motion';
+import { AnimatePresence, type BezierDefinition, type Variants, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Column, Grid, Row, motionEasing } from '@trezor/components';
+import { Column, Grid, Row } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
 import { CarouselIndicator } from './CarouselIndicator';
@@ -14,14 +14,14 @@ const Slide = styled(motion.div)`
 `;
 
 const slideTransition = {
-    duration: 0.35,
-    ease: motionEasing.transition,
+    duration: 0.6,
+    ease: [0.25, 0.46, 0.45, 0.94] as BezierDefinition,
 };
 
 const slideVariants: Variants = {
-    enter: (direction: number) => ({ x: `${direction * 100}%`, opacity: 0 }),
-    center: { x: '0%', opacity: 1 },
-    exit: (direction: number) => ({ x: `${direction * -100}%`, opacity: 0 }),
+    enter: (direction: number) => ({ x: `${direction * 100}%` }),
+    center: { x: '0%' },
+    exit: (direction: number) => ({ x: `${direction * -100}%` }),
 };
 
 export type CarouselBanner = {
@@ -95,7 +95,7 @@ export const BannerCarousel = ({ banners, onClose, onCTAClick }: BannerCarouselP
                 </AnimatePresence>
             </Grid>
             {banners.length > 1 && (
-                <Row margin={{ top: 16, bottom: 12 }}>
+                <Row margin={{ top: 10, bottom: 2 }}>
                     <CarouselIndicator
                         count={banners.length}
                         activeIndex={safeActiveIndex}
