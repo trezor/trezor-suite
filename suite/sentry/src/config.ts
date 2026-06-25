@@ -67,8 +67,28 @@ const redactCoinjoinData: ChainableBeforeSend = event => {
     return event;
 };
 
+const UNHANDLED_REJECTION_MESSAGE = '[global] unhandledrejection';
+/**
+ * Filter Sentry events for ignoreErrors in `extras` payload – but only do it for certain event.message types,
+ * which are known to hide (wrap) other errors in their extras payload.
+ */
+export const ignoreErrorsInGlobalUnhandledRejection: ChainableBeforeSend = event => {
+    if (event === null) return event;
+    const shouldProcessMessage = event.message?.includes(UNHANDLED_REJECTION_MESSAGE);
+    if (!shouldProcessMessage) return event;
+
+    const serializedMessage = JSON.stringify(event.extra);
+    if (typeof serializedMessage !== 'string') return event;
+
+    const isIgnoredError = ignoreErrors.some(ignoreError => ignoreError.test(serializedMessage));
+
+    return isIgnoredError ? null : event;
+};
+
 const beforeSend: ChainableBeforeSend = event =>
-    redactSentryEvent(redactUserPath(redactCoinjoinData(event)));
+    redactSentryEvent(
+        redactUserPath(redactCoinjoinData(ignoreErrorsInGlobalUnhandledRejection(event))),
+    );
 
 const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetches
