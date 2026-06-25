@@ -105,7 +105,7 @@ export const YieldWithdrawScreen = () => {
         resolutionStatus,
         depositedSharesAmount: resolvedDepositedSharesAmount,
         vault,
-        vaultTokenName,
+        vaultTokenSymbol: resolvedVaultTokenSymbol,
     } = useResolvedYieldFlowData(route.params);
 
     const depositedAmount = useMemo(() => {
@@ -560,7 +560,7 @@ export const YieldWithdrawScreen = () => {
                 apy={apy}
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={underlyingTokenSymbol}
-                vaultTokenName={vaultTokenName}
+                vaultTokenSymbol={resolvedVaultTokenSymbol}
             />
         </Screen>
     );

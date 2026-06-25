@@ -18,7 +18,7 @@ type YieldDepositInfoBottomSheetProps = {
     onClose: () => void;
     ref: BottomSheetModalRef;
     tokenSymbol: string;
-    vaultTokenName: string;
+    vaultTokenSymbol: string;
 };
 
 export const YieldDepositInfoBottomSheet = ({
@@ -26,12 +26,12 @@ export const YieldDepositInfoBottomSheet = ({
     onClose,
     ref,
     tokenSymbol,
-    vaultTokenName,
+    vaultTokenSymbol,
 }: YieldDepositInfoBottomSheetProps) => {
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({
         apy,
         tokenSymbol,
-        vaultTokenName,
+        vaultTokenSymbol,
     });
 
     return (

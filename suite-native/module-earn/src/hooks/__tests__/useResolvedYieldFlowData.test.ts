@@ -103,6 +103,8 @@ describe('resolveYieldFlowData', () => {
         expect(result.token.contractAddress).toBe(underlyingTokenAddress);
         expect(result.receiptToken.symbol).toBe('trSHUSDCp');
         expect(result.receiptToken.contractAddress).toBe(receiptTokenAddress);
+        expect(result.vaultTokenName).toBe('Trezor Steakhouse USDC Prime');
+        expect(result.vaultTokenSymbol).toBe('trSHUSDCp');
         expect(result.flowData.token.symbol).toBe('USDC');
         expect(result.depositedSharesAmount).toBe('1.5');
     });
