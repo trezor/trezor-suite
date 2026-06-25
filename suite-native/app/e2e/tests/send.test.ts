@@ -59,7 +59,7 @@ const preloadedState = preparePreloadedReduxState(
         : regtestDiscoveryFinishedStateT3W1,
 );
 
-describe('Send transaction flow. [@androidOnly @smoke @T3T1 @T3W1]', () => {
+describe('Send transaction flow. [@androidOnly @T3T1 @T3W1]', () => {
     beforeAll(async () => {
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',

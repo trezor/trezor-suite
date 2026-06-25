@@ -5,7 +5,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe(
     'Firmware - check readiness',
-    { tag: ['@firmware-ready', '@T1B1', '@T2T1', '@T3B1', '@T3T1', '@smoke'] },
+    { tag: ['@firmware-ready', '@T1B1', '@T2T1', '@T3B1', '@T3T1'] },
     () => {
         test.use({
             setupEmulator: false,

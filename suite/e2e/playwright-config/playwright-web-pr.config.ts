@@ -13,7 +13,9 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  * Web PR config
  * This config is used to run tests on each PR
  * There are projects for all supported device models with the latest firmware version
- * Additionally we only run smoke tests on T3T1 model and tests tagged as @webOnly to reduce the total number of tests executed on each PR
+ * To save Currents quota, T3W1 acts as the representative flagship and runs the full set; T3T1 runs only
+ * its exclusive (T3T1-only) tests on PR. Shared T3W1/T3T1 tests get full T3T1 coverage in nightly instead.
+ * Only @webOnly tests run on web.
  */
 const target = PlaywrightTarget.Web;
 const definition: PlaywrightProjectDefinition[] = [
@@ -27,8 +29,7 @@ const definition: PlaywrightProjectDefinition[] = [
         model: Model.T3T1,
         additionalGrepInvert: /@nightlyOnly/,
         currentsTags: tagsPr,
-        nameSuffix: 'smoke',
-        grep: new RegExp(`^(?=.*@T3T1)(?=.*@webOnly)((?=.*@smoke)|${noOtherDevice()})`),
+        grep: new RegExp(`^(?=.*@T3T1)(?=.*@webOnly)${noOtherDevice()}`),
     },
     {
         model: Model.T3B1,

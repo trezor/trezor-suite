@@ -11,7 +11,7 @@ type Coin = {
     customBackendUrlWrong: string;
 };
 
-test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic:

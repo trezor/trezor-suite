@@ -23,7 +23,6 @@
 
 ### Execution Context Tags
 
-- `@smoke` — Without this tag, `T3T1` test will be run only in nightly. So **critical tests** must be paired `@T3T1` with `@smoke`. Without `@T3T1`, this tag has no effect.
 - `@nightlyOnly` — runs only in nightly config; excluded from PR. **Required for slow/resource-intensive tests or tests with live currencies**. Combine with single platform (`@webOnly` or `@desktopOnly`) to conserve resources.
 - `@specificFirmware` — **required when using `test.use({ firmwareVersion: '2.10' })`**. Excluded from canary FW projects to prevent mismatched firmware runs.
 - `@group=manual` — excluded from all automated runs, reserved for manual test definitions

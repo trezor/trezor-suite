@@ -23,9 +23,8 @@ const definition: PlaywrightProjectDefinition[] = [
     },
     {
         model: Model.T3T1,
-        nameSuffix: 'fw_canary_smoke',
+        nameSuffix: 'fw_canary',
         firmware: '2-main',
-        grep: /^(?=.*@T3T1)(?=.*@smoke)/,
         additionalGrepInvert: /@specificFirmware/,
         currentsTags: tagsCanary,
     },

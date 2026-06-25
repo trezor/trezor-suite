@@ -86,16 +86,21 @@ Each test must be assigned a tag according to what device model it is supported 
 
 At the moment, there are these additional tags:
 
-- @smoke
 - @desktopOnly
 - @webOnly
 - @nightlyOnly
 - @specificFirmware
 - @firmware-ready
 
-#### @smoke
+#### Device coverage on PR
 
-Tests belonging to a smoke set are executed on all supported devices in PR pipelines. Otherwise only T3W1 is used.
+Most E2E tests are specified to cover T3T1 and T3W1, the two flagship models.
+But to save Currents quota, T3T1 is skipped on PR test runs, and only T3W1 is covered, unless the test is exclusive (T3T1-only) test. Meanwhile, nightly tests provide full coverage, i.e. they run both flagship models. This is configured entirely in the Playwright project configs.
+To summarize:
+
+- in PR run, if a test specifies T3T1 alongside any other models, T3T1 is skipped, and only other models are covered (usually just T3W1)
+- in PR run, if a test specifies T3T1 as its only model, it is covered
+- in nightly run, all models specified in the test are covered
 
 #### @desktopOnly or @webOnly
 

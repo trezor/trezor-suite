@@ -34,7 +34,7 @@ async function gotoConnectExplorer(page: Page, method: string) {
     }
 }
 
-test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] }, () => {
+test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
     test.beforeEach(async ({ onboardingPage, context }) => {
         await onboardingPage.completeOnboarding();
         await context.grantPermissions(['storage-access']);
@@ -323,37 +323,32 @@ test.describe('TrezorConnect popup web', { tag: ['@smoke', '@T3T1', '@webOnly'] 
     );
 });
 
-test.describe(
-    'TrezorConnect popup web - no onboarding',
-    { tag: ['@smoke', '@T3T1', '@webOnly'] },
-    () => {
-        test(
-            'popup blocked by browser returns popup-blocked error',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Suite Web Connect: When popup is blocked, returns popup-blocked error',
-                }),
-            },
-            async ({ page }) => {
-                // When window.open returns null (popup blocked), the error is
-                // returned immediately as { success: false, error: "popup-blocked" }.
+test.describe('TrezorConnect popup web - no onboarding', { tag: ['@T3T1', '@webOnly'] }, () => {
+    test(
+        'popup blocked by browser returns popup-blocked error',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Suite Web Connect: When popup is blocked, returns popup-blocked error',
+            }),
+        },
+        async ({ page }) => {
+            // When window.open returns null (popup blocked), the error is
+            // returned immediately as { success: false, error: "popup-blocked" }.
 
-                await gotoConnectExplorer(page, 'bitcoin/getAddress');
-                await page.getByTestId('@api-playground/collapsible-box').click();
+            await gotoConnectExplorer(page, 'bitcoin/getAddress');
+            await page.getByTestId('@api-playground/collapsible-box').click();
 
-                // Block popups
-                await page.evaluate(() => {
-                    window.open = () => null;
-                });
+            // Block popups
+            await page.evaluate(() => {
+                window.open = () => null;
+            });
 
-                await page.getByTestId('@submit-button').click();
-                const response = page.getByTestId('@response');
-                // todo: there is quite big  timeout before handshake failed appears. Maybe we could detect that popup
-                // did not open earlier and return error faster?
-                await expect(response).toHaveText(/success: false/, { timeout: 15_000 });
-                await expect(response).toHaveText(/popup-blocked/i);
-            },
-        );
-    },
-);
+            await page.getByTestId('@submit-button').click();
+            const response = page.getByTestId('@response');
+            // todo: there is quite big  timeout before handshake failed appears. Maybe we could detect that popup
+            // did not open earlier and return error faster?
+            await expect(response).toHaveText(/success: false/, { timeout: 15_000 });
+            await expect(response).toHaveText(/popup-blocked/i);
+        },
+    );
+});
