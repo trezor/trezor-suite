@@ -49,7 +49,7 @@ describe('EarnDashboardTableHeader', () => {
         renderHeader({ showRewardsColumns: false });
 
         expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT')).toBeInTheDocument();
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_APY')).toBeInTheDocument();
+        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_RATE')).toBeInTheDocument();
     });
 
     it('should render account balance column header when configured', () => {
@@ -59,6 +59,6 @@ describe('EarnDashboardTableHeader', () => {
         });
 
         expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE')).toBeInTheDocument();
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_APY')).toBeInTheDocument();
+        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_RATE')).toBeInTheDocument();
     });
 });

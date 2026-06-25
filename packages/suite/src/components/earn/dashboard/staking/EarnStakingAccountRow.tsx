@@ -37,6 +37,7 @@ import { EarnStakingPotentialRewards } from './EarnStakingPotentialRewards';
 import { EarnStakingRemainingVotes } from './EarnStakingRemainingVotes';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
+import { EarnRate } from '../common/EarnRate';
 
 interface EarnStakingAccountRowProps {
     account: Account;
@@ -286,7 +287,13 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 <Column gap={12} width="100%">
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell account={account} />
-                        <ApyValue apy={apyAvailable ? apy : null} />
+
+                        <EarnRate
+                            type={account.symbol === 'trx' ? 'apr' : 'apy'}
+                            rate={apyAvailable ? apy : null}
+                        >
+                            <ApyValue apy={apyAvailable ? apy : null} />
+                        </EarnRate>
                     </Row>
 
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
@@ -379,7 +386,13 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             </Table.Cell>
 
             <Table.Cell>
-                {apyAvailable ? <ApyValue apy={apy} /> : <Translation id="TR_EARN_NOT_AVAILABLE" />}
+                {apyAvailable ? (
+                    <EarnRate type={account.symbol === 'trx' ? 'apr' : 'apy'} rate={apy}>
+                        <ApyValue apy={apy} />
+                    </EarnRate>
+                ) : (
+                    <Translation id="TR_EARN_NOT_AVAILABLE" />
+                )}
             </Table.Cell>
 
             {stakingStatus === 'insufficient-funds' && (

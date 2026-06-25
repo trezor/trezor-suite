@@ -4,6 +4,7 @@ import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
 import { type YieldInactiveVaultOpportunity } from './types';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { EarnActivateButton } from '../common/EarnActivateButton';
+import { EarnRate } from '../common/EarnRate';
 
 type EarnYieldInactiveVaultOpportunityProps = {
     opportunity: YieldInactiveVaultOpportunity;
@@ -24,11 +25,13 @@ export const EarnYieldInactiveVaultOpportunity = ({
     );
 
     const apyCell = (
-        <EarnYieldApyTooltip
-            vault={opportunity.vault}
-            apyPercentage={opportunity.apyPercentage}
-            networkSymbol={opportunity.networkSymbol}
-        />
+        <EarnRate type="apy" rate={opportunity.apyPercentage}>
+            <EarnYieldApyTooltip
+                vault={opportunity.vault}
+                apyPercentage={opportunity.apyPercentage}
+                networkSymbol={opportunity.networkSymbol}
+            />
+        </EarnRate>
     );
 
     if (isCardLayout) {

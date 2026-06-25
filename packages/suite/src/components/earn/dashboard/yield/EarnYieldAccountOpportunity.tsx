@@ -35,6 +35,7 @@ import { EarnYieldYearlyRewards } from './EarnYieldYearlyRewards';
 import { type YieldAccountOpportunity } from './types';
 import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
+import { EarnRate } from '../common/EarnRate';
 
 type EarnYieldAccountOpportunityProps = {
     opportunity: YieldAccountOpportunity;
@@ -368,11 +369,13 @@ export const EarnYieldAccountOpportunity = ({
     );
 
     const apyCell = (
-        <EarnYieldApyTooltip
-            vault={opportunity.vault}
-            apyPercentage={opportunity.apyPercentage}
-            networkSymbol={opportunity.networkSymbol}
-        />
+        <EarnRate type="apy" rate={opportunity.apyPercentage}>
+            <EarnYieldApyTooltip
+                vault={opportunity.vault}
+                apyPercentage={opportunity.apyPercentage}
+                networkSymbol={opportunity.networkSymbol}
+            />
+        </EarnRate>
     );
 
     if (isCardLayout) {

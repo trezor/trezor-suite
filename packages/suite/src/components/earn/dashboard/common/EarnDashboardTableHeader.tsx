@@ -21,7 +21,7 @@ export const EarnDashboardTableHeader = ({
                     <Translation id={accountColumnTranslationId} />
                 </Table.Cell>
                 <Table.Cell>
-                    <Translation id="TR_EARN_DASHBOARD_TABLE_APY" />
+                    <Translation id="TR_EARN_DASHBOARD_TABLE_RATE" />
                 </Table.Cell>
                 <Table.Cell>
                     {showRewardsColumns && (
