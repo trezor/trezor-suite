@@ -69,15 +69,18 @@ const redactCoinjoinData: ChainableBeforeSend = event => {
 
 const UNHANDLED_REJECTION_MESSAGE = '[global] unhandledrejection';
 /**
- * Filter Sentry events for ignoreErrors in `extras` payload – but only do it for certain event.message types,
- * which are known to hide (wrap) other errors in their extras payload.
+ * Filter Sentry events for ignoreErrors in `event.extra.arguments` payload,
+ * but only do it for global error handler events identified by specific event.message.
+ * Global handlers write the handler arguments (i.e. the error payload itself) to `extra.arguments`:
+ * https://github.com/getsentry/sentry-javascript/blob/4b6156b6629ff5442f266ba4fbbfa7fabceba9d5/packages/browser/src/helpers.ts#L133-L136
  */
 export const ignoreErrorsInGlobalUnhandledRejection: ChainableBeforeSend = event => {
     if (event === null) return event;
     const shouldProcessMessage = event.message?.includes(UNHANDLED_REJECTION_MESSAGE);
-    if (!shouldProcessMessage) return event;
+    const extraArguments = event.extra?.arguments;
+    if (!shouldProcessMessage || !extraArguments) return event;
 
-    const serializedMessage = JSON.stringify(event.extra);
+    const serializedMessage = JSON.stringify(extraArguments);
     if (typeof serializedMessage !== 'string') return event;
 
     const isIgnoredError = ignoreErrors.some(ignoreError => ignoreError.test(serializedMessage));
