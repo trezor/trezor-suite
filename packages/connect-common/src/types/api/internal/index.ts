@@ -10,7 +10,7 @@ import type { uiResponse } from './uiResponse';
 import type { updateConnectSettings } from './updateConnectSettings';
 
 // Initialization, lifecycle, events, and settings
-export const TrezorConnectCore = Type.Object({
+export const TrezorConnectInternal = Type.Object({
     dispose: Type.Unsafe<typeof dispose>(),
     cancel: Type.Unsafe<typeof cancel>(),
     on: Type.Unsafe<typeof on>(),
@@ -19,4 +19,4 @@ export const TrezorConnectCore = Type.Object({
     uiResponse: Type.Unsafe<typeof uiResponse>(),
     updateConnectSettings: Type.Unsafe<typeof updateConnectSettings>(),
 });
-export type TrezorConnectCore = Static<typeof TrezorConnectCore>;
+export type TrezorConnectInternal = Static<typeof TrezorConnectInternal>;
