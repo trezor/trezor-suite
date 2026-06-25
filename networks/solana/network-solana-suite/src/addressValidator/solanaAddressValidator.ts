@@ -1,7 +1,9 @@
 import { type AddressValidator, addressType } from '@network-module/suite-types';
 import { base58 } from '@scure/base';
 
-export const isAddressValid = (address: string, _symbol: string): boolean => {
+import type { SolanaSupportedCoin } from '../supportedCoins';
+
+export const isAddressValid = (address: string, _symbol: SolanaSupportedCoin): boolean => {
     try {
         const decoded = base58.decode(address);
 
@@ -11,7 +13,7 @@ export const isAddressValid = (address: string, _symbol: string): boolean => {
     }
 };
 
-export const getAddressType = (address: string, _symbol: string) => {
+export const getAddressType = (address: string, _symbol: SolanaSupportedCoin) => {
     if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
@@ -19,7 +21,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-export const solanaValidator: AddressValidator = {
+export const solanaValidator: AddressValidator<SolanaSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };

@@ -3,6 +3,8 @@ import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex } from '@noble/hashes/utils.js';
 import { base58xrp } from '@scure/base';
 
+import type { RippleSupportedCoin } from '../supportedCoins';
+
 const ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
 
 const regexp = new RegExp('^r[' + ALLOWED_CHARS + ']{27,35}$');
@@ -15,7 +17,7 @@ function verifyChecksum(address: string): boolean {
     return computedChecksum === checksum;
 }
 
-export const isAddressValid = (address: string, _symbol: string): boolean => {
+export const isAddressValid = (address: string, _symbol: RippleSupportedCoin): boolean => {
     if (regexp.test(address)) {
         return verifyChecksum(address);
     }
@@ -23,7 +25,7 @@ export const isAddressValid = (address: string, _symbol: string): boolean => {
     return false;
 };
 
-export const getAddressType = (address: string, _symbol: string) => {
+export const getAddressType = (address: string, _symbol: RippleSupportedCoin) => {
     if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
@@ -31,7 +33,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-export const rippleValidator: AddressValidator = {
+export const rippleValidator: AddressValidator<RippleSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };

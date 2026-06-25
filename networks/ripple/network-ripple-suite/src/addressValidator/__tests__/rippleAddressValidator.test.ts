@@ -1,16 +1,17 @@
 import { type AddressType, addressType } from '@network-module/suite-types';
 
+import type { RippleSupportedCoin } from '../../supportedCoins';
 import { rippleValidator } from '../rippleAddressValidator';
 
 type RippleIsAddressValidCase = {
     address: string;
-    symbol: string;
+    symbol: RippleSupportedCoin;
     expected: boolean;
 };
 
 type RippleAddressTypeCase = {
     address: string;
-    symbol: string;
+    symbol: RippleSupportedCoin;
     expectedAddressType: AddressType | undefined;
 };
 

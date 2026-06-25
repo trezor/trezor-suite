@@ -1,16 +1,17 @@
 import { type AddressType, addressType } from '@network-module/suite-types';
 
+import type { BitcoinSupportedCoin } from '../../supportedCoins';
 import { bitcoinValidator } from '../bitcoinAddressValidator';
 
 type BitcoinIsAddressValidCase = {
     address: string;
-    symbol: string;
+    symbol: BitcoinSupportedCoin;
     expected: boolean;
 };
 
 type BitcoinAddressTypeCase = {
     address: string;
-    symbol: string;
+    symbol: BitcoinSupportedCoin;
     expectedAddressType: AddressType | undefined;
 };
 

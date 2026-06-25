@@ -1,16 +1,17 @@
 import { type AddressType, addressType } from '@network-module/suite-types';
 
+import type { EthereumSupportedCoin } from '../../supportedCoins';
 import { ethereumValidator } from '../ethereumAddressValidator';
 
 type EthereumIsAddressValidCase = {
     address: string;
-    symbol: string;
+    symbol: EthereumSupportedCoin;
     expected: boolean;
 };
 
 type EthereumAddressTypeCase = {
     address: string;
-    symbol: string;
+    symbol: EthereumSupportedCoin;
     expectedAddressType: AddressType | undefined;
 };
 

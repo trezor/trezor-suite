@@ -3,6 +3,10 @@
 
 import { type AddressValidator, addressType } from '@network-module/suite-types';
 
+import type { BitcoinSupportedCoin } from '../supportedCoins';
+
+type BitcoinCashSupportedCoin = Extract<BitcoinSupportedCoin, 'bch'>;
+
 const CASHADDR_REGEXP = /^[qQpP]{1}[0-9a-zA-Z]{41}$/;
 
 // Base32 charset used for the cashaddr payload (see "Base32" in the spec).
@@ -95,10 +99,10 @@ function validateAddress(address: string): boolean {
     return verifyChecksum(CASHADDR_PREFIX, normalized);
 }
 
-export const isAddressValid = (address: string, _symbol: string): boolean =>
+export const isAddressValid = (address: string, _symbol: BitcoinCashSupportedCoin): boolean =>
     validateAddress(address);
 
-export const getAddressType = (address: string, symbol: string) => {
+export const getAddressType = (address: string, symbol: BitcoinCashSupportedCoin) => {
     if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
@@ -106,7 +110,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-export const bchValidator: AddressValidator = {
+export const bchValidator: AddressValidator<BitcoinCashSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };

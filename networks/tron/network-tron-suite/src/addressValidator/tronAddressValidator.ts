@@ -2,6 +2,8 @@ import { type AddressValidator, addressType } from '@network-module/suite-types'
 import { sha256 } from '@noble/hashes/sha2.js';
 import { base58 } from '@scure/base';
 
+import type { TronSupportedCoin } from '../supportedCoins';
+
 const TRON_ADDRESS_TYPE = 0x41;
 
 function decodeBase58Address(base58Sting: unknown): number[] | false {
@@ -36,7 +38,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
     return false;
 }
 
-export const isAddressValid = (mainAddress: string, _symbol: string): boolean => {
+export const isAddressValid = (mainAddress: string, _symbol: TronSupportedCoin): boolean => {
     const address = decodeBase58Address(mainAddress);
 
     if (!address) {
@@ -50,7 +52,7 @@ export const isAddressValid = (mainAddress: string, _symbol: string): boolean =>
     return TRON_ADDRESS_TYPE === address[0];
 };
 
-export const getAddressType = (address: string, symbol: string) => {
+export const getAddressType = (address: string, symbol: TronSupportedCoin) => {
     if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
@@ -58,7 +60,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-export const tronValidator: AddressValidator = {
+export const tronValidator: AddressValidator<TronSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };

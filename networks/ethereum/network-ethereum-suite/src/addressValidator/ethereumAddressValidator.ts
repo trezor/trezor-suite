@@ -2,6 +2,8 @@ import { type AddressValidator, addressType } from '@network-module/suite-types'
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 
+import type { EthereumSupportedCoin } from '../supportedCoins';
+
 function verifyChecksum(address: string): boolean {
     const stripped = address.replace('0x', '');
     const addressHash = bytesToHex(keccak_256(utf8ToBytes(stripped.toLowerCase())));
@@ -22,7 +24,7 @@ function verifyChecksum(address: string): boolean {
     return true;
 }
 
-export const isAddressValid = (address: string, _symbol: string): boolean => {
+export const isAddressValid = (address: string, _symbol: EthereumSupportedCoin): boolean => {
     if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
         // Check if it has the basic requirements of an address
         return false;
@@ -36,7 +38,7 @@ export const isAddressValid = (address: string, _symbol: string): boolean => {
     return verifyChecksum(address);
 };
 
-export const getAddressType = (address: string, _symbol: string) => {
+export const getAddressType = (address: string, _symbol: EthereumSupportedCoin) => {
     if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
@@ -44,7 +46,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-export const ethereumValidator: AddressValidator = {
+export const ethereumValidator: AddressValidator<EthereumSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };

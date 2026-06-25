@@ -3,6 +3,8 @@ import { base58, bech32 } from '@scure/base';
 import * as cbor from 'cbor';
 import crc32 from 'crc/calculators/crc32';
 
+import type { CardanoSupportedCoin } from '../supportedCoins';
+
 type NetworkEnvironment = 'prod' | 'testnet' | 'regtest' | 'stake';
 
 const CARDANO_HRP: Record<string, string> = { prod: 'addr', testnet: 'addr_test', stake: 'stake' };
@@ -72,13 +74,13 @@ function isValidBech32Address(address: string, network: NetworkEnvironment): boo
     return true;
 }
 
-export const isAddressValid = (address: string, _symbol: string): boolean => {
+export const isAddressValid = (address: string, _symbol: CardanoSupportedCoin): boolean => {
     const resolvedNetwork = getNetworkEnvironment(address);
 
     return isValidLegacyAddress(address) || isValidBech32Address(address, resolvedNetwork);
 };
 
-export const getAddressType = (address: string, symbol: string) => {
+export const getAddressType = (address: string, symbol: CardanoSupportedCoin) => {
     if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
@@ -86,7 +88,7 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-export const adaValidator: AddressValidator = {
+export const adaValidator: AddressValidator<CardanoSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };

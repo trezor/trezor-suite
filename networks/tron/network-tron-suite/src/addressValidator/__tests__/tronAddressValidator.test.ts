@@ -1,16 +1,17 @@
 import { type AddressType, addressType } from '@network-module/suite-types';
 
+import type { TronSupportedCoin } from '../../supportedCoins';
 import { tronValidator } from '../tronAddressValidator';
 
 type TronIsAddressValidCase = {
     address: string;
-    symbol: string;
+    symbol: TronSupportedCoin;
     expected: boolean;
 };
 
 type TronAddressTypeCase = {
     address: string;
-    symbol: string;
+    symbol: TronSupportedCoin;
     expectedAddressType: AddressType | undefined;
 };
 

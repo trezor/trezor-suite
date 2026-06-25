@@ -3,6 +3,8 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 import { utils } from '@scure/base';
 import crc16xmodem from 'crc/calculators/crc16xmodem';
 
+import type { StellarSupportedCoin } from '../supportedCoins';
+
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
 const base32 = utils.chain(utils.radix(32), utils.alphabet(ALPHABET), utils.join(''));
@@ -34,7 +36,7 @@ function verifyChecksum(address: string): boolean {
     return computedChecksum === checksum;
 }
 
-export const isAddressValid = (address: string, _symbol: string): boolean => {
+export const isAddressValid = (address: string, _symbol: StellarSupportedCoin): boolean => {
     if (regexp.test(address)) {
         return verifyChecksum(address);
     }
@@ -42,7 +44,7 @@ export const isAddressValid = (address: string, _symbol: string): boolean => {
     return false;
 };
 
-export const getAddressType = (address: string, _symbol: string) => {
+export const getAddressType = (address: string, _symbol: StellarSupportedCoin) => {
     if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
@@ -50,7 +52,7 @@ export const getAddressType = (address: string, _symbol: string) => {
     return undefined;
 };
 
-export const stellarValidator: AddressValidator = {
+export const stellarValidator: AddressValidator<StellarSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };

@@ -10,6 +10,7 @@ import { typedObjectKeys } from '@trezor/utils';
 
 import { bchValidator } from './bchAddressValidator';
 import * as bech32 from './bech32';
+import type { BitcoinSupportedCoin } from '../supportedCoins';
 
 type NetworkEnvironment = 'prod' | 'testnet' | 'regtest' | 'stake';
 type HashFunction = 'sha256' | 'blake256' | 'blake256keccak256' | 'keccak256';
@@ -22,6 +23,7 @@ type BitcoinCurrency = {
     hashFunction?: HashFunction;
     regex?: RegExp;
 };
+type BitcoinCurrencySymbol = Exclude<BitcoinSupportedCoin, 'bch'>;
 
 const BITCOIN_NETWORK_CONFIG = {
     segwitHrp: { prod: 'bc', testnet: 'tb', regtest: 'bcrt' },
@@ -32,7 +34,7 @@ const BITCOIN_NETWORK_CONFIG = {
     },
 };
 
-const BITCOIN_CURRENCIES: Partial<Record<string, BitcoinCurrency>> = {
+const BITCOIN_CURRENCIES: Record<BitcoinCurrencySymbol, BitcoinCurrency> = {
     btc: {
         symbol: 'btc',
         ...BITCOIN_NETWORK_CONFIG,
@@ -61,7 +63,7 @@ const BITCOIN_CURRENCIES: Partial<Record<string, BitcoinCurrency>> = {
     },
 };
 
-const getCurrency = (symbol: string): BitcoinCurrency => {
+const getCurrency = (symbol: BitcoinCurrencySymbol): BitcoinCurrency => {
     const currency = BITCOIN_CURRENCIES[symbol];
 
     if (!currency) {
@@ -71,7 +73,7 @@ const getCurrency = (symbol: string): BitcoinCurrency => {
     return currency;
 };
 
-const getNetworkEnvironment = (symbol: string): NetworkEnvironment => {
+const getNetworkEnvironment = (symbol: BitcoinSupportedCoin): NetworkEnvironment => {
     switch (symbol) {
         case 'test':
             return 'testnet';
@@ -83,7 +85,7 @@ const getNetworkEnvironment = (symbol: string): NetworkEnvironment => {
 };
 
 const getNetworkEnvironments = (
-    symbol: string,
+    symbol: BitcoinSupportedCoin,
     currency: BitcoinCurrency,
 ): NetworkEnvironment[] => {
     const networkEnvironment = getNetworkEnvironment(symbol);
@@ -321,7 +323,7 @@ const getAddressTypeForNetwork = (
     return undefined;
 };
 
-export const getAddressType = (address: string, symbol: string) => {
+export const getAddressType = (address: string, symbol: BitcoinSupportedCoin) => {
     if (symbol === 'bch') {
         return bchValidator.getAddressType(address, symbol);
     }
@@ -340,13 +342,13 @@ export const getAddressType = (address: string, symbol: string) => {
     return undefined;
 };
 
-export const isAddressValid = (address: string, symbol: string): boolean => {
+export const isAddressValid = (address: string, symbol: BitcoinSupportedCoin): boolean => {
     const addrType = getAddressType(address, symbol);
 
     return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
 };
 
-export const bitcoinValidator: AddressValidator = {
+export const bitcoinValidator: AddressValidator<BitcoinSupportedCoin> = {
     isAddressValid,
     getAddressType,
 };
