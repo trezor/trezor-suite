@@ -3,6 +3,7 @@ import { isMaxAllowance } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { DebugModeView } from '@suite-native/trading-debug';
 
+import { ExchangeUsdcPresetButton } from './ExchangeUsdcPresetButton';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 
 export const ExchangeFormQuoteDebugView = () => {
@@ -30,6 +31,9 @@ export const ExchangeFormQuoteDebugView = () => {
                 <Text variant="body-xs" color="contentSecondary">
                     {preapproved}
                 </Text>
+            </HStack>
+            <HStack>
+                <ExchangeUsdcPresetButton />
             </HStack>
         </DebugModeView>
     );
