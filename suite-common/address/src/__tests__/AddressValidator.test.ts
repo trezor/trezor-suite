@@ -3,6 +3,8 @@ import type {
     NetworkModule,
 } from '@network-module/suite-types';
 
+import type { StaticNetworkModules } from '@suite-common/networks';
+
 import { createAddressValidator } from '../AddressValidator';
 
 describe(createAddressValidator.name, () => {
@@ -32,10 +34,10 @@ describe(createAddressValidator.name, () => {
 
         const addressValidator = createAddressValidator({
             networks: {
-                networkModules: new Map([
-                    ['bitcoin', bitcoinModule],
-                    ['ethereum', ethereumModule],
-                ]),
+                networkModules: {
+                    bitcoin: bitcoinModule,
+                    ethereum: ethereumModule,
+                } as unknown as StaticNetworkModules,
             },
         });
 
@@ -55,7 +57,7 @@ describe(createAddressValidator.name, () => {
 
     it('returns invalid result for unsupported symbol', () => {
         const addressValidator = createAddressValidator({
-            networks: { networkModules: new Map() },
+            networks: { networkModules: {} as StaticNetworkModules },
         });
 
         expect(addressValidator.isAddressValid(btcAddress, 'btc')).toBe(false);

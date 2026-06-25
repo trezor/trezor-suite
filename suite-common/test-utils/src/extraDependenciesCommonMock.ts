@@ -1,7 +1,7 @@
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
-import type { NetworksServiceDep } from '@suite-common/networks';
+import type { NetworksServiceDep, StaticNetworkModules } from '@suite-common/networks';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -104,7 +104,7 @@ export const extraDependenciesCommonMock: ExtraDependenciesCommonMock = {
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
         createTransports: () => [],
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
-        networks: { networkModules: new Map() },
+        networks: { networkModules: {} as StaticNetworkModules },
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: notImplementedSelector(

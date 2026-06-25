@@ -4,23 +4,23 @@ import { createEthereumNetworkModule } from '@network-module/ethereum-suite';
 import { createRippleNetworkModule } from '@network-module/ripple-suite';
 import { createSolanaNetworkModule } from '@network-module/solana-suite';
 import { createStellarNetworkModule } from '@network-module/stellar-suite';
-import { type NetworkModule } from '@network-module/suite-types';
 import { createTronNetworkModule } from '@network-module/tron-suite';
 
-import { type NetworkType } from '@suite-common/wallet-config';
-
-import { type NetworksService } from './NetworksService';
+import { type NetworksService, type StaticNetworkModules } from './NetworksService';
 
 export const createNetworksCompositionRoot = (): NetworksService => {
-    const networkModules = new Map<NetworkType, NetworkModule>([
-        ['bitcoin', createBitcoinNetworkModule()],
-        ['ethereum', createEthereumNetworkModule()],
-        ['ripple', createRippleNetworkModule()],
-        ['cardano', createCardanoNetworkModule()],
-        ['solana', createSolanaNetworkModule()],
-        ['stellar', createStellarNetworkModule()],
-        ['tron', createTronNetworkModule()],
-    ]);
+    // When adding a new Network Module, you have to
+    //    1. register it here to have the runtime object for DI
+    //    2. and in the `StaticNetworkModules` to have static typings right
+    const networkModules: StaticNetworkModules = {
+        bitcoin: createBitcoinNetworkModule(),
+        ethereum: createEthereumNetworkModule(),
+        ripple: createRippleNetworkModule(),
+        cardano: createCardanoNetworkModule(),
+        solana: createSolanaNetworkModule(),
+        stellar: createStellarNetworkModule(),
+        tron: createTronNetworkModule(),
+    };
 
     return { networkModules };
 };

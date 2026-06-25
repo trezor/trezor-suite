@@ -1,2 +1,6 @@
 export { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
-export { type NetworksService, type NetworksServiceDep } from './NetworksService';
+export {
+    type NetworksService,
+    type NetworksServiceDep,
+    type StaticNetworkModules,
+} from './NetworksService';
