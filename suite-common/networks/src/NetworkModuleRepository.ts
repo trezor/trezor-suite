@@ -2,7 +2,7 @@ import type { NetworkModule } from '@network-module/suite-types';
 
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
-import type { CoinSymbol, NetworksServiceDep } from './NetworksService';
+import type { CoinSymbol, StaticNetworkModulesDep } from './NetworkModules';
 
 export type NetworkModuleRepository = {
     get: <T extends CoinSymbol>(symbol: T) => NetworkModule<T>;
@@ -14,14 +14,14 @@ export type NetworkModuleRepositoryDep = {
     networkModuleRepository: NetworkModuleRepository;
 };
 
-export type NetworkModuleRepositoryDeps = NetworksServiceDep;
+export type NetworkModuleRepositoryDeps = StaticNetworkModulesDep;
 
-export const createNetworkModuleRepository = ({
-    networks,
-}: NetworkModuleRepositoryDeps): NetworkModuleRepository => {
+export const createNetworkModuleRepository = (
+    deps: NetworkModuleRepositoryDeps,
+): NetworkModuleRepository => {
     const networkModuleByCoinSymbol = new Map<CoinSymbol, NetworkModule<CoinSymbol>>();
 
-    typedObjectValues(networks.networkModules).forEach(networkModule => {
+    typedObjectValues(deps.networkModules).forEach(networkModule => {
         networkModule.getSupportedCoins().forEach(networkSymbol => {
             networkModuleByCoinSymbol.set(networkSymbol, networkModule);
         });

@@ -9,10 +9,10 @@ import { isAddressDeprecated } from '../isAddressDeprecated';
 // https://litecoin-project.github.io/p2sh-convert/
 // https://cashaddr.bitcoincash.org/
 describe('isAddressDeprecated', () => {
-    const networks = createNetworksCompositionRoot();
-    const repository = createNetworkModuleRepository({ networks });
+    const networkModules = createNetworksCompositionRoot();
+    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({
-        repository,
+        networkModuleRepository,
     });
 
     it('returns undefined for non-deprecated LTC address', () => {

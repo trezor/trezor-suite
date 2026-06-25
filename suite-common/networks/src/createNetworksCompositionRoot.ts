@@ -6,13 +6,13 @@ import { createSolanaNetworkModule } from '@network-module/solana-suite';
 import { createStellarNetworkModule } from '@network-module/stellar-suite';
 import { createTronNetworkModule } from '@network-module/tron-suite';
 
-import { type NetworksService, type StaticNetworkModules } from './NetworksService';
+import { type NetworkModules } from './NetworkModules';
 
-export const createNetworksCompositionRoot = (): NetworksService => {
+export const createNetworksCompositionRoot = (): NetworkModules => {
     // When adding a new Network Module, you have to
     //    1. register it here to have the runtime object for DI
-    //    2. and in the `StaticNetworkModules` to have static typings right
-    const networkModules: StaticNetworkModules = {
+    //    2. and in the `NetworkModules` to have static typings right
+    const networkModules: NetworkModules = {
         bitcoin: createBitcoinNetworkModule(),
         ethereum: createEthereumNetworkModule(),
         ripple: createRippleNetworkModule(),
@@ -22,5 +22,5 @@ export const createNetworksCompositionRoot = (): NetworksService => {
         tron: createTronNetworkModule(),
     };
 
-    return { networkModules };
+    return networkModules;
 };

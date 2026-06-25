@@ -8,7 +8,6 @@ export {
 } from './NetworkModuleRepository';
 export {
     type CoinSymbol,
-    type NetworksService,
-    type NetworksServiceDep,
-    type StaticNetworkModules,
-} from './NetworksService';
+    type NetworkModules,
+    type StaticNetworkModulesDep,
+} from './NetworkModules';
