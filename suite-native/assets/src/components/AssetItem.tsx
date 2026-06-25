@@ -23,14 +23,12 @@ import {
 } from '@suite-native/staking';
 import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 
-import {
-    type AssetsRootState,
-    selectSingleDeviceAccountKeyForNetworkSymbol,
-} from '../assetsSelectors';
+import { selectSingleDeviceAccountKeyForNetworkSymbol } from '../assetsSelectors';
 import { AccountsCount } from './AccountsCount';
 import { CryptoAmount } from './CryptoAmount';
 import { FiatAmount } from './FiatAmount';
 import { PercentageIcon } from './PercentageIcon';
+import { type AssetsRootState } from '../types';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -42,12 +40,8 @@ type NavigationType = TabToStackCompositeNavigationProp<
     RootStackParamList
 >;
 
-// Memoized because `Assets` re-renders every time a newly discovered network grows the list.
-// Without this, each new network would re-render every existing row; with it, unchanged rows bail.
-// `cryptoCurrencySymbol` is a stable primitive, so the memo is never silently defeated.
-// The sub-components are intentionally NOT memoized - they each subscribe to their own value and
-// re-render only when it changes, and this component rarely re-renders, so memoizing them adds
-// no benefit (and a leaf memo can't hide an unstable selector anyway - that fires regardless).
+// Memoized so existing rows bail when `Assets` re-renders to add a newly discovered network.
+// Sub-components aren't memoized: each subscribes to its own value, and this rarely re-renders.
 export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
     const { NetworkNameFormatter } = useFormatters();

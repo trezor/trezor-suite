@@ -4,7 +4,8 @@ import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 
-import { type AssetsRootState, selectAssetCryptoValue } from '../assetsSelectors';
+import { selectAssetCryptoValue } from '../assetsSelectors';
+import { type AssetsRootState } from '../types';
 
 type CryptoAmountProps = { symbol: NetworkSymbol };
 
