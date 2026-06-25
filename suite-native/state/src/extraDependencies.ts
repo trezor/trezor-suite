@@ -84,8 +84,8 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networks = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networks });
+    const networkModules = createNetworksCompositionRoot();
+    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({ networkModuleRepository });
 
     return {

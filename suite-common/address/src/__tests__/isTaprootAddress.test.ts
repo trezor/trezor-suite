@@ -7,10 +7,10 @@ import { createAddressValidator } from '../AddressValidator';
 import { isTaprootAddress } from '../isTaprootAddress';
 
 describe('isTaprootAddress', () => {
-    const networks = createNetworksCompositionRoot();
-    const repository = createNetworkModuleRepository({ networks });
+    const networkModules = createNetworksCompositionRoot();
+    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({
-        repository,
+        networkModuleRepository,
     });
 
     it('returns false for empty string', () => {

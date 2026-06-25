@@ -10,7 +10,7 @@ import type { TronNetworkModule } from '@network-module/tron-suite';
 // When adding a new Network Module, you have to
 //    1. register it here to have the static typing
 //    2. create the runtime object for DI in `createNetworksCompositionRoot`
-export type StaticNetworkModules = {
+export type NetworkModules = {
     bitcoin: BitcoinNetworkModule;
     ethereum: EthereumNetworkModule;
     ripple: RippleNetworkModule;
@@ -20,17 +20,17 @@ export type StaticNetworkModules = {
     tron: TronNetworkModule;
 };
 
-type StaticNetworkModuleCoinSymbol<TNetworkModule> =
+export type StaticNetworkModulesDep = {
+    networkModules: NetworkModules;
+};
+
+// This is a tool, that extracts the union type of all supported CoinSymbols
+// from the NetworkModules.
+//
+// With this, we are able to statically type the CoinSymbol, while
+// preserving the modular aspect.
+//
+type NetworkModuleCoinSymbol<TNetworkModule> =
     TNetworkModule extends NetworkModule<infer TSymbol> ? TSymbol : never;
 
-export type CoinSymbol = StaticNetworkModuleCoinSymbol<
-    StaticNetworkModules[keyof StaticNetworkModules]
->;
-
-export type NetworksService = {
-    networkModules: StaticNetworkModules;
-};
-
-export type NetworksServiceDep = {
-    networks: NetworksService;
-};
+export type CoinSymbol = NetworkModuleCoinSymbol<NetworkModules[keyof NetworkModules]>;

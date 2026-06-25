@@ -32,7 +32,6 @@ import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
-    type NetworksServiceDep,
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
@@ -102,7 +101,6 @@ export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep & Cr
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
-    NetworksServiceDep &
     SuiteRouterHistoryDep;
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
@@ -158,10 +156,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
-    const networks = createNetworksCompositionRoot();
-    const networkModuleRepository = createNetworkModuleRepository({ networks });
+    const networkModules = createNetworksCompositionRoot();
+    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({
-        repository: networkModuleRepository,
+        networkModuleRepository,
     });
 
     return {

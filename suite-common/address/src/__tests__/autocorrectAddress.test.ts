@@ -7,10 +7,10 @@ import { createAddressValidator } from '../AddressValidator';
 import { autocorrectAddress } from '../autocorrectAddress';
 
 describe('autocorrectAddress', () => {
-    const networks = createNetworksCompositionRoot();
-    const repository = createNetworkModuleRepository({ networks });
+    const networkModules = createNetworksCompositionRoot();
+    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({
-        repository,
+        networkModuleRepository,
     });
 
     it('lowercases uppercase bech32 BTC address', () => {
