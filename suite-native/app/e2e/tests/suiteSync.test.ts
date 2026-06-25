@@ -75,7 +75,7 @@ const preloadedState = preparePreloadedReduxState(
     deviceChecksDisabledState,
 );
 
-describe.skip('Suite Sync - Labelling [@androidOnly @T3T1 @smoke]', () => {
+describe.skip('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
     let evoluClient: NativeEvoluClient;
 
     beforeEach(async () => {

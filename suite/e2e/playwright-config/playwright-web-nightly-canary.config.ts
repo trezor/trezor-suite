@@ -11,7 +11,7 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 /*
  * Web Canary config
  * This config runs only the canary FW projects once a week (Fridays).
- * With the canary FW, we only run smoke tests on T3T1 model and tests tagged as @webOnly to reduce the total number of tests executed.
+ * With the canary FW we run the full @webOnly set.
  */
 const target = PlaywrightTarget.Web;
 const definition: PlaywrightProjectDefinition[] = [
@@ -25,9 +25,9 @@ const definition: PlaywrightProjectDefinition[] = [
     },
     {
         model: Model.T3T1,
-        nameSuffix: 'fw_canary_smoke',
+        nameSuffix: 'fw_canary',
         firmware: '2-main',
-        grep: /^(?=.*@T3T1)(?=.*@smoke)(?=.*@webOnly)/,
+        grep: /^(?=.*@T3T1)(?=.*@webOnly)/,
         additionalGrepInvert: /@specificFirmware/,
         currentsTags: tagsCanary,
     },

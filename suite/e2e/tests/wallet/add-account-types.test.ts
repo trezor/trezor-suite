@@ -6,7 +6,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
-test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',

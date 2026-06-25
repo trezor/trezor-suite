@@ -8,7 +8,7 @@ const SIGNATURE =
 const ELECTRUM_SIGNATURE =
     'HxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
 
-test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
     test.beforeEach(async ({ page, walletPage, onboardingPage, settingsPage }) => {
