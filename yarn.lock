@@ -5727,6 +5727,7 @@ __metadata:
   dependencies:
     "@network-module/suite-types": "workspace:*"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/utils": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^4.3.2"
   languageName: unknown
@@ -5738,6 +5739,7 @@ __metadata:
   dependencies:
     "@network-module/suite-types": "workspace:*"
     "@noble/hashes": "npm:^2.0.1"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5748,6 +5750,7 @@ __metadata:
     "@network-module/suite-types": "workspace:*"
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5757,6 +5760,7 @@ __metadata:
   dependencies:
     "@network-module/suite-types": "workspace:*"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -5767,6 +5771,7 @@ __metadata:
     "@network-module/suite-types": "workspace:*"
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/utils": "workspace:*"
     crc: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
@@ -5786,6 +5791,7 @@ __metadata:
     "@network-module/suite-types": "workspace:*"
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

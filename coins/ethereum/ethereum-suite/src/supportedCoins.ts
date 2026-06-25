@@ -1,3 +1,5 @@
+import { isArrayMember } from '@trezor/utils';
+
 export const supportedCoins = [
     'eth',
     'pol',
@@ -16,4 +18,4 @@ export type EthereumSupportedCoin = (typeof supportedCoins)[number];
 export const getSupportedCoins = (): readonly EthereumSupportedCoin[] => supportedCoins;
 
 export const isSupportedCoin = (symbol: string): symbol is EthereumSupportedCoin =>
-    supportedCoins.includes(symbol as EthereumSupportedCoin);
+    isArrayMember(symbol, supportedCoins);
