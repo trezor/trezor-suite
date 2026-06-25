@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@network-module/suite-types": "workspace:*",
-        "@scure/base": "^2.0.0"
+        "@scure/base": "^2.0.0",
+        "@trezor/utils": "workspace:*"
     }
 }
