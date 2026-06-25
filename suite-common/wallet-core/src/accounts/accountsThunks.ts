@@ -251,7 +251,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 isAccountOutdated(account, payload) ||
                 customTokens.length > 0
             ) {
-                // updateAccount restarts the throttle window via the middleware (mirrors old account.ts)
+                // updateAccount restarts the throttle window via the accountsRefreshTime slice
+                // (mirrors old account.ts)
                 dispatch(accountsActions.updateAccount(account, payload));
                 dispatch(reportAccountInfoThunk(account.key));
             } else {

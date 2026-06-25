@@ -90,7 +90,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         connectInitSettings,
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
         createTransports: () => [],
-        accountRefreshThrottle: createKeyedThrottle(10_000),
+        accountRefreshThrottle: createKeyedThrottle(10_000, () => undefined),
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {
@@ -105,6 +105,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
         selectLanguage: notImplementedSelector('selectLanguage', 'en'),
+
         selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
             status: 'loaded',
             account: mockWalletAccount({
