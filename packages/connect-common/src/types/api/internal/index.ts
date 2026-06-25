@@ -1,8 +1,6 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { cancel } from './cancel';
-import type { dispose } from './dispose';
 import type { off } from './off';
 import type { on } from './on';
 import type { removeAllListeners } from './removeAllListeners';
@@ -11,8 +9,6 @@ import type { updateConnectSettings } from './updateConnectSettings';
 
 // Initialization, lifecycle, events, and settings
 export const TrezorConnectInternal = Type.Object({
-    dispose: Type.Unsafe<typeof dispose>(),
-    cancel: Type.Unsafe<typeof cancel>(),
     on: Type.Unsafe<typeof on>(),
     off: Type.Unsafe<typeof off>(),
     removeAllListeners: Type.Unsafe<typeof removeAllListeners>(),

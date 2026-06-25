@@ -17,7 +17,10 @@ import { TrezorConnectStellar } from './stellar';
 import { TrezorConnectTezos } from './tezos';
 import { TrezorConnectTron } from './tron';
 
-export { TrezorConnectInternal };
+export interface TrezorConnectCore {
+    cancel(params?: string | { reason?: string; callId?: string }): void;
+    dispose(): void;
+}
 
 export const TrezorConnectCallable = Type.Composite([
     TrezorConnectManagement,
@@ -41,4 +44,4 @@ export type TrezorConnectCallable = Static<typeof TrezorConnectCallable>;
 // Runtime schema for key access
 export const TrezorConnectSchema = Type.Composite([TrezorConnectInternal, TrezorConnectCallable]);
 
-export type TrezorConnect = Static<typeof TrezorConnectSchema>;
+export type TrezorConnect = TrezorConnectCore & Static<typeof TrezorConnectSchema>;

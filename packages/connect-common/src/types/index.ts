@@ -43,7 +43,7 @@ export type {
 export { CipherKeyValue } from './api/device/cipherKeyValue';
 export { ApplySettings } from './api/management/applySettings';
 export { AuthorizeCoinjoin } from './api/bitcoin/authorizeCoinjoin';
-export * from './api/core/uiResponse';
+export * from './api/internal/uiResponse';
 export type {
     ComposeUtxo,
     ComposeResultFinal,
@@ -63,7 +63,7 @@ export {
     CARDANO_DERIVATIONS,
 } from './api/account/discoverAccounts';
 export { type FirmwareUpdateResponse } from './api/device/firmwareUpdate';
-export { type UpdateConnectSettings } from './api/core/updateConnectSettings';
+export { type UpdateConnectSettings } from './api/internal/updateConnectSettings';
 export { GetOwnershipId } from './api/device/getOwnershipId';
 export { GetOwnershipProof } from './api/device/getOwnershipProof';
 export { PushTransaction } from './api/blockchain/pushTransaction';
