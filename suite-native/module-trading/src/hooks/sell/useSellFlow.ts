@@ -58,8 +58,7 @@ export const useSellFlow = () => {
 
     const {
         txnErrorString,
-        composeRequest,
-        fetchFeesAndCompose,
+        composeTradingTransaction,
         signAndSendTransaction,
         serializedTx,
         resolveTransactionSendConsent,
@@ -150,8 +149,7 @@ export const useSellFlow = () => {
 
     return {
         txnErrorString,
-        composeRequest,
-        fetchFeesAndCompose,
+        composeTradingTransaction,
         signAndSendTransaction,
         serializedTx,
         resolveTransactionSendConsent,

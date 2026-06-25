@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -28,13 +28,19 @@ import { clearTradingStateThunk } from '../thunks';
 
 const TradingSellPreviewScreenContent = () => {
     const dispatch = useDispatch();
-    const { txnErrorString, doBankAccountVerificationCheck, fetchFeesAndCompose } = useSellFlow();
+    const { txnErrorString, doBankAccountVerificationCheck, composeTradingTransaction } =
+        useSellFlow();
     const { trade } = useTradingDetailData<TradingSellType>('sell');
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
-    const [shouldFetchFees, setShouldFetchFees] = useState(false);
 
     const currentQuote = trade?.data ? trade.data : selectedQuote;
     const isFinalized = isFinalStatus('sell', currentQuote?.status);
+
+    useWatchTrade({
+        accountKey: trade?.sendAccountKey,
+        orderId: currentQuote?.orderId,
+        isInProgress: true,
+    });
 
     const reportToAnalytics = useSellAnalyticReportCallback();
     const reportVisit = useEffectEvent(() => {
@@ -44,31 +50,19 @@ const TradingSellPreviewScreenContent = () => {
         reportVisit();
     }, []);
 
-    useWatchTrade({
-        accountKey: trade?.sendAccountKey,
-        orderId: currentQuote?.orderId,
-        isInProgress: true,
-    });
-
-    useEffect(() => {
+    const runBankAccountVerificationCheck = useEffectEvent(() => {
         doBankAccountVerificationCheck();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    });
+    useEffect(() => {
+        runBankAccountVerificationCheck();
     }, []);
 
-    // Fetch fees and compose when status is SEND_CRYPTO
+    // Compose transaction when status is SEND_CRYPTO
     useEffect(() => {
         if (currentQuote?.status === 'SEND_CRYPTO') {
-            setShouldFetchFees(true);
+            composeTradingTransaction();
         }
-    }, [currentQuote?.status, currentQuote?.orderId]);
-
-    // unfortunately fetchFeesAndCompose is too unstable to be used directly in above useEffect
-    useEffect(() => {
-        if (shouldFetchFees) {
-            setShouldFetchFees(false);
-            fetchFeesAndCompose();
-        }
-    }, [shouldFetchFees, fetchFeesAndCompose]);
+    }, [currentQuote?.status, composeTradingTransaction]);
 
     // clear trading state on unmount
     useEffect(

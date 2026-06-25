@@ -57,7 +57,7 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
-const mockFetchFeesAndCompose = jest.fn();
+const mockComposeTradingTransaction = jest.fn();
 const mockSignAndSendTransaction = jest.fn();
 const mockResolveConsent = jest.fn();
 const mockAbortConfirmTrade = jest.fn();
@@ -67,7 +67,7 @@ jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => ({
         abortConfirmTrade: mockAbortConfirmTrade,
         confirmTrade: mockConfirmTrade,
-        fetchFeesAndCompose: mockFetchFeesAndCompose,
+        composeTradingTransaction: mockComposeTradingTransaction,
         signAndSendTransaction: mockSignAndSendTransaction,
         signDataAndConfirm: jest.fn(),
         isConsentRequested: false,
