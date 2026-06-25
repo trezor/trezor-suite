@@ -4,6 +4,7 @@ import { useTranslation } from '@suite/intl';
 import { closeModalApp, goto } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
@@ -26,6 +27,7 @@ export const AppShortcuts = () => {
     const autodetectTheme = useSelector(selectAutodetectTheme);
 
     const isBioAuthEnabled = useSelector(state => state.bioAuth.bioAuthEnabled);
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     const { translationString } = useTranslation();
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -153,6 +155,12 @@ export const AppShortcuts = () => {
             if (desktopApi.available) {
                 desktopApi.themeChange(newTheme);
             }
+        }
+
+        // press ALT + H to toggle balances visibility (discreet mode)
+        if (altKey && !shiftKey && !cmdOrCtrl && e.code === KEYBOARD_CODE.KEY_H) {
+            e.preventDefault();
+            setIsDiscreetMode(!isDiscreetMode);
         }
 
         // press CMD/CTRL + K to focus account search
