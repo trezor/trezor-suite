@@ -57,11 +57,11 @@ type SolanaStakingAccountDecoded = {
 const activeFirst: SolanaStakingAccount = {
     account: {
         data: [
-            'AgAAAIDVIgAAAAAAUmFf8A6VI0pKOVEke559+E+OI7KNM3QcnXkN+plt4fxSYV/wDpUjSko5USR7nn34T44jso0zdBydeQ36mW3h/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHzgaQ+C+2FHX+u9FgXvIMNGqRZ3BtgpzkaZQ1xMJ4Cuu0/6CwAAAABgAwAAAAAAAP//////////AAAAAAAA0D8sQwlYAAAAAAAAAAA=',
+            'AgAAAIDVIgAAAAAAUmFf8A6VI0pKOVEke559+E+OI7KNM3QcnXkN+plt4fxSYV/wDpUjSko5USR7nn34T44jso0zdBydeQ36mW3h/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHzgaQ+C+2FHX+u9FgXvIMNGqRZ3BtgpzkaZQ1xMJ4CuuxmVRwAAAABgAwAAAAAAAP//////////AAAAAAAA0D8sQwlYAAAAAAAAAAA=',
             'base64',
         ],
         executable: false,
-        lamports: 203236667,
+        lamports: 1203236667,
         owner: 'Stake11111111111111111111111111111111111111',
         rentEpoch: '18446744073709551615',
         space: 200,
@@ -88,7 +88,7 @@ const activeFirstDecoded: SolanaStakingAccountDecoded = {
             {
                 delegation: {
                     voterPubkey: '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF',
-                    stake: '200953787',
+                    stake: '1200953787',
                     activationEpoch: '864',
                     deactivationEpoch: '18446744073709551615',
                     warmupCooldownRate: 0.25,
@@ -105,11 +105,11 @@ const activeFirstDecoded: SolanaStakingAccountDecoded = {
 const activeSecond: SolanaStakingAccount = {
     account: {
         data: [
-            'AgAAAIDVIgAAAAAAAd2KMZOenUYpy9lHHAjmZoDITGrJjJQMNyxulGUNXYYB3Yoxk56dRinL2UccCOZmgMhMasmMlAw3LG6UZQ1dhgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHzgaQ+C+2FHX+u9FgXvIMNGqRZ3BtgpzkaZQ1xMJ4Cu/pXMAQAAAABrAwAAAAAAAP//////////AAAAAAAA0D8sQwlYAAAAAAAAAAA=',
+            'AgAAAIDVIgAAAAAAAd2KMZOenUYpy9lHHAjmZoDITGrJjJQMNyxulGUNXYYB3Yoxk56dRinL2UccCOZmgMhMasmMlAw3LG6UZQ1dhgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHzgaQ+C+2FHX+u9FgXvIMNGqRZ3BtgpzkaZQ1xMJ4Cu/l9nPQAAAABrAwAAAAAAAP//////////AAAAAAAA0D8sQwlYAAAAAAAAAAA=',
             'base64',
         ],
         executable: false,
-        lamports: 32467838,
+        lamports: 1032467838,
         owner: 'Stake11111111111111111111111111111111111111',
         rentEpoch: '18446744073709551615',
         space: 200,
@@ -136,7 +136,7 @@ const activeSecondDecoded: SolanaStakingAccountDecoded = {
             {
                 delegation: {
                     voterPubkey: '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF',
-                    stake: '30184958',
+                    stake: '1030184958',
                     activationEpoch: '875',
                     deactivationEpoch: '18446744073709551615',
                     warmupCooldownRate: 0.25,
