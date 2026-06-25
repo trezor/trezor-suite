@@ -50,10 +50,13 @@ export function decode(hrp: string, addr: string, m = false): Bech32Decoded | nu
     } catch {
         return null;
     }
-    const words = dec?.words;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstWord: number = words[0];
-    if (dec?.prefix !== hrp || words.length < 1 || firstWord > 16) {
+    const { prefix, words } = dec;
+    if (prefix !== hrp || words.length < 1) {
+        return null;
+    }
+
+    const [firstWord] = words;
+    if (firstWord === undefined || firstWord > 16) {
         return null;
     }
     const res = convertbits(words.slice(1), 5, 8, false);

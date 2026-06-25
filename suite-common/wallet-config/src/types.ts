@@ -1,36 +1,8 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
+import type { CoinSymbol } from '@suite-common/networks';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
-export type NetworkSymbol =
-    | 'btc'
-    | 'ltc'
-    | 'eth'
-    | 'etc'
-    | 'xrp'
-    | 'bch'
-    | 'doge'
-    | 'zec'
-    | 'ada'
-    | 'sol'
-    | 'pol'
-    | 'bsc'
-    | 'arb'
-    | 'base'
-    | 'op'
-    | 'rhc'
-    | 'avax'
-    | 'xlm'
-    | 'test'
-    | 'regtest'
-    | 'trx'
-    | 'ttrx'
-    | 'tsep'
-    | 'thod'
-    | 'txrp'
-    | 'txlm'
-    | 'dsol';
-
-export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
+export type NetworkSymbol = CoinSymbol;
 
 /**
  * Used for some edge cases where extension of NetworkSymbol is necessary.

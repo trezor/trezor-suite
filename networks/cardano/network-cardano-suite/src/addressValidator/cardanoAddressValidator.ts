@@ -65,9 +65,12 @@ function isValidBech32Address(address: string, network: NetworkEnvironment): boo
         return false;
     }
 
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstWord: number = dec?.words[0];
-    if (dec?.prefix !== hrp || dec?.words.length < 1 || (firstWord > 16 && network !== 'stake')) {
+    if (dec.prefix !== hrp || dec.words.length < 1) {
+        return false;
+    }
+
+    const [firstWord] = dec.words;
+    if (firstWord === undefined || (firstWord > 16 && network !== 'stake')) {
         return false;
     }
 
