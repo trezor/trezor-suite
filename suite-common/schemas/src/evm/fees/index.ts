@@ -21,6 +21,17 @@ export type EvmFeeHex = z.infer<typeof EvmFeeHexSchema>;
 type EvmFeeHexType<Type extends EvmFeeHex['type']> = Extract<EvmFeeHex, { type: Type }>;
 
 /**
+ * EVM gas params expressed in Gwei (decimal strings), as stored in RBF transaction params.
+ */
+export const EvmGasParamsGweiSchema = z.object({
+    gasPrice: z.string().optional(),
+    maxFeePerGas: z.string().optional(),
+    maxPriorityFeePerGas: z.string().optional(),
+});
+
+export type EvmGasParamsGwei = z.infer<typeof EvmGasParamsGweiSchema>;
+
+/**
  * Sort out fee fields based on the tx type (legacy vs EIP1559)
  */
 export function parseEvmFeeHex(raw: unknown) {

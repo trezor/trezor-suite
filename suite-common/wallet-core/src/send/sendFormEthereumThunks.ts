@@ -1,5 +1,6 @@
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -68,7 +69,7 @@ import { selectTransactions } from '../transactions/transactionsSelectors';
  */
 export const getEthereumRbfFeeInfo = (
     feeInfo: FeeInfo,
-    originalGasParams: { gasPrice?: string; maxFeePerGas?: string; maxPriorityFeePerGas?: string },
+    originalGasParams: EvmGasParamsGwei,
 ): FeeInfo => {
     // feeInfo.levels are already in Gwei — do NOT call getConvertedOrDefaultFeeInfo here,
     // that would double-convert and produce near-zero values.
@@ -76,12 +77,10 @@ export const getEthereumRbfFeeInfo = (
     const firstLevel: FeeLevel | undefined = levels[0];
     if (!firstLevel) return feeInfo;
 
+    const { maxPriorityFeePerGas } = originalGasParams;
     if (isEip1559(originalGasParams) && isEip1559(firstLevel)) {
         const currentMaxFee = new BigNumber(originalGasParams.maxFeePerGas);
-        // Cast back to access maxPriorityFeePerGas — isEip1559 narrows to { maxFeePerGas: string } only
-        const currentMaxPriorityFee = new BigNumber(
-            (originalGasParams as { maxPriorityFeePerGas?: string }).maxPriorityFeePerGas || '0',
-        );
+        const currentMaxPriorityFee = new BigNumber(maxPriorityFeePerGas ?? '0');
         const highLevel = levels.find(l => l.label === 'high') ?? firstLevel;
 
         const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
