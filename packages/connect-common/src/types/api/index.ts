@@ -17,24 +17,7 @@ import { TrezorConnectStellar } from './stellar';
 import { TrezorConnectTezos } from './tezos';
 import { TrezorConnectTron } from './tron';
 
-export {
-    TrezorConnectAccount,
-    TrezorConnectBitcoin,
-    TrezorConnectBlockchain,
-    TrezorConnectCardano,
-    TrezorConnectCore,
-    TrezorConnectDevice,
-    TrezorConnectEthereum,
-    TrezorConnectEvolu,
-    TrezorConnectManagement,
-    TrezorConnectMonero,
-    TrezorConnectNostr,
-    TrezorConnectRipple,
-    TrezorConnectSolana,
-    TrezorConnectStellar,
-    TrezorConnectTezos,
-    TrezorConnectTron,
-};
+export { TrezorConnectCore };
 
 // Experimental methods — each requires `__experimental: true` in its params.
 export const TrezorConnectExperimental = Type.Composite([TrezorConnectNostr]);
