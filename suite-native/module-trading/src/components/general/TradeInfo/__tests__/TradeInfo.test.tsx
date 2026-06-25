@@ -53,6 +53,7 @@ describe('TradeInfo', () => {
             expect.objectContaining({
                 accountKey: btc1AccountKey,
                 formDraftKey: expect.any(String),
+                onFeeConfirmed: expect.any(Function),
             }),
         );
     });
