@@ -17,7 +17,7 @@ export const OnboardingOption = ({
     onClick,
     'data-testid': dataTestId,
 }: OnboardingOptionProps) => (
-    <Card onClick={onClick} data-testid={dataTestId} paddingType="none">
+    <Card onClick={onClick} data-testid={dataTestId} paddingType="none" type="contrast">
         <Row
             gap={20}
             justifyContent={iconName ? 'flex-start' : 'center'}
