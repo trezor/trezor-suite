@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import type { CoinSymbol } from '@suite-common/networks';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
@@ -43,7 +44,7 @@ describe('handleExchangeRequestThunk', () => {
                     addressValidator: {
                         getAddressType: jest.fn(),
                         getSupportedCoins: jest.fn(() => ['eth']),
-                        isSupportedCoin: (symbol: string): symbol is string => symbol === 'eth',
+                        isSupportedCoin: (symbol: string): symbol is CoinSymbol => symbol === 'eth',
                         isAddressValid: jest.fn(
                             (address, symbol) => address === validEthAddress && symbol === 'eth',
                         ),

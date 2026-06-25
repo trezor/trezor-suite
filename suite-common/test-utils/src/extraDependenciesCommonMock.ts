@@ -1,7 +1,7 @@
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
-import type { NetworksServiceDep, StaticNetworkModules } from '@suite-common/networks';
+import type { CoinSymbol, NetworksServiceDep, StaticNetworkModules } from '@suite-common/networks';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -60,7 +60,7 @@ const addressValidatorMock: AddressValidator = {
     isAddressValid: () => false,
     getAddressType: () => undefined,
     getSupportedCoins: () => [],
-    isSupportedCoin: (_symbol: string): _symbol is string => false,
+    isSupportedCoin: (_symbol: string): _symbol is CoinSymbol => false,
 };
 
 const connectInitSettings: ConnectInitSettings = {
