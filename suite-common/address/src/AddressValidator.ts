@@ -23,7 +23,7 @@ export const selectAddressValidatorDep = (services: any): AddressValidatorDep =>
 export const createAddressValidator = ({ networks }: AddressValidatorDeps): AddressValidator => {
     const validatorByNetworkSymbol = new Map<string, NetworkAddressValidator>();
 
-    networks.networkModules.forEach(networkModule => {
+    Object.values(networks.networkModules).forEach(networkModule => {
         networkModule.getSupportedCoins().forEach(networkSymbol => {
             if (!networkModule.isSupportedCoin(networkSymbol)) {
                 return;
