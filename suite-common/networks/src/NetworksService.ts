@@ -4,6 +4,7 @@ import type { EthereumNetworkModule } from '@network-module/ethereum-suite';
 import type { RippleNetworkModule } from '@network-module/ripple-suite';
 import type { SolanaNetworkModule } from '@network-module/solana-suite';
 import type { StellarNetworkModule } from '@network-module/stellar-suite';
+import type { NetworkModule } from '@network-module/suite-types';
 import type { TronNetworkModule } from '@network-module/tron-suite';
 
 // When adding a new Network Module, you have to
@@ -18,6 +19,13 @@ export type StaticNetworkModules = {
     stellar: StellarNetworkModule;
     tron: TronNetworkModule;
 };
+
+type StaticNetworkModuleCoinSymbol<TNetworkModule> =
+    TNetworkModule extends NetworkModule<infer TSymbol> ? TSymbol : never;
+
+export type CoinSymbol = StaticNetworkModuleCoinSymbol<
+    StaticNetworkModules[keyof StaticNetworkModules]
+>;
 
 export type NetworksService = {
     networkModules: StaticNetworkModules;

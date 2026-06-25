@@ -3,13 +3,14 @@ import type {
     AddressValidator as NetworkAddressValidator,
 } from '@network-module/suite-types';
 
-import type { NetworksServiceDep } from '@suite-common/networks';
+import type { CoinSymbol, NetworksServiceDep } from '@suite-common/networks';
+import { typedObjectValues } from '@trezor/utils';
 
 export type AddressValidatorDeps = NetworksServiceDep;
 
 export type AddressValidator = NetworkAddressValidator & {
-    getSupportedCoins: () => readonly string[];
-    isSupportedCoin: (symbol: string) => symbol is string;
+    getSupportedCoins: () => readonly CoinSymbol[];
+    isSupportedCoin: (symbol: string) => symbol is CoinSymbol;
 };
 
 export type AddressValidatorDep = {
@@ -21,9 +22,9 @@ export const selectAddressValidatorDep = (services: any): AddressValidatorDep =>
 });
 
 export const createAddressValidator = ({ networks }: AddressValidatorDeps): AddressValidator => {
-    const validatorByNetworkSymbol = new Map<string, NetworkAddressValidator>();
+    const validatorByNetworkSymbol = new Map<CoinSymbol, NetworkAddressValidator>();
 
-    Object.values(networks.networkModules).forEach(networkModule => {
+    typedObjectValues(networks.networkModules).forEach(networkModule => {
         networkModule.getSupportedCoins().forEach(networkSymbol => {
             if (!networkModule.isSupportedCoin(networkSymbol)) {
                 return;
@@ -34,17 +35,29 @@ export const createAddressValidator = ({ networks }: AddressValidatorDeps): Addr
 
     const supportedCoins = Array.from(validatorByNetworkSymbol.keys());
 
-    const getAddressType = (address: string, networkSymbol: string): AddressType | undefined =>
-        validatorByNetworkSymbol.get(networkSymbol)?.getAddressType(address, networkSymbol);
+    const isSupportedCoin = (symbol: string): symbol is CoinSymbol =>
+        validatorByNetworkSymbol.has(symbol as CoinSymbol);
 
-    const isAddressValid = (address: string, networkSymbol: string): boolean =>
-        validatorByNetworkSymbol.get(networkSymbol)?.isAddressValid(address, networkSymbol) ??
-        false;
+    const getAddressType = (address: string, networkSymbol: string): AddressType | undefined => {
+        if (!isSupportedCoin(networkSymbol)) {
+            return undefined;
+        }
 
-    const getSupportedCoins = (): readonly string[] => supportedCoins;
+        return validatorByNetworkSymbol.get(networkSymbol)?.getAddressType(address, networkSymbol);
+    };
 
-    const isSupportedCoin = (symbol: string): symbol is string =>
-        validatorByNetworkSymbol.has(symbol);
+    const isAddressValid = (address: string, networkSymbol: string): boolean => {
+        if (!isSupportedCoin(networkSymbol)) {
+            return false;
+        }
+
+        return (
+            validatorByNetworkSymbol.get(networkSymbol)?.isAddressValid(address, networkSymbol) ??
+            false
+        );
+    };
+
+    const getSupportedCoins = (): readonly CoinSymbol[] => supportedCoins;
 
     return {
         isAddressValid,
