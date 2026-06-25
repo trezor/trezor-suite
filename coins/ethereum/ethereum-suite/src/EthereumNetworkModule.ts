@@ -1,9 +1,9 @@
 import type { NetworkModule } from '@network-module/suite-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
-import { getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import { type EthereumSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
 
-export const createEthereumNetworkModule = (): NetworkModule => ({
+export const createEthereumNetworkModule = (): NetworkModule<EthereumSupportedCoin> => ({
     addressValidator: ethereumValidator,
     getSupportedCoins,
     isSupportedCoin,

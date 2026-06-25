@@ -1,9 +1,9 @@
 import type { NetworkModule } from '@network-module/suite-types';
 
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
-import { getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import { type RippleSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
 
-export const createRippleNetworkModule = (): NetworkModule => ({
+export const createRippleNetworkModule = (): NetworkModule<RippleSupportedCoin> => ({
     addressValidator: rippleValidator,
     getSupportedCoins,
     isSupportedCoin,

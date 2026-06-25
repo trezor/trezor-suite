@@ -1,9 +1,9 @@
 import type { NetworkModule } from '@network-module/suite-types';
 
 import { stellarValidator } from './addressValidator/stellarAddressValidator';
-import { getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import { type StellarSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
 
-export const createStellarNetworkModule = (): NetworkModule => ({
+export const createStellarNetworkModule = (): NetworkModule<StellarSupportedCoin> => ({
     addressValidator: stellarValidator,
     getSupportedCoins,
     isSupportedCoin,
