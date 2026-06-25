@@ -61,7 +61,7 @@ export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
 
 export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
-        (state: TradingRootState, supportedCoins: string[]) =>
+        (state: TradingRootState, supportedCoins: readonly string[]) =>
             selectTradingBuySupportedCryptoIds(state, supportedCoins),
         ({ wallet }) => wallet.trading.info.coins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),

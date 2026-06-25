@@ -7,7 +7,10 @@ import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
     type ExtraDependenciesStatic,
@@ -84,7 +87,8 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
     const networks = createNetworksCompositionRoot();
-    const addressValidator = createAddressValidator({ networks });
+    const networkModuleRepository = createNetworkModuleRepository({ networks });
+    const addressValidator = createAddressValidator({ networkModuleRepository });
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);
@@ -92,6 +96,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
     const logger = createLogger('native-transport');
 
     return {
+        networkModuleRepository,
         addressValidator,
         suiteSync,
         bip329,

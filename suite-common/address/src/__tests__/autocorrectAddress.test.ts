@@ -1,11 +1,16 @@
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 
 import { createAddressValidator } from '../AddressValidator';
 import { autocorrectAddress } from '../autocorrectAddress';
 
 describe('autocorrectAddress', () => {
+    const networks = createNetworksCompositionRoot();
+    const repository = createNetworkModuleRepository({ networks });
     const addressValidator = createAddressValidator({
-        networks: createNetworksCompositionRoot(),
+        repository,
     });
 
     it('lowercases uppercase bech32 BTC address', () => {

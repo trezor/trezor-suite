@@ -245,7 +245,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             (
                 state: CombinedSelectorsRootState,
                 tradingType: TradingType,
-                supportedCoins: string[],
+                supportedCoins: readonly string[],
             ) => selectTradingSupportedSymbols(state, tradingType, supportedCoins),
             (state: CombinedSelectorsRootState) =>
                 selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),

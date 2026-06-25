@@ -8,8 +8,8 @@ import {
     type PlatformsInfo,
 } from 'invity-api';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     type Network,
     type NetworkConfigWithoutTestnets,
@@ -237,10 +237,10 @@ export function createAssetTokenOption<
  */
 export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const supportedAddressValidatorSymbols = useMemo(
-        () => new Set(addressValidator.getSupportedCoins()),
-        [addressValidator],
+        () => new Set(networkModuleRepository.getSupportedCoins()),
+        [networkModuleRepository],
     );
 
     const buildAssetOptions = useCallback(

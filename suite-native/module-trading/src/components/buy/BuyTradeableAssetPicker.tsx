@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { HStack } from '@suite-native/atoms';
 import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type TradingRootState, selectBuyTradeableAssets } from '@suite-native/trading-state';
@@ -25,9 +25,9 @@ export const BuyTradeableAssetPicker = () => {
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'asset');
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const supportedCoins = addressValidator.getSupportedCoins();
+    const supportedCoins = networkModuleRepository.getSupportedCoins();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectBuyTradeableAssets(state, supportedCoins),
     );

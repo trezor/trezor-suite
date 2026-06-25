@@ -1,7 +1,7 @@
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
-import type { CoinSymbol, NetworksServiceDep, StaticNetworkModules } from '@suite-common/networks';
+import type { CoinSymbol, NetworkModuleRepository } from '@suite-common/networks';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -61,6 +61,12 @@ const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
 const addressValidatorMock: AddressValidator = {
     isAddressValid: () => false,
     getAddressType: () => undefined,
+};
+
+const networkModuleRepositoryMock: NetworkModuleRepository = {
+    get: () => {
+        throw new Error('Network module repository mock is not implemented.');
+    },
     getSupportedCoins: () => [],
     isSupportedCoin: (_symbol: string): _symbol is CoinSymbol => false,
 };
@@ -74,11 +80,7 @@ const connectInitSettings: ConnectInitSettings = {
     },
 };
 
-type ExtraDependenciesCommonMock = ExtraDependencies & {
-    services: ExtraDependencies['services'] & NetworksServiceDep;
-};
-
-export const extraDependenciesCommonMock: ExtraDependenciesCommonMock = {
+export const extraDependenciesCommonMock: ExtraDependencies = {
     thunks: {
         fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
         initMetadata: notImplementedThunk('initMetadata'),
@@ -87,6 +89,7 @@ export const extraDependenciesCommonMock: ExtraDependenciesCommonMock = {
     },
     services: {
         addressValidator: addressValidatorMock,
+        networkModuleRepository: networkModuleRepositoryMock,
         suiteSync: suiteSyncMock,
         bip329: bip329Mock,
         ensureDelegatedIdentityKey: () =>
@@ -104,7 +107,6 @@ export const extraDependenciesCommonMock: ExtraDependenciesCommonMock = {
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
         createTransports: () => [],
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
-        networks: { networkModules: {} as StaticNetworkModules },
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: notImplementedSelector(

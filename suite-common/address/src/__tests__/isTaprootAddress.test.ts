@@ -1,11 +1,16 @@
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 
 import { createAddressValidator } from '../AddressValidator';
 import { isTaprootAddress } from '../isTaprootAddress';
 
 describe('isTaprootAddress', () => {
+    const networks = createNetworksCompositionRoot();
+    const repository = createNetworkModuleRepository({ networks });
     const addressValidator = createAddressValidator({
-        networks: createNetworksCompositionRoot(),
+        repository,
     });
 
     it('returns false for empty string', () => {

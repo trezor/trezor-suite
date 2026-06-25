@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
     type TradingRootState,
@@ -12,10 +12,10 @@ import { useExchangeFormContext } from './useExchangeFormContext';
 import { useTradeableAssetsFilteredData } from '../general/useTradeableAssetsFilteredData';
 
 export const useExchangeBuyTradeableAssetsFilteredData = () => {
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const { watch } = useExchangeFormContext();
     const sendAsset = watch('sendAsset');
-    const supportedCoins = addressValidator.getSupportedCoins();
+    const supportedCoins = networkModuleRepository.getSupportedCoins();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
         selectExchangeBuyTradeableAssets(state, supportedCoins, sendAsset?.cryptoId),
     );
