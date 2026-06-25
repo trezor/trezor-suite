@@ -5,9 +5,14 @@ import {
     captureConsoleIntegration,
     elementTimingIntegration,
 } from '@sentry/browser';
-import type { ErrorEvent, Options } from '@sentry/core';
+import type { Options } from '@sentry/core';
 
-import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG, redactSentryEvent } from '@suite-common/sentry';
+import {
+    COINJOIN_NETWORK_TAG,
+    COINJOIN_REPORT_TAG,
+    type ChainableBeforeSend,
+    redactSentryEvent,
+} from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { redactUserPathFromString } from '@trezor/utils';
@@ -25,7 +30,8 @@ import { ignoreErrors } from './ignoreErrors';
  *
  * This is relevant only on Desktop.
  */
-const redactUserPath = (event: ErrorEvent): ErrorEvent => {
+const redactUserPath: ChainableBeforeSend = event => {
+    if (event === null) return null;
     try {
         const eventAsString = JSON.stringify(event);
         const redactedString = redactUserPathFromString(eventAsString);
@@ -43,7 +49,8 @@ const redactUserPath = (event: ErrorEvent): ErrorEvent => {
 };
 
 // Leaves only what is really necessary on a coinjoin error event
-const redactCoinjoinData = (event: ErrorEvent): ErrorEvent => {
+const redactCoinjoinData: ChainableBeforeSend = event => {
+    if (event === null) return null;
     if (event.tags?.[COINJOIN_REPORT_TAG]) {
         return {
             type: event.type,
@@ -60,7 +67,7 @@ const redactCoinjoinData = (event: ErrorEvent): ErrorEvent => {
     return event;
 };
 
-const beforeSend = (event: ErrorEvent) =>
+const beforeSend: ChainableBeforeSend = event =>
     redactSentryEvent(redactUserPath(redactCoinjoinData(event)));
 
 const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {

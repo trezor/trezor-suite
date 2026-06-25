@@ -2,7 +2,7 @@ import type { Options } from '@sentry/core';
 
 import { ignoreErrorsCommon } from '@suite-common/sentry';
 
-export const ignoreErrors = [
+export const ignoreErrors: RegExp[] = [
     ...ignoreErrorsCommon,
     /.*ResizeObserver loop limit exceeded.*/,
     /.*Timeout waiting for TOR control port.*/,

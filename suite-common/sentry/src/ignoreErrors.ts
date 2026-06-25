@@ -7,7 +7,7 @@ import type { Options } from '@sentry/core';
  * This is a good place to add commonly occurring lifecycle errors that may happen during normal use (not preventable).
  * Do not add here errors that are now definitively fixed (those belong in Sentry ingest inbound filters).
  */
-export const ignoreErrorsCommon = [
+export const ignoreErrorsCommon: RegExp[] = [
     /.*Sequence of config.*is older than the current one.*/,
 
     // Various kinds of network connectivity problems
