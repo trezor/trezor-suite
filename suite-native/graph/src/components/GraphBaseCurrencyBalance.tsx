@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Atom, useAtomValue } from 'jotai';
@@ -51,10 +50,7 @@ const SelectedPointFiatBalance = ({
     selectedPointFiatValueAtom,
 }: Pick<GraphFiatBalanceProps, 'selectedPointFiatValueAtom'>) => {
     const selectedPointFiatValue = useAtomValue(selectedPointFiatValueAtom);
-    const selectedPointFiatBalance = useMemo(
-        () => asBaseCurrencyAmount(new BigNumber(selectedPointFiatValue)),
-        [selectedPointFiatValue],
-    );
+    const selectedPointFiatBalance = asBaseCurrencyAmount(new BigNumber(selectedPointFiatValue));
 
     return <FormattedBalance value={selectedPointFiatBalance} />;
 };
