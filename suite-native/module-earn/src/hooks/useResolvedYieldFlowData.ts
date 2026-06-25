@@ -40,6 +40,7 @@ type UnresolvedYieldFlowData = {
     tokenSymbol: TokenSymbol | null;
     vault: YieldDto | null;
     vaultTokenName: string | null;
+    vaultTokenSymbol: string | null;
 };
 
 type YieldFlowDataResolved = {
@@ -55,6 +56,7 @@ type YieldFlowDataResolved = {
     tokenSymbol: TokenSymbol;
     vault: YieldDto;
     vaultTokenName: string;
+    vaultTokenSymbol: string;
 };
 
 export type ResolvedYieldFlowData = UnresolvedYieldFlowData | YieldFlowDataResolved;
@@ -86,6 +88,7 @@ const defaultFlowData: ResolvedYieldFlowData = {
     tokenSymbol: null,
     vault: null,
     vaultTokenName: null,
+    vaultTokenSymbol: null,
 };
 
 const getMatchingToken = ({ account, tokenContract }: GetMatchingTokenParams) =>
@@ -132,12 +135,14 @@ export const resolveYieldFlowData = ({
     const apy = getApyPercent(vault.rewardRate.total);
     const providerName = capitalizeFirstLetter(vault.providerId);
     const vaultTokenName = vault.outputToken?.name;
+    const vaultTokenSymbol = vault.outputToken.symbol;
     const resolvedVaultData = {
         apy,
         providerName,
         tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
         vault,
         vaultTokenName,
+        vaultTokenSymbol,
     };
 
     if (!network) {

@@ -4,13 +4,13 @@ import { type HowEarnWorksScreenPreset } from './types';
 
 type CreateHowYieldWorksPresetProps = {
     tokenSymbol: string;
-    vaultTokenName: string;
+    vaultTokenSymbol: string;
     apy: number | null;
 };
 
 export const createHowYieldWorksPreset = ({
     tokenSymbol,
-    vaultTokenName,
+    vaultTokenSymbol,
     apy,
 }: CreateHowYieldWorksPresetProps): HowEarnWorksScreenPreset => ({
     benefitItems: [
@@ -37,15 +37,10 @@ export const createHowYieldWorksPreset = ({
             title: (
                 <Translation
                     id="earn.howYieldWorksScreen.benefits.third.title"
-                    values={{ tokenSymbol, vaultTokenName }}
+                    values={{ tokenSymbol, vaultTokenSymbol }}
                 />
             ),
-            description: (
-                <Translation
-                    id="earn.howYieldWorksScreen.benefits.third.description"
-                    values={{ vaultTokenName }}
-                />
-            ),
+            description: <Translation id="earn.howYieldWorksScreen.benefits.third.description" />,
         },
     ],
     timelineSections: [
@@ -75,7 +70,10 @@ export const createHowYieldWorksPreset = ({
                 {
                     id: 'deposit.third',
                     title: (
-                        <Translation id="earn.howYieldWorksScreen.depositTimeline.third.title" />
+                        <Translation
+                            id="earn.howYieldWorksScreen.depositTimeline.third.title"
+                            values={{ vaultTokenSymbol }}
+                        />
                     ),
                     description:
                         apy !== null ? (

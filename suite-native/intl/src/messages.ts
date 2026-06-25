@@ -2757,7 +2757,7 @@ export const messages = {
                         'Most rewards compound automatically—some must be claimed manually.',
                 },
                 third: {
-                    title: 'Deposit {tokenSymbol} to receive {vaultTokenName}',
+                    title: 'Deposit {tokenSymbol} to receive {vaultTokenSymbol}',
                     description: 'This is your vault position.',
                 },
             },
@@ -2774,7 +2774,7 @@ export const messages = {
                     description: 'Network fee',
                 },
                 third: {
-                    title: 'Earn rewards as your assets grow in value',
+                    title: 'Receive {vaultTokenSymbol}',
                     description: '~{apy}% APY',
                 },
             },

@@ -70,7 +70,7 @@ export const YieldDepositApprovalScreen = () => {
         token,
         tokenSymbol,
         vault,
-        vaultTokenName,
+        vaultTokenSymbol,
         resolutionStatus,
     } = resolvedFlowData;
     const session = useYieldSession({
@@ -333,7 +333,7 @@ export const YieldDepositApprovalScreen = () => {
                 apy={apy}
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
-                vaultTokenName={vaultTokenName}
+                vaultTokenSymbol={vaultTokenSymbol}
             />
             <YieldDepositApprovalLimitBottomSheet
                 ref={approvalLimitBottomSheetRef}

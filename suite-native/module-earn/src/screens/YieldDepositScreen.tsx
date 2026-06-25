@@ -72,7 +72,7 @@ export const YieldDepositScreen = () => {
         token,
         tokenSymbol,
         vault,
-        vaultTokenName,
+        vaultTokenSymbol,
         resolutionStatus,
     } = resolvedFlowData;
 
@@ -351,7 +351,7 @@ export const YieldDepositScreen = () => {
                 apy={apy}
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
-                vaultTokenName={vaultTokenName}
+                vaultTokenSymbol={vaultTokenSymbol}
             />
             {simulationPreparedAction && (
                 <YieldTxSimulationBottomSheet
