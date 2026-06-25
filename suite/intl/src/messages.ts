@@ -7743,6 +7743,10 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME',
         defaultMessage: 'Toggle dark/light theme',
     },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_BALANCES: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_BALANCES',
+        defaultMessage: 'Toggle balances',
+    },
     TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS',
         defaultMessage: 'Search accounts',

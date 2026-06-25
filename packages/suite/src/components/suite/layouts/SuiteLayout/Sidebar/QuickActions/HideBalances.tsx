@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { Row, ShortcutBadge } from '@trezor/components';
 import { QuickActionButton } from '@trezor/product-components';
 
 export const HideBalances = () => {
@@ -21,7 +22,14 @@ export const HideBalances = () => {
 
     return (
         <QuickActionButton
-            tooltip={{ content: translationString(translationLabel) }}
+            tooltip={{
+                content: (
+                    <Row gap={8}>
+                        {translationString(translationLabel)}
+                        <ShortcutBadge shortcut={['ALT', 'KEY_H']} />
+                    </Row>
+                ),
+            }}
             onClick={handleDiscreetModeClick}
             data-testid="@quickActions/hideBalances"
             iconName={isDiscreetMode ? 'eyeSlash' : 'eye'}

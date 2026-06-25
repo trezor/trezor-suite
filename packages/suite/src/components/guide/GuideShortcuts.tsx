@@ -58,6 +58,10 @@ const generalSection: ShortcutSection = {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME',
             keys: ['ALT', 'KEY_T'],
         },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_BALANCES',
+            keys: ['ALT', 'KEY_H'],
+        },
     ],
 };
 

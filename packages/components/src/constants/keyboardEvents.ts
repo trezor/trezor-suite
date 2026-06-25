@@ -7,6 +7,7 @@ export enum KEYBOARD_CODE {
     TAB = 'Tab',
     COMMA = 'Comma',
     KEY_D = 'KeyD',
+    KEY_H = 'KeyH',
     KEY_K = 'KeyK',
     KEY_L = 'KeyL',
     KEY_N = 'KeyN',
