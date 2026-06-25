@@ -7,6 +7,7 @@ import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnAccountCell } from './EarnAccountCell';
 import { EarnActivateButton } from './EarnActivateButton';
+import { EarnRate } from './EarnRate';
 
 type EarnInactiveNetworkOpportunityProps = {
     symbol: NetworkSymbol;
@@ -33,7 +34,10 @@ export const EarnInactiveNetworkOpportunity = ({
                 <Column gap={12} width="100%">
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell symbol={symbol} />
-                        <ApyValue apy={apy} />
+
+                        <EarnRate type={symbol === 'trx' ? 'apr' : 'apy'} rate={apy}>
+                            <ApyValue apy={apy} />
+                        </EarnRate>
                     </Row>
 
                     {noteParagraph}
@@ -53,7 +57,9 @@ export const EarnInactiveNetworkOpportunity = ({
             </Table.Cell>
 
             <Table.Cell>
-                <ApyValue apy={apy} />
+                <EarnRate type={symbol === 'trx' ? 'apr' : 'apy'} rate={apy}>
+                    <ApyValue apy={apy} />
+                </EarnRate>
             </Table.Cell>
 
             <Table.Cell colSpan={2}>{noteParagraph}</Table.Cell>
