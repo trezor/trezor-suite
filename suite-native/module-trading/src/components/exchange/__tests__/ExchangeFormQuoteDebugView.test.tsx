@@ -1,3 +1,5 @@
+import { Text } from 'react-native';
+
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { UINT256_MAX } from '@suite-common/suite-constants';
@@ -23,6 +25,10 @@ jest.mock('@suite-native/trading-debug', () => {
             mockDebugMode ? children : null,
     };
 });
+
+jest.mock('../ExchangeUsdcPresetButton', () => ({
+    ExchangeUsdcPresetButton: () => <Text>PRESET BUTTON MOCK</Text>,
+}));
 
 describe('ExchangeFormQuoteDebugView', () => {
     const renderDebugView = () => renderWithBasicProvider(<ExchangeFormQuoteDebugView />);
