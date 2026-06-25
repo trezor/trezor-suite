@@ -1,6 +1,5 @@
-import type { ErrorEvent } from '@sentry/core';
-
 import { ALLOW_REPORT_TAG, MAX_EVENTS_INTERVAL_LENGTH, MAX_EVENTS_PER_INTERVAL } from './constants';
+import { type ChainableBeforeSend } from './types';
 
 let eventCountThisSession = 0;
 let countingStartTimestamp = Date.now();
@@ -18,7 +17,9 @@ const incrementOrResetCounter = () => {
  * Note that in case of Desktop & Mobile, the SDKs share tags and userId between processes
  * (it consistently handles events e.g. from Electron Main vs. Renderer)
  */
-export const redactSentryEvent = (event: ErrorEvent): ErrorEvent | null => {
+export const redactSentryEvent: ChainableBeforeSend = event => {
+    if (event === null) return null;
+
     incrementOrResetCounter();
     // hard limit the number of events sent this session (app instance), to prevent a flurry of events sent in a loop
     if (eventCountThisSession > MAX_EVENTS_PER_INTERVAL) {
