@@ -4,10 +4,10 @@ import { TrezorConnectAccount } from './account';
 import { TrezorConnectBitcoin } from './bitcoin';
 import { TrezorConnectBlockchain } from './blockchain';
 import { TrezorConnectCardano } from './cardano';
-import { TrezorConnectCore } from './core';
 import { TrezorConnectDevice } from './device';
 import { TrezorConnectEthereum } from './ethereum';
 import { TrezorConnectEvolu } from './evolu';
+import { TrezorConnectInternal } from './internal';
 import { TrezorConnectManagement } from './management';
 import { TrezorConnectMonero } from './monero';
 import { TrezorConnectNostr } from './nostr';
@@ -17,7 +17,7 @@ import { TrezorConnectStellar } from './stellar';
 import { TrezorConnectTezos } from './tezos';
 import { TrezorConnectTron } from './tron';
 
-export { TrezorConnectCore };
+export { TrezorConnectInternal };
 
 export const TrezorConnectCallable = Type.Composite([
     TrezorConnectManagement,
@@ -39,6 +39,6 @@ export const TrezorConnectCallable = Type.Composite([
 export type TrezorConnectCallable = Static<typeof TrezorConnectCallable>;
 
 // Runtime schema for key access
-export const TrezorConnectSchema = Type.Composite([TrezorConnectCore, TrezorConnectCallable]);
+export const TrezorConnectSchema = Type.Composite([TrezorConnectInternal, TrezorConnectCallable]);
 
 export type TrezorConnect = Static<typeof TrezorConnectSchema>;

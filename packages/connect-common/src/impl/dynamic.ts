@@ -5,7 +5,7 @@ import { parseManifest, parseVersion } from '../data/connectSettings';
 import { type CallMethodPayload, createErrorMessage } from '../events';
 import type { ConnectFactoryDependencies } from '../factory';
 import type { ConnectDynamicSettings, ConnectImplSettings } from '../types';
-import type { UpdateConnectSettings } from '../types/api/core/updateConnectSettings';
+import type { UpdateConnectSettings } from '../types/api/internal/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
 import { type CancelParams } from '../utils/cancelParams';
 
