@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoIconWithPercentage } from '@suite-native/icons';
 
-import { type AssetsRootState, selectAssetFiatValuePercentage } from '../assetsSelectors';
+import { selectAssetFiatValuePercentage } from '../assetsSelectors';
+import { type AssetsRootState } from '../types';
 
 type PercentageIconProps = { symbol: NetworkSymbol };
 

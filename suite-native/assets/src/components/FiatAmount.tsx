@@ -5,7 +5,8 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { BigNumber } from '@trezor/utils';
 
-import { type AssetsRootState, selectAssetFiatValue } from '../assetsSelectors';
+import { selectAssetFiatValue } from '../assetsSelectors';
+import { type AssetsRootState } from '../types';
 
 type FiatAmountProps = { symbol: NetworkSymbol };
 

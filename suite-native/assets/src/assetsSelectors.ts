@@ -1,65 +1,26 @@
+import { shallowEqual } from 'react-redux';
+
 import {
     type AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
-import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
-    type DiscoveryRootState,
-    type FiatRatesRootState,
-    type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectHasRunningDiscovery,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type BaseCurrencyAmount,
-    asBaseCurrencyAmount,
-} from '@suite-common/wallet-types';
+import { type AccountKey, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
-import {
-    type NativeStakingRootState,
-    getAccountCryptoBalanceWithStaking,
-} from '@suite-native/staking';
+import { getAccountCryptoBalanceWithStaking } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
-export interface AssetType {
-    symbol: NetworkSymbol;
-    assetBalance: string;
-    fiatBalance: BaseCurrencyAmount | null;
-}
-
-export type AssetsRootState = AccountsRootState &
-    FiatRatesRootState &
-    WalletSettingsRootState &
-    TokenDefinitionsRootState &
-    NativeStakingRootState &
-    DeviceRootState &
-    DiscoveryRootState;
+import { type AssetFiatPercentage, type AssetType, type AssetsRootState } from './types';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetsRootState>();
-
-/*
-Selectors here are memoized via `createWeakMapSelector`. Where the inputs churn (e.g. during
-discovery) but the output is value-stable, attach a `resultEqualityCheck` so the selector keeps
-returning the same reference. Consumers can then use a plain `useSelector` (`===`) instead of the
-per-dispatch deep walk of `useSelectorDeepComparison`.
-*/
-
-const areNetworkSymbolsEqual = (
-    previousNetworkSymbols: NetworkSymbol[],
-    nextNetworkSymbols: NetworkSymbol[],
-) =>
-    previousNetworkSymbols.length === nextNetworkSymbols.length &&
-    previousNetworkSymbols.every(
-        (networkSymbol, index) => networkSymbol === nextNetworkSymbols[index],
-    );
 
 export const selectDeviceNetworkSymbolsWithAssets = createMemoizedSelector(
     [selectVisibleDeviceAccounts],
@@ -72,7 +33,10 @@ export const selectDeviceNetworkSymbolsWithAssets = createMemoizedSelector(
     },
     {
         memoizeOptions: {
-            resultEqualityCheck: areNetworkSymbolsEqual,
+            // accounts churn every discovery tick but the symbol set rarely changes; shallowEqual
+            // keeps the previous array reference when symbols match, so `Assets` re-renders only
+            // when a network is added or removed, not on every balance update.
+            resultEqualityCheck: shallowEqual,
         },
     },
 );
@@ -163,18 +127,9 @@ export const selectAssetFiatValue = createMemoizedSelector(
     },
 );
 
-type AssetFiatPercentage = {
-    fiatPercentage: number;
-    fiatPercentageOffset: number;
-};
-
 const selectAssetsFiatValuePercentage = createMemoizedSelector(
     [selectDeviceAssetsWithBalances, selectHasRunningDiscovery],
     (assets, hasDiscovery): AssetFiatBalanceWithPercentage[] =>
-        // While discovery runs the totals change every tick, so skip the full percentage pass and
-        // compute it once discovery finishes. The empty result must stay a STABLE reference
-        // (returnStableArrayIfEmpty) - that stability is what keeps selectAssetFiatValuePercentage
-        // stable during discovery, so its consumer needs no resultEqualityCheck.
         hasDiscovery ? returnStableArrayIfEmpty([]) : calculateAssetsPercentage(assets),
 );
 
