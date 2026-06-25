@@ -58,6 +58,7 @@ export const tradingMiddleware =
                 api.dispatch(tradingBuyActions.saveTransactionId(undefined));
                 if (prefilledFromAccount.key) {
                     api.dispatch(tradingBuyActions.setTradingAccountKey(prefilledFromAccount.key));
+                    api.dispatch(tradingBuyActions.setReceiveAccountKey(prefilledFromAccount.key));
                 } else {
                     // When switching from sell tab, carry over the sell account key
                     const sellAccountKey = selectTradingAccountKeyByTradeType(nextState, 'sell');
