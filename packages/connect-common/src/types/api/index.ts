@@ -19,13 +19,7 @@ import { TrezorConnectTron } from './tron';
 
 export { TrezorConnectCore };
 
-// Experimental methods — each requires `__experimental: true` in its params.
-export const TrezorConnectExperimental = Type.Composite([TrezorConnectNostr]);
-export type TrezorConnectExperimental = Static<typeof TrezorConnectExperimental>;
-
-// Runtime schema for key access
-export const TrezorConnectSchema = Type.Composite([
-    TrezorConnectCore,
+export const TrezorConnectCallable = Type.Composite([
     TrezorConnectManagement,
     TrezorConnectDevice,
     TrezorConnectBlockchain,
@@ -40,7 +34,11 @@ export const TrezorConnectSchema = Type.Composite([
     TrezorConnectTezos,
     TrezorConnectTron,
     TrezorConnectEvolu,
-    TrezorConnectExperimental,
+    TrezorConnectNostr,
 ]);
+export type TrezorConnectCallable = Static<typeof TrezorConnectCallable>;
+
+// Runtime schema for key access
+export const TrezorConnectSchema = Type.Composite([TrezorConnectCore, TrezorConnectCallable]);
 
 export type TrezorConnect = Static<typeof TrezorConnectSchema>;

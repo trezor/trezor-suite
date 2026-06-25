@@ -1,7 +1,7 @@
 import type { CORE_CALL, CORE_CALL_CANCEL } from './core-call';
 import { type SerializedError, serializeError } from '../constants/errors';
 import type { DeviceState, DeviceUniquePath } from '../types';
-import type { TrezorConnect, TrezorConnectCore } from '../types/api';
+import type { TrezorConnectCallable } from '../types/api';
 import type { CommonParams, DeviceIdentity } from '../types/params';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
@@ -28,21 +28,12 @@ type UnwrappedMethod<Method, Params extends Record<string, string>> = Method ext
     ? (params: Params & CommonParams) => R // - method doesn't have params (example: dispose, disableWebUSB)
     : OverloadedMethod<Method, Params>;
 
-type IsMethodCallable<T> = T extends (...args: any[]) => infer R
-    ? R extends Promise<{ success: boolean }>
-        ? R
-        : never
-    : never;
-
 // map TrezorConnect api with unwrapped methods
 type CallApi = {
-    [K in keyof TrezorConnect]: IsMethodCallable<TrezorConnect[K]> extends never
-        ? never
-        : UnwrappedMethod<TrezorConnect[K], { method: K }>;
+    [K in keyof TrezorConnectCallable]: UnwrappedMethod<TrezorConnectCallable[K], { method: K }>;
 };
-type TrezorConnectCoreMethods = keyof TrezorConnectCore;
 
-export type CallMethodKeys = Exclude<keyof CallApi, TrezorConnectCoreMethods>;
+export type CallMethodKeys = keyof TrezorConnectCallable;
 export type CallMethodUnion = CallApi[CallMethodKeys];
 export type CallMethodPayload = Parameters<CallMethodUnion>[0];
 export type CallMethodParams<M extends CallMethodKeys> = Parameters<CallApi[M]>[0];
