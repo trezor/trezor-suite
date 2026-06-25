@@ -41,8 +41,8 @@ const Wrapper = styled.div`
 const SelectWrapper = styled.div`
     width: 700px;
     border-radius: ${borders.radii.sm};
-    border: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
-    background: ${({ theme }) => theme.surfaceFillRaised};
+    border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofterAlt};
+    background: ${({ theme }) => theme.elementFillNeutralSofter};
     position: relative;
 `;
 

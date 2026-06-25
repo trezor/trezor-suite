@@ -80,6 +80,20 @@ export const mapCardTypeToCSS = ({
         contrast: css`
             background: ${theme.elementFillNeutralSofter};
             outline: 1px solid ${theme.elementBorderNeutralSofterAlt};
+
+            ${$isClickable &&
+            css`
+                ${$isSelected &&
+                css`
+                    outline: 2px solid ${theme.borderBrand};
+                `}
+
+                box-shadow: ${theme.surfaceShadowAction};
+
+                &:hover {
+                    box-shadow: ${theme.surfaceShadowActionHovered};
+                }
+            `}
         `,
     };
 

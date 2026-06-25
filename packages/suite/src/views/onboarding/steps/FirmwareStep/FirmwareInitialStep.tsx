@@ -316,7 +316,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                 >
                     <Column gap={32}>
                         {deviceWillBeWiped && <FirmwareWipeWarning />}
-                        <Card>
+                        <Card type="contrast">
                             <FirmwareOffer targetFirmwareType={targetType} />
                         </Card>
                         <FirmwareWarningsList />

@@ -136,7 +136,7 @@ export const FirmwareStep = () => {
         case 'done': // This is shown only for NON-THP devices, THP device goes directly to the next step after successful THP pairing. see onboardingMiddleware
             if (isProgressCheckDisplayed) {
                 return (
-                    <Card paddingType="large">
+                    <Card paddingType="large" type="contrast">
                         <FirmwareInstallationProgressCheck
                             handleDismiss={handleDismissProgressCheck}
                         />
