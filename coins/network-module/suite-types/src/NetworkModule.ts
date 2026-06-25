@@ -1,6 +1,6 @@
 import type { AddressValidator } from './AddressValidator';
 
-export type NetworkModule<TSymbol extends string = string> = {
+export type NetworkModule<TSymbol extends string> = {
     addressValidator: AddressValidator<TSymbol>;
 
     getSupportedCoins: () => readonly TSymbol[];

@@ -18,6 +18,7 @@
         "@network-module/solana-suite": "workspace:*",
         "@network-module/stellar-suite": "workspace:*",
         "@network-module/suite-types": "workspace:*",
-        "@network-module/tron-suite": "workspace:*"
+        "@network-module/tron-suite": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

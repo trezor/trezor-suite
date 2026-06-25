@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -43,7 +43,7 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
     const quotes = useSelector(selectTradingSellQuotes);
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const {
         feeInfo,
@@ -89,7 +89,7 @@ export const TradingSellFormInputs = () => {
         [onCryptoCurrencyChangeRef],
     );
 
-    const supportedCoins = addressValidator.getSupportedCoins();
+    const supportedCoins = networkModuleRepository.getSupportedCoins();
     const sellSupportedCryptoIds = useSelector(state =>
         selectTradingSellSupportedCryptoIds(state, supportedCoins),
     );

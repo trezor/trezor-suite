@@ -1,4 +1,7 @@
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 
 import { createAddressValidator } from '../AddressValidator';
 import { isAddressDeprecated } from '../isAddressDeprecated';
@@ -6,8 +9,10 @@ import { isAddressDeprecated } from '../isAddressDeprecated';
 // https://litecoin-project.github.io/p2sh-convert/
 // https://cashaddr.bitcoincash.org/
 describe('isAddressDeprecated', () => {
+    const networks = createNetworksCompositionRoot();
+    const repository = createNetworkModuleRepository({ networks });
     const addressValidator = createAddressValidator({
-        networks: createNetworksCompositionRoot(),
+        repository,
     });
 
     it('returns undefined for non-deprecated LTC address', () => {

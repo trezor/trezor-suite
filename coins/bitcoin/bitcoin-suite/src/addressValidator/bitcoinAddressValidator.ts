@@ -16,7 +16,7 @@ type NetworkEnvironment = 'prod' | 'testnet' | 'regtest' | 'stake';
 type HashFunction = 'sha256' | 'blake256' | 'blake256keccak256' | 'keccak256';
 
 type BitcoinCurrency = {
-    symbol: string;
+    symbol: BitcoinSupportedCoin;
     segwitHrp?: Record<string, string>;
     addressTypes: Record<string, string[]>;
     expectedLength?: number;

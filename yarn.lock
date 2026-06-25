@@ -10531,7 +10531,6 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/utils": "workspace:*"
     viem: "npm:^2.52.2"
   languageName: unknown
   linkType: soft
@@ -11083,6 +11082,7 @@ __metadata:
     "@network-module/stellar-suite": "workspace:*"
     "@network-module/suite-types": "workspace:*"
     "@network-module/tron-suite": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -11124,6 +11124,7 @@ __metadata:
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
@@ -11475,6 +11476,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -13698,6 +13700,7 @@ __metadata:
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/mev": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"

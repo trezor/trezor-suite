@@ -23,6 +23,7 @@
         {
             "path": "../../coins/network-module/suite-types"
         },
-        { "path": "../../coins/tron/tron-suite" }
+        { "path": "../../coins/tron/tron-suite" },
+        { "path": "../../packages/utils" }
     ]
 }

@@ -1,8 +1,8 @@
 import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { type TradingType } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
@@ -44,8 +44,8 @@ const renderItem = (
 
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
-        const { addressValidator } = useServices(selectAddressValidatorDep);
-        const supportedCoins = addressValidator.getSupportedCoins();
+        const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+        const supportedCoins = networkModuleRepository.getSupportedCoins();
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
             selectAccountsWithTokensToSellSectionCondensedListByTradingType(
                 state,

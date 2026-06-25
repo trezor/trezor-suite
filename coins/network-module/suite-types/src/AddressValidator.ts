@@ -10,7 +10,7 @@ export const addressType = {
 
 export type AddressType = (typeof addressType)[keyof typeof addressType];
 
-export type AddressValidator<TSymbol extends string = string> = {
+export type AddressValidator<TSymbol extends string> = {
     isAddressValid(address: string, symbol: TSymbol): boolean;
 
     getAddressType(address: string, symbol: TSymbol): AddressType | undefined;

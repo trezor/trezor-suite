@@ -31,7 +31,11 @@ import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-ide
 import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import { type NetworksServiceDep, createNetworksCompositionRoot } from '@suite-common/networks';
+import {
+    type NetworksServiceDep,
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type CommonServices,
@@ -155,10 +159,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getState: deps.getState,
     });
     const networks = createNetworksCompositionRoot();
-    const addressValidator = createAddressValidator({ networks });
+    const networkModuleRepository = createNetworkModuleRepository({ networks });
+    const addressValidator = createAddressValidator({
+        repository: networkModuleRepository,
+    });
 
     return {
-        networks,
+        networkModuleRepository,
         addressValidator,
         suiteSync,
         bip329,

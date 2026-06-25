@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -38,7 +38,7 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
     const quotes = useSelector(selectTradingBuyQuotes);
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const { device, setAmountLimits, getValues, defaultCountry, setValue } = context;
     const {
@@ -66,7 +66,7 @@ export const TradingBuyFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef],
     );
 
-    const supportedCoins = addressValidator.getSupportedCoins();
+    const supportedCoins = networkModuleRepository.getSupportedCoins();
     const buySupportedCryptoIds = useSelector(state =>
         selectTradingBuySupportedCryptoIds(state, supportedCoins),
     );
