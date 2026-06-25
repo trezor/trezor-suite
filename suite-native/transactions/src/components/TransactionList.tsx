@@ -11,10 +11,8 @@ import {
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAreAllAccountTransactionsLoaded,
-    selectBaseCurrency,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
-    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -35,6 +33,7 @@ import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
+import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
 
 type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
@@ -140,7 +139,6 @@ export const TransactionList = ({
         utils: { colors },
     } = useNativeStyles();
 
-    const localCurrency = useSelector(selectBaseCurrency);
     const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
         selectIsLoadingAccountTransactions(state, accountKey),
     );
@@ -247,11 +245,7 @@ export const TransactionList = ({
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
 
-    useEffect(() => {
-        if (data.length > 0) {
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey }));
-        }
-    }, [data, dispatch, localCurrency, accountKey]);
+    useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {

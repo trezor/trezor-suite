@@ -23,6 +23,7 @@ import {
     InstantStakeBanner,
     TransactionName,
     getUnstakeTxAmount,
+    useFetchMissingTransactionFiatRates,
 } from '@suite-native/transactions';
 
 import { TransactionDetailData } from '../components/TransactionDetailData';
@@ -48,6 +49,8 @@ export const TransactionDetailScreen = ({
         navigation.dispatch(data.action);
         askForRating();
     });
+
+    useFetchMissingTransactionFiatRates({ accountKey, isEnabled: !!transaction });
 
     useEffect(() => {
         if (transaction) {
