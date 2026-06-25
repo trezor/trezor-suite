@@ -9586,6 +9586,18 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON',
         defaultMessage: 'Get started',
     },
+    TR_ONBOARDING_FEEDBACK_BANNER_TITLE: {
+        id: 'TR_ONBOARDING_FEEDBACK_BANNER_TITLE',
+        defaultMessage: 'Help us improve',
+    },
+    TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION: {
+        id: 'TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION',
+        defaultMessage: 'Share your setup experience',
+    },
+    TR_ONBOARDING_FEEDBACK_BANNER_BUTTON: {
+        id: 'TR_ONBOARDING_FEEDBACK_BANNER_BUTTON',
+        defaultMessage: 'Give feedback',
+    },
     TR_NO_DEVICE_ESHOP_BANNER_HEADING: {
         id: 'TR_NO_DEVICE_ESHOP_BANNER_HEADING',
         defaultMessage: 'Don’t have a Trezor yet?',

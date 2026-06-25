@@ -24,4 +24,16 @@ describe('initialRunCompleted', () => {
         await store.dispatch(initialRunCompleted());
         expect(store.getState().flags.initialRun).toBe(false);
     });
+
+    it('should make a freshly onboarded user eligible for the onboarding feedback banner', async () => {
+        const store = initStore({ showOnboardingFeedbackBanner: false });
+        await store.dispatch(initialRunCompleted());
+        expect(store.getState().flags.showOnboardingFeedbackBanner).toBe(true);
+    });
+
+    it('should not show the onboarding feedback banner for a returning user (initialRun already false)', async () => {
+        const store = initStore({ initialRun: false, showOnboardingFeedbackBanner: false });
+        await store.dispatch(initialRunCompleted());
+        expect(store.getState().flags.showOnboardingFeedbackBanner).toBe(false);
+    });
 });

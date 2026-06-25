@@ -11,6 +11,8 @@ export const IMAGES = {
     DASHBOARD_PROMO_BANNER_UNDERLINE: 'dashboard-promo-banner/underline.svg',
     DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD: 'dashboard-promo-banner/stablecoin-yield.webp',
     DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD_2x: 'dashboard-promo-banner/stablecoin-yield@2x.webp',
+    DASHBOARD_FEEDBACK_BANNER: 'dashboard-feedback-banner/feedback.webp',
+    DASHBOARD_FEEDBACK_BANNER_2x: 'dashboard-feedback-banner/feedback@2x.webp',
     ERROR_404: 'error-404.svg',
     EVERSTAKE_LOGO: 'everstake-logo.svg',
     GAINS_GRAPH: 'gains-graph.svg',
