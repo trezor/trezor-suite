@@ -8,7 +8,7 @@ import { processAgentOutput, runClaude } from './common';
 import { AnalysisReportSchema, FixResultJsonSchema, FixResultSchema } from './schemas';
 
 const MAX_BUDGET_USD = '10';
-const TIMEOUT_MS = 60 * 60 * 1000;
+const TIMEOUT_MS = 3 * 60 * 60 * 1000; // 3 hours
 
 function main(): void {
     const reportPath = process.env.REPORT_PATH;
