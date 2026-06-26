@@ -26,8 +26,6 @@ export const EmptyWallet = () => {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
 
-    // Engaging the primary CTA counts as "getting started", which permanently clears the
-    // one-time onboarding feedback banner.
     const clearOnboardingFeedbackBanner = () => {
         if (isOnboardingFeedbackBannerShown) {
             dispatch(setFlag({ key: 'showOnboardingFeedbackBanner', value: false }));

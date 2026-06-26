@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Box, Button, Column, Image, Paragraph, Row, Text } from '@trezor/components';
 import { borders } from '@trezor/theme';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
@@ -69,9 +70,6 @@ export const OnboardingFeedbackBanner = () => {
 
     const isDeviceEmpty = accounts.every(account => account.empty);
 
-    // Only show on the first post-onboarding "wallet is ready" state: the user is
-    // eligible (flag set on onboarding completion) and the empty-wallet dashboard is
-    // what's currently rendered (device empty, discovery settled, a device present).
     const isEligible = isBannerShown && isDeviceEmpty && discoveryStatus?.status !== 'loading';
 
     const clearBanner = () => {
@@ -80,16 +78,16 @@ export const OnboardingFeedbackBanner = () => {
 
     const handleCTAClick = () => {
         analytics.report({
-            type: events.onboardingFeedbackBannerEvent.name,
-            payload: { action: 'cta', platform: 'desktop' },
+            type: events.onboardingFeedbackBannerClickedEvent.name,
+            payload: { action: 'cta', platform: 'desktop', origin: 'postOnboardingDashboard' },
         });
         clearBanner();
     };
 
     const handleClose = () => {
         analytics.report({
-            type: events.onboardingFeedbackBannerEvent.name,
-            payload: { action: 'close', platform: 'desktop' },
+            type: events.onboardingFeedbackBannerClickedEvent.name,
+            payload: { action: 'close', platform: 'desktop', origin: 'postOnboardingDashboard' },
         });
         clearBanner();
     };
@@ -100,11 +98,9 @@ export const OnboardingFeedbackBanner = () => {
                 <motion.div key="onboarding-feedback-banner" {...bannerAnimationConfig}>
                     <Box
                         height={isVerticalLayout ? undefined : 213}
-                        //padding={{ left: 24, top: isVerticalLayout ? 16 : 0 }}
                         backgroundColor="elementFillNeutralSofter"
                         borderRadius={borders.radii.sm}
                         overflow="hidden"
-                        position={{ type: 'relative' }}
                         data-testid="@dashboard/onboarding-feedback-banner"
                     >
                         <ContentFlex
