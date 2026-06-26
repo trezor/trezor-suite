@@ -572,6 +572,7 @@ const getOutputLines = ({
                     type: 'safe-address',
                     label: <Translation id="TR_ADDRESS" />,
                     value,
+                    isChunked: false,
                 },
                 {
                     id: 'votes',
