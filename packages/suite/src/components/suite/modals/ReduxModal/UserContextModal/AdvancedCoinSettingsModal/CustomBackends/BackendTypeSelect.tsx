@@ -4,11 +4,10 @@ import styled from 'styled-components';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type ServerType } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
-import type { BackendOption } from 'src/hooks/settings/backends';
 import { useSelector } from 'src/hooks/suite';
 
 const Capitalize = styled.span`
@@ -63,8 +62,8 @@ const useBackendOptions = (network: Network, isDebugModeActive: boolean) => {
 
 type BackendTypeSelectProps = {
     network: Network;
-    value: BackendOption;
-    onChange: (type: BackendOption) => void;
+    value: ServerType;
+    onChange: (type: ServerType) => void;
 };
 
 export const BackendTypeSelect = ({ network, value, onChange }: BackendTypeSelectProps) => {

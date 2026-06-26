@@ -5,63 +5,25 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
-import { type BackendType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type ServerType,
+    getNetwork,
+    getServerAddressExample,
+    validateServerAddress,
+} from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { type BackendSettings } from '@suite-common/wallet-types';
-import { isElectrumUrl } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { isUrlWithQuery } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-export type BackendOption = BackendType | 'default';
-
 type BackendsFormData = {
-    type: BackendOption;
+    type: ServerType;
     urls: string[];
 };
 
-const validateUrl = (type: BackendOption, value: string) => {
-    switch (type) {
-        case 'blockbook':
-            return isUrlWithQuery(value);
-        case 'blockfrost':
-            return isUrlWithQuery(value);
-        case 'electrum':
-            return isElectrumUrl(value);
-        case 'solana':
-            return isUrlWithQuery(value);
-        case 'ripple':
-            return isUrlWithQuery(value);
-        case 'stellar':
-            return isUrlWithQuery(value);
-        case 'evm-rpc':
-            return isUrlWithQuery(value);
-        default:
-            return false;
-    }
-};
-
-const getUrlPlaceholder = (symbol: NetworkSymbol, type: BackendOption) => {
-    switch (type) {
-        case 'blockbook':
-            return `https://${symbol}.trezor.io/`;
-        case 'blockfrost':
-            return `wss://${symbol}.trezor.io/`;
-        case 'electrum':
-            return `electrum.example.com:50001:t`;
-        case 'solana':
-        case 'stellar':
-        case 'evm-rpc':
-            return 'https://';
-        case 'ripple':
-            return 'wss://';
-        default:
-            return '';
-    }
-};
-
-const useBackendUrlInput = (symbol: NetworkSymbol, type: BackendOption, currentUrls: string[]) => {
+const useBackendUrlInput = (symbol: NetworkSymbol, type: ServerType, currentUrls: string[]) => {
     const {
         register,
         watch,
@@ -74,19 +36,16 @@ const useBackendUrlInput = (symbol: NetworkSymbol, type: BackendOption, currentU
 
     const name = 'url' as const;
     const validate = (value: string) => {
-        // Check if URL is valid
-        if (!validateUrl(type, value)) {
+        if (!validateServerAddress(type, value)) {
             return translationString('TR_CUSTOM_BACKEND_INVALID_URL');
         }
-
-        // Check if already exists
         if (currentUrls.includes(value)) {
             return translationString('TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED');
         }
     };
 
     const placeholder = translationString('SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER', {
-        url: getUrlPlaceholder(symbol, type),
+        url: getServerAddressExample(symbol, type),
     });
 
     return {
@@ -102,7 +61,7 @@ const useBackendUrlInput = (symbol: NetworkSymbol, type: BackendOption, currentU
 
 const getStoredState = (
     symbol: NetworkSymbol,
-    type?: BackendOption,
+    type?: ServerType,
     urls?: BackendSettings['urls'],
 ): BackendsFormData => ({
     type: type ?? (symbol === 'regtest' ? 'blockbook' : 'default'),
@@ -126,7 +85,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol]);
 
-    const changeType = (type: BackendOption) => {
+    const changeType = (type: ServerType) => {
         setCurrentValues(getStoredState(symbol, type, backends.urls));
         setValidationError(null);
     };
