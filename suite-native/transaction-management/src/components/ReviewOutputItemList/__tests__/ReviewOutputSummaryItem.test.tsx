@@ -1,13 +1,20 @@
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { ETH_ACCOUNT_KEY } from '../../../__fixtures__/walletState';
 import {
     ReviewOutputSummaryItem,
     type ReviewOutputSummaryItemProps,
 } from '../ReviewOutputSummaryItem';
+
+const mockSelectIsClearSignedTradingSwap = jest.fn();
+jest.mock('../../../selectors', () => ({
+    ...jest.requireActual('../../../selectors'),
+    selectIsClearSignedTradingSwap: (...args: unknown[]) =>
+        mockSelectIsClearSignedTradingSwap(...args),
+}));
 
 jest.mock('../ReviewOutputItemValues', () => ({
     ReviewOutputItemValues: ({
@@ -25,14 +32,20 @@ jest.mock('../ReviewOutputItemValues', () => ({
 
 describe('ReviewOutputSummaryItem', () => {
     const renderReviewOutputSummaryItem = (props: Partial<ReviewOutputSummaryItemProps>) =>
-        renderWithBasicProvider(
+        renderWithStoreProvider(
             <ReviewOutputSummaryItem
                 accountKey={ETH_ACCOUNT_KEY}
                 symbol="btc"
                 onLayout={jest.fn()}
+                prefix="trading-buy"
                 {...props}
             />,
         );
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockSelectIsClearSignedTradingSwap.mockReturnValue(false);
+    });
 
     it('should render nothing when summaryOutput is not specified', () => {
         const { toJSON } = renderReviewOutputSummaryItem({});
@@ -141,6 +154,30 @@ describe('ReviewOutputSummaryItem', () => {
                 'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.amount]-[1000]',
             ),
         ).toBeTruthy();
+        expect(
+            getByText(
+                'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.maxFee]-[10]',
+            ),
+        ).toBeTruthy();
+    });
+
+    it('should not render "amount" if transaction is clear-signed', () => {
+        mockSelectIsClearSignedTradingSwap.mockReturnValue(true);
+
+        const { queryByText, getByText } = renderReviewOutputSummaryItem({
+            summaryOutput: {
+                totalSpent: '1000',
+                fee: '10',
+                state: 'active',
+            },
+            symbol: 'eth',
+        });
+
+        expect(
+            queryByText(
+                /ReviewOutputItemValues: \[transactionManagement\.review\.outputs\.summary\.amount]/,
+            ),
+        ).toBeNull();
         expect(
             getByText(
                 'ReviewOutputItemValues: [transactionManagement.review.outputs.summary.maxFee]-[10]',

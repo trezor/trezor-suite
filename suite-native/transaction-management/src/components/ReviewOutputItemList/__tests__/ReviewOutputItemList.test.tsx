@@ -26,6 +26,7 @@ jest.mock('../../../selectors', () => {
         selectReviewSummaryOutput: () => selectReviewSummaryOutputReturnValue,
         selectTransactionReviewOutputsFromDraft: () =>
             mockSelectTransactionReviewOutputsFromDraftReturnValue,
+        selectIsClearSignedTradingSwap: () => false,
     };
 });
 

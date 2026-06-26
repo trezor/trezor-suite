@@ -5,7 +5,6 @@ import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType, ScreenHeader } from '@suite-native/navigation';
-import { getFormDraftKeyPrefixFromTradingType } from '@suite-native/trading-quote-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ReviewOutputsBody } from './ReviewOutputsBody';
@@ -62,8 +61,6 @@ export const ReviewOutputsContent = memo(
             });
         const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
 
-        const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
-
         return (
             <ConfirmOnTrezorWrapper
                 controlRef={confirmOnTrezorRef}
@@ -82,11 +79,11 @@ export const ReviewOutputsContent = memo(
                     testID="@trading/outputs-review"
                 >
                     <ReviewOutputsBody
-                        prefix={prefix}
                         accountKey={accountKey}
                         tokenContract={tokenContract}
                         exchangeFlowType={exchangeFlowType}
                         shouldDisplayReviewList={shouldDisplayReviewList}
+                        tradingType={tradingType}
                     />
                     {isTransactionAlreadySigned ? (
                         <ReviewOutputsFooter

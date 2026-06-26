@@ -6,7 +6,7 @@ import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
 import { ReviewOutputsBody, type ReviewOutputsBodyProps } from '../ReviewOutputsBody';
 
 const defaultProps: ReviewOutputsBodyProps = {
-    prefix: 'trading-exchange',
+    tradingType: 'exchange',
     accountKey: 'ACCOUNT_KEY' as AccountKey,
     tokenContract: 'TOKEN_CONTRACT' as TokenAddress,
     exchangeFlowType: 'swap',
