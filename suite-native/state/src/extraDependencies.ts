@@ -95,7 +95,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         connectInitSettings: {
             transportReconnect: false,
             debug: false,
-            env: 'react-native',
             manifest: {
                 email: 'info@trezor.io',
                 appName: 'Trezor Suite',

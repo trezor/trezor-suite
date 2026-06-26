@@ -268,7 +268,7 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
-    const { env, transports, pendingTransportEvent } = settingsStore.get();
+    const { transports, pendingTransportEvent } = settingsStore.get();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
@@ -276,31 +276,20 @@ const onCallDevice = async (
     }
     await deviceList.pendingConnection();
 
-    const shouldRetry = ['web', 'webextension'].includes(env);
     // find device
     let tempDevice: Device | undefined;
-    while (!tempDevice) {
-        try {
-            tempDevice = selectDevice(context, message.payload.device);
-        } catch (error) {
-            if (error.code === 'Transport_Missing') {
-                // show message about transport
-                sendCoreMessage(createUiMessage(UI_REQUEST.TRANSPORT));
-
-                // Retry selectDevice again
-                // NOTE: this should change after multi-transports refactor, where transport will be always alive
-                if (deviceList.pendingConnection() && shouldRetry) {
-                    while (deviceList.pendingConnection()) {
-                        await deviceList.pendingConnection();
-                    }
-                    continue;
-                }
-            }
-            // TODO: this should not be returned here before user agrees on "read" perms...
-            sendCoreMessage(createResponseMessage(responseID, false, { error }));
-            throw error;
+    try {
+        tempDevice = selectDevice(context, message.payload.device);
+    } catch (error) {
+        if (error.code === 'Transport_Missing') {
+            // show message about transport
+            sendCoreMessage(createUiMessage(UI_REQUEST.TRANSPORT));
         }
+        // TODO: this should not be returned here before user agrees on "read" perms...
+        sendCoreMessage(createResponseMessage(responseID, false, { error }));
+        throw error;
     }
+
     const device = tempDevice;
 
     method.setDevice(device);
