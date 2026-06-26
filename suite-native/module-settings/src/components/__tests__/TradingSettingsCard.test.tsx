@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TradingSettingsCard, type TradingSettingsCardProps } from '../TradingSettingsCard';
@@ -37,8 +38,12 @@ describe('TradingSettingsCard', () => {
             });
 
             expect(getByTestId('@settings/trading')).toBeOnTheScreen();
-            expect(getByText('Enable trading')).toBeOnTheScreen();
-            expect(getByText('Confirm your country of residence')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.titleInactive')),
+            ).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.subtitleInactive')),
+            ).toBeOnTheScreen();
         });
 
         it('should render "Trading" button when selectIsTradingCountrySet is true', () => {
@@ -48,8 +53,12 @@ describe('TradingSettingsCard', () => {
             });
 
             expect(getByTestId('@settings/trading')).toBeOnTheScreen();
-            expect(getByText('Trading')).toBeOnTheScreen();
-            expect(getByText('Country of residence')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.title')),
+            ).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.items.general.trading.subtitle')),
+            ).toBeOnTheScreen();
         });
     });
 });
