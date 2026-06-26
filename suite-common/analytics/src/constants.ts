@@ -30,5 +30,6 @@ export enum EventType {
     CoinDiscovery = 'coin_discovery',
     AccountsBalance = 'accounts/balance',
     OnboardingStepViewed = 'onboarding/step-viewed',
+    OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',
     PromoNoDeviceEshopCta = 'promo/no-device-eshop-cta',
 }

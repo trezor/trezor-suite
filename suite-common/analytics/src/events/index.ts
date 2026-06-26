@@ -21,6 +21,10 @@ export {
     onboardingStepViewedEvent,
     type DeviceOnboardingStepName,
 } from './onboardingStepViewedEvent';
+export {
+    onboardingFeedbackBannerClickedEvent,
+    type OnboardingFeedbackBannerOrigin,
+} from './onboardingFeedbackBannerClickedEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
 export { walletBalanceEvent } from './walletBalanceEvent';
 export {
