@@ -142,7 +142,14 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                             {isAdaStakedOutsideEverstake ? (
                                 <Translation id="earn.notAvailableShort" />
                             ) : (
-                                <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                                <Translation
+                                    id={
+                                        symbol === 'trx'
+                                            ? 'earn.aprPercentage'
+                                            : 'earn.apyPercentage'
+                                    }
+                                    values={{ apy: apyValue }}
+                                />
                             )}
                         </Text>
                     )}
