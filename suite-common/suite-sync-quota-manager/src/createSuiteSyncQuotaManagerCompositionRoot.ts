@@ -2,7 +2,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type GetIsTorEnabledDep } from '@suite-common/suite-sync-types';
-import { type TrezorConnect } from '@trezor/connect';
+import { type TrezorConnectCallable } from '@trezor/connect';
 
 import { createPrepareChallengeSessionFetch } from './challenge/createPrepareChallengeSessionFetch';
 import { createEnsureQuota } from './createEnsureQuota';
@@ -33,7 +33,7 @@ import { generateSessionId } from './session/generateSessionId';
 type CreateSuiteSyncQuotaManagerCompositionRootDeps = {
     dispatch: Dispatch;
     getState: () => DeviceRootState & WithSuiteSyncQuotaManagerState;
-    trezorConnect: Pick<TrezorConnect, 'evoluSignRegistrationRequest'>;
+    trezorConnect: Pick<TrezorConnectCallable, 'evoluSignRegistrationRequest'>;
 } & GetDeviceForStaticSessionIdDep &
     GetIsTorEnabledDep &
     GetIsUsingTrezorRelayDep &

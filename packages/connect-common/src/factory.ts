@@ -1,39 +1,36 @@
-import { connectCallableMethods } from './callableMethods';
-import type { CallMethod } from './events/call';
-import {
-    type Manifest,
-    type TrezorConnect,
-    type TrezorConnectCallable,
-    type TrezorConnectCore,
+import { connectCallableMethods, connectPublicCallableMethods } from './callableMethods';
+import type {
+    ConnectSettings,
+    TrezorConnectCore,
+    TrezorConnectPrivilegedAPI,
+    TrezorConnectPublicAPI,
 } from './types';
+import type { TrezorConnectInternal } from './types/api/internal';
 
-export interface ConnectFactoryDependencies<
-    SettingsType extends Record<string, any>,
-> extends TrezorConnectCore {
-    init: (settings: { manifest: Manifest } & SettingsType) => Promise<void>;
-    call: CallMethod;
-}
+type ExtendedPublicAPI<C> =
+    C extends TrezorConnectCore<infer S>
+        ? TrezorConnectPublicAPI<S> & Omit<C, keyof TrezorConnectPublicAPI<S>>
+        : never;
 
-export const factory = <
-    SettingsType extends Record<string, any>,
-    ExtraMethodsType extends Record<string, any>,
-    CoreType extends ConnectFactoryDependencies<SettingsType>,
+export const factoryPublic = <C extends TrezorConnectCore<any>>(core: C): ExtendedPublicAPI<C> => {
+    for (const method of connectPublicCallableMethods) {
+        (core as any)[method] = (params: any) => core.call({ ...params, method });
+    }
+
+    return core as unknown as ExtendedPublicAPI<C>;
+};
+
+type ExtendedPrivilegedAPI<C> = TrezorConnectPrivilegedAPI &
+    Omit<C, keyof TrezorConnectPrivilegedAPI>;
+
+export const factoryPrivileged = <
+    C extends TrezorConnectCore<ConnectSettings> & TrezorConnectInternal,
 >(
-    core: CoreType,
-    extraMethods: ExtraMethodsType = {} as ExtraMethodsType,
-): TrezorConnectCallable & CoreType & ExtraMethodsType => {
-    const callableMethods = Object.fromEntries(
-        connectCallableMethods.map(method => [
-            method,
-            (params: any) => core.call({ ...params, method }),
-        ]),
-    ) as Pick<TrezorConnect, (typeof connectCallableMethods)[number]>;
+    core: C,
+): ExtendedPrivilegedAPI<C> => {
+    for (const method of connectCallableMethods) {
+        (core as any)[method] = (params: any) => core.call({ ...params, method });
+    }
 
-    return {
-        ...core,
-
-        ...callableMethods,
-
-        ...extraMethods,
-    };
+    return core as ExtendedPrivilegedAPI<C>;
 };

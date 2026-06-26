@@ -1,4 +1,4 @@
-import { factory } from '@trezor/connect-common';
+import { factoryPrivileged } from '@trezor/connect-common';
 
 const dummy = (method: string) => () => {
     throw new Error(
@@ -7,7 +7,7 @@ const dummy = (method: string) => () => {
 };
 
 // Exported to enable using directly
-const TrezorConnect = factory({
+const TrezorConnect = factoryPrivileged({
     on: dummy('eventEmitter.on'),
     off: dummy('eventEmitter.off'),
     removeAllListeners: dummy('eventEmitter.removeAllListeners'),

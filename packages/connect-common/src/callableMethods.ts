@@ -1,29 +1,30 @@
 import type { CallMethodKeys } from './events/call';
 
-const connectCallableMethodGroups = {
-    management: [
-        'getFirmwareHash',
-        'resetDevice',
-        'loadDevice',
-        'recoveryDevice',
-        'wipeDevice',
-        'backupDevice',
-        'changePin',
-        'changeWipeCode',
-        'changeLanguage',
-        'applySettings',
-        'applyFlags',
-        'authenticateDevice',
-        'setBusy',
-        'setBrightness',
-        'bleUnpair',
-        'thpGetCredentials',
-        'thpRemoveCredentials',
-        'telemetryGet',
-        'pingDevice',
-        'getNonce',
-        'getSettings',
-    ],
+const connectManagementMethods = [
+    'getFirmwareHash',
+    'resetDevice',
+    'loadDevice',
+    'recoveryDevice',
+    'wipeDevice',
+    'backupDevice',
+    'changePin',
+    'changeWipeCode',
+    'changeLanguage',
+    'applySettings',
+    'applyFlags',
+    'authenticateDevice',
+    'setBusy',
+    'setBrightness',
+    'bleUnpair',
+    'thpGetCredentials',
+    'thpRemoveCredentials',
+    'telemetryGet',
+    'pingDevice',
+    'getNonce',
+    'getSettings',
+] as const;
+
+const connectPublicCallableMethodGroups = {
     device: [
         'getFeatures',
         'getDeviceState',
@@ -105,16 +106,20 @@ const connectCallableMethodGroups = {
     nostr: ['nostrGetPublicKey', 'nostrSignEvent'],
 } as const;
 
+export const connectPublicCallableMethods = Object.values(
+    connectPublicCallableMethodGroups,
+).flat() as CallMethodKeys[];
+
+export const connectCallableMethods = [
+    ...connectPublicCallableMethods,
+    ...connectManagementMethods,
+];
+
 type AssertNever<T extends never> = T;
-type ConnectCallableMethod =
-    (typeof connectCallableMethodGroups)[keyof typeof connectCallableMethodGroups][number];
+type ConnectCallableMethod = (typeof connectCallableMethods)[number];
 
 export type MissingConnectCallableMethods = Exclude<CallMethodKeys, ConnectCallableMethod>;
 export type ExtraConnectCallableMethods = Exclude<ConnectCallableMethod, CallMethodKeys>;
 
 export type ConnectCallableMethodsMissingGuard = AssertNever<MissingConnectCallableMethods>;
 export type ConnectCallableMethodsExtraGuard = AssertNever<ExtraConnectCallableMethods>;
-
-export const connectCallableMethods = Object.values(
-    connectCallableMethodGroups,
-).flat() as CallMethodKeys[];

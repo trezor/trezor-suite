@@ -12,7 +12,7 @@ import {
     type DeviceErrorType,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { type TrezorConnect } from '@trezor/connect';
+import { type TrezorConnectCallable } from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
@@ -43,7 +43,7 @@ export type RegisterDevice = (
 
 export type RegisterDeviceDeps = {
     dispatch: Dispatch;
-    trezorConnect: Pick<TrezorConnect, 'evoluSignRegistrationRequest'>;
+    trezorConnect: Pick<TrezorConnectCallable, 'evoluSignRegistrationRequest'>;
 } & RegisterDeviceFetchDep &
     PrepareChallengeSessionFetchDep;
 

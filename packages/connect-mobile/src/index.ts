@@ -5,8 +5,9 @@ import {
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
 import { type CallMethodPayload } from '@trezor/connect-common/src/events';
-import { type ConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
+import { factoryPublic } from '@trezor/connect-common/src/factory';
 import type { ConnectMobileSettings, Manifest } from '@trezor/connect-common/src/types';
+import type { TrezorConnectCore } from '@trezor/connect-common/src/types/api';
 import {
     type CancelParams,
     normalizeCancelParams,
@@ -37,7 +38,7 @@ const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: Bui
     );
 };
 
-export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectMobileSettings> {
+export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSettings> {
     // Prefer crypto.randomUUID, but fall back to a weak id where `crypto` is absent: connect-mobile
     // is a published deeplink transport for third-party React Native apps that may lack a `crypto`
     // polyfill. These ids are only request/response correlation keys, so the weak fallback is fine.
@@ -166,16 +167,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     }
 }
 
-const impl = new TrezorConnectDeeplink();
-const TrezorConnect = factory<ConnectMobileSettings, { handleDeeplink: (url: string) => void }>(
-    {
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
-    { handleDeeplink: impl.handleDeeplink.bind(impl) },
-);
+const TrezorConnect = factoryPublic(new TrezorConnectDeeplink());
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;

@@ -1,4 +1,4 @@
-export * from './api';
+export type * from './api';
 export type * from './account';
 export * from './coinInfo';
 export * from './definitions';

@@ -4,7 +4,12 @@
 // `'@trezor/connect` module will be automatically mocked in all tests
 // https://jestjs.io/docs/manual-mocks#mocking-node-modules
 
-import { CallMethodPayload, TrezorConnect, connectCallableMethods } from '@trezor/connect';
+import {
+    CallMethodPayload,
+    TrezorConnectCallable,
+    TrezorConnectPrivilegedAPI,
+    connectCallableMethods,
+} from '@trezor/connect';
 import { typedObjectFromEntries } from '@trezor/utils';
 
 const connect = jest.requireActual('@trezor/connect');
@@ -82,7 +87,7 @@ const composeTransaction = jest.fn(async _params => {
     return { success: false, error: { message: 'error' }, ...fixture, _params };
 });
 
-const mock: TrezorConnect = {
+const mock: TrezorConnectPrivilegedAPI = {
     init,
     call,
     on,
@@ -98,7 +103,7 @@ const mock: TrezorConnect = {
             method,
             jest.fn().mockImplementation((params: any) => mock.call({ ...params, method })),
         ]),
-    ) as Pick<TrezorConnect, (typeof connectCallableMethods)[number]>),
+    ) as TrezorConnectCallable),
     composeTransaction,
 };
 

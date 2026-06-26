@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { connectCallableMethods } from '@trezor/connect';
 
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 const controller = getController();
@@ -59,34 +59,10 @@ describe('__info common param', () => {
     });
 
     describe('all the non-utility methods should not crash', () => {
-        Object.keys(TrezorConnect).forEach(method => {
-            if (
-                [
-                    // "utility" methods
-                    'init',
-                    'getSettings',
-                    'on',
-                    'off',
-                    'removeAllListeners',
-                    'uiResponse',
-                    'requestLogin',
-                    'getCoinInfo',
-                    'dispose',
-                    'cancel',
-                    'requestWebUSBDevice',
-                    'bleUnpair',
-                    'firmwareUpdate', // todo: this should probably work with __info param as well
-                    'updateConnectSettings',
-                ].includes(method)
-            ) {
-                return;
-            }
-
+        connectCallableMethods.forEach(method => {
             it(`TrezorConnect.${method}({ __info: true })`, async () => {
                 // @ts-expect-error
-                const result = await TrezorConnect[method]({
-                    __info: true,
-                });
+                const result = await TrezorConnect[method]({ __info: true });
                 expect(result).toBeDefined();
             });
         });
