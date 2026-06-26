@@ -1093,6 +1093,10 @@ export const messages = defineMessages({
         defaultMessage: 'Trade history',
         id: 'TR_TRADING_LAST_TRANSACTIONS',
     },
+    TR_TRADING_TRADE_DETAIL: {
+        defaultMessage: 'Trade detail',
+        id: 'TR_TRADING_TRADE_DETAIL',
+    },
     TR_TRADING_PAYMENT_METHOD: {
         defaultMessage: 'Payment method',
         id: 'TR_TRADING_PAYMENT_METHOD',

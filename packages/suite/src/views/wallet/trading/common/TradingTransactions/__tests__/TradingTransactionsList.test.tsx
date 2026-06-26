@@ -152,11 +152,10 @@ describe('TradingTransactionsList', () => {
 
         expect(screen.getByTestId('@trading/transactions/list')).toBeInTheDocument();
         expect(screen.getByTestId('@trading/transactions/no-transaction')).toBeInTheDocument();
-        expect(screen.queryByTestId('@trading/transactions/heading')).not.toBeInTheDocument();
         expect(screen.queryByTestId('@trading/transactions/count')).not.toBeInTheDocument();
     });
 
-    it('renders heading, correct transaction counts, and trade rows when there are trades', () => {
+    it('renders correct transaction counts and trade rows when there are trades', () => {
         const store = configureMockStore({
             preloadedState: buildState({ trades: [BUY_TRADE, SELL_TRADE, EXCHANGE_TRADE] }),
         });
@@ -167,7 +166,6 @@ describe('TradingTransactionsList', () => {
             <TradingTransactionsList />,
         );
 
-        expect(screen.getByTestId('@trading/transactions/heading')).toBeInTheDocument();
         expect(
             screen.queryByTestId('@trading/transactions/no-transaction'),
         ).not.toBeInTheDocument();

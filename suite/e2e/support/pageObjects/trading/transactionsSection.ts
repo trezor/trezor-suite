@@ -11,7 +11,7 @@ export class TradingTransactionsSection {
 
     constructor(private page: Page) {
         this.menuButton = page.getByTestId('@trading/menu/wallet-trading-transactions');
-        this.heading = page.getByTestId('@trading/transactions/heading');
+        this.heading = page.getByTestId('@trading/page-header/title');
         this.count = page.getByTestId('@trading/transactions/count');
         this.list = page.getByTestId('@trading/transactions/list');
         this.allSwapRows = this.list.locator(
