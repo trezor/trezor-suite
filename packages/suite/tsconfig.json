@@ -8,9 +8,7 @@
             }
         ],
         "outDir": "./libDev",
-        "paths": {
-            "src/*": ["./src/*"]
-        }
+        "paths": { "src/*": ["./src/*"] }
     },
     "include": [".", "e2e", "**/*.json"],
     "references": [

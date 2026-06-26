@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -14,7 +14,7 @@ import {
     selectEnsureWalletSuiteSyncOnDep,
     selectTurnOnSuiteSyncDep,
 } from '@suite-common/suite-sync-types';
-import { useAlert } from '@suite-native/alerts';
+import { useAlert, useShowAlertResult } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
@@ -23,14 +23,18 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { exhaustive } from '@trezor/type-utils';
+import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 import { useShowSuiteSyncEnabledToast } from './useShowSuiteSyncEnabledToast';
 import { useSuiteSyncErrorHandler } from './useSuiteSyncErrorHandler';
 
+type AddLabelSuiteSyncGuardResult = Result<void, { type: 'cancelled' }>;
+
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
-    const isAddLabelRequestInProgressRef = useRef(false);
+    const { showAlertResult } = useShowAlertResult();
+
+    const [isInProgress, setIsInProgress] = useState(false);
 
     const { ensureWalletSuiteSyncOn, turnOnSuiteSync } = useServices(
         selectEnsureWalletSuiteSyncOnDep,
@@ -50,9 +54,8 @@ export const useTurnOnSuiteSyncGuard = () => {
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
-    const suiteSyncInteraction = useSelector(
-        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
-            selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    const interaction = useSelector((state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+        selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     const showSuiteSyncFirmwareUpgradeAlert = () => {
@@ -76,80 +79,56 @@ export const useTurnOnSuiteSyncGuard = () => {
         });
     };
 
-    const handleTurnOnSuiteSync = async (onSuccess: () => void) => {
-        if (!deviceStaticSessionId) return;
+    const handleTurnOnSuiteSync = async (): Promise<AddLabelSuiteSyncGuardResult> => {
+        if (!deviceStaticSessionId) {
+            return err({ type: 'cancelled' });
+        }
 
         const result = await turnOnSuiteSync({ deviceStaticSessionId });
 
         if (!result.success) {
             handleSuiteSyncError(result.error);
 
-            return;
+            return err({ type: 'cancelled' });
         }
 
         showSuiteSyncEnabledToast();
 
-        onSuccess();
+        return ok();
     };
 
-    const showSuiteSyncEnableConfirmationAlert = ({
-        onSuccess,
-        onCancel,
-    }: {
-        onSuccess: () => void;
-        onCancel: () => void;
-    }) => {
+    const confirmSuiteSyncEnable = (): Promise<AddLabelSuiteSyncGuardResult> => {
         if (!isDeviceConnected) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
             });
-            onCancel();
-        } else {
-            showAlert({
-                title: <Translation id="suiteSync.enableAlert.title" />,
-                description: <Translation id="suiteSync.enableAlert.description" />,
-                primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
-                onPressPrimaryButton: () => handleTurnOnSuiteSync(onSuccess),
-                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                onPressSecondaryButton: onCancel,
-            });
+
+            return Promise.resolve(err({ type: 'cancelled' }));
         }
+
+        return showAlertResult({
+            title: <Translation id="suiteSync.enableAlert.title" />,
+            description: <Translation id="suiteSync.enableAlert.description" />,
+            primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
+            onPressPrimaryButton: handleTurnOnSuiteSync,
+            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+        });
     };
 
-    const handleAddLabel = async (onSuccess: () => void) => {
-        if (isAddLabelRequestInProgressRef.current) return;
-
-        isAddLabelRequestInProgressRef.current = true;
-
-        const releaseAddLabelRequest = () => {
-            isAddLabelRequestInProgressRef.current = false;
-        };
-
-        const handleSuccess = () => {
-            releaseAddLabelRequest();
-            onSuccess();
-        };
-
-        switch (suiteSyncInteraction) {
-            case 'suite-sync-off':
-                showSuiteSyncEnableConfirmationAlert({
-                    onSuccess: handleSuccess,
-                    onCancel: releaseAddLabelRequest,
-                });
-
-                return;
+    const ensureSuiteSyncReadyForAddLabel = async (): Promise<AddLabelSuiteSyncGuardResult> => {
+        switch (interaction) {
+            case 'suite-sync-off': {
+                return confirmSuiteSyncEnable();
+            }
 
             case 'firmware-upgrade-needed':
                 showSuiteSyncFirmwareUpgradeAlert();
-                releaseAddLabelRequest(); // Alert only informative, it then redirects user.
 
-                return;
+                return err({ type: 'cancelled' });
 
             case 'keys-needed': {
                 if (!deviceStaticSessionId) {
-                    releaseAddLabelRequest();
-
-                    return;
+                    return err({ type: 'cancelled' });
                 }
 
                 const result = await ensureWalletSuiteSyncOn({
@@ -160,26 +139,34 @@ export const useTurnOnSuiteSyncGuard = () => {
                 if (!result.success) {
                     handleSuiteSyncError(result.error);
 
-                    releaseAddLabelRequest();
-
-                    return;
+                    return err({ type: 'cancelled' });
                 }
 
-                handleSuccess();
-
-                return;
+                return ok();
             }
 
             case 'unsupported':
             case null:
-                handleSuccess();
-
-                return;
+                return ok();
 
             default:
-                return exhaustive(suiteSyncInteraction);
+                return exhaustive(interaction);
         }
     };
 
-    return { handleAddLabel };
+    const handleAddLabel = async (onSuccess: () => void) => {
+        if (isInProgress) return;
+
+        setIsInProgress(true);
+
+        const result = await ensureSuiteSyncReadyForAddLabel();
+
+        setIsInProgress(false);
+
+        if (result.success) {
+            onSuccess();
+        }
+    };
+
+    return { handleAddLabel, isInProgress };
 };
