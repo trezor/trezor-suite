@@ -13,7 +13,7 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
-import { type StaticSessionId, type TrezorConnect } from '@trezor/connect';
+import { type StaticSessionId, type TrezorConnectCallable } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
 
 import { type AccountsRootState } from './accounts/accountsReducer';
@@ -79,7 +79,7 @@ export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
     },
 );
 
-type DiscoveryAccountsParam = Parameters<TrezorConnect['discoverAccounts']>[0]['coins'];
+type DiscoveryAccountsParam = Parameters<TrezorConnectCallable['discoverAccounts']>[0]['coins'];
 
 const getDeviceAccountsPerEnabledNetwork = (
     state: WalletCoreCompoundRootState,

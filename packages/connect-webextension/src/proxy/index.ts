@@ -1,7 +1,6 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { CORE_CALL, type CallMethod, POPUP } from '@trezor/connect-common/src/events';
-import { createErrorMessage } from '@trezor/connect-common/src/events';
-import { factory } from '@trezor/connect-common/src/factory';
+import { CORE_CALL, POPUP, createErrorMessage } from '@trezor/connect-common/src/events';
+import { factoryPublic } from '@trezor/connect-common/src/factory';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 import type { ConnectDynamicSettings } from '@trezor/connect-common/src/types';
 import {
@@ -53,7 +52,7 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
     );
 };
 
-const call: CallMethod = async (params: any) => {
+const call = async (params: any) => {
     try {
         const response = await _channel.postMessage({
             type: CORE_CALL,
@@ -71,12 +70,7 @@ const call: CallMethod = async (params: any) => {
     }
 };
 
-const TrezorConnect = factory({
-    init,
-    call,
-    cancel,
-    dispose,
-});
+const TrezorConnect = factoryPublic({ init, call, cancel, dispose });
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;

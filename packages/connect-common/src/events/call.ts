@@ -1,7 +1,7 @@
 import type { CORE_CALL, CORE_CALL_CANCEL } from './core-call';
 import { type SerializedError, serializeError } from '../constants/errors';
-import type { DeviceState, DeviceUniquePath } from '../types';
-import type { TrezorConnectCallable } from '../types/api';
+import type { TrezorConnectCallable } from '../types/api/callable';
+import type { DeviceState, DeviceUniquePath } from '../types/device';
 import type { CommonParams, DeviceIdentity } from '../types/params';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
@@ -41,8 +41,6 @@ export type CallMethodResponse<M extends CallMethodKeys> = UnwrappedResponse<
     ReturnType<CallApi[M]>
 >;
 export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
-
-export type CallMethod = (params: CallMethodPayload) => Promise<any>;
 
 export interface CoreCallMessage {
     id: string;

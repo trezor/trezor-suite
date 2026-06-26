@@ -16,7 +16,7 @@ import {
 } from '@suite-common/suite-sync-evolu';
 import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
-import { type TrezorConnect } from '@trezor/connect';
+import { type TrezorConnectPrivilegedAPI } from '@trezor/connect';
 
 import { createOnSharedWorkerUnsupported } from './createOnSharedWorkerUnsupported';
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
@@ -25,7 +25,7 @@ import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 type SuiteSyncDesktopCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: TrezorConnect;
+    trezorConnect: TrezorConnectPrivilegedAPI;
     onStorageEnsured: OnStorageEnsured;
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &

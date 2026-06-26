@@ -1,4 +1,4 @@
-import { ERRORS, type UpdateConnectSettings, factory } from '@trezor/connect-common';
+import { ERRORS, type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
 import { TRANSPORT } from '@trezor/transport-common';
 
 import { config } from './data/config';
@@ -30,25 +30,8 @@ class CoreInModuleWeb extends CoreInModule {
     }
 }
 
-const impl = new CoreInModuleWeb();
-
 // Exported to enable using directly
-const TrezorConnect = factory(
-    {
-        on: impl.on,
-        off: impl.off,
-        removeAllListeners: impl.removeAllListeners,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        updateConnectSettings: impl.updateConnectSettings.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
-    {
-        requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
-    },
-);
+const TrezorConnect = factoryPrivileged(new CoreInModuleWeb());
 
 export default TrezorConnect;
 
@@ -58,6 +41,6 @@ export * from './exports';
 
 if (typeof window !== 'undefined') {
     window.addEventListener('beforeunload', () => {
-        impl.dispose();
+        TrezorConnect.dispose();
     });
 }

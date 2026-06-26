@@ -1,47 +1,21 @@
-import { type Static, Type } from '@trezor/schema-utils';
+import type { TrezorConnectCallable } from './callable';
+import type { TrezorConnectInternal } from './internal';
+import type { TrezorConnectManagement } from './management';
+import type { CallMethodPayload } from '../../events/call';
+import type { ConnectSettings, Manifest } from '../settings';
 
-import { TrezorConnectAccount } from './account';
-import { TrezorConnectBitcoin } from './bitcoin';
-import { TrezorConnectBlockchain } from './blockchain';
-import { TrezorConnectCardano } from './cardano';
-import { TrezorConnectDevice } from './device';
-import { TrezorConnectEthereum } from './ethereum';
-import { TrezorConnectEvolu } from './evolu';
-import { TrezorConnectInternal } from './internal';
-import { TrezorConnectManagement } from './management';
-import { TrezorConnectMonero } from './monero';
-import { TrezorConnectNostr } from './nostr';
-import { TrezorConnectRipple } from './ripple';
-import { TrezorConnectSolana } from './solana';
-import { TrezorConnectStellar } from './stellar';
-import { TrezorConnectTezos } from './tezos';
-import { TrezorConnectTron } from './tron';
+export type { TrezorConnectCallable };
 
-export interface TrezorConnectCore {
+export interface TrezorConnectCore<InitSettings extends Record<string, any>> {
+    init(settings: InitSettings & { manifest: Manifest }): Promise<void>;
+    call(params: CallMethodPayload): Promise<any>;
     cancel(params?: string | { reason?: string; callId?: string }): void;
     dispose(): void;
 }
 
-export const TrezorConnectCallable = Type.Composite([
-    TrezorConnectManagement,
-    TrezorConnectDevice,
-    TrezorConnectBlockchain,
-    TrezorConnectAccount,
-    TrezorConnectBitcoin,
-    TrezorConnectEthereum,
-    TrezorConnectCardano,
-    TrezorConnectMonero,
-    TrezorConnectRipple,
-    TrezorConnectSolana,
-    TrezorConnectStellar,
-    TrezorConnectTezos,
-    TrezorConnectTron,
-    TrezorConnectEvolu,
-    TrezorConnectNostr,
-]);
-export type TrezorConnectCallable = Static<typeof TrezorConnectCallable>;
+export type TrezorConnectPublicAPI<InitSettings extends Record<string, any>> =
+    TrezorConnectCore<InitSettings> & Omit<TrezorConnectCallable, keyof TrezorConnectManagement>;
 
-// Runtime schema for key access
-export const TrezorConnectSchema = Type.Composite([TrezorConnectInternal, TrezorConnectCallable]);
-
-export type TrezorConnect = TrezorConnectCore & Static<typeof TrezorConnectSchema>;
+export type TrezorConnectPrivilegedAPI = TrezorConnectCore<ConnectSettings> &
+    TrezorConnectInternal &
+    TrezorConnectCallable;

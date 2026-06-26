@@ -10,12 +10,12 @@ import {
 } from '@trezor/connect-common';
 import type {
     CallMethodPayload,
-    ConnectFactoryDependencies,
     ConnectSettings,
     ConnectSettingsTransport,
     CoreEventMessage,
     CoreRequestMessage,
     MethodResponseMessage,
+    TrezorConnectCore,
     UiResponseEvent,
     UpdateConnectSettings,
 } from '@trezor/connect-common';
@@ -33,7 +33,7 @@ import { type Logger, cloneObject } from '@trezor/utils';
 
 import { initCoreState } from '../core';
 
-export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettings> {
+export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings> {
     private readonly eventEmitter = new ConnectEmitter();
 
     public on = this.eventEmitter.on.bind(this.eventEmitter);
@@ -59,7 +59,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     }
 
     // handle messages to core
-    public handleCoreMessage(message: CoreRequestMessage) {
+    protected handleCoreMessage(message: CoreRequestMessage) {
         const core = this.coreManager.get();
         if (!core) {
             throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');

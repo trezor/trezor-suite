@@ -3,14 +3,12 @@ import { getSynchronize } from '@trezor/utils';
 import { ERRORS } from '../constants';
 import { parseManifest, parseVersion } from '../data/connectSettings';
 import { type CallMethodPayload, createErrorMessage } from '../events';
-import type { ConnectFactoryDependencies } from '../factory';
 import type { ConnectDynamicSettings, ConnectImplSettings, TrezorConnectCore } from '../types';
 import { type CancelParams } from '../utils/cancelParams';
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
-export type ConnectImpl = TrezorConnectCore &
-    Pick<ConnectFactoryDependencies<ConnectImplSettings>, 'init' | 'call'>;
+export type ConnectImpl = TrezorConnectCore<ConnectImplSettings>;
 
 type TrezorConnectDynamicParams = {
     implementations: Record<ImplType, ConnectImpl>;
@@ -20,7 +18,7 @@ type TrezorConnectDynamicParams = {
  * Implementation of TrezorConnect that can dynamically switch between different implementations.
  *
  */
-export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<never, never>> {
+export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSettings> {
     private currentTarget: ImplType;
     private readonly implementations: Record<ImplType, ConnectImpl>;
 
