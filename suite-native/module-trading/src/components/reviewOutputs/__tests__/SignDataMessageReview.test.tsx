@@ -107,7 +107,9 @@ describe('SignDataMessageReview', () => {
     it('should render domain card with simplified JSON', () => {
         const { getByText } = renderSignDataMessageReview();
 
-        expect(getByText('Domain')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.domain')),
+        ).toBeOnTheScreen();
         expect(getByText(/1inch Aggregation Router/)).toBeOnTheScreen();
     });
 

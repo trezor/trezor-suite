@@ -52,7 +52,9 @@ describe('ProviderSheetHandle', () => {
         expect(
             getByText(getTranslation('moduleTrading.providerSheet.filters.cex')),
         ).toBeOnTheScreen();
-        expect(getByText('DEX')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.filters.dex')),
+        ).toBeOnTheScreen();
     });
 
     it('should not render filters when shouldShowFilters is false', () => {
@@ -64,7 +66,7 @@ describe('ProviderSheetHandle', () => {
         expect(getByText(getTranslation('moduleTrading.providerSheet.title'))).toBeOnTheScreen();
         expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeNull();
         expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.cex'))).toBeNull();
-        expect(queryByText('DEX')).toBeNull();
+        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.dex'))).toBeNull();
     });
 
     it('should call onClose when close button is pressed', () => {

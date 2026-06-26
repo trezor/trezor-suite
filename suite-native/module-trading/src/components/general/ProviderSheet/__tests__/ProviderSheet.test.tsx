@@ -67,7 +67,9 @@ describe('ProviderSheet', () => {
         expect(
             getByText(getTranslation('moduleTrading.providerSheet.float.title')),
         ).toBeOnTheScreen();
-        expect(getByText('DEX')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerSheet.dex.title')),
+        ).toBeOnTheScreen();
     });
 
     it('should render provided quotes', () => {
