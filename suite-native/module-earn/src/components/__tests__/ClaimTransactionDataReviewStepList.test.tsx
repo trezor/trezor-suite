@@ -1,4 +1,5 @@
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type ReviewSummaryOutput } from '@suite-native/transaction-management';
 
@@ -69,7 +70,7 @@ describe('ClaimTransactionDataReviewStepList', () => {
 
         expect(mockClaimOutputItem).toHaveBeenCalledTimes(1);
         expect(mockClaimSummaryOutputItem).toHaveBeenCalledTimes(1);
-        expect(queryByText('Next')).toBeNull();
+        expect(queryByText(getTranslation('generic.buttons.next'))).toBeNull();
         expect(queryByTestId('@earn/claim-review-continue')).toBeNull();
     });
 
