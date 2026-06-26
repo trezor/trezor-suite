@@ -87,3 +87,21 @@ export type SwapTradeResponse = {
     tags?: string[];
     rateIdentificator: string;
 };
+
+type DexTx = {
+    from: string;
+    to: string;
+    data: string;
+    value: string;
+};
+
+// A DEX swap has no provider deposit `sendAddress`; Suite signs and broadcasts `dexTx` itself.
+export type SwapDexTradeResponse = Omit<SwapTradeResponse, 'sendAddress' | 'max'> & {
+    max: number | string; // DEX trades can return the sentinel string "NONE"
+    isDex: boolean;
+    dexTx: DexTx;
+    swapGasEstimate: number;
+    swapSlippage: string;
+    refundAddress: string;
+    fromAddress: string;
+};

@@ -15,7 +15,7 @@ export const TradingExchangeMinimumReceivedInfoItem = ({
     symbol,
 }: TradingExchangeMinimumReceivedInfoItemProps) => (
     <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />} direction="row">
-        <Text typographyStyle="body-sm">
+        <Text typographyStyle="body-sm" data-testid="@trading/offer/info/minimum-received">
             <FormattedCryptoAmount
                 value={minimumYouGetAmount}
                 symbol={symbol}

@@ -15385,5 +15385,21 @@
         "supportUrl": "https://support.moonpay.com/",
         "kycPolicyType": "KYC-required",
         "isRefundRequired": false
+    },
+    {
+        "name": "lifi",
+        "companyName": "LI.FI",
+        "logo": "lifi-icon.svg",
+        "isActive": true,
+        "isFixedRate": false,
+        "isDex": true,
+        "buyTickers": ["ethereum", "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+        "sellTickers": ["ethereum", "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+        "supportUrl": "https://help.li.fi",
+        "kycPolicyType": "DEX",
+        "statusUrl": "https://scan.li.fi/tx/{{orderId}}",
+        "kycPolicy": "KYC never required. DEX swaps either succeed or fail.",
+        "isRefundRequired": false,
+        "termsUrl": "https://li.fi/legal/terms-and-conditions"
     }
 ]

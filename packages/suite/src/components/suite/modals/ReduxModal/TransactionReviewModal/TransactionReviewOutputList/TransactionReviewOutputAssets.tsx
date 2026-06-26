@@ -195,6 +195,7 @@ export const TransactionReviewOutputAssets = ({
                                     value={receiveAddress}
                                     isChunked={false}
                                     isDeviceRendered
+                                    data-testid="@modal/assets/receive/address"
                                 />
                             </InfoItem>
                         </Column>

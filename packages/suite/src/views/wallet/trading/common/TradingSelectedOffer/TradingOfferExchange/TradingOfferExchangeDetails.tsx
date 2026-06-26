@@ -118,7 +118,10 @@ export const TradingOfferExchangeDetails = ({
                 <TradingProviderInfoItem exchange={exchange} providers={providers} />
 
                 <InfoItem label={<Translation id="TR_TRADING_EXCHANGE_TYPE" />} direction="row">
-                    <Text typographyStyle="body-sm">
+                    <Text
+                        typographyStyle="body-sm"
+                        data-testid="@trading/offer/info/exchange-dex-type"
+                    >
                         <Tooltip
                             content={
                                 <Translation
