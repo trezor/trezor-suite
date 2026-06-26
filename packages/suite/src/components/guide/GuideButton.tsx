@@ -3,7 +3,7 @@ import { FreeFocusInside } from 'react-focus-lock';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { IconButton, TOOLTIP_DELAY_LONG } from '@trezor/components';
+import { IconButton, Row, ShortcutBadge, TOOLTIP_DELAY_LONG } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
@@ -35,7 +35,12 @@ export const GuideButton = () => {
                     priority="secondary"
                     size="large"
                     tooltip={{
-                        content: <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />,
+                        content: (
+                            <Row gap={8}>
+                                <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                                <ShortcutBadge shortcut={['F1']} />
+                            </Row>
+                        ),
                         placement: 'top',
                         delayShow: TOOLTIP_DELAY_LONG,
                     }}

@@ -1,19 +1,27 @@
 import { useEffect, useRef } from 'react';
 
-import { useTranslation } from '@suite/intl';
-import { closeModalApp, goto } from '@suite/router';
+import { SettingsAnchor, closeModalApp, goto } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
-import { isDesktop, isMacOs } from '@trezor/env-utils';
+import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
-import { requestBioAuthChangeThunk } from 'src/actions/suite/bioAuthThunks';
+import { open, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+
+// `?` is a printable character, so the shortcut must not hijack typing in form fields.
+const isTypingTarget = (target: EventTarget | null): boolean => {
+    if (!(target instanceof HTMLElement)) return false;
+
+    const { tagName, isContentEditable } = target;
+
+    return isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName);
+};
 
 export const AppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -28,7 +36,6 @@ export const AppShortcuts = () => {
 
     const isBioAuthEnabled = useSelector(state => state.bioAuth.bioAuthEnabled);
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
-    const { translationString } = useTranslation();
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
@@ -81,17 +88,9 @@ export const AppShortcuts = () => {
             e.preventDefault();
 
             if (!isBioAuthEnabled) {
-                const messageSuccess = translationString(
-                    isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
-                );
-                const messageError = translationString('TR_BIO_AUTH_FAILED');
-                dispatch(
-                    requestBioAuthChangeThunk({
-                        payload: true,
-                        messageSuccess,
-                        messageError,
-                    }),
-                );
+                // Biometric lock isn't set up yet, so there's nothing to lock with.
+                // Take the user to the setting and highlight it instead.
+                dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.BioAuth }));
             } else {
                 dispatch(bioAuthActions.setCancelled(false));
                 dispatch(bioAuthActions.setIsBioAuthValidationRequired(true));
@@ -170,6 +169,14 @@ export const AppShortcuts = () => {
                 '[data-testid="@account-menu/search-input"]',
             );
             searchInput?.focus();
+        }
+
+        // press ? to open the keyboard shortcuts guide
+        // `?` is a printable character, so ignore it while the user is typing
+        if (e.key === '?' && !cmdOrCtrl && !altKey && !isTypingTarget(e.target)) {
+            e.preventDefault();
+            dispatch(setView('KEYBOARD_SHORTCUTS'));
+            dispatch(open());
         }
     };
 
