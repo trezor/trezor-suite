@@ -1,5 +1,6 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { featureFlagsReducer } from '@suite-native/feature-flags';
+import { getTranslation } from '@suite-native/intl';
 import { OnboardingStackRoutes } from '@suite-native/navigation';
 import {
     type TestStore,
@@ -81,7 +82,9 @@ describe('BiometricsScreen', () => {
         });
         const { getByText } = renderBiometricsScreen();
 
-        await userEvent.press(getByText('Not now'));
+        await userEvent.press(
+            getByText(getTranslation('moduleOnboarding.biometricsScreen.button.notNow')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledWith(OnboardingStackRoutes.TradingLocation);
     });
@@ -111,7 +114,9 @@ describe('BiometricsScreen', () => {
         });
         const { getByText } = renderBiometricsScreen();
 
-        await userEvent.press(getByText('Not now'));
+        await userEvent.press(
+            getByText(getTranslation('moduleOnboarding.biometricsScreen.button.notNow')),
+        );
 
         expect(mockNavigationDispatch).toHaveBeenCalledWith({
             payload: { index: 0, routes: [{ name: 'AppTabs', params: { screen: 'Home' } }] },
