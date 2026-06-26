@@ -8,8 +8,6 @@ export const initialRunCompleted = createThunk(
     (_, { dispatch, getState }) => {
         if (selectIsInitialRun(getState())) {
             dispatch(setFlag({ key: 'initialRun', value: false }));
-            // Make the freshly onboarded user eligible for the one-time onboarding
-            // feedback banner on their first post-onboarding dashboard.
             dispatch(setFlag({ key: 'showOnboardingFeedbackBanner', value: true }));
         }
     },

@@ -47,9 +47,6 @@ export const flagsInitialState: FlagsState = {
     showTEXDashboardPromoBanner: true,
     showTS7DashboardPromoBanner: true,
     showStablecoinYieldDashboardPromoBanner: true,
-    // Defaults to false so existing/returning users never see it. It is flipped to true
-    // exactly once when onboarding completes (see `initialRunCompleted`), so only newly
-    // onboarded users become eligible.
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
