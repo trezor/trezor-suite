@@ -4,19 +4,15 @@ import { ERRORS } from '../constants';
 import { parseManifest, parseVersion } from '../data/connectSettings';
 import { type CallMethodPayload, createErrorMessage } from '../events';
 import type { ConnectFactoryDependencies } from '../factory';
-import type { ConnectDynamicSettings, ConnectImplSettings } from '../types';
+import type { ConnectDynamicSettings, ConnectImplSettings, TrezorConnectCore } from '../types';
 import type { UpdateConnectSettings } from '../types/api/internal/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
 import { type CancelParams } from '../utils/cancelParams';
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
-export type ConnectImpl = Omit<
-    ConnectFactoryDependencies<Record<never, never>>,
-    'init' | 'eventEmitter' | 'uiResponse' | 'updateConnectSettings'
-> & {
-    init: (params: ConnectImplSettings) => Promise<void>;
-};
+export type ConnectImpl = TrezorConnectCore &
+    Pick<ConnectFactoryDependencies<ConnectImplSettings>, 'init' | 'call'>;
 
 type TrezorConnectDynamicParams = {
     implementations: Record<ImplType, ConnectImpl>;
@@ -27,7 +23,11 @@ type TrezorConnectDynamicParams = {
  *
  */
 export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<never, never>> {
-    public readonly eventEmitter = new ConnectEmitter();
+    private readonly eventEmitter = new ConnectEmitter();
+
+    public on = this.eventEmitter.on.bind(this.eventEmitter);
+    public off = this.eventEmitter.removeListener.bind(this.eventEmitter);
+    public removeAllListeners = this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
 
     private currentTarget: ImplType;
     private readonly implementations: Record<ImplType, ConnectImpl>;

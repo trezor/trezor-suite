@@ -8,11 +8,9 @@ const dummy = (method: string) => () => {
 
 // Exported to enable using directly
 const TrezorConnect = factory({
-    eventEmitter: {
-        on: dummy('eventEmitter.on'),
-        removeListener: dummy('eventEmitter.removeListener'),
-        removeAllListeners: dummy('eventEmitter.removeAllListeners'),
-    } as any,
+    on: dummy('eventEmitter.on'),
+    off: dummy('eventEmitter.off'),
+    removeAllListeners: dummy('eventEmitter.removeAllListeners'),
     init: dummy('init'),
     call: dummy('call'),
     updateConnectSettings: dummy('updateConnectSettings'),

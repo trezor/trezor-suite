@@ -95,7 +95,9 @@ const uiResponse = () => {
 };
 
 const TrezorConnect = factory({
-    eventEmitter,
+    on: eventEmitter.on.bind(eventEmitter),
+    off: eventEmitter.off.bind(eventEmitter),
+    removeAllListeners: eventEmitter.removeAllListeners.bind(eventEmitter),
     init,
     call,
     uiResponse,
