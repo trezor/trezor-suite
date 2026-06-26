@@ -16,7 +16,7 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
-    const { handleAddLabel } = useTurnOnSuiteSyncGuard();
+    const { handleAddLabel, isInProgress } = useTurnOnSuiteSyncGuard();
 
     const handleTriggerAccountRename = () => {
         if (isLabellingAllowed) {
@@ -32,8 +32,10 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
                 intent="neutral"
                 priority="secondary"
                 iconName="pencilSimple"
+                size="medium"
                 onPress={handleTriggerAccountRename}
                 testID="@account-detail/settings/edit-button"
+                isLoading={isInProgress}
             />
             <BottomSheetModal
                 isCloseDisplayed

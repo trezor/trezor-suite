@@ -19,7 +19,7 @@ type EditableLabelLayoutParams = {
 export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLayoutParams) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const { handleAddLabel } = useTurnOnSuiteSyncGuard();
+    const { handleAddLabel, isInProgress } = useTurnOnSuiteSyncGuard();
 
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
@@ -35,6 +35,7 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
                 iconRight="pencil"
                 testID={testID}
                 size="small"
+                isLoading={isInProgress}
             >
                 {label ?? <Translation id="suiteSync.addLabel" />}
             </TextButton>
