@@ -49,6 +49,7 @@ type ContainerProps = {
     $size: IconSize;
     $intent?: IconIntent;
     $priority?: IconPriority;
+    $isInverse: boolean;
     $isDisabled: boolean;
     $color?: Color;
 } & TransientProps<AllowedFrameProps>;
@@ -60,7 +61,7 @@ const Container = styled.div<ContainerProps>`
     `}
 
     path {
-        fill: ${({ $intent, $priority = 'primary', $isDisabled, $color, theme }) => {
+        fill: ${({ $intent, $priority = 'primary', $isInverse, $isDisabled, $color, theme }) => {
             if ($color !== undefined) {
                 return theme[$color];
             }
@@ -69,7 +70,7 @@ const Container = styled.div<ContainerProps>`
                 return 'currentColor';
             }
 
-            return mapIntentToCSS($intent ?? 'neutral', $priority, $isDisabled, theme);
+            return mapIntentToCSS($intent ?? 'neutral', $priority, $isInverse, $isDisabled, theme);
         }};
         transition: fill 0.14s;
     }
@@ -84,6 +85,7 @@ const Container = styled.div<ContainerProps>`
 
 export type IconBaseProps = AllowedFrameProps & {
     size?: IconSize;
+    isInverse?: boolean;
     onClick?: (e: MouseEvent<HTMLDivElement> | KeyboardEvent<Element>) => void;
     'data-testid'?: string;
 };
@@ -99,6 +101,7 @@ export const Icon = ({
     size = 24,
     intent,
     priority = 'primary',
+    isInverse = false,
     isDisabled = false,
     color,
     onClick,
@@ -127,6 +130,7 @@ export const Icon = ({
             $size={size}
             $intent={intent}
             $priority={priority}
+            $isInverse={isInverse}
             $isDisabled={isDisabled}
             $color={color}
             data-testid={dataTest}

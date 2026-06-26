@@ -69,6 +69,7 @@ type ColorProps = {
 } & {
     $intent?: TextIntent;
     $priority?: TextPriority;
+    $isInverse?: boolean;
     $isDisabled?: boolean;
     $color?: Color;
 };
@@ -76,6 +77,7 @@ type ColorProps = {
 const getColorForText = ({
     $intent,
     $priority = 'primary',
+    $isInverse,
     $isDisabled,
     theme,
     $color,
@@ -99,13 +101,14 @@ const getColorForText = ({
     }
 
     return css`
-        color: ${mapIntentToCSS($intent, $priority, theme)};
+        color: ${mapIntentToCSS($intent, $priority, $isInverse ?? false, theme)};
     `;
 };
 
 type StyledTextProps = {
     $intent?: TextIntent;
     $priority?: TextPriority;
+    $isInverse?: boolean;
     $isDisabled?: boolean;
     $color?: Color;
     $isMonospaced?: boolean;
@@ -141,6 +144,7 @@ const StyledText = styled.span<StyledTextProps>`
 
 export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     children: ReactNode;
+    isInverse?: boolean;
     isMonospaced?: boolean;
     isHighlighted?: boolean;
     isTabular?: boolean;
@@ -154,6 +158,7 @@ export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
 export const Text = ({
     intent,
     priority = 'primary',
+    isInverse = false,
     isDisabled = false,
     color,
     children,
@@ -174,6 +179,7 @@ export const Text = ({
         <StyledText
             $intent={intent}
             $priority={priority}
+            $isInverse={isInverse}
             $isDisabled={isDisabled}
             $color={color}
             as={as}

@@ -45,6 +45,9 @@ export const OpenGuideFromTooltip = ({
                 e.stopPropagation();
                 openNodeById(id);
             }}
+            size="small"
+            isInverse
+            iconLeft={LightbulbIcon}
         >
             <Icon size={12} intent="warning" as={LightbulbIcon} />
             <Translation id="TR_LEARN" />

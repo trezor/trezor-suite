@@ -55,9 +55,6 @@ export const Tooltip: StoryObj<TooltipProps> = {
         tooltipMaxWidth: {
             type: 'number',
         },
-        title: {
-            control: 'text',
-        },
         placement: {
             control: 'select',
             options: [

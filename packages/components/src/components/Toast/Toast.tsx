@@ -1,58 +1,20 @@
 import { type ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import { XIcon } from '@trezor/icons';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
-import { hexToRgba } from '@trezor/utils';
 
 import { type ToastAction, type ToastIntent } from './types';
-import { mapToastIntentToIcon, mapToastVariantToColor, normalizeToastActions } from './utils';
+import {
+    mapToastIntentToBackgroundColor,
+    mapToastIntentToBorderColor,
+    mapToastIntentToIcon,
+    normalizeToastActions,
+} from './utils';
+import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
 import { Icon, type IconComponent } from '../Icon/Icon';
 import { Button } from '../buttons/Button/Button';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { Text } from '../typography/Text/Text';
-
-const Container = styled.div<{ $variant: ToastIntent }>`
-    display: flex;
-    align-items: center;
-    min-height: 3.25rem;
-
-    padding-inline: ${spacingsPx.md};
-    padding-block: ${spacingsPx.xs};
-
-    font-size: 1rem;
-    color: ${({ theme }) => theme.contentPrimary};
-
-    overflow-wrap: anywhere;
-    word-break: normal;
-
-    border-radius: ${borders.radii.xs};
-    position: relative;
-
-    background: ${({ theme }) => hexToRgba(theme.surfaceFillSticky, 0.5)};
-    backdrop-filter: blur(12px);
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        border-radius: inherit;
-        border: 1px solid ${({ theme }) => hexToRgba(theme.borderNeutral, 0.1)};
-    }
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        border-left: ${spacingsPx.xxs} solid
-            ${({ theme, $variant }) => theme[mapToastVariantToColor($variant)]};
-        border-radius: inherit;
-    }
-`;
 
 export type ToastProps = {
     icon?: IconComponent;
@@ -87,50 +49,74 @@ export const Toast = ({
             priority={action.priority}
             onClick={action.onClick}
             size="small"
+            isInverse={intent === 'neutral'}
         >
             {action.label}
         </Button>
     );
 
     return (
-        <Container data-testid={dataTestBase} data-toast-intent={intent} $variant={intent}>
-            <Row gap={spacings.sm} justifyContent="space-between" flex="1">
-                {showIcon && (
-                    <Icon
-                        as={icon ?? mapToastIntentToIcon(intent)}
-                        color={mapToastVariantToColor(intent)}
-                    />
-                )}
-
-                <Column gap={spacings.xs} flex="1">
-                    {typeof content === 'string' || typeof content === 'number' ? (
-                        <Text typographyStyle="body-md-strong">{content}</Text>
-                    ) : (
-                        content
+        <div data-testid={dataTestBase} data-toast-intent={intent}>
+            <Box
+                borderRadius={8}
+                backgroundColor={mapToastIntentToBackgroundColor(intent)}
+                shadow="surfaceShadowModeless"
+                borderWidth={1}
+                borderColor={mapToastIntentToBorderColor(intent)}
+                padding={{ horizontal: 16, vertical: 12 }}
+            >
+                <Row gap={16} justifyContent="space-between" width="100%">
+                    {showIcon && (
+                        <Icon
+                            size={20}
+                            as={icon ?? mapToastIntentToIcon(intent)}
+                            intent={intent}
+                            isInverse={intent === 'neutral'}
+                        />
                     )}
 
-                    <Row gap={spacings.xs}>
-                        {bottomActions.map((action, index) => renderActionButton(action, index))}
+                    <Column gap={8} flex="1">
+                        <Text
+                            overflowWrap="anywhere"
+                            wordBreak="normal"
+                            intent={intent}
+                            priority="primary"
+                            isInverse={intent === 'neutral'}
+                            typographyStyle="body-sm"
+                            as="div"
+                        >
+                            {content}
+                        </Text>
+
+                        <Row gap={8}>
+                            {bottomActions.map((action, index) =>
+                                renderActionButton(action, index),
+                            )}
+                        </Row>
+                    </Column>
+
+                    <Row gap={8}>
+                        {rightActions.map((action, index) => renderActionButton(action, index))}
+                        {dismissible && (
+                            <IconButton
+                                icon={XIcon}
+                                size="small"
+                                intent={intent}
+                                priority="secondary"
+                                onClick={onDismiss}
+                                data-testid={`${dataTestBase}/close`}
+                                aria-label="Close toast"
+                                isInverse={intent === 'neutral'}
+                                tooltip={
+                                    dismissTooltip
+                                        ? { content: dismissTooltip }
+                                        : { isActive: false }
+                                }
+                            />
+                        )}
                     </Row>
-                </Column>
-
-                <Row gap={spacings.xs}>
-                    {rightActions.map((action, index) => renderActionButton(action, index))}
                 </Row>
-
-                {dismissible && (
-                    <IconButton
-                        icon={XIcon}
-                        size="small"
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={onDismiss}
-                        data-testid={`${dataTestBase}/close`}
-                        aria-label="Close toast"
-                        tooltip={dismissTooltip ? { content: dismissTooltip } : { isActive: false }}
-                    />
-                )}
-            </Row>
-        </Container>
+            </Box>
+        </div>
     );
 };
