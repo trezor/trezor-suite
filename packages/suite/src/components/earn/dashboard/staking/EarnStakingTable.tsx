@@ -55,14 +55,14 @@ export const EarnStakingTable = () => {
                                 {ethNotActivated && (
                                     <EarnStakingActivateRow symbol="eth" isCardLayout />
                                 )}
-                                {adaNotActivated && (
-                                    <EarnStakingActivateRow symbol="ada" isCardLayout />
-                                )}
                                 {solNotActivated && (
                                     <EarnStakingActivateRow symbol="sol" isCardLayout />
                                 )}
                                 {trxNotActivated && (
                                     <EarnStakingActivateRow symbol="trx" isCardLayout />
+                                )}
+                                {adaNotActivated && (
+                                    <EarnStakingActivateRow symbol="ada" isCardLayout />
                                 )}
                             </Column>
                         ) : (
@@ -87,12 +87,6 @@ export const EarnStakingTable = () => {
                                                 isCardLayout={false}
                                             />
                                         )}
-                                        {adaNotActivated && (
-                                            <EarnStakingActivateRow
-                                                symbol="ada"
-                                                isCardLayout={false}
-                                            />
-                                        )}
                                         {solNotActivated && (
                                             <EarnStakingActivateRow
                                                 symbol="sol"
@@ -102,6 +96,12 @@ export const EarnStakingTable = () => {
                                         {trxNotActivated && (
                                             <EarnStakingActivateRow
                                                 symbol="trx"
+                                                isCardLayout={false}
+                                            />
+                                        )}
+                                        {adaNotActivated && (
+                                            <EarnStakingActivateRow
+                                                symbol="ada"
                                                 isCardLayout={false}
                                             />
                                         )}
