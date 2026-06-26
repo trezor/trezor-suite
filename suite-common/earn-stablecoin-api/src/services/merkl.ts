@@ -1,4 +1,4 @@
-import { getMerklUsersRewardsResponse } from '@suite-common/earn-stablecoin-defs';
+import { GetMerklUsersRewardsResponse } from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 
 import { earnYieldWorkerBaseUrl } from '../context';
@@ -13,5 +13,5 @@ const merklApi = createHttpClient({
 
 export const getMerklUsersRewards = merklApi('/users/rewards', {
     method: 'POST',
-    schema: getMerklUsersRewardsResponse,
+    schema: GetMerklUsersRewardsResponse,
 });

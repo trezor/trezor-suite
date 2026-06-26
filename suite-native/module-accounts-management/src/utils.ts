@@ -1,8 +1,8 @@
-import { type RewardDtoYieldSource } from '@suite-common/earn-stablecoin-api';
+import { type RewardDto } from '@suite-common/earn-stablecoin-api';
 import { type TxKeyPath } from '@suite-native/intl';
 
 export const getApyBreakdownDescriptionKey = (
-    yieldSource: RewardDtoYieldSource,
+    yieldSource: RewardDto['yieldSource'],
 ): TxKeyPath | null => {
     switch (yieldSource) {
         case 'protocol_incentive':

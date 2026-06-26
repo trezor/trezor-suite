@@ -1,4 +1,4 @@
-import { type YieldDtoNetwork } from '@suite-common/earn-stablecoin-defs';
+import { type TokenDto } from '@suite-common/earn-stablecoin-defs';
 import { exhaustive } from '@trezor/type-utils';
 
 import { networks } from './networksConfig';
@@ -162,5 +162,5 @@ export const getNetworkDecimals = (symbol: NetworkSymbolExtended) => {
     return undefined;
 };
 
-export const getNetworkByYieldXyzId = (yieldXyzId: YieldDtoNetwork) =>
+export const getNetworkByYieldXyzId = (yieldXyzId: TokenDto['network']) =>
     networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;

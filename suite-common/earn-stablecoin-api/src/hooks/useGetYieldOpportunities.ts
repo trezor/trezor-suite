@@ -1,4 +1,6 @@
-import { type GetYieldsSort } from '@suite-common/earn-stablecoin-defs';
+import type z from 'zod';
+
+import { type GetYieldsQueryParams } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useInfiniteQuery } from '@suite-common/react-query';
 
 import { YIELD_OPPORTUNITIES_DEFAULT_LIMIT, queriesStaleTime } from '../config';
@@ -6,7 +8,7 @@ import { getYields } from '../services';
 
 export interface UseGetYieldOpportunitiesProps {
     limit?: number;
-    sort?: GetYieldsSort;
+    sort?: z.infer<typeof GetYieldsQueryParams>['sort'];
     enabled?: boolean;
 }
 
