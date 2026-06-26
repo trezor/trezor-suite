@@ -198,6 +198,7 @@
         { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
+        { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },

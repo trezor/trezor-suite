@@ -17062,6 +17062,7 @@ __metadata:
     "@suite/receive": "workspace:*"
     "@suite/recovery": "workspace:*"
     "@suite/router": "workspace:*"
+    "@suite/sentry": "workspace:*"
     "@suite/settings": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/thp": "workspace:*"

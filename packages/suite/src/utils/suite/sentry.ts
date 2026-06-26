@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/core';
 
+import { setShouldCaptureBrowserTracing } from '@suite/sentry';
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { selectSelectedDevice } from '@suite-common/device';
 import { redactDevice, redactDiscovery, selectRedactedActionsLog } from '@suite-common/logger';
@@ -26,6 +27,8 @@ export const captureSentryMessage = Sentry.captureMessage;
  */
 export const allowSentryReport = (value: boolean) => {
     Sentry.setTag(ALLOW_REPORT_TAG, value);
+    // synchronize the newly set value to localStorage (`value` may have been also be retrieved from IDB, which effectively synces it)
+    setShouldCaptureBrowserTracing(value);
 };
 
 export const setSentryUser = (instanceId: string) => {
