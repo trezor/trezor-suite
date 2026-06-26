@@ -168,7 +168,14 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                             {isAdaStakedOutsideEverstake ? (
                                 <Translation id="earn.notAvailableShort" />
                             ) : (
-                                <Translation id="earn.apyPercentage" values={{ apy: apyValue }} />
+                                <Translation
+                                    id={
+                                        symbol === 'trx'
+                                            ? 'earn.aprPercentage'
+                                            : 'earn.apyPercentage'
+                                    }
+                                    values={{ apy: apyValue }}
+                                />
                             )}
                         </Text>
                     )}
