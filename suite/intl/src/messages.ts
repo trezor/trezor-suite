@@ -1756,7 +1756,7 @@ export const messages = defineMessages({
         id: 'TR_CHECK_RECOVERY_SEED',
     },
     TR_CHECK_SEED: {
-        defaultMessage: 'Check',
+        defaultMessage: 'Check wallet backup',
         id: 'TR_CHECK_SEED',
     },
     TR_CHECKSUM_CONVERSION_INFO: {
@@ -2887,7 +2887,7 @@ export const messages = defineMessages({
         id: 'TR_NAV_SIGN_AND_VERIFY',
     },
     TR_NAV_TRANSACTIONS: {
-        defaultMessage: 'Transaction overview',
+        defaultMessage: 'Overview',
         description: 'Title of the navigation tab that contains tx history.',
         id: 'TR_NAV_TRANSACTIONS',
     },
@@ -3460,7 +3460,7 @@ export const messages = defineMessages({
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
     },
     TR_TESTNET_COINS: {
-        defaultMessage: 'Testnet networks',
+        defaultMessage: 'Testnet',
         id: 'TR_TESTNET_COINS',
     },
     TR_TESTNET_COINS_LABEL: {
