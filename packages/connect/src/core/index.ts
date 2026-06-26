@@ -1003,8 +1003,7 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect, coreMode } =
-            settingsStore.get();
+        const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
 
         try {
             this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
@@ -1014,8 +1013,7 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        // in auto core mode, we have to wait to check if transport is available
-        if (!transportReconnect || coreMode === 'auto') {
+        if (!transportReconnect) {
             await this.deviceList.pendingConnection();
         }
 

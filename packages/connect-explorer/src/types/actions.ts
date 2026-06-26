@@ -1,7 +1,6 @@
 import type { TSchema } from '@sinclair/typebox';
 
-import type TrezorConnectMobile from '@trezor/connect-mobile';
-import type TrezorConnect from '@trezor/connect-web';
+import type { ConnectDynamicSettings, ConnectMobileSettings } from '@trezor/connect-common';
 import type { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
 
 import type { Field } from './common';
@@ -37,7 +36,7 @@ export type MethodAction =
 
 // TrezorConnect action types
 export type ConnectOptions = Partial<
-    Parameters<(typeof TrezorConnect | typeof TrezorConnectMobile)['init']>[0]
+    (ConnectMobileSettings & { coreMode: 'deeplink' }) | ConnectDynamicSettings
 >;
 
 export type TrezorConnectAction =
