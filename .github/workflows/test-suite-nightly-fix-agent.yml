@@ -171,7 +171,7 @@ jobs:
     needs: [prepare-matrix, build-desktop, build-web]
     runs-on: ubuntu-24.04
     if: github.repository == 'trezor/trezor-suite' && needs.prepare-matrix.outputs.has-tasks == 'true'
-    timeout-minutes: 120
+    timeout-minutes: 210
     permissions:
       contents: write
       pull-requests: write
