@@ -12,7 +12,7 @@ import { showAddressThunk } from '@suite/receive';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     DefinitionType,
     type EnhancedTokenInfo,
@@ -62,7 +62,7 @@ interface TokenRowBasicActionsProps {
     account: Account;
     network: Network;
     isUnverifiedTable?: boolean;
-    yieldOpportunities?: YieldDto[];
+    yieldOpportunities?: YieldDtoV2[];
     setShowDeactivateModal: (value: boolean) => void;
 }
 
@@ -567,7 +567,7 @@ interface TokenRowActionsProps {
     tokenStatusType: TokenManagementAction;
     account: Account;
     network: Network;
-    yieldOpportunities?: YieldDto[];
+    yieldOpportunities?: YieldDtoV2[];
     isUnverifiedTable?: boolean;
     setShowDeactivateModal: (value: boolean) => void;
 }

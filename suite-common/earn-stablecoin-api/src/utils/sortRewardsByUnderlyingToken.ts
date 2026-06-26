@@ -1,6 +1,6 @@
-import { type RewardDto, type TokenDto } from '@suite-common/earn-stablecoin-defs';
+import { type RewardDtoV2, type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 
-const isSameToken = (a: TokenDto, b: TokenDto) => {
+const isSameToken = (a: TokenDtoV2, b: TokenDtoV2) => {
     if (a.address && b.address) {
         return a.address.toLowerCase() === b.address.toLowerCase();
     }
@@ -13,8 +13,8 @@ const isSameToken = (a: TokenDto, b: TokenDto) => {
 };
 
 export const sortRewardsByUnderlyingToken = (
-    rewards: RewardDto[],
-    underlyingToken: TokenDto | undefined,
+    rewards: RewardDtoV2[],
+    underlyingToken: TokenDtoV2 | undefined,
 ) =>
     rewards.toSorted((a, b) => {
         if (underlyingToken) {

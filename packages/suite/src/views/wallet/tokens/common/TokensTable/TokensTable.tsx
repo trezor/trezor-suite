@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type EnhancedTokenInfo,
     type TokenManagementAction,
@@ -40,7 +40,7 @@ interface TokensTableProps {
     hideRates?: boolean;
     searchQuery?: string;
     isUnverifiedTable?: boolean;
-    yieldOpportunities?: YieldDto[];
+    yieldOpportunities?: YieldDtoV2[];
 }
 
 export const TokensTable = ({

@@ -4,7 +4,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -23,7 +23,7 @@ interface YieldPageHeaderProps {
     fallbackTitleId: TranslationKey;
     account?: Account;
     routeParams?: EarnParams;
-    vault?: YieldDto;
+    vault?: YieldDtoV2;
     isInvalid?: boolean;
 }
 

@@ -1,4 +1,4 @@
-import type { YieldDto } from '@suite-common/earn-stablecoin-api';
+import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import type { EvmHexString } from '@suite-common/schemas/src/evm';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
@@ -29,7 +29,7 @@ export type YieldFlowToken = YieldFlowDisplayToken & {
 
 export type YieldFlowResolvedData = {
     account: Account;
-    vault: YieldDto;
+    vault: YieldDtoV2;
     token: YieldFlowToken;
     receiptToken: YieldFlowDisplayToken;
 };

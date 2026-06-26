@@ -1,5 +1,5 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
@@ -376,7 +376,7 @@ export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
 const getVaultAddressFromYieldId = (yieldId: string) =>
     yieldId.match(/0x[a-fA-F0-9]{40}/)?.[0] ?? null;
 
-export const getYieldVaultContractAddress = (vault: Pick<YieldDto, 'id' | 'outputToken'>) =>
+export const getYieldVaultContractAddress = (vault: Pick<YieldDtoV2, 'id' | 'outputToken'>) =>
     vault.outputToken?.address ?? getVaultAddressFromYieldId(vault.id);
 
 export const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>

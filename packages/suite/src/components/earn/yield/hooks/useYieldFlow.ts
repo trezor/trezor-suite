@@ -7,7 +7,7 @@ import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -50,7 +50,7 @@ import {
 type UseYieldFlowProps = {
     account: Account;
     routeParams: EarnParams;
-    vault: YieldDto;
+    vault: YieldDtoV2;
     flowType: YieldPositionFlowType;
 };
 
@@ -62,7 +62,7 @@ type UseYieldFlowStepsResult = {
 
 export type UseYieldFlowResult = {
     account: Account;
-    vault: YieldDto;
+    vault: YieldDtoV2;
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
@@ -111,7 +111,7 @@ export type YieldFlowContextValues = Omit<
 > & {
     token: YieldFlowToken;
     receiptToken: YieldFlowDisplayToken;
-    vault: YieldDto;
+    vault: YieldDtoV2;
 };
 
 export const useYieldFlow = ({

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
 import {
-    type RewardDto,
-    type TokenDto,
+    type RewardDtoV2,
+    type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -16,13 +16,13 @@ import { getApyBreakdownDescriptionKey } from '../utils';
 
 type StablecoinYieldApyBreakdownProps = {
     networkSymbol: NetworkSymbol;
-    rewards: RewardDto[];
-    underlyingToken: TokenDto | undefined;
+    rewards: RewardDtoV2[];
+    underlyingToken: TokenDtoV2 | undefined;
     tokenSymbol: string;
 };
 
 type RewardRowProps = {
-    reward: RewardDto;
+    reward: RewardDtoV2;
     networkSymbol: NetworkSymbol;
     tokenSymbol: string;
 };

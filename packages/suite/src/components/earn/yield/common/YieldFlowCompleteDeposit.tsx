@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Divider, Row, Text } from '@trezor/components';
@@ -13,7 +13,7 @@ type YieldFlowCompleteDepositProps = {
     input: YieldFlowCompleteValue;
     output: YieldFlowCompleteValue;
     apy?: number | null;
-    vault: YieldDto;
+    vault: YieldDtoV2;
     networkSymbol: NetworkSymbol;
 };
 

@@ -1,5 +1,5 @@
 import { type EarnParams } from '@suite/router';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account } from '@suite-common/wallet-types';
 
 import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow';
@@ -7,7 +7,7 @@ import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow
 type UseYieldDepositProps = {
     account: Account;
     routeParams: EarnParams;
-    vault: YieldDto;
+    vault: YieldDtoV2;
 };
 
 export const useYieldDeposit = ({

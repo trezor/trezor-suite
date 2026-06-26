@@ -6,7 +6,7 @@ import { EarnAnchor, goto, useAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type YieldAccountRewards,
-    type YieldDto,
+    type YieldDtoV2,
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
@@ -29,7 +29,7 @@ import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 
-const emptyVaults: YieldDto[] = [];
+const emptyVaults: YieldDtoV2[] = [];
 
 export const EarnYieldTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Yield);

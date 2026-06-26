@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type TokenDto } from '@suite-common/earn-stablecoin-api';
+import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
@@ -12,7 +12,7 @@ import { type EarnTokenBalance } from './types';
 type EarnAccountCellProps = {
     account?: Account;
     symbol?: NetworkSymbol;
-    iconToken?: TokenDto;
+    iconToken?: TokenDtoV2;
     showAssetNetworkIcon?: boolean;
     tokenBalance?: EarnTokenBalance;
     subtitle?: ReactNode;

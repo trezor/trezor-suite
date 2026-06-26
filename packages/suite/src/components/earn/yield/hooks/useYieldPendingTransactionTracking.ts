@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { type AnalyticsDesktopEvents, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
@@ -65,7 +65,7 @@ const getResolutionEventType = (
 
 type ReportContext = {
     networkSymbol: string;
-    vault?: YieldDto | null;
+    vault?: YieldDtoV2 | null;
     durationMs?: number;
 };
 
@@ -148,7 +148,7 @@ type UseYieldPendingTransactionTrackingProps = {
     flowType: YieldFlowType;
     flowKey: string;
     waitForMerklToResolveClaim?: () => Promise<unknown>;
-    vault?: YieldDto | null;
+    vault?: YieldDtoV2 | null;
 };
 
 const stablePlaceholderPromise = () => Promise.resolve();

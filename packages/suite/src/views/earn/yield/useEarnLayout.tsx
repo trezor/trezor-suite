@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
@@ -28,7 +28,7 @@ type GetEarnLayoutResultParams = {
     account?: Account;
     device?: TrezorDevice;
     routeParams?: EarnParams;
-    vault?: YieldDto;
+    vault?: YieldDtoV2;
     type: YieldPositionFlowType;
     isYieldOpportunitiesLoading: boolean;
     isYieldOpportunitiesSuccess: boolean;
@@ -37,7 +37,7 @@ type GetEarnLayoutResultParams = {
 
 type VaultValidationParams = {
     account: Account;
-    vault?: YieldDto;
+    vault?: YieldDtoV2;
 };
 
 type VaultTokenValidationParams = VaultValidationParams & {
