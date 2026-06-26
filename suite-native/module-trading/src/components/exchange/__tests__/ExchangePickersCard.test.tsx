@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 import { btcAsset, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -79,7 +80,9 @@ describe('ExchangePickersCard', () => {
 
         const { getByText } = renderExchangePickersCard();
 
-        expect(getByText('Receive account')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should render provider picker when quotes are loading', () => {
@@ -87,7 +90,7 @@ describe('ExchangePickersCard', () => {
             wallet: { trading: { exchange: { isLoading: true } } },
         });
 
-        expect(getByText('Provider')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
     it('should render provider picker when quote is selected', () => {
@@ -97,6 +100,6 @@ describe('ExchangePickersCard', () => {
 
         const { getByText } = renderExchangePickersCard();
 
-        expect(getByText('Provider')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 });
