@@ -202,6 +202,8 @@ export function useBuildTradingAssetOptions({
                 }
             });
 
+        const searchDisplayNameFilter = createSearchFilter(search.toLocaleLowerCase());
+
         const filteredAccounts = allAccountsWithTokens
             .filter(accountOrToken => {
                 switch (accountOrToken.type) {
@@ -227,9 +229,6 @@ export function useBuildTradingAssetOptions({
                             account: accountOrToken.account,
                             token: accountOrToken.token,
                         });
-                        const searchDisplayNameFilter = createSearchFilter(
-                            search.toLocaleLowerCase(),
-                        );
 
                         return (
                             searchDisplayNameFilter(displaySymbolName) ||
