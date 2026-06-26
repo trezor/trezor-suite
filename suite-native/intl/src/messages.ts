@@ -3584,7 +3584,7 @@ export const messages = {
                     update: 'This firmware update may take some time to complete.',
                     install: 'This firmware installation may take some time to complete.',
                 },
-                item2: '</b> Keep the app open while installing</b> —closing it may corrupt the firmware.',
+                item2: '<b> Keep the app open while installing</b> —closing it may corrupt the firmware.',
                 item3: {
                     update: 'While the firmware is updating, leave your phone as is. It will remain on throughout the update.',
                     install:
