@@ -1,7 +1,13 @@
+import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { formatAddressWithNewlines } from '../../support/common';
+import { formatAddressWithNewlines, replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+
+const signTxErrorMessage = replaceTemplatesInTranslation(
+    messages.TOAST_SIGN_TX_ERROR.defaultMessage,
+    { error: 'Invalid amount specified' },
+);
 
 test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -9,7 +15,7 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic:
                 'fantasy auto fancy access ring spring patrol expect common tape talent annual',
         },
-        ignoreToastErrors: ['Invalid amount specified'],
+        ignoreToastErrors: [signTxErrorMessage],
     });
 
     const recipientAddress = 'DJk8vtoEuNGtT4YRNoqVxWyRh6kM3s8bzc';
@@ -65,8 +71,6 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             await device.pressYes();
         });
 
-        await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(
-            'Transaction signing error: Invalid amount specified',
-        );
+        await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(signTxErrorMessage);
     });
 });

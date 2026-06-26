@@ -1,12 +1,21 @@
-import { formatAddress } from '../../support/common';
+import { messages } from '@suite/intl';
+
+import { formatAddress, replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 const correctPassphraseAddr =
     'addr1qx3ufjpwcx30ee73a7r29surauze6yt0jvr7c3rnahw0hnppg7qp5xvslcfucsqqayrtjhm4u66xsw987ae6ugydlzzsqdsfz4';
 const passphrase = 'secret passphrase A';
+const toastErrorMessage = replaceTemplatesInTranslation(
+    messages.TOAST_VERIFY_ADDRESS_ERROR.defaultMessage,
+    { error: 'Passphrase is incorrect' },
+);
 
 test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
+    test.use({
+        deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true },
+        ignoreToastErrors: [toastErrorMessage],
+    });
 
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
