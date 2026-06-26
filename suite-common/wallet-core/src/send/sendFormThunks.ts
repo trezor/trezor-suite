@@ -29,11 +29,11 @@ import {
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
+    isAllowanceUnlimited,
     isCardanoTx,
     isEvmApprovalTxByTextSignature,
     isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
-    isMaxAllowance,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -78,10 +78,6 @@ import {
     type SignTransactionError,
     type SignTransactionTimeoutError,
 } from './sendFormTypes';
-import {
-    composeTronTransactionFeeLevelsThunk,
-    signTronSendFormTransactionThunk,
-} from './tron/sendFormTronThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
@@ -95,6 +91,10 @@ import {
     addFakePendingEvmTxThunk,
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
+import {
+    composeTronTransactionFeeLevelsThunk,
+    signTronSendFormTransactionThunk,
+} from './tron/sendFormTronThunks';
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
@@ -366,7 +366,7 @@ export const pushSendFormTransactionThunk = createThunk<
 
             if (evmApprovalData && token) {
                 const amountString = evmApprovalData.amount.toString();
-                const isInfiniteApproval = isMaxAllowance(amountString);
+                const isInfiniteApproval = isAllowanceUnlimited(amountString, token.decimals);
                 const amount = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(amountString)),
                     decimals: token.decimals,
