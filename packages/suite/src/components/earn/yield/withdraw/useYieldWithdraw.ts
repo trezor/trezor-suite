@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { type EarnParams } from '@suite/router';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldFlowCompleteValue,
     type YieldWithdrawFlowType,
@@ -14,7 +14,7 @@ import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow
 type UseYieldWithdrawProps = {
     account: Account;
     routeParams: EarnParams;
-    vault: YieldDto;
+    vault: YieldDtoV2;
 };
 
 export type YieldWithdrawContextValues = Omit<YieldFlowContextValues, 'flowType'> & {

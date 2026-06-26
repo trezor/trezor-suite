@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StepList } from '@trezor/components';
 
@@ -10,7 +10,7 @@ import { EarnInfoRow } from './EarnInfoRow';
 
 type YieldDepositingInfoProps = {
     apy: number | null;
-    vault: YieldDto | undefined;
+    vault: YieldDtoV2 | undefined;
     networkSymbol: NetworkSymbol;
     depositSymbol: string;
     vaultSymbol: string | undefined;

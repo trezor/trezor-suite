@@ -1,4 +1,4 @@
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
@@ -35,13 +35,8 @@ const vault = {
     providerId: 'morpho',
     metadata: {
         name: 'Steakhouse USDC Prime',
-        description: '',
         underMaintenance: false,
         deprecated: false,
-        logoURI: '',
-        documentation: '',
-        supportedStandards: [],
-        supportsCampaigns: false,
     },
     token: {
         address: underlyingTokenAddress,
@@ -59,7 +54,6 @@ const vault = {
         network: 'ethereum',
         coinGeckoId: 'usd-coin',
     },
-    inputTokens: [],
     rewardRate: {
         total: 0.05,
         rateType: 'APY',
@@ -69,7 +63,7 @@ const vault = {
         enter: true,
         exit: true,
     },
-} satisfies Omit<YieldDto, 'tokens' | 'mechanics' | 'prime'> as unknown as YieldDto;
+} satisfies YieldDtoV2 as unknown as YieldDtoV2;
 
 const resolve = ({
     tokenContract,

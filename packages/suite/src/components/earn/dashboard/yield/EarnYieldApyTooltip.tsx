@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 
@@ -22,7 +22,7 @@ const Abbr = styled.abbr`
 `;
 
 type EarnYieldApyTooltipProps = {
-    vault: YieldDto;
+    vault: YieldDtoV2;
     apyPercentage: number | null;
     networkSymbol: NetworkSymbol;
     children?: ReactNode;

@@ -1,4 +1,4 @@
-import { type RewardDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { YIELD_FLOW_STEPS, type YieldFlowStepId } from '@suite-common/wallet-core';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import type { StepListItemState } from '@trezor/components';
@@ -38,7 +38,9 @@ export const getYieldModifyAmountInput = ({
  * component is emitted as-is — symbols repeating across components are not
  * merged. Returns an empty string when there are no usable components.
  */
-export const getApyBreakdown = (components: RewardDto[] | undefined): string =>
+export const getApyBreakdown = (
+    components: YieldDtoV2['rewardRate']['components'] | undefined,
+): string =>
     (components ?? [])
         .map(component => {
             if (!Number.isFinite(component.rate)) return null;

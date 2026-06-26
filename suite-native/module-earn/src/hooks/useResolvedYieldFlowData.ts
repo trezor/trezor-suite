@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -38,7 +38,7 @@ type UnresolvedYieldFlowData = {
     depositedSharesAmount: string | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
-    vault: YieldDto | null;
+    vault: YieldDtoV2 | null;
     vaultTokenName: string | null;
     vaultTokenSymbol: string | null;
 };
@@ -54,7 +54,7 @@ type YieldFlowDataResolved = {
     depositedSharesAmount: string;
     token: YieldFlowToken;
     tokenSymbol: TokenSymbol;
-    vault: YieldDto;
+    vault: YieldDtoV2;
     vaultTokenName: string;
     vaultTokenSymbol: string;
 };
@@ -65,7 +65,7 @@ type ResolveYieldFlowDataParams = {
     account: Account | null;
     tokenContract: string;
     yieldId?: string;
-    yieldOpportunities: YieldDto[];
+    yieldOpportunities: YieldDtoV2[];
 };
 
 type GetMatchingTokenParams = {
@@ -220,7 +220,7 @@ export const resolveYieldFlowData = ({
     };
 };
 
-const emptyYieldOpportunities: YieldDto[] = [];
+const emptyYieldOpportunities: YieldDtoV2[] = [];
 
 export const useResolvedYieldFlowData = ({
     accountKey,

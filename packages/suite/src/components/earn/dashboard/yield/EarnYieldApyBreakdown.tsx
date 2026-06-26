@@ -1,7 +1,7 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
-    type RewardDto,
-    type TokenDto,
+    type RewardDtoV2,
+    type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -10,15 +10,15 @@ import { Column, Icon, Row, Text } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
 
 type EarnYieldApyBreakdownProps = {
-    rewards: RewardDto[];
+    rewards: RewardDtoV2[];
     networkSymbol: NetworkSymbol;
-    underlyingToken: TokenDto | undefined;
+    underlyingToken: TokenDtoV2 | undefined;
 };
 
 // Translatable explainer rendered as the secondary text of a reward row. Unknown sources return
 // null so we never render the raw, untranslated description coming from the API.
 const getYieldSourceDescriptionId = (
-    yieldSource: RewardDto['yieldSource'],
+    yieldSource: RewardDtoV2['yieldSource'],
 ): TranslationKey | null => {
     switch (yieldSource) {
         case 'lending':

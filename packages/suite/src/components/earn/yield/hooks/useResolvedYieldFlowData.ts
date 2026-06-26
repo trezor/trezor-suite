@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { type EarnParams } from '@suite/router';
-import { type TokenDto, type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
@@ -23,7 +23,7 @@ const getMatchedAccountToken = ({
     token,
 }: {
     account: Account;
-    token?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
+    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
 }) => {
     if (!account.tokens?.length || !token) {
         return undefined;
@@ -57,7 +57,7 @@ type UseResolvedYieldFlowDataResult = {
 type UseResolvedYieldFlowDataProps = {
     account: Account;
     routeParams: EarnParams;
-    vault: YieldDto;
+    vault: YieldDtoV2;
 };
 
 export const useResolvedYieldFlowData = ({

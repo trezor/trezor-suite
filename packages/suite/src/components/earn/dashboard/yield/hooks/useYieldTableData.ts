@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type TokenDto, type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     doTokensMatch,
@@ -36,7 +36,7 @@ const getMatchedAccountToken = ({
 }: {
     account: Account;
     networkSymbol: NetworkSymbol;
-    token?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
+    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
 }): TokenInfoBranded | undefined => {
     if (!account.tokens?.length || !token) {
         return undefined;
@@ -64,7 +64,7 @@ const getYieldOpportunityData = ({
 }: {
     account: Account;
     networkSymbol: NetworkSymbol;
-    vault: YieldDto;
+    vault: YieldDtoV2;
 }): YieldOpportunityData => {
     const matchedInputToken = getMatchedAccountToken({
         account,
@@ -113,7 +113,7 @@ const toNetworkTokenSortKey = (opportunity: YieldAccountOpportunity) =>
     };
 
 type UseYieldTableDataProps = {
-    availableVaults: YieldDto[];
+    availableVaults: YieldDtoV2[];
     visibleAccounts: Account[];
     visibleAccountSymbols: Set<NetworkSymbol>;
 };

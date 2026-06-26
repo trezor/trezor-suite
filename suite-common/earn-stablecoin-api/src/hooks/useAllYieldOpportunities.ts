@@ -1,4 +1,4 @@
-import { type YieldDto } from '@suite-common/earn-stablecoin-defs';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { YIELD_OPPORTUNITIES_DEFAULT_LIMIT, queriesStaleTime } from '../config';
@@ -9,7 +9,7 @@ type UseAllYieldOpportunitiesProps = {
     enabled?: boolean;
 };
 
-const stableEmptyArray: YieldDto[] = [];
+const stableEmptyArray: YieldDtoV2[] = [];
 
 export const useAllYieldOpportunities = ({
     limit = YIELD_OPPORTUNITIES_DEFAULT_LIMIT,
