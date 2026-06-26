@@ -5,7 +5,7 @@ import {
     selectTradingExchangeInfo,
     selectTradingSellInfo,
 } from '@suite-common/trading';
-import { Box, Column, H3, Paragraph, Text } from '@trezor/components';
+import { Box, Column, Paragraph, Text } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -47,9 +47,6 @@ export const TradingTransactionsList = () => {
                 {!isEmpty && (
                     <>
                         <Column margin={{ bottom: 32 }}>
-                            <H3 data-testid="@trading/transactions/heading">
-                                <Translation id="TR_TRADING_LAST_TRANSACTIONS" />
-                            </H3>
                             <Text
                                 typographyStyle="body-sm"
                                 color="contentSecondary"

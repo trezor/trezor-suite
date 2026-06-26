@@ -166,7 +166,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
             });
 
             await test.step(`Navigate back to transaction list`, async () => {
-                await tradingPage.transactions.menuButton.click();
+                await tradingPage.backButton.click();
                 await expect(tradingPage.transactions.heading).toBeVisible();
             });
         }

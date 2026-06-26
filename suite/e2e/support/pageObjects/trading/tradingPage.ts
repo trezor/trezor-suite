@@ -47,6 +47,7 @@ export class TradingPage {
     readonly setMax: Locator;
 
     // Transactions
+    readonly backButton: Locator;
     readonly transactionDetailStatus: Locator;
     readonly transactionDetail: Locator;
     readonly transactions: TradingTransactionsSection;
@@ -85,6 +86,7 @@ export class TradingPage {
         this.sendBalance = this.page.getByTestId('outputs.0.token');
         this.setMax = this.page.getByTestId('outputs.0.setMax');
 
+        this.backButton = this.page.getByTestId('@account-subpage/back');
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
         this.transactions = new TradingTransactionsSection(page);
