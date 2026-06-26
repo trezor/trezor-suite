@@ -1,3 +1,5 @@
+import { createIntl, createIntlCache } from 'react-intl';
+
 import test, { Locator, Page, TestInfo } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
@@ -227,3 +229,12 @@ export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =
 
 export const toADA = (lovelace: number, options?: { maxDecimals?: number }) =>
     `${localizeNumber(lovelace / 1000000, 'en-US', 0, options?.maxDecimals ?? 6)} ADA`;
+
+export const replaceTemplatesInTranslation = (
+    template: string,
+    values: Record<string, string | number>,
+) => {
+    const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
+
+    return intlEn.formatMessage({ id: template, defaultMessage: template }, values);
+};
