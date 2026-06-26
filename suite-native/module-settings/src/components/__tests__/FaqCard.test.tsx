@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FaqCard } from '../FaqCard';
@@ -38,10 +39,18 @@ describe('FaqCard', () => {
             const { getByText } = renderFaqCard();
 
             // Android BT-specific info
-            expect(getByText('For wireless connections:')).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation(
+                        'moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.title',
+                    ),
+                ),
+            ).toBeOnTheScreen();
 
             // Trading info
-            expect(getByText('What trading features are available?')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.faq.trading.question')),
+            ).toBeOnTheScreen();
         });
 
         it('should not render trading section when trading is disabled', () => {
@@ -49,7 +58,7 @@ describe('FaqCard', () => {
 
             const { queryByText } = renderFaqCard();
 
-            expect(queryByText('What trading features are available?')).toBeNull();
+            expect(queryByText(getTranslation('moduleSettings.faq.trading.question'))).toBeNull();
         });
     });
 
@@ -63,11 +72,13 @@ describe('FaqCard', () => {
 
             // iOS BT-specific info
             expect(
-                getByText('Can I connect my Trezor to Trezor Suite on Mobile?'),
+                getByText(getTranslation('moduleSettings.faq.bluetoothEnabled.ios.0.question')),
             ).toBeOnTheScreen();
 
             // Trading info
-            expect(getByText('What trading features are available?')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleSettings.faq.trading.question')),
+            ).toBeOnTheScreen();
         });
 
         it('should not render trading section when trading is disabled', () => {
@@ -75,7 +86,7 @@ describe('FaqCard', () => {
 
             const { queryByText } = renderFaqCard();
 
-            expect(queryByText('What trading features are available?')).toBeNull();
+            expect(queryByText(getTranslation('moduleSettings.faq.trading.question'))).toBeNull();
         });
     });
 });
