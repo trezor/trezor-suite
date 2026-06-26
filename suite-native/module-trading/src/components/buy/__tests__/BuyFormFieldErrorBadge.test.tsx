@@ -2,6 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 import { btcAsset, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -108,7 +109,13 @@ describe('BuyFormFieldErrorBadge', () => {
                 tradingForm,
             );
 
-            expect(getByText('Provider offer: 0.0005 BTC')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingScreen.providerOffer', {
+                        amount: '0.0005 BTC',
+                    }),
+                ),
+            ).toBeTruthy();
         });
 
         it('should not render badge when crypto amount does not differ', () => {
@@ -174,7 +181,13 @@ describe('BuyFormFieldErrorBadge', () => {
                 tradingForm,
             );
 
-            expect(getByText('Provider offer: $10.00')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingScreen.providerOffer', {
+                        amount: '$10.00',
+                    }),
+                ),
+            ).toBeTruthy();
         });
 
         it('should not render badge when fiat amount does not differ', () => {
@@ -275,7 +288,13 @@ describe('BuyFormFieldErrorBadge', () => {
                 },
             );
 
-            expect(getByText('Provider offer: 50,000 sat')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingScreen.providerOffer', {
+                        amount: '50,000 sat',
+                    }),
+                ),
+            ).toBeTruthy();
         });
     });
 

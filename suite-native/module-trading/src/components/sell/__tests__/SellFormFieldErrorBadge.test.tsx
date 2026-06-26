@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, btcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
@@ -204,7 +205,13 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm,
             );
 
-            expect(getByText('Provider offer: 0.0233 BTC')).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingScreen.providerOffer', {
+                        amount: '0.0233 BTC',
+                    }),
+                ),
+            ).toBeOnTheScreen();
         });
 
         it('should render $ value badge when crypto amount does not differ', () => {
@@ -269,7 +276,13 @@ describe('SellFormFieldErrorBadge', () => {
                 tradingForm,
             );
 
-            expect(getByText('Provider offer: $90.17')).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingScreen.providerOffer', {
+                        amount: '$90.17',
+                    }),
+                ),
+            ).toBeOnTheScreen();
         });
 
         it('should not render badge when fiat amount does not differ', () => {
@@ -358,7 +371,13 @@ describe('SellFormFieldErrorBadge', () => {
                 getOverrides(PROTO.AmountUnit.SATOSHI),
             );
 
-            expect(getByText('Provider offer: 2,330,000 sat')).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingScreen.providerOffer', {
+                        amount: '2,330,000 sat',
+                    }),
+                ),
+            ).toBeOnTheScreen();
         });
     });
 
