@@ -1,4 +1,4 @@
-import { truncateDecimals } from '../amountUtils';
+import { truncateDecimals } from '@suite-native/helpers';
 
 describe('amountUtils', () => {
     describe('truncateDecimals', () => {
