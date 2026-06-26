@@ -85,6 +85,7 @@ export const ReviewOutputItemList = ({
                     {!isTron && (
                         <ReviewOutputSummaryItem
                             accountKey={accountKey}
+                            prefix={prefix}
                             summaryOutput={summaryOutput}
                             symbol={accountSymbol}
                             tokenContract={tokenContract}

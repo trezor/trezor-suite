@@ -26,6 +26,7 @@ import {
     getFormDraftKey,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
+    isClearSignedEvmTradingSwapTransaction,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
@@ -133,19 +134,26 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
     },
 );
 
+export const selectFormDraftByPrefix = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) =>
+    prefix === 'send'
+        ? selectSendFormDraftByKey(state, accountKey, tokenContract)
+        : selectFormDraft<FormState>(
+              state,
+              getFormDraftKey(prefix, isStakingPrefix(prefix) ? accountKey : ''),
+          );
+
 export const selectTransactionReviewOutputsFromDraft = (
     state: TransactionReviewOutputsState,
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
 ) => {
-    const formDraft =
-        prefix === 'send'
-            ? selectSendFormDraftByKey(state, accountKey, tokenContract)
-            : selectFormDraft<FormState>(
-                  state,
-                  getFormDraftKey(prefix, isStakingPrefix(prefix) ? accountKey : ''),
-              );
+    const formDraft = selectFormDraftByPrefix(state, prefix, accountKey, tokenContract);
 
     return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft);
 };
@@ -279,3 +287,29 @@ export const selectTransactionReviewActiveStepIndex = (
 
     return activeIndex === -1 ? reviewOutputs.length : activeIndex;
 };
+
+export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
+    [
+        selectAccountByKey,
+        selectSelectedDevice,
+        (
+            state: TransactionReviewOutputsState,
+            accountKey: AccountKey,
+            prefix: FormDraftWithSendKeyPrefix,
+        ) => selectFormDraftByPrefix(state, prefix, accountKey),
+        selectSendPrecomposedTx,
+    ],
+    (account, device, formDraft, precomposedTx) => {
+        if (account && device && formDraft && precomposedTx) {
+            return isClearSignedEvmTradingSwapTransaction({
+                account,
+                device,
+                precomposedTx,
+                transactionData: formDraft.transactionData,
+                trading: formDraft.trading,
+            });
+        }
+
+        return false;
+    },
+);
