@@ -31,7 +31,7 @@ export const ExchangeInfoNotification = ({
             <Row gap={8} alignItems="center">
                 <ExchangeAssetWithFallback asset={send} />
                 <ExchangeAmountWithSymbol amount={sendAmount} asset={send} />
-                <Icon as={ArrowRightIcon} intent="neutral" priority="secondary" size={20} />
+                <Icon as={ArrowRightIcon} size={20} />
                 <ExchangeAssetWithFallback asset={receive} />
                 <ExchangeAmountWithSymbol amount={receiveAmount} asset={receive} />
             </Row>
