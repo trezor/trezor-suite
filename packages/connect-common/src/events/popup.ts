@@ -1,6 +1,6 @@
 import type { TransportInfo } from './transport';
 import { UI_EVENT } from './ui-request';
-import type { ConnectSettings, Manifest } from '../types/settings';
+import type { ConnectDynamicSettings, Manifest } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {
@@ -19,7 +19,7 @@ export const POPUP = {
 export interface PopupInit {
     type: typeof POPUP.INIT;
     payload: {
-        settings: ConnectSettings; // settings from window.opener (sent by @trezor/connect-web)
+        settings: ConnectDynamicSettings; // settings from window.opener (sent by @trezor/connect-web)
         useBroadcastChannel: boolean;
         useCore?: boolean;
     };

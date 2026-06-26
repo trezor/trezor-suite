@@ -6,7 +6,7 @@ import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import { type ConnectSettings } from '@trezor/connect';
+import type { ConnectSettingsTransport } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
@@ -16,7 +16,7 @@ export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
-    transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
+    transports: Extract<ConnectSettingsTransport, string>[];
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
     isN4w1BackupEnabled: boolean;
