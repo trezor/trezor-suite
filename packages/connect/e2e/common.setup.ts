@@ -229,7 +229,6 @@ export const initTrezorConnect = async (
         debug: true,
         pendingTransportEvent: true,
         transportReconnect: false,
-        coreMode: 'auto', // for connect-web
         thp: {
             appName: 'TrezorConnect',
             hostName: 'tests:e2e',

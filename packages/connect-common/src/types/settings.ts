@@ -117,7 +117,6 @@ export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
 
 export interface ConnectMobileSettings {
     manifest: Manifest;
-    coreMode?: 'deeplink';
     connectSrc?: string;
     deeplinkOpen: (url: string) => void;
     deeplinkCallbackUrl: string;
