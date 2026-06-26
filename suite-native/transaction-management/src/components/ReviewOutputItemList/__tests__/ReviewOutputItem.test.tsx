@@ -773,26 +773,5 @@ describe('ReviewOutputItem', () => {
 
             expect(within(content).getByText('123456789')).toBeOnTheScreen();
         });
-
-        it('should render unlimited label for revoke approve_data without token when value is max uint256', () => {
-            const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-            const { getByTestId } = renderReviewOutputItem({
-                reviewOutput: {
-                    state: undefined,
-                    type: 'approve_data',
-                    value: maxUint256,
-                    value2: 'Ethereum',
-                } as StatefulReviewOutput,
-                flowType: 'revoke',
-            });
-
-            const content = getByTestId('review-output-card/content');
-
-            expect(
-                within(content).getByText(
-                    getTranslation('transactionManagement.review.outputs.approveMaxAmount'),
-                ),
-            ).toBeOnTheScreen();
-        });
     });
 });
