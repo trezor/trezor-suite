@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { SendUtxoScreenFooter } from '../SendUtxoScreenFooter';
@@ -12,9 +13,9 @@ describe('SendUtxosScreenFooter', () => {
             <SendUtxoScreenFooter symbol="btc" selectedTotal="800000000" onSubmit={jest.fn()} />,
         );
 
-        expect(getByText('Selected')).toBeTruthy();
+        expect(getByText(getTranslation('moduleSend.coinControl.utxos.selected'))).toBeTruthy();
         expect(getByText('8 BTC')).toBeTruthy();
-        expect(getByText('Confirm')).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.confirm'))).toBeTruthy();
     });
 
     it('should show remaining amount when amount is provided and selected total is less than amount', () => {
@@ -27,7 +28,7 @@ describe('SendUtxosScreenFooter', () => {
             />,
         );
 
-        expect(getByText('Remaining to select')).toBeTruthy();
+        expect(getByText(getTranslation('moduleSend.coinControl.utxos.remaining'))).toBeTruthy();
         expect(getByText('3 BTC')).toBeTruthy(); // 800000000 - 500000000 = 300000000 (3 BTC)
     });
 
@@ -41,6 +42,6 @@ describe('SendUtxosScreenFooter', () => {
             />,
         );
 
-        expect(queryByText('Remaining to select')).toBeNull();
+        expect(queryByText(getTranslation('moduleSend.coinControl.utxos.remaining'))).toBeNull();
     });
 });
