@@ -63,7 +63,7 @@ export const MevProtection = () => {
                         <Switch
                             isChecked={isMevProtectionEnabled}
                             onChange={handleSwitchChange}
-                            data-testid="@settings/auto-eject-switch"
+                            data-testid="@settings/mev-protection-switch"
                         />
                     </ActionColumn>
                 </SectionItem>
