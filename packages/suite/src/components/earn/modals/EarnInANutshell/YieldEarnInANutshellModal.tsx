@@ -1,7 +1,7 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { RewardDtoYieldSource, useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -56,7 +56,7 @@ export const YieldEarnInANutshellModal = ({
     const depositSymbol = vault?.token.symbol ?? '';
     const vaultSymbol = vault?.outputToken?.symbol;
     const rewardsSymbols = vault?.rewardRate.components
-        .filter(c => c.yieldSource === RewardDtoYieldSource.protocol_incentive)
+        .filter(c => c.yieldSource === 'protocol_incentive')
         .map(c => c.token.symbol);
     const yieldApy =
         vault?.rewardRate?.total != null ? getApyPercent(vault.rewardRate.total) : null;

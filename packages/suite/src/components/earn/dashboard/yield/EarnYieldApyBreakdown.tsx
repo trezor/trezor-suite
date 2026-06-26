@@ -1,7 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type RewardDto,
-    type RewardDtoYieldSource,
     type TokenDto,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
@@ -18,7 +17,9 @@ type EarnYieldApyBreakdownProps = {
 
 // Translatable explainer rendered as the secondary text of a reward row. Unknown sources return
 // null so we never render the raw, untranslated description coming from the API.
-const getYieldSourceDescriptionId = (yieldSource: RewardDtoYieldSource): TranslationKey | null => {
+const getYieldSourceDescriptionId = (
+    yieldSource: RewardDto['yieldSource'],
+): TranslationKey | null => {
     switch (yieldSource) {
         case 'lending':
             return 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST';

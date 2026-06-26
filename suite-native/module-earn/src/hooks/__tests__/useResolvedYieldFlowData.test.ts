@@ -69,7 +69,7 @@ const vault = {
         enter: true,
         exit: true,
     },
-} satisfies Omit<YieldDto, 'tokens' | 'mechanics'> as unknown as YieldDto;
+} satisfies Omit<YieldDto, 'tokens' | 'mechanics' | 'prime'> as unknown as YieldDto;
 
 const resolve = ({
     tokenContract,

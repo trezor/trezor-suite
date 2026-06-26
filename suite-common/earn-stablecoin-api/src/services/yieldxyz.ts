@@ -1,4 +1,4 @@
-import { getYieldResponse, getYieldsResponse } from '@suite-common/earn-stablecoin-defs';
+import { GetYieldResponse, GetYieldsResponse } from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
 
@@ -15,10 +15,10 @@ export const yieldXyzApi = createHttpClient({
 
 export const getYields = yieldXyzApi('/yields', {
     method: 'GET',
-    schema: getYieldsResponse,
+    schema: GetYieldsResponse,
 });
 
 export const getYield = yieldXyzApi('/yields/:vaultId', {
     method: 'GET',
-    schema: getYieldResponse,
+    schema: GetYieldResponse,
 });

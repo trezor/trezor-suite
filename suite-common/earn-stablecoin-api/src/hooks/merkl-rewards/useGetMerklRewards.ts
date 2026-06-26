@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { type MerklUsersRewardsRequestBodyItem } from '@suite-common/earn-stablecoin-defs';
+import { type MerklUsersRewardsRequestBody } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
 import { useFreshRef } from '@trezor/react-utils';
 import { delay } from '@trezor/utils';
@@ -51,7 +51,7 @@ export function useGetMerklRewards<Address extends string>(
                             address: entry.address,
                             chainId: entry.chainId,
                             reloadChainId: entry.chainId,
-                        }) satisfies MerklUsersRewardsRequestBodyItem,
+                        }) satisfies MerklUsersRewardsRequestBody[number],
                 ),
             });
 
