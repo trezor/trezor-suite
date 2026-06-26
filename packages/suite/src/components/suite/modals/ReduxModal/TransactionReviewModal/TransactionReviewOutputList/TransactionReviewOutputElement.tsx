@@ -100,9 +100,10 @@ type ValueProps = {
     isFiatVisible: boolean;
     state: TransactionReviewOutputElementProps['state'];
     token?: TokenInfo;
+    isChunked?: boolean;
 };
 
-const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps) => {
+const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: ValueProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     switch (type) {
@@ -115,7 +116,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
                 <Address value={value} isDeviceRendered />
             );
         case 'safe-address':
-            return <Address value={value} isDeviceRendered />;
+            return <Address value={value} isDeviceRendered isChunked={isChunked} />;
         case 'note':
             return <Text>{value}</Text>;
         case 'data':
@@ -165,6 +166,7 @@ export type OutputElementLine = {
     token?: TokenInfo;
     type: 'default' | 'address' | 'safe-address' | 'note' | 'data' | 'amount';
     label?: ReactNode;
+    isChunked?: boolean;
 };
 
 export type TransactionReviewOutputElementProps = {
@@ -210,6 +212,7 @@ export const TransactionReviewOutputElement = ({
                             token={line.token}
                             isFiatVisible={fiatVisible}
                             state={state}
+                            isChunked={line.isChunked}
                         />
                     );
 
