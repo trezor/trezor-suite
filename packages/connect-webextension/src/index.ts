@@ -20,13 +20,8 @@ const impl = new TrezorConnectDynamic({
 
 // Bind all methods due to shadowing `this`
 const TrezorConnect = factory({
-    on: impl.on,
-    off: impl.off,
-    removeAllListeners: impl.removeAllListeners,
     init: impl.init.bind(impl),
     call: impl.call.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    updateConnectSettings: impl.updateConnectSettings.bind(impl),
     cancel: impl.cancel.bind(impl),
     dispose: impl.dispose.bind(impl),
 });

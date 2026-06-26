@@ -9,7 +9,7 @@ class CoreInModuleWeb extends CoreInModule {
         return ['BridgeTransport' as const, 'WebUsbTransport' as const];
     }
 
-    updateProxy(proxy: UpdateConnectSettings['proxy']) {
+    protected updateProxy(proxy: UpdateConnectSettings['proxy']) {
         if (proxy !== undefined) {
             throw ERRORS.TypedError(
                 'Method_InvalidPackage',
