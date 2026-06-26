@@ -7,6 +7,7 @@ import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-co
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
+import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
@@ -16,7 +17,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
-import { truncateDecimals } from '../../utils/general/amountUtils';
 import { FiatAmountBadge } from '../general/FiatAmountBadge';
 
 export type SellFormFieldErrorBadgeProps = {

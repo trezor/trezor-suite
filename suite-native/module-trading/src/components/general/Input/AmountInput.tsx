@@ -2,9 +2,8 @@ import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from '
 import { type LayoutChangeEvent, Pressable, TextInput, type TextInputProps } from 'react-native';
 
 import { BoxSkeleton } from '@suite-native/atoms';
+import { truncateDecimals } from '@suite-native/helpers';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { truncateDecimals } from '../../../utils/general/amountUtils';
 
 export type AmountInputProps = {
     inputTransformer: (value: string) => string;

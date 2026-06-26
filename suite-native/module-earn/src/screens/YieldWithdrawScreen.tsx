@@ -29,7 +29,7 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
-import { decimalTransformer } from '@suite-native/helpers';
+import { decimalTransformer, truncateDecimals } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     Screen,
@@ -313,7 +313,12 @@ export const YieldWithdrawScreen = () => {
     };
 
     const handleAmountChange = (value: string) => {
-        const transformedValue = decimalTransformer(value);
+        if (!flowData) {
+            return;
+        }
+
+        const inputToken = getYieldWithdrawInputToken({ flowData, flowType });
+        const transformedValue = truncateDecimals(decimalTransformer(value), inputToken.decimals);
 
         if (!transformedValue) {
             setAssetAmount('');

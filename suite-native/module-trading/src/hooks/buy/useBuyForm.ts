@@ -15,6 +15,7 @@ import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-commo
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useForm, useWatch } from '@suite-native/forms';
+import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
@@ -28,7 +29,6 @@ import {
 import { type BuyFormType, type BuyFormValues } from '@suite-native/trading-types';
 
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
-import { truncateDecimals } from '../../utils/general/amountUtils';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
