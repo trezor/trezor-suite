@@ -21,10 +21,11 @@ import {
 import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
-    type ConnectSettings,
+    type ConnectSettingsPublic,
     type CreateLoggerDep,
     type Manifest,
     type StaticSessionId,
+    type ThpSettings,
 } from '@trezor/connect';
 
 import { type ConnectInitHooks } from './connectInitHooksType';
@@ -36,7 +37,7 @@ type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload:
 
 export type ConnectInitSettings = {
     manifest: Manifest;
-} & Partial<ConnectSettings>;
+} & Partial<ConnectSettingsPublic>;
 
 export type CommonServices = SuiteSyncDep &
     Bip329Dep &
@@ -82,7 +83,7 @@ export type ExtraDependenciesStatic = {
         >;
         selectTradedAccountKeys: SuiteCompatibleSelector<AccountKey[]>;
         selectIsViewOnlyByDefaultEnabled: SuiteCompatibleSelector<boolean>;
-        selectThpSettings: SuiteCompatibleSelector<NonNullable<ConnectSettings['thp']>>;
+        selectThpSettings: SuiteCompatibleSelector<ThpSettings>;
         selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!

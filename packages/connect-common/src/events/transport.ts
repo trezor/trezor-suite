@@ -4,7 +4,7 @@
 import type { TRANSPORT, Transport } from '@trezor/transport-common';
 
 import { serializeError } from '../constants/errors';
-import type { ConnectSettings } from '../types/settings';
+import type { ConnectSettingsTransport } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
@@ -27,7 +27,7 @@ export type TransportEvent =
 
 export interface TransportSetTransports {
     type: typeof TRANSPORT.SET_TRANSPORTS;
-    payload: Pick<ConnectSettings, 'transports'>;
+    payload: { transports?: ConnectSettingsTransport[] };
 }
 
 export interface TransportRequestWebUSBDevice {
