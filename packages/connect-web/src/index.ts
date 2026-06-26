@@ -12,7 +12,9 @@ const impl = new TrezorConnectDynamic({
 });
 
 const TrezorConnect = factory({
-    eventEmitter: impl.eventEmitter,
+    on: impl.on,
+    off: impl.off,
+    removeAllListeners: impl.removeAllListeners,
     init: impl.init.bind(impl),
     call: impl.call.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),

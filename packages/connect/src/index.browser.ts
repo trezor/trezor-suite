@@ -35,7 +35,9 @@ const impl = new CoreInModuleWeb();
 // Exported to enable using directly
 const TrezorConnect = factory(
     {
-        eventEmitter: impl.eventEmitter,
+        on: impl.on,
+        off: impl.off,
+        removeAllListeners: impl.removeAllListeners,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
         updateConnectSettings: impl.updateConnectSettings.bind(impl),

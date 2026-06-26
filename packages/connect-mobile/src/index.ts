@@ -44,7 +44,12 @@ const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: Bui
 };
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectMobileSettings> {
-    public eventEmitter = new ConnectEmitter();
+    private readonly eventEmitter = new ConnectEmitter();
+
+    public on = this.eventEmitter.on.bind(this.eventEmitter);
+    public off = this.eventEmitter.removeListener.bind(this.eventEmitter);
+    public removeAllListeners = this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
+
     // Prefer crypto.randomUUID, but fall back to a weak id where `crypto` is absent: connect-mobile
     // is a published deeplink transport for third-party React Native apps that may lack a `crypto`
     // polyfill. These ids are only request/response correlation keys, so the weak fallback is fine.
@@ -192,7 +197,9 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
 const impl = new TrezorConnectDeeplink();
 const TrezorConnect = factory<ConnectMobileSettings, { handleDeeplink: (url: string) => void }>(
     {
-        eventEmitter: impl.eventEmitter,
+        on: impl.on,
+        off: impl.off,
+        removeAllListeners: impl.removeAllListeners,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),

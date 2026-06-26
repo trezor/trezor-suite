@@ -1,20 +1,12 @@
 import { connectCallableMethods } from './callableMethods';
 import type { CallMethod } from './events/call';
-import { type Manifest, type TrezorConnect } from './types';
-import type { ConnectEmitter } from './types/emitter';
+import { type Manifest, type TrezorConnect, type TrezorConnectCore } from './types';
+import { type TrezorConnectInternal } from './types/api/internal';
 
-export type InitType<SettingsType extends Record<string, any>> = (
-    settings: { manifest: Manifest } & SettingsType,
-) => Promise<void>;
-
-export interface ConnectFactoryDependencies<SettingsType extends Record<string, any>> {
-    init: InitType<SettingsType>;
+export interface ConnectFactoryDependencies<SettingsType extends Record<string, any>>
+    extends TrezorConnectInternal, TrezorConnectCore {
+    init: (settings: { manifest: Manifest } & SettingsType) => Promise<void>;
     call: CallMethod;
-    eventEmitter: ConnectEmitter;
-    updateConnectSettings: TrezorConnect['updateConnectSettings'];
-    uiResponse: TrezorConnect['uiResponse'];
-    cancel: TrezorConnect['cancel'];
-    dispose: TrezorConnect['dispose'];
 }
 
 export const factory = <
@@ -22,7 +14,9 @@ export const factory = <
     ExtraMethodsType extends Record<string, any>,
 >(
     {
-        eventEmitter,
+        on,
+        off,
+        removeAllListeners,
         init,
         call,
         updateConnectSettings,
@@ -31,10 +25,7 @@ export const factory = <
         dispose,
     }: ConnectFactoryDependencies<SettingsType>,
     extraMethods: ExtraMethodsType = {} as ExtraMethodsType,
-): TrezorConnect & {
-    init: InitType<SettingsType>;
-    call: CallMethod;
-} & ExtraMethodsType => {
+): TrezorConnect & ConnectFactoryDependencies<SettingsType> & ExtraMethodsType => {
     const callableMethods = Object.fromEntries(
         connectCallableMethods.map(method => [
             method,
@@ -46,11 +37,11 @@ export const factory = <
         init,
         updateConnectSettings,
 
-        on: eventEmitter.on.bind(eventEmitter),
+        on,
 
-        off: eventEmitter.removeListener.bind(eventEmitter),
+        off,
 
-        removeAllListeners: eventEmitter.removeAllListeners.bind(eventEmitter),
+        removeAllListeners,
 
         uiResponse,
 

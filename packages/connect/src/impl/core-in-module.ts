@@ -34,7 +34,11 @@ import { type Logger, cloneObject } from '@trezor/utils';
 import { initCoreState } from '../core';
 
 export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettings> {
-    public readonly eventEmitter = new ConnectEmitter();
+    private readonly eventEmitter = new ConnectEmitter();
+
+    public on = this.eventEmitter.on.bind(this.eventEmitter);
+    public off = this.eventEmitter.removeListener.bind(this.eventEmitter);
+    public removeAllListeners = this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
 
     private settings;
     private coreManager;
