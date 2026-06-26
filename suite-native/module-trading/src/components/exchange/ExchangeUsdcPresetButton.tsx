@@ -32,7 +32,8 @@ export const ExchangeUsdcPresetButton = () => {
     const debugAccount = useSelector((state: AccountsRootState) =>
         selectAccounts(state).find(
             ({ symbol, tokens }) =>
-                symbol === 'eth' && tokens?.some(token => token.symbol === 'USDC'),
+                symbol === 'eth' &&
+                tokens?.some(token => token.symbol === 'USDC' && Number(token.balance) >= 1),
         ),
     );
 
