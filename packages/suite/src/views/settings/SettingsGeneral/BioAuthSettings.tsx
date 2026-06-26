@@ -36,7 +36,7 @@ export const BioAuthSettings = () => {
     const tooltipActive = isBioAuthAvailable === false;
 
     return (
-        <Anchor anchorId={SettingsAnchor.AddressDisplay}>
+        <Anchor anchorId={SettingsAnchor.BioAuth}>
             {({ anchorId, anchorRef, shouldHighlight }) => (
                 <SectionItem
                     data-testid={anchorId}

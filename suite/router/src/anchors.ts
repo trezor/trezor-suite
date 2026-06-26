@@ -27,6 +27,7 @@ export const SettingsAnchor = {
     TorOnionLinks: '@general-settings/tor-onion-links',
     Theme: '@general-settings/theme',
     AddressDisplay: '@general-settings/address-display',
+    BioAuth: '@general-settings/bio-auth',
     Analytics: '@general-settings/analytics',
     ShowLog: '@general-settings/show-log',
     ClearStorage: '@general-settings/clear-storage',
