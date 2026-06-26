@@ -78,6 +78,8 @@ export interface ConnectSettingsPublic {
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
     enableFirmwareHashCheck?: boolean;
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
+    firmwareChannel?: FirmwareChannel;
+    localFirmwares?: LocalFirmwares;
     thp?: ThpSettings;
     enabledNetworks?: EnabledNetwork[];
 }
@@ -94,8 +96,6 @@ export interface ConnectSettingsInternal {
     env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
     timestamp: number;
     proxy?: Proxy;
-    localFirmwares?: LocalFirmwares;
-    firmwareChannel?: FirmwareChannel;
 }
 
 export type ConnectSettings = ConnectSettingsPublic &
