@@ -22,8 +22,8 @@ import {
     type EvmApprovalPurpose,
     findAccountsByAddress,
     getCardanoFingerprint,
+    isAllowanceUnlimited,
     isEvmApprovalTxByTextSignature,
-    isMaxAllowance,
     isTestnet,
     localizeNumber,
 } from '@suite-common/wallet-utils';
@@ -516,7 +516,8 @@ const getOutputLines = ({
             return output;
         }
         case 'approve_data': {
-            const isMaxApproval = isMaxAllowance(value);
+            const isMaxApproval =
+                typeof token?.decimals === 'number' && isAllowanceUnlimited(value, token?.decimals);
             const isApprovalTx = evmTxType === 'approve';
             const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
             const getValue = () => {

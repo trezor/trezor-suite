@@ -8,7 +8,7 @@ import {
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits, isMaxAllowance } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -135,7 +135,9 @@ export const ReviewOutputItemContent = ({
                 flowType === 'revoke-and-approve';
 
             const isApprovalTx = flowType === 'approve';
-            const isMaxApproval = isMaxAllowance(value);
+
+            const isMaxApproval =
+                typeof token?.decimals === 'number' && isAllowanceUnlimited(value, token?.decimals);
 
             const getPrimaryValue = () => {
                 if (!isApprovalTx && token?.symbol) {

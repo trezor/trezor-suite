@@ -1,5 +1,5 @@
-import { getApprovalStatus } from '@suite-common/trading';
-import { isMaxAllowance } from '@suite-common/wallet-utils';
+import { cryptoIdToNetworkAndContractAddress, getApprovalStatus } from '@suite-common/trading';
+import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { DebugModeView } from '@suite-native/trading-debug';
 
@@ -8,14 +8,19 @@ import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormCont
 
 export const ExchangeFormQuoteDebugView = () => {
     const { watch } = useExchangeFormContext();
-    const quote = watch('quote');
+    const [quote, sendAccount] = watch(['quote', 'sendAccount']);
+
     const approvalStatus = getApprovalStatus(quote);
+    const { contractAddress } = cryptoIdToNetworkAndContractAddress(quote?.send);
+    const { decimals } = findToken(sendAccount?.tokens, contractAddress) ?? {};
 
     let preapproved = 'not defined';
     if (quote?.preapprovedStringAmount) {
-        preapproved = isMaxAllowance(quote.preapprovedStringAmount)
-            ? 'unlimited'
-            : quote.preapprovedStringAmount;
+        const isUnlimited =
+            typeof decimals === 'number' &&
+            isAllowanceUnlimited(quote.preapprovedStringAmount, decimals);
+
+        preapproved = isUnlimited ? 'unlimited' : quote.preapprovedStringAmount;
     }
 
     return (

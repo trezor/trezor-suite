@@ -7,12 +7,29 @@ import { renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
 import { ExchangeFormQuoteDebugView } from '../ExchangeFormQuoteDebugView';
 
+const USDC_CONTRACT_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const USDC_CRYPTO_ID = `ethereum--${USDC_CONTRACT_ADDRESS}` as CryptoId;
+
 let mockQuote: ExchangeTrade | undefined;
 let mockDebugMode: boolean;
+let mockSendAccount:
+    | {
+          tokens?: {
+              contract: string;
+              decimals: number;
+          }[];
+      }
+    | undefined;
 
 jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
     useExchangeFormContext: () => ({
-        watch: () => mockQuote,
+        watch: (field: string | string[]) => {
+            if (Array.isArray(field)) {
+                return [mockQuote, mockSendAccount];
+            }
+
+            return mockQuote;
+        },
     }),
 }));
 
@@ -35,6 +52,7 @@ describe('ExchangeFormQuoteDebugView', () => {
 
     beforeEach(() => {
         mockQuote = undefined;
+        mockSendAccount = undefined;
         mockDebugMode = false;
     });
 
@@ -75,7 +93,7 @@ describe('ExchangeFormQuoteDebugView', () => {
     it('should render approval status "not_needed" for a non-DEX quote', () => {
         mockDebugMode = true;
         mockQuote = {
-            send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            send: USDC_CRYPTO_ID,
             receive: 'bitcoin' as CryptoId,
             exchange: 'mercuryo',
             isDex: false,
@@ -89,7 +107,7 @@ describe('ExchangeFormQuoteDebugView', () => {
     it('should render approval status "needs_approval" for a DEX quote without pre-approval', () => {
         mockDebugMode = true;
         mockQuote = {
-            send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            send: USDC_CRYPTO_ID,
             receive: 'bitcoin' as CryptoId,
             exchange: 'invity',
             isDex: true,
@@ -102,8 +120,16 @@ describe('ExchangeFormQuoteDebugView', () => {
 
     it('should display "unlimited" for pre-approved amount when preapprovedStringAmount is max uint256', () => {
         mockDebugMode = true;
+        mockSendAccount = {
+            tokens: [
+                {
+                    contract: USDC_CONTRACT_ADDRESS,
+                    decimals: 6,
+                },
+            ],
+        };
         mockQuote = {
-            send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            send: USDC_CRYPTO_ID,
             receive: 'bitcoin' as CryptoId,
             exchange: 'invity',
             isDex: true,
@@ -120,7 +146,7 @@ describe('ExchangeFormQuoteDebugView', () => {
         mockDebugMode = true;
         const specificAmount = '1000000000000000000';
         mockQuote = {
-            send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            send: USDC_CRYPTO_ID,
             receive: 'bitcoin' as CryptoId,
             exchange: 'invity',
             isDex: true,
