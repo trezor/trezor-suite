@@ -21,7 +21,7 @@ export class Store {
         torSettings: TorSettings;
         bridgeSettings: BridgeSettings;
         traySettings: TraySettings;
-        connectSettings: ConnectSettings;
+        connectSettings: ElectronConnectSettings;
         bioAuthSettings: BioAuthSettings;
         mcpSettings: McpSettings;
     }>;
@@ -117,7 +117,7 @@ export class Store {
         });
     }
 
-    public setConnectSettings(connectSettings: Partial<ConnectSettings>) {
+    public setConnectSettings(connectSettings: Partial<ElectronConnectSettings>) {
         this.store.set('connectSettings', {
             ...this.store.get('connectSettings'),
             ...connectSettings,
