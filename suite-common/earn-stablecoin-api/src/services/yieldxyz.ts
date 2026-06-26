@@ -1,4 +1,4 @@
-import { GetYieldResponse, GetYieldsResponse } from '@suite-common/earn-stablecoin-defs';
+import { YieldResponseV2, YieldsResponseV2 } from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
 
@@ -8,17 +8,17 @@ export const yieldXyzApi = createHttpClient({
     async baseUrl() {
         const baseUrl = await earnYieldWorkerBaseUrl.get();
 
-        return `${baseUrl}/yieldxyz/v1`;
+        return `${baseUrl}/yieldxyz/v2`;
     },
     headers: { 'X-Suite-Version': getSuiteVersion() },
 });
 
 export const getYields = yieldXyzApi('/yields', {
     method: 'GET',
-    schema: GetYieldsResponse,
+    schema: YieldsResponseV2,
 });
 
 export const getYield = yieldXyzApi('/yields/:vaultId', {
     method: 'GET',
-    schema: GetYieldResponse,
+    schema: YieldResponseV2,
 });
