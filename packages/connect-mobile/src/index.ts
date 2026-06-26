@@ -5,14 +5,8 @@ import {
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
 import { type CallMethodPayload } from '@trezor/connect-common/src/events';
-import { createErrorMessage } from '@trezor/connect-common/src/events';
 import { type ConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
-import type {
-    ConnectMobileSettings,
-    Manifest,
-    UpdateConnectSettings,
-} from '@trezor/connect-common/src/types';
-import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
+import type { ConnectMobileSettings, Manifest } from '@trezor/connect-common/src/types';
 import {
     type CancelParams,
     normalizeCancelParams,
@@ -44,12 +38,6 @@ const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: Bui
 };
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectMobileSettings> {
-    private readonly eventEmitter = new ConnectEmitter();
-
-    public on = this.eventEmitter.on.bind(this.eventEmitter);
-    public off = this.eventEmitter.removeListener.bind(this.eventEmitter);
-    public removeAllListeners = this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
-
     // Prefer crypto.randomUUID, but fall back to a weak id where `crypto` is absent: connect-mobile
     // is a published deeplink transport for third-party React Native apps that may lack a `crypto`
     // polyfill. These ids are only request/response correlation keys, so the weak fallback is fine.
@@ -61,17 +49,6 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     });
 
     private manifest?: Manifest;
-
-    public updateConnectSettings(_params: UpdateConnectSettings) {
-        return Promise.resolve(
-            createErrorMessage(
-                ERRORS.TypedError(
-                    'Method_InvalidPackage',
-                    'updateConnectSettings is not supported in this implementation',
-                ),
-            ),
-        );
-    }
 
     private openDeeplink: (method: string, id: string, params: any) => void = () => {
         throw ERRORS.TypedError('Init_NotInitialized');
@@ -127,17 +104,12 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         return promise;
     }
 
-    public uiResponse() {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
     public cancel(params?: CancelParams) {
         const { reason } = normalizeCancelParams(params);
         this.resolveMessagePromises({ success: false, error: reason });
     }
 
     public dispose() {
-        this.eventEmitter.removeAllListeners();
         this.manifest = undefined;
         this.openDeeplink = () => {
             throw ERRORS.TypedError('Init_NotInitialized');
@@ -197,13 +169,8 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
 const impl = new TrezorConnectDeeplink();
 const TrezorConnect = factory<ConnectMobileSettings, { handleDeeplink: (url: string) => void }>(
     {
-        on: impl.on,
-        off: impl.off,
-        removeAllListeners: impl.removeAllListeners,
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        updateConnectSettings: impl.updateConnectSettings.bind(impl),
         cancel: impl.cancel.bind(impl),
         dispose: impl.dispose.bind(impl),
     },
