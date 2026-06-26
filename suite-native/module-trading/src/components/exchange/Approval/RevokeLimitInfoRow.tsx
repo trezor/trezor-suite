@@ -4,17 +4,19 @@ import {
     cryptoIdToNetworkAndContractAddress,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-import { isMaxAllowance } from '@suite-common/wallet-utils';
+import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { UnlimitedAllowanceLabel } from './UnlimitedAllowanceLabel';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const RevokeLimitInfoRow = () => {
     const quote = useSelector(selectTradingExchangeSelectedQuote);
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
     if (!quote?.send) {
         return null;
@@ -22,7 +24,12 @@ export const RevokeLimitInfoRow = () => {
 
     const { send, preapprovedStringAmount } = quote;
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
-    const isAllowanceUnlimited = isMaxAllowance(preapprovedStringAmount);
+    const { decimals } = findToken(sendAccount?.tokens, contractAddress) ?? {};
+
+    const showUnlimitedAllowanceLabel =
+        preapprovedStringAmount &&
+        typeof decimals === 'number' &&
+        isAllowanceUnlimited(preapprovedStringAmount, decimals);
 
     return (
         <TradeInfoRow testID="ExchangeApproval/LimitRevoke">
@@ -37,7 +44,7 @@ export const RevokeLimitInfoRow = () => {
                         size="extraSmall"
                     />
                 )}
-                {isAllowanceUnlimited ? (
+                {showUnlimitedAllowanceLabel ? (
                     <UnlimitedAllowanceLabel />
                 ) : (
                     <TradingCoinAmountFormatter
