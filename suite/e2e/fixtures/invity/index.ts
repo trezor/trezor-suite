@@ -30,6 +30,7 @@ import sellWatchSolana from './sell/watch-solana.json';
 import swapList from './swap/list.json';
 import swapQuotesBTCEthereum from './swap/quotes-btc-eth.json';
 import swapQuotesEthereumBTC from './swap/quotes-eth-btc.json';
+import swapQuotesEthDex from './swap/quotes-eth-dex.json';
 import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
 import swapQuotesSolanaTokens from './swap/quotes-solana-tokens.json';
 import swapQuotesSolanaUSDC from './swap/quotes-solana-usdc.json';
@@ -37,6 +38,7 @@ import swapQuotesTetherBTC from './swap/quotes-tether-btc.json';
 import swapQuotesTetherStellar from './swap/quotes-tether-stellar.json';
 import swapTradeBTCEthereum from './swap/trade-btc-eth.json';
 import swapTradeEthereumBTC from './swap/trade-eth-btc.json';
+import swapTradeEthDex from './swap/trade-eth-dex.json';
 import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
 import swapTradeSolanaTokens from './swap/trade-solana-tokens.json';
 import swapTradeSolanaUSDC from './swap/trade-solana-usdc.json';
@@ -125,6 +127,7 @@ export {
     sellWatchSolana,
     swapList,
     swapQuotesBTCEthereum,
+    swapQuotesEthDex,
     swapQuotesEthereumBTC,
     swapQuotesSolanaBTC,
     swapQuotesSolanaTokens,
@@ -132,6 +135,7 @@ export {
     swapQuotesTetherBTC,
     swapQuotesTetherStellar,
     swapTradeBTCEthereum,
+    swapTradeEthDex,
     swapTradeEthereumBTC,
     swapTradeSolanaBTC,
     swapTradeSolanaTokens,

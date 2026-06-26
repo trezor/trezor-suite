@@ -37,11 +37,14 @@ export const TradingExchangeSlippageInfoItem = ({
                         iconRight="pencilSimple"
                         intent="brand"
                         isUnderlined
+                        data-testid="@trading/offer/info/slippage"
                     >
                         {slippage}%
                     </TextButton>
                 ) : (
-                    <Text typographyStyle="body-sm">{slippage}%</Text>
+                    <Text typographyStyle="body-sm" data-testid="@trading/offer/info/slippage">
+                        {slippage}%
+                    </Text>
                 )}
             </InfoItem>
 

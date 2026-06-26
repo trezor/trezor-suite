@@ -10,6 +10,12 @@ export class TradingConfirmationModal {
     readonly account: Locator;
     readonly accountDropdown: Locator;
     readonly cryptoAmount: Locator;
+    readonly sendCryptoAmount: Locator;
+    readonly receiveCryptoAmount: Locator;
+    readonly sendAccount: Locator;
+    readonly receiveAccount: Locator;
+    readonly detailSendAccount: Locator;
+    readonly detailReceiveAccount: Locator;
     readonly fiatAmount: Locator;
     readonly provider: Locator;
     readonly address: Locator;
@@ -22,6 +28,11 @@ export class TradingConfirmationModal {
     readonly confirmAndSendButton: Locator;
     readonly buyButton: Locator;
 
+    readonly dexMaximumSlippage: Locator;
+    readonly dexMinimumReceivedAmount: Locator;
+    readonly dexNetworkFee: Locator;
+    readonly dexExchangeType: Locator;
+
     constructor(
         private readonly page: Page,
         private readonly devicePrompt: DevicePrompt,
@@ -31,6 +42,18 @@ export class TradingConfirmationModal {
         this.account = this.page.getByTestId('@trading/form/verify/account');
         this.accountDropdown = this.page.getByTestId('@trading/verify-options/account/input');
         this.cryptoAmount = this.page.getByTestId('@trading/form/info/crypto-amount');
+        this.sendCryptoAmount = this.page
+            .getByTestId('@trading/detail/send-info')
+            .getByTestId('@trading/form/info/crypto-amount');
+        this.receiveCryptoAmount = this.page
+            .getByTestId('@trading/detail/receive-info')
+            .getByTestId('@trading/form/info/crypto-amount');
+        this.sendAccount = this.page.getByTestId('@trading/detail/send-account');
+        this.receiveAccount = this.page.getByTestId('@trading/detail/receive-account');
+        this.detailSendAccount = this.page.getByTestId('@trading/transaction/detail/send-account');
+        this.detailReceiveAccount = this.page.getByTestId(
+            '@trading/transaction/detail/receive-account',
+        );
         this.fiatAmount = this.page.getByTestId('@trading/form/info/fiat-amount');
         this.provider = this.page.getByTestId('@trading/form/info/provider');
         this.address = this.page.getByTestId('@trading/form/verify/address');
@@ -46,6 +69,13 @@ export class TradingConfirmationModal {
             '@trading/offer/confirm-on-trezor-and-send',
         );
         this.buyButton = this.page.getByTestId('@trading/offer/buy-button');
+
+        this.dexMaximumSlippage = this.page.getByTestId('@trading/offer/info/slippage');
+        this.dexMinimumReceivedAmount = this.page.getByTestId(
+            '@trading/offer/info/minimum-received',
+        );
+        this.dexNetworkFee = this.page.getByTestId('@trading/offer/info/network-fee');
+        this.dexExchangeType = this.page.getByTestId('@trading/offer/info/exchange-dex-type');
     }
 
     @step()
