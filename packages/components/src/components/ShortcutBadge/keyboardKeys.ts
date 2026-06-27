@@ -101,6 +101,7 @@ export const keyboardKeys = {
     DASH: { code: 189, value: '-' },
     PERIOD: { code: 190, value: '.' },
     FORWARD_SLASH: { code: 191, value: '/' },
+    QUESTION_MARK: { code: 191, value: '?' },
     GRAVE_ACCENT: { code: 192, value: '`' },
     OPEN_BRACKET: { code: 219, value: '[' },
     BACK_SLASH: { code: 220, value: '\\' },

@@ -36,7 +36,7 @@ const passphraseShortcut: ShortcutItem = {
 
 const lockAppShortcut: ShortcutItem = {
     labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LOCK_APP',
-    keys: ['ALT', 'SHIFT', 'KEY_L'],
+    keys: ['ALT', 'KEY_L'],
 };
 
 const generalSection: ShortcutSection = {
@@ -45,6 +45,10 @@ const generalSection: ShortcutSection = {
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_GUIDE',
             keys: ['F1'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_SHORTCUTS',
+            keys: ['QUESTION_MARK'],
         },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SETTINGS',
@@ -58,6 +62,12 @@ const generalSection: ShortcutSection = {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME',
             keys: ['ALT', 'KEY_T'],
         },
+    ],
+};
+
+const securitySection: ShortcutSection = {
+    titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SECURITY',
+    items: [
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_BALANCES',
             keys: ['ALT', 'KEY_H'],
@@ -70,15 +80,31 @@ const walletsSection: ShortcutSection = {
     items: [
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE',
-            keys: ['ALT', 'KEY_D'],
+            keys: ['ALT', 'KEY_W'],
         },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEARCH_ACCOUNTS',
             keys: ['MOD', 'KEY_K'],
         },
         {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_ADD_ACCOUNT',
+            keys: ['ALT', 'KEY_A'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DASHBOARD',
+            keys: ['ALT', 'KEY_0'],
+        },
+        {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_ACCOUNT',
-            keys: ['MOD', 'KEY_1'],
+            keys: ['ALT', 'KEY_1'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_PREV_ACCOUNT',
+            keys: ['ALT', 'UP_ARROW'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NEXT_ACCOUNT',
+            keys: ['ALT', 'DOWN_ARROW'],
         },
     ],
 };
@@ -94,7 +120,56 @@ const transactionsSection: ShortcutSection = {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_RECEIVE',
             keys: ['ALT', 'KEY_R'],
         },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWAP',
+            keys: ['ALT', 'KEY_X'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_BUY',
+            keys: ['ALT', 'KEY_B'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SELL',
+            keys: ['ALT', 'KEY_C'],
+        },
     ],
+};
+
+const navigationSection: ShortcutSection = {
+    titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NAVIGATION',
+    items: [
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_EARN',
+            keys: ['ALT', 'KEY_E'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NETWORKS',
+            keys: ['ALT', 'KEY_N'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_ACTIVITY',
+            keys: ['ALT', 'KEY_I'],
+        },
+    ],
+};
+
+const otherSection: ShortcutSection = {
+    titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OTHER',
+    items: [
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE',
+            keys: ['ESCAPE'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_ACTIVATE',
+            keys: ['ENTER'],
+        },
+    ],
+};
+
+const debugModeShortcut: ShortcutItem = {
+    labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE',
+    keys: ['ALT', 'PERIOD'],
 };
 
 const debugSection: ShortcutSection = {
@@ -146,22 +221,32 @@ export const GuideShortcuts = () => {
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
 
-    const generalSectionWithLockApp: ShortcutSection = isDesktop()
-        ? { ...generalSection, items: [...generalSection.items, lockAppShortcut] }
-        : generalSection;
+    // Lock app is desktop-only, so it's appended to the Security section only there.
+    const securitySectionWithLockApp: ShortcutSection = isDesktop()
+        ? { ...securitySection, items: [...securitySection.items, lockAppShortcut] }
+        : securitySection;
 
     const walletsSectionWithPassphrase: ShortcutSection = isPassphraseProtectionEnabled
         ? { ...walletsSection, items: [passphraseShortcut, ...walletsSection.items] }
         : walletsSection;
+
+    // The debug-mode toggle is shown only while debug mode is off, so it stays discoverable;
+    // once active, the debug section already lists the debug-only shortcuts.
+    const otherSectionWithDebugToggle: ShortcutSection = isDebugModeActive
+        ? otherSection
+        : { ...otherSection, items: [debugModeShortcut, ...otherSection.items] };
 
     return (
         <GuideViewWrapper>
             <GuideHeader back={goBack} label={<Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />} />
             <GuideContent>
                 <Column>
-                    <ShortcutSectionBlock {...generalSectionWithLockApp} />
+                    <ShortcutSectionBlock {...generalSection} />
+                    <ShortcutSectionBlock {...securitySectionWithLockApp} />
                     <ShortcutSectionBlock {...walletsSectionWithPassphrase} />
                     <ShortcutSectionBlock {...transactionsSection} />
+                    <ShortcutSectionBlock {...navigationSection} />
+                    <ShortcutSectionBlock {...otherSectionWithDebugToggle} />
                     {isDebugModeActive && <ShortcutSectionBlock {...debugSection} />}
                 </Column>
             </GuideContent>
