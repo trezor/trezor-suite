@@ -12,6 +12,9 @@ const ShortcutContainer = styled.div`
     background-color: ${({ theme }) => addAlphaToHex(theme.borderNeutralDark, 0.09)};
     border-radius: ${borders.radii.xxs};
     padding: 0 ${spacingsPx.xxs};
+
+    /* Slashed zero so the "0" key is distinguishable from the letter "O". */
+    font-variant-numeric: slashed-zero;
 `;
 
 export type ShortcutBadgeProps = {

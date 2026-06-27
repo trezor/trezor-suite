@@ -1,5 +1,5 @@
 import { selectDeviceLabelOrNameById } from '@suite-common/device';
-import { Row, Tooltip } from '@trezor/components';
+import { Row, ShortcutBadge, Tooltip } from '@trezor/components';
 import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -39,13 +39,16 @@ export const DeviceStatus = ({
     );
 
     const content = device && (
-        <DeviceDetail label={deviceLabel}>
-            <DeviceStatusText
-                device={device}
-                forceConnectionInfo={forceConnectionInfo}
-                deviceNeedsRefresh={deviceNeedsRefresh}
-            />
-        </DeviceDetail>
+        <Row gap={16} alignItems="center">
+            <DeviceDetail label={deviceLabel}>
+                <DeviceStatusText
+                    device={device}
+                    forceConnectionInfo={forceConnectionInfo}
+                    deviceNeedsRefresh={deviceNeedsRefresh}
+                />
+            </DeviceDetail>
+            <ShortcutBadge shortcut={['ALT', 'KEY_W']} />
+        </Row>
     );
 
     return (

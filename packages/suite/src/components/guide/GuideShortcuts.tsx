@@ -109,8 +109,8 @@ const walletsSection: ShortcutSection = {
     ],
 };
 
-const transactionsSection: ShortcutSection = {
-    titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TRANSACTIONS',
+const navigationSection: ShortcutSection = {
+    titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NAVIGATION',
     items: [
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEND',
@@ -132,12 +132,6 @@ const transactionsSection: ShortcutSection = {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SELL',
             keys: ['ALT', 'KEY_C'],
         },
-    ],
-};
-
-const navigationSection: ShortcutSection = {
-    titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NAVIGATION',
-    items: [
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_EARN',
             keys: ['ALT', 'KEY_E'],
@@ -157,6 +151,14 @@ const otherSection: ShortcutSection = {
     titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OTHER',
     items: [
         {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_FOCUS_NEXT',
+            keys: ['TAB'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_FOCUS_PREVIOUS',
+            keys: ['SHIFT', 'TAB'],
+        },
+        {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE',
             keys: ['ESCAPE'],
         },
@@ -169,7 +171,7 @@ const otherSection: ShortcutSection = {
 
 const debugModeShortcut: ShortcutItem = {
     labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE',
-    keys: ['ALT', 'PERIOD'],
+    keys: ['MOD', 'ALT', 'SHIFT', 'KEY_D'],
 };
 
 const debugSection: ShortcutSection = {
@@ -244,7 +246,6 @@ export const GuideShortcuts = () => {
                     <ShortcutSectionBlock {...generalSection} />
                     <ShortcutSectionBlock {...securitySectionWithLockApp} />
                     <ShortcutSectionBlock {...walletsSectionWithPassphrase} />
-                    <ShortcutSectionBlock {...transactionsSection} />
                     <ShortcutSectionBlock {...navigationSection} />
                     <ShortcutSectionBlock {...otherSectionWithDebugToggle} />
                     {isDebugModeActive && <ShortcutSectionBlock {...debugSection} />}

@@ -53,6 +53,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     icon: 'house',
                     goToRoute: startRoute,
                     routes: [startRoute],
+                    shortcut: ['ALT', 'KEY_0'],
                 },
                 ...(!isBtcOnly
                     ? [
@@ -62,11 +63,13 @@ export const Navigation = ({ children }: NavigationProps) => {
                               goToRoute: 'wallet-trading-exchange',
                               routes: ['wallet-trading-exchange'],
                               onClick: reportSwapNavigation,
+                              shortcut: ['ALT', 'KEY_X'],
                           } as NavigationItemProps,
                           {
                               nameId: 'TR_EARN',
                               icon: 'piggyBank',
                               goToRoute: 'suite-earn',
+                              shortcut: ['ALT', 'KEY_E'],
                               routes: [
                                   'suite-earn',
                                   'earn-yield-deposit',
@@ -86,6 +89,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     icon: 'bell',
                     CustomComponent: NotificationDropdown,
                     'data-testid': '@suite/menu/notifications',
+                    shortcut: ['ALT', 'KEY_I'],
                 },
                 {
                     nameId: 'TR_SETTINGS',
@@ -93,6 +97,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     goToRoute: 'settings-index',
                     routes: SETTINGS_ROUTES,
                     'data-testid': '@suite/menu/settings',
+                    shortcut: ['MOD', 'COMMA'],
                 },
             ],
             [startRoute, isBtcOnly, reportSwapNavigation],

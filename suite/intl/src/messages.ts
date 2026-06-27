@@ -7797,7 +7797,15 @@ export const messages = defineMessages({
     },
     TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE',
-        defaultMessage: 'Toggle debug mode (press 3× on a settings page)',
+        defaultMessage: 'Toggle debug mode',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_FOCUS_NEXT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_FOCUS_NEXT',
+        defaultMessage: 'Focus next element',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_FOCUS_PREVIOUS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_FOCUS_PREVIOUS',
+        defaultMessage: 'Focus previous element',
     },
     TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE',
