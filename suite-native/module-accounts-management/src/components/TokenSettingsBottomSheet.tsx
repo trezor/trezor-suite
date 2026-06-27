@@ -34,7 +34,7 @@ import {
     TokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { CryptoIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     type TokensRootState as NativeTokensRootState,
     selectAccountTokenInfo,
@@ -83,6 +83,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { applyStyle } = useNativeStyles();
+        const { translate } = useTranslate();
         const dispatch = useDispatch();
 
         const token = useSelector((state: NativeTokensRootState) =>
@@ -172,7 +173,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                     </Card>
                     <TouchableSwitchRow
                         icon="eyeSlash"
-                        accessibilityLabel="Hide token"
+                        accessibilityLabel={translate('moduleAccountManagement.tokenSettings.hideToken')}
                         text={<Translation id="moduleAccountManagement.tokenSettings.hideToken" />}
                         isChecked={isHidden}
                         onChange={handleToggleHide}

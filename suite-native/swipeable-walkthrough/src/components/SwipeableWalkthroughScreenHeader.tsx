@@ -3,6 +3,7 @@ import Animated, { type SharedValue, useAnimatedStyle, withTiming } from 'react-
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Box, IconButton } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -37,6 +38,8 @@ const SwipeableWalkthroughBackButton = ({
     onPressBack,
     currentStepIndex,
 }: SwipeableWalkthroughBackButtonProps) => {
+    const { translate } = useTranslate();
+
     const animatedButtonStyle = useAnimatedStyle(() => ({
         transform: [
             {
@@ -56,7 +59,7 @@ const SwipeableWalkthroughBackButton = ({
                 size="medium"
                 onPress={onPressBack}
                 accessibilityRole="button"
-                accessibilityLabel="Go back"
+                accessibilityLabel={translate('generic.buttons.goBack')}
             />
         </Animated.View>
     );

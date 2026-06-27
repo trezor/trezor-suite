@@ -12,11 +12,12 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { events as nativeEvents, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { StorageContext } from '@suite-native/storage';
 import { useShowSuiteSyncEnabledToast, useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 export const ToggleSuiteSyncCard = () => {
+    const { translate } = useTranslate();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const storageContext = useContext(StorageContext);
     const { showAlert } = useAlert();
@@ -90,7 +91,7 @@ export const ToggleSuiteSyncCard = () => {
                 description={
                     <Translation id="moduleSettings.items.features.suiteSync.toggleDescription" />
                 }
-                accessibilityLabel="Secure sync toggle"
+                accessibilityLabel={translate('moduleSettings.items.features.suiteSync.title')}
                 testID="settings/suite-sync-touchable-row"
             />
         </>

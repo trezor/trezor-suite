@@ -1,5 +1,5 @@
 import { IconButton, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
@@ -7,6 +7,7 @@ import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { ToggleTestnetsCard } from '../components/ToggleTestnetsCard';
 
 export const SettingsExperimentalScreen = () => {
+    const { translate } = useTranslate();
     const openLink = useOpenLink();
 
     const onInfoPress = () => {
@@ -26,7 +27,7 @@ export const SettingsExperimentalScreen = () => {
                             priority="secondary"
                             onPress={onInfoPress}
                             accessibilityRole="button"
-                            accessibilityLabel="More info"
+                            accessibilityLabel={translate('generic.buttons.moreInfo')}
                         />
                     }
                 />
