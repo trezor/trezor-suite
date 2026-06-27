@@ -8,7 +8,7 @@ import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
-import { useGuideKeyboard } from 'src/hooks/guide';
+import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
@@ -79,6 +79,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
+    // Open the Guide from the desktop application menu (Help)
+    useGuideDesktopMenu();
     useWindowVisibility();
 
     if (!isAnalyticsConsentConfirmed) {

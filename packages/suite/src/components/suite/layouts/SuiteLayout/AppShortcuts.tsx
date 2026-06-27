@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { debugActions, selectIsDebugModeActive } from '@suite/debug';
+import { useToggleDebugMode } from '@suite/debug';
 import { openModal } from '@suite/modal';
-import { SettingsAnchor, closeModalApp, goto, selectRouteName } from '@suite/router';
+import { SettingsAnchor, closeModalApp, goto } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
@@ -17,9 +17,6 @@ import { open, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
-// Three ALT + . presses within this window toggle the debug mode.
-const DEBUG_TRIPLE_PRESS_WINDOW_MS = 800;
 
 type ListedAccount = ReturnType<typeof selectAllAccountsToList>[number];
 
@@ -61,14 +58,10 @@ export const AppShortcuts = () => {
     );
     const currentTheme = useSelector(selectTheme);
     const autodetectTheme = useSelector(selectAutodetectTheme);
-    const routeName = useSelector(selectRouteName);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
-
-    // Persists across renders so the ALT + . presses can be counted within the time window.
-    const debugPressTimestampsRef = useRef<number[]>([]);
+    const toggleDebugMode = useToggleDebugMode();
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
@@ -269,19 +262,10 @@ export const AppShortcuts = () => {
             gotoAccount(orderedAccounts[nextIndex]);
         }
 
-        // press ALT + . three times on a settings page to toggle the debug mode
-        if (altOnly && e.code === KEYBOARD_CODE.PERIOD && routeName?.startsWith('settings')) {
+        // press CMD/CTRL + ALT + SHIFT + D to toggle the debug mode
+        if (cmdOrCtrl && altKey && shiftKey && e.code === KEYBOARD_CODE.KEY_D) {
             e.preventDefault();
-            const now = Date.now();
-            const recentPresses = [...debugPressTimestampsRef.current, now].filter(
-                timestamp => now - timestamp < DEBUG_TRIPLE_PRESS_WINDOW_MS,
-            );
-            debugPressTimestampsRef.current = recentPresses;
-
-            if (recentPresses.length >= 3) {
-                debugPressTimestampsRef.current = [];
-                dispatch(debugActions.setShowDebugMenu(!isDebugModeActive));
-            }
+            toggleDebugMode();
         }
 
         // press ? to open the keyboard shortcuts guide

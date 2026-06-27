@@ -3,3 +3,4 @@ export { useGuideLoadArticle } from './useGuideLoadArticle';
 export { useGuideOpenNode } from './useGuideOpenNode';
 export { useGuideSearch } from './useGuideSearch';
 export { useGuideKeyboard } from './useGuideKeyboard';
+export { useGuideDesktopMenu } from './useGuideDesktopMenu';

@@ -101,6 +101,11 @@ export interface RendererChannels {
 
     'find:show': void;
 
+    // application menu (Help) → open the in-app guide on a specific view
+    'guide/open': void;
+    'guide/open-support-feedback': void;
+    'guide/open-shortcuts': void;
+
     'bio-auth/validation-status-changed': boolean;
     'bio-auth/bio-auth-availability-changed': boolean;
     'bio-auth/settings-changed': BioAuthSettings;
