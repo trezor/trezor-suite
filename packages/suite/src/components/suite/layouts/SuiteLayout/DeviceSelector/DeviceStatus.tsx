@@ -39,16 +39,13 @@ export const DeviceStatus = ({
     );
 
     const content = device && (
-        <Row gap={16} alignItems="center">
-            <DeviceDetail label={deviceLabel}>
-                <DeviceStatusText
-                    device={device}
-                    forceConnectionInfo={forceConnectionInfo}
-                    deviceNeedsRefresh={deviceNeedsRefresh}
-                />
-            </DeviceDetail>
-            <ShortcutBadge shortcut={['ALT', 'KEY_W']} />
-        </Row>
+        <DeviceDetail label={deviceLabel}>
+            <DeviceStatusText
+                device={device}
+                forceConnectionInfo={forceConnectionInfo}
+                deviceNeedsRefresh={deviceNeedsRefresh}
+            />
+        </DeviceDetail>
     );
 
     return (
@@ -60,7 +57,16 @@ export const DeviceStatus = ({
                 </Row>
             ) : (
                 <Row justifyContent="center">
-                    <Tooltip cursor="inherit" placement="right" content={content}>
+                    <Tooltip
+                        cursor="inherit"
+                        placement="right"
+                        content={
+                            <Row gap={16} alignItems="center">
+                                {content}
+                                <ShortcutBadge shortcut={['ALT', 'KEY_W']} />
+                            </Row>
+                        }
+                    >
                         {image}
                     </Tooltip>
                 </Row>
