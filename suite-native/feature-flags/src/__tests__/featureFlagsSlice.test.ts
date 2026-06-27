@@ -23,7 +23,6 @@ describe('featureFlagsSlice', () => {
                 isTradingDebugEnabled: false,
                 isN4w1BackupEnabled: false,
                 isStablecoinYieldEnabled: false,
-                isSolanaStakingEnabled: false,
             });
         });
 
@@ -42,7 +41,6 @@ describe('featureFlagsSlice', () => {
                 isTradingDebugEnabled: false,
                 isN4w1BackupEnabled: false,
                 isStablecoinYieldEnabled: false,
-                isSolanaStakingEnabled: false,
             });
         });
     });

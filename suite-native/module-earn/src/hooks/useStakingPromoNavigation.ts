@@ -8,7 +8,6 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
@@ -21,8 +20,6 @@ import {
 
 import { useEarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { type StakingEarnItem } from '../types';
-import { useSolanaStakingFlag } from './useSolanaStakingFlag';
-import { useStakingDetailNavigation } from './useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';
 import { isStakeFlowSupportedSymbol } from '../utils';
 import { navigateByAccountState } from '../utils/navigateByAccountState';
@@ -37,8 +34,6 @@ export const useStakingPromoNavigation = () => {
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const isSolanaStakingEnabled = useSolanaStakingFlag();
-    const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
 
@@ -64,28 +59,15 @@ export const useStakingPromoNavigation = () => {
     const chooseAccountSymbolRef = useRef<NetworkSymbol | null>(null);
     const pendingEnableSymbolRef = useRef<NetworkSymbol | null>(null);
 
-    const chooseAccountModeRef = useRef<'stake' | 'detail'>('stake');
-
     const handleAccountSelected = useCallback(
         (account: Account) => {
             chooseAccountContinuedRef.current = true;
             closeChooseAccountModal();
             reportStakingNavigate(account);
 
-            if (chooseAccountModeRef.current === 'detail') {
-                navigateToStakingDetail({ accountKey: account.key, symbol: account.symbol });
-
-                return;
-            }
-
             navigateByAccountState(account, navigation.navigate);
         },
-        [
-            closeChooseAccountModal,
-            navigation.navigate,
-            reportStakingNavigate,
-            navigateToStakingDetail,
-        ],
+        [closeChooseAccountModal, navigation.navigate, reportStakingNavigate],
     );
 
     const handleChooseAccountDismiss = useCallback(() => {
@@ -159,15 +141,6 @@ export const useStakingPromoNavigation = () => {
 
             const accountsForSymbol = accounts.filter(acc => acc.symbol === item.symbol);
 
-            const isSolStakingViewOnly =
-                isSupportedSolStakingNetworkSymbol(item.symbol) && !isSolanaStakingEnabled;
-
-            if (isSolStakingViewOnly && accountsForSymbol.length === 0) {
-                openInfoModal();
-
-                return;
-            }
-
             if (isPortfolioTrackerDevice) {
                 openPortfolioTrackerSheet();
 
@@ -186,13 +159,6 @@ export const useStakingPromoNavigation = () => {
             const singleAccount = accountsForSymbol[0];
             if (accountsForSymbol.length === 1 && singleAccount) {
                 reportStakingNavigate(singleAccount);
-
-                if (isSolStakingViewOnly) {
-                    navigateToStakingDetail({ accountKey: singleAccount.key, symbol: item.symbol });
-
-                    return;
-                }
-
                 navigateByAccountState(singleAccount, navigation.navigate);
 
                 return;
@@ -201,20 +167,17 @@ export const useStakingPromoNavigation = () => {
             setChosenAccounts(accountsForSymbol);
             chooseAccountSymbolRef.current = item.symbol;
             chooseAccountContinuedRef.current = false;
-            chooseAccountModeRef.current = isSolStakingViewOnly ? 'detail' : 'stake';
             openChooseAccountModal();
         },
         [
             accounts,
             navigation.navigate,
-            isSolanaStakingEnabled,
             isPortfolioTrackerDevice,
             openPortfolioTrackerSheet,
             openInfoModal,
             openChooseAccountModal,
             openEnableNetworkModal,
             reportStakingNavigate,
-            navigateToStakingDetail,
         ],
     );
 

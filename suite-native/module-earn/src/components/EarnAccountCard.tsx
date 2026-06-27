@@ -7,10 +7,7 @@ import {
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import {
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
@@ -28,10 +25,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 import { EarnClaimAlert } from './EarnClaimAlert';
-import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
-import { useSolanaStakingFlag } from '../hooks/useSolanaStakingFlag';
-import { type EarnDepositsCardActiveItem } from '../types';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
+import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
+import { type EarnDepositsCardActiveItem } from '../types';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp16,
@@ -78,9 +74,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const isStakingItem = item.type === 'staking';
     const isStablecoinYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
-    const isSolStaking = isStakingItem && isSupportedSolStakingNetworkSymbol(item.symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isSolanaStakingEnabled = useSolanaStakingFlag();
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
 
@@ -127,10 +121,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
 
     const { isClaimingDisabled } = useMessageSystemStaking(isStakingItem ? item.symbol : null);
 
-    const isSolClaimHidden = isSolStaking && !isSolanaStakingEnabled;
-
-    const showClaimAlert =
-        canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice && !isSolClaimHidden;
+    const showClaimAlert = canClaim && !isClaimingDisabled && !isPortfolioTrackerDevice;
 
     const showTronVotingAlert =
         isStakingItem && item.symbol === 'trx' && availableTronVotingPower !== '0';
