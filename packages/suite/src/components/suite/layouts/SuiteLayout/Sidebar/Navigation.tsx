@@ -85,6 +85,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: 'bell',
                     CustomComponent: NotificationDropdown,
+                    'data-testid': '@suite/menu/notifications',
                 },
                 {
                     nameId: 'TR_SETTINGS',

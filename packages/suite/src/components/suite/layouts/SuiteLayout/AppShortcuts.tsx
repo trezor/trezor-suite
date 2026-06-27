@@ -1,6 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
-import { SettingsAnchor, closeModalApp, goto } from '@suite/router';
+import { selectSelectedAccount } from '@suite/account';
+import { debugActions, selectIsDebugModeActive } from '@suite/debug';
+import { openModal } from '@suite/modal';
+import { SettingsAnchor, closeModalApp, goto, selectRouteName } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
@@ -12,7 +15,23 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import { open, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+
+// Three ALT + . presses within this window toggle the debug mode.
+const DEBUG_TRIPLE_PRESS_WINDOW_MS = 800;
+
+type ListedAccount = ReturnType<typeof selectAllAccountsToList>[number];
+
+// Account-group order as rendered in the sidebar (see AccountsList.tsx), so that the
+// digit / arrow account shortcuts step through accounts in the same order the user sees.
+const SIDEBAR_ACCOUNT_TYPE_ORDER = ['coinjoin', 'normal', 'taproot', 'segwit', 'legacy', 'ledger'];
+
+const sidebarTypeRank = (accountType: string) => {
+    const rank = SIDEBAR_ACCOUNT_TYPE_ORDER.indexOf(accountType);
+
+    return rank === -1 ? SIDEBAR_ACCOUNT_TYPE_ORDER.length : rank;
+};
 
 // `?` is a printable character, so the shortcut must not hijack typing in form fields.
 const isTypingTarget = (target: EventTarget | null): boolean => {
@@ -31,26 +50,61 @@ export const AppShortcuts = () => {
     const discoveryInProgress = discoveryStatus?.status === 'loading';
 
     const accounts = useSelector(selectAllAccountsToList);
+    const selectedAccount = useSelector(selectSelectedAccount);
+    // Stable sort keeps the per-group order from the selector while matching the sidebar grouping.
+    const orderedAccounts = useMemo(
+        () =>
+            [...accounts].sort(
+                (a, b) => sidebarTypeRank(a.accountType) - sidebarTypeRank(b.accountType),
+            ),
+        [accounts],
+    );
     const currentTheme = useSelector(selectTheme);
     const autodetectTheme = useSelector(selectAutodetectTheme);
+    const routeName = useSelector(selectRouteName);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
-    const isBioAuthEnabled = useSelector(state => state.bioAuth.bioAuthEnabled);
+    const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
+
+    // Persists across renders so the ALT + . presses can be counted within the time window.
+    const debugPressTimestampsRef = useRef<number[]>([]);
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
         const cmdOrCtrl = metaKey || ctrlKey;
+        // Most shortcuts use ALT alone; exclude the other modifiers to avoid clashes.
+        const altOnly = altKey && !shiftKey && !cmdOrCtrl;
 
-        // press ALT + P to show PassphraseModal
+        const gotoAccount = (account: ListedAccount | undefined) =>
+            dispatch(
+                goto({
+                    routeName: 'wallet-index',
+                    params: {
+                        symbol: account?.symbol,
+                        accountIndex: account?.index,
+                        accountType: account?.accountType,
+                    },
+                }),
+            );
+
+        // press CMD/CTRL + , to open Settings
         if (
-            selectedDevice?.connected &&
-            (altKey || metaKey) &&
-            e.code === KEYBOARD_CODE.KEY_P &&
+            cmdOrCtrl &&
+            !altKey &&
+            !shiftKey &&
+            e.code === KEYBOARD_CODE.COMMA &&
             isDeviceSelected
         ) {
-            dispatch(closeModalApp());
             e.preventDefault();
+            dispatch(goto({ routeName: 'settings-index' }));
+        }
+
+        // press ALT + P to open a passphrase (hidden) wallet
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_P && selectedDevice?.connected) {
+            e.preventDefault();
+            dispatch(closeModalApp());
             dispatch(
                 startDiscoveryThunk({
                     device: selectedDevice,
@@ -60,88 +114,30 @@ export const AppShortcuts = () => {
             );
         }
 
-        // press ALT + D to show SwitchDevice
-        if (altKey && e.code === KEYBOARD_CODE.KEY_D && isDeviceSelected) {
+        // press ALT + W to open the wallet/device switcher
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_W && isDeviceSelected) {
+            e.preventDefault();
             if (!discoveryInProgress) {
                 dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
             }
-
-            // Firefox has default ALT+D shortcut to open address bar so we want to prevent that
-            // anyway (even when we are doing nothing due to running discovery) to avoid inconsistent behavior
-            e.preventDefault();
         }
 
-        // press CMD/CTRL + , to show Settings
-        if (
-            cmdOrCtrl &&
-            !altKey &&
-            !shiftKey &&
-            e.code === KEYBOARD_CODE.COMMA &&
-            isDeviceSelected
-        ) {
-            dispatch(goto({ routeName: 'settings-index' }));
+        // press CMD/CTRL + K to focus the account search
+        if (cmdOrCtrl && !altKey && !shiftKey && e.code === KEYBOARD_CODE.KEY_K) {
             e.preventDefault();
+            document
+                .querySelector<HTMLInputElement>('[data-testid="@account-menu/search-input"]')
+                ?.focus();
         }
 
-        // press ALT + SHIFT + L to lock the app with biometric auth (desktop only)
-        if (altKey && shiftKey && e.code === KEYBOARD_CODE.KEY_L && isDesktop()) {
+        // press ALT + A to add a new account
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_A && selectedDevice) {
             e.preventDefault();
-
-            if (!isBioAuthEnabled) {
-                // Biometric lock isn't set up yet, so there's nothing to lock with.
-                // Take the user to the setting and highlight it instead.
-                dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.BioAuth }));
-            } else {
-                dispatch(bioAuthActions.setCancelled(false));
-                dispatch(bioAuthActions.setIsBioAuthValidationRequired(true));
-            }
-        }
-
-        // press CMD/CTRL + 1-9 to quick-switch between accounts
-        if (cmdOrCtrl && !shiftKey && !altKey && isDeviceSelected) {
-            const digitCodes: string[] = [
-                KEYBOARD_CODE.DIGIT_ONE,
-                KEYBOARD_CODE.DIGIT_TWO,
-                KEYBOARD_CODE.DIGIT_THREE,
-                KEYBOARD_CODE.DIGIT_FOUR,
-                KEYBOARD_CODE.DIGIT_FIVE,
-                KEYBOARD_CODE.DIGIT_SIX,
-                KEYBOARD_CODE.DIGIT_SEVEN,
-                KEYBOARD_CODE.DIGIT_EIGHT,
-                KEYBOARD_CODE.DIGIT_NINE,
-            ];
-
-            const accountIndex = digitCodes.indexOf(e.code);
-            if (accountIndex !== -1 && accountIndex < accounts.length) {
-                const account = accounts[accountIndex];
-                e.preventDefault();
-                dispatch(
-                    goto({
-                        routeName: 'wallet-index',
-                        params: {
-                            symbol: account?.symbol,
-                            accountIndex: account?.index,
-                            accountType: account?.accountType,
-                        },
-                    }),
-                );
-            }
-        }
-
-        // press ALT + S to open send flow
-        if (altKey && e.code === KEYBOARD_CODE.KEY_S && isDeviceSelected) {
-            e.preventDefault();
-            dispatch(goto({ routeName: 'suite-index', params: { modal: 'send' } }));
-        }
-
-        // press ALT + R to open receive flow
-        if (altKey && e.code === KEYBOARD_CODE.KEY_R && isDeviceSelected) {
-            e.preventDefault();
-            dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
+            dispatch(openModal({ type: 'add-account', device: selectedDevice }));
         }
 
         // press ALT + T to toggle dark/light theme
-        if (altKey && !shiftKey && !cmdOrCtrl && e.code === KEYBOARD_CODE.KEY_T) {
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_T) {
             e.preventDefault();
 
             if (autodetectTheme) {
@@ -157,18 +153,135 @@ export const AppShortcuts = () => {
         }
 
         // press ALT + H to toggle balances visibility (discreet mode)
-        if (altKey && !shiftKey && !cmdOrCtrl && e.code === KEYBOARD_CODE.KEY_H) {
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_H) {
             e.preventDefault();
             setIsDiscreetMode(!isDiscreetMode);
         }
 
-        // press CMD/CTRL + K to focus account search
-        if (cmdOrCtrl && e.code === KEYBOARD_CODE.KEY_K) {
+        // press ALT + L to lock the app with biometric auth (desktop only)
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_L && isDesktop()) {
             e.preventDefault();
-            const searchInput = document.querySelector<HTMLInputElement>(
-                '[data-testid="@account-menu/search-input"]',
+
+            if (!isBioAuthEnabled) {
+                // Biometric lock isn't set up yet, so there's nothing to lock with.
+                // Take the user to the setting and highlight it instead.
+                dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.BioAuth }));
+            } else {
+                dispatch(bioAuthActions.setCancelled(false));
+                dispatch(bioAuthActions.setIsBioAuthValidationRequired(true));
+            }
+        }
+
+        // press ALT + S to open the send flow
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_S && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'suite-index', params: { modal: 'send' } }));
+        }
+
+        // press ALT + R to open the receive flow
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_R && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
+        }
+
+        // press ALT + X to open Swap (exchange)
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_X && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'wallet-trading-exchange', preserveParams: false }));
+        }
+
+        // press ALT + B to open Buy
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_B && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'wallet-trading-buy', preserveParams: false }));
+        }
+
+        // press ALT + C to open Sell (cash out)
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_C && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'wallet-trading-sell', preserveParams: false }));
+        }
+
+        // press ALT + E to open Earn (grow / staking)
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_E && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'suite-earn' }));
+        }
+
+        // press ALT + N to open Networks (coin settings)
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_N && isDeviceSelected) {
+            e.preventDefault();
+            dispatch(goto({ routeName: 'settings-coins' }));
+        }
+
+        // press ALT + I to toggle the notifications (activity) dropdown in the sidebar
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_I) {
+            e.preventDefault();
+            document
+                .querySelector<HTMLElement>('[data-testid="@suite/menu/notifications"]')
+                ?.click();
+        }
+
+        // press ALT + 0 to open the Dashboard, ALT + 1-9 to quick-switch between accounts
+        if (altOnly && isDeviceSelected) {
+            if (e.code === KEYBOARD_CODE.DIGIT_ZERO) {
+                e.preventDefault();
+                dispatch(goto({ routeName: 'suite-index' }));
+            }
+
+            const digitCodes: string[] = [
+                KEYBOARD_CODE.DIGIT_ONE,
+                KEYBOARD_CODE.DIGIT_TWO,
+                KEYBOARD_CODE.DIGIT_THREE,
+                KEYBOARD_CODE.DIGIT_FOUR,
+                KEYBOARD_CODE.DIGIT_FIVE,
+                KEYBOARD_CODE.DIGIT_SIX,
+                KEYBOARD_CODE.DIGIT_SEVEN,
+                KEYBOARD_CODE.DIGIT_EIGHT,
+                KEYBOARD_CODE.DIGIT_NINE,
+            ];
+
+            const accountIndex = digitCodes.indexOf(e.code);
+            if (accountIndex !== -1 && accountIndex < orderedAccounts.length) {
+                e.preventDefault();
+                gotoAccount(orderedAccounts[accountIndex]);
+            }
+        }
+
+        // press ALT + ↑ / ↓ to step to the previous / next account in the list
+        if (
+            altOnly &&
+            (e.code === KEYBOARD_CODE.ARROW_UP || e.code === KEYBOARD_CODE.ARROW_DOWN) &&
+            orderedAccounts.length > 0
+        ) {
+            e.preventDefault();
+            const offset = e.code === KEYBOARD_CODE.ARROW_DOWN ? 1 : -1;
+            const currentIndex = orderedAccounts.findIndex(
+                account =>
+                    selectedAccount?.symbol === account.symbol &&
+                    selectedAccount?.index === account.index &&
+                    selectedAccount?.accountType === account.accountType,
             );
-            searchInput?.focus();
+            // When no account is selected yet, ↓ starts at the first and ↑ at the last one.
+            const fallbackBase = offset === 1 ? -1 : 0;
+            const base = currentIndex === -1 ? fallbackBase : currentIndex;
+            const nextIndex = (base + offset + orderedAccounts.length) % orderedAccounts.length;
+            gotoAccount(orderedAccounts[nextIndex]);
+        }
+
+        // press ALT + . three times on a settings page to toggle the debug mode
+        if (altOnly && e.code === KEYBOARD_CODE.PERIOD && routeName?.startsWith('settings')) {
+            e.preventDefault();
+            const now = Date.now();
+            const recentPresses = [...debugPressTimestampsRef.current, now].filter(
+                timestamp => now - timestamp < DEBUG_TRIPLE_PRESS_WINDOW_MS,
+            );
+            debugPressTimestampsRef.current = recentPresses;
+
+            if (recentPresses.length >= 3) {
+                debugPressTimestampsRef.current = [];
+                dispatch(debugActions.setShowDebugMenu(!isDebugModeActive));
+            }
         }
 
         // press ? to open the keyboard shortcuts guide

@@ -7824,11 +7824,79 @@ export const messages = defineMessages({
     },
     TR_GUIDE_KEYBOARD_SHORTCUTS_SEND: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SEND',
-        defaultMessage: 'New transaction',
+        defaultMessage: 'Send',
     },
     TR_GUIDE_KEYBOARD_SHORTCUTS_RECEIVE: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_RECEIVE',
         defaultMessage: 'Receive',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SWAP: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWAP',
+        defaultMessage: 'Swap',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_BUY: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_BUY',
+        defaultMessage: 'Buy',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SELL: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SELL',
+        defaultMessage: 'Sell',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_EARN: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_EARN',
+        defaultMessage: 'Earn',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_NETWORKS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NETWORKS',
+        defaultMessage: 'Networks',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_ACTIVITY: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_ACTIVITY',
+        defaultMessage: 'Activity',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_SECURITY: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SECURITY',
+        defaultMessage: 'Security',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_ADD_ACCOUNT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_ADD_ACCOUNT',
+        defaultMessage: 'Add account',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_DASHBOARD: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DASHBOARD',
+        defaultMessage: 'Open dashboard',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_PREV_ACCOUNT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_PREV_ACCOUNT',
+        defaultMessage: 'Previous account',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_NEXT_ACCOUNT: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NEXT_ACCOUNT',
+        defaultMessage: 'Next account',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_SHORTCUTS: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OPEN_SHORTCUTS',
+        defaultMessage: 'Open keyboard shortcuts',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_NAVIGATION: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NAVIGATION',
+        defaultMessage: 'Navigation',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_OTHER: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OTHER',
+        defaultMessage: 'Other',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE',
+        defaultMessage: 'Toggle debug mode (press 3× on a settings page)',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE',
+        defaultMessage: 'Close modal, drawer or guide',
+    },
+    TR_GUIDE_KEYBOARD_SHORTCUTS_ACTIVATE: {
+        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_ACTIVATE',
+        defaultMessage: 'Activate focused item',
     },
     TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TOGGLE_THEME',
