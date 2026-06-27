@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { Box, Column, IconCircle } from '@trezor/components';
+import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -34,6 +34,9 @@ export const Guide = () => {
     const handleShortcutsClick = () => {
         dispatch(setView('KEYBOARD_SHORTCUTS'));
     };
+
+    // Keyboard shortcuts are irrelevant on touch devices without a physical keyboard.
+    const isTouchDevice = useMediaQuery('(hover: none) and (pointer: coarse)');
 
     return (
         <GuideViewWrapper>
@@ -68,15 +71,17 @@ export const Guide = () => {
                         </>
                     )}
                 </GuideContent>
-                <Box padding={16}>
-                    <GuideItem
-                        onClick={handleShortcutsClick}
-                        data-testid="@guide/button-shortcuts"
-                        icon={<IconCircle name="keyboard" size={32} intent="neutral" />}
-                    >
-                        <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
-                    </GuideItem>
-                </Box>
+                {!isTouchDevice && (
+                    <Box padding={16}>
+                        <GuideItem
+                            onClick={handleShortcutsClick}
+                            data-testid="@guide/button-shortcuts"
+                            icon={<IconCircle name="keyboard" size={32} intent="neutral" />}
+                        >
+                            <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
+                        </GuideItem>
+                    </Box>
+                )}
             </Column>
         </GuideViewWrapper>
     );

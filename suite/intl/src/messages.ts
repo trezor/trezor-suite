@@ -7831,10 +7831,6 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_WALLETS',
         defaultMessage: 'Wallets & accounts',
     },
-    TR_GUIDE_KEYBOARD_SHORTCUTS_TRANSACTIONS: {
-        id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_TRANSACTIONS',
-        defaultMessage: 'Transactions',
-    },
     TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG',
         defaultMessage: 'Debug',
