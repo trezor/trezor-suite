@@ -53,10 +53,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: stakedAmount,
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: 'hidden',
+                        staked: stakedAmount,
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
@@ -133,10 +135,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify pending on dashboard', async () => {
                 await stakingSection.expectStakingAmounts({
-                    pending: stakeMoreAmount,
-                    staked: stakedAmount,
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: stakeMoreAmount,
+                        staked: stakedAmount,
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
@@ -147,10 +151,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await solanaStakingMock.advanceEpoch();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: totalStakedAmount,
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: 'hidden',
+                        staked: totalStakedAmount,
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();

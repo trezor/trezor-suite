@@ -54,10 +54,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: stakedAmount,
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: 'hidden',
+                        staked: stakedAmount,
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.claimCard).toBeHidden();
             });
@@ -121,12 +123,14 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     stakedAmountFormatted,
                 );
                 await solanaStakingMock.setupUnstakingAccount();
-                await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: unstakingAmount,
+                    expected: {
+                        pending: 'hidden',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: unstakingAmount,
+                    },
+                    options: { fastForward: stakingSection.solanaEpochCachePeriod },
                 });
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
@@ -143,12 +147,14 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Wait few epochs for claim to be available', async () => {
                 await solanaStakingMock.advanceEpoch();
-                await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: 'hidden',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
+                    options: { fastForward: stakingSection.solanaEpochCachePeriod },
                 });
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
@@ -214,10 +220,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify dashboard is back to initial state', async () => {
                 await solanaStakingMock.advanceEpoch();
-                await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
-                await expect(stakingSection.stakingEmptyCard).toBeVisible();
-                await expect(stakingSection.claimCard).toBeHidden();
-                await expect(stakingSection.startStakingButton).toBeVisible();
+                await expect(async () => {
+                    await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
+                    await expect(stakingSection.stakingEmptyCard).toBeVisible();
+                    await expect(stakingSection.claimCard).toBeHidden();
+                    await expect(stakingSection.startStakingButton).toBeVisible();
+                }).toPass({ timeout: 10_000 });
             });
         },
     );

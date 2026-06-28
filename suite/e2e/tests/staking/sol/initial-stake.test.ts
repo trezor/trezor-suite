@@ -113,10 +113,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify pending on dashboard', async () => {
                 await stakingSection.expectStakingAmounts({
-                    pending: stakedAmount,
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: stakedAmount,
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
@@ -127,10 +129,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await solanaStakingMock.advanceEpoch();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: stakedAmount,
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: 'hidden',
+                        staked: stakedAmount,
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();

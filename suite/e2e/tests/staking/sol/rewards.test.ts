@@ -56,10 +56,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: stakedTotal,
-                    rewards: '0',
-                    unstaking: unstakingTotal,
+                    expected: {
+                        pending: 'hidden',
+                        staked: stakedTotal,
+                        rewards: '0',
+                        unstaking: unstakingTotal,
+                    },
                 });
 
                 await expect(
@@ -102,10 +104,12 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify rewards are displayed correctly', async () => {
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: stakedTotal,
-                    rewards: totalRewardsInSol,
-                    unstaking: unstakingTotal,
+                    expected: {
+                        pending: 'hidden',
+                        staked: stakedTotal,
+                        rewards: totalRewardsInSol,
+                        unstaking: unstakingTotal,
+                    },
                 });
                 await expect(
                     walletPage.balanceOfAccountWithSymbol({

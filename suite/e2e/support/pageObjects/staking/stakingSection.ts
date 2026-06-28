@@ -193,13 +193,23 @@ export class StakingSection {
     }
 
     @step()
-    async expectStakingAmounts(expected: {
-        pending: string | 'hidden';
-        staked: string | 'hidden';
-        rewards: string | 'hidden';
-        unstaking: string | 'hidden';
+    async expectStakingAmounts({
+        expected,
+        options,
+    }: {
+        expected: {
+            pending: string | 'hidden';
+            staked: string | 'hidden';
+            rewards: string | 'hidden';
+            unstaking: string | 'hidden';
+        };
+        options?: { fastForward?: string; timeout?: number };
     }) {
         await expect(async () => {
+            if (options?.fastForward) {
+                await this.page.clock.fastForward(options.fastForward);
+            }
+
             const getStatus = async (locator: Locator) =>
                 (await locator.isVisible()) ? locator.innerText() : 'hidden';
 
@@ -214,6 +224,6 @@ export class StakingSection {
                 { pending, staked, rewards, unstaking },
                 'expected Staking dashboard to show correct values',
             ).toEqual(expected);
-        }).toPass();
+        }).toPass({ timeout: options?.timeout ?? 15_000 });
     }
 }
