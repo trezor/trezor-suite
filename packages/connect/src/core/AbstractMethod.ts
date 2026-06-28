@@ -3,6 +3,7 @@ import type {
     CallMethodPayload,
     CallMethodResponse,
     CoinInfo,
+    CoinSymbol,
     CoreEventMessage,
     DeviceState,
     FirmwareCapability,
@@ -42,6 +43,30 @@ export type MethodContext = {
 export type MethodMessage<Name extends CallMethodPayload['method']> = {
     id?: string;
     payload: Payload<Name>;
+};
+
+// Hardcoded — Cardano is the only coin needing session-level `derive_cardano`. Pinned to
+// `CoinSymbol` so a typo or a coin dropped from the canonical list fails to compile; widened to
+// string for case-folded `has`.
+const CARDANO_COIN_SYMBOLS: ReadonlySet<string> = new Set<CoinSymbol>(['ada', 'tada']);
+
+const referencesCardano = (value: unknown): boolean =>
+    typeof value === 'string' && CARDANO_COIN_SYMBOLS.has(value.toLowerCase());
+
+// The subclass's `bundlify` unwraps `bundle` only after this constructor guard runs, so the raw
+// `bundle` is inspected here too.
+const payloadReferencesCardanoCoin = (payload: any): boolean => {
+    if (referencesCardano(payload?.coin)) return true;
+    if (
+        Array.isArray(payload?.coins) &&
+        payload.coins.some((c: any) => referencesCardano(c?.symbol))
+    )
+        return true;
+    if (Array.isArray(payload?.bundle)) {
+        return payload.bundle.some((b: any) => referencesCardano(b?.coin));
+    }
+
+    return false;
 };
 
 function validateStaticSessionId(input: unknown): StaticSessionId {
@@ -175,6 +200,13 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     protected requiredFirmwareCapabilities: FirmwareCapability[] = [];
     protected requiredFirmwareCoins: (CoinInfo | undefined)[] = [];
 
+    // CODE SMELL (pre-existing, known — to be addressed later): this abstract base carries
+    // coin-specific knowledge (Cardano: `isCardanoBound`, `useCardanoDerivation`,
+    // `resolveCardanoCapability`). An abstract method should not know about a concrete coin;
+    // the detection/guard belongs in the concrete Cardano methods or a coin-agnostic capability
+    // mechanism (see #23879). Left here for now to avoid scope creep.
+    private readonly isCardanoBound: boolean;
+
     public useCardanoDerivation: boolean;
 
     public confirmMissingBackup: boolean;
@@ -204,6 +236,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = true;
+        // Payload-only detection (no store read) so `__info` introspection is never rejected — the
+        // popup needs `__info` to learn which coin a call targets before asking the user to grant it.
+        // The store-dependent enablement decision is resolved later; see `resolveCardanoCapability()`.
+        this.isCardanoBound =
+            payload.method.startsWith('cardano') || payloadReferencesCardanoCoin(payload);
         this.useCardanoDerivation = false;
         this.confirmMissingBackup = false;
     }
@@ -211,10 +248,18 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // Resolves the Cardano session capability against the runtime enabled-networks set. MUST run on
     // the real device-call path (NOT the constructor): keeps `__info` unblocked, and reflects any
     // enablement applied between introspection and the call (e.g. a permission grant projected into
-    // the store). Sets `useCardanoDerivation` (→ `derive_cardano` at session create).
+    // the store). Sets `useCardanoDerivation` (→ `derive_cardano` at session create) and rejects a
+    // Cardano-bound call up-front when neither 'ada' nor 'tada' is enabled.
     public resolveCardanoCapability(): void {
-        this.useCardanoDerivation =
-            enabledNetworksStore.has('ada') || enabledNetworksStore.has('tada');
+        const cardanoEnabled = enabledNetworksStore.has('ada') || enabledNetworksStore.has('tada');
+        if (this.isCardanoBound && !cardanoEnabled) {
+            throw ERRORS.TypedError(
+                'Method_NetworkNotEnabled',
+                `Cardano operation '${this.name}' requires 'ada' in enabled networks (or 'tada' for testnet). ` +
+                    "Declare it via init({ enabledNetworks: [{ coin: 'ada' }] }) before invoking Cardano methods.",
+            );
+        }
+        this.useCardanoDerivation = cardanoEnabled;
     }
 
     public setDevice(device: Device) {

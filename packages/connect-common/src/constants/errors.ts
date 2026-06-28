@@ -21,6 +21,7 @@ export const ERROR_CODES = {
     Method_Cancel: 'Canceled', // permission/confirmation not granted in popup OR .cancel() custom error
     Method_Interrupted: 'Popup closed', // interruption: popup closed
     Method_UnknownCoin: 'Coin not found', // coin definition not found
+    Method_NetworkNotEnabled: '', // a call requires a network not in the enabled set (today: Cardano); message set at throw site
     Method_AddressNotMatch: 'Addresses do not match', // thrown by all getAddress methods with custom UI validation
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen

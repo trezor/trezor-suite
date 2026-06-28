@@ -1,7 +1,9 @@
 import * as enabledNetworksStore from '../../data/enabledNetworksStore';
 import { AbstractMethod, type MethodContext, type MethodReturnType } from '../AbstractMethod';
 
-// Minimal concrete subclass used to exercise resolveCardanoCapability()'s derivation behavior.
+// Minimal concrete subclass. The Cardano enablement guard runs in `resolveCardanoCapability()`
+// (the real device-call path), NOT the constructor — so constructing the method (and the `__info`
+// introspection that uses it) never throws, even when the network isn't enabled.
 class TestMethod extends AbstractMethod<any> {
     get requiredPermissions() {
         return [];
@@ -26,6 +28,65 @@ describe('AbstractMethod Cardano enablement', () => {
     // Reset the singleton between tests.
     afterEach(() => {
         enabledNetworksStore.set([]);
+    });
+
+    describe('constructor never blocks (keeps `__info` introspection working when not enabled)', () => {
+        it('constructing a cardano* method with the store empty does not throw', () => {
+            expect(() => make('cardanoGetAddress')).not.toThrow();
+        });
+
+        it('constructing a coin-targeting method with the store empty does not throw', () => {
+            expect(() => make('getAccountInfo', { coin: 'ada' })).not.toThrow();
+        });
+
+        it('useCardanoDerivation defaults to false before resolveCardanoCapability()', () => {
+            expect(make('cardanoGetAddress').useCardanoDerivation).toBe(false);
+        });
+    });
+
+    describe("resolveCardanoCapability rejects Cardano-bound calls while neither 'ada' nor 'tada' is enabled", () => {
+        it('cardano* method name', () => {
+            expect(() => make('cardanoGetAddress').resolveCardanoCapability()).toThrow(
+                "requires 'ada' in enabled networks",
+            );
+        });
+
+        it('payload coin references ada', () => {
+            expect(() =>
+                make('getAccountInfo', { coin: 'ada' }).resolveCardanoCapability(),
+            ).toThrow("requires 'ada' in enabled networks");
+        });
+
+        it('payload coin references ada case-insensitively', () => {
+            expect(() =>
+                make('getAccountInfo', { coin: 'ADA' }).resolveCardanoCapability(),
+            ).toThrow();
+        });
+
+        it('a bundle coins entry references a Cardano symbol', () => {
+            expect(() =>
+                make('discoverAccounts', {
+                    coins: [{ symbol: 'btc' }, { symbol: 'tada' }],
+                }).resolveCardanoCapability(),
+            ).toThrow();
+        });
+
+        it('a bundle[].coin entry references a Cardano coin (bundlify runs after the guard)', () => {
+            expect(() =>
+                make('getAccountInfo', {
+                    bundle: [{ coin: 'btc' }, { coin: 'ada' }],
+                }).resolveCardanoCapability(),
+            ).toThrow("requires 'ada' in enabled networks");
+        });
+
+        it('the thrown error carries the Method_NetworkNotEnabled code', () => {
+            try {
+                make('cardanoSignTransaction').resolveCardanoCapability();
+                throw new Error('expected guard to throw');
+            } catch (error: any) {
+                expect(error.code).toBe('Method_NetworkNotEnabled');
+            }
+        });
     });
 
     describe("resolveCardanoCapability allows calls once 'ada' is enabled", () => {
@@ -64,7 +125,7 @@ describe('AbstractMethod Cardano enablement', () => {
     });
 
     describe('leaves non-Cardano calls untouched', () => {
-        it('keeps derivation off when ada is not enabled', () => {
+        it('does not throw and keeps derivation off when ada is not enabled', () => {
             expect(resolved('getAccountInfo', { coin: 'btc' }).useCardanoDerivation).toBe(false);
         });
 
