@@ -351,6 +351,7 @@ export interface TradingUseComposeTransactionProps<T extends TradingSellExchange
     network: Network;
     methods: UseFormReturn<T>;
     values: T;
+    estimateFeeForUnknownRecipient: boolean;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
 }
 

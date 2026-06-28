@@ -216,6 +216,11 @@ export const recomposeAndSignTxThunk = createThunk<
             });
         }
 
+        // Tron fee limit is SUN and recipient-dependent — use the recomposed (real recipient) estimate.
+        if (network.networkType === 'tron') {
+            formState.feeLimit = precomposedToSign.estimatedFeeLimit ?? precomposedToSign.fee ?? '';
+        }
+
         /*
             SLIP-24 to achieve the consistent trade data
             ---

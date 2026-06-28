@@ -173,6 +173,7 @@ export const useTradingSellForm = ({
         network,
         values: values as TradingSellFormProps,
         methods,
+        estimateFeeForUnknownRecipient: isFormPage,
         setShowReserveBanner,
     });
 

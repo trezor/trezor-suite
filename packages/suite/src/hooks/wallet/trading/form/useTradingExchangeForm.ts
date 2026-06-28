@@ -228,6 +228,7 @@ export const useTradingExchangeForm = ({
             network,
             values,
             methods,
+            estimateFeeForUnknownRecipient: isFormPage,
             setShowReserveBanner,
         });
 
