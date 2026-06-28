@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTextUnderline = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 28a1 1 0 0 1-1 1H8a1 1 0 0 1 0-2h16a1 1 0 0 1 1 1m-9-3a8.01 8.01 0 0 0 8-8V7a1 1 0 0 0-2 0v10a6 6 0 1 1-12 0V7a1 1 0 0 0-2 0v10a8.01 8.01 0 0 0 8 8"
+        />
+    </svg>
+);
+export { SvgTextUnderline as ReactComponent };

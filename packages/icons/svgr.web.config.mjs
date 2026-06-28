@@ -8,12 +8,9 @@ const config = {
     index: true,
     silent: true,
     outDir: 'src/generated/icons',
+    jsxRuntime: 'automatic',
     svgoConfig,
     indexTemplate,
-    replaceAttrValues: {
-        '#000': 'currentColor',
-        '#000000': 'currentColor',
-    },
 };
 
 export default config;

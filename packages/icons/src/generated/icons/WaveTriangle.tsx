@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgWaveTriangle = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="m29.81 16.585-6.5 9a1 1 0 0 1-1.625 0L9.5 8.708l-5.689 7.875a1 1 0 1 1-1.625-1.17l6.5-9a1 1 0 0 1 1.625 0L22.5 23.288l5.689-7.875a1.003 1.003 0 0 1 1.664.058 1 1 0 0 1-.04 1.112z"
+        />
+    </svg>
+);
+export { SvgWaveTriangle as ReactComponent };

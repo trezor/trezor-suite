@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgWarehouseFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 23h-1V7.237l1.209-.26a1 1 0 1 0-.419-1.955l-28 6a1 1 0 0 0 .421 1.955L3 12.81V23H2a1 1 0 1 0 0 2h28a1 1 0 0 0 0-2m-7 0H9v-2h14zm0-4H9v-2h14z"
+        />
+    </svg>
+);
+export { SvgWarehouseFilled as ReactComponent };

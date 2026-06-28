@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCookieFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 15a5 5 0 0 1-5-5 1 1 0 0 0-1-1 5 5 0 0 1-5-5 1 1 0 0 0-1-1 13 13 0 1 0 13 13 1 1 0 0 0-1-1M9.439 12.439a1.5 1.5 0 1 1 2.117 2.124 1.5 1.5 0 0 1-2.117-2.124m3.125 9.125a1.499 1.499 0 1 1 .438-1.064 1.5 1.5 0 0 1-.44 1.061zm2.875-5a1.5 1.5 0 1 1 .487.324 1.5 1.5 0 0 1-.487-.327zm5.125 6a1.499 1.499 0 1 1 .438-1.064 1.5 1.5 0 0 1-.44 1.061z"
+        />
+    </svg>
+);
+export { SvgCookieFilled as ReactComponent };

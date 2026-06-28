@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgXCircleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3m4.707 16.293a1 1 0 0 1-1.415 1.415L16 17.413l-3.293 3.293a1 1 0 0 1-1.415-1.415L14.587 16l-3.293-3.293a1 1 0 1 1 1.415-1.415L16 14.587l3.293-3.293a1 1 0 0 1 1.415 1.415L17.413 16l3.293 3.293z"
+        />
+    </svg>
+);
+export { SvgXCircleFilled as ReactComponent };

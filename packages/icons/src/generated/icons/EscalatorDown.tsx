@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgEscalatorDown = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M21.293 10.707a1 1 0 1 1 1.415-1.415L24 10.587V6a1 1 0 0 1 2 0v4.586l1.293-1.293a1 1 0 1 1 1.415 1.415l-3 3a1 1 0 0 1-1.415 0l-3-3zM30 20v5a2 2 0 0 1-2 2h-6.563a2 2 0 0 1-1.47-.644L8.564 14H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6.563a2 2 0 0 1 1.47.644L23.438 18H28a2 2 0 0 1 2 2m-2 0h-4.563a2 2 0 0 1-1.47-.644L10.564 7H4v5h4.563a2 2 0 0 1 1.47.644L21.438 25H28z"
+        />
+    </svg>
+);
+export { SvgEscalatorDown as ReactComponent };

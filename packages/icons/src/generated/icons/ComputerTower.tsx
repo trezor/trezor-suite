@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgComputerTower = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M11 9a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2h-8a1 1 0 0 1-1-1m1 5h8a1 1 0 0 0 0-2h-8a1 1 0 0 0 0 2m14-9v22a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2m-2 0H8v22h16zm-8 16a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"
+        />
+    </svg>
+);
+export { SvgComputerTower as ReactComponent };

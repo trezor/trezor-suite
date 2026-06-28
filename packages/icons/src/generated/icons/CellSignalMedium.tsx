@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCellSignalMedium = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 14v11a1 1 0 0 1-2 0V14a1 1 0 0 1 2 0m-6 4a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1m-5 5a1 1 0 0 0-1 1v1a1 1 0 1 0 2 0v-1a1 1 0 0 0-1-1"
+        />
+    </svg>
+);
+export { SvgCellSignalMedium as ReactComponent };

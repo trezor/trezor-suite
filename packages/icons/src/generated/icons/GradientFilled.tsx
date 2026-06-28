@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgGradientFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M10 24a1 1 0 0 1-1 1H4a1 1 0 0 1 0-2h5a1 1 0 0 1 1 1m18-1h-5a1 1 0 0 0 0 2h5a1 1 0 0 0 0-2m-9 0h-6a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2M4 21h10a1 1 0 0 0 0-2H4a1 1 0 0 0 0 2m24-2H18a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2m0-12H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h24a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1m0 7H4a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h24a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1"
+        />
+    </svg>
+);
+export { SvgGradientFilled as ReactComponent };

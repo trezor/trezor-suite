@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCircleHalfTiltFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3M5 16a11 11 0 0 1 18.775-7.775l-15.55 15.55A10.97 10.97 0 0 1 5 16"
+        />
+    </svg>
+);
+export { SvgCircleHalfTiltFilled as ReactComponent };

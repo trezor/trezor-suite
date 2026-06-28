@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgEyeglassesFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M29 9v11.5a5.5 5.5 0 0 1-10.976.5h-4.048A5.5 5.5 0 0 1 3 20.5V9a4 4 0 0 1 4-4 1 1 0 0 1 0 2 2 2 0 0 0-2 2v7.26A5.5 5.5 0 0 1 13.79 19h4.42A5.5 5.5 0 0 1 27 16.26V9a2 2 0 0 0-2-2 1 1 0 1 1 0-2 4 4 0 0 1 4 4"
+        />
+    </svg>
+);
+export { SvgEyeglassesFilled as ReactComponent };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgLadderSimple = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M24 3a1 1 0 0 0-1 1v4H9V4a1 1 0 0 0-2 0v24a1 1 0 1 0 2 0v-4h14v4a1 1 0 0 0 2 0V4a1 1 0 0 0-1-1m-1 7v5H9v-5zM9 22v-5h14v5z"
+        />
+    </svg>
+);
+export { SvgLadderSimple as ReactComponent };

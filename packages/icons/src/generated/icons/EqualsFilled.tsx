@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgEqualsFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-3 16H9a1 1 0 0 1 0-2h14a1 1 0 0 1 0 2m0-6H9a1 1 0 0 1 0-2h14a1 1 0 0 1 0 2"
+        />
+    </svg>
+);
+export { SvgEqualsFilled as ReactComponent };

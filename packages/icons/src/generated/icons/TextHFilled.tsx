@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTextHFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-3 18a1 1 0 0 1-2 0v-5H11v5a1 1 0 0 1-2 0V10a1 1 0 0 1 2 0v5h10v-5a1 1 0 0 1 2 0z"
+        />
+    </svg>
+);
+export { SvgTextHFilled as ReactComponent };

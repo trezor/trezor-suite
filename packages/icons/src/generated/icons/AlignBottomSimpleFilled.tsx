@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgAlignBottomSimpleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 29a1 1 0 0 1-1 1H7a1 1 0 0 1 0-2h18a1 1 0 0 1 1 1m-14-3h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v19a2 2 0 0 0 2 2"
+        />
+    </svg>
+);
+export { SvgAlignBottomSimpleFilled as ReactComponent };

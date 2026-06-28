@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgMonitorFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 5H6a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h20a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3m-6 22h-8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2"
+        />
+    </svg>
+);
+export { SvgMonitorFilled as ReactComponent };

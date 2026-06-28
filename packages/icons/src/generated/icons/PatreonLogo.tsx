@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgPatreonLogo = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M22 5a8 8 0 1 0 8 8 8.01 8.01 0 0 0-8-8m0 14a6 6 0 1 1 6-6 6.006 6.006 0 0 1-6 6M10 5H8a2 2 0 0 0-2 2v19a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m0 21H8V7h2z"
+        />
+    </svg>
+);
+export { SvgPatreonLogo as ReactComponent };

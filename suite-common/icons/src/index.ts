@@ -5,3 +5,4 @@ export * from './iconSymbols';
 export * from './iconUtils';
 export * from './coinImages';
 export * from './paymentMethodLogos';
+export * from './generated/icons';

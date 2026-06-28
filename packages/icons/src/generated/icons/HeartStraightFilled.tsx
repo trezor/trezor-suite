@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgHeartStraightFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 12.25a7.2 7.2 0 0 1-2.125 5.125L16.712 28.703a1 1 0 0 1-1.425 0L4.125 17.375a7.252 7.252 0 0 1 10.25-10.263L16 8.632l1.636-1.525A7.25 7.25 0 0 1 30 12.25"
+        />
+    </svg>
+);
+export { SvgHeartStraightFilled as ReactComponent };

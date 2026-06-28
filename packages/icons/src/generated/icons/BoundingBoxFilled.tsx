@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgBoundingBoxFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1h-8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1v8H6a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-1h8v1a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-1v-8zm-3 8h-1a2 2 0 0 0-2 2v1h-8v-1a2 2 0 0 0-2-2H9v-8h1a2 2 0 0 0 2-2V9h8v1a2 2 0 0 0 2 2h1z"
+        />
+    </svg>
+);
+export { SvgBoundingBoxFilled as ReactComponent };

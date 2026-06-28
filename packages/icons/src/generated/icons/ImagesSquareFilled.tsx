@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgImagesSquareFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 4H10a2 2 0 0 0-2 2v2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2h2a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2M10 6h16v8.672l-2.087-2.087a2 2 0 0 0-2.828 0L11.671 22H10zm12 20H6V10h2v12a2 2 0 0 0 2 2h12zm-9-15a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
+        />
+    </svg>
+);
+export { SvgImagesSquareFilled as ReactComponent };

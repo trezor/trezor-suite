@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgHourglassSimpleLowFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26.398 24.57 17.446 16l8.952-8.57A2 2 0 0 0 25 4H7a2 2 0 0 0-1.397 3.43l8.95 8.57-8.95 8.57A2 2 0 0 0 7 28h18a2 2 0 0 0 1.398-3.43M19.776 21h-7.552L16 17.385zM25 6l-9 8.615L7 6z"
+        />
+    </svg>
+);
+export { SvgHourglassSimpleLowFilled as ReactComponent };

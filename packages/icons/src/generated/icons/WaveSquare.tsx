@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgWaveSquare = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 16v7a1 1 0 0 1-1 1H16a1 1 0 0 1-1-1V10H4v6a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1h13a1 1 0 0 1 1 1v13h11v-6a1 1 0 0 1 2 0"
+        />
+    </svg>
+);
+export { SvgWaveSquare as ReactComponent };

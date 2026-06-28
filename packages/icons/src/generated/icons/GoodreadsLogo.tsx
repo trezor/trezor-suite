@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgGoodreadsLogo = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M23 3a1 1 0 0 0-1 1v1.718A8 8 0 0 0 8 11v3a8 8 0 0 0 14 5.282V21a6.006 6.006 0 0 1-6 6c-2.056 0-4.09-1.01-5.18-2.573a1 1 0 1 0-1.64 1.146C10.633 27.655 13.31 29 16 29a8.01 8.01 0 0 0 8-8V4a1 1 0 0 0-1-1m-7 17a6.006 6.006 0 0 1-6-6v-3a6 6 0 1 1 12 0v3a6.006 6.006 0 0 1-6 6"
+        />
+    </svg>
+);
+export { SvgGoodreadsLogo as ReactComponent };

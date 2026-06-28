@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgFolderSimpleMinus = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M20 18a1 1 0 0 1-1 1h-6a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1m9-7v14.111A1.89 1.89 0 0 1 27.111 27H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6.666a2 2 0 0 1 1.2.4L16.334 9H27a2 2 0 0 1 2 2m-2 0H16.334a2 2 0 0 1-1.2-.4L11.666 8H5v17h22z"
+        />
+    </svg>
+);
+export { SvgFolderSimpleMinus as ReactComponent };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowCircleUpRight = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M21 12v6a1 1 0 0 1-2 0v-3.586l-6.293 6.293a1 1 0 0 1-1.415-1.415L17.587 13H14a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1m8 4A13 13 0 1 1 16 3a13.014 13.014 0 0 1 13 13m-2 0a11 11 0 1 0-11 11 11.01 11.01 0 0 0 11-11"
+        />
+    </svg>
+);
+export { SvgArrowCircleUpRight as ReactComponent };
