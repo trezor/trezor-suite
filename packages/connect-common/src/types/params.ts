@@ -16,7 +16,6 @@ export interface DeviceIdentity {
 export interface CommonParams {
     device?: DeviceIdentity & { useEmptyPassphrase?: boolean };
     keepSession?: boolean;
-    useCardanoDerivation?: boolean;
     /**
      * Client-provided correlation token forwarded to related UI events during this call.
      * Must be a valid UUID; the method validator throws `Method_InvalidParameter` otherwise.

@@ -75,6 +75,10 @@ describe(`TrezorConnect.discoverAccounts`, () => {
         );
         */
 
+        // The bundle includes a Cardano coin, so 'ada' must be enabled — otherwise Connect
+        // rejects the call with Method_NetworkNotEnabled.
+        await TrezorConnect.updateConnectSettings({ enabledNetworks: [{ coin: 'ada' }] });
+
         const result = await TrezorConnect.discoverAccounts({
             coins: [
                 { symbol: 'btc', known: [{ type: 'legacy' }, { type: 'taproot' }] },
@@ -84,7 +88,6 @@ describe(`TrezorConnect.discoverAccounts`, () => {
                 { symbol: 'ada' },
                 { symbol: 'xrp' },
             ],
-            useCardanoDerivation: true,
         });
 
         TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);

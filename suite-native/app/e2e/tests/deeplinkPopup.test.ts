@@ -1,6 +1,7 @@
 import { expect as jestExpect } from '@jest/globals';
 import { exec } from 'child_process';
 
+import { CARDANO, PROTO } from '@trezor/connect';
 import TrezorConnect from '@trezor/connect-mobile';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -96,6 +97,48 @@ describe('Deeplink connect popup. [@androidOnly @T3T1]', () => {
             payload: jestExpect.objectContaining({
                 path: [2147483697, 2147483648, 2147483648, 0, 0],
                 serializedPath: "m/49'/0'/0'/0/0",
+                address: jestExpect.any(String),
+            }),
+        });
+    });
+
+    it('Handle Cardano deeplink — permission grant enables derive_cardano', async () => {
+        // The preloaded wallet enables only BTC, so 'ada' is NOT in Connect's init-seeded enabled
+        // set. Cardano derivation here depends entirely on the permission grant being projected
+        // into Connect's enabledNetworks by the shared connect-popup call thunk — the regression
+        // guard for the native deeplink path. Without that projection the session is created
+        // without derive_cardano and the call fails.
+        const promise = TrezorConnect.cardanoGetAddress({
+            addressParameters: {
+                addressType: PROTO.CardanoAddressType.BYRON,
+                path: "m/44'/1815'/0'/0/0",
+            },
+            protocolMagic: CARDANO.PROTOCOL_MAGICS.mainnet,
+            networkId: CARDANO.NETWORK_IDS.mainnet,
+        });
+
+        await waitForVisible(by.id('@popup/deeplink-info'));
+
+        // Skip waiting for Reanimated animations.
+        await device.disableSynchronization();
+
+        const permissionButton = element(by.id('@popup/call-device'));
+        await waitForVisible(permissionButton);
+        await permissionButton.tap();
+
+        const confirmButton = element(by.id('@popup/confirm-addresses'));
+        await waitForVisible(confirmButton);
+        await confirmButton.tap();
+
+        await device.enableSynchronization();
+        await TrezorUserEnvLink.pressYes();
+
+        const response = await promise;
+
+        jestExpect(response).toEqual({
+            success: true,
+            id: jestExpect.any(String),
+            payload: jestExpect.objectContaining({
                 address: jestExpect.any(String),
             }),
         });

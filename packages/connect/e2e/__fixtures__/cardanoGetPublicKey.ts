@@ -15,6 +15,7 @@ const showOnTrezorDeviceScreen = showOnTrezorDisplayablePublicKey.slice(0, 40);
 
 export default {
     method: 'cardanoGetPublicKey',
+    enabledCoins: ['ada'] as const,
     setup: {
         mnemonic: 'mnemonic_all',
     },

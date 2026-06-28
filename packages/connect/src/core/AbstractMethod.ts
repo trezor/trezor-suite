@@ -19,6 +19,7 @@ import type { Capability } from '@trezor/protobuf/src/definitions';
 import { isNotUndefined, isUUID, versionUtils } from '@trezor/utils';
 
 import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import type { Device } from '../device/Device';
 import type { UiPromiseCreator } from '../events/ui-promise';
 import { isDebugFirmware } from '../utils/firmwareUtils';
@@ -203,12 +204,17 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = true;
-        // should derive cardano seed? respect provided option or fall back to do it only when cardano method is called
-        this.useCardanoDerivation =
-            typeof payload.useCardanoDerivation === 'boolean'
-                ? payload.useCardanoDerivation
-                : payload.method.startsWith('cardano');
+        this.useCardanoDerivation = false;
         this.confirmMissingBackup = false;
+    }
+
+    // Resolves the Cardano session capability against the runtime enabled-networks set. MUST run on
+    // the real device-call path (NOT the constructor): keeps `__info` unblocked, and reflects any
+    // enablement applied between introspection and the call (e.g. a permission grant projected into
+    // the store). Sets `useCardanoDerivation` (→ `derive_cardano` at session create).
+    public resolveCardanoCapability(): void {
+        this.useCardanoDerivation =
+            enabledNetworksStore.has('ada') || enabledNetworksStore.has('tada');
     }
 
     public setDevice(device: Device) {

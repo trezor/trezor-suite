@@ -46,7 +46,6 @@ export const connectInitThunk = createThunk<void, void, void>(
             services: { connectInitSettings, connectInitHooks, analytics, createLogger },
         } = extra;
 
-        const getEnabledNetworks = () => selectEnabledNetworks(getState());
         const getEffectiveFirmwareChannel = selectEffectiveFirmwareChannel(
             extra.selectors.selectAllowPrerelease,
         );
@@ -108,17 +107,7 @@ export const connectInitThunk = createThunk<void, void, void>(
                 (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
                     dispatch(lockDevice(true));
 
-                    // cardano patch
-                    const enabledNetworks = getEnabledNetworks();
-                    const isCardanoMethod =
-                        key === 'call'
-                            ? params.method.startsWith('cardano')
-                            : key.startsWith('cardano');
-                    const cardanoEnabled = enabledNetworks.includes('ada') || isCardanoMethod;
-
-                    const result = await synchronize(() =>
-                        original({ ...params, useCardanoDerivation: cardanoEnabled }),
-                    );
+                    const result = await synchronize(() => original(params));
 
                     dispatch(lockDevice(false));
                     dispatch(
@@ -163,6 +152,8 @@ export const connectInitThunk = createThunk<void, void, void>(
                 createLogger,
                 firmwareHashCheckTimeouts,
                 firmwareChannel: getEffectiveFirmwareChannel(getState()),
+                // Suite's enabled coins, declared to Connect one-way (Suite is the source of truth).
+                enabledNetworks: selectEnabledNetworks(getState()).map(coin => ({ coin })),
             });
         } catch (error) {
             let formattedError: string;

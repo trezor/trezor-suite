@@ -122,6 +122,20 @@ describe(`TrezorConnect methods`, () => {
                             lastSetupConfig = setupConfig;
                         }
 
+                        // Coins enabled for this call's session: the test case's defaults (e.g.
+                        // Cardano fixtures declare `['ada']`) plus any the single test opts into.
+                        // Connect's guard rejects guarded coins unless enabled; keeping this opt-in
+                        // leaves unrelated tests off the slower Initialize path.
+                        const enabledCoins = [
+                            ...new Set([
+                                ...(testCase.enabledCoins ?? []),
+                                ...(t.enabledCoins ?? []),
+                            ]),
+                        ];
+                        await TrezorConnect.updateConnectSettings({
+                            enabledNetworks: enabledCoins.map(coin => ({ coin })),
+                        });
+
                         // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);
                         let expected = t.result

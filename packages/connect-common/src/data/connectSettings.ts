@@ -154,6 +154,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.version = input.version;
     }
 
+    if (Array.isArray(input.enabledNetworks)) {
+        settings.enabledNetworks = input.enabledNetworks;
+    }
+
     settings.thp = parseThpSettings(input);
 
     return settings;

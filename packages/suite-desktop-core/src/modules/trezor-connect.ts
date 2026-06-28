@@ -120,7 +120,11 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                     return response;
                 }
 
-                if (method === 'updateConnectSettings') {
+                // Only rewrite transports when the caller actually sent some. An enabledNetworks-only
+                // update (coin toggle / Cardano grant) carries no transports; injecting the bluetooth
+                // fallback here would make `newTransports` defined in Core and trigger a needless
+                // SET_TRANSPORTS → resetTransports → deviceList.init on every such update.
+                if (method === 'updateConnectSettings' && params[0].transports !== undefined) {
                     params[0].transports = getTransportsParam(params[0].transports);
                 }
 

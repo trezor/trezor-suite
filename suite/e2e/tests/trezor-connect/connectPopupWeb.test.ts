@@ -87,6 +87,57 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
     );
 
     test(
+        'TrezorConnect.cardanoGetAddress',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect: Cardano getAddress — granting the permission enables Cardano derivation (derive_cardano) end-to-end',
+            }),
+        },
+        async ({ page, device }) => {
+            await gotoConnectExplorer(page, 'cardano/cardanoGetAddress');
+
+            // expand method tester
+            await page.getByTestId('@api-playground/collapsible-box').click();
+            await expect(page.getByTestId('@submit-button')).toBeVisible();
+            const [suite] = await Promise.all([
+                page.waitForEvent('popup', { timeout: 30_000 }),
+                page.getByTestId('@submit-button').click(),
+            ]);
+
+            const connectPermissionsModal = new ConnectPermissionsModal(suite);
+            await expect(connectPermissionsModal.appName).toHaveText('Trezor Connect Explorer', {
+                timeout: 20_000,
+            });
+            // Granting the per-coin permission is what enables Cardano (`derive_cardano`) in Connect:
+            // the grant is projected into the enabled-networks set before the real call creates the
+            // session. Without that projection the cardano* call would derive a non-Cardano session
+            // and fail — so a successful response here is the regression guard for that path.
+            await connectPermissionsModal.confirmButton.click();
+
+            await expect(connectPermissionsModal.loadingHeader).toContainText(
+                'Export Cardano address',
+            );
+            await suite.getByTestId('@connect-address-confirmation/confirm-button').click();
+
+            await expect(
+                suite.getByTestId('@connect-address-confirmation/verify-button/0'),
+            ).toBeDisabled();
+            await suite.waitForTimeout(1000);
+            await device.pressYes();
+
+            await expect(
+                suite.getByTestId('@connect-address-confirmation/verified-badge/0'),
+            ).toBeVisible();
+
+            await suite.getByTestId('@connect-address-confirmation/close-button').click();
+
+            const response = page.getByTestId('@response');
+            await expect(response).toHaveText(/success: true/);
+        },
+    );
+
+    test(
         'call cancellation',
         {
             annotation: createTestAnnotation({

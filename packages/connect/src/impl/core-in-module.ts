@@ -4,6 +4,7 @@ import {
     CORE_CALL_CANCEL,
     DEVICE_EVENT,
     RESPONSE_EVENT,
+    SET_ENABLED_NETWORKS,
     TRANSPORT_EVENT,
     UI_EVENT,
     createErrorMessage,
@@ -134,7 +135,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     protected abstract updateProxy(proxy: UpdateConnectSettings['proxy']): Promise<void>;
 
     public async updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports: newTransports } = params;
+        const { proxy, transports: newTransports, enabledNetworks } = params;
 
         try {
             await this.updateProxy(proxy);
@@ -142,11 +143,30 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
             return Promise.resolve(createErrorMessage(err));
         }
 
-        if (newTransports !== undefined) {
-            const transports = newTransports?.length ? newTransports : this.defaultTransports;
+        // Mirror `call`: if init() is in progress but not yet complete, wait for it. Otherwise a
+        // settings update issued during the init window hits the empty-Core window and
+        // `handleCoreMessage` throws before the message is applied (and callers such as
+        // changeCoinVisibility silently swallow the returned error).
+        if (!this.coreManager.get()) {
+            const pending = this.coreManager.getPending();
+            if (pending) {
+                await pending;
+            }
+        }
 
-            this.settings = parseConnectSettings({ ...this.settings, transports });
-            this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+        try {
+            if (newTransports !== undefined) {
+                const transports = newTransports?.length ? newTransports : this.defaultTransports;
+
+                this.settings = parseConnectSettings({ ...this.settings, transports });
+                this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+            }
+
+            if (enabledNetworks !== undefined) {
+                this.handleCoreMessage({ type: SET_ENABLED_NETWORKS, payload: enabledNetworks });
+            }
+        } catch (err) {
+            return Promise.resolve(createErrorMessage(err));
         }
 
         return { success: true as const, payload: { message: 'success' } } as const;
