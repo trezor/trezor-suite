@@ -47,4 +47,5 @@ export interface ComposeActionContext {
     feeInfo: FeeInfo;
     excludedUtxos?: ExcludedUtxos;
     prison?: Record<string, unknown>;
+    feeEstimationRecipient?: string;
 }

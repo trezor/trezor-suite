@@ -50,6 +50,7 @@ export * from './send/sendFormSelectors';
 export * from './send/sendFormThunks';
 export type * from './send/sendFormTypes';
 export * from './send/sendFormEthereumThunks';
+export * from './send/tron/deriveColdRecipient';
 export * from './settings/useDisplayBaseCurrency';
 export * from './settings/walletSettingsActions';
 export * from './settings/walletSettingsConstants';

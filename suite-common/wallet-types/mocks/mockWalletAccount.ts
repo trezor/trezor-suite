@@ -25,6 +25,14 @@ export const networkSpecificDefaultEthereum = {
     page: { index: 1, size: 25, total: 1 },
 };
 
+export const networkSpecificDefaultTron = {
+    networkType: 'tron' as const,
+    misc: {},
+    marker: undefined,
+    stellarCursor: undefined,
+    page: { index: 1, size: 25, total: 1 },
+};
+
 export const networkSpecificDefaultSolana = {
     networkType: 'solana' as const,
     marker: undefined,
@@ -67,6 +75,7 @@ export const networkSpecificDefaultStellar = {
 type NetworkSpecificDefault =
     | typeof networkSpecificDefaultBitcoin
     | typeof networkSpecificDefaultEthereum
+    | typeof networkSpecificDefaultTron
     | typeof networkSpecificDefaultSolana
     | typeof networkSpecificDefaultRipple
     | typeof networkSpecificDefaultCardano
@@ -106,8 +115,8 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     base: networkSpecificDefaultBitcoin,
     op: networkSpecificDefaultBitcoin,
     avax: networkSpecificDefaultBitcoin,
-    trx: networkSpecificDefaultBitcoin,
-    ttrx: networkSpecificDefaultBitcoin,
+    trx: networkSpecificDefaultTron,
+    ttrx: networkSpecificDefaultTron,
     txrp: networkSpecificDefaultBitcoin,
     txlm: networkSpecificDefaultBitcoin,
 };

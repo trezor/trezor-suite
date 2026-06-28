@@ -54,7 +54,10 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         }
 
         const { output, tokenInfo: token, decimals } = composeOutputs;
-        const to = 'address' in output && output.address ? output.address : account.descriptor;
+        const to =
+            'address' in output && output.address
+                ? output.address
+                : (composeContext.feeEstimationRecipient ?? account.descriptor);
 
         const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
         const fallbackAmount = token

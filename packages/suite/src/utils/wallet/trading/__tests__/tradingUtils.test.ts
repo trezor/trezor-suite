@@ -1,5 +1,6 @@
 import { type Network, networks } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type Account } from 'src/types/wallet';
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
@@ -138,7 +139,6 @@ describe('trading utils', () => {
             { networkType: 'solana', descriptor: 'SolanaAddress123' },
             { networkType: 'ripple', descriptor: 'rRippleAddress123' },
             { networkType: 'stellar', descriptor: 'GStellarAddress123' },
-            { networkType: 'tron', descriptor: 'TTronAddress123' },
         ] as const)('$networkType', ({ networkType, descriptor }) => {
             it('returns account descriptor', async () => {
                 const account = {
@@ -150,6 +150,17 @@ describe('trading utils', () => {
 
                 expect(result).toBe(descriptor);
             });
+        });
+
+        it('returns empty string for tron (fee uses compose context recipient)', async () => {
+            const account = mockWalletAccount({
+                symbol: 'trx',
+                descriptor: asAccountDescriptor('TTronAddress123'),
+            });
+
+            const result = await getComposeAddressPlaceholder(account, {} as Network);
+
+            expect(result).toBe('');
         });
     });
 });
