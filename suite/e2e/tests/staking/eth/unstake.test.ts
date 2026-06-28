@@ -47,10 +47,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '3,000',
-                    rewards: '234',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '300',
+                        staked: '3,000',
+                        rewards: '234',
+                        unstaking: 'hidden',
+                    },
                 });
             });
 
@@ -113,10 +115,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(stakingSection.pendingTransactionText).toBeVisible();
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '3,000',
-                    rewards: '234',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '300',
+                        staked: '3,000',
+                        rewards: '234',
+                        unstaking: 'hidden',
+                    },
                 });
             });
 
@@ -140,10 +144,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: '3,234',
+                    expected: {
+                        pending: '300',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: '3,234',
+                    },
                 });
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
@@ -170,10 +176,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: '300',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '300',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.claimBalanceWithSymbol).toHaveText('3,234 ETH');
                 await stakingSection.claimButton.click();
