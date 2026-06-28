@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgPlaceholderFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m-2.586 19.414a1 1 0 0 1-1.414 0L8.586 10A1 1 0 0 1 10 8.586L23.414 22a1 1 0 0 1 0 1.414"
+        />
+    </svg>
+);
+export { SvgPlaceholderFilled as ReactComponent };

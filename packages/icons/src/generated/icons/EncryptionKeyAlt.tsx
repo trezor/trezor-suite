@@ -1,0 +1,23 @@
+import type { SVGProps } from 'react';
+const SvgEncryptionKeyAlt = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 9a5 5 0 1 0-7.5 4.332 1 1 0 1 1-1 1.73 7 7 0 1 1 7.5-.318V26a1 1 0 0 1-.293.707l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 1.414-1.414L21 27.586l2-2V14.197a1 1 0 0 1 .5-.865A5 5 0 0 0 26 9"
+        />
+        <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="M4 13a3 3 0 0 0 4.72 2.458l4.699 3.356A1 1 0 0 0 14 19h4a1 1 0 1 0 0-2h-3.68l-4.437-3.17A3.001 3.001 0 1 0 4 13m3-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2"
+            clipRule="evenodd"
+        />
+        <path fill="currentColor" d="M21.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+        <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="M10.993 24.794a3 3 0 1 1-.8-1.842l3.325-1.828A1 1 0 0 1 14 21h4a1 1 0 1 1 0 2h-3.743zM9 25a1 1 0 1 0-2 0 1 1 0 0 0 2 0"
+            clipRule="evenodd"
+        />
+    </svg>
+);
+export { SvgEncryptionKeyAlt as ReactComponent };

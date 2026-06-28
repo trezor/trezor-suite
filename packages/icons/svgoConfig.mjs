@@ -22,6 +22,12 @@ export const svgoConfig = {
                 attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }],
             },
         },
+        {
+            name: 'convertColors',
+            params: {
+                currentColor: true,
+            },
+        },
         'prefixIds',
         // it's necessary to remove all dimension tags to allow resizing
         'removeDimensions',

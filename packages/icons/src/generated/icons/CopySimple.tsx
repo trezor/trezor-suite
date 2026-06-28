@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCopySimple = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M23 8H5a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1m-1 18H6V10h16zm6-21v18a1 1 0 0 1-2 0V6H9a1 1 0 0 1 0-2h18a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgCopySimple as ReactComponent };

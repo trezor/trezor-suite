@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgFilmScript = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2m0 24H7V5h18zM12 9.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+        />
+    </svg>
+);
+export { SvgFilmScript as ReactComponent };

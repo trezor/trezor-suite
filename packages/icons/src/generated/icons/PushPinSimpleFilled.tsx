@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgPushPinSimpleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 22a1 1 0 0 1-1 1H17v7a1 1 0 0 1-2 0v-7H5a1 1 0 0 1 0-2h1.161L8.807 6H8a1 1 0 0 1 0-2h16a1 1 0 1 1 0 2h-.808l2.647 15H27a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgPushPinSimpleFilled as ReactComponent };

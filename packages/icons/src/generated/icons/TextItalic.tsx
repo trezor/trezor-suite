@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTextItalic = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 7a1 1 0 0 1-1 1h-4.279l-5.334 16H18a1 1 0 0 1 0 2H8a1 1 0 0 1 0-2h4.279l5.334-16H14a1 1 0 1 1 0-2h10a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgTextItalic as ReactComponent };

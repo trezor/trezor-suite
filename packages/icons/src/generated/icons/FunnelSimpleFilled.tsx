@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgFunnelSimpleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M27 5H5a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-9 17h-4a1 1 0 0 1 0-2h4a1 1 0 0 1 0 2m4-5H10a1 1 0 0 1 0-2h12a1 1 0 0 1 0 2m4-5H6a1 1 0 0 1 0-2h20a1 1 0 0 1 0 2"
+        />
+    </svg>
+);
+export { SvgFunnelSimpleFilled as ReactComponent };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowBendLeftDownFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 4a1 1 0 0 1-1 1 11.01 11.01 0 0 0-11 11v5h5a1 1 0 0 1 .707 1.707l-6 6a1 1 0 0 1-1.415 0l-6-6A1 1 0 0 1 7 21h5v-5A13.013 13.013 0 0 1 25 3a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgArrowBendLeftDownFilled as ReactComponent };

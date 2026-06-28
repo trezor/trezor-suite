@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCreditCardFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 6H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2M17 22h-2a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2m8 0h-4a1 1 0 0 1 0-2h4a1 1 0 0 1 0 2M4 11V8h24v3z"
+        />
+    </svg>
+);
+export { SvgCreditCardFilled as ReactComponent };

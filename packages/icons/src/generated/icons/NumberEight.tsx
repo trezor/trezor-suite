@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgNumberEight = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M19.444 14.909a6 6 0 1 0-6.888 0 7 7 0 1 0 6.888 0M12 10a4 4 0 1 1 8 0 4 4 0 0 1-8 0m4 16a5 5 0 1 1 0-10 5 5 0 0 1 0 10"
+        />
+    </svg>
+);
+export { SvgNumberEight as ReactComponent };

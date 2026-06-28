@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCirclesThreeFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 15a5.5 5.5 0 1 1 5.5-5.5A5.506 5.506 0 0 1 16 15m7.5 1a5.5 5.5 0 1 0 5.5 5.5 5.506 5.506 0 0 0-5.5-5.5m-15 0a5.5 5.5 0 1 0 5.5 5.5A5.506 5.506 0 0 0 8.5 16"
+        />
+    </svg>
+);
+export { SvgCirclesThreeFilled as ReactComponent };

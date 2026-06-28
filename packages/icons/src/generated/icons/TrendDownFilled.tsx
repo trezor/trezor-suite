@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTrendDownFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 17v8a1 1 0 0 1-1 1h-8a1 1 0 0 1-.707-1.708L23.586 21 17 14.414l-4.292 4.293a1 1 0 0 1-1.415 0l-9-9a1 1 0 1 1 1.415-1.415L12 16.586l4.293-4.294a1 1 0 0 1 1.415 0L25 19.586l3.293-3.294A1 1 0 0 1 30 17"
+        />
+    </svg>
+);
+export { SvgTrendDownFilled as ReactComponent };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgMusicNotesFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26.615 3.214a.99.99 0 0 0-.857-.183l-16 4A1 1 0 0 0 9 8v13.762a4.5 4.5 0 1 0 2 3.738V13.781l14-3.5v7.481a4.5 4.5 0 1 0 2 3.738V4a1 1 0 0 0-.385-.786"
+        />
+    </svg>
+);
+export { SvgMusicNotesFilled as ReactComponent };

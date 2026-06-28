@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCurrencyGbp = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M24 26a1 1 0 0 1-1 1H7a1 1 0 1 1 0-2h.5a3.5 3.5 0 0 0 3.5-3.5V17H7a1 1 0 1 1 0-2h4v-4.5a6.5 6.5 0 0 1 10.635-5.015 1 1 0 1 1-1.273 1.542A4.5 4.5 0 0 0 13 10.5V15h4a1 1 0 0 1 0 2h-4v4.5a5.48 5.48 0 0 1-1.26 3.5H23a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgCurrencyGbp as ReactComponent };

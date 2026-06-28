@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowBendUpLeftFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M29 25a1 1 0 0 1-2 0 11.013 11.013 0 0 0-11-11h-5v5a1 1 0 0 1-1.707.708l-6-6a1 1 0 0 1 0-1.415l6-6A1 1 0 0 1 11 7v5h5a13.013 13.013 0 0 1 13 13"
+        />
+    </svg>
+);
+export { SvgArrowBendUpLeftFilled as ReactComponent };

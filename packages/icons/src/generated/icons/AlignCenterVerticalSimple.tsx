@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgAlignCenterVerticalSimple = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 15h-4V6a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v9H6a1 1 0 0 0 0 2h4v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-9h4a1 1 0 0 0 0-2m-6 11h-8V6h8z"
+        />
+    </svg>
+);
+export { SvgAlignCenterVerticalSimple as ReactComponent };

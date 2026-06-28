@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgRadical = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 9v3a1 1 0 1 1-2 0v-2H15.694L9.936 25.351a1 1 0 0 1-1.875 0l-6-16a1.001 1.001 0 1 1 1.875-.702L9 22.153l5.064-13.5A1 1 0 0 1 15 8h14a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgRadical as ReactComponent };

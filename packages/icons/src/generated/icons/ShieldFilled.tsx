@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgShieldFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 7v7.346c0 11.201-9.477 14.918-11.375 15.549a1.94 1.94 0 0 1-1.25 0C13.475 29.264 4 25.547 4 14.346V7a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2"
+        />
+    </svg>
+);
+export { SvgShieldFilled as ReactComponent };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgElevatorFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2M14 7h4a1 1 0 1 1 0 2h-4a1 1 0 1 1 0-2m1 19H8V12h7zm9 0h-7V12h7z"
+        />
+    </svg>
+);
+export { SvgElevatorFilled as ReactComponent };

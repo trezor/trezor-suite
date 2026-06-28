@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCaretCircleUp = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3m0 24a11 11 0 1 1 11-11 11.01 11.01 0 0 1-11 11m5.707-9.707a1 1 0 0 1-1.415 1.415L16 14.413l-4.293 4.293a1 1 0 0 1-1.415-1.415l5-5a1 1 0 0 1 1.415 0l5 5z"
+        />
+    </svg>
+);
+export { SvgCaretCircleUp as ReactComponent };

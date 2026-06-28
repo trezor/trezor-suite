@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgAlarmFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="m7.708 3.708-4 4a1 1 0 1 1-1.415-1.415l4-4a1 1 0 0 1 1.415 1.415m22 2.585-4-4a1 1 0 0 0-1.415 1.415l4 4a1 1 0 1 0 1.415-1.415M28 16A12 12 0 1 1 16 4a12.014 12.014 0 0 1 12 12m-4 0a1 1 0 0 0-1-1h-6V9a1 1 0 0 0-2 0v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1"
+        />
+    </svg>
+);
+export { SvgAlarmFilled as ReactComponent };

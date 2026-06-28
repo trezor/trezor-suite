@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgGridFour = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 5H7a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m0 10h-8V7h8zM15 7v8H7V7zM7 17h8v8H7zm18 8h-8v-8h8z"
+        />
+    </svg>
+);
+export { SvgGridFour as ReactComponent };

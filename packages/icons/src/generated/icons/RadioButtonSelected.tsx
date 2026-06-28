@@ -1,0 +1,18 @@
+import type { SVGProps } from 'react';
+const SvgRadioButtonSelected = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="M3 16C3 8.82 8.82 3 16 3s13 5.82 13 13-5.82 13-13 13S3 23.18 3 16M16 5C9.925 5 5 9.925 5 16s4.925 11 11 11 11-4.925 11-11S22.075 5 16 5"
+            clipRule="evenodd"
+        />
+        <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="M16 11a5 5 0 1 0 0 10 5 5 0 0 0 0-10m-7 5a7 7 0 1 1 14 0 7 7 0 0 1-14 0"
+            clipRule="evenodd"
+        />
+    </svg>
+);
+export { SvgRadioButtonSelected as ReactComponent };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgShieldCheckeredFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 5H6a2 2 0 0 0-2 2v7.346c0 11.203 9.477 14.918 11.375 15.548a1.93 1.93 0 0 0 1.25 0C18.525 29.263 28 25.548 28 14.345V7a2 2 0 0 0-2-2M6.082 16H16V7h10v7.346q0 .828-.082 1.652H16v12C14.408 27.465 6.949 24.531 6.082 16"
+        />
+    </svg>
+);
+export { SvgShieldCheckeredFilled as ReactComponent };

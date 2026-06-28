@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCaretUpAltFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M10 19a1 1 0 0 1-.707-1.707l5.646-5.647a1.5 1.5 0 0 1 2.122 0l5.646 5.647A1 1 0 0 1 22 19z"
+        />
+    </svg>
+);
+export { SvgCaretUpAltFilled as ReactComponent };

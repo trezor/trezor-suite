@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgDivide = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M28 16a1 1 0 0 1-1 1H5a1 1 0 0 1 0-2h22a1 1 0 0 1 1 1m-12-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4m0 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4"
+        />
+    </svg>
+);
+export { SvgDivide as ReactComponent };

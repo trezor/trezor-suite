@@ -10,6 +10,7 @@ const config = {
     ext: 'native.tsx',
     silent: true,
     outDir: 'src/generated/icons',
+    jsxRuntime: 'automatic',
     indexTemplate,
     svgoConfig: {
         ...svgoConfig,
@@ -23,10 +24,6 @@ const config = {
                 },
             },
         ],
-    },
-    replaceAttrValues: {
-        '#000': '{props.color}',
-        '#000000': '{props.color}',
     },
 };
 

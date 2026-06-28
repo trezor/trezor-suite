@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTextH = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 7v18a1 1 0 0 1-2 0v-8H8v8a1 1 0 1 1-2 0V7a1 1 0 0 1 2 0v8h16V7a1 1 0 0 1 2 0"
+        />
+    </svg>
+);
+export { SvgTextH as ReactComponent };

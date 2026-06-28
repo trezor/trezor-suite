@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowArcRight = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 11v8a1 1 0 0 1-1 1h-8a1 1 0 1 1 0-2h5.575l-2.795-2.776A11 11 0 0 0 5 23a1 1 0 1 1-2 0 13 13 0 0 1 22.192-9.192L28 16.596V11a1 1 0 0 1 2 0"
+        />
+    </svg>
+);
+export { SvgArrowArcRight as ReactComponent };

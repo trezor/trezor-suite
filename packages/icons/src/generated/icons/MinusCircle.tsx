@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgMinusCircle = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M22 16a1 1 0 0 1-1 1H11a1 1 0 0 1 0-2h10a1 1 0 0 1 1 1m7 0A13 13 0 1 1 16 3a13.014 13.014 0 0 1 13 13m-2 0a11 11 0 1 0-11 11 11.01 11.01 0 0 0 11-11"
+        />
+    </svg>
+);
+export { SvgMinusCircle as ReactComponent };

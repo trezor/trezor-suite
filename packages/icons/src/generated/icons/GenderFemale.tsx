@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgGenderFemale = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 12a10 10 0 1 0-11 9.95V25h-4a1 1 0 1 0 0 2h4v3a1 1 0 0 0 2 0v-3h4a1 1 0 0 0 0-2h-4v-3.05A10.014 10.014 0 0 0 26 12M8 12a8 8 0 1 1 8 8 8.01 8.01 0 0 1-8-8"
+        />
+    </svg>
+);
+export { SvgGenderFemale as ReactComponent };

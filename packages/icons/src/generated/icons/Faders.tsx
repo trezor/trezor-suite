@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgFaders = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M17 15v12a1 1 0 0 1-2 0V15a1 1 0 0 1 2 0m8 9a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m3-4h-2V5a1 1 0 0 0-2 0v15h-2a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2M7 20a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1m3-4H8V5a1 1 0 0 0-2 0v11H4a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2m9-6h-2V5a1 1 0 0 0-2 0v5h-2a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2"
+        />
+    </svg>
+);
+export { SvgFaders as ReactComponent };

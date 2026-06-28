@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCurrencyJpy = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25.774 6.634 18.11 16H22a1 1 0 1 1 0 2h-5v2h5a1 1 0 1 1 0 2h-5v5a1 1 0 0 1-2 0v-5h-5a1 1 0 0 1 0-2h5v-2h-5a1 1 0 0 1 0-2h3.89L6.226 6.634a1 1 0 1 1 1.548-1.268L16 15.421l8.226-10.055a1.001 1.001 0 0 1 1.548 1.268"
+        />
+    </svg>
+);
+export { SvgCurrencyJpy as ReactComponent };

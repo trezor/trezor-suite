@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowULeftUp = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M26 10v11a8 8 0 1 1-16 0V6.414l-4.293 4.293a1 1 0 1 1-1.415-1.415l6-6a1 1 0 0 1 1.415 0l6 6a1 1 0 1 1-1.415 1.415L12 6.414V21a6 6 0 0 0 12 0V10a1 1 0 0 1 2 0"
+        />
+    </svg>
+);
+export { SvgArrowULeftUp as ReactComponent };

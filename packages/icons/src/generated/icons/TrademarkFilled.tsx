@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTrademarkFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3m-3 11h-1v5a1 1 0 0 1-2 0v-5H9a1 1 0 0 1 0-2h4a1 1 0 0 1 0 2m11 5a1 1 0 0 1-2 0v-3.339l-1.75 2a1 1 0 0 1-1.161.25 1 1 0 0 1-.339-.25l-1.75-2V19a1 1 0 0 1-2 0v-6a1 1 0 0 1 1.75-.659l2.75 3.14 2.75-3.14A1 1 0 0 1 24 13z"
+        />
+    </svg>
+);
+export { SvgTrademarkFilled as ReactComponent };

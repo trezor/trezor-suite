@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgMagnifyingGlassPlus = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M19 14a1 1 0 0 1-1 1h-3v3a1 1 0 1 1-2 0v-3h-3a1 1 0 0 1 0-2h3v-3a1 1 0 0 1 2 0v3h3a1 1 0 0 1 1 1m9.707 14.707a1 1 0 0 1-1.415 0l-6.257-6.259a11.013 11.013 0 1 1 1.414-1.413l6.258 6.257a1 1 0 0 1 0 1.415M14 23a9 9 0 1 0-9-9 9.01 9.01 0 0 0 9 9"
+        />
+    </svg>
+);
+export { SvgMagnifyingGlassPlus as ReactComponent };

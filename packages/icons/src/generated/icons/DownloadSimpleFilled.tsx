@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgDownloadSimpleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M10.293 14.707A1 1 0 0 1 11 13h4V5a1 1 0 0 1 2 0v8h4a1 1 0 0 1 .707 1.707l-5 5a1 1 0 0 1-1.415 0zM27 18a1 1 0 0 0-1 1v7H6v-7a1 1 0 1 0-2 0v7a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-7a1 1 0 0 0-1-1"
+        />
+    </svg>
+);
+export { SvgDownloadSimpleFilled as ReactComponent };
