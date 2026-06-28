@@ -24,6 +24,7 @@ import {
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
 } from './connectPopupTypes';
+import { deriveCardanoEnabledNetworks } from './deriveEnabledNetworks';
 import { postCallHooks, preCallHooks } from './methodHooks';
 import { permissionsAreCovered } from './permissionsGrouping';
 
@@ -100,6 +101,17 @@ export const connectPopupCallThunkInner = createThunk<
                 const permissionDeferred = getPermissionDeferred(true);
                 dispatch(connectPopupActions.requestPermissions());
                 await permissionDeferred.promise;
+            }
+
+            // Project the granted per-coin permissions into @trezor/connect's enabledNetworks
+            // capability (today: Cardano `derive_cardano`) before any device session is created.
+            // Lives in the shared call thunk — not a host-side middleware — so it runs on every
+            // platform (desktop/web popup AND native deeplink) and for remembered apps too (which
+            // skip the approve action a middleware would key off). updateConnectSettings returns
+            // { success: false } rather than throwing on the thin transports; the result is ignored.
+            const enabledNetworks = deriveCardanoEnabledNetworks(requestedPermissions);
+            if (enabledNetworks.length) {
+                await TrezorConnect.updateConnectSettings({ enabledNetworks });
             }
 
             let device = selectSelectedDevice(getState());

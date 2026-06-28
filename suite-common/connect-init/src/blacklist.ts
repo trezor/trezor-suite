@@ -8,6 +8,9 @@ export const blacklist: ConnectWebKey[] = [
     'off',
     'removeAllListeners',
     'uiResponse',
+    // Must not take the device lock: changeCoinVisibility awaits it before changeNetworks triggers
+    // discovery, so wrapping it in lockDevice/synchronize would deadlock that flow.
+    'updateConnectSettings',
     'blockchainGetAccountBalanceHistory',
     'blockchainGetInfo',
     'blockchainGetCurrentFiatRates',

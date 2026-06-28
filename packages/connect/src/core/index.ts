@@ -8,6 +8,7 @@ import {
     DEVICE,
     POPUP,
     RESPONSE_EVENT,
+    SET_ENABLED_NETWORKS,
     UI_EVENT,
     UI_REQUEST,
     UI_RESPONSE,
@@ -41,6 +42,7 @@ import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import { initializeFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 import * as localFirmwareStore from '../data/localFirmwareStore';
@@ -351,6 +353,10 @@ const onCallDevice = async (
     // device is available
     // set public variables, listeners and run method
     registerDeviceEvents(context, method)(device);
+
+    // Must run here: after the `__info` early-return above, before `device.run` reads
+    // `useCardanoDerivation` below.
+    method.resolveCardanoCapability();
 
     let messageResponse: CoreEventMessage;
 
@@ -835,6 +841,10 @@ export class Core extends EventEmitter {
                 resetTransports(this.getCoreContext());
                 break;
 
+            case SET_ENABLED_NETWORKS:
+                enabledNetworksStore.add(message.payload);
+                break;
+
             case TRANSPORT.REQUEST_DEVICE:
                 /**
                  * after pairing with device is requested in native context, for example see
@@ -961,7 +971,10 @@ export class Core extends EventEmitter {
             throttlePromise.promise.then(() => onCoreEvent(message));
 
         try {
-            settingsStore.set(settings);
+            // enabledNetworks has its own store (the single source of truth); keep it out of
+            // settingsStore so no reader picks up a stale, unsanitized snapshot.
+            settingsStore.set({ ...settings, enabledNetworks: undefined });
+            enabledNetworksStore.set(settings.enabledNetworks ?? []);
             await firmwareReleaseStore.init(
                 settings.firmwareChannel,
                 false,

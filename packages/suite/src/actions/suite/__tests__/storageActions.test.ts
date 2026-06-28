@@ -10,7 +10,7 @@ import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
+import { testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import {
     changeCoinVisibility,
     prepareDiscoveryReducer,
@@ -476,6 +476,8 @@ describe('Storage actions', () => {
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
+        // changeCoinVisibility awaits updateConnectSettings; mock it as a no-op success.
+        wireEnabledNetworksMock();
         // disable btc network, enable ltc, triggering ACCOUNT.REMOVE
         await store.dispatch(changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }));
         await store.dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: false }));

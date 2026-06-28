@@ -45,6 +45,14 @@ export const useConnectPopupDesktop = () => {
             // a caller from silently signing transactions or extracting keys.
             const SILENT_ALLOWED_METHODS = new Set(['getAccountInfo', 'blockchainEstimateFee']);
 
+            // Silent calls bypass the popup, so they get no permission grant and the Cardano
+            // enablement projection never runs for them — a silent Cardano call relies solely on the
+            // init-from-wallet baseline (it works only when the Suite user has 'ada'/'tada' enabled).
+            // Gap: a silent, device-using getAccountInfo (path or discovery — no descriptor) for a
+            // Cardano coin that isn't enabled is not caught here; it proceeds without derive_cardano
+            // and fails late/unpredictably rather than cleanly. A theoretical fix lives in the
+            // follow-up guard PR (#29159), which rejects such a call up-front with
+            // Method_NetworkNotEnabled.
             desktopApi.on('connect-popup/call', async params => {
                 // Silent calls bypass the connect-popup flow entirely and call
                 // TrezorConnect directly. Used for data-fetching methods like

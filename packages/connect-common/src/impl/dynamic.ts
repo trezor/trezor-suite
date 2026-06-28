@@ -14,6 +14,7 @@ export type ConnectImplSettings = {
     version: NonNullable<ConnectSettings['version']>;
     env?: ConnectSettings['env'];
     debug?: ConnectSettings['debug'];
+    enabledNetworks?: ConnectSettings['enabledNetworks'];
 };
 
 type CoreMode = 'auto' | 'suite-desktop' | 'suite-web';
@@ -99,6 +100,7 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<n
             env: settings.env,
             debug: settings.debug,
             version: parseVersion(settings.version),
+            enabledNetworks: settings.enabledNetworks,
         };
 
         this.currentTarget = this.getInitTarget();

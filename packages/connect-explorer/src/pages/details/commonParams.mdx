@@ -36,17 +36,39 @@ All common parameters are optional.
 
 </Param>
 
-<Param name="useCardanoDerivation" type="boolean" required={false}>
-    default is set to `true` for all cardano related methods, otherwise it is set to `false`. 
-    This parameter determines whether device should derive cardano seed for current session. Derivation of cardano seed takes longer then it does for other coins. A wallet that works with both cardano and other coins might want to set this param to `true` for every call or it must be able to cope with the following scenario:
-
-    - Connected device is using passhprase
-    - Wallet calls `getPublicKey` with `useCardanoDerivation=false`, passhprase is entered, seed derived
-    - Wallet calls `cardanoGetPublicKey`.
-    - At this moment user will be prompted to enter passhprase again.
-
-</Param>
-
 <Param name="override" type="boolean" required={false}>
     Interrupt previous call, if any.
 </Param>
+
+## Application-level setup
+
+In addition to the per-call common parameters above, applications declare which networks they use up-front, as part of `TrezorConnect.init`:
+
+```ts
+TrezorConnect.init({
+    manifest: { email: '...', appUrl: '...' },
+    enabledNetworks: [{ coin: 'btc' }, { coin: 'eth' }, { coin: 'ada' }],
+});
+```
+
+Today the only network this affects is Cardano: including `'ada'` makes the device session capable of Cardano-aware operations, by setting `derive_cardano: true` on the next `Initialize` (applies to both THP and pre-THP sessions). The device then derives the Cardano root key alongside the BIP-39 seed, which makes `Initialize` slower — only declare `'ada'` if your app actually uses Cardano.
+
+The declared set is applied **additively** — your declaration widens the enabled networks, it never replaces them.
+
+> **Note:** `enabledNetworks` is honored only by the in-process `@trezor/connect` package (code that embeds the Core directly, e.g. Trezor Suite itself). The thin packages — `@trezor/connect-web` (popup / desktop), `@trezor/connect-webextension`, and `@trezor/connect-mobile` (deeplink) — do **not** forward `enabledNetworks` to the host Core; on those, Cardano availability follows the host (Trezor Suite) wallet's own enabled coins.
+
+Cardano derivation is driven **solely** by this declaration — there is no per-call escape hatch (the former `useCardanoDerivation` common param has been removed). Declare `'ada'` in `init` before invoking any Cardano-bound call — whether a `cardano*` method (`cardanoGetAddress`, `cardanoSignTransaction`, …) or a non-`cardano*` method targeting a Cardano coin (e.g. `getAccountInfo({ coin: 'ada', path: ... })`). A call made while `'ada'` is not enabled produces a non-Cardano session, which the device then rejects (`Cardano derivation is not enabled for this session`).
+
+### Runtime mutation
+
+To change the set at runtime, pass `enabledNetworks` to `updateConnectSettings`:
+
+```ts
+TrezorConnect.updateConnectSettings({
+    enabledNetworks: [{ coin: 'btc' }, { coin: 'eth' }, { coin: 'ada' }],
+});
+```
+
+This is internal plumbing for in-process Core hosts — code that embeds `@trezor/connect` directly and owns the Core (Trezor Suite itself, or a consumer of the `@trezor/connect` package). It applies the set additively (e.g. when the user toggles a coin); the flow is one-way, and the current set is readable from `getSettings().enabledNetworks`.
+
+On the thin-client transports (popup / desktop / webextension / deeplink) the Core lives in the host, so neither `init` nor `updateConnectSettings` forwards `enabledNetworks` from the caller — Cardano availability there follows the host's own enabled coins (see the note above).

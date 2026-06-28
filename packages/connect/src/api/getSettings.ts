@@ -4,6 +4,7 @@ import { type PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import * as settingsStore from '../data/settingsStore';
 
 export default class GetSettings extends AbstractMethod<'getSettings'> {
@@ -17,6 +18,9 @@ export default class GetSettings extends AbstractMethod<'getSettings'> {
     }
 
     run() {
-        return Promise.resolve(settingsStore.get());
+        return Promise.resolve({
+            ...settingsStore.get(),
+            enabledNetworks: enabledNetworksStore.get(),
+        });
     }
 }

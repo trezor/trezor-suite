@@ -7,6 +7,7 @@ import type { Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
 import type { Logger } from '@trezor/utils';
 
+import type { CoinSymbol } from './coinInfo';
 import type { FirmwareChannel } from './firmware';
 
 export const Manifest = Type.Object({
@@ -45,6 +46,16 @@ export type CreateLogger = (prefix: string) => Logger;
 
 export type CreateLoggerDep = { createLogger?: CreateLogger };
 
+// #23879 originally expected the permission system to extend this object with per-network
+// fields (e.g. `permissions`, `backends`). It went the other way: `EnabledNetwork` stayed a
+// minimal Core capability — it only drives `derive_cardano` at session create — orthogonal to
+// permissions, which are host-side authorization Core never reads. The two are linked by a
+// projection (the connect-popup maps a granted coin to an enabled network), not by merging
+// fields into this object.
+export interface EnabledNetwork {
+    coin: CoinSymbol;
+}
+
 export interface ConnectSettingsPublic {
     manifest?: Manifest;
     // Enables connect logs. NOTE: connect core no longer uses this to gate its COMPONENT loggers
@@ -68,6 +79,7 @@ export interface ConnectSettingsPublic {
     enableFirmwareHashCheck?: boolean;
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
     thp?: ThpSettings;
+    enabledNetworks?: EnabledNetwork[];
 }
 
 // internal part, not to be accepted from .init()
