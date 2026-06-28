@@ -8,20 +8,13 @@ import prettier from 'prettier';
 import { optimize } from 'svgo';
 import { fileURLToPath } from 'url';
 
+import { svgoConfig } from './svgoConfig.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const iconsFilePath = './src/icons.ts';
 const cryptoIconsPath = './src/cryptoIcons.ts';
 const networkIconsPath = './src/networkIcons.ts';
 const paymentMethodLogosPath = './src/paymentMethodLogos.ts';
-
-const assetTypesConfig = [
-    {
-        name: 'icons',
-        dirname: 'assets',
-        typeName: 'IconName',
-    },
-];
 
 const cryptoAssetsTypesConfig = [
     {
@@ -42,39 +35,6 @@ const paymentMethodLogosAssetsTypesConfig = [
 const networkAssetsTypesConfig = [
     { name: 'networkIcons', dirname: 'cryptoAssets/networkIcons', typeName: 'NetworkIconName' },
 ];
-
-// https://github.com/svg/svgo#built-in-plugins
-/**
- * @type {import('svgo').Config}
- */
-const svgoConfig = {
-    multipass: true,
-    js2svg: {
-        indent: 2, // string with spaces or number of spaces. 4 by default
-        pretty: true, // boolean, false by default
-    },
-    plugins: [
-        {
-            name: 'preset-default',
-        },
-        {
-            name: 'removeViewBox',
-            active: false,
-        },
-        {
-            name: 'addAttributesToSVGElement',
-            params: {
-                attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }],
-            },
-        },
-        'prefixIds',
-        // it's necessary to remove all dimension tags to allow resizing
-        'removeDimensions',
-        'removeRasterImages',
-        'removeScripts',
-        'convertStyleToAttrs',
-    ],
-};
 
 const optimizeSvgAssets = assetsDirname => {
     const assetsDir = path.join(__dirname, assetsDirname);
@@ -148,8 +108,6 @@ const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
 };
 
 (async () => {
-    console.log('Generating icons TS file...');
-    await generateFileForAssetTypes(assetTypesConfig, iconsFilePath);
     console.log(chalk.green('Icons TS file generated successfully'));
     console.log('Generating crypto icons TS file...');
     await generateFileForAssetTypes(cryptoAssetsTypesConfig, cryptoIconsPath);
