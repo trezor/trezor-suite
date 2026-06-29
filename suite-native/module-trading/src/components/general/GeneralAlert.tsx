@@ -11,7 +11,7 @@ export const GeneralAlert = ({ text }: GeneralAlertProps) => {
 
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
-            <InlineAlertBox title={text} variant="critical" />
+            <InlineAlertBox title={text} intent="critical" />
         </AnimatedBox>
     );
 };

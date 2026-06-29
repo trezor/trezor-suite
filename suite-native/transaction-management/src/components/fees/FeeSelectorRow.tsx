@@ -45,7 +45,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
     }
 
     if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <InlineAlertBox variant="critical" title={feeUnavailableErrorTitle} />;
+        return <InlineAlertBox intent="critical" title={feeUnavailableErrorTitle} />;
     }
 
     const isTron = networkType === 'tron';

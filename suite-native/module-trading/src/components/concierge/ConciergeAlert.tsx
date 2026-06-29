@@ -82,7 +82,7 @@ export const ConciergeAlert = ({ tradingType }: Props) => {
         <FullAlertBox
             iconName="handshake"
             title={alertTitle}
-            variant="info"
+            intent="info"
             primaryButtonLabel={ctaLabel}
             onPressPrimaryButton={handlePressCta}
         />

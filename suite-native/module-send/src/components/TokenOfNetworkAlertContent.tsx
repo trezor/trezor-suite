@@ -76,7 +76,7 @@ export const TokenOfNetworkAlertBody = ({
             />
             <InlineAlertBox
                 title={<Translation id="moduleSend.outputs.tokenOfNetworkSheet.warning" />}
-                variant="warning"
+                intent="warning"
             />
         </VStack>
     );

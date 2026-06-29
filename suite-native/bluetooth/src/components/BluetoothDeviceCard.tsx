@@ -50,7 +50,7 @@ export const BluetoothDeviceCard = ({
     const isPairingInProgress = variant === 'connect' && device.connectionStatus.type === 'pairing';
     const pairingHintInlineAlert: InlineAlertBoxProps = {
         title: <Translation id="bluetooth.deviceCard.connect.pairingHint" />,
-        variant: 'info',
+        intent: 'info',
     };
 
     return (

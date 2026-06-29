@@ -11,7 +11,7 @@ import { Link } from '@suite-native/link';
 
 export type ContextMessageProps = Omit<
     InlineAlertBoxProps,
-    'variant' | 'title' | 'buttonLabel' | 'onButtonPress'
+    'intent' | 'title' | 'buttonLabel' | 'onButtonPress' | 'isCloseButtonDisplayed'
 > & {
     context: ContextDomain;
 };
@@ -26,13 +26,13 @@ export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
         return null;
     }
 
-    const { content, variant, cta } = message;
+    const { content, cta, variant: intent } = message;
     const { label, link } = cta ?? {};
     const shouldDisplayLink = !!(link && label);
 
     return (
         <InlineAlertBox
-            variant={variant}
+            intent={intent}
             title={
                 <Text variant="body-xs">
                     {content}

@@ -12,7 +12,7 @@ export const StablecoinYieldLoadErrorAlert = ({ onRetry }: StablecoinYieldLoadEr
         <FullAlertBox
             testID="@earn/stablecoin-yield-load-error-alert"
             margin="sp16"
-            variant="warning"
+            intent="warning"
             title={<Translation id="earn.earnScreen.stablecoinYieldLoadError.title" />}
             description={<Translation id="earn.earnScreen.stablecoinYieldLoadError.description" />}
             primaryButtonLabel={translate('generic.buttons.tryAgain')}

@@ -8,7 +8,7 @@ type TxSimulationRiskBannerProps = {
     disclaimerAccepted: boolean;
     setDisclaimerAccepted: (value: boolean) => void;
     title: ReactNode;
-    type: 'critical' | 'warning';
+    intent: 'critical' | 'warning';
 };
 
 export const TxSimulationRiskBanner = ({
@@ -16,10 +16,10 @@ export const TxSimulationRiskBanner = ({
     disclaimerAccepted,
     setDisclaimerAccepted,
     title,
-    type,
+    intent,
 }: TxSimulationRiskBannerProps) => (
     <>
-        <FullAlertBox variant={type} title={title} description={description} />
+        <FullAlertBox intent={intent} title={title} description={description} />
         <PressableOpacity onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}>
             <HStack spacing="sp16" padding="sp8" alignItems="center">
                 <CheckBox

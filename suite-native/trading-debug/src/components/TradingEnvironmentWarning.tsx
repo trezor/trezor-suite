@@ -12,10 +12,7 @@ export const TradingEnvironmentWarning = () => {
 
     return (
         <Box paddingHorizontal="sp16">
-            <InlineAlertBox
-                title={`Trading environment: ${tradingEnvironment}`}
-                variant="warning"
-            />
+            <InlineAlertBox title={`Trading environment: ${tradingEnvironment}`} intent="warning" />
         </Box>
     );
 };

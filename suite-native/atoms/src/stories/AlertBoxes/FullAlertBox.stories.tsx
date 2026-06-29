@@ -6,7 +6,7 @@ import {
     FullAlertBox as FullAlertBoxComponent,
     type FullAlertBoxProps,
 } from '../../FullAlertBox/FullAlertBox';
-import { FULL_ALERT_BOX_VARIANTS } from '../../FullAlertBox/presets';
+import { ALERT_BOX_INTENTS } from '../../FullAlertBox/types';
 
 type FullAlertBoxStory = StoryObj<FullAlertBoxProps>;
 
@@ -20,12 +20,11 @@ export default meta;
 export const FullAlertBox: FullAlertBoxStory = {
     name: 'FullAlertBox',
     args: {
-        title: 'Title',
-        description:
-            'Very descriptive description. Read carefully or you will miss something important.',
+        title: 'New Trezor firmware version available.',
+        description: 'Version 2.8.0.',
         primaryButtonLabel: 'Primary',
         secondaryButtonLabel: 'Secondary',
-        variant: 'info',
+        intent: 'info',
         iconName: undefined,
     },
     argTypes: {
@@ -41,9 +40,9 @@ export const FullAlertBox: FullAlertBoxStory = {
         secondaryButtonLabel: {
             control: { type: 'text' },
         },
-        variant: {
+        intent: {
             control: { type: 'select' },
-            options: FULL_ALERT_BOX_VARIANTS,
+            options: ALERT_BOX_INTENTS,
         },
         iconName: {
             control: { type: 'select' },

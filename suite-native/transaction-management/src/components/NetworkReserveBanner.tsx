@@ -43,8 +43,7 @@ export const NetworkReserveBanner = ({ symbol, contractAddress }: NetworkReserve
 
     return (
         <InlineAlertBox
-            variant="info"
-            viewLeft={<></>}
+            intent="info"
             title={
                 <Translation
                     id="transactionManagement.networkReserveBanner.title"

@@ -138,7 +138,7 @@ export const ReceiveAddressScreen = ({
             <VStack marginTop="sp8" spacing="sp16" flex={1}>
                 {showDestinationTagInfo && (
                     <InlineAlertBox
-                        variant="info"
+                        intent="info"
                         title={
                             <Translation
                                 id="moduleReceive.destinationTag"

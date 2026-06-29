@@ -39,7 +39,7 @@ export const DevicePinProtectionCard = () => {
         if (!isDeviceProtectedByPin) {
             return {
                 title: <Translation id="moduleDeviceSettings.pinProtection.alertBoxTitle" />,
-                variant: 'warning',
+                intent: 'warning',
                 buttonLabel: <Translation id="moduleDeviceSettings.pinProtection.buttons.setPin" />,
                 onButtonPress: navigateToPinStack,
                 buttonProps: {

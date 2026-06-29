@@ -72,7 +72,7 @@ export const DeviceFirmwareCard = () => {
             if (isFirmwareUpgradable) {
                 return {
                     title: <Translation id="firmware.updateCard.newVersionAvailable" />,
-                    variant: 'info',
+                    intent: 'info',
                     buttonLabel: <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />,
                     onButtonPress: handleOnPress,
                     buttonProps: {

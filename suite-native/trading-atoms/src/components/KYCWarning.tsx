@@ -6,7 +6,7 @@ export const KYCWarning = () => {
 
     return (
         <InlineAlertBox
-            variant="warning"
+            intent="warning"
             title={<Translation id="moduleTrading.tradingScreen.kycRequired" />}
             accessibilityHint={translate('generic.warning')}
             iconName="identificationCard"

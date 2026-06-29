@@ -33,7 +33,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
     if (!symbol || !networkType) return null;
 
     if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <InlineAlertBox variant="critical" title={feeUnavailableErrorTitle} />;
+        return <InlineAlertBox intent="critical" title={feeUnavailableErrorTitle} />;
     }
 
     return (

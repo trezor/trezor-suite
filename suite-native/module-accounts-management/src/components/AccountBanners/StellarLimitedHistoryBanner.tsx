@@ -29,7 +29,7 @@ export const StellarLimitedHistoryBanner = () => {
             iconName="warningCircle"
             primaryButtonLabel={translate('banner.stellarLimitedHistoryBanner.confirmButton')}
             onPressPrimaryButton={handleClose}
-            variant="info"
+            intent="info"
         />
     );
 };

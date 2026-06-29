@@ -23,7 +23,7 @@ export const FiveBinariesHomeBanner = () => {
 
     return (
         <InlineAlertBox
-            variant="warning"
+            intent="warning"
             title={<Translation id="earn.infoBanner.rewardsReduced" />}
             buttonLabel={<Translation id="generic.buttons.learnMore" />}
             onButtonPress={handleButtonPress}

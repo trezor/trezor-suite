@@ -50,7 +50,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     titleVariant="headline-md"
                 />
                 <InlineAlertBox
-                    variant="warning"
+                    intent="warning"
                     title={
                         <Translation
                             id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"

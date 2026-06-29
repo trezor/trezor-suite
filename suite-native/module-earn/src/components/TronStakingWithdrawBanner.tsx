@@ -22,7 +22,7 @@ export const TronStakingWithdrawBanner = ({ accountKey }: TronStakingWithdrawBan
 
     return (
         <InlineAlertBox
-            variant="info"
+            intent="info"
             title={
                 <Translation
                     id="earn.tron.readyToWithdrawAlert"

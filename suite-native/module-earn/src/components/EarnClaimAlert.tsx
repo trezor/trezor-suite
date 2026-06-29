@@ -22,7 +22,7 @@ export const EarnClaimAlert = ({ claimableAmount, symbol, onClaimPress }: EarnCl
     return (
         <Box style={applyStyle(claimAlertStyle)}>
             <InlineAlertBox
-                variant="success"
+                intent="brand"
                 title={
                     <Translation
                         id="earn.claimableCard.readyToClaim"

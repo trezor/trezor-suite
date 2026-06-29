@@ -49,7 +49,7 @@ export const DemoAccountQuestionnaireIntroScreen = () => {
                         />
                     </VStack>
                     <InlineAlertBox
-                        variant="success"
+                        intent="brand"
                         title={<Translation id="moduleDemoAccountQuestionnaire.intro.note" />}
                     />
                 </VStack>

@@ -31,7 +31,7 @@ export function EvmInsufficientGasWarning({
 
     return (
         <FullAlertBox
-            variant="warning"
+            intent="warning"
             title={
                 <Translation
                     id="transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee"

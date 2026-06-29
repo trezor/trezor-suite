@@ -133,7 +133,7 @@ export const UnstakeFlowScreen = () => {
             {showNetworkFeeWarning && (
                 <Box marginTop="sp16">
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
                     />
                 </Box>

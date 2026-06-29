@@ -40,7 +40,7 @@ export const DoNotCloseAppBottomSheetTrigger = ({
                     style={applyStyle(triggerStyle)}
                 >
                     <InlineAlertBox
-                        variant="info"
+                        intent="info"
                         title={
                             <Translation id="firmware.firmwareUpdateProgress.doNotCloseApp.alertBox.title" />
                         }

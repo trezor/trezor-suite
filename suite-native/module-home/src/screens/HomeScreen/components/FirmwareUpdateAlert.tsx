@@ -66,7 +66,7 @@ export const FirmwareUpdateAlert = () => {
                     values={{ version: updateFirmwareVersion }}
                 />
             }
-            variant="info"
+            intent="info"
             secondaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.close')}
             onPressSecondaryButton={handleClose}
             primaryButtonLabel={translate('moduleHome.firmwareUpdateAlert.button.update')}

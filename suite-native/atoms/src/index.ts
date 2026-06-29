@@ -89,3 +89,4 @@ export * from './ProgressBar';
 
 export { useDebugView } from './DebugView';
 export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';
+export { type AlertBoxIntent } from './FullAlertBox/types';

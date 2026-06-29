@@ -13,7 +13,7 @@ export const YieldWithdrawWarning = ({
     if (isAmountTooHigh) {
         return (
             <InlineAlertBox
-                variant="warning"
+                intent="warning"
                 title={<Translation id="earn.yieldWithdrawFlowScreen.amountExceedsDeposited" />}
             />
         );
@@ -22,7 +22,7 @@ export const YieldWithdrawWarning = ({
     if (shouldShowNetworkFeeWarning) {
         return (
             <InlineAlertBox
-                variant="warning"
+                intent="warning"
                 title={<Translation id="earn.yieldWithdrawFlowScreen.networkFeeWarning" />}
             />
         );

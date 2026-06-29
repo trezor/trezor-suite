@@ -31,7 +31,7 @@ export const CorrectNetworkMessageCard = ({
     if (qrNetworkSymbol) {
         return (
             <InlineAlertBox
-                variant="warning"
+                intent="warning"
                 title={
                     <Translation
                         id="moduleSend.outputs.recipients.qrNetworkMismatch"

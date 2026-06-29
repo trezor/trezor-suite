@@ -40,7 +40,7 @@ export const ExchangeApprovalDetails = ({
                 title={
                     <Translation id="moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert" />
                 }
-                variant="critical"
+                intent="critical"
             />
         );
     }

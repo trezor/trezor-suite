@@ -61,7 +61,7 @@ export const ExchangeConfirmationTitle = ({
                 >
                     <InlineAlertBox
                         title={<Translation id="moduleTrading.tradingConfirmationScreen.error" />}
-                        variant="critical"
+                        intent="critical"
                     />
                 </AnimatedBox>
             ) : (

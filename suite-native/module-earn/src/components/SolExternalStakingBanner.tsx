@@ -40,7 +40,7 @@ export const SolExternalStakingBanner = ({
     return (
         <FullAlertBox
             testID="@staking/outside-staking-card"
-            variant="neutral"
+            intent="neutral"
             iconName="puzzlePiece"
             title={<Translation id="earn.stakingManagementScreen.outsideStakingBanner.title" />}
             description={
