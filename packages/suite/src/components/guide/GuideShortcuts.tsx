@@ -159,12 +159,12 @@ const otherSection: ShortcutSection = {
             keys: ['SHIFT', 'TAB'],
         },
         {
-            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE',
-            keys: ['ESCAPE'],
-        },
-        {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_ACTIVATE',
             keys: ['ENTER'],
+        },
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_CLOSE',
+            keys: ['ESCAPE'],
         },
     ],
 };

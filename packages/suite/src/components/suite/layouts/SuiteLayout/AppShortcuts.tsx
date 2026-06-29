@@ -189,13 +189,13 @@ export const AppShortcuts = () => {
             dispatch(goto({ routeName: 'wallet-trading-buy', preserveParams: false }));
         }
 
-        // press ALT + C to open Sell (cash out)
+        // press ALT + C to open Sell
         if (altOnly && e.code === KEYBOARD_CODE.KEY_C && isDeviceSelected) {
             e.preventDefault();
             dispatch(goto({ routeName: 'wallet-trading-sell', preserveParams: false }));
         }
 
-        // press ALT + E to open Earn (grow / staking)
+        // press ALT + E to open Earn
         if (altOnly && e.code === KEYBOARD_CODE.KEY_E && isDeviceSelected) {
             e.preventDefault();
             dispatch(goto({ routeName: 'suite-earn' }));

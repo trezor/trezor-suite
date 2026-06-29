@@ -12,7 +12,7 @@ import { GuideRouter } from './GuideRouter';
 import { GuideSearch } from './GuideSearch';
 import { GuideSectionHeadline } from './GuideSectionHeadline';
 import { GuideShortcuts } from './GuideShortcuts';
-import { ContentScrolledContext, GuideViewWrapper } from './GuideViewWrapper';
+import { GuideViewWrapper } from './GuideViewWrapper';
 import { OpenGuideFromTooltip } from './OpenGuideFromTooltip';
 import { SupportFeedbackSelection } from './SupportFeedbackSelection';
 
@@ -27,7 +27,6 @@ export {
     GuideCategories,
     GuideSearch,
     GuideSectionHeadline,
-    ContentScrolledContext,
     Feedback,
     SupportFeedbackSelection,
     Guide,
