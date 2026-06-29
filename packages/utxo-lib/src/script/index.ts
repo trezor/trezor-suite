@@ -183,7 +183,7 @@ export function fromASM(asm: string) {
 
 export function toStack(chunks0: Buffer | Stack) {
     const chunks = decompile(chunks0);
-    if (!isPushOnly(chunks as Stack)) throw new TypeError('Expected push-only script');
+    if (!isPushOnly(chunks)) throw new TypeError('Expected push-only script');
 
     return chunks?.map(op => {
         if (isBuffer(op)) return op;

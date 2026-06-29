@@ -4,7 +4,7 @@ import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { type Payment, type PaymentOpts, type StackFunction } from '../types';
+import { type Payment, type PaymentOpts } from '../types';
 import { BufferSchema, Point, PredicateSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
@@ -36,7 +36,7 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
         a,
     );
 
-    const _chunks = lazy.value(() => bscript.decompile(a.input!)) as StackFunction;
+    const _chunks = lazy.value(() => bscript.decompile(a.input!));
 
     const network = a.network || BITCOIN_NETWORK;
     const o: Payment = { name: 'p2pk', network };
@@ -74,7 +74,7 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
                 throw new TypeError('Output is invalid');
             if (!o.pubkey || !ecc.isPoint(o.pubkey))
                 throw new TypeError('Output pubkey is invalid');
-            if (a.pubkey && !a.pubkey.equals(o.pubkey!)) throw new TypeError('Pubkey mismatch');
+            if (a.pubkey && !a.pubkey.equals(o.pubkey)) throw new TypeError('Pubkey mismatch');
         }
 
         if (a.signature) {

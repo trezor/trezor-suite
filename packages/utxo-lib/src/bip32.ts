@@ -142,7 +142,7 @@ class BIP32 implements BIP32Interface {
     get publicKey(): Buffer {
         if (this.__Q === undefined) this.__Q = ecc.pointFromScalar(this.__D!, true);
 
-        return this.__Q!;
+        return this.__Q;
     }
 
     get privateKey(): Buffer | undefined {
