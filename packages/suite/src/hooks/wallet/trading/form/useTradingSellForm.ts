@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
+import type { BankAccount, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type TranslationKey, useTranslation } from '@suite/intl';
@@ -38,7 +38,6 @@ import {
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -143,8 +142,8 @@ export const useTradingSellForm = ({
     const decimals = useMemo(
         () =>
             getAssetDecimals({
-                accountKey: values.sendCryptoSelect?.accountKey as AccountKey,
-                cryptoId: values.sendCryptoSelect?.id as CryptoId,
+                accountKey: values.sendCryptoSelect?.accountKey,
+                cryptoId: values.sendCryptoSelect?.id,
             }),
         [getAssetDecimals, values.sendCryptoSelect?.accountKey, values.sendCryptoSelect?.id],
     );

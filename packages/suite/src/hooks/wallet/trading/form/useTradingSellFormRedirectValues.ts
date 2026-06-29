@@ -43,7 +43,7 @@ export const useTradingSellFormRedirectValues = (
                             getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
                             getContractAddressForNetworkSymbol(
                                 assetOption.networkSymbol,
-                                assetOption.contractAddress!,
+                                assetOption.contractAddress,
                             ),
                     )
                 );
