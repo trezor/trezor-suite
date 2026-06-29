@@ -10,7 +10,6 @@ import {
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
 import {
-    type Account,
     type AccountWithNetworkType,
     AddressDisplayOptions,
     type ComposeActionContext,
@@ -439,17 +438,24 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
  *    txs. Gapped pending txs (e.g. a stuck tx far above the confirmed nonce) are ignored, so the
  *    suggestion fills the gap instead of queueing behind an unmineable tx.
  */
+interface ResolveEthereumNonceParams {
+    selectedAccount: AccountWithNetworkType<'ethereum'>;
+    rbfParams?: RbfTransactionParams;
+    accountTransactions: WalletAccountTransaction[];
+    fetchConfirmedNonce?: boolean;
+}
+
+interface ResolveEthereumNonceResult {
+    nonce: string;
+    confirmedNonce: string;
+}
+
 export const resolveEthereumNonce = async ({
     selectedAccount,
     rbfParams,
     accountTransactions,
     fetchConfirmedNonce,
-}: {
-    selectedAccount: AccountWithNetworkType<'ethereum'>;
-    rbfParams?: RbfTransactionParams;
-    accountTransactions: WalletAccountTransaction[];
-    fetchConfirmedNonce?: boolean;
-}): Promise<{ nonce: string; confirmedNonce: string }> => {
+}: ResolveEthereumNonceParams): Promise<ResolveEthereumNonceResult> => {
     // For RBF (cancel / speed-up) always use the original tx's nonce.
     // confirmedNonce is only consumed for custom-nonce validation (non-RBF), so mirror nonce here.
     if (rbfParams?.type === 'ethereum' && typeof rbfParams.ethereumNonce === 'number') {
@@ -485,13 +491,15 @@ export const resolveEthereumNonce = async ({
     return { nonce: nextNonce.toString(), confirmedNonce: confirmedNonce.toString() };
 };
 
+interface EthereumGetCurrentNonceThunkParams {
+    selectedAccount: AccountWithNetworkType<'ethereum'>;
+    rbfParams?: RbfTransactionParams;
+    fetchConfirmedNonce?: boolean;
+}
+
 export const ethereumGetCurrentNonceThunk = createThunk<
-    { nonce: string; confirmedNonce: string },
-    {
-        selectedAccount: Account & { networkType: 'ethereum' };
-        rbfParams?: RbfTransactionParams;
-        fetchConfirmedNonce?: boolean;
-    }
+    ResolveEthereumNonceResult,
+    EthereumGetCurrentNonceThunkParams
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
     ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
