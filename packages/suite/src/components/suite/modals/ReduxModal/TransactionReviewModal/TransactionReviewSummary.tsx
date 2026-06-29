@@ -1,39 +1,28 @@
-import { useEffect, useState } from 'react';
-
 import { AccountLabel } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
-import {
-    ethereumGetCurrentNonceThunk,
-    selectRawNetworkFeeInfo,
-    selectResolvedEthereumNonce,
-} from '@suite-common/wallet-core';
+import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
     type SendFormDraftKey,
     type StakeType,
 } from '@suite-common/wallet-types';
-import {
-    asAmountUnit,
-    getFee,
-    hasEip1559MaxPriorityFee,
-    isEip1559,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
+import { asAmountUnit, getFee, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { useDispatch, useLocales } from 'src/hooks/suite';
+import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
+import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
 import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';
 
 const getEstimatedTime = (
@@ -86,49 +75,6 @@ export const TransactionReviewSummary = ({
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
 
     const isEthereumNetworkType = networkType === 'ethereum';
-    const dispatch = useDispatch();
-    const precomposedFormEthereumNonce = useSelector(
-        state => state.wallet.send.precomposedForm?.ethereumNonce,
-    );
-    // In the normal flow the signing thunk stores this before the device button-request fires, so
-    // the modal reads the already-resolved value. The local fallback below covers edge cases where
-    // the modal renders before the thunk has stored it (e.g. in tests, or slow device response).
-    const storedEthereumNonce = useSelector(selectResolvedEthereumNonce);
-    const [resolvedNonce, setResolvedNonce] = useState<string>();
-    const ethereumNonce = storedEthereumNonce ?? resolvedNonce;
-
-    useEffect(() => {
-        // Skip if already resolved (production path: signing thunk stored it) or non-EVM.
-        if (!isEthereumNetworkType || storedEthereumNonce !== undefined) return;
-
-        if (precomposedFormEthereumNonce) {
-            setResolvedNonce(precomposedFormEthereumNonce);
-
-            return;
-        }
-
-        const promise = dispatch(
-            ethereumGetCurrentNonceThunk({
-                selectedAccount: account as Account & { networkType: 'ethereum' },
-                fetchConfirmedNonce: true,
-            }),
-        );
-
-        void promise
-            .unwrap()
-            .then(({ nonce }) => setResolvedNonce(nonce))
-            .catch(() => {});
-
-        return () => {
-            promise.abort();
-        };
-    }, [
-        account,
-        dispatch,
-        isEthereumNetworkType,
-        precomposedFormEthereumNonce,
-        storedEthereumNonce,
-    ]);
 
     return (
         <>
@@ -151,40 +97,10 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {isEthereumNetworkType && (
-                        <>
-                            {ethereumNonce !== undefined && (
-                                <Note data-testid="@modal/ethereum/nonce" iconName="receipt">
-                                    <Translation id="TR_NONCE" />
-                                    {': '}
-                                    {ethereumNonce}
-                                </Note>
-                            )}
-                            <Note data-testid="@modal/ethereum/gas-limit" iconName="gasPump">
-                                <Translation id="TR_GAS_LIMIT" />
-                                {': '}
-                                {tx.feeLimit}
-                            </Note>
-                            <Note data-testid="@modal/ethereum/fee" iconName="gasPump">
-                                {isEip1559(tx) ? (
-                                    <Translation id="TR_MAX_FEE_PER_GAS" />
-                                ) : (
-                                    <Translation id="TR_GAS_PRICE" />
-                                )}
-                                {': '}
-                                <FeeRate feeRate={fee} networkType={network.networkType} />
-                            </Note>
-                            {hasEip1559MaxPriorityFee(tx) ? (
-                                <Note data-testid="@modal/ethereum/priority-fee" iconName="gasPump">
-                                    <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
-
-                                    {': '}
-                                    <FeeRate
-                                        feeRate={tx.maxPriorityFeePerGas}
-                                        networkType={network.networkType}
-                                    />
-                                </Note>
-                            ) : undefined}
-                        </>
+                        <TransactionReviewEthereumNotes
+                            account={account as Account & { networkType: 'ethereum' }}
+                            tx={tx}
+                        />
                     )}
 
                     {!['ethereum', 'solana', 'tron'].includes(networkType) && (
