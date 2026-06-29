@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AccountNonce } from './AccountNonce';
+import { CardanoRecoveryPanel } from './CardanoRecoveryPanel';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
@@ -172,6 +173,8 @@ const Details = () => {
                     <Bip329Labels account={account} isLoading={locked} />
                 </Column>
             </Card>
+
+            {account.networkType === 'cardano' && <CardanoRecoveryPanel account={account} />}
 
             {isCoinjoinAccount && <CoinjoinLogs />}
         </WalletLayout>

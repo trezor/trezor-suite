@@ -37,7 +37,10 @@ export const transformInput = (input: unknown): InputWithPath => {
             prev_hash: input.prev_hash,
             prev_index: input.prev_index,
         },
-        path: input.path ? validatePath(input.path, 5) : undefined,
+        // Allow account-level (3-level) input paths so funds stranded on an address derived
+        // from m/1852'/1815'/account' can be recovered. The device's safety_checks remain the
+        // real safeguard: a non-standard witness path is rejected unless safety_checks is relaxed.
+        path: input.path ? validatePath(input.path, 3) : undefined,
     };
 };
 
