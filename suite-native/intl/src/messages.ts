@@ -2919,6 +2919,10 @@ export const messages = {
             maximumFee: 'Maximum fee',
             feeToBeCalculated: 'To be calculated',
             amountExceedsSupplied: 'The amount exceeds your supplied balance.',
+            validation: {
+                amountIsZero: 'Amount must be greater than 0.',
+                tooManyDecimals: 'Too many decimals.',
+            },
         },
         yieldClaimFlowScreen: {
             title: 'Claim rewards',
