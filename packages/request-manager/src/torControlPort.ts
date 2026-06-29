@@ -206,7 +206,9 @@ export class TorControlPort {
         const circuits = await this.getCircuits();
         const circuitsToClose = identity
             ? circuits.filter(circuit => circuit.username === identity)
-            : circuits.filter(circuit => !circuit.username || circuit.username === 'Default');
+            : circuits.filter(
+                  circuit => !circuit.username || circuit.username.toLowerCase() === 'default',
+              );
 
         return promiseAllSequence(
             circuitsToClose.map(circuit => () => this.sendCommand(`closecircuit ${circuit.id}`)),
