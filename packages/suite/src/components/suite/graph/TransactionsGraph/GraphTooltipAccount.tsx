@@ -111,11 +111,7 @@ export const GraphTooltipAccount = ({
                 formatters,
             )}
             balance={
-                <FormattedCryptoAmount
-                    disableHiddenPlaceholder
-                    value={balance as string}
-                    symbol={symbol}
-                />
+                <FormattedCryptoAmount disableHiddenPlaceholder value={balance} symbol={symbol} />
             }
         />
     );

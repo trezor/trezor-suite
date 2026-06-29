@@ -42,7 +42,7 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
 
     return (
         <Banner.Button
-            onClick={onClick!}
+            onClick={onClick}
             priority="primary"
             {...(id ? { 'data-testid': `@message-system/${id}/cta` } : {})}
             {...props}

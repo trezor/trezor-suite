@@ -59,7 +59,7 @@ export const highlightText = (root: HTMLElement, query: string): number => {
     });
 
     validNodes.forEach(textNode => {
-        const text = textNode.textContent!;
+        const text = textNode.textContent;
         const matches = Array.from(text.matchAll(regex));
         if (matches.length === 0) return;
 

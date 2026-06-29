@@ -15,7 +15,6 @@ import {
 import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
 import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
 import { useDispatch } from 'src/hooks/suite';
-import type { AcquiredDevice } from 'src/types/suite';
 
 import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
@@ -69,7 +68,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
         case 'add-account':
             return (
                 <AddAccountModal
-                    device={payload.device as AcquiredDevice}
+                    device={payload.device}
                     symbol={payload.symbol}
                     noRedirect={payload.noRedirect}
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
