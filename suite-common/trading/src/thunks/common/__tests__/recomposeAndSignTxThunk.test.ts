@@ -92,7 +92,10 @@ describe('recomposeAndSignTxThunk', () => {
         selectedFee: 'normal' as const,
     };
 
-    const getMocks = (initialTradingState?: Partial<TradingState>) => {
+    const getMocks = (
+        initialTradingState?: Partial<TradingState>,
+        deviceFeatures?: Partial<NonNullable<TrezorDevice['features']>>,
+    ) => {
         const account = accountBtc as Account;
         const device = mockSuiteDevice();
 
@@ -102,6 +105,7 @@ describe('recomposeAndSignTxThunk', () => {
                     major_version: 2,
                     minor_version: 8,
                     patch_version: 11,
+                    ...deviceFeatures,
                 },
             } as TrezorDevice,
         };
@@ -573,11 +577,17 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it('should create payment requests when SLIP24 is active and conditions are met', async () => {
-        const { store, account, tradingFormState } = getMocks({
-            composedTransactionInfo: {
-                ...mockComposedTransactionInfo,
+        const { store, account, tradingFormState } = getMocks(
+            {
+                composedTransactionInfo: {
+                    ...mockComposedTransactionInfo,
+                },
             },
-        });
+            {
+                minor_version: 12,
+                patch_version: 1,
+            },
+        );
 
         const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
             success: true,
