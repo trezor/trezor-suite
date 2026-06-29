@@ -5,6 +5,7 @@
         { "path": "../suite-constants" },
         { "path": "../suite-utils" },
         { "path": "../wallet-config" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
     ]
 }
