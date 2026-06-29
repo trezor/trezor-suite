@@ -21,7 +21,7 @@ import {
 import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
-    type ConnectSettingsPublic,
+    type ConnectSettings,
     type CreateLoggerDep,
     type Manifest,
     type StaticSessionId,
@@ -37,7 +37,7 @@ type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload:
 
 export type ConnectInitSettings = {
     manifest: Manifest;
-} & Partial<ConnectSettingsPublic>;
+} & Partial<ConnectSettings>;
 
 export type CommonServices = SuiteSyncDep &
     Bip329Dep &

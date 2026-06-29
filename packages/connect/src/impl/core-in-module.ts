@@ -13,7 +13,6 @@ import type {
     CallMethodPayload,
     ConnectFactoryDependencies,
     ConnectSettings,
-    ConnectSettingsPublic,
     ConnectSettingsTransport,
     CoreEventMessage,
     CoreRequestMessage,
@@ -34,7 +33,7 @@ import { type Logger, cloneObject, createDeferredManager } from '@trezor/utils';
 
 import { initCoreState } from '../core';
 
-export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
+export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettings> {
     public readonly eventEmitter = new ConnectEmitter();
 
     private settings;
