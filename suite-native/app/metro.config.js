@@ -72,6 +72,7 @@ const config = {
                 '@evolu/common/local-first': `${rootNodeModulesPath}/@evolu/common/dist/src/local-first/index.js`,
                 '@evolu/common/polyfills': `${rootNodeModulesPath}/@evolu/common/dist/src/Polyfills.js`,
                 '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
+                '@solana/kit/program-client-core': `${rootNodeModulesPath}/@solana/kit/dist/program-client-core.native.mjs`,
                 'crc/calculators/crc32': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc32.js`,
                 'crc/calculators/crc16xmodem': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc16xmodem.js`,
                 'bignumber.js': `${rootNodeModulesPath}/bignumber.js/dist/bignumber.cjs`,
