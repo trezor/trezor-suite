@@ -47,6 +47,7 @@ type AssetLogoBaseProps = AllowedFrameProps & {
 
 export type AssetLogoProps = AssetLogoBaseProps & {
     symbol: NetworkSymbolExtended;
+    coingeckoId?: string;
 };
 
 export type AssetLogoWithIdProps = AssetLogoBaseProps & {
@@ -67,11 +68,12 @@ const Logo = styled.img<{ $size: number; $isBordered: boolean }>`
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
     border-radius: ${borders.radii.full};
+    background-color: ${({ theme }) => theme.elementFillElevated};
+
     ${({ $isBordered }) =>
         $isBordered &&
         css`
             box-shadow: ${({ theme }) => theme.elementShadowElevated};
-            background-color: ${({ theme }) => theme.elementFillElevated};
         `}
 `;
 
@@ -159,6 +161,28 @@ export const AssetLogoWithId = ({
             });
 
             result.push({ address, src: url1x, srcSet: `${url1x} 1x, ${url2x} 2x` });
+        }
+
+        if (
+            !hasNative &&
+            !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, ZERO_ADDRESS))
+        ) {
+            const url1x = getAssetLogoUrl({
+                coingeckoId: coingeckoIdLogo,
+                density: 1,
+                size,
+            });
+            const url2x = getAssetLogoUrl({
+                coingeckoId: coingeckoIdLogo,
+                density: 2,
+                size,
+            });
+
+            result.push({
+                address: ZERO_ADDRESS,
+                src: url1x,
+                srcSet: `${url1x} 1x, ${url2x} 2x`,
+            });
         }
 
         return result;

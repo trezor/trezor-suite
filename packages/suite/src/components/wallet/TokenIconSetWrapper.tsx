@@ -58,10 +58,11 @@ export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperPro
     );
 
     const sortedAggregatedTokens = aggregatedTokens.sort(sortTokensWithRates);
+    const size = sortedAggregatedTokens.length === 1 ? 24 : 20;
 
     return (
         <TokenIconSet
-            size={20}
+            size={size}
             gap={6}
             symbol={symbol}
             tokens={sortedAggregatedTokens}
