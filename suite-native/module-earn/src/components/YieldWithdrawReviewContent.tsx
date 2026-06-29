@@ -52,6 +52,10 @@ export const YieldWithdrawReviewContent = ({
     const isWithdrawSigned = withdrawStatus === 'signed' || withdrawStatus === 'sending';
     const isSendingWithdraw = withdrawStatus === 'sending';
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
+    const submitButtonTranslationId =
+        flowType === 'redeem'
+            ? 'earn.yieldWithdrawReviewScreen.redeemSubmitButton'
+            : 'earn.yieldWithdrawReviewScreen.submitButton';
 
     useYieldReviewSheetAutoStart({
         closeSheet,
@@ -70,7 +74,7 @@ export const YieldWithdrawReviewContent = ({
             submittedCard={
                 isWithdrawSigned ? (
                     <EarnReviewSubmittedCard
-                        buttonTranslationId="earn.yieldWithdrawReviewScreen.submitButton"
+                        buttonTranslationId={submitButtonTranslationId}
                         isButtonLoading={isSendingWithdraw}
                         messageTranslationId="earn.yieldWithdrawReviewScreen.successMessage"
                         onButtonPress={handleWithdrawSubmitted}
