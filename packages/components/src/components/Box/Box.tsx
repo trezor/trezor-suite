@@ -160,7 +160,7 @@ export const Box = ({
             onMouseLeave={onMouseLeave}
             $shadow={shadow}
             tabIndex={tabIndex}
-            ref={ref as React.Ref<HTMLDivElement>}
+            ref={ref}
             {...frameProps}
         >
             {children}

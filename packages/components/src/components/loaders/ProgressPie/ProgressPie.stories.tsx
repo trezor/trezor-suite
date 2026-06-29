@@ -10,7 +10,7 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 const meta: Meta = {
     title: 'ProgressPie',
     component: ProgressPieComponent,
-} as Meta;
+};
 export default meta;
 
 export const ProgressPie: StoryObj<ProgressPieProps> = {

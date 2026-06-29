@@ -7,11 +7,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { icons } from '@suite-common/icons/src/icons';
 import { typedObjectKeys } from '@trezor/utils';
 
-import {
-    IconCircle as IconCircleComponent,
-    type IconCircleProps,
-    allowedIconCircleFrameProps,
-} from './IconCircle';
+import { IconCircle as IconCircleComponent, allowedIconCircleFrameProps } from './IconCircle';
 import { iconCircleIntents, iconCircleSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
@@ -21,7 +17,7 @@ const meta: Meta<typeof IconCircleComponent> = {
 export default meta;
 
 export const IconCircle: StoryObj<typeof meta> = {
-    render: props => <IconCircleComponent {...(props as IconCircleProps)} />,
+    render: props => <IconCircleComponent {...props} />,
     args: {
         intent: 'brand',
         name: 'butterfly',
