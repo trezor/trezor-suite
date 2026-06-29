@@ -60,7 +60,7 @@ export const bluetoothSlice = createSliceWithExtraDeps({
 
         builder
             .addCase(deviceActions.deviceDisconnect, (state, action) => {
-                commonReducer(state, action as AnyAction);
+                commonReducer(state, action);
 
                 state.knownDevices = state.knownDevices.map(device => {
                     if (device.deviceId === action.payload.id) {

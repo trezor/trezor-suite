@@ -23,7 +23,7 @@ import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { asSuiteServices } from 'src/support/extraDependencies';
 import { type Dispatch, type GetState } from 'src/types/suite';
 import { parseUri } from 'src/utils/suite/parseUri';
-import { type CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
+import { getProtocolInfo } from 'src/utils/suite/protocol';
 
 import { PROTOCOL } from './constants';
 
@@ -71,7 +71,7 @@ export const handleProtocolRequest =
         }
 
         if (protocol && !('error' in protocol) && getNetworkSymbolForProtocol(protocol.scheme)) {
-            const { scheme, amount, address, token, tokenAmount } = protocol as CoinProtocolInfo;
+            const { scheme, amount, address, token, tokenAmount } = protocol;
 
             dispatch(saveCoinProtocol(scheme, address, amount, token, tokenAmount));
             dispatch(

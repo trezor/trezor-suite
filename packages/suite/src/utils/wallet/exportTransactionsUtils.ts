@@ -314,7 +314,7 @@ const prepareContent = (
 
             return [...targets, ...tokens, ...internalTransfers, ...cardanoStaking];
         })
-        .filter(isNotNull) as Fields[];
+        .filter(isNotNull);
 };
 
 export const sanitizeCsvValue = (value: string): string => {

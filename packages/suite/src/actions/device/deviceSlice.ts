@@ -47,7 +47,7 @@ export const deviceSlice = createSliceWithExtraDeps({
                 isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
                 (state, action) => {
                     state.isConnectionModalOpen = false;
-                    commonReducer(state, action as AnyAction);
+                    commonReducer(state, action);
                 },
             )
             .addDefaultCase((state, action) => {
