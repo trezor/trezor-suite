@@ -11,11 +11,7 @@ import {
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type PrecomposedTransactionFinal,
-    type StakeFormState,
-} from '@suite-common/wallet-types';
+import { type Account, type StakeFormState } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     fromWei,
@@ -357,9 +353,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             setIsLoading(true);
-            const result = await dispatch(
-                signTransaction(values, composedTx as PrecomposedTransactionFinal),
-            );
+            const result = await dispatch(signTransaction(values, composedTx));
 
             setIsLoading(false);
             if (result?.success) {

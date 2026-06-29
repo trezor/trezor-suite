@@ -15,7 +15,7 @@ import {
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
@@ -273,9 +273,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(
-                signTransaction(values, composedTx as PrecomposedTransactionFinal),
-            );
+            const result = await dispatch(signTransaction(values, composedTx));
 
             if (result?.success) {
                 clearForm();

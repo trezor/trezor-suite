@@ -108,7 +108,7 @@ export const useAllowanceCompose = ({
                 return null;
             }
 
-            return result ? { levels: result as PrecomposedLevels, feeLevel } : null;
+            return result ? { levels: result, feeLevel } : null;
         },
         onMutate: () => {
             setComposedLevels(undefined);
