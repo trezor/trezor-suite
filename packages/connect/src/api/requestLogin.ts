@@ -1,13 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RequestLogin.js
 
-import type { ConnectSettings, PermissionRequest } from '@trezor/connect-common';
+import type { PermissionRequest } from '@trezor/connect-common';
 import { RequestLoginSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import * as settingsStore from '../data/settingsStore';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {
     constructor(message: MethodMessage<'requestLogin'>) {
@@ -17,9 +16,8 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         Assert(RequestLoginSchema, payload);
 
         const identity: PROTO.IdentityType = {};
-        const settings: ConnectSettings = settingsStore.get();
 
-        const origin = payload.origin || settings.origin;
+        const { origin } = payload;
 
         if (origin) {
             const originParts = origin.split(':');
