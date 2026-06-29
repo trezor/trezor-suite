@@ -20,7 +20,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { parseTransferUri } from '@suite-common/transfer-uri';
+import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import {
@@ -142,15 +142,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
 
         if (parsedScheme !== undefined) {
-            const isAmountPresent =
-                result.success &&
-                ((result.payload.format === 'bip321' && result.payload.amount !== undefined) ||
-                    (result.payload.format === 'erc681' &&
-                        result.payload.tokenAmount !== undefined));
-
             analytics.report({
                 type: events.sendQrScanEvent.name,
-                payload: { scheme: parsedScheme, isAmountPresent, networkSymbol: symbol },
+                payload: {
+                    scheme: parsedScheme,
+                    isAmountPresent: result.success && isAmountPresent(result.payload),
+                    networkSymbol: symbol,
+                },
             });
         }
 
