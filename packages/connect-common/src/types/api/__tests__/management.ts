@@ -1,6 +1,6 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { TrezorConnect } from '../../..';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
 
 export const management = async (api: TrezorConnect) => {
     const reset = await api.resetDevice({

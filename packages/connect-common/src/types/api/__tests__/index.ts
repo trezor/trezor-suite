@@ -1,7 +1,7 @@
 // TrezorConnect API types tests
 
 import type {
-    TrezorConnect,
+    TrezorConnectPrivilegedAPI as TrezorConnect,
     // Exported types // TODO: breaking change missing ex: EthereumAddress
 } from '../../..';
 

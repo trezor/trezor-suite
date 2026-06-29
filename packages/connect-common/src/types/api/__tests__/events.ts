@@ -1,6 +1,6 @@
 import { ThpPairingMethod } from '@trezor/protocol';
 
-import type { TrezorConnect } from '../../..';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
 import {
     BLOCKCHAIN,
     BLOCKCHAIN_EVENT,
