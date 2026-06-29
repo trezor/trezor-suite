@@ -1,10 +1,10 @@
 import { type Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { err, ok } from '@trezor/type-utils';
+import { safeParseUrl } from '@trezor/utils';
 
 import { parseBip321Uri } from './parseBip321Uri';
 import { type Erc681TransferInfo, parseErc681TransferUri } from './parseErc681TransferUri';
-import { safeParseUrl } from './parseUtils';
 import { type ErcTransferUriInfo, type TransferUriResult } from './transferUtils';
 
 const erc681ToTransferUriInfo = (

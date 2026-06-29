@@ -15,12 +15,11 @@ import {
     SUITE_TRADING_REDIRECT_DEEPLINKS,
     SUITE_WALLETCONNECT_DEEPLINK,
 } from '@trezor/urls';
-import { isArrayMember } from '@trezor/utils';
+import { isArrayMember, safeParseUrl } from '@trezor/utils';
 
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { asSuiteServices } from 'src/support/extraDependencies';
 import { type Dispatch, type GetState } from 'src/types/suite';
-import { parseUri } from 'src/utils/suite/parseUri';
 
 import { PROTOCOL } from './constants';
 
@@ -52,7 +51,7 @@ export const handleProtocolRequest =
         if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
             dispatch(goto({ routeName: 'suite-bridge-requested', params: { cancelable: true } }));
         } else if (uri?.startsWith(SUITE_WALLETCONNECT_DEEPLINK)) {
-            const parsedUri = parseUri(uri);
+            const parsedUri = safeParseUrl(uri);
             const wcUri = parsedUri?.searchParams?.get('uri');
             if (wcUri) {
                 dispatch(walletConnectActions.walletConnectPairThunk({ uri: wcUri }))
@@ -77,7 +76,7 @@ export const handleProtocolRequest =
                 dispatch(goto({ routeName: targetRoute, anchor }));
             }
         } else if (SUITE_TRADING_REDIRECT_DEEPLINKS.some(deeplink => uri?.startsWith(deeplink))) {
-            const parsedUri = parseUri(decodeURIComponent(uri));
+            const parsedUri = safeParseUrl(decodeURIComponent(uri));
             const redirectPath = parsedUri?.searchParams?.get('p');
 
             if (redirectPath) {

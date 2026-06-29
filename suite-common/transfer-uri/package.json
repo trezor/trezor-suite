@@ -15,6 +15,7 @@
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

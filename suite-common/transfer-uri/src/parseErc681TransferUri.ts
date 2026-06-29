@@ -1,6 +1,5 @@
 import { type NetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
-
-import { safeParseUrl } from './parseUtils';
+import { safeParseUrl } from '@trezor/utils';
 
 /**
  * Parsed information from an ERC-681 URI.

@@ -11422,6 +11422,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
