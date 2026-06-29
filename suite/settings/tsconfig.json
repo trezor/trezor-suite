@@ -22,7 +22,9 @@
         },
         { "path": "../../suite-common/trading" },
         { "path": "../experimental" },
-        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/suite-desktop-api"
