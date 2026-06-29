@@ -37,6 +37,66 @@ describe(serializeError.name, () => {
         expect(serializeError(error)).toBe(JSON.stringify(error));
     });
 
+    it('serializes an Error instance nested inside a plain object', () => {
+        const caused = new Error('Goverment is mafia');
+        caused.stack = 'Mock Stack Trace';
+
+        expect(
+            JSON.parse(
+                serializeError({
+                    type: 'TaxationIsTheft',
+                    caused,
+                }),
+            ),
+        ).toMatchObject({
+            type: 'TaxationIsTheft',
+            caused: {
+                message: 'Error: Goverment is mafia',
+                stackTrace: 'Mock Stack Trace',
+            },
+        });
+    });
+
+    it('serializes an Error instance nested deeply inside a plain object', () => {
+        const caused = new Error('Goverment is mafia');
+        caused.stack = 'Mock Stack Trace';
+
+        expect(
+            JSON.parse(
+                serializeError({
+                    type: 'TaxationIsTheft',
+                    details: {
+                        level1: {
+                            level2: {
+                                level3: {
+                                    level4: {
+                                        caused,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }),
+            ),
+        ).toMatchObject({
+            type: 'TaxationIsTheft',
+            details: {
+                level1: {
+                    level2: {
+                        level3: {
+                            level4: {
+                                caused: {
+                                    message: 'Error: Goverment is mafia',
+                                    stackTrace: 'Mock Stack Trace',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    });
+
     it('serializes a primitive', () => {
         expect(serializeError('test')).toBe('test');
         expect(serializeError(123)).toBe('123');
