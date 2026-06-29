@@ -5,7 +5,7 @@ import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { ListItemSkeleton, TitleHeader, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { TitleHeader, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
@@ -15,7 +15,7 @@ import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { EarnPoweredByProvider } from '../components/EarnPoweredByProvider';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
-import { EarnPromoListRow } from '../components/EarnPromoListRow';
+import { EarnPromoListRow, EarnPromoListSkeletonRow } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
 import { useStablecoinYieldFlag } from '../hooks/useStablecoinYieldFlag';
@@ -115,7 +115,7 @@ const EarnScreenContent = () => {
             const isLastInSection = isSectionBoundaryItem(nextItem);
 
             if (item.type === 'skeleton-loader') {
-                return <ListItemSkeleton />;
+                return <EarnPromoListSkeletonRow isLastInSection={isLastInSection} />;
             }
 
             return (

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 
-import { Box, CardDivider } from '@suite-native/atoms';
+import { Box, CardDivider, ListItemSkeleton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnPromoItem } from '../types';
@@ -31,15 +31,37 @@ type EarnPromoListRowProps = {
     onPress: (item: EarnPromoItem) => void;
 };
 
-export const EarnPromoListRow = React.memo(
-    ({ item, isLastInSection, onPress }: EarnPromoListRowProps) => {
-        const { applyStyle } = useNativeStyles();
+type EarnPromoListRowContainerProps = {
+    children: ReactNode;
+    isLastInSection: boolean;
+};
 
-        return (
-            <Box style={applyStyle(rowContainerStyle, { isLastInSection })}>
-                <CardDivider />
-                <EarnListItem {...item} onPress={onPress} />
-            </Box>
-        );
-    },
+const EarnPromoListRowContainer = ({
+    children,
+    isLastInSection,
+}: EarnPromoListRowContainerProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <Box style={applyStyle(rowContainerStyle, { isLastInSection })}>
+            <CardDivider />
+            {children}
+        </Box>
+    );
+};
+
+export const EarnPromoListSkeletonRow = ({
+    isLastInSection,
+}: Pick<EarnPromoListRowContainerProps, 'isLastInSection'>) => (
+    <EarnPromoListRowContainer isLastInSection={isLastInSection}>
+        <ListItemSkeleton />
+    </EarnPromoListRowContainer>
+);
+
+export const EarnPromoListRow = React.memo(
+    ({ item, isLastInSection, onPress }: EarnPromoListRowProps) => (
+        <EarnPromoListRowContainer isLastInSection={isLastInSection}>
+            <EarnListItem {...item} onPress={onPress} />
+        </EarnPromoListRowContainer>
+    ),
 );
