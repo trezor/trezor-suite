@@ -7,9 +7,3 @@ export type TurnOffSuiteSyncForWallet = (params: {
 export type TurnOffSuiteSyncForWalletDep = {
     turnOffSuiteSyncForWallet: TurnOffSuiteSyncForWallet;
 };
-
-export const selectTurnOffSuiteSyncForWalletDep = (
-    services: any,
-): TurnOffSuiteSyncForWalletDep => ({
-    turnOffSuiteSyncForWallet: services.suiteSync.turnOffSuiteSyncForWallet,
-});

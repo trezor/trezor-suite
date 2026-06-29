@@ -68,12 +68,6 @@ export type EnsureWalletSuiteSyncOnUncontrolledDep = {
     ensureWalletSuiteSyncOnUncontrolled: EnsureWalletSuiteSyncOnUncontrolled;
 };
 
-export const selectEnsureWalletSuiteSyncOnUncontrolledDep = (
-    services: any,
-): EnsureWalletSuiteSyncOnUncontrolledDep => ({
-    ensureWalletSuiteSyncOnUncontrolled: services.suiteSync.ensureWalletSuiteSyncOnUncontrolled,
-});
-
 export type SuiteSyncUserFacingErrorType =
     | 'SuiteSyncUnavailableOnDeviceError'
     | 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType'

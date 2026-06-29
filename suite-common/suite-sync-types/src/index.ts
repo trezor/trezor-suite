@@ -3,7 +3,6 @@ export {
     type WriteLabelsDep,
     type SuiteSync,
     type SuiteSyncDep,
-    selectSuiteSyncDep,
 } from './SuiteSync';
 
 export type {
@@ -55,7 +54,6 @@ export {
 export {
     type TurnOffSuiteSyncForWallet,
     type TurnOffSuiteSyncForWalletDep,
-    selectTurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';
 export {
     type EnsureWalletSuiteSyncOnUncontrolled,
@@ -69,7 +67,6 @@ export {
     type OnStorageEnsured,
     type OnStorageEnsuredDep,
     type OnStorageEnsuredParams,
-    selectEnsureWalletSuiteSyncOnUncontrolledDep,
     selectEnsureWalletSuiteSyncOnDep,
 } from './storage/ensureWalletSuiteSyncOn';
 
