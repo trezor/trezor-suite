@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core';
 import { type Account, type FormOptions } from '@suite-common/wallet-types';
-import { Button, Column, Row, Text, TextButton, Tooltip } from '@trezor/components';
-import { HELP_CENTER_EVM_NONCE_URL } from '@trezor/urls';
+import { Column } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
-import { TransactionData } from '../shared/TransactionData';
-import { OnOffSwitcher } from '../OnOffSwitcher';
 import { EthereumNonce } from './EthereumNonce';
 import { TransactionData } from '../shared/TransactionData';
 
@@ -21,7 +17,6 @@ export const EthereumOptions = () => {
         useSendFormContext();
     const dispatch = useDispatch();
 
-    const isEthereum = account.networkType === 'ethereum';
     const [displayNonce, setDisplayNonce] = useState<string>();
     const [confirmedNonce, setConfirmedNonce] = useState<string>();
     // Nonce editing is toggled from the send-form header dropdown (EVM-only). useWatch keeps this in
@@ -71,81 +66,13 @@ export const EthereumOptions = () => {
         composeTransaction();
     };
 
-    const enableNonceOverride = () => {
-        toggleOption('ethereumNonce');
-        composeTransaction();
-    };
-
     return (
         <Column gap={16}>
-            <Row gap={8}>
-                {!dataEnabled && !tokenValue && (
-                    <Tooltip content={<Translation id="DATA_ADD_TOOLTIP" />} cursor="pointer">
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            iconLeft="database"
-                            data-testid="send/open-ethereum-data"
-                            onClick={toggleData}
-                        >
-                            <Translation id="DATA_ADD" />
-                        </Button>
-                    </Tooltip>
-                )}
-                <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
-                    <Button
-                        intent="neutral"
-                        priority="secondary"
-                        iconLeft="broadcast"
-                        data-testid="send/broadcast"
-                        onClick={toggleBroadcast}
-                    >
-                        <Row>
-                            <Translation id="BROADCAST" />
-                            <OnOffSwitcher isOn={broadcastEnabled} />
-                        </Row>
-                    </Button>
-                </Tooltip>
-                {isEthereum && !isEditingNonce && (
-                    <Tooltip
-                        addon={
-                            <TextButton
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                href={HELP_CENTER_EVM_NONCE_URL}
-                            >
-                                <Translation id="TR_LEARN" />
-                            </TextButton>
-                        }
-                        content={<Translation id="EVM_NONCE_TOOLTIP" />}
-                        cursor="pointer"
-                    >
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            iconLeft="pencil"
-                            data-testid="send/edit-ethereum-nonce"
-                            onClick={enableNonceOverride}
-                        >
-                            <Row>
-                                <Text typographyStyle="body-sm" data-testid="@send/ethereum-nonce">
-                                    <Translation
-                                        id="EVM_NONCE"
-                                        values={{ nonce: displayNonce ?? '' }}
-                                    />
-                                </Text>
-                            </Row>
-                        </Button>
-                    </Tooltip>
-                )}
-            </Row>
-
             {dataEnabled && (
                 <TransactionData maxBytes={formInputsMaxLength.ethData} close={toggleData} />
             )}
 
-            {isEthereum && isEditingNonce && (
+            {isEditingNonce && (
                 <EthereumNonce
                     displayNonce={displayNonce}
                     confirmedNonce={confirmedNonce}
