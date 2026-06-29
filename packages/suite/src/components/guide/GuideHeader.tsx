@@ -1,4 +1,4 @@
-import { type JSX, useContext } from 'react';
+import { type JSX } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -9,12 +9,10 @@ import { H3, IconButton, Paragraph } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
-import { ContentScrolledContext } from 'src/components/guide';
 import { useDispatch } from 'src/hooks/suite';
 
 const HeaderWrapper = styled.div<{
     $noLabel?: boolean;
-    $isScrolled: boolean;
 }>`
     display: flex;
     align-items: center;
@@ -22,18 +20,8 @@ const HeaderWrapper = styled.div<{
     position: sticky;
     top: 0;
     background-color: inherit;
-    box-shadow: none;
-    border-bottom: 1px solid transparent;
-    transition: all 0.5s ease;
     white-space: nowrap;
     z-index: ${zIndices.base}; /* Prevents search bar from overlapping when scrolling */
-
-    ${({ $isScrolled, theme }) =>
-        $isScrolled &&
-        css`
-            box-shadow: ${({ theme }) => theme.elementShadowElevated};
-            border-bottom: 1px solid ${theme.surfaceBorderSticky};
-        `}
 
     ${({ $noLabel }) =>
         $noLabel &&
@@ -50,7 +38,6 @@ interface GuideHeaderProps {
 export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
-    const isScrolled = useContext(ContentScrolledContext);
 
     const goBack = () => {
         back?.();
@@ -72,7 +59,7 @@ export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
     };
 
     return (
-        <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled}>
+        <HeaderWrapper $noLabel={!label}>
             {back && (
                 <>
                     <IconButton

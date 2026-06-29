@@ -76,7 +76,7 @@ export const Guide = () => {
                         <GuideItem
                             onClick={handleShortcutsClick}
                             data-testid="@guide/button-shortcuts"
-                            icon={<IconCircle name="keyboard" size={32} intent="neutral" />}
+                            icon={<IconCircle name="command" size={32} intent="neutral" />}
                         >
                             <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
                         </GuideItem>
