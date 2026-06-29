@@ -12,11 +12,13 @@ export const EVM_ABI = {
         safeTransferFrom: parseAbi([
             'function safeTransferFrom(address from, address to, uint256 tokenId)',
         ]),
+        tokenURI: parseAbi(['function tokenURI(uint256 tokenId) returns (string)']),
     },
     erc1155: {
         safeTransferFrom: parseAbi([
             'function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)',
         ]),
+        uri: parseAbi(['function uri(uint256 id) returns (string)']),
     },
     erc4626: {
         deposit: parseAbi(['function deposit(uint256 assets, address receiver)']),

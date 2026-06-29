@@ -26,6 +26,12 @@ export const commonQueryKeys = {
     ],
     merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
+    nftMetadata: (symbol: string, contract: string, tokenId: string) => [
+        'nft-metadata',
+        symbol,
+        contract,
+        tokenId,
+    ],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const desktopQueryKeys = {
