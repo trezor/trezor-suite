@@ -97,7 +97,7 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
 
 const meta: Meta = {
     title: 'Layout',
-} as Meta;
+};
 export default meta;
 
 export const Row: StoryObj<FlexProps> = {

@@ -155,7 +155,7 @@ export const Icon = ({
             <SVG
                 tabIndex={onClick && !isDisabled ? 0 : undefined}
                 onKeyDown={handleOnKeyDown}
-                src={icons[name as IconName]}
+                src={icons[name]}
                 beforeInjection={handleInjection}
             />
         </Container>

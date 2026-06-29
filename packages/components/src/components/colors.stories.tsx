@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { type Meta } from '@storybook/react';
 import styled, { useTheme } from 'styled-components';
 
-import { type CSSColor, colorVariants, colorsV2, typography } from '@trezor/theme';
+import { colorVariants, colorsV2, typography } from '@trezor/theme';
 import { hexToRgba, throwError } from '@trezor/utils';
 
 import { Box } from './Box/Box';
@@ -164,14 +164,14 @@ export const Colors = () => {
                                     $value={
                                         colorVariants[theme][
                                             tokenName as keyof (typeof colorVariants)[ThemeKey]
-                                        ] as CSSColor
+                                        ]
                                     }
                                     $isColorCodeVisible={isColorCodeVisible}
                                 >
                                     {isColorCodeVisible &&
-                                        (colorVariants[theme][
+                                        colorVariants[theme][
                                             tokenName as keyof (typeof colorVariants)[ThemeKey]
-                                        ] as CSSColor)}
+                                        ]}
                                 </Color>
                             ))}
                         </Column>
