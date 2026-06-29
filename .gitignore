@@ -154,6 +154,9 @@ packages/suite-data/files/translations/master.json
 .claude/
 .mcp.json
 
+# playwright trace CLI extraction dir
+.playwright-cli/
+
 # AI agent plans
 /plans
 

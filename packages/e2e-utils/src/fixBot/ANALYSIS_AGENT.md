@@ -67,40 +67,22 @@ _Cost marker: run `echo fixagent-stage-investigate` before starting this step._
 For each failed or pending `instanceId`, use `currents-get-spec-instance` and extract:
 
 - Per-test error messages and stack traces
-- Screenshot URLs
 - Trace file URL (if present)
 - `electron-logs.txt` attachment URL (desktop runs only — useful for Electron startup
   crashes or main process errors)
 
-## Step 4 — Fetch and analyze visual artifacts (MANDATORY — do not skip)
+## Step 4 — Fetch and analyze trace artifacts (MANDATORY — do not skip)
 
 **Do not write any diagnosis until you have completed this step for every failed instance.**
 
-**Trace file (primary):** The trace zip contains step-by-step screenshots and network data
-for the entire test execution.
-
-If a trace URL is present:
+**Trace (primary).** Download the trace, then read it with the **`playwright-trace` skill**:
 
 ```bash
 python3 -c "import urllib.request; urllib.request.urlretrieve('<trace-url>', '/tmp/trace-<instanceId>.zip')"
-unzip -q /tmp/trace-<instanceId>.zip -d /tmp/trace-<instanceId>/
 ```
 
-The trace URLs are pre-signed Cloudflare R2 URLs — no Authorization header is needed.
-
-**Screenshots:** Sequential UI screenshots are JPEGs named `page@*.jpeg` inside the
-`resources/` subdirectory. There can be hundreds — read the last 10 (closest to the
-failure). Describe what you see in each: UI state, visible elements, what happened just
-before the failure.
-
-**Network log:** Read `0-trace.network` (newline-delimited JSON). Look for failed
-requests, unexpected status codes, or missing responses that correlate with the failure.
-
-**Screenshots (fallback):** If no trace URL is present, or `resources/` contains no
-`page@*.jpeg` files, fetch each screenshot URL from the instance payload and read it
-with the Read tool. Describe what you see.
-
-If neither is available, state this explicitly and note that visual analysis was not possible.
+If a trace is not available for an instance, state this explicitly and note that visual analysis
+was not possible.
 
 ## Step 5 — Read the test source
 
@@ -135,8 +117,8 @@ For each failing or pending test:
 **File:** suite/e2e/tests/...
 **Platform:** web | desktop | both
 **Error:** <exact error message from Currents>
-**Visual evidence:** <describe what you saw in the screenshots/trace — UI state at the
-  point of failure, what was visible or missing>
+**Visual evidence:** <what the trace showed — the failing action, the DOM
+  snapshot at the point of failure, and any failed requests or console errors>
 **Root cause:** <what specifically caused the failure, grounded in the visual evidence>
 **Classification:** FIXABLE | PRODUCT_BUG | INFRASTRUCTURE
 **Analysis notes:** <Your notes on the diagnosis>
@@ -215,9 +197,9 @@ Return a JSON object (validated against a matching JSON Schema) with:
 ## Rules
 
 - **Visual evidence is mandatory.** Do not write a diagnosis for any test until you have
-  fetched and read its trace or screenshots. Every **Root cause** must cite something you
-  actually observed — in a screenshot, trace frame, or stack trace. If it does not, you
-  are speculating.
+  fetched and read its trace. Every **Root cause** must cite something you actually
+  observed — an action's selector or result, a DOM snapshot, a failed request, or a stack
+  trace. If it does not, you are speculating.
 - Never speculate. Base every diagnosis strictly on what the error, stack trace, and visual
   evidence directly show.
 - If a failure looks like a flaky timing issue, say so explicitly and explain the signal.
