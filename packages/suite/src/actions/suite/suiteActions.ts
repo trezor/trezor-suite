@@ -1,7 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import type { TranslationKey } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
@@ -133,7 +132,7 @@ export const toggleTor =
             dispatch(
                 notificationsActions.addToast({
                     type: 'tor-toggle-error',
-                    error: ipcResponse.error as TranslationKey,
+                    error: ipcResponse.error,
                 }),
             );
 

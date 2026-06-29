@@ -98,7 +98,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'accounts', account => {
             account.metadata = {
-                key: '' as AccountKey,
+                key: '',
                 // @ts-expect-error
                 fileName: '',
                 aesKey: '',

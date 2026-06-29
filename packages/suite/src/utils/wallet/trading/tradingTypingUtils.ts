@@ -200,14 +200,14 @@ export const getSelectedQuote = (
 
     if (isTradingBuyContext(context)) {
         return getQuotesFilteredByProviderAndPaymentMethod<BuyTrade>(
-            context.quotes as BuyTrade[],
+            context.quotes,
             provider,
             paymentMethod?.value,
         )?.[0];
     }
 
     return getQuotesFilteredByProviderAndPaymentMethod<SellFiatTrade>(
-        context.quotes as SellFiatTrade[],
+        context.quotes,
         provider,
         paymentMethod?.value,
     )?.[0];

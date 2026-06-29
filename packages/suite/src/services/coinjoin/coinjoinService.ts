@@ -36,7 +36,7 @@ export class CoinjoinService {
     private static instances: PartialRecord<CoinjoinSymbol, CoinjoinServiceInstance> = {};
 
     static async createInstance({ symbol, prison, settings }: CoinjoinCreateInstance) {
-        if (this.instances[symbol]) return this.instances[symbol] as CoinjoinServiceInstance;
+        if (this.instances[symbol]) return this.instances[symbol];
         const config = settings ?? getCoinjoinConfig(symbol);
         const [backend, client] = await loadInstance({ ...config, prison });
         const instance = { backend, client };
