@@ -120,7 +120,7 @@ export const TradingSellFormInputs = () => {
                                     balance={outputAmount}
                                     displaySymbol={sendCryptoSelect?.id}
                                     symbol={account.symbol}
-                                    tokenAddress={tokenAddress as TokenAddress}
+                                    tokenAddress={tokenAddress}
                                     showOnlyAmount
                                     amountInCrypto={amountInCrypto}
                                     decimals={sendAssetDecimals}

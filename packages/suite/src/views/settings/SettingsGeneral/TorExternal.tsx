@@ -51,7 +51,7 @@ export const TorExternal = () => {
         if (!torSettings) return;
         const { externalPort } = torSettings;
         const selectedOption = options.find(o => o.value === externalPort);
-        setSelectedOption(selectedOption!);
+        setSelectedOption(selectedOption);
     }, [torSettings]);
 
     const onChange = async ({ value }: { value: number }) => {

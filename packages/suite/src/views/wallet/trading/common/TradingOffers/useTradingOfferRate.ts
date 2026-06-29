@@ -64,7 +64,7 @@ export const useTradingOfferRate = (trade: TradingTradeType | undefined): string
     const rate = fromBigNumber.div(toBigNumber);
 
     const fromSymbol = isFromCrypto
-        ? (cryptoIdToCoinSymbol(fromCurrency as CryptoId) ?? fromCurrency).toUpperCase()
+        ? (cryptoIdToCoinSymbol(fromCurrency) ?? fromCurrency).toUpperCase()
         : fromCurrency;
     const rateFormatted = `${formatExchangeRate(rate)} ${fromSymbol}`;
 

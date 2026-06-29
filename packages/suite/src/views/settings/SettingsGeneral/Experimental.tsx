@@ -189,7 +189,7 @@ export const Experimental = () => {
                             {experimentalFeatures.map(feature => (
                                 <FeatureLine
                                     key={feature}
-                                    feature={feature as ExperimentalFeature}
+                                    feature={feature}
                                     enabledFeatures={enabledFeatures}
                                 />
                             ))}
