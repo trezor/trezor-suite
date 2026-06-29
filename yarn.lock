@@ -15499,6 +15499,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/transfer-uri@workspace:*, @suite/transfer-uri@workspace:suite/transfer-uri":
+  version: 0.0.0-use.local
+  resolution: "@suite/transfer-uri@workspace:suite/transfer-uri"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/transfer-uri": "workspace:*"
+    "@suite/analytics": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/tx-simulation@workspace:^, @suite/tx-simulation@workspace:suite/tx-simulation":
   version: 0.0.0-use.local
   resolution: "@suite/tx-simulation@workspace:suite/tx-simulation"
@@ -17118,6 +17131,7 @@ __metadata:
     "@suite/thp": "workspace:*"
     "@suite/tor": "workspace:*"
     "@suite/trading": "workspace:*"
+    "@suite/transfer-uri": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
     "@suite/ui-animations": "workspace:*"
     "@suite/wallet": "workspace:*"
