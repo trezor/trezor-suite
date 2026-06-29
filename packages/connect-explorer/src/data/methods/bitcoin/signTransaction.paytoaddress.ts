@@ -16,6 +16,7 @@ const btc = {
             ],
             prev_hash: '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
             prev_index: 1,
+            amount: '50000',
         },
     ],
     outputs: [
@@ -153,6 +154,7 @@ const doge = {
             ],
             prev_index: 12,
             prev_hash: '0a4cb7d5c27455333701f0e53812e4be56a0272ad7f168279acfed7b065ee118',
+            amount: '622200000000',
         },
     ],
     outputs: [

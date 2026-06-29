@@ -42,7 +42,7 @@ export const getHDPath = (path: string): number[] => {
     throw PATH_NOT_VALID;
 };
 
-export const isSegwitPath = (path: number[] | undefined) =>
+const isSegwitPath = (path: number[] | undefined) =>
     Array.isArray(path) && path[0] === toHardenedPathPart(49);
 
 const isBech32Path = (path: number[] | undefined) =>
