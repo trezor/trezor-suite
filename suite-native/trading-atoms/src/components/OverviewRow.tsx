@@ -72,7 +72,7 @@ export const OverviewRow = ({
                 {warning && (
                     <Box paddingHorizontal="sp16" paddingBottom="sp12">
                         <InlineAlertBox
-                            variant="warning"
+                            intent="warning"
                             title={warning}
                             accessibilityHint={translate('generic.warning')}
                         />

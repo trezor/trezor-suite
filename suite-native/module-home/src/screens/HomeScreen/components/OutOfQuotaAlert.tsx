@@ -28,7 +28,7 @@ export const OutOfQuotaAlert = () => {
     return (
         <AnimatedFullAlertBox
             marginHorizontal="sp16"
-            variant="info"
+            intent="info"
             iconName="info"
             title={<Translation id="generic.banners.outOfSuiteSyncQuota.title" />}
             description={<Translation id="generic.banners.outOfSuiteSyncQuota.subtitle" />}

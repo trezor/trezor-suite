@@ -30,7 +30,7 @@ describe('Card', () => {
 
     it('should render alert only on top when alertPosition is not specified', () => {
         const { getByTestId, getByText, queryByTestId } = renderComponent({
-            alertProps: { title: 'alert', variant: 'info' },
+            alertProps: { title: 'alert', intent: 'info' },
         });
 
         expect(getByText('hello')).toBeTruthy();
@@ -42,7 +42,7 @@ describe('Card', () => {
 
     it('should render alert only on top when alertPosition is top', () => {
         const { getByTestId, getByText, queryByTestId } = renderComponent({
-            alertProps: { title: 'alert', variant: 'info' },
+            alertProps: { title: 'alert', intent: 'info' },
             alertPosition: 'top',
         });
 
@@ -55,7 +55,7 @@ describe('Card', () => {
 
     it('should render alert only on bottom when alertPosition is bottom', () => {
         const { getByTestId, getByText, queryByTestId } = renderComponent({
-            alertProps: { title: 'alert', variant: 'info' },
+            alertProps: { title: 'alert', intent: 'info' },
             alertPosition: 'bottom',
         });
 

@@ -45,7 +45,7 @@ const getCardAlertProps = (
     if (isStakeConfirming && !isStakePending) {
         return {
             title: <Translation id="earn.stakePendingCard.transactionPending" />,
-            variant: 'warning',
+            intent: 'warning',
             iconName: 'spinnerGap',
         };
     }
@@ -56,7 +56,7 @@ const getCardAlertProps = (
             ) : (
                 <Translation id="earn.stakePendingCard.addingToStakingPool" />
             ),
-            variant: 'warning',
+            intent: 'warning',
             iconName: 'spinnerGap',
         };
     }
@@ -95,7 +95,7 @@ export const StakePendingCard = ({
         [symbol, isStakeConfirming, isStakePending],
     );
 
-    if (!symbol || !cardAlertProps?.variant) return null;
+    if (!symbol || !cardAlertProps?.intent) return null;
 
     const title = getTitle(symbol);
 

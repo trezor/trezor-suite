@@ -27,7 +27,7 @@ const SolStakingRewardsWarningContent = ({ account }: SolStakingRewardsWarningCo
     return (
         <FullAlertBox
             testID="@staking/sol-rewards-warning"
-            variant="warning"
+            intent="warning"
             verticalAlignment="center"
             title={<Translation id="earn.stakingManagementScreen.solRewardsWarning" />}
         />

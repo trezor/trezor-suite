@@ -229,7 +229,7 @@ export const WalletConnectSessionPopupScreen = () => {
 
                 {(requiredNetworksNotActivated || noNetworksActivated) && (
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={
                             <Translation
                                 id={
@@ -244,7 +244,7 @@ export const WalletConnectSessionPopupScreen = () => {
 
                 {pendingProposal?.isScam && (
                     <TxSimulationRiskBanner
-                        type="critical"
+                        intent="critical"
                         title={<Translation id="moduleConnectPopup.walletConnect.errors.isScam" />}
                         disclaimerAccepted={ignoreWarning}
                         setDisclaimerAccepted={setIgnoreWarning}
@@ -253,7 +253,7 @@ export const WalletConnectSessionPopupScreen = () => {
 
                 {pendingProposal?.validation === 'INVALID' && (
                     <InlineAlertBox
-                        variant="critical"
+                        intent="critical"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.unableToVerify" />
                         }
@@ -262,7 +262,7 @@ export const WalletConnectSessionPopupScreen = () => {
 
                 {pendingProposal?.expired && (
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.requestExpired" />
                         }

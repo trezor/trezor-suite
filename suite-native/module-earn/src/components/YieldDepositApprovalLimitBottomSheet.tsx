@@ -79,7 +79,7 @@ export const YieldDepositApprovalLimitBottomSheet = ({
                                 values={{ tokenSymbol }}
                             />
                         }
-                        variant="warning"
+                        intent="warning"
                     />
                 </YieldDepositApprovalLimitCard>
             </VStack>

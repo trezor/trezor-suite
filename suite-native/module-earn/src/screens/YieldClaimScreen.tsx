@@ -217,7 +217,7 @@ export const YieldClaimScreen = () => {
 
                     {shouldShowFeeWarning && (
                         <FullAlertBox
-                            variant="warning"
+                            intent="warning"
                             title={<Translation id="earn.yieldClaimFlowScreen.feeWarning.title" />}
                             description={
                                 <Translation id="earn.yieldClaimFlowScreen.feeWarning.description" />

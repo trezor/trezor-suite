@@ -99,7 +99,7 @@ export const WalletBackupTutorialStep5 = ({
                     </Text>
                     {isCalloutButtonShown && (
                         <InlineAlertBox
-                            variant={selectedType === 'shamir-advanced' ? 'warning' : 'success'}
+                            intent={selectedType === 'shamir-advanced' ? 'warning' : 'brand'}
                             buttonLabel={
                                 selectedType === 'shamir-advanced' ? (
                                     <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step5.backupOptions.shamir-advanced.calloutActionLabel" />

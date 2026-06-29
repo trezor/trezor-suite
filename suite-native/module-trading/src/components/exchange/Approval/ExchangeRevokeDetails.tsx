@@ -33,7 +33,7 @@ export const ExchangeRevokeDetails = ({ exchange }: ExchangeRevokeDetailsProps) 
                 title={
                     <Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />
                 }
-                variant="critical"
+                intent="critical"
             />
         );
     }

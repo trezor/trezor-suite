@@ -154,7 +154,7 @@ export const HowStakeWorksScreen = () => {
                     </HowEarnWorksTimelineCard>
                 </VStack>
                 {isStakingDisabled && stakingMessageContent && (
-                    <InlineAlertBox variant="warning" title={stakingMessageContent} />
+                    <InlineAlertBox intent="warning" title={stakingMessageContent} />
                 )}
                 <Button
                     onPress={handleContinue}

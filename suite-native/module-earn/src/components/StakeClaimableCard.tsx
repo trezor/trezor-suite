@@ -97,7 +97,7 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
                     </Box>
                 </Box>
                 {isClaimingDisabled && claimingMessageContent && (
-                    <InlineAlertBox variant="warning" title={claimingMessageContent} />
+                    <InlineAlertBox intent="warning" title={claimingMessageContent} />
                 )}
             </Card>
         </PressableOpacity>

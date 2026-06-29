@@ -84,9 +84,9 @@ export const CoinEnablingInitScreen = () => {
                 {!isAlertDismissed && (
                     <AnimatedInlineAlertBox
                         title={<Translation id="networks.initialSetup.banner" />}
-                        variant="neutral"
-                        buttonIcon="x"
+                        intent="neutral"
                         onButtonPress={() => setIsAlertDismissed(true)}
+                        isCloseButtonDisplayed
                     />
                 )}
                 <AnimatedBox layout={LinearTransition}>

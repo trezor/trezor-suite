@@ -299,7 +299,7 @@ export const YieldDepositScreen = () => {
                     {isApprovalInsufficient && (
                         <Box paddingHorizontal="sp16">
                             <FullAlertBox
-                                variant="warning"
+                                intent="warning"
                                 title={
                                     <Translation id="earn.yieldDepositFlowScreen.alerts.approvalTooLow.title" />
                                 }

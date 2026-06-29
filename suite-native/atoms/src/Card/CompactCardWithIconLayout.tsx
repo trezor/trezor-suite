@@ -23,7 +23,7 @@ export type CompactCardWithIconLayoutProps = {
     title: ReactNode;
     subtitle?: ReactNode;
     isDisabled?: boolean;
-    alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
+    alertBoxProps?: InlineAlertBoxProps;
     onPress: () => void;
     variant?: CompactCardVariant;
     borderColor?: Color | null;

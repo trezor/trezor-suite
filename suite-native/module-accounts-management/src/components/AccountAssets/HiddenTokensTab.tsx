@@ -117,7 +117,7 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
                     return (
                         <View style={applyStyle(warningWrapperStyle)}>
                             <InlineAlertBox
-                                variant="warning"
+                                intent="warning"
                                 title={
                                     <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.warning" />
                                 }

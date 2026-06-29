@@ -125,7 +125,7 @@ export const TransactionDetailData = ({
         <VStack spacing="sp16">
             {isPhishingTransaction && (
                 <FullAlertBox
-                    variant="warning"
+                    intent="warning"
                     title={<Translation id={getPhishingWarningTranslationId(phishingDetectorId)} />}
                     primaryButtonLabel={
                         <Translation id="transactions.phishing.unhideTransaction" />
@@ -142,7 +142,7 @@ export const TransactionDetailData = ({
 
             {!isPhishingTransaction && isTxMarkedAsNotScam && (
                 <FullAlertBox
-                    variant="info"
+                    intent="info"
                     title={<Translation id="transactions.phishing.markedAsRecognized" />}
                     primaryButtonProps={{
                         onPress: onUnmarkTxAsNotScamPress,

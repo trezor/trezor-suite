@@ -167,10 +167,10 @@ export const StakingManagementStakedCard = ({
             </HStack>
             <VStack style={applyStyle(buttonsRowStyle)}>
                 {isUnstakingDisabled && unstakingMessageContent && (
-                    <InlineAlertBox variant="warning" title={unstakingMessageContent} />
+                    <InlineAlertBox intent="warning" title={unstakingMessageContent} />
                 )}
                 {isStakingDisabled && stakingMessageContent && (
-                    <InlineAlertBox variant="warning" title={stakingMessageContent} />
+                    <InlineAlertBox intent="warning" title={stakingMessageContent} />
                 )}
                 <HStack spacing="sp12">
                     {hasStakedBalance && (

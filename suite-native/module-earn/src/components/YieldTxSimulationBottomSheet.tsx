@@ -81,7 +81,7 @@ export const YieldTxSimulationBottomSheet = ({
                 />
             ) : (
                 <FullAlertBox
-                    variant="critical"
+                    intent="critical"
                     title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
                 />
             )}

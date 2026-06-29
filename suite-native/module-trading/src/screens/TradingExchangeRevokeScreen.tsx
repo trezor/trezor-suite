@@ -123,7 +123,7 @@ const TradingExchangeRevokeScreenContent = ({
                     title={
                         <Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />
                     }
-                    variant="critical"
+                    intent="critical"
                 />
             </Screen>
         );
@@ -161,7 +161,7 @@ const TradingExchangeRevokeScreenContent = ({
             <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
                     <InlineAlertBox
-                        variant="info"
+                        intent="info"
                         title={
                             <Translation id="moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert" />
                         }

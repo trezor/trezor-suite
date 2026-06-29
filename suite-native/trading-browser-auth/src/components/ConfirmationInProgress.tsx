@@ -42,7 +42,7 @@ export const ConfirmationInProgress = ({ status, loadingState }: ConfirmationInP
                             <Translation id="moduleTrading.tradingSellPreviewScreen.providerStatus.startOver" />
                         }
                         iconName="info"
-                        variant="info"
+                        intent="info"
                     />
                 </AnimatedBox>
             )}

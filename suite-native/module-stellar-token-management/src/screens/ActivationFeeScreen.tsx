@@ -143,7 +143,7 @@ export const ActivationFeeScreen = () => {
                         {/* Insufficient Balance Warning */}
                         {insufficientBalanceInfo && (
                             <InlineAlertBox
-                                variant="warning"
+                                intent="warning"
                                 title={
                                     <Translation
                                         id="moduleStellarToken.networkFee.insufficientBalance"

@@ -29,7 +29,7 @@ export const SolanaLimitedHistoryBanner = () => {
             iconName="warningCircle"
             primaryButtonLabel={translate('banner.solanaLimitedHistoryBanner.confirmButton')}
             onPressPrimaryButton={handleClose}
-            variant="info"
+            intent="info"
         />
     );
 };

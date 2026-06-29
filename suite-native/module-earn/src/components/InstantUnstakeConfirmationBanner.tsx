@@ -38,7 +38,7 @@ export const InstantUnstakeConfirmationBanner = ({
     return (
         <FullAlertBox
             testID="@staking/instant-unstake-banner"
-            variant="neutral"
+            intent="neutral"
             iconName="lightning"
             title={
                 <Translation

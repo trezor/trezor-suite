@@ -97,7 +97,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                 <Pressable onPress={handleCheckboxPress}>
                     <Card
                         alertProps={{
-                            variant: 'warning',
+                            intent: 'warning',
                             title: (
                                 <Text variant="body-sm-strong">
                                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.acknowledgementNote" />

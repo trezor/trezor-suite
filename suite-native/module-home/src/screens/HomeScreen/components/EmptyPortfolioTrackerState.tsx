@@ -53,7 +53,7 @@ export const EmptyPortfolioTrackerState = () => {
             <Card
                 alertProps={{
                     title: <Translation id="moduleHome.emptyState.portfolioTracker.alert" />,
-                    variant: 'info',
+                    intent: 'info',
                 }}
                 style={applyStyle(cardStyle)}
             >

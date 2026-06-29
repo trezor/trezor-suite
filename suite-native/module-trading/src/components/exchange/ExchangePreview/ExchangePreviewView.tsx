@@ -43,7 +43,7 @@ export const ExchangePreviewView = memo(
                 <LastErrorMessage tradingType="exchange" />
                 {!!isApproved && (
                     <InlineAlertBox
-                        variant="success"
+                        intent="brand"
                         title={
                             <Translation id="moduleTrading.tradingExchangePreviewScreen.approvalSuccessAlert" />
                         }
@@ -51,7 +51,7 @@ export const ExchangePreviewView = memo(
                 )}
                 {isTxnError && (
                     <Animated.View layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
-                        <InlineAlertBox variant="critical" title={txnErrorString} />
+                        <InlineAlertBox intent="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
                 <AnimatedVStack layout={LinearTransition} spacing="sp16">

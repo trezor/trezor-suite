@@ -46,7 +46,7 @@ export const CustomFeeContent = ({
         {isErrorBoxVisible && (
             <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
                 <InlineAlertBox
-                    variant="critical"
+                    intent="critical"
                     title={<Translation id="transactionManagement.fees.error" />}
                 />
             </Animated.View>

@@ -43,7 +43,7 @@ export const ConciergeProviderPicker = () => {
             ) : (
                 <Box paddingHorizontal="sp20" paddingVertical="sp18">
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={
                             <Translation id="moduleTrading.tradingScreen.concierge.noProvidersAvailable" />
                         }

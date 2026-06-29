@@ -130,7 +130,7 @@ const TradingExchangeApprovalScreenContent = ({
                     title={
                         <Translation id="moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert" />
                     }
-                    variant="critical"
+                    intent="critical"
                 />
             </Screen>
         );
@@ -162,7 +162,7 @@ const TradingExchangeApprovalScreenContent = ({
             <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
                     <InlineAlertBox
-                        variant="info"
+                        intent="info"
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
                         }
@@ -171,7 +171,7 @@ const TradingExchangeApprovalScreenContent = ({
 
                 {!!isRevoked && (
                     <InlineAlertBox
-                        variant="success"
+                        intent="brand"
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
                         }

@@ -30,8 +30,8 @@ const containerStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isS
     borderWidth: utils.borders.widths.large,
 }));
 
-const variantByWalletBackupType: Record<BackupType, FullAlertBoxProps['variant']> = {
-    'shamir-single': 'success',
+const intentByWalletBackupType: Record<BackupType, FullAlertBoxProps['intent']> = {
+    'shamir-single': 'brand',
     'shamir-advanced': 'warning',
     '12-words': 'neutral',
     '24-words': 'neutral',
@@ -64,7 +64,7 @@ export const WalletBackupCard = memo(
                         <CardDivider horizontalPadding={isSelected ? 'sp16' : 'sp18'} />
                         <CardContent type={type} />
                         <FullAlertBox
-                            variant={variantByWalletBackupType[type]}
+                            intent={intentByWalletBackupType[type]}
                             title={translate(walletBackupSheetCopyByType[type].calloutLabel)}
                             onPressPrimaryButton={handleLearnMorePress}
                             primaryButtonLabel={

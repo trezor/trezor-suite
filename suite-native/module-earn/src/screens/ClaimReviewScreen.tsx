@@ -162,7 +162,7 @@ export const ClaimReviewScreen = () => {
                 />
                 {isInsufficientFeeBalance && (
                     <FullAlertBox
-                        variant="critical"
+                        intent="critical"
                         iconName="warningCircle"
                         title={
                             <Translation
@@ -180,7 +180,7 @@ export const ClaimReviewScreen = () => {
                 )}
                 {canClaimInstantly && !isInsufficientFeeBalance && (
                     <InlineAlertBox
-                        variant="success"
+                        intent="brand"
                         title={
                             <Translation
                                 id="earn.claimReviewScreen.instantClaimBanner"

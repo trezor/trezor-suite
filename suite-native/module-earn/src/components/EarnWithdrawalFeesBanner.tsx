@@ -38,7 +38,7 @@ export const EarnWithdrawalFeesBanner = ({ accountKey, symbol }: EarnWithdrawalF
 
     return (
         <InlineAlertBox
-            variant="info"
+            intent="info"
             title={
                 <Translation
                     id="earn.earnFormScreen.withdrawalFeesBanner"

@@ -56,7 +56,7 @@ export const SecuritySealImages = () => {
                 <Image source={images[1]} contentFit="contain" style={applyStyle(duoImageStyle)} />
             </HStack>
             <InlineAlertBox
-                variant="info"
+                intent="info"
                 title={
                     <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.alertBox" />
                 }

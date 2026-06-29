@@ -3,16 +3,12 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box, type BoxProps } from '../Box';
 import { Button, type ButtonProps } from '../Button/Button';
-import { HStack } from '../Stack';
+import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
-import {
-    type AlertVariant,
-    type FullAlertStyles,
-    variantToColorMap,
-    variantToIconName,
-} from './presets';
+import { type AlertBoxStyles, intentToColorMap, intentToIconName } from './presets';
+import { type AlertBoxIntent } from './types';
 
-const containerStyle = prepareNativeStyle<Pick<FullAlertStyles, 'backgroundColor' | 'borderColor'>>(
+const containerStyle = prepareNativeStyle<Pick<AlertBoxStyles, 'backgroundColor' | 'borderColor'>>(
     (utils, { backgroundColor, borderColor }) => ({
         backgroundColor: utils.colors[backgroundColor],
         borderWidth: utils.borders.widths.small,
@@ -31,7 +27,7 @@ export type FullAlertBoxProps = {
     onPressSecondaryButton?: () => void;
     primaryButtonProps?: Partial<ButtonProps>;
     secondaryButtonProps?: Partial<ButtonProps>;
-    variant?: AlertVariant;
+    intent?: AlertBoxIntent;
     iconName?: IconName;
     verticalAlignment?: 'flex-start' | 'center';
 } & BoxProps;
@@ -45,54 +41,61 @@ export const FullAlertBox = ({
     secondaryButtonLabel,
     primaryButtonProps,
     secondaryButtonProps,
-    variant = 'neutral',
+    intent = 'neutral',
     iconName,
     verticalAlignment = 'flex-start',
     ...restProps
 }: FullAlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
-    const { backgroundColor, borderColor, primaryButtonColorProps, secondaryButtonColorProps } =
-        variantToColorMap[variant];
+    const { backgroundColor, borderColor, textColor } = intentToColorMap[intent];
 
     return (
         <Box style={applyStyle(containerStyle, { backgroundColor, borderColor })} {...restProps}>
-            <HStack spacing="sp12" alignItems={verticalAlignment}>
-                <Box>
-                    <Icon name={iconName ?? variantToIconName[variant]} size="large" />
-                </Box>
-                <Box flex={1}>
-                    <Text>{title}</Text>
-                    {description && (
-                        <Text color="contentSecondary" variant="body-sm">
-                            {description}
-                        </Text>
-                    )}
-                    {primaryButtonLabel && (
-                        <HStack marginTop="sp12">
-                            {secondaryButtonLabel && (
-                                <Button
-                                    size="medium"
-                                    {...secondaryButtonColorProps}
-                                    flex={1}
-                                    onPress={onPressSecondaryButton}
-                                    {...secondaryButtonProps}
-                                >
-                                    {secondaryButtonLabel}
-                                </Button>
+            <VStack spacing="sp12">
+                <HStack spacing="sp12" alignItems={verticalAlignment}>
+                    <Icon
+                        name={iconName ?? intentToIconName[intent]}
+                        color={textColor}
+                        size="large"
+                    />
+                    <VStack spacing="sp12" flex={1}>
+                        <VStack spacing="sp2">
+                            <Text color={textColor}>{title}</Text>
+                            {description && (
+                                <Text color={textColor} priority="secondary" variant="body-sm">
+                                    {description}
+                                </Text>
                             )}
+                        </VStack>
+                    </VStack>
+                </HStack>
+                {primaryButtonLabel && (
+                    <HStack spacing="sp12" paddingLeft="sp32">
+                        {secondaryButtonLabel && (
                             <Button
                                 size="medium"
-                                {...primaryButtonColorProps}
+                                intent={intent}
+                                priority="secondary"
                                 flex={1}
-                                onPress={onPressPrimaryButton}
-                                {...primaryButtonProps}
+                                onPress={onPressSecondaryButton}
+                                {...secondaryButtonProps}
                             >
-                                {primaryButtonLabel}
+                                {secondaryButtonLabel}
                             </Button>
-                        </HStack>
-                    )}
-                </Box>
-            </HStack>
+                        )}
+                        <Button
+                            size="medium"
+                            intent={intent}
+                            priority="primary"
+                            flex={1}
+                            onPress={onPressPrimaryButton}
+                            {...primaryButtonProps}
+                        >
+                            {primaryButtonLabel}
+                        </Button>
+                    </HStack>
+                )}
+            </VStack>
         </Box>
     );
 };

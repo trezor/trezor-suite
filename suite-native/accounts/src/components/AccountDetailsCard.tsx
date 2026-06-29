@@ -69,7 +69,7 @@ export const AccountDetailsCard = ({
                     title={translate('moduleSend.defi.banner.title', { token: token?.symbol })}
                     description={translate('moduleSend.defi.banner.description')}
                     iconName="info"
-                    variant="info"
+                    intent="info"
                 />
             )}
 

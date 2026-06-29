@@ -40,7 +40,7 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
         <AnimatedVStack spacing="sp20" paddingVertical="sp20" layout={LinearTransition}>
             {isTxnError && (
                 <Animated.View>
-                    <InlineAlertBox variant="critical" title={txnErrorString} />
+                    <InlineAlertBox intent="critical" title={txnErrorString} />
                 </Animated.View>
             )}
             <SellFromAccountTradePreviewCard quote={quote} />

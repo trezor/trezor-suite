@@ -79,7 +79,7 @@ export const YieldDepositRevokeScreen = () => {
                 <VStack spacing="sp12">
                     {shouldShowLowLimitWarning && (
                         <InlineAlertBox
-                            variant="warning"
+                            intent="warning"
                             title={
                                 <Translation id="earn.yieldDepositRevokeScreen.lowLimitInfoAlert" />
                             }

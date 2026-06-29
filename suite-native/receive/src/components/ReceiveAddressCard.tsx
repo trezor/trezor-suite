@@ -43,7 +43,7 @@ export const ReceiveAddressCard = ({
         if (isReceiveApproved && !isPortfolioTrackerDevice && !isDeviceInViewOnlyMode) {
             return {
                 title: <Translation id="moduleReceive.receiveAddressCard.alert.success" />,
-                variant: 'success',
+                intent: 'brand',
             };
         }
         if (symbol === 'ada' && isUnverifiedAddressRevealed) {
@@ -51,7 +51,7 @@ export const ReceiveAddressCard = ({
                 title: (
                     <Translation id="moduleReceive.receiveAddressCard.alert.longCardanoAddress" />
                 ),
-                variant: 'info',
+                intent: 'info',
             };
         }
         if (isTokenAddress) {
@@ -62,7 +62,7 @@ export const ReceiveAddressCard = ({
                         values={{ networkName }}
                     />
                 ),
-                variant: 'info',
+                intent: 'info',
             };
         }
 

@@ -119,7 +119,7 @@ export const SendOutputsScreen = ({
                     <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
                         <Box padding="sp16">
                             <InlineAlertBox
-                                variant="warning"
+                                intent="warning"
                                 title={<Translation id="moduleSend.coinControl.notEnoughCoins" />}
                             />
                         </Box>
