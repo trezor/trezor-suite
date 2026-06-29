@@ -70,7 +70,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                                     parameter: 'cryptoFrom',
                                 },
                             });
-                            prevCryptoId.current = sendAsset?.cryptoId as CryptoId | undefined;
+                            prevCryptoId.current = sendAsset?.cryptoId;
                             setValue('cryptoStringAmount', undefined, { shouldValidate: true });
                             dispatch(sellActions.sendAssetChanged());
                         }

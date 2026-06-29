@@ -3,7 +3,6 @@ import type { BuyTrade, CoinInfo, PlatformsInfo } from 'invity-api';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingBuyFormProps,
-    type TradingCountryOption,
     type TradingPaymentMethodListProps,
     createAssetOption,
     cryptoIdToNetwork,
@@ -74,7 +73,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
             label: currencyName,
         },
         cryptoSelect: createAssetOption({ cryptoId: asset.cryptoId, coinInfo, platformInfo })!,
-        countrySelect: country as TradingCountryOption,
+        countrySelect: country,
         countrySubdivisionSelect: countrySubdivision,
         paymentMethod: getPaymentMethodFromBuyForm(form),
         amountInCrypto,

@@ -90,7 +90,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                                     parameter: 'cryptoTo',
                                 },
                             });
-                            prevCryptoId.current = asset?.cryptoId as CryptoId | undefined;
+                            prevCryptoId.current = asset?.cryptoId;
                             setValue('cryptoValue', undefined, { shouldValidate: true });
                             dispatch(
                                 prevSymbol === symbol
