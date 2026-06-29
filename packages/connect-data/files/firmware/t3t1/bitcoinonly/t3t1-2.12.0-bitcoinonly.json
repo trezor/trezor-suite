@@ -1,19 +1,18 @@
 {
     "required": false,
     "version": [2, 12, 0],
-    "min_bridge_version": [2, 0, 7],
     "min_bootloader_version": [2, 1, 6],
     "min_firmware_version": [2, 7, 2],
     "bootloader_version": [2, 1, 16],
     "firmware_revision": "4d89c11df37355bd2cb0f3b8e28cfc661b65f743",
+    "url": "firmware/t3t1/trezor-t3t1-2.12.0-bitcoinonly.bin",
+    "fingerprint": "1e14f60f37eaf0e7778fbe3ffdb1e18258b9334b1974f824879c159492e5b274",
+    "changelog": "* Introduced font kerning.",
     "translations": {
         "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.12.0.bin",
         "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.12.0.bin",
         "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.12.0.bin",
         "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.12.0.bin",
         "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.12.0.bin"
-    },
-    "url": "firmware/t3t1/trezor-t3t1-2.12.0-bitcoinonly.bin",
-    "fingerprint": "1e14f60f37eaf0e7778fbe3ffdb1e18258b9334b1974f824879c159492e5b274",
-    "changelog": "* Introduced font kerning."
+    }
 }
