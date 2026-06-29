@@ -1,9 +1,7 @@
 import type { UpdateConnectSettings } from '@trezor/connect-common';
 import { factory } from '@trezor/connect-common';
-import { deepEqual } from '@trezor/utils';
 
-import { reconnectAllBackends } from './backend/BlockchainLink';
-import * as settingsStore from './data/settingsStore';
+import { updateProxy } from './backend/BlockchainLink';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleNode extends CoreInModule {
@@ -12,13 +10,7 @@ class CoreInModuleNode extends CoreInModule {
     }
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        // updateConnectSettings() may be called before init() — nothing to do yet.
-        if (!settingsStore.isLoaded()) return;
-        const settings = settingsStore.get();
-        if (proxy !== undefined && !deepEqual(settings.proxy, proxy)) {
-            settingsStore.update({ proxy });
-            await reconnectAllBackends();
-        }
+        await updateProxy(proxy);
     }
 }
 
