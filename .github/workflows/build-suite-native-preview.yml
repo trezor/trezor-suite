@@ -38,18 +38,18 @@ jobs:
       pull-requests: write
       actions: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
       - name: Setup EAS
-        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # v8
+        uses: expo/expo-github-action@eab7a230208c952974db8c3245cfd78402c7b385 # v9
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN_DEVELOP }}
       - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        uses: SocketDev/action@ba6de6cc0565af1f42295590380973573297e31f # v1.3.2
         continue-on-error: true
         with:
           mode: firewall-free
@@ -79,7 +79,7 @@ jobs:
       - name: Create preview builds if fingerprint changed
         # Only create preview builds if there is no build with the same runtimeVersion on EAS already
         if: env.RUNTIME_BUILD_EXISTS == 'false'
-        uses: expo/expo-github-action/preview-build@b184ff86a3c926240f1b6db41764c83a01c02eef # main
+        uses: expo/expo-github-action/preview-build@eab7a230208c952974db8c3245cfd78402c7b385 # main
         with:
           command: eas build --profile preview --platform all
           working-directory: suite-native/app
@@ -88,7 +88,7 @@ jobs:
         run: yarn message-system-sign-config
 
       - name: Create preview update
-        uses: expo/expo-github-action/preview@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # v8
+        uses: expo/expo-github-action/preview@eab7a230208c952974db8c3245cfd78402c7b385 # v9
         with:
           command: eas update --auto --branch ${{ env.BRANCH_NAME }}
           working-directory: suite-native/app
