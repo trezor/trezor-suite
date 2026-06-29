@@ -9,7 +9,7 @@ import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { type Payment, type PaymentOpts, type StackFunction } from '../types';
+import { type Payment, type PaymentOpts } from '../types';
 import { BufferNSchema, BufferSchema, Point, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
@@ -43,7 +43,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
 
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, a.network));
 
-    const _chunks = lazy.value(() => bscript.decompile(a.input!)) as StackFunction;
+    const _chunks = lazy.value(() => bscript.decompile(a.input!));
 
     const network = a.network || BITCOIN_NETWORK;
     const o: Payment = { name: 'p2pkh', network };

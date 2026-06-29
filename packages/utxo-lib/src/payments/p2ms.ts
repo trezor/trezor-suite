@@ -61,13 +61,13 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     function decode(output: Buffer | Stack): void {
         if (decoded) return;
         decoded = true;
-        chunks = bscript.decompile(output) as Stack;
+        chunks = bscript.decompile(output);
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstChunk: number = chunks[0];
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const nChunk: number = chunks[chunks.length - 2];
-        o.m = (firstChunk as number) - OPS.OP_RESERVED;
-        o.n = (nChunk as number) - OPS.OP_RESERVED;
+        o.m = firstChunk - OPS.OP_RESERVED;
+        o.n = nChunk - OPS.OP_RESERVED;
         o.pubkeys = chunks.slice(1, -2) as Buffer[];
     }
 
@@ -105,7 +105,7 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     lazy.prop(o, 'signatures', () => {
         if (!a.input) return;
 
-        return bscript.decompile(a.input)!.slice(1);
+        return bscript.decompile(a.input).slice(1);
     });
     lazy.prop(o, 'input', () => {
         if (!a.signatures) return;
