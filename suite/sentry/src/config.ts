@@ -114,8 +114,8 @@ export const SENTRY_BROWSER_CONFIG = {
     profileLifecycle: 'trace',
     integrations: [
         captureConsoleIntegration({ levels: ['error'] }),
-        !isProd && browserProfilingIntegration(),
-        !isProd && browserTracingIntegration(),
-        !isProd && elementTimingIntegration(),
-    ].filter((item): item is Exclude<typeof item, false> => Boolean(item)),
+        browserProfilingIntegration(),
+        browserTracingIntegration(),
+        elementTimingIntegration(),
+    ],
 } satisfies BrowserOptions;
