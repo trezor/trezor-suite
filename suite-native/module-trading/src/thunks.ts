@@ -205,7 +205,7 @@ export const composeTradingTransactionThunk = createThunk(
                     const composed = (await dispatch(
                         enhancePrecomposedTransactionThunk({
                             transactionFormValues: formState,
-                            precomposedTransaction: selectedLevel as PrecomposedTransactionFinal,
+                            precomposedTransaction: selectedLevel,
                             selectedAccount: account,
                         }),
                     ).unwrap()) as PrecomposedTransactionFinal;
@@ -309,8 +309,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                 return rejectWithValue('Token not found in account');
             }
 
-            const approvalType =
-                approvalTypeOverride ?? ((quoteApprovalType ?? 'INFINITE') as DexApprovalType);
+            const approvalType = approvalTypeOverride ?? quoteApprovalType ?? 'INFINITE';
             const { allowanceAmount } = getAllowanceAmount({
                 rawAmount: sendStringAmount,
                 approvalType,
@@ -343,7 +342,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
 
                 const selectedLevel = feeLevels[selectedFeeLevel];
                 if (selectedLevel && isFinalPrecomposedTransaction(selectedLevel)) {
-                    const composed = selectedLevel as PrecomposedTransactionFinal;
+                    const composed = selectedLevel;
 
                     dispatch(
                         tradingCommonActions.saveComposedTransactionInfo({

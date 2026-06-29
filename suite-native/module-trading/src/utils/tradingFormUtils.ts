@@ -61,7 +61,7 @@ export const createFormStateForSendForm = ({
 
     if (isExchangeTrade(quote)) {
         // Exchange quote (swap)
-        const exchangeQuote = quote as ExchangeTrade;
+        const exchangeQuote = quote;
         const exchangeProviders = providers as Record<string, ExchangeProviderInfo>;
         outputAddress = exchangeQuote.sendAddress || '';
         outputAmount = exchangeQuote.sendStringAmount || '';
@@ -90,7 +90,7 @@ export const createFormStateForSendForm = ({
         });
     } else {
         // Sell quote (crypto to fiat)
-        const sellQuote = quote as SellFiatTrade;
+        const sellQuote = quote;
         const sellProviders = providers as Record<string, SellProviderInfo>;
         outputAddress = sellQuote.destinationAddress || '';
         outputAmount = sellQuote.cryptoStringAmount || '';

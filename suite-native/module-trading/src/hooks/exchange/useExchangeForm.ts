@@ -132,7 +132,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
                             },
                         });
 
-                        prevSendCryptoId.current = sendAsset?.cryptoId as CryptoId | undefined;
+                        prevSendCryptoId.current = sendAsset?.cryptoId;
                         setValue('sendCryptoAmount', undefined, { shouldValidate: true });
                         if (sendAsset?.cryptoId === receiveAsset?.cryptoId) {
                             setValue('receiveAsset', undefined);
@@ -154,9 +154,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
                             },
                         });
 
-                        prevReceiveCryptoId.current = receiveAsset?.cryptoId as
-                            | CryptoId
-                            | undefined;
+                        prevReceiveCryptoId.current = receiveAsset?.cryptoId;
                         dispatch(
                             prevReceiveSymbol === receiveSymbol
                                 ? exchangeActions.receiveTokenChanged()
