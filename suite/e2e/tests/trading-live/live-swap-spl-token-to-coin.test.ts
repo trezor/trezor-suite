@@ -12,6 +12,10 @@ const receiveCoinSymbol = 'SOL';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ${sendTokenSymbol}`;
 const accountLabel = 'Solana #2';
 
+// afterEach constants
+const usdtTopUpThreshold = parseFloat(sendAmount) * 3;
+const solFeeReserve = 0.05;
+
 // limiting number of runs due to fees onchain and nonce issues during teardown - by using specific model and FW tags
 test.describe(
     'Trading - Swap SPL token to coin via CEX',
@@ -32,14 +36,27 @@ test.describe(
         });
 
         test.afterEach(async ({ tradingPage, devicePrompt, walletPage }) => {
-            await walletPage.openAccount({ symbol: 'sol', atIndex: 1 });
-            const balanceText = await walletPage.topPanelBalance.innerText();
-            const solBalance = parseFloat(balanceText);
-            if (solBalance < 0.1) {
+            // Only top up when USDT on Solana #2 has run low; otherwise leave the account as is.
+            const usdtBalance = await walletPage.getTokenBalance({
+                symbol: 'sol',
+                atIndex: 1,
+                tokenName: sendAssetName,
+            });
+            if (usdtBalance >= usdtTopUpThreshold) {
                 return;
             }
 
-            const swapBackAmount = (solBalance - 0.05).toFixed(6);
+            await walletPage.openAccount({ symbol: 'sol', atIndex: 1 });
+            const balanceText = await walletPage.topPanelBalance.innerText();
+            const solBalance = parseFloat(balanceText);
+
+            // Swap all SOL except the fee reserve back to USDT.
+            const sellableSol = solBalance - solFeeReserve;
+            if (sellableSol <= 0) {
+                return;
+            }
+
+            const swapBackAmount = sellableSol.toFixed(6);
 
             await walletPage.openSwapTrading({ symbol: 'sol', atIndex: 1 });
 
