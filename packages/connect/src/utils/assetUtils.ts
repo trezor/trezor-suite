@@ -19,14 +19,6 @@ export class HttpRequestError extends Error {
     }
 }
 
-type FirmwareAssetMap = {
-    [device: string]: {
-        [type: string]: {
-            [file: string]: FirmwareRelease;
-        };
-    };
-};
-
 export const getReleasesAssetByDeviceModelAndFirmwareType = (
     deviceModel: DeviceModelInternal,
     firmwareType: FirmwareType,
@@ -35,9 +27,7 @@ export const getReleasesAssetByDeviceModelAndFirmwareType = (
         firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
 
     const availableReleasesRecord =
-        (firmwareAssets as FirmwareAssetMap)?.[deviceModel.toLowerCase()]?.[
-            firmwareTypeInFileName
-        ] ?? {};
+        firmwareAssets?.[deviceModel.toLowerCase()]?.[firmwareTypeInFileName] ?? {};
 
     return Object.values(availableReleasesRecord).sort((a, b) =>
         versionUtils.isNewer(b.version, a.version) ? 1 : -1,
@@ -54,9 +44,7 @@ export const getReleaseAsset = (
     const fileName = `${deviceModel.toLowerCase()}-${version.join('.')}-${firmwareTypeInFileName}`;
     const deviceModelLower = deviceModel.toLowerCase();
 
-    const asset = (firmwareAssets as FirmwareAssetMap)?.[deviceModelLower]?.[
-        firmwareTypeInFileName
-    ]?.[fileName];
+    const asset = firmwareAssets?.[deviceModelLower]?.[firmwareTypeInFileName]?.[fileName];
 
     return asset as FirmwareRelease;
 };

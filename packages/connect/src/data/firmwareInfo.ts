@@ -468,7 +468,7 @@ export const getReleaseInfo = ({
     }
     const { min_firmware_version, min_bootloader_version } = release;
 
-    const changelog = getChangelog(releasesOfDevice, features as StrictFeatures);
+    const changelog = getChangelog(releasesOfDevice, features);
 
     let isNewer = false;
     let requiresIntermediary = false;

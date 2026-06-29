@@ -859,7 +859,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         if (unitColor) {
             const deviceUnitColor = unitColor.toString();
             if (deviceUnitColor in deviceInfo.colors) {
-                this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
+                this.color = deviceInfo.colors[deviceUnitColor];
             }
         }
     }

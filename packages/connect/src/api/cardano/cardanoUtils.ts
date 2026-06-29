@@ -55,14 +55,14 @@ export const prepareCertificates = (certs: CardanoCertificate[]) => {
                     convertedCerts.push({
                         type: cert.type,
                         dRep: {
-                            type: cert.dRep!.type,
+                            type: cert.dRep.type,
                         },
                     });
                 } else if (cert.dRep?.type === PROTO.CardanoDRepType.KEY_HASH) {
                     convertedCerts.push({
                         type: cert.type,
                         dRep: {
-                            type: cert.dRep!.type,
+                            type: cert.dRep.type,
                             keyHash: cert.dRep.keyHash!,
                         },
                     });
@@ -70,8 +70,8 @@ export const prepareCertificates = (certs: CardanoCertificate[]) => {
                     convertedCerts.push({
                         type: cert.type,
                         dRep: {
-                            type: cert.dRep!.type,
-                            scriptHash: cert.dRep!.scriptHash!,
+                            type: cert.dRep.type,
+                            scriptHash: cert.dRep.scriptHash!,
                         },
                     });
                 }

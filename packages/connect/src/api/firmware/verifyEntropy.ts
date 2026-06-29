@@ -34,7 +34,7 @@ const roundFunction = async (i: number, passphrase: Buffer, e: number, salt: Buf
     // return crypto.pbkdf2Sync(data, Buffer.concat([salt, r]), iterations, r.length, 'sha256');
 
     // Nodejs + WebCrypto equivalent
-    const { subtle } = crypto as Crypto;
+    const { subtle } = crypto;
     const key = await subtle.importKey('raw', data, 'PBKDF2', false, ['deriveBits']);
     const bits = await subtle.deriveBits(
         {

@@ -116,7 +116,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         for (const { name, type, certSizes, sigSize } of proofTypes) {
             for (const [i, certSize] of certSizes.entries()) {
                 const cert = await getChunk({ proof_type: type, index: i }, certSize);
-                (authenticityProof[`${name}_certificates`] as string[]).push(cert);
+                authenticityProof[`${name}_certificates`].push(cert);
             }
 
             if (sigSize) {
