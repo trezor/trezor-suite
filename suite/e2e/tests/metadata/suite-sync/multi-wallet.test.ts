@@ -81,7 +81,9 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
     });
 
     test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableSuiteSync();
     });

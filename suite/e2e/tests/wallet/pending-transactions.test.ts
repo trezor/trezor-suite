@@ -39,7 +39,9 @@ test.describe(
                 await page.waitForTimeout(5_000);
             });
 
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+            await onboardingPage.completeOnboarding();
+            await settingsPage.navigateTo('application');
+            await settingsPage.toggleDebugModeInSettings();
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
         });
