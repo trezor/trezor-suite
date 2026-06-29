@@ -16524,7 +16524,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     node-fetch: "npm:^3.3.2"
     socks-proxy-agent: "npm:8.0.5"
-    ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.21.0"
     ws: "npm:^8.20.0"
   languageName: unknown
   linkType: soft
