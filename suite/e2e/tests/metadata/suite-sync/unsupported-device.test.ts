@@ -2,7 +2,9 @@ import { expect, test } from '../../../support/fixtures';
 
 test.describe('Suite Sync - Unsupported device banner', { tag: ['@T1B1', '@T2T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.setupQuotaManager();
         await metadataPage.initiateSuiteSyncSetup();
