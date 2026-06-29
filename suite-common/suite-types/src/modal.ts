@@ -171,6 +171,12 @@ export type UserContextPayload =
           actionType?: EarnModalAction;
       }
     | {
+          type: 'nft-send';
+          account: Account;
+          tokenContract: string;
+          tokenId: string;
+      }
+    | {
           type: 'stake';
           flow: StakeModalFlow;
           account: Account;

@@ -205,6 +205,11 @@ export type SendStackParamList = {
         prevHeaderHeight?: number;
         initialSnapIndex?: number;
     };
+    [SendStackRoutes.NftSend]: {
+        accountKey: AccountKey;
+        tokenContract: string;
+        tokenId: string;
+    };
 };
 
 export type AppTabsParamList = {

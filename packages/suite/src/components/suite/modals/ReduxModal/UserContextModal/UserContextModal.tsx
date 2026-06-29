@@ -58,6 +58,7 @@ import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
+import { NftSendModal } from 'src/views/wallet/nfts/NftSend/NftSendModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
@@ -200,6 +201,14 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             );
         case 'wipe-device-success':
             return <WipeDeviceSuccessModal />;
+        case 'nft-send':
+            return (
+                <NftSendModal
+                    account={payload.account}
+                    tokenContract={payload.tokenContract}
+                    tokenId={payload.tokenId}
+                />
+            );
         default:
             return exhaustive(payload);
     }

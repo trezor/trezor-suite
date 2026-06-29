@@ -2,7 +2,6 @@ import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
-import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -16,7 +15,6 @@ export const AccountNavigation = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
-    const enabledNftSection = useSelector(selectHasExperimentalFeature('nft-section'));
     const network = getNetworkOptional(routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);
 
@@ -51,7 +49,7 @@ export const AccountNavigation = () => {
                 goToWithAnalytics({ routeName: 'wallet-nfts', preserveParams: true });
             },
             title: <Translation id="TR_NAV_NFTS" />,
-            isHidden: !hasNetworkFeatures(account, 'nfts') || !enabledNftSection,
+            isHidden: !hasNetworkFeatures(account, 'nfts'),
             activeRoutes: ['wallet-nfts', 'wallet-nfts-hidden'],
             'data-testid': '@wallet/menu/wallet-nfts',
         },

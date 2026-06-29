@@ -269,6 +269,7 @@ export enum SendStackRoutes {
     SendDestinationTagReview = 'SendDestinationTagReview',
     SendAddressReview = 'SendAddressReview',
     SendOutputsReview = 'SendOutputsReview',
+    NftSend = 'NftSend',
 }
 
 export enum AddCoinAccountStackRoutes {

@@ -5999,6 +5999,14 @@ export const messages = defineMessages({
         id: 'TR_NFT_EMPTY',
         defaultMessage: 'No NFT collections',
     },
+    TR_NFT_TOKEN_ID: {
+        id: 'TR_NFT_TOKEN_ID',
+        defaultMessage: 'Token ID',
+    },
+    TR_NFT_COLLECTION: {
+        id: 'TR_NFT_COLLECTION',
+        defaultMessage: 'Collection',
+    },
     TR_TOKENS_EMPTY_CHECK_HIDDEN: {
         id: 'TR_TOKENS_EMPTY_CHECK_HIDDEN',
         defaultMessage: 'No tokens. Check hidden.',

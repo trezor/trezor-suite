@@ -97,4 +97,8 @@ export type * from './phishing/phishingReducerTypes';
 export * from './stake/stakeDataSlice';
 export * from './uiEvent/defaultTrezorUIEventHandlerThunk';
 export * from './discovery/passphraseWalletThunks';
+export * from './nfts/composeNftTransactionThunk';
+export * from './nfts/nftSendFormSchema';
+export * from './nfts/useNftFeeCompose';
 export * from './nfts/useNftMetadata';
+export * from './nfts/useNftSend';

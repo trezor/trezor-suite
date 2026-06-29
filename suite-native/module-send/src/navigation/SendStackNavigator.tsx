@@ -6,6 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { NftSendScreen } from '../screens/NftSendScreen';
 import { SendAccountsScreen } from '../screens/SendAccountsScreen';
 import { SendAddressReviewScreen } from '../screens/SendAddressReviewScreen';
 import { SendDestinationTagReviewScreen } from '../screens/SendDestinationTagReviewScreen';
@@ -41,5 +42,6 @@ export const SendStackNavigator = () => (
                 component={SendOutputsReviewScreen}
             />
         </SendStack.Group>
+        <SendStack.Screen name={SendStackRoutes.NftSend} component={NftSendScreen} />
     </SendStack.Navigator>
 );

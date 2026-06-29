@@ -4,6 +4,7 @@ import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/ad
 import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import {
     DefinitionType,
@@ -67,6 +68,18 @@ const NftsRow = ({
     const { account } = selectedAccount;
     const nftItemsCount = nft.ids?.length || nft.multiTokenValues?.length || 0;
     const NftName = <BlurUrls text={nft.name} />;
+
+    const onSendNft = (tokenId: string) => {
+        if (!account) return;
+        dispatch(
+            openModal({
+                type: 'nft-send',
+                account,
+                tokenContract: nft.contract || '',
+                tokenId,
+            }),
+        );
+    };
 
     return (
         <>
@@ -211,7 +224,7 @@ const NftsRow = ({
                         isCollapsed={!isCollectionOpen}
                         isHighlightedOnHover={false}
                     >
-                        <Table.Cell colSpan={2}>
+                        <Table.Cell colSpan={1}>
                             <Text typographyStyle="body-sm">
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
@@ -233,6 +246,19 @@ const NftsRow = ({
                                 </HiddenPlaceholder>
                             </Text>
                         </Table.Cell>
+                        <Table.Cell colSpan={1} align="end">
+                            <Button
+                                size="small"
+                                intent="brand"
+                                priority="secondary"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    onSendNft(id);
+                                }}
+                            >
+                                <Translation id="TR_NAV_SEND" />
+                            </Button>
+                        </Table.Cell>
                     </Table.Row>
                 ))}
             {NFT_MULTITOKEN_STANDARDS.has(nft.standard) &&
@@ -242,7 +268,7 @@ const NftsRow = ({
                         isCollapsed={!isCollectionOpen}
                         isHighlightedOnHover={false}
                     >
-                        <Table.Cell colSpan={2}>
+                        <Table.Cell colSpan={1}>
                             <Text typographyStyle="body-sm">
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
@@ -265,6 +291,19 @@ const NftsRow = ({
                                     </Row>
                                 </HiddenPlaceholder>
                             </Text>
+                        </Table.Cell>
+                        <Table.Cell colSpan={1} align="end">
+                            <Button
+                                size="small"
+                                intent="brand"
+                                priority="secondary"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    onSendNft(value.id || '');
+                                }}
+                            >
+                                <Translation id="TR_NAV_SEND" />
+                            </Button>
                         </Table.Cell>
                     </Table.Row>
                 ))}
