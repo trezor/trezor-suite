@@ -56,7 +56,7 @@ export interface EnabledNetwork {
     coin: CoinSymbol;
 }
 
-export interface ConnectSettingsPublic {
+export interface ConnectSettings {
     manifest?: Manifest;
     // Enables connect logs. NOTE: connect core no longer uses this to gate its COMPONENT loggers
     // (Core/Device/DeviceCommands/@trezor/transport) — those are driven by `createLogger`. It is still
@@ -83,25 +83,6 @@ export interface ConnectSettingsPublic {
     thp?: ThpSettings;
     enabledNetworks?: EnabledNetwork[];
 }
-
-// internal part, not to be accepted from .init()
-export interface ConnectSettingsInternal {
-    origin?: string;
-    configSrc: string;
-    popupSrc: string;
-    version: string;
-    npmVersion?: string;
-    priority: number;
-    extension?: string;
-    env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
-    timestamp: number;
-    proxy?: Proxy;
-}
-
-export type ConnectSettings = ConnectSettingsPublic &
-    ConnectSettingsInternal &
-    // coreMode is a common parameter between these, so it is explicitly handled here for correct handling
-    { coreMode?: 'auto' | 'suite-desktop' | 'suite-web' | 'deeplink' };
 
 export type ConnectImplSettings = {
     manifest: Manifest;
