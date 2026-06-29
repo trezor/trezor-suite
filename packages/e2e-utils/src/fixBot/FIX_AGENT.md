@@ -97,16 +97,9 @@ Non-zero = failing — read the trace before deciding anything further (see belo
 
 ### Reading traces after pre-flight and any test run
 
-```bash
-find suite/e2e/test-results -name 'trace.zip'
-```
-
-Unzip and read the screenshot closest to the failure:
-
-```bash
-unzip -q <path/to/trace.zip> -d /tmp/trace-preflight/
-ls /tmp/trace-preflight/resources/page@*.jpeg | sort | tail -10
-```
+Every failing run leaves a trace at `suite/e2e/test-results/<…>/trace.zip` (find it with
+`find suite/e2e/test-results -name 'trace.zip'`). Read it with the **`playwright-trace` skill**.
+`test-results` is overwritten by the next run, so read a trace before running anything else.
 
 ### Check the failure matches the analysis
 
@@ -139,9 +132,10 @@ _Cost marker: at the start of each iteration, run `echo fixagent-stage-iteration
 **1. Make changes** within the allowed surface (see Fix Constraints).
 
 **Missing / mismatched locator.** When a locator the test uses is not found, do not reflexively
-add it to the product. First inspect the product element the test targets. If it already exposes
-a `data-testid` (possibly renamed from what the test expects), point the test/page-object at the
-current one. Add a new `data-testid` only if the element genuinely has none.
+add it to the product. Inspect the target element in the trace (see _Reading traces_) to see what
+it actually exposes — don't guess. If it already exposes a `data-testid` (possibly renamed from what
+the test expects), point the test/page-object at the current one. Add a new `data-testid` only if
+the element genuinely has none.
 
 **2. Run all validations that are still failing:**
 
@@ -154,14 +148,6 @@ Select config by platform:
   --config=./playwright-config/playwright-<web|desktop>.config.ts \
   --project=<group> \
   <spec>)
-```
-
-**3. Read traces for any that still fail:**
-
-```bash
-find suite/e2e/test-results -name 'trace.zip'
-unzip -q <trace.zip> -d /tmp/trace-iter-<N>/
-ls /tmp/trace-iter-<N>/resources/page@*.jpeg | sort | tail -10
 ```
 
 **4. Commit all changes from this iteration:**

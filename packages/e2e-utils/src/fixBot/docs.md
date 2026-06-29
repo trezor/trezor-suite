@@ -1,5 +1,3 @@
-# bot fixer
-
 # Autonomous Nightly Test Fix Agent — Design Summary
 
 ---
@@ -25,8 +23,6 @@ notify         → Slack summary from downloaded artifacts
 update-ledger  → rebuild ledger.json from run outcomes, upload to S3
 aggregate      → LLM usage dashboard
 ```
-
-Source: packages/e2e-utils/src/fixBot
 
 ### Fix Agent Output Contract
 
@@ -126,12 +122,12 @@ Setup environment (web preview server (pre-built static) / build electron app / 
 Pre-flight run: playwright test <spec> for each validation
   → confirms failure is real
   → produces fresh local trace + screenshots
-Fix agent reads trace from disk when it needs visual context
+Fix agent reads the trace via the playwright-trace skill (trace CLI) when it needs context
 Loop:
   modify code
   rebuild electron and/or web app if needed
   run validations
-  read new trace if needed
+  read the new trace via the trace CLI if needed
   iterate
 ```
 
