@@ -345,6 +345,11 @@ describe('tradingSelectors', () => {
                         staticSessionId:
                             'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0' as StaticSessionId,
                     },
+                    features: {
+                        major_version: 2,
+                        minor_version: 12,
+                        patch_version: 1,
+                    },
                 },
             },
         }) as unknown as TradingRootStateWithDeviceAndAccounts;
@@ -2111,6 +2116,21 @@ describe('tradingSelectors', () => {
         it('should return false when firmware has slip24 in unavailableCapabilities', () => {
             if (state.device.selectedDevice) {
                 state.device.selectedDevice.unavailableCapabilities = { slip24: 'no-support' };
+            }
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it('should return false when firmware version is older than the minimum', () => {
+            if (state.device.selectedDevice?.features) {
+                state.device.selectedDevice.features.minor_version = 12;
+                state.device.selectedDevice.features.patch_version = 0;
+            }
+            expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it('should return false when firmware version is unknown', () => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.features = undefined;
             }
             expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
         });
