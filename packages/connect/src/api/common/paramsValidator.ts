@@ -169,7 +169,7 @@ const getCoinRules = (coins: CoinInfo[], currentRange: FirmwareRange): FirmwareR
     coins.map(({ support = typedObjectTransformValues(DEFAULT_FIRMWARE_RANGE, () => false) }) => ({
         ...currentRange,
         ...typedObjectTransformValues(support, value => ({
-            min: (value || '0') as FirmwareBoundary,
+            min: value || '0',
             max: '0' as const,
         })),
     }));
