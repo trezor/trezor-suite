@@ -4,24 +4,10 @@ import { ERRORS } from '../constants';
 import { parseManifest, parseVersion } from '../data/connectSettings';
 import { type CallMethodPayload, createErrorMessage } from '../events';
 import type { ConnectFactoryDependencies } from '../factory';
-import type { ConnectSettings } from '../types';
+import type { ConnectDynamicSettings, ConnectImplSettings } from '../types';
 import type { UpdateConnectSettings } from '../types/api/core/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
 import { type CancelParams } from '../utils/cancelParams';
-
-export type ConnectImplSettings = {
-    manifest: NonNullable<ConnectSettings['manifest']>;
-    version: NonNullable<ConnectSettings['version']>;
-    env?: ConnectSettings['env'];
-    debug?: ConnectSettings['debug'];
-    enabledNetworks?: ConnectSettings['enabledNetworks'];
-};
-
-type CoreMode = 'auto' | 'suite-desktop' | 'suite-web';
-
-export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
-    coreMode?: CoreMode;
-};
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
@@ -46,7 +32,7 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<n
     private currentTarget: ImplType;
     private readonly implementations: Record<ImplType, ConnectImpl>;
 
-    private coreMode?: CoreMode;
+    private coreMode?: ConnectDynamicSettings['coreMode'];
     private implSettings?: ConnectImplSettings;
     private callPending = 0;
     private beforeCallSynchronize = getSynchronize();

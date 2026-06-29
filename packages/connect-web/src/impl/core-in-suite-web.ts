@@ -6,7 +6,8 @@ import {
     type CallMethodPayload,
     createErrorMessage,
 } from '@trezor/connect-common/src/events';
-import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
+import type { ConnectImpl } from '@trezor/connect-common/src/impl/dynamic';
+import type { ConnectImplSettings } from '@trezor/connect-common/src/types/settings';
 import {
     type CancelParams,
     normalizeCancelParams,

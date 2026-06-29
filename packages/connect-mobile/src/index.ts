@@ -7,7 +7,11 @@ import {
 import { type CallMethodPayload } from '@trezor/connect-common/src/events';
 import { createErrorMessage } from '@trezor/connect-common/src/events';
 import { type ConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
-import { type Manifest, type UpdateConnectSettings } from '@trezor/connect-common/src/types';
+import type {
+    ConnectMobileSettings,
+    Manifest,
+    UpdateConnectSettings,
+} from '@trezor/connect-common/src/types';
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import {
     type CancelParams,
@@ -39,15 +43,7 @@ const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: Bui
     );
 };
 
-interface ConnectSettingsMobile {
-    manifest: Manifest;
-    coreMode?: 'deeplink';
-    connectSrc?: string;
-    deeplinkOpen: (url: string) => void;
-    deeplinkCallbackUrl: string;
-}
-
-export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
+export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectMobileSettings> {
     public eventEmitter = new ConnectEmitter();
     private messages = createDeferredManager({ generateId: (): string => crypto.randomUUID() });
 
@@ -66,7 +62,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         connectSrc,
         deeplinkOpen,
         deeplinkCallbackUrl,
-    }: ConnectSettingsMobile) {
+    }: ConnectMobileSettings) {
         this.manifest = parseManifest(manifest);
 
         if (!this.manifest) {
@@ -179,7 +175,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
 }
 
 const impl = new TrezorConnectDeeplink();
-const TrezorConnect = factory<ConnectSettingsMobile, { handleDeeplink: (url: string) => void }>(
+const TrezorConnect = factory<ConnectMobileSettings, { handleDeeplink: (url: string) => void }>(
     {
         eventEmitter: impl.eventEmitter,
         init: impl.init.bind(impl),

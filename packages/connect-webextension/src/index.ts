@@ -2,10 +2,10 @@
 // these targeted imports
 import { CORE_CALL_CANCEL, POPUP } from '@trezor/connect-common/src/events';
 import { factory } from '@trezor/connect-common/src/factory';
-import { type ConnectDynamicSettings } from '@trezor/connect-common/src/impl/dynamic';
 import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
+import { type ConnectDynamicSettings } from '@trezor/connect-common/src/types/settings';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
