@@ -207,6 +207,7 @@
         { "path": "../../suite/thp" },
         { "path": "../../suite/tor" },
         { "path": "../../suite/trading" },
+        { "path": "../../suite/transfer-uri" },
         { "path": "../../suite/tx-simulation" },
         { "path": "../../suite/ui-animations" },
         { "path": "../../suite/wallet" },

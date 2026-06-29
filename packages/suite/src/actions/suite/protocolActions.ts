@@ -1,4 +1,3 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import {
     type AnchorSettingSection,
     SettingsAnchor,
@@ -6,10 +5,9 @@ import {
     mapAnchorToRoute,
     onLocationChange,
 } from '@suite/router';
+import { type CoinProtocol, handleCoinProtocolUri } from '@suite/transfer-uri';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
-import { type Protocol } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { parseTransferUri } from '@suite-common/transfer-uri';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import {
     SUITE_ANCHOR_DEEPLINK_PREFIX,
@@ -42,59 +40,16 @@ export const fillSendForm = (shouldFill: boolean): ProtocolAction => ({
     payload: shouldFill,
 });
 
-const saveCoinProtocol = (
-    scheme: Protocol,
-    address: string,
-    amount?: string,
-    token?: string,
-    tokenAmount?: string,
-): ProtocolAction => ({
+const saveCoinProtocol = (coinProtocol: CoinProtocol): ProtocolAction => ({
     type: PROTOCOL.SAVE_COIN_PROTOCOL,
-    payload: { scheme, address, amount, token, tokenAmount },
+    payload: coinProtocol,
 });
 
 export const handleProtocolRequest =
     (uri: string) => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
-        const result = parseTransferUri(uri);
+        dispatch(handleCoinProtocolUri(uri, saveCoinProtocol));
 
-        let scheme: string | undefined;
-        if (result.success) {
-            scheme = result.payload.scheme;
-        } else if (result.error.type === 'UNKNOWN_SCHEME') {
-            scheme = result.error.scheme;
-        }
-
-        // Report for any URI carrying a recognizable scheme (incl. unknown-protocol deeplinks).
-        if (scheme !== undefined) {
-            const isAmountPresent =
-                result.success &&
-                ((result.payload.format === 'bip321' && result.payload.amount !== undefined) ||
-                    (result.payload.format === 'erc681' &&
-                        result.payload.tokenAmount !== undefined));
-
-            asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: events.appUriHandlerEvent.name,
-                payload: { scheme, isAmountPresent },
-            });
-        }
-
-        if (result.success) {
-            const info = result.payload;
-            const amount = info.format === 'bip321' ? info.amount : undefined;
-            const token = info.format === 'erc681' ? info.token : undefined;
-            const tokenAmount = info.format === 'erc681' ? info.tokenAmount : undefined;
-
-            dispatch(saveCoinProtocol(info.scheme, info.address, amount, token, tokenAmount));
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'coin-scheme-protocol',
-                    address: info.address,
-                    scheme: info.scheme,
-                    amount,
-                    autoClose: false,
-                }),
-            );
-        } else if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
+        if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
             dispatch(goto({ routeName: 'suite-bridge-requested', params: { cancelable: true } }));
         } else if (uri?.startsWith(SUITE_WALLETCONNECT_DEEPLINK)) {
             const parsedUri = parseUri(uri);
