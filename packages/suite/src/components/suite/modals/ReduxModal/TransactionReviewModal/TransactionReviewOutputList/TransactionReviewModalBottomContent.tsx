@@ -100,7 +100,7 @@ export const TransactionReviewModalBottomContent = ({
                 selectedFee: selectedFee || 'normal',
                 isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
                 hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
-                txType: txType as 'stake' | 'trade' | undefined,
+                txType,
             },
         });
 
@@ -113,7 +113,7 @@ export const TransactionReviewModalBottomContent = ({
             decision.resolve(true);
             reportTransactionCreatedEvent(
                 isRbfTransaction(precomposedTx!)
-                    ? mapRbfTypeToReporting[precomposedTx!.rbfType]
+                    ? mapRbfTypeToReporting[precomposedTx.rbfType]
                     : 'sent',
             );
 

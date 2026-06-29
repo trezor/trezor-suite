@@ -24,9 +24,7 @@ const isModelWithRotate = (model: DeviceModelInternal | undefined): model is Rot
     !!model && model !== DeviceModelInternal.UNKNOWN;
 
 const getDeviceModel = (deviceModelInternal: DeviceModelInternal | undefined): RotateModel =>
-    isModelWithRotate(deviceModelInternal)
-        ? deviceModelInternal
-        : (DeviceModelInternal.T3W1 as RotateModel);
+    isModelWithRotate(deviceModelInternal) ? deviceModelInternal : DeviceModelInternal.T3W1;
 
 export const SecurityCheckLayout = ({
     isFailed,

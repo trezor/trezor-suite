@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import type { GuideCategory } from '@suite-common/suite-types';
 import { spacingsPx } from '@trezor/theme';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
@@ -27,11 +26,7 @@ export const GuideArticle = () => {
     // Always go back to the level 1 ancestor so the user lands on the same screen they came from.
     const parentCategory =
         currentNode && indexNode
-            ? (
-                  findAncestorNodes(currentNode, indexNode).filter(
-                      node => node.type === 'category',
-                  ) as GuideCategory[]
-              )[0]
+            ? findAncestorNodes(currentNode, indexNode).filter(node => node.type === 'category')[0]
             : undefined;
 
     const goBack = () => {

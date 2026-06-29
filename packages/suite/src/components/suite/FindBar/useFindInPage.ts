@@ -24,8 +24,7 @@ export const useFindInPage = () => {
     const seqRef = useRef(0);
     const queryRef = useRef('');
 
-    const rootElement = (rootRef.current = (document.getElementById('root') ||
-        document.body) as HTMLElement);
+    const rootElement = (rootRef.current = document.getElementById('root') || document.body);
 
     const observeRoot = useCallback(() => {
         observerRef.current?.observe(rootElement, {
@@ -159,7 +158,7 @@ export const useFindInPage = () => {
 
             if (keepActive && activeOrdinalRef.current != null) {
                 const ord = clampOrdinal(activeOrdinalRef.current, total);
-                applyActiveOrdinal(ord as number | null, false);
+                applyActiveOrdinal(ord, false);
             } else {
                 applyActiveOrdinal(null);
             }
@@ -226,7 +225,7 @@ export const useFindInPage = () => {
             if (isMutatingRef.current) return;
 
             const relevant = muts.some(m => {
-                const node = m.target as Node;
+                const node = m.target;
 
                 const getParentElement = () =>
                     node.parentElement instanceof HTMLElement ? node.parentElement : null;
