@@ -1,7 +1,6 @@
 {
     "required": false,
     "version": [2, 3, 5],
-    "min_bridge_version": [2, 0, 7],
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "firmware_revision": "ffa96205fb5e22b43e7b08a3dbc3cdeee0931de3",
