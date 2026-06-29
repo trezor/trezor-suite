@@ -1,0 +1,9 @@
+{
+    "platforms": ["android", "ios"],
+    "android": {
+        "modules": ["io.trezor.rnnfc.ReactNativeNfcModule"]
+    },
+    "ios": {
+        "modules": ["ReactNativeNfcModule"]
+    }
+}

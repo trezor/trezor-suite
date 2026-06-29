@@ -47,6 +47,7 @@ import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/fe
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
 import { type TxKeyPath, localePersistWhitelist, localeReducer } from '@suite-native/intl';
+import { nfcTagsPersistWhitelist, nfcTagsReducer } from '@suite-native/module-device-settings';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
     type MMKVStorageDep,
@@ -391,6 +392,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const nfcTagsPersistedReducer = preparePersistReducer({
+        reducer: nfcTagsReducer,
+        persistedKeys: nfcTagsPersistWhitelist,
+        key: 'nfcTags',
+        version: 1,
+        storage: deps.mmkvStorage,
+    });
+
     const localePersistedReducer = preparePersistReducer({
         reducer: localeReducer,
         persistedKeys: localePersistWhitelist,
@@ -440,6 +449,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             logs: logsSlice.reducer,
             messageSystem: messageSystemPersistedReducer,
             nativeFirmware: nativeFirmwareReducer,
+            nfcTags: nfcTagsPersistedReducer,
             notifications: createNotificationsReducer<TxKeyPath>().reducer,
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
             suiteSync: suiteSyncPersistedReducer,
