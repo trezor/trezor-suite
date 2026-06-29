@@ -2,6 +2,8 @@ import { buildAllowance } from './builder/evm/allowance';
 import { buildApprove } from './builder/evm/approve';
 import { buildClaim } from './builder/evm/claim';
 import { buildDeposit } from './builder/evm/deposit';
+import { buildErc1155SafeTransferFrom } from './builder/evm/erc1155SafeTransferFrom';
+import { buildErc721SafeTransferFrom } from './builder/evm/erc721SafeTransferFrom';
 import { buildClaimWithdrawRequest } from './builder/evm/everstake/claimWithdrawRequest';
 import { buildStake } from './builder/evm/everstake/stake';
 import { buildUnstake } from './builder/evm/everstake/unstake';
@@ -23,6 +25,18 @@ export const Calldata = {
             transfer: {
                 encode: buildTransfer,
                 decode: createEvmDecoder(EVM_ABI.erc20.transfer),
+            },
+        },
+        erc721: {
+            safeTransferFrom: {
+                encode: buildErc721SafeTransferFrom,
+                decode: createEvmDecoder(EVM_ABI.erc721.safeTransferFrom),
+            },
+        },
+        erc1155: {
+            safeTransferFrom: {
+                encode: buildErc1155SafeTransferFrom,
+                decode: createEvmDecoder(EVM_ABI.erc1155.safeTransferFrom),
             },
         },
         erc4626: {
