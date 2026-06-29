@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { fromWei } from 'web3-utils';
-
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getEthereumRbfFeeInfo, selectTransactions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
-import { isEip1559, isInteger, isPending, isSentTransaction } from '@suite-common/wallet-utils';
+import {
+    fromWei,
+    isEip1559,
+    isInteger,
+    isPending,
+    isSentTransaction,
+} from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Note, Row, TextButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
@@ -113,12 +117,12 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
         if (!replacedGas) return;
 
         const bumpedLevel = getEthereumRbfFeeInfo(feeInfo, {
-            gasPrice: replacedGas.gasPrice ? fromWei(replacedGas.gasPrice, 'gwei') : undefined,
+            gasPrice: replacedGas.gasPrice ? fromWei(replacedGas.gasPrice).toGwei() : undefined,
             maxFeePerGas: replacedGas.maxFeePerGas
-                ? fromWei(replacedGas.maxFeePerGas, 'gwei')
+                ? fromWei(replacedGas.maxFeePerGas).toGwei()
                 : undefined,
             maxPriorityFeePerGas: replacedGas.maxPriorityFeePerGas
-                ? fromWei(replacedGas.maxPriorityFeePerGas, 'gwei')
+                ? fromWei(replacedGas.maxPriorityFeePerGas).toGwei()
                 : undefined,
         }).levels[0];
 
