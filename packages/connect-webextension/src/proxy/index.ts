@@ -7,9 +7,11 @@ import {
 } from '@trezor/connect-common/src/events';
 import { createErrorMessage } from '@trezor/connect-common/src/events';
 import { factory } from '@trezor/connect-common/src/factory';
-import { type ConnectDynamicSettings } from '@trezor/connect-common/src/impl/dynamic';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
-import type { UpdateConnectSettings } from '@trezor/connect-common/src/types';
+import type {
+    ConnectDynamicSettings,
+    UpdateConnectSettings,
+} from '@trezor/connect-common/src/types';
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import {
     type CancelParams,

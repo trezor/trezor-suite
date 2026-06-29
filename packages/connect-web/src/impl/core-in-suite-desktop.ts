@@ -6,8 +6,8 @@ import {
     type CallMethodPayload,
     POPUP,
 } from '@trezor/connect-common/src/events';
-import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect-common/src/impl/dynamic';
-import type { Manifest } from '@trezor/connect-common/src/types/settings';
+import type { ConnectImpl } from '@trezor/connect-common/src/impl/dynamic';
+import type { ConnectImplSettings, Manifest } from '@trezor/connect-common/src/types/settings';
 import {
     type CancelParams,
     normalizeCancelParams,

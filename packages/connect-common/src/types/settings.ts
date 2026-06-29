@@ -102,3 +102,23 @@ export type ConnectSettings = ConnectSettingsPublic &
     ConnectSettingsInternal &
     // coreMode is a common parameter between these, so it is explicitly handled here for correct handling
     { coreMode?: 'auto' | 'suite-desktop' | 'suite-web' | 'deeplink' };
+
+export type ConnectImplSettings = {
+    manifest: Manifest;
+    version: string;
+    env?: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
+    debug?: boolean;
+    enabledNetworks?: EnabledNetwork[];
+};
+
+export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
+    coreMode?: 'auto' | 'suite-desktop' | 'suite-web';
+};
+
+export interface ConnectMobileSettings {
+    manifest: Manifest;
+    coreMode?: 'deeplink';
+    connectSrc?: string;
+    deeplinkOpen: (url: string) => void;
+    deeplinkCallbackUrl: string;
+}
