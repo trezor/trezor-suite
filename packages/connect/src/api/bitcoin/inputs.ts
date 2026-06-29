@@ -8,13 +8,7 @@ import type {
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
-import {
-    fixPath,
-    getHDPath,
-    getScriptType,
-    isSegwitPath,
-    validatePath,
-} from '../../utils/pathUtils';
+import { fixPath, getHDPath, getScriptType, validatePath } from '../../utils/pathUtils';
 import { validateParams } from '../common/paramsValidator';
 
 /** *****
@@ -28,14 +22,10 @@ export const validateTrezorInputs = (
         .map(i => fixPath(i))
         .map(i => convertMultisigPubKey(coinInfo.network, i))
         .map(input => {
-            const useAmount = input.script_type === 'EXTERNAL' || isSegwitPath(input.address_n);
-            // since 2.3.5 amount is required for all inputs.
-            // this change however is breaking 3rd party implementations
-            // missing amount will be delivered by refTx object
             validateParams(input, [
                 { name: 'prev_hash', type: 'string', required: true },
                 { name: 'prev_index', type: 'number', required: true },
-                { name: 'amount', type: 'uint', required: useAmount },
+                { name: 'amount', type: 'uint', required: true },
                 { name: 'script_type', type: 'string' },
                 { name: 'sequence', type: 'number' },
                 { name: 'multisig', type: 'object' },

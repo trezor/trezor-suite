@@ -18,12 +18,14 @@ export default {
                         prev_hash:
                             '84533aa6244bcee68040d851dc4f502838ed3fd9ce838e2e48dbf440e7f4df2a',
                         prev_index: 0,
+                        amount: '13123',
                     },
                     {
                         address_n: "m/44'/133'/0'/1/0",
                         prev_hash:
                             '84533aa6244bcee68040d851dc4f502838ed3fd9ce838e2e48dbf440e7f4df2a',
                         prev_index: 1,
+                        amount: '3299',
                     },
                 ],
                 outputs: [
@@ -52,6 +54,7 @@ export default {
                         prev_hash:
                             '29d25589db4623d1a33c58745b8f95b131f49841c79dcd171847d0d7e9e2dc3a',
                         prev_index: 0,
+                        amount: '80000',
                     },
                 ],
                 outputs: [
