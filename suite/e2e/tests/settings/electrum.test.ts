@@ -9,8 +9,10 @@ test.describe(
     'Suite works with Electrum server',
     { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
     () => {
-        test.beforeEach(async ({ onboardingPage }) => {
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        test.beforeEach(async ({ onboardingPage, settingsPage }) => {
+            await onboardingPage.completeOnboarding();
+            await settingsPage.navigateTo('application');
+            await settingsPage.toggleDebugModeInSettings();
         });
 
         test(

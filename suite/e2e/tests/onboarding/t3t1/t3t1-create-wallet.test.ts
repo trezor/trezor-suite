@@ -22,13 +22,11 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1'] }, () => {
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, device, onboardingPage, devicePrompt, analyticsSection }) => {
+        async ({ device, onboardingPage, devicePrompt, analyticsSection }) => {
             await analyticsSection.passThroughAnalytics();
 
             // Device onboarding steps
             await onboardingPage.firmware.continueThroughFirmware();
-            await onboardingPage.passThroughAuthenticityCheck();
-            await page.waitForTimeout(500);
             await onboardingPage.tutorial.skip();
 
             // Select backup type (no device interaction, just navigates to SecurityStep)

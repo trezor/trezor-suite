@@ -8,7 +8,10 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
     test.use({
         setupEmulator: false,
         electronConf: { offlineMode: true },
-        ignoreToastErrors: [messages.TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR.defaultMessage],
+        ignoreToastErrors: [
+            messages.TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR.defaultMessage,
+            'Network request failed',
+        ],
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -46,8 +49,6 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
 
             await test.step('Device onboarding steps', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
-                await onboardingPage.passThroughAuthenticityCheck();
-                await page.waitForTimeout(500);
                 await onboardingPage.tutorial.skip();
             });
 

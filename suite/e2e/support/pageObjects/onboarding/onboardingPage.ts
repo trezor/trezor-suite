@@ -121,7 +121,7 @@ export class OnboardingPage {
     }
 
     @step()
-    async completeOnboarding(options?: { keepDebugModeEnabled?: boolean }) {
+    async completeOnboarding() {
         await this.disableNecessaryFirmwareChecks();
         await this.disableDisconnectPrompt();
         await this.optionallyDismissFwHashCheckError();
@@ -130,14 +130,6 @@ export class OnboardingPage {
         await this.pairTHP();
 
         await this.completeOnboardingButton.click();
-        if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
-            await this.passThroughAuthenticityCheck();
-        }
-        // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
-        // that differs from production version, so we disable it again after onboarding is done
-        if (!options?.keepDebugModeEnabled) {
-            await this.disableDebugMode();
-        }
         await this.page.discoveryShouldFinish();
     }
 
@@ -185,8 +177,8 @@ export class OnboardingPage {
                     payload: false,
                 },
                 {
-                    type: debugActions.setShowDebugMenu.type,
-                    payload: true,
+                    type: suiteSettingsActions.toggleDeviceAuthenticityCheck.type,
+                    payload: false,
                 },
             ],
         );

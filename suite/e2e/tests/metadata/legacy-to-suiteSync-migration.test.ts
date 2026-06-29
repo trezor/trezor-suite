@@ -20,7 +20,9 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
     test.use({ wipeEvoluRelay: true });
 
     test.beforeEach(async ({ onboardingPage, settingsPage, metadataPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.LOCAL);
     });
