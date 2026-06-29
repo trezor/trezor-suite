@@ -29,3 +29,8 @@ export type TransferUriError =
     | { type: 'UNKNOWN_SCHEME'; scheme: string }; // not a recognized crypto protocol
 
 export type TransferUriResult = Result<TransferUriInfo, TransferUriError>;
+
+/** Whether a decoded transfer URI carries a spendable amount (native amount or token amount). */
+export const isAmountPresent = (info: TransferUriInfo): boolean =>
+    (info.format === 'bip321' && info.amount !== undefined) ||
+    (info.format === 'erc681' && info.tokenAmount !== undefined);

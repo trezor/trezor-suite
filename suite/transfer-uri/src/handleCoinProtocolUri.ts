@@ -4,7 +4,7 @@ import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { type Protocol } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { parseTransferUri } from '@suite-common/transfer-uri';
+import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 
 /** Flat transfer fields, matching the send-form state the protocol reducer persists. */
 export type CoinProtocol = {
@@ -28,10 +28,10 @@ export const handleCoinProtocolUri =
     (uri: string, saveCoinProtocol: SaveCoinProtocol) =>
     (dispatch: Dispatch, _getState: unknown, extra: ExtraDependencies) => {
         // Report any URI carrying a recognizable scheme (incl. unknown-protocol deeplinks).
-        const reportScheme = (scheme: string, isAmountPresent: boolean) =>
+        const reportScheme = (scheme: string, amountPresent: boolean) =>
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.appUriHandlerEvent.name,
-                payload: { scheme, isAmountPresent },
+                payload: { scheme, isAmountPresent: amountPresent },
             });
 
         const result = parseTransferUri(uri);
@@ -51,10 +51,7 @@ export const handleCoinProtocolUri =
             tokenAmount: info.format === 'erc681' ? info.tokenAmount : undefined,
         };
 
-        reportScheme(
-            info.scheme,
-            coinProtocol.amount !== undefined || coinProtocol.tokenAmount !== undefined,
-        );
+        reportScheme(info.scheme, isAmountPresent(info));
 
         dispatch(saveCoinProtocol(coinProtocol));
         dispatch(
