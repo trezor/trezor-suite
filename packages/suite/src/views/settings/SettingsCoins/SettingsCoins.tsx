@@ -304,7 +304,7 @@ export const SettingsCoins = () => {
                 </Anchor>
             </SettingsSection>
 
-            <Box position={{ type: 'fixed', bottom: 20 }}>
+            <Box position={{ type: 'fixed', bottom: 16 }}>
                 <AnimatePresence>
                     {isDiscoveryButtonVisible && (
                         <motion.div {...discoveryButtonAnimationConfig} key="discover-button">

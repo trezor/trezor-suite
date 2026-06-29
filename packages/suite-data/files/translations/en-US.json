@@ -731,6 +731,8 @@
   "TR_CUSTOM_BACKEND_INVALID_URL": "Invalid URL",
   "TR_CUSTOM_BACKEND_NETWORK_MISSING_CHAIN_ID": "Network doesn't have a chain ID configured",
   "TR_CUSTOM_BACKEND_VALIDATION_ERROR": "Failed to validate {url}",
+  "TR_MORE": "more",
+  "TR_REPRESENTATIVE_ASSETS_ON_NETWORK": "Representative assets on this network",
   "TR_CUSTOM_FEE_WARNING": "Setting a low fee might cause your transaction to fail or experience significant delays.",
   "TR_CUSTOM_FIRMWARE_GITHUB": "Find all official releases on",
   "TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD": "Select compatible firmware",

@@ -6848,6 +6848,14 @@ export const messages = defineMessages({
         id: 'TR_CUSTOM_BACKEND',
         defaultMessage: 'Custom backend',
     },
+    TR_MORE: {
+        id: 'TR_MORE',
+        defaultMessage: 'more',
+    },
+    TR_REPRESENTATIVE_ASSETS_ON_NETWORK: {
+        id: 'TR_REPRESENTATIVE_ASSETS_ON_NETWORK',
+        defaultMessage: 'Representative assets on this network',
+    },
     TR_BACKEND_DEFAULT_SERVERS: {
         id: 'TR_BACKEND_DEFAULT_SERVERS',
         defaultMessage: 'Trezor (default)',

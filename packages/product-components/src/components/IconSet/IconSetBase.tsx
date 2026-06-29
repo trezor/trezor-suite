@@ -10,9 +10,9 @@ import { type AssetLogoSize } from '../AssetLogo/AssetLogoWithId';
 const mapSizeToTypographyStyle = (size: AssetLogoSize): TypographyStyle => {
     const typographyStyleMap: Record<AssetLogoSize, TypographyStyle> = {
         20: 'body-xs',
-        24: 'body-sm',
-        32: 'body-md',
-        40: 'headline-sm',
+        24: 'body-xs',
+        32: 'body-sm',
+        40: 'body-md',
     };
 
     return typographyStyleMap[size];
@@ -29,6 +29,8 @@ const Container = styled.div<{
     justify-content: center;
     display: flex;
     align-items: center;
+    filter: drop-shadow(0 2px 2px ${({ theme }) => theme.shadowKeyElevated})
+        drop-shadow(0 0 2px ${({ theme }) => theme.shadowAmbientElevated});
 
     ${({ $isCentered, $size, $gap, $length, $maxVisibleIcons, $isCountVisible }) => {
         const visibleCount =
@@ -57,36 +59,43 @@ const Container = styled.div<{
         `}
 `;
 
+const overlappingIconStyles = ($size: number, $gap: number, $length: number) =>
+    $length > 1 &&
+    css`
+        height: ${$size}px;
+
+        &:not(:first-child) {
+            mask: radial-gradient(
+                circle at calc(50% - ${$gap}px) 50%,
+                transparent ${$size / 2 + 1.5}px,
+                black ${$size / 2 + 1.5}px
+            );
+        }
+    `;
+
 export const IconWrapper = styled.div<{ $size: number; $gap: number; $length: number }>`
     border-radius: ${borders.radii.full};
 
-    ${({ $size, $gap, $length }) =>
-        $length > 1 &&
-        css`
-            height: ${$size}px;
-
-            &:not(:last-child) {
-                mask: radial-gradient(
-                    circle at calc(50% + ${$gap}px) 50%,
-                    transparent ${$size / 2 + 1}px,
-                    black ${$size / 2 + 1}px
-                );
-            }
-        `}
+    ${({ $size, $gap, $length }) => overlappingIconStyles($size, $gap, $length)}
 `;
 
-const CountContainer = styled.div<{ $size: AssetLogoSize }>`
+const CountContainer = styled.div<{
+    $size: AssetLogoSize;
+    $gap: SpacingValuesNew;
+    $length: number;
+}>`
     ${({ $size }) => css`
-        width: ${$size}px;
+        min-width: ${$size}px;
         height: ${$size}px;
     `}
 
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: ${borders.radii.full};
+    border-radius: ${({ $size }) => $size / 2}px;
     background: ${({ theme }) => theme.elementFillNeutralSofter};
+
+    ${({ $size, $gap, $length }) => overlappingIconStyles($size, $gap, $length)}
 `;
 
 export type CommonIconSetProps = {
@@ -134,8 +143,12 @@ export const IconSetBase = ({
         >
             {orderedChildren}
             {count > effectiveMaxVisibleIcons && isCountVisible && (
-                <CountContainer $size={size}>
-                    <Text typographyStyle={mapSizeToTypographyStyle(size)} intent="neutral">
+                <CountContainer $size={size} $gap={gap} $length={count}>
+                    <Text
+                        typographyStyle={mapSizeToTypographyStyle(size)}
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         +{count - effectiveMaxVisibleIcons}
                     </Text>
                 </CountContainer>

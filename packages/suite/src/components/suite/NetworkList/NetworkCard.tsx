@@ -5,6 +5,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconButton, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
+import { RepresentativeAssetIconSet } from './RepresentativeAssetIconSet';
 import { StatusIndicator } from './StatusIndicator';
 import { type BackendStatus } from './getBackendStatus';
 
@@ -38,12 +39,15 @@ export const NetworkCard = ({
             data-testid={`@settings/wallet/network/${symbol}`}
             onClick={isCardClickable && onClick ? () => onClick(symbol, !isEnabled) : undefined}
         >
-            <Row padding={{ vertical: 12, horizontal: 14 }} gap={12}>
+            <Row padding={{ vertical: 12, horizontal: 14 }} gap={12} maxWidth="100%">
                 <CoinLogo size={24} symbol={symbol} type="network" />
-                <Column flex="1" minHeight={32} justifyContent="center">
-                    <Text typographyStyle="body-sm-strong">{name}</Text>
+                <Column flex="1" minWidth={0} minHeight={32} justifyContent="center">
+                    <Text typographyStyle="body-sm-strong" ellipsisLineCount={1}>
+                        {name}
+                    </Text>
                 </Column>
-                <Row gap={12} onClick={e => e.stopPropagation()}>
+                <Row gap={12} onClick={e => e.stopPropagation()} flex="0 0 auto">
+                    <RepresentativeAssetIconSet symbol={symbol} />
                     {onSettings && (
                         // Make the clickable area bigger
                         <Box padding={8} margin={-8} onClick={() => onSettings(symbol)}>
