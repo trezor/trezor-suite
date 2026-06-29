@@ -2,7 +2,6 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    type BackendType,
     type NetworkSymbol,
     getNetworkOptional,
     networksCollection,
@@ -153,12 +152,12 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                     delete state[symbol].backends.selected;
                 } else if (!action.payload.urls.length) {
                     delete state[symbol].backends.selected;
-                    delete state[symbol].backends.urls?.[type as BackendType];
+                    delete state[symbol].backends.urls?.[type];
                 } else {
-                    state[symbol].backends.selected = type as BackendType;
+                    state[symbol].backends.selected = type;
                     state[symbol].backends.urls = {
                         ...state[symbol].backends.urls,
-                        [type as BackendType]: action.payload.urls,
+                        [type]: action.payload.urls,
                     };
                 }
             })

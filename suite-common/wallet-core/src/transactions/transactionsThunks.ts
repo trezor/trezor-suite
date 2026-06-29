@@ -26,7 +26,7 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { type TokenInfo, type TokenStandard } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
     type AccountInfo,
@@ -311,7 +311,7 @@ const buildFakePendingEvmTx = ({
     if (token) {
         const tokenTransfer: TokenTransfer = {
             type: 'sent',
-            standard: token.standard as TokenStandard,
+            standard: token.standard,
             amount,
             from: fromAddress,
             to: toAddress,

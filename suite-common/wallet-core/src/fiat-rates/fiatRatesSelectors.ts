@@ -95,10 +95,10 @@ export const selectTickerFromAccounts = (
 
     return pipe(
         accounts,
-        A.map(account => [
+        A.map((account): TickerId[] => [
             {
                 symbol: account.symbol,
-            } as TickerId,
+            },
             ...(account.tokens || [])
                 .filter(token => new BigNumber(token.balance ?? '0').gt(0))
                 .map(

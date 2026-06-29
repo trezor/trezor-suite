@@ -383,7 +383,7 @@ export const periodicFetchFiatRatesThunk = createThunk(
         const isWindowVisible = selectIsWindowVisible(getState());
 
         if (ratesTimeouts[rateType]) {
-            clearTimeout(ratesTimeouts[rateType]!);
+            clearTimeout(ratesTimeouts[rateType]);
         }
 
         if (isWindowVisible) {
