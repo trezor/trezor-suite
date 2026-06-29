@@ -88,6 +88,7 @@ export type Output = {
     currency: BaseCurrencyOption;
     label?: string;
     token: string | null;
+    tokenId?: string; // ERC721/ERC1155: token id within the collection; token field holds the contract address
     dataHex?: string; // bitcoin opreturn/ethereum data
     dataAscii?: string; // bitcoin opreturn/ethereum data
 };
@@ -124,6 +125,8 @@ export type EthTransactionData = {
     maxPriorityFeePerGas?: string;
     nonce: string;
     payment_req?: PROTO.PaymentRequest;
+    from?: string; // NFT safeTransferFrom: the account descriptor (must match on-chain sender)
+    tokenId?: string; // ERC721/ERC1155: token id within the collection
 };
 
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;

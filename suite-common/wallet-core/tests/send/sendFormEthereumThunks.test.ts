@@ -9,6 +9,9 @@ describe(calculate.name, () => {
                 f.input.output,
                 f.input.feeLevel,
                 f.input.token,
+                undefined,
+                false,
+                'tokenId' in f.input ? f.input.tokenId : undefined,
             );
 
             expect(result).toEqual(f.result);

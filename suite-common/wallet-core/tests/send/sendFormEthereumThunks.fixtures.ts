@@ -374,4 +374,65 @@ export const calculate = [
             type: 'error',
         },
     },
+    {
+        description: 'ERC1155: amount within per-id balance passes',
+        input: {
+            availableBalance: '1000000000000000000',
+            output: { type: 'payment' as const, address: 'A', amount: '3' },
+            feeLevel: { label: 'normal' as const, feePerUnit: '10', feeLimit: '80000', blocks: -1 },
+            token: {
+                standard: 'ERC1155' as const,
+                contract: '0xabc',
+                symbol: 'ITEM',
+                decimals: 0,
+                balance: '50', // aggregate — irrelevant for per-id check
+                multiTokenValues: [{ id: '7', value: '10' }],
+            },
+            tokenId: '7',
+        },
+        result: {
+            max: undefined,
+            bytes: 0,
+            fee: '800000000000000',
+            feeLimit: '80000',
+            feePerByte: '10',
+            inputs: [],
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
+            outputs: [{ address: 'A', amount: '3', script_type: 'PAYTOADDRESS' }],
+            outputsPermutation: [0],
+            token: {
+                standard: 'ERC1155' as const,
+                contract: '0xabc',
+                symbol: 'ITEM',
+                decimals: 0,
+                balance: '50',
+                multiTokenValues: [{ id: '7', value: '10' }],
+            },
+            totalSpent: '3',
+            type: 'final',
+        },
+    },
+    {
+        description: 'ERC1155: amount exceeds per-id balance fails, even when aggregate balance is high',
+        input: {
+            availableBalance: '1000000000000000000',
+            output: { type: 'payment' as const, address: 'A', amount: '11' },
+            feeLevel: { label: 'normal' as const, feePerUnit: '10', feeLimit: '80000', blocks: -1 },
+            token: {
+                standard: 'ERC1155' as const,
+                contract: '0xabc',
+                symbol: 'ITEM',
+                decimals: 0,
+                balance: '50', // aggregate would pass, but per-id cap is 10
+                multiTokenValues: [{ id: '7', value: '10' }],
+            },
+            tokenId: '7',
+        },
+        result: {
+            type: 'error',
+            error: 'AMOUNT_IS_NOT_ENOUGH',
+            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+        },
+    },
 ];

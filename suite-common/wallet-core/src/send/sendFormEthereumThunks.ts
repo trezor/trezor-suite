@@ -33,6 +33,8 @@ import {
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
     isEvmApprovalTx,
+    isNftToken,
+    NFT_MULTITOKEN_STANDARDS,
     isPending,
     isSentTransaction,
     prepareEthereumTransaction,
@@ -60,6 +62,7 @@ export const calculate = (
     token?: TokenInfo,
     composeContext?: ComposeActionContext,
     isNetworkReserveEnabled = false,
+    tokenId?: string,
 ): PrecomposedTransaction => {
     let amount: string;
     let max: string | undefined;
@@ -69,9 +72,17 @@ export const calculate = (
         feeLevel.feeLimit,
     );
 
-    const availableTokenBalance = token
-        ? convertAmountUnitsToSubunits(token.balance!, token.decimals)
-        : undefined;
+    const availableTokenBalance = (() => {
+        if (!token) return undefined;
+        // ERC1155: cap against the per-id balance, not the aggregate collection balance
+        if (isNftToken(token) && NFT_MULTITOKEN_STANDARDS.has(token.standard) && tokenId) {
+            const entry = token.multiTokenValues?.find(v => v.id === tokenId);
+
+            return entry?.value ?? '0';
+        }
+
+        return convertAmountUnitsToSubunits(token.balance!, token.decimals);
+    })();
 
     const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
 
@@ -236,6 +247,8 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                       amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
                       tokenInfo,
                       formState.transactionData,
+                      account.descriptor,
+                      firstOutput.tokenId,
                   );
 
         // gasLimit calculation based on address, amount and data size
@@ -322,6 +335,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 tokenInfo,
                 composeContext,
                 isNetworkReserveEnabled,
+                firstOutput.tokenId,
             ),
         );
         response.forEach((tx, index) => {
@@ -439,6 +453,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             gasPrice: precomposedTransaction.feePerByte,
             nonce,
             payment_req: paymentRequests?.[0],
+            from: selectedAccount.descriptor,
+            tokenId: firstSignOutput.tokenId,
         });
 
         const response = await TrezorConnect.ethereumSignTransaction({

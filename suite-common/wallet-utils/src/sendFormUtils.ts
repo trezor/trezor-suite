@@ -7,6 +7,7 @@ import {
     type Merge,
 } from 'react-hook-form';
 
+import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import {
     type Network,
     type NetworkSymbol,
@@ -58,6 +59,7 @@ import {
 import { isBaseCurrencyWithSats } from './baseCurrency';
 import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
 import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
+import { NFT_MULTITOKEN_STANDARDS, NFT_SINGLETOKEN_STANDARDS, isNftToken } from './transactionUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -137,24 +139,71 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
 };
 
+const getSerializedNftTransfer = (
+    from: string,
+    to: string,
+    token: TokenInfo,
+    tokenId: string,
+    amount: string,
+): string => {
+    const fromAddr = asEvmAddress(from);
+
+    if (NFT_SINGLETOKEN_STANDARDS.has(token.standard)) {
+        const result = Calldata.evm.erc721.safeTransferFrom.encode(
+            { from: fromAddr, to, tokenId: new BigNumber(tokenId) },
+            { sender: fromAddr },
+        );
+        if (!result.isValid || result.data === null) {
+            throw new Error('ERC721 safeTransferFrom encoding failed');
+        }
+
+        return result.data;
+    }
+
+    if (NFT_MULTITOKEN_STANDARDS.has(token.standard)) {
+        const result = Calldata.evm.erc1155.safeTransferFrom.encode(
+            { from: fromAddr, to, id: new BigNumber(tokenId), amount: new BigNumber(amount) },
+            { sender: fromAddr },
+        );
+        if (!result.isValid || result.data === null) {
+            throw new Error('ERC1155 safeTransferFrom encoding failed');
+        }
+
+        return result.data;
+    }
+
+    throw new Error(`Unsupported NFT standard: ${token.standard}`);
+};
+
 // TrezorConnect.blockchainEstimateFee for ETH
 export const getEthereumEstimateFeeParams = (
     to: string,
     amount: string,
     token?: TokenInfo,
     data?: string,
+    from?: string,
+    tokenId?: string,
 ) => {
     if (token) {
-        // use the data if provided
+        // pre-built calldata (approval, staking, etc.)
         if (data) {
             return {
-                to,
+                to: token.contract,
                 value: '0x0',
                 data,
             };
         }
 
-        // otherwise compose basic ERC-20 token transfer data
+        // NFT transfer — generate safeTransferFrom calldata for accurate gas estimation
+        if (isNftToken(token) && from && tokenId) {
+            return {
+                to: token.contract,
+                value: '0x0',
+                data: getSerializedNftTransfer(from, to, token, tokenId, amount),
+            };
+        }
+
+        // ERC-20 token transfer
         return {
             to: token.contract,
             value: '0x0',
@@ -208,7 +257,16 @@ export const prepareEthereumTransaction = (
     if (txInfo.token) {
         const isApprovalTx = isEvmApprovalTx(txInfo.data);
 
-        if (txInfo.data && txInfo.data !== '0x' && !isApprovalTx) {
+        if (isNftToken(txInfo.token) && txInfo.from && txInfo.tokenId) {
+            result.data = getSerializedNftTransfer(
+                txInfo.from,
+                txInfo.to,
+                txInfo.token,
+                txInfo.tokenId,
+                txInfo.amount,
+            );
+            result.to = txInfo.token.contract;
+        } else if (txInfo.data && txInfo.data !== '0x' && !isApprovalTx) {
             result.data = sanitizeHex(txInfo.data);
         } else {
             result.data = isApprovalTx
