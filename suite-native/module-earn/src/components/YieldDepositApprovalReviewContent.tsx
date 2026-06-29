@@ -51,6 +51,9 @@ export const YieldDepositApprovalReviewContent = ({
     const successMessageTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.successMessage'
         : 'earn.yieldDepositApprovalReviewScreen.successMessage';
+    const submitButtonTranslationId = isRevokeReview
+        ? 'earn.yieldDepositRevokeReviewScreen.submitButton'
+        : 'earn.yieldDepositApprovalReviewScreen.submitButton';
     const titleTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.title'
         : 'earn.yieldDepositApprovalReviewScreen.title';
@@ -101,7 +104,7 @@ export const YieldDepositApprovalReviewContent = ({
             submittedCard={
                 isApprovalSigned ? (
                     <EarnReviewSubmittedCard
-                        buttonTranslationId="transactions.send"
+                        buttonTranslationId={submitButtonTranslationId}
                         isButtonLoading={isSendingApproval}
                         messageTranslationId={successMessageTranslationId}
                         onButtonPress={handleApprovalSubmitted}
