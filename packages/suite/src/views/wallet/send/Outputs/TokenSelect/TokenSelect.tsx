@@ -69,7 +69,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     useEffect(() => {
         if (hasNetworkFeatures(account, 'tokens') && !isSetMaxActive) {
-            const amountValue = getValues(`outputs.${outputId}.amount`) as string;
+            const amountValue = getValues(`outputs.${outputId}.amount`);
             if (amountValue) setAmount(outputId, amountValue);
         }
     }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);

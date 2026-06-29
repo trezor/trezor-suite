@@ -51,7 +51,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const dispatch = useDispatch();
 
     const lastTxBlockTime = stakeTxs[0]?.blockTime;
-    const timestamp = hasStakeInPendingDepositedState(account!) ? lastTxBlockTime : undefined;
+    const timestamp = hasStakeInPendingDepositedState(account) ? lastTxBlockTime : undefined;
 
     const { data: validatorQueueData, isLoading: isValidatorQueueLoading } =
         useEthereumValidatorsQueue({ account, timestamp });

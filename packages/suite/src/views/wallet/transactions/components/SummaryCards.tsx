@@ -130,7 +130,7 @@ export const SummaryCards = ({
                     shallDisplayBaseCurrency && totalReceivedFiatMap[localCurrency] ? (
                         <BaseCurrencyAmountFormatter
                             currency={localCurrency}
-                            value={totalReceivedFiatMap[localCurrency]!}
+                            value={totalReceivedFiatMap[localCurrency]}
                         />
                     ) : undefined
                 }
@@ -145,7 +145,7 @@ export const SummaryCards = ({
                     shallDisplayBaseCurrency && totalSentFiatMap[localCurrency] ? (
                         <BaseCurrencyAmountFormatter
                             currency={localCurrency}
-                            value={totalSentFiatMap[localCurrency]!}
+                            value={totalSentFiatMap[localCurrency]}
                         />
                     ) : undefined
                 }

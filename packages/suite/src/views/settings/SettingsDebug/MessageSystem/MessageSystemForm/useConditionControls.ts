@@ -7,10 +7,10 @@ type Parsed = { conditions?: unknown[] } | null;
 
 export function useConditionControls(parsedData: Parsed, setFormData: (next: string) => void) {
     const availableConditionOptions = useMemo(() => {
-        if (!Array.isArray(parsedData?.conditions) || !parsedData!.conditions![0]) {
+        if (!Array.isArray(parsedData?.conditions) || !parsedData.conditions[0]) {
             return CONDITION_OPTIONS;
         }
-        const head = parsedData!.conditions![0] as Record<keyof Condition, unknown>;
+        const head = parsedData.conditions[0] as Record<keyof Condition, unknown>;
         const used = new Set(Object.keys(head));
 
         return CONDITION_OPTIONS.filter(o => !used.has(o.value));
