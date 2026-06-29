@@ -10,7 +10,7 @@ import type {
     TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
+import type { CreateLogger, Manifest } from '@trezor/connect-common/src/types/settings';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import {
     type Descriptor,
@@ -33,7 +33,8 @@ import { createTransportList } from './TransportList';
 import { TransportManager } from './TransportManager';
 import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
 
-const createAuthPenaltyManager = (priority: number) => {
+// TODO probably scheduled for deletion, given that priority is now always 2
+const createAuthPenaltyManager = (priority = 2) => {
     const penalizedDevices: { [deviceID: string]: number } = {};
 
     const get = () =>
@@ -98,7 +99,8 @@ export const assertDeviceListConnected: (
     }
 };
 
-type ConstructorParams = Pick<ConnectSettings, 'priority' | 'manifest'> & {
+type ConstructorParams = {
+    manifest?: Manifest;
     createLogger: CreateLogger;
 };
 type InitParams = Pick<
@@ -142,12 +144,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getConnectedTransports().map(getTransportInfo);
     }
 
-    constructor({ priority, manifest, createLogger }: ConstructorParams) {
+    constructor({ manifest, createLogger }: ConstructorParams) {
         super();
 
         this.createLogger = createLogger;
         this.handshakeLock = getSynchronize();
-        this.authPenaltyManager = createAuthPenaltyManager(priority);
+        this.authPenaltyManager = createAuthPenaltyManager();
         this.updateTransports = createTransportList({
             logger: createLogger('@trezor/transport'),
             id: manifest?.appName || manifest?.appUrl || 'unknown app',

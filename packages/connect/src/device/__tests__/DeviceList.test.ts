@@ -39,7 +39,6 @@ describe('DeviceList', () => {
     beforeEach(() => {
         list = new DeviceList({
             ...parseConnectSettings({}),
-            priority: 0,
             createLogger: noopCreateLogger,
         });
         eventsSpy = jest.fn();
@@ -67,7 +66,6 @@ describe('DeviceList', () => {
         const createLogger = jest.fn(() => noopLogger);
         const local = new DeviceList({
             ...parseConnectSettings({}),
-            priority: 0,
             createLogger,
         });
 
