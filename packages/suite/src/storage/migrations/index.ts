@@ -17,7 +17,7 @@ import {
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
-import { FirmwareType } from '@trezor/connect';
+import { type DeviceState, FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
@@ -1057,9 +1057,10 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         // Migrate device state to new object format
         await updateAll(transaction, 'devices', device => {
             if (typeof device.state === 'string') {
-                if (typeof (device as any)?._state?.staticSessionId === 'string') {
+                const legacyDevice = device as typeof device & { _state?: DeviceState };
+                if (typeof legacyDevice._state?.staticSessionId === 'string') {
                     // Has _state property, migrate to that
-                    device.state = (device as any)._state;
+                    device.state = legacyDevice._state;
                 } else {
                     // No _state property, create new object
                     device.state = {
