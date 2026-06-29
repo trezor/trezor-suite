@@ -327,7 +327,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         response.forEach((tx, index) => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label as FeeLevel['label'];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx;
         });
 

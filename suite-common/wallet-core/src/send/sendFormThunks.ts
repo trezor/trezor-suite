@@ -132,7 +132,7 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
                     : convertAmountSubunitsToUnits;
 
             const updatedDraft = cloneObject(draft);
-            const amountDecimals = getAccountDecimals(relatedAccount.symbol)!;
+            const amountDecimals = getAccountDecimals(relatedAccount.symbol);
 
             updatedDraft.outputs.forEach(output => {
                 if (output.amount && areSatsSupported) {
