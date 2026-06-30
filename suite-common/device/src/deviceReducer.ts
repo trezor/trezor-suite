@@ -74,14 +74,22 @@ const mergeDeviceState = (
 ): DeviceState | undefined => {
     const currentState = device.state;
 
-    return currentState &&
-        upcoming.state &&
-        currentState.staticSessionId === upcoming.state.staticSessionId &&
-        currentState.sessionId !== upcoming.state.sessionId
-        ? // update sessionId for the same staticSessionId
-          { ...currentState, sessionId: upcoming.state.sessionId }
-        : // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
-          currentState;
+    // Device state is set explicitly via addAuthorizedDevice/setDeviceState. For the same session we only
+    // sync the volatile sessionId and deriveCardano from connect, so the cardano-derived session is not
+    // recreated (re-prompting the passphrase) on every cardano call.
+    if (
+        !currentState ||
+        !upcoming.state ||
+        currentState.staticSessionId !== upcoming.state.staticSessionId
+    ) {
+        return currentState;
+    }
+
+    return {
+        ...currentState,
+        sessionId: upcoming.state.sessionId,
+        deriveCardano: upcoming.state.deriveCardano ?? currentState.deriveCardano,
+    };
 };
 
 /**
