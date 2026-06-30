@@ -28,7 +28,7 @@ export const HELP = `@trezor/connect CLI arguments:
     --cancel-passphrase-ui                    Respond with missing payload (tests error handling)
 
   Method (default: GetAddress)
-    --method=<name>                           Run TrezorConnect method
+    --method=<name>                           Run TrezorConnect method (comma-separated to run multiple)
                                                 --method=none (retrieve device Features and exit)
                                                 --method=fw-update
                                                 --method=get-credentials
@@ -36,8 +36,15 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=get-features
                                                 --method=apply-settings
                                                 --method=authenticate-device
+                                                --method=dblookup   Look up a Bitcoin address in the local SQLite DB
+                                                --method=dbchange   Upsert metadata for a Bitcoin address in the local SQLite DB
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
+                                                --params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup)
+                                                --params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
+
+  Database options
+    --db-path=<path>                          Path to the SQLite DB file (default: <cli-dir>/bitcoin-addresses.db)
 `;
 
 // read and parse application arguments

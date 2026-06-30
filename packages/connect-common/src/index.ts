@@ -18,3 +18,4 @@ export {
 export * from './utils/debug';
 export * from './utils/urlUtils';
 export { connectCallableMethods } from './callableMethods';
+export * from './addressLookupProvider';

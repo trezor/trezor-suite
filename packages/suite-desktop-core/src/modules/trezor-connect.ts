@@ -1,5 +1,3 @@
-import path from 'path';
-
 import { ipcMain } from 'electron';
 
 import TrezorConnect, {
@@ -13,14 +11,11 @@ import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
-import { BitcoinAddressDb } from './bitcoin-address-db';
-import { createBitcoinAddressNotificationHandler } from './bitcoin-address-notification-handler';
 import { getStoredFirmwares } from './firmware';
 import { type MainThreadEmitter, type ModuleInit, type ModuleInitBackground } from './module';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
-import { app } from '../typed-electron';
 
 export const SERVICE_NAME = '@trezor/connect';
 
@@ -141,27 +136,11 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
 
     const unregisterProxy = createIpcProxyHandler(ipcMain, 'TrezorConnect', ipcProxyOptions);
 
-    const userDataDir = app?.getPath('userData') ?? '.';
-    const addressDb = new BitcoinAddressDb(path.join(userDataDir, 'bitcoin-addresses.db'));
-
-    const removeAddressHandler = createBitcoinAddressNotificationHandler({
-        trezorConnect: TrezorConnect,
-        db: addressDb,
-        onAddressAnnotated: (descriptor, metadata) => {
-            logger.info(
-                SERVICE_NAME,
-                `Bitcoin address ${descriptor} annotation: ${JSON.stringify(metadata)}`,
-            );
-        },
-    });
-
     const onLoad = () => {
         // TODO: doing nothing for now.
     };
 
     const onQuit = () => {
-        removeAddressHandler();
-        addressDb.close();
         unregisterProxy();
         TrezorConnect.dispose();
     };

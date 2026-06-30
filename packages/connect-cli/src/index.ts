@@ -1,7 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
+import { BitcoinAddressDb } from './bitcoin-address-db';
+import { verifyEntryAuthenticity } from './verify-authenticity';
 import TrezorConnect, {
+    createBitcoinAddressNotificationHandler,
     type Device,
     ThpPairingMethod,
     type UiRequestThpPairing,
@@ -56,6 +59,69 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
 
         return 'unknown-tag';
     }
+};
+
+const DB_METHODS = new Set(['dblookup', 'dbchange']);
+
+const getDbPath = () =>
+    typeof args['db-path'] === 'string'
+        ? args['db-path']
+        : path.join(__dirname, 'bitcoin-addresses.db');
+
+const getMethods = (): string[] =>
+    args.method && args.method !== 'none'
+        ? String(args.method)
+              .split(',')
+              .map((m: string) => m.trim())
+        : [args.method ?? 'none'];
+
+// Run DB methods, optionally with a device for authenticity verification.
+// Returns true if all requested methods were DB methods (caller can skip TrezorConnect init).
+const runDbMethods = async (device?: Device): Promise<boolean> => {
+    const methods = getMethods();
+    const dbMethods = methods.filter(m => DB_METHODS.has(m));
+    if (dbMethods.length === 0) return false;
+
+    const params = args.params ? JSON.parse(args.params) : {};
+    const db = new BitcoinAddressDb(getDbPath());
+
+    try {
+        for (const method of dbMethods) {
+            if (method === 'dblookup') {
+                const { address, networkSymbol } = params;
+                if (!address || !networkSymbol) {
+                    console.error('dblookup requires --params=\'{"address":"...","networkSymbol":"..."}\' ');
+                    process.exit(1);
+                }
+                const metadata = db.lookupOrCreate(address, networkSymbol);
+                const authentic = await verifyEntryAuthenticity(address, networkSymbol, metadata, device);
+                console.log(
+                    JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata, authentic }, null, 2),
+                );
+            }
+
+            if (method === 'dbchange') {
+                const { address, networkSymbol, metadata } = params;
+                if (!address || !networkSymbol || !metadata) {
+                    console.error(
+                        'dbchange requires --params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
+                    );
+                    process.exit(1);
+                }
+                db.upsert(address, networkSymbol, metadata);
+                const updated = db.lookup(address, networkSymbol)!;
+                const authentic = await verifyEntryAuthenticity(address, networkSymbol, updated, device);
+                console.log(
+                    JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata: updated, authentic }, null, 2),
+                );
+            }
+        }
+    } finally {
+        db.close();
+    }
+
+    // Return true only if every requested method was a DB method
+    return methods.every(m => DB_METHODS.has(m));
 };
 
 const cliStatePath = path.join(__dirname, 'thp-state.dat');
@@ -156,6 +222,10 @@ const run = async () => {
         return;
     }
 
+    if (await runDbMethods()) {
+        return;
+    }
+
     let testIsRunning = false;
 
     console.log('Running @trezor/connect CLI with args', args);
@@ -188,7 +258,9 @@ const run = async () => {
                 }
             } else {
                 testIsRunning = true;
-                runTestCase(device);
+                runDbMethods(device).then(dbOnly => {
+                    if (!dbOnly) runTestCase(device);
+                });
             }
         }
 
@@ -294,6 +366,16 @@ const run = async () => {
             hostName: 'localhost',
             knownCredentials: getThpCredentials(),
             pairingMethods,
+        },
+    });
+
+    // Register the blockchain notification handler so every Bitcoin address notification
+    // is looked up (or auto-labeled) in the local DB and logged.
+    createBitcoinAddressNotificationHandler({
+        trezorConnect: TrezorConnect,
+        provider: new BitcoinAddressDb(getDbPath()),
+        onAddressAnnotated: (descriptor, metadata) => {
+            console.log('Address annotation:', { descriptor, metadata });
         },
     });
 };

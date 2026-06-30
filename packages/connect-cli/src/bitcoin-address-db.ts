@@ -2,15 +2,11 @@ import { createHash } from 'crypto';
 
 import Database from 'better-sqlite3';
 
-// Extensible metadata stored as JSON — add fields without altering the DB schema.
-// Future: replace JSON.stringify/parse with protobuf encode/decode and change column to BLOB.
-export type AddressMetadata = {
-    label?: string;
-};
+import type { AddressLookupProvider, AddressMetadata } from '@trezor/connect';
 
 type AddressRow = { data: string };
 
-export class BitcoinAddressDb {
+export class BitcoinAddressDb implements AddressLookupProvider {
     private db: Database.Database;
 
     constructor(dbPath: string) {
@@ -33,16 +29,6 @@ export class BitcoinAddressDb {
         return row ? (JSON.parse(row.data) as AddressMetadata) : null;
     }
 
-    upsert(address: string, networkSymbol: string, metadata: AddressMetadata): void {
-        this.db
-            .prepare(
-                `INSERT INTO addresses (address, network_symbol, data)
-                 VALUES (?, ?, ?)
-                 ON CONFLICT(address, network_symbol) DO UPDATE SET data = excluded.data`,
-            )
-            .run(address, networkSymbol, JSON.stringify(metadata));
-    }
-
     // Returns existing metadata, or creates and stores a default label on first access.
     // Default label format: label_<first 8 bytes of SHA-256 as 16 hex chars>
     lookupOrCreate(address: string, networkSymbol: string): AddressMetadata {
@@ -54,6 +40,16 @@ export class BitcoinAddressDb {
         this.upsert(address, networkSymbol, metadata);
 
         return metadata;
+    }
+
+    upsert(address: string, networkSymbol: string, metadata: AddressMetadata): void {
+        this.db
+            .prepare(
+                `INSERT INTO addresses (address, network_symbol, data)
+                 VALUES (?, ?, ?)
+                 ON CONFLICT(address, network_symbol) DO UPDATE SET data = excluded.data`,
+            )
+            .run(address, networkSymbol, JSON.stringify(metadata));
     }
 
     close(): void {
