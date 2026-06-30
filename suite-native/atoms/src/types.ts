@@ -1,7 +1,6 @@
 export type TestProps = {
     ['data-testid']?: never;
     ['data-test']?: never;
-    ['data-testid']?: never;
     ['data-testId']?: never;
     ['data-testID']?: never;
     ['testID']?: string;

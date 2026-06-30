@@ -121,15 +121,17 @@ const configWithStorybook = mergeConfig(
     }),
 );
 
+let exportedConfig = configWithStorybook;
+
 if (
     process.env.EXPO_PUBLIC_IS_DETOX_BUILD !== 'true' &&
     process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug'
 ) {
     // enable Rozenite plugins only in debug build
-    module.exports = withRozenite(configWithStorybook, {
+    exportedConfig = withRozenite(configWithStorybook, {
         enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),
         enabled: true,
     });
-} else {
-    module.exports = configWithStorybook;
 }
+
+module.exports = exportedConfig;
