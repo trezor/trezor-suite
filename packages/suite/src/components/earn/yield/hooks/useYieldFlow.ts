@@ -572,7 +572,7 @@ export const useYieldFlow = ({
         isApprovalInsufficient,
         isSubmittingApprove:
             session.approval.isSubmitting ||
-            session.approval.isInitializingAllowance ||
+            session.approval.allowanceStatus === 'loading' ||
             session.approval.modalState !== null,
         isSubmittingAction: session.action.isSubmitting,
         setAmountInput,

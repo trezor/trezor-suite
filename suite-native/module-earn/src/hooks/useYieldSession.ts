@@ -27,8 +27,7 @@ export const useYieldSession = ({
         selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
     );
     const hasSession = !!session;
-    const hasPendingTransaction =
-        session?.approval.isPending || !!session?.action.pendingTransaction;
+    const hasPendingTransaction = !!session?.action.pendingTransaction;
 
     useEffect(() => {
         if (flowKey && !hasSession) {
