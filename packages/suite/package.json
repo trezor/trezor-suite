@@ -156,6 +156,7 @@
         "history": "^5.3.0",
         "idb": "^8.0.3",
         "immer": "11.1.5",
+        "lottie-react": "2.4.1",
         "pako": "^2.1.0",
         "pdfmake": "^0.3.7",
         "polished": "^4.3.1",

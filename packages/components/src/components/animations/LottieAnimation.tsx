@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import Lottie, { type LottieOptions } from 'lottie-react';
+import Lottie, { type LottieOptions, type LottieRef } from 'lottie-react';
 import styled from 'styled-components';
 
 import { resolveStaticPath } from '@trezor/env-utils';
 
 import { AnimationWrapper, type Shape } from './AnimationPrimitives';
+import { recolorLottieAnimation } from './recolorLottieAnimation';
 
 const StyledLottie = styled(Lottie)`
     width: 100%;
@@ -14,22 +15,33 @@ const StyledLottie = styled(Lottie)`
 
 export type LottieType = 'BLOCK' | 'MEMPOOL' | 'MASCOT';
 
+const lottieFiles: Record<LottieType, string> = {
+    BLOCK: 'cubes_line',
+    MEMPOOL: 'square_stack',
+    MASCOT: 'trezor_mascot',
+};
+
 type LottieAnimationProps = {
     size?: number;
     type: LottieType;
     loop?: boolean;
+    autoplay?: boolean;
     shape?: Shape;
+    lottieRef?: LottieRef;
+    colorReplacements?: { from: string; to: string }[];
 };
 
 export const LottieAnimation = ({
     size,
     type,
     loop = false,
+    autoplay = true,
     shape,
+    lottieRef,
+    colorReplacements,
     ...props
 }: LottieAnimationProps) => {
-    const [lottieAnimationData, setLottieAnimationData] =
-        useState<LottieOptions['animationData']>();
+    const [rawAnimationData, setRawAnimationData] = useState<LottieOptions['animationData']>();
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -42,30 +54,37 @@ export const LottieAnimation = ({
                     })
                 ).json();
 
-                setLottieAnimationData(animation);
+                setRawAnimationData(animation);
             } catch {
                 // do not need to handle error
             }
         };
 
-        if (type === 'BLOCK') {
-            loadAnimation('cubes_line');
-        } else if (type === 'MEMPOOL') {
-            loadAnimation('square_stack');
-        } else if (type === 'MASCOT') {
-            loadAnimation('trezor_mascot');
-        }
+        loadAnimation(lottieFiles[type]);
 
         return () => {
             abortController.abort();
         };
     }, [type]);
 
+    const animationData = useMemo(
+        () =>
+            rawAnimationData && colorReplacements?.length
+                ? recolorLottieAnimation(rawAnimationData, colorReplacements)
+                : rawAnimationData,
+        [rawAnimationData, colorReplacements],
+    );
+
     return (
         <AnimationWrapper $height={size} $width={size} shape={shape} {...props}>
             <>
-                {lottieAnimationData && (
-                    <StyledLottie animationData={lottieAnimationData} loop={loop} />
+                {animationData && (
+                    <StyledLottie
+                        lottieRef={lottieRef}
+                        animationData={animationData}
+                        loop={loop}
+                        autoplay={autoplay}
+                    />
                 )}
             </>
         </AnimationWrapper>
