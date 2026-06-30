@@ -1383,7 +1383,7 @@ export const messages = {
             mevProtection: {
                 title: 'MEV protection',
                 subtitle:
-                    'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
+                    'Stay safe and secure fair prices by preventing others from interfering with your transactions.',
             },
             dustPhishing: {
                 title: 'Dust phishing protection',
@@ -1436,7 +1436,7 @@ export const messages = {
             networkReserve: {
                 title: 'Network reserve',
                 subtitle:
-                    'Reserve a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
+                    'Reserve a small amount of the native token to cover any extra network fees when you send, swap, or sell your assets.',
             },
             addressDisplay: {
                 title: 'Spaced address formatting',
@@ -1518,6 +1518,8 @@ export const messages = {
             },
             exportButton: 'Export to file',
         },
+        availableOn: 'Available on {supportedNetworks}.',
+        notSupported: 'Not supported on this Trezor device.',
     },
     moduleOnboarding: {
         welcomeScreen: {
