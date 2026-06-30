@@ -166,7 +166,7 @@ const validateModalAppParams = (hash: HashString, params?: Route['params']): Mod
                 ),
             ]) ?? [],
         ),
-    } as ModalAppParams;
+    };
 };
 
 const validateDashboardParams = (hash: HashString): DashboardParams | undefined => {

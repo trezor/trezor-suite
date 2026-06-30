@@ -348,10 +348,7 @@ export const isAddressValid = (address: string, symbol: NetworkSymbol): boolean 
     return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
 };
 
-const getSupportedCoins = (): NetworkSymbol[] => [
-    ...(typedObjectKeys(BITCOIN_CURRENCIES) as NetworkSymbol[]),
-    'bch',
-];
+const getSupportedCoins = (): NetworkSymbol[] => [...typedObjectKeys(BITCOIN_CURRENCIES), 'bch'];
 
 export const bitcoinValidator: AddressValidator = {
     isAddressValid,
