@@ -20,6 +20,7 @@ import {
     cryptoIdToSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
+    selectTradingIsSlip24Allowed,
     selectTradingSupportedSymbols,
     toTokenCryptoId,
 } from '@suite-common/trading';
@@ -130,6 +131,17 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
 export const selectIsTradingConciergeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
 ) => selectIsFeatureEnabled(state, Feature.trading.concierge, true);
+
+export const selectIsTradingSlip24Enabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
+    account: Account | undefined,
+) =>
+    selectTradingIsSlip24Allowed(
+        state,
+        account,
+        selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
+            selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSlip24Enabled),
+    );
 
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,

@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type TradingFulfillValue,
+    type TradingRootStateWithDeviceAndAccounts,
     type TradingSellFormProps,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
@@ -28,9 +30,14 @@ import {
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
 import { type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type TxKeyPath } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
-import { type TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    getFormDraftKeyByTradeType,
+    selectIsTradingSlip24Enabled,
+} from '@suite-native/trading-state';
 import {
     selectFeeLevels,
     usePrecomposedTransactionError,
@@ -130,8 +137,14 @@ export const useTradingTransaction = ({
         resolveConsent: resolveTransactionSendConsent,
     } = useConsent();
 
-    // TODO: slip24 - not implemented in mobile
-    const isSlip24Active = false;
+    const isSlip24Active = useSelector(
+        (
+            state: MessageSystemRootState &
+                FeatureFlagsRootState &
+                TradingRootStateWithDeviceAndAccounts,
+        ) => selectIsTradingSlip24Enabled(state, sendAccount ?? undefined),
+    );
+
     const { composeTradingTransaction } = useComposeTradingTransaction({ tradeType });
 
     // cancel txn signing on unmount
