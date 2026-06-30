@@ -34,6 +34,7 @@ const getDefaultResourceType = ({ account, flow }: GetDefaultResourceTypeProps) 
 
 export type TronStakeFormValues = {
     amount: string;
+    fiatAmount: string;
     resourceType: TronResourceType;
     selectedFee: FeeLevel['label'];
     representative: string;
@@ -52,6 +53,7 @@ export const useTronStakeForm = ({ account, flow }: UseTronStakeFormProps) => {
         mode: 'onChange',
         defaultValues: {
             amount: '',
+            fiatAmount: '',
             resourceType: getDefaultResourceType({ account, flow }),
             selectedFee: 'normal',
             representative: '',

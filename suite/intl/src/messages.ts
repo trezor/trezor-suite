@@ -8519,6 +8519,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
         defaultMessage: 'Claim',
     },
+    TR_EARN_ENTER_AMOUNT_IN: {
+        id: 'TR_EARN_ENTER_AMOUNT_IN',
+        defaultMessage: 'Enter amount in {currency}',
+    },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
         defaultMessage:
