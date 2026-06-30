@@ -163,6 +163,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         sendAccount,
         receiveAccount,
         isLoading,
+        isDexQuoteApprovalPrefetchLoadingForCandidateQuote,
         selectReceiveAccount,
         selectQuote,
         selectQuoteForRevoke,

@@ -17,8 +17,13 @@ export const ExchangeConfirmation = () => {
     const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
     const quote = useWatch({ name: 'quote', control: form.control });
 
-    const { canProceed, selectQuote, selectQuoteForRevoke, isLoading } =
-        useExchangeSelectQuote(form);
+    const {
+        canProceed,
+        selectQuote,
+        selectQuoteForRevoke,
+        isLoading,
+        isDexQuoteApprovalPrefetchLoadingForCandidateQuote,
+    } = useExchangeSelectQuote(form);
 
     const receiveCryptoId = receiveAsset?.cryptoId;
     const approvalStatus = getApprovalStatus(quote);
@@ -34,7 +39,13 @@ export const ExchangeConfirmation = () => {
             buttonTestId: CONFIRMATION_TEST_ID,
         });
 
-    if (!isLoading && !canProceed && !canRevoke && !isReceivingInactiveStellarToken) {
+    if (
+        !isLoading &&
+        !isDexQuoteApprovalPrefetchLoadingForCandidateQuote &&
+        !canProceed &&
+        !canRevoke &&
+        !isReceivingInactiveStellarToken
+    ) {
         return null;
     }
 
@@ -49,9 +60,11 @@ export const ExchangeConfirmation = () => {
                             onPress={selectQuote}
                             testID={CONFIRMATION_TEST_ID}
                             isDisabled={!canProceed}
-                            isLoading={isLoading}
+                            isLoading={
+                                isLoading || isDexQuoteApprovalPrefetchLoadingForCandidateQuote
+                            }
                         >
-                            {!isLoading && (
+                            {!(isLoading || isDexQuoteApprovalPrefetchLoadingForCandidateQuote) && (
                                 <Translation id="moduleTrading.tradingScreen.buttons.continue" />
                             )}
                         </Button>

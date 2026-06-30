@@ -124,6 +124,8 @@ describe('useExchangeSelectQuote', () => {
         it('should canProceed be false when loading', () => {
             const { result } = renderUseExchangeSelectQuote();
             expect(result.current.canProceed).toBe(false);
+            expect(result.current.isLoading).toBe(true);
+            expect(result.current.isDexQuoteApprovalPrefetchLoadingForCandidateQuote).toBe(false);
         });
 
         it('selectQuote should not dispatch selectQuoteThunk when isLoading', () => {
@@ -172,6 +174,8 @@ describe('useExchangeSelectQuote', () => {
             await act(() => Promise.resolve());
 
             expect(result.current.canProceed).toBe(false);
+            expect(result.current.isLoading).toBe(false);
+            expect(result.current.isDexQuoteApprovalPrefetchLoadingForCandidateQuote).toBe(true);
         });
 
         it('should not dispatch selectQuoteThunk while prefetch is loading for approval-required quote', () => {
