@@ -110,10 +110,7 @@ const stellarSignXDR = createThunk<
             }),
         );
 
-        const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
-            .promise) as Awaited<
-            ReturnType<typeof trezorConnectPopupActions.getPopupCallDeferred>['promise']
-        >;
+        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
         if (!response.success) {
             console.error('stellar_signXDR error', response);
             throw new Error('Stellar signing error');

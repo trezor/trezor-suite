@@ -78,7 +78,7 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
                 }
             })
             .addDefaultCase((state, action) => {
-                suiteSyncReducer(state, action as AnyAction);
+                suiteSyncReducer(state, action);
             });
     },
 });

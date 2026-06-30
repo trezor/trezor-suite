@@ -124,7 +124,7 @@ export const buildStablecoinYieldReviewState = ({
     token,
     symbol,
 }: BuildStablecoinYieldReviewStateParams): BuildStablecoinYieldReviewStateResult => {
-    const gasPriceHex = tx.maxFeePerGas ?? tx.gasPrice ?? ('0x0' as `0x${string}`);
+    const gasPriceHex = tx.maxFeePerGas ?? tx.gasPrice ?? '0x0';
     const gasLimit = fromHex(tx.gasLimit);
     const gasPrice = fromHex(gasPriceHex);
     const feePerUnit = fromHex(gasPriceHex).asWei().toGwei();
