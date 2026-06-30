@@ -96,6 +96,7 @@ export enum EventType {
     SettingsGeneralLabelingProvider = 'settings/general/labeling-provider',
     SettingsGeneralMevProtection = 'settings/general/mev-protection',
     SettingsGeneralNetworkReserve = 'settings/general/network-reserve',
+    SettingsLoadNetworksClicked = 'settings/load-networks-clicked',
     SettingsTor = 'settings/tor',
     SettingsTorOnionLinks = 'settings/tor/onion-links',
     StakingChangeDelegate = 'staking/change-delegate',
