@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Banner, Column, H3, Modal, Paragraph } from '@trezor/components';
+import { DropboxLogoFilledIcon, GoogleDriveLogoFilledIcon, TagIcon } from '@trezor/icons';
 
 type MetadataProviderSelectionModalProps = {
     onCancel: () => void;
@@ -30,7 +31,7 @@ export const MetadataProviderSelectionModal = ({
         onCancel={onCancel}
         data-testid={testId}
         width={600}
-        iconName="tag"
+        icon={TagIcon}
         bottomContent={
             <>
                 <Modal.Button
@@ -40,7 +41,7 @@ export const MetadataProviderSelectionModal = ({
                     isLoading={loadingProvider === 'dropbox'}
                     isDisabled={isDisabled || !!loadingProvider}
                     data-testid={`${testId}/dropbox-button`}
-                    iconLeft="dropboxLogoFilled"
+                    iconLeft={DropboxLogoFilledIcon}
                 >
                     <Translation id="TR_DROPBOX" />
                 </Modal.Button>
@@ -52,7 +53,7 @@ export const MetadataProviderSelectionModal = ({
                     isLoading={loadingProvider === 'google'}
                     isDisabled={isDisabled || !!loadingProvider}
                     data-testid={`${testId}/google-button`}
-                    iconLeft="googleDriveLogoFilled"
+                    iconLeft={GoogleDriveLogoFilledIcon}
                 >
                     <Translation id="TR_GOOGLE_DRIVE" />
                 </Modal.Button>

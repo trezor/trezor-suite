@@ -1,4 +1,5 @@
 import { Badge, Box, Icon, List, Paragraph, Row } from '@trezor/components';
+import { DotOutlineIcon } from '@trezor/icons';
 
 import { type NormalizedChangelog } from '../types';
 import { Markdown } from './Markdown';
@@ -14,7 +15,7 @@ export const Changelog = ({ children }: ChangelogProps) => {
         <>
             <Paragraph typographyStyle="body-sm-strong">Changelog</Paragraph>
             <List
-                bulletComponent={<Icon name="dotOutline" />}
+                bulletComponent={<Icon as={DotOutlineIcon} />}
                 bulletGap={4}
                 margin={{
                     horizontal: 0,

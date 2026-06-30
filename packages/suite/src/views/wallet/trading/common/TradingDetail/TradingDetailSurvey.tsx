@@ -8,6 +8,7 @@ import {
     validateTradingSurvey,
 } from '@suite-common/message-system';
 import { Card, Column, H2, Paragraph } from '@trezor/components';
+import { ArrowSquareOutIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -49,7 +50,7 @@ export const TradingDetailSurvey = () => {
                 </Column>
                 <MessageSystemButton
                     cta={survey.cta}
-                    iconRight="arrowSquareOut"
+                    iconRight={ArrowSquareOutIcon}
                     intent="brand"
                     size="large"
                 />

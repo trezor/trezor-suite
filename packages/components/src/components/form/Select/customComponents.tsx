@@ -16,6 +16,8 @@ import {
 
 import styled from 'styled-components';
 
+import { CaretDownIcon } from '@trezor/icons';
+
 import type { Option as OptionType } from './types';
 import { Box } from '../../Box/Box';
 import { Column, Row } from '../../Flex/Flex';
@@ -252,7 +254,7 @@ export const IndicatorsContainer = ({
 export const DropdownIndicator = (props: DropdownIndicatorProps) => (
     <DropdownWrapper $isOpen={props.selectProps.menuIsOpen}>
         <Icon
-            name="caretDown"
+            as={CaretDownIcon}
             size={20}
             {...(props.isDisabled
                 ? { isDisabled: true }

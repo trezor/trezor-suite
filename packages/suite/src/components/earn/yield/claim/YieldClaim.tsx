@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
@@ -199,7 +200,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                             !claimSession.action.pendingTransaction && (
                                                 <Banner
                                                     intent="warning"
-                                                    icon="warning"
+                                                    icon={WarningIcon}
                                                     description={
                                                         <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
                                                     }

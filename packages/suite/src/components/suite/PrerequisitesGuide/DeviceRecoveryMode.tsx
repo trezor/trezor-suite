@@ -4,6 +4,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { Banner } from '@trezor/components';
+import { TrezorBodyIcon } from '@trezor/icons';
 
 import { recoveryRerun } from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
@@ -38,7 +39,7 @@ export const DeviceRecoveryMode = () => {
                     key: 'recovery-mode',
                     heading: <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />,
                     description: <Translation id="TR_DEVICE_IN_RECOVERY_MODE_DESC" />,
-                    icon: 'trezorBody',
+                    icon: TrezorBodyIcon,
                 },
             ]}
         />

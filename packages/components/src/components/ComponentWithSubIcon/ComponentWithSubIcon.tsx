@@ -10,13 +10,13 @@ import {
     pickAndPrepareFrameProps,
 } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;
 
 export type ComponentWithSubIconProps = AllowedFrameProps & {
-    iconName?: IconName;
+    icon?: IconComponent;
     iconSize?: number;
     children: ReactNode;
     iconPadding?: SpacingValuesNew;
@@ -27,7 +27,7 @@ export type ComponentWithSubIconProps = AllowedFrameProps & {
 export const ComponentWithSubIcon = ({
     intent = 'brand',
     iconSize = 8,
-    iconName,
+    icon,
     children,
     iconPadding = 2,
     iconOffset = 4,
@@ -38,14 +38,14 @@ export const ComponentWithSubIcon = ({
     return (
         <Box width="fit-content" position={{ type: 'relative' }} {...frameProps}>
             {children}
-            {iconName && (
+            {icon && (
                 <Box
                     position={{ type: 'absolute', top: iconOffset * -1, right: iconOffset * -1 }}
                     backgroundColor={mapIntentToBackgroundColor(intent)}
                     borderRadius={borders.radii.full}
                     padding={iconPadding}
                 >
-                    <Icon name={iconName} size={iconSize} color={mapIntentToIconColor(intent)} />
+                    <Icon as={icon} size={iconSize} color={mapIntentToIconColor(intent)} />
                 </Box>
             )}
         </Box>

@@ -12,6 +12,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
+import { CopyIcon, DotsThreeIcon, MagnifyingGlassIcon, NoteIcon, PencilIcon } from '@trezor/icons';
 
 import type { EventDoc } from '../types';
 import { AddedBadge } from './AddedBadge';
@@ -93,7 +94,7 @@ const Header = ({ event, onEdit }: HeaderProps) => {
                   {
                       key: 'edit',
                       label: 'Edit',
-                      icon: 'pencil' as const,
+                      icon: PencilIcon,
                       onClick: () => onEdit(event),
                   },
               ]
@@ -101,19 +102,19 @@ const Header = ({ event, onEdit }: HeaderProps) => {
         {
             key: 'open-definition',
             label: 'Open definition on Github',
-            icon: 'note' as const,
+            icon: NoteIcon,
             onClick: () => window.open(getEventDefinitionUrl(event.name), '_blank'),
         },
         {
             key: 'find-usages',
             label: 'Find usages on Github',
-            icon: 'magnifyingGlass' as const,
+            icon: MagnifyingGlassIcon,
             onClick: () => window.open(getEventUsagesUrl(event.name), '_blank'),
         },
         {
             key: 'copy-link',
             label: 'Copy link',
-            icon: 'copy' as const,
+            icon: CopyIcon,
             onClick: handleCopyLink,
         },
     ];
@@ -142,7 +143,7 @@ const Header = ({ event, onEdit }: HeaderProps) => {
                         <ChangelogButton />
 
                         <Tooltip content="More actions">
-                            <Dropdown items={dropdownItems} iconName="dotsThree" iconSize="small" />
+                            <Dropdown items={dropdownItems} icon={DotsThreeIcon} iconSize="small" />
                         </Tooltip>
                         {copied && (
                             <Text intent="brand" priority="primary" typographyStyle="body-xs">

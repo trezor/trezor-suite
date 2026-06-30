@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Column, Image, Modal, Text } from '@trezor/components';
+import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
@@ -62,7 +63,7 @@ export const Backup = ({
             <Modal
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
-                iconName={device.features.unfinished_backup ? 'warning' : 'check'}
+                icon={device.features.unfinished_backup ? WarningIcon : CheckIcon}
                 intent={device.features.unfinished_backup ? 'warning' : 'brand'}
                 bottomContent={
                     <Modal.Button onClick={() => onCancel()} data-testid="@backup/close-button">

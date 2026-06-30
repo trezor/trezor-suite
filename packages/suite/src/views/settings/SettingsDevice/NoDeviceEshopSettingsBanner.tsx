@@ -14,12 +14,18 @@ import {
     Divider,
     H3,
     Icon,
-    type IconName,
+    type IconComponent,
     Image,
     Paragraph,
     Row,
     Text,
 } from '@trezor/components';
+import {
+    ArrowLineUpRightIcon,
+    DevicesFilledIcon,
+    RocketLaunchFilledIcon,
+    ShieldStarFilledIcon,
+} from '@trezor/icons';
 import { borders, breakpoints, paletteV2 } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
 
@@ -40,10 +46,10 @@ const HeroContainer = styled.div`
     border-radius: ${borders.radii.sm};
 `;
 
-const bulletPointValues: Array<{ icon: IconName; textId: TranslationKey }> = [
-    { icon: 'shieldStarFilled', textId: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY' },
-    { icon: 'devicesFilled', textId: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP' },
-    { icon: 'rocketLaunchFilled', textId: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP' },
+const bulletPointValues: Array<{ icon: IconComponent; textId: TranslationKey }> = [
+    { icon: ShieldStarFilledIcon, textId: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SECURITY' },
+    { icon: DevicesFilledIcon, textId: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_APP' },
+    { icon: RocketLaunchFilledIcon, textId: 'TR_NO_DEVICE_ESHOP_BANNER_BULLET_SETUP' },
 ];
 
 type NoDeviceEshopSettingsBannerRootState = DeviceRootState & FlagsRootState;
@@ -89,7 +95,7 @@ export const NoDeviceEshopSettingsBanner = () => {
                     <Row gap={32} hasDivider alignItems="flex-start" margin={{ bottom: 24 }}>
                         {bulletPointValues.map(({ icon, textId }) => (
                             <Column key={textId} gap={8} flex="1" padding={{ right: 16 }}>
-                                <Icon name={icon} size={20} intent="neutral" priority="secondary" />
+                                <Icon as={icon} size={20} intent="neutral" priority="secondary" />
                                 <Text
                                     typographyStyle="body-xs"
                                     intent="neutral"
@@ -103,7 +109,7 @@ export const NoDeviceEshopSettingsBanner = () => {
                     <Button
                         intent="neutral"
                         priority="primary"
-                        iconRight="arrowLineUpRight"
+                        iconRight={ArrowLineUpRightIcon}
                         href={href}
                         onClick={handleClick}
                         data-testid="@settings/no-device-eshop-banner/button"

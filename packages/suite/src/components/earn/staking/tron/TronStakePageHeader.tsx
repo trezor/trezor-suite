@@ -4,6 +4,7 @@ import { openModal } from '@suite/modal';
 import { goto, selectSettingsBackRoute } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
+import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -32,7 +33,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
         <PageHeader>
             <Row width="100%" gap={16} alignItems="center">
                 <IconButton
-                    icon="caretLeft"
+                    icon={CaretLeftIcon}
                     intent="neutral"
                     priority="secondary"
                     size="large"
@@ -69,7 +70,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                 <Box margin={{ left: 'auto' }}>
                     {isBelowMobile ? (
                         <IconButton
-                            icon="info"
+                            icon={InfoIcon}
                             intent="neutral"
                             priority="secondary"
                             size="large"

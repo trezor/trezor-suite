@@ -17,6 +17,7 @@ import {
     isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
+import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -151,7 +152,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
     return (
         <Banner
-            icon="piggyBank"
+            icon={PiggyBankIcon}
             intent="brand"
             title={
                 <Translation
@@ -180,7 +181,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                     <Banner.IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         onClick={closeBanner}
                         tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />

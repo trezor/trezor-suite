@@ -13,6 +13,7 @@ import {
     Text,
     Textarea,
 } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 
 import { AttributeEditor } from './AttributeEditor';
 import { ChangelogEntriesEditor } from './ChangelogEntriesEditor';
@@ -154,7 +155,7 @@ export const EventForm = ({ formState, setFormState, eventChangelogError }: Even
                     size="small"
                     intent="neutral"
                     priority="secondary"
-                    iconLeft="plus"
+                    iconLeft={PlusIcon}
                     onClick={() =>
                         setFormState(s => ({
                             ...s,

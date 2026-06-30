@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
+import { TrezorLogoIcon, WalletConnectIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
@@ -18,14 +19,14 @@ export const SettingsConnectedApps = () => {
     const tabs = [
         {
             id: 'walletconnect',
-            icon: 'walletConnect' as const,
+            icon: WalletConnectIcon,
             title: <Translation id="TR_WALLETCONNECT" />,
             component: <WalletConnectList />,
             isEnabled: true,
         },
         {
             id: 'trezor-connect',
-            icon: 'trezorLogo' as const,
+            icon: TrezorLogoIcon,
             title: <Translation id="TR_TREZOR_CONNECT" />,
             component: <ConnectPermissions />,
             isEnabled: true,
@@ -52,7 +53,7 @@ export const SettingsConnectedApps = () => {
                                 onClick={() => setActiveItemId(tab.id)}
                             >
                                 <Row alignItems="center" gap={spacings.xs}>
-                                    <Icon name={tab.icon} />
+                                    <Icon as={tab.icon} />
                                     {tab.title}
                                 </Row>
                             </SubTabs.Item>

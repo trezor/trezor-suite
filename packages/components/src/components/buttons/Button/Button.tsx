@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { ArrowLineUpRightIcon } from '@trezor/icons';
+
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -9,7 +11,7 @@ import {
 import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
-import { Icon, type IconName } from '../../Icon/Icon';
+import { Icon, type IconComponent } from '../../Icon/Icon';
 import { ShortcutBadge } from '../../ShortcutBadge/ShortcutBadge';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
@@ -63,8 +65,8 @@ const Container = styled.button<ButtonContainerProps>`
 export type ButtonProps = CommonButtonProps &
     AllowedButtonFrameProps & {
         size?: ButtonSize;
-        iconLeft?: IconName;
-        iconRight?: IconName;
+        iconLeft?: IconComponent;
+        iconRight?: IconComponent;
         children: React.ReactNode;
         'data-testid'?: string;
         shortcut?: Keys[];
@@ -114,7 +116,7 @@ export const Button = ({
                         data-testid={`${dataTestId}/spinner`}
                     />
                 )}
-                {iconLeft && !props.isLoading && <Icon name={iconLeft} {...iconProps} />}
+                {iconLeft && !props.isLoading && <Icon as={iconLeft} {...iconProps} />}
                 <Box padding={{ horizontal: 4 }} overflow="hidden">
                     <Text
                         as="div"
@@ -126,7 +128,7 @@ export const Button = ({
                     </Text>
                 </Box>
                 {(iconRight || buttonProps.target === '_blank') && (
-                    <Icon name={iconRight ?? 'arrowLineUpRight'} {...iconProps} />
+                    <Icon as={iconRight ?? ArrowLineUpRightIcon} {...iconProps} />
                 )}
                 {shortcut?.length && (
                     <Text as="div" color={colorToken}>

@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -46,7 +47,7 @@ export const SolanaMemo = ({ close }: SolanaMemoProps) => {
                     <IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         size="small"
                         onClick={handleClose}
                         tooltip={{ content: <Translation id="TR_CLOSE" /> }}

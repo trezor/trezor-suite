@@ -4,6 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Banner, Row, Skeleton, Tooltip } from '@trezor/components';
+import { HandCoinsIcon, InfoIcon } from '@trezor/icons';
 
 type EarnYieldClaimRewardsBannerProps = {
     value: BaseCurrencyAmount;
@@ -41,7 +42,7 @@ export const EarnYieldClaimRewardsBanner = ({
     return (
         <Banner
             intent="neutral"
-            icon="handCoins"
+            icon={HandCoinsIcon}
             description={
                 <Row gap={4} alignItems="center">
                     <span>
@@ -61,7 +62,7 @@ export const EarnYieldClaimRewardsBanner = ({
                 <Tooltip content={claimDisabledTooltip}>
                     <Banner.Button
                         isDisabled={isClaimDisabled}
-                        iconLeft={claimDisabledTooltip ? 'info' : undefined}
+                        iconLeft={claimDisabledTooltip ? InfoIcon : undefined}
                         onClick={handleOnClaim}
                     >
                         <Translation id="TR_EARN_CLAIM_REWARDS_BUTTON" />

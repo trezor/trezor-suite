@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { commonFocusStyles, focusStyleTransition } from '@trezor/components/src/utils/utils';
+import { CaretCircleDownIcon } from '@trezor/icons';
 import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
@@ -129,7 +130,7 @@ export const DeviceSelector = () => {
                         <ExpandedSidebarOnly>
                             {selectedDevice?.state && (
                                 <CaretContainer>
-                                    <Icon size={20} name="caretCircleDown" />
+                                    <Icon size={20} as={CaretCircleDownIcon} />
                                 </CaretContainer>
                             )}
                         </ExpandedSidebarOnly>

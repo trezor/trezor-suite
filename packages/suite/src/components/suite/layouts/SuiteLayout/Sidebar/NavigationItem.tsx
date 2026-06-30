@@ -6,7 +6,7 @@ import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from
 import { type Route, goto, selectRouteName } from '@suite/router';
 import {
     Icon,
-    type IconName,
+    type IconComponent,
     Paragraph,
     Row,
     ShortcutBadge,
@@ -52,7 +52,7 @@ const Container = styled.button<{ $isActive?: boolean }>`
 
 export type NavigationItemProps = {
     nameId: TranslationKey;
-    icon: IconName;
+    icon: IconComponent;
     expanded?: boolean;
     routes?: Route['name'][];
     goToRoute?: Route['name'];
@@ -133,7 +133,7 @@ const NavItem = ({
                 type="button"
             >
                 <Icon
-                    name={icon}
+                    as={icon}
                     size={24}
                     intent="neutral"
                     priority={isItemActive ? 'primary' : 'secondary'}

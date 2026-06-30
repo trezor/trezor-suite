@@ -4,6 +4,7 @@ import { goto } from '@suite/router';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -97,7 +98,7 @@ const PassphraseWalletIsEmptyContent = ({
                                 <Button
                                     intent="neutral"
                                     priority="secondary"
-                                    iconLeft="plus"
+                                    iconLeft={PlusIcon}
                                     size="small"
                                     onClick={() => {
                                         onCancel();

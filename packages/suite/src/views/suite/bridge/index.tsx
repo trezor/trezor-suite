@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { Metadata } from 'src/components/suite';
@@ -32,7 +33,7 @@ export const BridgeUnavailable = () => {
     return (
         <Modal
             data-testid="@modal/bridge"
-            iconName="appWindow"
+            icon={AppWindowIcon}
             width={600}
             bottomContent={
                 <>
@@ -41,7 +42,7 @@ export const BridgeUnavailable = () => {
                     </Modal.Button>
                     {hasTransport && (
                         <Modal.Button
-                            iconLeft="caretLeft"
+                            iconLeft={CaretLeftIcon}
                             intent="neutral"
                             priority="secondary"
                             onClick={goToWallet}

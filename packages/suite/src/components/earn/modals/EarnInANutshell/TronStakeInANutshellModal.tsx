@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
 import { Divider, StepList } from '@trezor/components';
+import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
@@ -96,15 +97,15 @@ export const TronStakeInANutshellModal = ({
             <EarnInANutshellHighlights
                 items={[
                     {
-                        icon: 'lightning',
+                        icon: LightningIcon,
                         content: <Translation id="TR_EARN_TRON_NUTSHELL_RESOURCES" />,
                     },
                     {
-                        icon: 'checkSquareOffset',
+                        icon: CheckSquareOffsetIcon,
                         content: <Translation id="TR_EARN_TRON_NUTSHELL_FREEZE_VOTE" />,
                     },
                     {
-                        icon: 'lockSimpleOpen',
+                        icon: LockSimpleOpenIcon,
                         content: <Translation id="TR_EARN_TRON_NUTSHELL_UNSTAKE" />,
                     },
                 ]}

@@ -5,6 +5,7 @@ import { goto } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
@@ -81,13 +82,13 @@ export const BridgeRequested = () => {
 
     return (
         <Modal
-            iconName="appWindow"
+            icon={AppWindowIcon}
             intent="info"
             width={600}
             bottomContent={
                 <>
                     <Modal.Button
-                        iconLeft="caretLeft"
+                        iconLeft={CaretLeftIcon}
                         intent="neutral"
                         priority="secondary"
                         onClick={() => setConfirmGoToWallet(true)}

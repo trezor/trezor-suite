@@ -1,10 +1,12 @@
+import { DesktopIcon, DesktopTowerIcon, DeviceMobileIcon } from '@trezor/icons';
+
 export const getPlatformIcon = (platform: string) => {
     switch (platform) {
         case 'mobile':
-            return 'deviceMobile';
+            return DeviceMobileIcon;
         case 'desktop':
-            return 'desktop';
+            return DesktopIcon;
         default:
-            return 'desktopTower';
+            return DesktopTowerIcon;
     }
 };

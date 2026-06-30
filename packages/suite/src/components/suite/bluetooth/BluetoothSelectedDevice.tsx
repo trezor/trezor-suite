@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { type DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
 import { Banner, Card, Modal, Row } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 
@@ -96,7 +97,7 @@ export const BluetoothSelectedDevice = ({
                 {showHint && (
                     <Banner
                         intent="info"
-                        icon="info"
+                        icon={InfoIcon}
                         margin={{ top: 16 }}
                         description={<Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />}
                     />

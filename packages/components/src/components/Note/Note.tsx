@@ -1,10 +1,11 @@
 import { type ReactNode } from 'react';
 
+import { InfoIcon } from '@trezor/icons';
 import { type SpacingValues, spacings } from '@trezor/theme';
 
 import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
 import { type TextIntent, type TextPriority } from '../typography/Text/Text';
 
@@ -12,7 +13,7 @@ export const allowedNoteFrameProps = ['margin', 'minWidth'] as const satisfies F
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNoteFrameProps)[number]>;
 
 export type NoteProps = AllowedFrameProps & {
-    iconName?: IconName;
+    icon?: IconComponent;
     intent?: TextIntent;
     priority?: TextPriority;
     isDisabled?: boolean;
@@ -23,7 +24,7 @@ export type NoteProps = AllowedFrameProps & {
 
 export const Note = ({
     children,
-    iconName = 'info',
+    icon = InfoIcon,
     margin,
     gap = spacings.xxs,
     minWidth,
@@ -33,13 +34,7 @@ export const Note = ({
     'data-testid': dataTestId,
 }: NoteProps) => (
     <Row gap={gap} margin={margin} minWidth={minWidth}>
-        <Icon
-            name={iconName}
-            size={16}
-            intent={intent}
-            priority={priority}
-            isDisabled={isDisabled}
-        />
+        <Icon as={icon} size={16} intent={intent} priority={priority} isDisabled={isDisabled} />
         <Paragraph
             data-testid={dataTestId}
             typographyStyle="body-sm"

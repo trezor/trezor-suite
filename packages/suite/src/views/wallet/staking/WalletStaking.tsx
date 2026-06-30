@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -34,7 +35,7 @@ export const WalletStaking = () => {
         <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
             <AccountExceptionLayout
                 title={<Translation id="TR_STAKING_IS_NOT_SUPPORTED" />}
-                iconName="warning"
+                icon={WarningIcon}
                 iconVariant="warning"
             />
         </WalletLayout>

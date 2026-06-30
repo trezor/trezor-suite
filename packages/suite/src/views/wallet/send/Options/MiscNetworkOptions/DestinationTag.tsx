@@ -4,6 +4,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Card, Column, Input, Note, Row, Switch } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -114,7 +115,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
                 ) : (
                     <Banner
                         intent="warning"
-                        icon="warning"
+                        icon={WarningIcon}
                         description={
                             <Translation
                                 id="DESTINATION_TAG_BANNER_SEND"

@@ -14,6 +14,7 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackAction,
 } from '@suite-common/feedback';
+import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 
 import { feedbackDismissed } from '../featureFeedbackSlice';
@@ -95,7 +96,7 @@ export const FeedbackFormManager = () => {
                     }}
                 />
             }
-            icon="smiley"
+            icon={SmileyIcon}
             onClick={() => setIsModalOpen(true)}
             onClose={handleDismiss}
         />

@@ -4,6 +4,7 @@ import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Card, Column, Grid, H3, Paragraph, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -50,7 +51,7 @@ export const EmptyStakingCard = () => {
                             <Button
                                 onClick={content.onStartStakingClick}
                                 isDisabled={data.isStartStakingDisabled}
-                                iconLeft={data.isStartStakingDisabled ? 'info' : undefined}
+                                iconLeft={data.isStartStakingDisabled ? InfoIcon : undefined}
                                 data-testid="@wallet/staking/empty-card/start-staking-button"
                                 size="large"
                             >

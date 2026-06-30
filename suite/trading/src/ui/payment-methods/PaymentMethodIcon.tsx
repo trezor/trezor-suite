@@ -1,6 +1,7 @@
 import { useTheme } from 'styled-components';
 
 import { Icon, type IconSize } from '@trezor/components';
+import { BankIcon, CreditCardIcon, WalletIcon } from '@trezor/icons';
 
 import { PaymentMethodLogo } from './PaymentMethodLogo';
 
@@ -37,10 +38,10 @@ export const PaymentMethodIcon = ({ paymentMethod, size = 20 }: PaymentMethodIco
             );
         case 'bankTransfer':
         case 'SEPA':
-            return <Icon name="bank" size={size} />;
+            return <Icon as={BankIcon} size={size} />;
         case 'creditCard':
-            return <Icon name="creditCard" size={size} />;
+            return <Icon as={CreditCardIcon} size={size} />;
         default:
-            return <Icon name="wallet" size={size} />;
+            return <Icon as={WalletIcon} size={size} />;
     }
 };

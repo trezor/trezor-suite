@@ -1,5 +1,6 @@
 import { Children, Fragment, type ReactNode, useId } from 'react';
 
+import { DotOutlineFilledIcon } from '@trezor/icons';
 import { type SpacingValuesNew } from '@trezor/theme';
 
 import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
@@ -57,7 +58,7 @@ export const InfoSegments = ({
                     <Fragment key={`${id}-${index}`}>
                         {child}
                         {index < validChildren.length - 1 && (
-                            <Icon name="dotOutlineFilled" size={16} {...iconProps} />
+                            <Icon as={DotOutlineFilledIcon} size={16} {...iconProps} />
                         )}
                     </Fragment>
                 ))}

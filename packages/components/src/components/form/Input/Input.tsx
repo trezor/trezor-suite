@@ -2,6 +2,8 @@ import { type InputHTMLAttributes, type ReactElement, type Ref } from 'react';
 
 import styled from 'styled-components';
 
+import { XIcon } from '@trezor/icons';
+
 import { type FrameProps } from '../../../utils/frameProps';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
@@ -137,7 +139,7 @@ export const Input = ({
                             {rightContent}
                             {hasShowClearButton && (
                                 <Icon
-                                    name="x"
+                                    as={XIcon}
                                     size={16}
                                     intent="neutral"
                                     onClick={onClear}

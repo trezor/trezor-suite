@@ -8,6 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -19,7 +20,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     {
         label: (
             <Tooltip content={<Translation id="TR_NORTH" />} cursor="pointer">
-                <Icon name="arrowUp" />
+                <Icon as={ArrowUpIcon} />
             </Tooltip>
         ),
         value: 'North',
@@ -27,7 +28,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     {
         label: (
             <Tooltip content={<Translation id="TR_EAST" />} cursor="pointer">
-                <Icon name="arrowLeft" />
+                <Icon as={ArrowLeftIcon} />
             </Tooltip>
         ),
         value: 'East',
@@ -35,7 +36,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     {
         label: (
             <Tooltip content={<Translation id="TR_SOUTH" />} cursor="pointer">
-                <Icon name="arrowDown" />
+                <Icon as={ArrowDownIcon} />
             </Tooltip>
         ),
         value: 'South',
@@ -43,7 +44,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
     {
         label: (
             <Tooltip content={<Translation id="TR_WEST" />} cursor="pointer">
-                <Icon name="arrowRight" />
+                <Icon as={ArrowRightIcon} />
             </Tooltip>
         ),
         value: 'West',

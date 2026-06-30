@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { Button, Row } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 export const CardanoOptions = () => {
@@ -10,7 +11,7 @@ export const CardanoOptions = () => {
             <Button
                 intent="neutral"
                 priority="secondary"
-                iconLeft="plus"
+                iconLeft={PlusIcon}
                 data-testid="add-output"
                 onClick={addOutput}
             >

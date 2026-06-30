@@ -6,6 +6,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite/useDispatch';
@@ -47,7 +48,7 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
     return (
         <Modal
             onCancel={onCancel}
-            iconName="warning"
+            icon={WarningIcon}
             intent="warning"
             bottomContent={
                 <>

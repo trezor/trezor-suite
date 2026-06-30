@@ -6,6 +6,7 @@ import { type Route } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Column } from '@trezor/components';
+import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -50,7 +51,7 @@ export const Navigation = ({ children }: NavigationProps) => {
             () => [
                 {
                     nameId: 'TR_DASHBOARD',
-                    icon: 'house',
+                    icon: HouseIcon,
                     goToRoute: startRoute,
                     routes: [startRoute],
                     shortcut: ['ALT', 'KEY_0'],
@@ -59,7 +60,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     ? [
                           {
                               nameId: 'TR_TRADING_SWAP',
-                              icon: 'repeat',
+                              icon: RepeatIcon,
                               goToRoute: 'wallet-trading-exchange',
                               routes: ['wallet-trading-exchange'],
                               onClick: reportSwapNavigation,
@@ -67,7 +68,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                           } as NavigationItemProps,
                           {
                               nameId: 'TR_EARN',
-                              icon: 'piggyBank',
+                              icon: PiggyBankIcon,
                               goToRoute: 'suite-earn',
                               shortcut: ['ALT', 'KEY_E'],
                               routes: [
@@ -87,14 +88,14 @@ export const Navigation = ({ children }: NavigationProps) => {
                     : []),
                 {
                     nameId: 'TR_NOTIFICATIONS',
-                    icon: 'bell',
+                    icon: BellIcon,
                     CustomComponent: NotificationDropdown,
                     'data-testid': '@suite/menu/notifications',
                     shortcut: ['ALT', 'KEY_I'],
                 },
                 {
                     nameId: 'TR_SETTINGS',
-                    icon: 'gearSix',
+                    icon: GearSixIcon,
                     goToRoute: 'settings-index',
                     routes: SETTINGS_ROUTES,
                     'data-testid': '@suite/menu/settings',

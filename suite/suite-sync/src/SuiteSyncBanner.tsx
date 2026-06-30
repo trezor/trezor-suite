@@ -13,6 +13,7 @@ import {
 import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { Banner } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
+import { XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
@@ -133,7 +134,7 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
                     intent="info"
                     rightContent={
                         <Banner.IconButton
-                            icon="x"
+                            icon={XIcon}
                             onClick={() => dispatch(dismissUnsupportedDeviceBanner())}
                             data-testid="@notification/suite-sync-unsupported-device/dismiss"
                             tooltip={{ content: <Translation id="TR_DISMISS" /> }}

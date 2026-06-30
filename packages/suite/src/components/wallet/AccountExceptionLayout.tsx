@@ -8,7 +8,7 @@ import {
     H2,
     IconCircle,
     type IconCircleIntent,
-    type IconName,
+    type IconComponent,
     Paragraph,
     Row,
 } from '@trezor/components';
@@ -17,7 +17,7 @@ import { spacings } from '@trezor/theme';
 interface AccountExceptionLayoutProps {
     title: ReactNode;
     description?: ReactNode;
-    iconName?: IconName;
+    icon?: IconComponent;
     iconVariant?: IconCircleIntent;
     actions?: ({ key: string } & ButtonProps)[];
     'data-testid'?: string;
@@ -26,9 +26,9 @@ interface AccountExceptionLayoutProps {
 export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
     <Card data-testid={props['data-testid']}>
         <Column gap={4} alignItems="center" margin={{ bottom: 24 }}>
-            {props.iconName && props.iconVariant && (
+            {props.icon && props.iconVariant && (
                 <IconCircle
-                    name={props.iconName}
+                    icon={props.icon}
                     intent={props.iconVariant}
                     size={96}
                     margin={{ top: spacings.xxl, bottom: spacings.xl }}

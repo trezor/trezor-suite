@@ -1,8 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { icons } from '@suite-common/icons/src/icons';
+import * as generatedIcons from '@trezor/icons';
 
 import { Icon as IconComponent, allowedIconFrameProps, iconIntents, iconPriorities } from './Icon';
 import { iconSizes } from './types';
@@ -15,8 +13,14 @@ const meta: Meta<typeof IconComponent> = {
 export default meta;
 
 export const Icon: StoryObj<typeof IconComponent> = {
+    render: args =>
+        args.as ? (
+            <IconComponent {...args} />
+        ) : (
+            <IconComponent {...args} as={generatedIcons.MagnifyingGlassIcon} />
+        ),
     args: {
-        name: 'discover',
+        as: generatedIcons.MagnifyingGlassIcon,
         intent: 'brand',
         priority: 'primary',
         isDisabled: false,
@@ -25,11 +29,10 @@ export const Icon: StoryObj<typeof IconComponent> = {
         ...getFramePropsStory(allowedIconFrameProps).args,
     },
     argTypes: {
-        name: {
-            options: Object.keys(icons),
-            control: {
-                type: 'select',
-            },
+        as: {
+            options: Object.keys(generatedIcons),
+            mapping: generatedIcons,
+            control: { type: 'select' },
         },
         intent: {
             options: [undefined, ...iconIntents],

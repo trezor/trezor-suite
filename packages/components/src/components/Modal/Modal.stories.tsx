@@ -3,13 +3,10 @@ import { type JSX } from 'react';
 import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
+import * as generatedIcons from '@trezor/icons';
+
 import { modalIntents, modalWidths } from './types';
-import {
-    Modal as ModalComponent,
-    type ModalProps,
-    allowedModalFrameProps,
-    variables,
-} from '../../index';
+import { Modal as ModalComponent, type ModalProps, allowedModalFrameProps } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (
@@ -48,7 +45,7 @@ export default meta;
 export const Modal: StoryObj<ModalProps> = {
     args: {
         intent: 'brand',
-        iconName: undefined,
+        icon: undefined,
         heading: 'Modal heading',
         description: 'Modal description',
         children:
@@ -115,12 +112,9 @@ export const Modal: StoryObj<ModalProps> = {
                 },
             },
         },
-        iconName: {
-            options: ['none', ...variables.ICONS],
-            mapping: {
-                ...variables.ICONS,
-                none: undefined,
-            },
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: {
                 type: 'select',
             },

@@ -8,6 +8,7 @@ import {
     Spinner,
     pickFormCellProps,
 } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
 
 const FakeSelectContainer = styled.button<{ $isDisabled?: boolean }>`
     border: unset;
@@ -59,7 +60,7 @@ export const FakeSelect = (props: FakeSelectProps) => {
                 leftContent={derivedLeftContent}
                 disabled={isDisabled}
                 rightContent={
-                    <Icon name="caretDown" size={20} intent="neutral" priority="secondary" />
+                    <Icon as={CaretDownIcon} size={20} intent="neutral" priority="secondary" />
                 }
                 data-testid={dataTestId}
                 isClean={isClean}

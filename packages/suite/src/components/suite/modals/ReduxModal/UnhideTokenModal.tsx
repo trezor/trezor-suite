@@ -9,6 +9,7 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -45,7 +46,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
     return (
         <Modal
             onCancel={onCancel}
-            iconName="warning"
+            icon={WarningIcon}
             intent="warning"
             bottomContent={
                 <>

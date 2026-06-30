@@ -2,6 +2,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { SLIPPAGE_PRESETS, type SlippageFormValues } from '@suite-common/trading';
 import { Column, FractionButton, Icon, Input, Row } from '@trezor/components';
+import { PercentIcon } from '@trezor/icons';
 import { decimalTransformer } from '@trezor/utils';
 
 export const TradingOfferExchangeSlippageInput = () => {
@@ -23,7 +24,7 @@ export const TradingOfferExchangeSlippageInput = () => {
                         data-testid="@trading/slippage-modal/input"
                         hasError={!!error}
                         bottomText={error?.message || null}
-                        rightContent={<Icon name="percent" />}
+                        rightContent={<Icon as={PercentIcon} />}
                     />
                 )}
             />

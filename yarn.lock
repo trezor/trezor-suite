@@ -12492,7 +12492,6 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/firmware": "workspace:*"
-    "@suite-common/icons": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -16117,6 +16116,7 @@ __metadata:
   resolution: "@trezor/analytics-docs@workspace:packages/analytics-docs"
   dependencies:
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/icons": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -16406,7 +16406,9 @@ __metadata:
   resolution: "@trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme"
   dependencies:
     "@headlessui/react": "npm:^2.2.10"
+    "@suite-common/icons": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -16708,6 +16710,17 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^7.1.1"
     globals: "npm:^17.6.0"
     typescript-eslint: "npm:^8.60.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/icons@workspace:packages/icons":
+  version: 0.0.0-use.local
+  resolution: "@trezor/icons@workspace:packages/icons"
+  dependencies:
+    "@svgr/cli": "npm:^8.1.0"
+    "@trezor/eslint": "workspace:*"
+    prettier: "npm:^3.8.3"
+    svgo: "npm:^4.0.1"
   languageName: unknown
   linkType: soft
 

@@ -1,6 +1,7 @@
 import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
+import { CoinsIcon } from '@trezor/icons';
 import { AssetLogo, type AssetLogoSize, CoinLogo, isCoinSymbol } from '@trezor/product-components';
 
 interface TxSimulationAssetLogoProps {
@@ -36,5 +37,5 @@ export function TxSimulationAssetLogo({
         );
     }
 
-    return <IconCircle name="coins" size={iconCircleSize} intent="neutral" />;
+    return <IconCircle icon={CoinsIcon} size={iconCircleSize} intent="neutral" />;
 }

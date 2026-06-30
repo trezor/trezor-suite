@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 
@@ -104,7 +105,7 @@ export const TradingReceiveAddress = () => {
                         )}
                     </Column>
 
-                    <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+                    <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
                 </Row>
             </Row>
         </GhostContainer>

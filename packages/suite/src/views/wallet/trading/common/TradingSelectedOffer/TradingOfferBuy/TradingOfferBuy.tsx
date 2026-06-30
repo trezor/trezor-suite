@@ -7,6 +7,7 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Card, Column, H2, Text } from '@trezor/components';
+import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -71,7 +72,7 @@ export const TradingOfferBuy = ({
                         <TradingFormOfferConfirmButton
                             translationId="TR_TRADING_BUY_VIA"
                             translationValues={{ providerName: providerName ?? '' }}
-                            iconRight="arrowSquareOut"
+                            iconRight={ArrowSquareOutIcon}
                             testId="@trading/offer/buy-button"
                             isDisabled={isConfirmDisabled || disabled}
                             isLoading={disabled}

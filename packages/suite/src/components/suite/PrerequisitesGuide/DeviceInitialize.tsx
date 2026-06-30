@@ -7,6 +7,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { TrezorBodyIcon } from '@trezor/icons';
 
 import {
     enableOnboardingReducer,
@@ -59,7 +60,7 @@ export const DeviceInitialize = () => {
                     key: 'device-initialize',
                     heading: <Translation id="TR_DEVICE_NOT_INITIALIZED" />,
                     description: <Translation id="TR_DEVICE_NOT_INITIALIZED_TEXT" />,
-                    icon: 'trezorBody',
+                    icon: TrezorBodyIcon,
                 },
             ]}
         />

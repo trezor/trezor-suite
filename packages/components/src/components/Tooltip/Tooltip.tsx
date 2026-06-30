@@ -3,6 +3,7 @@ import { type MutableRefObject, type ReactNode } from 'react';
 import { type Placement, type ShiftOptions } from '@floating-ui/react';
 import styled, { ThemeProvider } from 'styled-components';
 
+import { QuestionIcon } from '@trezor/icons';
 import { type ZIndexValues, spacingsPx, zIndices } from '@trezor/theme';
 
 import { TooltipArrow } from './TooltipArrow';
@@ -120,7 +121,7 @@ export const Tooltip = ({
             <TooltipTrigger>
                 <Content as={as} {...frameProps}>
                     {children}
-                    {hasIcon && isActive && <Icon name="question" size={16} />}
+                    {hasIcon && isActive && <Icon as={QuestionIcon} size={16} />}
                 </Content>
             </TooltipTrigger>
 

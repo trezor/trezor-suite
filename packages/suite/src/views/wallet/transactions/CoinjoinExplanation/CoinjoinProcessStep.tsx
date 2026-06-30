@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import {
     H3,
     IconCircle,
-    type IconName,
+    type IconComponent,
     Paragraph,
     useMediaQuery,
     variables,
@@ -89,7 +89,7 @@ const Container = styled.div`
 
 export interface CoinjoinProcessStepProps {
     number: number;
-    iconName: IconName;
+    iconName: IconComponent;
     title: ReactNode;
     description: ReactNode;
 }
@@ -105,7 +105,7 @@ export const CoinjoinProcessStep = ({
     return (
         <Container>
             <Image>
-                <IconCircle name={iconName} size={96} />
+                <IconCircle icon={iconName} size={96} />
             </Image>
             <StepNumberSlot>
                 <Paragraph

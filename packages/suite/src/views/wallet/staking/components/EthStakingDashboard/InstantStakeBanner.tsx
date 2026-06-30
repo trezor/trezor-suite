@@ -8,6 +8,7 @@ import { type StakeType, type WalletAccountTransaction } from '@suite-common/wal
 import { fromWei } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { type InternalTransfer } from '@trezor/connect';
+import { LightningIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -70,7 +71,7 @@ export const InstantStakeBanner = ({
     return (
         <Banner
             data-testid="@staking/instant-stake-banner"
-            icon="lightning"
+            icon={LightningIcon}
             intent="neutral"
             rightContent={
                 <Banner.Button

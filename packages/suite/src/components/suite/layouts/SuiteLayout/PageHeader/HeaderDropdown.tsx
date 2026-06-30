@@ -4,7 +4,8 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
+import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
+import { PencilLineIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useSelector } from 'src/hooks/suite';
@@ -13,7 +14,7 @@ import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 
 type ActionItem = {
     id: string;
-    icon?: IconName;
+    icon?: IconComponent;
     callback: () => void;
     title: JSX.Element;
     'data-testid'?: string;
@@ -40,7 +41,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                           });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
-                      icon: 'pencilLine' as const,
+                      icon: PencilLineIcon,
                       isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
                   },
               ]

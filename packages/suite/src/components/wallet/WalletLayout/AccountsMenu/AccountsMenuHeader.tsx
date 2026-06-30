@@ -5,6 +5,7 @@ import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/setting
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Column, Divider, Icon, Row, Skeleton, Tooltip } from '@trezor/components';
+import { FunnelSimpleIcon } from '@trezor/icons';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
@@ -78,7 +79,7 @@ export const AccountsMenuHeader = () => {
                                                 priority={
                                                     isCoinsFilterVisible ? 'primary' : 'secondary'
                                                 }
-                                                name="funnelSimple"
+                                                as={FunnelSimpleIcon}
                                                 onClick={toggleCoinsFilter}
                                                 data-testid="@account-menu/filter-accounts"
                                             />

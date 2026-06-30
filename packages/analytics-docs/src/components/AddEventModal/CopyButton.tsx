@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Button } from '@trezor/components';
+import { CheckIcon, CopyIcon } from '@trezor/icons';
 
 const COPIED_FEEDBACK_MS = 2000;
 
@@ -30,7 +31,7 @@ export const CopyButton = ({ textToCopy, copyLabel }: CopyButtonProps) => {
             size="small"
             intent="neutral"
             priority="secondary"
-            iconLeft={copied ? 'check' : 'copy'}
+            iconLeft={copied ? CheckIcon : CopyIcon}
             onClick={handleClick}
         >
             {copied ? 'Copied!' : copyLabel}

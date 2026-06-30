@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Badge, Banner, Button, Text } from '@trezor/components';
+import { HourglassIcon, RepeatIcon } from '@trezor/icons';
 import { useClickCooldown } from '@trezor/react-utils';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
@@ -31,7 +32,7 @@ export const TransactionReviewOutputTimer = ({
         return (
             <>
                 <Button
-                    iconLeft="repeat"
+                    iconLeft={RepeatIcon}
                     intent="neutral"
                     priority="secondary"
                     type="button"
@@ -61,7 +62,7 @@ export const TransactionReviewOutputTimer = ({
 
     return (
         <Banner
-            icon="hourglass"
+            icon={HourglassIcon}
             rightContent={
                 <Banner.Button isDisabled={isSending} onClick={() => onTryAgain(true)}>
                     <Translation id="TR_RETRY" />

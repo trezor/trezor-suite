@@ -3,6 +3,7 @@ import { selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -45,7 +46,7 @@ export const PassphraseWalletConfirmation = ({
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
                     </H3>
                     <Banner
-                        icon="info"
+                        icon={InfoIcon}
                         description={
                             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING" />
                         }

@@ -20,6 +20,7 @@ import {
     Switch,
     Text,
 } from '@trezor/components';
+import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -171,7 +172,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     <Translation id="TR_COIN_CONTROL" />
                     <Row gap={spacings.md}>
                         <Switch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
-                        <Icon size={24} name="caretUp" onClick={close} />
+                        <Icon size={24} as={CaretUpIcon} onClick={close} />
                     </Row>
                 </Row>
 
@@ -221,7 +222,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         description={
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                         }
-                        icon="shieldCheck"
+                        icon={ShieldCheckIcon}
                         iconIntent="brand"
                         utxos={spendableUtxosOnPage}
                     />
@@ -236,7 +237,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                                 values={{ targetAnonymity }}
                             />
                         }
-                        icon="shieldWarning"
+                        icon={ShieldWarningIcon}
                         iconIntent="warning"
                         utxos={lowAnonymityUtxosOnPage}
                     />
@@ -251,7 +252,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         withHeader
                         heading={<Translation id="TR_DUST" />}
                         description={<Translation id="TR_DUST_DESCRIPTION" />}
-                        icon="info"
+                        icon={InfoIcon}
                         iconIntent="neutral"
                         utxos={dustUtxosOnPage}
                     />

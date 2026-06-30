@@ -9,6 +9,7 @@ import {
 import { Column, H4, Icon, Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { ArrowRightIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents } from 'src/components/suite';
@@ -77,7 +78,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 ) : (
                     <CurrentVersion />
                 ))}
-            {currentVersion && <Icon name="arrowRight" size={16} />}
+            {currentVersion && <Icon as={ArrowRightIcon} size={16} />}
             <Column alignItems="center" gap={spacings.xxs}>
                 <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />

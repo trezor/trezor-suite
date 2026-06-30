@@ -24,6 +24,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/utils": "workspace:*",

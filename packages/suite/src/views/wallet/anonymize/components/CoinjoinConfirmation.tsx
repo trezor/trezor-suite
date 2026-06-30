@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
+import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
@@ -49,21 +50,24 @@ const Tiles = styled.div`
     }
 `;
 
-const tiles: TileProps[] = [
+const tiles: Array<TileProps & { id: string }> = [
     {
+        id: 'clock',
         title: <Translation id="TR_COINJOIN_TILE_1_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_1_DESCRIPTION" />,
-        iconName: 'clock',
+        iconName: ClockIcon,
     },
     {
+        id: 'circuitry',
         title: <Translation id="TR_COINJOIN_TILE_2_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_2_DESCRIPTION" />,
-        iconName: 'circuitry',
+        iconName: CircuitryIcon,
     },
     {
+        id: 'lock',
         title: <Translation id="TR_COINJOIN_TILE_3_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_3_DESCRIPTION" />,
-        iconName: 'lockKey',
+        iconName: LockKeyIcon,
     },
 ];
 
@@ -116,8 +120,8 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                     <Translation id="TR_COINJOIN_SETUP" />
                 </H3>
                 <Tiles>
-                    {tiles.map(tile => (
-                        <Tile key={tile.iconName} {...tile} />
+                    {tiles.map(({ id, ...tile }) => (
+                        <Tile key={id} {...tile} />
                     ))}
                 </Tiles>
                 <FeeWrapper>

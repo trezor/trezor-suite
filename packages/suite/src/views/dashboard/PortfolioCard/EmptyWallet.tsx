@@ -8,6 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
+import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { NetworkIconSet } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
@@ -90,7 +91,7 @@ export const EmptyWallet = () => {
             <Row gap={12} margin={{ top: 16 }}>
                 <Button
                     intent="brand"
-                    iconLeft="currencyCircleDollar"
+                    iconLeft={CurrencyCircleDollarIcon}
                     size="medium"
                     onClick={handleBuy}
                     data-testid="@dashboard/empty-wallet/buy"
@@ -99,7 +100,7 @@ export const EmptyWallet = () => {
                 </Button>
                 <Button
                     intent="brand"
-                    iconLeft="arrowDown"
+                    iconLeft={ArrowDownIcon}
                     size="medium"
                     onClick={handleReceive}
                     data-testid="@dashboard/empty-wallet/receive"

@@ -4,6 +4,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
 import { Badge, Box, Button, Column, Icon, Text, getFramePropsStory } from '@trezor/components';
+import { TagIcon } from '@trezor/icons';
 import { spacingsNew } from '@trezor/theme';
 
 import {
@@ -125,7 +126,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
             options: [undefined, 'example with icon', 'example with text'],
             mapping: {
                 undefined,
-                'example with icon': <Icon name="tag" size={16} />,
+                'example with icon': <Icon as={TagIcon} size={16} />,
                 'example with text': 'Foo:',
             },
         },

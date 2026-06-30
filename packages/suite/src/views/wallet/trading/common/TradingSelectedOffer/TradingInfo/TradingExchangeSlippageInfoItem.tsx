@@ -4,6 +4,7 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
+import { PencilSimpleIcon } from '@trezor/icons';
 
 import { TradingOfferExchangeSlippageModal } from 'src/views/wallet/trading/exchange/TradingOfferExchangeSlippageModal/TradingOfferExchangeSlippageModal';
 
@@ -34,7 +35,7 @@ export const TradingExchangeSlippageInfoItem = ({
                     <TextButton
                         onClick={() => setIsEditModalOpen(true)}
                         size="small"
-                        iconRight="pencilSimple"
+                        iconRight={PencilSimpleIcon}
                         intent="brand"
                         isUnderlined
                         data-testid="@trading/offer/info/slippage"

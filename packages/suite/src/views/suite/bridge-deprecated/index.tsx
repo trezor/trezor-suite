@@ -2,6 +2,7 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
@@ -37,7 +38,7 @@ export const BridgeDeprecated = () => {
             }
             width={600}
             intent="warning"
-            iconName="warning"
+            icon={WarningIcon}
             onCancel={onClose}
             isBackdropCancelable
         >

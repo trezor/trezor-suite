@@ -10,6 +10,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon, XIcon } from '@trezor/icons';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
@@ -85,7 +86,7 @@ export const DesktopSuiteBanner = () => {
                     >
                         <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
                             <IconButton
-                                icon="x"
+                                icon={XIcon}
                                 onClick={handleClose}
                                 data-testid="@banner/install-desktop-suite/close-button"
                                 intent="neutral"
@@ -123,9 +124,9 @@ export const DesktopSuiteBanner = () => {
                             </Button>
 
                             <OSIcons>
-                                <Icon name="appleLogo" intent="brand" />
-                                <Icon name="linuxLogo" intent="brand" />
-                                <Icon name="windowsLogo" intent="brand" size={20} />
+                                <Icon as={AppleLogoIcon} intent="brand" />
+                                <Icon as={LinuxLogoIcon} intent="brand" />
+                                <Icon as={WindowsLogoIcon} intent="brand" size={20} />
                             </OSIcons>
                         </Content>
                     </Row>

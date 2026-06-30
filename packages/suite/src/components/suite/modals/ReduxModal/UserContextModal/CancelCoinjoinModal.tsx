@@ -1,6 +1,7 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { ArrowsInIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
@@ -24,7 +25,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
         <Modal
             onCancel={onClose}
             intent="warning"
-            iconName="arrowsIn"
+            icon={ArrowsInIcon}
             width={600}
             bottomContent={
                 <>

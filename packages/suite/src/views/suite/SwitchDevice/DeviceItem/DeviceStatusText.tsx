@@ -3,6 +3,7 @@ import React from 'react';
 import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { RepeatIcon } from '@trezor/icons';
 
 import { getDeviceResolveStatusCTAMessage } from '../getDeviceResolveStatusCTAMessage';
 import { DeviceConnectionText } from './DeviceConnectionText';
@@ -24,7 +25,7 @@ export const DeviceStatusText = ({
         return (
             <DeviceConnectionText
                 intent="warning"
-                icon="repeat"
+                icon={RepeatIcon}
                 data-testid="@deviceStatus-connected"
                 data-testid-alt="@deviceStatus"
                 isAction

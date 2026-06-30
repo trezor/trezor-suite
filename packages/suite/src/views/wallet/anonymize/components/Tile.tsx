@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Card, IconCircle, type IconName, variables } from '@trezor/components';
+import { Card, IconCircle, type IconComponent, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 const containerGridStyle = css`
@@ -101,7 +101,7 @@ const Description = styled.p`
 
 export interface TileProps {
     description: ReactNode;
-    iconName: IconName;
+    iconName: IconComponent;
     title: ReactNode;
 }
 
@@ -109,7 +109,7 @@ export const Tile = ({ description, iconName, title }: TileProps) => (
     <Card paddingType="none">
         <Container>
             <Image>
-                <IconCircle name={iconName} size={96} />
+                <IconCircle icon={iconName} size={96} />
             </Image>
             <Title>{title}</Title>
             <Description>{description}</Description>

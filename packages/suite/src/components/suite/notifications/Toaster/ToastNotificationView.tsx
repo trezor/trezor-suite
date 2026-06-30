@@ -1,8 +1,8 @@
-import { type JSX } from 'react';
+import { type ReactNode } from 'react';
 
 import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { type NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
-import { type IconName, Toast } from '@trezor/components';
+import { type IconComponent, Toast } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { type ToastNotificationVariant } from 'src/types/suite';
@@ -13,7 +13,7 @@ import { type NotificationViewProps } from '../Notifications/NotificationGroup/N
 export type ToastNotificationViewProps = {
     notification: NotificationEntry;
     variant: ToastNotificationVariant;
-    icon?: IconName | JSX.Element;
+    icon?: IconComponent | ReactNode;
     message: ExtendedMessageDescriptor['id'];
     messageValues: ExtendedMessageDescriptor['values'];
     action?: NotificationViewProps['action'];
@@ -37,7 +37,7 @@ export const ToastNotificationView = ({
         onCancel?.();
     };
 
-    const toastIcon = typeof icon === 'string' ? icon : undefined;
+    const toastIcon = typeof icon === 'function' ? icon : undefined;
 
     return (
         <Toast

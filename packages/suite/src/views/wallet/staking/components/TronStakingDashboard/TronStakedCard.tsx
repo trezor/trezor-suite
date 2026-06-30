@@ -20,6 +20,7 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
@@ -121,7 +122,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                 {hasRemainingVotes ? (
                     <Tooltip content={<Translation id="TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP" />}>
                         <Row gap={4} alignItems="center">
-                            <IconCircle name="warning" size={24} intent="warning" />
+                            <IconCircle icon={WarningIcon} size={24} intent="warning" />
                             <TextButton
                                 size="small"
                                 intent="neutral"

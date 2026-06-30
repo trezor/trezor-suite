@@ -1,14 +1,16 @@
+import { CheckIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
 
-import { type ToastAction, type ToastIconVariant, type ToastIntent } from './types';
+import { type ToastAction, type ToastIntent } from './types';
+import { type IconComponent } from '../Icon/Icon';
 
-export const mapToastIntentToIcon = (intent: ToastIntent) => {
-    const iconMap: Record<ToastIntent, ToastIconVariant> = {
-        brand: 'check',
-        info: 'info',
-        warning: 'warning',
-        critical: 'warning',
-        neutral: 'info',
+export const mapToastIntentToIcon = (intent: ToastIntent): IconComponent => {
+    const iconMap: Record<ToastIntent, IconComponent> = {
+        brand: CheckIcon,
+        info: InfoIcon,
+        warning: WarningIcon,
+        critical: WarningIcon,
+        neutral: InfoIcon,
     };
 
     return iconMap[intent];

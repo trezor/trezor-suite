@@ -22,6 +22,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Box, Button, Column, Switch, Text, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { CoinIcon } from '@trezor/icons';
 import { OutlineHighlight, SectionItem, SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
@@ -200,7 +201,7 @@ export const SettingsCoins = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_COINS" />}
-                icon="coin"
+                icon={CoinIcon}
                 hasContainer={false}
             >
                 <Anchor anchorId={SettingsAnchor.Crypto}>

@@ -5,6 +5,7 @@ import { selectTorState } from '@suite/tor';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { Banner, Modal } from '@trezor/components';
+import { TorBrowserIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -60,7 +61,7 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
             }
         >
             <Banner
-                icon="torBrowser"
+                icon={TorBrowserIcon}
                 intent="brand"
                 margin={{ top: spacings.md }}
                 description={

@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
@@ -52,7 +53,7 @@ export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
         >
             <Icon
                 onClick={device ? handleOnClick : undefined}
-                name="plus"
+                as={PlusIcon}
                 size={16}
                 {...(addAccountDisabled
                     ? { isDisabled: true }

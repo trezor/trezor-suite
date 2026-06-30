@@ -18,6 +18,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
+import { ArrowsDownUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -245,8 +246,10 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                 <>
                                     {showTokenCurrency && (
                                         <Icon
-                                            name={
-                                                isBelowLaptop ? 'arrowsDownUp' : 'arrowsLeftRight'
+                                            as={
+                                                isBelowLaptop
+                                                    ? ArrowsDownUpIcon
+                                                    : ArrowsLeftRightIcon
                                             }
                                             size={20}
                                             intent="neutral"

@@ -2,13 +2,14 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { XIcon } from '@trezor/icons';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { type ToastAction, type ToastIntent } from './types';
 import { mapToastIntentToIcon, mapToastVariantToColor, normalizeToastActions } from './utils';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Button } from '../buttons/Button/Button';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { Text } from '../typography/Text/Text';
@@ -54,7 +55,7 @@ const Container = styled.div<{ $variant: ToastIntent }>`
 `;
 
 export type ToastProps = {
-    icon?: IconName;
+    icon?: IconComponent;
     content: ReactNode;
     intent: ToastIntent;
     actions?: ToastAction[];
@@ -96,7 +97,7 @@ export const Toast = ({
             <Row gap={spacings.sm} justifyContent="space-between" flex="1">
                 {showIcon && (
                     <Icon
-                        name={icon ?? mapToastIntentToIcon(intent)}
+                        as={icon ?? mapToastIntentToIcon(intent)}
                         color={mapToastVariantToColor(intent)}
                     />
                 )}
@@ -119,7 +120,7 @@ export const Toast = ({
 
                 {dismissible && (
                     <IconButton
-                        icon="x"
+                        icon={XIcon}
                         size="small"
                         intent="neutral"
                         priority="secondary"

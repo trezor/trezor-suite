@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
+import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
@@ -39,7 +40,7 @@ export const HeaderActions = () => {
                 >
                     <HeaderActionButton
                         key="wallet-receive"
-                        icon="arrowDown"
+                        icon={ArrowDownIcon}
                         onClick={() => {
                             goToWithAnalytics({
                                 routeName: 'wallet-receive',
@@ -53,7 +54,7 @@ export const HeaderActions = () => {
 
                     <HeaderActionButton
                         key="wallet-send"
-                        icon="arrowUp"
+                        icon={ArrowUpIcon}
                         onClick={() => {
                             goToWithAnalytics({
                                 routeName: 'wallet-send',

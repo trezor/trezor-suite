@@ -17,6 +17,7 @@
         "@suite/experimental": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",

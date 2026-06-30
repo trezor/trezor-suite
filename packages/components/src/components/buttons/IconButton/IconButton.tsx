@@ -8,7 +8,7 @@ import {
 } from '../../../utils/frameProps';
 import { type TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
-import { Icon, type IconName } from '../../Icon/Icon';
+import { Icon, type IconComponent } from '../../Icon/Icon';
 import { Tooltip, type UnmanagedTooltipProps } from '../../Tooltip/Tooltip';
 import { TOOLTIP_DELAY_NORMAL } from '../../Tooltip/TooltipDelay';
 import { Spinner } from '../../loaders/Spinner/Spinner';
@@ -61,7 +61,7 @@ export type IconButtonTooltipProps = Omit<UnmanagedTooltipProps, 'children' | 'c
 export type IconButtonProps = CommonButtonProps &
     AllowedIconButtonFrameProps & {
         size?: ButtonSize;
-        icon: IconName;
+        icon: IconComponent;
         tooltip: IconButtonTooltipProps;
         'data-testid'?: string;
         'aria-label'?: string;
@@ -106,7 +106,7 @@ export const IconButton = ({
                             data-testid={`${dataTestId}/spinner`}
                         />
                     ) : (
-                        <Icon name={icon} {...iconProps} />
+                        <Icon as={icon} {...iconProps} />
                     )}
                 </Box>
             </Tooltip>

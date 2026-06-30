@@ -6,8 +6,6 @@ import { type ButtonIntent, type ButtonPriority } from '../buttons/types';
 export const toastIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
 export type ToastIntent = Extract<UIIntent, (typeof toastIntents)[number]>;
 
-export type ToastIconVariant = 'info' | 'warning' | 'check';
-
 export type ToastActionPosition = 'right' | 'bottom';
 
 export type ToastAction = {

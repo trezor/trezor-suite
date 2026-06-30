@@ -28,6 +28,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
+import { ClockIcon, GradientIcon, InfoIcon, PackageIcon, SealCheckIcon } from '@trezor/icons';
 import { breakpoints } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
@@ -52,7 +53,7 @@ import { DeviceAuthenticityStep } from './index';
 
 const firmwareInstalledChecklist = [
     {
-        icon: <Icon size={24} name="info" />,
+        icon: <Icon size={24} as={InfoIcon} />,
         content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
     },
 ] as const satisfies SecurityChecklistItem[];
@@ -60,7 +61,7 @@ const firmwareInstalledChecklist = [
 const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
     [
         {
-            icon: <Icon size={24} name="sealCheck" />,
+            icon: <Icon size={24} as={SealCheckIcon} />,
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_2"
@@ -74,7 +75,7 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
             ),
         },
         {
-            icon: <Icon size={24} name="gradient" />,
+            icon: <Icon size={24} as={GradientIcon} />,
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_1"
@@ -96,7 +97,7 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
             ),
         },
         {
-            icon: <Icon size={24} name="package" />,
+            icon: <Icon size={24} as={PackageIcon} />,
             content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
         },
     ] as const satisfies SecurityChecklistItem[];
@@ -261,7 +262,7 @@ const SecurityCheckContent = ({
                 ) : (
                     <Tooltip
                         content={
-                            <Note iconName="clock">
+                            <Note icon={ClockIcon}>
                                 <Translation id="TR_TAKES_N_MINUTES" />
                             </Note>
                         }

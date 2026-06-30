@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { Card, Column, IconButton, Row, Select, Tooltip } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useSelector } from 'src/hooks/suite';
@@ -109,7 +110,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                         <Translation id="LOCKTIME_ADD" />
                     </Tooltip>
                     <IconButton
-                        icon="x"
+                        icon={XIcon}
                         intent="neutral"
                         priority="secondary"
                         size="small"

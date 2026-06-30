@@ -9,6 +9,7 @@ import {
 } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { Badge, Button, Column, Input, Switch } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -36,7 +37,7 @@ export const AnalyticsLogging = () => {
     };
 
     const renderAnalyticsDisabledBadge = () => (
-        <Badge size="small" intent="warning" iconLeft="info">
+        <Badge size="small" intent="warning" iconLeft={InfoIcon}>
             Enable analytics to see the events.
         </Badge>
     );

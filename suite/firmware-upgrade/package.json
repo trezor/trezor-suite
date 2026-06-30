@@ -20,6 +20,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",

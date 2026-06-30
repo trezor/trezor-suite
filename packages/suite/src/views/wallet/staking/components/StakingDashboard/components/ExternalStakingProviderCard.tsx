@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
+import { PuzzlePieceIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -25,7 +26,7 @@ export const ExternalStakingProviderCard = ({
     return (
         <DashboardSection data-testid="@wallet/staking/outside-staking-card">
             <Banner
-                icon="puzzlePiece"
+                icon={PuzzlePieceIcon}
                 intent="neutral"
                 title={<Translation id="TR_OUTSIDE_STAKING_CARD_TITLE" />}
                 description={

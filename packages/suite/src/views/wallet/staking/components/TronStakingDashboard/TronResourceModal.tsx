@@ -8,6 +8,7 @@ import {
     sunToTrx,
 } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Divider, Icon, Modal, Row, Text } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -155,7 +156,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
                 </Card>
 
                 <Row gap={8} alignItems="center">
-                    <Icon name="info" size={20} intent="neutral" priority="secondary" />
+                    <Icon as={InfoIcon} size={20} intent="neutral" priority="secondary" />
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                         <Translation
                             id={

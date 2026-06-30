@@ -1,4 +1,5 @@
 import { Icon, Input, Row, Select, Text } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { type SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
@@ -56,7 +57,7 @@ export const SearchAsset = ({
             onChange={event => setSearch(event.target.value)}
             onClear={() => setSearch('')}
             leftContent={
-                <Icon name="magnifyingGlass" intent="neutral" priority="secondary" size={16} />
+                <Icon as={MagnifyingGlassIcon} intent="neutral" priority="secondary" size={16} />
             }
             rightContent={networkSelect}
             // eslint-disable-next-line jsx-a11y/no-autofocus

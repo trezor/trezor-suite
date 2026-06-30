@@ -6,6 +6,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { EntryForm, PasswordsList, TagsList, getNextId, usePasswords } from '@suite/metadata';
 import { Button, Tooltip } from '@trezor/components';
+import { PencilIcon } from '@trezor/icons';
 import { ActionColumn, TextColumn } from '@trezor/product-components';
 
 const PasswordManagerBody = styled.div`
@@ -112,7 +113,7 @@ export const PasswordManager = () => {
                                     type="button"
                                     intent="neutral"
                                     priority="secondary"
-                                    iconLeft="pencil"
+                                    iconLeft={PencilIcon}
                                 >
                                     Add the first one!
                                 </Button>

@@ -1,7 +1,8 @@
+import { InfoIcon, LightbulbIcon, WarningIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
 
 import { type BannerIntent } from './types';
-import { type IconName } from '../Icon/Icon';
+import { type IconComponent } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
@@ -39,13 +40,13 @@ export const mapIntentToIconColor = (intent: BannerIntent): Color => {
     return colorMap[intent];
 };
 
-export const mapIntentToIcon = (intent: BannerIntent): IconName => {
-    const iconMap: Record<BannerIntent, IconName> = {
-        brand: 'lightbulb',
-        info: 'info',
-        warning: 'warning',
-        critical: 'warning',
-        neutral: 'info',
+export const mapIntentToIcon = (intent: BannerIntent): IconComponent => {
+    const iconMap: Record<BannerIntent, IconComponent> = {
+        brand: LightbulbIcon,
+        info: InfoIcon,
+        warning: WarningIcon,
+        critical: WarningIcon,
+        neutral: InfoIcon,
     };
 
     return iconMap[intent];

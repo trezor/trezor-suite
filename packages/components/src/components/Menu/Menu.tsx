@@ -13,7 +13,7 @@ import {
 import { type TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const DROPDOWN_MENU = keyframes`
@@ -64,8 +64,8 @@ const MenuList = styled.ul`
 export type DropdownMenuItemProps = {
     label: React.ReactNode;
     onClick?: () => unknown | Promise<unknown>;
-    icon?: IconName;
-    iconRight?: IconName;
+    icon?: IconComponent;
+    iconRight?: IconComponent;
     isDisabled?: boolean;
     isHidden?: boolean;
     closeOnClick?: boolean;
@@ -99,7 +99,7 @@ const MenuItem = ({
         <Row gap={spacings.sm} padding={{ vertical: spacings.xs, horizontal: spacings.sm }}>
             {icon && (
                 <Icon
-                    name={icon}
+                    as={icon}
                     size={spacings.md}
                     {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />
@@ -110,7 +110,7 @@ const MenuItem = ({
             {iconRight && (
                 <Icon
                     margin={{ left: 'auto' }}
-                    name={iconRight}
+                    as={iconRight}
                     size={spacings.md}
                     {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />

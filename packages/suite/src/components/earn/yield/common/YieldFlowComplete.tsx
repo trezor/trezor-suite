@@ -6,6 +6,7 @@ import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 import { FeedbackCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -73,7 +74,7 @@ export const YieldFlowComplete = ({
 
     return (
         <Column gap={16}>
-            <IconCircle name="check" intent="brand" size={isBelowMobile ? 64 : 96} />
+            <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
 
             <Column gap={4}>
                 <Text typographyStyle="headline-md">{heading}</Text>
@@ -94,7 +95,7 @@ export const YieldFlowComplete = ({
                             <Translation id="TR_EARN_YIELD_STATUS" />
                         </Text>
                         <Row alignItems="center" gap={8}>
-                            <Icon name="checkCircleFilled" intent="brand" />
+                            <Icon as={CheckCircleFilledIcon} intent="brand" />
                             <Text typographyStyle="body-md" intent="brand">
                                 <Translation id="TR_EARN_YIELD_COMPLETED" />
                             </Text>

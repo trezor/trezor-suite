@@ -19,6 +19,7 @@ import {
 } from '@suite-common/tx-simulation';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Modal } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
@@ -172,7 +173,7 @@ export function EarnYieldTxSimulationModalInner({
                         {composedLevelsError && (
                             <Banner
                                 intent="critical"
-                                icon="warning"
+                                icon={WarningIcon}
                                 description={
                                     <Translation
                                         id={composedLevelsError.id}

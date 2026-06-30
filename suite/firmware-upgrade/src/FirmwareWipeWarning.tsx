@@ -1,5 +1,6 @@
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Banner, Paragraph, Text } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 export const FirmwareWipeWarning = () => {
     const warningTranslationValues: ExtendedMessageDescriptor['values'] = {
@@ -9,7 +10,7 @@ export const FirmwareWipeWarning = () => {
     return (
         <Banner
             intent="critical"
-            icon="warning"
+            icon={WarningIcon}
             description={
                 <Paragraph>
                     <Translation

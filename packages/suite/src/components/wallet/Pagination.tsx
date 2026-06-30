@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { Button, Row } from '@trezor/components';
+import { CaretLeftIcon, CaretRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
@@ -143,7 +144,7 @@ export const Pagination = ({
                 <Actions $isActive={showPrev}>
                     <Button
                         onClick={() => onPageSelected(currentPage - 1)}
-                        iconLeft="caretLeft"
+                        iconLeft={CaretLeftIcon}
                         intent="neutral"
                         priority="secondary"
                     >
@@ -153,7 +154,7 @@ export const Pagination = ({
                 <Actions $isActive={!isLastPage}>
                     <Button
                         onClick={() => onPageSelected(currentPage + 1)}
-                        iconRight="caretRight"
+                        iconRight={CaretRightIcon}
                         intent="neutral"
                         priority="secondary"
                     >

@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import { useTranslation } from '@suite/intl';
 import { Icon, Input } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { useAccountSearch } from 'src/hooks/suite';
 
@@ -24,7 +25,7 @@ export const AccountSearchBox = () => {
             }}
             leftContent={
                 <Icon
-                    name="magnifyingGlass"
+                    as={MagnifyingGlassIcon}
                     margin={{ left: 12, right: 20 }}
                     size={16}
                     intent="neutral"

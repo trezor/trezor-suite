@@ -17,6 +17,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
 import { getAddressPathIndex } from '@trezor/crypto-utils';
+import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -200,7 +201,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconRight="caretDown"
+                                iconRight={CaretDownIcon}
                                 onClick={() => setLimit(limit + 20)}
                                 data-testid="@wallet/receive/used-address/show-more"
                             >
@@ -212,7 +213,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconLeft="caretUp"
+                                iconLeft={CaretUpIcon}
                                 onClick={() => setLimit(DEFAULT_LIMIT)}
                             >
                                 <Translation id="TR_SHOW_LESS" />

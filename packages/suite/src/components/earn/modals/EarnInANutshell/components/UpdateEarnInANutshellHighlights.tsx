@@ -4,6 +4,7 @@ import {
     type StakingNetworkType,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
+import { HandCoinsIcon, PiggyBankIcon, WalletIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
@@ -28,7 +29,7 @@ export const UpdateEarnInANutshellHighlights = ({
 
     const highlights: EarnInANutshellHighlight[] = [
         {
-            icon: 'piggyBank',
+            icon: PiggyBankIcon,
             content: (
                 <Translation
                     id="TR_EARN_APY_WITH_EVERSTAKE"
@@ -37,7 +38,7 @@ export const UpdateEarnInANutshellHighlights = ({
             ),
         },
         {
-            icon: 'wallet',
+            icon: WalletIcon,
             content: (
                 <Translation
                     id="TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE"
@@ -46,7 +47,7 @@ export const UpdateEarnInANutshellHighlights = ({
             ),
         },
         {
-            icon: 'handCoins',
+            icon: HandCoinsIcon,
             content: (
                 <Translation
                     id="TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED"

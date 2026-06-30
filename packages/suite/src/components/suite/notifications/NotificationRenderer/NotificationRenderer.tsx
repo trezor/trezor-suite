@@ -15,6 +15,7 @@ import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notific
 import { getTradingErrorDisplay } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ActionRenderer } from './ActionRenderer';
@@ -112,49 +113,49 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_BACKUP_SUCCESS',
-                icon: 'gear',
+                icon: GearIcon,
             });
 
         case 'settings-applied':
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_SETTINGS_APPLIED',
-                icon: 'gear',
+                icon: GearIcon,
             });
 
         case 'pin-changed':
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_PIN_CHANGED',
-                icon: 'gear',
+                icon: GearIcon,
             });
 
         case 'wipe-code-changed':
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_WIPE_CODE_CHANGED',
-                icon: 'gear',
+                icon: GearIcon,
             });
 
         case 'wipe-code-removed':
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_WIPE_CODE_REMOVED',
-                icon: 'gear',
+                icon: GearIcon,
             });
 
         case 'device-wiped':
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_DEVICE_WIPED',
-                icon: 'gear',
+                icon: GearIcon,
             });
 
         case 'device-forgotten':
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TR_DEVICE_HAS_BEEN_FORGOTTEN',
-                icon: 'check',
+                icon: CheckIcon,
             });
 
         case 'copy-to-clipboard':
@@ -168,7 +169,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_SENT"
                     messageValues={{
@@ -425,7 +426,7 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'info',
                 message: 'TR_TOR_IS_SLOW_MESSAGE',
-                icon: 'torBrowser',
+                icon: TorBrowserIcon,
                 values: { br: () => <br /> },
             });
 
@@ -443,7 +444,7 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TR_SUITE_SYNC_ENABLED_SUCCESS',
-                icon: 'check',
+                icon: CheckIcon,
             });
 
         case 'tx-received':
@@ -451,7 +452,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowDown"
+                    icon={ArrowDownIcon}
                     variant="info"
                     message="TOAST_TX_RECEIVED"
                     messageValues={{
@@ -466,7 +467,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_REVOKED"
                     messageValues={{
@@ -480,7 +481,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_APPROVED"
                     messageValues={{
@@ -495,7 +496,7 @@ export const NotificationRenderer = ({
                 <ExchangeInfoRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_EXCHANGE_BROADCASTED"
                 />
@@ -506,7 +507,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_SENT"
                     messageValues={{
@@ -571,7 +572,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_STAKED"
                     messageValues={{
@@ -586,7 +587,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_UNSTAKED"
                     messageValues={{
@@ -600,7 +601,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_CLAIMED"
                     messageValues={{
@@ -614,7 +615,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_YIELD_DEPOSIT"
                     messageValues={{
@@ -628,7 +629,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_YIELD_WITHDRAW"
                     messageValues={{
@@ -642,7 +643,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="arrowUp"
+                    icon={ArrowUpIcon}
                     variant="success"
                     message="TOAST_TX_YIELD_CLAIM"
                     messageValues={{
@@ -655,7 +656,7 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TOAST_SUCCESSFUL_CLAIM',
-                icon: 'check',
+                icon: CheckIcon,
                 values: {
                     networkDisplaySymbol: getNetworkDisplaySymbol(notification.symbol),
                 },
@@ -705,7 +706,7 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'success',
                 message: 'TR_CONNECT_POPUP_SUCCESS',
-                icon: 'check',
+                icon: CheckIcon,
                 values: { appName: notification.appName },
             });
 

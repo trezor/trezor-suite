@@ -7,6 +7,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CpuIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
@@ -47,7 +48,7 @@ export const DeviceNoFirmware = () => {
                     key: 'device-firmware-missing',
                     heading: <Translation id="TR_NO_FIRMWARE" />,
                     description: <Translation id="TR_NO_FIRMWARE_EXPLAINED" />,
-                    icon: 'cpu',
+                    icon: CpuIcon,
                 },
             ]}
         />

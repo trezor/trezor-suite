@@ -9,6 +9,7 @@ import {
 
 import { Translation } from '@suite/intl';
 import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
+import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 import { useCurrentRef } from '@trezor/react-utils';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
@@ -70,7 +71,7 @@ export const DashboardSection = forwardRef(
                                                 onClick={() => setCollapsed(prev => !prev)}
                                             >
                                                 <IconButton
-                                                    icon={collapsed ? 'caretDown' : 'caretUp'}
+                                                    icon={collapsed ? CaretDownIcon : CaretUpIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     tooltip={{

@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
@@ -63,7 +64,7 @@ export const UnstakeButton = () => {
                 isDisabled={isDisabled || isUnstakingDisabled}
                 isLoading={isLoading}
                 onClick={onWithdrawalClick}
-                iconLeft={isUnstakingDisabled ? 'info' : undefined}
+                iconLeft={isUnstakingDisabled ? InfoIcon : undefined}
                 data-testid="@modal/staking/unstake-button"
             >
                 <Translation id="TR_CONTINUE" />

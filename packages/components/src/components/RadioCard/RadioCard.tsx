@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { CheckIcon } from '@trezor/icons';
 import { borders } from '@trezor/theme';
 
 import {
@@ -67,7 +68,7 @@ export const RadioCard = ({
                     backgroundColor="borderBrand"
                     padding={2}
                 >
-                    <Icon name="check" size={12} color="contentPrimaryInverse" />
+                    <Icon as={CheckIcon} size={12} color="contentPrimaryInverse" />
                 </Box>
             )}
         </Wrapper>

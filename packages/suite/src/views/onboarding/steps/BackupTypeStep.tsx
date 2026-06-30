@@ -9,6 +9,7 @@ import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-comm
 import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Column, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { WalletIcon } from '@trezor/icons';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 
@@ -85,7 +86,7 @@ export const BackupTypeStep = () => {
 
     return (
         <OnboardingCard
-            iconName="wallet"
+            icon={WalletIcon}
             heading={
                 <Column gap={8} alignItems="center" justifyContent="center">
                     <Badge intent="neutral" size="medium">

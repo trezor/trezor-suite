@@ -6,6 +6,7 @@ import type {
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { YieldAmountCard } from './YieldAmountCard';
@@ -108,7 +109,7 @@ export const YieldApproveStep = ({
             {approvalAction === 'revoke' && !isDisabled && (
                 <Banner
                     intent="warning"
-                    icon="warning"
+                    icon={WarningIcon}
                     description={<Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />}
                 />
             )}

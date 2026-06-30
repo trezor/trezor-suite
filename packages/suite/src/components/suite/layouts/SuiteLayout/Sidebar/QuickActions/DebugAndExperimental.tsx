@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
 import { Box, Column, Icon } from '@trezor/components';
+import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,30 +22,30 @@ const DebugAndExperimentalTooltip = ({
     <Column gap={16} padding={4} alignItems="start">
         {isExperimental && (
             <TooltipRow
-                iconName="check"
+                icon={CheckIcon}
                 intent="brand"
                 header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
-                leftItem={<Icon name="atom" intent="warning" size={16} />}
+                leftItem={<Icon as={AtomIcon} intent="warning" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
         )}
         {isEapEnabled && (
             <TooltipRow
-                iconName="check"
+                icon={CheckIcon}
                 intent="brand"
                 header={<Translation id="TR_EARLY_ACCESS" />}
-                leftItem={<Icon name="starFour" intent="info" size={16} />}
+                leftItem={<Icon as={StarFourIcon} intent="info" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
         )}
         {isDebugMode && (
             <TooltipRow
-                iconName="check"
+                icon={CheckIcon}
                 intent="brand"
                 header="Debug Mode"
-                leftItem={<Icon name="dotOutlineFilled" intent="critical" size={16} />}
+                leftItem={<Icon as={DotOutlineFilledIcon} intent="critical" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -82,17 +83,17 @@ export const DebugAndExperimental = () => {
                 <Box position={{ type: 'relative' }} width={16} height={16}>
                     {isDebug && (
                         <Box position={position}>
-                            <Icon name="dotOutlineFilled" intent="critical" size={16} />
+                            <Icon as={DotOutlineFilledIcon} intent="critical" size={16} />
                         </Box>
                     )}
                     {isExperimental && (
                         <Box position={position}>
-                            <Icon name="atom" intent="warning" size={16} />
+                            <Icon as={AtomIcon} intent="warning" size={16} />
                         </Box>
                     )}
                     {isEapEnabled && (
                         <Box position={position}>
-                            <Icon name="starFour" intent="info" size={16} />
+                            <Icon as={StarFourIcon} intent="info" size={16} />
                         </Box>
                     )}
                 </Box>

@@ -33,6 +33,13 @@ import {
     Table,
     Text,
 } from '@trezor/components';
+import {
+    ArrowUpRightIcon,
+    EyeIcon,
+    EyeSlashIcon,
+    NewspaperIcon,
+    PictureFrameIcon,
+} from '@trezor/icons';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { HiddenPlaceholder } from 'src/components/suite';
@@ -136,7 +143,7 @@ const NftsRow = ({
                             items={[
                                 {
                                     label: <Translation id="TR_HIDE_COLLECTION" />,
-                                    icon: 'eyeSlash',
+                                    icon: EyeSlashIcon,
                                     onClick: () =>
                                         dispatch(
                                             tokenDefinitionsActions.setTokenStatus({
@@ -150,7 +157,7 @@ const NftsRow = ({
                                 },
                                 {
                                     label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
-                                    icon: 'newspaper',
+                                    icon: NewspaperIcon,
                                     onClick: () => {
                                         dispatch({
                                             type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
@@ -172,7 +179,7 @@ const NftsRow = ({
                                 },
                                 {
                                     label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                                    icon: 'arrowUpRight',
+                                    icon: ArrowUpRightIcon,
                                     onClick: () => {
                                         window.open(
                                             getNftContractExplorerUrl(explorer, nft),
@@ -184,7 +191,7 @@ const NftsRow = ({
                         />
                         {!isShown && (
                             <Button
-                                iconLeft="eye"
+                                iconLeft={EyeIcon}
                                 onClick={() => {
                                     dispatch(
                                         tokenDefinitionsActions.setTokenStatus({
@@ -216,7 +223,7 @@ const NftsRow = ({
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
                                         <IconCircle
-                                            name="pictureFrame"
+                                            icon={PictureFrameIcon}
                                             size={32}
                                             intent="neutral"
                                         />
@@ -247,7 +254,7 @@ const NftsRow = ({
                                 <HiddenPlaceholder>
                                     <Row gap={8}>
                                         <IconCircle
-                                            name="pictureFrame"
+                                            icon={PictureFrameIcon}
                                             size={32}
                                             intent="neutral"
                                         />

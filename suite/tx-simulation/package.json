@@ -16,6 +16,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3"

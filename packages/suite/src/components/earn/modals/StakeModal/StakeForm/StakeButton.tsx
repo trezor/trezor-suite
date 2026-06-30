@@ -5,6 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
@@ -83,7 +84,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
                 isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isLoading}
                 onClick={onStakeClick}
-                iconLeft={isStakingDisabled ? 'info' : undefined}
+                iconLeft={isStakingDisabled ? InfoIcon : undefined}
                 data-testid="@modal/staking/continue-button"
             >
                 <Translation id="TR_CONTINUE" />

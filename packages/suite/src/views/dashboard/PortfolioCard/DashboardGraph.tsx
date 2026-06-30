@@ -9,6 +9,7 @@ import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Box, Button } from '@trezor/components';
+import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
@@ -120,7 +121,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
                         <Button
                             onClick={onRefresh}
-                            iconLeft="repeat"
+                            iconLeft={RepeatIcon}
                             intent="neutral"
                             priority="secondary"
                         >

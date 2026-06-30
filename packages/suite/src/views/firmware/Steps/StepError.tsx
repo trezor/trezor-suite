@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { H3, Modal, Paragraph } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 type StepErrorProps = {
     onClose: () => void;
@@ -15,7 +16,7 @@ export const StepError = ({ onClose, error }: StepErrorProps) => (
                 <Translation id="TR_CLOSE" />
             </Modal.Button>
         }
-        iconName="warning"
+        icon={WarningIcon}
         intent="critical"
     >
         <H3>

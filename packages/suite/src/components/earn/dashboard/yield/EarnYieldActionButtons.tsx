@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Button, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 type EarnYieldActionButtonsProps = {
     hasDepositedBalance: boolean;
@@ -39,7 +40,7 @@ export const EarnYieldActionButtons = ({
                     <Button
                         size="small"
                         isDisabled={isDepositMoreDisabled}
-                        iconLeft={isDepositDisabled ? 'info' : undefined}
+                        iconLeft={isDepositDisabled ? InfoIcon : undefined}
                         onClick={onDepositMore}
                     >
                         <Translation id="TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE" />
@@ -51,7 +52,7 @@ export const EarnYieldActionButtons = ({
                         intent="brand"
                         priority="secondary"
                         isDisabled={isWithdrawDisabled}
-                        iconLeft={isWithdrawDisabled ? 'info' : undefined}
+                        iconLeft={isWithdrawDisabled ? InfoIcon : undefined}
                         onClick={onWithdraw}
                     >
                         <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
@@ -65,7 +66,7 @@ export const EarnYieldActionButtons = ({
                 <Button
                     size="small"
                     isDisabled={isDepositNowDisabled}
-                    iconLeft={isDepositDisabled ? 'info' : undefined}
+                    iconLeft={isDepositDisabled ? InfoIcon : undefined}
                     onClick={onDepositNow}
                 >
                     <Translation id="TR_EARN_YIELD_DASHBOARD_DEPOSIT_NOW" />

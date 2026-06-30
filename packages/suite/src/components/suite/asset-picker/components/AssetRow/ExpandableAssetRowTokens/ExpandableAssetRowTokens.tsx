@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Collapsible, Row, Text } from '@trezor/components';
+import { CaretUpDownIcon, CaretUpDownReverseIcon } from '@trezor/icons';
 import { TokenIconSet } from '@trezor/product-components';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
@@ -85,7 +86,7 @@ export function ExpandableAssetRowTokens({
                                 )}
 
                                 <Collapsible.ToggleIcon
-                                    iconName={expanded ? 'caretUpDownReverse' : 'caretUpDown'}
+                                    icon={expanded ? CaretUpDownReverseIcon : CaretUpDownIcon}
                                 />
                             </Row>
                         </Row>

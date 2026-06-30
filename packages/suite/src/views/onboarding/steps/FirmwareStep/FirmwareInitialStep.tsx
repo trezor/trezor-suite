@@ -14,6 +14,7 @@ import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { CircuitryIcon } from '@trezor/icons';
 import { unique } from '@trezor/utils';
 
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
@@ -307,7 +308,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                     <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
                 )}
                 <OnboardingCard
-                    iconName="circuitry"
+                    icon={CircuitryIcon}
                     heading={content.heading}
                     description={content.description}
                     innerActions={content.innerActions}

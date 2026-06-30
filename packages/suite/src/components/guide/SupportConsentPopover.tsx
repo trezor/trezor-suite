@@ -7,6 +7,7 @@ import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { Button, Card, Checkbox, Column, Paragraph, Popover, variables } from '@trezor/components';
+import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -62,7 +63,7 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
                             </Paragraph>
                         </Column>
                         <Button
-                            iconRight="arrowLineUpRight"
+                            iconRight={ArrowLineUpRightIcon}
                             onClick={handleOpenSupportChat}
                             width="100%"
                         >

@@ -9,7 +9,7 @@ interface EmptyStakingCardFeatureProps {
 export const EmptyStakingCardFeature = ({ feature }: EmptyStakingCardFeatureProps) => (
     <Row gap={16} alignItems="flex-start">
         <Column>
-            <IconCircle name={feature.icon} intent="brand" size={40} />
+            <IconCircle icon={feature.icon} intent="brand" size={40} />
         </Column>
         <Column gap={4}>
             <H4>{feature.title}</H4>

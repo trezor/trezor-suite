@@ -1,4 +1,5 @@
 import { Badge, Tooltip } from '@trezor/components';
+import { ArrowsClockwiseFilledIcon } from '@trezor/icons';
 
 type LastUpdatedBadgeProps = {
     children: React.ReactNode;
@@ -9,7 +10,7 @@ export const LastUpdatedBadge = ({ children }: LastUpdatedBadgeProps) => {
 
     return (
         <Tooltip content="Last updated in version">
-            <Badge intent="warning" size="small" iconLeft="arrowsClockwiseFilled">
+            <Badge intent="warning" size="small" iconLeft={ArrowsClockwiseFilledIcon}>
                 {children}
             </Badge>
         </Tooltip>

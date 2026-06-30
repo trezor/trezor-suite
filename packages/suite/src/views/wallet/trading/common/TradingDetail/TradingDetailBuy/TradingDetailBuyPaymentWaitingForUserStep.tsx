@@ -5,6 +5,7 @@ import { type BuyTrade } from 'invity-api';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { invityAPI } from '@suite-common/trading';
 import { Button, Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
+import { ArrowSquareOutIcon } from '@trezor/icons';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -84,7 +85,7 @@ export const TradingDetailBuyPaymentWaitingForUserStep = ({
                         onClick={goToPayment}
                         isLoading={isWorking}
                         isDisabled={isWorking}
-                        iconRight="arrowSquareOut"
+                        iconRight={ArrowSquareOutIcon}
                     >
                         <Translation id={getButtonLabelId(trade)} />
                     </Button>

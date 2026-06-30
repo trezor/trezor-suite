@@ -2,6 +2,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type Route, goto, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
+import { CaretLeftIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -35,7 +36,7 @@ const TradingPageHeader = ({ title }: TradingPageHeaderProps) => {
             <Row width="100%" gap={spacings.md}>
                 {!isTopLevelRoute && (
                     <IconButton
-                        icon="caretLeft"
+                        icon={CaretLeftIcon}
                         intent="neutral"
                         priority="secondary"
                         size="large"

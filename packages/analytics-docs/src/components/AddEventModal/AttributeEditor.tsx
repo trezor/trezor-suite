@@ -12,6 +12,7 @@ import {
     Textarea,
     Tooltip,
 } from '@trezor/components';
+import { QuestionIcon, TrashIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import {
@@ -65,7 +66,7 @@ export const AttributeEditor = ({
                             appendTo={document.body}
                             zIndex={zIndices.windowControls}
                         >
-                            <Icon name="question" size={16} priority="secondary" cursor="help" />
+                            <Icon as={QuestionIcon} size={16} priority="secondary" cursor="help" />
                         </Tooltip>
                     </Row>
                 </Row>
@@ -98,7 +99,7 @@ export const AttributeEditor = ({
                                 zIndex={zIndices.windowControls}
                             >
                                 <Icon
-                                    name="question"
+                                    as={QuestionIcon}
                                     size={16}
                                     priority="secondary"
                                     cursor="help"
@@ -109,7 +110,7 @@ export const AttributeEditor = ({
                     {canRemove && (
                         <Row flex="1" justifyContent="flex-end">
                             <IconButton
-                                icon="trash"
+                                icon={TrashIcon}
                                 size="small"
                                 intent="critical"
                                 priority="secondary"

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Icon, Paragraph, Row, ShortcutBadge, Spinner } from '@trezor/components';
+import { QrCodeIcon, WarningIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -87,7 +88,7 @@ export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
                 <>
                     <DropZone
                         accept={IMAGE_ACCEPT}
-                        iconName="qrCode"
+                        icon={QrCodeIcon}
                         emptyLabel={<Translation id="TR_DROPZONE" />}
                         emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
                         fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}
@@ -96,7 +97,7 @@ export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
                     {error && (
                         <Card>
                             <Column alignItems="center" gap={spacings.xs}>
-                                <Icon name="warning" size={24} intent="critical" />
+                                <Icon as={WarningIcon} size={24} intent="critical" />
                                 <Paragraph intent="critical">
                                     <Translation id="TR_QR_NOT_FOUND" />
                                 </Paragraph>

@@ -10,7 +10,8 @@ import {
 
 import styled from 'styled-components';
 
-import { Column, Icon, type IconName, Paragraph, Row, Text } from '@trezor/components';
+import { Column, Icon, type IconComponent, Paragraph, Row, Text } from '@trezor/components';
+import { FileXIcon } from '@trezor/icons';
 import { borders, spacings } from '@trezor/theme';
 
 const Wrapper = styled.div`
@@ -35,7 +36,7 @@ const StyledInput = styled.input`
 
 export type DropZoneProps = {
     accept?: string;
-    iconName?: IconName;
+    icon?: IconComponent;
     emptyLabel: ReactNode;
     emptyError: ReactNode;
     fileTypeError: ReactNode;
@@ -168,7 +169,7 @@ const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZonePr
 
 export const DropZone = ({
     accept,
-    iconName = 'fileX',
+    icon = FileXIcon,
     emptyLabel,
     emptyError,
     fileTypeError,
@@ -196,7 +197,7 @@ export const DropZone = ({
                 <StyledInput {...getInputProps()} />
                 <Row gap={spacings.xs}>
                     <Icon
-                        name={iconName}
+                        as={icon}
                         size={20}
                         {...(filename
                             ? { intent: 'neutral' as const }

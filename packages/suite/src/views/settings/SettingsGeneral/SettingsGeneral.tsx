@@ -13,6 +13,15 @@ import {
     selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
+import {
+    AppWindowIcon,
+    AtomIcon,
+    FlagIcon,
+    LockIcon,
+    PlugsIcon,
+    ShieldIcon,
+    TagIcon,
+} from '@trezor/icons';
 import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
@@ -90,7 +99,7 @@ export const SettingsGeneral = () => {
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_PRIVACY" />}
-                    icon="lock"
+                    icon={LockIcon}
                 >
                     <AutoEject />
                     {isDesktop() && !isLinux() && <BioAuthSettings />}
@@ -109,7 +118,7 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_LOCALIZATION" />}
-                icon="flag"
+                icon={FlagIcon}
             >
                 <Language />
                 <BaseCurrency />
@@ -119,7 +128,7 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_LABELING" />}
-                icon="tag"
+                icon={TagIcon}
             >
                 <LabelingSettings />
                 {isLegacyLabelingVisible &&
@@ -134,7 +143,7 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_APPLICATION" />}
-                icon="appWindow"
+                icon={AppWindowIcon}
             >
                 <Theme />
                 <Analytics />
@@ -146,7 +155,7 @@ export const SettingsGeneral = () => {
 
             <SettingsSection
                 title={<Translation id="TR_SECURITY" />}
-                icon="shield"
+                icon={ShieldIcon}
                 hasVerticalLayout={hasContentBelowTabletWidth}
             >
                 {isMevProtectionSettingsVisible && <MevProtection />}
@@ -169,7 +178,7 @@ export const SettingsGeneral = () => {
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_TREZOR_CONNECT" />}
-                    icon="plugs"
+                    icon={PlugsIcon}
                 >
                     <AutoStart />
                     <ShowOnTray />
@@ -179,7 +188,7 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
-                icon="atom"
+                icon={AtomIcon}
             >
                 <Experimental />
             </SettingsSection>
@@ -188,7 +197,7 @@ export const SettingsGeneral = () => {
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_EXPERIMENTAL_MCP_SERVER" />}
-                    icon="plugs"
+                    icon={PlugsIcon}
                 >
                     <McpServer />
                 </SettingsSection>

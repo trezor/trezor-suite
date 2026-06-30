@@ -10,6 +10,7 @@ import {
     useTradingUtils,
 } from '@suite-common/trading';
 import { Column, Divider, Row, Text, TextButton } from '@trezor/components';
+import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -83,7 +84,7 @@ export const TradingOfferExchangeSlippageSummary = ({
             </Column>
 
             <TextButton
-                iconRight="arrowLineUpRight"
+                iconRight={ArrowLineUpRightIcon}
                 isUnderlined
                 href={TREZOR_TRADING_DEX_SLIPPAGE_URL}
             >

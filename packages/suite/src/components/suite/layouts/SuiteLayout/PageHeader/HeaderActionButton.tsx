@@ -1,4 +1,4 @@
-import { Button, type ButtonProps, IconButton, type IconName } from '@trezor/components';
+import { Button, type ButtonProps, IconButton, type IconComponent } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
@@ -7,7 +7,7 @@ type HeaderActionButtonProps = Pick<
     ButtonProps,
     'onClick' | 'data-testid' | 'size' | 'isDisabled' | 'children' | 'intent' | 'priority'
 > & {
-    icon: IconName;
+    icon: IconComponent;
 };
 
 export const HeaderActionButton = ({

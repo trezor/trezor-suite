@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react';
 
-import { Column, Icon, type IconName, Row, Text, type UIIntent } from '@trezor/components';
+import { Column, Icon, type IconComponent, Row, Text, type UIIntent } from '@trezor/components';
 
 type TooltipRowProps = {
     children: ReactNode;
     leftItem: ReactNode;
     header: ReactNode;
     intent: UIIntent;
-    iconName: IconName;
-    onClick?: () => void;
+    icon: IconComponent;
+    onClick?: () => unknown;
 };
 
 export const TooltipRow = ({
@@ -16,7 +16,7 @@ export const TooltipRow = ({
     children,
     header,
     intent,
-    iconName,
+    icon,
     onClick,
 }: TooltipRowProps) => (
     <Row gap={12} onClick={onClick} cursor={onClick ? 'pointer' : undefined}>
@@ -24,7 +24,7 @@ export const TooltipRow = ({
         <Column alignItems="start">
             <Text>{header}</Text>
             <Row gap={4}>
-                <Icon name={iconName} intent={intent} size={12} priority="secondary" />
+                <Icon as={icon} intent={intent} size={12} priority="secondary" />
                 <Text intent={intent} priority="secondary">
                     {children}
                 </Text>

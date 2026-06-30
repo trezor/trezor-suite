@@ -4,7 +4,8 @@ import { type TranslationKey } from '@suite/intl';
 import { selectTorState } from '@suite/tor';
 import { type TradingType, selectTradingProviderCompanyName } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { type IconName } from '@trezor/components';
+import { type IconComponent } from '@trezor/components';
+import { ArrowSquareOutIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
@@ -69,7 +70,7 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const confirmButtonData: {
         translationId: TranslationKey;
         translationValues?: Record<string, string>;
-        iconRight?: IconName;
+        iconRight?: IconComponent;
         isLoading: boolean;
     } = {
         translationId: tradingGetSectionActionLabel(type),
@@ -81,11 +82,11 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
     } else if (providerName && type === 'buy') {
         confirmButtonData.translationId = 'TR_TRADING_BUY_VIA';
         confirmButtonData.translationValues = { providerName };
-        confirmButtonData.iconRight = 'arrowSquareOut';
+        confirmButtonData.iconRight = ArrowSquareOutIcon;
     } else if (providerName && type === 'sell') {
         confirmButtonData.translationId = 'TR_TRADING_SELL_VIA';
         confirmButtonData.translationValues = { providerName };
-        confirmButtonData.iconRight = 'arrowSquareOut';
+        confirmButtonData.iconRight = ArrowSquareOutIcon;
     }
 
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto: !!amountInCrypto });

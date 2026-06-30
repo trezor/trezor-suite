@@ -1,12 +1,13 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import * as generatedIcons from '@trezor/icons';
+
 import {
     ComponentWithSubIcon as ComponentWithSubIconComponent,
     type ComponentWithSubIconProps,
     allowedComponentWithSubIconFrameProps,
 } from './ComponentWithSubIcon';
 import { componentWithSubIconIntents } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { IconButton } from '../buttons/IconButton/IconButton';
 
@@ -18,11 +19,11 @@ export default meta;
 
 export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
     args: {
-        iconName: 'check',
+        icon: generatedIcons.CheckIcon,
         intent: 'brand',
         children: (
             <IconButton
-                icon="airTrafficControl"
+                icon={generatedIcons.AirTrafficControlIcon}
                 size="large"
                 intent="neutral"
                 priority="secondary"
@@ -35,6 +36,11 @@ export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
         ...getFramePropsStory(allowedComponentWithSubIconFrameProps).args,
     },
     argTypes: {
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
+            control: { type: 'select' },
+        },
         intent: {
             options: componentWithSubIconIntents,
             control: {
@@ -49,12 +55,6 @@ export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
         iconOffset: {
             control: {
                 type: 'number',
-            },
-        },
-        iconName: {
-            options: [null, ...variables.ICONS],
-            control: {
-                type: 'select',
             },
         },
         iconSize: {

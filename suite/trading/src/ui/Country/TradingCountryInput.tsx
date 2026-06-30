@@ -4,6 +4,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryCode, getDefaultCountry } from '@suite-common/trading';
 import { Flag, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { CountrySelectModal } from './CountrySelectModal';
 import { useGetCountryName } from '../../hooks';
@@ -72,7 +73,7 @@ export const TradingCountryInput = ({
                                     </Text>
                                 </Row>
                                 <Icon
-                                    name="caretRight"
+                                    as={CaretRightIcon}
                                     size={20}
                                     intent="neutral"
                                     priority="secondary"

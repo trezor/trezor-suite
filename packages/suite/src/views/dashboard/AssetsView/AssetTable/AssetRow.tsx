@@ -12,6 +12,7 @@ import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 
 import {
     AmountUnitSwitchWrapper,
@@ -172,7 +173,7 @@ export const AssetRow = memo(
                         ) : (
                             <Text intent="critical" typographyStyle="body-sm" textWrap="nowrap">
                                 <Row gap={4}>
-                                    <Icon name="warning" intent="critical" size={14} />
+                                    <Icon as={WarningIcon} intent="critical" size={14} />
                                     <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                                 </Row>
                             </Text>
@@ -208,7 +209,7 @@ export const AssetRow = memo(
                                 </AssetActionButton>
                             )}
                             <IconButton
-                                icon="arrowRight"
+                                icon={ArrowRightIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 tooltip={{ content: <Translation id="TR_SHOW_MORE" /> }}

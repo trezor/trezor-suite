@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { IconCircle, Row, Text } from '@trezor/components';
+import { CheckIcon, DotOutlineFilledIcon, SpinnerIcon } from '@trezor/icons';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { type ProgressLabelState } from './types';
@@ -33,11 +34,11 @@ const getProgressStateIcon = (progressState: ProgressLabelState) => {
 
     switch (progressState) {
         case 'active':
-            return <IconCircle {...props} name="spinner" intent="warning" />;
+            return <IconCircle {...props} icon={SpinnerIcon} intent="warning" />;
         case 'done':
-            return <IconCircle {...props} name="check" intent="brand" />;
+            return <IconCircle {...props} icon={CheckIcon} intent="brand" />;
         default:
-            return <IconCircle {...props} name="dotOutlineFilled" intent="neutral" />;
+            return <IconCircle {...props} icon={DotOutlineFilledIcon} intent="neutral" />;
     }
 };
 

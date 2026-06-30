@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Card, Column, Icon, Paragraph, Row } from '@trezor/components';
+import { QrCodeIcon } from '@trezor/icons';
 import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 
@@ -88,7 +89,7 @@ export const CameraQRReader = ({ onResult }: CameraQRReaderProps) => {
                             gap={spacings.xxxl}
                             alignItems="center"
                         >
-                            <Icon name="qrCode" size={100} />
+                            <Icon as={QrCodeIcon} size={100} />
                             <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
                         </Column>
                     </Card>

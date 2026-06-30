@@ -8,6 +8,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
+import { DotsThreeIcon, MagnifyingGlassIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { platforms, sorting } from '../constants';
@@ -61,7 +62,7 @@ export const Filter = ({
                 showClearButton
                 leftContent={
                     <Icon
-                        name="magnifyingGlass"
+                        as={MagnifyingGlassIcon}
                         size={12}
                         intent="neutral"
                         priority="secondary"
@@ -72,7 +73,7 @@ export const Filter = ({
             />
 
             <Dropdown
-                iconName="dotsThree"
+                icon={DotsThreeIcon}
                 iconSize="small"
                 data-testid="@analytics/search-options"
                 items={[

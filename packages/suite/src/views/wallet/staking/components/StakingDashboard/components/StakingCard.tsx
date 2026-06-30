@@ -22,13 +22,14 @@ import {
     Card,
     Column,
     Grid,
-    type IconName,
+    type IconComponent,
     InfoItem,
     Paragraph,
     Row,
     Skeleton,
     Tooltip,
 } from '@trezor/components';
+import { CheckIcon, InfoIcon, LockIcon, PlusCircleIcon, SpinnerGapIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
@@ -42,7 +43,7 @@ import { getStakingTotalRewards } from './utils/stakingTotalRewards';
 
 type ItemProps = {
     label: React.ReactNode;
-    iconName: IconName;
+    icon: IconComponent;
     title: React.ReactNode;
     description: React.ReactNode;
     isReward?: boolean;
@@ -52,14 +53,14 @@ type ItemProps = {
 
 const Item = ({
     label,
-    iconName,
+    icon,
     isReward = false,
     isLoading = false,
     title,
     description,
     'data-testid': dataTestId,
 }: ItemProps) => (
-    <InfoItem label={label} iconName={iconName}>
+    <InfoItem label={label} icon={icon}>
         {isLoading ? (
             <>
                 <Skeleton width={150} height={32} animate />
@@ -237,7 +238,7 @@ export const StakingCard = ({
                     {isStakePending && !isCardanoNetworkType && (
                         <Item
                             label={<Translation id="TR_STAKE_TOTAL_PENDING" />}
-                            iconName="spinnerGap"
+                            icon={SpinnerGapIcon}
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/pending"
@@ -258,7 +259,7 @@ export const StakingCard = ({
                     {isCardanoNetworkType ? (
                         <Item
                             label={<Translation id="TR_STAKE_STAKED_AUTOMATICALLY" />}
-                            iconName="check"
+                            icon={CheckIcon}
                             title={<Translation id="TR_STAKE_FULL_BALANCE" />}
                             description={
                                 <Translation
@@ -275,7 +276,7 @@ export const StakingCard = ({
                     ) : (
                         <Item
                             label={<Translation id="TR_STAKE_STAKE" />}
-                            iconName="lock"
+                            icon={LockIcon}
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/staked"
@@ -311,14 +312,14 @@ export const StakingCard = ({
                                     }
                                 >
                                     {!isCardanoNetworkType && (
-                                        <Badge intent="brand" iconRight="info" size="small">
+                                        <Badge intent="brand" iconRight={InfoIcon} size="small">
                                             <Translation id="TR_STAKE_RESTAKED_BADGE" />
                                         </Badge>
                                     )}
                                 </Tooltip>
                             </Row>
                         }
-                        iconName="plusCircle"
+                        icon={PlusCircleIcon}
                         isReward
                         title={
                             <FormattedCryptoAmount
@@ -357,7 +358,7 @@ export const StakingCard = ({
                                     )}
                                 </>
                             }
-                            iconName="spinnerGap"
+                            icon={SpinnerGapIcon}
                             title={
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/unstaking"
@@ -382,7 +383,7 @@ export const StakingCard = ({
                             <Button
                                 onClick={openStakeModal}
                                 isDisabled={isStakingDisabled}
-                                iconLeft={isStakingDisabled ? 'info' : undefined}
+                                iconLeft={isStakingDisabled ? InfoIcon : undefined}
                                 intent="neutral"
                                 priority="secondary"
                                 data-testid="@account/staking/stake-more-button"
@@ -404,7 +405,7 @@ export const StakingCard = ({
                         <Button
                             isDisabled={!canUnstake || isUnstakingDisabled}
                             onClick={openUnstakeModal}
-                            iconLeft={isUnstakingDisabled ? 'info' : undefined}
+                            iconLeft={isUnstakingDisabled ? InfoIcon : undefined}
                             intent="neutral"
                             priority="secondary"
                             data-testid="@account/staking/unstake-button"

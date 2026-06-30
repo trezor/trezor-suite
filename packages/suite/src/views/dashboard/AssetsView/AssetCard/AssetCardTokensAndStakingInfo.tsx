@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
+import { PiggyBankFilledIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
@@ -28,7 +29,12 @@ export const AssetCardTokensAndStakingInfo = ({
         {shouldRenderStaking && (
             <Row justifyContent="space-between" margin={{ horizontal: 8 }}>
                 <Row gap={8}>
-                    <Icon name="piggyBankFilled" size={20} intent="neutral" priority="secondary" />
+                    <Icon
+                        as={PiggyBankFilledIcon}
+                        size={20}
+                        intent="neutral"
+                        priority="secondary"
+                    />
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         <Translation id="TR_NAV_STAKING" />
                     </Text>

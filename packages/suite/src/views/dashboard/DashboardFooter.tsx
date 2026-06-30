@@ -10,6 +10,7 @@ import {
 } from '@suite-common/device';
 import { Box, Button, Column, Divider, Row, SvgImage, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
+import { UsersFilledIcon } from '@trezor/icons';
 import { breakpoints } from '@trezor/theme';
 import {
     SUITE_MOBILE_APP_STORE,
@@ -90,7 +91,7 @@ const ReferralButton = () => {
             href={SUITE_REFERRAL}
             intent="neutral"
             priority="secondary"
-            iconLeft="usersFilled"
+            iconLeft={UsersFilledIcon}
             size="small"
             onClick={() => {
                 analytics.report({

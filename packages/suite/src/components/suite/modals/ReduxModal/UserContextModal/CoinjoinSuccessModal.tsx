@@ -4,6 +4,7 @@ import { goto, selectRouterParams } from '@suite/router';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { ArrowsInIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -65,7 +66,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
                 </>
             }
             width={600}
-            iconName="arrowsIn"
+            icon={ArrowsInIcon}
         >
             <Column gap={spacings.xxs}>
                 <H3>

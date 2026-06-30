@@ -1,6 +1,7 @@
 import { Translation, type TranslationId } from '@suite/intl';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Column, Icon, Row, Text } from '@trezor/components';
+import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
@@ -55,7 +56,7 @@ export const YieldFlowTransferRow = ({
         return (
             <Column gap={12} padding={{ vertical: 16, horizontal: 20 }}>
                 {inputColumn}
-                <Icon name="arrowDown" size={20} intent="neutral" priority="secondary" />
+                <Icon as={ArrowDownIcon} size={20} intent="neutral" priority="secondary" />
                 {outputColumn}
             </Column>
         );
@@ -68,7 +69,7 @@ export const YieldFlowTransferRow = ({
             padding={{ vertical: 16, horizontal: 20 }}
         >
             {inputColumn}
-            <Icon name="arrowRight" size={20} intent="neutral" priority="secondary" />
+            <Icon as={ArrowRightIcon} size={20} intent="neutral" priority="secondary" />
             {outputColumn}
         </Row>
     );

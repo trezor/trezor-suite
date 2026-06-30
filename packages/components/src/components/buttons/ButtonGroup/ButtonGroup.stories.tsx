@@ -1,5 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { FaceMaskIcon } from '@trezor/icons';
+
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button } from '../Button/Button';
@@ -20,7 +22,7 @@ export const ButtonGroups: StoryObj<typeof meta> = {
                 <Button>Button 2 with tooltip</Button>
             </Tooltip>
             <Button isDisabled>Button 3</Button>
-            <Button iconLeft="faceMask">Button 4</Button>
+            <Button iconLeft={FaceMaskIcon}>Button 4</Button>
             <Button intent="neutral">Button 5</Button>
         </ButtonGroup>
     ),

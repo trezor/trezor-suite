@@ -5,9 +5,8 @@ import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { type IconName } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
 import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -34,8 +33,10 @@ export const DeviceTutorialStep = () => {
             heading={<Translation id="TR_TREZOR_DEVICE_TUTORIAL_HEADING" />}
             description={<Translation id="TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION" />}
             device={device}
-            iconName={
-                `${mapTrezorModelToIcon[device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL]}Filled` as IconName
+            icon={
+                mapTrezorModelToFilledIcon[
+                    device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL
+                ]
             }
             innerActions={
                 <OnboardingCard.Button

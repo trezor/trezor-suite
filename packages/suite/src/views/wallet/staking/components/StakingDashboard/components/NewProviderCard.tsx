@@ -6,6 +6,7 @@ import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Banner, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -69,7 +70,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                     <Banner.Button
                         onClick={openStakeInANutshellModal}
                         isDisabled={isStakingDisabled}
-                        iconLeft={isStakingDisabled ? 'info' : undefined}
+                        iconLeft={isStakingDisabled ? InfoIcon : undefined}
                         data-testid="@wallet/staking/empty-card/start-staking-button"
                     >
                         <Translation id="TR_EARN_UPDATE_PROVIDER" />

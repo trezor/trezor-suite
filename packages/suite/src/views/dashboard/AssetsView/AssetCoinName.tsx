@@ -1,6 +1,7 @@
 import { type Network } from '@suite-common/wallet-config';
 import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Column, Note, Skeleton } from '@trezor/components';
+import { WalletIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -18,7 +19,7 @@ export const AssetCoinName = ({ network }: AssetCoinNameProps) => {
     return (
         <Column gap={spacings.xxxs}>
             <span data-testid="@dashboard/asset/name">{name}</span>
-            <Note iconName="wallet">{selectedAccounts.length}</Note>
+            <Note icon={WalletIcon}>{selectedAccounts.length}</Note>
         </Column>
     );
 };

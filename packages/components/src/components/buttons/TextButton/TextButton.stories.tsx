@@ -1,13 +1,14 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
+import * as generatedIcons from '@trezor/icons';
+
 import {
     TextButton as TextButtonComponent,
     type TextButtonProps,
     allowedTextButtonFrameProps,
 } from './TextButton';
 import { textButtonSizes } from './types';
-import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonIntents, buttonPriorities } from '../types';
 
@@ -53,11 +54,13 @@ export const TextButton: StoryObj<TextButtonProps> = {
             options: buttonPriorities,
         },
         iconLeft: {
-            options: [null, ...variables.ICONS],
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: { type: 'select' },
         },
         iconRight: {
-            options: [null, ...variables.ICONS],
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: { type: 'select' },
         },
         size: {

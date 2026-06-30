@@ -8,6 +8,7 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { goto } from '@suite/router';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
 import { Badge, Column } from '@trezor/components';
+import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
@@ -138,7 +139,7 @@ export const SecurityStep = () => {
                     />
                 )}
                 <OnboardingCard
-                    iconName="trezorBackup"
+                    icon={TrezorBackupIcon}
                     heading={
                         <Column gap={8} alignItems="center" justifyContent="center">
                             <Badge intent="neutral" size="medium">
@@ -176,7 +177,7 @@ export const SecurityStep = () => {
         if (isBackupRequired) {
             return (
                 <OnboardingCard
-                    iconName="warning"
+                    icon={WarningIcon}
                     heading={<Translation id="TR_WALLET_CREATED_NOT_SECURED" />}
                     description={<Translation id="TR_WALLET_CREATED_NOT_SECURED_DESCRIPTION" />}
                     intent="warning"
@@ -194,7 +195,7 @@ export const SecurityStep = () => {
 
         return (
             <OnboardingCard
-                iconName="check"
+                icon={CheckIcon}
                 heading={<Translation id="TR_BACKUP_CREATED" />}
                 description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
                 innerActions={
@@ -226,7 +227,7 @@ export const SecurityStep = () => {
 
         return (
             <OnboardingCard
-                iconName="wallet"
+                icon={WalletIcon}
                 heading={<Translation id="TR_CREATE_WALLET" />}
                 description={
                     <Translation
@@ -252,7 +253,7 @@ export const SecurityStep = () => {
 
     return (
         <OnboardingCard
-            iconName="trezorBackup"
+            icon={TrezorBackupIcon}
             heading={<Translation id="TR_CREATE_BACKUP" />}
             description={<Translation id="TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP" />}
             device={device}

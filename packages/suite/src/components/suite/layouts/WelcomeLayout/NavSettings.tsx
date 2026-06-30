@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { IconButton } from '@trezor/components';
+import { GearIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -11,7 +12,7 @@ export const NavSettings = () => {
 
     return (
         <IconButton
-            icon="gear"
+            icon={GearIcon}
             intent="neutral"
             priority="secondary"
             onClick={handleClick}

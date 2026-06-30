@@ -5,6 +5,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { Column, Icon } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import { TrezorLogoIcon } from '@trezor/icons';
 import { TooltipRow, mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { type DesktopUpdateRootState } from '../desktopUpdateReducer';
@@ -43,10 +44,8 @@ const DeviceRow = ({ updateStatus, onClick }: DeviceRowProps) => {
     return (
         <TooltipRow
             onClick={onClick}
-            leftItem={
-                <Icon name={mapTrezorModelToIcon[device.features.internal_model]} size={16} />
-            }
-            iconName={mapUpdateStatusToIcon[updateStatus]}
+            leftItem={<Icon as={mapTrezorModelToIcon[device.features.internal_model]} size={16} />}
+            icon={mapUpdateStatusToIcon[updateStatus]}
             intent={mapUpdateStatusToIntent[updateStatus]}
             header={<Translation id="TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE" />}
         >
@@ -76,8 +75,8 @@ const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
     return (
         <TooltipRow
             onClick={onClick}
-            leftItem={<Icon name="trezorLogo" size={16} />}
-            iconName={mapUpdateStatusToIcon[updateStatus]}
+            leftItem={<Icon as={TrezorLogoIcon} size={16} />}
+            icon={mapUpdateStatusToIcon[updateStatus]}
             intent={mapUpdateStatusToIntent[updateStatus]}
             header={<Translation id="TR_QUICK_ACTION_TOOLTIP_TREZOR_SUITE" />}
         >

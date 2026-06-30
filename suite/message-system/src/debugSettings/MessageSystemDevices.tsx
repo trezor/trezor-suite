@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { type Device } from '@suite-common/suite-types';
 import { Collapsible, InfoItem, TextButton } from '@trezor/components';
+import { CaretDownFilledIcon, CaretUpFilledIcon, DevicesIcon } from '@trezor/icons';
 
 type MessageSystemDevicesProps = {
     devices?: Device[];
@@ -12,7 +13,7 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
 
     if (!devices || devices.length === 0) {
         return (
-            <InfoItem label="Devices" iconName="devices" intent="neutral" priority="primary">
+            <InfoItem label="Devices" icon={DevicesIcon} intent="neutral" priority="primary">
                 -
             </InfoItem>
         );
@@ -27,7 +28,7 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
                 label={
                     <Collapsible.Toggle>
                         <TextButton
-                            iconRight={expanded ? 'caretUpFilled' : 'caretDownFilled'}
+                            iconRight={expanded ? CaretUpFilledIcon : CaretDownFilledIcon}
                             intent="neutral"
                             onClick={handleToggle}
                         >
@@ -35,7 +36,7 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
                         </TextButton>
                     </Collapsible.Toggle>
                 }
-                iconName="devices"
+                icon={DevicesIcon}
                 intent="neutral"
                 priority="primary"
             >

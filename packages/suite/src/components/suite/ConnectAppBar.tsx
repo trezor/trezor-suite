@@ -9,6 +9,7 @@ import {
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Row, Text } from '@trezor/components';
+import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 import { borders, spacings } from '@trezor/theme';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
@@ -68,14 +69,14 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                                     device={device}
                                 />
                                 {canSwitchDevice && !isWalletConnect && (
-                                    <Icon size={20} name="caretCircleDown" />
+                                    <Icon size={20} as={CaretCircleDownIcon} />
                                 )}
                             </Row>
                         )}
                         {connectPopupCall.state !== 'error' && (
                             <Row gap={spacings.xs} alignItems="center">
                                 <Icon
-                                    name={isWalletConnect ? 'walletConnect' : 'plugs'}
+                                    as={isWalletConnect ? WalletConnectIcon : PlugsIcon}
                                     intent="neutral"
                                     priority="secondary"
                                 />

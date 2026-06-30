@@ -11,6 +11,7 @@ import { goto } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
@@ -162,7 +163,7 @@ export const Experimental = () => {
                                 {isExperimentalEnabled && (
                                     <motion.div {...bannerMotionDivProps}>
                                         <Banner
-                                            icon="warning"
+                                            icon={WarningIcon}
                                             intent="warning"
                                             description={
                                                 <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED" />

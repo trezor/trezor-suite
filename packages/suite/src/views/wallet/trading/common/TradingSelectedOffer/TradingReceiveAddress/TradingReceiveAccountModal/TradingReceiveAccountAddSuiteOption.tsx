@@ -4,6 +4,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { IconCircle, Row } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
@@ -54,7 +55,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <IconCircle name="plus" size={24} intent="neutral" />
+                <IconCircle icon={PlusIcon} size={24} intent="neutral" />
                 <Translation
                     id="TR_EXCHANGE_CREATE_SUITE_ACCOUNT"
                     values={{ symbol: networkName }}
