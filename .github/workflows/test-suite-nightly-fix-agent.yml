@@ -40,7 +40,7 @@ jobs:
         run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Install Playwright trace skill
-        run: yarn workspace @trezor/suite-e2e exec playwright trace install-skill
+        run: yarn workspace @trezor/e2e-utils exec playwright trace install-skill
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
