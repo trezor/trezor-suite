@@ -103,7 +103,7 @@
         "s": "yarn native:start"
     },
     "resolutions": {
-        "typescript": "6.0.3",
+        "typescript": "npm:@typescript/typescript6@6.0.2",
         "@types/jest": "30.0.0",
         "prettier": "^3.9.6",
         "react-native": "0.86.0",
@@ -148,6 +148,7 @@
         "@trezor/eslint": "workspace:*",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
+        "@typescript/native-preview": "npm:typescript@^7.0.2",
         "babel-jest": "30.0.0",
         "depcheck": "^1.4.7",
         "eslint": "^9.39.4",
@@ -165,7 +166,7 @@
         "ts-node": "^10.9.2",
         "tslib": "^2.6.2",
         "tsx": "^4.21.0",
-        "typescript": "6.0.3",
+        "typescript": "npm:@typescript/typescript6@6.0.2",
         "typescript-eslint": "^8.65.0",
         "uint8array-tools": "^0.0.8",
         "version-bump-prompt": "^6.1.0"
