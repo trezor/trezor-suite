@@ -1,8 +1,7 @@
-import { type AccountLabels, type AccountOutputLabels } from '@suite-common/metadata-types';
+import { type AccountLabels } from '@suite-common/metadata-types';
 import {
     type SearchAccountLabels,
     type SearchOutputLabels,
-    type TxId,
 } from '@suite-common/transaction-search';
 import { asTxTargetId } from '@suite-common/wallet-types';
 import { typedObjectEntries } from '@trezor/utils';
@@ -12,11 +11,12 @@ export const fromLegacyMetadataToSearchOutputLabels = (
 ): SearchOutputLabels =>
     new Map(
         typedObjectEntries(outputLabels).map(([txid, accountOutputLabels]) => [
-            txid as TxId,
+            txid,
             new Map(
-                typedObjectEntries(accountOutputLabels as AccountOutputLabels).map(
-                    ([targetId, label]) => [asTxTargetId(`${targetId}`), label],
-                ),
+                typedObjectEntries(accountOutputLabels).map(([targetId, label]) => [
+                    asTxTargetId(`${targetId}`),
+                    label,
+                ]),
             ),
         ]),
     );

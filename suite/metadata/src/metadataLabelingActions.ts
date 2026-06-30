@@ -592,7 +592,7 @@ export const init =
             dispatch({
                 type: METADATA.SET_ERROR_FOR_DEVICE,
                 payload: {
-                    deviceState: device.state!.staticSessionId,
+                    deviceState: device.state.staticSessionId,
                     failed: false,
                 },
             });
@@ -614,7 +614,7 @@ export const init =
                 dispatch({
                     type: METADATA.SET_ERROR_FOR_DEVICE,
                     payload: {
-                        deviceState: device.state!.staticSessionId,
+                        deviceState: device.state.staticSessionId,
                         failed: true,
                     },
                 });

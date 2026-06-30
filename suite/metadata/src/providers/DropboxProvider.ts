@@ -137,7 +137,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
 
                 if (match && 'metadata' in match.metadata) {
                     const { result } = await this.client.filesDownload({
-                        path: match!.metadata.metadata.path_lower!,
+                        path: match.metadata.metadata.path_lower!,
                     });
 
                     // @ts-expect-error fileBlob is missing in dropbox lib types file, but it is available
