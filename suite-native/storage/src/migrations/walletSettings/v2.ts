@@ -20,7 +20,7 @@ export const migrateAutoEjectToWalletSettings =
         });
 
         if (!devicesState || !('isDeviceAutoEjectEnabled' in devicesState)) {
-            return oldState as MigratedState; // no new migration, just pass the previous one
+            return oldState; // no new migration, just pass the previous one
         }
 
         return {

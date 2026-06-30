@@ -30,7 +30,7 @@ export const typedObjectTransformValues = <T extends Record<string, unknown>, U>
 
 /** Typed wrapper around `Object.keys()` that preserves `keyof T`. */
 export const typedObjectKeys = <T extends Record<string, unknown>>(obj: T): Array<keyof T> =>
-    Object.keys(obj) as Array<keyof T>;
+    Object.keys(obj);
 
 /** Typed wrapper around `Object.values()` that preserves the union of object value types. */
 export const typedObjectValues = <T extends Record<string, unknown>>(obj: T): Array<T[keyof T]> =>
