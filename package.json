@@ -103,6 +103,7 @@
     },
     "resolutions": {
         "typescript": "6.0.3",
+        "@types/jest": "30.0.0",
         "prettier": "^3.8.3",
         "react-native": "0.85.3",
         "type-fest": "5.5.0",
@@ -144,7 +145,7 @@
         "@swc/core": "^1.15.40",
         "@swc/jest": "^0.2.39",
         "@trezor/eslint": "workspace:*",
-        "@types/jest": "29.5.12",
+        "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
         "babel-jest": "30.0.0",
         "depcheck": "^1.4.7",

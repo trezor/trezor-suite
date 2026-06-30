@@ -54,7 +54,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@types/chrome": "^0.1.40",
-        "@types/jest": "29.5.12",
+        "@types/jest": "30.0.0",
         "@types/w3c-web-usb": "^1.0.14",
         "@types/web": "^0.0.345",
         "xvfb-maybe": "^0.2.1"
