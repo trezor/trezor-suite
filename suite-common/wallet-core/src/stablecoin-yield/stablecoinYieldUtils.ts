@@ -265,9 +265,7 @@ export const splitYieldPendingTransaction = (
     actionKind: YieldFlowType,
 ) => {
     const isApprovalPending =
-        pendingTransaction?.type === 'approve' ||
-        pendingTransaction?.type === 'revoke' ||
-        pendingTransaction?.type === 'revoke-only';
+        pendingTransaction?.type === 'approve' || pendingTransaction?.type === 'revoke';
 
     return {
         approvalPendingTransaction: isApprovalPending ? pendingTransaction : undefined,

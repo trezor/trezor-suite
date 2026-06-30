@@ -48,7 +48,6 @@ const getResolutionEventType = (
         case 'approve':
             return { type: 'deposit', successType: 'approve-success' };
         case 'revoke':
-        case 'revoke-only':
             return { type: 'deposit', successType: 'revoke-success' };
         case 'deposit':
             return { type: 'deposit', successType: 'success' };
@@ -243,7 +242,7 @@ export const useYieldPendingTransactionTracking = ({
             pendingStartRef.current = null;
         }
 
-        if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
+        if (pendingTransaction.type === 'revoke') {
             dispatch(stablecoinYieldActions.revokeSuccess({ flowType, flowKey }));
             dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
 

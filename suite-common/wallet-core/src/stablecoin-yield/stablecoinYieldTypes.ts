@@ -64,11 +64,11 @@ export type YieldApproveModalState = {
     contractAddress: string;
     spender: string;
     preapprovedAmount?: string;
-    txType: Extract<YieldPendingTransactionState['type'], 'approve' | 'revoke' | 'revoke-only'>;
+    txType: Extract<YieldPendingTransactionState['type'], 'approve' | 'revoke'>;
 };
 
 export type YieldPendingTransactionState = {
-    type: 'approve' | 'revoke' | 'revoke-only' | 'deposit' | 'withdraw' | 'redeem' | 'claim';
+    type: 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim';
     txid: string;
     amount: string;
     fee?: string;

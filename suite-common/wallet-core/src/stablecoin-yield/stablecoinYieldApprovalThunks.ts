@@ -58,7 +58,7 @@ type OpenYieldApproveModalParams = YieldSessionDataPayload & {
     amount: string;
     spender: string;
     preapprovedAmount?: string;
-    txType: 'approve' | 'revoke' | 'revoke-only';
+    txType: 'approve' | 'revoke';
 };
 
 type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
@@ -173,7 +173,7 @@ export const openYieldRevokeModal = ({
         amount: getRevokeModalAmount({ flowType, amount: approveAmount, flowData }),
         spender,
         preapprovedAmount: allowanceAmount || undefined,
-        txType: 'revoke-only',
+        txType: 'revoke',
     });
 };
 
