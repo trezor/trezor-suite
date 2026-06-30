@@ -10,6 +10,7 @@ import * as definitionsProto from '@trezor/protobuf/src/definitions/messages-def
 import * as eosProto from '@trezor/protobuf/src/definitions/messages-eos_pb';
 import * as ethereumEip712Proto from '@trezor/protobuf/src/definitions/messages-ethereum-eip712_pb';
 import * as ethereumProto from '@trezor/protobuf/src/definitions/messages-ethereum_pb';
+import * as authdbProto from '@trezor/protobuf/src/definitions/messages-authdb_pb';
 import * as evoluProto from '@trezor/protobuf/src/definitions/messages-evolu_pb';
 import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
 import * as moneroProto from '@trezor/protobuf/src/definitions/messages-monero_pb';
@@ -36,6 +37,7 @@ export const loadProtobufModules = () => {
         eosProto,
         ethereumEip712Proto,
         ethereumProto,
+        authdbProto,
         evoluProto,
         managementProto,
         moneroProto,

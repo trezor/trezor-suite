@@ -131,6 +131,12 @@ import {
     EthereumTypedDataValueRequest,
 } from './messages-ethereum-eip712';
 import {
+    AuthDbLookup,
+    AuthDbLookupResponse,
+    AuthDbSetRoot,
+    AuthDbSetRootResponse,
+} from './messages-authdb';
+import {
     EvoluDelegatedIdentityKey,
     EvoluGetDelegatedIdentityKey,
     EvoluGetNode,
@@ -318,6 +324,7 @@ export * from './messages-definitions';
 export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
+export * from './messages-authdb';
 export * from './messages-evolu';
 export * from './messages-monero';
 export * from './messages-ripple';
@@ -499,6 +506,10 @@ export const MessageType = Type.Object(
         EthereumTypedDataStructAck,
         EthereumTypedDataValueRequest,
         EthereumTypedDataValueAck,
+        AuthDbSetRoot,
+        AuthDbSetRootResponse,
+        AuthDbLookup,
+        AuthDbLookupResponse,
         EvoluGetNode,
         EvoluNode,
         EvoluSignRegistrationRequest,
@@ -716,6 +727,8 @@ export type WireInMessage =
     | 'EthereumSignTypedData'
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
+    | 'AuthDbSetRoot'
+    | 'AuthDbLookup'
     | 'EvoluGetNode'
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
@@ -822,6 +835,8 @@ export type WireOutMessage =
     | 'EthereumTypedDataSignature'
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
+    | 'AuthDbSetRootResponse'
+    | 'AuthDbLookupResponse'
     | 'EvoluNode'
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'

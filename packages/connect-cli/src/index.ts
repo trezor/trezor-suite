@@ -3,7 +3,7 @@ import path from 'path';
 
 import { BitcoinAddressDb } from './bitcoin-address-db';
 import { computeMerkleRoot, generateMerkleProof } from './merkle-tree';
-import { verifyAndUpdateEntry } from './verify-authenticity';
+import { verifyAndUpdateEntry, verifyEntry } from './verify-authenticity';
 import TrezorConnect, {
     type AddressMetadata,
     createBitcoinAddressNotificationHandler,
@@ -113,7 +113,9 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const allEntries = db.getAllEntries();
                 const proof = generateMerkleProof(allEntries, address, networkSymbol);
                 const treeState = db.getTreeState();
+                const authentic = await verifyEntry(address, networkSymbol, entry, proof, device);
                 console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof, treeState }, null, 2));
+                console.log('Authenticity verified:', authentic);
             }
 
             if (method === 'dbchange') {
@@ -134,11 +136,20 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const allEntries = db.getAllEntries();
                 const currentProof = generateMerkleProof(allEntries, address, networkSymbol);
                 const treeState = db.getTreeState();
+                // Compute provisional counter and new root (before device call).
+                const provisionalCounter = (treeState?.counter ?? 0) + 1;
+                const provisionalEntry = { metadata, counter: provisionalCounter };
+                const provisionalEntries = [
+                    ...allEntries.filter(r => !(r.address === address && r.networkSymbol === networkSymbol)),
+                    { address, networkSymbol, entry: provisionalEntry },
+                ];
+                const provisionalRoot = computeMerkleRoot(provisionalEntries);
                 const { authentic, newEntryCounter } = await verifyAndUpdateEntry(
-                    address, networkSymbol, oldEntry, metadata, currentProof, treeState, device,
+                    address, networkSymbol, oldEntry, metadata, currentProof, treeState,
+                    provisionalRoot, device,
                 );
                 db.upsert(address, networkSymbol, { metadata, counter: newEntryCounter });
-                // Recompute root from updated MPT; counter matches the new leaf counter.
+                // Recompute root from updated MPT to persist.
                 const updatedEntries = db.getAllEntries();
                 const newRoot = computeMerkleRoot(updatedEntries);
                 const newTreeState = { root: newRoot, counter: newEntryCounter };

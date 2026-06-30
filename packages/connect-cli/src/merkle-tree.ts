@@ -40,7 +40,7 @@ export const computeLeafHash = (
 };
 
 // Deterministic value encoding (networkSymbol + counter + sorted metadata).
-const entryToValueBytes = (networkSymbol: string, entry: AddressEntry): Buffer => {
+export const entryToValueBytes = (networkSymbol: string, entry: AddressEntry): Buffer => {
     const metaSorted = Object.fromEntries(
         Object.entries(entry.metadata).sort(([a], [b]) => a.localeCompare(b)),
     );
