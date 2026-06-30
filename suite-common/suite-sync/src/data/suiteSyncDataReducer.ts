@@ -39,7 +39,7 @@ const ensureWallet = (
         };
     }
 
-    return state.wallets[walletDescriptor]!;
+    return state.wallets[walletDescriptor];
 };
 
 export const suiteSyncDataSlice = createSlice({

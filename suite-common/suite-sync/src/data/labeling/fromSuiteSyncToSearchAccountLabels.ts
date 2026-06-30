@@ -2,7 +2,6 @@ import { type SuiteSyncAddress, type SuiteSyncOutput } from '@suite-common/suite
 import {
     type SearchAccountLabels,
     type SearchOutputLabels,
-    type TxId,
 } from '@suite-common/transaction-search';
 import { asTxTargetId } from '@suite-common/wallet-types';
 
@@ -14,10 +13,10 @@ export const fromSuiteSyncToSearchOutputLabels = (
     outputLabels.reduce<SearchOutputLabels>((acc, { txId, txTargetId, label }) => {
         if (label === null) return acc;
 
-        if (!acc.has(txId as TxId)) {
-            acc.set(txId as TxId, new Map([[asTxTargetId(`${txTargetId}`), label]]));
+        if (!acc.has(txId)) {
+            acc.set(txId, new Map([[asTxTargetId(`${txTargetId}`), label]]));
         } else {
-            acc.get(txId as TxId)?.set(asTxTargetId(`${txTargetId}`), label);
+            acc.get(txId)?.set(asTxTargetId(`${txTargetId}`), label);
         }
 
         return acc;
