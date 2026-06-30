@@ -260,8 +260,6 @@ export const initYieldAllowanceThunk = createThunk<void, InitYieldAllowancePaylo
         } catch (error) {
             dispatch(stablecoinYieldActions.setAllowanceError({ flowType, flowKey }));
             throw error;
-        } finally {
-            dispatch(stablecoinYieldActions.finishInitializingAllowance({ flowType, flowKey }));
         }
     },
 );
