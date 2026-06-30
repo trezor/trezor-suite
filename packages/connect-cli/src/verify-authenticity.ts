@@ -1,9 +1,9 @@
 import type { AddressEntry, AddressMetadata, MerkleProof, TreeState } from '@trezor/connect';
+// TreeState is used as a param (sent to device); newTreeState is computed by the caller after upsert.
 import type { Device } from '@trezor/connect';
 
 export type VerifyAndUpdateResult = {
     authentic: boolean;
-    newTreeState: TreeState;
     newEntryCounter: number;
 };
 
@@ -49,16 +49,12 @@ export const verifyAndUpdateEntry = async (
     _device?: Device,
 ): Promise<VerifyAndUpdateResult> => {
     // Stub: device verification not yet implemented.
-    // When implemented, the device returns the real newTreeState and newEntryCounter.
-    const currentCounter = _treeState?.counter ?? 0;
-    const newEntryCounter = _oldEntry !== null ? _oldEntry.counter + 1 : 0;
+    // When implemented, the device returns authentic + the new entry counter.
+    // The caller recomputes the Merkle root from all updated entries and stores it.
+    const newEntryCounter = (_treeState?.counter ?? 0) + 1;
 
     return {
         authentic: true,
-        newTreeState: {
-            root: _treeState?.root ?? '',
-            counter: currentCounter + 1,
-        },
         newEntryCounter,
     };
 };

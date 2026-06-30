@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { BitcoinAddressDb } from './bitcoin-address-db';
-import { generateMerkleProof } from './merkle-tree';
+import { computeMerkleRoot, generateMerkleProof } from './merkle-tree';
 import { verifyAndUpdateEntry } from './verify-authenticity';
 import TrezorConnect, {
     type AddressMetadata,
@@ -134,13 +134,16 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const allEntries = db.getAllEntries();
                 const currentProof = generateMerkleProof(allEntries, address, networkSymbol);
                 const treeState = db.getTreeState();
-                const { authentic, newTreeState, newEntryCounter } = await verifyAndUpdateEntry(
+                const { authentic, newEntryCounter } = await verifyAndUpdateEntry(
                     address, networkSymbol, oldEntry, metadata, currentProof, treeState, device,
                 );
                 db.upsert(address, networkSymbol, { metadata, counter: newEntryCounter });
+                // Recompute root from updated MPT; counter matches the new leaf counter.
+                const updatedEntries = db.getAllEntries();
+                const newRoot = computeMerkleRoot(updatedEntries);
+                const newTreeState = { root: newRoot, counter: newEntryCounter };
                 db.setTreeState(newTreeState);
-                // Recompute proof from updated MPT for the output.
-                const updatedProof = generateMerkleProof(db.getAllEntries(), address, networkSymbol);
+                const updatedProof = generateMerkleProof(updatedEntries, address, networkSymbol);
                 console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: newEntryCounter, proof: updatedProof, treeState: newTreeState }, null, 2));
                 console.log('Authenticity verified:', authentic);
             }
