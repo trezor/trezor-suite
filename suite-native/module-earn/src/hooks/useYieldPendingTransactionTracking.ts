@@ -98,7 +98,7 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
-        if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
+        if (pendingTransaction.type === 'revoke') {
             dispatch(stablecoinYieldActions.revokeSuccess(sessionParams));
             dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
 

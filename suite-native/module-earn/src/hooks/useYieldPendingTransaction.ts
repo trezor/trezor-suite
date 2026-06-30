@@ -5,7 +5,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useTransactionDetails } from '@suite-native/transaction-management';
 
-type YieldPendingTransactionType = Exclude<YieldPendingTransactionState['type'], 'revoke-only'>;
+type YieldPendingTransactionType = YieldPendingTransactionState['type'];
 
 type UseYieldPendingTransactionParams = {
     accountKey: AccountKey | null | undefined;
@@ -20,12 +20,6 @@ const getPendingTransactionByType = (
 ) => {
     if (!pendingTransaction) {
         return undefined;
-    }
-
-    if (transactionType === 'revoke') {
-        return pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only'
-            ? pendingTransaction
-            : undefined;
     }
 
     return pendingTransaction.type === transactionType ? pendingTransaction : undefined;

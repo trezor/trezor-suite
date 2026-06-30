@@ -50,7 +50,7 @@ type GetYieldAllowanceReviewAmountParams = {
     amount?: string;
     approvalLimitType?: YieldApprovalLimitType;
     flowData: YieldFlowResolvedData;
-    modalTxType: 'approve' | 'revoke' | 'revoke-only';
+    modalTxType: 'approve' | 'revoke';
     tokenContract: TokenAddress;
 };
 
@@ -75,7 +75,6 @@ const getYieldAllowanceReviewAmount = ({
                 tokenSymbol: flowData.token.symbol,
             });
         case 'revoke':
-        case 'revoke-only':
             return REVOKE_ALLOWANCE_AMOUNT;
         default:
             return exhaustive(modalTxType);
@@ -84,13 +83,13 @@ const getYieldAllowanceReviewAmount = ({
 
 const isExpectedAllowanceModalTxType = (
     transactionType: YieldAllowanceFormDraftTransactionType,
-    modalTxType: 'approve' | 'revoke' | 'revoke-only',
+    modalTxType: 'approve' | 'revoke',
 ) => {
     if (transactionType === 'approve') {
         return modalTxType === 'approve';
     }
 
-    return modalTxType === 'revoke' || modalTxType === 'revoke-only';
+    return modalTxType === 'revoke';
 };
 
 export const prepareYieldAllowanceReviewTransactionThunk = createThunk(
