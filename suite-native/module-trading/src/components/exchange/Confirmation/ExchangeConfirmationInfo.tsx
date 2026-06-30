@@ -61,8 +61,8 @@ export const ExchangeConfirmationInfo = ({
         <AnimatedVStack spacing="sp16" paddingVertical="sp16" layout={LinearTransition}>
             <Card noPadding>
                 {date && (
-                    <TradeInfoRow>
-                        <Text variant="body-sm">
+                    <TradeInfoRow noBorder>
+                        <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleTrading.tradingConfirmationScreen.date" />
                         </Text>
                         <VStack>
