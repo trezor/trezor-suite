@@ -26,7 +26,7 @@ export const RevokeLimitInfoRow = () => {
 
     return (
         <TradeInfoRow testID="ExchangeApproval/LimitRevoke">
-            <Text variant="body-sm">
+            <Text variant="body-sm" color="contentSecondary">
                 <Translation id="moduleTrading.tradingExchangeRevokeScreen.limitLabel" />
             </Text>
             <HStack alignItems="center">

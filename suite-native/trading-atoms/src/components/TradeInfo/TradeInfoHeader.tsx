@@ -12,7 +12,7 @@ type TradeInfoHeaderProps = {
 
 export const TradeInfoHeader = ({ title, rightContent, testID }: TradeInfoHeaderProps) => (
     <TradeInfoRow noBorder>
-        <Text variant="body-sm" testID={testID}>
+        <Text variant="body-sm" color="contentSecondary" testID={testID}>
             {title}
         </Text>
         {rightContent}
