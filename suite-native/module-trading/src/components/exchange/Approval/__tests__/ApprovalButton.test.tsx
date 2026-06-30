@@ -56,15 +56,17 @@ describe('ApprovalButton', () => {
     it('should render continue button when isReady is true', () => {
         const { getByText } = renderApprovalButton({ isReady: true });
 
-        expect(
-            getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
-        ).toBeOnTheScreen();
+        const button = getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue'));
+        expect(button).toBeOnTheScreen();
+        expect(button).toBeEnabled();
     });
 
-    it('should render nothing when isReady is false', () => {
-        const { toJSON } = renderApprovalButton({ isReady: false });
+    it('should render disabled button when isReady is false', () => {
+        const { getByText } = renderApprovalButton({ isReady: false });
 
-        expect(toJSON()).toBeNull();
+        const button = getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue'));
+        expect(button).toBeOnTheScreen();
+        expect(button).toBeDisabled();
     });
 
     it('should navigate to TradingExchangeOutputsReview on press', async () => {
