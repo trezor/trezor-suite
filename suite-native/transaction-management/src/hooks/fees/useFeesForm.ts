@@ -94,7 +94,7 @@ export const useFeesForm = ({
             : undefined;
 
     const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? (feeLevels.normal as PrecomposedTransactionFinal)
+        ? feeLevels.normal
         : undefined;
 
     const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;

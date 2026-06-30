@@ -12,7 +12,6 @@ import {
     type AccountKey,
     type FeeLevelLabel,
     type GeneralPrecomposedTransactionFinal,
-    type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
@@ -40,9 +39,7 @@ export const useFeeCalculation = ({
     const feeLevels = useSelector(selectFeeLevels);
     const { symbol } = account ?? {};
 
-    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? (feeLevels.normal as PrecomposedTransactionFinal)
-        : null;
+    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal) ? feeLevels.normal : null;
 
     const form = useFeesForm({
         accountKey,
