@@ -196,6 +196,7 @@ const onNewBlock = ({ post }: Context, event: BlockNotification) => {
             payload: {
                 blockHeight: event.height,
                 blockHash: event.hash,
+                evmData: event.evmData ?? null,
             },
         },
     });

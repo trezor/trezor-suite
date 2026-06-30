@@ -1,5 +1,5 @@
 import type { Block, ContractInfoResponse, MempoolTransactionNotification } from './blockbook';
-import { type Eip1559Fees } from './blockbook-api';
+import { type Eip1559Fees, type EthereumGasData } from './blockbook-api';
 import type {
     AccountBalanceHistory,
     AccountInfo,
@@ -126,6 +126,7 @@ export interface BlockEvent {
     payload: {
         blockHeight: number;
         blockHash: string;
+        evmData?: EthereumGasData | null;
     };
 }
 

@@ -34,6 +34,20 @@ const mapBlockTransaction = (
     value: tx.value.toString(10),
     fees: tx.gas && tx.gasPrice ? (tx.gas * tx.gasPrice).toString(10) : '0',
     confirmations,
+    ethereumSpecific: {
+        status: 1,
+        nonce: tx.nonce,
+        gasLimit: Number(tx.gas),
+        type: tx.typeHex ? parseInt(tx.typeHex, 16) : undefined,
+        maxPriorityFeePerGas:
+            'maxPriorityFeePerGas' in tx && tx.maxPriorityFeePerGas != null
+                ? tx.maxPriorityFeePerGas.toString()
+                : undefined,
+        maxFeePerGas:
+            'maxFeePerGas' in tx && tx.maxFeePerGas != null
+                ? tx.maxFeePerGas.toString()
+                : undefined,
+    },
 });
 
 interface MapGetBlockResponseParams {

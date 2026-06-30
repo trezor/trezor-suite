@@ -122,7 +122,7 @@ export interface EthereumSpecific {
     /** Transaction nonce (sequential number from the sender). */
     nonce: number;
     /** Maximum gas allowed by the sender for this transaction. */
-    gasLimit: number;
+    gasLimit?: number;
     /** Actual gas consumed by the transaction execution. */
     gasUsed?: number;
     /** Price (in Wei or base units) per gas unit. */
@@ -898,8 +898,8 @@ export interface WsEstimateFeeReq {
     };
 }
 export interface Eip1559Fee {
-    maxFeePerGas: string;
-    maxPriorityFeePerGas: string;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
     minWaitTimeEstimate?: number;
     maxWaitTimeEstimate?: number;
 }
@@ -992,4 +992,14 @@ export interface MempoolTxidFilterEntries {
     entries?: { [key: string]: string };
     /** Indicates if a zeroed key was used in filter calculation. */
     usedZeroedKey?: boolean;
+}
+export interface EthereumGasData {
+    baseFeePerGas?: string;
+    blockGasUsed?: string;
+    blockGasLimit?: string;
+}
+export interface WsNewBlock {
+    height: number;
+    hash: string;
+    evmData: EthereumGasData | null;
 }

@@ -10,6 +10,7 @@ import type {
     Tx as BlockbookTx,
     Utxo as BlockbookUtxo,
     ContractInfoResult,
+    EthereumGasData,
     FiatTicker,
     MempoolTxidFilterEntries,
     WsAccountUtxoReq,
@@ -20,6 +21,7 @@ import type {
     WsEstimateFeeRes,
     WsInfoRes,
     WsMempoolFiltersReq,
+    WsNewBlock,
 } from './blockbook-api';
 import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
 import type {
@@ -142,7 +144,8 @@ export interface Push {
 
 export type Fee = Omit<RequiredKey<WsEstimateFeeRes, 'feePerUnit'>, 'eip1559'>[];
 
-export type BlockNotification = Pick<BlockbookBlock, 'hash' | 'height'>;
+export type BlockNotification = WsNewBlock;
+export type { EthereumGasData };
 
 export type MempoolTransactionNotification = RequiredKey<
     Transaction,

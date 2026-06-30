@@ -172,7 +172,7 @@ const getTransactionFee = (tx: BlockbookTransaction): string => {
     if (tx.chainExtraData?.payloadType === 'tron') {
         return tx.chainExtraData.payload?.totalFee || tx.fees;
     }
-    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed) {
+    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed && tx.ethereumSpecific.gasLimit) {
         return new BigNumber(
             tx.ethereumSpecific.maxFeePerGas ?? tx.ethereumSpecific.gasPrice ?? '0',
         )
@@ -373,6 +373,7 @@ export const transformTransaction = (
         ethereumSpecific: tx.ethereumSpecific && {
             ...tx.ethereumSpecific,
             gasPrice: tx.ethereumSpecific.gasPrice ?? '0', // even if it shouldn't, `null` sometimes came from Erigon
+            gasLimit: tx.ethereumSpecific.gasLimit ?? 0,
         },
         tronSpecific:
             tx.chainExtraData?.payloadType === 'tron' ? tx.chainExtraData.payload : undefined,
