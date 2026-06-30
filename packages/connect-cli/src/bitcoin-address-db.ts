@@ -2,21 +2,15 @@ import { createHash } from 'crypto';
 
 import Database from 'better-sqlite3';
 
-import type { AddressEntry, AddressLookupProvider, AddressMetadata } from '@trezor/connect';
+import type { AddressEntry, AddressLookupProvider, AddressMetadata, TreeState } from '@trezor/connect';
 
-type AddressRow = { data: string };
+type AddressRow = { data: string; counter: number };
+type TreeStateRow = { root: string; counter: number };
 
-// Stored JSON shape: { metadata: AddressMetadata, proof: string[] }
-// Backward-compat: if the row pre-dates AddressEntry, treat the whole blob as metadata with empty proof.
-const parseRow = (raw: string): AddressEntry => {
-    const parsed = JSON.parse(raw);
-    if ('metadata' in parsed && 'proof' in parsed) {
-        return parsed as AddressEntry;
-    }
-
-    // Legacy flat metadata blob (before AddressEntry was introduced)
-    return { metadata: parsed as AddressMetadata, proof: [] };
-};
+const parseRow = (row: AddressRow): AddressEntry => ({
+    metadata: JSON.parse(row.data) as AddressMetadata,
+    counter: row.counter ?? 0,
+});
 
 export class BitcoinAddressDb implements AddressLookupProvider {
     private db: Database.Database;
@@ -27,21 +21,27 @@ export class BitcoinAddressDb implements AddressLookupProvider {
             CREATE TABLE IF NOT EXISTS addresses (
                 address        TEXT NOT NULL,
                 network_symbol TEXT NOT NULL,
+                counter        INTEGER NOT NULL DEFAULT 0,
                 data           TEXT NOT NULL,
                 PRIMARY KEY (address, network_symbol)
-            )
+            );
+            CREATE TABLE IF NOT EXISTS tree_state (
+                id      INTEGER PRIMARY KEY CHECK (id = 1),
+                root    TEXT NOT NULL,
+                counter INTEGER NOT NULL DEFAULT 0
+            );
         `);
     }
 
     lookup(address: string, networkSymbol: string): AddressEntry | null {
         const row = this.db
-            .prepare('SELECT data FROM addresses WHERE address = ? AND network_symbol = ?')
+            .prepare('SELECT data, counter FROM addresses WHERE address = ? AND network_symbol = ?')
             .get(address, networkSymbol) as AddressRow | undefined;
 
-        return row ? parseRow(row.data) : null;
+        return row ? parseRow(row) : null;
     }
 
-    // Returns existing entry, or creates one with a default label and empty proof on first access.
+    // Returns existing entry, or creates one with a default label and counter=0 on first access.
     // Default label format: label_<first 8 bytes of SHA-256 as 16 hex chars>
     lookupOrCreate(address: string, networkSymbol: string): AddressEntry {
         const existing = this.lookup(address, networkSymbol);
@@ -50,7 +50,7 @@ export class BitcoinAddressDb implements AddressLookupProvider {
         const shortHash = createHash('sha256').update(address).digest('hex').slice(0, 16);
         const entry: AddressEntry = {
             metadata: { label: `label_${shortHash}` },
-            proof: [],
+            counter: 0,
         };
         this.upsert(address, networkSymbol, entry);
 
@@ -60,11 +60,30 @@ export class BitcoinAddressDb implements AddressLookupProvider {
     upsert(address: string, networkSymbol: string, entry: AddressEntry): void {
         this.db
             .prepare(
-                `INSERT INTO addresses (address, network_symbol, data)
-                 VALUES (?, ?, ?)
-                 ON CONFLICT(address, network_symbol) DO UPDATE SET data = excluded.data`,
+                `INSERT INTO addresses (address, network_symbol, counter, data)
+                 VALUES (?, ?, ?, ?)
+                 ON CONFLICT(address, network_symbol) DO UPDATE SET
+                     counter = excluded.counter,
+                     data    = excluded.data`,
             )
-            .run(address, networkSymbol, JSON.stringify(entry));
+            .run(address, networkSymbol, entry.counter, JSON.stringify(entry.metadata));
+    }
+
+    getTreeState(): TreeState | null {
+        const row = this.db
+            .prepare('SELECT root, counter FROM tree_state WHERE id = 1')
+            .get() as TreeStateRow | undefined;
+
+        return row ? { root: row.root, counter: row.counter } : null;
+    }
+
+    setTreeState(state: TreeState): void {
+        this.db
+            .prepare(
+                `INSERT INTO tree_state (id, root, counter) VALUES (1, ?, ?)
+                 ON CONFLICT(id) DO UPDATE SET root = excluded.root, counter = excluded.counter`,
+            )
+            .run(state.root, state.counter);
     }
 
     close(): void {
