@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
-import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
@@ -23,7 +22,7 @@ import {
 import { Box, Button, Column, Switch, Text, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { OutlineHighlight, SectionItem, SettingsSection } from '@trezor/product-components';
-import { breakpoints, spacingsPx } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
@@ -37,12 +36,6 @@ import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { NetworkSettingsSearchInput } from './NetworkSettingsSearchInput';
 import { NoNetworkSearchResults } from './NoNetworkSearchResults';
 import { useNetworkSettingsSearch } from './useNetworkSettingsSearch';
-
-const DiscoveryButtonWrapper = styled.div`
-    position: fixed;
-    bottom: ${spacingsPx.lg};
-    width: fit-content;
-`;
 
 const discoveryButtonAnimationConfig: MotionProps = {
     initial: { opacity: 0, y: 16 },
@@ -311,7 +304,7 @@ export const SettingsCoins = () => {
                 </Anchor>
             </SettingsSection>
 
-            <DiscoveryButtonWrapper>
+            <Box position={{ type: 'fixed', bottom: 20 }}>
                 <AnimatePresence>
                     {isDiscoveryButtonVisible && (
                         <motion.div {...discoveryButtonAnimationConfig} key="discover-button">
@@ -330,7 +323,7 @@ export const SettingsCoins = () => {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </DiscoveryButtonWrapper>
+            </Box>
         </SettingsLayout>
     );
 };
