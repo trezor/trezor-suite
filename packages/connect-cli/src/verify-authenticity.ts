@@ -13,9 +13,10 @@ export type VerifyAndUpdateResult = {
  * Device flow (AuthDB firmware messages, not yet wired on connect side):
  *
  *   Lookup / verification only:
- *     1. Compute leaf_hash = SHA-256(b"\x00" + entryToBytes(address, networkSymbol, entry))
- *     2. Send AuthDbLookup { leaf_hash, proof: currentProof } → device
- *     3. Device evaluates proof against stored root → returns AuthDbLookupResponse { valid, counter }
+ *     1. Compute value = entryToValueBytes(networkSymbol, entry)
+ *     2. Send AuthDbLookup { address: address_bytes, value, proof: currentProof } → device
+ *     3. Device recomputes leaf_hash = SHA-256(b"\x00" + address + value), evaluates SMT proof
+ *        against stored root → returns AuthDbLookupResponse { valid, counter }
  *
  *   Existing entry update:
  *     1. Compute old leaf_hash, verify via AuthDbLookup (step above)
