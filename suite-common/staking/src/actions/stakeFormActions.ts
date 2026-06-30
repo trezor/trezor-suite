@@ -155,7 +155,7 @@ export const composeStakingTransaction = (
     response.forEach((tx, index) => {
         const level = predefinedLevels[index];
         if (!level) return;
-        const feeLabel = level.label as FeeLevel['label'];
+        const feeLabel = level.label;
         wrappedResponse[feeLabel] = tx;
     });
 

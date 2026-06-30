@@ -413,14 +413,14 @@ export const transformTx = (
             gasPrice: undefined,
             maxFeePerGas: fromGwei(maxFeePerGas).toWei('hex'),
             maxPriorityFeePerGas: fromGwei(maxPriorityFeePerGas || '0').toWei('hex'),
-        } as EthereumTransactionEIP1559;
+        };
     } else if (gasPrice) {
         result = {
             ...commonTxData,
             gasPrice: fromGwei(gasPrice).toWei('hex'),
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
-        } as EthereumTransaction;
+        };
     } else {
         throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
     }
