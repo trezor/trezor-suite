@@ -1,9 +1,11 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { TRON_STAKING_CONTRACT_TYPES } from '@suite-common/wallet-constants';
 import {
     type Account,
     type GeneralPrecomposedTransaction,
     type SupportedTronNetworkSymbols,
     type TronResourceType,
+    type WalletAccountTransaction,
     supportedTronNetworkSymbols,
 } from '@suite-common/wallet-types';
 import {
@@ -22,6 +24,9 @@ export function isSupportedTronStakingNetworkSymbol(
 ): symbol is SupportedTronNetworkSymbols {
     return isArrayMember(symbol, supportedTronNetworkSymbols);
 }
+
+export const isTronStakingTx = (transaction: WalletAccountTransaction) =>
+    TRON_STAKING_CONTRACT_TYPES.some(type => type === transaction.tronSpecific?.contractType);
 
 export const sunToTrx = (sun: string, symbol: NetworkSymbol) =>
     subunitsToUnits({
