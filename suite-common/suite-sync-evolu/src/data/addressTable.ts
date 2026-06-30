@@ -64,7 +64,7 @@ export class AddressEvoluTable implements AddressTable {
             address,
             label: normalizeLabel(label),
             accountDescriptor: asAccountDescriptor(accountDescriptor),
-            networkSymbol: networkSymbol as NetworkSymbol,
+            networkSymbol,
         });
 
         if (!validated.ok) {
