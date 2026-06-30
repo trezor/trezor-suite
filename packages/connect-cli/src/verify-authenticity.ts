@@ -1,5 +1,4 @@
 import type { AddressEntry, AddressMetadata, MerkleProof, TreeState } from '@trezor/connect';
-// TreeState is used as a param (sent to device); newTreeState is computed by the caller after upsert.
 import type { Device } from '@trezor/connect';
 
 export type VerifyAndUpdateResult = {
@@ -8,34 +7,34 @@ export type VerifyAndUpdateResult = {
 };
 
 /**
- * Verifies the existing DB entry and returns updated tree state for the new entry.
- * The caller is responsible for computing currentProof from the MPT before calling.
+ * Verifies the existing DB entry against the device and returns the new entry counter.
+ * The caller computes currentProof from the MPT and recomputes the root after upsert.
  *
- * Intended device flow (not yet implemented on device side):
+ * Device flow (AuthDB firmware messages, not yet wired on connect side):
  *
- *   Existing entry:
- *     1. Caller builds MPT from all DB entries, generates currentProof for this address
- *     2. Send oldEntry.counter + currentProof + hash(oldMetadata) + hash(newMetadata) + treeState → device
- *     3. Device verifies proof against its stored root
- *     4. Device replaces the leaf, increments tree counter, recomputes root
- *     5. Store { metadata: newMetadata, counter: newEntryCounter } + newTreeState in DB
- *     6. Next dblookup rebuilds MPT and generates fresh proof
+ *   Lookup / verification only:
+ *     1. Compute leaf_hash = SHA-256(b"\x00" + entryToBytes(address, networkSymbol, entry))
+ *     2. Send AuthDbLookup { leaf_hash, proof: currentProof } → device
+ *     3. Device evaluates proof against stored root → returns AuthDbLookupResponse { valid, counter }
  *
- *   New entry (oldEntry === null):
- *     1. Send hash(newMetadata) + treeState → device
- *     2. Device inserts new leaf, increments tree counter, recomputes root
- *     3. Store { metadata: newMetadata, counter: 0 } + newTreeState in DB
+ *   Existing entry update:
+ *     1. Compute old leaf_hash, verify via AuthDbLookup (step above)
+ *     2. Compute new leaf_hash for newMetadata with newEntryCounter
+ *     3. Rebuild MPT with updated leaf, compute new root
+ *     4. Send AuthDbSetRoot { root: newRoot } → device → returns AuthDbSetRootResponse { counter }
+ *     5. Store { metadata: newMetadata, counter: newEntryCounter } + TreeState { root, counter } in DB
  *
- *   Lookup verification:
- *     1. Caller builds MPT, generates proof for address
- *     2. Send entry.counter + proof + hash(entry.metadata) + treeState → device
- *     3. Device confirms proof against its stored root → authentic = true/false
+ *   New entry:
+ *     1. Compute leaf_hash for newMetadata with counter = treeState.counter + 1
+ *     2. Rebuild MPT with new leaf, compute new root
+ *     3. Send AuthDbSetRoot { root: newRoot } → device → returns AuthDbSetRootResponse { counter }
+ *     4. Store { metadata: newMetadata, counter: newEntryCounter } + TreeState { root, counter } in DB
  *
  * @param _address       Bitcoin address
  * @param _networkSymbol Network symbol (e.g. "btc")
  * @param _oldEntry      Existing DB entry (null for new addresses)
  * @param _newMetadata   Metadata being written
- * @param _currentProof  Proof computed from current MPT for this address
+ * @param _currentProof  Proof computed from current MPT for this address (before update)
  * @param _treeState     Current tree state from DB (null if tree is empty)
  * @param _device        Connected Trezor device
  */
@@ -48,13 +47,11 @@ export const verifyAndUpdateEntry = async (
     _treeState: TreeState | null,
     _device?: Device,
 ): Promise<VerifyAndUpdateResult> => {
-    // Stub: device verification not yet implemented.
-    // When implemented, the device returns authentic + the new entry counter.
-    // The caller recomputes the Merkle root from all updated entries and stores it.
+    // Stub: AuthDbLookup / AuthDbSetRoot not yet called.
+    // When implemented:
+    //   - AuthDbLookup verifies _currentProof against device root → authentic
+    //   - AuthDbSetRoot stores the new root computed by caller after upsert → newEntryCounter
     const newEntryCounter = (_treeState?.counter ?? 0) + 1;
 
-    return {
-        authentic: true,
-        newEntryCounter,
-    };
+    return { authentic: true, newEntryCounter };
 };
