@@ -65,7 +65,7 @@ export const ExchangeConfirmationInfo = ({
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="moduleTrading.tradingConfirmationScreen.date" />
                         </Text>
-                        <VStack>
+                        <VStack spacing={0}>
                             <Text variant="body-sm" textAlign="right">
                                 <DateFormatter value={date} />
                             </Text>
