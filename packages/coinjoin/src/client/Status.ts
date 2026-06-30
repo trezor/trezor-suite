@@ -5,12 +5,7 @@ import * as coordinator from './coordinator';
 import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
-import {
-    type CoinjoinClientSettings,
-    type CoinjoinClientVersion,
-    type CoinjoinStatusEvent,
-    type LogEvent,
-} from '../types';
+import { type CoinjoinClientSettings, type CoinjoinStatusEvent, type LogEvent } from '../types';
 import { type Round } from '../types/coordinator';
 import { patchResponse } from '../utils/http';
 import { transformStatus } from '../utils/roundUtils';
@@ -249,7 +244,7 @@ export class Status extends TypedEmitter<StatusEvents> {
             majorVersion: version?.BackenMajordVersion ?? '0',
             commitHash: version?.CommitHash ?? 'deadbeef',
             legalDocumentsVersion: version?.Ww2LegalDocumentsVersion ?? '1.0',
-        } as CoinjoinClientVersion;
+        };
     }
 
     async start() {
