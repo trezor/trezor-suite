@@ -49,7 +49,7 @@ export function getTickerFromFiatRateKey(fiatRateKey: CryptoBaseCurrencyPair): T
     }
 
     return {
-        symbol: symbol as NetworkSymbol,
+        symbol,
         tokenAddress: tokenAddress as TokenAddress,
     };
 }
