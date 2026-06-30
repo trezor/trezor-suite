@@ -9,7 +9,7 @@ import { Card } from '@trezor/components';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAppShortcuts, useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
     selectIsTransportInitialized,
@@ -81,6 +81,10 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     useGuideKeyboard();
     // Open the Guide from the desktop application menu (Help)
     useGuideDesktopMenu();
+    // App-wide keyboard shortcuts; mounted here so they work regardless of the active
+    // layout (e.g. also on the device-prerequisite screen). Each shortcut self-guards
+    // on whether a device/account is required.
+    useAppShortcuts();
     useWindowVisibility();
 
     if (!isAnalyticsConsentConfirmed) {

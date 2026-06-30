@@ -15,7 +15,6 @@ import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHi
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { LayoutContext, type LayoutContextPayload } from 'src/support/suite/LayoutContext';
 
-import { AppShortcuts } from './AppShortcuts';
 import { ContentContainer } from '../ContentContainer';
 import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
@@ -120,7 +119,6 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
                         <SwitchDeviceLayer />
                         <AddPassphraseWalletFlow />
 
-                        <AppShortcuts />
                         <PowerMonitorManager />
 
                         {isBelowTablet && <CoinjoinBars />}

@@ -14,7 +14,8 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import { open, setView } from 'src/actions/suite/guideActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -39,7 +40,7 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
     return isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName);
 };
 
-export const AppShortcuts = () => {
+export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
@@ -290,6 +291,4 @@ export const AppShortcuts = () => {
 
         return () => window.removeEventListener('keydown', listener, { capture: true });
     }, []);
-
-    return null;
 };
