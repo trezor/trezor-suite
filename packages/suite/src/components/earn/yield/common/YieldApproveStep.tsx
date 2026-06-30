@@ -4,65 +4,31 @@ import { Translation } from '@suite/intl';
 import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
-    YieldPositionFlowType,
 } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { YieldAmountCard } from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
 import type { YieldApprovalAction } from '../yieldFlowUtils';
 
-const approveStepTranslationMap = {
-    deposit: {
-        amountLabelTranslationId: 'AMOUNT',
-        balanceLabelTranslationId: 'TR_BALANCE',
-    },
-    withdraw: {
-        amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
-        balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
-    },
-    redeem: {
-        amountLabelTranslationId: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
-        balanceLabelTranslationId: 'TR_EARN_YIELD_DEPOSITED',
-    },
-} as const;
-
-type ApproveButtonTranslationId =
-    | 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON'
-    | 'TR_EARN_YIELD_REVOKE_APPROVAL'
-    | 'TR_EARN_YIELD_INCREASE_APPROVAL'
-    | 'TR_APPROVE_DATA_TITLE'
-    | 'TR_CONTINUE';
-
-type GetApproveButtonTranslationIdParams = {
-    approvalAction: YieldApprovalAction;
-};
-
-const getApproveButtonTranslationId = ({
-    approvalAction,
-}: GetApproveButtonTranslationIdParams): ApproveButtonTranslationId => {
-    if (approvalAction === 'approve') {
-        return 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON';
+const getApproveButtonTranslationId = (approvalAction: YieldApprovalAction) => {
+    switch (approvalAction) {
+        case 'approve':
+            return 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON';
+        case 'revoke':
+            return 'TR_EARN_YIELD_REVOKE_APPROVAL';
+        case 'increase':
+            return 'TR_EARN_YIELD_INCREASE_APPROVAL';
+        case 'continue':
+            return 'TR_CONTINUE';
+        default:
+            return exhaustive(approvalAction);
     }
-
-    if (approvalAction === 'revoke') {
-        return 'TR_EARN_YIELD_REVOKE_APPROVAL';
-    }
-
-    if (approvalAction === 'increase') {
-        return 'TR_EARN_YIELD_INCREASE_APPROVAL';
-    }
-
-    if (approvalAction === 'continue') {
-        return 'TR_CONTINUE';
-    }
-
-    return 'TR_APPROVE_DATA_TITLE';
 };
 
 export type YieldApproveStepProps = {
-    flowType: YieldPositionFlowType;
     token: YieldFlowDisplayToken;
     variant: 'active' | 'done';
     summaryValue: ReactNode;
@@ -83,7 +49,6 @@ export type YieldApproveStepProps = {
 };
 
 export const YieldApproveStep = ({
-    flowType,
     token,
     variant,
     summaryValue,
@@ -101,11 +66,7 @@ export const YieldApproveStep = ({
     onRevoke,
     onPendingTxClick,
 }: YieldApproveStepProps) => {
-    const { amountLabelTranslationId, balanceLabelTranslationId } =
-        approveStepTranslationMap[flowType];
-    const approveButtonId = getApproveButtonTranslationId({
-        approvalAction,
-    });
+    const approveButtonId = getApproveButtonTranslationId(approvalAction);
     const approvedAmountValue = approvedAmount ?? '0';
     const shouldEnableRevoke =
         canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError && !isLoading;
@@ -127,12 +88,12 @@ export const YieldApproveStep = ({
                         tokenSymbol={token.symbol}
                         decimals={token.decimals}
                         summary={{
-                            labelTranslationId: balanceLabelTranslationId,
+                            labelTranslationId: 'TR_BALANCE',
                             value: summaryValue,
                             onMaxClick: pendingApproveTransaction ? undefined : onMaxClick,
                         }}
                         heading={{
-                            amountLabelTranslationId,
+                            amountLabelTranslationId: 'AMOUNT',
                         }}
                         warning={warning}
                         isDisabled={!!pendingApproveTransaction}
