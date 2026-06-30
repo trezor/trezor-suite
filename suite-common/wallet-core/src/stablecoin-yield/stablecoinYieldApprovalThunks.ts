@@ -31,6 +31,10 @@ export type YieldSessionDataAmountPayload = YieldSessionDataPayload & {
     amount: string;
 };
 
+type SubmitYieldApprovePayload = YieldSessionDataAmountPayload & {
+    flowType: 'deposit';
+};
+
 type InitYieldAllowancePayload = YieldSessionDataPayload & {
     flowType: 'deposit';
     shouldSkipApprovalStep?: boolean;
@@ -292,10 +296,7 @@ export const submitYieldRevokeThunk = createThunk(
 
 export const submitYieldApproveThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/submitApprove`,
-    async (
-        { flowKey, flowType, flowData, amount }: YieldSessionDataAmountPayload,
-        { dispatch },
-    ) => {
+    async ({ flowKey, flowType, flowData, amount }: SubmitYieldApprovePayload, { dispatch }) => {
         const requestAmount = getApprovalRequestAmount({
             flowType,
             amount,
@@ -311,12 +312,6 @@ export const submitYieldApproveThunk = createThunk(
         dispatch(stablecoinYieldActions.startSubmittingApproval({ flowType, flowKey }));
 
         try {
-            if (flowType === 'withdraw') {
-                dispatch(stablecoinYieldActions.cancelModification({ flowType, flowKey }));
-
-                return;
-            }
-
             const spender = getAllowanceSpender(flowData);
             const tokenContractAddress = flowData.token.contractAddress;
 

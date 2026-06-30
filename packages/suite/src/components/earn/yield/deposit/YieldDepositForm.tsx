@@ -234,7 +234,6 @@ export const YieldDepositForm = () => {
                                     }
                                 >
                                     <YieldApproveStep
-                                        flowType="deposit"
                                         token={token}
                                         variant={approveStepState === 'done' ? 'done' : 'active'}
                                         summaryValue={

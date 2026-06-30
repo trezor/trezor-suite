@@ -351,6 +351,10 @@ export const useYieldFlow = ({
     const isDeviceConnected = !!device?.connected && !!device?.available;
 
     const submitApprove = useCallback(() => {
+        if (flowType !== 'deposit') {
+            return;
+        }
+
         if (!isDeviceConnected) {
             openDeviceConnectionModal();
 

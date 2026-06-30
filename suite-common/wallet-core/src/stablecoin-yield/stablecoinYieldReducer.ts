@@ -333,13 +333,6 @@ export const stablecoinYieldSlice = createSlice({
                 session.step = 'action';
             });
         },
-        cancelModification(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
-            withSession(state, action.payload, session => {
-                session.approval.isModifyMode = false;
-                session.approval.isRevokeRequired = false;
-                session.step = 'approve';
-            });
-        },
         revokeSuccess(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = false;
