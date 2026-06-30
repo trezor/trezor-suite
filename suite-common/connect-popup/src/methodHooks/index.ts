@@ -4,6 +4,7 @@ import { addressConfirmationModalHooks } from './addressConfirmation';
 import { bitcoinSignTransaction } from './bitcoinSignTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { requestLoginHooks } from './requestLogin';
+import { selectAccountHooks } from './selectAccount';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
@@ -29,6 +30,7 @@ export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHo
         await ethereumSignTransaction.postCallHook(params),
         await solanaSignTransaction.postCallHook(params),
         await addressConfirmationModalHooks.postCallHook(params),
+        await selectAccountHooks.postCallHook(params),
     ];
 
     return hooks.some(Boolean);

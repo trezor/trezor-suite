@@ -47,6 +47,43 @@ const confirmAddresses = createAction(
     }),
 );
 
+const selectAccount = createAction(
+    `${ACTION_PREFIX}/selectAccount`,
+    (
+        payload: Pick<
+            ConnectPopupCallWithState<'select-account'>,
+            | 'options'
+            | 'selectedAccountTypeKey'
+            | 'candidates'
+            | 'page'
+            | 'exported'
+            | 'manualPhase'
+        >,
+    ) => ({
+        payload,
+    }),
+);
+
+const updateSelectAccount = createAction(
+    `${ACTION_PREFIX}/updateSelectAccount`,
+    (
+        payload: Partial<
+            Pick<
+                ConnectPopupCallWithState<'select-account'>,
+                | 'selectedAccountTypeKey'
+                | 'candidates'
+                | 'page'
+                | 'exported'
+                | 'totalCandidates'
+                | 'manualPhase'
+                | 'manualAccountIndex'
+            >
+        >,
+    ) => ({
+        payload,
+    }),
+);
+
 const setSelectedAccountKey = createAction(
     `${ACTION_PREFIX}/setSelectedAccountKey`,
     (payload: Pick<ConnectPopupCall & { state: 'ongoing' }, 'selectedAccountKey'>) => ({
@@ -116,6 +153,8 @@ export const connectPopupActions = {
     rejectPermissions,
     finishCall,
     confirmAddresses,
+    selectAccount,
+    updateSelectAccount,
     setSelectedAccountKey,
     deeplinkCallback,
     setError,

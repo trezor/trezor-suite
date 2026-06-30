@@ -14,6 +14,7 @@ export * from './blockchain/blockchainMiddleware';
 export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainSelectors';
 export * from './blockchain/blockchainThunks';
+export * from './device/deviceAddressUtils';
 export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
 export * from './device/preparePushNotificationMiddleware';
