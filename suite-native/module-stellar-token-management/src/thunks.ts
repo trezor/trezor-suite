@@ -13,7 +13,6 @@ import {
 import {
     type AccountKey,
     type FormState,
-    type PrecomposedTransactionFinal,
     type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -147,7 +146,7 @@ export const composeStellarTrustlineFeesThunk = createThunk(
 
             // Get the actual composed normal fee to use as default for custom fee
             const composedNormalFee = isFinalPrecomposedTransaction(result.payload.normal)
-                ? (result.payload.normal as PrecomposedTransactionFinal).feePerByte
+                ? result.payload.normal.feePerByte
                 : normalFeePerUnit;
 
             // Store form draft for fee selection with the composed fee
