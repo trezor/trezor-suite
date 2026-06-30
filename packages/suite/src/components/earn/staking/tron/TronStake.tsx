@@ -49,16 +49,56 @@ export const TronStake = ({ account }: TronStakeProps) => {
                             <Text typographyStyle="headline-md">
                                 <Translation id="TR_EARN_TRON_STAKE_TITLE" />
                             </Text>
-                            <StepList bulletSize="small" bulletGap={12} gap={24} titleGap={16}>
+
+                            <StepList
+                                isOrdered
+                                bulletSize="large"
+                                bulletGap={12}
+                                gap={24}
+                                titleGap={16}
+                            >
                                 <StepList.Item
                                     state={getStepState('freeze')}
-                                    title={<Translation id="TR_EARN_TRON_FREEZE_STEP_TITLE" />}
+                                    title={
+                                        <Column gap={2} width="100%">
+                                            <Text
+                                                typographyStyle="body-xs"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                case="uppercase"
+                                            >
+                                                <Translation
+                                                    id="TR_STEP_OF_TOTAL"
+                                                    values={{ index: 1, total: 2 }}
+                                                />
+                                            </Text>
+
+                                            <Translation id="TR_EARN_TRON_FREEZE_STEP_TITLE" />
+                                        </Column>
+                                    }
                                 >
                                     {step === 'freeze' && <TronFreezeStep />}
                                 </StepList.Item>
+
                                 <StepList.Item
                                     state={getStepState('vote')}
-                                    title={<Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />}
+                                    title={
+                                        <Column gap={2} width="100%">
+                                            <Text
+                                                typographyStyle="body-xs"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                case="uppercase"
+                                            >
+                                                <Translation
+                                                    id="TR_STEP_OF_TOTAL"
+                                                    values={{ index: 2, total: 2 }}
+                                                />
+                                            </Text>
+
+                                            <Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />
+                                        </Column>
+                                    }
                                 >
                                     {step === 'vote' && <TronVoteStep />}
                                 </StepList.Item>
