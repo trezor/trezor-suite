@@ -6,9 +6,9 @@ import type { Account } from '@suite-common/wallet-types';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CryptoAmountRow } from '../../general/CryptoAmountRow';
+import { CryptoAmountRow } from './CryptoAmountRow';
 
-export type ExchangeAccountCardProps = {
+export type TradingAccountCardProps = {
     account: Account | undefined;
     title: ReactNode;
     amount: string | undefined;
@@ -23,13 +23,13 @@ const rowStyle = prepareNativeStyle(({ spacings, colors, borders }) => ({
     borderTopWidth: borders.widths.small,
 }));
 
-export const ExchangeAccountCard = ({
+export const TradingAccountCard = ({
     account,
     title,
     amount,
     direction,
     cryptoId,
-}: ExchangeAccountCardProps) => {
+}: TradingAccountCardProps) => {
     const { applyStyle } = useNativeStyles();
 
     if (!account || !cryptoId) {
