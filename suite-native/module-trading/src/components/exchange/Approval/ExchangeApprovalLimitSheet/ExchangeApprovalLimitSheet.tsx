@@ -3,9 +3,10 @@ import { memo, useEffect } from 'react';
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
-import { BottomSheetModal, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { BottomSheetModal, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import { UnlimitedAllowanceLabel } from '../UnlimitedAllowanceLabel';
 import { ExchangeApprovalLimitCard } from './ExchangeApprovalLimitCard';
 import { TradingCoinAmountFormatter } from '../../../general/TradingCoinAmountFormatter';
 import { LimitPickerUnlimitedAlert } from '../LimitPickerUnlimitedAlert';
@@ -68,11 +69,7 @@ export const ExchangeApprovalLimitSheet = memo(
                         onChange={() => onApprovalTypeSelect('MINIMAL')}
                     />
                     <ExchangeApprovalLimitCard
-                        title={
-                            <Text variant="body-sm-strong" color="contentPrimary">
-                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
-                            </Text>
-                        }
+                        title={<UnlimitedAllowanceLabel />}
                         description={
                             <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />
                         }

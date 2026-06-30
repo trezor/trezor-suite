@@ -38,7 +38,7 @@ export const RevokeLimitInfoRow = () => {
                     />
                 )}
                 {isAllowanceUnlimited ? (
-                    <UnlimitedAllowanceLabel cryptoId={send} />
+                    <UnlimitedAllowanceLabel />
                 ) : (
                     <TradingCoinAmountFormatter
                         amount={preapprovedStringAmount}

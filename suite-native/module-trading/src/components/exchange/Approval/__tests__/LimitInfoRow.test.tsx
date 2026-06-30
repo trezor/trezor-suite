@@ -48,14 +48,14 @@ describe('LimitInfoRow', () => {
         expect(getByText('100 USDC')).toBeOnTheScreen();
     });
 
-    it('should render unlimited label and coin symbol when approval type is INFINITE', () => {
+    it('should render unlimited label when approval type is INFINITE', () => {
         const unlimitedText = getTranslation(
             'moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel',
         );
 
         const { getByText } = renderLimitInfoRow({}, { approvalType: 'INFINITE' });
 
-        expect(getByText(new RegExp(`${unlimitedText}\\s*USDC`))).toBeOnTheScreen();
+        expect(getByText(unlimitedText)).toBeOnTheScreen();
     });
 
     it('should render unlimited label without coin symbol when approval type is INFINITE and coin is missing in trading info', () => {

@@ -50,7 +50,7 @@ export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfo
                             />
                         )}
                         {approvalType === 'INFINITE' ? (
-                            <UnlimitedAllowanceLabel cryptoId={send} />
+                            <UnlimitedAllowanceLabel />
                         ) : (
                             <TradingCoinAmountFormatter
                                 amount={sendStringAmount}
