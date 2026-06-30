@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { BitcoinAddressDb } from './bitcoin-address-db';
-import { verifyEntryAuthenticity } from './verify-authenticity';
+import { verifyAndUpdateEntry } from './verify-authenticity';
 import TrezorConnect, {
     type AddressMetadata,
     createBitcoinAddressNotificationHandler,
@@ -108,14 +108,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dblookup requires --params=\'{"address":"...","networkSymbol":"..."}\' ');
                     process.exit(1);
                 }
-                const metadata = db.lookupOrCreate(address, networkSymbol);
-                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata }, null, 2));
-                const authentic = await verifyEntryAuthenticity(address, networkSymbol, metadata, device);
-                console.log('Authenticity verified:', authentic);
+                const entry = db.lookupOrCreate(address, networkSymbol);
+                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, proof: entry.proof }, null, 2));
             }
 
             if (method === 'dbchange') {
-                const { address, networkSymbol, metadata: rawMetadata } = params;
+                const { address, networkSymbol, metadata: rawMetadata, proof: submittedProof = [] } = params;
                 if (!address || !networkSymbol || !rawMetadata) {
                     console.error(
                         'dbchange requires --params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
@@ -125,12 +123,14 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 // Strip unknown fields — only persist known AddressMetadata keys.
                 const metadata: AddressMetadata = {
                     ...(rawMetadata.label !== undefined && { label: String(rawMetadata.label) }),
-                    ...(rawMetadata.proof !== undefined && { proof: String(rawMetadata.proof) }),
+                    ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
                 };
-                db.upsert(address, networkSymbol, metadata);
-                const updated = db.lookup(address, networkSymbol)!;
-                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata: updated }, null, 2));
-                const authentic = await verifyEntryAuthenticity(address, networkSymbol, updated, device);
+                const oldEntry = db.lookup(address, networkSymbol);
+                const { authentic, newProof } = await verifyAndUpdateEntry(
+                    address, networkSymbol, oldEntry, metadata, submittedProof, device,
+                );
+                db.upsert(address, networkSymbol, { metadata, proof: newProof });
+                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, proof: newProof }, null, 2));
                 console.log('Authenticity verified:', authentic);
             }
         }
