@@ -15,9 +15,14 @@ import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { EarnPoweredByProvider } from '../components/EarnPoweredByProvider';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
-import { EarnPromoListRow, EarnPromoListSkeletonRow } from '../components/EarnPromoListRow';
+import {
+    EarnPromoListRow,
+    EarnPromoListRowContainer,
+    EarnPromoListSkeletonRow,
+} from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
+import { StablecoinYieldLoadErrorAlert } from '../components/StablecoinYieldLoadErrorAlert';
 import { useStablecoinYieldFlag } from '../hooks/useStablecoinYieldFlag';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStablecoinYieldPromoNavigation } from '../hooks/useStablecoinYieldPromoNavigation';
@@ -52,6 +57,7 @@ const EarnScreenContent = () => {
         totalFiatClaimableAmount: stablecoinYieldTotalFiatClaimableAmount,
         isLoading: isYieldLoading,
         isClaimSummariesLoading,
+        retryLoadStablecoinYield,
     } = useStablecoinYieldListData();
 
     const staking = useStakingPromoNavigation();
@@ -118,6 +124,14 @@ const EarnScreenContent = () => {
                 return <EarnPromoListSkeletonRow isLastInSection={isLastInSection} />;
             }
 
+            if (item.type === 'stablecoin-yield-load-error') {
+                return (
+                    <EarnPromoListRowContainer isLastInSection={isLastInSection}>
+                        <StablecoinYieldLoadErrorAlert onRetry={retryLoadStablecoinYield} />
+                    </EarnPromoListRowContainer>
+                );
+            }
+
             return (
                 <EarnPromoListRow
                     item={item}
@@ -126,7 +140,7 @@ const EarnScreenContent = () => {
                 />
             );
         },
-        [earnListData, handlePromoItemPress],
+        [earnListData, handlePromoItemPress, retryLoadStablecoinYield],
     );
 
     return (

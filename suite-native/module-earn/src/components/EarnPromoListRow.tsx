@@ -31,12 +31,12 @@ type EarnPromoListRowProps = {
     onPress: (item: EarnPromoItem) => void;
 };
 
-type EarnPromoListRowContainerProps = {
+export type EarnPromoListRowContainerProps = {
     children: ReactNode;
     isLastInSection: boolean;
 };
 
-const EarnPromoListRowContainer = ({
+export const EarnPromoListRowContainer = ({
     children,
     isLastInSection,
 }: EarnPromoListRowContainerProps) => {

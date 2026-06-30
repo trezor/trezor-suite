@@ -2680,6 +2680,11 @@ export const messages = {
             claimRewards: {
                 title: 'Claim rewards from an account',
             },
+            stablecoinYieldLoadError: {
+                title: 'Unable to load yield opportunities',
+                description:
+                    'This may be due to a network or connectivity issue. Check your connection and try again.',
+            },
             chooseAccountSheet: {
                 title: 'Choose account',
             },
