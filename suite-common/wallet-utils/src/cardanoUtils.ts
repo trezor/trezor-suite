@@ -27,7 +27,8 @@ export const getDerivationType = (accountType: AccountType) => {
     }
 };
 
-export const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
+export const getStakingPath = (account: Pick<Account, 'index'>) =>
+    `m/1852'/1815'/${account.index}'/2/0`;
 
 export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
     // TODO: use testnet magic from connect once this PR is merged https://github.com/trezor/connect/pull/1046
@@ -48,7 +49,7 @@ export const getUnusedChangeAddress = (account: Pick<Account, 'addresses'>) => {
     return changeAddress;
 };
 
-export const getAddressParameters = (account: Account, path: string) => ({
+export const getAddressParameters = (account: Pick<Account, 'index'>, path: string) => ({
     path,
     addressType: getAddressType(),
     stakingPath: getStakingPath(account),

@@ -109,6 +109,26 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(connectPopupActions.selectAccount, (state, { payload }) => {
+                if (
+                    state.activeCall?.state === 'ongoing' ||
+                    state.activeCall?.state === 'select-account'
+                ) {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'select-account',
+                        ...payload,
+                    };
+                }
+            })
+            .addCase(connectPopupActions.updateSelectAccount, (state, { payload }) => {
+                if (state.activeCall?.state === 'select-account') {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        ...payload,
+                    };
+                }
+            })
             .addCase(connectPopupActions.setSelectedAccountKey, (state, { payload }) => {
                 if (state.activeCall?.state === 'ongoing') {
                     state.activeCall = {

@@ -25,11 +25,10 @@ import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    getAddressType,
+    getAddressParameters,
     getDerivationType,
     getNetworkId,
     getProtocolMagic,
-    getStakingPath,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type Address,
@@ -42,6 +41,7 @@ import TrezorConnect, {
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
+import { getAddressForNetworkType } from './deviceAddressUtils';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
@@ -232,61 +232,21 @@ export const confirmAddressOnDeviceThunk = createThunk(
                 },
             };
 
-        const params = {
+        return await getAddressForNetworkType({
             device,
+            networkType: account.networkType,
             path: addressPath,
             unlockPath: account.unlockPath,
             coin: account.symbol,
             chunkify,
             showOnTrezor,
-        };
-
-        let response;
-
-        switch (account.networkType) {
-            case 'tron':
-                response = await TrezorConnect.tronGetAddress(params);
-                break;
-            case 'ethereum':
-                response = await TrezorConnect.ethereumGetAddress(params);
-                break;
-            case 'cardano':
-                response = TrezorConnect.cardanoGetAddress({
-                    device,
-                    addressParameters: {
-                        stakingPath: getStakingPath(account),
-                        addressType: getAddressType(),
-                        path: addressPath,
-                    },
-                    protocolMagic: getProtocolMagic(account.symbol),
-                    networkId: getNetworkId(),
-                    derivationType: getDerivationType(account.accountType),
-                    chunkify,
-                });
-                break;
-            case 'ripple':
-                response = TrezorConnect.rippleGetAddress(params);
-                break;
-            case 'bitcoin':
-                response = TrezorConnect.getAddress(params);
-                break;
-            case 'solana':
-                response = TrezorConnect.solanaGetAddress(params);
-                break;
-            case 'stellar':
-                response = TrezorConnect.stellarGetAddress(params);
-                break;
-            default:
-                response = {
-                    success: false,
-                    error: {
-                        message: 'Method for getAddress not defined',
-                        code: 'Failure_UnknownCode',
-                    },
-                } as const;
-        }
-
-        return response;
+            cardano: {
+                addressParameters: getAddressParameters(account, addressPath),
+                protocolMagic: getProtocolMagic(account.symbol),
+                networkId: getNetworkId(),
+                derivationType: getDerivationType(account.accountType),
+            },
+        });
     },
 );
 

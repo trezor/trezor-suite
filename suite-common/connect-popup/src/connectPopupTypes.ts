@@ -1,6 +1,16 @@
+import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
 import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+
+// UTXO coins have accounts with many addresses (mirrors `isUtxoBased` in
+// wallet-utils/accountUtils, which operates on an already-loaded `Account` instead of a symbol) —
+// `selectAccount`'s `addressSelection`/xpub-vs-address distinction only applies to them.
+export const isUtxoNetwork = (symbol: NetworkSymbol) => {
+    const { networkType } = getNetwork(symbol);
+
+    return networkType === 'bitcoin' || networkType === 'cardano';
+};
 
 export type ManifestPartial = {
     appName: string;
@@ -67,6 +77,63 @@ type SelectedFee =
           gasLimit: string;
       };
 
+// One account-type tab offered by the `selectAccount` picker. `accountType` is set when the tab
+// is one of the network's built-in types (see networksConfig); custom tabs (arbitrary bip43Path
+// requested by the app) have no `accountType` and carry their own display label instead.
+export type SelectAccountTypeTab = {
+    key: string;
+    bip43Path: string;
+    accountType?: AccountType;
+    customLabel?: string;
+};
+
+// A single row in the `selectAccount` picker. The host (Suite) owns this list: existing accounts
+// come from Redux discovery, new/arbitrary indices are derived on demand.
+//
+// In `options.mode === 'xpub'` (UTXO, `addressSelection` omitted or 'fullAccount') a row is one
+// BIP44 account, identified by `xpub`. In `options.mode === 'address'` a row is one individual
+// address (`address`) — either the account itself (account-based networks, and UTXO
+// `addressSelection: 'firstFresh'`, one row per BIP44 account index) or one of the chosen
+// account's previously-used addresses (UTXO `addressSelection: 'manual'`, `manualPhase ===
+// 'address'` — one row per used address, and `accountIndex` is then the index into that
+// used-address list, not a BIP44 account index). `addressSelection: 'manual'`'s account-picking
+// phase (`manualPhase === 'account'`) reuses the same account-index rows as
+// `mode === 'address'`/`'firstFresh'`, but never populates `address`/`xpub` on them — picking one
+// is a drill-in, not an export.
+export type SelectAccountCandidate = {
+    symbol: NetworkSymbol;
+    accountIndex: number;
+    accountTypeKey: string; // SelectAccountTypeTab.key of the tab this row belongs to
+    path: string; // serialized derivation path of the address/account
+    address?: string; // mutually exclusive with `xpub`
+    xpub?: string; // mutually exclusive with `address` — set only in `options.mode === 'xpub'`
+    balance?: string; // formatted crypto amount
+    used: boolean; // has on-chain history
+    selected: boolean;
+    loading: boolean; // deriving address/xpub/balance
+    loadFailed: boolean; // derivation failed
+    verifying: boolean; // on-device verification in progress
+    validated: 'valid' | 'failed' | 'not-started';
+    mac?: string; // SLIP-0019 address MAC captured during verification (`address` rows only)
+};
+
+export const SELECT_ACCOUNT_PAGE_SIZE = 5;
+
+// Picker options derived from the `selectAccount` method params (by its methodHook).
+export type SelectAccountOptions = {
+    symbol: NetworkSymbol;
+    selectionType: 'single' | 'multi';
+    accountTypeTabs: SelectAccountTypeTab[]; // at least one
+    // Resolved once from `addressSelection` + the coin's network type (see SelectAccountCandidate).
+    mode: 'xpub' | 'address';
+    // Normalized: 'fullAccount' when the coin is UTXO-based and the param was omitted or explicit;
+    // undefined only for account-based networks, where `addressSelection` is ignored entirely.
+    addressSelection?: 'fullAccount' | 'firstFresh' | 'manual';
+    requireOnDeviceVerification: boolean;
+    minCount: number;
+    maxCount?: number;
+};
+
 type TxSimulationConnectPopupCallLoaded = {
     state: 'tx-simulation';
     selectedAccountKey?: AccountKey;
@@ -116,6 +183,28 @@ type ConnectPopupCallLoaded = {
               validatePayload: any;
           }[];
           payload: any;
+      }
+    | {
+          method: CallMethodKeys;
+          state: 'select-account';
+          payload: any;
+          options: SelectAccountOptions;
+          selectedAccountTypeKey: string; // options.accountTypeTabs[n].key of the active tab
+          page: number;
+          candidates: SelectAccountCandidate[];
+          // Total number of candidates, when finite (UTXO `addressSelection: 'manual'`, bounded by
+          // the account's used-address count). Undefined elsewhere — accounts can always be
+          // derived further, so there's no last page.
+          totalCandidates?: number;
+          // UTXO `addressSelection: 'manual'` only: a two-phase flow — pick an account, then pick
+          // one of its addresses. Undefined for every other mode (no account-drill-in phase).
+          manualPhase?: 'account' | 'address';
+          // Set once `manualPhase === 'address'`: the BIP44 index of the account chosen in the
+          // 'account' phase, whose used addresses are now being listed.
+          manualAccountIndex?: number;
+          // false while selecting, true once the selection has been sent to the app; in the
+          // exported phase the modal stays open so the user can keep verifying on device.
+          exported: boolean;
       }
     | {
           method: CallMethodKeys;

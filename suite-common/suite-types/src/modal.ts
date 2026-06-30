@@ -223,6 +223,9 @@ export type UserContextPayload =
           type: 'connect-address-confirmation';
       }
     | {
+          type: 'connect-select-account';
+      }
+    | {
           type: 'connect-error';
       }
     | {

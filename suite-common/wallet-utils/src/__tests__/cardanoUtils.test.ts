@@ -61,7 +61,6 @@ describe('cardano utils', () => {
             const address = getUnusedChangeAddress(f.account);
             const res = address && {
                 address: address.address,
-                // @ts-expect-error params are partial
                 addressParameters: getAddressParameters(f.account, address.path),
             };
             expect(res).toMatchObject(f.result);
