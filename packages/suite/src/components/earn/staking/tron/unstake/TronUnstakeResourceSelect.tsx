@@ -25,6 +25,7 @@ export const TronUnstakeResourceSelect = () => {
     const handleChange = (value: TronResourceType) => {
         setValue('resourceType', value);
         resetField('amount');
+        resetField('fiatAmount');
     };
 
     return (
