@@ -120,6 +120,67 @@ describe(getFirstFreshAddress.name, () => {
         });
     });
 
+    it('returns the next address after a labeled unused address', () => {
+        const account = mockWalletAccount({
+            symbol: 'test',
+            path: "m/84'/1'/0'",
+            descriptor: asAccountDescriptor('descriptorTest'),
+            history: { total: 13, tokens: 0, unconfirmed: 0 },
+            addresses: {
+                used: [],
+                unused: [
+                    {
+                        address: 'tb1q-skipped',
+                        path: "m/84'/1'/0'/0/138",
+                        balance: '0',
+                        sent: '0',
+                        received: '0',
+                        transfers: 0,
+                    },
+                    {
+                        address: 'tb1q-labeled',
+                        path: "m/84'/1'/0'/0/140",
+                        balance: '0',
+                        sent: '0',
+                        received: '0',
+                        transfers: 0,
+                    },
+                    {
+                        address: 'tb1q-fresh',
+                        path: "m/84'/1'/0'/0/141",
+                        balance: '0',
+                        sent: '0',
+                        received: '0',
+                        transfers: 0,
+                    },
+                ],
+                change: [],
+            },
+        });
+
+        expect(
+            getFirstFreshAddress(
+                account,
+                [
+                    {
+                        path: "m/84'/1'/0'/0/140",
+                        address: 'tb1q-labeled',
+                        isVerified: false,
+                    },
+                ],
+                [],
+                true,
+            ),
+        ).toEqual({
+            address: 'tb1q-fresh',
+            balance: '0',
+            path: "m/84'/1'/0'/0/141",
+            received: '0',
+            sent: '0',
+            transfers: 0,
+        });
+    });
+
     it('returns the descriptor-based receive address for non-utxo accounts', () => {
         const account = mockWalletAccount({
             symbol: 'xrp',

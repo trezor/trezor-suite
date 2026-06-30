@@ -110,16 +110,24 @@ export const FreshAddress = ({
     );
 
     useEffect(() => {
-        if (currentFreshAddress !== undefined) {
-            return;
-        }
+        const alreadyUsedAddressesExceptCurrentFresh = labeledAddresses
+            .concat(revealedAddresses)
+            .filter(address => address.path !== currentFreshAddress?.path);
 
         const firstFreshAddress = getFirstFreshAddress(
             account,
-            labeledAddresses.concat(revealedAddresses),
+            alreadyUsedAddressesExceptCurrentFresh,
             pendingAddresses,
             isAccountUtxoBased,
         );
+
+        const hasCurrentChanged =
+            currentFreshAddress?.path !== firstFreshAddress?.path ||
+            currentFreshAddress?.address !== firstFreshAddress?.address;
+
+        if (!hasCurrentChanged) {
+            return;
+        }
 
         dispatch(
             receiveActions.setCurrentFreshAddress({
