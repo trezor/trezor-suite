@@ -31,34 +31,6 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const flagsReducer = prepareFlagsReducer(extraDependencies);
 
-const TrezorConnect = testMocks.getTrezorConnectMock();
-
-const setTrezorConnectFixtures = (fixture: any) => {
-    jest.spyOn(TrezorConnect, 'getFeatures').mockImplementation(
-        () =>
-            fixture || {
-                success: true,
-            },
-    );
-    jest.spyOn(TrezorConnect, 'getDeviceState').mockImplementation(
-        ({ device }: any) =>
-            fixture || {
-                success: true,
-                payload: {
-                    state: {
-                        staticSessionId: `state@device-id:${device ? device.instance : undefined}`,
-                    },
-                },
-            },
-    );
-    jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(
-        () =>
-            fixture || {
-                success: true,
-            },
-    );
-};
-
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
@@ -208,7 +180,7 @@ describe('Suite Actions', () => {
 
     fixtures.acquireDevice.forEach(f => {
         it(`acquireDevice: ${f.description}`, async () => {
-            setTrezorConnectFixtures(f.getFeatures);
+            testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
