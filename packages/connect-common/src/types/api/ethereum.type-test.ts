@@ -237,16 +237,17 @@ export const signTypedData = async (api: TrezorConnect) => {
         domain_separator_hash: '0x',
     });
 
-    // @ts-expect-error: primaryType not in `types`, incorrect type for message_hash
     await api.ethereumSignTypedData({
         path: 'm/44',
         metamask_v4_compat: true,
         data: {
             types: { EIP712Domain: [] },
+            // @ts-expect-error primaryType must be one of the keys in `types`
             primaryType: 'UnknownType',
             domain: {},
             message: {},
         },
+        // @ts-expect-error message_hash must be a string when provided
         message_hash: 12345,
         domain_separator_hash: '0x',
     });
