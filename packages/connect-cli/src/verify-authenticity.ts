@@ -17,7 +17,7 @@ export type VerifyAndUpdateResult = {
  *   Lookup / verification only (dblookup):
  *     1. Compute value = entryToValueBytes(networkSymbol, entry)
  *     2. Send AuthDbLookup { address: address_bytes, value, proof: currentProof } → device
- *     3. Device recomputes leaf_hash = SHA-256(b"\x00" + address + value), evaluates SMT proof
+ *     3. Device recomputes leaf_hash = SHA-256(b"\x00" + address + value), evaluates MPT proof
  *        against stored root → returns AuthDbLookupResponse { valid, counter }
  *
  *   Existing entry update (dbchange):
