@@ -7,7 +7,6 @@ import { VStack } from '@suite-native/atoms';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
-    type StatefulReviewOutput,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
 
@@ -73,17 +72,14 @@ const getSummaryState = ({
 };
 
 const getStatefulOutputs = ({ activeStep, isSigned, outputs }: GetStatefulOutputsParams) =>
-    outputs.map(
-        (output: ReviewOutput, index) =>
-            ({
-                ...output,
-                state: getOutputState({
-                    activeStep,
-                    index,
-                    isSigned: isSigned ?? false,
-                }),
-            }) as StatefulReviewOutput,
-    );
+    outputs.map((output: ReviewOutput, index) => ({
+        ...output,
+        state: getOutputState({
+            activeStep,
+            index,
+            isSigned: isSigned ?? false,
+        }),
+    }));
 
 export const YieldTransactionReviewOutputList = ({
     accountKey,
