@@ -14,13 +14,19 @@ type TradeDetailInfoRowProps = {
 
 export const DETAIL_INFO_ROW_MIN_HEIGHT = 66;
 
-const wrapperStyle = prepareNativeStyle<{ borderBottom?: boolean }>((utils, { borderBottom }) => ({
-    justifyContent: 'space-between',
-    minHeight: DETAIL_INFO_ROW_MIN_HEIGHT,
-    alignItems: 'center',
-    paddingHorizontal: utils.spacings.sp16,
-    borderBottomWidth: borderBottom ? 1 : 0,
-    borderBottomColor: utils.colors.surfaceFillPage,
+const wrapperStyle = prepareNativeStyle<{ borderBottom?: boolean }>(
+    ({ spacings, colors, borders }, { borderBottom }) => ({
+        justifyContent: 'space-between',
+        minHeight: DETAIL_INFO_ROW_MIN_HEIGHT,
+        alignItems: 'center',
+        paddingHorizontal: spacings.sp16,
+        borderBottomWidth: borderBottom ? borders.widths.small : 0,
+        borderBottomColor: colors.surfaceFillPage,
+    }),
+);
+
+const titleStyle = prepareNativeStyle(() => ({
+    flexShrink: 1,
 }));
 
 export const TradeDetailInfoRow = ({
@@ -34,7 +40,7 @@ export const TradeDetailInfoRow = ({
 
     const row = (
         <HStack style={applyStyle(wrapperStyle, { borderBottom })}>
-            <Text variant="body-sm" color="contentSecondary">
+            <Text variant="body-sm" color="contentSecondary" style={applyStyle(titleStyle)}>
                 {title}
             </Text>
             {typeof content === 'string' ? (
