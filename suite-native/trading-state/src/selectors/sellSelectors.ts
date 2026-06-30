@@ -2,7 +2,6 @@ import type { FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    type TradingCountryCode,
     type TradingPaymentMethodProps,
     bestSellQuotePerPaymentMethodProjection,
     getCurrencyLabel,
@@ -58,10 +57,10 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
     ],
     (sellInfo, coins, residenceCountry, residenceCountrySubdivision) => {
         if (!sellInfo || !coins) {
-            return {} as Partial<SellFormValues>;
+            return {};
         }
 
-        const country = residenceCountry ?? (sellInfo.country as TradingCountryCode);
+        const country = residenceCountry ?? sellInfo.country;
 
         const fiatCurrency = DEFAULT_FIAT_CURRENCY_FALLBACK;
         const countryDefaultValue =

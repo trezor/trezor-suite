@@ -100,7 +100,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
     ],
     (buyInfo, coins, residenceCountry, residenceCountrySubdivision) => {
         if (!buyInfo || !coins) {
-            return {} as Partial<BuyFormValues>;
+            return {};
         }
 
         const { suggestedFiatCurrency } = buyInfo.buyInfo;
