@@ -48,8 +48,8 @@ export const TronStakeInANutshellModal = ({
                         content={{
                             text: (
                                 <Translation
-                                    id="TR_EARN_APY_APPROX"
-                                    values={{ apyPercent: formatApyValue(maxApr) }}
+                                    id="TR_EARN_APR_APPROX"
+                                    values={{ aprPercent: formatApyValue(maxApr) }}
                                 />
                             ),
                         }}

@@ -10303,6 +10303,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_APY_APPROX',
         defaultMessage: '~{apyPercent}% APY',
     },
+    TR_EARN_APR_APPROX: {
+        id: 'TR_EARN_APR_APPROX',
+        defaultMessage: '~{aprPercent}% APR',
+    },
     TR_EARN_NOT_AVAILABLE: {
         id: 'TR_EARN_NOT_AVAILABLE',
         defaultMessage: 'Not available',
