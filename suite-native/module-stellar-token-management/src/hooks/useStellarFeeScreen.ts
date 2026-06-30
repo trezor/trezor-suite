@@ -18,9 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
-    type FeeLevelLabel,
     type FormState,
-    type PrecomposedTransactionFinal,
     type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -122,7 +120,7 @@ export const useStellarFeeScreen = ({
         selectFeeLevels(state),
     );
     const normalFeePerUnit = isFinalPrecomposedTransaction(precomposedFeeLevels.normal)
-        ? (precomposedFeeLevels.normal as PrecomposedTransactionFinal).feePerByte
+        ? precomposedFeeLevels.normal.feePerByte
         : undefined;
 
     const {
@@ -136,7 +134,7 @@ export const useStellarFeeScreen = ({
         handleCustomFeeSet,
     } = useFeesManagement({
         accountKey,
-        selectedFee: (formDraft?.selectedFee as FeeLevelLabel) ?? 'normal',
+        selectedFee: formDraft?.selectedFee ?? 'normal',
         selectedFeePerUnit: formDraft?.feePerUnit ?? normalFeePerUnit,
         updateThunk: updateStellarTokenSelectedFeeLevelThunk,
         formDraftKey,
