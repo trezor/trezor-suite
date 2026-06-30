@@ -734,10 +734,7 @@ export const parseBodyJSONWithLimit =
                 try {
                     const text = Buffer.concat(chunks).toString();
                     const body = text ? JSON.parse(text) : {};
-                    next(
-                        Object.assign(request, { body }) as unknown as RequestWithParams<JSON>,
-                        response,
-                    );
+                    next(Object.assign(request, { body }), response);
                 } catch (error) {
                     response.statusCode = 400;
                     response.end(

@@ -104,10 +104,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                         { type: 'ROTATE' }
                     >;
 
-                    const modelConfig =
-                        DEVICE_ANIMATION_CONFIG.ROTATE.models[
-                            deviceModelInternal as keyof typeof DEVICE_ANIMATION_CONFIG.ROTATE.models
-                        ];
+                    const modelConfig = DEVICE_ANIMATION_CONFIG.ROTATE.models[deviceModelInternal];
 
                     const allowedColors = modelConfig.colors ?? [1];
                     const color = deviceUnitColor ?? allowedColors[0];

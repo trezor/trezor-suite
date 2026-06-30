@@ -9,7 +9,6 @@ import {
     Column,
     H3,
     Icon,
-    type IconProps,
     Paragraph,
     type SuiteThemeColors,
     Text,
@@ -195,10 +194,7 @@ export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSi
                                         <Text typographyStyle="body-xs">{event.name}</Text>
 
                                         <Tooltip content={getTooltipContent(changeInfo)}>
-                                            <Icon
-                                                {...(getEventChangeProps(changeInfo) as IconProps)}
-                                                size={12}
-                                            />
+                                            <Icon {...getEventChangeProps(changeInfo)} size={12} />
                                         </Tooltip>
                                     </CardList.Item>
                                 );
