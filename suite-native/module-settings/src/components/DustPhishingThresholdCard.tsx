@@ -10,8 +10,8 @@ export const DustPhishingThresholdCard = () => {
     return (
         <PressableCardWithIconLayout
             icon="detective"
-            title={<Translation id="moduleSettings.advanced.dustPhishing.title" />}
-            description={<Translation id="moduleSettings.advanced.dustPhishing.subtitle" />}
+            title={<Translation id="moduleSettings.security.dustPhishing.title" />}
+            description={<Translation id="moduleSettings.security.dustPhishing.subtitle" />}
             onPress={() => navigateTo(SettingsStackRoutes.SettingsDustPhishing)}
         />
     );

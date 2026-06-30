@@ -16,6 +16,7 @@ import { SettingsExperimentalScreen } from '../screens/SettingsExperimentalScree
 import { SettingsNetworksScreen } from '../screens/SettingsNetworksScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
+import { SettingsSecurityScreen } from '../screens/SettingsSecurityScreen';
 import { SettingsSuiteSyncScreen } from '../screens/SettingsSuiteSyncScreen';
 import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
 import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
@@ -63,6 +64,10 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsSuiteSync }}
             name={SettingsStackRoutes.SettingsSuiteSync}
             component={SettingsSuiteSyncScreen}
+        />
+        <SettingsStack.Screen
+            name={SettingsStackRoutes.SettingsSecurity}
+            component={SettingsSecurityScreen}
         />
         <SettingsStack.Screen
             name={SettingsStackRoutes.SettingsAdvanced}

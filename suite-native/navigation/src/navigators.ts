@@ -160,6 +160,7 @@ export type SettingsStackParamList = {
         networkSymbol: NetworkSymbol;
     };
     [SettingsStackRoutes.SettingsSuiteSync]: undefined;
+    [SettingsStackRoutes.SettingsSecurity]: undefined;
     [SettingsStackRoutes.SettingsAdvanced]: undefined;
     [SettingsStackRoutes.SettingsDustPhishing]: undefined;
     [SettingsStackRoutes.SettingsExperimental]: undefined;

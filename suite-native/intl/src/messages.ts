@@ -1082,6 +1082,10 @@ export const messages = {
                         saved: 'Server settings saved.',
                     },
                 },
+                security: {
+                    title: 'Security',
+                    subtitle: 'Protect your transactions',
+                },
                 advanced: {
                     title: 'Advanced',
                     subtitle: 'Enable expert features for power users',
@@ -1374,6 +1378,30 @@ export const messages = {
                 },
             },
         },
+        security: {
+            title: 'Security',
+            mevProtection: {
+                title: 'MEV protection',
+                subtitle:
+                    'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
+            },
+            dustPhishing: {
+                title: 'Dust phishing protection',
+                subtitle:
+                    'Hide suspicious micro transactions used in scams from your transaction history.',
+                enableProtection: 'Enable protection',
+                dustThresholdTitle: 'Dust phishing threshold',
+                dustThresholdDescription:
+                    'Transactions below this amount are marked as suspicious and hidden.',
+                save: 'Save',
+                placeholder: 'Enter dust threshold in USD',
+                errors: {
+                    empty: 'Dust threshold is required',
+                    number: 'Enter a valid number',
+                    positive: 'Dust threshold must be a positive number',
+                },
+            },
+        },
         advanced: {
             title: 'Advanced',
             authenticityChecks: {
@@ -1410,31 +1438,10 @@ export const messages = {
                 subtitle:
                     'Reserve a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
             },
-            mevProtection: {
-                title: 'MEV protection',
-                subtitle:
-                    'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
-            },
             addressDisplay: {
                 title: 'Spaced address formatting',
                 subtitle:
                     'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
-            },
-            dustPhishing: {
-                title: 'Dust phishing protection',
-                subtitle:
-                    'Hide suspicious micro transactions used in scams from your transaction history.',
-                enableProtection: 'Enable protection',
-                dustThresholdTitle: 'Dust phishing threshold',
-                dustThresholdDescription:
-                    'Transactions below this amount are marked as suspicious and hidden.',
-                save: 'Save',
-                placeholder: 'Enter dust threshold in USD',
-                errors: {
-                    empty: 'Dust threshold is required',
-                    number: 'Enter a valid number',
-                    positive: 'Dust threshold must be a positive number',
-                },
             },
             bitcoinBackends: {
                 title: 'Bitcoin backend',
@@ -1479,6 +1486,11 @@ export const messages = {
                     title: 'Suite Sync',
                 },
             },
+            testnets: {
+                title: 'Testnet networks',
+                description:
+                    'Send and receive transactions on testnet networks. These assets are for testing purposes only and have no real value.',
+            },
             featureFeedback: {
                 title: 'Rate your {featureName} experience',
                 description:
@@ -1493,10 +1505,9 @@ export const messages = {
         experimental: {
             title: 'Experimental',
             subtitle: 'For experienced users only. Use at your own risk.',
-            testnets: {
-                title: 'Testnet networks',
-                description:
-                    'Send and receive transactions on testnet networks. These assets are for testing purposes only and have no real value.',
+            noneAvailable: {
+                title: 'None available',
+                subtitle: 'No experimental features currently available.',
             },
         },
         appLog: {
