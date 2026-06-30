@@ -681,7 +681,7 @@
     "moduleSettings.advanced.authenticityChecks.device.subtitle": "Verify that your Trezor device is genuine. This helps ensure you never use a compromised or fake device. ",
     "moduleSettings.advanced.authenticityChecks.device.turnOffTitle": "Turn off device authenticity check",
     "moduleSettings.advanced.networkReserve.title": "Network reserve",
-    "moduleSettings.advanced.networkReserve.subtitle": "Reserve a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.",
+    "moduleSettings.advanced.networkReserve.subtitle": "Reserve a small amount of the native token to cover any extra network fees when you send, swap, or sell your assets.",
     "moduleSettings.advanced.mevProtection.title": "MEV protection",
     "moduleSettings.advanced.mevProtection.subtitle": "Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.",
     "moduleSettings.advanced.addressDisplay.title": "Spaced address formatting",

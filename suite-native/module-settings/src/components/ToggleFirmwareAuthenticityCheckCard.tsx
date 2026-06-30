@@ -14,6 +14,7 @@ import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const ToggleFirmwareAuthenticityCheckCard = () => {
     const isFwAuthenticityCheckEnabled = useSelector(selectIsFirmwareAuthenticityCheckEnabled);
+
     const dispatch = useDispatch();
     const navigateTo = useSettingsNavigateTo();
     const openLink = useOpenLink();
@@ -32,15 +33,15 @@ export const ToggleFirmwareAuthenticityCheckCard = () => {
 
     return (
         <TouchableSwitchRow
-            isChecked={isFwAuthenticityCheckEnabled}
-            onChange={handleToggle}
-            accessibilityLabel="firmware authenticity check"
+            icon="shieldCheck"
             text={<Translation id="moduleSettings.advanced.authenticityChecks.firmware.title" />}
+            accessibilityLabel="firmware authenticity check"
             description={
                 <Translation id="moduleSettings.advanced.authenticityChecks.firmware.subtitle" />
             }
-            icon="shieldCheck"
             onLearnMorePress={handleLearnMorePress}
+            isChecked={isFwAuthenticityCheckEnabled}
+            onChange={handleToggle}
         />
     );
 };

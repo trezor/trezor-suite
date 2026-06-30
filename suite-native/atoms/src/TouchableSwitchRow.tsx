@@ -6,6 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { Box } from './Box';
 import { Button } from './Button/Button';
 import { Card } from './Card/Card';
+import { InlineAlertBox } from './InlineAlertBox/InlineAlertBox';
 import { PressableOpacity } from './Pressable';
 import { HStack, VStack } from './Stack';
 import { Switch } from './Switch';
@@ -34,21 +35,23 @@ export type TouchableSwitchRowProps = {
     text: ReactNode;
     accessibilityLabel?: string;
     description?: ReactNode;
+    additionalInfo?: ReactNode;
     isChecked: boolean;
     onChange: (value: boolean) => void;
-    testID?: string;
     onLearnMorePress?: () => void;
+    testID?: string;
 };
 
 export const TouchableSwitchRow = ({
     icon,
-    accessibilityLabel,
     text,
+    accessibilityLabel,
     description,
+    additionalInfo,
     isChecked,
     onChange,
-    testID,
     onLearnMorePress,
+    testID,
 }: TouchableSwitchRowProps) => {
     const handleChange = () => {
         onChange(!isChecked);
@@ -62,29 +65,32 @@ export const TouchableSwitchRow = ({
                 accessibilityRole="switch"
                 accessibilityState={{ checked: isChecked }}
             >
-                <HStack margin="sp16" spacing="sp12">
-                    <Box marginVertical="sp2">
-                        <Icon name={icon} size="mediumLarge" />
-                    </Box>
-                    <VStack flex={1}>
-                        <HStack justifyContent="space-between" flex={1}>
-                            <VStack flex={1} spacing="sp2">
-                                <Text variant="body-md-strong">{text}</Text>
-                                {description && (
-                                    <Text variant="body-sm" color="contentSecondary">
-                                        {description}
-                                    </Text>
-                                )}
-                            </VStack>
-                            <Switch
-                                testID={testID}
-                                isChecked={isChecked}
-                                onChange={() => onChange(!isChecked)}
-                            />
-                        </HStack>
-                        {onLearnMorePress && <LearnMoreButton onPress={onLearnMorePress} />}
-                    </VStack>
-                </HStack>
+                <VStack margin="sp16" spacing="sp12">
+                    <HStack spacing="sp12">
+                        <Box marginVertical="sp2">
+                            <Icon name={icon} size="mediumLarge" />
+                        </Box>
+                        <VStack flex={1}>
+                            <HStack justifyContent="space-between" flex={1}>
+                                <VStack flex={1} spacing="sp2">
+                                    <Text variant="body-md-strong">{text}</Text>
+                                    {description && (
+                                        <Text variant="body-sm" color="contentSecondary">
+                                            {description}
+                                        </Text>
+                                    )}
+                                </VStack>
+                                <Switch
+                                    testID={testID}
+                                    isChecked={isChecked}
+                                    onChange={() => onChange(!isChecked)}
+                                />
+                            </HStack>
+                            {onLearnMorePress && <LearnMoreButton onPress={onLearnMorePress} />}
+                        </VStack>
+                    </HStack>
+                    {additionalInfo && <InlineAlertBox title={additionalInfo} intent="neutral" />}
+                </VStack>
             </PressableOpacity>
         </Card>
     );

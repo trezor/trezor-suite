@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -13,7 +14,11 @@ import { HELP_CENTER_DEVICE_AUTHENTICATION_MOBILE } from '@trezor/urls';
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const ToggleDeviceAuthenticityCheckCard = () => {
+    const isDeviceAuthenticityCheckSupported = useSelector(
+        selectIsDeviceAuthenticityCheckSupported,
+    );
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
+
     const dispatch = useDispatch();
     const navigateTo = useSettingsNavigateTo();
     const openLink = useOpenLink();
@@ -32,15 +37,20 @@ export const ToggleDeviceAuthenticityCheckCard = () => {
 
     return (
         <TouchableSwitchRow
-            isChecked={isDeviceAuthenticityCheckEnabled}
-            onChange={handleToggle}
-            accessibilityLabel="device authenticity check"
+            icon="trezorDevices"
             text={<Translation id="moduleSettings.advanced.authenticityChecks.device.title" />}
+            accessibilityLabel="device authenticity check"
             description={
                 <Translation id="moduleSettings.advanced.authenticityChecks.device.subtitle" />
             }
-            icon="trezorDevices"
+            additionalInfo={
+                !isDeviceAuthenticityCheckSupported && (
+                    <Translation id="moduleSettings.notSupported" />
+                )
+            }
             onLearnMorePress={handleLearnMorePress}
+            isChecked={isDeviceAuthenticityCheckEnabled}
+            onChange={handleToggle}
         />
     );
 };
