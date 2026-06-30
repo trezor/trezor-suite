@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     type StablecoinYieldRootState,
     type YieldFlowResolvedData,
@@ -21,8 +22,9 @@ import {
     type YieldReviewSigningResult,
     type YieldReviewStatus,
 } from '../types';
-import { isUserCancelledSignError } from '../utils';
+import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
 import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
+import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
 
@@ -51,12 +53,11 @@ export const useYieldDepositReview = ({
 }: UseYieldDepositReviewParams): UseYieldDepositReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const {
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
-        showSignTransactionFailedAlert,
-    } = useShowPushTransactionFailedDuringReviewAlert('yield-deposit');
+    const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
+        useShowPushTransactionFailedDuringReviewAlert('yield-deposit');
+    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const [depositActionStatus, setDepositActionStatus] = useState<YieldReviewActionStatus>('idle');
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const txReview = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldTxReview(state),
     );
@@ -82,6 +83,12 @@ export const useYieldDepositReview = ({
             return 'not-ready';
         }
 
+        if (!isDeviceConnected) {
+            showDeviceDisconnectedAlert();
+
+            return 'failed';
+        }
+
         setDepositActionStatus('signing');
 
         const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
@@ -97,7 +104,16 @@ export const useYieldDepositReview = ({
         setDepositActionStatus('idle');
 
         if (!deviceAccessResponse.success) {
-            showSignTransactionFailedAlert();
+            handleEarnReviewError({
+                payload: {
+                    error: 'sign-transaction-failed',
+                    message: 'Prioritized device access failed.',
+                },
+                navigation,
+                showPushTransactionFailedAlert,
+                showPendingTransactionConflictAlert,
+                showDeviceDisconnectedAlert,
+            });
 
             return 'failed';
         }
@@ -110,13 +126,29 @@ export const useYieldDepositReview = ({
         }
 
         if (isSignRejected) {
-            showSignTransactionFailedAlert();
+            handleEarnReviewError({
+                payload: signResponse.payload,
+                navigation,
+                showPushTransactionFailedAlert,
+                showPendingTransactionConflictAlert,
+                showDeviceDisconnectedAlert,
+            });
 
             return 'failed';
         }
 
         return 'signed';
-    }, [depositStatus, dispatch, flowData, flowKey, showSignTransactionFailedAlert]);
+    }, [
+        depositStatus,
+        dispatch,
+        flowData,
+        flowKey,
+        isDeviceConnected,
+        navigation,
+        showDeviceDisconnectedAlert,
+        showPendingTransactionConflictAlert,
+        showPushTransactionFailedAlert,
+    ]);
 
     const handleDepositSubmitted = useCallback(async () => {
         if (depositStatus !== 'signed') {
