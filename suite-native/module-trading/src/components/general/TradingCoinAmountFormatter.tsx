@@ -32,6 +32,7 @@ export const TradingCoinAmountFormatter = ({
                 value={amount ?? '0'}
                 symbol={coinSymbol}
                 isBalance={false}
+                isDiscreetText={false}
                 {...textProps}
             />
         );
@@ -41,6 +42,7 @@ export const TradingCoinAmountFormatter = ({
         <TokenAmountFormatter
             value={amount ?? '0'}
             tokenSymbol={coinSymbol as TokenSymbol}
+            isDiscreetText={false}
             {...textProps}
         />
     );
