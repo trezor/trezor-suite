@@ -22,6 +22,7 @@ import {
     initialWalletSettingsState,
     phishingInitialState,
     stakeInitialState,
+    tokenInfoInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
@@ -82,6 +83,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         blockchain: blockchainInitialState,
         explorer: explorerInitialState,
         fiat: fiatRatesInitialState,
+        tokenInfo: tokenInfoInitialState,
         transactions: transactionsInitialState,
         phishing: phishingInitialState,
         discovery: discoveryInitialState,

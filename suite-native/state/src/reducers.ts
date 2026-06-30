@@ -27,6 +27,7 @@ import {
     prepareFiatRatesReducer,
     preparePhishingReducer,
     prepareStakeReducer,
+    prepareTokenInfoReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     stablecoinYieldReducer,
@@ -89,6 +90,7 @@ const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
+const tokenInfoReducer = prepareTokenInfoReducer(extraDependencies);
 const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
 const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
@@ -223,6 +225,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         blockchain: blockchainPersistedReducer,
         explorer: explorerReducer,
         fiat: fiatRatesReducer,
+        tokenInfo: tokenInfoReducer,
         transactions: transactionsReducer,
         phishing: phishingPersistedReducer,
         discovery: discoveryReducer,
