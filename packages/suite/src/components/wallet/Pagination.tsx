@@ -95,6 +95,9 @@ interface PaginationProps {
     perPage: number;
     totalItems: number;
     explicitNavigation?: boolean;
+    // `totalItems` is a lower-bound estimate rather than a true count (e.g. accounts that can
+    // always be derived further), so the page-input shouldn't reject pages beyond it.
+    noUpperBound?: boolean;
     onPageSelected: (page: number) => void;
 }
 
@@ -106,13 +109,14 @@ export const Pagination = ({
     perPage,
     totalItems,
     explicitNavigation = false,
+    noUpperBound = false,
     ...rest
 }: PaginationProps) => {
     const locale = useSelector(selectLanguage);
 
     const totalPages = Math.ceil(totalItems / perPage);
     const showPrev = currentPage > 1;
-    const showNext = currentPage < totalPages;
+    const showNext = noUpperBound || currentPage < totalPages;
 
     const { control, watch } = useForm({
         defaultValues: {
@@ -125,7 +129,7 @@ export const Pagination = ({
     const isPageInputInvalid =
         !Number.isInteger(Number(pageInput)) ||
         Number(pageInput) < 1 ||
-        Number(pageInput) > totalPages;
+        (!noUpperBound && Number(pageInput) > totalPages);
 
     const pageNumbers = getPages({ currentPage, totalPages });
 

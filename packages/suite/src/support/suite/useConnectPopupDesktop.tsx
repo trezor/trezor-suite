@@ -195,6 +195,7 @@ export const useConnectPopupDesktop = () => {
                 case 'switch-device':
                 case 'permission-request':
                 case 'address-confirmation':
+                case 'select-account':
                 case 'tx-simulation':
                     return true;
                 case 'ongoing': {

@@ -40,6 +40,7 @@ import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { ConnectPermissionsModal } from './ConnectPermissionsModal';
+import { ConnectSelectAccount } from './ConnectSelectAccount/ConnectSelectAccount';
 import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
 import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
 import { DisableTorModal } from './DisableTorModal';
@@ -184,6 +185,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <WalletConnectSwitchAccountModal sessionTopic={payload.sessionTopic} />;
         case 'connect-address-confirmation':
             return <ConnectAddressConfirmation />;
+        case 'connect-select-account':
+            return <ConnectSelectAccount />;
         case 'connect-error':
             return <ConnectErrorModal />;
         case 'connect-loading':

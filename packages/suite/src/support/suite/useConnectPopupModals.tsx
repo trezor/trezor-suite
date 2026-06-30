@@ -42,6 +42,7 @@ export const useConnectPopupModals = () => {
                 'connect-popup',
                 'connect-loading',
                 'connect-address-confirmation',
+                'connect-select-account',
                 'connect-error',
                 'connect-popup-tx-simulation',
             ].includes(modalType);
@@ -63,6 +64,7 @@ export const useConnectPopupModals = () => {
                 | 'connect-popup'
                 | 'connect-loading'
                 | 'connect-address-confirmation'
+                | 'connect-select-account'
                 | 'connect-error'
                 | 'connect-popup-tx-simulation',
         ) => {
@@ -99,6 +101,18 @@ export const useConnectPopupModals = () => {
             }
             case 'address-confirmation': {
                 return openIfNeeded('connect-address-confirmation');
+            }
+            case 'select-account': {
+                // The picker itself triggers nested device calls (derive/verify) that
+                // open MODAL_CONTEXT_DEVICE modals; don't replace those with the picker.
+                if (
+                    modalContext === MODAL_CONTEXT_DEVICE ||
+                    modalContext === MODAL_CONTEXT_DEVICE_CONFIRMATION
+                ) {
+                    return;
+                }
+
+                return openIfNeeded('connect-select-account');
             }
             case 'tx-simulation': {
                 return openIfNeeded('connect-popup-tx-simulation');

@@ -12491,6 +12491,44 @@ export const messages = defineMessages({
         defaultMessage:
             'The following accounts from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
     },
+    TR_CONNECT_SELECT_ACCOUNT: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT',
+        defaultMessage: 'Select account',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_DESCRIPTION: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_DESCRIPTION',
+        defaultMessage:
+            'Only the accounts you select are shared. Verify an address on your Trezor to confirm it before connecting.',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION',
+        defaultMessage: 'Choose which account to pick an address from.',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_CONFIRM: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_CONFIRM',
+        defaultMessage: 'Connect',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_LABEL: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_LABEL',
+        defaultMessage: 'Account #{index}',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_ADDRESS_LABEL: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_ADDRESS_LABEL',
+        defaultMessage: 'Address #{index}',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_SELECTED: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_SELECTED',
+        defaultMessage: '{count} selected',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_EXPORTED: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_EXPORTED',
+        defaultMessage: 'Accounts shared',
+    },
+    TR_CONNECT_SELECT_ACCOUNT_EXPORTED_DESCRIPTION: {
+        id: 'TR_CONNECT_SELECT_ACCOUNT_EXPORTED_DESCRIPTION',
+        defaultMessage:
+            'You can verify the shared addresses on your Trezor to make sure they are correct.',
+    },
     TR_DYK_TITLE: {
         id: 'TR_DYK_TITLE',
         defaultMessage: 'Did you know?',
