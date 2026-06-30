@@ -1,7 +1,11 @@
+import { useMemo } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
 
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation, useTranslation } from '@suite/intl';
 import { Column, Input, Row, Select, Text } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { formatApyValue } from '../../../utils/earnApyUtils';
 import { useTronStakeContext } from '../TronStakeContext';
@@ -18,6 +22,7 @@ type FormatContext = { context: 'menu' | 'value' };
 
 export const TronVoteRepresentativeSelect = () => {
     const { translationString } = useTranslation();
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { representatives, form, actions } = useTronStakeContext();
     const { control, setValue, register } = form.methods;
 
@@ -30,19 +35,30 @@ export const TronVoteRepresentativeSelect = () => {
         form.customRepresentativeRules,
     );
 
-    const options: RepresentativeOption[] = [
-        ...(representatives.data ?? []).map(({ address, name, apr }) => ({
-            value: address,
-            name,
-            address,
-            apr,
-        })),
-        { value: CUSTOM_REPRESENTATIVE, name: '' },
-    ];
+    const options: RepresentativeOption[] = useMemo(() => {
+        const baseOptions: RepresentativeOption[] =
+            representatives.data?.map(({ address, name, apr }) => ({
+                value: address,
+                name,
+                address,
+                apr,
+            })) ?? [];
+
+        if (isDebugModeActive) {
+            baseOptions.push({ value: CUSTOM_REPRESENTATIVE, name: '' });
+        }
+
+        return baseOptions;
+    }, [representatives.data, isDebugModeActive]);
 
     const formatOptionLabel = (option: RepresentativeOption, { context }: FormatContext) => {
         if (option.value === CUSTOM_REPRESENTATIVE) {
-            return <Translation id="TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE" />;
+            return (
+                <Row justifyContent="space-between" alignItems="center" gap={12}>
+                    <Translation id="TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE" />
+                    <DebugOnlyBadge />
+                </Row>
+            );
         }
 
         if (context === 'value') {
