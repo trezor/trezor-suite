@@ -32,3 +32,13 @@ export type TronTxContractType =
     | 'UnfreezeBalanceV2Contract' // Used to unfreeze staked TRX and return the Bandwidth/Energy resources (used in conjunction with FreezeBalanceV2Contract)
     | 'WithdrawExpireUnfreezeContract' // Used to withdraw TRX funds that have passed the unstaking waiting period (must be executed after initiating UnfreezeBalanceV2Contract)
     | 'CancelAllUnfreezeV2Contract'; // Used to cancel all uncompleted unstaking operations (revokes initiated unstaking requests within the unstaking waiting period)
+
+export const TRON_STAKING_CONTRACT_TYPES: TronTxContractType[] = [
+    'FreezeBalanceContract',
+    'FreezeBalanceV2Contract',
+    'UnfreezeBalanceContract',
+    'UnfreezeBalanceV2Contract',
+    'VoteWitnessContract',
+    'WithdrawExpireUnfreezeContract',
+    'WithdrawBalanceContract',
+];

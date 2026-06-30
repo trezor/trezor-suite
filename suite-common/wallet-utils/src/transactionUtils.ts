@@ -38,6 +38,7 @@ import { isStakeTypeTx } from './ethereumStakingUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
+import { isTronStakingTx } from './tronStakingUtils';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
@@ -617,6 +618,10 @@ export const isStakingTransaction = (transaction: WalletAccountTransaction) => {
 
     // Ethereum staking transactions
     if (isStakeTypeTx(transaction.ethereumSpecific?.parsedData?.methodId)) {
+        return true;
+    }
+
+    if (isTronStakingTx(transaction)) {
         return true;
     }
 

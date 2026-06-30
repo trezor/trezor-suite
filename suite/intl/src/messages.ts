@@ -5654,13 +5654,17 @@ export const messages = defineMessages({
         id: 'TR_TRON_TX_VOTE_WITNESS',
         defaultMessage: 'Vote witness',
     },
+    TR_TRON_TX_VOTED_VOTES: {
+        id: 'TR_TRON_TX_VOTED_VOTES',
+        defaultMessage: 'Voted with {votes} {votes, plural, one {vote} other {votes}}',
+    },
     TR_TRON_TX_FREEZE_BALANCE: {
         id: 'TR_TRON_TX_FREEZE_BALANCE',
         defaultMessage: 'Freeze balance',
     },
     TR_TRON_TX_UNFREEZE_BALANCE: {
         id: 'TR_TRON_TX_UNFREEZE_BALANCE',
-        defaultMessage: 'Unfreeze balance',
+        defaultMessage: 'Unfreeze',
     },
     TR_TRON_TX_WITHDRAW_BALANCE: {
         id: 'TR_TRON_TX_WITHDRAW_BALANCE',

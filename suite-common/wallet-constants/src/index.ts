@@ -5,4 +5,4 @@ export * from './tronStakingConstants';
 export * from './cardanoConstants';
 export * from './stakingConstants';
 export * from './accountConstants';
-export type * from './tronConstants';
+export * from './tronConstants';

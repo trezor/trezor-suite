@@ -1,4 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType } from '@suite-common/wallet-types';
@@ -9,6 +10,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { type AccountTransaction } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { type WalletAccountTransaction } from 'src/types/wallet';
@@ -120,6 +122,7 @@ const getTronTransactionMessageId = (transaction: WalletAccountTransaction) => {
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
+    const { isDiscreetMode } = useDiscreetMode();
 
     if (isPending && (transaction.ethereumSpecific || transaction.cardanoSpecific)) {
         return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
@@ -141,10 +144,36 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         );
     }
 
-    // Tron-specific transactions
     const tronTransactionMessageId = getTronTransactionMessageId(transaction);
     if (tronTransactionMessageId) {
-        return <BlurUrls text={translationString(tronTransactionMessageId)} />;
+        const contractType = transaction.tronSpecific?.contractType;
+
+        const votes = transaction.tronSpecific?.votes;
+        if (contractType === 'VoteWitnessContract' && votes?.length) {
+            const totalVotes = votes
+                .reduce((sum, vote) => sum.plus(vote.count ?? '0'), new BigNumber(0))
+                .toString();
+            const displayedVotes = isDiscreetMode
+                ? redactNumericalSubstring(totalVotes)
+                : totalVotes;
+
+            return (
+                <BlurUrls
+                    text={translationString('TR_TRON_TX_VOTED_VOTES', { votes: displayedVotes })}
+                />
+            );
+        }
+
+        const isUnfreeze =
+            contractType === 'UnfreezeBalanceContract' ||
+            contractType === 'UnfreezeBalanceV2Contract';
+
+        return (
+            <>
+                <BlurUrls text={translationString(tronTransactionMessageId)} />
+                {isUnfreeze && <UnstakingTxAmount transaction={transaction} />}
+            </>
+        );
     }
 
     const solanaStakeType = transaction?.solanaSpecific?.stakeOperation?.type;
