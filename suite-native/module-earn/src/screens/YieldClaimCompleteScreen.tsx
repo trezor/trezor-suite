@@ -12,8 +12,8 @@ import { Translation } from '@suite-native/intl';
 import {
     type YieldStackParamList,
     type YieldStackRoutes,
+    useInterceptNativeNavigation,
     useNavigateToInitialScreen,
-    useOverrideBackNavigation,
 } from '@suite-native/navigation';
 
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
@@ -35,7 +35,7 @@ export const YieldClaimCompleteScreen = () => {
         dispatch(stablecoinYieldActions.disposeSession({ flowType: 'claim', flowKey: accountKey }));
     }, [accountKey, dispatch, navigateToInitialScreen]);
 
-    useOverrideBackNavigation({ onNavigateBack: handleExit });
+    useInterceptNativeNavigation({ onPress: handleExit });
 
     useEffect(() => {
         if (!session) {
