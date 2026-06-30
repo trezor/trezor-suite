@@ -1,4 +1,4 @@
-import { type ExchangeTrade } from 'invity-api';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
@@ -8,11 +8,13 @@ import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
+    selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeAccountKey,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
+import { resolveExchangeTradeError } from '../../utils/exchange/resolveExchangeTradeError';
 import { logErrorThunk } from '../common/logErrorThunk';
 
 export type ConfirmApprovalThunkProps = {
@@ -36,6 +38,9 @@ export const confirmApprovalThunk = createThunk(
         }: ConfirmApprovalThunkProps,
         { dispatch, getState },
     ) => {
+        const getCoinSymbol = (cryptoId: CryptoId) =>
+            selectTradingCoinSymbolByCryptoId(getState(), cryptoId);
+
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
@@ -90,7 +95,7 @@ export const confirmApprovalThunk = createThunk(
         ) {
             dispatch(
                 logErrorThunk({
-                    errorMessage: response.error || 'Error response from the server',
+                    errorMessage: resolveExchangeTradeError(response, { getCoinSymbol }),
                     tradingType: 'exchange',
                 }),
             );

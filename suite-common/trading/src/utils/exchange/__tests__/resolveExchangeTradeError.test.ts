@@ -56,7 +56,7 @@ describe('resolveExchangeTradeError', () => {
         });
     });
 
-    it('falls back to the backend error as the message when errorDetails carries neither message nor externalCode', () => {
+    it('returns no message when errorDetails carries neither message nor externalCode', () => {
         const source: Partial<TradeError> = {
             error: 'Backend went boom',
             errorDetails: { origin: 'partner', code: 'unknown' },
@@ -64,7 +64,7 @@ describe('resolveExchangeTradeError', () => {
 
         expect(resolveExchangeTradeError(source)).toEqual({
             code: 'unknown',
-            message: 'Backend went boom',
+            message: undefined,
         });
     });
 
