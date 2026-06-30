@@ -18,8 +18,9 @@ const host = 'localhost';
 const port = 9998;
 const controlPort = 9999;
 
-// TODO: Skipping this for now, since I want to get the most critical tests to run in CI.
-describe.skip('TorControlPort', () => {
+const conditionalTest = process.env.SKIP_FLAKY_TESTS ? describe.skip : describe;
+
+conditionalTest('TorControlPort', () => {
     beforeAll(async () => {
         if (!fs.existsSync(torDataDir)) {
             // Make sure there is `torDataDir` directory.

@@ -6,7 +6,7 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
-        "test:all": "yarn g:jest",
+        "test:all": "SKIP_FLAKY_TESTS=1 yarn g:jest",
         "test:unit": "yarn g:jest --testPathIgnorePatterns e2e",
         "test:e2e": "yarn g:jest --runInBand --testPathIgnorePatterns tests",
         "type-check": "yarn g:tsc --build tsconfig.json",

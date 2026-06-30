@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
     timeout-minutes: 60
+    env:
+      TEST_SCRIPT: ${{ github.event_name == 'workflow_dispatch' && 'test:e2e' || 'test:all' }}
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
@@ -38,4 +40,4 @@ jobs:
           job-summary: errors
           firewall-version: 1.11.0
       - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
-      - run: yarn workspace @trezor/request-manager test:all
+      - run: yarn workspace @trezor/request-manager ${{ env.TEST_SCRIPT }}
