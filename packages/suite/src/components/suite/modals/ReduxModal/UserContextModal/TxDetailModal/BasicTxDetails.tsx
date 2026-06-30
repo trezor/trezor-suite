@@ -184,7 +184,7 @@ export const BasicTxDetails = ({
                             iconName="gasPump"
                         >
                             {tx.ethereumSpecific.gasLimit}
-                            {tx.ethereumSpecific.gasUsed && (
+                            {tx.ethereumSpecific.gasUsed && tx.ethereumSpecific.gasLimit && (
                                 <>
                                     {' / '}
                                     {tx.ethereumSpecific.gasUsed} (

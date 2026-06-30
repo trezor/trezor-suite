@@ -35,6 +35,7 @@ export type {
     TronUnstakingBatch,
     TronVote,
     Eip1559Fees,
+    EthereumGasData,
 } from './blockbook-api';
 
 export type {

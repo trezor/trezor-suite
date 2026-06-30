@@ -74,11 +74,11 @@ async function getEstimatedFee({
     const gasLimit = feeLevel.feeLimit ?? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
     const eip1559MediumFee = feeLevel.eip1559?.medium;
 
-    if (eip1559MediumFee && feeLevel.eip1559) {
+    if (eip1559MediumFee?.maxFeePerGas && eip1559MediumFee?.maxPriorityFeePerGas) {
         return {
             maxFeePerGas: eip1559MediumFee.maxFeePerGas,
             maxPriorityFeePerGas: eip1559MediumFee.maxPriorityFeePerGas,
-            baseFeePerGas: feeLevel.eip1559.baseFeePerGas,
+            baseFeePerGas: feeLevel.eip1559?.baseFeePerGas,
             gasLimit,
         };
     }

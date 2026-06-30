@@ -61,6 +61,8 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
         return null;
     }
 
+    const units = getFeeUnits(networkType);
+
     return (
         <>
             <FeeCardsWrapper data-testid="@wallet/fee-details">
@@ -107,15 +109,15 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                                     >
                                         <Translation id="TR_MAX_FEE_PER_GAS" />
                                         <Text isMonospaced>
-                                            {fee.maxFeePerGas} {getFeeUnits(networkType)}
+                                            {fee.maxFeePerGas} {units}
                                         </Text>
                                         <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
                                         <Text isMonospaced>
-                                            {fee.maxPriorityFeePerGas} {getFeeUnits(networkType)}
+                                            {fee.maxPriorityFeePerGas} {units}
                                         </Text>
                                         <Translation id="TR_BASE_FEE" />
                                         <Text isMonospaced>
-                                            {fee.baseFeePerGas} {getFeeUnits(networkType)}
+                                            {fee.baseFeePerGas} {units}
                                         </Text>
                                     </Grid>
                                 </>
@@ -124,6 +126,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                     />
                 ))}
             </FeeCardsWrapper>
+
             {isDebug && cachedGasLimit && (
                 <Row alignItems="baseline" justifyContent="space-between">
                     <Row gap={spacings.xxs}>
