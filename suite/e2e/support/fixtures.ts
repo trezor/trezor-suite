@@ -11,6 +11,7 @@ import { TradingMock } from './mocks/tradingMock';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
+import { ConnectSelectAccountModal } from './pageObjects/connectSelectAccountModal';
 import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
 import { GuidePanel } from './pageObjects/guidePanel';
@@ -50,6 +51,7 @@ type Fixtures = {
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
+    connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
     paginationControl: PaginationControl;
     evoluClient: EvoluClient;
@@ -125,6 +127,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));
+    },
+    connectSelectAccountModal: async ({ page }, use) => {
+        await use(new ConnectSelectAccountModal(page));
     },
     connectPermissionsModal: async ({ page }, use) => {
         await use(new ConnectPermissionsModal(page));
