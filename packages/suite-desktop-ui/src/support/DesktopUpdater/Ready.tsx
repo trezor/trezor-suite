@@ -1,6 +1,7 @@
 import { installUpdateThunk } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { DownloadIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -21,7 +22,7 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
     return (
         <Modal
             onCancel={installOnQuit}
-            iconName="download"
+            icon={DownloadIcon}
             bottomContent={
                 <>
                     <Modal.Button onClick={install}>

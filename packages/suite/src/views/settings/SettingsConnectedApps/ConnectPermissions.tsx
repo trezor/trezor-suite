@@ -22,12 +22,31 @@ import {
     H3,
     Icon,
     IconButton,
-    type IconName,
+    type IconComponent,
     Row,
     Text,
     Tooltip,
 } from '@trezor/components';
 import { type MethodPermission, type PermissionRequest } from '@trezor/connect';
+import {
+    BellSlashIcon,
+    BroadcastIcon,
+    CaretDownIcon,
+    CheckIcon,
+    CircuitryIcon,
+    CoinsIcon,
+    CpuIcon,
+    CubeIcon,
+    EyeIcon,
+    GearSixIcon,
+    KeyIcon,
+    NotePencilIcon,
+    SealCheckIcon,
+    SignatureIcon,
+    SlidersHorizontalIcon,
+    WalletIcon,
+    XCircleIcon,
+} from '@trezor/icons';
 import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -54,10 +73,25 @@ const PermissionRow = styled.div`
     }
 `;
 
-const getPermissionIcon = (permission: string): IconName =>
+// TODO: Once native use same icon approach use permissionIcons instead
+const permissionIconsLocalMap: Record<keyof typeof permissionIcons, IconComponent> = {
+    read_address: EyeIcon,
+    read_xpub: KeyIcon,
+    read_account_info: WalletIcon,
+    read_settings: SlidersHorizontalIcon,
+    read_features: CpuIcon,
+    sign: SignatureIcon,
+    sign_message: NotePencilIcon,
+    verify_message: SealCheckIcon,
+    management: GearSixIcon,
+    push_tx: BroadcastIcon,
+    internal: CubeIcon,
+};
+
+const getPermissionIcon = (permission: string): IconComponent =>
     Object.hasOwn(permissionIcons, permission)
-        ? permissionIcons[permission as keyof typeof permissionIcons]
-        : 'cube';
+        ? permissionIconsLocalMap[permission as keyof typeof permissionIconsLocalMap]
+        : CubeIcon;
 
 export const getPermissionText = (permissionType: MethodPermission | string) => {
     switch (permissionType) {
@@ -101,7 +135,11 @@ const GroupBadge = ({ coin }: { coin?: string }) => {
     return (
         <Box width={24} height={24} borderRadius={6} backgroundColor="elementFillContrast">
             <Center>
-                <Icon name={coin ? 'coins' : 'circuitry'} size={16} color="contentPrimaryInverse" />
+                <Icon
+                    as={coin ? CoinsIcon : CircuitryIcon}
+                    size={16}
+                    color="contentPrimaryInverse"
+                />
             </Center>
         </Box>
     );
@@ -109,7 +147,7 @@ const GroupBadge = ({ coin }: { coin?: string }) => {
 
 // Shared so the collapsed preview and the expanded rows render identical icons.
 const PermissionIcon = ({ permission }: { permission: MethodPermission }) => (
-    <Icon name={getPermissionIcon(permission)} size={20} intent="neutral" priority="secondary" />
+    <Icon as={getPermissionIcon(permission)} size={20} intent="neutral" priority="secondary" />
 );
 
 const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] }) => {
@@ -163,7 +201,7 @@ const PermissionGroup = ({
                         </Row>
                         {!isOpen && <PermissionPreview permissions={permissions} />}
                     </Row>
-                    <Collapsible.ToggleIcon iconName="caretDown" size={20} />
+                    <Collapsible.ToggleIcon icon={CaretDownIcon} size={20} />
                 </Row>
             </Collapsible.Toggle>
             <Collapsible.Content>
@@ -178,7 +216,7 @@ const PermissionGroup = ({
                                 {onRemovePermission && (
                                     <PermissionRemove>
                                         <IconButton
-                                            icon="xCircle"
+                                            icon={XCircleIcon}
                                             size="small"
                                             intent="neutral"
                                             priority="secondary"
@@ -304,10 +342,8 @@ export const ConnectPermissions = () => {
                                 ...(isDebugModeActive
                                     ? [
                                           {
-                                              icon: 'bellSlash' as const,
-                                              iconRight: app.silentMode
-                                                  ? ('check' as const)
-                                                  : undefined,
+                                              icon: BellSlashIcon,
+                                              iconRight: app.silentMode ? CheckIcon : undefined,
                                               label: (
                                                   <Tooltip
                                                       content={
@@ -332,7 +368,7 @@ export const ConnectPermissions = () => {
                                       ]
                                     : []),
                                 {
-                                    icon: 'xCircle',
+                                    icon: XCircleIcon,
                                     label: <Translation id="TR_FORGET_ALL_PERMISSIONS" />,
                                     onClick: () => {
                                         dispatch(connectPopupActions.forgetAppPermissions(app));

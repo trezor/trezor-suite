@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconButton, Row, Text } from '@trezor/components';
+import { SlidersIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -66,7 +67,7 @@ export const NetworkCard = ({
                                 >
                                     <IconButton
                                         size="small"
-                                        icon="sliders"
+                                        icon={SlidersIcon}
                                         data-testid={`@settings/wallet/network/${symbol}/advance`}
                                         tooltip={{
                                             content: <Translation id="TR_CUSTOM_BACKEND" />,

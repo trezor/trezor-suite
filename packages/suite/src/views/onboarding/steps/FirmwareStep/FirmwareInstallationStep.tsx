@@ -2,6 +2,7 @@ import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-u
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Card, Column, Paragraph } from '@trezor/components';
+import { CircuitryIcon } from '@trezor/icons';
 
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
@@ -55,7 +56,7 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
         <>
             {showReconnectPrompt && <ReconnectDevicePrompt onSuccess={install} />}
             <OnboardingCard
-                iconName="circuitry"
+                icon={CircuitryIcon}
                 heading={<Translation id="TR_INSTALL_FIRMWARE" />}
                 isActionAbortable={true}
                 innerActions={getInnerActionComponent()}

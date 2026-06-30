@@ -20,6 +20,7 @@ import {
 } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
+import { CaretRightIcon, EyeClosedIcon, EyeIcon } from '@trezor/icons';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
@@ -129,7 +130,7 @@ export const PassphraseInputCard = ({
                             </Text>
                             <Icon
                                 margin={{ left: 'auto' }}
-                                name="caretRight"
+                                as={CaretRightIcon}
                                 intent="neutral"
                                 priority="secondary"
                             />
@@ -159,7 +160,7 @@ export const PassphraseInputCard = ({
                                         size={18}
                                         intent="neutral"
                                         priority="secondary"
-                                        name={showPassword ? 'eyeClosed' : 'eye'}
+                                        as={showPassword ? EyeClosedIcon : EyeIcon}
                                         onClick={() => setShowPassword(prev => !prev)}
                                         data-testid="@passphrase/show-toggle"
                                     />

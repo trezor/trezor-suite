@@ -30,6 +30,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { type TimerId } from '@trezor/type-utils';
@@ -470,15 +471,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const getBottomTextIconComponent = () => {
         if (addressError) {
-            return <Icon name="warningCircle" size={16} intent="critical" />;
+            return <Icon as={WarningCircleIcon} size={16} intent="critical" />;
         }
 
         if (hasAddressChecksummed) {
-            return <Icon name="check" size={16} isDisabled={true} />;
+            return <Icon as={CheckIcon} size={16} isDisabled={true} />;
         }
 
         if (autocorrectMessage) {
-            return <Icon name="info" size={16} intent="info" />;
+            return <Icon as={InfoIcon} size={16} intent="info" />;
         }
 
         if (isAddressWithLabel) {
@@ -491,7 +492,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     return (
         <Input
             hasError={!!addressError}
-            rightContent={<Icon name="qrCode" onClick={handleQrClick} />}
+            rightContent={<Icon as={QrCodeIcon} onClick={handleQrClick} />}
             label={<Translation id="RECIPIENT_ADDRESS" />}
             labelLeft={
                 <Translation
@@ -539,7 +540,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     )}
                     {outputsCount > 1 && (
                         <IconButton
-                            icon="x"
+                            icon={XIcon}
                             intent="neutral"
                             size="small"
                             priority="secondary"

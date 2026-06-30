@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
+import { PiggyBankIcon } from '@trezor/icons';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
@@ -81,7 +82,11 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
 
                                 <Card paddingType="none">
                                     <Row gap={32} padding={{ vertical: 16, horizontal: 24 }}>
-                                        <IconCircle name="piggyBank" intent="neutral" size={40} />
+                                        <IconCircle
+                                            icon={PiggyBankIcon}
+                                            intent="neutral"
+                                            size={40}
+                                        />
                                         <Column flex="1" gap={4}>
                                             <Text typographyStyle="body-md">
                                                 <Translation id="TR_REWARD" />

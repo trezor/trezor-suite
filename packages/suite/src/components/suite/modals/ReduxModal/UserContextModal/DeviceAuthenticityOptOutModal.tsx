@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
+import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
@@ -24,7 +25,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
     return (
         <Modal
             onCancel={onCancel}
-            iconName="shieldWarning"
+            icon={ShieldWarningIcon}
             width={600}
             bottomContent={
                 <>
@@ -50,13 +51,13 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
             </Paragraph>
             <Column gap={spacings.sm} margin={{ top: spacings.xl }} alignItems="center">
                 <Banner
-                    icon="questionFilled"
+                    icon={QuestionFilledIcon}
                     description={
                         <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1" />
                     }
                 />
                 <Banner
-                    icon="warningFilled"
+                    icon={WarningFilledIcon}
                     description={
                         <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2" />
                     }

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { type ConnectProcessInfo } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Badge, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { AppWindowIcon, WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 const AppIcon = styled.img`
@@ -21,7 +22,7 @@ export const ConnectProcessLabel = ({
     if (process.warning) {
         return (
             <Tooltip content={process.fullPath}>
-                <Badge intent="warning" iconLeft="warning">
+                <Badge intent="warning" iconLeft={WarningIcon}>
                     <Text data-testid={dataTest}>{process.name}</Text>
                 </Badge>
             </Tooltip>
@@ -34,7 +35,7 @@ export const ConnectProcessLabel = ({
                 {process.icon ? (
                     <AppIcon src={process.icon} alt="Process icon" />
                 ) : (
-                    <Icon name="appWindow" intent="neutral" priority="secondary" />
+                    <Icon as={AppWindowIcon} intent="neutral" priority="secondary" />
                 )}
                 <Text data-testid={dataTest}>{process.name}</Text>
             </Row>

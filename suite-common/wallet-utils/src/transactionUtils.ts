@@ -777,40 +777,6 @@ export const isStakingTransaction = (transaction: WalletAccountTransaction) => {
     return false;
 };
 
-export const getTxIcon = (
-    transaction: WalletAccountTransaction,
-    isPhishingTransaction: boolean,
-) => {
-    if (isPhishingTransaction) {
-        return 'ghost';
-    }
-
-    if (isSwapTransaction(transaction)) {
-        return 'arrowsDownUp';
-    }
-
-    if (isStakingTransaction(transaction)) {
-        return 'piggyBank';
-    }
-
-    switch (transaction.type) {
-        case 'recv':
-            return 'arrowDown';
-        case 'sent':
-            return 'arrowUp';
-        case 'self':
-            return 'arrowURightDown';
-        case 'contract':
-            return 'fileCode';
-        case 'joint':
-            return 'shuffle';
-        case 'failed':
-            return 'x';
-        default:
-            return 'questionSimple';
-    }
-};
-
 export const getTargetAmountRaw = (
     target: WalletAccountTransaction['targets'][number] | undefined,
     transaction: WalletAccountTransaction,

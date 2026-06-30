@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Card, Icon } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 interface BatchWrapperProps {
     children: ReactNode;
@@ -15,7 +16,7 @@ const Fields = styled.div`
 
 export const BatchWrapper = ({ children, onRemove }: BatchWrapperProps) => (
     <Card paddingType="small">
-        <Icon name="x" onClick={() => onRemove()} size={20} />
+        <Icon as={XIcon} onClick={() => onRemove()} size={20} />
         <Fields>{children}</Fields>
     </Card>
 );

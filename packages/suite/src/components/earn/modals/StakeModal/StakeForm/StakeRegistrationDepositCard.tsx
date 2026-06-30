@@ -7,6 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Paragraph, Row } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
@@ -84,7 +85,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
             )}
             <Banner
                 intent="info"
-                icon="info"
+                icon={InfoIcon}
                 margin={{ top: 16 }}
                 description={
                     <Translation

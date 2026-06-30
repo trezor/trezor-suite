@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { getIsTorLoading } from '@suite/tor';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { TorBrowserIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 
@@ -36,7 +37,7 @@ export const TorModal = ({ onResult }: TorModalProps) => {
                 </>
             }
             width={600}
-            iconName="torBrowser"
+            icon={TorBrowserIcon}
         >
             <H3>
                 <Translation id="TR_TOR_ENABLE" />

@@ -10,7 +10,24 @@ import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
-import { Button, Icon, IconButton, type IconName, Input, Row, SubTabs } from '@trezor/components';
+import {
+    Button,
+    Icon,
+    IconButton,
+    type IconComponent,
+    Input,
+    Row,
+    SubTabs,
+} from '@trezor/components';
+import {
+    CoinSlashIcon,
+    CoinsIcon,
+    EyeSlashIcon,
+    MagnifyingGlassIcon,
+    PercentIcon,
+    PictureFrameIcon,
+    PlusIcon,
+} from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
@@ -26,7 +43,7 @@ type SubTabConfig = {
 
 type SubTabItem = {
     id: string;
-    iconName: IconName;
+    iconName: IconComponent;
     onClick: () => void;
     count?: number;
     labelId: TranslationKey;
@@ -40,7 +57,7 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig
     const baseConfig: SubTabItem[] = [
         {
             id: isNft ? 'wallet-nfts' : 'wallet-tokens',
-            iconName: isNft ? 'pictureFrame' : 'coins',
+            iconName: isNft ? PictureFrameIcon : CoinsIcon,
             onClick: goToRoute(isNft ? 'wallet-nfts' : 'wallet-tokens'),
             count: normalTokens.length,
             labelId: isNft ? 'TR_NAV_COLLECTIONS' : 'TR_NAV_TOKENS',
@@ -49,7 +66,7 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig
             ? [
                   {
                       id: 'wallet-tokens-defi',
-                      iconName: 'percent',
+                      iconName: PercentIcon,
                       onClick: goToRoute('wallet-tokens-defi'),
                       count: erc4626Tokens.length,
                       labelId: 'TR_DEFI',
@@ -58,7 +75,7 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig
             : []),
         {
             id: isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden',
-            iconName: 'eyeSlash',
+            iconName: EyeSlashIcon,
             onClick: goToRoute(isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden'),
             count: tokens.hiddenWithBalance.length,
             labelId: 'TR_HIDDEN',
@@ -69,7 +86,7 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig
     if (networkType === 'stellar' && !isNft) {
         baseConfig.push({
             id: 'wallet-tokens-inactive',
-            iconName: 'coinSlash',
+            iconName: CoinSlashIcon,
             onClick: goToRoute('wallet-tokens-inactive'),
             labelId: 'TR_NAV_INACTIVE_TOKENS',
         });
@@ -141,7 +158,7 @@ export const TokensNavigation = ({
                     <SubTabs.Item
                         key={tab.id}
                         id={tab.id}
-                        iconName={tab.iconName}
+                        icon={tab.iconName}
                         onClick={tab.onClick}
                         count={tab.count}
                     >
@@ -171,7 +188,7 @@ export const TokensNavigation = ({
                     size="small"
                     leftContent={
                         <Icon
-                            name="magnifyingGlass"
+                            as={MagnifyingGlassIcon}
                             intent="neutral"
                             priority="secondary"
                             size={16}
@@ -180,7 +197,7 @@ export const TokensNavigation = ({
                 />
                 {showAddToken && (
                     <IconButton
-                        icon="plus"
+                        icon={PlusIcon}
                         size="medium"
                         intent="neutral"
                         priority="secondary"

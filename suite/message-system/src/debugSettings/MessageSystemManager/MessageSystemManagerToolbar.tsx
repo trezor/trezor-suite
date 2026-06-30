@@ -16,6 +16,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { CheckFatIcon, CodeBlockFilledIcon, PlusIcon, QuestionIcon } from '@trezor/icons';
 import { spacings, zIndices } from '@trezor/theme';
 
 import { MessageSystemManual } from '../MessageSystemManual';
@@ -71,7 +72,7 @@ export const MessageSystemManagerToolbar = ({
                 >
                     <Button
                         size="small"
-                        iconLeft="plus"
+                        iconLeft={PlusIcon}
                         intent="neutral"
                         priority="secondary"
                         isDisabled={!canAddCondition}
@@ -99,7 +100,7 @@ export const MessageSystemManagerToolbar = ({
                 >
                     <Button
                         size="small"
-                        iconLeft="codeBlockFilled"
+                        iconLeft={CodeBlockFilledIcon}
                         intent="neutral"
                         priority="secondary"
                     >
@@ -121,7 +122,12 @@ export const MessageSystemManagerToolbar = ({
                     }
                     zIndex={zIndices.tooltip}
                 >
-                    <Button size="small" iconLeft="checkFat" intent="neutral" priority="secondary">
+                    <Button
+                        size="small"
+                        iconLeft={CheckFatIcon}
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         Feature list
                     </Button>
                 </Popover>
@@ -137,7 +143,7 @@ export const MessageSystemManagerToolbar = ({
                     zIndex={zIndices.tooltip}
                 >
                     <IconButton
-                        icon="question"
+                        icon={QuestionIcon}
                         intent="neutral"
                         priority="secondary"
                         tooltip={{ content: 'Manual' }}

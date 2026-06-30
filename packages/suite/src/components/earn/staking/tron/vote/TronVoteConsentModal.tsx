@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
+import { FileFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { type Deferred } from '@trezor/utils';
 
 interface TronVoteConsentModalProps {
@@ -58,7 +59,7 @@ export const TronVoteConsentModal = ({
         >
             <Column gap={12} margin={{ top: 8, bottom: 20 }}>
                 <Banner
-                    icon="fileFilled"
+                    icon={FileFilledIcon}
                     intent="info"
                     description={
                         <Translation
@@ -69,7 +70,7 @@ export const TronVoteConsentModal = ({
                 />
 
                 <Banner
-                    icon="shieldWarningFilled"
+                    icon={ShieldWarningFilledIcon}
                     intent="info"
                     description={
                         <Translation

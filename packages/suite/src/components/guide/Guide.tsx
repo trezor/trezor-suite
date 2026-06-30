@@ -4,6 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
+import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -54,7 +55,7 @@ export const Guide = () => {
                                         data-testid="@guide/button-feedback"
                                         icon={
                                             <IconCircle
-                                                name="lifebuoy"
+                                                icon={LifebuoyIcon}
                                                 size={32}
                                                 intent="neutral"
                                             />
@@ -76,7 +77,7 @@ export const Guide = () => {
                         <GuideItem
                             onClick={handleShortcutsClick}
                             data-testid="@guide/button-shortcuts"
-                            icon={<IconCircle name="command" size={32} intent="neutral" />}
+                            icon={<IconCircle icon={CommandIcon} size={32} intent="neutral" />}
                         >
                             <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
                         </GuideItem>

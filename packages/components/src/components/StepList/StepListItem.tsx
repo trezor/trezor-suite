@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 
+import { CheckIcon } from '@trezor/icons';
 import { type SpacingValuesNew, typography } from '@trezor/theme';
 
 import { useStepList } from './StepListContext';
@@ -181,7 +182,7 @@ export const StepListItem = ({
             <StepIndicatorWrapper $direction={direction}>
                 {state === 'done' ? (
                     <IconCircle
-                        name="check"
+                        icon={CheckIcon}
                         size={mapSizeToDimension({ $size: bulletSize })}
                         intent="brand"
                     />

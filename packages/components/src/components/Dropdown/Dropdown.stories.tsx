@@ -1,11 +1,12 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import * as generatedIcons from '@trezor/icons';
+
 import {
     Dropdown as DropdownComponent,
     type DropdownProps,
     allowedDropdownFrameProps,
 } from './Dropdown';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof DropdownComponent> = {
@@ -47,7 +48,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 onClick: () => {
                     console.log('item 4 clicked - disabled');
                 },
-                icon: 'lightbulb',
+                icon: generatedIcons.LightbulbIcon,
                 isDisabled: true,
             },
             {
@@ -55,7 +56,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 onClick: () => {
                     console.log('item 5 clicked - disabled');
                 },
-                iconRight: 'caretRight',
+                iconRight: generatedIcons.CaretRightIcon,
                 isDisabled: true,
             },
             {
@@ -69,17 +70,16 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 onClick: () => {
                     console.log('item 7 clicked');
                 },
-                iconRight: 'caretRight',
+                iconRight: generatedIcons.CaretRightIcon,
             },
         ],
         ...getFramePropsStory(allowedDropdownFrameProps).args,
     },
     argTypes: {
-        iconName: {
-            options: variables.ICONS,
-            control: {
-                type: 'select',
-            },
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
+            control: { type: 'select' },
         },
         placement: {
             control: {

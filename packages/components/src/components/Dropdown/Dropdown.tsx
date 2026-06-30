@@ -1,7 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
+import { DotsThreeIcon } from '@trezor/icons';
+
 import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
-import { type IconName } from '../Icon/Icon';
+import { type IconComponent } from '../Icon/Icon';
 import { type DropdownMenuItemProps, Menu, type MenuProps } from '../Menu/Menu';
 import { Popover, type PopoverRef } from '../Popover/Popover';
 import { type PopoverPlacement } from '../Popover/utils';
@@ -17,7 +19,7 @@ export type DropdownProps = Omit<MenuProps, 'onClose'> &
         isDisabled?: boolean;
         iconSize?: ButtonSize;
         isLoading?: boolean;
-        iconName?: IconName;
+        icon?: IconComponent;
         tooltip?: IconButtonProps['tooltip'];
         'data-testid'?: string;
     };
@@ -38,7 +40,7 @@ export const Dropdown = forwardRef(
             isDisabled,
             isLoading,
             placement,
-            iconName = 'dotsThree',
+            icon = DotsThreeIcon,
             'data-testid': dataTest,
             minWidth,
             maxWidth,
@@ -78,7 +80,7 @@ export const Dropdown = forwardRef(
                 <IconButton
                     intent="neutral"
                     priority="secondary"
-                    icon={iconName}
+                    icon={icon}
                     size={iconSize}
                     tabIndex={-1}
                     isDisabled={isDisabled}

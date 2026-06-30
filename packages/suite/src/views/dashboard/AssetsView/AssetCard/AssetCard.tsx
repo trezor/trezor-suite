@@ -14,6 +14,7 @@ import { type AmountUnit } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Card, Column, Icon, InfoItem, Note, Row, Skeleton, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 
 import {
     AmountUnitSwitchWrapper,
@@ -55,7 +56,7 @@ const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountC
             </Text>
         </Column>
     ) : (
-        <Note intent="critical" iconName="warning">
+        <Note intent="critical" icon={WarningIcon}>
             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
         </Note>
     );
@@ -165,7 +166,7 @@ export const AssetCard = ({
                             assetsFiatBalances={assetsFiatBalances}
                             index={index}
                         />
-                        <Icon size={16} name="arrowRight" isDisabled={true} />
+                        <Icon size={16} as={ArrowRightIcon} isDisabled={true} />
                     </Row>
                     <AmountComponent
                         symbol={symbol}

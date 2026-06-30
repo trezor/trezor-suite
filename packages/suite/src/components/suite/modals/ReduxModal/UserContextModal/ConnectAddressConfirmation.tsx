@@ -12,6 +12,7 @@ import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CheckCircleIcon, CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -102,7 +103,7 @@ export const ConnectAddressConfirmation = () => {
                 <Column gap={spacings.xs}>
                     {popupCall.exported ? (
                         <Row alignItems="center" gap={spacings.sm}>
-                            <Icon name="checkCircle" size={32} intent="brand" />
+                            <Icon as={CheckCircleIcon} size={32} intent="brand" />
                             <H3 intent="brand">
                                 <Translation id="TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS" />
                             </H3>
@@ -167,7 +168,7 @@ export const ConnectAddressConfirmation = () => {
                                         {address.validated === 'valid' && (
                                             <Badge
                                                 intent="brand"
-                                                iconLeft="check"
+                                                iconLeft={CheckIcon}
                                                 size="small"
                                                 data-testid={`@connect-address-confirmation/verified-badge/${index}`}
                                             >
@@ -177,7 +178,7 @@ export const ConnectAddressConfirmation = () => {
                                         {address.validated === 'failed' && (
                                             <Badge
                                                 intent="warning"
-                                                iconLeft="warning"
+                                                iconLeft={WarningIcon}
                                                 size="small"
                                                 data-testid={`@connect-address-confirmation/error-badge/${index}`}
                                             >

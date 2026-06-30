@@ -1,11 +1,12 @@
 import { Translation } from '@suite/intl';
 import { Banner, H4, Paragraph } from '@trezor/components';
+import { SpinnerGapIcon } from '@trezor/icons';
 
 export const DiscoveryWarning = () => (
     <Banner
         intent="warning"
         data-testid="@warning/trezorDiscovery"
-        icon="spinnerGap"
+        icon={SpinnerGapIcon}
         description={
             <>
                 <H4>

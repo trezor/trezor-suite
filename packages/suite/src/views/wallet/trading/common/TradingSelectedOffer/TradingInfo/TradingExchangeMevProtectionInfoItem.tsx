@@ -2,6 +2,7 @@ import { FormattedList } from 'react-intl';
 
 import { Translation } from '@suite/intl';
 import { Icon, InfoItem, Tooltip } from '@trezor/components';
+import { CheckIcon, XIcon } from '@trezor/icons';
 
 type TradingExchangeMevProtectionInfoItemProps = {
     isMevProtectionEnabled: boolean;
@@ -46,7 +47,7 @@ export const TradingExchangeMevProtectionInfoItem = ({
             direction="row"
         >
             <Icon
-                name={isMevProtectionEnabled ? 'check' : 'x'}
+                as={isMevProtectionEnabled ? CheckIcon : XIcon}
                 size={16}
                 intent={isMevProtectionEnabled ? 'brand' : 'neutral'}
                 priority={isMevProtectionEnabled ? 'primary' : 'secondary'}

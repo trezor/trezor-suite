@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Grid } from '@trezor/components';
+import { PlusCircleIcon, TrezorBackupIcon, WalletIcon } from '@trezor/icons';
 
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
 import * as STEP from 'src/constants/onboarding/steps';
@@ -12,7 +13,7 @@ export const CreateOrRecoverStep = () => {
 
     return (
         <OnboardingCard
-            iconName="wallet"
+            icon={WalletIcon}
             heading={<Translation id="TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION" />}
         >
             <Grid gap={24} columns={isBelowTablet ? 1 : 2}>
@@ -23,7 +24,7 @@ export const CreateOrRecoverStep = () => {
                         updateAnalytics({ seed: 'create' });
                     }}
                     data-testid="@onboarding/path-create-button"
-                    iconName="plusCircle"
+                    icon={PlusCircleIcon}
                     heading={<Translation id="TR_CREATE_WALLET" />}
                 />
                 <OnboardingOption
@@ -33,7 +34,7 @@ export const CreateOrRecoverStep = () => {
                         updateAnalytics({ seed: 'recovery' });
                     }}
                     data-testid="@onboarding/path-recovery-button"
-                    iconName="trezorBackup"
+                    icon={TrezorBackupIcon}
                     heading={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
                 />
             </Grid>

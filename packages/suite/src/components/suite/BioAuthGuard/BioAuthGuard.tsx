@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Button, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
+import { LockFilledIcon } from '@trezor/icons';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import {
@@ -54,7 +55,7 @@ const BioAuthOverlay = ({
                                 justifyContent="center"
                             >
                                 <Container>
-                                    <Icon name="lockFilled" />
+                                    <Icon as={LockFilledIcon} />
                                     <Paragraph align="center" typographyStyle="headline-sm">
                                         <Translation id="TR_BIO_AUTH_LOCKED_HEADING" />
                                     </Paragraph>

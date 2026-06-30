@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Column, Icon, Row, Text } from '@trezor/components';
+import { ArrowRightIcon } from '@trezor/icons';
 
 import { ExchangeAmountWithSymbol } from './ExchangeAmountWithSymbol';
 import { ExchangeAssetWithFallback } from './ExchangeAssetWithFallback';
@@ -30,7 +31,7 @@ export const ExchangeInfoNotification = ({
             <Row gap={8} alignItems="center">
                 <ExchangeAssetWithFallback asset={send} />
                 <ExchangeAmountWithSymbol amount={sendAmount} asset={send} />
-                <Icon name="arrowRight" intent="neutral" priority="secondary" size={20} />
+                <Icon as={ArrowRightIcon} intent="neutral" priority="secondary" size={20} />
                 <ExchangeAssetWithFallback asset={receive} />
                 <ExchangeAmountWithSymbol amount={receiveAmount} asset={receive} />
             </Row>

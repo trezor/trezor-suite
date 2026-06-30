@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { IconButton, Row, ShortcutBadge, TOOLTIP_DELAY_LONG } from '@trezor/components';
+import { LifebuoyIcon } from '@trezor/icons';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';
@@ -28,7 +29,7 @@ export const GuideButton = () => {
                 <IconButton
                     data-testid="@guide/button-open"
                     onClick={openGuide}
-                    icon="lifebuoy"
+                    icon={LifebuoyIcon}
                     intent="neutral"
                     priority="secondary"
                     size="large"

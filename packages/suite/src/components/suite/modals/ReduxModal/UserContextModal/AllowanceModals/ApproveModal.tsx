@@ -19,6 +19,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { CaretDownIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 import { AssetLogo, NetworkIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
@@ -110,7 +111,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                     {hasPreapprovedAmount && (
                         <Banner
                             intent="info"
-                            icon="info"
+                            icon={InfoIcon}
                             description={<Translation id="TR_APPROVAL_MODAL_APPROVE_BANNER" />}
                         />
                     )}
@@ -178,7 +179,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                                     </DebugOnlyBadge>
                                 </Text>
                             }
-                            toggleIconName="caretDown"
+                            toggleIcon={CaretDownIcon}
                             toggleIconSize={20}
                         >
                             <Text wordBreak="break-all" isMonospaced>
@@ -202,7 +203,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                         {composedLevelsError && (
                             <Banner
                                 intent="critical"
-                                icon="warning"
+                                icon={WarningIcon}
                                 description={
                                     <Translation
                                         id={composedLevelsError.id}

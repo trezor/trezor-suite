@@ -8,6 +8,7 @@ import { suiteSettingsActions } from '@suite/settings';
 import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, ResizableBox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { TrezorLogoIcon } from '@trezor/icons';
 import { TrezorLogo } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
@@ -69,7 +70,7 @@ const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
 
     return isCollapsed ? (
         <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
-            <Icon name="trezorLogo" size={24} pointerEvents="none" />
+            <Icon as={TrezorLogoIcon} size={24} pointerEvents="none" />
         </Box>
     ) : (
         <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>

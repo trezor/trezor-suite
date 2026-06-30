@@ -7,6 +7,7 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
+import { ChartLineIcon } from '@trezor/icons';
 import { AssetLogo } from '@trezor/product-components';
 
 type EarnYieldApyBreakdownProps = {
@@ -117,7 +118,7 @@ export const EarnYieldApyBreakdown = ({
                 );
             })}
             <Row gap={4} alignItems="center" margin={{ top: 4 }}>
-                <Icon name="chartLine" size={14} intent="neutral" priority="secondary" />
+                <Icon as={ChartLineIcon} size={14} intent="neutral" priority="secondary" />
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id={footerId} />
                 </Text>

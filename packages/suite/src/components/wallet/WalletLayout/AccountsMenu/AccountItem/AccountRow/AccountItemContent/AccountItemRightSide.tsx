@@ -2,6 +2,7 @@ import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Icon, Text } from '@trezor/components';
+import { CheckIcon, WarningIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -35,7 +36,7 @@ export const AccountItemRightSide = ({
 
         return (
             <Icon
-                name={isEverstake ? 'check' : 'warning'}
+                as={isEverstake ? CheckIcon : WarningIcon}
                 intent={isEverstake ? 'brand' : 'warning'}
                 size={ICON_SIZE}
             />
@@ -43,11 +44,11 @@ export const AccountItemRightSide = ({
     }
 
     if (isTronStakingRowWithActiveVotes) {
-        return <Icon name="warning" intent="warning" size={ICON_SIZE} />;
+        return <Icon as={WarningIcon} intent="warning" size={ICON_SIZE} />;
     }
 
     if (isFailed) {
-        return <Icon name="warning" intent="warning" size={ICON_SIZE} />;
+        return <Icon as={WarningIcon} size={ICON_SIZE} intent="warning" />;
     }
 
     return (

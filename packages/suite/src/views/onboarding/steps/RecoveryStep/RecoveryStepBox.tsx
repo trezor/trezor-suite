@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
 import { recoveryActions, selectRecoveryError, selectRecoveryStatus } from '@suite/recovery';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { TrezorBackupIcon } from '@trezor/icons';
 
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -49,7 +50,7 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
 
     return (
         <OnboardingCard
-            iconName="trezorBackup"
+            icon={TrezorBackupIcon}
             outerActions={
                 isBackButtonVisible() ? (
                     <OnboardingCard.SecondaryButton

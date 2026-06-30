@@ -10,6 +10,7 @@ import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/w
 import { type Account } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
+import { InfoIcon, WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -154,7 +155,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                             isDisabled={isDisabled || isClaimingDisabled || !formIsValid}
                             isLoading={isLoading}
                             onClick={onClaimClick}
-                            iconLeft={isClaimingDisabled ? 'info' : undefined}
+                            iconLeft={isClaimingDisabled ? InfoIcon : undefined}
                             data-testid="@staking/claim-modal/continue-button"
                         >
                             {isCardanoNetworkType ? (
@@ -181,7 +182,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                     <Banner
                                         data-testid="@modal/claim/fee-warning-banner"
                                         intent="warning"
-                                        icon="warning"
+                                        icon={WarningIcon}
                                         description={
                                             <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
                                         }

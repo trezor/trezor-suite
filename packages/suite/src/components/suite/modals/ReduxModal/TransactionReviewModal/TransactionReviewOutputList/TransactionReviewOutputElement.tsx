@@ -10,6 +10,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Box, Card, Column, H4, InfoItem, Note, Row, Text, TextButton } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
+import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 import { type Color, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -83,7 +84,7 @@ const Data = ({
             <Row justifyContent="center">
                 <TextButton
                     intent="neutral"
-                    iconLeft={isExpanded ? 'caretUp' : 'caretDown'}
+                    iconLeft={isExpanded ? CaretUpIcon : CaretDownIcon}
                     onClick={() => setIsExpanded(!isExpanded)}
                 >
                     <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />

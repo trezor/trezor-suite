@@ -8,6 +8,13 @@ import {
     messageSystemActions,
 } from '@suite-common/message-system';
 import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
+import {
+    ArrowCounterClockwiseIcon,
+    CircleFilledIcon,
+    CrosshairIcon,
+    InfoIcon,
+    UsersIcon,
+} from '@trezor/icons';
 import { useDebounce } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -58,15 +65,15 @@ export const MessageSystemExperimentInfo = ({
 
     return (
         <Column gap={spacings.xs}>
-            <InfoItem label="Active" iconName="info" direction="row">
-                <Icon name="circleFilled" intent={isActive ? 'brand' : 'critical'} />
+            <InfoItem label="Active" icon={InfoIcon} direction="row">
+                <Icon as={CircleFilledIcon} intent={isActive ? 'brand' : 'critical'} />
             </InfoItem>
 
-            <InfoItem label="Assigned group" iconName="users" direction="row">
+            <InfoItem label="Assigned group" icon={UsersIcon} direction="row">
                 {assignedGroup ? assignedGroup.variant : 'N/A'}
             </InfoItem>
 
-            <InfoItem label="Inclusion" iconName="crosshair" direction="row">
+            <InfoItem label="Inclusion" icon={CrosshairIcon} direction="row">
                 {localInclusion !== null ? localInclusion : 'N/A'}
             </InfoItem>
 
@@ -86,7 +93,7 @@ export const MessageSystemExperimentInfo = ({
                 <Button
                     size="small"
                     intent="warning"
-                    iconLeft="arrowCounterClockwise"
+                    iconLeft={ArrowCounterClockwiseIcon}
                     isDisabled={localInclusion === inclusion}
                     onClick={onResetInclusion}
                 >

@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { Banner, Paragraph } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { CurrencyBtcIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -23,7 +24,7 @@ export const FirmwareTypeSuggestion = () => {
     return (
         <Banner
             intent="info"
-            icon="currencyBtc"
+            icon={CurrencyBtcIcon}
             rightContent={
                 <Banner.Button onClick={handleClose}>
                     <Translation id="TR_GOT_IT" />

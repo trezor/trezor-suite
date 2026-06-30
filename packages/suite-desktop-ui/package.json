@@ -26,6 +26,7 @@
         "@suite/sentry": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
         "@trezor/suite": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",

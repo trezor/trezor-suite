@@ -17,6 +17,7 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { ArrowsClockwiseIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 
 type SuiteSyncPromoBannerRootState = LegacyLabelingVisibleRootState &
@@ -67,7 +68,7 @@ export const SuiteSyncPromoBanner = ({ onDismiss }: SuiteSyncPromoBannerProps) =
                     <Translation id="TR_LEGACY_LABELING_TURN_ON_SUITE_SYNC_BANNER_DESCRIPTION" />
                 }
                 heading={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />}
-                icon="arrowsClockwise"
+                icon={ArrowsClockwiseIcon}
                 onClick={handleTurnOn}
                 onClose={handleDismiss}
             />

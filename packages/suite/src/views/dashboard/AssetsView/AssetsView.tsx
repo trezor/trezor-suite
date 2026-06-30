@@ -40,6 +40,7 @@ import {
     Row,
     TOOLTIP_DELAY_LONG,
 } from '@trezor/components';
+import { GridNineFilledIcon, PlusIcon, RowsFilledIcon, WarningIcon } from '@trezor/icons';
 import { spacingsPx, typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
@@ -206,7 +207,7 @@ export const AssetsView = () => {
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconLeft="plus"
+                                iconLeft={PlusIcon}
                                 onClick={openActivateAssetsModal}
                                 data-testid="@dashboard/assets/enable-more-coins"
                             >
@@ -215,7 +216,7 @@ export const AssetsView = () => {
                         )}
                         <ButtonGroup intent="neutral" priority="secondary">
                             <IconButton
-                                icon="rowsFilled"
+                                icon={RowsFilledIcon}
                                 data-testid="@dashboard/assets/table-icon"
                                 onClick={setTable}
                                 intent={dashboardAssetsGridMode ? 'neutral' : 'brand'}
@@ -225,7 +226,7 @@ export const AssetsView = () => {
                                 }}
                             />
                             <IconButton
-                                icon="gridNineFilled"
+                                icon={GridNineFilledIcon}
                                 data-testid="@dashboard/assets/grid-icon"
                                 onClick={setGrid}
                                 intent={dashboardAssetsGridMode ? 'brand' : 'neutral'}
@@ -264,7 +265,7 @@ export const AssetsView = () => {
                         <Card width="100%">
                             <InfoMessage>
                                 <Icon
-                                    name="warning"
+                                    as={WarningIcon}
                                     intent="critical"
                                     size={14}
                                     margin={{ right: 4 }}
@@ -287,7 +288,7 @@ export const AssetsView = () => {
                     {isError && (
                         <InfoMessage>
                             <Icon
-                                name="warning"
+                                as={WarningIcon}
                                 intent="critical"
                                 size={14}
                                 margin={{ right: 4 }}

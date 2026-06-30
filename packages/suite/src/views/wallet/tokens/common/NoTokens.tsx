@@ -1,5 +1,7 @@
 import { type JSX } from 'react';
 
+import { CoinsIcon, PictureFrameIcon } from '@trezor/icons';
+
 import { AccountExceptionLayout } from 'src/components/wallet';
 
 interface NoTokensProps {
@@ -10,7 +12,7 @@ interface NoTokensProps {
 export const NoTokens = ({ title, isNft }: NoTokensProps) => (
     <AccountExceptionLayout
         title={title}
-        iconName={isNft ? 'pictureFrame' : 'coins'}
+        icon={isNft ? PictureFrameIcon : CoinsIcon}
         iconVariant="neutral"
     />
 );

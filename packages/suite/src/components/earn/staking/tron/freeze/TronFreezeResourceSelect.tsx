@@ -4,6 +4,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { TRON_RESOURCE_TYPES, type TronResourceType } from '@suite-common/wallet-types';
 import { asAmountSubunit, getResourceGain, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, SelectBar, Text, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { useTronStakeContext } from '../TronStakeContext';
@@ -48,7 +49,7 @@ export const TronFreezeResourceSelect = () => {
                     <Translation id="TR_EARN_TRON_RESOURCE_TO_EARN" />
                 </Text>
                 <Tooltip content={<Translation id="TR_EARN_TRON_RESOURCE_TO_EARN_TOOLTIP" />}>
-                    <Icon name="info" size={16} />
+                    <Icon as={InfoIcon} size={16} />
                 </Tooltip>
             </Row>
 

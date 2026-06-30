@@ -1,12 +1,13 @@
 import { Translation } from '@suite/intl';
 import { H3, Modal, Paragraph } from '@trezor/components';
+import { DatabaseIcon } from '@trezor/icons';
 
 type DatabaseUpgradeModalProps = {
     variant: 'blocking' | 'blocked';
 };
 
 export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => (
-    <Modal iconName="database" intent="warning">
+    <Modal icon={DatabaseIcon} intent="warning">
         <H3>
             <Translation
                 id={

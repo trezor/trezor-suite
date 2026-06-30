@@ -20,6 +20,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { FunnelSimpleIcon } from '@trezor/icons';
 import { spacings, zIndices } from '@trezor/theme';
 
 const options = [
@@ -81,7 +82,7 @@ export const FilterAction = () => {
             }
         >
             <Dropdown
-                iconName="funnelSimple"
+                icon={FunnelSimpleIcon}
                 ref={dropdownRef}
                 placement={{ position: 'bottom', alignment: 'end' }}
                 isDisabled={false}

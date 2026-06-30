@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { ThpPairingFailedForFirmwareInstallation, startThpSessionThunk } from '@suite/thp';
 import { Column, Paragraph } from '@trezor/components';
+import { PlugsConnectedIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -21,7 +22,7 @@ export const ThpCodeInvalidStep = () => {
 
     return (
         <OnboardingCard
-            iconName="plugsConnected"
+            icon={PlugsConnectedIcon}
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             innerActions={

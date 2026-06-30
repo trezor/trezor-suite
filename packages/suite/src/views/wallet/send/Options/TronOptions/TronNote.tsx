@@ -14,6 +14,7 @@ import {
     Textarea,
     Tooltip,
 } from '@trezor/components';
+import { InfoIcon, XIcon } from '@trezor/icons';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -64,7 +65,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
                         </Tooltip>
 
                         <Row gap={4}>
-                            <Icon name="info" size={20} intent="neutral" priority="secondary" />
+                            <Icon as={InfoIcon} size={20} intent="neutral" priority="secondary" />
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <Translation
                                     id="TR_TRON_NOTE_INFO"
@@ -77,7 +78,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
                     <IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         size="small"
                         onClick={handleClose}
                         tooltip={{ content: <Translation id="TR_CLOSE" /> }}

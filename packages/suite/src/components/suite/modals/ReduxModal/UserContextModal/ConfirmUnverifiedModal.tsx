@@ -6,6 +6,7 @@ import { closeModal } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
+import { ShieldWarningIcon } from '@trezor/icons';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -70,7 +71,7 @@ export const ConfirmUnverifiedModal = ({
         <Modal
             intent="warning"
             width={600}
-            iconName="shieldWarning"
+            icon={ShieldWarningIcon}
             onCancel={handleClose}
             bottomContent={
                 <>

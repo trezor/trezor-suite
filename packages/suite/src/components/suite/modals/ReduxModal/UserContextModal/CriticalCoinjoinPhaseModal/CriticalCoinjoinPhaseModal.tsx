@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
@@ -43,7 +44,7 @@ export const CriticalCoinjoinPhaseModal = ({
             <Column gap={spacings.md} margin={{ top: spacings.xs }}>
                 <Banner
                     intent="warning"
-                    icon="warning"
+                    icon={WarningIcon}
                     description={<Translation id="TR_DO_NOT_DISCONNECT_DEVICE" />}
                 />
                 <Card>

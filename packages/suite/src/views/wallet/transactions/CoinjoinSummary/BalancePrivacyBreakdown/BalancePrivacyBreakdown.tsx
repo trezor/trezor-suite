@@ -4,6 +4,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { isZero } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
+import { CheckIcon, PauseIcon, ShuffleIcon, XIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -56,13 +57,13 @@ export const BalancePrivacyBreakdown = () => {
     const getBalanceIcon = () => {
         if (hasSession) {
             if (currentSession.paused) {
-                return <Icon name="pause" size={12} />;
+                return <Icon as={PauseIcon} size={12} />;
             }
 
-            return <Icon name="shuffle" size={15} />;
+            return <Icon as={ShuffleIcon} size={15} />;
         }
 
-        return <Icon name="x" size={15} />;
+        return <Icon as={XIcon} size={15} />;
     };
 
     if (!currentAccount) {
@@ -85,7 +86,7 @@ export const BalancePrivacyBreakdown = () => {
                         <Translation id="TR_PRIVATE" />
                     </PrivateBalanceHeading>
                 }
-                headerIcon={<Icon name="check" size={16} intent="brand" />}
+                headerIcon={<Icon as={CheckIcon} size={16} intent="brand" />}
                 value={anonymized}
                 symbol={currentAccount?.symbol}
                 color={!isZero(anonymized || '0') ? theme.contentBrand : theme.contentSecondary}

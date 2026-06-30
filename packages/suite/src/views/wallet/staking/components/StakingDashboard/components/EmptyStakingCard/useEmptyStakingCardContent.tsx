@@ -5,7 +5,16 @@ import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
-import { type IconName, Tooltip } from '@trezor/components';
+import { type IconComponent, Tooltip } from '@trezor/components';
+import {
+    EverstakeLogoIcon,
+    HandCoinsIcon,
+    LightningIcon,
+    LockLaminatedOpenIcon,
+    PiggyBankIcon,
+    SnowflakeIcon,
+    WalletIcon,
+} from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useDispatch } from 'src/hooks/suite';
@@ -25,7 +34,7 @@ export interface EmptyStakingCardContentFeature {
     id: number;
     title: ReactNode;
     text: ReactNode;
-    icon: IconName;
+    icon: IconComponent;
 }
 
 export interface EmptyStakingCardContent {
@@ -53,19 +62,19 @@ const getTronContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakin
     const features = [
         {
             id: 0,
-            icon: 'lightning' as const,
+            icon: LightningIcon,
             title: <Translation id="TR_STAKING_CARD_GET_RESOURCES_TITLE" />,
             text: <Translation id="TR_STAKING_CARD_GET_RESOURCES_TEXT" />,
         },
         {
             id: 1,
-            icon: 'snowflake' as const,
+            icon: SnowflakeIcon,
             title: <Translation id="TR_STAKING_CARD_FREEZE_AND_VOTE_TITLE" />,
             text: <Translation id="TR_STAKING_CARD_FREEZE_AND_VOTE_TEXT" />,
         },
         {
             id: 2,
-            icon: 'lockLaminatedOpen' as const,
+            icon: LockLaminatedOpenIcon,
             title: <Translation id="TR_STAKING_CARD_UNSTAKE_ANYTIME_TITLE" />,
             text: <Translation id="TR_STAKING_CARD_UNSTAKE_ANYTIME_TEXT" />,
         },
@@ -116,7 +125,7 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
     const features = [
         {
             id: 0,
-            icon: 'piggyBank' as const,
+            icon: PiggyBankIcon,
             title: <Translation id="TR_STAKING_CARD_KEEP_EARNING_TITLE" />,
             text: (
                 <Translation
@@ -138,7 +147,7 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
         },
         {
             id: 1,
-            icon: 'wallet' as const,
+            icon: WalletIcon,
             title: <Translation id="TR_STAKE_USE_ANYTIME" />,
             text: (
                 <Translation
@@ -149,7 +158,7 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
         },
         {
             id: 2,
-            icon: 'handCoins' as const,
+            icon: HandCoinsIcon,
             title: <Translation id="TR_STAKING_CARD_RESTAKE_TITLE" />,
             text: <Translation id="TR_STAKING_CARD_RESTAKE_TEXT" />,
         },
@@ -199,7 +208,7 @@ const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
     const features = [
         {
             id: 0,
-            icon: 'piggyBank' as const,
+            icon: PiggyBankIcon,
             title: <Translation id="TR_STAKING_CARD_KEEP_EARNING_TITLE" />,
             text: (
                 <Translation
@@ -221,7 +230,7 @@ const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
         },
         {
             id: 1,
-            icon: 'lockLaminatedOpen' as const,
+            icon: LockLaminatedOpenIcon,
             title: <Translation id="TR_STAKING_CARD_LOCK_IN_TITLE" />,
             text: (
                 <Translation
@@ -232,7 +241,7 @@ const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
         },
         {
             id: 2,
-            icon: 'everstakeLogo' as const,
+            icon: EverstakeLogoIcon,
             title: <Translation id="TR_STAKING_CARD_RESTAKE_TITLE" />,
             text: <Translation id="TR_STAKING_CARD_RESTAKE_TEXT" />,
         },

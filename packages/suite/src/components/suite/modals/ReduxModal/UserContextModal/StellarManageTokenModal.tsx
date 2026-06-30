@@ -22,6 +22,7 @@ import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { STELLAR_BASE_RESERVE } from '@trezor/coins-stellar/constants';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
+import { SpinnerIcon, WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -291,7 +292,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     {insufficientBalanceInfo && (
                         <Banner
                             intent="warning"
-                            icon="warning"
+                            icon={WarningIcon}
                             description={
                                 <Translation
                                     id="TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS"
@@ -307,7 +308,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     {isProcessing && (
                         <Banner
                             intent="info"
-                            icon="spinner"
+                            icon={SpinnerIcon}
                             description={
                                 <Translation
                                     id={

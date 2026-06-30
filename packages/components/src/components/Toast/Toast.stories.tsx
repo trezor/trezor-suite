@@ -1,7 +1,8 @@
 import { type ArgTypes, type Meta, type StoryObj } from '@storybook/react';
 
+import * as generatedIcons from '@trezor/icons';
+
 import { Toast as ToastComponent, type ToastProps } from './Toast';
-import { variables } from '../../config';
 
 const meta: Meta<typeof ToastComponent> = {
     title: 'Toast',
@@ -22,7 +23,8 @@ const argTypes: Partial<ArgTypes<ToastProps>> | undefined = {
         type: 'string',
     },
     icon: {
-        options: [undefined, ...variables.ICONS],
+        options: ['none', ...Object.keys(generatedIcons)],
+        mapping: { none: undefined, ...generatedIcons },
         control: {
             type: 'select',
         },

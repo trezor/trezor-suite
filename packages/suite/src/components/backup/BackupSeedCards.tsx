@@ -1,6 +1,7 @@
 import { type ConfirmKey, backupActions } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, Grid, Icon, Paragraph, Row } from '@trezor/components';
+import { AnchorIcon, KeyIcon, PencilLineIcon } from '@trezor/icons';
 
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
@@ -8,17 +9,17 @@ const items = [
     {
         key: 'wrote-seed-properly',
         label: <Translation id="TR_BACKUP_CHECKBOX_1_TITLE" />,
-        icon: 'key',
+        icon: KeyIcon,
     },
     {
         key: 'made-no-digital-copy',
         label: <Translation id="TR_BACKUP_CHECKBOX_2_TITLE" />,
-        icon: 'pencilLine',
+        icon: PencilLineIcon,
     },
     {
         key: 'will-hide-seed',
         label: <Translation id="TR_BACKUP_CHECKBOX_3_TITLE" />,
-        icon: 'anchor',
+        icon: AnchorIcon,
     },
 ] as const;
 
@@ -56,7 +57,7 @@ export const BackupSeedCards = () => {
                                         event.preventDefault();
                                     }}
                                 />
-                                <Icon name={item.icon} size={24} />
+                                <Icon as={item.icon} size={24} />
                             </Row>
                             <Paragraph typographyStyle="body-sm">{item.label}</Paragraph>
                         </Column>

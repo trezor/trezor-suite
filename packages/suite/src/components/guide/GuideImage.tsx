@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Button, Modal } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
+import { XIcon } from '@trezor/icons';
 import { borders, zIndices } from '@trezor/theme';
 
 const ThumbnailImage = styled.img`
@@ -61,7 +62,7 @@ export const GuideImage = ({ src, alt }: GuideImageProps) => {
                         <FullSizeImage src={resolvedSrc} alt={alt} onClick={close} />
                         <CloseButtonWrapper>
                             <Button
-                                iconLeft="x"
+                                iconLeft={XIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={close}

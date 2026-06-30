@@ -9,6 +9,7 @@ import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { InfoIcon } from '@trezor/icons';
 
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 
@@ -68,7 +69,7 @@ export const FirmwareInitial = () => {
         <Column gap={16}>
             <Banner
                 intent="info"
-                icon="info"
+                icon={InfoIcon}
                 description={
                     <Translation
                         id={getDescription({

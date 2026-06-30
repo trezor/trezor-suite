@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Card, Icon, variables } from '@trezor/components';
+import { ArrowsInIcon, CoinsIcon, QuestionIcon, TrezorBackupIcon } from '@trezor/icons';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { CoinjoinProcessStep, type CoinjoinProcessStepProps } from './CoinjoinProcessStep';
@@ -26,19 +27,22 @@ const Steps = styled.div`
     }
 `;
 
-const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
+const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'> & { id: string }> = [
     {
-        iconName: 'coins',
+        id: 'coins',
+        iconName: CoinsIcon,
         title: <Translation id="TR_COINJOIN_STEP_1_TITLE" />,
         description: <Translation id="TR_COINJOIN_STEP_1_DESCRIPTION" />,
     },
     {
-        iconName: 'trezorBackup',
+        id: 'backup',
+        iconName: TrezorBackupIcon,
         title: <Translation id="TR_START_COINJOIN" />,
         description: <Translation id="TR_COINJOIN_STEP_2_DESCRIPTION" />,
     },
     {
-        iconName: 'arrowsIn',
+        id: 'arrows',
+        iconName: ArrowsInIcon,
         title: <Translation id="TR_COINJOIN_STEP_3_TITLE" />,
         description: <Translation id="TR_COINJOIN_STEP_3_DESCRIPTION" />,
     },
@@ -47,13 +51,13 @@ const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
 export const CoinjoinExplanation = () => (
     <Card>
         <Heading>
-            <Icon name="question" margin={{ right: spacings.xxs }} size={15} />
+            <Icon as={QuestionIcon} margin={{ right: spacings.xxs }} size={15} />
             <Translation id="TR_COINJOIN_EXPLANATION_TITLE" />
         </Heading>
 
         <Steps>
-            {STEPS.map((step, index) => (
-                <CoinjoinProcessStep number={index + 1} key={step.iconName} {...step} />
+            {STEPS.map(({ id, ...step }, index) => (
+                <CoinjoinProcessStep number={index + 1} key={id} {...step} />
             ))}
         </Steps>
     </Card>

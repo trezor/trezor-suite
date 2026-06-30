@@ -5,16 +5,17 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { Card, Column, Grid, Icon, type IconName, Paragraph } from '@trezor/components';
+import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
+import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
-const items: { icon: IconName; text: TranslationKey }[] = [
-    { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
-    { icon: 'cpu', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
-    { icon: 'listChecks', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
+const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
+    { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
+    { id: 'chip', icon: CpuIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
+    { id: 'checks', icon: ListChecksIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
 ];
 
 type DeviceAuthenticityProps = {
@@ -118,7 +119,7 @@ export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) =>
 
     return (
         <OnboardingCard
-            iconName="shieldCheck"
+            icon={ShieldCheckIcon}
             heading={<Translation id={getHeadingText()} />}
             description={getDescription()}
             innerActions={getInnerActions()}
@@ -128,9 +129,9 @@ export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) =>
         >
             {!isCheckSuccessful && (
                 <Grid columns={isBelowTablet ? 1 : items.length} gap={48}>
-                    {items.map(({ icon, text }) => (
-                        <Column key={icon} gap={24} alignItems="center">
-                            <Icon name={icon} size={32} />
+                    {items.map(({ id, icon, text }) => (
+                        <Column key={id} gap={24} alignItems="center">
+                            <Icon as={icon} size={32} />
                             <Paragraph
                                 intent="neutral"
                                 priority="secondary"

@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { IconButton, Row, TOOLTIP_DELAY_LONG } from '@trezor/components';
+import { CaretLeftIcon, XIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
@@ -40,7 +41,7 @@ export const DeviceHeader = ({
         <Row gap={spacings.sm}>
             {onBackButtonClick && (
                 <IconButton
-                    icon="caretLeft"
+                    icon={CaretLeftIcon}
                     onClick={onBackButtonClick}
                     intent="neutral"
                     priority="secondary"
@@ -60,7 +61,7 @@ export const DeviceHeader = ({
             <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
                 {isDefaultCancelVisible && (
                     <IconButton
-                        icon="x"
+                        icon={XIcon}
                         intent="neutral"
                         priority="secondary"
                         onClick={() => onCancel()}

@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
+import { ArrowLineDownIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
 
@@ -12,7 +13,7 @@ export const RewardsEmpty = () => (
                 values={{ count: SOLANA_EPOCH_DAYS }}
             />
         }
-        iconName="arrowLineDown"
+        icon={ArrowLineDownIcon}
         iconVariant="neutral"
     />
 );

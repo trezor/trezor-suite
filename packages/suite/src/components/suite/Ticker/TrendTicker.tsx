@@ -6,7 +6,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
-import { Icon, type IconName, Skeleton } from '@trezor/components';
+import { Icon, type IconComponent, Skeleton } from '@trezor/components';
+import { TrendDownIcon, TrendUpIcon } from '@trezor/icons';
 import { type Color, spacingsPx, typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -29,9 +30,9 @@ const Empty = styled.div`
 
 type Trend = 'up' | 'down' | 'stable';
 
-const trendStyles: Record<Trend, { icon?: IconName; color: Color }> = {
-    up: { icon: 'trendUp', color: 'contentBrand' },
-    down: { icon: 'trendDown', color: 'contentCritical' },
+const trendStyles: Record<Trend, { icon?: IconComponent; color: Color }> = {
+    up: { icon: TrendUpIcon, color: 'contentBrand' },
+    down: { icon: TrendDownIcon, color: 'contentCritical' },
     stable: { color: 'contentSecondary' },
 };
 
@@ -106,7 +107,7 @@ export const TrendTicker = ({
             {({ rate, timestamp }) =>
                 rate && timestamp && isSuccessfullyFetched ? (
                     <PercentageWrapper $color={color}>
-                        {icon !== undefined && <Icon name={icon} color={color} size={16} />}
+                        {icon !== undefined && <Icon as={icon} color={color} size={16} />}
                         {formattedChange}
                     </PercentageWrapper>
                 ) : (

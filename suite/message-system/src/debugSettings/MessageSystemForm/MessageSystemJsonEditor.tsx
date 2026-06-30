@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { type ValidateError } from '@suite-common/message-system';
 import { Button, Column, Icon, Row, Text, Textarea } from '@trezor/components';
+import { CheckCircleFilledIcon, XCircleFilledIcon } from '@trezor/icons';
 import { useTextareaCursorPosition } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -61,12 +62,12 @@ export const MessageSystemJsonEditor = ({
                 <Row gap={spacings.xs} margin={{ bottom: spacings.xs }}>
                     {isValid ? (
                         <>
-                            <Icon name="checkCircleFilled" intent="brand" size={32} />
+                            <Icon as={CheckCircleFilledIcon} intent="brand" size={32} />
                             <span>Config is valid</span>
                         </>
                     ) : (
                         <>
-                            <Icon name="xCircleFilled" intent="critical" size={32} />
+                            <Icon as={XCircleFilledIcon} intent="critical" size={32} />
                             <span>Config is invalid</span>
                         </>
                     )}

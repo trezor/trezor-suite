@@ -23,6 +23,7 @@ import {
     isTxFeePaid,
 } from '@suite-common/wallet-utils';
 import { Button, Icon, Row, Tooltip } from '@trezor/components';
+import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
@@ -184,7 +185,7 @@ export const TransactionItem = memo(
                                 <TransactionTimestamp transaction={transaction} />
                                 {nonceWarning && (
                                     <Tooltip content={nonceWarning}>
-                                        <Icon name="warning" size={16} intent="warning" />
+                                        <Icon as={WarningIcon} size={16} intent="warning" />
                                     </Tooltip>
                                 )}
                             </Row>
@@ -221,7 +222,7 @@ export const TransactionItem = memo(
                                             <Button
                                                 intent="neutral"
                                                 priority="secondary"
-                                                iconLeft="gauge"
+                                                iconLeft={GaugeIcon}
                                                 onClick={e => {
                                                     openTxDetailsModal({
                                                         flow: 'bump-fee',
@@ -240,7 +241,7 @@ export const TransactionItem = memo(
                                         <Button
                                             intent="neutral"
                                             priority="secondary"
-                                            iconLeft="x"
+                                            iconLeft={XIcon}
                                             onClick={e => {
                                                 openTxDetailsModal({
                                                     flow: 'cancel-transaction',

@@ -10,6 +10,7 @@ import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Dropdown, Note } from '@trezor/components';
+import { ChecksIcon, FileArrowDownIcon, InfoIcon } from '@trezor/icons';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -103,7 +104,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
             placement={{ position: 'bottom', alignment: 'start' }}
             content={
                 searchQuery ? (
-                    <Note iconName="checks">
+                    <Note icon={ChecksIcon}>
                         <Translation
                             id={
                                 searchQuery
@@ -113,7 +114,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
                         />
                     </Note>
                 ) : (
-                    <Note iconName="info" priority="secondary">
+                    <Note icon={InfoIcon} priority="secondary">
                         <Translation id="TR_EXPORT_SEARCH_FILTER_INACTIVE" />
                     </Note>
                 )
@@ -124,7 +125,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
                 'data-testid': `${dataTest}/${type}`,
             }))}
             minWidth={240}
-            iconName="fileArrowDown"
+            icon={FileArrowDownIcon}
             isLoading={isExportRunning}
             data-testid={`${dataTest}/dropdown`}
             tooltip={{ content: <Translation id="TR_EXPORT_TO_FILE" />, placement: 'left' }}

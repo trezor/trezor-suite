@@ -8,6 +8,7 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CopyIcon } from '@trezor/icons';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { copyAddressToClipboard } from './copyAddressActions';
@@ -116,7 +117,7 @@ export const Address = ({
                 <Row gap={8}>
                     <Text onCopy={onManualCopy}>{formattedValueFull}</Text>
                     <IconButton
-                        icon="copy"
+                        icon={CopyIcon}
                         size="small"
                         intent="neutral"
                         priority="secondary"

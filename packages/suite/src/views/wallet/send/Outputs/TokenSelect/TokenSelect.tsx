@@ -19,6 +19,7 @@ import {
     isNftToken,
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -205,7 +206,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     </Row>
                     {!hasNoStandardTokens && (
                         <IconButton
-                            icon="caretDown"
+                            icon={CaretDownIcon}
                             intent="neutral"
                             priority="secondary"
                             tooltip={{ isActive: false }}

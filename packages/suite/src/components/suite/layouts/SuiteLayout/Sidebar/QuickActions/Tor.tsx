@@ -1,8 +1,16 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { TorStatus, selectTorState } from '@suite/tor';
-import { Column, Icon, type IconName, type UIIntent } from '@trezor/components';
+import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import {
+    ArrowsClockwiseIcon,
+    CheckIcon,
+    InfoIcon,
+    TorBrowserIcon,
+    WarningIcon,
+    XIcon,
+} from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -16,13 +24,13 @@ const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Slow]: 'TR_TOR_SLOW',
 };
 
-const torIconMap: Record<TorStatus, IconName> = {
-    [TorStatus.Enabled]: 'check',
-    [TorStatus.Disabled]: 'x',
-    [TorStatus.Disabling]: 'arrowsClockwise',
-    [TorStatus.Enabling]: 'arrowsClockwise',
-    [TorStatus.Error]: 'warning',
-    [TorStatus.Slow]: 'info',
+const torIconMap: Record<TorStatus, IconComponent> = {
+    [TorStatus.Enabled]: CheckIcon,
+    [TorStatus.Disabled]: XIcon,
+    [TorStatus.Disabling]: ArrowsClockwiseIcon,
+    [TorStatus.Enabling]: ArrowsClockwiseIcon,
+    [TorStatus.Error]: WarningIcon,
+    [TorStatus.Slow]: InfoIcon,
 };
 
 const torIntentMap: Record<TorStatus, UIIntent> = {
@@ -49,10 +57,10 @@ export const Tor = () => {
                     content: (
                         <Column padding={4} alignItems="start">
                             <TooltipRow
-                                iconName={iconName}
+                                icon={iconName}
                                 intent={torIntentMap[torStatus]}
                                 header={<Translation id="TR_TOR" />}
-                                leftItem={<Icon name="torBrowser" size={16} />}
+                                leftItem={<Icon as={TorBrowserIcon} size={16} />}
                             >
                                 <Translation id={torStatusTranslationMap[torStatus]} />
                             </TooltipRow>
@@ -62,9 +70,9 @@ export const Tor = () => {
                 onClick={() =>
                     dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }))
                 }
-                iconName="torBrowser"
+                icon={TorBrowserIcon}
                 subIconIntent={torIntentMap[torStatus]}
-                subIconName={iconName}
+                subIcon={iconName}
             />
         )
     );

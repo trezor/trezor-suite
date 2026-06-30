@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-types';
 import { asAmountUnit, getFee, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
+import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } from '@trezor/icons';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -92,7 +93,7 @@ export const TransactionReviewSummary = ({
                     </Row>
 
                     {estimateTime !== undefined && (
-                        <Note iconName="clock">
+                        <Note icon={ClockIcon}>
                             {'≈ '}
                             {formatDurationStrict(estimateTime, locale)}
                         </Note>
@@ -103,7 +104,7 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {!['ethereum', 'solana', 'tron'].includes(networkType) && (
-                        <Note iconName="receipt">
+                        <Note icon={ReceiptIcon}>
                             <FeeRate feeRate={fee} networkType={network.networkType} />
                         </Note>
                     )}
@@ -117,7 +118,7 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {!stakeType && !broadcast && connectPopupCall?.state !== 'ongoing' && (
-                        <Note iconName="broadcast">
+                        <Note icon={BroadcastIcon}>
                             <Translation id="BROADCAST" />
                             {': '}
                             <Text intent="critical">
@@ -135,7 +136,7 @@ export const TransactionReviewSummary = ({
                                 onClick={() => onDetailsClick()}
                                 intent="neutral"
                                 priority="secondary"
-                                icon="info"
+                                icon={InfoIcon}
                                 tooltip={{
                                     content: <Translation id="TR_TRANSACTION_DETAILS" />,
                                 }}
@@ -148,12 +149,12 @@ export const TransactionReviewSummary = ({
             {networkType === 'solana' && isDebug && (
                 <Row margin={{ top: spacings.xs }} gap={spacings.xs}>
                     <DebugOnlyBadge />
-                    <Note iconName="computerTower">
+                    <Note icon={ComputerTowerIcon}>
                         CU Limit
                         {': '}
                         {tx.feeLimit} CU
                     </Note>
-                    <Note iconName="computerTower">
+                    <Note icon={ComputerTowerIcon}>
                         CU Price
                         {': '}
                         <FeeRate

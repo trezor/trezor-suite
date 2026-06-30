@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { type Localization } from '@suite-common/suite-types';
 import { Collapsible, InfoItem, TextButton } from '@trezor/components';
+import { CaretDownFilledIcon, CaretUpFilledIcon, TranslateIcon } from '@trezor/icons';
 
 type MessageSystemManagerTranslationsProps = {
     messages: Localization;
@@ -21,7 +22,7 @@ export const MessageSystemManagerTranslations = ({
                 label={
                     <Collapsible.Toggle>
                         <TextButton
-                            iconRight={showAll ? 'caretUpFilled' : 'caretDownFilled'}
+                            iconRight={showAll ? CaretUpFilledIcon : CaretDownFilledIcon}
                             intent="neutral"
                             onClick={handleToggle}
                         >
@@ -31,7 +32,7 @@ export const MessageSystemManagerTranslations = ({
                 }
                 intent="neutral"
                 priority="secondary"
-                iconName="translate"
+                icon={TranslateIcon}
             >
                 <div>
                     <div key="en">

@@ -5,6 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { ButtonGroup, Row } from '@trezor/components';
+import { MinusIcon, PlusIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
@@ -70,14 +71,14 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             <AppNavigationTooltip>
                 <ButtonGroup intent="neutral" priority="secondary" isDisabled={isAccountLoading}>
                     <HeaderActionButton
-                        icon="plus"
+                        icon={PlusIcon}
                         onClick={() => navigateToTrading('buy')}
                         data-testid="@wallet/menu/wallet-trading-buy"
                     >
                         <Translation id="TR_NAV_BUY" />
                     </HeaderActionButton>
                     <HeaderActionButton
-                        icon="minus"
+                        icon={MinusIcon}
                         onClick={() => navigateToTrading('sell')}
                         data-testid="@wallet/menu/wallet-trading-sell"
                     >

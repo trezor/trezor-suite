@@ -6,6 +6,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { H3, IconButton, Paragraph } from '@trezor/components';
+import { ArrowLeftIcon, XIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
@@ -63,7 +64,7 @@ export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
             {back && (
                 <>
                     <IconButton
-                        icon="arrowLeft"
+                        icon={ArrowLeftIcon}
                         onClick={goBack}
                         intent="neutral"
                         priority="secondary"
@@ -92,7 +93,7 @@ export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
             )}
 
             <IconButton
-                icon="x"
+                icon={XIcon}
                 intent="neutral"
                 priority="secondary"
                 onClick={handleClose}

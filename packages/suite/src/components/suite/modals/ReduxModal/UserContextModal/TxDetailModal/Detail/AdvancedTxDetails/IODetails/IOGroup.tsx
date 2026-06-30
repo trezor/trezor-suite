@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
+import { ArrowRightIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 
@@ -71,7 +72,7 @@ export const IOGroup = ({
             )}
             {hasInputs && hasOutputs && (
                 <Row alignSelf="center">
-                    <Icon name="arrowRight" size={16} intent="neutral" priority="secondary" />
+                    <Icon as={ArrowRightIcon} size={16} intent="neutral" priority="secondary" />
                 </Row>
             )}
             {hasOutputs && (

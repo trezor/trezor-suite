@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 
+import { CaretDownIcon } from '@trezor/icons';
+
 import { useCollapsible } from './CollapsibleContext';
 import { motionEasing } from '../../config/motion';
-import { Icon, type IconName, type IconProps } from '../Icon/Icon';
+import { Icon, type IconComponent, type IconProps } from '../Icon/Icon';
 
 const ANIMATION_DURATION = 0.4;
 
@@ -14,7 +16,7 @@ const IconWrapper = styled.div<{ $isCollapsed?: boolean }>`
 
 type ToggleProps = {
     size?: IconProps['size'];
-    iconName?: IconName;
+    icon?: IconComponent;
     'data-testid'?: string;
     intent?: IconProps['intent'];
     priority?: IconProps['priority'];
@@ -23,7 +25,7 @@ type ToggleProps = {
 
 export const CollapsibleToggleIcon = ({
     size,
-    iconName = 'caretDown',
+    icon = CaretDownIcon,
     'data-testid': dataTestId,
     intent = 'neutral',
     priority = 'secondary',
@@ -34,7 +36,7 @@ export const CollapsibleToggleIcon = ({
     return (
         <IconWrapper $isCollapsed={!isOpen}>
             <Icon
-                name={iconName}
+                as={icon}
                 size={size}
                 data-testid={dataTestId}
                 intent={intent}

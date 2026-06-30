@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectVotingDelegationOption } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, CollapsibleBox, Row, Text } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -28,7 +29,7 @@ export const VotingDelegations = ({ account }: VotingDelegationsProps) => {
                         </Text>
                     </Row>
                 }
-                toggleIconName="caretDown"
+                toggleIcon={CaretDownIcon}
                 toggleLabel={
                     <Text intent="neutral" typographyStyle="body-sm-strong">
                         <Translation

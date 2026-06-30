@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
+import { XIcon } from '@trezor/icons';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { RotateDeviceImage } from '../RotateDeviceImage/RotateDeviceImage';
@@ -93,7 +94,7 @@ export const ConfirmOnDevicePillContent = ({
 
             {onCancel && (
                 <IconButton
-                    icon="x"
+                    icon={XIcon}
                     onClick={onCancel}
                     data-testid="@confirm-on-device/close-button"
                     intent="neutral"

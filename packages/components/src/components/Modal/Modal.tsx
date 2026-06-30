@@ -3,6 +3,7 @@ import { useEvent } from 'react-use';
 
 import styled from 'styled-components';
 
+import { CaretLeftIcon, XIcon } from '@trezor/icons';
 import { borders, negativeSpacings, spacings } from '@trezor/theme';
 
 import { ModalBackdrop } from './ModalBackdrop';
@@ -15,7 +16,7 @@ import { useScrollShadow } from '../../utils/useScrollShadow';
 import { Box } from '../Box/Box';
 import { Divider } from '../Divider/Divider';
 import { Column, Row } from '../Flex/Flex';
-import { type IconName } from '../Icon/Icon';
+import { type IconComponent } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';
@@ -53,7 +54,7 @@ type ModalProps = AllowedFrameProps & {
     isBackdropCancelable?: boolean;
     alignment?: ModalAlignment;
     width?: ModalWidth;
-    iconName?: IconName;
+    icon?: IconComponent;
     'data-testid'?: string;
     padding?: Padding;
     shadowBottom?: boolean;
@@ -66,7 +67,7 @@ const ModalBase = ({
     heading,
     description,
     bottomContent,
-    iconName,
+    icon,
     onBackClick,
     onCancel,
     backButtonTooltip,
@@ -107,7 +108,7 @@ const ModalBase = ({
                                     <IconButton
                                         intent="neutral"
                                         priority="secondary"
-                                        icon="caretLeft"
+                                        icon={CaretLeftIcon}
                                         data-testid="@modal/back-button"
                                         onClick={onBackClick}
                                         tooltip={
@@ -140,7 +141,7 @@ const ModalBase = ({
                                     <IconButton
                                         intent="neutral"
                                         priority="secondary"
-                                        icon="x"
+                                        icon={XIcon}
                                         data-testid="@modal/close-button"
                                         onClick={onCancel}
                                         margin={{ left: 'auto' }}
@@ -157,18 +158,14 @@ const ModalBase = ({
                             <ShadowTop />
                             <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                                 <Column padding={padding ? padding : spacings.md}>
-                                    {iconName && (
+                                    {icon && (
                                         <Box
                                             margin={{
                                                 bottom: spacings.md,
                                                 top: isIconPushedTop ? negativeSpacings.md : 0,
                                             }}
                                         >
-                                            <IconCircle
-                                                name={iconName}
-                                                size={112}
-                                                intent={intent}
-                                            />
+                                            <IconCircle icon={icon} size={112} intent={intent} />
                                         </Box>
                                     )}
                                     {children}

@@ -1,4 +1,4 @@
-import { type JSX } from 'react';
+import { type ReactNode } from 'react';
 
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import type { NotificationEntry } from '@suite-common/toast-notifications';
@@ -7,11 +7,12 @@ import {
     type ButtonProps,
     Column,
     Icon,
-    type IconName,
+    type IconComponent,
     Paragraph,
     Row,
 } from '@trezor/components';
 import { type ButtonPriority } from '@trezor/components/src/components/buttons/types';
+import { CaretRightIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
@@ -30,7 +31,7 @@ export interface NotificationAction {
 export interface NotificationViewProps {
     notification: NotificationEntry;
     variant: ToastNotificationVariant;
-    icon?: IconName | JSX.Element;
+    icon?: IconComponent | ReactNode;
     message: ExtendedMessageDescriptor['id'];
     messageValues: ExtendedMessageDescriptor['values'];
     action?: NotificationAction | NotificationAction[];
@@ -57,8 +58,8 @@ export const NotificationView = ({
     return (
         <Row gap={spacings.sm}>
             {defaultIcon &&
-                (typeof defaultIcon === 'string' ? (
-                    <Icon size={20} name={defaultIcon} {...colorProps} />
+                (typeof defaultIcon === 'function' ? (
+                    <Icon size={20} as={defaultIcon} {...colorProps} />
                 ) : (
                     defaultIcon
                 ))}
@@ -80,7 +81,7 @@ export const NotificationView = ({
             </Column>
             {action?.onClick &&
                 (isBelowTablet ? (
-                    <Icon name="caretRight" onClick={action.onClick} size={18} />
+                    <Icon as={CaretRightIcon} onClick={action.onClick} size={18} />
                 ) : (
                     <Button
                         intent={action.intent ?? 'neutral'}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { CheckIcon, DotsThreeIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import {
@@ -10,10 +11,8 @@ import {
     allowedSubTabsFrameProps,
 } from './SubTabs';
 import { subtabsSizes } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Column } from '../Flex/Flex';
-import { type IconName } from '../Icon/Icon';
 
 const meta: Meta<typeof SubTabsComponent> = {
     title: 'SubTabs',
@@ -22,6 +21,7 @@ export default meta;
 
 const SubTabsApp = (props: Partial<SubTabsProps>) => {
     const [selectedTab, setSelectedTab] = useState(0);
+    const tabIcons = [CheckIcon, DotsThreeIcon, InfoIcon, WarningIcon];
 
     const items = ['Lorem', 'Ipsum', 'Dolor Sit', 'Amet'].map((title, index) => ({
         title,
@@ -29,7 +29,7 @@ const SubTabsApp = (props: Partial<SubTabsProps>) => {
         onClick: () => {
             setSelectedTab(index);
         },
-        iconName: variables.ICONS[index * 2] as IconName,
+        icon: tabIcons[index],
         'data-testid': title.toLowerCase(),
     }));
 

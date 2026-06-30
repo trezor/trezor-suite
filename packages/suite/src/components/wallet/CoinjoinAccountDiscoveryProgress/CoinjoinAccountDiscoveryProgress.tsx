@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
+import { StarFourIcon } from '@trezor/icons';
 import { spacings, typography } from '@trezor/theme';
 
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
@@ -84,7 +85,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
 
                 <FactHeading>
                     <Icon
-                        name="starFour"
+                        as={StarFourIcon}
                         size={13}
                         intent="warning"
                         margin={{ right: 4, bottom: 2 }}

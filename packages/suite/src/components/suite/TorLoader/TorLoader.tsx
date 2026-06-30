@@ -14,6 +14,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { ClockClockwiseIcon, RepeatIcon, TorBrowserIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
@@ -102,7 +103,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
     return (
         <Modal
             intent="info"
-            iconName="torBrowser"
+            icon={TorBrowserIcon}
             width={600}
             bottomContent={
                 <>
@@ -119,7 +120,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                     {isTorError && (
                         <Modal.Button
                             data-testid="@tor-loading-screen/try-again-button"
-                            iconLeft="repeat"
+                            iconLeft={RepeatIcon}
                             onClick={tryAgain}
                             intent="neutral"
                             priority="secondary"
@@ -154,7 +155,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                 {!!torBootstrap?.isSlow && (
                     <Banner
                         intent="info"
-                        icon="clockClockwise"
+                        icon={ClockClockwiseIcon}
                         description={
                             <Translation id="TR_TOR_IS_SLOW_MESSAGE" values={{ br: () => ' ' }} />
                         }

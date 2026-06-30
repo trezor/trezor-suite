@@ -6,6 +6,7 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
+import { LockKeyIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
@@ -87,7 +88,7 @@ export const PinStep = () => {
         // Used only on T1B1, T2T1 shows pins mismatch error on its display
         return (
             <OnboardingCard
-                iconName="lockKey"
+                icon={LockKeyIcon}
                 heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
                 data-testid="@pin-mismatch"
                 innerActions={
@@ -113,7 +114,7 @@ export const PinStep = () => {
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
             <OnboardingCard
-                iconName="lockKey"
+                icon={LockKeyIcon}
                 heading={
                     <>
                         {status === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}

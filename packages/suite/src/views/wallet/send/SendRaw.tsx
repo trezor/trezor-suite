@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -96,7 +97,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
                 <IconButton
                     intent="neutral"
                     priority="secondary"
-                    icon="x"
+                    icon={XIcon}
                     onClick={cancel}
                     tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                 />

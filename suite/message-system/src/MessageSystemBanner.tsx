@@ -6,6 +6,7 @@ import { selectLanguage } from '@suite/settings';
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type BannerProps } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import { MessageSystemButton } from './MessageSystemButton';
 
@@ -41,7 +42,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
                     <MessageSystemButton cta={cta} id={id} />
                     {dismissalConfig && (
                         <Banner.IconButton
-                            icon="x"
+                            icon={XIcon}
                             onClick={dismissalConfig.onClick}
                             priority="secondary"
                             data-testid={dismissalConfig['data-testid']}

@@ -14,6 +14,7 @@ import {
     type FramePropsKeys,
     pickFormCellProps,
 } from '@trezor/components';
+import { FileTextIcon } from '@trezor/icons';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 export const allowedJsonlReaderFrameProps = [
@@ -122,7 +123,7 @@ export const JsonlReader = <T extends Record<string, unknown> = Record<string, u
 
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled, hasError, bottomText } = formCellProps;
-    const resolvedIconLeft = iconLeft === null ? undefined : (iconLeft ?? 'fileText');
+    const resolvedIconLeft = iconLeft === null ? undefined : (iconLeft ?? FileTextIcon);
 
     const handleError = (error: JsonlReaderError) => {
         onError?.(error);

@@ -3,6 +3,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
@@ -106,7 +107,7 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
             </Column>
             {balanceExcludesTranslationId && (
                 <Row gap={4}>
-                    <Icon name="info" size={16} intent="neutral" priority="secondary" />
+                    <Icon as={InfoIcon} size={16} intent="neutral" priority="secondary" />
                     <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id={balanceExcludesTranslationId} />
                     </Paragraph>

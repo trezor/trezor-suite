@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import {
     Icon,
-    type IconName,
+    type IconComponent,
     type IconProps,
     Row,
     Spinner,
@@ -31,7 +31,7 @@ type DeviceConnectionTextProps = {
     isDisabled?: IconProps['isDisabled'];
     'data-testid'?: string;
     'data-testid-alt'?: string;
-    icon: IconName;
+    icon: IconComponent;
     children: ReactNode;
     isAction?: boolean;
     isLoading?: boolean;
@@ -66,7 +66,7 @@ export const DeviceConnectionText = ({
                 {isLoading ? (
                     <Spinner size={16} isDisabled={true} />
                 ) : (
-                    <Icon name={icon} size={12} {...colorProps} />
+                    <Icon as={icon} size={12} {...colorProps} />
                 )}
                 <Text ellipsisLineCount={1} typographyStyle="body-xs" {...colorProps}>
                     {children}

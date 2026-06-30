@@ -1,5 +1,6 @@
 import { useTranslation } from '@suite/intl';
 import { Icon, Input } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 
 type NetworkSettingsSearchInputProps = {
     searchQuery: string;
@@ -26,7 +27,7 @@ export const NetworkSettingsSearchInput = ({
             width="100%"
             data-testid={dataTestId}
             leftContent={
-                <Icon name="magnifyingGlass" intent="neutral" priority="secondary" size={16} />
+                <Icon as={MagnifyingGlassIcon} intent="neutral" priority="secondary" size={16} />
             }
         />
     );

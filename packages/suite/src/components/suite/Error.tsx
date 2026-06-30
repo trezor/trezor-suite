@@ -1,6 +1,7 @@
 import { useServices } from '@suite-common/dependency-injection';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Button, Column, Divider, H2, Paragraph, Row } from '@trezor/components';
+import { RepeatIcon } from '@trezor/icons';
 
 import { db } from 'src/storage';
 
@@ -30,7 +31,7 @@ export const Error = ({ error }: ErrorProps) => {
             <Divider margin={{ vertical: 24 }} />
             <Row width="100%" justifyContent="center" gap={16} flexWrap="wrap">
                 <Button
-                    iconLeft="repeat"
+                    iconLeft={RepeatIcon}
                     intent="neutral"
                     priority="secondary"
                     onClick={() => {
@@ -41,7 +42,7 @@ export const Error = ({ error }: ErrorProps) => {
                 </Button>
 
                 <Button
-                    iconLeft="repeat"
+                    iconLeft={RepeatIcon}
                     intent="neutral"
                     priority="secondary"
                     onClick={() => {

@@ -9,6 +9,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
+import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
@@ -97,7 +98,7 @@ export const ClaimCard = () => {
 
     return isClaimPending ? (
         <Card data-testid="@staking/can-claim-card">
-            <InfoItem label={<Translation id="TR_STAKE_CLAIM_PENDING" />} iconName="spinnerGap">
+            <InfoItem label={<Translation id="TR_STAKE_CLAIM_PENDING" />} icon={SpinnerGapIcon}>
                 {content}
             </InfoItem>
         </Card>
@@ -106,11 +107,11 @@ export const ClaimCard = () => {
             <Column flex="1" gap={spacings.xl}>
                 <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM" />}
-                    iconName="checks"
+                    icon={ChecksIcon}
                 >
                     {content}
                 </InfoItem>
-                <InfoItem label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} iconName="lightning">
+                <InfoItem label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />} icon={LightningIcon}>
                     <Paragraph typographyStyle="headline-sm">
                         <Translation id="TR_STAKE_INSTANT" />
                     </Paragraph>
@@ -120,7 +121,7 @@ export const ClaimCard = () => {
                     <Button
                         onClick={openClaimModal}
                         isDisabled={isClaimButtonDisabled}
-                        iconLeft={isClaimButtonDisabled ? 'info' : undefined}
+                        iconLeft={isClaimButtonDisabled ? InfoIcon : undefined}
                         data-testid="@account/staking/claim-button"
                     >
                         <Translation id="TR_STAKE_CLAIM" />

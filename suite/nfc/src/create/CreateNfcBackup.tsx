@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Card, Column, Text } from '@trezor/components';
+import { CaretLeftIcon, TrezorBackupIcon } from '@trezor/icons';
 
 import { NfcTag } from '../tags/NfcTag';
 
@@ -18,7 +19,7 @@ interface CreateNfcBackupProps {
 
 export const CreateNfcBackup = ({ onBack, onCreateBackup }: CreateNfcBackupProps) => (
     <OnboardingCard
-        iconName="trezorBackup"
+        icon={TrezorBackupIcon}
         heading={<Translation id="TR_NFC_BACKUP_HEADING" />}
         innerActions={
             <OnboardingCard.Button onClick={onCreateBackup}>
@@ -26,7 +27,7 @@ export const CreateNfcBackup = ({ onBack, onCreateBackup }: CreateNfcBackupProps
             </OnboardingCard.Button>
         }
         outerActions={
-            <OnboardingCard.SecondaryButton iconLeft="caretLeft" onClick={onBack}>
+            <OnboardingCard.SecondaryButton iconLeft={CaretLeftIcon} onClick={onBack}>
                 <Translation id="TR_BACK" />
             </OnboardingCard.SecondaryButton>
         }

@@ -5,7 +5,7 @@ import { borders, spacings } from '@trezor/theme';
 import { useSubTabsContext } from './SubTabsContext';
 import { mapSizeToIconSize, mapSizeToTypography } from './utils';
 import { Row } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 const Item = styled.div<{ $isActive: boolean }>`
@@ -35,7 +35,7 @@ const Item = styled.div<{ $isActive: boolean }>`
 export type SubTabsItemProps = {
     id: string;
     onClick: () => void;
-    iconName?: IconName;
+    icon?: IconComponent;
     count?: number;
     children: React.ReactNode;
     'data-testid'?: string;
@@ -44,7 +44,7 @@ export type SubTabsItemProps = {
 export const SubTabsItem = ({
     id,
     onClick,
-    iconName,
+    icon,
     count = 0,
     'data-testid': dataTestId,
     children,
@@ -55,7 +55,7 @@ export const SubTabsItem = ({
     return (
         <Item $isActive={isActive} onClick={onClick} data-testid={dataTestId}>
             <Row gap={spacings.xs} padding={{ vertical: spacings.xs, horizontal: spacings.md }}>
-                {iconName && <Icon name={iconName} size={mapSizeToIconSize(size)} />}
+                {icon && <Icon as={icon} size={mapSizeToIconSize(size)} />}
                 <Text as="div" typographyStyle={mapSizeToTypography(size)} textWrap="nowrap">
                     {children}
                 </Text>

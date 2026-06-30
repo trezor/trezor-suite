@@ -1,11 +1,12 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import * as generatedIcons from '@trezor/icons';
+
 import {
     CollapsibleBox as CollapsibleBoxComponent,
     allowedCollapsibleBoxFrameProps,
 } from './CollapsibleBox';
 import { fillTypes, headingSizes, paddingTypes } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof CollapsibleBoxComponent> = {
@@ -60,12 +61,9 @@ export const CollapsibleBox: StoryObj<typeof meta> = {
         toggleLabel: {
             type: 'string',
         },
-        toggleIconName: {
-            options: ['none', ...variables.ICONS],
-            mapping: {
-                ...variables.ICONS,
-                none: undefined,
-            },
+        toggleIcon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: {
                 type: 'select',
             },

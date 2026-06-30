@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
+import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
@@ -93,7 +94,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                     <IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         onClick={() => {
                             setIsPassphraseExpanded(false);
                         }}
@@ -106,7 +107,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         intent="brand"
                         priority="secondary"
                         size="large"
-                        iconLeft="plusCircleFilled"
+                        iconLeft={PlusCircleFilledIcon}
                         width="100%"
                         isDisabled={isLocked}
                         onClick={() =>
@@ -122,7 +123,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         intent="neutral"
                         priority="secondary"
                         size="large"
-                        iconLeft="folderOpen"
+                        iconLeft={FolderOpenIcon}
                         width="100%"
                         isDisabled={isLocked}
                         onClick={() =>
@@ -154,7 +155,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         priority="secondary"
                         width="100%"
                         size="large"
-                        iconLeft="plus"
+                        iconLeft={PlusIcon}
                         isDisabled={isLocked}
                         onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
                     >
@@ -179,7 +180,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                                 priority="secondary"
                                 width="100%"
                                 size="large"
-                                iconLeft="plus"
+                                iconLeft={PlusIcon}
                                 isDisabled={isPassphraseAddDisabled}
                                 onClick={() => setIsPassphraseExpanded(true)}
                             >

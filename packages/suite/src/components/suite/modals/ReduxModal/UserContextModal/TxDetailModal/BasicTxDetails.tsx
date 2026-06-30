@@ -7,7 +7,6 @@ import {
     type PendingEvmNonceStatus,
     fromWei,
     getFeeRate,
-    getTxIcon,
     isEip1559,
     isPending,
 } from '@suite-common/wallet-utils';
@@ -25,6 +24,15 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import {
+    CalendarIcon,
+    FingerprintIcon,
+    GasPumpIcon,
+    PencilIcon,
+    ReceiptIcon,
+    TagIcon,
+    WarningIcon,
+} from '@trezor/icons';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -33,6 +41,7 @@ import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithB
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
+import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 const IconWrapper = styled.div`
@@ -51,10 +60,10 @@ const NestedIconWrapper = styled.div`
     padding: ${spacingsPx.xxxs};
 `;
 
-const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
+const Item = ({ label, icon, children }: Partial<InfoItemProps>) => (
     <InfoItem
         label={label}
-        iconName={iconName}
+        icon={icon}
         labelWidth={135}
         typographyStyle="body-xs"
         direction="row"
@@ -101,7 +110,7 @@ export const BasicTxDetails = ({
                         <Icon
                             size={14}
                             intent={tx.type === 'failed' ? 'critical' : 'neutral'}
-                            name={getTxIcon(tx, false)}
+                            as={getTransactionIcon(tx, false)}
                         />
                     </NestedIconWrapper>
                 </IconWrapper>
@@ -155,7 +164,7 @@ export const BasicTxDetails = ({
                             <Translation id="TR_FIRST_SEEN" />
                         )
                     }
-                    iconName="calendar"
+                    icon={CalendarIcon}
                 >
                     {tx.blockTime ? (
                         <FormattedDateWithBullet value={new Date(tx.blockTime * 1000)} />
@@ -166,7 +175,7 @@ export const BasicTxDetails = ({
 
                 {/* Fee level */}
                 {network.networkType === 'bitcoin' && (
-                    <Item label={<Translation id="TR_FEE_RATE" />} iconName="receipt">
+                    <Item label={<Translation id="TR_FEE_RATE" />} icon={ReceiptIcon}>
                         {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
                             might have locally saved old transactions without this field. since we
                             cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
@@ -180,7 +189,7 @@ export const BasicTxDetails = ({
                 {/* Ethereum */}
                 {network.networkType === 'ethereum' && tx.ethereumSpecific && (
                     <>
-                        <Item label={<Translation id="TR_NONCE" />} iconName="receipt">
+                        <Item label={<Translation id="TR_NONCE" />} icon={ReceiptIcon}>
                             <Row gap={4}>
                                 {tx.ethereumSpecific?.nonce}
                                 {nonceStatus && nonceStatus !== 'ok' && (
@@ -199,7 +208,7 @@ export const BasicTxDetails = ({
                                             )
                                         }
                                     >
-                                        <Icon name="warning" size={16} intent="warning" />
+                                        <Icon as={WarningIcon} size={16} intent="warning" />
                                     </Tooltip>
                                 )}
                             </Row>
@@ -215,7 +224,7 @@ export const BasicTxDetails = ({
                                     }
                                 />
                             }
-                            iconName="gasPump"
+                            icon={GasPumpIcon}
                         >
                             {tx.ethereumSpecific.gasLimit}
                             {tx.ethereumSpecific.gasUsed && tx.ethereumSpecific.gasLimit && (
@@ -231,7 +240,7 @@ export const BasicTxDetails = ({
                             )}
                         </Item>
 
-                        <Item label={<Translation id="TR_GAS_PRICE" />} iconName="gasPump">
+                        <Item label={<Translation id="TR_GAS_PRICE" />} icon={GasPumpIcon}>
                             {isConfirmed || !isEip1559(tx.ethereumSpecific) ? (
                                 <FeeRate
                                     feeRate={fromWei(tx.ethereumSpecific?.gasPrice || '0').toGwei()}
@@ -247,7 +256,7 @@ export const BasicTxDetails = ({
                             <>
                                 <Item
                                     label={<Translation id="TR_MAX_FEE_PER_GAS" />}
-                                    iconName="gasPump"
+                                    icon={GasPumpIcon}
                                 >
                                     <FeeRate
                                         feeRate={fromWei(
@@ -260,7 +269,7 @@ export const BasicTxDetails = ({
 
                                 <Item
                                     label={<Translation id="TR_BLOCK_BASE_FEE" />}
-                                    iconName="gasPump"
+                                    icon={GasPumpIcon}
                                 >
                                     {isConfirmed ? (
                                         <FeeRate
@@ -277,7 +286,7 @@ export const BasicTxDetails = ({
 
                                 <Item
                                     label={<Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />}
-                                    iconName="gasPump"
+                                    icon={GasPumpIcon}
                                 >
                                     <FeeRate
                                         feeRate={fromWei(
@@ -293,25 +302,25 @@ export const BasicTxDetails = ({
                 )}
 
                 {tx.rippleSpecific && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} icon={TagIcon}>
                         {tx.rippleSpecific.destinationTag ?? '-'}
                     </Item>
                 )}
 
                 {tx.stellarSpecific?.memo && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} icon={TagIcon}>
                         <BlurUrls text={tx.stellarSpecific.memo} />
                     </Item>
                 )}
 
                 {tx.solanaSpecific?.memo && (
-                    <Item label={<Translation id="MEMO" />} iconName="tag">
+                    <Item label={<Translation id="MEMO" />} icon={TagIcon}>
                         <BlurUrls text={tx.solanaSpecific.memo} />
                     </Item>
                 )}
 
                 {/* TX ID */}
-                <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
+                <Item label={<Translation id="TR_TXID" />} icon={FingerprintIcon}>
                     <Link
                         href={explorerLink}
                         data-testid="@tx-detail/txid-value"
@@ -322,19 +331,19 @@ export const BasicTxDetails = ({
                 </Item>
 
                 {tx.tronSpecific?.energyUsage && (
-                    <Item label={<Translation id="TR_TRON_ENERGY" />} iconName="gasPump">
+                    <Item label={<Translation id="TR_TRON_ENERGY" />} icon={GasPumpIcon}>
                         {tx.tronSpecific.energyUsage}
                     </Item>
                 )}
 
                 {tx.tronSpecific?.bandwidthUsage && (
-                    <Item label={<Translation id="TR_TRON_BANDWIDTH" />} iconName="gasPump">
+                    <Item label={<Translation id="TR_TRON_BANDWIDTH" />} icon={GasPumpIcon}>
                         {tx.tronSpecific.bandwidthUsage}
                     </Item>
                 )}
 
                 {tx.tronSpecific?.note && (
-                    <Item label={<Translation id="TR_TRON_NOTE" />} iconName="pencil">
+                    <Item label={<Translation id="TR_TRON_NOTE" />} icon={PencilIcon}>
                         {tx.tronSpecific.note}
                     </Item>
                 )}

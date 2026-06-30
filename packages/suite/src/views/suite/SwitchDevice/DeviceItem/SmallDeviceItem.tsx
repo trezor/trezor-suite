@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Image, Row } from '@trezor/components';
+import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -38,7 +39,7 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
 
             <DeviceDetail label={forceAlternativeDeviceLabel || deviceLabel || 'Trezor'}>
                 <DeviceConnectionText
-                    icon={isConnected ? 'link' : 'linkBreak'}
+                    icon={isConnected ? LinkIcon : LinkBreakIcon}
                     intent={isConnected ? 'brand' : 'critical'}
                 >
                     <Translation id={isConnected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />

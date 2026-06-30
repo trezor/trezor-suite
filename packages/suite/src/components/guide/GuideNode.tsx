@@ -5,10 +5,19 @@ import styled from 'styled-components';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { type IconName, icons } from '@suite-common/icons/src/icons';
 import { type GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { type IconComponent } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
+import {
+    ArrowsLeftRightFilledIcon,
+    CaretRightIcon,
+    CheckCircleIcon,
+    CoinsIcon,
+    CurrencyBtcIcon,
+    GearIcon,
+    PiggyBankIcon,
+} from '@trezor/icons';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,6 +30,15 @@ const CategoryImage = styled.img`
     height: 32px;
     object-fit: contain;
 `;
+
+const guideCategoryIcons: Partial<Record<string, IconComponent>> = {
+    arrowsLeftRightFilled: ArrowsLeftRightFilledIcon,
+    checkCircle: CheckCircleIcon,
+    coins: CoinsIcon,
+    currencyBtc: CurrencyBtcIcon,
+    gear: GearIcon,
+    piggyBank: PiggyBankIcon,
+};
 
 type GuideNodeProps = {
     node: GuideNodeType;
@@ -76,15 +94,15 @@ export const GuideNode = ({ node, description, itemVariant = 'cardList' }: Guide
                         </Text>
                     )}
                 </Column>
-                <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+                <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
             </CardList.Item>
         );
     }
 
     if (node.type === 'category') {
-        const hasValidIcon = typeof node.icon === 'string' && Object.hasOwn(icons, node.icon);
-        const categoryIcon = hasValidIcon ? (
-            <IconCircle name={node.icon as IconName} size={32} intent="neutral" />
+        const icon = node.icon ? guideCategoryIcons[node.icon] : undefined;
+        const categoryIcon = icon ? (
+            <IconCircle icon={icon} size={32} intent="neutral" />
         ) : (
             node.image && <CategoryImage src={resolveStaticPath(node.image)} />
         );
@@ -113,7 +131,7 @@ export const GuideNode = ({ node, description, itemVariant = 'cardList' }: Guide
                         {getNodeTitle(node, language)}
                     </Text>
                 </Row>
-                <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+                <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
             </CardList.Item>
         );
     }

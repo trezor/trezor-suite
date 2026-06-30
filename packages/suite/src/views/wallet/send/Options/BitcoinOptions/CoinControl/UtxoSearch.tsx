@@ -9,6 +9,7 @@ import {
 
 import { useTranslation } from '@suite/intl';
 import { Icon, Input, KEYBOARD_CODE } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 
 export type UtxoSearchProps = {
     searchQuery: string;
@@ -44,7 +45,7 @@ export const UtxoSearch = ({ searchQuery, setSearch, setSelectedPage }: UtxoSear
             data-testid="@wallet/send/search-icon"
             innerRef={inputRef}
             leftContent={
-                <Icon name="magnifyingGlass" size={16} intent="neutral" priority="secondary" />
+                <Icon as={MagnifyingGlassIcon} size={16} intent="neutral" priority="secondary" />
             }
             placeholder={translationString('TR_SEARCH_UTXOS')}
             onChange={onSearch}

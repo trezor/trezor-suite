@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import { type Rating } from '@suite-common/feedback';
 import { Button, Card, Column, H3, IconCircle, Paragraph, Row, Textarea } from '@trezor/components';
+import { CheckIcon } from '@trezor/icons';
 
 import { EmojiRatingSelector } from '../EmojiRatingSelector/EmojiRatingSelector';
 
@@ -45,7 +46,7 @@ export const FeedbackCard = ({
         return (
             <Card>
                 <Row gap={20} margin={{ vertical: 8 }}>
-                    <IconCircle name="check" size={40} />
+                    <IconCircle icon={CheckIcon} size={40} />
                     <Column gap={8}>
                         <H3>{successHeading}</H3>
                         <Paragraph typographyStyle="body-sm">{successDescription}</Paragraph>

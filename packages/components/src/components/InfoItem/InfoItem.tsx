@@ -20,7 +20,7 @@ import {
 import { type TransientProps } from '../../utils/transientProps';
 import { Flex, Row } from '../Flex/Flex';
 import { type FlexDirection } from '../Flex/FlexProp';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Text, type TextIntent, type TextPriority } from '../typography/Text/Text';
 import { type TextProps as TextPropsCommon, type TextPropsKeys } from '../typography/utils';
 
@@ -50,7 +50,7 @@ export type InfoItemProps = AllowedFrameProps &
     AllowedTextProps & {
         children?: ReactNode;
         direction?: FlexDirection;
-        iconName?: IconName;
+        icon?: IconComponent;
         label: ReactNode;
         intent?: TextIntent;
         priority?: TextPriority;
@@ -66,7 +66,7 @@ export const InfoItem = ({
     children,
     label,
     direction = 'column',
-    iconName,
+    icon,
     typographyStyle = 'body-sm',
     intent = 'neutral',
     priority = 'secondary',
@@ -92,9 +92,9 @@ export const InfoItem = ({
                     width={labelWidth}
                     flex={labelWidth ? '0 0 auto' : '1 0 auto'}
                 >
-                    {iconName && (
+                    {icon && (
                         <Icon
-                            name={iconName}
+                            as={icon}
                             size={mapTypographyStyleToIconSize(typographyStyle)}
                             intent={intent}
                             priority={priority}

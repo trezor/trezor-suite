@@ -1,11 +1,11 @@
 import { type ReactNode } from 'react';
 
-import { type IconName } from '@trezor/components';
+import { type IconComponent } from '@trezor/components';
 
 export type TroubleshootingTipsItem = {
     key: string;
     heading?: ReactNode;
     description?: ReactNode;
     hide?: boolean;
-    icon?: IconName;
+    icon?: IconComponent;
 };

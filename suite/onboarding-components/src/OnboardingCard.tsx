@@ -10,7 +10,7 @@ import {
     H2,
     IconCircle,
     type IconCircleIntent,
-    type IconName,
+    type IconComponent,
     Modal,
     Paragraph,
     Row,
@@ -28,7 +28,7 @@ export type OnboardingCardProps = {
     description?: ReactNode;
     innerActions?: ReactNode;
     outerActions?: ReactNode;
-    iconName?: IconName;
+    icon?: IconComponent;
     device?: TrezorDevice;
     isConfirmedOnDevice?: boolean;
     devicePrompt?: ReactNode;
@@ -41,7 +41,7 @@ export type OnboardingCardProps = {
 export const OnboardingCard = ({
     heading,
     description,
-    iconName,
+    icon,
     innerActions,
     outerActions,
     device,
@@ -63,7 +63,7 @@ export const OnboardingCard = ({
                 alignItems="center"
                 gap={20}
                 position={{ type: 'relative' }}
-                padding={{ top: iconName ? 48 : 0 }}
+                padding={{ top: icon ? 48 : 0 }}
                 width="100%"
             >
                 {isBackDropVisible && (
@@ -91,7 +91,7 @@ export const OnboardingCard = ({
                     paddingType="none"
                     data-testid={dataTestId}
                 >
-                    <Column gap={48} padding={60} margin={iconName ? { top: 40 } : undefined}>
+                    <Column gap={48} padding={60} margin={icon ? { top: 40 } : undefined}>
                         {(heading || description) && (
                             <Column gap={16} alignItems="center" width="100%">
                                 {heading && <H2 align="center">{heading}</H2>}
@@ -112,14 +112,14 @@ export const OnboardingCard = ({
                         {innerActions && <Row justifyContent="center">{innerActions}</Row>}
                     </Column>
                 </Card>
-                {iconName && (
+                {icon && (
                     <Box
                         position={{ type: 'absolute', top: 0 }}
                         zIndex={isBackDropVisible ? zIndices.modal : undefined}
                         backgroundColor="surfaceFillPage"
                         borderRadius={borders.radii.full}
                     >
-                        <IconCircle name={iconName} size={96} intent={intent} />
+                        <IconCircle icon={icon} size={96} intent={intent} />
                     </Box>
                 )}
                 {outerActions && <Box zIndex={zIndices.onboardingForeground}>{outerActions}</Box>}

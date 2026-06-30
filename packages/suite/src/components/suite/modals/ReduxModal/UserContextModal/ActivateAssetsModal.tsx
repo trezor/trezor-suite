@@ -12,6 +12,7 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Banner, Column, Modal, Switch, motionEasing } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
@@ -157,7 +158,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                         <motion.div {...bannerAnimationConfig}>
                             <Banner
                                 intent="neutral"
-                                icon="info"
+                                icon={InfoIcon}
                                 title={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE" />}
                                 rightContent={
                                     <Banner.Button size="small" onClick={handleBannerClose}>

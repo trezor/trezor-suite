@@ -14,6 +14,7 @@ import {
     Row,
     TOOLTIP_DELAY_LONG,
 } from '@trezor/components';
+import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon, XIcon } from '@trezor/icons';
 import { borders, zIndices } from '@trezor/theme';
 
 import { useFindBarShortcuts } from './useFindBarShortcuts';
@@ -87,7 +88,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 height="100%"
                                 cursor="pointer"
                             >
-                                <Icon name="magnifyingGlass" size={12} />
+                                <Icon as={MagnifyingGlassIcon} size={12} />
                             </Row>
                         }
                         rightContent={
@@ -119,7 +120,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                     <Row gap={8} justifyContent="flex-end">
                         <ButtonGroup intent="neutral" priority="secondary" size="small">
                             <IconButton
-                                icon="arrowUp"
+                                icon={ArrowUpIcon}
                                 onClick={prev}
                                 tooltip={{
                                     content: <Translation id="TR_FIND_PREV" />,
@@ -127,7 +128,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 }}
                             />
                             <IconButton
-                                icon="arrowDown"
+                                icon={ArrowDownIcon}
                                 onClick={next}
                                 tooltip={{
                                     content: <Translation id="TR_FIND_NEXT" />,
@@ -136,7 +137,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                             />
                         </ButtonGroup>
                         <IconButton
-                            icon="x"
+                            icon={XIcon}
                             size="small"
                             intent="neutral"
                             priority="secondary"

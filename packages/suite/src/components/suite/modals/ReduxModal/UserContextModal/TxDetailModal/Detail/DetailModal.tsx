@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
+import { GaugeIcon, XIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -59,7 +60,7 @@ export const DetailModal = ({
                 canReplaceTransaction ? (
                     <>
                         <Modal.Button
-                            iconLeft="gauge"
+                            iconLeft={GaugeIcon}
                             intent="neutral"
                             priority="secondary"
                             onClick={onChangeFeeClick}
@@ -68,7 +69,7 @@ export const DetailModal = ({
                         </Modal.Button>
                         {canCancelTransaction && (
                             <Modal.Button
-                                iconLeft="x"
+                                iconLeft={XIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={onCancelTxClick}

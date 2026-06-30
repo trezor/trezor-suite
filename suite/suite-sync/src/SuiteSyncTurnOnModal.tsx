@@ -7,6 +7,7 @@ import { selectTurnOnSuiteSyncDep } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
+import { ArrowsCounterClockwiseIcon, ShieldCheckIcon, TagIcon, ThumbsUpIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';
@@ -102,24 +103,24 @@ export const SuiteSyncTurnOnModal = ({
             <Column gap={16}>
                 <Card paddingType="large">
                     <List gap={16} intent="neutral" priority="secondary">
-                        <List.Item bulletComponent={<Icon name="tag" size={20} />}>
+                        <List.Item bulletComponent={<Icon as={TagIcon} size={20} />}>
                             <Paragraph>
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_DATA_LABELS" />
                             </Paragraph>
                         </List.Item>
                         <List.Item
-                            bulletComponent={<Icon name="arrowsCounterClockwise" size={20} />}
+                            bulletComponent={<Icon as={ArrowsCounterClockwiseIcon} size={20} />}
                         >
                             <Paragraph>
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY" />
                             </Paragraph>
                         </List.Item>
-                        <List.Item bulletComponent={<Icon name="shieldCheck" size={20} />}>
+                        <List.Item bulletComponent={<Icon as={ShieldCheckIcon} size={20} />}>
                             <Paragraph>
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES" />
                             </Paragraph>
                         </List.Item>
-                        <List.Item bulletComponent={<Icon name="thumbsUp" size={20} />}>
+                        <List.Item bulletComponent={<Icon as={ThumbsUpIcon} size={20} />}>
                             <Paragraph>
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_MIGRATION" />
                             </Paragraph>

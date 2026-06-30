@@ -3,6 +3,7 @@ import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
+import { CheckIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -23,7 +24,7 @@ export const TradingDetailBuyPaymentPaymentSuccessful = ({
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="check" size={96} />
+            <IconCircle icon={CheckIcon} size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_BUY_DETAIL_SUCCESS_TITLE" />

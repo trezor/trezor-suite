@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { type BackupType } from '@suite-common/suite-types';
 import { Icon, Radio, Row, Text, Tooltip, variables } from '@trezor/components';
+import { CaretDownIcon, RecoverySeedIcon } from '@trezor/icons';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
@@ -76,7 +77,7 @@ const DownIconCircle = styled.div`
 
 const ArrowDown = () => (
     <DownIconCircle>
-        <Icon name="caretDown" size={16} />
+        <Icon as={CaretDownIcon} size={16} />
     </DownIconCircle>
 );
 
@@ -127,7 +128,7 @@ export const SelectedOption = forwardRef<HTMLDivElement, SelectedOptionProps>(
         <SelectedOptionStyled $isDisabled={isDisabled}>
             <OptionStyled ref={ref} onClick={isDisabled ? undefined : onClick}>
                 <div>
-                    <Icon name="recoverySeed" size={24} />
+                    <Icon as={RecoverySeedIcon} size={24} />
                 </div>
                 {children}
                 <ArrowDown />

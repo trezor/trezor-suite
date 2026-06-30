@@ -12,6 +12,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { CoinIcon } from '@trezor/icons';
 
 import { useFiatCurrencyFilteredData } from './hooks/useFiatCurrencyFilteredData';
 import { type CurrencyPickerOption } from './types/currencyPickerTypes';
@@ -64,7 +65,7 @@ export const CurrencyPickerModal = ({
                                                 <Flag country={flag} size={32} />
                                             ) : (
                                                 <IconCircle
-                                                    name="coin"
+                                                    icon={CoinIcon}
                                                     size={32}
                                                     intent="neutral"
                                                 />

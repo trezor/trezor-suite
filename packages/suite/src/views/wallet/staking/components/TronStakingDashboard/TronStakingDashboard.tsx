@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column, Row, TextButton } from '@trezor/components';
+import { QuestionIcon } from '@trezor/icons';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useGuideOpenNode } from 'src/hooks/guide';
@@ -44,7 +45,7 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
                     <Row justifyContent="center" padding={{ vertical: 20 }}>
                         <TextButton
                             size="small"
-                            iconLeft="question"
+                            iconLeft={QuestionIcon}
                             isUnderlined
                             onClick={() => openNodeById(TRON_STAKING_GUIDE_PATH)}
                         >

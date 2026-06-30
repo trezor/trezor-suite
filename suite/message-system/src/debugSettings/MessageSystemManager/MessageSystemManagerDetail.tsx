@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { toCommaSeparated } from '@suite-common/message-system';
 import { type Action } from '@suite-common/suite-types';
 import { InfoItem } from '@trezor/components';
+import { CheckFatIcon, CodeBlockFilledIcon, CursorClickIcon, NoteIcon } from '@trezor/icons';
 
 import { MessageSystemManagerTranslations } from './MessageSystemManagerTranslations';
 
@@ -19,7 +20,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
         <InfoItem
             label={message.id}
             typographyStyle="body-md-strong"
-            iconName="note"
+            icon={NoteIcon}
             intent="neutral"
             priority="primary"
         >
@@ -28,7 +29,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
         {message.context && (
             <InfoItem
                 label="Context"
-                iconName="codeBlockFilled"
+                icon={CodeBlockFilledIcon}
                 typographyStyle="body-md-strong"
                 intent="neutral"
                 priority="primary"
@@ -39,7 +40,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
         {message.feature && (
             <InfoItem
                 label="Features"
-                iconName="checkFat"
+                icon={CheckFatIcon}
                 typographyStyle="body-md-strong"
                 intent="neutral"
                 priority="primary"
@@ -57,7 +58,7 @@ export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDeta
         {message.cta && (
             <InfoItem
                 label="CTA"
-                iconName="cursorClick"
+                icon={CursorClickIcon}
                 typographyStyle="body-md-strong"
                 intent="neutral"
                 priority="primary"

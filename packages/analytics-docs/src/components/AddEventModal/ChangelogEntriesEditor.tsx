@@ -1,4 +1,5 @@
 import { Button, Column, IconButton, Input, Paragraph, Row, Text } from '@trezor/components';
+import { PlusIcon, TrashIcon } from '@trezor/icons';
 
 import { VersionReleasesTooltip } from './VersionReleasesTooltip';
 import { CHANGELOG_ERROR_MESSAGES, defaultChangelogEntry } from './constants';
@@ -50,7 +51,7 @@ export const ChangelogEntriesEditor = ({
                     flex="1"
                 />
                 <IconButton
-                    icon="trash"
+                    icon={TrashIcon}
                     size="medium"
                     intent="neutral"
                     onClick={() => onChange(entries.filter((_, i) => i !== idx))}
@@ -69,7 +70,7 @@ export const ChangelogEntriesEditor = ({
             size="small"
             intent="neutral"
             priority="secondary"
-            iconLeft="plus"
+            iconLeft={PlusIcon}
             margin={{ top: 12 }}
             onClick={() => onChange([...entries, defaultChangelogEntry()])}
         >

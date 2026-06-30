@@ -6,6 +6,7 @@ import { useGetCountryName } from '@suite/trading';
 import { getCountryFlag } from '@suite-common/flags';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
 import { Flag, GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -77,7 +78,7 @@ export const TradingFormInputCountry = ({
                                 </Text>
                             </Row>
                             <Icon
-                                name="caretRight"
+                                as={CaretRightIcon}
                                 size={20}
                                 intent="neutral"
                                 priority="secondary"

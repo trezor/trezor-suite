@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { IconCircle } from '@trezor/components';
+import { PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 import { type SpacingValues, spacings } from '@trezor/theme';
 
 import { useProxyImage } from 'src/hooks/suite/useProxyImage';
@@ -35,7 +36,7 @@ export const ConnectAppIcon = ({
 
         return (
             <IconCircle
-                name={type === 'walletConnect' ? 'walletConnect' : 'plugs'}
+                icon={type === 'walletConnect' ? WalletConnectIcon : PlugsIcon}
                 size={iconCircleSize}
                 intent="neutral"
             />

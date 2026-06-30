@@ -18,6 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
+import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -356,7 +357,7 @@ export const EarnYieldAccountOpportunity = ({
                                         <>
                                             {hasApy && (
                                                 <Icon
-                                                    name="arrowDown"
+                                                    as={ArrowDownIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={20}
@@ -377,7 +378,7 @@ export const EarnYieldAccountOpportunity = ({
                                             {hasApy && (
                                                 <Column flex="1" alignItems="center">
                                                     <Icon
-                                                        name="arrowRight"
+                                                        as={ArrowRightIcon}
                                                         intent="neutral"
                                                         priority="secondary"
                                                         size={20}
@@ -419,7 +420,7 @@ export const EarnYieldAccountOpportunity = ({
 
                                 {hasApy && (
                                     <Icon
-                                        name="arrowRight"
+                                        as={ArrowRightIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         size={20}

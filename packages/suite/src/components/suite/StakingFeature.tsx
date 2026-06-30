@@ -1,17 +1,17 @@
 import { type ReactNode } from 'react';
 
-import { H3, IconCircle, type IconName, Paragraph } from '@trezor/components';
+import { H3, IconCircle, type IconComponent, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 interface StakingFeatureProps {
-    icon: IconName;
+    icon: IconComponent;
     title: ReactNode;
     description: ReactNode;
 }
 
 export const StakingFeature = ({ icon, title, description }: StakingFeatureProps) => (
     <section>
-        <IconCircle name={icon} intent="brand" size={96} />
+        <IconCircle icon={icon} intent="brand" size={96} />
         <H3 margin={{ top: spacings.md }}>{title}</H3>
         <Paragraph intent="neutral" priority="secondary">
             {description}

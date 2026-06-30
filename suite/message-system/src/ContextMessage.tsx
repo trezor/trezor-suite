@@ -12,6 +12,7 @@ import {
     selectContextMessageContent,
 } from '@suite-common/message-system';
 import { Banner } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import type { MessageSystemSuiteWithTorRootState } from './messageSystemRootState';
 
@@ -81,7 +82,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
                     )}
                     {dismissalConfig && (
                         <Banner.IconButton
-                            icon="x"
+                            icon={XIcon}
                             onClick={dismissalConfig.onClick}
                             priority="secondary"
                             data-testid={dismissalConfig['data-testid']}

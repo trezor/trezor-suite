@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Column, Row, Text } from '@trezor/components';
+import { CaretLeftIcon, TrezorBackupIcon } from '@trezor/icons';
 
 import { NfcTag } from '../tags/NfcTag';
 
@@ -36,7 +37,7 @@ export const SelectBackupType = ({
     onContinueWithoutNfc,
 }: SelectBackupTypeProps) => (
     <OnboardingCard
-        iconName="trezorBackup"
+        icon={TrezorBackupIcon}
         heading={<Translation id="TR_WALLET_BACKUP_TYPE" />}
         innerActions={
             <Row gap={12}>
@@ -53,7 +54,7 @@ export const SelectBackupType = ({
             </Row>
         }
         outerActions={
-            <OnboardingCard.SecondaryButton iconLeft="caretLeft" onClick={onBack}>
+            <OnboardingCard.SecondaryButton iconLeft={CaretLeftIcon} onClick={onBack}>
                 <Translation id="TR_BACK" />
             </OnboardingCard.SecondaryButton>
         }

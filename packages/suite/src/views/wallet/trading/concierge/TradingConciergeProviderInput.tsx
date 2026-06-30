@@ -18,6 +18,7 @@ import {
     Skeleton,
     Text,
 } from '@trezor/components';
+import { CaretRightIcon, WarningIcon } from '@trezor/icons';
 
 type TradingConciergeProviderInputProps = {
     provider: OtcProviderType | null;
@@ -59,7 +60,7 @@ export const TradingConciergeProviderInput = ({
             <Column padding={16} hasDivider>
                 <Banner
                     intent="warning"
-                    icon="warning"
+                    icon={WarningIcon}
                     title={<Translation id="TR_TRADING_NO_PROVIDERS_AVAILABLE" />}
                 />
             </Column>
@@ -94,7 +95,7 @@ export const TradingConciergeProviderInput = ({
                             </Text>
 
                             <Icon
-                                name="caretRight"
+                                as={CaretRightIcon}
                                 size={20}
                                 intent="neutral"
                                 priority="secondary"

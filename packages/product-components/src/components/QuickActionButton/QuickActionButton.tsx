@@ -4,25 +4,22 @@ import {
     ComponentWithSubIcon,
     type ComponentWithSubIconIntent,
     Icon,
-    type IconName,
+    type IconComponent,
     type ManagedTooltipProps,
     Row,
     Tooltip,
 } from '@trezor/components';
 
 type QuickActionButtonProps = {
-    onClick?: () => void;
+    onClick?: () => unknown;
     subIconIntent?: ComponentWithSubIconIntent;
-    subIconName?: IconName;
+    subIcon?: IconComponent;
     tooltip?: Partial<ManagedTooltipProps>;
     'data-testid'?: string;
     isOpen?: boolean;
 } & (
-    | { iconComponent: ReactNode; iconName?: undefined }
-    | {
-          iconComponent?: undefined;
-          iconName: IconName;
-      }
+    | { iconComponent: ReactNode; icon?: undefined }
+    | { iconComponent?: undefined; icon: IconComponent }
 );
 
 export const QuickActionButton = ({
@@ -31,12 +28,12 @@ export const QuickActionButton = ({
     'data-testid': dataTest,
     isOpen,
     iconComponent,
-    iconName,
+    icon: IconComponent,
     subIconIntent,
-    subIconName,
+    subIcon,
 }: QuickActionButtonProps) => {
-    const icon = iconName ? (
-        <Icon name={iconName} size={16} intent="neutral" priority="secondary" />
+    const icon = IconComponent ? (
+        <Icon as={IconComponent} size={16} intent="neutral" priority="secondary" />
     ) : (
         iconComponent
     );
@@ -44,10 +41,10 @@ export const QuickActionButton = ({
     return (
         <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip} isOpen={isOpen}>
             <Row data-testid={dataTest} onClick={onClick} justifyContent="center">
-                {subIconName ? (
+                {subIcon ? (
                     <ComponentWithSubIcon
                         intent={subIconIntent}
-                        iconName={subIconName}
+                        icon={subIcon}
                         iconSize={8}
                         iconOffset={8}
                     >

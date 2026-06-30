@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { Badge, Icon, Row, Text, type TextProps } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
 import { type TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
@@ -44,7 +45,7 @@ export const DropdownRow = ({
         <Row gap={spacings.xs}>
             {shouldDisplayIcon && (
                 <IconWrapper $isActive={isActive}>
-                    <Icon size={18} intent="neutral" priority="secondary" name="caretDown" />
+                    <Icon size={18} intent="neutral" priority="secondary" as={CaretDownIcon} />
                 </IconWrapper>
             )}
             {nftName ? (

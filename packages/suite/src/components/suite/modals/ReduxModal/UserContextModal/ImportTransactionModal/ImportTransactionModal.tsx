@@ -5,6 +5,7 @@ import { type UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
+import { FileCsvIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -97,7 +98,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                         {mode === 'upload' ? (
                             <DropZone
                                 accept=".csv,.txt,text/csv"
-                                iconName="fileCsv"
+                                icon={FileCsvIcon}
                                 emptyLabel={<Translation id="TR_DROPZONE" />}
                                 emptyError={<Translation id="TR_DROPZONE_ERROR_EMPTY" />}
                                 fileTypeError={<Translation id="TR_DROPZONE_ERROR_FILETYPE" />}

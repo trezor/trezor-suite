@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
@@ -116,7 +117,11 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                         }}
                                     >
                                         <Row gap={12}>
-                                            <IconCircle name="plus" size={40} intent="neutral" />
+                                            <IconCircle
+                                                icon={PlusIcon}
+                                                size={40}
+                                                intent="neutral"
+                                            />
                                             <Translation id="TR_ADD_ACCOUNT" />
                                         </Row>
                                     </CardList.Item>

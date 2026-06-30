@@ -7,6 +7,14 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import {
+    ArrowLineUpRightIcon,
+    BugBeetleIcon,
+    CaretRightIcon,
+    ChatsIcon,
+    LifebuoyIcon,
+    MegaphoneIcon,
+} from '@trezor/icons';
 import { TREZOR_FORUM_URL } from '@trezor/urls';
 
 import { setView } from 'src/actions/suite/guideActions';
@@ -118,7 +126,11 @@ export const SupportFeedbackSelection = () => {
                                     data-testid="@guide/feedback/bug"
                                 >
                                     <Row gap={16} flex="1" overflow="hidden">
-                                        <IconCircle name="bugBeetle" size={32} intent="neutral" />
+                                        <IconCircle
+                                            icon={BugBeetleIcon}
+                                            size={32}
+                                            intent="neutral"
+                                        />
                                         <Column alignItems="flex-start" overflow="hidden">
                                             <Text
                                                 typographyStyle="body-md"
@@ -139,7 +151,7 @@ export const SupportFeedbackSelection = () => {
                                         </Column>
                                     </Row>
                                     <Icon
-                                        name="caretRight"
+                                        as={CaretRightIcon}
                                         size={20}
                                         intent="neutral"
                                         priority="secondary"
@@ -151,7 +163,11 @@ export const SupportFeedbackSelection = () => {
                                     data-testid="@guide/feedback/suggestion"
                                 >
                                     <Row gap={16} flex="1" overflow="hidden">
-                                        <IconCircle name="megaphone" size={32} intent="neutral" />
+                                        <IconCircle
+                                            icon={MegaphoneIcon}
+                                            size={32}
+                                            intent="neutral"
+                                        />
                                         <Column alignItems="flex-start" overflow="hidden">
                                             <Text
                                                 typographyStyle="body-md"
@@ -172,7 +188,7 @@ export const SupportFeedbackSelection = () => {
                                         </Column>
                                     </Row>
                                     <Icon
-                                        name="caretRight"
+                                        as={CaretRightIcon}
                                         size={20}
                                         intent="neutral"
                                         priority="secondary"
@@ -193,7 +209,7 @@ export const SupportFeedbackSelection = () => {
                                     >
                                         <Row gap={16} flex="1" overflow="hidden">
                                             <IconCircle
-                                                name="lifebuoy"
+                                                icon={LifebuoyIcon}
                                                 size={32}
                                                 intent="neutral"
                                             />
@@ -206,7 +222,7 @@ export const SupportFeedbackSelection = () => {
                                             </Text>
                                         </Row>
                                         <Icon
-                                            name="arrowLineUpRight"
+                                            as={ArrowLineUpRightIcon}
                                             size={20}
                                             intent="neutral"
                                             priority="secondary"
@@ -220,13 +236,13 @@ export const SupportFeedbackSelection = () => {
                                     data-testid="@guide/forum"
                                 >
                                     <Row gap={16} flex="1" overflow="hidden">
-                                        <IconCircle name="chats" size={32} intent="neutral" />
+                                        <IconCircle icon={ChatsIcon} size={32} intent="neutral" />
                                         <Text typographyStyle="body-md" as="div" maxWidth="100%">
                                             <Translation id="TR_GUIDE_FORUM" />
                                         </Text>
                                     </Row>
                                     <Icon
-                                        name="arrowLineUpRight"
+                                        as={ArrowLineUpRightIcon}
                                         size={20}
                                         intent="neutral"
                                         priority="secondary"

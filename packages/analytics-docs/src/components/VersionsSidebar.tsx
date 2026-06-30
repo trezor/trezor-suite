@@ -15,6 +15,7 @@ import {
     Tooltip,
     variables,
 } from '@trezor/components';
+import { ArrowsClockwiseFilledIcon, PlusIcon } from '@trezor/icons';
 
 import type { EventDoc } from '../types';
 import type { VersionWithEvents } from '../utils/filterUtils';
@@ -129,8 +130,8 @@ const getTooltipContent = (changeInfo: ChangeInfo) => {
 
 const getEventChangeProps = (changeInfo: ChangeInfo) =>
     changeInfo.isEventAdded
-        ? { name: 'plus' as const, intent: 'brand' as const }
-        : { name: 'arrowsClockwiseFilled' as const, intent: 'warning' as const };
+        ? { as: PlusIcon, intent: 'brand' as const }
+        : { as: ArrowsClockwiseFilledIcon, intent: 'warning' as const };
 
 const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     width: 100%;

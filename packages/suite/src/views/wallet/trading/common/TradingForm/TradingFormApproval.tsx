@@ -14,6 +14,7 @@ import {
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
@@ -213,7 +214,7 @@ export const TradingFormApproval = () => {
 
                                     <Banner
                                         intent="warning"
-                                        icon="warning"
+                                        icon={WarningIcon}
                                         description={
                                             <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />
                                         }

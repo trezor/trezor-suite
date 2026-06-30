@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { CaretCircleDownIcon } from '@trezor/icons';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { type FillType, type HeadingSize, type PaddingType } from './types';
@@ -21,7 +22,7 @@ import {
 import { type TransientProps } from '../../utils/transientProps';
 import { Collapsible } from '../Collapsible/Collapsible';
 import { Column, Row } from '../Flex/Flex';
-import { type IconName, type IconProps, type IconSize } from '../Icon/Icon';
+import { type IconComponent, type IconProps, type IconSize } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const allowedCollapsibleBoxFrameProps = [
@@ -51,7 +52,7 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     paddingType?: PaddingType;
     fillType?: FillType;
     toggleLabel?: ReactNode;
-    toggleIconName?: IconName;
+    toggleIcon?: IconComponent;
     toggleIconSize?: IconSize;
     toggleIconIntent?: IconProps['intent'];
     toggleIconPriority?: IconProps['priority'];
@@ -122,7 +123,7 @@ const Content = styled.div<ContentProps>`
 export const CollapsibleBox = ({
     defaultIsOpen = false,
     toggleLabel,
-    toggleIconName = 'caretCircleDown',
+    toggleIcon = CaretCircleDownIcon,
     paddingType = 'normal',
     heading,
     subHeading,
@@ -176,7 +177,7 @@ export const CollapsibleBox = ({
                         </Text>
                     )}
                     <Collapsible.ToggleIcon
-                        iconName={toggleIconName}
+                        icon={toggleIcon}
                         size={toggleIconSize ?? mapSizeToIconSize({ $headingSize: headingSize })}
                         data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
                         intent={toggleIconIntent}

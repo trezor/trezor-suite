@@ -2,6 +2,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type TronResourceType } from '@suite-common/wallet-types';
 import { getResourceGain } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
+import { CheckCircleFilledIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -37,7 +38,7 @@ export const TronUnstakeSummaryCard = () => {
             <Column gap={0}>
                 <TronStakeInfoRow label={<Translation id="TR_EARN_YIELD_STATUS" />}>
                     <Row alignItems="center" gap={8}>
-                        <Icon name="checkCircleFilled" intent="brand" />
+                        <Icon as={CheckCircleFilledIcon} intent="brand" />
                         <Text typographyStyle="body-md" intent="brand">
                             <Translation id="TR_EARN_YIELD_COMPLETED" />
                         </Text>

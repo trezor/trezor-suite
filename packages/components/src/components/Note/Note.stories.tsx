@@ -1,7 +1,8 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import * as generatedIcons from '@trezor/icons';
+
 import { Note as NoteComponent, type NoteProps, allowedNoteFrameProps } from './Note';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { textIntents, textPriorities } from '../typography/Text/Text';
 
@@ -13,7 +14,7 @@ export default meta;
 
 export const Note: StoryObj<NoteProps> = {
     args: {
-        iconName: 'info',
+        icon: generatedIcons.InfoIcon,
         intent: 'neutral',
         priority: 'secondary',
         isDisabled: false,
@@ -21,11 +22,10 @@ export const Note: StoryObj<NoteProps> = {
         ...getFramePropsStory(allowedNoteFrameProps).args,
     },
     argTypes: {
-        iconName: {
-            options: variables.ICONS,
-            control: {
-                type: 'select',
-            },
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
+            control: { type: 'select' },
         },
         intent: {
             options: textIntents,

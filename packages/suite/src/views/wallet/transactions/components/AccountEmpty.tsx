@@ -8,11 +8,11 @@ import {
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
+import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
-
 interface AccountEmptyProps {
     account: Account;
 }
@@ -71,14 +71,14 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     />
                 )
             }
-            iconName="arrowsLeftRight"
+            icon={ArrowsLeftRightIcon}
             iconVariant="neutral"
             actions={[
                 {
                     'data-testid': '@accounts/empty-account/buy',
                     key: '1',
                     onClick: handleNavigateToBuyPage,
-                    iconLeft: 'currencyCircleDollar',
+                    iconLeft: CurrencyCircleDollarIcon,
                     size: 'medium',
                     children: isTokensNetwork ? (
                         <Translation id="TR_BUY" />
@@ -93,7 +93,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     'data-testid': '@accounts/empty-account/receive',
                     key: '2',
                     onClick: handleNavigateToReceivePage,
-                    iconLeft: 'arrowDown',
+                    iconLeft: ArrowDownIcon,
                     size: 'medium',
                     children: isTokensNetwork ? (
                         <Translation id="TR_RECEIVE" />

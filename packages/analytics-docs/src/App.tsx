@@ -16,6 +16,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
+import { BroadcastIcon, ClockCounterClockwiseIcon, PlusIcon } from '@trezor/icons';
 
 import { AnalyticsContent } from './app/AnalyticsContent';
 import { ContentArea, EventCardWrapper, MainWithSidebar, SidebarOuter, TopBar } from './app/layout';
@@ -278,11 +279,11 @@ export const App = ({ theme }: AppProps) => {
                                     {isMobile ? (
                                         <IconButton
                                             tooltip={{ content: 'Add event' }}
-                                            icon="plus"
+                                            icon={PlusIcon}
                                             {...addButtonProps}
                                         />
                                     ) : (
-                                        <Button iconLeft="plus" {...addButtonProps}>
+                                        <Button iconLeft={PlusIcon} {...addButtonProps}>
                                             Add event
                                         </Button>
                                     )}
@@ -294,7 +295,7 @@ export const App = ({ theme }: AppProps) => {
                                                     ? 'Hide live log'
                                                     : 'Show live analytics log',
                                             }}
-                                            icon="broadcast"
+                                            icon={BroadcastIcon}
                                             onClick={() => {
                                                 startTransition(() => {
                                                     const next = !isLiveLogOpen;
@@ -312,7 +313,7 @@ export const App = ({ theme }: AppProps) => {
                                                     ? 'Hide changelog'
                                                     : 'Show versions by changelog',
                                             }}
-                                            icon="clockCounterClockwise"
+                                            icon={ClockCounterClockwiseIcon}
                                             onClick={() => {
                                                 setIsSidebarLoading(true);
                                                 if (isSidebarOpen) {

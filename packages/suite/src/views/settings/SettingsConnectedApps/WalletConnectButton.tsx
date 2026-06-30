@@ -4,6 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { Button, Input, Modal } from '@trezor/components';
+import { PlusIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -76,7 +77,7 @@ export const WalletConnectButton = () => {
             )}
 
             <Button
-                iconLeft="plus"
+                iconLeft={PlusIcon}
                 intent="neutral"
                 priority="secondary"
                 size="small"

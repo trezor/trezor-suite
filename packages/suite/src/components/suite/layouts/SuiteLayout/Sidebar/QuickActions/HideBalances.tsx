@@ -3,6 +3,7 @@ import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { Row, ShortcutBadge } from '@trezor/components';
+import { EyeIcon, EyeSlashIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
 
 export const HideBalances = () => {
@@ -32,7 +33,7 @@ export const HideBalances = () => {
             }}
             onClick={handleDiscreetModeClick}
             data-testid="@quickActions/hideBalances"
-            iconName={isDiscreetMode ? 'eyeSlash' : 'eye'}
+            icon={isDiscreetMode ? EyeSlashIcon : EyeIcon}
         />
     );
 };

@@ -16,6 +16,7 @@
         "@suite-common/analytics": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",

@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { H3, Modal } from '@trezor/components';
+import { CheckIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -18,7 +19,7 @@ export const WipeDeviceSuccessModal = () => {
                 </Modal.Button>
             }
             width={600}
-            iconName="check"
+            icon={CheckIcon}
         >
             <H3 typographyStyle="headline-md">
                 <Translation id="TR_WIPE_DEVICE_SUCCESS_HEADING" />

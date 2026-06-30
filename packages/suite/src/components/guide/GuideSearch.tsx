@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Translation, useTranslation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
 import { Box, CardList, Icon, Input, Paragraph, Spinner } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
@@ -67,7 +68,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                         <Spinner size={24} isDisabled={true} />
                     ) : (
                         <Icon
-                            name="magnifyingGlass"
+                            as={MagnifyingGlassIcon}
                             size={20}
                             intent="neutral"
                             priority="secondary"

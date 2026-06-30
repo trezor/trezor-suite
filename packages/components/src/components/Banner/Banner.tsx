@@ -22,7 +22,7 @@ import {
 } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Row } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
 import { H4 } from '../typography/Heading/Heading';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
@@ -70,7 +70,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[numbe
 export type BannerProps = AllowedFrameProps & {
     intent?: BannerIntent;
     rightContent?: ReactNode;
-    icon?: IconName | true;
+    icon?: IconComponent | true;
     'data-testid'?: string;
     isLoading?: boolean;
 } & ({ title: ReactNode; description?: ReactNode } | { title?: ReactNode; description: ReactNode });
@@ -109,7 +109,7 @@ export const Banner = ({
                         {!isLoading && withIcon && (
                             <Icon
                                 size={title ? 20 : 16}
-                                name={icon === true ? mapIntentToIcon(intent) : icon}
+                                as={icon === true ? mapIntentToIcon(intent) : icon}
                                 color={mapIntentToIconColor(intent)}
                             />
                         )}

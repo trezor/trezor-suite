@@ -1,6 +1,13 @@
 import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import {
+    ArrowBendDoubleUpLeftIcon,
+    HandCoinsIcon,
+    LockSimpleIcon,
+    ScrollIcon,
+    WalletIcon,
+} from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -26,7 +33,7 @@ export const StakingEarnInANutshellHighlights = ({
             case 'ethereum':
                 return [
                     {
-                        icon: 'lockSimple',
+                        icon: LockSimpleIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_STAKED_AMOUNT_LOCKED"
@@ -35,7 +42,7 @@ export const StakingEarnInANutshellHighlights = ({
                         ),
                     },
                     {
-                        icon: 'handCoins',
+                        icon: HandCoinsIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_REWARDS"
@@ -44,7 +51,7 @@ export const StakingEarnInANutshellHighlights = ({
                         ),
                     },
                     {
-                        icon: 'arrowBendDoubleUpLeft',
+                        icon: ArrowBendDoubleUpLeftIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_ETH_UNSTAKING_TAKES"
@@ -56,7 +63,7 @@ export const StakingEarnInANutshellHighlights = ({
             case 'solana':
                 return [
                     {
-                        icon: 'lockSimple',
+                        icon: LockSimpleIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_STAKED_AMOUNT_LOCKED"
@@ -65,7 +72,7 @@ export const StakingEarnInANutshellHighlights = ({
                         ),
                     },
                     {
-                        icon: 'handCoins',
+                        icon: HandCoinsIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_REWARDS"
@@ -74,7 +81,7 @@ export const StakingEarnInANutshellHighlights = ({
                         ),
                     },
                     {
-                        icon: 'arrowBendDoubleUpLeft',
+                        icon: ArrowBendDoubleUpLeftIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_SOL_UNSTAKING_TAKES"
@@ -86,7 +93,7 @@ export const StakingEarnInANutshellHighlights = ({
             case 'cardano':
                 return [
                     {
-                        icon: 'wallet',
+                        icon: WalletIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE"
@@ -95,7 +102,7 @@ export const StakingEarnInANutshellHighlights = ({
                         ),
                     },
                     {
-                        icon: 'handCoins',
+                        icon: HandCoinsIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED"
@@ -104,7 +111,7 @@ export const StakingEarnInANutshellHighlights = ({
                         ),
                     },
                     {
-                        icon: 'scroll',
+                        icon: ScrollIcon,
                         content: (
                             <Translation
                                 id="TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED"

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Banner, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { DetectiveIcon, IdentificationCardIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -49,7 +50,7 @@ export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycPro
             return (
                 <Row alignItems="center" gap={4}>
                     <Icon
-                        name="detective"
+                        as={DetectiveIcon}
                         color="contentBrand"
                         size={12}
                         data-testid="@trading/kyc/dex"
@@ -77,7 +78,7 @@ export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycPro
                 <TooltipText>
                     <Text color="contentWarning" typographyStyle="body-sm">
                         <Row gap={4}>
-                            <Icon name="identificationCard" color="contentWarning" size={12} />
+                            <Icon as={IdentificationCardIcon} color="contentWarning" size={12} />
                             <Translation id={kycTitle} />
                         </Row>
                     </Text>
@@ -92,5 +93,7 @@ export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycPro
         return null;
     }
 
-    return <Banner intent="neutral" icon="identificationCard" description={kycPolicyTranslation} />;
+    return (
+        <Banner intent="neutral" icon={IdentificationCardIcon} description={kycPolicyTranslation} />
+    );
 };

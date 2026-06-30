@@ -6,6 +6,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
+import { EjectIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -44,7 +45,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
             <Row gap={spacings.xs} margin={{ top: spacings.md }}>
                 <Button
                     size="small"
-                    iconLeft="eject"
+                    iconLeft={EjectIcon}
                     onClick={handleEject}
                     intent="brand"
                     data-testid="@switch-device/eject"

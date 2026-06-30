@@ -10,16 +10,17 @@ import {
     H4,
     IconButton,
     IconCircle,
-    type IconName,
+    type IconComponent,
     Paragraph,
     Row,
 } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 type SidebarBannerAnimation = 'drop' | 'shake' | Array<'drop' | 'shake'>;
 
 type SidebarBannerWithIconProps = {
     heroContent?: never;
-    icon: IconName;
+    icon: IconComponent;
 };
 
 type SidebarBannerWithHeroContentProps = {
@@ -104,7 +105,7 @@ export const SidebarBanner = ({
         >
             <Column gap={16} padding={12}>
                 {icon ? (
-                    <IconCircle name={icon} size={40} intent={intent} />
+                    <IconCircle icon={icon} size={40} intent={intent} />
                 ) : (
                     <Box margin={{ top: -12, horizontal: -12 }}>{heroContent}</Box>
                 )}
@@ -130,7 +131,7 @@ export const SidebarBanner = ({
                     </Button>
                     {onClose !== undefined && (
                         <IconButton
-                            icon="x"
+                            icon={XIcon}
                             intent={intent}
                             priority="secondary"
                             data-testid={`${dataTestId}/close-button`}

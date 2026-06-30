@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import styled, { css } from 'styled-components';
 
 import { IconButton, type IconButtonProps, Spinner } from '@trezor/components';
+import { ArrowsClockwiseIcon, CheckIcon, PencilSimpleIcon, TrashIcon, XIcon } from '@trezor/icons';
 
 import type { SavingStatus } from './types';
 
@@ -86,7 +87,7 @@ export const ActionsContainer = ({
             return (
                 <IconButton
                     intent="critical"
-                    icon="arrowsClockwise"
+                    icon={ArrowsClockwiseIcon}
                     onClick={onError}
                     tooltip={{
                         content: (
@@ -108,7 +109,7 @@ export const ActionsContainer = ({
                     {isSubmitButtonVisible && (
                         <IconButton
                             data-testid="@metadata/submit"
-                            icon="check"
+                            icon={CheckIcon}
                             onClick={onSubmit}
                             tooltip={{ isActive: false }}
                             {...commonProps}
@@ -116,7 +117,7 @@ export const ActionsContainer = ({
                     )}
                     <IconButton
                         data-testid="@metadata/cancel"
-                        icon="x"
+                        icon={XIcon}
                         intent="neutral"
                         onClick={onCancel}
                         tooltip={{ isActive: false }}
@@ -130,7 +131,7 @@ export const ActionsContainer = ({
                     <IconButton
                         data-testid="@metadata/edit"
                         intent="neutral"
-                        icon="pencilSimple"
+                        icon={PencilSimpleIcon}
                         onClick={onEdit}
                         tooltip={{
                             content: (
@@ -147,7 +148,7 @@ export const ActionsContainer = ({
                         <IconButton
                             data-testid="@metadata/delete"
                             intent="critical"
-                            icon="trash"
+                            icon={TrashIcon}
                             onClick={onDelete}
                             tooltip={{
                                 content: (

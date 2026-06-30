@@ -6,6 +6,7 @@ import { onReceiveAccount } from '@suite/modal';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
+import { CaretRightIcon } from '@trezor/icons';
 import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -140,7 +141,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                                 )}
                                             </Table.Cell>
                                             <Table.Cell align="end">
-                                                <Icon size={24} name="caretRight" />
+                                                <Icon size={24} as={CaretRightIcon} />
                                             </Table.Cell>
                                         </Table.Row>
                                     );

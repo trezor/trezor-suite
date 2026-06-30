@@ -1,6 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { type IconName, Toast, type ToastProps, variables } from '@trezor/components';
+import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
+import * as generatedIcons from '@trezor/icons';
 
 import { ExchangeInfoNotification } from './ExchangeInfoNotification';
 
@@ -20,7 +21,7 @@ type NotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transpare
 
 type ExchangeInfoToastStoryArgs = {
     variant: NotificationVariant;
-    icon?: IconName;
+    icon?: IconComponent;
     dismissible: boolean;
 };
 
@@ -61,7 +62,7 @@ export const Default: StoryObj<typeof ExchangeInfoNotification> = {
 export const InToast: StoryObj<ExchangeInfoToastStoryArgs> = {
     args: {
         variant: 'success',
-        icon: 'arrowUp',
+        icon: generatedIcons.ArrowUpIcon,
         dismissible: true,
     },
     argTypes: {
@@ -72,10 +73,9 @@ export const InToast: StoryObj<ExchangeInfoToastStoryArgs> = {
             options: ['success', 'info', 'warning', 'error', 'transparent'],
         },
         icon: {
-            options: [undefined, ...variables.ICONS],
-            control: {
-                type: 'select',
-            },
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
+            control: { type: 'select' },
         },
         dismissible: {
             control: {

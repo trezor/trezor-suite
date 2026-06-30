@@ -20,6 +20,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { ArrowRightIcon, CaretDownIcon, WarningIcon } from '@trezor/icons';
 import { AssetLogo, NetworkIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
@@ -129,7 +130,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                     {showRevokeBanner && (
                         <Banner
                             intent="warning"
-                            icon="warning"
+                            icon={WarningIcon}
                             description={
                                 <Translation
                                     id="TR_APPROVAL_MODAL_REVOKE_BANNER"
@@ -178,7 +179,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                         )}
                                     </Text>
                                     <Column alignSelf="center">
-                                        <Icon name="arrowRight" size={16} />
+                                        <Icon as={ArrowRightIcon} size={16} />
                                     </Column>
                                     <Text typographyStyle="body-sm-strong">0 {displaySymbol}</Text>
                                 </Row>
@@ -195,7 +196,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                     </DebugOnlyBadge>
                                 </Text>
                             }
-                            toggleIconName="caretDown"
+                            toggleIcon={CaretDownIcon}
                             toggleIconSize={20}
                         >
                             <Text wordBreak="break-all" isMonospaced>
@@ -218,7 +219,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                     {composedLevelsError && (
                         <Banner
                             intent="critical"
-                            icon="warning"
+                            icon={WarningIcon}
                             description={
                                 <Translation
                                     id={composedLevelsError.id}

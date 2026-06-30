@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
+import { DeviceMobileIcon, TagIcon } from '@trezor/icons';
 
 type LabelingSwitchToLegacyModalProps = {
     onSwitch: () => void;
@@ -26,12 +27,12 @@ export const LabelingSwitchToLegacyModal = ({
     >
         <Card paddingType="large">
             <List gap={16} intent="neutral" priority="secondary">
-                <List.Item bulletComponent={<Icon name="tag" size={20} />}>
+                <List.Item bulletComponent={<Icon as={TagIcon} size={20} />}>
                     <Paragraph>
                         <Translation id="TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED" />
                     </Paragraph>
                 </List.Item>
-                <List.Item bulletComponent={<Icon name="deviceMobile" size={20} />}>
+                <List.Item bulletComponent={<Icon as={DeviceMobileIcon} size={20} />}>
                     <Paragraph>
                         <Translation id="TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE" />
                     </Paragraph>

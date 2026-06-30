@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { Row } from '@trezor/components';
+import { ArrowLeftIcon, TrezorBackupIcon } from '@trezor/icons';
 
 import { BackupAlternativeCard } from '../create/BackupAlternativeCard';
 
@@ -12,7 +13,7 @@ interface NoNfcTagsProps {
 
 export const NoNfcTags = ({ onFinishSetup, onCreateWordlistBackup, onBack }: NoNfcTagsProps) => (
     <OnboardingCard
-        iconName="trezorBackup"
+        icon={TrezorBackupIcon}
         heading={<Translation id="TR_NFC_BACKUP_NO_TAGS_HEADING" />}
         description={<Translation id="TR_NFC_BACKUP_NO_TAGS_DESCRIPTION" />}
         outerActions={
@@ -20,7 +21,7 @@ export const NoNfcTags = ({ onFinishSetup, onCreateWordlistBackup, onBack }: NoN
                 size="small"
                 intent="neutral"
                 priority="secondary"
-                iconLeft="arrowLeft"
+                iconLeft={ArrowLeftIcon}
                 onClick={onBack}
             >
                 <Translation id="TR_BACK" />

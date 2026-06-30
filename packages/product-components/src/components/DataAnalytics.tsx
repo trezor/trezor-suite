@@ -2,6 +2,7 @@ import { type JSX, type ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { Button, Card, Center, Column, Icon, List, Row, Switch, Text } from '@trezor/components';
+import { BugIcon, EyeSlashIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 type DataAnalyticsProps = {
@@ -43,7 +44,7 @@ export const DataAnalytics = ({
                     <Card type="contrast">
                         <Column gap={spacings.lg}>
                             <List gap={spacings.md}>
-                                <List.Item bulletComponent={<Icon size={16} name="eyeSlash" />}>
+                                <List.Item bulletComponent={<Icon size={16} as={EyeSlashIcon} />}>
                                     <Column gap={spacings.xxxs} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
@@ -63,7 +64,7 @@ export const DataAnalytics = ({
                                         </Text>
                                     </Column>
                                 </List.Item>
-                                <List.Item bulletComponent={<Icon size={16} name="bug" />}>
+                                <List.Item bulletComponent={<Icon size={16} as={BugIcon} />}>
                                     <Column gap={spacings.xxxs} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage

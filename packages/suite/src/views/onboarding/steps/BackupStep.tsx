@@ -12,6 +12,7 @@ import { selectIsDeviceLocked } from '@suite/locks';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { CheckIcon, TrezorBackupIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
@@ -59,7 +60,7 @@ export const BackupStep = () => {
             case 'initial':
                 return (
                     <OnboardingCard
-                        iconName="trezorBackup"
+                        icon={TrezorBackupIcon}
                         heading={<Translation id="TR_CREATE_BACKUP" />}
                         description={<Translation id="TR_ONBOARDING_BACKUP_SUBHEADING" />}
                         innerActions={
@@ -86,7 +87,7 @@ export const BackupStep = () => {
             case 'in-progress':
                 return (
                     <OnboardingCard
-                        iconName="trezorBackup"
+                        icon={TrezorBackupIcon}
                         heading={<Translation id="TR_CREATE_BACKUP" />}
                         description={<Translation id="TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP" />}
                         device={device}
@@ -97,7 +98,7 @@ export const BackupStep = () => {
             case 'finished':
                 return (
                     <OnboardingCard
-                        iconName="check"
+                        icon={CheckIcon}
                         heading={<Translation id="TR_BACKUP_CREATED" />}
                         description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
                         innerActions={
@@ -114,7 +115,7 @@ export const BackupStep = () => {
             case 'error':
                 return (
                     <OnboardingCard
-                        iconName="trezorBackup"
+                        icon={TrezorBackupIcon}
                         heading={<Translation id="TOAST_BACKUP_FAILED" />}
                         description={
                             <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />

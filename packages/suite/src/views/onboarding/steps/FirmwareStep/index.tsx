@@ -12,6 +12,7 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { CircuitryIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
@@ -44,7 +45,7 @@ export const FirmwareStep = () => {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
         return (
             <OnboardingCard
-                iconName="circuitry"
+                icon={CircuitryIcon}
                 heading={<Translation id="TR_CHECK_FINGERPRINT" />}
                 device={device}
                 isActionAbortable={false}
@@ -59,7 +60,7 @@ export const FirmwareStep = () => {
     if (status === 'error') {
         return (
             <OnboardingCard
-                iconName="circuitry"
+                icon={CircuitryIcon}
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
                 innerActions={
@@ -89,7 +90,7 @@ export const FirmwareStep = () => {
 
         return (
             <OnboardingCard
-                iconName="circuitry"
+                icon={CircuitryIcon}
                 heading={<Translation id="TR_FIRMWARE_IS_UP_TO_DATE" />}
                 description={
                     <Translation

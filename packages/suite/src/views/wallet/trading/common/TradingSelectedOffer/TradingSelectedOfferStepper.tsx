@@ -2,6 +2,7 @@ import { Fragment, type JSX } from 'react';
 
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 export interface TradingSelectedOfferStepperItemProps {
@@ -28,7 +29,7 @@ export const TradingSelectedOfferStepper = ({ steps }: TradingSelectedOfferStepp
                     </Text>
                 </Row>
                 {index < steps.length - 1 && (
-                    <Icon name="caretRight" intent="neutral" priority="secondary" size={20} />
+                    <Icon as={CaretRightIcon} intent="neutral" priority="secondary" size={20} />
                 )}
             </Fragment>
         ))}

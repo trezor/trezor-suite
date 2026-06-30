@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
 
-import { Card, Column, type IconName, InfoItem, Tooltip } from '@trezor/components';
+import { Card, Column, type IconComponent, InfoItem, Tooltip } from '@trezor/components';
 
 type SettingsSectionProps = {
     title: ReactNode;
-    icon?: IconName;
+    icon?: IconComponent;
     children?: ReactNode;
     tooltipText?: ReactNode;
     hasVerticalLayout?: boolean;
@@ -26,7 +26,7 @@ export const SettingsSection = ({
             ellipsisLineCount={0}
             direction={hasVerticalLayout ? 'column' : 'row'}
             labelWidth={width}
-            iconName={icon}
+            icon={icon}
             label={
                 <Tooltip hasIcon content={tooltipText}>
                     {title}

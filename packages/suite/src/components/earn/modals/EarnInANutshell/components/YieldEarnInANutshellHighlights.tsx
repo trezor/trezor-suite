@@ -1,6 +1,7 @@
 import { FormattedList } from 'react-intl';
 
 import { Translation } from '@suite/intl';
+import { CoinsIcon, HandCoinsIcon, LockSimpleIcon, PlusCircleIcon } from '@trezor/icons';
 
 import {
     type EarnInANutshellHighlight,
@@ -20,7 +21,7 @@ export const YieldEarnInANutshellHighlights = ({
 }: YieldEarnInANutshellHighlightsProps) => {
     const highlights: EarnInANutshellHighlight[] = [
         {
-            icon: 'lockSimple',
+            icon: LockSimpleIcon,
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT"
@@ -29,7 +30,7 @@ export const YieldEarnInANutshellHighlights = ({
             ),
         },
         {
-            icon: 'handCoins',
+            icon: HandCoinsIcon,
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST"
@@ -40,7 +41,7 @@ export const YieldEarnInANutshellHighlights = ({
         ...(vaultSymbol !== undefined
             ? [
                   {
-                      icon: 'coins' as const,
+                      icon: CoinsIcon,
                       content: (
                           <Translation
                               id="TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS"
@@ -53,7 +54,7 @@ export const YieldEarnInANutshellHighlights = ({
         ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
             ? [
                   {
-                      icon: 'plusCircle' as const,
+                      icon: PlusCircleIcon,
                       content: (
                           <Translation
                               id="TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS"

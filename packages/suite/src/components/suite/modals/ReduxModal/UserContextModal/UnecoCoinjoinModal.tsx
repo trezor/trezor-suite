@@ -4,6 +4,7 @@ import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { ArrowsInIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -46,7 +47,7 @@ export const UnecoCoinjoinModal = () => {
             }
             width={600}
             intent="warning"
-            iconName="arrowsIn"
+            icon={ArrowsInIcon}
         >
             <Column gap={spacings.xs}>
                 <H3>

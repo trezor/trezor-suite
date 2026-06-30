@@ -10,6 +10,7 @@ import {
     sellUtils,
 } from '@suite-common/trading';
 import { Button, Column, Divider, Icon, Row, Select, Text } from '@trezor/components';
+import { CheckIcon, PlusIcon } from '@trezor/icons';
 import { spacingsPx } from '@trezor/theme';
 
 import { QuestionTooltip } from 'src/components/suite';
@@ -57,7 +58,7 @@ export const TradingOfferSellBankAccount = () => {
                         <Button
                             intent="neutral"
                             priority="secondary"
-                            iconLeft="plus"
+                            iconLeft={PlusIcon}
                             data-testid="add-output"
                             onClick={addBankAccount}
                         >
@@ -87,7 +88,7 @@ export const TradingOfferSellBankAccount = () => {
                                     </Column>
                                     {option.verified ? (
                                         <Row alignItems="center" justifyContent="flex-end" gap={2}>
-                                            <Icon intent="brand" size={15} name="check" />
+                                            <Icon intent="brand" size={15} as={CheckIcon} />
                                             <Text typographyStyle="body-xs" color="contentBrand">
                                                 <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
                                             </Text>

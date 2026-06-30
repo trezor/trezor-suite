@@ -9,6 +9,7 @@ import {
 import { type Action } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { CopyIcon, TrashIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { MessageSystemConditionGroup } from '../MessageSystemConditionGroup';
@@ -99,7 +100,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                         <Column alignItems="flex-end" gap={spacings.xs}>
                                             <Button
                                                 size="small"
-                                                iconLeft="copy"
+                                                iconLeft={CopyIcon}
                                                 intent="neutral"
                                                 onClick={() =>
                                                     copyToClipboard(
@@ -116,7 +117,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                             {!!allManuallyAddedMessageIds?.[message.id] && (
                                                 <Button
                                                     size="small"
-                                                    iconLeft="trash"
+                                                    iconLeft={TrashIcon}
                                                     intent="critical"
                                                     onClick={() => removeMessage(message.id)}
                                                 >

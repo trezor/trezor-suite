@@ -15,6 +15,7 @@ import {
     Text,
     TextButton,
 } from '@trezor/components';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
@@ -61,7 +62,7 @@ const ReducedAmount = ({ composedLevels, setMaxOutputId, account, selectedFee }:
 
     return (
         <>
-            <Icon name="arrowRight" />
+            <Icon as={ArrowRightIcon} />
             <AmountItem
                 labelTranslationKey="TR_RBF_NEW_AMOUNT"
                 amount={precomposedTx.outputs[setMaxOutputId]?.amount.toString() ?? '0'}
@@ -120,7 +121,7 @@ export const DecreasedOutputs = () => {
                 <Banner
                     intent="warning"
                     data-testid="@send/decreased-outputs"
-                    icon="warning"
+                    icon={WarningIcon}
                     description={<Translation id={getDecreaseWarring()} />}
                 />
                 {useRadio && (

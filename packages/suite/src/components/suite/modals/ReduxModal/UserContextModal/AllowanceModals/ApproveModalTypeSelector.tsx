@@ -17,6 +17,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { CaretDownIcon, WarningIcon } from '@trezor/icons';
 import { AssetLogo } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
@@ -83,7 +84,7 @@ export const ApproveModalTypeSelector = ({
             {type === 'INFINITE' && (
                 <Text intent="warning" typographyStyle="body-sm">
                     <Row gap={8}>
-                        <Icon name="warning" size={16} />
+                        <Icon as={WarningIcon} size={16} />
                         <Translation
                             id="TR_APPROVAL_VALUE_INFINITE_WARNING"
                             values={{ send: displaySymbol }}
@@ -138,7 +139,7 @@ export const ApproveModalTypeSelector = ({
                                 values={translationValues}
                             />
                         </Text>
-                        <Icon name="caretDown" size={20} color="contentSecondary" />
+                        <Icon as={CaretDownIcon} size={20} color="contentSecondary" />
                     </Row>
                 </Row>
                 {renderDetails(selectedType)}

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Button, Column, Modal } from '@trezor/components';
+import { LaptopIcon, TrezorSafe7Icon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
@@ -60,7 +61,7 @@ export const OsAndTrezorCleanupModal = ({
                             <Translation id="TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT" />
                         </Button>
                     }
-                    icon="laptop"
+                    icon={LaptopIcon}
                     state={osRemovalConfirmed ? 'confirmed' : 'default'}
                 />
                 <StepCard
@@ -84,7 +85,7 @@ export const OsAndTrezorCleanupModal = ({
                             <Translation id="TR_FORGET_DEVICE_MODAL_IVE_REMOVED_IT" />
                         </Button>
                     }
-                    icon="trezorSafe7"
+                    icon={TrezorSafe7Icon}
                     state={osRemovalConfirmed ? 'default' : 'pending'}
                 />
             </Column>

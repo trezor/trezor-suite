@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { IconButton } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 import { spacingsPx } from '@trezor/theme';
 
 const CloseButtonContainer = styled.div`
@@ -18,7 +19,7 @@ type CloseButtonProps = {
 export const CloseButton = ({ onClose, isInverse = false }: CloseButtonProps) => (
     <CloseButtonContainer>
         <IconButton
-            icon="x"
+            icon={XIcon}
             intent="neutral"
             priority="secondary"
             onClick={onClose}

@@ -16,6 +16,7 @@ import {
 import { type Experiments } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { CopyIcon, TrashIcon } from '@trezor/icons';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { MessageSystemExperimentDetail } from './MessageSystemExperimentDetail';
@@ -117,7 +118,7 @@ export const MessageSystemExperiments = ({
                                 <Column alignItems="flex-end" gap={spacings.xs}>
                                     <Button
                                         size="small"
-                                        iconLeft="copy"
+                                        iconLeft={CopyIcon}
                                         intent="brand"
                                         onClick={() =>
                                             copyToClipboard(
@@ -130,7 +131,7 @@ export const MessageSystemExperiments = ({
                                     {!!allManuallyAddedExperimentIds?.[experiment.id] && (
                                         <Button
                                             size="small"
-                                            iconLeft="trash"
+                                            iconLeft={TrashIcon}
                                             intent="critical"
                                             onClick={() => removeExperiment(experiment.id)}
                                         >

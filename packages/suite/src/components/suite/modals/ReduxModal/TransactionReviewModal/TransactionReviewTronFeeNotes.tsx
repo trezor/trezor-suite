@@ -6,6 +6,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
+import { ReceiptIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -43,7 +44,7 @@ export const TransactionReviewTronFeeNotes = ({
     return (
         <>
             {totalTrxBurned && !totalTrxBurned.isZero() && (
-                <Note iconName="receipt">
+                <Note icon={ReceiptIcon}>
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={totalTrxBurned.toString()}
@@ -52,14 +53,14 @@ export const TransactionReviewTronFeeNotes = ({
                 </Note>
             )}
             {coveredBandwidth?.gt(0) && (
-                <Note iconName="receipt">
+                <Note icon={ReceiptIcon}>
                     {translationString('TR_TRON_FEE_BANDWIDTH', {
                         count: coveredBandwidth.toNumber(),
                     })}
                 </Note>
             )}
             {coveredEnergy?.gt(0) && (
-                <Note iconName="receipt">
+                <Note icon={ReceiptIcon}>
                     {translationString('TR_TRON_FEE_ENERGY', {
                         count: coveredEnergy.toNumber(),
                     })}

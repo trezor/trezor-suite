@@ -1,8 +1,9 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
+import * as generatedIcons from '@trezor/icons';
+
 import { Button as ButtonComponent, type ButtonProps, allowedButtonFrameProps } from './Button';
-import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
@@ -62,11 +63,13 @@ export const Button: StoryObj<ButtonProps> = {
             type: 'boolean',
         },
         iconLeft: {
-            options: [null, ...variables.ICONS],
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: { type: 'select' },
         },
         iconRight: {
-            options: [null, ...variables.ICONS],
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
             control: { type: 'select' },
         },
         shortcut: {

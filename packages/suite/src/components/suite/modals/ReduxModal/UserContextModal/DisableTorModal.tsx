@@ -6,6 +6,7 @@ import { type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
+import { GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -48,7 +49,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
             onCancel={onCancel}
             intent={onionBackends.length ? 'warning' : 'brand'}
             width={600}
-            iconName={onionBackends.length ? undefined : 'torBrowser'}
+            icon={onionBackends.length ? undefined : TorBrowserIcon}
             heading={
                 onionBackends.length ? <Translation id="TR_TOR_DISABLE_ONIONS_ONLY" /> : undefined
             }
@@ -73,7 +74,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                 <Column gap={spacings.md}>
                     <Banner
                         intent="warning"
-                        icon="torBrowser"
+                        icon={TorBrowserIcon}
                         description={
                             <>
                                 <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_TITLE" />{' '}
@@ -101,7 +102,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                         intent="neutral"
                                         priority="secondary"
                                         onClick={() => setSymbol(symbol)}
-                                        iconLeft="gear"
+                                        iconLeft={GearIcon}
                                         size="small"
                                         margin={{ left: 'auto' }}
                                     >

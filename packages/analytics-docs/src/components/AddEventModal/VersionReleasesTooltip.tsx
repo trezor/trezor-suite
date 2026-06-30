@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { Column, Icon, InfoItem, Link, Paragraph, Row, Text, Tooltip } from '@trezor/components';
+import { QuestionIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { useLatestReleases } from '../../utils/useLatestReleases';
@@ -53,7 +54,7 @@ export const VersionReleasesTooltip = () => {
             appendTo={document.body}
             zIndex={zIndices.windowControls}
         >
-            <Icon name="question" size={16} priority="secondary" cursor="help" />
+            <Icon as={QuestionIcon} size={16} priority="secondary" cursor="help" />
         </Tooltip>
     );
 };

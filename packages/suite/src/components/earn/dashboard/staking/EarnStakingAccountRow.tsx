@@ -22,6 +22,7 @@ import {
     isPending,
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
@@ -310,7 +311,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                                 <EarnStakingCurrentRewards {...currentRewardsProps} />
                                 {rate && (
                                     <Icon
-                                        name="arrowDown"
+                                        as={ArrowDownIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         size={20}
@@ -326,7 +327,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                                 {rate && (
                                     <Column flex="1" alignItems="center">
                                         <Icon
-                                            name="arrowRight"
+                                            as={ArrowRightIcon}
                                             intent="neutral"
                                             priority="secondary"
                                             size={20}
@@ -407,7 +408,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                             <EarnStakingCurrentRewards {...currentRewardsProps} />
                             {rate && (
                                 <Icon
-                                    name="arrowRight"
+                                    as={ArrowRightIcon}
                                     intent="neutral"
                                     priority="secondary"
                                     size={20}

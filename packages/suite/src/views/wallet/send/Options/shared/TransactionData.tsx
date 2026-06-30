@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { isHexValid } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -79,7 +80,7 @@ export const TransactionData = ({ maxBytes, close }: TransactionDataProps) => {
                     <IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         size="small"
                         data-testid="send/close-transaction-data"
                         onClick={handleClose}

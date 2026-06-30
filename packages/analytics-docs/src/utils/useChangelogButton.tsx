@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { IconButton } from '@trezor/components';
+import { ClockCounterClockwiseIcon } from '@trezor/icons';
 
 export const useChangelogButton = () => {
     const [isChangelogOpened, setIsChangelogOpened] = React.useState<boolean>(false);
@@ -12,7 +13,7 @@ export const useChangelogButton = () => {
                 onClick={() => {
                     setIsChangelogOpened(!isChangelogOpened);
                 }}
-                icon="clockCounterClockwise"
+                icon={ClockCounterClockwiseIcon}
                 intent={isChangelogOpened ? 'brand' : 'neutral'}
                 size="small"
                 priority="secondary"

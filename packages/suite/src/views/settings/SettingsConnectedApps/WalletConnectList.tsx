@@ -6,6 +6,12 @@ import {
     walletConnectDisconnectThunk,
 } from '@suite-common/walletconnect';
 import { Badge, Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
+import {
+    ArrowsClockwiseIcon,
+    ShieldCheckFilledIcon,
+    ShieldWarningFilledIcon,
+    XCircleIcon,
+} from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
@@ -49,17 +55,17 @@ export const WalletConnectList = () => {
                                     {session.peer.metadata.url}
                                 </Text>
                                 {session.validation === 'VALID' && (
-                                    <Badge intent="info" iconLeft="shieldCheckFilled">
+                                    <Badge intent="info" iconLeft={ShieldCheckFilledIcon}>
                                         <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
                                     </Badge>
                                 )}
                                 {session.validation === 'UNKNOWN' && (
-                                    <Badge intent="warning" iconLeft="shieldWarningFilled">
+                                    <Badge intent="warning" iconLeft={ShieldWarningFilledIcon}>
                                         <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
                                     </Badge>
                                 )}
                                 {session.validation === 'INVALID' && (
-                                    <Badge intent="critical" iconLeft="shieldWarningFilled">
+                                    <Badge intent="critical" iconLeft={ShieldWarningFilledIcon}>
                                         <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
                                     </Badge>
                                 )}
@@ -80,7 +86,7 @@ export const WalletConnectList = () => {
                             }}
                             items={[
                                 {
-                                    icon: 'xCircle',
+                                    icon: XCircleIcon,
                                     label: <Translation id="TR_DISCONNECT" />,
                                     onClick: () => {
                                         dispatch(
@@ -91,7 +97,7 @@ export const WalletConnectList = () => {
                                     },
                                 },
                                 {
-                                    icon: 'arrowsClockwise',
+                                    icon: ArrowsClockwiseIcon,
                                     label: <Translation id="TR_SWITCH_ACCOUNT" />,
                                     onClick: () => {
                                         dispatch(

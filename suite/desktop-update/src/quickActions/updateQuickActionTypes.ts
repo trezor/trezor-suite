@@ -1,7 +1,8 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { goto } from '@suite/router';
-import { type IconName, type UIIntent } from '@trezor/components';
+import { type IconComponent, type UIIntent } from '@trezor/components';
+import { ArrowDownIcon, ArrowsClockwiseFilledIcon, CheckIcon, PlugsIcon } from '@trezor/icons';
 
 import { installUpdateThunk } from '../desktopUpdateActionsThunks';
 import { desktopUpdateActions } from '../desktopUpdateReducer';
@@ -17,13 +18,13 @@ export type UpdateStatusSuite =
 
 export type UpdateStatus = UpdateStatusDevice | UpdateStatusSuite;
 
-export const mapUpdateStatusToIcon: Record<UpdateStatus, IconName> = {
-    disconnected: 'plugs', // Todo: better icon
-    'update-downloaded-manual': 'arrowDown',
-    'update-downloaded-auto-restart-to-update': 'arrowsClockwiseFilled',
-    'up-to-date': 'check',
-    'update-available': 'arrowDown',
-    'just-updated': 'check',
+export const mapUpdateStatusToIcon: Record<UpdateStatus, IconComponent> = {
+    disconnected: PlugsIcon, // Todo: better icon
+    'update-downloaded-manual': ArrowDownIcon,
+    'update-downloaded-auto-restart-to-update': ArrowsClockwiseFilledIcon,
+    'up-to-date': CheckIcon,
+    'update-available': ArrowDownIcon,
+    'just-updated': CheckIcon,
 };
 
 export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {

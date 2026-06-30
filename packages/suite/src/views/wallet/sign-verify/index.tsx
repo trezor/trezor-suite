@@ -19,6 +19,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { CheckIcon, CopyIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
@@ -282,7 +283,7 @@ const SignVerify = () => {
                                                 intent="neutral"
                                                 priority="secondary"
                                                 onClick={copy}
-                                                iconLeft="copy"
+                                                iconLeft={CopyIcon}
                                                 size="small"
                                             >
                                                 <Translation
@@ -314,7 +315,7 @@ const SignVerify = () => {
                                                     onClick={() =>
                                                         copyToClipboard(formValues.pubKey || '')
                                                     }
-                                                    iconLeft="copy"
+                                                    iconLeft={CopyIcon}
                                                     size="small"
                                                 >
                                                     <Translation id="TR_COPY_TO_CLIPBOARD" />
@@ -351,7 +352,7 @@ const SignVerify = () => {
                     <Button
                         type="submit"
                         intent="brand"
-                        iconLeft={isCompleted ? 'check' : undefined}
+                        iconLeft={isCompleted ? CheckIcon : undefined}
                         priority={isCompleted ? 'secondary' : 'primary'}
                         isDisabled={isLocked()}
                         isLoading={isSubmitting}

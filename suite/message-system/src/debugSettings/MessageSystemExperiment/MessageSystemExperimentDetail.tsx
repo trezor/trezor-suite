@@ -8,6 +8,7 @@ import {
 } from '@suite-common/message-system';
 import { type ExperimentsItem } from '@suite-common/suite-types';
 import { InfoItem, Row, Text } from '@trezor/components';
+import { LightbulbIcon, UsersThreeIcon } from '@trezor/icons';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 const BarTrack = styled.div`
@@ -86,7 +87,7 @@ export const MessageSystemExperimentDetail = ({
             <InfoItem
                 label={experiment.id}
                 typographyStyle="body-md-strong"
-                iconName="lightbulb"
+                icon={LightbulbIcon}
                 intent="neutral"
                 priority="primary"
             >
@@ -102,7 +103,7 @@ export const MessageSystemExperimentDetail = ({
             <InfoItem
                 label="Groups"
                 typographyStyle="body-md-strong"
-                iconName="usersThree"
+                icon={UsersThreeIcon}
                 intent="neutral"
                 priority="primary"
             >

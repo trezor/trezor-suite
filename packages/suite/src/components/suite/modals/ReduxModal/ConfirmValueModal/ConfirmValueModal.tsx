@@ -34,6 +34,15 @@ import {
 } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
+import {
+    CheckIcon,
+    CopyIcon,
+    InfoIcon,
+    TagFilledIcon,
+    TagIcon,
+    WarningFilledIcon,
+    WarningIcon,
+} from '@trezor/icons';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -153,7 +162,7 @@ export const ConfirmValueModal = ({
                 <Column gap={spacings.md}>
                     {!device?.connected && (
                         <Banner
-                            icon="warning"
+                            icon={WarningIcon}
                             intent="warning"
                             description={
                                 <>
@@ -173,7 +182,7 @@ export const ConfirmValueModal = ({
                     {(account?.networkType === 'ripple' || account?.networkType === 'stellar') && (
                         <Banner
                             intent="info"
-                            icon="info"
+                            icon={InfoIcon}
                             description={
                                 <Translation
                                     id="DESTINATION_TAG_BANNER_RECEIVE"
@@ -205,7 +214,7 @@ export const ConfirmValueModal = ({
                                         placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
                                         leftAddon={
                                             <Icon
-                                                name={addressLabel ? 'tagFilled' : 'tag'}
+                                                as={addressLabel ? TagFilledIcon : TagIcon}
                                                 size={16}
                                                 intent="neutral"
                                                 priority="secondary"
@@ -235,7 +244,7 @@ export const ConfirmValueModal = ({
                                     priority="secondary"
                                     data-testid={copyButtonDataTest}
                                     size="small"
-                                    iconLeft={isCopied ? 'check' : 'copy'}
+                                    iconLeft={isCopied ? CheckIcon : CopyIcon}
                                     margin={{ top: 'auto' }}
                                 >
                                     <Translation
@@ -252,7 +261,7 @@ export const ConfirmValueModal = ({
                     {isAddress && (
                         <Card type="contrast">
                             <Row gap={20}>
-                                <IconCircle intent="neutral" size={32} name="warningFilled" />
+                                <IconCircle intent="neutral" size={32} icon={WarningFilledIcon} />
                                 <H3>
                                     <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
                                 </H3>

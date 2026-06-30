@@ -8,6 +8,7 @@ import {
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/device';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { PrerequisitesGuide } from 'src/components/suite';
@@ -143,7 +144,7 @@ export const StepCheckSeed = ({
                 {deviceWillBeWiped && (
                     <Banner
                         intent="critical"
-                        icon="warning"
+                        icon={WarningIcon}
                         description={<Translation id="TR_FIRMWARE_SWITCH_WARNING_3" />}
                     />
                 )}

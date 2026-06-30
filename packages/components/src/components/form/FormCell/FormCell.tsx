@@ -12,7 +12,7 @@ import {
 } from '../../../utils/frameProps';
 import { type TransientProps } from '../../../utils/transientProps';
 import { Column } from '../../Flex/Flex';
-import { type IconName } from '../../Icon/Icon';
+import { type IconComponent } from '../../Icon/Icon';
 import { BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
 
@@ -30,7 +30,7 @@ const formCellProps = [
     'labelRight',
     'bottomText',
     'bottomTextIconComponent',
-    'bottomTextIconName',
+    'bottomTextIcon',
     'hasError',
     'isDisabled',
     ...allowedFormCellFrameProps,
@@ -54,7 +54,7 @@ export type FormCellProps = AllowedFrameProps & {
     labelRight?: React.ReactNode;
     bottomText?: ReactNode;
     bottomTextIconComponent?: ReactNode;
-    bottomTextIconName?: IconName;
+    bottomTextIcon?: IconComponent;
     hasError?: boolean;
     isDisabled?: boolean;
     children: ReactNode;
@@ -68,7 +68,7 @@ export const FormCell = ({
     labelHoverRight,
     bottomText,
     bottomTextIconComponent,
-    bottomTextIconName,
+    bottomTextIcon,
     hasError,
     isDisabled,
     'data-testid': dataTestId,
@@ -96,7 +96,7 @@ export const FormCell = ({
                         hasError={hasError}
                         isDisabled={isDisabled}
                         iconComponent={bottomTextIconComponent}
-                        iconName={bottomTextIconName}
+                        icon={bottomTextIcon}
                         data-testid={dataTestId ? `${dataTestId}/bottom-text` : undefined}
                     >
                         {bottomText}

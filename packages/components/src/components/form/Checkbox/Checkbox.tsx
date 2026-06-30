@@ -7,6 +7,7 @@ import {
 
 import styled, { css } from 'styled-components';
 
+import { CheckIcon } from '@trezor/icons';
 import { borders } from '@trezor/theme';
 
 import { type LabelAlignment, type VerticalAlignment } from './types';
@@ -97,7 +98,7 @@ export const Checkbox = ({
                 <Icon
                     size={16}
                     color={isDisabled ? 'contentDisabled' : 'contentPrimaryInverse'}
-                    name="check"
+                    as={CheckIcon}
                 />
             </FakeInput>
 

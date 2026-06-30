@@ -3,6 +3,7 @@ import { type ReactNode, useCallback, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { type TradingTradeType, useProviderMetadataChangeEffect } from '@suite-common/trading';
 import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -87,7 +88,7 @@ export const TradingSelectedOfferProvider = () => {
                                         />
                                     </Text>
                                     <Icon
-                                        name="caretRight"
+                                        as={CaretRightIcon}
                                         size={20}
                                         intent="neutral"
                                         priority="secondary"

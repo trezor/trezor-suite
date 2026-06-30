@@ -7,6 +7,7 @@ import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
+import { XIcon } from '@trezor/icons';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
@@ -53,7 +54,7 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconRight="x"
+                                iconRight={XIcon}
                                 size="small"
                                 onClick={onCancelHandler}
                             >

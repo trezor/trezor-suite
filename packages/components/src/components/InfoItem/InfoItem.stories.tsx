@@ -2,6 +2,7 @@ import React from 'react';
 
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import * as generatedIcons from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import {
@@ -10,7 +11,6 @@ import {
     allowedInfoItemTextProps,
 } from './InfoItem';
 import { infoItemVerticalAlignments } from './types';
-import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { flexDirection } from '../Flex/FlexProp';
 import { textIntents, textPriorities } from '../typography/Text/Text';
@@ -28,11 +28,17 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
         ...getFramePropsStory(allowedInfoItemFrameProps).args,
         direction: 'column',
         label: 'Label',
+        icon: generatedIcons.InfoIcon,
         intent: 'neutral',
         priority: 'secondary',
         typographyStyle: 'body-sm',
     },
     argTypes: {
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
+            control: { type: 'select' },
+        },
         direction: {
             options: flexDirection,
             control: {
@@ -42,16 +48,6 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
         label: {
             control: {
                 type: 'text',
-            },
-        },
-        iconName: {
-            options: ['none', ...variables.ICONS],
-            mapping: {
-                ...variables.ICONS,
-                none: undefined,
-            },
-            control: {
-                type: 'select',
             },
         },
         labelWidth: {

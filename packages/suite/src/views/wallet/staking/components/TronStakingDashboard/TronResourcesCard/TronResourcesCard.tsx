@@ -5,6 +5,7 @@ import { goto } from '@suite/router';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Icon, Row, Text } from '@trezor/components';
+import { LightningIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -44,7 +45,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
             paddingType="normal"
             header={
                 <Row gap={8} alignItems="center">
-                    <Icon name="lightning" size={20} />
+                    <Icon as={LightningIcon} size={20} />
                     <Text typographyStyle="body-md-strong">
                         <Translation id="TR_EARN_TRON_RESOURCES" />
                     </Text>

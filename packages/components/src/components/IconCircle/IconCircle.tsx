@@ -12,18 +12,18 @@ import {
 } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Center } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;
 
 export type IconCircleProps = {
-    name: IconName;
+    icon: IconComponent;
     size?: IconCircleSize;
     intent?: IconCircleIntent;
 } & AllowedFrameProps;
 
-export const IconCircle = ({ name, size = 40, intent = 'brand', ...rest }: IconCircleProps) => {
+export const IconCircle = ({ icon, size = 40, intent = 'brand', ...rest }: IconCircleProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedIconCircleFrameProps, false);
 
     return (
@@ -39,7 +39,7 @@ export const IconCircle = ({ name, size = 40, intent = 'brand', ...rest }: IconC
         >
             <Center>
                 <Icon
-                    name={name}
+                    as={icon}
                     size={mapSizeToIconSize(size)}
                     intent={intent}
                     priority="secondary"

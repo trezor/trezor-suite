@@ -8,6 +8,7 @@ import {
     isCardanoStakedWithFiveBinaries,
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -33,7 +34,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
         <Card paddingType="small" flex="1">
             <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
                 <Row columnGap={spacings.xxs}>
-                    <Icon name="info" intent="neutral" priority="secondary" />
+                    <Icon as={InfoIcon} intent="neutral" priority="secondary" />
 
                     <DebugOnlyBadge />
                 </Row>

@@ -7,6 +7,7 @@ import {
     type TradingCountryOption,
 } from '@suite-common/trading';
 import { GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { FakeSelect } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -72,7 +73,7 @@ export const TradingFormInputCountrySubdivision = ({
                                 {subdivisionLabel}
                             </Text>
                             <Icon
-                                name="caretRight"
+                                as={CaretRightIcon}
                                 size={20}
                                 intent="neutral"
                                 priority="secondary"

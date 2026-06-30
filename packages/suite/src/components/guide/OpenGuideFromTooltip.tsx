@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Icon } from '@trezor/components';
+import { LightbulbIcon } from '@trezor/icons';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
@@ -45,7 +46,7 @@ export const OpenGuideFromTooltip = ({
                 openNodeById(id);
             }}
         >
-            <Icon size={12} intent="warning" name="lightbulb" />
+            <Icon size={12} intent="warning" as={LightbulbIcon} />
             <Translation id="TR_LEARN" />
         </OpenGuideLink>
     );

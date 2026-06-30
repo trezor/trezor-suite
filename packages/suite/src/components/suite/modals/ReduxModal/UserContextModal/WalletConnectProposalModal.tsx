@@ -29,6 +29,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -161,19 +162,19 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             <Row gap={spacings.sm}>
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'VALID' && (
-                                        <Badge intent="info" iconLeft="shieldCheckFilled">
+                                        <Badge intent="info" iconLeft={ShieldCheckFilledIcon}>
                                             <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
                                         </Badge>
                                     )}
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'UNKNOWN' && (
-                                        <Badge intent="warning" iconLeft="shieldWarningFilled">
+                                        <Badge intent="warning" iconLeft={ShieldWarningFilledIcon}>
                                             <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
                                         </Badge>
                                     )}
                                 {(pendingProposal.isScam ||
                                     pendingProposal.validation === 'INVALID') && (
-                                    <Badge intent="critical" iconLeft="shieldWarningFilled">
+                                    <Badge intent="critical" iconLeft={ShieldWarningFilledIcon}>
                                         <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
                                     </Badge>
                                 )}

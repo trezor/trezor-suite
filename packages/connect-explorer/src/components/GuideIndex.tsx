@@ -5,6 +5,7 @@ import { getPagesUnderRoute } from 'nextra/context';
 import styled from 'styled-components';
 
 import { Button, Card, H3, Paragraph } from '@trezor/components';
+import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { spacingsPx } from '@trezor/theme';
 
 const BottomRow = styled.div`
@@ -41,7 +42,7 @@ export default function GuideIndex(): ReactNode {
                         intent="neutral"
                         priority="secondary"
                         size="small"
-                        iconRight="arrowLineUpRight"
+                        iconRight={ArrowLineUpRightIcon}
                     >
                         Read more
                     </Button>

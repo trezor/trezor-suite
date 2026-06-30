@@ -1,4 +1,4 @@
-import { type JSX, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { Paragraph } from '@trezor/components';
@@ -10,7 +10,7 @@ import { type NotificationAction } from '../Notifications/NotificationGroup/Noti
 type ConditionalActionRendererProps = NotificationRendererProps & {
     header: ReactNode;
     body: ReactNode;
-    icon?: JSX.Element;
+    icon?: ReactNode;
     actionLabel: ExtendedMessageDescriptor['id'];
     actionAllowed: boolean;
     onAction: () => void;

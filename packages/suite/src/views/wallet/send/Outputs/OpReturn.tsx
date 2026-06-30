@@ -4,6 +4,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { isHexValid } from '@suite-common/wallet-utils';
 import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useLayoutSize } from 'src/hooks/suite';
@@ -72,7 +73,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                 <IconButton
                     intent="neutral"
                     priority="secondary"
-                    icon="x"
+                    icon={XIcon}
                     size="small"
                     onClick={() => removeOpReturn(outputId)}
                     tooltip={{ content: <Translation id="TR_REMOVE" /> }}
