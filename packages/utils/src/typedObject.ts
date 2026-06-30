@@ -21,7 +21,7 @@ export const typedObjectTransformValues = <T extends Record<string, unknown>, U>
     ) as { [K in keyof T]: U };
 
 export const typedObjectKeys = <T extends Record<string, unknown>>(obj: T): Array<keyof T> =>
-    Object.keys(obj) as Array<keyof T>;
+    Object.keys(obj);
 
 export const typedObjectValues = <T extends Record<string, unknown>>(obj: T): Array<T[keyof T]> =>
     Object.values(obj) as Array<T[keyof T]>;
