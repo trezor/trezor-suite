@@ -10,6 +10,7 @@ export interface TronChainExtraData {
     resource?: string;
     stakeAmount?: string;
     unstakeAmount?: string;
+    claimedVoteReward?: string;
     delegateAmount?: string;
     delegateTo?: string;
     assetIssueID?: string;

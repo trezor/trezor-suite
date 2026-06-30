@@ -947,6 +947,106 @@ export const transformTransaction: {
             targets: [],
         },
     },
+    {
+        description: 'TRON: freeze is sent with the staked amount as a value row (not self)',
+        descriptor: 'A',
+        tx: {
+            vin: [{ addresses: ['A'] }],
+            vout: [{ addresses: ['A'] }],
+            chainExtraData: {
+                payloadType: 'tron',
+                payload: { contractType: 'FreezeBalanceV2Contract', stakeAmount: '1000000' },
+            },
+            ...FEES,
+        },
+        parsed: {
+            type: 'sent',
+            amount: '1000000',
+            fee: '10',
+            targets: [{ amount: '1000000', addresses: ['A'], isAccountTarget: undefined }],
+        },
+    },
+    {
+        description:
+            'TRON: unfreeze is sent with zero amount and no value row (amount shown in title)',
+        descriptor: 'A',
+        tx: {
+            vin: [{ addresses: ['A'] }],
+            vout: [{ addresses: ['A'] }],
+            chainExtraData: {
+                payloadType: 'tron',
+                payload: { contractType: 'UnfreezeBalanceV2Contract', unstakeAmount: '2000000' },
+            },
+            ...FEES,
+        },
+        parsed: {
+            type: 'sent',
+            amount: '0',
+            targets: [],
+        },
+    },
+    {
+        description: 'TRON: vote is sent with zero amount and no empty target row',
+        descriptor: 'A',
+        tx: {
+            vin: [{ addresses: ['A'] }],
+            vout: [{ addresses: ['A'] }],
+            chainExtraData: {
+                payloadType: 'tron',
+                payload: {
+                    contractType: 'VoteWitnessContract',
+                    votes: [{ address: 'B', count: '5' }],
+                },
+            },
+            ...FEES,
+        },
+        parsed: {
+            type: 'sent',
+            amount: '0',
+            targets: [],
+        },
+    },
+    {
+        description:
+            'TRON: withdraw expired unfreeze is recv with the withdrawn amount (unstakeAmount)',
+        descriptor: 'A',
+        tx: {
+            vin: [{ addresses: ['A'] }],
+            vout: [{ addresses: ['A'] }],
+            chainExtraData: {
+                payloadType: 'tron',
+                payload: {
+                    contractType: 'WithdrawExpireUnfreezeContract',
+                    unstakeAmount: '1000000',
+                },
+            },
+            ...FEES,
+        },
+        parsed: {
+            type: 'recv',
+            amount: '1000000',
+            targets: [{ amount: '1000000', addresses: ['A'], isAccountTarget: undefined }],
+        },
+    },
+    {
+        description:
+            'TRON: claim rewards is recv with the claimed voting reward (claimedVoteReward)',
+        descriptor: 'A',
+        tx: {
+            vin: [{ addresses: ['A'] }],
+            vout: [{ addresses: ['A'] }],
+            chainExtraData: {
+                payloadType: 'tron',
+                payload: { contractType: 'WithdrawBalanceContract', claimedVoteReward: '250000' },
+            },
+            ...FEES,
+        },
+        parsed: {
+            type: 'recv',
+            amount: '250000',
+            targets: [{ amount: '250000', addresses: ['A'], isAccountTarget: undefined }],
+        },
+    },
 ];
 
 export const sortedTxs = [...'abcdefghij'].map(txid => ({ txid }));
