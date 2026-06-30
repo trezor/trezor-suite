@@ -39,7 +39,7 @@ export const TradeDetailAmountStack = ({
     currency,
     testID,
 }: TradeDetailAmountStackProps) => (
-    <VStack>
+    <VStack spacing={0}>
         <HStack alignItems="center" spacing="sp2">
             {isCrypto && <CryptoIdIcon cryptoId={currency as CryptoId} />}
             <Text variant="body-sm" testID={testID}>
