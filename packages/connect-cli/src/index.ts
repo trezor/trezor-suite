@@ -4,6 +4,7 @@ import path from 'path';
 import { BitcoinAddressDb } from './bitcoin-address-db';
 import { verifyEntryAuthenticity } from './verify-authenticity';
 import TrezorConnect, {
+    type AddressMetadata,
     createBitcoinAddressNotificationHandler,
     type Device,
     ThpPairingMethod,
@@ -114,13 +115,18 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
 
             if (method === 'dbchange') {
-                const { address, networkSymbol, metadata } = params;
-                if (!address || !networkSymbol || !metadata) {
+                const { address, networkSymbol, metadata: rawMetadata } = params;
+                if (!address || !networkSymbol || !rawMetadata) {
                     console.error(
                         'dbchange requires --params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
                     );
                     process.exit(1);
                 }
+                // Strip unknown fields — only persist known AddressMetadata keys.
+                const metadata: AddressMetadata = {
+                    ...(rawMetadata.label !== undefined && { label: String(rawMetadata.label) }),
+                    ...(rawMetadata.proof !== undefined && { proof: String(rawMetadata.proof) }),
+                };
                 db.upsert(address, networkSymbol, metadata);
                 const updated = db.lookup(address, networkSymbol)!;
                 console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata: updated }, null, 2));
