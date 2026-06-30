@@ -695,7 +695,7 @@ const handleEvmSend = async (
         value: '0x' + BigInt(coinToSmallestUnit(value, coin)).toString(16),
         nonce: toHex(nonce ?? '0'),
         chainId,
-        data: (params.data as string) ?? '0x',
+        data: params.data ?? '0x',
     };
     transaction.gasLimit = toHex(gasLimit);
 

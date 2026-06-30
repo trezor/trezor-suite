@@ -299,8 +299,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const tokenAccountsInfos = tokenAccounts.map(a => ({
         address: a.pubkey,
-        mint: a.account.data.parsed?.info?.mint as string | undefined,
-        decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
+        mint: a.account.data.parsed?.info?.mint,
+        decimals: a.account.data.parsed?.info?.tokenAmount?.decimals,
     }));
 
     const transactionPage =

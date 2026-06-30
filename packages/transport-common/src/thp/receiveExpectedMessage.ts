@@ -18,7 +18,6 @@ export const THP_ACK_DEADLINE = 30_000;
 
 export type ReceiveResult = Awaited<ReturnType<typeof receive>>;
 type ReceiveSuccess = Extract<ReceiveResult, { success: true }>;
-type ReceiveError = Extract<ReceiveResult, { success: false }>;
 type ReceiveExpectedMessageError = ReturnType<
     typeof error<
         | 'UnexpectedChunk'
@@ -82,7 +81,7 @@ export const receiveExpectedMessage = async (
             return error({ code: 'Timeout' });
         }
 
-        return receiveResult as ReceiveError;
+        return receiveResult;
     }
 
     const encodedMessage = receiveResult.payload;

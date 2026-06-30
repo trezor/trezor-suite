@@ -214,7 +214,7 @@ export const requireUnifiedDependencyVersions: Requirement<'repo'> = {
                     const canonical = canonicalVersions.get(name);
 
                     if (canonical !== undefined && currentVersion !== canonical) {
-                        (deps as Record<string, string>)[name] = canonical;
+                        deps[name] = canonical;
                         modified = true;
                     }
                 }
