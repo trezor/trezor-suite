@@ -18,11 +18,7 @@ import {
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountDescriptor,
-    asAccountDescriptor,
-    asTxTargetId,
-} from '@suite-common/wallet-types';
+import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { normalizeLabel } from './normalizeLabel';
@@ -70,8 +66,8 @@ export class OutputEvoluTable implements OutputTable {
             txId,
             outputIndex: `${txTargetId}`,
             label: normalizeLabel(label),
-            accountDescriptor: accountDescriptor as AccountDescriptor,
-            networkSymbol: networkSymbol as NetworkSymbol,
+            accountDescriptor,
+            networkSymbol,
         });
 
         if (!validated.ok) {
