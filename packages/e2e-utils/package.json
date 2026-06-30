@@ -23,7 +23,7 @@
         "gh-pr-stats": "tsx ./src/ghPrStats/index.ts"
     },
     "dependencies": {
-        "@anthropic-ai/sdk": "^0.39.0",
+        "@anthropic-ai/sdk": "0.100.0",
         "@octokit/rest": "^21.1.1",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
