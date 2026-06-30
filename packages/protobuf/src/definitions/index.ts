@@ -304,6 +304,7 @@ import {
     TronTriggerSmartContract,
     TronUnfreezeBalanceV2Contract,
     TronVoteWitnessContract,
+    TronWithdrawBalance,
     TronWithdrawUnfreeze,
 } from './messages-tron';
 
@@ -616,6 +617,7 @@ export const MessageType = Type.Object(
         TronFreezeBalanceV2Contract,
         TronUnfreezeBalanceV2Contract,
         TronWithdrawUnfreeze,
+        TronWithdrawBalance,
         TronSignature,
     },
     { $id: 'MessageType' },
@@ -791,7 +793,8 @@ export type WireInMessage =
     | 'TronTriggerSmartContract'
     | 'TronFreezeBalanceV2Contract'
     | 'TronUnfreezeBalanceV2Contract'
-    | 'TronWithdrawUnfreeze';
+    | 'TronWithdrawUnfreeze'
+    | 'TronWithdrawBalance';
 
 export type WireOutMessage =
     | 'Success'
