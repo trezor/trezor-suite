@@ -5,7 +5,6 @@ import { type Account } from 'src/types/wallet';
 import { CollapsibleFees, type CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
 import { useFetchFees } from './CollapsibleFees/hooks/useFetchFees';
 import { FieldErrorBanner } from './FieldErrorBanner';
-import { TronFreezeFeeBanner } from './TronFreezeFeeBanner';
 
 export type FeesProps = {
     account: Pick<Account, 'symbol' | 'networkType' | 'misc'>;
@@ -47,13 +46,6 @@ export const Fees = ({
                 isOpen={isOpen}
                 tronResources={tronResources}
             />
-
-            {networkType === 'tron' && (
-                <TronFreezeFeeBanner
-                    composedLevels={composedLevels}
-                    tronResources={tronResources}
-                />
-            )}
 
             <FieldErrorBanner fieldName="selectedFee" />
         </Column>
