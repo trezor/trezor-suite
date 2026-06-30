@@ -1,12 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import {
-    type Action,
-    type GuideArticle,
-    type GuideCategory,
-    type GuideNode,
-    type MessageSystem,
-} from '@suite-common/suite-types';
+import { type Action, type GuideNode, type MessageSystem } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     type BlockchainNetworks,
@@ -380,7 +374,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
             title: {
                 'en-us': 'Locktime',
             },
-        } as GuideArticle;
+        };
     } else if (type === 'page' && id !== '/') {
         result = {
             type: 'page',
@@ -389,7 +383,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
             title: {
                 'en-us': 'Locktime',
             },
-        } as GuideArticle;
+        };
     } else {
         result = {
             type: 'category',
@@ -438,7 +432,7 @@ const getGuideNode = (type: string, id?: string): GuideNode => {
                     ],
                 },
             ],
-        } as GuideCategory;
+        };
     }
 
     return result;

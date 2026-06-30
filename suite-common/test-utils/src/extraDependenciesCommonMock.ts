@@ -46,7 +46,7 @@ const bip329Mock: Bip329 = {
 
 const platformEncryptionMock: PlatformEncryption = {
     encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
-        Promise.resolve(ok(asEncryptedHex(value as T))),
+        Promise.resolve(ok(asEncryptedHex(value))),
 
     decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
         Promise.resolve(ok(value as unknown as T)),
