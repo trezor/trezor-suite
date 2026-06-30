@@ -265,7 +265,11 @@ const run = async () => {
         return;
     }
 
-    if (await runDbMethods()) {
+    // Run DB methods without a device only when no device connection is requested.
+    // If --autoconnect or --credentials is set, skip early exit so TrezorConnect
+    // initializes and the DEVICE_EVENT handler calls runDbMethods(device).
+    const wantsDevice = args.autoconnect || args.credentials;
+    if (!wantsDevice && (await runDbMethods())) {
         return;
     }
 
