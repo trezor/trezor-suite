@@ -26,7 +26,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (selectIsSuiteSyncEnabled(getState()) && isAnyOf(selectDeviceThunk.fulfilled)(action)) {
-            const { payload } = action as ReturnType<typeof selectDeviceThunk.fulfilled>;
+            const { payload } = action;
 
             if (isTrezorDeviceWithState(payload.device) && payload.device.discovered) {
                 const suiteSyncErrors = selectHasDeviceSuiteSyncError(
