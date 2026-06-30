@@ -40,10 +40,5 @@ export const castExtraStore = <E, S extends EnhancedStore<any, any>>(
     return {
         store,
         extra,
-    } as {
-        store: S & {
-            dispatch: ThunkDispatch<S, E, any>;
-        };
-        extra: NonNullable<E>;
     };
 };

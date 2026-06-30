@@ -28,7 +28,7 @@ export const groupPermissionsByCoin = (permissions: PermissionRequest[]): Groupe
         byCoin.get(coin)!.push(permission);
     }
 
-    const coinFirst = order.filter(c => c !== undefined) as string[];
+    const coinFirst = order.filter(c => c !== undefined);
     const groups: GroupedPermissions[] = coinFirst.map(coin => ({
         coin,
         permissions: unique(byCoin.get(coin)!),
