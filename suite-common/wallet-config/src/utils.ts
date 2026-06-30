@@ -164,3 +164,12 @@ export const getNetworkDecimals = (symbol: NetworkSymbolExtended) => {
 
 export const getNetworkByYieldXyzId = (yieldXyzId: TokenDtoV2['network']) =>
     networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;
+
+const formatNetworksAsString = (someNetworks: Network[]): string =>
+    someNetworks.map(n => n.name).join(', ');
+
+export const getNetworksWithMevProtection = () =>
+    formatNetworksAsString(networksCollection.filter(n => n.features.includes('mev-protection')));
+
+export const getNetworksWithNativeTokenReserve = () =>
+    formatNetworksAsString(networksCollection.filter(n => !!n.nativeTokenReserve));

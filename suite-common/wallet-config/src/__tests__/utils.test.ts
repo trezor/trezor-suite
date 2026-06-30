@@ -2,6 +2,8 @@ import { networks } from '../networksConfig';
 import { type NetworkSymbol } from '../types';
 import {
     getMainnets,
+    getNetworksWithMevProtection,
+    getNetworksWithNativeTokenReserve,
     getTestnets,
     isAccountBasedNetwork,
     isAccountOfNetwork,
@@ -94,4 +96,18 @@ describe(isNetworkUsingExternalBackend.name, () => {
             expect(isNetworkUsingExternalBackend(symbol)).toBe(false);
         },
     );
+});
+
+describe(getNetworksWithMevProtection.name, () => {
+    it('returns string with all networks with MEV protection', () => {
+        expect(getNetworksWithMevProtection()).toEqual(
+            'Ethereum, BNB Smart Chain, Arbitrum One, Base',
+        );
+    });
+});
+
+describe(getNetworksWithNativeTokenReserve.name, () => {
+    it('returns string with all networks with native token reserve', () => {
+        expect(getNetworksWithNativeTokenReserve()).toEqual('Base, Optimism, Solana');
+    });
 });
