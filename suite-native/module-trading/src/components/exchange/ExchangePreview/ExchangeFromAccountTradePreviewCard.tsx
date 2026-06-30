@@ -6,7 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { ExchangeAccountCard } from './ExchangeAccountCard';
+import { TradingAccountCard } from '../../general/TradingAccountCard';
 
 export type ExchangeFromAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
@@ -19,7 +19,7 @@ export const ExchangeFromAccountTradePreviewCard = ({
     const { fromValue } = useChangeStringsExtractor(quote);
 
     return (
-        <ExchangeAccountCard
+        <TradingAccountCard
             title={<Translation id="moduleTrading.tradingExchangePreviewScreen.fromAccount" />}
             account={fromAccount}
             amount={fromValue}
