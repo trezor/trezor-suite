@@ -6,6 +6,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { IconButton } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 
 type SwipeableWalkthroughCloseButtonProps = {
     onPressBack: () => void;
@@ -18,6 +19,8 @@ export const SwipeableWalkthroughCloseButton = ({
     onPressBack,
     currentStepIndex,
 }: SwipeableWalkthroughCloseButtonProps) => {
+    const { translate } = useTranslate();
+
     const xOpacity = useDerivedValue(() =>
         withTiming(currentStepIndex.value === 0 ? 1 : 0, {
             duration: ANIMATION_DURATION / (currentStepIndex.value === 0 ? 4 : 1),
@@ -45,7 +48,7 @@ export const SwipeableWalkthroughCloseButton = ({
                 priority="secondary"
                 onPress={onPressBack}
                 accessibilityRole="button"
-                accessibilityLabel="Go back"
+                accessibilityLabel={translate('generic.buttons.goBack')}
                 style={animatedCaretStyle}
             />
             <IconButton
@@ -55,7 +58,7 @@ export const SwipeableWalkthroughCloseButton = ({
                 priority="secondary"
                 onPress={onPressBack}
                 accessibilityRole="button"
-                accessibilityLabel="Go back"
+                accessibilityLabel={translate('generic.buttons.goBack')}
             />
         </Animated.View>
     );

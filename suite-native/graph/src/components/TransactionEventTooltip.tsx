@@ -14,6 +14,7 @@ import {
     SignValueFormatter,
     TokenAmountFormatter,
 } from '@suite-native/formatters';
+import { useTranslate } from '@suite-native/intl';
 import { type EventTooltipComponentProps } from '@suite-native/react-native-graph';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -140,6 +141,7 @@ export const TransactionEventTooltip = ({
     },
 }: TransactionEventTooltipProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
 
     const totalAmount = received && sent ? received - sent : null;
 
@@ -155,7 +157,7 @@ export const TransactionEventTooltip = ({
             <Card style={applyStyle(TooltipCardStyle)}>
                 {isSentDisplayed && (
                     <EventTooltipRow
-                        title={`Sent · ${sentTransactionsCount}`}
+                        title={translate('graph.tooltip.sent', { count: sentTransactionsCount })}
                         signValue="negative"
                         value={sent}
                         symbol={symbol}
@@ -165,7 +167,9 @@ export const TransactionEventTooltip = ({
                 )}
                 {isReceivedDisplayed && (
                     <EventTooltipRow
-                        title={`Received · ${receivedTransactionsCount}`}
+                        title={translate('graph.tooltip.received', {
+                            count: receivedTransactionsCount,
+                        })}
                         signValue="positive"
                         value={received}
                         symbol={symbol}
@@ -175,7 +179,7 @@ export const TransactionEventTooltip = ({
                 )}
                 {isNotNullOrUndefined(totalAmount) && (
                     <EventTooltipRow
-                        title="In total"
+                        title={translate('graph.tooltip.inTotal')}
                         signValue={totalAmount}
                         value={Math.abs(totalAmount)}
                         symbol={symbol}

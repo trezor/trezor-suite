@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
 import { TouchableSwitchRow } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 export const ToggleMevProtectionCard = () => {
+    const { translate } = useTranslate();
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const dispatch = useDispatch();
 
@@ -27,7 +28,7 @@ export const ToggleMevProtectionCard = () => {
         <TouchableSwitchRow
             isChecked={isMevProtectionEnabled}
             onChange={handleToggle}
-            accessibilityLabel="MEV protection"
+            accessibilityLabel={translate('moduleSettings.advanced.mevProtection.title')}
             text={<Translation id="moduleSettings.advanced.mevProtection.title" />}
             description={
                 <Translation

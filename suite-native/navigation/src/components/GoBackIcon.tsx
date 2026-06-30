@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { IconButton } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 
 import { type CloseActionType } from '../navigators';
 
@@ -14,6 +15,7 @@ type GoBackIconProps = {
 
 export const GoBackIcon = ({ closeActionType = 'back', closeAction, testID }: GoBackIconProps) => {
     const navigation = useNavigation();
+    const { translate } = useTranslate();
 
     const handleGoBack = useCallback(() => {
         if (closeAction) {
@@ -32,7 +34,7 @@ export const GoBackIcon = ({ closeActionType = 'back', closeAction, testID }: Go
             size="medium"
             onPress={handleGoBack}
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={translate('generic.buttons.goBack')}
         />
     );
 };

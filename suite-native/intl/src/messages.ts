@@ -24,6 +24,7 @@ export const messages = {
             copy: 'Copy',
             understand: 'I understand',
             goBack: 'Go back',
+            moreInfo: 'More info',
         },
         validateForm: 'Validate form',
         savedToClipboard: 'Saved to clipboard',
@@ -2183,6 +2184,11 @@ export const messages = {
             sixMonths: '6M',
             year: '1Y',
             all: 'ALL',
+        },
+        tooltip: {
+            sent: 'Sent · {count}',
+            received: 'Received · {count}',
+            inTotal: 'In total',
         },
     },
     modulePassphrase: {

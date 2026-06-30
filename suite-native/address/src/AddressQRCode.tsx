@@ -46,7 +46,7 @@ export const AddressQRCode = ({
                 message: address,
             });
         } catch (error) {
-            Alert.alert('Something went wrong.', error.message);
+            Alert.alert(translate('generic.unknownError'), error.message);
         }
     };
 
