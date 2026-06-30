@@ -80,6 +80,11 @@ export type SkeletonLoaderItem = {
     id: string;
 };
 
+export type StablecoinYieldLoadErrorListItem = {
+    type: 'stablecoin-yield-load-error';
+    id: string;
+};
+
 export type EarnProvider = 'everstake' | 'morpho';
 
 export type EarnProviderListItem = {
@@ -92,6 +97,7 @@ export type EarnPromoListDataItem =
     | EarnPromoItem
     | EarnPromoSectionType
     | SkeletonLoaderItem
+    | StablecoinYieldLoadErrorListItem
     | EarnProviderListItem;
 
 export type EarnDepositsCardActiveItem =
