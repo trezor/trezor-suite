@@ -3818,10 +3818,6 @@ export const messages = defineMessages({
         id: 'ETHEREUM_NONCE_IS_TOO_LOW',
         defaultMessage: 'Nonce must be 0 or greater',
     },
-    ETHEREUM_NONCE_IS_MINED: {
-        id: 'ETHEREUM_NONCE_IS_MINED',
-        defaultMessage: 'Nonce must be greater than {lastMinedNonce}',
-    },
     ETHEREUM_NONCE_BELOW_CONFIRMED: {
         id: 'ETHEREUM_NONCE_BELOW_CONFIRMED',
         defaultMessage:
@@ -6598,19 +6594,6 @@ export const messages = defineMessages({
     BROADCAST: {
         id: 'BROADCAST',
         defaultMessage: 'Broadcast',
-    },
-    BROADCAST_TOOLTIP: {
-        id: 'BROADCAST_TOOLTIP',
-        defaultMessage: 'Broadcast the transaction to the network.',
-    },
-    EVM_NONCE: {
-        id: 'EVM_NONCE',
-        defaultMessage: 'Nonce: {nonce}',
-    },
-    EVM_NONCE_TOOLTIP: {
-        id: 'EVM_NONCE_TOOLTIP',
-        defaultMessage:
-            'The next sequential nonce — the position of this transaction in your account’s history. It’s set automatically and rarely needs changing.',
     },
     EVM_NONCE_EDIT: {
         id: 'EVM_NONCE_EDIT',
