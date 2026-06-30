@@ -12,7 +12,7 @@ const StyledLottie = styled(Lottie)`
     height: 100%;
 `;
 
-export type LottieType = 'BLOCK' | 'MEMPOOL';
+export type LottieType = 'BLOCK' | 'MEMPOOL' | 'MASCOT';
 
 type LottieAnimationProps = {
     size?: number;
@@ -52,6 +52,8 @@ export const LottieAnimation = ({
             loadAnimation('cubes_line');
         } else if (type === 'MEMPOOL') {
             loadAnimation('square_stack');
+        } else if (type === 'MASCOT') {
+            loadAnimation('trezor_mascot');
         }
 
         return () => {
