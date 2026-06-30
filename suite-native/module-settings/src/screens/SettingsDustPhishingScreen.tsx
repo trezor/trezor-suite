@@ -51,8 +51,8 @@ export const SettingsDustPhishingScreen = () => {
         <Screen
             header={
                 <DynamicScreenHeader
-                    title={<Translation id="moduleSettings.advanced.dustPhishing.title" />}
-                    subtitle={<Translation id="moduleSettings.advanced.dustPhishing.subtitle" />}
+                    title={<Translation id="moduleSettings.security.dustPhishing.title" />}
+                    subtitle={<Translation id="moduleSettings.security.dustPhishing.subtitle" />}
                 />
             }
         >
@@ -68,7 +68,7 @@ export const SettingsDustPhishingScreen = () => {
                             <VStack flex={1}>
                                 <HStack justifyContent="space-between" flex={1}>
                                     <Text variant="body-md-strong">
-                                        <Translation id="moduleSettings.advanced.dustPhishing.enableProtection" />
+                                        <Translation id="moduleSettings.security.dustPhishing.enableProtection" />
                                     </Text>
                                     <Switch
                                         isChecked={dustPhishingIsEnabled}
@@ -86,11 +86,11 @@ export const SettingsDustPhishingScreen = () => {
                             <HStack justifyContent="space-between" flex={1}>
                                 <VStack flex={1} spacing="sp2">
                                     <Text variant="body-md-strong">
-                                        <Translation id="moduleSettings.advanced.dustPhishing.dustThresholdTitle" />
+                                        <Translation id="moduleSettings.security.dustPhishing.dustThresholdTitle" />
                                     </Text>
 
                                     <Text variant="body-sm" color="contentSecondary">
-                                        <Translation id="moduleSettings.advanced.dustPhishing.dustThresholdDescription" />
+                                        <Translation id="moduleSettings.security.dustPhishing.dustThresholdDescription" />
                                     </Text>
                                 </VStack>
                             </HStack>
@@ -100,13 +100,13 @@ export const SettingsDustPhishingScreen = () => {
                                     <TextInputField
                                         name="dustThreshold"
                                         label={translate(
-                                            'moduleSettings.advanced.dustPhishing.placeholder',
+                                            'moduleSettings.security.dustPhishing.placeholder',
                                         )}
                                     />
 
                                     {!isDisabled && (
                                         <Button size="medium" onPress={onSubmit}>
-                                            <Translation id="moduleSettings.advanced.dustPhishing.save" />
+                                            <Translation id="moduleSettings.security.dustPhishing.save" />
                                         </Button>
                                     )}
                                 </VStack>

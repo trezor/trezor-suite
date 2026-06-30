@@ -28,10 +28,10 @@ export const ToggleMevProtectionCard = () => {
             isChecked={isMevProtectionEnabled}
             onChange={handleToggle}
             accessibilityLabel="MEV protection"
-            text={<Translation id="moduleSettings.advanced.mevProtection.title" />}
+            text={<Translation id="moduleSettings.security.mevProtection.title" />}
             description={
                 <Translation
-                    id="moduleSettings.advanced.mevProtection.subtitle"
+                    id="moduleSettings.security.mevProtection.subtitle"
                     values={{ supportedNetworks }}
                 />
             }

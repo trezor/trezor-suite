@@ -287,6 +287,7 @@ export enum SettingsStackRoutes {
     SettingsNetworks = 'SettingsNetworks',
     SettingsNetworkBackends = 'SettingsNetworkBackends',
     SettingsSuiteSync = 'SettingsSuiteSync',
+    SettingsSecurity = 'SettingsSecurity',
     SettingsAdvanced = 'SettingsAdvanced',
     SettingsDustPhishing = 'SettingsDustPhishing',
     SettingsExperimental = 'SettingsExperimental',
