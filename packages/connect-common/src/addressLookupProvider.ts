@@ -12,8 +12,7 @@ export type AddressMetadata = {
 
 /**
  * Merkle proof path: ordered array of sibling hashes from the leaf to the Merkle root.
- * Stored in the database and reconstructed before sending to the device for verification.
- * Starts as an empty array for new entries; populated by the device on first dbchange.
+ * Computed on-the-fly from the MPT built over all stored entries — never stored in the DB.
  */
 export type MerkleProof = string[];
 
@@ -21,28 +20,11 @@ export type MerkleProof = string[];
  * A full address entry as stored in the database.
  * counter tracks the version of this entry in the Merkle tree — incremented by the device
  * on each successful dbchange so stale updates can be rejected.
- * proof is reconstructed from the DB and sent to the device for verification on each dbchange.
- *
- * Device flow:
- *   dbchange (existing entry):
- *     1. Reconstruct proof from DB; send oldEntry.counter + oldEntry.proof + hash(oldMetadata) + hash(newMetadata) + treeState → device
- *     2. Device verifies proof against its stored root
- *     3. Device replaces the leaf, increments tree counter, recomputes root, returns new proof
- *     4. Store { metadata: newMetadata, counter: newEntryCounter, proof: newProof } + TreeState { root, counter } in DB
- *
- *   dbchange (new entry):
- *     1. Send hash(newMetadata) + treeState → device
- *     2. Device inserts new leaf, increments tree counter, recomputes root, returns proof
- *     3. Store { metadata: newMetadata, counter: 0, proof: newProof } + TreeState { root, counter } in DB
- *
- *   dblookup:
- *     1. Client retrieves { metadata, counter, proof } from DB
- *     2. proof is passed back to device on next dbchange for verification
+ * proof is NOT stored; it is generated from the MPT before each device interaction.
  */
 export type AddressEntry = {
     metadata: AddressMetadata;
     counter: number;
-    proof: MerkleProof;
 };
 
 /**
@@ -55,6 +37,13 @@ export type TreeState = {
     counter: number;
 };
 
+/** All entries returned for MPT construction. */
+export type AllEntriesRow = {
+    address: string;
+    networkSymbol: string;
+    entry: AddressEntry;
+};
+
 /**
  * Provider interface for Bitcoin address entry storage.
  * Implementations: BitcoinAddressDb/better-sqlite3 (connect-cli dev/testing),
@@ -64,6 +53,7 @@ export type AddressLookupProvider = {
     lookup(address: string, networkSymbol: string): AddressEntry | null | Promise<AddressEntry | null>;
     lookupOrCreate(address: string, networkSymbol: string): AddressEntry | Promise<AddressEntry>;
     upsert(address: string, networkSymbol: string, entry: AddressEntry): void | Promise<void>;
+    getAllEntries(): AllEntriesRow[] | Promise<AllEntriesRow[]>;
     getTreeState(): TreeState | null | Promise<TreeState | null>;
     setTreeState(state: TreeState): void | Promise<void>;
 };
@@ -83,7 +73,7 @@ type Deps = {
 /**
  * Subscribes to TrezorConnect BLOCKCHAIN_EVENT notifications for Bitcoin addresses.
  * On each notification the address entry is looked up (or auto-created) via the provider,
- * then onAddressAnnotated is called with the full AddressEntry (metadata + counter + proof).
+ * then onAddressAnnotated is called with the AddressEntry (metadata + counter).
  *
  * Returns a cleanup function that removes the listener.
  */

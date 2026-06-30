@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { BitcoinAddressDb } from './bitcoin-address-db';
+import { generateMerkleProof } from './merkle-tree';
 import { verifyAndUpdateEntry } from './verify-authenticity';
 import TrezorConnect, {
     type AddressMetadata,
@@ -109,8 +110,10 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
                 const entry = db.lookupOrCreate(address, networkSymbol);
+                const allEntries = db.getAllEntries();
+                const proof = generateMerkleProof(allEntries, address, networkSymbol);
                 const treeState = db.getTreeState();
-                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof: entry.proof, treeState }, null, 2));
+                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof, treeState }, null, 2));
             }
 
             if (method === 'dbchange') {
@@ -127,13 +130,18 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
                 };
                 const oldEntry = db.lookup(address, networkSymbol);
+                // Build proof from current MPT before sending to device for verification.
+                const allEntries = db.getAllEntries();
+                const currentProof = generateMerkleProof(allEntries, address, networkSymbol);
                 const treeState = db.getTreeState();
-                const { authentic, newTreeState, newEntryCounter, newProof } = await verifyAndUpdateEntry(
-                    address, networkSymbol, oldEntry, metadata, treeState, device,
+                const { authentic, newTreeState, newEntryCounter } = await verifyAndUpdateEntry(
+                    address, networkSymbol, oldEntry, metadata, currentProof, treeState, device,
                 );
-                db.upsert(address, networkSymbol, { metadata, counter: newEntryCounter, proof: newProof });
+                db.upsert(address, networkSymbol, { metadata, counter: newEntryCounter });
                 db.setTreeState(newTreeState);
-                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: newEntryCounter, proof: newProof, treeState: newTreeState }, null, 2));
+                // Recompute proof from updated MPT for the output.
+                const updatedProof = generateMerkleProof(db.getAllEntries(), address, networkSymbol);
+                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: newEntryCounter, proof: updatedProof, treeState: newTreeState }, null, 2));
                 console.log('Authenticity verified:', authentic);
             }
         }
