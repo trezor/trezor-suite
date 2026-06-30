@@ -5,6 +5,9 @@ import type { BlockchainEvent } from './events/blockchain';
 // Future: encode as protobuf (change column to BLOB) without altering this interface.
 export type AddressMetadata = {
     label?: string;
+    // Merkle proof for the DB entry, hex-encoded. Populated after the first on-device
+    // verification. verifyEntryAuthenticity() uses this to confirm integrity with Trezor.
+    proof?: string;
 };
 
 /**

@@ -82,7 +82,21 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     const dbMethods = methods.filter(m => DB_METHODS.has(m));
     if (dbMethods.length === 0) return false;
 
-    const params = args.params ? JSON.parse(args.params) : {};
+    if (!args.params) {
+        console.error(
+            'DB methods require --params (note the double dash). Example:\n' +
+            '  --params=\'{"address":"...","networkSymbol":"btc"}\'',
+        );
+        process.exit(1);
+    }
+    let params: any;
+    try {
+        params = JSON.parse(args.params);
+    } catch (e) {
+        console.error('Invalid JSON in --params:', (e as Error).message);
+        console.error('Received:', args.params);
+        process.exit(1);
+    }
     const db = new BitcoinAddressDb(getDbPath());
 
     try {
@@ -94,10 +108,9 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
                 const metadata = db.lookupOrCreate(address, networkSymbol);
+                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata }, null, 2));
                 const authentic = await verifyEntryAuthenticity(address, networkSymbol, metadata, device);
-                console.log(
-                    JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata, authentic }, null, 2),
-                );
+                console.log('Authenticity verified:', authentic);
             }
 
             if (method === 'dbchange') {
@@ -110,10 +123,9 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 }
                 db.upsert(address, networkSymbol, metadata);
                 const updated = db.lookup(address, networkSymbol)!;
+                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata: updated }, null, 2));
                 const authentic = await verifyEntryAuthenticity(address, networkSymbol, updated, device);
-                console.log(
-                    JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata: updated, authentic }, null, 2),
-                );
+                console.log('Authenticity verified:', authentic);
             }
         }
     } finally {
