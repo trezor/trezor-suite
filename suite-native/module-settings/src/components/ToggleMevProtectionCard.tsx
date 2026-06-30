@@ -35,7 +35,7 @@ export const ToggleMevProtectionCard = () => {
                     values={{ supportedNetworks }}
                 />
             }
-            icon="shield"
+            icon="shieldCheckered"
         />
     );
 };

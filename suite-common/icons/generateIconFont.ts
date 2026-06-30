@@ -149,6 +149,7 @@ const usedIcons = [
     'shareNetwork',
     'shield',
     'shieldCheck',
+    'shieldCheckered',
     'shieldStar',
     'shieldStarFilled',
     'shieldWarning',
