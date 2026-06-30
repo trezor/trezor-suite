@@ -24,7 +24,7 @@ function getDecoded(address: string): any {
     try {
         const decoded = base58.decode(address);
 
-        return cbor.decode(new Uint8Array(decoded).buffer as ArrayBuffer);
+        return cbor.decode(new Uint8Array(decoded).buffer);
     } catch {
         return null;
     }
