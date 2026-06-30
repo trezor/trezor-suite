@@ -33,6 +33,14 @@ export class BitcoinAddressDb implements AddressLookupProvider {
                 counter INTEGER NOT NULL DEFAULT 0
             );
         `);
+        // Migrate existing DBs that predate the counter and proof columns.
+        const cols = (this.db.pragma('table_info(addresses)') as { name: string }[]).map(c => c.name);
+        if (!cols.includes('counter')) {
+            this.db.exec(`ALTER TABLE addresses ADD COLUMN counter INTEGER NOT NULL DEFAULT 0`);
+        }
+        if (!cols.includes('proof')) {
+            this.db.exec(`ALTER TABLE addresses ADD COLUMN proof TEXT NOT NULL DEFAULT '[]'`);
+        }
     }
 
     lookup(address: string, networkSymbol: string): AddressEntry | null {
