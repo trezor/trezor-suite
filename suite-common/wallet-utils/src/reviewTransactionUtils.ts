@@ -131,7 +131,7 @@ const getClearSignedSwapRecipientName = (
 ): string => {
     const routerAddress = precomposedTx.outputs.find(
         o => 'address' in o && typeof o.address === 'string',
-    )?.address as string | undefined;
+    )?.address;
 
     return (routerAddress && EVM_SPENDER_LABELS[routerAddress.toLowerCase()]) ?? fallback;
 };
@@ -180,7 +180,7 @@ const constructOldFlow = ({
         outputs.push(
             {
                 type: 'txid',
-                value: precomposedTx.prevTxid!,
+                value: precomposedTx.prevTxid,
             },
             {
                 type: 'fee-replace',
@@ -454,7 +454,7 @@ const constructNewFlow = ({
         outputs.push(
             {
                 type: 'txid',
-                value: precomposedTx.prevTxid!,
+                value: precomposedTx.prevTxid,
             },
             {
                 type: 'fee-replace',
