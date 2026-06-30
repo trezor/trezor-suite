@@ -8,41 +8,6 @@ import { configureMockStore, testMocks } from '@suite-common/test-utils';
 
 import fixtures from '../__fixtures__/publicKeyActions';
 
-const TrezorConnect = testMocks.getTrezorConnectMock();
-
-const setTrezorConnectFixtures = (fixture: any) => {
-    let buttonRequest: ((e?: any) => any) | undefined;
-
-    const getPublicKey = (_params: any) => {
-        if (fixture?.getPublicKey) {
-            if (fixture.getPublicKey.success && buttonRequest) {
-                buttonRequest({ code: 'ButtonRequest_PublicKey' });
-            }
-
-            return fixture.getPublicKey;
-        }
-        // trigger multiple button requests
-        if (buttonRequest) {
-            buttonRequest({ code: 'ButtonRequest_PublicKey' });
-            buttonRequest({ code: 'some-other-code' });
-            buttonRequest();
-        }
-
-        return {
-            success: true,
-        };
-    };
-
-    jest.spyOn(TrezorConnect, 'on').mockImplementation((event: string, cb) => {
-        if (event === 'ui-button') buttonRequest = cb;
-    });
-    jest.spyOn(TrezorConnect, 'off').mockImplementation(() => {
-        buttonRequest = undefined;
-    });
-    jest.spyOn(TrezorConnect, 'getPublicKey').mockImplementation(getPublicKey);
-    jest.spyOn(TrezorConnect, 'cardanoGetPublicKey').mockImplementation(getPublicKey);
-};
-
 const device = mockSuiteDevice({
     state: { staticSessionId: '1stTestnetAddress@device_id:0' },
     connected: true,
@@ -102,7 +67,7 @@ const initStore = (stateOverrides?: StateOverrides) => {
 describe('PublicKeyActions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
-            setTrezorConnectFixtures(f.mocks);
+            testMocks.setTrezorConnectFixtures(f.mocks.getPublicKey);
             const store = initStore(f.initialState);
             await store.dispatch(connectInitThunk());
             await store.dispatch(f.action() as any);

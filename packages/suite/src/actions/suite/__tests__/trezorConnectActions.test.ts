@@ -70,31 +70,7 @@ describe('TrezorConnect Actions', () => {
         const store = initStore(state);
         try {
             await store.dispatch(connectInitThunk()).unwrap();
-        } catch (error) {
-            expect(error.message).toEqual('Iframe error');
-        }
-    });
-
-    it('TypedError', async () => {
-        testMocks.setTrezorConnectFixtures(() => ({
-            message: 'Iframe error',
-            code: 'SomeCode',
-        }));
-        const state = getInitialState();
-        const store = initStore(state);
-        try {
-            await store.dispatch(connectInitThunk()).unwrap();
-        } catch (error) {
-            expect(error.message).toEqual('SomeCode: Iframe error');
-        }
-    });
-
-    it('Error as string', async () => {
-        testMocks.setTrezorConnectFixtures(() => 'Iframe error');
-        const state = getInitialState();
-        const store = initStore(state);
-        try {
-            await store.dispatch(connectInitThunk()).unwrap();
+            throw new Error('Unreachable!');
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
         }
@@ -123,6 +99,7 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Wrapped method', async () => {
+        testMocks.setTrezorConnectFixtures();
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(connectInitThunk());
