@@ -150,7 +150,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
         onAddressAnnotated: (descriptor, metadata) => {
             logger.info(
                 SERVICE_NAME,
-                `Bitcoin address ${descriptor} annotation: ${metadata ? JSON.stringify(metadata) : 'not found'}`,
+                `Bitcoin address ${descriptor} annotation: ${JSON.stringify(metadata)}`,
             );
         },
     });

@@ -1,3 +1,5 @@
+import { createHash } from 'crypto';
+
 import Database from 'better-sqlite3';
 
 // Extensible metadata stored as JSON — add fields without altering the DB schema.
@@ -39,6 +41,19 @@ export class BitcoinAddressDb {
                  ON CONFLICT(address, network_symbol) DO UPDATE SET data = excluded.data`,
             )
             .run(address, networkSymbol, JSON.stringify(metadata));
+    }
+
+    // Returns existing metadata, or creates and stores a default label on first access.
+    // Default label format: label_<first 8 bytes of SHA-256 as 16 hex chars>
+    lookupOrCreate(address: string, networkSymbol: string): AddressMetadata {
+        const existing = this.lookup(address, networkSymbol);
+        if (existing !== null) return existing;
+
+        const shortHash = createHash('sha256').update(address).digest('hex').slice(0, 16);
+        const metadata: AddressMetadata = { label: `label_${shortHash}` };
+        this.upsert(address, networkSymbol, metadata);
+
+        return metadata;
     }
 
     close(): void {

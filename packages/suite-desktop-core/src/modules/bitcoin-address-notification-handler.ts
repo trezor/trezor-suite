@@ -7,7 +7,7 @@ import type { AddressMetadata, BitcoinAddressDb } from './bitcoin-address-db';
 type Deps = {
     trezorConnect: typeof TrezorConnect;
     db: BitcoinAddressDb;
-    onAddressAnnotated: (descriptor: string, metadata: AddressMetadata | null) => void;
+    onAddressAnnotated: (descriptor: string, metadata: AddressMetadata) => void;
 };
 
 export const createBitcoinAddressNotificationHandler = ({
@@ -22,7 +22,7 @@ export const createBitcoinAddressNotificationHandler = ({
         const descriptor = event.payload.notification.descriptor;
         const networkSymbol = event.payload.coin.shortcut.toLowerCase();
 
-        const metadata = db.lookup(descriptor, networkSymbol);
+        const metadata = db.lookupOrCreate(descriptor, networkSymbol);
         onAddressAnnotated(descriptor, metadata);
     };
 
