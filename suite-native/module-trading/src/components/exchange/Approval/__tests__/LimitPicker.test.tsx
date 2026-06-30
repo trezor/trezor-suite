@@ -81,9 +81,7 @@ describe('LimitPicker', () => {
         expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('INFINITE');
         expect(
             within(picker).getByText(
-                new RegExp(
-                    `${getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')}\\s*USDC`,
-                ),
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel'),
             ),
         ).toBeOnTheScreen();
         expect(
