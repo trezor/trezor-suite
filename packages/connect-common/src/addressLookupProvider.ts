@@ -11,37 +11,43 @@ export type AddressMetadata = {
 };
 
 /**
+ * Merkle proof path: ordered array of sibling hashes from the leaf to the Merkle root.
+ * Stored in the database and reconstructed before sending to the device for verification.
+ * Starts as an empty array for new entries; populated by the device on first dbchange.
+ */
+export type MerkleProof = string[];
+
+/**
  * A full address entry as stored in the database.
  * counter tracks the version of this entry in the Merkle tree — incremented by the device
  * on each successful dbchange so stale updates can be rejected.
- * proof is NOT stored; it is ephemeral and produced/verified by the Trezor device on demand.
+ * proof is reconstructed from the DB and sent to the device for verification on each dbchange.
  *
  * Device flow:
  *   dbchange (existing entry):
- *     1. Client sends: address + entry.counter + hash(oldMetadata) + hash(newMetadata) → device
- *     2. Device verifies against its stored root using entry.counter as leaf version
- *     3. Device computes new leaf, updates root, increments tree counter
- *     4. Device returns: new root + new tree counter + new entry counter
- *     5. DB stores: { metadata: newMetadata, counter: newEntryCounter } + TreeState { root, counter }
+ *     1. Reconstruct proof from DB; send oldEntry.counter + oldEntry.proof + hash(oldMetadata) + hash(newMetadata) + treeState → device
+ *     2. Device verifies proof against its stored root
+ *     3. Device replaces the leaf, increments tree counter, recomputes root, returns new proof
+ *     4. Store { metadata: newMetadata, counter: newEntryCounter, proof: newProof } + TreeState { root, counter } in DB
  *
  *   dbchange (new entry):
- *     1. Client sends: address + hash(newMetadata) → device
- *     2. Device inserts new leaf, updates root, increments tree counter
- *     3. Device returns: new root + new tree counter; entry counter starts at 0
- *     4. DB stores: { metadata: newMetadata, counter: 0 } + TreeState { root, counter }
+ *     1. Send hash(newMetadata) + treeState → device
+ *     2. Device inserts new leaf, increments tree counter, recomputes root, returns proof
+ *     3. Store { metadata: newMetadata, counter: 0, proof: newProof } + TreeState { root, counter } in DB
  *
  *   dblookup:
- *     1. Client retrieves { metadata, counter } from DB
- *     2. On next dbchange the counter is passed back for device-side verification
+ *     1. Client retrieves { metadata, counter, proof } from DB
+ *     2. proof is passed back to device on next dbchange for verification
  */
 export type AddressEntry = {
     metadata: AddressMetadata;
     counter: number;
+    proof: MerkleProof;
 };
 
 /**
  * Global Merkle tree state stored in the database.
- * root   — current Merkle root hash as maintained by the Trezor device.
+ * root    — current Merkle root hash as maintained by the Trezor device.
  * counter — monotonically increasing version; incremented by the device on every tree mutation.
  */
 export type TreeState = {
@@ -77,7 +83,7 @@ type Deps = {
 /**
  * Subscribes to TrezorConnect BLOCKCHAIN_EVENT notifications for Bitcoin addresses.
  * On each notification the address entry is looked up (or auto-created) via the provider,
- * then onAddressAnnotated is called with the full AddressEntry (metadata + counter).
+ * then onAddressAnnotated is called with the full AddressEntry (metadata + counter + proof).
  *
  * Returns a cleanup function that removes the listener.
  */

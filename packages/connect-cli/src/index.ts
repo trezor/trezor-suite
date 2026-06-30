@@ -110,7 +110,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 }
                 const entry = db.lookupOrCreate(address, networkSymbol);
                 const treeState = db.getTreeState();
-                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, treeState }, null, 2));
+                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof: entry.proof, treeState }, null, 2));
             }
 
             if (method === 'dbchange') {
@@ -128,12 +128,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 };
                 const oldEntry = db.lookup(address, networkSymbol);
                 const treeState = db.getTreeState();
-                const { authentic, newTreeState, newEntryCounter } = await verifyAndUpdateEntry(
+                const { authentic, newTreeState, newEntryCounter, newProof } = await verifyAndUpdateEntry(
                     address, networkSymbol, oldEntry, metadata, treeState, device,
                 );
-                db.upsert(address, networkSymbol, { metadata, counter: newEntryCounter });
+                db.upsert(address, networkSymbol, { metadata, counter: newEntryCounter, proof: newProof });
                 db.setTreeState(newTreeState);
-                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: newEntryCounter, treeState: newTreeState }, null, 2));
+                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: newEntryCounter, proof: newProof, treeState: newTreeState }, null, 2));
                 console.log('Authenticity verified:', authentic);
             }
         }
