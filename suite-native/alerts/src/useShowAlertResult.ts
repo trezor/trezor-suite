@@ -1,14 +1,7 @@
-import { type Result, err, ok } from '@trezor/type-utils';
-
 import { type Alert } from './alertsAtoms';
 import { useAlert } from './useAlert';
 
-type AlertResult = Result<void, { type: 'cancelled' }>;
-
-type ShowAlertResultParams = Omit<Alert, 'onPressPrimaryButton' | 'onPressSecondaryButton'> & {
-    onPressPrimaryButton?: () => AlertResult | Promise<AlertResult> | void;
-    onPressSecondaryButton?: () => AlertResult | Promise<AlertResult> | void;
-};
+type AlertResult = { action: 'primaryButton' | 'secondaryButton' };
 
 export const useShowAlertResult = () => {
     const { showAlert } = useAlert();
@@ -17,18 +10,18 @@ export const useShowAlertResult = () => {
         onPressPrimaryButton,
         onPressSecondaryButton,
         ...alert
-    }: ShowAlertResultParams): Promise<AlertResult> =>
+    }: Alert): Promise<AlertResult> =>
         new Promise(resolve =>
             showAlert({
                 ...alert,
                 onPressPrimaryButton: () => {
-                    void Promise.resolve(onPressPrimaryButton?.()).then(result =>
-                        resolve(result ?? ok()),
+                    void Promise.resolve(onPressPrimaryButton?.()).then(_ =>
+                        resolve({ action: 'primaryButton' }),
                     );
                 },
                 onPressSecondaryButton: () => {
-                    void Promise.resolve(onPressSecondaryButton?.()).then(result =>
-                        resolve(result ?? err({ type: 'cancelled' })),
+                    void Promise.resolve(onPressSecondaryButton?.()).then(_ =>
+                        resolve({ action: 'secondaryButton' }),
                     );
                 },
             }),

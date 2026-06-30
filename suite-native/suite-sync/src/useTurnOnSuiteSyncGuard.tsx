@@ -97,7 +97,7 @@ export const useTurnOnSuiteSyncGuard = () => {
         return ok();
     };
 
-    const confirmSuiteSyncEnable = (): Promise<AddLabelSuiteSyncGuardResult> => {
+    const confirmSuiteSyncEnable = async (): Promise<AddLabelSuiteSyncGuardResult> => {
         if (!isDeviceConnected) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
@@ -106,13 +106,15 @@ export const useTurnOnSuiteSyncGuard = () => {
             return Promise.resolve(err({ type: 'cancelled' }));
         }
 
-        return showAlertResult({
+        await showAlertResult({
             title: <Translation id="suiteSync.enableAlert.title" />,
             description: <Translation id="suiteSync.enableAlert.description" />,
             primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
             onPressPrimaryButton: handleTurnOnSuiteSync,
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
         });
+
+        return ok();
     };
 
     const ensureSuiteSyncReadyForAddLabel = async (): Promise<AddLabelSuiteSyncGuardResult> => {

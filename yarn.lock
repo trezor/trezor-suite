@@ -11428,7 +11428,6 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
