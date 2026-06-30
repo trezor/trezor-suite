@@ -76,6 +76,7 @@ set.prototype.symmetricdifference
 set.prototype.union
 sort-package-json
 typescript-eslint
+@typescript/native-preview
 vm-browserify
 webpack
 webpack-bundle-analyzer
