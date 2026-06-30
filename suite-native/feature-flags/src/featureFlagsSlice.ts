@@ -9,6 +9,7 @@ export const FeatureFlag = {
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
+    IsTradingSlip24Enabled: 'isTradingSlip24Enabled',
     IsN4w1BackupEnabled: 'isN4w1BackupEnabled',
 } as const;
 
@@ -33,6 +34,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
     [FeatureFlag.IsTradingDebugEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
+    [FeatureFlag.IsTradingSlip24Enabled]:
+        process.env.EXPO_PUBLIC_FF_IS_TRADING_SLIP24_ENABLED === 'true',
     [FeatureFlag.IsN4w1BackupEnabled]: process.env.EXPO_PUBLIC_FF_IS_N4W1_BACKUP_ENABLED === 'true',
 };
 
@@ -42,6 +45,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsCardanoSendEnabled,
     FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
+    FeatureFlag.IsTradingSlip24Enabled,
     FeatureFlag.IsN4w1BackupEnabled,
 ];
 

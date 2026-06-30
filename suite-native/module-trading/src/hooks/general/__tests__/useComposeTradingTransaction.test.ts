@@ -1,5 +1,6 @@
 import { formDraftActions } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { FeatureFlag } from '@suite-native/feature-flags';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
@@ -43,6 +44,7 @@ describe('useComposeTradingTransaction', () => {
         return createTradingLightStore({
             tradeType: 'exchange',
             overrides: {
+                featureFlags: { [FeatureFlag.IsTradingSlip24Enabled]: true },
                 wallet: {
                     accounts: [btcAccount],
                     fees: {
@@ -65,9 +67,12 @@ describe('useComposeTradingTransaction', () => {
     };
 
     const renderUseComposeTradingTransaction = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useComposeTradingTransaction({ tradeType: 'exchange' }), {
-            store,
-        });
+        renderHookWithStoreProvider(
+            () => useComposeTradingTransaction({ tradeType: 'exchange' }),
+            {
+                store,
+            },
+        );
 
     beforeEach(() => {
         mockComposeTradingTransactionThunk.mockClear();
@@ -114,6 +119,7 @@ describe('useComposeTradingTransaction', () => {
                 feeLimit: '21000',
                 maxPriorityFeePerGas: '2',
                 maxFeePerGas: '100',
+                isSlip24Active: true,
             }),
         );
     });

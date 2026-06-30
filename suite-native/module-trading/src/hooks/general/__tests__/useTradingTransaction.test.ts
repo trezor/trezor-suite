@@ -1,4 +1,5 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { FeatureFlag } from '@suite-native/feature-flags';
 import { type TestStore, act } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
@@ -63,7 +64,7 @@ const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2') });
 describe('useTradingTransaction', () => {
     const getMockAccounts = () => [btc1Account, btc2Account];
 
-    const getInitializedStore = () => {
+    const getInitializedStore = (featureFlags?: Partial<Record<FeatureFlag, boolean>>) => {
         const tradingState = getInitializedTradingStateWithQuotes();
 
         // Add the required account keys to the exchange state
@@ -79,6 +80,7 @@ describe('useTradingTransaction', () => {
                     trading: tradingState,
                     accounts: getMockAccounts(),
                 },
+                ...(featureFlags ? { featureFlags } : {}),
             },
         });
     };
@@ -166,6 +168,28 @@ describe('useTradingTransaction', () => {
                 },
                 unwrap: expect.any(Function),
             });
+        });
+
+        it('should pass isSlip24Active: true to sendTransactionThunk when the feature flag is on', async () => {
+            const store = getInitializedStore({ [FeatureFlag.IsTradingSlip24Enabled]: true });
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const mockNextStep = jest.fn();
+
+            const { result } = renderUseTradingTransaction({ store });
+
+            await act(async () => {
+                await result.current.signAndSendTransaction({
+                    nextStep: mockNextStep,
+                    onError: jest.fn(),
+                });
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'sendTransactionThunkMock',
+                    payload: expect.objectContaining({ isSlip24Active: true }),
+                }),
+            );
         });
     });
 

@@ -48,6 +48,7 @@ import {
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
+    selectIsTradingSlip24Enabled,
     selectTradeToBeOpened,
     selectTradesToWatchByAccount,
     selectTradingEnvironment,
@@ -257,6 +258,39 @@ describe('commonSelectors', () => {
 
         it('should correctly select that concierge is enabled if remote feature is not set', () => {
             expect(selectIsTradingConciergeEnabled(getPreloadedState({}))).toBe(true);
+        });
+    });
+
+    describe('selectIsTradingSlip24Enabled', () => {
+        const getSlip24State = (isFeatureFlagEnabled: boolean) =>
+            ({
+                messageSystem: messageSystemState,
+                featureFlags: {
+                    ...featureFlagsInitialState,
+                    [FeatureFlag.IsTradingSlip24Enabled]: isFeatureFlagEnabled,
+                },
+                device: deviceInitialState,
+                wallet: { trading: tradingInitialState },
+            }) as any;
+
+        it('should be enabled when the feature flag is on for a supported network', () => {
+            expect(selectIsTradingSlip24Enabled(getSlip24State(true), getBtcAccount())).toBe(true);
+        });
+
+        it('should be disabled when the feature flag is off', () => {
+            expect(selectIsTradingSlip24Enabled(getSlip24State(false), getBtcAccount())).toBe(
+                false,
+            );
+        });
+
+        it('should be disabled for an unsupported network type', () => {
+            expect(selectIsTradingSlip24Enabled(getSlip24State(true), getCardanoAccount())).toBe(
+                false,
+            );
+        });
+
+        it('should be disabled when there is no account', () => {
+            expect(selectIsTradingSlip24Enabled(getSlip24State(true), undefined)).toBe(false);
         });
     });
 
