@@ -2,22 +2,39 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { type Account } from '@suite-common/wallet-types';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 interface TronStakeCompleteProps {
+    account: Account;
     heading: ReactNode;
     description: ReactNode;
     children: ReactNode;
 }
 
-export const TronStakeComplete = ({ heading, description, children }: TronStakeCompleteProps) => {
+export const TronStakeComplete = ({
+    account,
+    heading,
+    description,
+    children,
+}: TronStakeCompleteProps) => {
     const dispatch = useDispatch();
     const { isBelowMobile } = useLayoutSize();
 
-    const handleBackToOverview = () => dispatch(goto({ routeName: 'suite-earn' }));
+    const handleBackToOverview = () =>
+        dispatch(
+            goto({
+                routeName: 'wallet-staking',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
 
     return (
         <Column gap={16}>

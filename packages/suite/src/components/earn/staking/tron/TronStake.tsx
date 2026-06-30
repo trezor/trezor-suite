@@ -36,6 +36,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
                 <Column gap={24} width="100%" maxWidth={500}>
                     {step === 'complete' ? (
                         <TronStakeComplete
+                            account={account}
                             heading={<Translation id="TR_EARN_TRON_STAKE_COMPLETE" />}
                             description={
                                 <Translation id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION" />
