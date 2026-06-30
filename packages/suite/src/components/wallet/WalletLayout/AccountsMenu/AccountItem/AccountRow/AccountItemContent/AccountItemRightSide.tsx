@@ -12,6 +12,7 @@ const ICON_SIZE = 16;
 type AccountItemRightSideProps = {
     account: Account;
     isCardanoStakingRow: boolean;
+    isTronStakingRowWithActiveVotes: boolean;
     isFailed: boolean;
     formattedBalance: string;
     customFiatValue?: BaseCurrencyAmount;
@@ -21,6 +22,7 @@ type AccountItemRightSideProps = {
 export const AccountItemRightSide = ({
     account,
     isCardanoStakingRow,
+    isTronStakingRowWithActiveVotes,
     isFailed,
     formattedBalance,
     customFiatValue,
@@ -40,8 +42,12 @@ export const AccountItemRightSide = ({
         );
     }
 
+    if (isTronStakingRowWithActiveVotes) {
+        return <Icon name="warning" intent="warning" size={ICON_SIZE} />;
+    }
+
     if (isFailed) {
-        return <Icon name="warning" size={ICON_SIZE} intent="warning" />;
+        return <Icon name="warning" intent="warning" size={ICON_SIZE} />;
     }
 
     return (
