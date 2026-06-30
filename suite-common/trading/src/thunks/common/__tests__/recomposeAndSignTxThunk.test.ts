@@ -583,6 +583,110 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
     });
 
+    it('should keep the user custom feeLimit when it is higher than the recalculated normal feeLimit', async () => {
+        const { store, account, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+                composed: {
+                    ...mockComposedTransactionInfo.composed,
+                    feeLimit: '5000',
+                },
+                selectedFee: 'custom',
+            },
+        });
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            feeLimit: '1111',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                        custom: {
+                            type: 'final',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                recalculateCustomLimit: true,
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(mockSignAndPushSendFormTransaction.mock.calls[0][0].formState.feeLimit).toBe('5000');
+    });
+
+    it('should raise the user custom feeLimit to the recalculated normal feeLimit when it is lower', async () => {
+        const { store, account, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                ...mockComposedTransactionInfo,
+                composed: {
+                    ...mockComposedTransactionInfo.composed,
+                    feeLimit: '500',
+                },
+                selectedFee: 'custom',
+            },
+        });
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            feeLimit: '1111',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                        custom: {
+                            type: 'final',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                recalculateCustomLimit: true,
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(mockSignAndPushSendFormTransaction.mock.calls[0][0].formState.feeLimit).toBe('1111');
+    });
+
     it('should derive the Tron fee limit from the recomposed tx (real recipient), not the offers estimate', async () => {
         const { store, tradingFormState } = getMocks({
             composedTransactionInfo: {

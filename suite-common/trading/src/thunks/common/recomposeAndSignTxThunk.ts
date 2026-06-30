@@ -177,7 +177,10 @@ export const recomposeAndSignTxThunk = createThunk<
                 });
             }
 
-            formState.feeLimit = normalLevels.normal.feeLimit;
+            formState.feeLimit = BigNumber.max(
+                formState.feeLimit || '0',
+                normalLevels.normal.feeLimit,
+            ).toString();
         }
 
         // compose transaction again to recalculate fees based on real account values
