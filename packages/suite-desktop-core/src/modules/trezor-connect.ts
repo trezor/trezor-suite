@@ -80,8 +80,22 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
 
     const ipcProxyOptions: IpcProxyHandlerOptions<typeof TrezorConnect> = {
         onCreateInstance: () => ({
-            onRequest: async (method, params) => {
-                logger.debug(SERVICE_NAME, `call ${method}`);
+            onRequest: async (...proxyArgs) => {
+                logger.debug(SERVICE_NAME, `call ${proxyArgs[0]}`);
+
+                const unwrap = (...args: typeof proxyArgs): typeof proxyArgs => {
+                    // Unwrap 'call' method params, otherwise noop
+                    if (args[0] === 'call') {
+                        const { method, ...p } = args[1][0];
+
+                        return [method, [p]] as typeof proxyArgs;
+                    } else {
+                        return args;
+                    }
+                };
+
+                const [method, params] = unwrap(...proxyArgs);
+
                 if (method === 'init') {
                     logger.info(SERVICE_NAME, `Retrieving stored firmwares`);
                     const [settings] = params;

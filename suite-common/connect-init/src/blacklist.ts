@@ -1,16 +1,8 @@
-import { type ConnectWebKey } from './types';
+import type { connectCallableMethods } from '@trezor/connect';
 
 // List of methods that don't work with device, so they don't need to be patched
-export const blacklist: ConnectWebKey[] = [
-    'init',
+export const blacklist: (typeof connectCallableMethods)[number][] = [
     'getSettings',
-    'on',
-    'off',
-    'removeAllListeners',
-    'uiResponse',
-    // Must not take the device lock: changeCoinVisibility awaits it before changeNetworks triggers
-    // discovery, so wrapping it in lockDevice/synchronize would deadlock that flow.
-    'updateConnectSettings',
     'blockchainGetAccountBalanceHistory',
     'blockchainGetInfo',
     'blockchainGetCurrentFiatRates',
@@ -25,13 +17,9 @@ export const blacklist: ConnectWebKey[] = [
     'blockchainUnsubscribeFiatRates',
     'requestLogin',
     'getCoinInfo',
-    'dispose',
-    'cancel',
     // this API may use device or not, depending on parameters. The flow that doesn't use device is called very often,
     // so locking device must be avoided (blocks a lot of Suite features needlessly)
     // TODO find a better solution to wrap this method only when device is used
     'getAccountInfo',
-    // WebUSB methods from Connect web
-    'requestWebUSBDevice',
     'bleUnpair',
 ];

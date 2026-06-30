@@ -124,7 +124,19 @@ export const init = async (container: HTMLElement) => {
     // create ipc-proxy for @trezor/connect
     const proxy = await createIpcProxy<typeof TrezorConnect>('TrezorConnect');
     // override each method of @trezor/connect using ipc-proxy
-    Object.keys(TrezorConnect).forEach(method => {
+    // TODO temporarily enumerate every non-callable api member (callable methods use call anyway).
+    // In the future, move the whole renderer connect dummy and this to a separate package connect-electron
+    [
+        'on',
+        'off',
+        'removeAllListeners',
+        'init',
+        'call',
+        'updateConnectSettings',
+        'uiResponse',
+        'cancel',
+        'dispose',
+    ].forEach(method => {
         // @ts-expect-error key vs union of values endless problem
         TrezorConnect[method] = proxy[method];
     });

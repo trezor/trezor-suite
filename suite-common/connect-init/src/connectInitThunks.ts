@@ -19,6 +19,7 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
+    type CallMethodPayload,
     DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -29,7 +30,6 @@ import { DATA_URL } from '@trezor/urls';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
-import { type ConnectKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
@@ -103,29 +103,27 @@ export const connectInitThunk = createThunk<void, void, void>(
 
         const synchronize = getSynchronize();
 
-        Object.keys(TrezorConnect)
-            .filter(k => !isArrayMember(k, blacklist))
-            .forEach(key => {
-                // typescript complains about params and return type, need to be "any"
-                const original: any = TrezorConnect[key as ConnectKey];
-                if (!original) return;
-                (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
-                    dispatch(lockDevice(true));
+        const original = TrezorConnect.call.bind(TrezorConnect);
+        TrezorConnect.call = async (params: CallMethodPayload) => {
+            if (isArrayMember(params.method, blacklist)) {
+                return original(params);
+            }
 
-                    const result = await synchronize(() => original(params));
+            dispatch(lockDevice(true));
 
-                    dispatch(lockDevice(false));
-                    dispatch(
-                        deviceActions.removeButtonRequests({
-                            // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                            // be the same re-selected device from this line. We should reuse device from params.
-                            device: selectSelectedDevice(getState()),
-                        }),
-                    );
+            const result = await synchronize(() => original(params));
 
-                    return result;
-                };
-            });
+            dispatch(lockDevice(false));
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                    // be the same re-selected device from this line. We should reuse device from params.
+                    device: selectSelectedDevice(getState()),
+                }),
+            );
+
+            return result;
+        };
 
         const binFilesBaseUrl = isDesktop()
             ? extra.selectors.selectDesktopBinDir(getState())
