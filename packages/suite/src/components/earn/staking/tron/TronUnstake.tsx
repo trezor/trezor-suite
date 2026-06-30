@@ -22,6 +22,7 @@ export const TronUnstake = ({ account }: TronUnstakeProps) => {
                 <Column gap={24} width="100%" maxWidth={500}>
                     {step === 'complete' ? (
                         <TronStakeComplete
+                            account={account}
                             heading={<Translation id="TR_EARN_TRON_UNSTAKE_COMPLETE" />}
                             description={<Translation id="TR_EARN_TRON_UNSTAKE_DESCRIPTION" />}
                         >
