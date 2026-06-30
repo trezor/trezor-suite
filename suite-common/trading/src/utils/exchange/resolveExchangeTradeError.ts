@@ -65,7 +65,7 @@ export const resolveExchangeTradeError = (
     const resolveSymbol = (cryptoId: string): string =>
         getCoinSymbol?.(cryptoId as CryptoId) ?? cryptoId;
 
-    const base = { message: details.message ?? details.externalCode ?? source.error };
+    const base = { message: details.message ?? details.externalCode };
     const asUnknown = (): ResolvedTradeError => ({ ...base, code: 'unknown' });
 
     switch (details.code) {
