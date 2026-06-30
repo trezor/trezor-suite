@@ -53,7 +53,7 @@ class Regional {
     }
 
     isSanctioned(country: string): boolean {
-        return SANCTIONED_COUNTRIES.has(country as TradingCountryCode);
+        return SANCTIONED_COUNTRIES.has(country);
     }
 
     getCountryOptionWithWorldwideFallback(country: string): TradingCountryOption {

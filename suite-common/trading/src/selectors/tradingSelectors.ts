@@ -184,7 +184,7 @@ export const selectTradingBuyInfo = createMemoizedSelector(
                 defaultAmountsOfFiatCurrencies,
             },
             supportedCryptoCurrencies: new Set(buyInfo.supportedCryptoCurrencies),
-            supportedFiatCurrencies: new Set(buyInfo.supportedFiatCurrencies as FiatCurrencyCode[]),
+            supportedFiatCurrencies: new Set(buyInfo.supportedFiatCurrencies),
         };
     },
 );
