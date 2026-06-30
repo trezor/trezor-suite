@@ -30,7 +30,7 @@ export const useTronStakeFlow = ({
     const dispatch = useDispatch();
     const { stats } = useTronStakingStats();
 
-    const form = useTronStakeForm({ account });
+    const form = useTronStakeForm({ account, flow });
     const actions = useTronStakeActions({ account, form, flow });
 
     useTronStakePendingTransactionTracking({ account, flow });
