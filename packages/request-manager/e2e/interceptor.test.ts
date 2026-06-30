@@ -25,6 +25,8 @@ const testGetUrlHttp = 'http://check.torproject.org/';
 const testGetUrlHttps = 'https://check.torproject.org/';
 const testPostUrlHttps = 'https://httpbingo.org/post';
 
+const conditionalTest = process.env.SKIP_FLAKY_TESTS ? describe.skip : describe;
+
 describe('Interceptor', () => {
     let torProcess: ReturnType<typeof torRunner> | null;
     let torController: TorController;
@@ -78,9 +80,7 @@ describe('Interceptor', () => {
     // The tests below are somehow useful but their nature is flaky since we can not
     // guarantee that the IPs of 2 different Tor circuits are different. And this is
     // part of the Tor nature.
-    // Ideally we could find a way to check that actually we are generating different
-    // circuits in each request, until then I would skip them.
-    describe.skip('Check if IPs are different', () => {
+    conditionalTest('Check if IPs are different', () => {
         it('HTTP GET - Each identity has different ip address', async () => {
             const identityDefault = await fetch(testGetUrlHttp, {
                 headers: { 'proxy-authorization': 'Basic default' },
@@ -179,8 +179,7 @@ describe('Interceptor', () => {
         });
     });
 
-    // TODO: Skipping this for now, since I want to get the most critical tests to run in CI.
-    describe.skip('TorControl', () => {
+    conditionalTest('TorControl', () => {
         it('closing circuits', async () => {
             await fetch(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': 'Basic user-circuit-1' },
