@@ -73,7 +73,7 @@ export const CompoundRoundedIcon = ({
             {compoundIcons.map(({ name, color, size }) =>
                 name && name in icons ? (
                     <Icon
-                        name={name as IconName}
+                        name={name}
                         color={color}
                         size={size}
                         key={`${name}-${color ?? 'default'}-${size ?? 'default'}`}

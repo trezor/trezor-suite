@@ -80,7 +80,7 @@ export function SearchInputWithCancel<R extends ClearAndBlur | null>({
         <HStack alignItems="center" spacing={0}>
             <Animated.View layout={LinearTransition} style={applyStyle(inputWrapperStyle)}>
                 <SearchComponent
-                    {...(searchRef ? { ref: searchRef as React.Ref<any> } : {})}
+                    {...(searchRef ? { ref: searchRef } : {})}
                     placeholder={placeholder ?? translate('moduleTrading.defaultSearchLabel')}
                     onFocus={() => {
                         setIsInputActive(true);
