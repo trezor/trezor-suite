@@ -97,6 +97,8 @@ export class TorIdentities {
 
         this.resetIdentityIfPasswordChanged(user, password);
 
+        // TODO clean agents when host/port changes? (same caveat as getIdentity above — the socks
+        // host/port is captured at construction time and cached until the password changes)
         if (!this.dispatchers[user]) {
             this.dispatchers[user] = createSocks5ProxyAgent(
                 this.buildSocksServerUrl(user, password),
