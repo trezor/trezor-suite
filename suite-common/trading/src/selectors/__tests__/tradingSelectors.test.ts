@@ -2,6 +2,7 @@ import {
     type BuyTrade,
     type Coins,
     type CryptoId,
+    type ExchangeTrade,
     type FiatCurrenciesProps,
     type FiatCurrencyCode,
     type Platforms,
@@ -30,6 +31,7 @@ import {
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
     selectGroupedTradingExchangeQuotes,
+    selectIsTradingNetworkFeeMissing,
     selectTradedAccountKeys,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
@@ -54,6 +56,7 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingComposedTransactionInfo,
+    selectTradingDisplayComposedFee,
     selectTradingExchange,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
@@ -1267,6 +1270,54 @@ describe('tradingSelectors', () => {
             },
             selectedFee: 'normal',
         });
+    });
+
+    const gaslessQuote = {
+        orderId: 'test-order',
+        exchange: '1inchfusion',
+        isDex: true,
+        signData: {
+            type: 'eip712-typed-data' as const,
+            data: { primaryType: 'Order' },
+        },
+    } as unknown as ExchangeTrade;
+
+    describe(selectTradingDisplayComposedFee.name, () => {
+        it.each([
+            ['return the composed fee for a regular quote', { fee: '12345' }, undefined, '12345'],
+            ['return undefined when there is no composed fee', undefined, undefined, undefined],
+            ['return "0" for an EIP-712-signed (gasless) quote', undefined, gaslessQuote, '0'],
+        ] as [
+            string,
+            { fee: string } | undefined,
+            ExchangeTrade | undefined,
+            string | undefined,
+        ][])('should %s', (_title, composed, quote, expected) => {
+            state.wallet.trading.composedTransactionInfo.composed = composed as any;
+
+            expect(selectTradingDisplayComposedFee(state, quote)).toBe(expected);
+        });
+    });
+
+    describe(selectIsTradingNetworkFeeMissing.name, () => {
+        it.each([
+            ['false when the composed fee is present', { fee: '12345' }, undefined, false],
+            ['true when the composed fee is undefined', undefined, undefined, true],
+            ['true when the composed fee is an empty string', { fee: '' }, undefined, true],
+            [
+                'false for an EIP-712-signed (gasless) quote even without a composed fee',
+                undefined,
+                gaslessQuote,
+                false,
+            ],
+        ] as [string, { fee: string } | undefined, ExchangeTrade | undefined, boolean][])(
+            'should be %s',
+            (_title, composed, quote, expected) => {
+                state.wallet.trading.composedTransactionInfo.composed = composed as any;
+
+                expect(selectIsTradingNetworkFeeMissing(state, quote)).toBe(expected);
+            },
+        );
     });
 
     describe(selectTradingAccountAccordingActiveSection.name, () => {

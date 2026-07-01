@@ -5,7 +5,7 @@ import type { CryptoId } from 'invity-api';
 import { Translation } from '@suite/intl';
 import {
     requiresTokenApproval,
-    selectTradingComposedTransactionInfo,
+    selectIsTradingNetworkFeeMissing,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
@@ -38,10 +38,6 @@ export const TradingFormOfferExchangeActions = () => {
 
     const modalControls = useReceiveAddressModalControls();
 
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
-    const fee = composedTransactionInfo?.composed?.fee;
-    const isFeeRequiredButMissingValue = fee === undefined || fee === '';
-
     const { outputs, sendCryptoSelect, receiveCryptoSelect } = watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
@@ -54,6 +50,10 @@ export const TradingFormOfferExchangeActions = () => {
         selectedAssetCryptoId,
         isBaseButtonDisabled,
     } = useTradingFormOfferCommon<'exchange'>();
+
+    const isNetworkFeeMissing = useSelector(reduxState =>
+        selectIsTradingNetworkFeeMissing(reduxState, quote),
+    );
 
     const { stellarActivateButton, stellarActivateModal } = useTradingStellarActivation({
         account: tradingReceiveAddress.selectedAccount ?? undefined,
@@ -76,7 +76,7 @@ export const TradingFormOfferExchangeActions = () => {
         : state.isFormLoading || isLoadingQuote;
 
     const isButtonDisabled =
-        isBaseButtonDisabled || amountTooHigh || isFeeRequiredButMissingValue || isLoading;
+        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || isLoading;
 
     useEffect(() => {
         const initConfirmTrade = async () => {

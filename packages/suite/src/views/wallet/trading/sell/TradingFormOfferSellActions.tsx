@@ -1,4 +1,4 @@
-import { selectTradingComposedTransactionInfo, tradingSellActions } from '@suite-common/trading';
+import { selectIsTradingNetworkFeeMissing, tradingSellActions } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,14 +21,11 @@ export const TradingFormOfferSellActions = () => {
         form: { state },
     } = context;
 
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
 
     const { outputs } = watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
-
-    const fee = composedTransactionInfo?.composed?.fee;
-    const isFeeRequiredButMissingValue = fee === undefined || fee === '';
 
     const amountTooHigh = isAmountTooHigh({
         amount,
@@ -40,10 +37,7 @@ export const TradingFormOfferSellActions = () => {
     const { quote, confirmButtonData, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
 
     const isButtonDisabled =
-        isBaseButtonDisabled ||
-        amountTooHigh ||
-        isFeeRequiredButMissingValue ||
-        state.isFormLoading;
+        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || state.isFormLoading;
 
     const onSelectQuote = () => {
         if (!quote) return;

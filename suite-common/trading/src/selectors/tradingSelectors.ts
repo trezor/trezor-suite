@@ -690,6 +690,15 @@ export const selectTradingDisplayComposedFee = (
 ): string | undefined =>
     getDisplayNetworkFee(quote, state.wallet.trading.composedTransactionInfo.composed?.fee);
 
+export const selectIsTradingNetworkFeeMissing = (
+    state: TradingRootState,
+    quote?: ExchangeTrade,
+): boolean => {
+    const fee = selectTradingDisplayComposedFee(state, quote);
+
+    return fee === undefined || fee === '';
+};
+
 export const selectTradingAccountAccordingActiveSection =
     createMemoizedSelectorWithDeviceAndAccounts(
         [
