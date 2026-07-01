@@ -48,6 +48,7 @@ import { getNetwork, isAccountBasedNetwork } from '@suite-common/wallet-config';
 import {
     ETHEREUM_ADJUST_GAS_LIMIT,
     fetchAndUpdateAccountThunk,
+    selectAccountByKey,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -98,7 +99,26 @@ export const useTradingExchangeForm = ({
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
-    const { account, tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
+    const {
+        account: formAccount,
+        tradingAccountKey: accountKey,
+        cryptoId,
+    } = useTradingFormAccount(type);
+
+    const trades = useSelector(selectTradingTrades);
+    const trade = useMemo(
+        () =>
+            trades.find(
+                (trade): trade is TradingTransactionExchange =>
+                    trade.tradeType === 'exchange' &&
+                    !!transactionId &&
+                    trade.data.orderId === transactionId,
+            ),
+        [trades, transactionId],
+    );
+
+    const tradeSendAccount = useSelector(state => selectAccountByKey(state, trade?.sendAccountKey));
+    const account = tradeSendAccount ?? formAccount;
 
     // used for disabling approve/revoke controls when
     // quotes are scheduled to refresh after changing swap form inputs
@@ -130,17 +150,6 @@ export const useTradingExchangeForm = ({
     const { symbol } = account;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const network = getNetwork(account.symbol);
-    const trades = useSelector(selectTradingTrades);
-    const trade = useMemo(
-        () =>
-            trades.find(
-                (trade): trade is TradingTransactionExchange =>
-                    trade.tradeType === 'exchange' &&
-                    !!transactionId &&
-                    trade.data.orderId === transactionId,
-            ),
-        [trades, transactionId],
-    );
 
     const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(
         accountKey,
@@ -683,6 +692,9 @@ export const useTradingExchangeForm = ({
             if (transactionId && trade) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(trade.data));
                 dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
+                if (trade.sendAccountKey) {
+                    dispatch(tradingExchangeActions.setTradingAccountKey(trade.sendAccountKey));
+                }
             }
 
             dispatch(tradingExchangeActions.setIsFromRedirect(false));

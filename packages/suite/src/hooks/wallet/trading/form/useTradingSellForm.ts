@@ -37,7 +37,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -77,7 +77,20 @@ export const useTradingSellForm = ({
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const { account, tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
+    const {
+        account: formAccount,
+        tradingAccountKey: accountKey,
+        cryptoId,
+    } = useTradingFormAccount(type);
+
+    const trades = useSelector(selectTradingTrades);
+    const trade = trades.find(
+        (trade): trade is TradingTransactionSell =>
+            trade.tradeType === 'sell' && trade.key === transactionId,
+    );
+
+    const tradeSendAccount = useSelector(state => selectAccountByKey(state, trade?.sendAccountKey));
+    const account = tradeSendAccount ?? formAccount;
 
     const { device } = useTradingInitializer({
         pageType,
@@ -104,11 +117,6 @@ export const useTradingSellForm = ({
     const network = networks[account.symbol];
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const localCurrencyOption = { value: baseCurrencyCode, label: baseCurrencyCode.toUpperCase() };
-    const trades = useSelector(selectTradingTrades);
-    const trade = trades.find(
-        (trade): trade is TradingTransactionSell =>
-            trade.tradeType === 'sell' && trade.key === transactionId,
-    );
 
     const { defaultValues, defaultCountry, defaultSubdivision, defaultCurrency } =
         useTradingSellFormDefaultValues(
@@ -446,6 +454,9 @@ export const useTradingSellForm = ({
             if (transactionId && trade && pageType !== 'retry') {
                 dispatch(tradingSellActions.saveSelectedQuote(trade.data));
                 dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
+                if (trade.sendAccountKey) {
+                    dispatch(tradingSellActions.setTradingAccountKey(trade.sendAccountKey));
+                }
             }
 
             dispatch(tradingSellActions.setIsFromRedirect(false));
