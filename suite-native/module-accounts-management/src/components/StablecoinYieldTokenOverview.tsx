@@ -20,7 +20,6 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -53,7 +52,6 @@ export const StablecoinYieldTokenOverview = ({
     const { translate } = useTranslate();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
-    const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
     const { account, apy, resolutionStatus, depositedSharesAmount, vault } =
         useResolvedYieldFlowData({
             accountKey,
@@ -204,7 +202,7 @@ export const StablecoinYieldTokenOverview = ({
                             </HStack>
                         )}
                     </HStack>
-                    {isEnabled && depositedPosition && (
+                    {depositedPosition && (
                         <HStack spacing="sp12">
                             <Box flex={1}>
                                 <Button
