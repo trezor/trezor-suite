@@ -36,7 +36,6 @@ import {
     type FeeInfo,
     type FeeLevelLabel,
     type PrecomposedTransactionFinal,
-    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
@@ -299,11 +298,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                 return rejectWithValue('Could not extract token contract address');
             }
 
-            const token = selectAccountTokenInfo(
-                getState(),
-                account.key,
-                contractAddress as TokenAddress,
-            );
+            const token = selectAccountTokenInfo(getState(), account.key, contractAddress);
 
             if (!token) {
                 return rejectWithValue('Token not found in account');
@@ -375,7 +370,7 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                                       fiat: '',
                                       currency: { label: '', value: '' },
                                       label: '',
-                                      token: contractAddress as TokenAddress,
+                                      token: contractAddress,
                                   },
                               ];
 

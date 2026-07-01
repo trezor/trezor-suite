@@ -69,9 +69,7 @@ export const useTradingFiatValues = ({
 
         return {
             network: assetInfo?.network,
-            contractAddress: isNativeToken
-                ? undefined
-                : (assetInfo?.contractAddress as TokenAddress | undefined),
+            contractAddress: isNativeToken ? undefined : assetInfo?.contractAddress,
             symbol: assetInfo?.network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
         };
     }, [cryptoId, isNativeToken]);

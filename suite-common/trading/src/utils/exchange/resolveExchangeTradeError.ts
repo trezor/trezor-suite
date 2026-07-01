@@ -36,7 +36,7 @@ export const isResolvedTradeError = (value: unknown): value is ResolvedTradeErro
     typeof value === 'object' &&
     value !== null &&
     'code' in value &&
-    typeof (value as { code: unknown }).code === 'string';
+    typeof value.code === 'string';
 
 export type TradingErrorDisplay =
     | { kind: 'detailed'; values: TradingErrorValuesRecord }

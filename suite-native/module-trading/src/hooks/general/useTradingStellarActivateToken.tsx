@@ -7,7 +7,6 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { type BuyTrade, type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -63,7 +62,7 @@ export const useTradingStellarActivateToken = ({
         if (!receiveContractAddress) return;
 
         const accountKey = selectedReceiveAccount.account.key;
-        const tokenContract = receiveContractAddress as TokenAddress;
+        const tokenContract = receiveContractAddress;
 
         setIsComposingFees(true);
 
@@ -77,7 +76,7 @@ export const useTradingStellarActivateToken = ({
                     screen: StellarManageTokenStackRoutes.ActivationFee,
                     params: {
                         accountKey: selectedReceiveAccount.account.key,
-                        tokenContract: receiveContractAddress as TokenAddress,
+                        tokenContract: receiveContractAddress,
                         isTrading: true,
                     },
                 });

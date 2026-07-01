@@ -39,6 +39,9 @@ export const createEvmEncoder = <const T extends Abi>(
             }
         }
 
+        // Load-bearing: without the assertion the inferred argument type does not satisfy
+        // viem's EncodeFunctionDataParameters (TS2345); the lint rule mis-reports it as a no-op.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         return encodeFunctionData({
             abi,
             functionName: fn.name,

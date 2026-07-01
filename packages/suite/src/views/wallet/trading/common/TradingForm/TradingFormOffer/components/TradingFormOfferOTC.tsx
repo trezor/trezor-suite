@@ -12,7 +12,6 @@ import {
     useFetchOtc,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
@@ -73,7 +72,7 @@ export const TradingFormOfferOTC = () => {
     const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
         amount: cryptoAmount || '0',
         symbol: network?.symbol || 'btc',
-        tokenAddress: contractAddress as TokenAddress | undefined,
+        tokenAddress: contractAddress,
         rateType: 'current',
     });
 

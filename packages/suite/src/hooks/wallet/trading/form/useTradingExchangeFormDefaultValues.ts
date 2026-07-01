@@ -66,12 +66,17 @@ export const useTradingExchangeFormDefaultValues = (accountKey: AccountKey, cryp
             sendCryptoSelect: defaultAsset,
             receiveCryptoSelect: null,
             receiveAddress: undefined,
+            // Load-bearing widening: without the assertions these literal constants widen to
+            // `string` in the object literal and defaultValues no longer satisfies the form's
+            // union field types; the lint rule mis-reports the assertions as no-ops.
+            /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
             [TRADING_EXCHANGE_RATE]: TRADING_EXCHANGE_RATE_FLOATING as TradingExchangeRateType,
             [TRADING_EXCHANGE_FORM]: TRADING_EXCHANGE_FORM_CEX as TradingExchangeFormType,
             [TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]:
                 TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL as TradingExchangeKycFilter,
             [TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]:
                 TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL as TradingExchangeRateFilter,
+            /* eslint-enable @typescript-eslint/no-unnecessary-type-assertion */
         }),
         [defaultAsset, defaultFormState],
     );

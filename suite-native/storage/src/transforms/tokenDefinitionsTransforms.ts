@@ -29,6 +29,6 @@ export const tokenDefinitionsPersistTransform = createTransform<
 
         return result;
     },
-    outboundState => outboundState as TokenDefinitionsState,
+    outboundState => outboundState,
     { whitelist: ['tokenDefinitions'] },
 );

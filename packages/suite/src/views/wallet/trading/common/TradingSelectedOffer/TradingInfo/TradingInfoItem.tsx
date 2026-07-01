@@ -5,7 +5,7 @@ import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
@@ -142,9 +142,7 @@ export const TradingInfoItem = ({
                                         amount={amount}
                                         symbol={currencyInfo.symbol}
                                         rateType="current"
-                                        tokenAddress={
-                                            currencyInfo.contractAddress as TokenAddress | undefined
-                                        }
+                                        tokenAddress={currencyInfo.contractAddress}
                                         showApproximationIndicator
                                     />
                                 </Text>
