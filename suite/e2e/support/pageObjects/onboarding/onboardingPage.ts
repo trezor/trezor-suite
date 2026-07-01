@@ -176,10 +176,6 @@ export class OnboardingPage {
                     type: suiteSettingsActions.toggleFirmwareHashCheck.type,
                     payload: false,
                 },
-                {
-                    type: suiteSettingsActions.toggleDeviceAuthenticityCheck.type,
-                    payload: false,
-                },
             ],
         );
     }
@@ -190,6 +186,15 @@ export class OnboardingPage {
         await this.page.evaluate(action => window.store.dispatch(action), {
             type: debugActions.setShowDebugMenu.type,
             payload: false,
+        });
+    }
+
+    @step()
+    async enableDebugMode() {
+        await this.page.ensureStoreOnDesktop();
+        await this.page.evaluate(action => window.store.dispatch(action), {
+            type: debugActions.setShowDebugMenu.type,
+            payload: true,
         });
     }
 
@@ -230,8 +235,7 @@ export class OnboardingPage {
             await this.disableFirmwareRevisionCheck();
         }
 
-        // TODO https://github.com/trezor/trezor-suite/issues/22765
-        if (this.device.model === Model.T3W1) {
+        if (this.device.hasSecureElement) {
             await this.disableAuthenticityCheck();
         }
     }
