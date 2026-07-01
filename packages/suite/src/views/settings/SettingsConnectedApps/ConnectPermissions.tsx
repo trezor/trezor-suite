@@ -1,14 +1,31 @@
+import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import {
     connectPopupActions,
     groupPermissionsByCoin,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
-import { Card, Column, Dropdown, H3, IconButton, Row, Text, Tooltip } from '@trezor/components';
+import {
+    Box,
+    Card,
+    Center,
+    Collapsible,
+    Column,
+    Dropdown,
+    H3,
+    Icon,
+    IconButton,
+    type IconName,
+    Row,
+    Text,
+    Tooltip,
+} from '@trezor/components';
 import { type MethodPermission, type PermissionRequest } from '@trezor/connect';
+import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
@@ -16,10 +33,47 @@ import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getCoinLabel } from 'src/utils/suite/connectPermissions';
 
-const PermissionsList = styled.ul`
-    list-style: disc;
-    margin-left: 16px;
+// Each permission type is represented by an icon symbol; the full label is shown
+// in the expanded row and previewed as a small glyph next to the collapsed header.
+const permissionIconMap = {
+    read_address: 'eye',
+    read_xpub: 'key',
+    read_account_info: 'wallet',
+    read_settings: 'slidersHorizontal',
+    read_features: 'cpu',
+    sign: 'signature',
+    sign_message: 'notePencil',
+    verify_message: 'sealCheck',
+    management: 'gearSix',
+    push_tx: 'broadcast',
+    internal: 'cube',
+} as const satisfies Record<MethodPermission, IconName>;
+
+const PERMISSION_PREVIEW_LIMIT = 6;
+
+// The remove button sits next to the permission text and is only revealed when
+// the row is hovered or a child receives keyboard focus, to reduce clutter.
+// Mirrors the reveal styling of EditableText's ActionsContainer.
+const PermissionRemove = styled.div`
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-5px);
 `;
+
+const PermissionRow = styled.div`
+    &:hover ${PermissionRemove}, &:focus-within ${PermissionRemove} {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0);
+        transition: 200ms ease-in-out;
+    }
+`;
+
+const getPermissionIcon = (permission: string): IconName =>
+    permission in permissionIconMap
+        ? permissionIconMap[permission as keyof typeof permissionIconMap]
+        : 'cube';
 
 export const getPermissionText = (permissionType: MethodPermission | string) => {
     switch (permissionType) {
@@ -50,50 +104,145 @@ export const getPermissionText = (permissionType: MethodPermission | string) => 
     }
 };
 
+// Network icon for a coin group; falls back to a rounded-square badge that
+// mirrors NetworkIcon for the device group (no coin) or altcoins that suite has
+// no network icon for.
+const GroupBadge = ({ coin }: { coin?: string }) => {
+    const symbol = coin?.toLowerCase();
+
+    if (symbol && isNetworkSymbolWithIcon(symbol)) {
+        return <NetworkIcon networkSymbol={symbol} size={24} />;
+    }
+
+    return (
+        <Box width={24} height={24} borderRadius={6} backgroundColor="elementFillContrast">
+            <Center>
+                <Icon name={coin ? 'coins' : 'circuitry'} size={16} color="contentPrimaryInverse" />
+            </Center>
+        </Box>
+    );
+};
+
+// Shared so the collapsed preview and the expanded rows render identical icons.
+const PermissionIcon = ({ permission }: { permission: MethodPermission }) => (
+    <Icon name={getPermissionIcon(permission)} size={20} intent="neutral" priority="secondary" />
+);
+
+const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] }) => {
+    const shown = permissions.slice(0, PERMISSION_PREVIEW_LIMIT);
+    const remaining = permissions.length - shown.length;
+
+    return (
+        <Row gap={spacings.xxs}>
+            {shown.map(permission => (
+                <PermissionIcon key={permission} permission={permission} />
+            ))}
+            {remaining > 0 && (
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    +{remaining}
+                </Text>
+            )}
+        </Row>
+    );
+};
+
+type PermissionGroupProps = {
+    coin?: string;
+    permissions: MethodPermission[];
+    defaultIsOpen: boolean;
+    onRemovePermission?: (permission: PermissionRequest) => void;
+};
+
+const PermissionGroup = ({
+    coin,
+    permissions,
+    defaultIsOpen,
+    onRemovePermission,
+}: PermissionGroupProps) => {
+    const { translationString } = useTranslation();
+    const [isOpen, setIsOpen] = useState(defaultIsOpen);
+
+    return (
+        <Collapsible isOpen={isOpen}>
+            <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
+                <Row
+                    justifyContent="space-between"
+                    gap={spacings.sm}
+                    padding={{ vertical: spacings.xs }}
+                >
+                    <Row gap={spacings.md}>
+                        <Row gap={spacings.sm}>
+                            <GroupBadge coin={coin} />
+                            <Text typographyStyle="body-md-strong">
+                                {coin ? getCoinLabel(coin) : <Translation id="TR_DEVICE" />}
+                            </Text>
+                        </Row>
+                        {!isOpen && <PermissionPreview permissions={permissions} />}
+                    </Row>
+                    <Collapsible.ToggleIcon iconName="caretDown" size={20} />
+                </Row>
+            </Collapsible.Toggle>
+            <Collapsible.Content>
+                <Column gap={spacings.xs} margin={{ top: spacings.xxs, bottom: spacings.xs }}>
+                    {permissions.map(permission => (
+                        <PermissionRow key={permission}>
+                            <Row gap={spacings.sm}>
+                                <PermissionIcon permission={permission} />
+                                <Text typographyStyle="body-sm">
+                                    {getPermissionText(permission)}
+                                </Text>
+                                {onRemovePermission && (
+                                    <PermissionRemove>
+                                        <IconButton
+                                            icon="xCircle"
+                                            size="small"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            tooltip={{}}
+                                            aria-label={translationString('TR_FORGET_PERMISSION')}
+                                            onClick={() => onRemovePermission({ permission, coin })}
+                                        />
+                                    </PermissionRemove>
+                                )}
+                            </Row>
+                        </PermissionRow>
+                    ))}
+                </Column>
+            </Collapsible.Content>
+        </Collapsible>
+    );
+};
+
 type GroupedPermissionsListProps = {
     permissions: PermissionRequest[];
+    // Groups are expanded by default in the grant-permissions modal (a security
+    // decision — nothing hidden behind a click) and collapsed in the settings
+    // overview, where the preview communicates scope at a glance.
+    defaultIsOpen?: boolean;
     onRemovePermission?: (permission: PermissionRequest) => void;
 };
 
 export const GroupedPermissionsList = ({
     permissions,
+    defaultIsOpen = false,
     onRemovePermission,
 }: GroupedPermissionsListProps) => (
-    <PermissionsList>
+    <Column
+        hasDivider
+        gap={spacings.xs}
+        alignItems="stretch"
+        padding={{ horizontal: spacings.xxs }}
+    >
         {groupPermissionsByCoin(permissions).map(group => (
-            <li key={group.coin ?? '__device__'}>
-                <Text>
-                    {group.coin ? getCoinLabel(group.coin) : <Translation id="TR_DEVICE" />}
-                </Text>
-                <PermissionsList>
-                    {group.permissions.map(permission => (
-                        <li key={permission}>
-                            {onRemovePermission ? (
-                                <Row gap={spacings.xs} alignItems="center">
-                                    <Text>{getPermissionText(permission)}</Text>
-                                    <IconButton
-                                        icon="xCircle"
-                                        size="small"
-                                        intent="neutral"
-                                        priority="secondary"
-                                        tooltip={{
-                                            content: <Translation id="TR_FORGET_PERMISSION" />,
-                                            placement: 'left',
-                                        }}
-                                        onClick={() =>
-                                            onRemovePermission({ permission, coin: group.coin })
-                                        }
-                                    />
-                                </Row>
-                            ) : (
-                                getPermissionText(permission)
-                            )}
-                        </li>
-                    ))}
-                </PermissionsList>
-            </li>
+            <PermissionGroup
+                key={group.coin ?? '__device__'}
+                coin={group.coin}
+                permissions={group.permissions}
+                defaultIsOpen={defaultIsOpen}
+                onRemovePermission={onRemovePermission}
+            />
         ))}
-    </PermissionsList>
+    </Column>
 );
 
 export const ConnectPermissions = () => {
@@ -127,6 +276,7 @@ export const ConnectPermissions = () => {
                         key={app.origin}
                         gap={spacings.md}
                         padding={spacings.md}
+                        alignItems="flex-start"
                         data-testid={`@settings/connect-apps/${index}`}
                     >
                         <ConnectAppIcon src={app.manifest?.appIcon} />
@@ -146,19 +296,17 @@ export const ConnectPermissions = () => {
 
                                 {app.process && <ConnectProcessLabel process={app.process} />}
                             </Row>
-                            <Text intent="neutral" priority="secondary">
-                                <GroupedPermissionsList
-                                    permissions={app.allowedPermissions}
-                                    onRemovePermission={permission => {
-                                        dispatch(
-                                            connectPopupActions.forgetAppPermission({
-                                                origin: app.origin,
-                                                permission,
-                                            }),
-                                        );
-                                    }}
-                                />
-                            </Text>
+                            <GroupedPermissionsList
+                                permissions={app.allowedPermissions}
+                                onRemovePermission={permission => {
+                                    dispatch(
+                                        connectPopupActions.forgetAppPermission({
+                                            origin: app.origin,
+                                            permission,
+                                        }),
+                                    );
+                                }}
+                            />
                         </Column>
 
                         <Dropdown
