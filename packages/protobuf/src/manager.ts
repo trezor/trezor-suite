@@ -190,7 +190,18 @@ export const ProtobufManager = () => {
         const wireTypeExtension = extensions['wire_type'];
         const wireTypeOption = unknownOptions.find(o => o.no === wireTypeExtension?.number);
 
-        return wireTypeOption ? wireTypeOption.data[0] : undefined;
+        if (!wireTypeOption) return undefined;
+        // data holds the raw varint bytes; decode all bytes instead of reading only data[0],
+        // which would be wrong for values >= 128 encoded as multi-byte varints (e.g. 2302 → FE 11).
+        let result = 0;
+        let shift = 0;
+        for (const byte of wireTypeOption.data) {
+            result |= (byte & 0x7f) << shift;
+            if (!(byte & 0x80)) break;
+            shift += 7;
+        }
+
+        return result;
     };
 
     const findEnum = (enumName: string) => enums[enumName];
