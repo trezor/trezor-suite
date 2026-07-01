@@ -111,6 +111,7 @@ export const WalletConnectPairScreen = () => {
                             intent="neutral"
                             priority="secondary"
                             iconName="qrCode"
+                            size="medium"
                             onPress={openModal}
                         />
                     }
