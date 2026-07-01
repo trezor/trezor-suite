@@ -104,3 +104,33 @@ export const verifyEntry = async (
 
     return result.success ? result.payload.valid : false;
 };
+
+/**
+ * Verify that an address is NOT in the device's Merkle tree (used by dblookup when address absent).
+ * Sends a non-membership proof + witness to the device; returns true if device confirms non-membership.
+ */
+export const verifyNonMembership = async (
+    address: string,
+    proof: MerkleProof,
+    witnessAddress: string | null,
+    witnessValue: Buffer | null,
+    device?: Device,
+): Promise<boolean> => {
+    if (!device) return true;
+
+    const addressHex = Buffer.from(address, 'utf8').toString('hex');
+
+    const result = await TrezorConnect.authDbLookup({
+        device,
+        address: addressHex,
+        proof,
+        ...(witnessAddress !== null && {
+            witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
+            witness_value: witnessValue!.toString('hex'),
+        }),
+    });
+
+    if (!result.success) return false;
+
+    return result.payload.valid && result.payload.membership === false;
+};

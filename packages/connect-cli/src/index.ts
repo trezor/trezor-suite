@@ -3,7 +3,7 @@ import path from 'path';
 
 import { BitcoinAddressDb } from './bitcoin-address-db';
 import { computeMerkleRoot, generateMerkleProof, generateNonMembershipProof } from './merkle-tree';
-import { verifyAndUpdateEntry, verifyEntry } from './verify-authenticity';
+import { verifyAndUpdateEntry, verifyEntry, verifyNonMembership } from './verify-authenticity';
 import TrezorConnect, {
     type AddressMetadata,
     createBitcoinAddressNotificationHandler,
@@ -112,9 +112,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 }
                 const entry = db.lookup(address, networkSymbol);
                 const treeState = db.getTreeState();
+                const allEntries = db.getAllEntries();
                 if (entry === null) {
-                    console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: null, counter: null, proof: [], treeState }, null, 2));
-                    console.log('Authenticity verified: not in DB');
+                    const nm = generateNonMembershipProof(allEntries, address, networkSymbol);
+                    const absent = await verifyNonMembership(address, nm.proof, nm.witnessAddress, nm.witnessValue, device);
+                    console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: null, counter: null, proof: nm.proof, treeState }, null, 2));
+                    console.log('Authenticity verified (non-membership):', absent);
                 } else {
                     const allEntries = db.getAllEntries();
                     const proof = generateMerkleProof(allEntries, address, networkSymbol);
