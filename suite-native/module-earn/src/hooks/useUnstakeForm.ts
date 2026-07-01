@@ -15,6 +15,8 @@ import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
     type NativeStakingRootState,
+    selectCanClaimByAccountKey,
+    selectClaimableAmountByAccountKey,
     selectStakedBalanceByAccountKey,
 } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
@@ -34,6 +36,13 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     const stakedBalance = useSelector((state: NativeStakingRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
+    const canClaim = useSelector((state: NativeStakingRootState) =>
+        selectCanClaimByAccountKey(state, accountKey),
+    );
+    const claimableAmount =
+        useSelector((state: NativeStakingRootState) =>
+            selectClaimableAmountByAccountKey(state, accountKey),
+        ) ?? '0';
 
     const network = account ? getNetwork(account.symbol) : null;
 
@@ -100,6 +109,8 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         form,
         amountValue,
         stakedBalance,
+        canClaim,
+        claimableAmount,
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,

@@ -2657,6 +2657,8 @@ export const messages = {
             },
         },
         unstakeFlowScreen: {
+            canClaimWarning:
+                'You can already claim {amount}. Claim now or wait until your new unstake is processed.',
             instantlyAvailable: {
                 label: 'Instantly available (est.)',
                 infoTitle: 'Instantly available (estimate)',
