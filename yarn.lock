@@ -22962,7 +22962,9 @@ __metadata:
     "@trezor/connect-mobile": "workspace:*"
     "@types/react": "npm:19.2.14"
     expo: "npm:~56.0.6"
+    expo-crypto: "npm:~56.0.4"
     expo-linking: "npm:~56.0.12"
+    expo-standard-web-crypto: "npm:~56.0.3"
     expo-status-bar: "npm:~56.0.4"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
@@ -27352,6 +27354,15 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/9e3beef346093d47afb86f58c5343aa84183f0148fe88cb4bf595ca2c720034d66fee32320abbea125c4344e22abc57d7a2f745dcec88b346f321ecfa3b67527
+  languageName: node
+  linkType: hard
+
+"expo-standard-web-crypto@npm:~56.0.3":
+  version: 56.0.3
+  resolution: "expo-standard-web-crypto@npm:56.0.3"
+  peerDependencies:
+    expo-crypto: ^56.0.4
+  checksum: 10/7cee6d80754b08fcae1c169e53cc58604ebeacbee1c226dacc57b6fc0d14f05f228654dc0a17e20068c7f50d88919a296241031bf8f60575aac77b11ff4ba744
   languageName: node
   linkType: hard
 

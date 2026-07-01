@@ -477,6 +477,26 @@ import IconWeb from '../components/icons/IconWeb';
                 yarn add @trezor/connect-mobile
                 ```
 
+                {<h3>Crypto polyfill</h3>}
+
+                React Native/Expo does not ship the Web Crypto API that `@trezor/connect-mobile` relies on (it uses `crypto.randomUUID`). Install the polyfill packages:
+
+                ```bash
+                npx expo install expo-crypto expo-standard-web-crypto
+                ```
+
+                Then apply the polyfill before your app starts (for example at the top of `index.js`). `expo-standard-web-crypto` installs `crypto.getRandomValues`, while `crypto.randomUUID` is backed by `expo-crypto`:
+
+                ```javascript
+                import { randomUUID } from 'expo-crypto';
+                import { polyfillWebCrypto } from 'expo-standard-web-crypto';
+
+                polyfillWebCrypto();
+                if (typeof crypto !== 'undefined' && !crypto.randomUUID) {
+                    crypto.randomUUID = randomUUID;
+                }
+                ```
+
                 {<h3>Initialization of the API</h3>}
 
                 ```javascript

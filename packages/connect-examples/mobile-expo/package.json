@@ -12,7 +12,9 @@
     "dependencies": {
         "@trezor/connect-mobile": "workspace:*",
         "expo": "~56.0.6",
+        "expo-crypto": "~56.0.4",
         "expo-linking": "~56.0.12",
+        "expo-standard-web-crypto": "~56.0.3",
         "expo-status-bar": "~56.0.4",
         "react": "19.2.3",
         "react-native": "0.85.3"
