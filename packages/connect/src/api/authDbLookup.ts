@@ -20,7 +20,6 @@ export default class AuthDbLookup extends AbstractMethod<'authDbLookup', PROTO.A
 
         super(message, params);
         this.useDeviceState = false;
-        this.useEmptyPassphrase = true;
     }
 
     get requiredPermissions(): MethodPermission[] {
