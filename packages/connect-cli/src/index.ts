@@ -111,8 +111,21 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 }
                 const entry = db.lookupOrCreate(address, networkSymbol);
                 const allEntries = db.getAllEntries();
+                const currentRoot = computeMerkleRoot(allEntries);
+                let treeState = db.getTreeState();
+
+                // Sync the MPT root to the device if the device has no root or has a stale one
+                // (e.g. after an SMT→MPT migration). Without this the device would DataError on
+                // authDbLookup because the proof was built against a root it has never seen.
+                if (device && currentRoot && currentRoot !== treeState?.root) {
+                    const setRootResult = await TrezorConnect.authDbSetRoot({ device, root: currentRoot });
+                    if (setRootResult.success) {
+                        treeState = { root: currentRoot, counter: setRootResult.payload.counter };
+                        db.setTreeState(treeState);
+                    }
+                }
+
                 const proof = generateMerkleProof(allEntries, address, networkSymbol);
-                const treeState = db.getTreeState();
                 const authentic = await verifyEntry(address, networkSymbol, entry, proof, device);
                 console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof, treeState }, null, 2));
                 console.log('Authenticity verified:', authentic);
