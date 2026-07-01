@@ -135,7 +135,7 @@ export const ConnectPermissionsModal = () => {
                     </Text>
 
                     <Card>
-                        <GroupedPermissionsList permissions={permissionTypes} />
+                        <GroupedPermissionsList permissions={permissionTypes} defaultIsOpen />
                     </Card>
                     {source.type !== CALL_SOURCE_WALLETCONNECT && (
                         <>
