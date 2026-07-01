@@ -14,10 +14,10 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
+import { useEthereumCancelTxCompose } from 'src/hooks/wallet/useEthereumCancelTxCompose';
 
 import { CancelTransaction } from './CancelTransaction';
 import { CancelTransactionButton } from './CancelTransactionButton';
@@ -47,12 +47,23 @@ export const CancelTransactionModal = ({
     chainedTxs,
     selectedAccount,
 }: CancelTransactionModalProps) => {
-    const [error, setError] = useState<string | null>(null);
     const { account } = selectedAccount;
-
     const dispatch = useDispatch();
-    const [composedCancelTx, setComposedCancelTx] =
+
+    const {
+        composedCancelTx: ethComposedCancelTx,
+        cancelFormState,
+        error: ethError,
+    } = useEthereumCancelTxCompose({ account, tx });
+
+    const [utxoComposedCancelTx, setUtxoComposedCancelTx] =
         useState<PrecomposedTransactionFinalCancelRbf | null>(null);
+    const [utxoError, setUtxoError] = useState<string | null>(null);
+
+    const composedCancelTx =
+        account.networkType === 'ethereum' ? ethComposedCancelTx : utxoComposedCancelTx;
+    const error = account.networkType === 'ethereum' ? ethError : utxoError;
+    const isComposing = composedCancelTx === null && error === null;
 
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, account.key),
@@ -61,24 +72,20 @@ export const CancelTransactionModal = ({
     const isTxConfirmed = confirmations > 0;
 
     useEffect(() => {
-        if (tx.vsize === undefined) {
-            return;
-        }
-
-        if (!isComposeCancelTransactionPartialAccount(account)) {
-            return;
-        }
+        if (account.networkType === 'ethereum') return;
+        if (tx.vsize === undefined) return;
+        if (!isComposeCancelTransactionPartialAccount(account)) return;
 
         dispatch(composeCancelTransactionThunk({ account, tx, chainedTxs }))
             .unwrap()
             .then(precomposed => {
-                setComposedCancelTx({ ...precomposed, rbfType: 'cancel', prevTxid: tx.txid });
+                setUtxoComposedCancelTx({ ...precomposed, rbfType: 'cancel', prevTxid: tx.txid });
             })
-            .catch(setError);
+            .catch(setUtxoError);
     }, [account, tx, dispatch, chainedTxs]);
 
     return (
-        <CancelTxContext.Provider value={{ composedCancelTx }}>
+        <CancelTxContext.Provider value={{ composedCancelTx, cancelFormState, isComposing }}>
             <TxDetailModalBase
                 tx={tx}
                 onCancel={onCancel}
@@ -90,7 +97,10 @@ export const CancelTransactionModal = ({
                         </Modal.Button>
                     ) : (
                         <>
-                            <CancelTransactionButton account={selectedAccount.account} />
+                            <CancelTransactionButton
+                                account={selectedAccount.account}
+                                onSuccess={onCancel}
+                            />
                             {error !== null ? (
                                 // This shall never happen, error like this always signal big in the code,
                                 // this is here just to make easier to detect and fix
@@ -112,7 +122,7 @@ export const CancelTransactionModal = ({
                         networkType={account.networkType}
                     />
                 ) : (
-                    <Column gap={spacings.md}>
+                    <Column gap={16}>
                         <CancelTransaction tx={tx} selectedAccount={selectedAccount} />
                         <AffectedTransactions showChained={onShowChained} chainedTxs={chainedTxs} />
                     </Column>
