@@ -165,6 +165,9 @@
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
+        "@anthropic-ai/claude-code": {
+            "built": true
+        },
         "@bufbuild/buf": {
             "built": true
         },
