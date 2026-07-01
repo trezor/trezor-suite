@@ -46,6 +46,10 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
+      - name: Fetch Cardano native binaries
+        uses: ./.github/actions/fetch-cardano-native-binaries
+        with:
+          platform: ${{ github.event.inputs.PLATFORM == 'android' && 'android' || github.event.inputs.PLATFORM == 'ios' && 'ios' || 'all' }}
       - name: Trigger adhoc build Android
         working-directory: suite-native/app
         if: ${{ github.event.inputs.PLATFORM == 'android' || github.event.inputs.PLATFORM == 'all' }}

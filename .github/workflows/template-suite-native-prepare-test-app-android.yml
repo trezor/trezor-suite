@@ -21,6 +21,12 @@ jobs:
         with:
           submodules: "true"
 
+      - name: Fetch Cardano native binaries
+        uses: ./.github/actions/fetch-cardano-native-binaries
+        with:
+          platform: android
+          android-abis: x86_64
+
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
         with:

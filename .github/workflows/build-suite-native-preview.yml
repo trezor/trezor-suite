@@ -74,6 +74,10 @@ jobs:
             echo "RUNTIME_BUILD_EXISTS=true" >> $GITHUB_ENV
           fi
 
+      - name: Fetch Cardano native binaries
+        if: env.RUNTIME_BUILD_EXISTS == 'false'
+        uses: ./.github/actions/fetch-cardano-native-binaries
+
       - name: Create preview builds if fingerprint changed
         # Only create preview builds if there is no build with the same runtimeVersion on EAS already
         if: env.RUNTIME_BUILD_EXISTS == 'false'

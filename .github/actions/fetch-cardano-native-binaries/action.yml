@@ -1,0 +1,44 @@
+name: Fetch Cardano native binaries
+description: Fetch precompiled Cardano native binaries tracked by Git LFS.
+
+inputs:
+  platform:
+    description: Cardano native platform artifacts to fetch.
+    required: false
+    default: all
+  android-abis:
+    description: Comma-separated Android ABIs to fetch when platform is android or all.
+    required: false
+    default: armeabi-v7a,arm64-v8a,x86,x86_64
+
+runs:
+  using: composite
+  steps:
+    - name: Fetch Cardano native binaries
+      shell: bash
+      env:
+        CARDANO_NATIVE_PLATFORM: ${{ inputs.platform }}
+        CARDANO_ANDROID_ABIS: ${{ inputs.android-abis }}
+      run: |
+        set -euo pipefail
+
+        include_paths=("suite-native/app/native-libs/cardano/include/**")
+
+        if [[ "$CARDANO_NATIVE_PLATFORM" == "android" || "$CARDANO_NATIVE_PLATFORM" == "all" ]]; then
+          IFS=',' read -ra android_abis <<< "$CARDANO_ANDROID_ABIS"
+
+          for android_abi in "${android_abis[@]}"; do
+            include_paths+=("suite-native/app/native-libs/cardano/android/${android_abi}/**")
+          done
+        fi
+
+        if [[ "$CARDANO_NATIVE_PLATFORM" == "ios" || "$CARDANO_NATIVE_PLATFORM" == "all" ]]; then
+          include_paths+=("suite-native/app/native-libs/cardano/ios/**")
+        fi
+
+        if [[ "$CARDANO_NATIVE_PLATFORM" != "android" && "$CARDANO_NATIVE_PLATFORM" != "ios" && "$CARDANO_NATIVE_PLATFORM" != "all" ]]; then
+          echo "Unsupported Cardano native platform: $CARDANO_NATIVE_PLATFORM" >&2
+          exit 1
+        fi
+
+        git lfs pull --include "$(IFS=','; echo "${include_paths[*]}")"

@@ -77,6 +77,8 @@ const config = {
                 'crc/calculators/crc16xmodem': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc16xmodem.js`,
                 'bignumber.js': `${rootNodeModulesPath}/bignumber.js/dist/bignumber.cjs`,
                 uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
+                '@emurgo/cardano-serialization-lib-browser': `${rootNodeModulesPath}/@emurgo/csl-mobile-bridge/src/index.ts`,
+                '@emurgo/cardano-serialization-lib-nodejs': `${rootNodeModulesPath}/@emurgo/csl-mobile-bridge/src/index.ts`,
 
                 // web3-validator package is by default trying to use non-existing minified index file. This fixes that.
                 // Can be removed once web3-validator fixup PR is merged: https://github.com/web3/web3.js/pull/7016.
@@ -93,13 +95,6 @@ const config = {
                 const source = `${rootNodeModulesPath}/@trezor/coins-${coinsModuleMatch[1]}/src/${coinsModuleMatch[2]}/index.ts`;
 
                 return getSourceFile(source);
-            }
-
-            if (moduleName.startsWith('@emurgo/cardano')) {
-                // Cardano libs doesn't have main field in package.json which will cause error in metro
-                // Also they use WASM which doesn't work in RN so we polyfill it with empty file to build errors
-                // In future we will need JS implementation of Cardano libs or C++ implementation
-                return getSourceFile('./cardanoPolyfills.js');
             }
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {

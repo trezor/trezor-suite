@@ -1,0 +1,162 @@
+diff --git a/android/CMakeLists.txt b/android/CMakeLists.txt
+index ef0e5d75de8a09e476e2ced11d9663c5a2be59a1..863e4e6979a9d184388d8a190573b692500730d7 100644
+--- a/android/CMakeLists.txt
++++ b/android/CMakeLists.txt
+@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
+ project(csl_mobile_bridge_jsi)
+ 
+ set(CMAKE_VERBOSE_MAKEFILE ON)
+-set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_STANDARD 20)
+ 
+ # Paths
+ set(BUILD_DIR ${CMAKE_CURRENT_LIST_DIR}/build)
+@@ -31,6 +31,7 @@ set_target_properties(
+         react_native_haskell_shelley
+         PROPERTIES
+         IMPORTED_LOCATION ${BUILD_DIR}/rustJniLibs/android/${ANDROID_ABI}/libreact_native_haskell_shelley.so
++        IMPORTED_SONAME libreact_native_haskell_shelley.so
+ )
+ target_include_directories(
+         react_native_haskell_shelley
+diff --git a/android/build.gradle b/android/build.gradle
+index 933cb657ecde41a3370e9b2f2ce98e7af576fcab..db50015b28eadd2f7ee429a9f03f2a7fe828ccf4 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -2,7 +2,6 @@ def DEFAULT_COMPILE_SDK_VERSION = 30
+ def DEFAULT_BUILD_TOOLS_VERSION = '30.0.3'
+ def DEFAULT_MIN_SDK_VERSION = 21
+ def DEFAULT_TARGET_SDK_VERSION = 31
+-def DEFAULT_NDK_API_LEVEL = 24
+ 
+ def safeExtGet(prop, fallback) {
+     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+@@ -10,7 +9,6 @@ def safeExtGet(prop, fallback) {
+ 
+ apply plugin: 'com.android.library'
+ apply plugin: 'maven-publish'
+-apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
+ 
+ def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())
+ 
+@@ -24,7 +22,6 @@ buildscript {
+   }
+ 
+   dependencies {
+-    classpath 'org.mozilla.rust-android-gradle:plugin:0.9.6'
+     classpath "com.android.tools.build:gradle:7.2.2"
+   }
+ }
+@@ -114,59 +111,45 @@ android {
+             //"${project.buildDir}/generated/source/codegen/java"
+           ]
+       }
+-      // jniLibs.srcDirs += ["${project.buildDir}/rustJniLibs/android"]
++      jniLibs.srcDirs += ["${project.buildDir}/rustJniLibs/android"]
+     }
+   }
+ }
+ 
+-// Task to install required Rust targets for Android
+-task installRustTargets(type: Exec) {
+-    description = 'Install required Rust targets for Android builds'
+-    commandLine 'rustup', 'target', 'add',
+-        'aarch64-linux-android',
+-        'armv7-linux-androideabi',
+-        'i686-linux-android',
+-        'x86_64-linux-android'
+-}
+-
+-cargo {
+-    profile = 'release'
+-    module = '../rust'
+-    libname = 'react_native_haskell_shelley'
+-    targets = ['arm', 'arm64', 'x86', 'x86_64']
+-    apiLevel = safeExtGet('ndkApiLevel', DEFAULT_NDK_API_LEVEL)
+-    prebuiltToolchains = true
+-    exec { spec, toolchain ->
+-        // Support 16KB page sizes
+-        // https://developer.android.com/guide/practices/page-sizes#other-build-systems
+-        spec.environment("RUST_ANDROID_GRADLE_CC_LINK_ARG", "-Wl,-z,max-page-size=16384,-soname,lib${libname}.so")
+-    }
++def getReactNativeArchitectures() {
++    return rootProject.hasProperty("reactNativeArchitectures")
++        ? rootProject.getProperty("reactNativeArchitectures")
++        : "armeabi-v7a,arm64-v8a,x86,x86_64"
++}
++
++def prepareCardanoNativeBridge = tasks.register("prepareCardanoNativeBridge", Exec) {
++    workingDir rootProject.rootDir.getParentFile()
++    environment "CARDANO_ANDROID_ABIS", getReactNativeArchitectures()
++    commandLine "node", new File(rootProject.rootDir.getParentFile(), "scripts/prepareCardanoNativeBridge.js").absolutePath, "android"
+ }
+ 
+ afterEvaluate {
+-    // Ensure Rust targets are installed before cargo build
+-    tasks.matching { it.name == "cargoBuild" }.configureEach {
+-        it.dependsOn("installRustTargets")
++    tasks.matching { it.name == 'javaPreCompileDebug' || it.name == 'javaPreCompileRelease' }.configureEach {
++        it.dependsOn(prepareCardanoNativeBridge)
+     }
+ 
+-    // Ensure Rust builds before any CMake build task
+-    tasks.matching { it.name.startsWith("buildCMake") }.configureEach {
+-        it.dependsOn("cargoBuild")
++    tasks.matching { it.name.matches(/merge.*JniLibFolders/) }.configureEach {
++        it.inputs.dir(new File(buildDir, "rustJniLibs/android"))
++        it.dependsOn(prepareCardanoNativeBridge)
+     }
+ }
+ 
+-tasks.whenTaskAdded { task ->
+-    if ((task.name == 'javaPreCompileDebug' || task.name == 'javaPreCompileRelease')) {
+-        task.dependsOn 'cargoBuild'
++gradle.projectsEvaluated {
++    rootProject.subprojects.each { subproject ->
++        subproject.tasks.matching { task ->
++            task.name.startsWith("configureCMake") ||
++                task.name.startsWith("buildCMake")
++        }.configureEach { task ->
++            task.dependsOn(prepareCardanoNativeBridge)
++        }
+     }
+ }
+ 
+-//https://github.com/mozilla/rust-android-gradle/issues/118
+-tasks.matching { it.name.matches(/merge.*JniLibFolders/) }.configureEach {
+-    it.inputs.dir(new File(buildDir, "rustJniLibs/android"))
+-    it.dependsOn("cargoBuild")
+-}
+-
+ repositories {
+   mavenCentral()
+   google()
+diff --git a/emurgo-csl-mobile-bridge.podspec b/emurgo-csl-mobile-bridge.podspec
+index 2394a680954f2969327e202f564101715c6f074e..18fc00959e139fd1860e03144b913824d4f38293 100644
+--- a/emurgo-csl-mobile-bridge.podspec
++++ b/emurgo-csl-mobile-bridge.podspec
+@@ -20,18 +20,20 @@ Pod::Spec.new do |s|
+   s.module_name = 'EmurgoCslMobileBridge'
+ 
+   s.script_phase = {
+-    :name => "Build Rust Binary",
+-    :script => 'bash "${PODS_TARGET_SRCROOT}/ios/build.sh"',
++    :name => "Prepare Precompiled Cardano Binary",
++    :script => 'node "$PODS_ROOT/../../scripts/prepareCardanoNativeBridge.js" ios',
+     :execution_position => :before_compile
+   }
+ 
+-  s.compiler_flags  = folly_compiler_flags + ' -DRCT_NEW_ARCH_ENABLED=1 -Wc++17-extensions'
++  s.compiler_flags  = folly_compiler_flags + ' -DRCT_NEW_ARCH_ENABLED=1 -DFOLLY_CFG_NO_COROUTINES=1 -Wc++20-extensions'
+   s.vendored_libraries = [ "$(CONFIGURATION_BUILD_DIR)/libreact_native_haskell_shelley.a" ]
+   s.libraries = "react_native_haskell_shelley"
+ 
+   s.pod_target_xcconfig    = {
+       "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\" \"$(CONFIGURATION_BUILD_DIR)\"",
+-      "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
++      "CLANG_CXX_LANGUAGE_STANDARD" => "c++20",
++      "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited) FOLLY_CFG_NO_COROUTINES=1",
++      "OTHER_CPLUSPLUSFLAGS" => "$(inherited) -DFOLLY_CFG_NO_COROUTINES=1",
+       "ENABLE_BITCODE" => "NO",
+   }
+ 

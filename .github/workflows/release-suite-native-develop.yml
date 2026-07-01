@@ -41,6 +41,8 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
+      - name: Fetch Cardano native binaries
+        uses: ./.github/actions/fetch-cardano-native-binaries
       - name: Build on EAS Android
         run: eas build
           --platform android

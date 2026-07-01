@@ -17,8 +17,8 @@ web-build/
 *.mobileprovision
 
 # These are generated when running `expo prebuild`
-ios/
-android/
+/ios/
+/android/
 
 # Metro
 .metro-health-check*

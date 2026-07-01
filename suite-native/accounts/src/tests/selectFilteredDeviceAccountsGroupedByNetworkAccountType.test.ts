@@ -195,6 +195,7 @@ describe('selectFilteredDeviceAccountsGroupedByNetworkAccountType', () => {
         ).toEqual({
             'Bitcoin Taproot accounts': [withLabel(btcTaprootAccount, null)],
             'Ethereum default accounts': [withLabel(ethAccount, 'Long-term ETH')],
+            'Cardano default accounts': [withLabel(adaAccount, null)],
         });
     });
 

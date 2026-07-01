@@ -1,3 +1,4 @@
+@emurgo/csl-mobile-bridge
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @hookform/resolvers
