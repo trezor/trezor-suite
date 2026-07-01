@@ -44,7 +44,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
 
   Database options
-    --db-path=<path>                          Path to the SQLite DB file (default: <cli-dir>/bitcoin-addresses.db)
+    --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<sha256(getAddress)>.db)
 `;
 
 // read and parse application arguments

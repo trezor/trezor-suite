@@ -1,4 +1,6 @@
+import { createHash } from 'crypto';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
 import { BitcoinAddressDb } from './bitcoin-address-db';
@@ -66,10 +68,16 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
 
 const DB_METHODS = new Set(['dblookup', 'dbchange']);
 
-const getDbPath = () =>
-    typeof args['db-path'] === 'string'
-        ? args['db-path']
-        : path.join(__dirname, 'bitcoin-addresses.db');
+const getDbPath = (seedAddress?: string) => {
+    if (typeof args['db-path'] === 'string') return args['db-path'];
+    const profileDir = path.join(os.homedir(), '.trezor');
+    fs.mkdirSync(profileDir, { recursive: true });
+    if (seedAddress) {
+        const hash = createHash('sha256').update(seedAddress).digest('hex');
+        return path.join(profileDir, `auth_database_${hash}.db`);
+    }
+    return path.join(profileDir, 'auth_database_unknown.db');
+};
 
 const getMethods = (): string[] =>
     args.method && args.method !== 'none'
@@ -100,7 +108,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         console.error('Received:', args.params);
         process.exit(1);
     }
-    const db = new BitcoinAddressDb(getDbPath());
+    let seedAddress: string | undefined;
+    if (device) {
+        const addrResult = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", coin: 'btc', showOnTrezor: false });
+        if (addrResult.success) seedAddress = addrResult.payload.address;
+    }
+    const db = new BitcoinAddressDb(getDbPath(seedAddress));
 
     try {
         for (const method of dbMethods) {
