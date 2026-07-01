@@ -23,6 +23,7 @@
         { "path": "../intl" },
         { "path": "../router" },
         { "path": "../../packages/components" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },

@@ -71,7 +71,6 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -228,6 +227,7 @@
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
+        { "path": "../icons" },
         { "path": "../ipc-proxy" },
         { "path": "../product-components" },
         { "path": "../react-utils" },

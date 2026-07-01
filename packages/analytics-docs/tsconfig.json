@@ -22,6 +22,7 @@
         },
         { "path": "../components" },
         { "path": "../eslint" },
+        { "path": "../icons" },
         { "path": "../react-utils" },
         { "path": "../theme" },
         { "path": "../utils" }
