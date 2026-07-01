@@ -13,18 +13,24 @@ if (signingKey === undefined) {
 
 type GetSignatureFileProps = { feedURL: string; downloadedFile: string };
 
+const GET_SIGNATURE_TIMEOUT = 10_000; // [ms]
 /**
  * Get signature files, which are available next to installation files.
  */
 export const getSignatureFile = async ({ downloadedFile, feedURL }: GetSignatureFileProps) => {
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), GET_SIGNATURE_TIMEOUT);
+
     try {
         const filename = path.basename(downloadedFile);
         const signatureFileURL = `${removeTrailingSlashes(feedURL)}/${filename}.asc`;
-        const signatureFile = await fetch(signatureFileURL);
+        const signatureFile = await fetch(signatureFileURL, { signal: abortController.signal });
 
-        return signatureFile.text();
+        return await signatureFile.text();
     } catch {
         return null;
+    } finally {
+        clearTimeout(timeoutId);
     }
 };
 
