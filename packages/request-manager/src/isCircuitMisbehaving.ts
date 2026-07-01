@@ -42,3 +42,24 @@ export const isCircuitMisbehaving = (error: unknown): boolean => {
 
     return false;
 };
+
+export type CircuitMisbehavingDetails = {
+    host: string;
+    identity?: string;
+    method: 'http' | 'fetch';
+};
+
+export class CircuitMisbehavingError extends Error {
+    readonly host: string;
+    readonly identity?: string;
+    readonly method: 'http' | 'fetch';
+
+    constructor(details: CircuitMisbehavingDetails, cause: unknown) {
+        super('CIRCUIT_MISBEHAVING', { cause });
+        this.name = 'CircuitMisbehavingError';
+        this.host = details.host;
+        this.identity = details.identity;
+        this.method = details.method;
+        this.cause = cause;
+    }
+}

@@ -1,6 +1,6 @@
 import type http from 'http';
 
-import { isCircuitMisbehaving } from './isCircuitMisbehaving';
+import { CircuitMisbehavingError, isCircuitMisbehaving } from './isCircuitMisbehaving';
 import { type InterceptorOptions } from './types';
 
 export const createRequestPool = (interceptorOptions: InterceptorOptions) => {
@@ -28,19 +28,39 @@ export const createRequestPool = (interceptorOptions: InterceptorOptions) => {
             });
         });
 
-        request.on('error', (error: Error) => {
-            if (isCircuitMisbehaving(error)) {
+        // Override `emit` so that when an 'error' event fires, all listeners
+        // (including consumer ones) receive a typed CircuitMisbehavingError
+        // instead of the raw network error.
+        const originalEmit = request.emit.bind(request);
+        request.emit = (event: string, ...args: unknown[]) => {
+            if (event === 'error' && isCircuitMisbehaving(args[0])) {
                 interceptorOptions.handler({
                     type: 'CIRCUIT_MISBEHAVING',
                     identity: identity?.split(':')[0],
                 });
-            } else {
+
+                return originalEmit(
+                    'error',
+                    new CircuitMisbehavingError(
+                        {
+                            host: host ?? 'unknown',
+                            identity: identity?.split(':')[0],
+                            method: 'http',
+                        },
+                        args[0],
+                    ),
+                );
+            }
+
+            if (event === 'error') {
                 interceptorOptions.handler({
                     type: 'ERROR',
-                    error,
+                    error: args[0] as Error,
                 });
             }
-        });
+
+            return originalEmit(event, ...args);
+        };
 
         return request;
     };

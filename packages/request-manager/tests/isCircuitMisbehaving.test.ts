@@ -1,4 +1,4 @@
-import { isCircuitMisbehaving } from '../src/isCircuitMisbehaving';
+import { CircuitMisbehavingError, isCircuitMisbehaving } from '../src/isCircuitMisbehaving';
 
 describe('isCircuitMisbehaving', () => {
     it('returns true for ECONNRESET error', () => {
@@ -115,5 +115,47 @@ describe('isCircuitMisbehaving', () => {
     it('returns false when cause is null', () => {
         const error = Object.assign(new TypeError('fetch failed'), { cause: null });
         expect(isCircuitMisbehaving(error)).toBe(false);
+    });
+});
+
+describe('CircuitMisbehavingError', () => {
+    it('has correct name, message and properties', () => {
+        const cause = Object.assign(new Error('socket hang up'), { code: 'ECONNRESET' });
+        const error = new CircuitMisbehavingError(
+            { host: 'example.onion', identity: 'coinjoin-1', method: 'fetch' },
+            cause,
+        );
+
+        expect(error).toBeInstanceOf(Error);
+        expect(error).toBeInstanceOf(CircuitMisbehavingError);
+        expect(error.name).toBe('CircuitMisbehavingError');
+        expect(error.host).toBe('example.onion');
+        expect(error.identity).toBe('coinjoin-1');
+        expect(error.method).toBe('fetch');
+        expect(error.cause).toBe(cause);
+        expect(error.message).toBe('CIRCUIT_MISBEHAVING');
+    });
+
+    it('handles missing identity', () => {
+        const cause = new Error('timeout');
+        const error = new CircuitMisbehavingError(
+            { host: 'blockstream.info', method: 'http' },
+            cause,
+        );
+
+        expect(error.identity).toBeUndefined();
+        expect(error.message).toBe('CIRCUIT_MISBEHAVING');
+    });
+
+    it('can be caught with instanceof', () => {
+        const cause = new Error('ECONNRESET');
+        const error = new CircuitMisbehavingError(
+            { host: 'coordinator.onion', identity: 'default', method: 'fetch' },
+            cause,
+        );
+
+        expect(() => {
+            throw error;
+        }).toThrow(CircuitMisbehavingError);
     });
 });

@@ -1,4 +1,4 @@
-import { isCircuitMisbehaving } from '../isCircuitMisbehaving';
+import { CircuitMisbehavingError, isCircuitMisbehaving } from '../isCircuitMisbehaving';
 import { type InterceptorContext } from './interceptorTypes';
 
 const requestTimeoutLimit = 1000 * 30;
@@ -47,6 +47,11 @@ export const monitorFetch = <T extends { status: number }>({
                     type: 'CIRCUIT_MISBEHAVING',
                     identity: username,
                 });
+
+                throw new CircuitMisbehavingError(
+                    { host, identity: username, method: 'fetch' },
+                    error,
+                );
             } else {
                 context.handler({
                     type: 'ERROR',

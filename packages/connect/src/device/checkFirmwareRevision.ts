@@ -22,7 +22,7 @@ const NODEJS_NETWORK_ERROR_CODES = [
     'EAI_AGAIN',
     'ENETUNREACH',
     'EHOSTUNREACH',
-    'ETIMEDOUT',
+    'ETIMEDOUT', // TODO CIRCUIT_MISBEHAVING error.message
 ];
 
 // Native `fetch` (undici) reports connectivity failures as `TypeError: fetch failed` and attaches
