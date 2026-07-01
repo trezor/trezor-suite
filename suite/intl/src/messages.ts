@@ -10684,6 +10684,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_CLAIM_CONFIRM',
         defaultMessage: 'Claim voting rewards?',
     },
+    TR_EARN_TRON_CLAIM_COMPLETE: {
+        id: 'TR_EARN_TRON_CLAIM_COMPLETE',
+        defaultMessage: 'Rewards claimed',
+    },
+    TR_EARN_TRON_CLAIM_DESCRIPTION: {
+        id: 'TR_EARN_TRON_CLAIM_DESCRIPTION',
+        defaultMessage: 'The claimed amount was added to your balance.',
+    },
+    TR_EARN_TRON_CLAIMED: {
+        id: 'TR_EARN_TRON_CLAIMED',
+        defaultMessage: 'Claimed',
+    },
     TR_EARN_TRON_UNSTAKE_TITLE: {
         id: 'TR_EARN_TRON_UNSTAKE_TITLE',
         defaultMessage: 'Unstake',
