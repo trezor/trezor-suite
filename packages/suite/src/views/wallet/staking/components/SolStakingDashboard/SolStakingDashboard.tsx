@@ -28,7 +28,7 @@ import { StakingRewardsWarning } from './StakingRewardsWarning';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
-import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
+import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 import { ExternalStakingProviderCard } from '../StakingDashboard/components/ExternalStakingProviderCard';
 import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
