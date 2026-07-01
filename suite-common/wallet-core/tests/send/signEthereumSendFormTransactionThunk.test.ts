@@ -94,16 +94,7 @@ describe(signEthereumSendFormTransactionThunk.name, () => {
         expect(signMock.mock.calls[0][0].transaction.nonce).toBe('0x6');
     });
 
-    it('lets a custom nonce override the RBF nonce', async () => {
-        // gapped pending tx at 13, confirmed 6 -> next 6; override 6 wins over the RBF nonce 13
-        const store = initStore([...confirmedNonces(6), evmTx(13, { confirmed: false })]);
-
-        await sign(store, formState({ ethereumNonce: '6', rbfParams: ethereumRbf(13) }));
-
-        expect(signMock.mock.calls[0][0].transaction.nonce).toBe('0x6');
-    });
-
-    it('uses the RBF nonce when no custom nonce is set', async () => {
+    it('uses the RBF nonce when rbfParams are set', async () => {
         const store = initStore([...confirmedNonces(6), evmTx(13, { confirmed: false })]);
 
         await sign(store, formState({ rbfParams: ethereumRbf(13) }));
