@@ -44,6 +44,7 @@ expo-mcp
 expo-secure-store
 expo-sharing
 expo-splash-screen
+expo-standard-web-crypto
 expo-status-bar
 expo-system-ui
 expo-store-review
