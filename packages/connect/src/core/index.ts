@@ -23,6 +23,7 @@ import type {
     CoreEventMessage,
     CoreRequestMessage,
     DeviceIdentity,
+    MethodInfo,
     TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -877,6 +878,20 @@ export class Core extends EventEmitter {
                 // like regular methods using onCall function. In onCall, disconnecting device
                 // means that call immediately returns error.
                 if (message.payload.method === 'firmwareUpdate') {
+                    if (message.payload.__info) {
+                        this.sendCoreMessage(
+                            createResponseMessage(message.id, true, {
+                                name: 'firmwareUpdate',
+                                info: 'Update firmware',
+                                requiredPermissions: [{ permission: 'internal' }],
+                                useUi: true,
+                                useDevice: true,
+                                useDeviceState: false,
+                            } satisfies MethodInfo),
+                        );
+                        break;
+                    }
+
                     assertDeviceListConnected(this.deviceList);
 
                     const coreContext = this.getCoreContext();
