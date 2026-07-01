@@ -83,14 +83,19 @@ export const getEthereumRbfFeeInfo = (
         const currentMaxPriorityFee = new BigNumber(maxPriorityFeePerGas ?? '0');
         const highLevel = levels.find(l => l.label === 'high') ?? firstLevel;
 
+        // Gwei has at most 9 decimal places (1 Gwei = 1e9 Wei); multiplying by a decimal
+        // multiplier can produce more, which later fails Wei conversion. Round up to keep
+        // the bump at least as large as calculated.
         const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
             .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
             .toString();
         const newMaxPriorityFeePerGas = BigNumber.maximum(
             currentMaxPriorityFee,
             highLevel.maxPriorityFeePerGas ?? 0,
         )
             .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
             .toString();
 
         return {
