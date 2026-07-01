@@ -1058,7 +1058,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         await updateAll(transaction, 'devices', device => {
             if (typeof device.state === 'string') {
                 const legacyDevice = device as typeof device & { _state?: DeviceState };
-                if (typeof legacyDevice._state?.staticSessionId === 'string') {
+                if (typeof legacyDevice?._state?.staticSessionId === 'string') {
                     // Has _state property, migrate to that
                     device.state = legacyDevice._state;
                 } else {
