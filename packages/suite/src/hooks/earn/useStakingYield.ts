@@ -11,7 +11,7 @@ import { getTronVotes } from '@suite-common/wallet-utils';
 import { useSelector } from '../suite';
 
 interface UseStakingYieldProps {
-    symbol: NetworkSymbol;
+    symbol?: NetworkSymbol;
     accountKey?: AccountKey;
 }
 
