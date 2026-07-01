@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useStore } from 'react-redux';
 
 import { selectTradingAccountKeyByTradeType } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -10,6 +10,7 @@ import {
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
+    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { type FeeLevelLabel } from '@suite-common/wallet-types';
 import { type TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
@@ -29,12 +30,31 @@ export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTra
     const dispatch = useDispatch();
     const store = useStore<TradingTransactionRootState>();
 
+    const getNetworkFeeInfo = useCallback(
+        async (symbol: NetworkSymbol) => {
+            const networkFeeInfo = selectConvertedNetworkFeeInfo(store.getState(), symbol);
+
+            if (!networkFeeInfo) {
+                try {
+                    await dispatch(updateFeeInfoThunk({ networkSymbol: symbol })).unwrap();
+                } catch {
+                    console.error('Failed to re-fetch network fee info for composing transaction');
+
+                    return;
+                }
+            }
+
+            return networkFeeInfo ?? selectConvertedNetworkFeeInfo(store.getState(), symbol);
+        },
+        [store, dispatch],
+    );
+
     const composeTradingTransaction = useCallback(async () => {
         const state = store.getState();
         const sendAccountKey = selectTradingAccountKeyByTradeType(state, tradeType);
         const sendAccount = selectAccountByKey(state, sendAccountKey);
         const draft = selectDeepCopyOfFormDraft(state, getFormDraftKeyByTradeType(tradeType));
-        const networkFeeInfo = selectConvertedNetworkFeeInfo(state, sendAccount?.symbol);
+        const networkFeeInfo = await getNetworkFeeInfo(sendAccount?.symbol as NetworkSymbol);
 
         if (!sendAccount || !networkFeeInfo) {
             console.error('Send account and networkFeeInfo are required for composing transaction');
@@ -59,7 +79,7 @@ export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTra
         } catch (error) {
             console.error('Failed to compose trading transaction:', error);
         }
-    }, [dispatch, store, tradeType]);
+    }, [dispatch, store, tradeType, getNetworkFeeInfo]);
 
     return { composeTradingTransaction };
 };
