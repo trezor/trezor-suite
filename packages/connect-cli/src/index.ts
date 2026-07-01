@@ -109,7 +109,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     // The firmware always includes identifier in the response regardless of valid/membership.
     const probe = await TrezorConnect.authDbLookup({ device, address: '00', proof: [] });
     if (!probe.success) {
-        console.error('Probe authDbLookup failed:', probe.payload.error);
+        console.error('Probe authDbLookup failed:', probe);
         process.exit(1);
     }
     if (!probe.payload.identifier) {
