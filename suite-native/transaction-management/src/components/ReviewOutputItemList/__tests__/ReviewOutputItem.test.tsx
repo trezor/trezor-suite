@@ -266,6 +266,32 @@ describe('ReviewOutputItem', () => {
         );
     });
 
+    it('should render the send leg only for a partial clear-signed swap (receive missing)', () => {
+        const { getByTestId } = renderReviewOutputItem({
+            reviewOutput: {
+                type: 'traded_assets',
+                value: '',
+                value2: '',
+                state: 'active',
+                send: {
+                    cryptoId: undefined,
+                    accountKey: undefined,
+                    symbol: 'eth',
+                    amount: '0.5',
+                },
+            } as StatefulReviewOutput,
+        });
+
+        const content = getByTestId('review-output-card/content');
+
+        expect(content).toHaveTextContent(
+            `${getTranslation('transactionManagement.review.outputs.tradedAssetsSendLabel')} 0.5 eth`,
+        );
+        expect(content).not.toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.tradedAssetsReceiveLabel'),
+        );
+    });
+
     it('should render traded assets when receive is fiat', () => {
         const { getByTestId } = renderReviewOutputItem({
             reviewOutput: {

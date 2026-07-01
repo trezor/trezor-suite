@@ -24,49 +24,55 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
 
     return useCallback(
         ({ outputType, send, receive }) => {
-            if (outputType === 'traded_assets') {
-                if (!send || !receive || !('cryptoId' in receive)) {
-                    return undefined;
-                }
+            if (outputType !== 'traded_assets' || !send) {
+                return undefined;
+            }
 
-                const account = selectAccountByKey(
-                    getState() as AccountsRootState & DeviceRootState,
-                    receive.accountKey,
-                );
+            // Fiat receive (sell flow) is rendered by the generic content builder.
+            if (receive && !('cryptoId' in receive)) {
+                return undefined;
+            }
 
-                return (
-                    <VStack spacing="sp16">
-                        <CryptoAmountRow
-                            direction="from"
-                            amount={send.amount}
-                            cryptoId={send.cryptoId}
-                            withNetworkIcon
-                        />
+            // receive is undefined on a partial clear-signed swap — render send-only.
+            const account = receive
+                ? selectAccountByKey(
+                      getState() as AccountsRootState & DeviceRootState,
+                      receive.accountKey,
+                  )
+                : undefined;
+
+            return (
+                <VStack spacing="sp16">
+                    <CryptoAmountRow
+                        direction="from"
+                        amount={send.amount}
+                        cryptoId={send.cryptoId}
+                        withNetworkIcon
+                    />
+                    {!!receive && (
                         <CryptoAmountRow
                             direction="to"
                             amount={receiveAmountMultiplier(receive.amount)}
                             cryptoId={receive.cryptoId}
                             withNetworkIcon
                         />
-                        {!!account && (
-                            <HStack justifyContent="space-between" spacing="sp16">
-                                <Text variant="body-sm" color="contentPrimary">
-                                    <Translation id="moduleTrading.tradingReviewOutputs.tradedAssets.recipient" />
-                                </Text>
-                                <Text
-                                    variant="body-sm-strong"
-                                    color="contentPrimary"
-                                    style={applyStyle(flexStyle)}
-                                >
-                                    {account.descriptor}
-                                </Text>
-                            </HStack>
-                        )}
-                    </VStack>
-                );
-            }
-
-            return undefined;
+                    )}
+                    {!!account && (
+                        <HStack justifyContent="space-between" spacing="sp16">
+                            <Text variant="body-sm" color="contentPrimary">
+                                <Translation id="moduleTrading.tradingReviewOutputs.tradedAssets.recipient" />
+                            </Text>
+                            <Text
+                                variant="body-sm-strong"
+                                color="contentPrimary"
+                                style={applyStyle(flexStyle)}
+                            >
+                                {account.descriptor}
+                            </Text>
+                        </HStack>
+                    )}
+                </VStack>
+            );
         },
         [getState, applyStyle, receiveAmountMultiplier],
     );
