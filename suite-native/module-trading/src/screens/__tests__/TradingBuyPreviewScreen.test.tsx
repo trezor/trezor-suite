@@ -34,20 +34,20 @@ describe('TradingBuyPreviewScreen', () => {
         });
     };
 
-    it('returns null when providerMetadata is missing', () => {
-        const { toJSON } = renderTradingBuyPreviewScreen({
+    it('displays error when providerMetadata is missing', () => {
+        const { getByText } = renderTradingBuyPreviewScreen({
             selectedQuote: mercuryoApplePayBuyQuote,
         });
 
-        expect(toJSON()).toBeNull();
+        expect(getByText(getTranslation('generic.unknownError'))).toBeOnTheScreen();
     });
 
-    it('returns null when quote is missing', () => {
-        const { toJSON } = renderTradingBuyPreviewScreen({
+    it('displays error when quote is missing', () => {
+        const { getByText } = renderTradingBuyPreviewScreen({
             providerMetadata: buyMercuryo,
         });
 
-        expect(toJSON()).toBeNull();
+        expect(getByText(getTranslation('generic.unknownError'))).toBeOnTheScreen();
     });
 
     it('renders screen title with company name when all data is provided', () => {

@@ -9,6 +9,7 @@ import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { Footer } from '@suite-native/trading-provider-utils';
 
+import { BuyGeneralErrorScreen } from '../components/buy/BuyPreview/BuyGeneralErrorScreen';
 import { BuyPreviewContinueButton } from '../components/buy/BuyPreview/BuyPreviewContinueButton';
 import { BuyPreviewInfoCard } from '../components/buy/BuyPreview/BuyPreviewInfoCard';
 import { BuyPreviewReceiveCard } from '../components/buy/BuyPreview/BuyPreviewReceiveCard';
@@ -19,8 +20,8 @@ export const TradingBuyPreviewScreen = () => {
     const providerMetadata = useSelector(selectTradingProviderMetadata);
     const quote = useSelector(selectTradingBuySelectedQuote);
 
-    if (!providerMetadata || !quote) {
-        return null;
+    if (!quote || !providerMetadata) {
+        return <BuyGeneralErrorScreen />;
     }
 
     const { companyName } = providerMetadata;
