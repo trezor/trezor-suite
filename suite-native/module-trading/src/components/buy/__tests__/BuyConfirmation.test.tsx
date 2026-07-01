@@ -1,11 +1,11 @@
 import { Button } from '@suite-native/atoms';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
 import { BuyConfirmation } from '../BuyConfirmation';
 
-const EXCHANGE_NAME = 'test-provider';
-const CTA_TEXT = `Buy with ${EXCHANGE_NAME}`;
+const CTA_TEXT = getTranslation('moduleTrading.tradingScreen.buttons.continue');
 
 jest.mock('../../../hooks/buy/useBuyFlow', () => ({
     useBuyFlow: jest.fn(),
@@ -13,7 +13,7 @@ jest.mock('../../../hooks/buy/useBuyFlow', () => ({
 
 jest.mock('../../../hooks/buy/useBuyFormContext', () => ({
     useBuyFormContext: () => ({
-        watch: () => ({ exchange: EXCHANGE_NAME }),
+        watch: jest.fn().mockReturnValue([undefined, undefined]),
     }),
 }));
 
