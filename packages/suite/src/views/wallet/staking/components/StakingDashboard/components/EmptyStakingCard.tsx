@@ -3,12 +3,13 @@ import { useMemo } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectHasRunningDiscovery, selectPoolStatsApy } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import {
     calculateRewards,
     getStakingDataForNetwork,
@@ -32,6 +33,7 @@ import { BigNumber } from '@trezor/utils';
 import { DashboardSection } from 'src/components/dashboard';
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
+import { useStakingYield } from 'src/hooks/earn/useStakingYield';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -48,8 +50,10 @@ export const EmptyStakingCard = () => {
     const isStartStakingDisabled = isStakingDisabled || !account;
 
     const isCardano = account?.networkType === 'cardano';
+    const isTron = account?.networkType === 'tron';
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const { apy } = useStakingYield({ symbol: account?.symbol, accountKey: account?.key });
+
     const stakingData = getStakingDataForNetwork(account);
 
     const accountBalance = account?.formattedBalance ?? '0';
@@ -78,8 +82,31 @@ export const EmptyStakingCard = () => {
 
     const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
 
-    const stakingFeatures = useMemo(
-        () => [
+    const stakingFeatures = useMemo(() => {
+        if (isTron) {
+            return [
+                {
+                    id: 0,
+                    icon: 'lightning' as const,
+                    title: <Translation id="TR_STAKING_CARD_GET_RESOURCES_TITLE" />,
+                    text: <Translation id="TR_STAKING_CARD_GET_RESOURCES_TEXT" />,
+                },
+                {
+                    id: 1,
+                    icon: 'snowflake' as const,
+                    title: <Translation id="TR_STAKING_CARD_FREEZE_AND_VOTE_TITLE" />,
+                    text: <Translation id="TR_STAKING_CARD_FREEZE_AND_VOTE_TEXT" />,
+                },
+                {
+                    id: 2,
+                    icon: 'lockLaminatedOpen' as const,
+                    title: <Translation id="TR_STAKING_CARD_UNSTAKE_ANYTIME_TITLE" />,
+                    text: <Translation id="TR_STAKING_CARD_UNSTAKE_ANYTIME_TEXT" />,
+                },
+            ];
+        }
+
+        return [
             {
                 id: 0,
                 icon: 'piggyBank' as const,
@@ -131,21 +158,94 @@ export const EmptyStakingCard = () => {
                 title: <Translation id="TR_STAKING_CARD_RESTAKE_TITLE" />,
                 text: <Translation id="TR_STAKING_CARD_RESTAKE_TEXT" />,
             },
-        ],
-        [isCardano, displaySymbol],
-    );
+        ];
+    }, [isCardano, displaySymbol, isTron]);
+
+    const cardTitle = useMemo(() => {
+        if (isTron) {
+            return (
+                <Translation
+                    id="TR_STAKING_CARD_TITLE_TRON"
+                    values={{ apr: formatApyValue(apy), displaySymbol }}
+                />
+            );
+        }
+
+        return (
+            <Translation
+                id="TR_STAKING_CARD_TITLE"
+                values={{ apy: formatApyValue(apy), displaySymbol }}
+            />
+        );
+    }, [apy, displaySymbol, isTron]);
+
+    const cardText = useMemo(() => {
+        if (isTron) {
+            return <Translation id="TR_STAKING_CARD_TEXT_TRON" />;
+        }
+
+        if (!hasEnoughBalanceForStaking || !hasPotentialRewards) {
+            return (
+                <Translation
+                    id={
+                        isCardano
+                            ? 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY'
+                            : 'TR_STAKING_CARD_TEXT_EMPTY'
+                    }
+                    values={{ displaySymbol }}
+                />
+            );
+        }
+
+        return (
+            <Translation
+                id={isCardano ? 'TR_STAKING_CARD_TEXT_FUNDS_STAY' : 'TR_STAKING_CARD_TEXT_EMPTY'}
+                values={{ potentialRewards, displaySymbol }}
+            />
+        );
+    }, [
+        hasEnoughBalanceForStaking,
+        hasPotentialRewards,
+        potentialRewards,
+        displaySymbol,
+        isCardano,
+        isTron,
+    ]);
+
+    const openTronStakingFlow = () => {
+        if (isStartStakingDisabled) return;
+
+        dispatch(
+            goto({
+                routeName: 'earn-tron-stake',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+    };
 
     const openEarnInANutshellModal = () => {
-        if (!isStartStakingDisabled) {
-            dispatch(
-                openModal({
-                    type: 'earn-in-a-nutshell',
-                    flow: EarnFlow.Stake,
-                    provider: EarnProvider.Everstake,
-                    account,
-                    analyticsStep: 'staking-dashboard',
-                }),
-            );
+        if (isStartStakingDisabled) return;
+
+        dispatch(
+            openModal({
+                type: 'earn-in-a-nutshell',
+                flow: EarnFlow.Stake,
+                provider: EarnProvider.Everstake,
+                account,
+                analyticsStep: 'staking-dashboard',
+            }),
+        );
+    };
+
+    const onStartStakingClick = () => {
+        if (isTron) {
+            openTronStakingFlow();
+        } else {
+            openEarnInANutshellModal();
         }
     };
 
@@ -157,32 +257,10 @@ export const EmptyStakingCard = () => {
                 <Card>
                     <Column gap={spacings.xxxl}>
                         <Column gap={spacings.xs}>
-                            <H3>
-                                <Translation
-                                    id="TR_STAKING_CARD_TITLE"
-                                    values={{ apy: formatApyValue(apy), displaySymbol }}
-                                />
-                            </H3>
+                            <H3>{cardTitle}</H3>
+
                             <Paragraph intent="neutral" priority="secondary" maxWidth={700}>
-                                {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
-                                    <Translation
-                                        id={
-                                            isCardano
-                                                ? 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY'
-                                                : 'TR_STAKING_CARD_TEXT_EMPTY'
-                                        }
-                                        values={{ displaySymbol }}
-                                    />
-                                ) : (
-                                    <Translation
-                                        id={
-                                            isCardano
-                                                ? 'TR_STAKING_CARD_TEXT_FUNDS_STAY'
-                                                : 'TR_STAKING_CARD_TEXT_EMPTY'
-                                        }
-                                        values={{ potentialRewards, displaySymbol }}
-                                    />
-                                )}
+                                {cardText}
                             </Paragraph>
                         </Column>
 
@@ -204,7 +282,7 @@ export const EmptyStakingCard = () => {
 
                         <Tooltip content={stakingMessageContent}>
                             <Button
-                                onClick={openEarnInANutshellModal}
+                                onClick={onStartStakingClick}
                                 isDisabled={isStartStakingDisabled}
                                 iconLeft={isStartStakingDisabled ? 'info' : undefined}
                                 data-testid="@wallet/staking/empty-card/start-staking-button"
@@ -216,6 +294,7 @@ export const EmptyStakingCard = () => {
                     </Column>
                 </Card>
             </Column>
+
             <ContextMessage context={Context.getLegal('gateway')} />
         </DashboardSection>
     );

@@ -10110,6 +10110,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_CARD_TITLE',
         defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',
     },
+    TR_STAKING_CARD_TITLE_TRON: {
+        id: 'TR_STAKING_CARD_TITLE_TRON',
+        defaultMessage: 'Earn ~{apr}% APR by staking your {displaySymbol}',
+    },
     TR_STAKING_NEW_PROVIDER_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
         defaultMessage: 'Earn ~{apy}% APY with our new provider',
@@ -10185,10 +10189,41 @@ export const messages = defineMessages({
         defaultMessage:
             'Stake your full balance and start earning rewards. Your {displaySymbol} stay in your account, ready to use anytime—while helping to secure the network.',
     },
+    TR_STAKING_CARD_TEXT_TRON: {
+        id: 'TR_STAKING_CARD_TEXT_TRON',
+        defaultMessage:
+            'Freeze your TRX to earn staking rewards and get resources that reduce fees on your transactions.',
+    },
     TR_STAKING_CARD_START_STAKING: {
         id: 'TR_STAKING_CARD_START_STAKING',
         defaultMessage: 'Start staking',
     },
+
+    TR_STAKING_CARD_GET_RESOURCES_TITLE: {
+        id: 'TR_STAKING_CARD_GET_RESOURCES_TITLE',
+        defaultMessage: 'Get resources',
+    },
+    TR_STAKING_CARD_GET_RESOURCES_TEXT: {
+        id: 'TR_STAKING_CARD_GET_RESOURCES_TEXT',
+        defaultMessage: 'Get additional energy or bandwidth for your transactions.',
+    },
+    TR_STAKING_CARD_FREEZE_AND_VOTE_TITLE: {
+        id: 'TR_STAKING_CARD_FREEZE_AND_VOTE_TITLE',
+        defaultMessage: 'Freeze and vote',
+    },
+    TR_STAKING_CARD_FREEZE_AND_VOTE_TEXT: {
+        id: 'TR_STAKING_CARD_FREEZE_AND_VOTE_TEXT',
+        defaultMessage: 'Freeze your funds and vote for representatives to start earning yield.',
+    },
+    TR_STAKING_CARD_UNSTAKE_ANYTIME_TITLE: {
+        id: 'TR_STAKING_CARD_UNSTAKE_ANYTIME_TITLE',
+        defaultMessage: 'Unstake anytime',
+    },
+    TR_STAKING_CARD_UNSTAKE_ANYTIME_TEXT: {
+        id: 'TR_STAKING_CARD_UNSTAKE_ANYTIME_TEXT',
+        defaultMessage: 'You can unstake anytime and withdraw your funds after 14 days.',
+    },
+
     TR_STAKING_CARD_KEEP_EARNING_TITLE: {
         id: 'TR_STAKING_CARD_KEEP_EARNING_TITLE',
         defaultMessage: 'Keep earning',
