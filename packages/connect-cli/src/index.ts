@@ -110,13 +110,18 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dblookup requires --params=\'{"address":"...","networkSymbol":"..."}\' ');
                     process.exit(1);
                 }
-                const entry = db.lookupOrCreate(address, networkSymbol);
-                const allEntries = db.getAllEntries();
-                const proof = generateMerkleProof(allEntries, address, networkSymbol);
+                const entry = db.lookup(address, networkSymbol);
                 const treeState = db.getTreeState();
-                const authentic = await verifyEntry(address, networkSymbol, entry, proof, device);
-                console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof, treeState }, null, 2));
-                console.log('Authenticity verified:', authentic);
+                if (entry === null) {
+                    console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: null, counter: null, proof: [], treeState }, null, 2));
+                    console.log('Authenticity verified: not in DB');
+                } else {
+                    const allEntries = db.getAllEntries();
+                    const proof = generateMerkleProof(allEntries, address, networkSymbol);
+                    const authentic = await verifyEntry(address, networkSymbol, entry, proof, device);
+                    console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof, treeState }, null, 2));
+                    console.log('Authenticity verified:', authentic);
+                }
             }
 
             if (method === 'dbchange') {

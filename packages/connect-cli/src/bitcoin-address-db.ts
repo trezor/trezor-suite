@@ -1,4 +1,3 @@
-import { createHash } from 'crypto';
 
 import Database from 'better-sqlite3';
 
@@ -64,22 +63,6 @@ export class BitcoinAddressDb implements AddressLookupProvider {
             .get(address, networkSymbol) as Pick<AddressRow, 'data' | 'counter'> | undefined;
 
         return row ? parseRow({ address, network_symbol: networkSymbol, ...row }) : null;
-    }
-
-    // Returns existing entry, or creates one with a default label and counter=0 on first access.
-    // Default label format: label_<first 8 bytes of SHA-256 as 16 hex chars>
-    lookupOrCreate(address: string, networkSymbol: string): AddressEntry {
-        const existing = this.lookup(address, networkSymbol);
-        if (existing !== null) return existing;
-
-        const shortHash = createHash('sha256').update(address).digest('hex').slice(0, 16);
-        const entry: AddressEntry = {
-            metadata: { label: `label_${shortHash}` },
-            counter: 0,
-        };
-        this.upsert(address, networkSymbol, entry);
-
-        return entry;
     }
 
     upsert(address: string, networkSymbol: string, entry: AddressEntry): void {
