@@ -63,9 +63,7 @@ export const TradingFormOfferExchangeActions = () => {
     const isReceiveAddressSelected = !!tradingReceiveAddress.receiveAddress;
     const shouldShowApprovalStep = quote !== undefined && requiresTokenApproval(quote);
     const isQuoteOutdated = quote?.send !== sendCryptoSelect?.id;
-    const isQuoteForSelectedReceive =
-        quote?.receive === receiveCryptoSelect?.id &&
-        quote?.receiveAddress === tradingReceiveAddress.receiveAddress;
+    const isQuoteForSelectedReceive = quote?.receive === receiveCryptoSelect?.id;
     const amountTooHigh = isAmountTooHigh({
         amount,
         contractAddress: tokenAddress,
