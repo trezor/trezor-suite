@@ -186,6 +186,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
     autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
+        // Disable installation of the downloaded file before verification is complete
+        const previousAutoInstallOnAppQuit = autoUpdater.autoInstallOnAppQuit;
+        autoUpdater.autoInstallOnAppQuit = false;
 
         logger.info(SERVICE_NAME, [
             'Update downloaded:',
@@ -221,6 +224,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             });
 
             logger.info(SERVICE_NAME, 'Signature of update file is valid');
+            autoUpdater.autoInstallOnAppQuit = previousAutoInstallOnAppQuit;
 
             mainWindowProxy.getInstance()?.webContents.send('update/downloaded', {
                 version,
