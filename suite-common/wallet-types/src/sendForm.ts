@@ -19,7 +19,8 @@ export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'lar
 export type TronStakingFormState =
     | { kind: 'freeze' | 'unstake'; resource: 'bandwidth' | 'energy' }
     | { kind: 'vote'; votes: string }
-    | { kind: 'withdraw' };
+    | { kind: 'withdraw' }
+    | { kind: 'claim' };
 
 export type FormStateTradingCryptoCurrency = {
     cryptoId: CryptoId | undefined;

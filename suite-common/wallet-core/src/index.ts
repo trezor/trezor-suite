@@ -81,6 +81,8 @@ export { composeTronUnstakeFeeLevelsThunk } from './stake/tron/actions/unstake/c
 export { submitTronUnstakeThunk } from './stake/tron/actions/unstake/submitUnstake';
 export { composeTronWithdrawFeeLevelsThunk } from './stake/tron/actions/withdraw/composeWithdraw';
 export { submitTronWithdrawThunk } from './stake/tron/actions/withdraw/submitWithdraw';
+export { composeTronClaimFeeLevelsThunk } from './stake/tron/actions/claim/composeClaim';
+export { submitTronClaimThunk } from './stake/tron/actions/claim/submitClaim';
 export * from './stake/tron/tronStakeTypes';
 export * from './token/stellarTokenThunks';
 export * from './tokens/tokenSelectors';
