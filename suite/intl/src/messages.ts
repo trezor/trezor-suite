@@ -7417,6 +7417,15 @@ export const messages = defineMessages({
         id: 'TR_CANCEL_TX_FEE',
         defaultMessage: 'Transaction fee',
     },
+    TR_CANCEL_TX_NOTICE_EVM: {
+        id: 'TR_CANCEL_TX_NOTICE_EVM',
+        defaultMessage:
+            'Canceling creates a zero-value transaction with a higher gas fee to replace the pending one. Cancellation is not guaranteed — the original transaction may still be confirmed.',
+    },
+    TR_CANCEL_TX_ORIGINAL_FEE: {
+        id: 'TR_CANCEL_TX_ORIGINAL_FEE',
+        defaultMessage: 'Original fee',
+    },
     TR_CANCEL_TX_RETURN_TO_YOUR_WALLET: {
         id: 'TR_CANCEL_TX_RETURN_TO_YOUR_WALLET',
         defaultMessage: 'Return to your account',
