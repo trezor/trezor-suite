@@ -82,7 +82,7 @@ export const TransactionItem = memo(
         const isTxCancellable =
             transaction.type !== 'self' &&
             transaction.type !== 'joint' &&
-            network.networkType === 'bitcoin';
+            (network.networkType === 'bitcoin' || network.networkType === 'ethereum');
 
         const isTxBumpable =
             !isActionDisabled &&
@@ -180,32 +180,34 @@ export const TransactionItem = memo(
                         actions={
                             isTxBumpable && (
                                 <Row gap={12}>
-                                    <Tooltip
-                                        content={
-                                            <EvmBumpFeeTooltip
-                                                isDisabled={disableBumpFee}
-                                                nonce={evmNonce}
-                                            />
-                                        }
-                                        isActive={disableBumpFee || evmNonce !== undefined}
-                                    >
-                                        <Button
-                                            intent="neutral"
-                                            priority="secondary"
-                                            iconLeft="gauge"
-                                            onClick={e => {
-                                                openTxDetailsModal({
-                                                    flow: 'bump-fee',
-                                                });
-                                                e.stopPropagation();
-                                            }}
-                                            isDisabled={disableBumpFee}
-                                            data-testid="@transaction-item/bump-fee-button"
-                                            size="medium"
+                                    {isTxBumpable && (
+                                        <Tooltip
+                                            content={
+                                                <EvmBumpFeeTooltip
+                                                    isDisabled={disableBumpFee}
+                                                    nonce={evmNonce}
+                                                />
+                                            }
+                                            isActive={disableBumpFee || evmNonce !== undefined}
                                         >
-                                            <Translation id="TR_BUMP_FEE" />
-                                        </Button>
-                                    </Tooltip>
+                                            <Button
+                                                intent="neutral"
+                                                priority="secondary"
+                                                iconLeft="gauge"
+                                                onClick={e => {
+                                                    openTxDetailsModal({
+                                                        flow: 'bump-fee',
+                                                    });
+                                                    e.stopPropagation();
+                                                }}
+                                                isDisabled={disableBumpFee}
+                                                data-testid="@transaction-item/bump-fee-button"
+                                                size="medium"
+                                            >
+                                                <Translation id="TR_BUMP_FEE" />
+                                            </Button>
+                                        </Tooltip>
+                                    )}
                                     {isTxCancellable && (
                                         <Button
                                             intent="neutral"
