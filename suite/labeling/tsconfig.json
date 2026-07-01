@@ -50,6 +50,7 @@
         { "path": "../suite-sync" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },

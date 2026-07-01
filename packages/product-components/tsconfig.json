@@ -38,6 +38,7 @@
         { "path": "../components" },
         { "path": "../device-utils" },
         { "path": "../env-utils" },
+        { "path": "../icons" },
         { "path": "../theme" },
         { "path": "../type-utils" },
         { "path": "../utils" },

@@ -27,6 +27,7 @@
         { "path": "../connect-web" },
         { "path": "../connect-webextension" },
         { "path": "../device-authenticity" },
+        { "path": "../icons" },
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
         { "path": "../theme" },

@@ -59,6 +59,7 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/suite-desktop-api"
         },

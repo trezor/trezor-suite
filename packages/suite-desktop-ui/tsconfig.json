@@ -22,6 +22,7 @@
         { "path": "../../suite/sentry" },
         { "path": "../components" },
         { "path": "../connect" },
+        { "path": "../icons" },
         { "path": "../ipc-proxy" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
