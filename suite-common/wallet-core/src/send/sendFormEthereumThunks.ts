@@ -1,6 +1,6 @@
-import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import type { AddToastDep, GetIsApprovalFlowSupportedDep } from '@network-module/suite-types';
+
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
@@ -184,181 +184,173 @@ export const calculate = (
     return payloadData;
 };
 
-export const composeEthereumTransactionFeeLevelsThunk = createThunk<
-    PrecomposedLevels,
-    ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
->(
-    `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
-    async (
-        { formState, composeContext, isNetworkReserveEnabled = false },
-        { dispatch, rejectWithValue, getState },
-    ) => {
-        const device = selectSelectedDevice(getState());
+type ComposeEthereumTransactionFeeLevelsParams = ComposeTransactionThunkArguments & {
+    suiteModuleApi: AddToastDep & GetIsApprovalFlowSupportedDep;
+};
 
-        const { account, network, feeInfo } = composeContext;
-        const { transactionData } = formState;
+export const composeEthereumTransactionFeeLevels = async ({
+    formState,
+    composeContext,
+    isNetworkReserveEnabled = false,
+    suiteModuleApi,
+}: ComposeEthereumTransactionFeeLevelsParams): Promise<
+    PrecomposedLevels | ComposeFeeLevelsError
+> => {
+    const { account, network, feeInfo } = composeContext;
+    const { transactionData } = formState;
 
-        const isApproveTx = isEvmApprovalTx(transactionData);
-        const { outputs } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstOutput: (typeof outputs)[number] = outputs[0];
-        const contract = isApprovalFlowSupported(device)
-            ? (firstOutput.token ?? undefined)
-            : firstOutput.address;
+    const isApproveTx = isEvmApprovalTx(transactionData);
+    const { outputs } = formState;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstOutput: (typeof outputs)[number] = outputs[0];
+    const contract = suiteModuleApi.getIsApprovalFlowSupported()
+        ? (firstOutput.token ?? undefined)
+        : firstOutput.address;
 
-        if (isApproveTx && !contract) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
-        }
+    if (isApproveTx && !contract) {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Unable to compose output.',
+        };
+    }
 
-        const composedOutput = isApproveTx
-            ? getApprovalComposeOutput(contract, account, network)
-            : getExternalComposeOutput(formState, account, network);
+    const composedOutput = isApproveTx
+        ? getApprovalComposeOutput(contract, account, network)
+        : getExternalComposeOutput(formState, account, network);
 
-        if (!composedOutput)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
+    if (!composedOutput)
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Unable to compose output.',
+        };
 
-        const { output, tokenInfo, decimals } = composedOutput;
-        const { availableBalance } = account;
-        const { address, amount } = firstOutput;
+    const { output, tokenInfo, decimals } = composedOutput;
+    const { availableBalance } = account;
+    const { address, amount } = firstOutput;
 
-        const ethereumEstimateFeeParams =
-            isApproveTx && contract
-                ? getEthereumEstimateFeeParams(contract, '0', undefined, formState.transactionData)
-                : getEthereumEstimateFeeParams(
-                      address || account.descriptor,
-                      amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
-                      tokenInfo,
-                      formState.transactionData,
-                  );
+    const ethereumEstimateFeeParams =
+        isApproveTx && contract
+            ? getEthereumEstimateFeeParams(contract, '0', undefined, formState.transactionData)
+            : getEthereumEstimateFeeParams(
+                  address || account.descriptor,
+                  amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
+                  tokenInfo,
+                  formState.transactionData,
+              );
 
-        // gasLimit calculation based on address, amount and data size
-        // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
-            identity: getAccountIdentity(account),
-            request: {
-                blocks: [2],
-                specific: {
-                    from: account.descriptor,
-                    ...ethereumEstimateFeeParams,
-                },
+    // gasLimit calculation based on address, amount and data size
+    // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
+    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+        coin: account.symbol,
+        identity: getAccountIdentity(account),
+        request: {
+            blocks: [2],
+            specific: {
+                from: account.descriptor,
+                ...ethereumEstimateFeeParams,
             },
-        });
+        },
+    });
 
-        let customFeeLimit: BigNumber;
-        if (estimatedFee.success) {
-            const { levels } = estimatedFee.payload;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const firstLevel: (typeof levels)[number] = levels[0];
-            customFeeLimit = new BigNumber(firstLevel.feeLimit || '');
-        } else {
-            customFeeLimit = new BigNumber(
-                tokenInfo || transactionData
-                    ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
-                    : ETH_TRANSFER_BACKUP_GAS_LIMIT,
-            );
-
-            reportEthereumFeeEstimationFailed({
-                account,
-                formState,
-                tokenInfo,
-                estimateTarget: ethereumEstimateFeeParams.to,
-                error: estimatedFee.error,
-            });
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'estimated-fee-error',
-                }),
-            );
-        }
-
-        // increase gas limit, this flow is used only for Invity
-        if (formState.ethereumAdjustGasLimit) {
-            customFeeLimit = customFeeLimit.multipliedBy(formState.ethereumAdjustGasLimit);
-        }
-
-        // increase gas limit for staking, this flow is used only during bump fee
-        const isStakeEthTx = !!getTxStakeNameByDataHex(formState.transactionData);
-        if (isStakeEthTx) {
-            customFeeLimit = customFeeLimit.plus(STAKE_GAS_LIMIT_RESERVE);
-        }
-
-        // FeeLevels are read-only
-        const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
-        const predefinedLevels = levels.filter(l => l.label !== 'custom');
-        // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
-        if (customFeeLimit.gt(0)) {
-            predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit.toFixed(0)));
-        }
-        // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formState.selectedFee === 'custom') {
-            const { maxPriorityFeePerGas, maxFeePerGas, feePerUnit, feeLimit } = formState;
-
-            predefinedLevels.push({
-                label: 'custom',
-                feePerUnit,
-                feeLimit,
-                maxPriorityFeePerGas,
-                maxFeePerGas,
-                blocks: -1,
-            });
-        }
-
-        // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const resultLevels: PrecomposedLevels = {};
-        const response = predefinedLevels.map(level =>
-            calculate(
-                availableBalance,
-                output,
-                level,
-                tokenInfo,
-                composeContext,
-                isNetworkReserveEnabled,
-            ),
+    let customFeeLimit: BigNumber;
+    if (estimatedFee.success) {
+        const { levels } = estimatedFee.payload;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstLevel: (typeof levels)[number] = levels[0];
+        customFeeLimit = new BigNumber(firstLevel.feeLimit || '');
+    } else {
+        customFeeLimit = new BigNumber(
+            tokenInfo || transactionData
+                ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
+                : ETH_TRANSFER_BACKUP_GAS_LIMIT,
         );
-        response.forEach((tx, index) => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx;
+
+        reportEthereumFeeEstimationFailed({
+            account,
+            formState,
+            tokenInfo,
+            estimateTarget: ethereumEstimateFeeParams.to,
+            error: estimatedFee.error,
         });
 
-        // format max
-        // update errorMessage values (symbol)
-        Object.keys(resultLevels).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const tx: (typeof resultLevels)[string] = resultLevels[key];
-            if (tx.type !== 'error') {
-                tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
-                tx.estimatedFeeLimit = !customFeeLimit.isNaN()
-                    ? customFeeLimit.toFixed(0)
-                    : undefined;
-            }
-            if (
-                tx.type === 'error' &&
-                tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT'
-            ) {
-                tx.errorMessage = {
-                    values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
-                        feeAmount: tx.errorMessage?.values?.feeAmount || '',
-                    },
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                };
-            }
+        suiteModuleApi.addToast({
+            type: 'estimated-fee-error',
         });
+    }
 
-        return resultLevels;
-    },
-);
+    // increase gas limit, this flow is used only for Invity
+    if (formState.ethereumAdjustGasLimit) {
+        customFeeLimit = customFeeLimit.multipliedBy(formState.ethereumAdjustGasLimit);
+    }
+
+    // increase gas limit for staking, this flow is used only during bump fee
+    const isStakeEthTx = !!getTxStakeNameByDataHex(formState.transactionData);
+    if (isStakeEthTx) {
+        customFeeLimit = customFeeLimit.plus(STAKE_GAS_LIMIT_RESERVE);
+    }
+
+    // FeeLevels are read-only
+    const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
+    const predefinedLevels = levels.filter(l => l.label !== 'custom');
+    // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
+    if (customFeeLimit.gt(0)) {
+        predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit.toFixed(0)));
+    }
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    if (formState.selectedFee === 'custom') {
+        const { maxPriorityFeePerGas, maxFeePerGas, feePerUnit, feeLimit } = formState;
+
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit,
+            feeLimit,
+            maxPriorityFeePerGas,
+            maxFeePerGas,
+            blocks: -1,
+        });
+    }
+
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
+    const resultLevels: PrecomposedLevels = {};
+    const response = predefinedLevels.map(level =>
+        calculate(
+            availableBalance,
+            output,
+            level,
+            tokenInfo,
+            composeContext,
+            isNetworkReserveEnabled,
+        ),
+    );
+    response.forEach((tx, index) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+        const feeLabel = predefinedLevel.label;
+        resultLevels[feeLabel] = tx;
+    });
+
+    // format max
+    // update errorMessage values (symbol)
+    Object.keys(resultLevels).forEach(key => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tx: (typeof resultLevels)[string] = resultLevels[key];
+        if (tx.type !== 'error') {
+            tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
+            tx.estimatedFeeLimit = !customFeeLimit.isNaN() ? customFeeLimit.toFixed(0) : undefined;
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT') {
+            tx.errorMessage = {
+                values: {
+                    networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
+                    feeAmount: tx.errorMessage?.values?.feeAmount || '',
+                },
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+            };
+        }
+    });
+
+    return resultLevels;
+};
 
 export const ethereumGetCurrentNonceThunk = createThunk<
     { nonce: string },

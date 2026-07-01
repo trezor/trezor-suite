@@ -1,3 +1,5 @@
+import type { GetBlockchainBlockInfoBySymbolDep } from '@network-module/suite-types';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -33,7 +35,6 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
 
 const calculate = (
     availableBalance: string,
@@ -159,169 +160,168 @@ function assertIsSolanaAccount(
         throw new Error(`Invalid network type. ${account.networkType}`);
 }
 
-export const composeSolanaTransactionFeeLevelsThunk = createThunk<
-    PrecomposedLevels,
-    ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
->(
-    `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
-    async (
-        { formState, composeContext, isNetworkReserveEnabled = false },
-        { getState, rejectWithValue },
-    ) => {
-        const { account, network, feeInfo } = composeContext;
-        const composedOutput = getExternalComposeOutput(formState, account, network);
-        if (!composedOutput)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to prepare compose output.',
-            });
+type ComposeSolanaTransactionFeeLevelsParams = ComposeTransactionThunkArguments & {
+    suiteModuleApi: GetBlockchainBlockInfoBySymbolDep;
+};
 
-        const { output, decimals, tokenInfo } = composedOutput;
+export const composeSolanaTransactionFeeLevels = async ({
+    formState,
+    composeContext,
+    isNetworkReserveEnabled = false,
+    suiteModuleApi,
+}: ComposeSolanaTransactionFeeLevelsParams): Promise<PrecomposedLevels | ComposeFeeLevelsError> => {
+    const { account, network, feeInfo } = composeContext;
+    const composedOutput = getExternalComposeOutput(formState, account, network);
+    if (!composedOutput)
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Unable to prepare compose output.',
+        };
 
-        const { blockhash: blockHash, blockHeight: lastValidBlockHeight } =
-            selectBlockchainBlockInfoBySymbol(getState(), account.symbol);
+    const { output, decimals, tokenInfo } = composedOutput;
 
-        assertIsSolanaAccount(account);
+    const { blockhash: blockHash, blockHeight: lastValidBlockHeight } =
+        suiteModuleApi.getBlockchainBlockInfoBySymbol(account.symbol);
 
-        // invalid token transfer -- should never happen
-        if (tokenInfo && !tokenInfo.accounts)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Token accounts not found.',
-            });
+    assertIsSolanaAccount(account);
 
-        const { outputs: composeOutputsList } = formState;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
-        if (formState.setMaxOutputId !== undefined && !firstOutput.amount) {
-            if (tokenInfo?.balance) {
-                firstOutput.amount = tokenInfo.balance;
-            } else {
-                // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
-                firstOutput.amount = convertAmountSubunitsToUnits(
-                    (account.misc?.rent ?? 0) + 1,
-                    decimals,
-                );
-            }
-        }
+    // invalid token transfer -- should never happen
+    if (tokenInfo && !tokenInfo.accounts)
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Token accounts not found.',
+        };
 
-        // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
-        // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
-        // for the estimation, since these values don't affect the final fee.
-        // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
-        const transaction = await TrezorConnect.solanaComposeTransaction({
-            fromAddress: account.descriptor,
-            toAddress: firstOutput.address,
-            amount: firstOutput.amount,
-            token: tokenInfo
-                ? {
-                      mint: tokenInfo.contract,
-                      program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
-                      decimals: tokenInfo.decimals,
-                      accounts: tokenInfo.accounts ?? [],
-                  }
-                : undefined,
-            blockHash,
-            lastValidBlockHeight,
-            memo: formState.destinationTag || undefined,
-            coin: account.symbol,
-            identity: getAccountIdentity(account),
-            priorityFees: {
-                // dummy value so simulation always passes
-                computeUnitPrice: formState.feePerUnit || '1',
-                computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
-            },
-            serializedTx: formState.transactionData,
-        });
-
-        if (!transaction.success) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: transaction.error.message,
-            });
-        }
-
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
-            request: {
-                specific: {
-                    data: transaction.payload.serializedTx,
-                    newAccountProgramName: transaction.payload.additionalInfo.newAccountProgramName,
-                },
-            },
-        });
-
-        let fetchedFee: string | undefined;
-        let fetchedFeePerUnit: string | undefined;
-        let fetchedFeeLimit: string | undefined;
-        if (estimatedFee.success) {
-            // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
-            const { levels: estimatedFeeLevels } = estimatedFee.payload;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const feeLevel: (typeof estimatedFeeLevels)[number] = estimatedFeeLevels[0];
-            fetchedFee = feeLevel.feePerTx;
-            fetchedFeePerUnit = feeLevel.feePerUnit;
-            fetchedFeeLimit = feeLevel.feeLimit;
+    const { outputs: composeOutputsList } = formState;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
+    if (formState.setMaxOutputId !== undefined && !firstOutput.amount) {
+        if (tokenInfo?.balance) {
+            firstOutput.amount = tokenInfo.balance;
         } else {
-            // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
-            console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
-        }
-
-        // FeeLevels are read-only, so we create a copy if need be
-        const levels = fetchedFee ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
-        // update predefined levels with fee fetched from network
-        const predefinedLevels = levels
-            .filter(l => l.label !== 'custom')
-            .map(l => ({
-                ...l,
-                feePerTx: fetchedFee || l.feePerTx,
-                feePerUnit: fetchedFeePerUnit || l.feePerUnit,
-                feeLimit: fetchedFeeLimit || l.feeLimit,
-            }));
-
-        const resultLevels: PrecomposedLevels = {};
-
-        const response = predefinedLevels.map(level =>
-            calculate(
-                account.availableBalance,
-                output,
-                level,
+            // minimal amount for purpose of fee estimation, at least to cover rent + 1 lamport
+            firstOutput.amount = convertAmountSubunitsToUnits(
+                (account.misc?.rent ?? 0) + 1,
                 decimals,
-                account.misc?.rent ?? 0,
-                tokenInfo,
-                composeContext,
-                isNetworkReserveEnabled,
-            ),
-        );
-        response.forEach((tx, index) => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx;
-        });
+            );
+        }
+    }
 
-        // format max (calculate sends it as lamports)
-        // update errorMessage values (symbol)
-        Object.keys(resultLevels).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const tx: (typeof resultLevels)[string] = resultLevels[key];
-            if (tx.type !== 'error') {
-                tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
-            }
-            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
-                tx.errorMessage = {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
-                    },
-                };
-            }
-        });
+    // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
+    // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
+    // for the estimation, since these values don't affect the final fee.
+    // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
+    const transaction = await TrezorConnect.solanaComposeTransaction({
+        fromAddress: account.descriptor,
+        toAddress: firstOutput.address,
+        amount: firstOutput.amount,
+        token: tokenInfo
+            ? {
+                  mint: tokenInfo.contract,
+                  program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
+                  decimals: tokenInfo.decimals,
+                  accounts: tokenInfo.accounts ?? [],
+              }
+            : undefined,
+        blockHash,
+        lastValidBlockHeight,
+        memo: formState.destinationTag || undefined,
+        coin: account.symbol,
+        identity: getAccountIdentity(account),
+        priorityFees: {
+            // dummy value so simulation always passes
+            computeUnitPrice: formState.feePerUnit || '1',
+            computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
+        },
+        serializedTx: formState.transactionData,
+    });
 
-        return resultLevels;
-    },
-);
+    if (!transaction.success) {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: transaction.error.message,
+        };
+    }
+
+    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+        coin: account.symbol,
+        request: {
+            specific: {
+                data: transaction.payload.serializedTx,
+                newAccountProgramName: transaction.payload.additionalInfo.newAccountProgramName,
+            },
+        },
+    });
+
+    let fetchedFee: string | undefined;
+    let fetchedFeePerUnit: string | undefined;
+    let fetchedFeeLimit: string | undefined;
+    if (estimatedFee.success) {
+        // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
+        const { levels: estimatedFeeLevels } = estimatedFee.payload;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const feeLevel: (typeof estimatedFeeLevels)[number] = estimatedFeeLevels[0];
+        fetchedFee = feeLevel.feePerTx;
+        fetchedFeePerUnit = feeLevel.feePerUnit;
+        fetchedFeeLimit = feeLevel.feeLimit;
+    } else {
+        // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
+        console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
+    }
+
+    // FeeLevels are read-only, so we create a copy if need be
+    const levels = fetchedFee ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
+    // update predefined levels with fee fetched from network
+    const predefinedLevels = levels
+        .filter(l => l.label !== 'custom')
+        .map(l => ({
+            ...l,
+            feePerTx: fetchedFee || l.feePerTx,
+            feePerUnit: fetchedFeePerUnit || l.feePerUnit,
+            feeLimit: fetchedFeeLimit || l.feeLimit,
+        }));
+
+    const resultLevels: PrecomposedLevels = {};
+
+    const response = predefinedLevels.map(level =>
+        calculate(
+            account.availableBalance,
+            output,
+            level,
+            decimals,
+            account.misc?.rent ?? 0,
+            tokenInfo,
+            composeContext,
+            isNetworkReserveEnabled,
+        ),
+    );
+    response.forEach((tx, index) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+        const feeLabel = predefinedLevel.label;
+        resultLevels[feeLabel] = tx;
+    });
+
+    // format max (calculate sends it as lamports)
+    // update errorMessage values (symbol)
+    Object.keys(resultLevels).forEach(key => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tx: (typeof resultLevels)[string] = resultLevels[key];
+        if (tx.type !== 'error') {
+            tx.max = tx.max ? convertAmountSubunitsToUnits(tx.max, decimals) : undefined;
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+            tx.errorMessage = {
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                values: {
+                    networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
+                },
+            };
+        }
+    });
+
+    return resultLevels;
+};
 
 export const signSolanaSendFormTransactionThunk = createThunk<
     { serializedTx: string },

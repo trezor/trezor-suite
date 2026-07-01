@@ -5,14 +5,14 @@ import {
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
 import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock, mockSuiteModuleApi } from '@suite-common/test-utils';
 import { ok } from '@trezor/type-utils';
 
 import { type SuiteServices } from '../extraDependencies';
 
 type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteServices };
 
-const networkModules = createNetworksCompositionRoot();
+const networkModules = createNetworksCompositionRoot({ suiteModuleApi: mockSuiteModuleApi });
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 const addressValidator = createAddressValidator({ networkModuleRepository });
 

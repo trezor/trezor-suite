@@ -41,47 +41,29 @@ import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: blocked on blockchain plugin modularisation; remove this exception once Solana helpers are exposed via a public API (see #27376 deferred work)
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
-import { type Ok, exhaustive } from '@trezor/type-utils';
+import { type Ok } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
-import {
-    composeBitcoinTransactionFeeLevelsThunk,
-    signBitcoinSendFormTransactionThunk,
-} from './sendFormBitcoinThunks';
-import {
-    composeCardanoTransactionFeeLevelsThunk,
-    signCardanoSendFormTransactionThunk,
-} from './sendFormCardanoThunks';
+import { signBitcoinSendFormTransactionThunk } from './sendFormBitcoinThunks';
+import { signCardanoSendFormTransactionThunk } from './sendFormCardanoThunks';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import {
-    composeEthereumTransactionFeeLevelsThunk,
-    signEthereumSendFormTransactionThunk,
-} from './sendFormEthereumThunks';
-import {
-    composeRippleStellarTransactionFeeLevelsThunk,
-    signRippleStellarSendFormTransactionThunk,
-} from './sendFormRippleStellarThunks';
+import { signEthereumSendFormTransactionThunk } from './sendFormEthereumThunks';
+import { signRippleStellarSendFormTransactionThunk } from './sendFormRippleStellarThunks';
 import {
     selectPrecomposedSendForm,
     selectSendFormDrafts,
     selectSendPrecomposedTx,
     selectSendSerializedTx,
 } from './sendFormSelectors';
-import {
-    composeSolanaTransactionFeeLevelsThunk,
-    signSolanaSendFormTransactionThunk,
-} from './sendFormSolanaThunks';
+import { signSolanaSendFormTransactionThunk } from './sendFormSolanaThunks';
 import {
     type ComposeFeeLevelsError,
     type PushTransactionError,
     type SignTransactionError,
     type SignTransactionTimeoutError,
 } from './sendFormTypes';
-import {
-    composeTronTransactionFeeLevelsThunk,
-    signTronSendFormTransactionThunk,
-} from './tron/sendFormTronThunks';
+import { signTronSendFormTransactionThunk } from './tron/sendFormTronThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
@@ -151,13 +133,10 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     },
 );
 
-type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
-    | typeof composeBitcoinTransactionFeeLevelsThunk
-    | typeof composeEthereumTransactionFeeLevelsThunk
-    | typeof composeCardanoTransactionFeeLevelsThunk
-    | typeof composeSolanaTransactionFeeLevelsThunk
-    | typeof composeTronTransactionFeeLevelsThunk
->;
+const isComposeFeeLevelsError = (
+    result: object | ComposeFeeLevelsError,
+): result is ComposeFeeLevelsError =>
+    'error' in result && result.error === 'fee-levels-compose-failed';
 
 export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels | PrecomposedLevelsCardano,
@@ -165,64 +144,29 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
-    async ({ formState, composeContext }, { getState, dispatch, rejectWithValue }) => {
-        const { account } = composeContext;
-        let response: CoinSpecificComposeResponse | undefined;
+    async ({ formState, composeContext }, { extra, getState, rejectWithValue }) => {
         const isNetworkReserveEnabled = selectIsNetworkReserveEnabled(getState());
+        const { symbol } = composeContext.account;
 
-        const { networkType } = account;
-
-        if (networkType === 'bitcoin') {
-            response = await dispatch(
-                composeBitcoinTransactionFeeLevelsThunk({
-                    formState,
-                    composeContext,
-                }),
-            );
-        } else if (networkType === 'ethereum') {
-            response = await dispatch(
-                composeEthereumTransactionFeeLevelsThunk({
-                    formState,
-                    composeContext,
-                    isNetworkReserveEnabled,
-                }),
-            );
-        } else if (networkType === 'ripple' || networkType == 'stellar') {
-            response = await dispatch(
-                composeRippleStellarTransactionFeeLevelsThunk({
-                    formState,
-                    composeContext,
-                }),
-            );
-        } else if (networkType === 'cardano') {
-            response = await dispatch(
-                composeCardanoTransactionFeeLevelsThunk({ formState, composeContext }),
-            );
-        } else if (networkType === 'solana') {
-            response = await dispatch(
-                composeSolanaTransactionFeeLevelsThunk({
-                    formState,
-                    composeContext,
-                    isNetworkReserveEnabled,
-                }),
-            );
-        } else if (networkType === 'tron') {
-            response = await dispatch(
-                composeTronTransactionFeeLevelsThunk({ formState, composeContext }),
-            );
-        } else {
-            return exhaustive(networkType);
+        if (!extra.services.networkModuleRepository.isSupportedCoin(symbol)) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+            });
         }
 
-        if (isRejected(response) || !response?.payload) {
-            return rejectWithValue(
-                response?.payload ?? {
-                    error: 'fee-levels-compose-failed',
-                },
-            );
+        const result = await extra.services.networkModuleRepository
+            .get(symbol)
+            .composeTransactionFeeLevels({
+                formState,
+                composeContext,
+                isNetworkReserveEnabled,
+            });
+
+        if (isComposeFeeLevelsError(result)) {
+            return rejectWithValue(result);
         }
 
-        return response.payload;
+        return result as PrecomposedLevels | PrecomposedLevelsCardano;
     },
 );
 

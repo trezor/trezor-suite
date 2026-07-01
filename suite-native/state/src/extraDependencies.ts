@@ -1,11 +1,13 @@
 import { Platform } from 'react-native';
 
+import type { SuiteModuleApi } from '@network-module/suite-types';
 import * as Device from 'expo-device';
 
 import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
+import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
@@ -21,6 +23,12 @@ import {
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    selectAreSatsAmountUnit,
+    selectBlockchainBlockInfoBySymbol,
+} from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
@@ -84,7 +92,23 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
-    const networkModules = createNetworksCompositionRoot();
+    const suiteModuleApi: SuiteModuleApi = {
+        getAreSatsAmountUnit: () => selectAreSatsAmountUnit(deps.getState()),
+        getBlockchainBlockInfoBySymbol: symbol => {
+            if (!isNetworkSymbol(symbol)) {
+                throw new Error(`Invalid network symbol ${symbol}.`);
+            }
+
+            return selectBlockchainBlockInfoBySymbol(deps.getState(), symbol);
+        },
+        getIsApprovalFlowSupported: () =>
+            isApprovalFlowSupported(selectSelectedDevice(deps.getState())),
+        getSelectedDevice: () => selectSelectedDevice(deps.getState()),
+        addToast: payload => deps.dispatch(notificationsActions.addToast(payload)),
+    };
+    const networkModules = createNetworksCompositionRoot({
+        suiteModuleApi,
+    });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({ networkModuleRepository });
 

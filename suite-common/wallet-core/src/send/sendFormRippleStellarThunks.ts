@@ -108,128 +108,120 @@ const calculate = (
     return payloadData;
 };
 
-export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
-    PrecomposedLevels,
-    ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
->(
-    `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { rejectWithValue }) => {
-        const { account, network, feeInfo } = composeContext;
-        const composeOutputs = getExternalComposeOutput(formState, account, network);
-        if (!composeOutputs)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
+export const composeRippleStellarTransactionFeeLevels = async ({
+    formState,
+    composeContext,
+}: ComposeTransactionThunkArguments): Promise<PrecomposedLevels | ComposeFeeLevelsError> => {
+    const { account, network, feeInfo } = composeContext;
+    const composeOutputs = getExternalComposeOutput(formState, account, network);
+    if (!composeOutputs)
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Unable to compose output.',
+        };
 
-        const { output, tokenInfo } = composeOutputs;
-        const { availableBalance } = account;
-        const { outputs: composeOutputsList } = formState;
+    const { output, tokenInfo } = composeOutputs;
+    const { availableBalance } = account;
+    const { outputs: composeOutputsList } = formState;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
+    const { address } = firstOutput;
+
+    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    if (formState.selectedFee === 'custom') {
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit: formState.feePerUnit,
+            blocks: -1,
+        });
+    }
+
+    let requiredAmount: BigNumber | undefined;
+    // additional check if recipient address is empty
+    // it will set requiredAmount to recipient account reserve value
+    if (address) {
+        const accountResponse = await TrezorConnect.getAccountInfo({
+            descriptor: address,
+            coin: account.symbol,
+            suppressBackupWarning: true,
+        });
+        if (accountResponse.success && accountResponse.payload.empty) {
+            // TODO(stellar): check if the recipient has a trust line before sending.
+            requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);
+        }
+    }
+
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
+    const resultLevels: PrecomposedLevels = {};
+    const response = predefinedLevels.map(level =>
+        calculate(availableBalance, output, level, requiredAmount, tokenInfo),
+    );
+    response.forEach((tx, index) => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstOutput: (typeof composeOutputsList)[number] = composeOutputsList[0];
-        const { address } = firstOutput;
+        const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+        const feeLabel = predefinedLevel.label;
+        resultLevels[feeLabel] = tx;
+    });
 
-        const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
-        // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formState.selectedFee === 'custom') {
-            predefinedLevels.push({
-                label: 'custom',
-                feePerUnit: formState.feePerUnit,
-                blocks: -1,
-            });
+    const hasAtLeastOneValid = response.find(r => r.type !== 'error');
+    // there is no valid tx in predefinedLevels and there is no custom level
+    if (!hasAtLeastOneValid && !resultLevels.custom) {
+        const { minFee } = feeInfo;
+        const lastIndex = predefinedLevels.length - 1;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
+        const lastKnownFee = lastLevel.feePerUnit;
+        let maxFee = new BigNumber(lastKnownFee).minus(1);
+        // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in @trezor/connect)
+        const customLevels: FeeLevel[] = [];
+        while (maxFee.gte(minFee)) {
+            customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
+            maxFee = maxFee.minus(1);
         }
 
-        let requiredAmount: BigNumber | undefined;
-        // additional check if recipient address is empty
-        // it will set requiredAmount to recipient account reserve value
-        if (address) {
-            const accountResponse = await TrezorConnect.getAccountInfo({
-                descriptor: address,
-                coin: account.symbol,
-                suppressBackupWarning: true,
-            });
-            if (accountResponse.success && accountResponse.payload.empty) {
-                // TODO(stellar): check if the recipient has a trust line before sending.
-                requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);
-            }
-        }
-
-        // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const resultLevels: PrecomposedLevels = {};
-        const response = predefinedLevels.map(level =>
+        const customLevelsResponse = customLevels.map(level =>
             calculate(availableBalance, output, level, requiredAmount, tokenInfo),
         );
-        response.forEach((tx, index) => {
+
+        const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
+        if (customValid >= 0) {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx;
-        });
-
-        const hasAtLeastOneValid = response.find(r => r.type !== 'error');
-        // there is no valid tx in predefinedLevels and there is no custom level
-        if (!hasAtLeastOneValid && !resultLevels.custom) {
-            const { minFee } = feeInfo;
-            const lastIndex = predefinedLevels.length - 1;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
-            const lastKnownFee = lastLevel.feePerUnit;
-            let maxFee = new BigNumber(lastKnownFee).minus(1);
-            // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in @trezor/connect)
-            const customLevels: FeeLevel[] = [];
-            while (maxFee.gte(minFee)) {
-                customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
-                maxFee = maxFee.minus(1);
-            }
-
-            const customLevelsResponse = customLevels.map(level =>
-                calculate(availableBalance, output, level, requiredAmount, tokenInfo),
-            );
-
-            const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
-            if (customValid >= 0) {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const customResult: (typeof customLevelsResponse)[number] =
-                    customLevelsResponse[customValid];
-                resultLevels.custom = customResult;
-            }
+            const customResult: (typeof customLevelsResponse)[number] =
+                customLevelsResponse[customValid];
+            resultLevels.custom = customResult;
         }
+    }
 
-        // format max (calculate sends it as satoshi)
-        // update errorMessage values (reserve)
-        Object.keys(resultLevels).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const tx: (typeof resultLevels)[string] = resultLevels[key];
-            if (tx.type !== 'error' && tx.max) {
-                tx.max = formatNetworkAmount(tx.max, account.symbol);
-            }
-            if (
-                tx.type === 'error' &&
-                tx.error === 'AMOUNT_IS_LESS_THAN_RESERVE' &&
-                requiredAmount
-            ) {
-                tx.errorMessage = {
-                    id: 'AMOUNT_IS_LESS_THAN_RESERVE',
-                    values: {
-                        reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
-                        displaySymbol: getDisplaySymbol(account.symbol),
-                    },
-                };
-            }
-            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
-                tx.errorMessage = {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: {
-                        networkDisplaySymbol: getDisplaySymbol(network.symbol),
-                    },
-                };
-            }
-        });
+    // format max (calculate sends it as satoshi)
+    // update errorMessage values (reserve)
+    Object.keys(resultLevels).forEach(key => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tx: (typeof resultLevels)[string] = resultLevels[key];
+        if (tx.type !== 'error' && tx.max) {
+            tx.max = formatNetworkAmount(tx.max, account.symbol);
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_IS_LESS_THAN_RESERVE' && requiredAmount) {
+            tx.errorMessage = {
+                id: 'AMOUNT_IS_LESS_THAN_RESERVE',
+                values: {
+                    reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
+                    displaySymbol: getDisplaySymbol(account.symbol),
+                },
+            };
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+            tx.errorMessage = {
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                values: {
+                    networkDisplaySymbol: getDisplaySymbol(network.symbol),
+                },
+            };
+        }
+    });
 
-        return resultLevels;
-    },
-);
+    return resultLevels;
+};
 
 export const signRippleStellarSendFormTransactionThunk = createThunk<
     { serializedTx: string },

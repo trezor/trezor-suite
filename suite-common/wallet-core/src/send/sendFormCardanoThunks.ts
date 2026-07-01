@@ -1,5 +1,6 @@
+import type { AddToastDep } from '@network-module/suite-types';
+
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     AddressDisplayOptions,
     type PrecomposedLevelsCardano,
@@ -26,117 +27,116 @@ import {
 } from './sendFormTypes';
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
-export const composeCardanoTransactionFeeLevelsThunk = createThunk<
-    PrecomposedLevelsCardano,
-    ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
->(
-    `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
-        const { account, feeInfo } = composeContext;
-        const changeAddress = getUnusedChangeAddress(account);
-        if (!changeAddress || !account.utxo || !account.addresses)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Change address, utxos or addresses are missing.',
-            });
+type ComposeCardanoTransactionFeeLevelsParams = ComposeTransactionThunkArguments & {
+    suiteModuleApi: AddToastDep;
+};
 
-        const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
-        if (formState.selectedFee === 'custom') {
-            predefinedLevels.push({
-                label: 'custom',
-                feePerUnit: formState.feePerUnit,
-                blocks: -1,
+export const composeCardanoTransactionFeeLevels = async ({
+    formState,
+    composeContext,
+    suiteModuleApi,
+}: ComposeCardanoTransactionFeeLevelsParams): Promise<
+    PrecomposedLevelsCardano | ComposeFeeLevelsError
+> => {
+    const { account, feeInfo } = composeContext;
+    const changeAddress = getUnusedChangeAddress(account);
+    if (!changeAddress || !account.utxo || !account.addresses)
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Change address, utxos or addresses are missing.',
+        };
+
+    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    if (formState.selectedFee === 'custom') {
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit: formState.feePerUnit,
+            blocks: -1,
+        });
+    }
+
+    const outputs = transformUserOutputs(
+        formState.outputs,
+        account.tokens,
+        account.symbol,
+        formState.setMaxOutputId,
+    );
+
+    const addressParameters = getAddressParameters(account, changeAddress.path);
+
+    const response = await TrezorConnect.cardanoComposeTransaction({
+        feeLevels: predefinedLevels,
+        outputs,
+        account: {
+            descriptor: account.descriptor,
+            utxo: account.utxo,
+        },
+        changeAddress,
+        addressParameters,
+        testnet: isTestnet(account.symbol),
+    });
+
+    if (!response.success) {
+        if (response.error.code !== 'Method_InvalidParameter') {
+            suiteModuleApi.addToast({
+                type: 'sign-tx-error',
+                error: response.error.message,
             });
         }
 
-        const outputs = transformUserOutputs(
-            formState.outputs,
-            account.tokens,
-            account.symbol,
-            formState.setMaxOutputId,
-        );
+        return {
+            error: 'fee-levels-compose-failed',
+            message: response.error.message,
+        };
+    }
 
-        const addressParameters = getAddressParameters(account, changeAddress.path);
-
-        const response = await TrezorConnect.cardanoComposeTransaction({
-            feeLevels: predefinedLevels,
-            outputs,
-            account: {
-                descriptor: account.descriptor,
-                utxo: account.utxo,
-            },
-            changeAddress,
-            addressParameters,
-            testnet: isTestnet(account.symbol),
-        });
-
-        if (!response.success) {
-            if (response.error.code !== 'Method_InvalidParameter') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'sign-tx-error',
-                        error: response.error.message,
-                    }),
+    const resultLevels: PrecomposedLevelsCardano = {};
+    response.payload.forEach((t, index) => {
+        const tx: PrecomposedTransactionCardano = t;
+        switch (tx.type) {
+            case 'final':
+                // convert from lovelace units to ADA
+                tx.max = formatMaxOutputAmount(
+                    tx.max,
+                    outputs.find(o => o.setMax),
+                    account,
                 );
-            }
-
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: response.error.message,
-            });
+                break;
+            case 'nonfinal':
+                // convert lovelace to ADA (for ADA outputs only)
+                tx.max = formatMaxOutputAmount(
+                    tx.max,
+                    outputs.find(o => o.setMax && o.assets.length === 0),
+                    account,
+                );
+                break;
+            case 'error':
+                switch (tx.error) {
+                    case 'UTXO_BALANCE_INSUFFICIENT':
+                        tx.errorMessage = { id: 'AMOUNT_IS_NOT_ENOUGH' };
+                        break;
+                    case 'UTXO_VALUE_TOO_SMALL':
+                        tx.errorMessage = { id: 'AMOUNT_IS_TOO_LOW' };
+                        break;
+                    default:
+                        suiteModuleApi.addToast({
+                            type: 'sign-tx-error',
+                            error: tx.error,
+                        });
+                        break;
+                }
+                break;
+            // no default
         }
 
-        const resultLevels: PrecomposedLevelsCardano = {};
-        response.payload.forEach((t, index) => {
-            const tx: PrecomposedTransactionCardano = t;
-            switch (tx.type) {
-                case 'final':
-                    // convert from lovelace units to ADA
-                    tx.max = formatMaxOutputAmount(
-                        tx.max,
-                        outputs.find(o => o.setMax),
-                        account,
-                    );
-                    break;
-                case 'nonfinal':
-                    // convert lovelace to ADA (for ADA outputs only)
-                    tx.max = formatMaxOutputAmount(
-                        tx.max,
-                        outputs.find(o => o.setMax && o.assets.length === 0),
-                        account,
-                    );
-                    break;
-                case 'error':
-                    switch (tx.error) {
-                        case 'UTXO_BALANCE_INSUFFICIENT':
-                            tx.errorMessage = { id: 'AMOUNT_IS_NOT_ENOUGH' };
-                            break;
-                        case 'UTXO_VALUE_TOO_SMALL':
-                            tx.errorMessage = { id: 'AMOUNT_IS_TOO_LOW' };
-                            break;
-                        default:
-                            dispatch(
-                                notificationsActions.addToast({
-                                    type: 'sign-tx-error',
-                                    error: tx.error,
-                                }),
-                            );
-                            break;
-                    }
-                    break;
-                // no default
-            }
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+        const feeLabel = predefinedLevel.label;
+        resultLevels[feeLabel] = tx;
+    });
 
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx;
-        });
-
-        return resultLevels;
-    },
-);
+    return resultLevels;
+};
 
 type SignCardanoTransactionThunkArguments = Omit<
     SignTransactionThunkArguments,

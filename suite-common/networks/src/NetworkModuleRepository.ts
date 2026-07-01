@@ -19,7 +19,7 @@ export type NetworkModuleRepositoryDeps = StaticNetworkModulesDep;
 export const createNetworkModuleRepository = (
     deps: NetworkModuleRepositoryDeps,
 ): NetworkModuleRepository => {
-    const networkModuleByCoinSymbol = new Map<CoinSymbol, NetworkModule<CoinSymbol>>();
+    const networkModuleByCoinSymbol = new Map<CoinSymbol, NetworkModule<string>>();
 
     typedObjectValues(deps.networkModules).forEach(networkModule => {
         networkModule.getSupportedCoins().forEach(networkSymbol => {
@@ -37,7 +37,7 @@ export const createNetworkModuleRepository = (
                 throw new Error(`Network module for ${symbol} is not registered.`);
             }
 
-            return networkModule as NetworkModule<T>;
+            return networkModule as unknown as NetworkModule<T>;
         },
         getSupportedCoins: (): readonly CoinSymbol[] => supportedCoins,
         isSupportedCoin: (symbol: string): symbol is CoinSymbol =>

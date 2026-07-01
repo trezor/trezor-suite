@@ -1,3 +1,5 @@
+import type { ComposeFeeLevelsError } from '@network-module/suite-types';
+
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -11,6 +13,8 @@ import { type PROTO, type TokenInfo } from '@trezor/connect';
 import { type ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
+
+export type { ComposeFeeLevelsError };
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 
@@ -39,11 +43,6 @@ export type SignTransactionThunkArguments = {
     selectedAccount: Account;
     device: TrezorDevice;
     paymentRequests?: PROTO.PaymentRequest[];
-};
-
-export type ComposeFeeLevelsError = {
-    error: 'fee-levels-compose-failed';
-    message?: string;
 };
 
 export type SignTransactionError = {
