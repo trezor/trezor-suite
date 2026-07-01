@@ -99,7 +99,8 @@ interface SuiteLayoutProps {
 }
 
 export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutProps) => {
-    const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
+    const [{ title, layoutHeader, layoutFooter }, setLayoutPayload] =
+        useState<LayoutContextPayload>({});
 
     const { isBelowTablet } = useLayoutSize();
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -144,6 +145,7 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
                                             >
                                                 {children}
                                             </ContentContainer>
+                                            {layoutFooter}
                                         </AppWrapper>
                                     </MainContent>
                                 </Columns>

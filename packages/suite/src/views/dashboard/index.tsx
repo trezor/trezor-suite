@@ -15,7 +15,7 @@ import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
 
 export const Dashboard = () => {
-    useLayout('Home', <PageHeader />);
+    useLayout('Home', <PageHeader />, <DashboardFooter />);
     useNotificationForDisconnectedDevice();
 
     return (
@@ -28,7 +28,6 @@ export const Dashboard = () => {
             </Column>
             <DashboardPromoBanner />
             <AssetsView />
-            <DashboardFooter />
         </Column>
     );
 };

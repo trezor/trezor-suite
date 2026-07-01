@@ -316,6 +316,7 @@ export const SettingsCoins = () => {
                                     data-testid="@settings-coins/discovery-button"
                                     onClick={startDiscovery}
                                     isDisabled={isDeviceLocked}
+                                    isFloating
                                 >
                                     <Translation id="TR_DISCOVERY_NEW_COINS" />
                                 </Button>
