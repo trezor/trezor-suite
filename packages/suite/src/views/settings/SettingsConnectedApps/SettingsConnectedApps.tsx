@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
-import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
@@ -29,7 +28,7 @@ export const SettingsConnectedApps = () => {
             icon: 'trezorLogo' as const,
             title: <Translation id="TR_TREZOR_CONNECT" />,
             component: <ConnectPermissions />,
-            isEnabled: isDesktop(),
+            isEnabled: true,
         },
     ].filter(tab => tab.isEnabled);
     const [activeItemdId, setActiveItemId] = useState(tabs[0]?.id);
