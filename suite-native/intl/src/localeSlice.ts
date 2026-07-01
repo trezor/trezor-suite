@@ -9,6 +9,7 @@ export type AppLocaleOption = SupportedLocaleCode | 'system';
 export type LocaleState = {
     appLocaleCode: AppLocaleOption;
     systemLocaleCode: LocaleCode;
+    areDebugTranslationKeysDisplayed: boolean;
 };
 
 export type LocaleSliceRootState = {
@@ -18,11 +19,13 @@ export type LocaleSliceRootState = {
 export const localeInitialState: LocaleState = {
     appLocaleCode: 'system',
     systemLocaleCode: DEFAULT_LOCALE,
+    areDebugTranslationKeysDisplayed: false,
 };
 
 export const localePersistWhitelist: Array<keyof LocaleState> = [
     'appLocaleCode',
     'systemLocaleCode',
+    'areDebugTranslationKeysDisplayed',
 ];
 
 const localeSlice = createSlice({
@@ -35,13 +38,20 @@ const localeSlice = createSlice({
         setSystemLocaleCode: (state, { payload }: PayloadAction<LocaleCode>) => {
             state.systemLocaleCode = payload;
         },
+        setAreDebugTranslationKeysDisplayed: (state, { payload }: PayloadAction<boolean>) => {
+            state.areDebugTranslationKeysDisplayed = payload;
+        },
     },
 });
 
-export const { setAppLocaleCode, setSystemLocaleCode } = localeSlice.actions;
+export const { setAppLocaleCode, setSystemLocaleCode, setAreDebugTranslationKeysDisplayed } =
+    localeSlice.actions;
 export const localeReducer = localeSlice.reducer;
 
 export const selectAppLocaleCode = (state: LocaleSliceRootState) => state.locale.appLocaleCode;
+
+export const selectAreDebugTranslationKeysDisplayed = (state: LocaleSliceRootState) =>
+    state.locale.areDebugTranslationKeysDisplayed;
 
 const selectSystemLocaleCode = (state: LocaleSliceRootState) => state.locale.systemLocaleCode;
 
