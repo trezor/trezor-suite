@@ -90,6 +90,7 @@ import {
     selectBitcoinAmountUnit,
     selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
+import { transactionsActions } from '../transactions/transactionsActions';
 import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
@@ -218,6 +219,7 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
             return rejectWithValue(
                 response?.payload ?? {
                     error: 'fee-levels-compose-failed',
+                    message: isRejected(response) ? response.error.message : undefined,
                 },
             );
         }
@@ -300,6 +302,27 @@ export const synchronizeSentTransactionThunk = createThunk(
                 }),
             );
             dispatch(accountsActions.updateAccount(selectedAccount));
+
+            // EVM cancel/bump: when the precomposed tx replaces a prior pending tx (identified by
+            // prevTxid), evict the old tx from the store immediately. The backend notification is
+            // delayed, and keeping the replaced tx visible would show the user a stale pending entry.
+            // blockchainGetTransactions is called to confirm the old tx is truly gone from the
+            // mempool before the local removal takes effect; its response is not awaited because we
+            // dispatch removeTransaction optimistically and the backend will correct any discrepancy
+            // on the next account sync.
+            if ('prevTxid' in precomposedTransaction && precomposedTransaction.prevTxid) {
+                const { prevTxid } = precomposedTransaction;
+                void TrezorConnect.blockchainGetTransactions({
+                    txs: [prevTxid],
+                    coin: selectedAccount.symbol,
+                });
+                dispatch(
+                    transactionsActions.removeTransaction({
+                        account: selectedAccount,
+                        txs: [{ txid: prevTxid }],
+                    }),
+                );
+            }
         } else {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
