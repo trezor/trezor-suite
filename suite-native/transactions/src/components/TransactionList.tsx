@@ -253,9 +253,7 @@ export const TransactionList = ({
                 // month with only month name and without token txn
                 const isEmptyMonth = typeof data.at(index + 1) === 'string' || !data.at(index + 1);
 
-                return isEmptyMonth
-                    ? null
-                    : renderSectionHeader({ section: { monthKey: item as MonthKey } });
+                return isEmptyMonth ? null : renderSectionHeader({ section: { monthKey: item } });
             }
 
             const isFirstInSection = typeof data.at(index - 1) === 'string';

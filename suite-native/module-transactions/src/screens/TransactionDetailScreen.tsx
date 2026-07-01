@@ -17,7 +17,6 @@ import {
     type TransactionDetailStackParamList,
     type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { type TypedTokenTransfer } from '@suite-native/tokens';
 import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
     InstantStakeBanner,
@@ -131,7 +130,7 @@ export const TransactionDetailScreen = ({
                 <VStack spacing="sp24">
                     <TransactionDetailHeader
                         transaction={transaction}
-                        tokenTransfer={tokenTransfer as TypedTokenTransfer}
+                        tokenTransfer={tokenTransfer}
                     />
                     {isUnstakeTransaction && (
                         <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
@@ -139,7 +138,7 @@ export const TransactionDetailScreen = ({
                     <TransactionDetailData
                         transaction={transaction}
                         accountKey={accountKey}
-                        tokenTransfer={tokenTransfer as TypedTokenTransfer}
+                        tokenTransfer={tokenTransfer}
                     />
                 </VStack>
                 <Button

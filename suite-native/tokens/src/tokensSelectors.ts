@@ -71,7 +71,7 @@ export const selectAccountTokenSymbol = createMemoizedSelector(
             return null;
         }
 
-        return tokenInfo.symbol as TokenSymbol;
+        return tokenInfo.symbol;
     },
 );
 
