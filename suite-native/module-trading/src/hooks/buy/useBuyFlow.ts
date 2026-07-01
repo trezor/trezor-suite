@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
@@ -24,7 +23,6 @@ import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { type BuyFormType } from '@suite-native/trading-types';
 
-import { clearBuyFormQuoteData } from './useBuyForm';
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
 import {
     getReceiveAccountAddressText,
@@ -62,15 +60,6 @@ export const useBuyFlow = (form: BuyFormType) => {
 
     const { openBrowserForFormData } = useBrowserAuth('buy');
 
-    const reportTradeConfirmation = () => {
-        analytics.report({
-            type: events.tradingConfirmTradeEvent.name,
-            payload: {
-                type: 'buy',
-            },
-        });
-    };
-
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSymbolFromTradeableAsset(asset);
         if (selectedNetworkSymbol) {
@@ -79,40 +68,6 @@ export const useBuyFlow = (form: BuyFormType) => {
                 tradingType: 'buy',
             });
         }
-    };
-
-    const handleTradeResponse = (response: BuyTradeResponse, returnUrl: string) => {
-        if (response.trade.paymentId) {
-            dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
-        }
-
-        if (response.tradeForm) {
-            openBrowserForFormData(response.tradeForm.form, returnUrl, response.trade.orderId);
-        }
-
-        clearBuyFormQuoteData(form);
-    };
-
-    const confirmTrade = async (quote: BuyTrade, address: string) => {
-        if (!receiveAccount) {
-            return;
-        }
-
-        const returnUrl = buildTradingUrl({
-            actionType: 'trade',
-            tradeType: 'buy',
-            orderId: quote.orderId,
-        });
-
-        await dispatch(
-            buyThunks.confirmTradeThunk({
-                address,
-                returnUrl,
-                account: receiveAccount.account,
-                processResponseData: response => handleTradeResponse(response, returnUrl),
-                triggerAnalyticsTradeConfirmation: reportTradeConfirmation,
-            }),
-        );
     };
 
     const selectQuote = async () => {
@@ -147,6 +102,9 @@ export const useBuyFlow = (form: BuyFormType) => {
         const addressText = getReceiveAccountAddressText(receiveAccount);
         invariant(addressText, 'addressText is not defined');
 
+        dispatch(tradingBuyActions.setReceiveAddress(addressText));
+        dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount.account.key));
+
         const returnUrl = buildTradingUrl({
             actionType: 'quote',
             tradeType: 'buy',
@@ -160,7 +118,8 @@ export const useBuyFlow = (form: BuyFormType) => {
                 loginRequest: formResponse =>
                     openBrowserForFormData(formResponse, returnUrl, candidateQuote.orderId),
                 nextStep: () => {
-                    confirmTrade(candidateQuote, addressText);
+                    navigation.navigate(RootStackRoutes.TradingBuyPreview);
+                    form.reset();
                 },
             }),
         );

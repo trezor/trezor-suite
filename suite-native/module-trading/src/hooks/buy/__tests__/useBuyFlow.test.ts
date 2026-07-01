@@ -10,23 +10,27 @@ import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
 
+const mockSelectQuoteThunk = jest.fn();
+
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     buyThunks: {
-        selectQuoteThunk: (payload: unknown) => ({
-            type: 'selectQuoteThunkMock',
-            payload,
-        }),
-        confirmTradeThunk: (payload: unknown) => ({
-            type: 'confirmTradeThunkMock',
-            payload,
-        }),
+        selectQuoteThunk: (payload: unknown) => {
+            mockSelectQuoteThunk(payload);
+
+            // Return a thunk so redux-thunk intercepts it before the serializable check middleware
+            return () => Promise.resolve();
+        },
     },
 }));
 
 describe('useBuyFlow', () => {
     let buyForm: BuyFormType;
     let store: TestStore;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
     const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) =>
         createTradingLightStore({
@@ -89,37 +93,37 @@ describe('useBuyFlow', () => {
                 });
             });
 
-            it('should call nextStep callback with correct address', () => {
+            it('should store receive address and account key in Redux before navigating to preview', () => {
                 const btcAccount = getBtcAccount();
-                const dispatchSpy = jest.spyOn(store, 'dispatch');
                 const expectedAddress =
                     btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
 
                 const { result } = renderUseTradingBuyFlow();
-                dispatchSpy.mockClear();
 
                 act(() => {
                     result.current.selectQuote();
                 });
 
-                const { calls } = dispatchSpy.mock;
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const firstCall: (typeof calls)[number] = calls[0];
-                const [dispatchCall] = firstCall;
-                const { nextStep } = (dispatchCall as any).payload;
+                const state = store.getState();
+                expect(state.wallet.trading.buy.receiveAddress).toBe(expectedAddress);
+                expect(state.wallet.trading.buy.receiveAccountKey).toBe(btcAccount.key);
+            });
+
+            it('should reset form when navigating to preview', () => {
+                const { result } = renderUseTradingBuyFlow();
+                const resetSpy = jest.spyOn(buyForm, 'reset');
 
                 act(() => {
-                    nextStep();
+                    result.current.selectQuote();
                 });
 
-                expect(dispatchSpy).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        type: 'confirmTradeThunkMock',
-                        payload: expect.objectContaining({
-                            address: expectedAddress,
-                        }),
-                    }),
-                );
+                const [payload] = mockSelectQuoteThunk.mock.calls[0] as [any];
+
+                act(() => {
+                    payload.nextStep();
+                });
+
+                expect(resetSpy).toHaveBeenCalledTimes(1);
             });
         });
     });
