@@ -80,6 +80,9 @@ const getTokenInfo = (cryptoId: CryptoId): TokenInfo | undefined => {
 
     // TODO this conversion is not valid, not all required fields are present
     return {
+        // Load-bearing widening: with the branded TokenAddress the outer `as TokenInfo`
+        // conversion is rejected (TS2352); the lint rule mis-reports the assertion as a no-op.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         contract: contractAddress as string,
     } as TokenInfo;
 };

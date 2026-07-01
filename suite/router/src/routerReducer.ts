@@ -62,6 +62,10 @@ const initialState: RouterState = {
 
 const routerSlice = createSlice({
     name: ROUTER_PREFIX,
+    // Load-bearing un-narrowing: TS narrows the const's declared union by its initializer
+    // (the `app: 'unknown'` variant), so createSlice would infer that narrowed State; the
+    // assertion restores the full RouterState. The lint rule mis-reports it as a no-op.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     initialState: initialState as RouterState,
     reducers: {
         routerLocationChange: (state, action: PayloadAction<LocationChangePayload>) => {

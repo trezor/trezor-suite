@@ -304,6 +304,9 @@ export const transformTypedData = <
     if (data.primaryType !== 'EIP712Domain') {
         message_hash = hashStruct({
             data: data.message,
+            // Load-bearing widening: without it viem's hashStruct rejects `string | keyof T`
+            // for primaryType (TS2322); the lint rule mis-reports the assertion as a no-op.
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             primaryType: data.primaryType as string,
             types: data.types as any,
         }).slice(2);

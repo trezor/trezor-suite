@@ -13,7 +13,6 @@ import {
     type Account,
     type FormState,
     type PrecomposedTransactionFinalCancelRbf,
-    type RbfTransactionParamsEthereum,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 
@@ -62,7 +61,7 @@ export const useEthereumCancelTxCompose = ({ account, tx }: UseEthereumCancelTxC
                 throw new Error('Missing fee info or invalid RBF params for Ethereum cancellation');
             }
 
-            const rbfParams = tx.rbfParams as RbfTransactionParamsEthereum;
+            const { rbfParams } = tx;
             const network = getNetwork(account.symbol);
 
             const formState: FormState = {

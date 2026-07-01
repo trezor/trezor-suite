@@ -679,12 +679,12 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         if (line.type === 'address') {
             const relevantAccounts = findAccountsByAddress(symbol, line.value, accounts);
 
+            const type: OutputElementLine['type'] =
+                isTrading || stakeType || relevantAccounts.length > 0 ? 'safe-address' : line.type;
+
             return {
                 ...line,
-                type:
-                    isTrading || stakeType || relevantAccounts.length > 0
-                        ? ('safe-address' as OutputElementLine['type'])
-                        : line.type,
+                type,
             };
         }
 

@@ -1,5 +1,3 @@
-import { type CryptoId } from 'invity-api';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -93,7 +91,7 @@ export const TradingOfferExchange = () => {
                         key={amountLabels.sendLabel}
                         account={sendAccount}
                         label={amountLabels.sendLabel}
-                        currency={selectedTrade.send as CryptoId}
+                        currency={selectedTrade.send}
                         amount={selectedTrade.sendStringAmount ?? ''}
                     />
 

@@ -138,6 +138,17 @@ export const typescriptConfig = [
                 },
             ],
             '@typescript-eslint/prefer-optional-chain': ['error'],
+            // Known limitation: the rule mis-reports some load-bearing widening assertions
+            // (removing them breaks tsc); such spots carry a scoped disable with a justification.
+            '@typescript-eslint/no-unnecessary-type-assertion': ['error'],
+        },
+    },
+    {
+        // Type assertions on partial mocks and fixtures are idiomatic in tests,
+        // so scope the rule out of test and fixture files.
+        files: ['**/__tests__/**', '**/__fixtures__/**', '**/tests/**', '**/*.test.{ts,tsx}'],
+        rules: {
+            '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         },
     },
 ];

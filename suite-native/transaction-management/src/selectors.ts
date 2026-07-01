@@ -32,7 +32,6 @@ import {
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { type NativeSendRootState } from './sendFormSlice';
-import { type StatefulReviewOutput } from './types';
 
 const isStakingPrefix = (
     prefix: FormDraftWithSendKeyPrefix,
@@ -122,15 +121,13 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             ? outputs
             : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
 
-        return newFlowOutputs.map(
-            (output, outputIndex) =>
-                ({
-                    ...output,
-                    state: isTransactionAlreadySigned
-                        ? 'success'
-                        : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
-                }) as StatefulReviewOutput,
-        );
+        return newFlowOutputs.map((output, outputIndex) => {
+            const outputState: ReviewOutputState = isTransactionAlreadySigned
+                ? 'success'
+                : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
+
+            return { ...output, state: outputState };
+        });
     },
 );
 
@@ -230,7 +227,7 @@ export const selectReviewSummaryOutputState = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
-) => {
+): ReviewOutputState => {
     const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
     if (isTransactionAlreadySigned) {
@@ -259,7 +256,7 @@ export const selectReviewSummaryOutput = createSendMemoizedSelector(
         }
 
         return {
-            state: outputState as ReviewOutputState,
+            state: outputState,
             totalSpent: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
         };

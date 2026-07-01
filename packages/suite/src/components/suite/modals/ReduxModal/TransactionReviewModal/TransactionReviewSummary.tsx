@@ -6,7 +6,6 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
-    type AccountWithNetworkType,
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
     type SendFormDraftKey,
@@ -100,10 +99,7 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {isEthereumNetworkType && (
-                        <TransactionReviewEthereumNotes
-                            account={account as AccountWithNetworkType<'ethereum'>}
-                            tx={tx}
-                        />
+                        <TransactionReviewEthereumNotes account={account} tx={tx} />
                     )}
 
                     {!['ethereum', 'solana', 'tron'].includes(networkType) && (

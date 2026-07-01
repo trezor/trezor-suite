@@ -29,12 +29,12 @@ export const useFirmwareAnalytics = ({
     const toFwVersion = useSelector(selectDeviceUpdateFirmwareVersion);
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const prepareAnalyticsPayload = useCallback(
-        () => ({
+        (): FirmwareUpdatePayload => ({
             model: device?.features?.internal_model ?? DeviceModelInternal.UNKNOWN,
             fromBootloaderVersion: getBootloaderVersion(device),
             fromFwVersion: device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
             toFwVersion: toFwVersion ?? '?.?.?',
-            fromFwType: (device?.firmwareType || 'none') as FirmwareType | 'none',
+            fromFwType: device?.firmwareType || 'none',
             toFwType: targetFirmwareType,
             location: navigationLocation ?? null,
         }),
