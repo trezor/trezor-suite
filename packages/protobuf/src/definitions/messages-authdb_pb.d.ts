@@ -7,3 +7,5 @@ export declare const AuthDbSetRootSchema: DescMessage;
 export declare const AuthDbSetRootResponseSchema: DescMessage;
 export declare const AuthDbLookupSchema: DescMessage;
 export declare const AuthDbLookupResponseSchema: DescMessage;
+export declare const AuthDbUpdateLeafSchema: DescMessage;
+export declare const AuthDbUpdateLeafResponseSchema: DescMessage;

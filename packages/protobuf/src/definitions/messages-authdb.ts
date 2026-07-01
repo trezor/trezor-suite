@@ -23,8 +23,10 @@ export type AuthDbLookup = Static<typeof AuthDbLookup>;
 export const AuthDbLookup = Type.Object(
     {
         address: Type.String(),
-        value: Type.String(),
+        value: Type.Optional(Type.String()),
         proof: Type.Optional(Type.Array(Type.String())),
+        witness_address: Type.Optional(Type.String()),
+        witness_value: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbLookup' },
 );
@@ -34,6 +36,29 @@ export const AuthDbLookupResponse = Type.Object(
     {
         valid: Type.Boolean(),
         counter: Type.Number(),
+        membership: Type.Optional(Type.Boolean()),
     },
     { $id: 'AuthDbLookupResponse' },
+);
+
+export type AuthDbUpdateLeaf = Static<typeof AuthDbUpdateLeaf>;
+export const AuthDbUpdateLeaf = Type.Object(
+    {
+        address: Type.String(),
+        old_value: Type.String(),
+        new_value: Type.String(),
+        proof: Type.Optional(Type.Array(Type.String())),
+        witness_address: Type.Optional(Type.String()),
+        witness_value: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbUpdateLeaf' },
+);
+
+export type AuthDbUpdateLeafResponse = Static<typeof AuthDbUpdateLeafResponse>;
+export const AuthDbUpdateLeafResponse = Type.Object(
+    {
+        counter: Type.Number(),
+        new_root: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbUpdateLeafResponse' },
 );

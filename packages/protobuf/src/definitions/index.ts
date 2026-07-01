@@ -135,6 +135,8 @@ import {
     AuthDbLookupResponse,
     AuthDbSetRoot,
     AuthDbSetRootResponse,
+    AuthDbUpdateLeaf,
+    AuthDbUpdateLeafResponse,
 } from './messages-authdb';
 import {
     EvoluDelegatedIdentityKey,
@@ -510,6 +512,8 @@ export const MessageType = Type.Object(
         AuthDbSetRootResponse,
         AuthDbLookup,
         AuthDbLookupResponse,
+        AuthDbUpdateLeaf,
+        AuthDbUpdateLeafResponse,
         EvoluGetNode,
         EvoluNode,
         EvoluSignRegistrationRequest,
@@ -729,6 +733,7 @@ export type WireInMessage =
     | 'EthereumTypedDataValueAck'
     | 'AuthDbSetRoot'
     | 'AuthDbLookup'
+    | 'AuthDbUpdateLeaf'
     | 'EvoluGetNode'
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
@@ -837,6 +842,7 @@ export type WireOutMessage =
     | 'EthereumTypedDataValueRequest'
     | 'AuthDbSetRootResponse'
     | 'AuthDbLookupResponse'
+    | 'AuthDbUpdateLeafResponse'
     | 'EvoluNode'
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'

@@ -173,6 +173,81 @@ export const computeMerkleRoot = (rows: AllEntriesRow[]): string => {
 };
 
 /**
+ * Generate a non-membership proof for the given address.
+ * Returns the proof (same format as membership proof, but for the witness leaf),
+ * plus the witness address and witness value bytes.
+ * Returns null if the tree is empty (address trivially not in tree).
+ */
+export const generateNonMembershipProof = (
+    rows: AllEntriesRow[],
+    address: string,
+    networkSymbol: string,
+): { proof: MerkleProof; witnessAddress: string | null; witnessValue: Buffer | null } => {
+    if (rows.length === 0) {
+        return { proof: [], witnessAddress: null, witnessValue: null };
+    }
+
+    const targetAddrHash = createHash('sha256').update(Buffer.from(address, 'utf8')).digest();
+
+    const leaves: LeafInfo[] = rows.map(r => ({
+        addrHash: createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest(),
+        leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
+    }));
+
+    const mptRoot = buildMpt(leaves, 0);
+
+    // Walk the MPT following the target address path, collecting siblings.
+    // The leaf we land on is the witness.
+    let witnessRow: AllEntriesRow | null = null;
+    const proof: string[] = [];
+
+    const walk = (node: MptNode, rowsSubset: AllEntriesRow[]): Buffer => {
+        if (node.kind === 'leaf') {
+            // This is the witness leaf
+            witnessRow = rowsSubset[0];
+            return node.leafHash;
+        }
+
+        const targetBit = getBit(targetAddrHash, node.bit);
+        const bitHex = node.bit.toString(16).padStart(2, '0');
+
+        const leftRows = rowsSubset.filter(r => {
+            const h = createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest();
+            return getBit(h, node.bit) === 0;
+        });
+        const rightRows = rowsSubset.filter(r => {
+            const h = createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest();
+            return getBit(h, node.bit) === 1;
+        });
+
+        if (targetBit === 0) {
+            const leftHash = walk(node.left, leftRows);
+            const rightHash = hashMpt(node.right);
+            proof.push(bitHex + rightHash.toString('hex'));
+            return internalHash(leftHash, rightHash);
+        } else {
+            const leftHash = hashMpt(node.left);
+            const rightHash = walk(node.right, rightRows);
+            proof.push(bitHex + leftHash.toString('hex'));
+            return internalHash(leftHash, rightHash);
+        }
+    };
+
+    walk(mptRoot, rows);
+
+    if (!witnessRow) {
+        return { proof: [], witnessAddress: null, witnessValue: null };
+    }
+
+    const wr = witnessRow as AllEntriesRow;
+    return {
+        proof,
+        witnessAddress: wr.address,
+        witnessValue: entryToValueBytes(wr.networkSymbol, wr.entry),
+    };
+};
+
+/**
  * Verify a proof locally (mirrors firmware evaluate_proof in lookup.py).
  * proof[0] = sibling nearest leaf; proof[last] = sibling nearest root.
  * Each element is 66 hex chars: 2-char bit-position + 64-char sibling hash.

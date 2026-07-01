@@ -5,14 +5,15 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 
-export default class AuthDbLookup extends AbstractMethod<'authDbLookup', PROTO.AuthDbLookup> {
-    constructor(message: MethodMessage<'authDbLookup'>) {
+export default class AuthDbUpdateLeaf extends AbstractMethod<'authDbUpdateLeaf', PROTO.AuthDbUpdateLeaf> {
+    constructor(message: MethodMessage<'authDbUpdateLeaf'>) {
         const { payload } = message;
-        Assert(PROTO.AuthDbLookup, payload);
+        Assert(PROTO.AuthDbUpdateLeaf, payload);
 
         const params = {
             address: payload.address,
-            ...(payload.value !== undefined && { value: payload.value }),
+            old_value: payload.old_value,
+            new_value: payload.new_value,
             proof: payload.proof ?? [],
             ...(payload.witness_address !== undefined && { witness_address: payload.witness_address }),
             ...(payload.witness_value !== undefined && { witness_value: payload.witness_value }),
@@ -27,9 +28,13 @@ export default class AuthDbLookup extends AbstractMethod<'authDbLookup', PROTO.A
         return ['management'];
     }
 
+    get info() {
+        return 'Update address-database leaf';
+    }
+
     async run() {
         const cmd = this.getDevice().getCommands();
-        const response = await cmd.typedCall('AuthDbLookup', 'AuthDbLookupResponse', this.params);
+        const response = await cmd.typedCall('AuthDbUpdateLeaf', 'AuthDbUpdateLeafResponse', this.params);
 
         return response.message;
     }

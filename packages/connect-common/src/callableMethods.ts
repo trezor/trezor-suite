@@ -65,6 +65,7 @@ const connectCallableMethodGroups = {
         'pingDevice',
         'authDbSetRoot',
         'authDbLookup',
+        'authDbUpdateLeaf',
     ],
     blockchain: [
         'blockchainSubscribe',
