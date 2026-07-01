@@ -18,6 +18,7 @@ This version removes support for legacy iframe and popup integration methods and
 
 Features:
 
+- `solanaSignTransaction` now accepts a `chunkify` flag that renders addresses in the transaction confirmation on the device in chunks of 4 characters, matching the existing behavior of `solanaGetAddress` and the sign flows of other coins. Requires firmware with chunked-address support in the Solana `SignTx` flow.
 - Tron support (`tronGetAddress`, `tronSignTransaction`)
 - `ethereumSignTypedData` now computes `domain_separator_hash` / `message_hash` internally for T1B1 firmware. Callers no longer need to pre-compute hashes via `@trezor/connect-plugin-ethereum`; passing only `data` works for all supported Trezor models. Caller-provided hashes still take precedence for backwards compatibility. Implementation is powered by `viem` and lives in the lazy-loaded ethereum chunk, so non-Ethereum consumers do not pay any bundle cost.
 

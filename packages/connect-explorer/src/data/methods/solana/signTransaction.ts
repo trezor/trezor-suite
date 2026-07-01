@@ -34,6 +34,11 @@ export default [
                 type: 'json',
                 value: additionalInfo,
             },
+            {
+                name: 'chunkify',
+                type: 'checkbox',
+                value: false,
+            },
         ],
     },
 ];
