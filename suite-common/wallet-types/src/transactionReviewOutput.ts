@@ -63,7 +63,7 @@ export type ReviewOutput =
           label?: undefined;
           token?: undefined;
           send: FormStateTradingCryptoCurrency;
-          receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+          receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
           receiveAddress?: string;
       }
     | {

@@ -20,6 +20,7 @@ export * from './getMyInputsFromTransaction';
 export * from './localizeNumberUtils';
 export * from './localizePercentage';
 export * from './reviewTransactionUtils';
+export * from './clearSignedSwapUtils';
 export * from './sendFormUtils';
 export * from './settingsUtils';
 export * from './solanaStakingUtils';

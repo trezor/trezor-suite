@@ -67,10 +67,16 @@ describe('useTradingContentBuilder', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('returns undefined when receive is missing', () => {
-        const { toJSON } = renderContentBuilder({ receive: undefined });
+    it('renders the send leg only for a partial swap (receive missing)', () => {
+        const { getByText, queryByText } = renderContentBuilder({ receive: undefined });
 
-        expect(toJSON()).toBeNull();
+        expect(getByText('-1.22 BTC')).toBeOnTheScreen();
+        expect(queryByText('+0.45796014 ETH')).toBeNull();
+        expect(
+            queryByText(
+                getTranslation('moduleTrading.tradingReviewOutputs.tradedAssets.recipient'),
+            ),
+        ).toBeNull();
     });
 
     it('returns undefined when receive is fiat (no cryptoId)', () => {

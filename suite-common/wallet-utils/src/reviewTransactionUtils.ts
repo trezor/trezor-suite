@@ -1,4 +1,8 @@
-import { Calldata, isEvmClearSigningTx } from '@suite-common/calldata';
+import {
+    Calldata,
+    type ClearSigningCoverage,
+    getEvmClearSignedSwapCoverage,
+} from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
@@ -114,10 +118,11 @@ type ConstructOutputsParams = {
     vaultName?: string;
     availableRewards?: YieldClaimReward[];
     swapSlippage?: string;
-    isClearSignedTradingSwap: boolean;
+    // undefined when the device will not clear-sign the transaction as a swap
+    clearSignedSwapCoverage: ClearSigningCoverage | undefined;
 };
 
-type IsClearSignedEvmTradingSwapTransactionParams = {
+type ClearSignedEvmTradingSwapParams = {
     account: Account;
     device: TrezorDevice;
     precomposedTx: GeneralPrecomposedTransactionFinal;
@@ -136,33 +141,50 @@ const getClearSignedSwapRecipientName = (
     return (routerAddress && EVM_SPENDER_LABELS[routerAddress.toLowerCase()]) ?? fallback;
 };
 
-export const isClearSignedEvmTradingSwapTransaction = ({
+export const getClearSignedEvmTradingSwapCoverage = ({
     account,
     device,
     precomposedTx,
     transactionData,
     trading,
-}: IsClearSignedEvmTradingSwapTransactionParams): boolean => {
-    if (!isExchangeTradingForm(trading)) return false;
-    if (!isEvmClearSigningSupportedByDevice(device)) return false;
-    if (isEvmApprovalTx(transactionData)) return false;
-    if (account.networkType !== 'ethereum' || !transactionData) return false;
+}: ClearSignedEvmTradingSwapParams): ClearSigningCoverage | undefined => {
+    if (
+        !isExchangeTradingForm(trading) ||
+        !isEvmClearSigningSupportedByDevice(device) ||
+        isEvmApprovalTx(transactionData) ||
+        account.networkType !== 'ethereum' ||
+        !transactionData
+    ) {
+        return undefined;
+    }
     const network = networks[account.symbol];
-    if (!('chainId' in network)) return false;
+    if (!('chainId' in network)) {
+        return undefined;
+    }
     const to = precomposedTx.outputs.find(
         o => 'address' in o && typeof o.address === 'string',
     )?.address;
 
-    return isEvmClearSigningTx(network.chainId, to, transactionData);
+    return getEvmClearSignedSwapCoverage(
+        network.chainId,
+        to,
+        transactionData,
+        getFirmwareVersion(device),
+    );
 };
+
+export const isClearSignedEvmTradingSwapTransaction = (
+    params: ClearSignedEvmTradingSwapParams,
+): boolean => getClearSignedEvmTradingSwapCoverage(params) !== undefined;
 
 const constructOldFlow = ({
     precomposedTx,
     decreaseOutputId,
     account,
     precomposedForm,
-    isClearSignedTradingSwap,
+    clearSignedSwapCoverage,
 }: ConstructOutputsParams): ReviewOutput[] => {
+    const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -327,7 +349,7 @@ const constructNewFlow = ({
     vaultName,
     availableRewards,
     swapSlippage,
-    isClearSignedTradingSwap,
+    clearSignedSwapCoverage,
     isApprovalFlowSupported,
     isEvmClearSigningSupported,
     isUpdatedEthereumSendFlow,
@@ -338,6 +360,7 @@ const constructNewFlow = ({
     isApprovalFlowSupported: boolean;
     isEvmClearSigningSupported: boolean;
 }): ReviewOutput[] => {
+    const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
     const outputs: ReviewOutput[] = [];
 
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -525,9 +548,11 @@ const constructNewFlow = ({
         if (isClearSignedTradingSwap) {
             outputs.push({ type: 'swap_intent', value: 'swap' });
         }
+
+        const isPartialClearSignedSwap = clearSignedSwapCoverage === 'partial';
         // TODO: extract the receive amount directly from the actual transaction data
         // instead of deriving it from the quote and slippage.
-        const receive =
+        const slippageAdjustedReceive =
             isClearSignedTradingSwap && swapSlippage
                 ? {
                       ...trading.receive,
@@ -537,13 +562,14 @@ const constructNewFlow = ({
                           .toString(),
                   }
                 : trading.receive;
+        const receive = isPartialClearSignedSwap ? undefined : slippageAdjustedReceive;
         outputs.push({
             type: 'traded_assets',
             value: '',
             value2: '',
             send: trading.send,
             receive,
-            receiveAddress: isClearSignedTradingSwap ? trading.receiveAddress : undefined,
+            receiveAddress: clearSignedSwapCoverage === 'full' ? trading.receiveAddress : undefined,
         });
     } else {
         precomposedTx.outputs.forEach(o => {
@@ -663,7 +689,7 @@ const constructNewFlow = ({
 
 type ConstructTransactionReviewOutputsProps = Omit<
     ConstructOutputsParams,
-    'isClearSignedTradingSwap'
+    'clearSignedSwapCoverage'
 > & {
     device: TrezorDevice;
 };
@@ -681,7 +707,7 @@ export const constructTransactionReviewOutputs = ({
         device,
         params.account.networkType,
     ); // > 2.9.0 && isStellar
-    const isClearSignedTradingSwap = isClearSignedEvmTradingSwapTransaction({
+    const clearSignedSwapCoverage = getClearSignedEvmTradingSwapCoverage({
         account: params.account,
         device,
         precomposedTx: params.precomposedTx,
@@ -689,12 +715,12 @@ export const constructTransactionReviewOutputs = ({
         trading: params.precomposedForm.trading,
     });
     if (!isUpdatedSendFlow) {
-        return constructOldFlow({ ...params, isClearSignedTradingSwap });
+        return constructOldFlow({ ...params, clearSignedSwapCoverage });
     }
 
     return constructNewFlow({
         ...params,
-        isClearSignedTradingSwap,
+        clearSignedSwapCoverage,
         isUpdatedEthereumSendFlow,
         isApprovalFlowSupported: isApprovalSupported(device),
         isEvmClearSigningSupported: isEvmClearSigningSupportedByDevice(device),

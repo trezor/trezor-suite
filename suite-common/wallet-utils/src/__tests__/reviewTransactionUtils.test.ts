@@ -77,11 +77,12 @@ const buildEthereumAccount = (overrides: Partial<Account> = {}): Account =>
         ...overrides,
     });
 
+// >= 2.12.1: clear-signing-capable (clear signing is version-gated per selector).
 const buildUpdatedDevice = () =>
     mockSuiteDevice(undefined, {
         major_version: 2,
-        minor_version: 6,
-        patch_version: 3,
+        minor_version: 12,
+        patch_version: 2,
     });
 
 const buildPrecomposedTransaction = ({
@@ -194,6 +195,55 @@ describe('constructTransactionReviewOutputs', () => {
                     type: 'traded_assets',
                     receiveAddress: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
                 }),
+            ]),
+        );
+    });
+
+    it('renders the plain flow on modern firmware that predates clear signing', () => {
+        const oldFirmwareDevice = mockSuiteDevice(undefined, {
+            major_version: 2,
+            minor_version: 11,
+            patch_version: 0,
+        });
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: oldFirmwareDevice,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                transactionData: LIFI_SWAP_DATA,
+                trading: buildTrading(),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: LIFI_DIAMOND, token: usdcToken }),
+        });
+
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'swap_intent' })]),
+        );
+    });
+
+    it('omits the receive leg for a partial clear-signed swap (1inch unoswap)', () => {
+        const ONEINCH_ROUTER = '0x111111125421cA6dc452d289314280a0f8842A65';
+        const UNOSWAP_DATA = `0x83800a8e${'00'.repeat(32 * 4)}`; // unoswap selector
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                transactionData: UNOSWAP_DATA,
+                trading: buildTrading(),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: ONEINCH_ROUTER, token: usdcToken }),
+        });
+
+        const tradedAssets = outputs.find(o => o.type === 'traded_assets');
+        expect(tradedAssets).toBeDefined();
+        expect(tradedAssets?.receive).toBeUndefined();
+        expect(tradedAssets?.receiveAddress).toBeUndefined();
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'swap_intent', value: 'swap' }),
             ]),
         );
     });

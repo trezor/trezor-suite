@@ -13,7 +13,6 @@ import {
 } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
-import { mapPaddingTypeToPadding } from '@trezor/components/src/components/Card/utils';
 import {
     AssetLogo,
     CoinLogo,
@@ -30,7 +29,7 @@ export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;
     state: 'active' | 'confirmed' | 'unconfirmed';
     send: FormStateTradingCryptoCurrency;
-    receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+    receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
     receiveAddress?: string;
 };
 
@@ -152,10 +151,10 @@ export const TransactionReviewOutputAssets = ({
             paddingType="none"
             type={state === 'confirmed' ? 'contrast' : 'raised'}
             header={
-                <Row gap={spacings.sm} padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
+                <Row gap={12} padding={12}>
                     <TransactionReviewOutputStatus state={state} />
                     <H4
-                        margin={{ left: spacings.xxs }}
+                        margin={{ left: 4 }}
                         typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
                     >
                         {title}
@@ -164,20 +163,24 @@ export const TransactionReviewOutputAssets = ({
             }
         >
             <Column>
-                <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
+                <Column padding={12}>
                     <TransactionReviewOutputAssetsCryptoCurrency
                         cryptoCurrency={send}
                         type="send"
                     />
                 </Column>
-                <Divider margin={{}} />
-                <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
-                    <TransactionReviewOutputAssetsTo receive={receive} />
-                </Column>
+                {receive && (
+                    <>
+                        <Divider margin={{}} />
+                        <Column padding={12}>
+                            <TransactionReviewOutputAssetsTo receive={receive} />
+                        </Column>
+                    </>
+                )}
                 {receiveAddress && (
                     <>
                         <Divider margin={{}} />
-                        <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
+                        <Column padding={12}>
                             <InfoItem
                                 label={
                                     <Text intent="neutral" padding={{ left: 32 }}>

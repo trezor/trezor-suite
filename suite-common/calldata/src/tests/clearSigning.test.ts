@@ -118,4 +118,24 @@ describe(isEvmClearSigningTx.name, () => {
             expect(isEvmClearSigningTx(1, RANDOM_ADDRESS, LIFI_DATA)).toBe(false);
         });
     });
+
+    // On zkSync/Metis/Linea/Taiko the diamond moved from the canonical address
+    // (bound by 2.12.1 firmware) to a chain-specific one (since 2.12.2). This
+    // version-agnostic predicate matches both; getEvmClearSignedSwapCoverage resolves
+    // which one a given firmware actually binds.
+    describe('LI.FI Diamond (moved deployments)', () => {
+        const ZKSYNC_ALT_ADDRESS = '0x341e94069f53234fe6dabef707ad424830525715';
+
+        it('recognises the chain-specific address on zkSync Era (324)', () => {
+            expect(isEvmClearSigningTx(324, ZKSYNC_ALT_ADDRESS, LIFI_DATA)).toBe(true);
+        });
+
+        it('recognises the canonical address on zkSync Era (bound by 2.12.1)', () => {
+            expect(isEvmClearSigningTx(324, LIFI_ADDRESS, LIFI_DATA)).toBe(true);
+        });
+
+        it('does not match the chain-specific address on a chain it is not deployed on', () => {
+            expect(isEvmClearSigningTx(1, ZKSYNC_ALT_ADDRESS, LIFI_DATA)).toBe(false);
+        });
+    });
 });
