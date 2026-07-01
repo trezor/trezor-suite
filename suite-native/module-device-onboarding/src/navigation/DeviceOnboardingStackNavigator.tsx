@@ -43,7 +43,7 @@ export const DeviceOnboardingStackNavigator = () => {
             initialRouteName={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
             screenOptions={stackNavigationOptionsConfig}
             screenListeners={({ route }) => ({
-                focus: () => reportStepViewed(route.name as DeviceOnboardingStackRoutes),
+                focus: () => reportStepViewed(route.name),
             })}
         >
             <DeviceOnboardingStack.Screen

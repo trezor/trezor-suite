@@ -21,7 +21,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { STAKE_NATIVE_MODULE_PREFIX } from './constants';
 import {
-    type EthereumAccount,
     type EthereumStakingVariant,
     type Failure,
     type PreparedEthereumStakingContext,
@@ -154,7 +153,7 @@ const prepareEthereumStakingContext = (
     return {
         ok: true,
         context: {
-            account: account as EthereumAccount,
+            account,
             chainId,
             gasLimit,
             variant,

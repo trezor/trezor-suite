@@ -115,7 +115,7 @@ export const Screen = ({
     // We have to extract dynamic header props from header prop. While not ideal, this allows us to only send one header prop to the screen.
     const dynamicHeaderProps = ((): DynamicScreenHeaderProps | null => {
         if (isScreenHeaderPropDynamic(header)) {
-            return header.props as DynamicScreenHeaderProps;
+            return header.props;
         }
 
         return null;

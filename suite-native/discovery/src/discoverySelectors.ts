@@ -46,7 +46,7 @@ const filterUnavailableNetworks = (
             !n.support || // support is not defined => is supported
             !internalModel || // typescript. device undefined. => supported
             (n.support[internalModel] && // support is defined for current device
-                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel] as string)); // device version is newer or equal to support field in networks => supported
+                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel])); // device version is newer or equal to support field in networks => supported
 
         return (
             enabledNetworks.includes(n.symbol) &&
