@@ -6,7 +6,9 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type FormDraftRootState,
+    type StablecoinYieldActionReviewState,
     type StablecoinYieldRootState,
+    type YieldWithdrawFlowType,
     getYieldWithdrawInputToken,
     selectFormDraft,
     selectStablecoinYieldSessionByFlowKey,
@@ -29,6 +31,14 @@ type NavigationProps = StackNavigationProps<
     YieldStackParamList,
     YieldStackRoutes.YieldWithdrawReview
 >;
+type YieldWithdrawScreenReview = StablecoinYieldActionReviewState & {
+    type: YieldWithdrawFlowType;
+};
+
+const isYieldWithdrawScreenReview = (
+    actionReview: StablecoinYieldActionReviewState | null | undefined,
+    flowType: YieldWithdrawFlowType,
+): actionReview is YieldWithdrawScreenReview => actionReview?.type === flowType;
 
 export const YieldWithdrawReviewScreen = () => {
     const route = useRoute<RouteProps>();
@@ -47,14 +57,8 @@ export const YieldWithdrawReviewScreen = () => {
     );
     const actionReview = session?.action.review;
     const review = useMemo(
-        () =>
-            actionReview?.type === 'withdraw'
-                ? {
-                      ...actionReview,
-                      type: 'withdraw' as const,
-                  }
-                : null,
-        [actionReview],
+        () => (isYieldWithdrawScreenReview(actionReview, flowType) ? actionReview : null),
+        [actionReview, flowType],
     );
     const reviewToken = useMemo(() => {
         if (!flowData) {
