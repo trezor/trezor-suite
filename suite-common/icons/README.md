@@ -1,19 +1,11 @@
 # @suite-common/icons
 
-This package contains source assets for icons used in the app.
+Icons for the native (mobile) app. General icon SVG sources live in `@trezor/icons` (`packages/icons/assets`).
 
-## How to add or update icon
+## How to add or update an icon
 
-1. Export icon as SVG from Figma (no other types than SVG are allowed).
-2. Rename icon to follow camel case convention (`Warning Circle.svg` => `warningCircle.svg`).
-3. Run `yarn generate-icons` - this will do some necessary changes in SVG structure like removing dimensions and some optimization using [SVGO library](https://github.com/svg/svgo). It will also regenerate `src/icons.ts` file.
-4. You can use your newly added icon 🎉.
-
-## How to update icon font for mobile app
-
-1. Register new icon in `generateIconFont.ts` file.
-2. Run `yarn generate-icons` to generate new font file.
-3. Rebuild/restart app (incl. shutting down emulator & rerunning `yarn native:prebuild`).
+1. Export the icon as SVG from Figma and rename it to camelCase (`Warning Circle.svg` → `warningCircle.svg`), place it in `@trezor/icons/assets`.
+2. Run `yarn generate-icons` from repo root
 
 ## In case some icons are not rendering correctly in icon font
 
