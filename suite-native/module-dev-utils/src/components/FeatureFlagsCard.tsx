@@ -13,7 +13,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
     [FeatureFlagEnum.IsTradingResidenceCheckEnabled]: '💰 Trading Residence Check',
     [FeatureFlagEnum.IsTradingDebugEnabled]: '💰 Trading Debug Mode',
-    [FeatureFlagEnum.IsStablecoinYieldEnabled]: 'Stablecoin Yield',
     [FeatureFlagEnum.IsN4w1BackupEnabled]: 'N4W1 Backup',
 } as const satisfies Record<FeatureFlagEnum, string>;
 

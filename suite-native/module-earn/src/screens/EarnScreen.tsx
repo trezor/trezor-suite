@@ -5,7 +5,7 @@ import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { TitleHeader, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { TitleHeader, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
@@ -23,7 +23,6 @@ import {
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
 import { StablecoinYieldLoadErrorAlert } from '../components/StablecoinYieldLoadErrorAlert';
-import { useStablecoinYieldFlag } from '../hooks/useStablecoinYieldFlag';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStablecoinYieldPromoNavigation } from '../hooks/useStablecoinYieldPromoNavigation';
 import { useStakingListData } from '../hooks/useStakingListData';
@@ -41,9 +40,6 @@ const isSectionBoundaryItem = (item: EarnPromoListDataItem | undefined) =>
 
 const EarnScreenContent = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
-        useBottomSheetModal();
-    const isStablecoinYieldEnabled = useStablecoinYieldFlag();
 
     const {
         promoListData: stakingPromoItems,
@@ -83,11 +79,7 @@ const EarnScreenContent = () => {
                     type: events.earnStablecoinYieldTilePressedEvent.name,
                 });
 
-                if (isStablecoinYieldEnabled) {
-                    handleStablecoinYieldPromoPress(item);
-                } else {
-                    openStablecoinYieldModal();
-                }
+                handleStablecoinYieldPromoPress(item);
 
                 return;
             }
@@ -98,13 +90,7 @@ const EarnScreenContent = () => {
 
             handleStakingPromoPress(item);
         },
-        [
-            analytics,
-            handleStablecoinYieldPromoPress,
-            handleStakingPromoPress,
-            isStablecoinYieldEnabled,
-            openStablecoinYieldModal,
-        ],
+        [analytics, handleStablecoinYieldPromoPress, handleStakingPromoPress],
     );
 
     const renderItem = useCallback(
@@ -174,7 +160,6 @@ const EarnScreenContent = () => {
                 />
 
                 <EarnItemInfoModal ref={staking.infoSheetRef} type="staking" />
-                <EarnItemInfoModal ref={stablecoinYieldBottomSheetRef} type="stablecoin-yield" />
                 <ChooseStakingAccountBottomSheet
                     ref={staking.chooseAccountSheetRef}
                     accounts={staking.chosenAccounts}
