@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -105,18 +106,18 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         console.error('A connected device is required to derive the database path.');
         process.exit(1);
     }
-    // Probe: send a dummy non-membership lookup to obtain the per-seed identifier from firmware.
-    // The firmware always includes identifier in the response regardless of valid/membership.
-    const probe = await TrezorConnect.authDbLookup({ device, address: '00', proof: [] });
-    if (!probe.success) {
-        console.error('Probe authDbLookup failed:', probe);
+    // Derive identifier: SHA-256 of compressed public key at m/44'/0'/0'/0/0,
+    // matching the firmware's own identifier derivation.
+    const pubKeyResult = await TrezorConnect.getPublicKey({ device, path: "m/44'/0'/0'/0/0", coin: 'btc' });
+    if (!pubKeyResult.success) {
+        console.error('Failed to get public key from device:', pubKeyResult);
         process.exit(1);
     }
-    if (!probe.payload.identifier) {
-        console.error('Probe authDbLookup succeeded but identifier missing. payload:', JSON.stringify(probe.payload));
-        process.exit(1);
-    }
-    const db = new BitcoinAddressDb(getDbPath(probe.payload.identifier));
+    const identifierHex = createHash('sha256')
+        .update(Buffer.from(pubKeyResult.payload.node.public_key, 'hex'))
+        .digest('hex');
+    console.log('Using database identifier:', identifierHex);
+    const db = new BitcoinAddressDb(getDbPath(identifierHex));
 
     try {
         for (const method of dbMethods) {
