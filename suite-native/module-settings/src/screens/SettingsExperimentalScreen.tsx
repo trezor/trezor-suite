@@ -22,6 +22,7 @@ export const SettingsExperimentalScreen = () => {
                             iconName="info"
                             intent="neutral"
                             priority="secondary"
+                            size="medium"
                             onPress={onInfoPress}
                             accessibilityRole="button"
                             accessibilityLabel="More info"
