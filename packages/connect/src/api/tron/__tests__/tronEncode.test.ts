@@ -95,6 +95,26 @@ const WITHDRAW = {
     },
 } as const;
 
+const CLAIM_CONTRACT: TronContracts = {
+    type: 'WithdrawBalanceContract',
+    parameter: {
+        value: {
+            owner_address: OWNER_ADDRESS,
+        },
+    },
+};
+
+const CLAIM = {
+    signature:
+        'a7f8602b02413e9dded0170daa5b4ada9a2679198af276be456f4faea1bc326f5070789bec5e6471de3f726f4fe0c9daced8df183e4a62804db26d5650c59a521c',
+    blockParams: {
+        ref_block_bytes: 'e942',
+        ref_block_hash: '6394747da9fee421',
+        expiration: 1752562632000,
+        timestamp: 1752562572000,
+    },
+} as const;
+
 const VOTE_CONTRACT: TronContracts = {
     type: 'VoteWitnessContract',
     parameter: {
@@ -179,6 +199,19 @@ describe('tron/encodeBroadcastTransaction', () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignature: (typeof signature)[number] = signature[0];
         expect(bytesToHex(firstSignature)).toBe(WITHDRAW.signature);
+    });
+
+    it('embeds rawData and signature for a claim', () => {
+        const rawDataHex = bytesToHex(encodeTronContractRawData(CLAIM_CONTRACT, CLAIM.blockParams));
+        const result = encodeBroadcastTransaction(rawDataHex, CLAIM.signature);
+
+        const decoded = decodeBroadcastTransaction(result);
+        expect(bytesToHex(decoded.rawData)).toBe(rawDataHex);
+        expect(decoded.signature).toHaveLength(1);
+        const { signature } = decoded;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstSignature: (typeof signature)[number] = signature[0];
+        expect(bytesToHex(firstSignature)).toBe(CLAIM.signature);
     });
 
     it('embeds rawData and signature for a vote', () => {

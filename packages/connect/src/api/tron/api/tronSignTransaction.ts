@@ -69,6 +69,7 @@ const transformContract = (input: TronContractInput): TronContracts => {
         case 'TransferContract':
         case 'TriggerSmartContract':
         case 'WithdrawExpireUnfreezeContract':
+        case 'WithdrawBalanceContract':
             return input;
     }
 };
@@ -79,6 +80,7 @@ const contractMapping = {
     FreezeBalanceV2Contract: 'TronFreezeBalanceV2Contract',
     UnfreezeBalanceV2Contract: 'TronUnfreezeBalanceV2Contract',
     WithdrawExpireUnfreezeContract: 'TronWithdrawUnfreeze',
+    WithdrawBalanceContract: 'TronWithdrawBalance',
     VoteWitnessContract: 'TronVoteWitnessContract',
 } as const satisfies Record<TronContractsTypes, PROTO.MessageKey>;
 
