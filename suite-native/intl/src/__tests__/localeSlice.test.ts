@@ -14,6 +14,7 @@ describe('selectSupportedLanguageLocale', () => {
             localeState: {
                 appLocaleCode: 'system',
                 systemLocaleCode: 'cs-CZ',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'cs-CZ',
         },
@@ -23,6 +24,7 @@ describe('selectSupportedLanguageLocale', () => {
             localeState: {
                 appLocaleCode: 'system',
                 systemLocaleCode: 'it-IT',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: DEFAULT_LOCALE,
         },
@@ -31,6 +33,7 @@ describe('selectSupportedLanguageLocale', () => {
             localeState: {
                 appLocaleCode: 'cs-CZ',
                 systemLocaleCode: 'en-US',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'cs-CZ',
         },
@@ -40,6 +43,7 @@ describe('selectSupportedLanguageLocale', () => {
             localeState: {
                 appLocaleCode: 'system',
                 systemLocaleCode: 'de-AT',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'de-DE',
         },
@@ -65,6 +69,7 @@ describe('selectLocale', () => {
             localeState: {
                 appLocaleCode: 'system',
                 systemLocaleCode: 'cs-CZ',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'cs-CZ',
         },
@@ -73,6 +78,7 @@ describe('selectLocale', () => {
             localeState: {
                 appLocaleCode: 'ja-JP',
                 systemLocaleCode: 'cs-CZ',
+                areDebugTranslationKeysDisplayed: false,
             },
             expectedResultLocale: 'ja-JP',
         },

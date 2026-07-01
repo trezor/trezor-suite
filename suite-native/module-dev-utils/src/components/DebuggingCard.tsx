@@ -5,12 +5,18 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { captureSentryException } from '@suite-native/sentry';
 
 import { RenderingUtils } from './RenderingUtils';
+import { TranslationUtils } from './TranslationUtils';
 
 export const DebuggingCard = () => (
     <Card>
         <VStack spacing="sp12">
             <Text variant="headline-sm">Debugging</Text>
-            {isDevelopOrDebugEnv() && <RenderingUtils />}
+            {isDevelopOrDebugEnv() && (
+                <>
+                    <RenderingUtils />
+                    <TranslationUtils />
+                </>
+            )}
             <VStack>
                 <Button
                     onPress={() => {
