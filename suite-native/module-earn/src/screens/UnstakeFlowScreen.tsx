@@ -25,6 +25,7 @@ import {
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnOutputFields } from '../components/EarnOutputFields';
+import { UnstakeCanClaimAlert } from '../components/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../components/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../components/UnstakingTimelineCard';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
@@ -61,6 +62,8 @@ export const UnstakeFlowScreen = () => {
         form,
         amountValue,
         stakedBalance,
+        canClaim,
+        claimableAmount,
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,
@@ -135,6 +138,14 @@ export const UnstakeFlowScreen = () => {
                     <InlineAlertBox
                         intent="warning"
                         title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
+                    />
+                </Box>
+            )}
+            {canClaim && networkSymbol && (
+                <Box marginTop="sp16">
+                    <UnstakeCanClaimAlert
+                        claimableAmount={claimableAmount}
+                        symbol={networkSymbol}
                     />
                 </Box>
             )}
