@@ -18,7 +18,14 @@ export const settingsToggleExperimentalFeatureEvent: EventDef<
 
     attributes: {
         feature: {
-            changelog: [{ version: '26.4.1', notes: 'added' }],
+            changelog: [
+                {
+                    version: '26.4.1',
+                    notes: 'added `tron-view-only` and `testnet-networks` values',
+                },
+                { version: '26.6.1', notes: 'removed `tron-view-only` value' },
+                { version: '26.7.1', notes: 'removed `testnet-networks` value' },
+            ],
             description: 'The identifier of the experimental feature being toggled',
         },
         value: {
