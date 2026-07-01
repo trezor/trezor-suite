@@ -8,7 +8,6 @@ import { computeMerkleRoot, generateMerkleProof, generateNonMembershipProof } fr
 import { verifyAndUpdateEntry, verifyEntry, verifyNonMembership } from './verify-authenticity';
 import TrezorConnect, {
     type AddressMetadata,
-    createBitcoinAddressNotificationHandler,
     type Device,
     type MerkleProof,
     ThpPairingMethod,
@@ -68,15 +67,12 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
 
 const DB_METHODS = new Set(['dblookup', 'dbchange']);
 
-const getDbPath = (seedAddress?: string) => {
+const getDbPath = (seedAddress: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
     const profileDir = path.join(os.homedir(), '.trezor');
     fs.mkdirSync(profileDir, { recursive: true });
-    if (seedAddress) {
-        const hash = createHash('sha256').update(seedAddress).digest('hex');
-        return path.join(profileDir, `auth_database_${hash}.db`);
-    }
-    return path.join(profileDir, 'auth_database_unknown.db');
+    const hash = createHash('sha256').update(seedAddress).digest('hex');
+    return path.join(profileDir, `auth_database_${hash}.db`);
 };
 
 const getMethods = (): string[] =>
@@ -108,12 +104,16 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         console.error('Received:', args.params);
         process.exit(1);
     }
-    let seedAddress: string | undefined;
-    if (device) {
-        const addrResult = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", coin: 'btc', showOnTrezor: false });
-        if (addrResult.success) seedAddress = addrResult.payload.address;
+    if (!device) {
+        console.error('A connected device is required to derive the database path.');
+        process.exit(1);
     }
-    const db = new BitcoinAddressDb(getDbPath(seedAddress));
+    const addrResult = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", coin: 'btc', showOnTrezor: false });
+    if (!addrResult.success) {
+        console.error('Failed to derive database path from device:', addrResult.payload.error);
+        process.exit(1);
+    }
+    const db = new BitcoinAddressDb(getDbPath(addrResult.payload.address));
 
     try {
         for (const method of dbMethods) {
@@ -457,15 +457,8 @@ const run = async () => {
         },
     });
 
-    // Register the blockchain notification handler so every Bitcoin address notification
-    // is looked up (or auto-labeled) in the local DB and logged.
-    createBitcoinAddressNotificationHandler({
-        trezorConnect: TrezorConnect,
-        provider: new BitcoinAddressDb(getDbPath()),
-        onAddressAnnotated: (descriptor, metadata) => {
-            console.log('Address annotation:', { descriptor, metadata });
-        },
-    });
+    // Blockchain notification handler requires a seed-derived DB path; it is wired up
+    // inside the DEVICE_EVENT handler once the device is known.
 };
 
 run();
