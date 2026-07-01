@@ -50,7 +50,12 @@ describe('Interceptor', () => {
             'localhost',
             '127.0.0.1',
         ],
-        handler: () => {},
+        handler: async event => {
+            if (event.type === 'CIRCUIT_MISBEHAVING') {
+                console.log(`Circuit "${event.identity}" is misbehaving`);
+                await torController.controlPort.closeActiveCircuits();
+            }
+        },
         getTorSettings: () => torSettings,
     };
 

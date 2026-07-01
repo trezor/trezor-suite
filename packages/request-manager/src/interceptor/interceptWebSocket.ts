@@ -3,6 +3,7 @@
 // See issue: https://github.com/TooTallNate/proxy-agents/issues/239
 import WebSocketNode from 'ws';
 
+import { isCircuitMisbehaving } from '../isCircuitMisbehaving';
 import { type Interceptor } from './interceptorTypes';
 
 export const interceptWebSocket: Interceptor = ({ context, validateRequest }) => {
@@ -20,13 +21,20 @@ export const interceptWebSocket: Interceptor = ({ context, validateRequest }) =>
             validateRequest({ hostname });
 
             if (context.getTorSettings().running) {
-                const agent = context.torIdentities.getIdentity(
-                    `WebSocket/${hostname}`,
-                    undefined,
-                    'https',
-                );
+                const identity = `WebSocket/${hostname}`;
+                const agent = context.torIdentities.getIdentity(identity, undefined, 'https');
 
-                return new WebSocketNode(urlString, protocols, { agent });
+                const ws = new WebSocketNode(urlString, protocols, { agent });
+                ws.on('error', (error: Error) => {
+                    if (isCircuitMisbehaving(error)) {
+                        context.handler({
+                            type: 'CIRCUIT_MISBEHAVING',
+                            identity,
+                        });
+                    }
+                });
+
+                return ws;
             }
 
             return new OriginalWebSocket(url, protocols);
