@@ -82,6 +82,7 @@ const getPreloadedState = ({
     exchange,
     concierge,
     blacklist,
+    slip24,
     residence,
     countryCode,
 }: {
@@ -90,6 +91,7 @@ const getPreloadedState = ({
     exchange?: boolean;
     concierge?: boolean;
     blacklist?: boolean;
+    slip24?: boolean;
     residence?: boolean;
     countryCode?: TradingCountryCode | undefined;
 }) => {
@@ -122,6 +124,12 @@ const getPreloadedState = ({
         features.push({
             domain: 'trading.restrictions.blacklist',
             flag: blacklist,
+        });
+    }
+    if (slip24 !== undefined) {
+        features.push({
+            domain: 'trading.slip24',
+            flag: slip24,
         });
     }
 
@@ -262,25 +270,51 @@ describe('commonSelectors', () => {
     });
 
     describe('selectIsTradingSlip24Enabled', () => {
-        const getSlip24State = (isFeatureFlagEnabled: boolean) =>
+        const getSlip24State = (
+            isFeatureFlagEnabled: boolean,
+            features: object | undefined = {
+                major_version: 2,
+                minor_version: 12,
+                patch_version: 1,
+            },
+        ) =>
             ({
                 messageSystem: messageSystemState,
                 featureFlags: {
                     ...featureFlagsInitialState,
                     [FeatureFlag.IsTradingSlip24Enabled]: isFeatureFlagEnabled,
                 },
-                device: deviceInitialState,
+                device: { selectedDevice: { features } },
                 wallet: { trading: tradingInitialState },
             }) as any;
 
-        it('should be enabled when the feature flag is on for a supported network', () => {
+        it('should be enabled when the feature flag is on for a supported network and firmware', () => {
             expect(selectIsTradingSlip24Enabled(getSlip24State(true), getBtcAccount())).toBe(true);
+        });
+
+        it('should be disabled when the device firmware is too old', () => {
+            const state = getSlip24State(true, {
+                major_version: 2,
+                minor_version: 12,
+                patch_version: 0,
+            });
+
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);
         });
 
         it('should be disabled when the feature flag is off', () => {
             expect(selectIsTradingSlip24Enabled(getSlip24State(false), getBtcAccount())).toBe(
                 false,
             );
+        });
+
+        it('should be disabled when the message-system feature is disabled', () => {
+            const state = {
+                ...getSlip24State(true),
+                messageSystem: getPreloadedState({ slip24: false }).messageSystem,
+            };
+
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);
         });
 
         it('should be disabled for an unsupported network type', () => {

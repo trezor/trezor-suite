@@ -902,11 +902,14 @@ export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndA
     [
         state => selectDeviceUnavailableCapabilities(state),
         state => selectDeviceFirmwareVersion(state),
-        (_: TradingRootState, account: Account | undefined) => account,
-        (_: TradingRootState, __: Account | undefined, isSlip24Active: boolean) => isSlip24Active,
+        (_: TradingRootState, account: Account | undefined | null) => account,
+        (_: TradingRootState, __: Account | undefined | null, isSlip24Active: boolean) =>
+            isSlip24Active,
     ],
     (unavailableCapabilities, firmwareVersion, account, isSlip24Active) => {
-        if (!account) return false;
+        if (!account) {
+            return false;
+        }
 
         const isFirmwareVersionSlip24Compatible =
             !unavailableCapabilities?.['slip24'] &&

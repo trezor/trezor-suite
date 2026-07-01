@@ -80,7 +80,20 @@ describe('useTradingTransaction', () => {
                     trading: tradingState,
                     accounts: getMockAccounts(),
                 },
-                ...(featureFlags ? { featureFlags } : {}),
+                ...(featureFlags
+                    ? {
+                          featureFlags,
+                          device: {
+                              selectedDevice: {
+                                  features: {
+                                      major_version: 2,
+                                      minor_version: 12,
+                                      patch_version: 1,
+                                  },
+                              },
+                          },
+                      }
+                    : {}),
             },
         });
     };
