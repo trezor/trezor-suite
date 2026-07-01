@@ -61,6 +61,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                       PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
                   )
                 : undefined,
+            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
         };
 
         const params = { proto, serialize: !!payload.serialize, symbols };

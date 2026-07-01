@@ -2,6 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type Account,
+    AddressDisplayOptions,
     type ComposeActionContext,
     type ExternalOutput,
     type PrecomposedLevels,
@@ -34,6 +35,7 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
+import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -331,7 +333,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { rejectWithValue },
+        { getState, rejectWithValue },
     ) => {
         if (precomposedTransaction.feeLimit == null)
             return rejectWithValue({
@@ -416,6 +418,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                       tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
                   }
                 : undefined,
+            chunkify: selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,
         });
 
         if (!response.success) {

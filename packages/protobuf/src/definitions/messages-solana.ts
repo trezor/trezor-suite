@@ -86,6 +86,7 @@ export const SolanaSignTx = Type.Object(
         serialized_tx: Type.String(),
         additional_info: Type.Optional(SolanaTxAdditionalInfo),
         payment_req: Type.Optional(PaymentRequest),
+        chunkify: Type.Optional(Type.Boolean()),
     },
     { $id: 'SolanaSignTx' },
 );
