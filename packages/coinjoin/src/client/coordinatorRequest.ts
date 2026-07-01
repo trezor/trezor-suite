@@ -77,10 +77,21 @@ export const coordinatorRequest = async <R = void>(
             // underlying error (carrying `code`/`type`/`message`) on `e.cause`; node-fetch put them on `e`.
             // A reset connection is `ECONNRESET` under node-fetch but `UND_ERR_SOCKET` ("other side
             // closed") under undici; both should reset the TOR circuit and retry.
+            // undici ships its own SOCKS5 client (not the `socks` package), so SOCKS5 connect/auth
+            // failures surface as `UND_ERR_SOCKS5_*` codes and DON'T match the `type`/`message` branch
+            // below (no `type` field, message uses upper-case `SOCKS5`) — match them by code too.
+            // Keep the reset-code list (ECONNRESET/UND_ERR_SOCKET/UND_ERR_SOCKS5*) in sync with
+            // `isTorCircuitError` in @trezor/request-manager (can't be imported here); the legacy
+            // socks-package error is detected differently there (an `options` field) — by design.
             const err = e.cause ?? e;
             const socksErrors = ['Socks5', 'Proxy'];
+            const hasResetCode =
+                'code' in err &&
+                (err.code === 'ECONNRESET' ||
+                    err.code === 'UND_ERR_SOCKET' ||
+                    (typeof err.code === 'string' && err.code.startsWith('UND_ERR_SOCKS5')));
             const shouldSwitchIdentity =
-                ('code' in err && (err.code === 'ECONNRESET' || err.code === 'UND_ERR_SOCKET')) ||
+                hasResetCode ||
                 ('type' in err &&
                     err.type === 'system' &&
                     socksErrors.some(se => err.message.includes(se)));
