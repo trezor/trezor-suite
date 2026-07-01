@@ -1,3 +1,4 @@
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
 
 type ApyValueProps = {
@@ -5,8 +6,8 @@ type ApyValueProps = {
 };
 
 export const ApyValue = ({ apy }: ApyValueProps) => {
-    if (apy == null) {
-        return <Translation id="earn.apyNotAvailable" />;
+    if (!isApyAvailable(apy)) {
+        return <Translation id="earn.notAvailableShort" />;
     }
 
     return <>{`~${apy}%`}</>;

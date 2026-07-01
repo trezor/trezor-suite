@@ -6,6 +6,7 @@ import {
     selectHasRunningDiscovery,
     useAccountsSelector,
 } from '@suite-common/wallet-core';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Badge, Box, BoxSkeleton, HStack, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -139,7 +140,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                             variant={accountKey ? 'body-sm' : 'body-md'}
                             color={accountKey ? 'contentSecondary' : 'contentPrimary'}
                         >
-                            {isAdaStakedOutsideEverstake ? (
+                            {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (
                                 <Translation id="earn.notAvailableShort" />
                             ) : (
                                 <Translation

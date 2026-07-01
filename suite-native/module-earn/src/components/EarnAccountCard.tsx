@@ -7,7 +7,7 @@ import {
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { isApyAvailable, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
@@ -156,7 +156,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                     <Text variant="body-md">{formatActiveItemBalance(item)}</Text>
                     {(isAdaStakedOutsideEverstake || apyValue != null) && (
                         <Text variant="body-sm" color="contentSecondary">
-                            {isAdaStakedOutsideEverstake ? (
+                            {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (
                                 <Translation id="earn.notAvailableShort" />
                             ) : (
                                 <Translation
