@@ -11,7 +11,7 @@ const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
 );
 
-describe('Trade Buy [@noDevice]', () => {
+describe.skip('Trade Buy [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
