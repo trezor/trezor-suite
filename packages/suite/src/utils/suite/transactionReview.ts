@@ -114,6 +114,10 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_EARN_TRON_WITHDRAW_TITLE' };
     }
 
+    if (routeName === 'earn-tron-claim') {
+        return { id: 'TR_EARN_TRON_CLAIM_TITLE' };
+    }
+
     if (
         precomposedForm.tronStaking?.kind === 'freeze' ||
         precomposedForm.tronStaking?.kind === 'unstake'

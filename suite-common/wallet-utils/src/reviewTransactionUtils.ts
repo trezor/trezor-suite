@@ -411,6 +411,12 @@ const constructNewFlow = ({
         return outputs;
     }
 
+    if (tronStaking?.kind === 'claim') {
+        outputs.push({ type: 'tron-claim', value: '' });
+
+        return outputs;
+    }
+
     if (networkType === 'stellar') {
         if (!isUpdatedStellarSendFlow) {
             outputs.push({

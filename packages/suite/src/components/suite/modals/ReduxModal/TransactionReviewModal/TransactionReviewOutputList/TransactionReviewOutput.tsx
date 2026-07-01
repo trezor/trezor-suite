@@ -266,6 +266,8 @@ const getOutputTitle = (
             return <Translation id="TR_SUMMARY" />;
         case 'tron-withdraw':
             return <Translation id="TR_SUMMARY" />;
+        case 'tron-claim':
+            return <Translation id="TR_STAKE_CLAIM" />;
         default:
             return exhaustive(type);
     }
@@ -588,6 +590,14 @@ const getOutputLines = ({
                     type: 'safe-address',
                     label: <Translation id="TR_EARN_TRON_CLAIM_ADDRESS" />,
                     value,
+                },
+            ];
+        case 'tron-claim':
+            return [
+                {
+                    id: 'tron-claim',
+                    type: 'data',
+                    value: translationString('TR_EARN_TRON_CLAIM_CONFIRM'),
                 },
             ];
         default:

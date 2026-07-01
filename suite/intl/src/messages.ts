@@ -10680,6 +10680,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_CLAIM_TITLE',
         defaultMessage: 'Claim rewards',
     },
+    TR_EARN_TRON_CLAIM_CONFIRM: {
+        id: 'TR_EARN_TRON_CLAIM_CONFIRM',
+        defaultMessage: 'Claim voting rewards?',
+    },
     TR_EARN_TRON_UNSTAKE_TITLE: {
         id: 'TR_EARN_TRON_UNSTAKE_TITLE',
         defaultMessage: 'Unstake',
