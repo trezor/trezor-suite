@@ -1,5 +1,4 @@
 import { registerRootComponent } from 'expo';
-
 import { randomUUID } from 'expo-crypto';
 import { polyfillWebCrypto } from 'expo-standard-web-crypto';
 
