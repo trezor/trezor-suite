@@ -1,10 +1,5 @@
 import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 
-import {
-    type TradingRootState,
-    selectTradingProviderByNameAndTradeType,
-} from '@suite-common/trading';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -16,20 +11,24 @@ export type ConfirmationProps = {
     enteringAnimation?: AnimatedProps<any>['entering'];
 };
 
+type ContinueButtonProps = {
+    selectQuote: () => Promise<void>;
+};
+
 const CONFIRMATION_TEST_ID = '@trading/buy/continue-button';
+
+const ContinueButton = ({ selectQuote }: ContinueButtonProps) => (
+    <AnimatedBox entering={FadeIn}>
+        <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
+            <Translation id="moduleTrading.tradingScreen.buttons.continue" />
+        </Button>
+    </AnimatedBox>
+);
 
 export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const form = useBuyFormContext();
-    const receiveAsset = form.watch('asset');
-    const receiveCryptoId = receiveAsset?.cryptoId;
-
     const { canProceed, selectQuote } = useBuyFlow(form);
-
-    const quote = form.watch('quote');
-    const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'buy'),
-    );
-    const providerName = providerInfo?.companyName ?? quote?.exchange;
+    const [receiveCryptoId, quote] = form.watch(['asset.cryptoId', 'quote']);
 
     const { isReceivingInactiveStellarToken, activateButtonElement } =
         useTradingStellarActivateToken({
@@ -38,28 +37,12 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
             buttonTestId: CONFIRMATION_TEST_ID,
         });
 
+    const shouldDisplayContinueButton = canProceed && !isReceivingInactiveStellarToken;
+
     return (
         <AnimatedBox entering={enteringAnimation} exiting={FadeOutDown}>
-            {isReceivingInactiveStellarToken
-                ? activateButtonElement
-                : canProceed && (
-                      <AnimatedBox entering={FadeIn}>
-                          <Button
-                              onPress={selectQuote}
-                              testID={CONFIRMATION_TEST_ID}
-                              iconRight="arrowSquareOut"
-                          >
-                              {providerName ? (
-                                  <Translation
-                                      id="moduleTrading.tradingScreen.buttons.buyVia"
-                                      values={{ providerName }}
-                                  />
-                              ) : (
-                                  <Translation id="moduleTrading.tradingScreen.buttons.continue" />
-                              )}
-                          </Button>
-                      </AnimatedBox>
-                  )}
+            {isReceivingInactiveStellarToken && activateButtonElement}
+            {shouldDisplayContinueButton && <ContinueButton selectQuote={selectQuote} />}
         </AnimatedBox>
     );
 };
