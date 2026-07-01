@@ -12,7 +12,7 @@ import { TronStakedCard } from './TronStakedCard';
 import { TronUnstakingCard } from './TronUnstakingCard';
 import { TronVotingRewardsCard } from './TronVotingRewardsCard';
 import { TronWithdrawReadyBanner } from './TronWithdrawReadyBanner';
-import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
+import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 
 const TRON_STAKING_GUIDE_PATH = '/earn/staking/tron-trx-staking.md';
 
