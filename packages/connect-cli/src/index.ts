@@ -108,8 +108,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     // Probe: send a dummy non-membership lookup to obtain the per-seed identifier from firmware.
     // The firmware always includes identifier in the response regardless of valid/membership.
     const probe = await TrezorConnect.authDbLookup({ device, address: '00', proof: [] });
-    if (!probe.success || !probe.payload.identifier) {
-        console.error('Failed to get identifier from device');
+    if (!probe.success) {
+        console.error('Probe authDbLookup failed:', probe.payload.error);
+        process.exit(1);
+    }
+    if (!probe.payload.identifier) {
+        console.error('Probe authDbLookup succeeded but identifier missing. payload:', JSON.stringify(probe.payload));
         process.exit(1);
     }
     const db = new BitcoinAddressDb(getDbPath(probe.payload.identifier));
