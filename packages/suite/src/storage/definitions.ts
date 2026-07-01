@@ -49,6 +49,15 @@ export interface DBWalletAccountTransaction {
     order: number;
 }
 
+/**
+ * IDB Schema definition used in Suite Web & Desktop.
+ *
+ * Note that some stores are singletons – only one specific `key` is expected to hold the entire serialized payload,
+ * those must have `key` typed as a constant string, to ensure consistency in `preloadStore`, migrations, etc.
+ * Meanwhile, some stores contain a collection of keys, those have `key` as a broader type.
+ *
+ * Note that this is the latest schema, but actual app IDB may carry outdated values not removed in migrations.
+ */
 export interface SuiteDBSchema extends DBSchema {
     bioAuth: {
         key: 'bioAuth';
@@ -59,7 +68,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: string[];
     };
     phishingMetadata: {
-        key: string;
+        key: 'phishingMetadata';
         value: PhishingState;
     };
     txs: {
@@ -86,7 +95,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: ReceiveAccountState;
     };
     suiteSettings: {
-        key: string;
+        key: 'suite';
         value: {
             settings: SuiteSettingsState;
             flags: FlagsState;
@@ -99,7 +108,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: RatesByTimestamps;
     };
     walletSettings: {
-        key: string;
+        key: 'wallet';
         value: WalletSettings;
     };
     backendSettings: {
@@ -111,13 +120,13 @@ export interface SuiteDBSchema extends DBSchema {
         value: DeviceWithEmptyPath;
     };
     thp: {
-        key: string;
+        key: 'value';
         value: {
             credentials: ThpSuiteCredentials[];
         };
     };
     bluetooth: {
-        key: string;
+        key: 'value';
         value: {
             knownDevices: DesktopBluetoothDevice[];
         };
@@ -142,7 +151,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: CoinjoinDebugSettings;
     };
     analytics: {
-        key: string;
+        key: 'suite';
         value: AnalyticsState;
     };
     graph: {
@@ -175,7 +184,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: SuiteSyncQuotaManagerState;
     };
     messageSystem: {
-        key: string;
+        key: 'suite';
         value: {
             currentSequence: number;
             config: MessageSystem | null;
