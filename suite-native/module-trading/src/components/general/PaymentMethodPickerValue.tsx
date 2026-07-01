@@ -8,7 +8,7 @@ type PaymentMethodPickerValueProps = {
     paymentMethod?: SellCryptoPaymentMethod | BuyCryptoPaymentMethod;
     paymentMethodName?: string;
     accessibilityLabel: string;
-    testID: string;
+    testID?: string;
 };
 
 export const PaymentMethodPickerValue = ({

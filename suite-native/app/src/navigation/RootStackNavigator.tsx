@@ -49,6 +49,7 @@ import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
 import {
+    TradingBuyPreviewScreen,
     TradingConfirmingScreen,
     TradingExchangeApprovalScreen,
     TradingExchangeOutputsReviewScreen,
@@ -235,6 +236,11 @@ export const RootStackNavigator = () => {
                     options={{ title: RootStackRoutes.TradingHistory }}
                     name={RootStackRoutes.TradingHistory}
                     component={TradingHistoryScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingBuyPreview }}
+                    name={RootStackRoutes.TradingBuyPreview}
+                    component={TradingBuyPreviewScreen}
                 />
             </RootStack.Group>
             <RootStack.Screen name={RootStackRoutes.DevUtils} component={DevUtilsScreen} />

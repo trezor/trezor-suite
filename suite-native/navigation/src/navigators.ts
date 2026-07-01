@@ -533,6 +533,7 @@ export type RootStackParamList = {
         tradingType: Exclude<TradingType, 'sell'>;
     };
     [RootStackRoutes.TradingHistory]: undefined;
+    [RootStackRoutes.TradingBuyPreview]: undefined;
 };
 
 export type TransactionDetailStackParamList = {

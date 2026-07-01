@@ -3381,6 +3381,13 @@ export const messages = {
             dustLimit: 'Amount is lower than the dust limit',
             networkReserve: 'Not enough {displaySymbol} remaining after reserving network fees',
         },
+        tradingBuyPreviewScreen: {
+            title: 'Complete your buy with {companyName}',
+            subtitle: 'You’ll be redirected to provider’s website to finish the payment.',
+            buyVia: 'Buy with {companyName}',
+            youPay: 'You pay',
+            youGet: 'You get',
+        },
         tradingExchangePreviewScreen: {
             title: 'Swap',
             fromAccount: 'From',

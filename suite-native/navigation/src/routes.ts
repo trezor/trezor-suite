@@ -50,6 +50,7 @@ export enum RootStackRoutes {
     TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
     ReceiveAccounts = 'ReceiveAccounts',
     TradingHistory = 'TradingHistory',
+    TradingBuyPreview = 'TradingBuyPreview',
 }
 
 export enum AppTabsRoutes {
