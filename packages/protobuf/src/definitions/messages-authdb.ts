@@ -15,6 +15,7 @@ export type AuthDbSetRootResponse = Static<typeof AuthDbSetRootResponse>;
 export const AuthDbSetRootResponse = Type.Object(
     {
         counter: Type.Number(),
+        identifier: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbSetRootResponse' },
 );
@@ -37,6 +38,7 @@ export const AuthDbLookupResponse = Type.Object(
         valid: Type.Boolean(),
         counter: Type.Number(),
         membership: Type.Optional(Type.Boolean()),
+        identifier: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbLookupResponse' },
 );
@@ -59,6 +61,18 @@ export const AuthDbUpdateLeafResponse = Type.Object(
     {
         counter: Type.Number(),
         new_root: Type.Optional(Type.String()),
+        identifier: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbUpdateLeafResponse' },
+);
+
+export type AuthDbClearRoot = Static<typeof AuthDbClearRoot>;
+export const AuthDbClearRoot = Type.Object({}, { $id: 'AuthDbClearRoot' });
+
+export type AuthDbClearRootResponse = Static<typeof AuthDbClearRootResponse>;
+export const AuthDbClearRootResponse = Type.Object(
+    {
+        identifier: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbClearRootResponse' },
 );

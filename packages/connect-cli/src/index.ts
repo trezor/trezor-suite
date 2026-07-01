@@ -1,4 +1,3 @@
-import { createHash } from 'crypto';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -65,13 +64,12 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dblookup', 'dbchange']);
+const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbclear']);
 
-const getDbPath = (seedAddress: string) => {
+const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
     const profileDir = path.join(os.homedir(), '.trezor');
-    const hash = createHash('sha256').update(seedAddress).digest('hex');
-    return path.join(profileDir, `auth_database_${hash}.db`);
+    return path.join(profileDir, `auth_database_${identifierHex}.db`);
 };
 
 const getMethods = (): string[] =>
@@ -107,12 +105,14 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         console.error('A connected device is required to derive the database path.');
         process.exit(1);
     }
-    const addrResult = await TrezorConnect.getAddress({ device, path: "m/44'/0'/0'/0/0", coin: 'btc', showOnTrezor: false });
-    if (!addrResult.success) {
-        console.error('Failed to derive database path from device:', addrResult.payload.error);
+    // Probe: send a dummy non-membership lookup to obtain the per-seed identifier from firmware.
+    // The firmware always includes identifier in the response regardless of valid/membership.
+    const probe = await TrezorConnect.authDbLookup({ device, address: '00', proof: [] });
+    if (!probe.success || !probe.payload.identifier) {
+        console.error('Failed to get identifier from device');
         process.exit(1);
     }
-    const db = new BitcoinAddressDb(getDbPath(addrResult.payload.address));
+    const db = new BitcoinAddressDb(getDbPath(probe.payload.identifier));
 
     try {
         for (const method of dbMethods) {
@@ -196,6 +196,20 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState }, null, 2));
                     console.log('Authenticity verified:', result.authentic);
                 }
+            }
+
+            if (method === 'dbclear') {
+                if (!device) {
+                    console.error('dbclear requires a connected device');
+                    process.exit(1);
+                }
+                const result = await TrezorConnect.authDbClearRoot({ device });
+                if (!result.success) {
+                    console.error('dbclear failed:', result.payload.error);
+                    process.exit(1);
+                }
+                db.clearAll();
+                console.log(JSON.stringify({ method: 'dbclear', identifier: result.payload.identifier }, null, 2));
             }
         }
     } finally {

@@ -66,6 +66,7 @@ const connectCallableMethodGroups = {
         'authDbSetRoot',
         'authDbLookup',
         'authDbUpdateLeaf',
+        'authDbClearRoot',
     ],
     blockchain: [
         'blockchainSubscribe',

@@ -110,6 +110,11 @@ export class BitcoinAddressDb implements AddressLookupProvider {
             .run(state.root, state.counter);
     }
 
+    clearAll(): void {
+        this.db.prepare('DELETE FROM addresses').run();
+        this.db.prepare('DELETE FROM tree_state').run();
+    }
+
     close(): void {
         this.db.close();
     }

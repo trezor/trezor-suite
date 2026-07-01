@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import type { authDbClearRoot } from './authDbClearRoot';
 import type { authDbLookup } from './authDbLookup';
 import type { authDbSetRoot } from './authDbSetRoot';
 import type { authDbUpdateLeaf } from './authDbUpdateLeaf';
@@ -213,6 +214,7 @@ export const TrezorConnectDevice = Type.Object({
     authDbSetRoot: Type.Unsafe<typeof authDbSetRoot>(),
     authDbLookup: Type.Unsafe<typeof authDbLookup>(),
     authDbUpdateLeaf: Type.Unsafe<typeof authDbUpdateLeaf>(),
+    authDbClearRoot: Type.Unsafe<typeof authDbClearRoot>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 
