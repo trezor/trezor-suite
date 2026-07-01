@@ -1,4 +1,5 @@
 import { type InterceptorContext } from './interceptorTypes';
+import { isTorCircuitError } from './torError';
 
 const requestTimeoutLimit = 1000 * 30;
 
@@ -40,21 +41,11 @@ export const monitorFetch = <T extends { status: number }>({
             return response;
         },
         (error: Error) => {
-            // undici wraps connection failures in a generic error and exposes the underlying cause
-            // on the `cause` field, so we inspect both. A SocksClientError thrown by the 'socks'
-            // package carries an `options` field, while socket resets surface as 'ECONNRESET'; both
-            // indicate a misbehaving Tor circuit.
-            const cause = 'cause' in error ? (error.cause as unknown) : undefined;
-
-            const isCircuitMisbehaving = [error, cause].some(
-                candidate =>
-                    typeof candidate === 'object' &&
-                    candidate !== null &&
-                    (('code' in candidate && candidate.code === 'ECONNRESET') ||
-                        'options' in candidate),
-            );
-
-            if (isCircuitMisbehaving) {
+            // `isTorCircuitError` recognises the failure shapes of both transports (undici's
+            // UND_ERR_SOCKET / UND_ERR_SOCKS5_* as well as the legacy socks ECONNRESET / `options`),
+            // so a misbehaving circuit reached over `fetch`/undici still triggers the global
+            // circuit-reset recovery (CIRCUIT_MISBEHAVING -> reset-tor-circuits -> closeActiveCircuits).
+            if (isTorCircuitError(error)) {
                 context.handler({
                     type: 'CIRCUIT_MISBEHAVING',
                     identity: identity?.split(':')[0],
