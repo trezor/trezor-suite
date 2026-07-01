@@ -23,6 +23,17 @@ export default class AuthDbSetRoot extends AbstractMethod<'authDbSetRoot', PROTO
         return ['management'];
     }
 
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            label: 'Update the address-database Merkle root stored on the device?',
+        };
+    }
+
+    get info() {
+        return 'Set address-database Merkle root';
+    }
+
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('AuthDbSetRoot', 'AuthDbSetRootResponse', this.params);
