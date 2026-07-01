@@ -200,6 +200,15 @@ const usedIcons = [
     'wifiX',
     'x',
     'xCircle',
+    // Trezor Connect permission + group-badge icons (shared with the web permissions UI).
+    'key',
+    'signature',
+    'notePencil',
+    'sealCheck',
+    'gearSix',
+    'broadcast',
+    'cube',
+    'circuitry',
 ] as const satisfies AllAvailableIcons[];
 
 const tempAssetsDir = path.join(__dirname, 'assetsTemp');
