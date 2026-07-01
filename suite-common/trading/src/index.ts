@@ -2,6 +2,7 @@ export * from './constants';
 export * from './reducers/tradingReducer';
 export * from './reducers/tradingCommonReducer';
 export * from './currency';
+export * from './hooks/useCryptoIdDecimals';
 export * from './hooks/useTradingAssets';
 export * from './hooks/useTradingUtils';
 export * from './hooks/useListDataFilter';

@@ -17,7 +17,7 @@ type UseTokenDecimalsResult = {
 
 // Returns decimals from redux (held token or cached fetch), fetching once when missing.
 export const useTokenDecimals = (
-    networkSymbol: NetworkSymbol,
+    networkSymbol?: NetworkSymbol,
     contractAddress?: TokenAddress,
     accountKey?: AccountKey,
 ): UseTokenDecimalsResult => {
@@ -33,7 +33,7 @@ export const useTokenDecimals = (
 
     useEffect(() => {
         // No auto-retry after a failure; in-flight dedupe lives in the thunk's condition.
-        if (!contractAddress || decimals !== null || cacheEntry?.error) {
+        if (!networkSymbol || !contractAddress || decimals !== null || cacheEntry?.error) {
             return;
         }
 
@@ -44,7 +44,7 @@ export const useTokenDecimals = (
 
     return {
         decimals: decimals ?? undefined,
-        isLoading: !!contractAddress && decimals === null && !error,
+        isLoading: !!networkSymbol && !!contractAddress && decimals === null && !error,
         error,
     };
 };
