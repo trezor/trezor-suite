@@ -10503,6 +10503,30 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP',
         defaultMessage: 'Assign all votes to earn more rewards.',
     },
+    TR_EARN_TRON_VOTE_ALLOCATION: {
+        id: 'TR_EARN_TRON_VOTE_ALLOCATION',
+        defaultMessage: 'Vote allocation',
+    },
+    TR_EARN_TRON_CHANGE_VOTES: {
+        id: 'TR_EARN_TRON_CHANGE_VOTES',
+        defaultMessage: 'Change votes',
+    },
+    TR_EARN_TRON_REPRESENTATIVE: {
+        id: 'TR_EARN_TRON_REPRESENTATIVE',
+        defaultMessage: 'Representative',
+    },
+    TR_EARN_TRON_REMAINING_VOTES_LABEL: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES_LABEL',
+        defaultMessage: 'Remaining votes',
+    },
+    TR_EARN_TRON_ASSIGN_VOTES_BANNER: {
+        id: 'TR_EARN_TRON_ASSIGN_VOTES_BANNER',
+        defaultMessage: 'Assign all of your votes to earn more rewards.',
+    },
+    TR_EARN_TRON_NO_VOTES: {
+        id: 'TR_EARN_TRON_NO_VOTES',
+        defaultMessage: 'You haven’t voted for any representatives yet.',
+    },
     TR_EARN_TRON_UNSTAKING: {
         id: 'TR_EARN_TRON_UNSTAKING',
         defaultMessage: 'Unstaking (~{days} days)',

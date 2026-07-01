@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
@@ -24,12 +26,15 @@ import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
+import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';
+
 interface TronStakedCardProps {
     account: Account;
 }
 
 export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const dispatch = useDispatch();
+    const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
 
     const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '0';
@@ -122,7 +127,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                                 intent="neutral"
                                 priority="secondary"
                                 isUnderlined
-                                onClick={() => goToFlow('earn-tron-vote')}
+                                onClick={() => setIsVoteAllocationOpen(true)}
                             >
                                 <Translation
                                     id="TR_EARN_TRON_VOTES_TO_ALLOCATE"
@@ -134,16 +139,29 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                 ) : (
                     <>
                         {shouldShowRemainingVotes && (
-                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <TextButton
+                                size="small"
+                                intent="neutral"
+                                priority="secondary"
+                                isUnderlined
+                                onClick={() => setIsVoteAllocationOpen(true)}
+                            >
                                 <Translation
                                     id="TR_EARN_TRON_REMAINING_VOTES"
                                     values={{ remaining: remainingVotes, total: totalVotes }}
                                 />
-                            </Text>
+                            </TextButton>
                         )}
                     </>
                 )}
             </Row>
+
+            {isVoteAllocationOpen && (
+                <TronVoteAllocationModal
+                    account={account}
+                    onClose={() => setIsVoteAllocationOpen(false)}
+                />
+            )}
         </Card>
     );
 };
