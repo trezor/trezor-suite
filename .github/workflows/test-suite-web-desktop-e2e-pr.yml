@@ -54,7 +54,7 @@ jobs:
   build-app:
     needs:
       - determine-strategy
-    if: github.repository == 'trezor/trezor-suite'
+    if: github.repository == 'trezor/trezor-suite' && needs.determine-strategy.outputs.strategy != 'skip-e2e'
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
   post-currents-pr-info-desktop:
@@ -121,7 +121,9 @@ jobs:
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
-    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - determine-strategy
+    if: github.repository == 'trezor/trezor-suite' && needs.determine-strategy.outputs.strategy != 'skip-e2e'
     uses: ./.github/workflows/build-suite-web-e2e.yml
 
   extract-branch:
@@ -137,7 +139,8 @@ jobs:
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
   build-connect:
-    needs: [extract-branch]
+    needs: [extract-branch, determine-strategy]
+    if: github.repository == 'trezor/trezor-suite' && needs.determine-strategy.outputs.strategy != 'skip-e2e'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -219,7 +222,10 @@ jobs:
           DIRECT_SPEC="${{ needs.determine-strategy.outputs.spec-list }}"
           LLM_SPEC="${{ needs.run-llm-analysis.outputs.spec-list }}"
 
-          if [[ "$STRATEGY" == "specific-tests" ]]; then
+          if [[ "$STRATEGY" == "skip-e2e" ]]; then
+            echo "No runtime-impacting files changed — no e2e tests will run."
+            echo "spec-list=" >> "$GITHUB_OUTPUT"
+          elif [[ "$STRATEGY" == "specific-tests" ]]; then
             echo "Using direct spec list from strategy determination: $DIRECT_SPEC"
             echo "spec-list=$DIRECT_SPEC" >> "$GITHUB_OUTPUT"
           elif [[ "$STRATEGY" == "analyze" ]] && [[ -n "$LLM_SPEC" ]]; then

@@ -1,12 +1,13 @@
 name: "Determine E2E Test Strategy"
 description: >
-  Classifies PR changes into one of three strategies:
+  Classifies PR changes into one of four strategies:
+  skip-e2e (only documentation / repo-metadata files with no runtime impact changed),
   run-everything (e2e framework changed, mixed framework+production, or CI-only changes),
   analyze (production code changed → LLM analysis needed),
   or specific-tests (only e2e test files changed).
 outputs:
   strategy:
-    description: "specific-tests | run-everything | analyze"
+    description: "skip-e2e | specific-tests | run-everything | analyze"
     value: ${{ steps.classify.outputs.strategy }}
   spec-list:
     description: "Comma-separated list of test file paths (only set when strategy=specific-tests)"
@@ -35,6 +36,28 @@ runs:
         if [[ -z "$CHANGED" ]]; then
           echo "No changed files detected. Running everything."
           echo "strategy=run-everything" >> "$GITHUB_OUTPUT"
+          echo "spec-list=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # No-runtime-impact short-circuit.
+        # If EVERY changed file is documentation or repo metadata that cannot
+        # affect the built app or the e2e tests themselves, skip e2e entirely.
+        # The set is deliberately narrow — only files whose changes provably
+        # have no runtime effect. Anything ambiguous (source, styles, configs,
+        # fixtures, assets, lockfiles) is intentionally excluded so it falls
+        # through to normal classification and is still tested.
+        #
+        # Note: a PR touching ONLY top-level markdown never reaches this
+        # workflow at all (see `paths-ignore: "**.md"` on the workflow). This
+        # check additionally covers doc-only change sets that the path filter
+        # does not catch on its own — e.g. *.mdx, LICENSE, or a mix such as
+        # `README.md` + `LICENSE` (which triggers the workflow because LICENSE
+        # is not in paths-ignore). To extend the set, add patterns below.
+        RUNTIME_RELEVANT=$(echo "$CHANGED" | grep -vE '(\.mdx?$)|(^|/)(LICENSE|CODEOWNERS|AUTHORS)$' || true)
+        if [[ -z "$RUNTIME_RELEVANT" ]]; then
+          echo "Only documentation / non-runtime files changed — skipping e2e."
+          echo "strategy=skip-e2e" >> "$GITHUB_OUTPUT"
           echo "spec-list=" >> "$GITHUB_OUTPUT"
           exit 0
         fi
