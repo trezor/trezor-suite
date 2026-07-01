@@ -1,4 +1,5 @@
 import http from 'http';
+import nodeFetch from 'node-fetch';
 import path from 'path';
 import WebSocket from 'ws';
 
@@ -33,6 +34,13 @@ describe('Interceptor', () => {
     let torIdentities: TorIdentities;
 
     const torSettings = { running: true, host: hostIp, port };
+    const fetchImplementations = [
+        ['global.fetch', (...args: Parameters<typeof fetch>) => fetch(...args)],
+        ['node-fetch', nodeFetch],
+    ] as const;
+
+    const extractIp = async (response: { text: () => Promise<string> }) =>
+        (await response.text()).match(ipRegex)?.[0];
 
     const interceptorOptions: InterceptorOptions = {
         getWhitelistedDomains: () => [
@@ -81,58 +89,61 @@ describe('Interceptor', () => {
     // guarantee that the IPs of 2 different Tor circuits are different. And this is
     // part of the Tor nature.
     conditionalTest('Check if IPs are different', () => {
-        it('HTTP GET - Each identity has different ip address', async () => {
-            const identityDefault = await fetch(testGetUrlHttp, {
-                headers: { 'proxy-authorization': 'Basic default' },
-            });
-            const identityDefault2 = await fetch(testGetUrlHttp, {
-                headers: { 'Proxy-Authorization': 'Basic user' },
-            });
-            const iPIdentitieA = ((await identityDefault.text()) as any).match(ipRegex)[0];
-
-            const iPIdentitieB = ((await identityDefault2.text()) as any).match(ipRegex)[0];
-            expect(iPIdentitieA).not.toEqual(iPIdentitieB);
-        });
-
-        it('HTTPS GET - Each identity has different ip address', async () => {
-            const identityA = await fetch(testGetUrlHttps, {
-                headers: { 'proxy-authorization': 'Basic default' },
-            });
-            const identityB = await fetch(testGetUrlHttps, {
-                headers: { 'Proxy-Authorization': 'Basic user' },
-            });
-            // Parsing IP address from html provided by check.torproject.org.
-            const iPIdentitieA = ((await identityA.text()) as any).match(ipRegex)[0];
-            const iPIdentitieB = ((await identityB.text()) as any).match(ipRegex)[0];
-            // Check if identities are different when using different identity.
-            expect(iPIdentitieA).not.toEqual(iPIdentitieB);
-
-            // reset existing circuit using identity with password
-            const identityB2 = await fetch(testGetUrlHttps, {
-                headers: { 'Proxy-Authorization': 'Basic user:password' },
-            });
-            const iPIdentitieB2 = ((await identityB2.text()) as any).match(ipRegex)[0];
-            // ip for "user" did change
-            expect(iPIdentitieB2).not.toEqual(iPIdentitieB);
-        });
-
-        it('HTTPS POST - Each identity has different ip address', async () => {
-            const identityA = await fetch(testPostUrlHttps, {
+        const testCases = [
+            {
+                name: 'HTTP GET',
+                url: testGetUrlHttp,
+                method: 'GET',
+                body: undefined,
+            },
+            {
+                name: 'HTTPS GET',
+                url: testGetUrlHttps,
+                method: 'GET',
+                body: undefined,
+            },
+            {
+                name: 'HTTPS POST',
+                url: testPostUrlHttps,
                 method: 'POST',
                 body: JSON.stringify({ test: 'test' }),
-                headers: { 'proxy-authorization': 'Basic default' },
-            });
-            const identityB = await fetch(testPostUrlHttps, {
-                method: 'POST',
-                body: JSON.stringify({ test: 'test' }),
-                headers: { 'Proxy-Authorization': 'Basic user' },
-            });
+            },
+        ];
 
-            const iPIdentitieA = ((await identityA.json()) as any).origin;
-            const iPIdentitieB = ((await identityB.json()) as any).origin;
+        describe.each(fetchImplementations)('%s', (_, fetchFn) => {
+            it.each(testCases)(
+                '$name - Each identity has different ip address',
+                async ({ url, method, body }) => {
+                    const identityA = await fetchFn(url, {
+                        method,
+                        body,
+                        headers: { 'proxy-authorization': 'Basic default' },
+                    });
+                    const identityB = await fetchFn(url, {
+                        method,
+                        body,
+                        headers: { 'Proxy-Authorization': 'Basic user' },
+                    });
 
-            // Check if identities are different when using different identity.
-            expect(iPIdentitieA).not.toEqual(iPIdentitieB);
+                    const ipA = await extractIp(identityA);
+                    const ipB = await extractIp(identityB);
+
+                    expect(ipA).not.toEqual(ipB);
+                },
+            );
+
+            it(`Reset identity by changing password`, async () => {
+                const identityA = await fetchFn(testGetUrlHttps, {
+                    headers: { 'Proxy-Authorization': 'Basic user' },
+                });
+                // Reset existing circuit by changing password
+                const identityB = await fetchFn(testGetUrlHttps, {
+                    headers: { 'Proxy-Authorization': 'Basic user:password' },
+                });
+                const ipB = await extractIp(identityA);
+                const ipB2 = await extractIp(identityB);
+                expect(ipB2).not.toEqual(ipB);
+            });
         });
     });
 
@@ -180,12 +191,12 @@ describe('Interceptor', () => {
     });
 
     conditionalTest('TorControl', () => {
-        it('closing circuits', async () => {
-            await fetch(testGetUrlHttps, {
+        it.each(fetchImplementations)('%s closing circuits', async (_label, fetchFn) => {
+            await fetchFn(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': 'Basic user-circuit-1' },
             });
 
-            await fetch(testGetUrlHttps, {
+            await fetchFn(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': 'Basic user-circuit-2' },
             });
 
@@ -250,87 +261,85 @@ describe('Interceptor', () => {
 
         afterAll(() => new Promise(resolve => serverInit.server.close(resolve)));
 
-        const fetchHeaders = (url: string, options: RequestInit) =>
-            fetch(url, options).then(r => r.json());
+        const fetchHeaders = (pr: Promise<any>) => pr.then(r => r.json());
 
-        it('POST request headers', async () => {
-            const { serverUrl, host } = serverInit;
-
-            // default headers
-            await expect(
-                fetchHeaders(serverUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({ test: 'test' }),
-                    headers: { 'User-Agent': 'TrezorSuite' },
-                }),
-            ).resolves.toEqual(
-                expect.objectContaining({
-                    host,
+        const headerTestCases = [
+            {
+                method: 'POST',
+                body: JSON.stringify({ test: 'test' }),
+                defaultHeaders: { 'User-Agent': 'TrezorSuite' },
+                expectedDefault: {
                     accept: '*/*',
                     'content-length': '15',
                     'content-type': 'text/plain;charset=UTF-8',
                     'user-agent': 'TrezorSuite',
-                }),
-            );
-
-            // restricted headers
-            await expect(
-                fetchHeaders(serverUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({ test: 'test' }),
-                    headers: {
-                        'User-Agent': 'TrezorSuite',
-                        'Allowed-Headers': 'AcCePt-EnCoDiNg;content-type;Content-Length;HOST', // case insensitive
-                    },
-                }),
-            ).resolves.toEqual(
-                expect.objectContaining({
-                    host,
+                },
+                allowedHeaders: 'AcCePt-EnCoDiNg;content-type;Content-Length;HOST', // case insensitive
+                expectedRestricted: {
                     'content-length': '15',
                     'content-type': 'text/plain;charset=UTF-8',
-                }),
-            );
-        });
-
-        it('GET request headers', async () => {
-            const { serverUrl, host } = serverInit;
-
-            // default headers
-            await expect(
-                fetchHeaders(serverUrl, {
-                    method: 'GET',
-                    headers: { 'User-Agent': 'TrezorSuite' },
-                }),
-            ).resolves.toEqual(
-                expect.objectContaining({
-                    host,
+                },
+            },
+            {
+                method: 'GET',
+                body: undefined,
+                defaultHeaders: { 'User-Agent': 'TrezorSuite' },
+                expectedDefault: {
                     accept: '*/*',
                     'user-agent': 'TrezorSuite',
-                }),
-            );
+                },
+                allowedHeaders: 'Accept-Encoding;Content-Type;Content-Length;Host',
+                expectedRestricted: {},
+            },
+        ];
 
-            // restricted headers
-            await expect(
-                fetchHeaders(serverUrl, {
-                    method: 'GET',
-                    headers: {
-                        'User-Agent': 'TrezorSuite',
-                        'Allowed-Headers': 'Accept-Encoding;Content-Type;Content-Length;Host',
-                    },
-                }),
-            ).resolves.toEqual(
-                expect.objectContaining({
-                    host,
-                }),
+        describe.each(fetchImplementations)('%s', (_, fetchFn) => {
+            it.each(headerTestCases)(
+                '$method request headers',
+                async ({
+                    method,
+                    body,
+                    defaultHeaders,
+                    expectedDefault,
+                    allowedHeaders,
+                    expectedRestricted,
+                }) => {
+                    const { serverUrl, host } = serverInit;
+
+                    // default headers
+                    await expect(
+                        fetchHeaders(
+                            fetchFn(serverUrl, {
+                                method,
+                                body,
+                                headers: defaultHeaders,
+                            }),
+                        ),
+                    ).resolves.toEqual(expect.objectContaining({ host, ...expectedDefault }));
+
+                    // restricted headers
+                    await expect(
+                        fetchHeaders(
+                            fetchFn(serverUrl, {
+                                method,
+                                body,
+                                headers: {
+                                    ...defaultHeaders,
+                                    'Allowed-Headers': allowedHeaders,
+                                },
+                            }),
+                        ),
+                    ).resolves.toEqual(expect.objectContaining({ host, ...expectedRestricted }));
+                },
             );
         });
     });
 
-    it('Block unauthorized requests', async () => {
+    it.each(fetchImplementations)('%s Block unauthorized requests', async (_, fetchFn) => {
         torSettings.running = false;
 
         await expect(
-            fetch(testPostUrlHttps, {
+            fetchFn(testPostUrlHttps, {
                 method: 'POST',
                 body: JSON.stringify({ test: 'test' }),
                 headers: { 'Proxy-Authorization': 'Basic default' },
