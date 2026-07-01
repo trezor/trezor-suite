@@ -74,6 +74,7 @@
         "convert-figma-palette": "yarn tsx ./scripts/convertFigmaPalette.ts",
         "update-project-references": "yarn tsx ./scripts/updateProjectReferences.ts",
         "generate-icons": "yarn workspace @suite-common/icons generate-icons",
+        "generate-icons:web": "yarn workspace @trezor/icons generate-icons",
         "generate-package": "yarn workspace @trezor/scripts generate-package",
         "deps": "rimraf **/node_modules && yarn",
         "list-outdated": "./scripts/list-outdated-dependencies/list-outdated-dependencies.sh",

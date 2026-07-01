@@ -10,6 +10,7 @@ const config = {
     outDir: 'src/generated/icons',
     jsxRuntime: 'automatic',
     svgoConfig,
+    exportType: 'named',
     indexTemplate,
 };
 
