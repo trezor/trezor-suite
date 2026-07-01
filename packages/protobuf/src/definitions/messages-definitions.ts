@@ -56,6 +56,8 @@ export enum EthereumERC7730FieldFormatterType {
     FORMATTER_AMOUNT = 1,
     FORMATTER_TOKEN_AMOUNT = 2,
     FORMATTER_UNIT = 3,
+    FORMATTER_RAW = 4,
+    FORMATTER_DATE = 5,
 }
 
 export type EnumEthereumERC7730FieldFormatterType = Static<
@@ -83,6 +85,7 @@ export const EthereumERC7730FieldInfo = Type.Object(
         decimals: Type.Optional(Type.Number()),
         base: Type.Optional(Type.String()),
         prefix: Type.Optional(Type.Boolean()),
+        const_token_address: Type.Optional(Type.String()),
     },
     { $id: 'EthereumERC7730FieldInfo' },
 );
