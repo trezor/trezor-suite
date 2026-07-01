@@ -159,24 +159,28 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     provisionalCounter, witnessAddress, witnessValue, device,
                 );
 
-                db.upsert(address, networkSymbol, { metadata, counter: result.newEntryCounter });
+                if (!result.authentic) {
+                    console.log('Authenticity verified: false — database not updated');
+                } else {
+                    db.upsert(address, networkSymbol, { metadata, counter: result.newEntryCounter });
 
-                let newTreeState = treeState;
-                if (result.newRoot !== null) {
-                    newTreeState = { root: result.newRoot, counter: result.newEntryCounter };
-                    db.setTreeState(newTreeState);
-                } else if (!device) {
-                    // Offline: recompute root locally
+                    let newTreeState = treeState;
+                    if (result.newRoot !== null) {
+                        newTreeState = { root: result.newRoot, counter: result.newEntryCounter };
+                        db.setTreeState(newTreeState);
+                    } else if (!device) {
+                        // Offline: recompute root locally
+                        const updatedEntries = db.getAllEntries();
+                        const newRoot = computeMerkleRoot(updatedEntries);
+                        newTreeState = { root: newRoot, counter: result.newEntryCounter };
+                        db.setTreeState(newTreeState);
+                    }
+
                     const updatedEntries = db.getAllEntries();
-                    const newRoot = computeMerkleRoot(updatedEntries);
-                    newTreeState = { root: newRoot, counter: result.newEntryCounter };
-                    db.setTreeState(newTreeState);
+                    const updatedProof = generateMerkleProof(updatedEntries, address, networkSymbol);
+                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState }, null, 2));
+                    console.log('Authenticity verified:', result.authentic);
                 }
-
-                const updatedEntries = db.getAllEntries();
-                const updatedProof = generateMerkleProof(updatedEntries, address, networkSymbol);
-                console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState }, null, 2));
-                console.log('Authenticity verified:', result.authentic);
             }
         }
     } finally {
