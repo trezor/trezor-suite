@@ -26,6 +26,7 @@ export type ReviewOutput =
               | 'swap_intent'
               | 'tron-vote'
               | 'tron-withdraw'
+              | 'tron-claim'
               | 'fee-limit';
           label?: string;
           value: string;
