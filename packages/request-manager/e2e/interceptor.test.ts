@@ -140,9 +140,9 @@ describe('Interceptor', () => {
                 const identityB = await fetchFn(testGetUrlHttps, {
                     headers: { 'Proxy-Authorization': 'Basic user:password' },
                 });
-                const ipB = await extractIp(identityA);
-                const ipB2 = await extractIp(identityB);
-                expect(ipB2).not.toEqual(ipB);
+                const ipA = await extractIp(identityA);
+                const ipB = await extractIp(identityB);
+                expect(ipB).not.toEqual(ipA);
             });
         });
     });
@@ -231,6 +231,11 @@ describe('Interceptor', () => {
         });
     });
 
+    // NOTE: the server here is `localhost`, which is whitelisted, so these requests take the DIRECT
+    // branch of interceptFetch (originalFetch) and the header restriction is enforced by the
+    // socket-level stripping in `interceptNetSocketConnect`, NOT by `buildTorHeaders`. The fetch-path
+    // `buildTorHeaders` allow-list + Proxy-Authorization/Allowed-Headers stripping is covered
+    // deterministically (no Tor needed) in tests/fetchHeaders.test.ts.
     describe('Allowed-Headers', () => {
         // create simple http server and respond with received headers
         const createHttpServer = () =>
