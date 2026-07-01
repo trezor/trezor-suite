@@ -56,7 +56,7 @@ export const verifyAndUpdateEntry = async (
         return { authentic: true, newEntryCounter };
     }
 
-    let authentic = true;
+    let authentic = false;
 
     // Verify old entry against device root (if device has a root stored).
     if (oldEntry !== null) {
@@ -71,7 +71,6 @@ export const verifyAndUpdateEntry = async (
         if (lookupResult.success) {
             authentic = lookupResult.payload.valid;
         }
-        // If the device has no root yet (DataError), treat as authentic for first-time setup.
     }
 
     // Set new root and get the authoritative counter from the device.
@@ -112,5 +111,5 @@ export const verifyEntry = async (
         proof,
     });
 
-    return result.success ? result.payload.valid : true;
+    return result.success ? result.payload.valid : false;
 };
