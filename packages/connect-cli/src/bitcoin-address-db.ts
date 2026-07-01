@@ -1,4 +1,7 @@
 
+import { mkdirSync } from 'fs';
+import { dirname } from 'path';
+
 import Database from 'better-sqlite3';
 
 import type { AddressEntry, AddressLookupProvider, AddressMetadata, AllEntriesRow, TreeState } from '@trezor/connect';
@@ -15,6 +18,7 @@ export class BitcoinAddressDb implements AddressLookupProvider {
     private db: Database.Database;
 
     constructor(dbPath: string) {
+        mkdirSync(dirname(dbPath), { recursive: true });
         this.db = new Database(dbPath);
         this.db.exec(`
             CREATE TABLE IF NOT EXISTS addresses (

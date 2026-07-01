@@ -70,7 +70,6 @@ const DB_METHODS = new Set(['dblookup', 'dbchange']);
 const getDbPath = (seedAddress: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
     const profileDir = path.join(os.homedir(), '.trezor');
-    fs.mkdirSync(profileDir, { recursive: true });
     const hash = createHash('sha256').update(seedAddress).digest('hex');
     return path.join(profileDir, `auth_database_${hash}.db`);
 };
