@@ -7,4 +7,5 @@ export * from './screens/TradingExchangeRevokeScreen';
 export * from './screens/TradingOutputsReviewScreen';
 export * from './screens/TradingReceiveAccountsPickerScreen';
 export * from './screens/TradingSellPreviewScreen';
+export { TradingBuyPreviewScreen } from './screens/TradingBuyPreviewScreen';
 export * from './thunks';
