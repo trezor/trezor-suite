@@ -5,8 +5,11 @@ import styled from 'styled-components';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, useTranslation } from '@suite/intl';
 import {
+    PERMISSION_PREVIEW_LIMIT,
     connectPopupActions,
+    getCoinLabel,
     groupPermissionsByCoin,
+    permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
 import {
@@ -31,25 +34,6 @@ import { spacings } from '@trezor/theme';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getCoinLabel } from 'src/utils/suite/connectPermissions';
-
-// Each permission type is represented by an icon symbol; the full label is shown
-// in the expanded row and previewed as a small glyph next to the collapsed header.
-const permissionIconMap = {
-    read_address: 'eye',
-    read_xpub: 'key',
-    read_account_info: 'wallet',
-    read_settings: 'slidersHorizontal',
-    read_features: 'cpu',
-    sign: 'signature',
-    sign_message: 'notePencil',
-    verify_message: 'sealCheck',
-    management: 'gearSix',
-    push_tx: 'broadcast',
-    internal: 'cube',
-} as const satisfies Record<MethodPermission, IconName>;
-
-const PERMISSION_PREVIEW_LIMIT = 6;
 
 // The remove button sits next to the permission text and is only revealed when
 // the row is hovered or a child receives keyboard focus, to reduce clutter.
@@ -71,8 +55,8 @@ const PermissionRow = styled.div`
 `;
 
 const getPermissionIcon = (permission: string): IconName =>
-    permission in permissionIconMap
-        ? permissionIconMap[permission as keyof typeof permissionIconMap]
+    Object.hasOwn(permissionIcons, permission)
+        ? permissionIcons[permission as keyof typeof permissionIcons]
         : 'cube';
 
 export const getPermissionText = (permissionType: MethodPermission | string) => {
