@@ -114,7 +114,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         process.exit(1);
     }
     const identifierHex = createHash('sha256')
-        .update(Buffer.from(pubKeyResult.payload.node.public_key, 'hex'))
+        .update(Buffer.from(pubKeyResult.payload.publicKey, 'hex'))
         .digest('hex');
     console.log('Using database identifier:', identifierHex);
     const db = new BitcoinAddressDb(getDbPath(identifierHex));
