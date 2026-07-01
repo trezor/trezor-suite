@@ -134,7 +134,7 @@ export const selectIsTradingConciergeEnabled = (
 
 export const selectIsTradingSlip24Enabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
-    account: Account | undefined,
+    account: Account | undefined | null,
 ) =>
     selectTradingIsSlip24Allowed(
         state,

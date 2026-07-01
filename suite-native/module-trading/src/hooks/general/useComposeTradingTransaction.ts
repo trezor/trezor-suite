@@ -17,7 +17,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type FeeLevelLabel } from '@suite-common/wallet-types';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { getFormDraftKeyByTradeType, selectIsTradingSlip24Enabled } from '@suite-native/trading-state';
+import {
+    getFormDraftKeyByTradeType,
+    selectIsTradingSlip24Enabled,
+} from '@suite-native/trading-state';
 
 import { composeTradingTransactionThunk } from '../../thunks';
 
