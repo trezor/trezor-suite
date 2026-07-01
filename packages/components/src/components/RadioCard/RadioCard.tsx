@@ -55,6 +55,7 @@ export const RadioCard = ({
                 onClick={!isDisabled ? onClick : undefined}
                 isSelected={isSelected}
                 data-testid={dataTestId}
+                type="contrast"
                 {...frameProps}
             >
                 {children}

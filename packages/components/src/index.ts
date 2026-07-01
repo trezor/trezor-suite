@@ -84,6 +84,7 @@ export * from './components/form/FractionButton/FractionButton';
 export { Grid, type GridProps } from './components/Grid/Grid';
 export * from './components/ShortcutBadge/ShortcutBadge';
 export * from './components/Image/Image';
+export * from './components/Image/SvgImage';
 export * from './components/Image/images';
 export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
 export {

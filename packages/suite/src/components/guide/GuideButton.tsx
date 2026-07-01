@@ -4,21 +4,19 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { IconButton, Row, ShortcutBadge, TOOLTIP_DELAY_LONG } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
-import { hexToRgba } from '@trezor/utils';
+import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';
 
 const Wrapper = styled.div<{ $isGuideOpen: boolean }>`
     position: fixed;
     z-index: ${zIndices.guideButton};
-    bottom: 15px;
-    right: 15px;
-    border-radius: 12px;
+    bottom: ${spacingsPx.md};
+    right: ${spacingsPx.md};
+    border-radius: ${borders.radii.sm};
     backdrop-filter: blur(10px);
     transition: ${({ $isGuideOpen }) => ($isGuideOpen ? 'none' : 'all 0.3s ease 0.3s')};
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? '0' : '1')};
-    background: ${({ theme }) => hexToRgba(theme.surfaceFillModeless, 0.7)};
 `;
 
 export const GuideButton = () => {
