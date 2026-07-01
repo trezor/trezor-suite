@@ -333,7 +333,8 @@ const run = async () => {
             } else {
                 testIsRunning = true;
                 runDbMethods(device).then(dbOnly => {
-                    if (!dbOnly) runTestCase(device);
+                    if (dbOnly) process.exit(0);
+                    else runTestCase(device);
                 });
             }
         }
