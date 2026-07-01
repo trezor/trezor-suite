@@ -63,10 +63,7 @@ export const YieldDepositingInfo = ({
                                 />
                             </EarnYieldApyTooltip>
                         ) : (
-                            <>
-                                <Translation id="TR_EARN_APY_N_A" />{' '}
-                                <Translation id="TR_STAKE_APY_ABBR" />
-                            </>
+                            <Translation id="TR_EARN_APY_N_A" />
                         ),
                 }}
             />

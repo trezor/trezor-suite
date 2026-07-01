@@ -9,6 +9,7 @@ import {
     toTokenAddress,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import {
     Box,
@@ -58,7 +59,7 @@ export const StablecoinYieldTokenOverview = ({
             tokenContract,
             displayError: false,
         });
-    const apyValueText = apy !== null ? `~${apy.toFixed(2)}%` : null;
+    const apyValueText = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
 
     const handleOpenApyAlert = useCallback(() => {
         if (!account || !vault) {
@@ -128,7 +129,7 @@ export const StablecoinYieldTokenOverview = ({
     if (resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 
     const apyColor = apyValueText === null ? 'contentSecondary' : 'contentPrimary';
-    const apyValue = apyValueText ?? <Translation id="earn.notAvailable" />;
+    const apyValue = apyValueText ?? <Translation id="earn.notAvailableShort" />;
     const depositedPosition =
         account && depositedSharesAmount !== null
             ? {
