@@ -7,6 +7,7 @@ import {
     type StablecoinYieldActionReviewState,
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
+    type YieldWithdrawFlowType,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -31,7 +32,7 @@ type YieldActionReview = Extract<
     { type: 'deposit' | 'withdraw' | 'redeem' }
 >;
 type YieldDepositReview = YieldActionReview & { type: 'deposit' };
-type YieldWithdrawReview = YieldActionReview & { type: 'withdraw' };
+type YieldWithdrawScreenReview = YieldActionReview & { type: YieldWithdrawFlowType };
 type YieldClaimReview = Extract<StablecoinYieldActionReviewState, { type: 'claim' }>;
 
 export type YieldReviewEvmTransactionPurpose = Extract<
@@ -78,7 +79,7 @@ type BuildYieldDepositReviewPreviewParams = {
 type BuildYieldWithdrawReviewPreviewParams = {
     device: TrezorDevice;
     flowData: YieldFlowResolvedData;
-    review: YieldWithdrawReview;
+    review: YieldWithdrawScreenReview;
     reviewToken: YieldFlowDisplayToken;
     selectedFee?: EvmSelectedFee | null;
     type: 'withdraw';
