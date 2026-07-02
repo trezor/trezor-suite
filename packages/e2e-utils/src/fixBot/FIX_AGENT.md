@@ -137,6 +137,11 @@ it actually exposes — don't guess. If it already exposes a `data-testid` (poss
 the test expects), point the test/page-object at the current one. Add a new `data-testid` only if
 the element genuinely has none.
 
+**Readability lives in clear code, not comments.** Any test file or page object you touch should
+read on its own through precise naming and obvious structure — that is the primary tool. A comment
+is the last resort, reserved for intent the code genuinely cannot carry (a non-obvious wait, a
+workaround for a known bug). When you do add one, keep it to a single line.
+
 **2. Run all validations that are still failing:**
 
 Run each failing validation separately, reading its trace right after the run (see
