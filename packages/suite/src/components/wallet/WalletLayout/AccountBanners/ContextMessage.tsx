@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { type Route, goto } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
 import {
@@ -44,8 +44,10 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
 
         const onClick =
             action === 'internal-link'
-                ? // @ts-expect-error: impossible to add all href options to the message system config json schema
-                  () => dispatch(goto({ routeName: link, anchor, preserveParams: true }))
+                ? () =>
+                      dispatch(
+                          goto({ routeName: link as Route['name'], anchor, preserveParams: true }),
+                      )
                 : () =>
                       window.open(
                           isTorEnabled && torOnionLinks ? getTorUrlIfAvailable(link) : link,
