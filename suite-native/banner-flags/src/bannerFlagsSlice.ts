@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { DEVICE } from '@trezor/connect';
 
@@ -7,6 +7,7 @@ export interface BannerFlagsState {
     isSolanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
     isGetTrezorBannerClosed: boolean; // promo banner on Home dashboard nudging users without a device to the eShop
     areGetTrezorPromoBannersDisabled: boolean; // permanently disabled once a physical device has ever been connected
+    isOnboardingFeedbackBannerEnabled: boolean; // feedback banner on Home dashboard shown after completing device onboarding
 }
 
 export type BannerFlagsSliceRootState = {
@@ -18,6 +19,7 @@ export const bannerFlagsInitialState: BannerFlagsState = {
     isSolanaLimitedHistoryBannerClosed: false,
     isGetTrezorBannerClosed: false,
     areGetTrezorPromoBannersDisabled: false,
+    isOnboardingFeedbackBannerEnabled: false,
 };
 
 export const bannerFlagsSlice = createSlice({
@@ -32,6 +34,9 @@ export const bannerFlagsSlice = createSlice({
         },
         setIsGetTrezorBannerClosed: state => {
             state.isGetTrezorBannerClosed = true;
+        },
+        setIsOnboardingFeedbackBannerEnabled: (state, action: PayloadAction<boolean>) => {
+            state.isOnboardingFeedbackBannerEnabled = action.payload;
         },
     },
     extraReducers: builder => {
@@ -50,6 +55,7 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isSolanaLimitedHistoryBannerClosed',
     'isGetTrezorBannerClosed',
     'areGetTrezorPromoBannersDisabled',
+    'isOnboardingFeedbackBannerEnabled',
 ];
 
 export const selectIsStellarLimitedHistoryBannerClosed = (state: BannerFlagsSliceRootState) =>
@@ -64,10 +70,14 @@ export const selectIsGetTrezorBannerClosed = (state: BannerFlagsSliceRootState) 
 export const selectAreGetTrezorPromoBannersDisabled = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.areGetTrezorPromoBannersDisabled;
 
+export const selectIsOnboardingFeedbackBannerEnabled = (state: BannerFlagsSliceRootState) =>
+    state.bannerFlags.isOnboardingFeedbackBannerEnabled;
+
 export const {
     setIsStellarLimitedHistoryBannerClosed,
     setIsSolanaLimitedHistoryBannerClosed,
     setIsGetTrezorBannerClosed,
+    setIsOnboardingFeedbackBannerEnabled,
 } = bannerFlagsSlice.actions;
 
 export const bannerFlagsReducer = bannerFlagsSlice.reducer;
