@@ -82,6 +82,8 @@
     },
     "dependencies": {
         "@bufbuild/protobuf": "^2.11.0",
+        "@noble/ciphers": "^1.3.0",
+        "@noble/curves": "^2.0.1",
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
         "@scure/bip39": "^1.5.1",

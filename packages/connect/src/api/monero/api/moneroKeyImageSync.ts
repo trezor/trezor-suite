@@ -1,11 +1,6 @@
-import { keccak_256 } from '@noble/hashes/sha3.js';
 import { hexToBytes } from '@noble/hashes/utils.js';
 
-import type {
-    MoneroExportedKeyImage,
-    MoneroKeyImageSyncResult,
-    PermissionRequest,
-} from '@trezor/connect-common';
+import type { MoneroKeyImageSyncResult, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -14,18 +9,7 @@ import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
-
-// Encode unsigned integer as varint (LEB128 format)
-function encodeVarint(n: number): Uint8Array {
-    const bytes: number[] = [];
-    while (n >= 0x80) {
-        bytes.push((n & 0x7f) | 0x80);
-        n >>= 7;
-    }
-    bytes.push(n & 0x7f);
-
-    return new Uint8Array(bytes);
-}
+import { runMoneroKeyImageSync } from '../device/keyImageSyncProtocol';
 
 type Params = {
     address_n: number[];
@@ -126,90 +110,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         return 'Export Monero key images for spent output tracking';
     }
 
-    async run(): Promise<MoneroKeyImageSyncResult> {
-        const cmd = this.getDevice().getCommands();
-
-        // Compute hash of all tdis for verification
-        const tdHashes: Uint8Array[] = [];
-        for (const tdi of this.params.tdis) {
-            // Compute hash for this transfer detail
-            const kck = keccak_256.create();
-
-            // Update with out_key (32 bytes)
-            kck.update(tdi.out_key);
-
-            // Update with tx_pub_key (32 bytes)
-            kck.update(tdi.tx_pub_key);
-
-            // Update with additional_tx_pub_keys if present
-            if (tdi.additional_tx_pub_keys && tdi.additional_tx_pub_keys.length > 0) {
-                for (const addKey of tdi.additional_tx_pub_keys) {
-                    kck.update(addKey);
-                }
-            }
-
-            // Update with internal_output_index as varint
-            const indexVarint = encodeVarint(tdi.internal_output_index);
-            kck.update(indexVarint);
-
-            tdHashes.push(kck.digest());
-        }
-
-        // Compute final hash as keccak(hash1 + hash2 + ... + hashN)
-        const finalKck = keccak_256.create();
-        for (const hash of tdHashes) {
-            finalKck.update(hash);
-        }
-        const hashBytes = finalKck.digest();
-
-        // Step 1: Initialize
-        const numOutputs = this.params.tdis.length;
-        await cmd.typedCall('MoneroKeyImageExportInitRequest', 'MoneroKeyImageExportInitAck', {
-            num: numOutputs,
-            hash: hashBytes,
-            address_n: this.params.address_n,
-            network_type: this.params.network_type,
-            subs: this.params.subs,
-        });
-
-        // Step 2: Process batches (device may handle in chunks)
-        const allKeyImages: PROTO.MoneroExportedKeyImage[] = [];
-
-        // Send all tdis in one step (device will handle internally)
-        const stepResponse = await cmd.typedCall(
-            'MoneroKeyImageSyncStepRequest',
-            'MoneroKeyImageSyncStepAck',
-            {
-                tdis: this.params.tdis,
-            },
-        );
-
-        allKeyImages.push(...stepResponse.message.kis);
-
-        // Step 3: Finalize
-        const finalResponse = await cmd.typedCall(
-            'MoneroKeyImageSyncFinalRequest',
-            'MoneroKeyImageSyncFinalAck',
-            {},
-        );
-
-        const encKey = finalResponse.message.enc_key;
-        if (!encKey) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'Device did not return encryption key for key images',
-            );
-        }
-
-        // Decrypt and format key images
-        const keyImages: MoneroExportedKeyImage[] = allKeyImages.map(ki => ({
-            iv: ki.iv || '',
-            key_image: ki.blob || '',
-        }));
-
-        return {
-            key_images: keyImages,
-            signature: encKey,
-        };
+    run(): Promise<MoneroKeyImageSyncResult> {
+        return runMoneroKeyImageSync(this.getDevice().getCommands(), this.params);
     }
 }

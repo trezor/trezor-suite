@@ -56,6 +56,14 @@ const EvmRpcWorker: WorkerAsyncImporter = () =>
         '@trezor/blockchain-link/src/workers/evm-rpc'
     ).then(w => w.default());
 
+// Monero embeds a heavy WASM module; use a module import (like Solana) instead of
+// `new Worker(URL)` to avoid the nested-worker + WASM-asset-resolution issues.
+const MoneroWorker: WorkerAsyncImporter = () =>
+    import(
+        /* webpackChunkName: "workers/monero-worker" */
+        '@trezor/blockchain-link/src/workers/monero'
+    ).then(w => w.default());
+
 export {
     BlockbookWorker,
     RippleWorker,
@@ -64,4 +72,5 @@ export {
     SolanaWorker,
     StellarWorker,
     EvmRpcWorker,
+    MoneroWorker,
 };

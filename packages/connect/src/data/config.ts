@@ -243,6 +243,8 @@ export const config: Config = {
                 'moneroGetWatchKey',
                 'moneroKeyImageSync',
                 'moneroSignTransaction',
+                'moneroSendTransaction',
+                'moneroSyncKeyImages',
             ],
             min: {
                 T1B1: '0',

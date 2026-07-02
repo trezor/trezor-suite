@@ -11,6 +11,7 @@ import type {
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
@@ -58,6 +59,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'defaultAccountType', type: 'string' },
                 { name: 'derivationType', type: 'number' },
                 { name: 'suppressBackupWarning', type: 'boolean' },
+                { name: 'moneroRestoreDate', type: 'object' },
+                { name: 'moneroResetScan', type: 'boolean' },
             ]);
 
             // validate coin info
@@ -229,6 +232,34 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
                 if (this.disposed) break;
 
+                // Monero: fetch the private view key from the device so the backend can scan
+                // client-side. It travels out-of-band to the worker and is never persisted or
+                // echoed back into the response (see AccountInfoParams.monero). Only when a path is
+                // present (account add / discovery) — descriptor-only refreshes reuse the worker's
+                // cached key instead of re-prompting the device every poll.
+                let monero;
+                if (request.coinInfo.shortcut === 'XMR' && address_n.length > 0) {
+                    const { message } = await this.getDevice()
+                        .getCommands()
+                        .typedCall('MoneroGetWatchKey', 'MoneroWatchKey', {
+                            address_n,
+                            network_type: PROTO.MoneroNetworkType.MAINNET,
+                        });
+                    // restoreDate (wallet birthday) is host-provided; the backend resolves it to a
+                    // block height so the scan can skip the empty pre-birthday history.
+                    monero = {
+                        privateViewKey: message.watch_key,
+                        restoreDate: request.moneroRestoreDate,
+                    };
+                } else if (request.coinInfo.shortcut === 'XMR' && request.moneroResetScan) {
+                    // Re-arm from a new birthday without re-prompting the device: no path, so no
+                    // watch-key call — the backend recovers the view key from the existing wallet.
+                    monero = {
+                        restoreDate: request.moneroRestoreDate,
+                        resetScan: true,
+                    };
+                }
+
                 // get account info from backend
                 const info = await blockchain.getAccountInfo({
                     descriptor,
@@ -245,6 +276,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
                     protocols: request.protocols,
                     confirmedNonce: request.confirmedNonce,
+                    monero,
                 });
 
                 if (this.disposed) break;
