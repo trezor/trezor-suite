@@ -27,14 +27,35 @@ describe('tokenSupportsIncreasingAllowance', () => {
 });
 
 describe('isAllowanceUnlimited', () => {
-    it('treats values at or above half of UINT256_MAX as unlimited', () => {
-        expect(isAllowanceUnlimited('1000', 6)).toBe(false);
+    it('treats unit amounts at or above half of UINT256_MAX (in subunits) as unlimited', () => {
+        expect(isAllowanceUnlimited({ amount: '1000', decimals: 6 })).toBe(false);
         expect(
-            isAllowanceUnlimited(
-                '115792089237316195423570985008687907853269984665640564039457',
-                18,
-            ),
+            isAllowanceUnlimited({
+                amount: '115792089237316195423570985008687907853269984665640564039457',
+                decimals: 18,
+            }),
         ).toBe(true);
+    });
+
+    it('compares subunit amounts directly instead of scaling them again', () => {
+        // Unlimited approvals are decoded as UINT256_MAX subunits.
+        expect(
+            isAllowanceUnlimited({
+                amount: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+                decimals: 18,
+                isSubunit: true,
+            }),
+        ).toBe(true);
+
+        // A large but finite approval (1e60 subunits) stays finite; without `isSubunit`
+        // it would be scaled by 10^18 again and mislabeled as unlimited.
+        expect(
+            isAllowanceUnlimited({
+                amount: `1${'0'.repeat(60)}`,
+                decimals: 18,
+                isSubunit: true,
+            }),
+        ).toBe(false);
     });
 });
 

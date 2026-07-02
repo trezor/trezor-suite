@@ -77,7 +77,8 @@ export const ApproveModal = (props: ApproveModalProps) => {
     const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
     const hasPreapprovedAmount = !!preapprovedAmount && preapprovedAmount !== '0';
     const isPreapprovedAmountUnlimited =
-        hasPreapprovedAmount && isAllowanceUnlimited(preapprovedAmount, token.decimals);
+        hasPreapprovedAmount &&
+        isAllowanceUnlimited({ amount: preapprovedAmount, decimals: token.decimals });
 
     return (
         <FormProvider {...methods}>

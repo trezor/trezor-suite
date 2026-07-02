@@ -88,7 +88,8 @@ export const RevokeModal = (props: RevokeModalProps) => {
     const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
     const hasPreapprovedAmount = !!preapprovedAmount && preapprovedAmount !== '0';
     const isPreapprovedAmountUnlimited =
-        !!preapprovedAmount && isAllowanceUnlimited(preapprovedAmount, token.decimals);
+        !!preapprovedAmount &&
+        isAllowanceUnlimited({ amount: preapprovedAmount, decimals: token.decimals });
 
     const showRevokeBanner = shouldShowRevokeAllowanceBanner({
         followedByApproval,

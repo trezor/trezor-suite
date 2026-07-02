@@ -29,7 +29,7 @@ export const RevokeLimitInfoRow = () => {
     const showUnlimitedAllowanceLabel =
         preapprovedStringAmount &&
         typeof decimals === 'number' &&
-        isAllowanceUnlimited(preapprovedStringAmount, decimals);
+        isAllowanceUnlimited({ amount: preapprovedStringAmount, decimals });
 
     return (
         <TradeInfoRow testID="ExchangeApproval/LimitRevoke">

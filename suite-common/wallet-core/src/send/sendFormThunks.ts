@@ -366,7 +366,11 @@ export const pushSendFormTransactionThunk = createThunk<
 
             if (evmApprovalData && token) {
                 const amountString = evmApprovalData.amount.toString();
-                const isInfiniteApproval = isAllowanceUnlimited(amountString, token.decimals);
+                const isInfiniteApproval = isAllowanceUnlimited({
+                    amount: amountString,
+                    decimals: token.decimals,
+                    isSubunit: true,
+                });
                 const amount = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(amountString)),
                     decimals: token.decimals,

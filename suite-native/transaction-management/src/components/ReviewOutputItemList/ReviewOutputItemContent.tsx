@@ -137,7 +137,8 @@ export const ReviewOutputItemContent = ({
             const isApprovalTx = flowType === 'approve';
 
             const isMaxApproval =
-                typeof token?.decimals === 'number' && isAllowanceUnlimited(value, token?.decimals);
+                typeof token?.decimals === 'number' &&
+                isAllowanceUnlimited({ amount: value, decimals: token.decimals, isSubunit: true });
 
             const getPrimaryValue = () => {
                 if (!isApprovalTx && token?.symbol) {
