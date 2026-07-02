@@ -8,6 +8,7 @@ import {
     getStakingProviderByCardanoPoolId,
     getStakingProviderByEthereumPoolName,
     getStakingProviderBySolanaVoterPubkey,
+    getStakingProviderByTronSrAddress,
 } from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
@@ -68,6 +69,7 @@ import {
     getTronAccountTotalStakingBalance,
     getTronStakingRewards,
     getTronUnstakingBalance,
+    getTronVotes,
     isSupportedTronStakingNetworkSymbol,
 } from './tronStakingUtils';
 
@@ -303,6 +305,10 @@ export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] =
             return;
         }
 
+        if (!isStakingNetworkType(account.networkType)) {
+            return;
+        }
+
         switch (account.networkType) {
             case 'ethereum':
                 account.misc?.stakingPools?.forEach(pool => {
@@ -346,8 +352,19 @@ export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] =
                 }
                 break;
             }
-            default:
+            case 'tron':
+                getTronVotes(account).forEach(vote => {
+                    const provider = getStakingProviderByTronSrAddress(vote.address);
+                    if (provider) {
+                        providers.add(provider.id);
+                    } else {
+                        // Account is staked but provider is unknown
+                        providers.add('unknown');
+                    }
+                });
                 break;
+            default:
+                exhaustive(account.networkType);
         }
     });
 
