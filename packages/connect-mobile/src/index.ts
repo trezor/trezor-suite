@@ -6,7 +6,11 @@ import {
 } from '@trezor/connect-common/src/data/version';
 import { type CallMethodPayload } from '@trezor/connect-common/src/events';
 import { createErrorMessage } from '@trezor/connect-common/src/events';
-import { type ConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
+import {
+    type ConnectFactoryDependencies,
+    bindConnectFactoryDependencies,
+    factory,
+} from '@trezor/connect-common/src/factory';
 import type {
     ConnectMobileSettings,
     Manifest,
@@ -176,15 +180,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
 
 const impl = new TrezorConnectDeeplink();
 const TrezorConnect = factory<ConnectMobileSettings, { handleDeeplink: (url: string) => void }>(
-    {
-        eventEmitter: impl.eventEmitter,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        updateConnectSettings: impl.updateConnectSettings.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
+    bindConnectFactoryDependencies(impl),
     { handleDeeplink: impl.handleDeeplink.bind(impl) },
 );
 

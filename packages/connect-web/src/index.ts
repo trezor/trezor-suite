@@ -1,4 +1,4 @@
-import { factory } from '@trezor/connect-common/src/factory';
+import { bindConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
@@ -11,15 +11,7 @@ const impl = new TrezorConnectDynamic({
     },
 });
 
-const TrezorConnect = factory({
-    eventEmitter: impl.eventEmitter,
-    init: impl.init.bind(impl),
-    call: impl.call.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    updateConnectSettings: impl.updateConnectSettings.bind(impl),
-    cancel: impl.cancel.bind(impl),
-    dispose: impl.dispose.bind(impl),
-});
+const TrezorConnect = factory(bindConnectFactoryDependencies(impl));
 
 export default TrezorConnect;
 export * from '@trezor/connect-common/src/constants';

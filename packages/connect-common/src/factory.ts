@@ -17,6 +17,23 @@ export interface ConnectFactoryDependencies<SettingsType extends Record<string, 
     dispose: TrezorConnect['dispose'];
 }
 
+/**
+ * Bind a class instance implementing `ConnectFactoryDependencies` to a plain deps object
+ * suitable for `factory`. Every host package (connect, connect-web, connect-webextension,
+ * connect-mobile) previously repeated the same `impl.method.bind(impl)` block.
+ */
+export const bindConnectFactoryDependencies = <SettingsType extends Record<string, any>>(
+    impl: ConnectFactoryDependencies<SettingsType>,
+): ConnectFactoryDependencies<SettingsType> => ({
+    eventEmitter: impl.eventEmitter,
+    init: impl.init.bind(impl),
+    call: impl.call.bind(impl),
+    updateConnectSettings: impl.updateConnectSettings.bind(impl),
+    uiResponse: impl.uiResponse.bind(impl),
+    cancel: impl.cancel.bind(impl),
+    dispose: impl.dispose.bind(impl),
+});
+
 export const factory = <
     SettingsType extends Record<string, any>,
     ExtraMethodsType extends Record<string, any>,

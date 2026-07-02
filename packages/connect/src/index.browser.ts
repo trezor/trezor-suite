@@ -1,4 +1,9 @@
-import { ERRORS, type UpdateConnectSettings, factory } from '@trezor/connect-common';
+import {
+    ERRORS,
+    type UpdateConnectSettings,
+    bindConnectFactoryDependencies,
+    factory,
+} from '@trezor/connect-common';
 import { TRANSPORT } from '@trezor/transport-common';
 
 import { config } from './data/config';
@@ -33,20 +38,9 @@ class CoreInModuleWeb extends CoreInModule {
 const impl = new CoreInModuleWeb();
 
 // Exported to enable using directly
-const TrezorConnect = factory(
-    {
-        eventEmitter: impl.eventEmitter,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        updateConnectSettings: impl.updateConnectSettings.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
-    {
-        requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
-    },
-);
+const TrezorConnect = factory(bindConnectFactoryDependencies(impl), {
+    requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
+});
 
 export default TrezorConnect;
 

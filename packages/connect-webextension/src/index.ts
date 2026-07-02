@@ -1,7 +1,7 @@
 // note: at the moment, there is something in the root of @trezor/connect-common that pulls entire PROTO runtime, thus
 // these targeted imports
 import { CORE_CALL_CANCEL, POPUP } from '@trezor/connect-common/src/events';
-import { factory } from '@trezor/connect-common/src/factory';
+import { bindConnectFactoryDependencies, factory } from '@trezor/connect-common/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
@@ -18,16 +18,7 @@ const impl = new TrezorConnectDynamic({
     },
 });
 
-// Bind all methods due to shadowing `this`
-const TrezorConnect = factory({
-    eventEmitter: impl.eventEmitter,
-    init: impl.init.bind(impl),
-    call: impl.call.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    updateConnectSettings: impl.updateConnectSettings.bind(impl),
-    cancel: impl.cancel.bind(impl),
-    dispose: impl.dispose.bind(impl),
-});
+const TrezorConnect = factory(bindConnectFactoryDependencies(impl));
 
 const initProxyChannel = () => {
     const channel = new ServiceWorkerWindowChannel<{

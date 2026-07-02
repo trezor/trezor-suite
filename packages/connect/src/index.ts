@@ -1,5 +1,5 @@
 import type { UpdateConnectSettings } from '@trezor/connect-common';
-import { factory } from '@trezor/connect-common';
+import { bindConnectFactoryDependencies, factory } from '@trezor/connect-common';
 
 import { updateProxy } from './backend/BlockchainLink';
 import { CoreInModule } from './impl/core-in-module';
@@ -16,18 +16,7 @@ class CoreInModuleNode extends CoreInModule {
 
 const impl = new CoreInModuleNode();
 
-const TrezorConnect = factory(
-    {
-        eventEmitter: impl.eventEmitter,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        updateConnectSettings: impl.updateConnectSettings.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
-    {},
-);
+const TrezorConnect = factory(bindConnectFactoryDependencies(impl), {});
 
 export default TrezorConnect;
 
