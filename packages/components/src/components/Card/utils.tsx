@@ -80,6 +80,7 @@ export const mapCardTypeToCSS = ({
         contrast: css`
             background: ${theme.elementFillNeutralSofter};
             outline: 1px solid ${theme.elementBorderNeutralSofterAlt};
+            outline-offset: -1px;
 
             ${$isClickable &&
             css`
