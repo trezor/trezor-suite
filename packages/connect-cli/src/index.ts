@@ -431,11 +431,15 @@ const run = async () => {
         return;
     }
 
-    // Run DB methods without a device only when no device connection is requested.
-    // If --autoconnect or --credentials is set, skip early exit so TrezorConnect
-    // initializes and the DEVICE_EVENT handler calls runDbMethods(device).
+    // Skip device initialization entirely when --db-path is explicit and no requested
+    // method needs to contact firmware (e.g. --dblistroots --db-path=...).
+    const hasExplicitPath = typeof args['db-path'] === 'string';
+    const requestedDbMethods = getMethods().filter(m => DB_METHODS.has(m));
+    const dbNeedsDevice = requestedDbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
+    const canSkipDevice = hasExplicitPath && !dbNeedsDevice;
+
     const wantsDevice = args.autoconnect || args.credentials;
-    if (!wantsDevice && (await runDbMethods())) {
+    if ((!wantsDevice || canSkipDevice) && (await runDbMethods())) {
         return;
     }
 
