@@ -4,7 +4,7 @@ import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { type WalletDescriptor, asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
-import { DEFAULT_ACCOUNT_SIZE_QUOTA } from '../../constants';
+import { DEFAULT_ACCOUNT_SIZE_QUOTA } from '../../quotaManagerQuotaSize';
 import { type AllocateOwnerQuotaDeps, createAllocateOwnerQuota } from '../createAllocateOwnerQuota';
 
 const ownerId = asSuiteSyncOwnerId('owner-id');

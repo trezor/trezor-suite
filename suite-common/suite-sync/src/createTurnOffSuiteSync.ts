@@ -2,10 +2,10 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { eraseFetchedData } from '@suite-common/suite-sync-quota-manager';
 import {
+    type GetAllDeviceSessionIdsDep,
     type TurnOffSuiteSync,
     type TurnOffSuiteSyncForWalletDep,
 } from '@suite-common/suite-sync-types';
-import { type StaticSessionId } from '@trezor/connect';
 
 import { clearAll } from './data/suiteSyncDataReducer';
 import { updateSuiteSyncEnabled } from './suiteSyncSlice';
@@ -13,8 +13,8 @@ import { updateSuiteSyncEnabled } from './suiteSyncSlice';
 export type CreateTurnOffSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
     dispatch: Dispatch;
-    getAllDeviceSessionIds: () => StaticSessionId[];
-} & TurnOffSuiteSyncForWalletDep;
+} & GetAllDeviceSessionIdsDep &
+    TurnOffSuiteSyncForWalletDep;
 
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>

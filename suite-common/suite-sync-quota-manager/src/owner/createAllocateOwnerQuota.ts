@@ -12,15 +12,14 @@ import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
-import {
-    DEFAULT_DEVICE_SIZE_QUOTA,
-    EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
-} from '../constants';
 import { QuotaManagerCommunicationFailed, WriteModeRequiredForAllocation } from '../errors';
+import { DEFAULT_DEVICE_SIZE_QUOTA } from '../quotaManagerQuotaSize';
 import { type TransferStorageFetchDep } from './createTransferStorageFetch';
 import { getAccountIncrementSizeQuota } from './getAccountIncrementSizeQuota';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './prepareMessageBufferEvoluAddSpaceToOwner';
 import { type PrepareChallengeSessionFetchDep } from '../challenge/createPrepareChallengeSessionFetch';
+
+const EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER = 'EvoluAddSpaceToOwnerV1';
 
 type GetLeftDeviceQuota = (deviceId: string) => number | undefined;
 

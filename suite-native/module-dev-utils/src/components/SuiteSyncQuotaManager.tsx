@@ -5,7 +5,7 @@ import {
     eraseFetchedData,
     selectEnforceQuotaManager,
     selectOwnersAllowance,
-    selectQuotaManagerBaseUrl,
+    selectQuotaManagerCustomUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
@@ -18,7 +18,7 @@ export const SuiteSyncQuotaManager = () => {
     const dispatch = useDispatch();
     const { showToast } = useToast();
 
-    const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
+    const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
     const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
@@ -34,7 +34,7 @@ export const SuiteSyncQuotaManager = () => {
 
     const form = useForm<{ suiteSyncQuotaManagerUrl: string }>({
         defaultValues: {
-            suiteSyncQuotaManagerUrl: quotaManagerBaseUrl ?? '',
+            suiteSyncQuotaManagerUrl: quotaManagerCustomUrl ?? '',
         },
         validation: yup.object({
             suiteSyncQuotaManagerUrl: yup.string().url('Invalid URL format'),

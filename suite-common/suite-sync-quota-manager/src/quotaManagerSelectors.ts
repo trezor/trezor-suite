@@ -12,9 +12,6 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & WithSuiteSyncQuotaManagerState
 >();
 
-export const selectQuotaManagerBaseUrl = (state: WithSuiteSyncQuotaManagerState) =>
-    state.suiteSyncQuotaManager.baseUrl;
-
 export const selectIsDeviceRegistered = (state: WithSuiteSyncQuotaManagerState, deviceId: string) =>
     state.suiteSyncQuotaManager.registeredDevices.find(device => device.deviceId === deviceId) !==
     undefined;

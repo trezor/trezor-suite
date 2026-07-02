@@ -85,3 +85,12 @@ export const createCompositionRoot = (deps: CompositionRootDeps) => {
     };
 };
 ```
+
+## React service selection
+
+`useServices` accepts multiple selectors. Prefer one call with all needed selectors instead of
+multiple `useServices` calls when a component or hook needs several services.
+
+```ts
+const { serviceName, otherService } = useServices(selectServiceNameDep, selectOtherServiceDep);
+```

@@ -45,6 +45,7 @@ export const createSuiteSyncNativeCompositionRoot = (
             createEvoluInstance: createEvoluInstanceFactory({ run }),
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        getIsTorEnabled: () => false,
         subscribeError: errorHandler => {
             evoluDeps.evoluError.subscribe(
                 createEvoluErrorHandler(evoluDeps.evoluError, errorHandler),

@@ -15,7 +15,7 @@ describe(createQuotaManagerFetch.name, () => {
 
         const quotaManagerFetch = createQuotaManagerFetch({
             fetch: fetchMock,
-            getQuotaManagerBaseUrl: () => 'https://example.com',
+            getQuotaManagerUrl: () => 'https://example.com',
         });
         const result = await quotaManagerFetch({
             path: '/challenge',
@@ -46,7 +46,7 @@ describe(createQuotaManagerFetch.name, () => {
 
         const quotaManagerFetch = createQuotaManagerFetch({
             fetch: fetchMock,
-            getQuotaManagerBaseUrl: () => 'https://example.com',
+            getQuotaManagerUrl: () => 'https://example.com',
         });
         const result = await quotaManagerFetch({
             path: '/challenge',
@@ -76,7 +76,7 @@ describe(createQuotaManagerFetch.name, () => {
 
         const quotaManagerFetch = createQuotaManagerFetch({
             fetch: fetchMock,
-            getQuotaManagerBaseUrl: () => 'https://example.com',
+            getQuotaManagerUrl: () => 'https://example.com',
         });
         const result = await quotaManagerFetch({
             path: '/challenge',

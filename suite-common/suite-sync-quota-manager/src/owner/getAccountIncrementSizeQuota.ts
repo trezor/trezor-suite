@@ -1,4 +1,4 @@
-import { DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA } from '../constants';
+import { DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA } from '../quotaManagerQuotaSize';
 
 type GetAccountIncrementSizeQuotaParams = {
     unspentStorage: number;

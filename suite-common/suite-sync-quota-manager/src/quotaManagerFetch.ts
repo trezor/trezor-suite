@@ -2,7 +2,7 @@ import { getSuiteVersion } from '@trezor/env-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { DEFAULT_QUOTA_MANAGER_URL } from './constants';
+import { type GetQuotaManagerUrlDep } from './quotaManagerUrl';
 
 type SupportedMethod = 'GET' | 'POST' | 'DELETE';
 
@@ -43,17 +43,12 @@ export type FetchDep = {
     fetch: typeof fetch;
 };
 
-type GetQuotaManagerBaseUrl = () => string | null;
-
-export type CreateQuotaManagerFetchDeps = {
-    getQuotaManagerBaseUrl: GetQuotaManagerBaseUrl;
-} & FetchDep;
+export type CreateQuotaManagerFetchDeps = GetQuotaManagerUrlDep & FetchDep;
 
 export const createQuotaManagerFetch =
     (deps: CreateQuotaManagerFetchDeps): QuotaManagerFetch =>
     async ({ path, method, body, queryParams }) => {
-        const base = deps.getQuotaManagerBaseUrl() ?? DEFAULT_QUOTA_MANAGER_URL;
-
+        const base = deps.getQuotaManagerUrl();
         const normalizedBase = base.endsWith('/') ? base : `${base}/`;
         const normalizedPath = path.replace(/^\/+/, '');
 

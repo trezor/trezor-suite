@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectIsTorEnabled } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
 import {
-    DEFAULT_SUITE_SYNC_RELAY_URL,
-    DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
-    DEFAULT_SUITE_SYNC_RELAY_URL_PROD,
+    type WithSuiteSyncState,
+    getSuiteSyncDefaultRelayUrl,
+    getSuiteSyncRelayUrl,
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncFeatureAvailable,
-    selectSuiteSyncRelayUrl,
+    selectSuiteSyncCustomRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
 import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
@@ -19,8 +20,6 @@ import { type BreakpointFlags, spacings } from '@trezor/theme';
 import { WipeSuiteSyncLabels, type WipeSuiteSyncLabelsOnError } from './WipeSuiteSyncLabels';
 
 const selectIsBelowLaptop = (state: { window: BreakpointFlags }) => state.window.isBelowLaptop;
-
-const LOCAL_SUITE_SYNC_RELAY_URL = 'http://127.0.0.1:4000/evolu/';
 
 type SuiteSyncSettingsProps = {
     onError: WipeSuiteSyncLabelsOnError;
@@ -36,9 +35,12 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
 
     const isSuiteSyncFeatureEnabled = useSelector(selectIsSuiteSyncFeatureAvailable);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
-    const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
+    const suiteSyncCustomRelayUrl = useSelector((state: WithSuiteSyncState) =>
+        selectSuiteSyncCustomRelayUrl(state),
+    );
 
-    const [relayUrl, setRelayUrl] = useState(suiteSyncRelayUrl ?? '');
+    const [relayUrl, setRelayUrl] = useState(suiteSyncCustomRelayUrl ?? '');
 
     const handleToggleSuiteSyncDebug = () => {
         dispatch(updateSuiteSyncDebugEnabled({ isEnabled: !isSuiteSyncDebugEnabled }));
@@ -87,14 +89,16 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
                             }
                         />
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            Default is: <Code>{DEFAULT_SUITE_SYNC_RELAY_URL}</Code>
+                            Default is: <Code>{getSuiteSyncDefaultRelayUrl({ isTorEnabled })}</Code>
                         </Text>
                         <ButtonGroup size="small" priority="secondary">
                             <Button
                                 intent="critical"
                                 isDisabled={isRelayUrlLoading}
                                 onClick={() =>
-                                    onRelayUrlPresetClick(DEFAULT_SUITE_SYNC_RELAY_URL_PROD)
+                                    onRelayUrlPresetClick(
+                                        getSuiteSyncRelayUrl({ env: 'prod', isTorEnabled }),
+                                    )
                                 }
                             >
                                 Production
@@ -103,7 +107,9 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
                                 intent="brand"
                                 isDisabled={isRelayUrlLoading}
                                 onClick={() =>
-                                    onRelayUrlPresetClick(DEFAULT_SUITE_SYNC_RELAY_URL_DEV)
+                                    onRelayUrlPresetClick(
+                                        getSuiteSyncRelayUrl({ env: 'dev', isTorEnabled }),
+                                    )
                                 }
                             >
                                 Dev
@@ -111,9 +117,20 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
                             <Button
                                 intent="info"
                                 isDisabled={isRelayUrlLoading}
-                                onClick={() => onRelayUrlPresetClick(LOCAL_SUITE_SYNC_RELAY_URL)}
+                                onClick={() =>
+                                    onRelayUrlPresetClick(
+                                        getSuiteSyncRelayUrl({ env: 'local', isTorEnabled }),
+                                    )
+                                }
                             >
                                 Local
+                            </Button>
+                            <Button
+                                intent="neutral"
+                                isDisabled={isRelayUrlLoading}
+                                onClick={() => onRelayUrlPresetClick('')}
+                            >
+                                Reset
                             </Button>
                         </ButtonGroup>
                     </Column>

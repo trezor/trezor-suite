@@ -15,6 +15,7 @@ export type SuiteSyncStorage = {
     data: SuiteSyncStorageData;
 
     updateRelayUrl(url: string): Promise<void>;
+    disconnectRelay(): Promise<void>;
     dispose(): Promise<void>;
 };
 

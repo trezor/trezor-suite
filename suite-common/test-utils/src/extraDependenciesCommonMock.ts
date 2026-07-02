@@ -24,6 +24,8 @@ import { err, ok } from '@trezor/type-utils';
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),
+    disconnectAll: () => Promise.resolve(),
+    reconnectAll: () => Promise.resolve(),
     ensureWalletSuiteSyncOn: () =>
         Promise.resolve(err({ type: 'SuiteSyncUnavailableOnDeviceError' })),
     ensureWalletSuiteSyncOnUncontrolled: () => Promise.resolve(),
