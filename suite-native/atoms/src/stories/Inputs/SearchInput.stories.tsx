@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
 import {
+    SEARCH_INPUT_SIZES,
     SearchInput as SearchInputComponent,
     type SearchInputProps,
 } from '../../Input/SearchInput';
@@ -19,6 +20,7 @@ export const SearchInput: SearchInputStory = {
     args: {
         placeholder: 'Search for something',
         maxLength: 100,
+        size: 'medium',
         onChange: () => {},
     },
     argTypes: {
@@ -27,6 +29,10 @@ export const SearchInput: SearchInputStory = {
         },
         maxLength: {
             control: { type: 'number' },
+        },
+        size: {
+            control: { type: 'radio' },
+            options: SEARCH_INPUT_SIZES,
         },
     },
 };
