@@ -44,6 +44,26 @@ const DeviceVersion = ({ version }) => <div>{version}</div>;
 const DeviceVersion = device => <div>{device.version}</div>;
 ```
 
+## Spacing
+
+The `spacings` and `negativeSpacings` objects exported from `@trezor/theme` are deprecated. Use numbers directly instead (backed by `spacingsNew`).
+
+```tsx
+// bad - deprecated
+margin-bottom: ${({ theme }) => theme.spacings.md}px;
+
+// good
+margin-bottom: 16px;
+```
+
+```tsx
+// bad - deprecated
+<Divider margin={{ vertical: spacings.xs }} />
+
+// good
+<Divider margin={{ vertical: 8 }} />
+```
+
 ## Prop drilling and identifiers
 
 Don't pass entire objects which have an identifier of some sort around in components too much. In simpler terms, consider the Redux store as the primary source for components to retrieve complete data. For instance, if you have three components (C1 ⇒ C2 ⇒ C3) and C1 receives an account key, if both C1 and C3 need the full account, they should use the `selectAccountById` selector to access it. C1 and C2 should only pass the `accountKey` as a prop to their children. This principle also applies to selectors, where the parameters should ideally be as granular as possible, like selecting something by `id` . This minimalistic approach simplifies the identification of what's necessary in components, helps avoid unnecessary re-renders, and slightly improves performance.
