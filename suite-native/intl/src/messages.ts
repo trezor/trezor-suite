@@ -2650,7 +2650,6 @@ export const messages = {
             withdrawalFeesBanner:
                 "We've left {amount} {displaySymbol} in your account so you can pay for withdrawal fees.",
             estimatedRewardsLabel: 'Estimated yearly rewards',
-            estimatedRewardsPlaceholder: 'Enter amount to see rewards',
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
                 amountBelowMinimum: 'Amount must be at least {amount} {symbol}.',
