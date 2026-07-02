@@ -185,12 +185,18 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 } else {
                     db.upsert(address, networkSymbol, { metadata, counter: result.newEntryCounter });
 
+                    // Store auth_mac (leaf authorization MAC) per-address so it can be passed
+                    // as mac+device_id in a future dbchange on another device to skip confirmation
+                    if (result.authMac !== null && result.deviceId !== null) {
+                        db.setApproval(address, networkSymbol, result.authMac, result.deviceId);
+                    }
+
                     let newTreeState = treeState;
                     if (result.newRoot !== null) {
-                        const mac = result.mac ?? undefined;
+                        const rootMac = result.mac ?? undefined;
                         const deviceId = result.deviceId ?? undefined;
-                        newTreeState = { root: result.newRoot, counter: result.newEntryCounter, mac: mac ?? null, deviceId: deviceId ?? null };
-                        db.setTreeState({ root: result.newRoot, counter: result.newEntryCounter }, mac, deviceId);
+                        newTreeState = { root: result.newRoot, counter: result.newEntryCounter, mac: rootMac ?? null, deviceId: deviceId ?? null };
+                        db.setTreeState({ root: result.newRoot, counter: result.newEntryCounter }, rootMac, deviceId);
                     } else if (!device) {
                         // Offline: recompute root locally
                         const updatedEntries = db.getAllEntries();
@@ -201,7 +207,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
 
                     const updatedEntries = db.getAllEntries();
                     const updatedProof = generateMerkleProof(updatedEntries, address, networkSymbol);
-                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState, mac: result.mac }, null, 2));
+                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState, authMac: result.authMac }, null, 2));
                     console.log('Authenticity verified:', result.authentic);
                 }
             }

@@ -8,7 +8,10 @@ export type VerifyAndUpdateResult = {
     authentic: boolean;
     newEntryCounter: number;
     newRoot: string | null;
+    /** Root MAC (field 4) — stored in tree_state, used by dbsetroot */
     mac: string | null;
+    /** Leaf authorization MAC (field 5) — stored per-address, used by next dbchange to skip confirmation */
+    authMac: string | null;
     deviceId: string | null;
 };
 
@@ -40,7 +43,7 @@ export const verifyAndUpdateEntry = async (
     const addressHex = Buffer.from(address, 'utf8').toString('hex');
 
     if (!device) {
-        return { authentic: true, newEntryCounter, newRoot: null, mac: null, deviceId: null };
+        return { authentic: true, newEntryCounter, newRoot: null, mac: null, authMac: null, deviceId: null };
     }
 
     const isInsert = oldEntry === null;
@@ -78,14 +81,15 @@ export const verifyAndUpdateEntry = async (
 
     if (!result.success) {
         console.error('[authDbUpdateLeaf] FAILED:', result); // eslint-disable-line no-console
-        return { authentic: false, newEntryCounter, newRoot: null, mac: null, deviceId: null };
+        return { authentic: false, newEntryCounter, newRoot: null, mac: null, authMac: null, deviceId: null };
     }
 
     return {
         authentic: true,
         newEntryCounter: result.payload.counter,
         newRoot: result.payload.new_root ?? null,
-        mac: result.payload.auth_mac ?? null,
+        mac: result.payload.mac ?? null,
+        authMac: result.payload.auth_mac ?? null,
         deviceId: result.payload.identifier ?? null,
     };
 };

@@ -66,6 +66,7 @@ export const AuthDbUpdateLeafResponse = Type.Object(
         counter: Type.Number(),
         new_root: Type.Optional(Type.String()),
         identifier: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
         auth_mac: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbUpdateLeafResponse' },
