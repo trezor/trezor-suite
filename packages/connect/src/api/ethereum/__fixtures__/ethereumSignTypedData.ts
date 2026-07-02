@@ -61,6 +61,28 @@ export const getFieldType = [
         },
     },
     {
+        description: `bare uint is currently mis-sized as NaN (pre-fix behavior)`,
+        input: {
+            typeName: 'uint',
+            types: {},
+        },
+        output: {
+            data_type: PROTO.EthereumDataType.UINT,
+            size: NaN,
+        },
+    },
+    {
+        description: `bare int is currently mis-sized as NaN (pre-fix behavior)`,
+        input: {
+            typeName: 'int',
+            types: {},
+        },
+        output: {
+            data_type: PROTO.EthereumDataType.INT,
+            size: NaN,
+        },
+    },
+    {
         description: `should parse booleans`,
         input: {
             typeName: 'bool',
@@ -283,6 +305,22 @@ export const encodeData = [
             data: '0xc000000000000000000000000000000000000000000000000000000000000001',
         },
         output: 'c000000000000000000000000000000000000000000000000000000000000001',
+    },
+    {
+        description: `bare uint is currently left unpadded (pre-fix behavior)`,
+        input: {
+            typeName: 'uint',
+            data: 255,
+        },
+        output: 'ff',
+    },
+    {
+        description: `bare int is currently left unpadded (pre-fix behavior)`,
+        input: {
+            typeName: 'int',
+            data: 127,
+        },
+        output: '7f',
     },
     {
         description: `should throw overflow error when signed int is too large`,
