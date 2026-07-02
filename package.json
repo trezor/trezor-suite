@@ -128,7 +128,9 @@
         "@types/react": "19.2.14",
         "react-dom": "19.2.3",
         "expo-modules-core": "patch:expo-modules-core@npm%3A56.0.13#~/.yarn/patches/expo-modules-core-npm-56.0.13-6a0e36c09c.patch",
-        "react-test-renderer": "19.2.3"
+        "react-test-renderer": "19.2.3",
+        "### Force monero-ts's transitive serialize-javascript past the RCE CVE (GHSA-5c6j-r48x-rmvq, <7.0.3)": "1.0.0",
+        "monero-ts/serialize-javascript": "^7.0.3"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",

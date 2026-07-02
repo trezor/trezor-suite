@@ -32,6 +32,7 @@ golomb
 immer
 json-schema-to-typescript
 jws
+monero-ts
 n64
 raw-loader
 react-hook-form
