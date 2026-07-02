@@ -68,6 +68,7 @@ const projectIds = {
 } as const satisfies Record<BuildType, string>;
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
+const cardanoNativeBridgeNdkVersion = '27.0.12077973';
 
 // This is used only as a fallback for the local development.
 const getLocalCommitHash = (): string => {
@@ -136,7 +137,7 @@ const getPlugins = (): ExpoPlugins => {
                     minSdkVersion: 28,
                     // this fixes expo-updates build error
                     kotlinVersion: '2.1.20',
-                    ndkVersion: '27.0.12077973',
+                    ndkVersion: cardanoNativeBridgeNdkVersion,
                     // react-native-quick-crypto (since v1) and expo-sqlite both bundle their
                     // own OpenSSL libcrypto.so, which collides during mergeDebugNativeLibs.
                     // pickFirst resolves the duplicate-.so packaging conflict.
@@ -149,6 +150,7 @@ const getPlugins = (): ExpoPlugins => {
                 },
             },
         ],
+        ['./plugins/withNdkVersion', { ndkVersion: cardanoNativeBridgeNdkVersion }],
         '@trezor/react-native-usb/plugins/withUSBDevice.js',
         [
             './plugins/withAndroidMainActivityAttributes.js',
