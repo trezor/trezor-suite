@@ -9,6 +9,7 @@ import { type AccountsRootState } from '../accountsReducer';
 import {
     selectAddressByNetworkAndPath,
     selectVisibleDeviceAccountsMap,
+    selectVisibleNonEmptyDeviceAccountsByNetworkSymbol,
 } from '../accountsSelectors';
 
 const BTC_DEVICE_SSID: `${string}@${string}:${number}` =
@@ -229,6 +230,27 @@ describe('accountsSelectors', () => {
             expect(result.get(btcAccount.key)).toEqual(
                 expect.objectContaining({ key: btcAccount.key }),
             );
+        });
+    });
+
+    describe(selectVisibleNonEmptyDeviceAccountsByNetworkSymbol.name, () => {
+        it('returns a visible non-empty account', () => {
+            const result = selectVisibleNonEmptyDeviceAccountsByNetworkSymbol(
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
+                'btc',
+            );
+
+            expect(result).toHaveLength(1);
+            expect(result[0]?.symbol).toBe('btc');
+        });
+
+        it('excludes a visible but empty account', () => {
+            const result = selectVisibleNonEmptyDeviceAccountsByNetworkSymbol(
+                getStateWithSelectedDevice(mockState, ETH_DEVICE),
+                'eth',
+            );
+
+            expect(result).toHaveLength(0);
         });
     });
 });

@@ -172,7 +172,7 @@ export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = createMemoized
     accounts =>
         pipe(
             accounts,
-            A.filter(account => !account.empty || account.visible),
+            A.filter(account => !account.empty && account.visible),
             returnStableArrayIfEmpty,
         ),
 );
