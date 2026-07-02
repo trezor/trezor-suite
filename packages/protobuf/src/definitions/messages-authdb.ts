@@ -100,3 +100,19 @@ export const AuthDbApproveResponse = Type.Object(
     },
     { $id: 'AuthDbApproveResponse' },
 );
+
+export type AuthDbSetDeviceId = Static<typeof AuthDbSetDeviceId>;
+export const AuthDbSetDeviceId = Type.Object(
+    {
+        device_id: Type.String(),
+    },
+    { $id: 'AuthDbSetDeviceId' },
+);
+
+export type AuthDbSetDeviceIdResponse = Static<typeof AuthDbSetDeviceIdResponse>;
+export const AuthDbSetDeviceIdResponse = Type.Object(
+    {
+        identifier: Type.String(),
+    },
+    { $id: 'AuthDbSetDeviceIdResponse' },
+);

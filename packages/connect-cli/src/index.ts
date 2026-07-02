@@ -65,10 +65,10 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear', 'dblistroots']);
-const DB_METHODS_REQUIRING_PARAMS = new Set(['dblookup', 'dbchange', 'dbapprove']);
+const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear', 'dblistroots', 'dbsetdeviceid']);
+const DB_METHODS_REQUIRING_PARAMS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetdeviceid']);
 // Methods that must send a command to firmware (need a connected device even when --db-path is set)
-const DB_METHODS_NEEDING_DEVICE = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear']);
+const DB_METHODS_NEEDING_DEVICE = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear', 'dbsetdeviceid']);
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
@@ -323,6 +323,24 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 }
                 db.clearAll();
                 console.log(JSON.stringify({ method: 'dbclear', identifier: result.payload.identifier }, null, 2));
+            }
+
+            if (method === 'dbsetdeviceid') {
+                const { deviceId } = params;
+                if (!deviceId) {
+                    console.error('dbsetdeviceid requires --db-params=\'{"deviceId":"<hex>"}\'');
+                    process.exit(1);
+                }
+                if (!device) {
+                    console.error('dbsetdeviceid requires a connected device');
+                    process.exit(1);
+                }
+                const result = await TrezorConnect.authDbSetDeviceId({ device, device_id: deviceId });
+                if (!result.success) {
+                    console.error('dbsetdeviceid failed:', result);
+                    process.exit(1);
+                }
+                console.log(JSON.stringify({ method: 'dbsetdeviceid', deviceId: result.payload.identifier }, null, 2));
             }
         }
     } finally {

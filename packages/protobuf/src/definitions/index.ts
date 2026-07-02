@@ -137,6 +137,8 @@ import {
     AuthDbLookupResponse,
     AuthDbSetRoot,
     AuthDbSetRootResponse,
+    AuthDbSetDeviceId,
+    AuthDbSetDeviceIdResponse,
     AuthDbUpdateLeaf,
     AuthDbUpdateLeafResponse,
 } from './messages-authdb';
@@ -514,6 +516,8 @@ export const MessageType = Type.Object(
         AuthDbApproveResponse,
         AuthDbSetRoot,
         AuthDbSetRootResponse,
+        AuthDbSetDeviceId,
+        AuthDbSetDeviceIdResponse,
         AuthDbLookup,
         AuthDbLookupResponse,
         AuthDbUpdateLeaf,
@@ -737,6 +741,7 @@ export type WireInMessage =
     | 'EthereumTypedDataValueAck'
     | 'AuthDbApprove'
     | 'AuthDbSetRoot'
+    | 'AuthDbSetDeviceId'
     | 'AuthDbLookup'
     | 'AuthDbUpdateLeaf'
     | 'EvoluGetNode'
@@ -847,6 +852,7 @@ export type WireOutMessage =
     | 'EthereumTypedDataValueRequest'
     | 'AuthDbApproveResponse'
     | 'AuthDbSetRootResponse'
+    | 'AuthDbSetDeviceIdResponse'
     | 'AuthDbLookupResponse'
     | 'AuthDbUpdateLeafResponse'
     | 'EvoluNode'

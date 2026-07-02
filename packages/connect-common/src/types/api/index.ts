@@ -5,6 +5,7 @@ import type { authDbApprove } from './authDbApprove';
 import type { authDbClearRoot } from './authDbClearRoot';
 import type { authDbLookup } from './authDbLookup';
 import type { authDbSetRoot } from './authDbSetRoot';
+import type { authDbSetDeviceId } from './authDbSetDeviceId';
 import type { authDbUpdateLeaf } from './authDbUpdateLeaf';
 import type { applyFlags } from './applyFlags';
 import type { applySettings } from './applySettings';
@@ -214,6 +215,7 @@ export const TrezorConnectDevice = Type.Object({
     pingDevice: Type.Unsafe<typeof pingDevice>(),
     authDbApprove: Type.Unsafe<typeof authDbApprove>(),
     authDbSetRoot: Type.Unsafe<typeof authDbSetRoot>(),
+    authDbSetDeviceId: Type.Unsafe<typeof authDbSetDeviceId>(),
     authDbLookup: Type.Unsafe<typeof authDbLookup>(),
     authDbUpdateLeaf: Type.Unsafe<typeof authDbUpdateLeaf>(),
     authDbClearRoot: Type.Unsafe<typeof authDbClearRoot>(),

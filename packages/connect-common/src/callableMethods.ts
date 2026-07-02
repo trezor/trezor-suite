@@ -65,6 +65,7 @@ const connectCallableMethodGroups = {
         'pingDevice',
         'authDbApprove',
         'authDbSetRoot',
+        'authDbSetDeviceId',
         'authDbLookup',
         'authDbUpdateLeaf',
         'authDbClearRoot',

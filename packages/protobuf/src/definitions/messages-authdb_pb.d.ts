@@ -13,3 +13,5 @@ export declare const AuthDbClearRootSchema: DescMessage;
 export declare const AuthDbClearRootResponseSchema: DescMessage;
 export declare const AuthDbApproveSchema: DescMessage;
 export declare const AuthDbApproveResponseSchema: DescMessage;
+export declare const AuthDbSetDeviceIdSchema: DescMessage;
+export declare const AuthDbSetDeviceIdResponseSchema: DescMessage;

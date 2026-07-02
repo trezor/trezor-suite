@@ -42,6 +42,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=dbsetroot   Send stored root + MAC from DB to device (for initial sync)
                                                 --method=dblistroots List stored Merkle root(s) from local DB; prints ready-to-run dbsetroot command
                                                 --method=dbclear     Clear the Merkle root on device and wipe the local DB
+                                                --method=dbsetdeviceid Set the authdb device identifier on the Trezor (for testing cross-device sync)
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 
@@ -55,6 +56,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{...},"mac":"<hex>","deviceId":"<hex>"}' (dbchange with pre-approval)
+                                                --db-params='{"deviceId":"<hex>"}' (dbsetdeviceid)
 `;
 
 // read and parse application arguments
