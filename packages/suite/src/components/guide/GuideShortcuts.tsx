@@ -169,14 +169,13 @@ const otherSection: ShortcutSection = {
     ],
 };
 
-const debugModeShortcut: ShortcutItem = {
-    labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE',
-    keys: ['MOD', 'ALT', 'SHIFT', 'KEY_D'],
-};
-
 const debugSection: ShortcutSection = {
     titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG',
     items: [
+        {
+            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DEBUG_MODE',
+            keys: ['MOD', 'ALT', 'SHIFT', 'KEY_D'],
+        },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_LANGUAGE_NEXT',
             keys: ['CTRL', 'F9'],
@@ -232,22 +231,16 @@ export const GuideShortcuts = () => {
         ? { ...walletsSection, items: [passphraseShortcut, ...walletsSection.items] }
         : walletsSection;
 
-    // The debug-mode toggle is shown only while debug mode is off, so it stays discoverable;
-    // once active, the debug section already lists the debug-only shortcuts.
-    const otherSectionWithDebugToggle: ShortcutSection = isDebugModeActive
-        ? otherSection
-        : { ...otherSection, items: [debugModeShortcut, ...otherSection.items] };
-
     return (
         <GuideViewWrapper>
             <GuideHeader back={goBack} label={<Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />} />
             <GuideContent>
                 <Column>
-                    <ShortcutSectionBlock {...generalSection} />
                     <ShortcutSectionBlock {...securitySectionWithLockApp} />
                     <ShortcutSectionBlock {...walletsSectionWithPassphrase} />
                     <ShortcutSectionBlock {...navigationSection} />
-                    <ShortcutSectionBlock {...otherSectionWithDebugToggle} />
+                    <ShortcutSectionBlock {...generalSection} />
+                    <ShortcutSectionBlock {...otherSection} />
                     {isDebugModeActive && <ShortcutSectionBlock {...debugSection} />}
                 </Column>
             </GuideContent>

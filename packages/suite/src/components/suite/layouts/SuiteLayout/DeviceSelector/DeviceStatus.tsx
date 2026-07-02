@@ -1,5 +1,5 @@
 import { selectDeviceLabelOrNameById } from '@suite-common/device';
-import { Row, ShortcutBadge, Tooltip } from '@trezor/components';
+import { Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -60,6 +60,7 @@ export const DeviceStatus = ({
                     <Tooltip
                         cursor="inherit"
                         placement="right"
+                        delayShow={TOOLTIP_DELAY_LONG}
                         content={
                             <Row gap={16} alignItems="center">
                                 {content}

@@ -119,7 +119,7 @@ export const SupportFeedbackSelection = () => {
                                 >
                                     <Row gap={16} flex="1" overflow="hidden">
                                         <IconCircle name="bugBeetle" size={32} intent="neutral" />
-                                        <Column gap={4} alignItems="flex-start" overflow="hidden">
+                                        <Column alignItems="flex-start" overflow="hidden">
                                             <Text
                                                 typographyStyle="body-md"
                                                 as="div"
@@ -152,7 +152,7 @@ export const SupportFeedbackSelection = () => {
                                 >
                                     <Row gap={16} flex="1" overflow="hidden">
                                         <IconCircle name="megaphone" size={32} intent="neutral" />
-                                        <Column gap={4} alignItems="flex-start" overflow="hidden">
+                                        <Column alignItems="flex-start" overflow="hidden">
                                             <Text
                                                 typographyStyle="body-md"
                                                 as="div"
@@ -238,7 +238,7 @@ export const SupportFeedbackSelection = () => {
                     <CardList margin={{ bottom: 16 }}>
                         <CardList.Item data-testid="@guide/support/version" paddingType="medium">
                             <Row justifyContent="space-between" width="100%" alignItems="flex-end">
-                                <Column gap={4} alignItems="flex-start" overflow="hidden">
+                                <Column alignItems="flex-start" overflow="hidden">
                                     <Text typographyStyle="body-md" as="div" maxWidth="100%">
                                         <Translation id="TR_APPLICATION" />
                                     </Text>
@@ -260,7 +260,7 @@ export const SupportFeedbackSelection = () => {
                         </CardList.Item>
                         <CardList.Item data-testid="@guide/support/firmware" paddingType="medium">
                             <Row justifyContent="space-between" width="100%" alignItems="flex-end">
-                                <Column gap={4} alignItems="flex-start" overflow="hidden">
+                                <Column alignItems="flex-start" overflow="hidden">
                                     <Text typographyStyle="body-md" as="div" maxWidth="100%">
                                         <Translation id="TR_FIRMWARE" />
                                     </Text>
