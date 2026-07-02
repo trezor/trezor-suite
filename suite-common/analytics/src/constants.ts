@@ -18,6 +18,7 @@ export enum EventType {
     SettingsDeviceWipe = 'settings/device/wipe',
     SettingsGeneralLabeling = 'settings/general/labeling',
     SettingsNetworkSearchUsed = 'settings/network-search-used',
+    SettingsTestnetNetworksToggle = 'settings/testnet-networks-toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteSyncLabelCreated = 'suite-sync/label',
     WalletConnectInit = 'wallet-connect/init',
