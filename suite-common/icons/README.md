@@ -17,9 +17,8 @@ This package contains source assets for icons used in the app.
 
 ## In case some icons are not rendering correctly in icon font
 
-1. Copy path from svg file of broken icon.
-2. Open `https://codepen.io/herrstrietzel/pen/GRGexdb` and paste path there.
-3. Uncheck `directions` checkbox.
-4. Inspect fix path output preview SVG in Chrome DevTools.
-5. Copy SVG code from Chrome DevTools and replace original SVG code (do not use that fixed path directly, it won't work for some reason).
-6. Regenerate icons with `yarn generate-icons`.
+1. Copy a whole path from the SVG file of the problematic icon.
+2. Open `https://yqnn.github.io/svg-path-editor/` and paste the path there.
+3. Select the problematic segment in the _Commands_ section and fix it by running _Reverse Subpath_.
+4. Check the _Minify output_ checkbox and copy&paste the fixed path back into the SVG file.
+5. Regenerate icons with `yarn generate-icons`.
