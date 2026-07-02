@@ -68,30 +68,36 @@ type LeafNode = { kind: 'leaf'; addrHash: Buffer; leafHash: Buffer };
 type BranchNode = { kind: 'branch'; bit: number; left: MptNode; right: MptNode };
 type MptNode = LeafNode | BranchNode;
 
-// Find the first bit position (>= startBit) where the set of leaves diverges.
-const findSplitBit = (leaves: LeafInfo[], startBit: number): number => {
-    for (let bit = startBit; bit < 256; bit++) {
-        const b0 = getBit(leaves[0].addrHash, bit);
-        if (leaves.some(l => getBit(l.addrHash, bit) !== b0)) return bit;
+// Graft-based INSERT matching firmware's insert_leaf algorithm.
+// When reaching a leaf, create a branch at the first bit where new and existing diverge.
+// This may produce branches with non-monotonically increasing bit positions, matching firmware.
+const graftInsert = (tree: MptNode | null, addrHash: Buffer, leafHash: Buffer): MptNode => {
+    if (tree === null) {
+        return { kind: 'leaf', addrHash, leafHash };
     }
-    // Should never reach here if all addrHashes are distinct (SHA-256 collisions are impossible).
-    throw new Error('MPT: duplicate address hashes detected');
+    if (tree.kind === 'leaf') {
+        let bit = 0;
+        while (bit < 256 && getBit(tree.addrHash, bit) === getBit(addrHash, bit)) bit++;
+        const newLeaf: MptNode = { kind: 'leaf', addrHash, leafHash };
+        return getBit(addrHash, bit) === 0
+            ? { kind: 'branch', bit, left: newLeaf, right: tree }
+            : { kind: 'branch', bit, left: tree, right: newLeaf };
+    }
+    const b = getBit(addrHash, tree.bit);
+    return b === 0
+        ? { ...tree, left: graftInsert(tree.left, addrHash, leafHash) }
+        : { ...tree, right: graftInsert(tree.right, addrHash, leafHash) };
 };
 
-// Build MPT from a non-empty set of leaves, starting path-compression from bit `startBit`.
-const buildMpt = (leaves: LeafInfo[], startBit: number): MptNode => {
-    if (leaves.length === 1) return { kind: 'leaf', ...leaves[0] };
-
-    const bit = findSplitBit(leaves, startBit);
-    const left = leaves.filter(l => getBit(l.addrHash, bit) === 0);
-    const right = leaves.filter(l => getBit(l.addrHash, bit) === 1);
-
-    return {
-        kind: 'branch',
-        bit,
-        left: buildMpt(left, bit + 1),
-        right: buildMpt(right, bit + 1),
-    };
+// Build MPT by replaying inserts in rowid order (matching firmware's sequential graft INSERTs).
+// rows must already be sorted by rowid (insertion order).
+const buildMpt = (leaves: LeafInfo[]): MptNode => {
+    let tree: MptNode | null = null;
+    for (const leaf of leaves) {
+        tree = graftInsert(tree, leaf.addrHash, leaf.leafHash);
+    }
+    if (tree === null) throw new Error('MPT: no leaves');
+    return tree;
 };
 
 // Hash a subtree recursively.
@@ -125,7 +131,7 @@ export const generateMerkleProof = (
     }));
 
     const targetAddrHash = createHash('sha256').update(Buffer.from(address, 'utf8')).digest();
-    const mptRoot = buildMpt(leaves, 0);
+    const mptRoot = buildMpt(leaves);
 
     const proof: string[] = [];
 
@@ -169,7 +175,7 @@ export const computeMerkleRoot = (rows: AllEntriesRow[]): string => {
         leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
     }));
 
-    return hashMpt(buildMpt(leaves, 0)).toString('hex');
+    return hashMpt(buildMpt(leaves)).toString('hex');
 };
 
 /**
@@ -194,52 +200,49 @@ export const generateNonMembershipProof = (
         leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
     }));
 
-    const mptRoot = buildMpt(leaves, 0);
+    const mptRoot = buildMpt(leaves);
 
     // Walk the MPT following the target address path, collecting siblings.
     // The leaf we land on is the witness.
-    let witnessRow: AllEntriesRow | null = null;
+    let witnessLeaf: LeafInfo | null = null;
     const proof: string[] = [];
 
-    const walk = (node: MptNode, rowsSubset: AllEntriesRow[]): Buffer => {
+    const walk = (node: MptNode): Buffer => {
         if (node.kind === 'leaf') {
-            // This is the witness leaf
-            witnessRow = rowsSubset[0];
+            witnessLeaf = node;
             return node.leafHash;
         }
 
         const targetBit = getBit(targetAddrHash, node.bit);
         const bitHex = node.bit.toString(16).padStart(2, '0');
 
-        const leftRows = rowsSubset.filter(r => {
-            const h = createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest();
-            return getBit(h, node.bit) === 0;
-        });
-        const rightRows = rowsSubset.filter(r => {
-            const h = createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest();
-            return getBit(h, node.bit) === 1;
-        });
-
         if (targetBit === 0) {
-            const leftHash = walk(node.left, leftRows);
+            const leftHash = walk(node.left);
             const rightHash = hashMpt(node.right);
             proof.push(bitHex + rightHash.toString('hex'));
             return internalHash(leftHash, rightHash);
         } else {
             const leftHash = hashMpt(node.left);
-            const rightHash = walk(node.right, rightRows);
+            const rightHash = walk(node.right);
             proof.push(bitHex + leftHash.toString('hex'));
             return internalHash(leftHash, rightHash);
         }
     };
 
-    walk(mptRoot, rows);
+    walk(mptRoot);
 
-    if (!witnessRow) {
+    if (!witnessLeaf) {
         return { proof: [], witnessAddress: null, witnessValue: null };
     }
 
-    const wr = witnessRow as AllEntriesRow;
+    const wl = witnessLeaf as LeafInfo;
+    const wr = rows.find(r =>
+        createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest().equals(wl.addrHash),
+    );
+    if (!wr) {
+        return { proof: [], witnessAddress: null, witnessValue: null };
+    }
+
     return {
         proof,
         witnessAddress: wr.address,

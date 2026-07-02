@@ -83,7 +83,7 @@ export class BitcoinAddressDb implements AddressLookupProvider {
 
     getAllEntries(): AllEntriesRow[] {
         const rows = this.db
-            .prepare('SELECT address, network_symbol, counter, data FROM addresses')
+            .prepare('SELECT address, network_symbol, counter, data FROM addresses ORDER BY rowid')
             .all() as AddressRow[];
 
         return rows.map(r => ({
