@@ -28,16 +28,15 @@ import { useStakingYield } from 'src/hooks/earn/useStakingYield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnStakingActionButtons } from './EarnStakingActionButtons';
+import { EarnStakingApyTooltip } from './EarnStakingApyTooltip';
 import { EarnStakingCurrentRewards } from './EarnStakingCurrentRewards';
 import { EarnStakingOutdatedProvider } from './EarnStakingOutdatedProvider';
 import { EarnStakingPotentialRewards } from './EarnStakingPotentialRewards';
 import { EarnStakingRemainingVotes } from './EarnStakingRemainingVotes';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
-import { EarnRate } from '../common/EarnRate';
 
 interface EarnStakingAccountRowProps {
     account: Account;
@@ -288,12 +287,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell account={account} />
 
-                        <EarnRate
-                            type={account.symbol === 'trx' ? 'apr' : 'apy'}
-                            rate={apyAvailable ? apy : null}
-                        >
-                            <ApyValue apy={apyAvailable ? apy : null} />
-                        </EarnRate>
+                        {apyAvailable ? (
+                            <EarnStakingApyTooltip symbol={account.symbol} apy={apy} />
+                        ) : (
+                            <Translation id="TR_EARN_NOT_AVAILABLE" />
+                        )}
                     </Row>
 
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
@@ -387,9 +385,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
             <Table.Cell>
                 {apyAvailable ? (
-                    <EarnRate type={account.symbol === 'trx' ? 'apr' : 'apy'} rate={apy}>
-                        <ApyValue apy={apy} />
-                    </EarnRate>
+                    <EarnStakingApyTooltip symbol={account.symbol} apy={apy} />
                 ) : (
                     <Translation id="TR_EARN_NOT_AVAILABLE" />
                 )}

@@ -69,14 +69,6 @@ export const messages = defineMessages({
         defaultMessage: "Account doesn't exist",
         id: 'TR_ACCOUNT_EXCEPTION_NOT_EXIST',
     },
-    TR_EARN_APY: {
-        id: 'TR_EARN_APY',
-        defaultMessage: 'APY',
-    },
-    TR_EARN_APR: {
-        id: 'TR_EARN_APR',
-        defaultMessage: 'APR',
-    },
     TR_EARN_YIELD_VAULT_NOT_EXIST: {
         defaultMessage: "Vault doesn't exist",
         id: 'TR_EARN_YIELD_VAULT_NOT_EXIST',
@@ -10001,6 +9993,14 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
         defaultMessage: 'APY can change over time',
     },
+    TR_EARN_STAKING_APY_TOOLTIP: {
+        id: 'TR_EARN_STAKING_APY_TOOLTIP',
+        defaultMessage: 'Annual percentage yield (APY)',
+    },
+    TR_EARN_STAKING_APR_TOOLTIP: {
+        id: 'TR_EARN_STAKING_APR_TOOLTIP',
+        defaultMessage: 'Annual percentage rate (APR)',
+    },
     TR_EARN_YIELD_AMOUNT_TO_WITHDRAW: {
         id: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
         defaultMessage: 'Withdrawal amount',
@@ -11168,10 +11168,6 @@ export const messages = defineMessages({
     TR_STAKE_APY: {
         id: 'TR_STAKE_APY',
         defaultMessage: 'Annual Percentage Yield',
-    },
-    TR_STAKE_APR: {
-        id: 'TR_STAKE_APR',
-        defaultMessage: 'Annual Percentage Rate',
     },
     TR_STAKE_APY_ABBR: {
         id: 'TR_STAKE_APY_ABBR',
