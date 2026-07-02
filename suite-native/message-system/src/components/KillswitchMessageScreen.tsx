@@ -45,17 +45,17 @@ export const KillswitchMessageScreen = () => {
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
 
-    const killswitch = useSelector(selectActiveKillswitchMessage);
+    const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
 
     // Destroy Connect instance, to prevent any device or backend interaction on the background.
     // Connect won't init if there is an active killswitch (see initActions.init), but message system can be updated anytime later.
     useEffect(() => {
-        if (killswitch) {
+        if (activeKillswitchMessage) {
             TrezorConnect.dispose();
         }
-    }, [killswitch]);
+    }, [activeKillswitchMessage]);
 
-    if (!killswitch) return null;
+    if (!activeKillswitchMessage) return null;
 
     const {
         id: messageId,
@@ -64,7 +64,7 @@ export const KillswitchMessageScreen = () => {
         content,
         cta,
         dismissible: isDismissible,
-    } = killswitch;
+    } = activeKillswitchMessage;
 
     const messageTitle = headline ? resolveMessageContent(headline, language) : null;
     const messageContent = resolveMessageContent(content, language);
