@@ -242,12 +242,9 @@ export const useAppShortcuts = () => {
             }
         }
 
-        // press ALT + ↑ / ↓ (or the vim-style ALT + K / J alternative) to step to the
-        // previous / next account in the list
-        const isPrevAccountKey =
-            e.code === KEYBOARD_CODE.ARROW_UP || e.code === KEYBOARD_CODE.KEY_K;
-        const isNextAccountKey =
-            e.code === KEYBOARD_CODE.ARROW_DOWN || e.code === KEYBOARD_CODE.KEY_J;
+        // press ALT + K / J (vim-style) to step to the previous / next account in the list
+        const isPrevAccountKey = e.code === KEYBOARD_CODE.KEY_K;
+        const isNextAccountKey = e.code === KEYBOARD_CODE.KEY_J;
 
         if (altOnly && (isPrevAccountKey || isNextAccountKey) && orderedAccounts.length > 0) {
             e.preventDefault();
@@ -271,11 +268,9 @@ export const useAppShortcuts = () => {
             toggleDebugMode();
         }
 
-        // press SHIFT + / (i.e. "?") to toggle the keyboard shortcuts guide: open it (and
-        // jump to the shortcuts view) if it's not already showing, close it if it is.
-        // Matched by physical key + shiftKey rather than `e.key === '?'`, since holding
-        // Option/Alt on macOS changes what character Shift+/ produces (e.g. "¿").
-        if (e.code === KEYBOARD_CODE.SLASH && shiftKey && !cmdOrCtrl && !isTypingTarget(e.target)) {
+        // press "?" to toggle the keyboard shortcuts guide
+        // matched on `e.key` rather than `e.code` so it also works on non-US layouts
+        if (e.key === '?' && !cmdOrCtrl && !isTypingTarget(e.target)) {
             e.preventDefault();
             dispatch(toggleGuideView('KEYBOARD_SHORTCUTS'));
         }

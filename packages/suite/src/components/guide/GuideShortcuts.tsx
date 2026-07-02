@@ -100,11 +100,11 @@ const walletsSection: ShortcutSection = {
         },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_PREV_ACCOUNT',
-            keys: ['ALT', 'UP_ARROW'],
+            keys: ['ALT', 'KEY_K'],
         },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NEXT_ACCOUNT',
-            keys: ['ALT', 'DOWN_ARROW'],
+            keys: ['ALT', 'KEY_J'],
         },
     ],
 };
