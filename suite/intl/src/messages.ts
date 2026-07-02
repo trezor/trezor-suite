@@ -12635,4 +12635,12 @@ export const messages = defineMessages({
         id: 'MEMO_SWITCH',
         defaultMessage: 'Add memo',
     },
+    KILLSWITCH_SCREEN_DEFAULT_TITLE: {
+        id: 'KILLSWITCH_SCREEN_DEFAULT_TITLE',
+        defaultMessage: 'Update required',
+    },
+    KILLSWITCH_SCREEN_DEFAULT_CONTENT: {
+        id: 'KILLSWITCH_SCREEN_DEFAULT_CONTENT',
+        defaultMessage: 'Update to continue using Trezor Suite. Your funds are secure.',
+    },
 } as const);
