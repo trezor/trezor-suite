@@ -38,13 +38,16 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=authenticate-device
                                                 --method=dblookup   Look up a Bitcoin address in the local SQLite DB
                                                 --method=dbchange   Upsert metadata for a Bitcoin address in the local SQLite DB
+                                                --method=dbapprove  Approve an address record on device; stores MAC signature in DB
+                                                --method=dbclear    Clear the Merkle root on device and wipe the local DB
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
-                                                --params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup)
+                                                --params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
                                                 --params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
+                                                --params='{"address":"bc1q...","networkSymbol":"btc","metadata":{...},"mac":"<hex>","deviceId":"<hex>"}' (dbchange with pre-approval)
 
   Database options
-    --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<sha256(getAddress)>.db)
+    --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
 `;
 
 // read and parse application arguments
