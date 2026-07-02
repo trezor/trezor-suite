@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from 'react';
 
-import { CONDITION_OPTIONS, getDefaultConditionValue } from '@suite-common/message-system';
 import { type Condition } from '@suite-common/suite-types';
+
+import { CONDITION_OPTIONS } from './messageSystemConstants';
+import { getDefaultConditionValue } from './messageSystemUtils';
 
 type Parsed = { conditions?: unknown[] } | null;
 
@@ -20,13 +22,17 @@ export function useConditionControls(parsedData: Parsed, setFormData: (next: str
 
     const addCondition = useCallback(
         (conditionKey: keyof Condition) => {
-            if (!parsedData) return;
+            if (!parsedData) {
+                return;
+            }
 
             const defaultValue = getDefaultConditionValue(conditionKey);
             const existing = Array.isArray(parsedData.conditions) ? parsedData.conditions : [];
             const head = (existing[0] ?? {}) as Record<string, unknown>;
 
-            if (Object.prototype.hasOwnProperty.call(head, conditionKey)) return;
+            if (Object.prototype.hasOwnProperty.call(head, conditionKey)) {
+                return;
+            }
 
             const updatedHead = { ...head, [conditionKey]: defaultValue };
             const next = {

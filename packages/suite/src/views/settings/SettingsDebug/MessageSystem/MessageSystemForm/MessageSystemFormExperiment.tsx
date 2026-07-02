@@ -7,6 +7,7 @@ import {
     messageSystemActions,
     selectMessageSystemConfig,
     stripFieldFromMessage,
+    useConditionControls,
     validateExperimentForm,
 } from '@suite-common/message-system';
 import { type Experiments } from '@suite-common/suite-types';
@@ -17,7 +18,6 @@ import { spacings } from '@trezor/theme';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
-import { useConditionControls } from './useConditionControls';
 import { MessageSystemExperimentToolbar } from '../MessageSystemExperiment/MessageSystemExperimentToolbar';
 
 export const MessageSystemFormExperiment = () => {
