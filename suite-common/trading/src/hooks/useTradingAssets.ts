@@ -90,6 +90,12 @@ export function createAssetOption({
 }: CreateAssetOptionProps): TradingAssetOption | null {
     const { contractAddress = null } = parseCryptoId(cryptoId);
     const network = cryptoIdToNetwork(cryptoId);
+
+    // Privacy coins (e.g. Monero) are not offered for buy/sell/swap — drop them from the asset list.
+    if (network?.isTradingDisabled) {
+        return null;
+    }
+
     const isNativeToken = Boolean(
         network && (!contractAddress || isCryptoIdForNativeToken(cryptoId)),
     );

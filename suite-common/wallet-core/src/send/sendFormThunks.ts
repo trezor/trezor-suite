@@ -59,6 +59,12 @@ import {
     signEthereumSendFormTransactionThunk,
 } from './sendFormEthereumThunks';
 import {
+    clearPendingMoneroKeyImages,
+    composeMoneroTransactionFeeLevelsThunk,
+    signMoneroSendFormTransactionThunk,
+    syncMoneroKeyImagesThunk,
+} from './sendFormMoneroThunks';
+import {
     composeRippleStellarTransactionFeeLevelsThunk,
     signRippleStellarSendFormTransactionThunk,
 } from './sendFormRippleStellarThunks';
@@ -209,6 +215,10 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
         } else if (networkType === 'tron') {
             response = await dispatch(
                 composeTronTransactionFeeLevelsThunk({ formState, composeContext }),
+            );
+        } else if (networkType === 'monero') {
+            response = await dispatch(
+                composeMoneroTransactionFeeLevelsThunk({ formState, composeContext }),
             );
         } else {
             return exhaustive(networkType);
@@ -438,7 +448,20 @@ export const pushSendFormTransactionThunk = createThunk<
                     txid,
                 }),
             );
+
+            // A view-only Monero wallet can't see its own spend until the device's key images are
+            // imported. Sync them now (the device is still connected) so the just-sent tx shows as
+            // sent/self and the balance updates. Best-effort: the tx is already broadcast, so a
+            // declined device prompt or failure must not fail the push.
+            if (selectedAccount.networkType === 'monero') {
+                dispatch(syncMoneroKeyImagesThunk({ account: selectedAccount }));
+            }
         } else {
+            // The device exported key images while signing, but the broadcast failed — drop them so a
+            // later sync can't import stale images for a tx that never landed.
+            if (selectedAccount.networkType === 'monero') {
+                clearPendingMoneroKeyImages(selectedAccount.key);
+            }
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
@@ -581,6 +604,8 @@ export const signTransactionThunk = createThunk<
                 );
             } else if (networkType === 'tron') {
                 response = await dispatch(signTronSendFormTransactionThunk(thunkArguments));
+            } else if (networkType === 'monero') {
+                response = await dispatch(signMoneroSendFormTransactionThunk(thunkArguments));
             }
         }
 

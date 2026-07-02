@@ -276,6 +276,18 @@ export const confirmAddressOnDeviceThunk = createThunk(
             case 'stellar':
                 response = TrezorConnect.stellarGetAddress(params);
                 break;
+            case 'monero':
+                // The Monero account descriptor is its primary address (account 0, minor 0).
+                // moneroGetAddress takes Monero-specific params, not the shared coin/unlockPath shape.
+                response = await TrezorConnect.moneroGetAddress({
+                    device,
+                    path: addressPath,
+                    account: 0,
+                    minor: 0,
+                    chunkify,
+                    showOnTrezor,
+                });
+                break;
             default:
                 response = {
                     success: false,
