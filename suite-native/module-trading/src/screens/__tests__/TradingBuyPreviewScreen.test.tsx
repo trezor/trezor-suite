@@ -16,7 +16,20 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ name: 'TradingBuyPreviewScreen' }),
 }));
 
+const mockAnalyticsReport = jest.fn();
+jest.mock('@suite-native/trading-analytics', () => ({
+    ...jest.requireActual('@suite-native/trading-analytics'),
+    useBuyAnalyticsStepReport:
+        (step: unknown) =>
+        (...args: unknown[]) =>
+            mockAnalyticsReport(step, ...args),
+}));
+
 describe('TradingBuyPreviewScreen', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     const renderTradingBuyPreviewScreen = ({
         providerMetadata,
         selectedQuote,
@@ -63,5 +76,15 @@ describe('TradingBuyPreviewScreen', () => {
                 }),
             ),
         ).toBeOnTheScreen();
+    });
+
+    it('should report buy-preview visit on mount', () => {
+        renderTradingBuyPreviewScreen({
+            selectedQuote: mercuryoApplePayBuyQuote,
+            providerMetadata: buyMercuryo,
+        });
+
+        expect(mockAnalyticsReport).toHaveBeenCalledWith('buy-preview', 'visit');
+        expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
     });
 });

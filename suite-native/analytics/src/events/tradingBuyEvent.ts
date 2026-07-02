@@ -1,9 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
-
-type TradingBuyAction = 'continue' | 'cancel';
-type TradingBuyStep = 'buy-form' | 'account-selection';
+import type { TradingBuyAction, TradingBuyStep } from '../definitions';
 
 type Attributes = {
     action: AttributeDef<TradingBuyAction>;
@@ -24,13 +22,20 @@ export const tradingBuyEvent: EventDef<Attributes, EventType.TradingBuy> = {
 
     attributes: {
         action: {
-            changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'User action: `continue` to proceed through the flow, `cancel` to exit',
+            changelog: [
+                { version: '25.5.1', notes: 'added' },
+                { version: '26.7.1', notes: 'added `visit` value' },
+            ],
+            description:
+                'User action: `continue` to proceed through the flow, `cancel` to exit, `visit` on screen mount',
         },
         step: {
-            changelog: [{ version: '25.5.1', notes: 'added' }],
+            changelog: [
+                { version: '25.5.1', notes: 'added' },
+                { version: '26.7.1', notes: 'added `buy-preview` value' },
+            ],
             description:
-                'Current step in the buy flow: `buy-form` for initial form, `account-selection` for choosing account to buy to',
+                'Current step in the buy flow: `buy-form` for initial form, `account-selection` for choosing account to buy to, `buy-preview` for the preview screen',
         },
         cryptoLabel: {
             changelog: [{ version: '25.5.1', notes: 'added' }],

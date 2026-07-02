@@ -5,11 +5,13 @@ import type { BuyTradeResponse } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
+    type TradingRootState,
     buyThunks,
     selectTradingBuyIsLoading,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
     selectTradingBuySelectedQuote,
+    selectTradingCoinInfoByCryptoId,
     tradingBuyActions,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -21,6 +23,8 @@ import {
     type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
+
+import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -40,6 +44,13 @@ export const useBuyPreviewFlow = () => {
     const receiveAccount = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, receiveAccountKey),
     );
+    const coinInfo = useSelector((state: TradingRootState) =>
+        selectTradingCoinInfoByCryptoId(state, selectedQuote?.receiveCurrency),
+    );
+    const quoteAnalyticsData = getAnalyticsTradingBuyPayload({
+        quote: selectedQuote,
+        coinInfo,
+    });
 
     const { openBrowserForFormData } = useBrowserAuth('buy');
 
@@ -75,6 +86,15 @@ export const useBuyPreviewFlow = () => {
         if (!canProceed || !selectedQuote || !receiveAccount || !receiveAddress) {
             return;
         }
+
+        analytics.report({
+            type: events.tradingBuyEvent.name,
+            payload: {
+                step: 'buy-preview',
+                action: 'continue',
+                ...quoteAnalyticsData,
+            },
+        });
 
         const returnUrl = buildTradingUrl({
             actionType: 'trade',

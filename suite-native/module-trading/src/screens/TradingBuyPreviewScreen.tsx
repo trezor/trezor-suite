@@ -1,3 +1,4 @@
+import { useEffect, useEffectEvent } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -7,6 +8,7 @@ import {
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useBuyAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { KYCWarning } from '@suite-native/trading-atoms';
 import { Footer } from '@suite-native/trading-provider-utils';
 
@@ -19,6 +21,14 @@ import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
 export const TradingBuyPreviewScreen = () => {
     const providerMetadata = useSelector(selectTradingProviderMetadata);
     const quote = useSelector(selectTradingBuySelectedQuote);
+
+    const reportToAnalytics = useBuyAnalyticsStepReport('buy-preview');
+    const reportVisit = useEffectEvent(() => {
+        reportToAnalytics('visit');
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
 
     if (!quote || !providerMetadata) {
         return <BuyGeneralErrorScreen />;

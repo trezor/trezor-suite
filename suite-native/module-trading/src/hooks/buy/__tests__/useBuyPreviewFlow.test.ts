@@ -1,3 +1,5 @@
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
@@ -35,6 +37,11 @@ jest.mock('@suite-common/trading', () => ({
         },
     },
 }));
+
+const mockReport = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(mockReport),
+};
 
 describe('useBuyPreviewFlow', () => {
     const receiveAddress =
@@ -76,7 +83,7 @@ describe('useBuyPreviewFlow', () => {
     };
 
     const renderHook = (store: ReturnType<typeof getInitializedStore>) =>
-        renderHookWithStoreProvider(() => useBuyPreviewFlow(), { store });
+        renderHookWithStoreProvider(() => useBuyPreviewFlow(), { store, services });
 
     const getProcessResponseData = () => {
         const [payload] = mockConfirmTradeThunk.mock.calls[0] as [any];
@@ -183,7 +190,7 @@ describe('useBuyPreviewFlow', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
         });
 
-        it('does not open browser, navigate, or clear Redux when tradeForm is absent', async () => {
+        it('does not open browser or navigate when tradeForm is absent', async () => {
             const store = getInitializedStore({ withFullState: true });
             const { result } = renderHook(store);
 
@@ -202,6 +209,56 @@ describe('useBuyPreviewFlow', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toStrictEqual(
                 mercuryoApplePayBuyQuote,
             );
+        });
+    });
+
+    describe('analytics', () => {
+        it('reports buy-preview continue when confirmTrade is called and canProceed is true', () => {
+            const store = getInitializedStore({ withFullState: true });
+            const { result } = renderHook(store);
+
+            act(() => {
+                result.current.confirmTrade();
+            });
+
+            expect(mockReport).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: events.tradingBuyEvent.name,
+                    payload: expect.objectContaining({
+                        step: 'buy-preview',
+                        action: 'continue',
+                        exchangeName: 'mercuryo',
+                    }),
+                }),
+            );
+        });
+
+        it('does not report analytics when canProceed is false', () => {
+            const store = getInitializedStore({ isLoading: true, withFullState: true });
+            const { result } = renderHook(store);
+
+            act(() => {
+                result.current.confirmTrade();
+            });
+
+            expect(mockReport).not.toHaveBeenCalled();
+        });
+
+        it('triggerAnalyticsTradeConfirmation reports tradingConfirmTradeEvent', () => {
+            const store = getInitializedStore({ withFullState: true });
+            const { result } = renderHook(store);
+
+            act(() => {
+                result.current.confirmTrade();
+            });
+
+            const [payload] = mockConfirmTradeThunk.mock.calls[0] as [any];
+            payload.triggerAnalyticsTradeConfirmation();
+
+            expect(mockReport).toHaveBeenCalledWith({
+                type: events.tradingConfirmTradeEvent.name,
+                payload: { type: 'buy' },
+            });
         });
     });
 });
