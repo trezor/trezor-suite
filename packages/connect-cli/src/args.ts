@@ -43,12 +43,13 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=dbclear    Clear the Merkle root on device and wipe the local DB
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
-                                                --params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
-                                                --params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
-                                                --params='{"address":"bc1q...","networkSymbol":"btc","metadata":{...},"mac":"<hex>","deviceId":"<hex>"}' (dbchange with pre-approval)
 
   Database options
     --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
+    --db-params=<json>                        Params for database commands (JSON object)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{...},"mac":"<hex>","deviceId":"<hex>"}' (dbchange with pre-approval)
 `;
 
 // read and parse application arguments
@@ -73,7 +74,7 @@ const parseArgv = () => {
                 // @ts-expect-error: indexing with noUncheckedIndexedAccess
                 const k: string = preKey;
                 const v = rest.join('=');
-                add(k, k === 'params' ? v : v.toLowerCase());
+                add(k, k === 'params' || k === 'db-params' ? v : v.toLowerCase());
             } else if (add(key, argv[i + 1])) i++;
         } else if (arg.startsWith('-') && arg.length === 2) {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess

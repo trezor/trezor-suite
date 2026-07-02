@@ -87,19 +87,19 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     const dbMethods = methods.filter(m => DB_METHODS.has(m));
     if (dbMethods.length === 0) return false;
 
-    if (!args.params) {
+    if (!args['db-params']) {
         console.error(
-            'DB methods require --params (note the double dash). Example:\n' +
-            '  --params=\'{"address":"...","networkSymbol":"btc"}\'',
+            'DB methods require --db-params (note the double dash). Example:\n' +
+            '  --db-params=\'{"address":"...","networkSymbol":"btc"}\'',
         );
         process.exit(1);
     }
     let params: any;
     try {
-        params = JSON.parse(args.params);
+        params = JSON.parse(args['db-params']);
     } catch (e) {
-        console.error('Invalid JSON in --params:', (e as Error).message);
-        console.error('Received:', args.params);
+        console.error('Invalid JSON in --db-params:', (e as Error).message);
+        console.error('Received:', args['db-params']);
         process.exit(1);
     }
     if (!device) {
@@ -124,7 +124,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             if (method === 'dblookup') {
                 const { address, networkSymbol } = params;
                 if (!address || !networkSymbol) {
-                    console.error('dblookup requires --params=\'{"address":"...","networkSymbol":"..."}\' ');
+                    console.error('dblookup requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ');
                     process.exit(1);
                 }
                 const entry = db.lookup(address, networkSymbol);
@@ -148,7 +148,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const { address, networkSymbol, metadata: rawMetadata, mac: inputMac, deviceId: inputDeviceId } = params;
                 if (!address || !networkSymbol || !rawMetadata) {
                     console.error(
-                        'dbchange requires --params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
+                        'dbchange requires --db-params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
                     );
                     process.exit(1);
                 }
@@ -213,7 +213,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             if (method === 'dbapprove') {
                 const { address, networkSymbol } = params;
                 if (!address || !networkSymbol) {
-                    console.error('dbapprove requires --params=\'{"address":"...","networkSymbol":"..."}\' ');
+                    console.error('dbapprove requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ');
                     process.exit(1);
                 }
                 if (!device) {
