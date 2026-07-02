@@ -18,6 +18,7 @@ export type SuiteSwitch =
     | 'expose-connect-ws'
     | 'expose-store'
     | 'offline-mode'
+    | 'mock-monerod' // e2e: skip real binary download, emit synthetic progress
     | 'state'; // very special handling, see `./app-utils.ts`
 
 /**

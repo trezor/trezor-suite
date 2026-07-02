@@ -19,4 +19,11 @@ export type {
     BootstrapTorEvent,
     TorStatusEvent,
     HandshakeTorModule,
+    MonerodStatus,
+    MonerodStatusEvent,
+    MonerodDownloadEvent,
+    MonerodSyncEvent,
+    MonerodSettings,
+    MoneroNetwork,
+    DiskSpace,
 } from './messages';

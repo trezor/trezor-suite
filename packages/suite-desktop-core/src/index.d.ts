@@ -116,6 +116,16 @@ declare type TorSettings = {
     externalPort: number; // Tor external port.
 };
 
+declare type MonerodSettings = {
+    running: boolean; // local monerod should be enabled
+    network: 'mainnet' | 'stagenet'; // which Monero network to run
+    host: string; // RPC bind ip (always loopback)
+    rpcPort: number; // monerod restricted RPC port
+    p2pPort: number; // monerod p2p port
+    zmqPort: number; // monerod zmq-rpc port
+    dataDir: string; // blockchain data directory
+};
+
 declare type BridgeSettings = {
     /**
      * Force suite not to start bridge on application startup

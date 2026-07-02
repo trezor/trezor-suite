@@ -140,6 +140,20 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
 
+        // Monerod (local Monero daemon)
+        getMonerodStatus: () => ipcRenderer.send('monerod/get-status'),
+        toggleMonerod: shouldEnable => {
+            if (validation.isPrimitive('boolean', shouldEnable)) {
+                return ipcRenderer.invoke('monerod/toggle', shouldEnable);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
+        getMonerodSettings: () => ipcRenderer.invoke('monerod/get-settings'),
+
+        // Generic OS
+        getDiskSpace: () => ipcRenderer.invoke('os/get-disk-space'),
+
         // Store
         clearStore: () => ipcRenderer.send('store/clear'),
 

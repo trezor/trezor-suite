@@ -2,6 +2,7 @@
     "ignore-patterns": ["libDev", "lib", "dist", "build"],
     "ignores": [
         "// Runtime deps for electron-main process. They must be in package.json, since electron-builder is hardwired for it.",
+        "monero-ts",
         "openpgp",
         "usb"
     ]
