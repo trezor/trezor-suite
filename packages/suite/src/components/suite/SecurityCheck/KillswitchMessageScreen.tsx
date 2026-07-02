@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
@@ -8,8 +10,12 @@ import {
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { reloadApp } from 'src/utils/suite/reload';
+
+const APP_RESTART_DELAY_MILLISECONDS = 100;
 
 type CtaButtonProps = {
     ctaLabel: string;
@@ -40,6 +46,15 @@ export const KillswitchMessageScreen = () => {
     const dispatch = useDispatch();
     const language = useSelector(selectLanguage);
     const killswitch = useSelector(selectActiveKillswitchMessage);
+
+    // Destroy Connect instance, to prevent any device or backend interaction on the background
+    // Connect won't init if there is an active killswitch (see appInitThunks), but message system can be updated anytime later.
+    useEffect(() => {
+        if (killswitch) {
+            TrezorConnect.dispose();
+        }
+    }, [killswitch]);
+
     if (!killswitch) return null;
 
     const {
@@ -62,6 +77,9 @@ export const KillswitchMessageScreen = () => {
     const handleDismiss = () => {
         if (!isDismissible) return;
         dispatch(messageSystemActions.dismissMessage({ id: messageId, category: 'feature' }));
+
+        // To reinitialize Connect, we need to restart whole Desktop App /  refresh Web window.
+        reloadApp(APP_RESTART_DELAY_MILLISECONDS); // Leave some time for DB persistence.
     };
 
     return (

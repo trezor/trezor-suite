@@ -25,11 +25,13 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-reanimated": "4.3.1",
+        "react-native-restart": "0.0.27",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
