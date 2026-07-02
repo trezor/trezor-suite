@@ -9,3 +9,7 @@ export declare const AuthDbLookupSchema: DescMessage;
 export declare const AuthDbLookupResponseSchema: DescMessage;
 export declare const AuthDbUpdateLeafSchema: DescMessage;
 export declare const AuthDbUpdateLeafResponseSchema: DescMessage;
+export declare const AuthDbClearRootSchema: DescMessage;
+export declare const AuthDbClearRootResponseSchema: DescMessage;
+export declare const AuthDbApproveSchema: DescMessage;
+export declare const AuthDbApproveResponseSchema: DescMessage;

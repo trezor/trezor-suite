@@ -85,7 +85,7 @@ export const verifyAndUpdateEntry = async (
         authentic: true,
         newEntryCounter: result.payload.counter,
         newRoot: result.payload.new_root ?? null,
-        mac: result.payload.mac ?? null,
+        mac: result.payload.auth_mac ?? null,
         deviceId: result.payload.identifier ?? null,
     };
 };

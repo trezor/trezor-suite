@@ -131,6 +131,8 @@ import {
     EthereumTypedDataValueRequest,
 } from './messages-ethereum-eip712';
 import {
+    AuthDbApprove,
+    AuthDbApproveResponse,
     AuthDbLookup,
     AuthDbLookupResponse,
     AuthDbSetRoot,
@@ -508,6 +510,8 @@ export const MessageType = Type.Object(
         EthereumTypedDataStructAck,
         EthereumTypedDataValueRequest,
         EthereumTypedDataValueAck,
+        AuthDbApprove,
+        AuthDbApproveResponse,
         AuthDbSetRoot,
         AuthDbSetRootResponse,
         AuthDbLookup,
@@ -731,6 +735,7 @@ export type WireInMessage =
     | 'EthereumSignTypedData'
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
+    | 'AuthDbApprove'
     | 'AuthDbSetRoot'
     | 'AuthDbLookup'
     | 'AuthDbUpdateLeaf'
@@ -840,6 +845,7 @@ export type WireOutMessage =
     | 'EthereumTypedDataSignature'
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
+    | 'AuthDbApproveResponse'
     | 'AuthDbSetRootResponse'
     | 'AuthDbLookupResponse'
     | 'AuthDbUpdateLeafResponse'
