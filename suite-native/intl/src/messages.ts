@@ -157,6 +157,11 @@ export const messages = {
                 title: "Don't have a Trezor yet?",
                 button: 'Get Trezor',
             },
+            onboardingFeedbackBanner: {
+                title: 'Help us improve',
+                subtitle: 'Share your setup experience',
+                button: 'Give feedback',
+            },
         },
         buttons: {
             receive: 'Receive',
