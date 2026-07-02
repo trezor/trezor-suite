@@ -26,7 +26,7 @@ export const ApprovedAmountValue = ({
         return <Text typographyStyle="body-md">-</Text>;
     }
 
-    if (isAllowanceUnlimited(amount, token.decimals)) {
+    if (isAllowanceUnlimited({ amount, decimals: token.decimals })) {
         return (
             <Text typographyStyle="body-md">
                 <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />

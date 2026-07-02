@@ -18,7 +18,7 @@ export const ExchangeFormQuoteDebugView = () => {
     if (quote?.preapprovedStringAmount) {
         const isUnlimited =
             typeof decimals === 'number' &&
-            isAllowanceUnlimited(quote.preapprovedStringAmount, decimals);
+            isAllowanceUnlimited({ amount: quote.preapprovedStringAmount, decimals });
 
         preapproved = isUnlimited ? 'unlimited' : quote.preapprovedStringAmount;
     }

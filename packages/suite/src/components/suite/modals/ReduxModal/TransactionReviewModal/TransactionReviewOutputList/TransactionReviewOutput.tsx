@@ -517,7 +517,8 @@ const getOutputLines = ({
         }
         case 'approve_data': {
             const isMaxApproval =
-                typeof token?.decimals === 'number' && isAllowanceUnlimited(value, token?.decimals);
+                typeof token?.decimals === 'number' &&
+                isAllowanceUnlimited({ amount: value, decimals: token.decimals, isSubunit: true });
             const isApprovalTx = evmTxType === 'approve';
             const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
             const getValue = () => {
