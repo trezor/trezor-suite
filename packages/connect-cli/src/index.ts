@@ -340,7 +340,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dbsetdeviceid failed:', result);
                     process.exit(1);
                 }
-                console.log(JSON.stringify({ method: 'dbsetdeviceid', deviceId: result.payload.identifier }, null, 2));
+                console.log(JSON.stringify({ method: 'dbsetdeviceid', deviceId: result.payload.device_id }, null, 2));
             }
         }
     } finally {

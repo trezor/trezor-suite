@@ -112,7 +112,7 @@ export const AuthDbSetDeviceId = Type.Object(
 export type AuthDbSetDeviceIdResponse = Static<typeof AuthDbSetDeviceIdResponse>;
 export const AuthDbSetDeviceIdResponse = Type.Object(
     {
-        identifier: Type.String(),
+        device_id: Type.String(),
     },
     { $id: 'AuthDbSetDeviceIdResponse' },
 );
