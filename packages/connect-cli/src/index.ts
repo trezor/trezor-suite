@@ -3,7 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { BitcoinAddressDb } from './bitcoin-address-db';
+import { BitcoinAddressDb } from './authdb';
 import { computeMerkleRoot, entryToValueBytes, generateMerkleProof, generateNonMembershipProof } from './merkle-tree';
 import { verifyAndUpdateEntry, verifyEntry, verifyNonMembership } from './verify-authenticity';
 import TrezorConnect, {
