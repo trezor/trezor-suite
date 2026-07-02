@@ -202,6 +202,12 @@ export const selectIsFeatureDisabled = (
     return featureFlag !== undefined ? !featureFlag : (defaultValue ?? false);
 };
 
+export const selectActiveKillswitchMessage = createMemoizedSelector(
+    [selectActiveFeatureMessages],
+    messages =>
+        messages.find(m => m.feature?.some(item => item.domain === 'killswitch' && item?.flag)),
+);
+
 export const selectAllManuallyAddedMessageIds = (state: MessageSystemRootState) =>
     state.messageSystem.manuallyAddedMessageIds;
 
