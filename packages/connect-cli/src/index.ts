@@ -205,9 +205,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                         db.setTreeState({ root: newRoot, counter: result.newEntryCounter });
                     }
 
-                    const updatedEntries = db.getAllEntries();
-                    const updatedProof = generateMerkleProof(updatedEntries, address, networkSymbol);
-                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState, authMac: result.authMac }, null, 2));
+                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: currentProof, treeState: newTreeState, authMac: result.authMac }, null, 2));
                     console.log('Authenticity verified:', result.authentic);
                 }
             }
