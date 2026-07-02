@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
@@ -22,7 +22,7 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
-import { Column, Modal } from '@trezor/components';
+import { Box, Column, Modal } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { arrayPartition } from '@trezor/utils';
 
@@ -32,6 +32,9 @@ import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
 import { type TrezorDevice } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
+import { NetworkSettingsSearchInput } from 'src/views/settings/SettingsCoins/NetworkSettingsSearchInput';
+import { NoNetworkSearchResults } from 'src/views/settings/SettingsCoins/NoNetworkSearchResults';
+import { useNetworkSettingsSearch } from 'src/views/settings/SettingsCoins/useNetworkSettingsSearch';
 
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
@@ -162,7 +165,56 @@ export const AddAccountModal = ({
         disabledNetworks,
         network => !network?.testnet,
     );
-    const testnetNetworks = [...enabledTestnetNetworks, ...disabledTestnetNetworks];
+    const testnetNetworks = useMemo(
+        () => [...enabledTestnetNetworks, ...disabledTestnetNetworks],
+        [enabledTestnetNetworks, disabledTestnetNetworks],
+    );
+
+    const allSearchableNetworks = useMemo(() => {
+        if (symbol) {
+            return [];
+        }
+
+        return [
+            ...enabledMainnetNetworks,
+            ...disabledMainnetNetworks,
+            ...(useTestnetNetworks ? testnetNetworks : []),
+            ...(showUnsupportedCoins ? unsupportedMainnets : []),
+        ];
+    }, [
+        disabledMainnetNetworks,
+        enabledMainnetNetworks,
+        showUnsupportedCoins,
+        symbol,
+        testnetNetworks,
+        unsupportedMainnets,
+        useTestnetNetworks,
+    ]);
+
+    const {
+        searchQuery,
+        hasActiveSearch,
+        hasNoSearchResults,
+        filterNetworks,
+        handleSearchChange,
+        handleSearchClear,
+    } = useNetworkSettingsSearch(allSearchableNetworks, { origin: 'add-account' });
+
+    const filteredEnabledMainnetNetworks = filterNetworks(enabledMainnetNetworks);
+    const filteredDisabledMainnetNetworks = filterNetworks(disabledMainnetNetworks);
+    const filteredTestnetNetworks = filterNetworks(testnetNetworks);
+    const filteredUnsupportedMainnets = filterNetworks(unsupportedMainnets);
+
+    const showEnabledMainnets = !hasActiveSearch || filteredEnabledMainnetNetworks.length > 0;
+    const showDisabledMainnets = !hasActiveSearch || filteredDisabledMainnetNetworks.length > 0;
+    const showTestnetsSection =
+        useTestnetNetworks &&
+        testnetNetworks.length > 0 &&
+        (!hasActiveSearch || filteredTestnetNetworks.length > 0);
+    const showUnsupportedSection =
+        showUnsupportedCoins &&
+        unsupportedMainnets.length > 0 &&
+        (!hasActiveSearch || filteredUnsupportedMainnets.length > 0);
 
     // Collect all empty accounts related to selected device and selected accountType
     const currentType = selectedAccount?.accountType ?? 'normal';
@@ -486,17 +538,8 @@ export const AddAccountModal = ({
               }
             : {
                   heading: <Translation id="TR_ADD_ACCOUNT" />,
-                  children: (
+                  children: symbol ? (
                       <Column gap={24}>
-                          {!symbol && (
-                              <SelectNetwork
-                                  heading={<Translation id="TR_ACTIVATED_COINS" />}
-                                  networks={enabledMainnetNetworks}
-                                  handleNetworkSelection={handleNetworkSelection}
-                                  onSettings={setAdvancedSettingsSymbol}
-                                  getAddDisabledMessage={getAddDisabledMessage}
-                              />
-                          )}
                           <SelectNetwork
                               heading={
                                   isAccountActivated ? (
@@ -505,28 +548,63 @@ export const AddAccountModal = ({
                                       <Translation id="TR_INACTIVE_COINS" />
                                   )
                               }
-                              networks={symbol ? visibleNetworks : disabledMainnetNetworks}
+                              networks={visibleNetworks}
                               handleNetworkSelection={handleNetworkSelection}
                               onSettings={setAdvancedSettingsSymbol}
                               getAddDisabledMessage={getAddDisabledMessage}
                           />
-                          {!symbol && !!testnetNetworks.length && useTestnetNetworks && (
-                              <SelectNetwork
-                                  heading={<Translation id="TR_TESTNET_COINS" />}
-                                  data-testid="@modal/account/activate_more_coins"
-                                  networks={testnetNetworks}
-                                  handleNetworkSelection={handleNetworkSelection}
-                                  onSettings={setAdvancedSettingsSymbol}
-                                  getAddDisabledMessage={getAddDisabledMessage}
-                              />
-                          )}
-                          {!symbol && showUnsupportedCoins && (
-                              <SelectNetwork
-                                  heading={<Translation id="TR_UNSUPPORTED_COINS" />}
-                                  data-testid="@modal/account/activate_more_coins"
-                                  networks={unsupportedMainnets}
-                                  onSettings={setAdvancedSettingsSymbol}
-                              />
+                      </Column>
+                  ) : (
+                      <Column gap={24}>
+                          <NetworkSettingsSearchInput
+                              searchQuery={searchQuery}
+                              onSearchChange={handleSearchChange}
+                              onSearchClear={handleSearchClear}
+                              dataTestId="@modal/account/network-search-input"
+                          />
+                          {hasNoSearchResults ? (
+                              <Box padding={{ vertical: 32 }}>
+                                  <NoNetworkSearchResults dataTestId="@modal/account/no-networks-found" />
+                              </Box>
+                          ) : (
+                              <>
+                                  {showEnabledMainnets && (
+                                      <SelectNetwork
+                                          heading={<Translation id="TR_ACTIVATED_COINS" />}
+                                          networks={filteredEnabledMainnetNetworks}
+                                          handleNetworkSelection={handleNetworkSelection}
+                                          onSettings={setAdvancedSettingsSymbol}
+                                          getAddDisabledMessage={getAddDisabledMessage}
+                                      />
+                                  )}
+                                  {showDisabledMainnets && (
+                                      <SelectNetwork
+                                          heading={<Translation id="TR_INACTIVE_COINS" />}
+                                          networks={filteredDisabledMainnetNetworks}
+                                          handleNetworkSelection={handleNetworkSelection}
+                                          onSettings={setAdvancedSettingsSymbol}
+                                          getAddDisabledMessage={getAddDisabledMessage}
+                                      />
+                                  )}
+                                  {showTestnetsSection && (
+                                      <SelectNetwork
+                                          heading={<Translation id="TR_TESTNET_COINS" />}
+                                          data-testid="@modal/account/activate_more_coins"
+                                          networks={filteredTestnetNetworks}
+                                          handleNetworkSelection={handleNetworkSelection}
+                                          onSettings={setAdvancedSettingsSymbol}
+                                          getAddDisabledMessage={getAddDisabledMessage}
+                                      />
+                                  )}
+                                  {showUnsupportedSection && (
+                                      <SelectNetwork
+                                          heading={<Translation id="TR_UNSUPPORTED_COINS" />}
+                                          data-testid="@modal/account/activate_more_coins"
+                                          networks={filteredUnsupportedMainnets}
+                                          onSettings={setAdvancedSettingsSymbol}
+                                      />
+                                  )}
+                              </>
                           )}
                       </Column>
                   ),
