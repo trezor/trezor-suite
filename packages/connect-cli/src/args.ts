@@ -45,6 +45,10 @@ export const HELP = `@trezor/connect CLI arguments:
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 
+  Database shorthand flags (without --method=)
+    --dblistroots                             List stored Merkle root(s) from local DB; prints ready-to-run dbsetroot command
+                                                Requires either --db-path (no device needed) or a connected device to derive the path
+
   Database options
     --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
     --db-params=<json>                        Params for database commands (JSON object)

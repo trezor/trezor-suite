@@ -67,6 +67,8 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
 
 const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear', 'dblistroots']);
 const DB_METHODS_REQUIRING_PARAMS = new Set(['dblookup', 'dbchange', 'dbapprove']);
+// Methods that must send a command to firmware (need a connected device even when --db-path is set)
+const DB_METHODS_NEEDING_DEVICE = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear']);
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
@@ -74,12 +76,17 @@ const getDbPath = (identifierHex: string) => {
     return path.join(profileDir, `auth_database_${identifierHex}.db`);
 };
 
-const getMethods = (): string[] =>
-    args.method && args.method !== 'none'
-        ? String(args.method)
-              .split(',')
-              .map((m: string) => m.trim())
-        : [args.method ?? 'none'];
+const getMethods = (): string[] => {
+    const methods =
+        args.method && args.method !== 'none'
+            ? String(args.method)
+                  .split(',')
+                  .map((m: string) => m.trim())
+            : [args.method ?? 'none'];
+    if (args.dblistroots && !methods.includes('dblistroots')) methods.push('dblistroots');
+
+    return methods;
+};
 
 // Run DB methods, optionally with a device for authenticity verification.
 // Returns true if all requested methods were DB methods (caller can skip TrezorConnect init).
@@ -106,22 +113,37 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             process.exit(1);
         }
     }
-    if (!device) {
-        console.error('A connected device is required to derive the database path.');
-        process.exit(1);
+    const hasExplicitPath = typeof args['db-path'] === 'string';
+    const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
+
+    let identifierHex: string;
+    let db: BitcoinAddressDb;
+
+    if (hasExplicitPath) {
+        if (needsDevice && !device) {
+            console.error('A connected device is required for this DB method.');
+            process.exit(1);
+        }
+        identifierHex = '(explicit-path)';
+        db = new BitcoinAddressDb(args['db-path'] as string);
+    } else {
+        if (!device) {
+            console.error('A connected device is required to derive the database path.');
+            process.exit(1);
+        }
+        // Derive identifier: SHA-256 of compressed public key at m/44'/0'/0'/0/0,
+        // matching the firmware's own identifier derivation.
+        const pubKeyResult = await TrezorConnect.getPublicKey({ device, path: "m/44'/0'/0'/0/0", coin: 'btc' });
+        if (!pubKeyResult.success) {
+            console.error('Failed to get public key from device:', pubKeyResult);
+            process.exit(1);
+        }
+        identifierHex = createHash('sha256')
+            .update(Buffer.from(pubKeyResult.payload.publicKey, 'hex'))
+            .digest('hex');
+        console.log('Using database identifier:', identifierHex);
+        db = new BitcoinAddressDb(getDbPath(identifierHex));
     }
-    // Derive identifier: SHA-256 of compressed public key at m/44'/0'/0'/0/0,
-    // matching the firmware's own identifier derivation.
-    const pubKeyResult = await TrezorConnect.getPublicKey({ device, path: "m/44'/0'/0'/0/0", coin: 'btc' });
-    if (!pubKeyResult.success) {
-        console.error('Failed to get public key from device:', pubKeyResult);
-        process.exit(1);
-    }
-    const identifierHex = createHash('sha256')
-        .update(Buffer.from(pubKeyResult.payload.publicKey, 'hex'))
-        .digest('hex');
-    console.log('Using database identifier:', identifierHex);
-    const db = new BitcoinAddressDb(getDbPath(identifierHex));
 
     try {
         for (const method of dbMethods) {
