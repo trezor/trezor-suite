@@ -11394,6 +11394,10 @@ export const messages = defineMessages({
         id: 'TR_STAKE_PROVIDED_BY',
         defaultMessage: 'Powered by',
     },
+    TR_EARN_STAKING_OPERATED_BY_PROVIDERS: {
+        id: 'TR_EARN_STAKING_OPERATED_BY_PROVIDERS',
+        defaultMessage: 'Staking is operated by independent providers',
+    },
     TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED: {
         id: 'TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED',
         defaultMessage: 'Your staked funds are maintained by {providerName}.',

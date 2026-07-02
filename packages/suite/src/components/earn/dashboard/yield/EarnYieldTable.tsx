@@ -15,6 +15,7 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
+import { DashboardSection } from 'src/components/dashboard';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -25,8 +26,8 @@ import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountM
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
+import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { useMerklRewards } from '../../yield/claim/hooks';
-import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 
 const emptyVaults: YieldDtoV2[] = [];
@@ -143,11 +144,11 @@ export const EarnYieldTable = () => {
             <ContextMessage context={Context.getEarnDashboard('yield')} />
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>
-                <EarnDashboardSection
-                    titleId="TR_EARN_STABLECOIN_YIELD_TITLE"
-                    subheadingId="TR_EARN_YIELD_DASHBOARD_TEXT"
-                    provider="morpho"
-                    sectionRef={anchorRef}
+                <DashboardSection
+                    heading={<Translation id="TR_EARN_STABLECOIN_YIELD_TITLE" />}
+                    subheading={<Translation id="TR_EARN_YIELD_DASHBOARD_TEXT" />}
+                    actions={<PoweredByBadge provider="morpho" />}
+                    ref={anchorRef}
                 >
                     <Column gap={16} alignItems="center">
                         {(isYieldActive || accountsRewards.length > 0) && (
@@ -220,7 +221,7 @@ export const EarnYieldTable = () => {
                             </Button>
                         )}
                     </Column>
-                </EarnDashboardSection>
+                </DashboardSection>
             </OutlineHighlight>
         </Column>
     );

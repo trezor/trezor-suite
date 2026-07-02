@@ -4,12 +4,13 @@ import { Context } from '@suite-common/message-system';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
+import { DashboardSection } from 'src/components/dashboard';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import { EarnStakingActivateRow } from './EarnStakingActivateRow';
-import { EarnDashboardSection } from '../common/EarnDashboardSection';
+import { EarnProviderInfoBadge } from '../../providers/EarnProviderInfoBadge';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { useStakingTableData } from './hooks/useStakingTableData';
 
@@ -35,11 +36,13 @@ export const EarnStakingTable = () => {
             <ContextMessage context={Context.getEarnDashboard('staking')} />
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>
-                <EarnDashboardSection
-                    titleId="TR_EARN_STAKING_DASHBOARD_TITLE"
-                    subheadingId="TR_EARN_STAKING_DASHBOARD_TEXT"
-                    provider="everstake"
-                    sectionRef={anchorRef}
+                <DashboardSection
+                    heading={<Translation id="TR_EARN_STAKING_DASHBOARD_TITLE" />}
+                    subheading={<Translation id="TR_EARN_STAKING_DASHBOARD_TEXT" />}
+                    actions={
+                        <EarnProviderInfoBadge messageId="TR_EARN_STAKING_OPERATED_BY_PROVIDERS" />
+                    }
+                    ref={anchorRef}
                 >
                     <Column gap={16} alignItems="center">
                         {isCardLayout ? (
@@ -116,7 +119,7 @@ export const EarnStakingTable = () => {
                             </Button>
                         )}
                     </Column>
-                </EarnDashboardSection>
+                </DashboardSection>
             </OutlineHighlight>
         </Column>
     );
