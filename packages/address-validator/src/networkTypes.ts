@@ -28,7 +28,8 @@ export type NetworkSymbol =
     | 'thod'
     | 'txrp'
     | 'txlm'
-    | 'dsol';
+    | 'dsol'
+    | 'xmr';
 
 /**
  * @deprecated shall be removed in the future
@@ -40,4 +41,5 @@ export type NetworkType =
     | 'cardano'
     | 'solana'
     | 'stellar'
-    | 'tron';
+    | 'tron'
+    | 'monero';
