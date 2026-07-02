@@ -38,7 +38,7 @@ describe('TradeableAssetButton', () => {
         );
 
         expect(getByText('USDC')).toBeTruthy();
-        expect(getByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
+        expect(getByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
     });
 
     it('should call onPress callback', () => {

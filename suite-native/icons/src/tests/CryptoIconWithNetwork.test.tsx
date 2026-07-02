@@ -36,7 +36,7 @@ describe('CryptoIconWithNetwork', () => {
         );
 
         expect(getByHintText(cryptoIconHint)).toBeTruthy();
-        expect(getByLabelText('op' + contract)).toBeTruthy();
+        expect(getByLabelText(`op:${contract}`)).toBeTruthy();
         expect(getByHintText(networkIconHint)).toBeTruthy();
     });
 });
