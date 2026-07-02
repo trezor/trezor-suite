@@ -89,6 +89,11 @@ jobs:
   run-e2e-tests:
     runs-on: ubuntu-24.04
     timeout-minutes: 90 # [throwaway] bumped from 45 to fit 3 coins x 10min idle steady-state measurement
+    env:
+      # [throwaway: bcl request baseline] shared by the Playwright run (taps write here) + aggregate/publish steps
+      BCL_LOG: ${{ github.workspace }}/bcl.jsonl
+      BCL_COINS: "btc,eth,sol"
+      BCL_IDLE_MS: "600000"
     steps:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
@@ -205,10 +210,6 @@ jobs:
           ELECTRON_DISABLE_SANDBOX: 1
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
-          # [throwaway: bcl request baseline] backend-request taps + discovery-test markers write here
-          BCL_LOG: ${{ github.workspace }}/bcl.jsonl
-          BCL_COINS: "btc,eth,sol"
-          BCL_IDLE_MS: "600000"
         run: |
           if [[ -z "${{ inputs.base-url }}" ]]; then
             BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
@@ -314,6 +315,49 @@ jobs:
           path: ${{ github.workspace }}/bcl.jsonl
           if-no-files-found: warn
           retention-days: 30
+
+      # [throwaway: bcl request baseline] aggregate bcl.jsonl -> summary.json and publish a
+      # same-origin viewer to sldev (https://dev.suite.sldev.cz/coverage/e2e/bcl-baseline/index.html)
+      - name: Aggregate BCL baseline
+        if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+        shell: bash
+        run: |
+          if [ ! -s "$BCL_LOG" ]; then echo "no bcl.jsonl, skipping"; exit 0; fi
+          SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          export SHA
+          export SHA_SHORT="${SHA:0:7}"
+          export BRANCH="${branch}"
+          export RUN_TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          export RUN_ID="${{ github.run_id }}"
+          node suite/e2e/scripts/bcl/aggregate.mjs "$BCL_LOG" "$GITHUB_WORKSPACE/summary.json"
+
+      - name: Configure AWS credentials (BCL baseline)
+        if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
+
+      - name: Publish BCL baseline to sldev
+        if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+        shell: bash
+        env:
+          PREFIX: coverage/e2e/bcl-baseline
+        run: |
+          if [ ! -f "$GITHUB_WORKSPACE/summary.json" ]; then echo "no summary.json, skipping"; exit 0; fi
+          SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          SHA_SHORT="${SHA:0:7}"
+          export RUN_TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          aws s3api put-object --bucket dev.suite.sldev.cz --key "$PREFIX/runs/summary-$SHA_SHORT.json" \
+            --body "$GITHUB_WORKSPACE/summary.json" --content-type application/json --cache-control "no-cache, max-age=0"
+          mkdir -p /tmp/bcl-runs
+          aws s3 sync "s3://dev.suite.sldev.cz/$PREFIX/runs/" /tmp/bcl-runs/ || true
+          node suite/e2e/scripts/bcl/manifest.mjs /tmp/bcl-runs "$GITHUB_WORKSPACE/runs.json"
+          aws s3api put-object --bucket dev.suite.sldev.cz --key "$PREFIX/runs.json" \
+            --body "$GITHUB_WORKSPACE/runs.json" --content-type application/json --cache-control "no-cache, max-age=0"
+          aws s3api put-object --bucket dev.suite.sldev.cz --key "$PREFIX/index.html" \
+            --body "$GITHUB_WORKSPACE/suite/e2e/scripts/bcl/index.html" --content-type text/html --cache-control "no-cache, max-age=0"
+          echo "BCL baseline viewer: https://dev.suite.sldev.cz/$PREFIX/index.html"
 
       - name: Upload per-test coverage map
         if: inputs.enable-coverage == 'true' && !cancelled()

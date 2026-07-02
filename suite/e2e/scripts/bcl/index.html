@@ -1,0 +1,166 @@
+<!doctype html>
+<!--
+  [throwaway: blockchain-link request baseline] Dependency-free viewer.
+  Fetches ./runs.json + ./runs/summary-<sha>.json from the SAME origin (no CORS, no build, no CDN).
+  Deployed to https://dev.suite.sldev.cz/coverage/e2e/bcl-baseline/index.html
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>blockchain-link request baseline</title>
+    <style>
+      :root { --bg:#0e1116; --card:#171b22; --fg:#e6e6e6; --muted:#8a93a0; --line:#262c36;
+              --up:#e5534b; --down:#3fb950; --accent:#4aa3ff; --ghost:#3a4150; }
+      * { box-sizing: border-box; }
+      body { margin:0; background:var(--bg); color:var(--fg);
+             font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+      header { padding:18px 22px; border-bottom:1px solid var(--line); }
+      h1 { font-size:17px; margin:0 0 4px; }
+      .sub { color:var(--muted); font-size:12px; }
+      main { padding:18px 22px; max-width:1100px; }
+      .controls { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:18px; }
+      select, button { background:var(--card); color:var(--fg); border:1px solid var(--line);
+                       border-radius:6px; padding:6px 9px; font:inherit; }
+      label { color:var(--muted); font-size:12px; margin-right:5px; }
+      table { width:100%; border-collapse:collapse; background:var(--card);
+              border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-bottom:26px; }
+      th, td { padding:8px 11px; text-align:right; border-bottom:1px solid var(--line); }
+      th:first-child, td:first-child { text-align:left; font-weight:600; }
+      thead th { color:var(--muted); font-weight:600; font-size:12px; background:#12161c; }
+      tbody tr:last-child td { border-bottom:0; }
+      .delta { font-size:11px; margin-left:6px; }
+      .up { color:var(--up); } .down { color:var(--down); } .muted { color:var(--muted); }
+      .bars .coin { margin:0 0 14px; }
+      .bars .coin > .name { font-weight:600; margin-bottom:5px; }
+      .metric { display:grid; grid-template-columns:120px 1fr 150px; gap:10px; align-items:center; margin:3px 0; }
+      .metric .mlabel { color:var(--muted); font-size:12px; }
+      .track { background:#0b0e13; border:1px solid var(--line); border-radius:5px; height:16px; position:relative; }
+      .fill { height:100%; border-radius:4px; background:var(--accent); }
+      .fill.ghost { background:var(--ghost); position:absolute; top:0; left:0; }
+      .val { font-variant-numeric:tabular-nums; font-size:12px; }
+      .err { color:var(--up); padding:20px; }
+      section h2 { font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>blockchain-link request baseline</h1>
+      <div class="sub" id="sub">loading…</div>
+    </header>
+    <main>
+      <div class="controls">
+        <span><label>mode</label>
+          <select id="mode"><option value="single">single</option><option value="diff">diff (before → after)</option></select>
+        </span>
+        <span><label>after</label><select id="after"></select></span>
+        <span id="beforeWrap" hidden><label>before</label><select id="before"></select></span>
+      </div>
+      <div id="content"><div class="err" id="err" hidden></div>
+        <section><h2>metrics</h2><table id="tbl"><thead><tr>
+          <th>coin</th><th>disc logical</th><th>disc wire</th><th>disc amp</th><th>idle wire</th><th>idle /min</th>
+        </tr></thead><tbody id="tbody"></tbody></table></section>
+        <section class="bars"><h2>discovery amplification &amp; idle rate</h2><div id="bars"></div></section>
+      </div>
+    </main>
+    <script>
+      const $ = id => document.getElementById(id);
+      const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+      const cache = {};
+      let manifest = null;
+
+      const fail = msg => { const e = $('err'); e.hidden = false; e.textContent = msg; };
+
+      async function loadSummary(file) {
+        if (cache[file]) return cache[file];
+        const s = await fetch('./' + file, { cache: 'no-store' }).then(r => r.json());
+        if (s.schema !== 1) throw new Error('unknown summary schema in ' + file);
+        cache[file] = s;
+        return s;
+      }
+
+      const optLabel = r => `${r.shaShort || r.sha.slice(0,7)}  ${(r.ts||'').replace('T',' ').replace('Z','')}  [${(r.coins||[]).join(',')}]  ${r.branch||''}`;
+
+      // number cell with optional before/after delta (more requests = red/up = worse)
+      function cell(after, before, digits = 0) {
+        if (after == null) return '<td class="muted">—</td>';
+        const av = digits ? after.toFixed(digits) : after;
+        if (before == null || before === undefined) return `<td><span class="val">${av}</span></td>`;
+        const d = after - before;
+        const dv = (d > 0 ? '+' : '') + (digits ? d.toFixed(digits) : d);
+        const cls = d > 0 ? 'up' : d < 0 ? 'down' : 'muted';
+        return `<td><span class="val">${av}</span><span class="delta ${cls}">${d === 0 ? '±0' : dv}</span></td>`;
+      }
+
+      function metricVals(s, coin) {
+        const c = s && s.coins[coin];
+        if (!c) return null;
+        return { dl: c.discovery.logical, dw: c.discovery.wire, amp: c.discovery.amp,
+                 iw: c.idle.wire, ir: c.idle.ratePerMin };
+      }
+
+      function renderTable(before, after) {
+        const coins = [...new Set([...Object.keys(after.coins), ...(before ? Object.keys(before.coins) : [])])].sort();
+        $('tbody').innerHTML = coins.map(coin => {
+          const a = metricVals(after, coin), b = before ? metricVals(before, coin) : null;
+          const A = a || {}, B = b || {};
+          return `<tr><td>${esc(coin)}</td>${
+            cell(A.dl ?? null, b ? (B.dl ?? null) : undefined)}${
+            cell(A.dw ?? null, b ? (B.dw ?? null) : undefined)}${
+            cell(A.amp ?? null, b ? (B.amp ?? null) : undefined, 2)}${
+            cell(A.iw ?? null, b ? (B.iw ?? null) : undefined)}${
+            cell(A.ir ?? null, b ? (B.ir ?? null) : undefined, 1)}</tr>`;
+        }).join('');
+      }
+
+      function bar(label, aVal, bVal, max) {
+        const pct = v => (max > 0 && v != null ? Math.max(1, (v / max) * 100) : 0);
+        const ghost = bVal != null ? `<div class="fill ghost" style="width:${pct(bVal)}%"></div>` : '';
+        return `<div class="metric"><span class="mlabel">${label}</span>
+          <div class="track">${ghost}<div class="fill" style="width:${pct(aVal)}%"></div></div>
+          <span class="val">${aVal == null ? '—' : aVal}${bVal != null ? ` <span class="muted">(was ${bVal})</span>` : ''}</span></div>`;
+      }
+
+      function renderBars(before, after) {
+        const coins = [...new Set([...Object.keys(after.coins), ...(before ? Object.keys(before.coins) : [])])].sort();
+        const maxAmp = Math.max(...coins.map(c => after.coins[c]?.discovery.amp || 0), 1);
+        const maxRate = Math.max(...coins.map(c => after.coins[c]?.idle.ratePerMin || 0), 1);
+        $('bars').innerHTML = coins.map(coin => {
+          const a = metricVals(after, coin), b = before ? metricVals(before, coin) : null;
+          return `<div class="coin"><div class="name">${esc(coin)}</div>
+            ${bar('disc amp ×', a?.amp ?? null, b ? (b.amp ?? null) : null, maxAmp)}
+            ${bar('idle req/min', a?.ir ?? null, b ? (b.ir ?? null) : null, maxRate)}</div>`;
+        }).join('');
+      }
+
+      async function render() {
+        try {
+          const mode = $('mode').value;
+          $('beforeWrap').hidden = mode !== 'diff';
+          const after = await loadSummary($('after').value);
+          const before = mode === 'diff' && $('before').value ? await loadSummary($('before').value) : null;
+          renderTable(before, after);
+          renderBars(before, after);
+        } catch (e) { fail(String(e.message || e)); }
+      }
+
+      async function boot() {
+        try {
+          manifest = await fetch('./runs.json', { cache: 'no-store' }).then(r => r.json());
+          if (manifest.schema !== 1) return fail('unknown runs.json schema');
+          const runs = manifest.runs || [];
+          $('sub').textContent = `${runs.length} runs · manifest generated ${manifest.generated || '?'}`;
+          if (!runs.length) return fail('no runs yet');
+          const opts = runs.map(r => `<option value="${esc(r.file)}">${esc(optLabel(r))}</option>`).join('');
+          $('after').innerHTML = opts;
+          $('before').innerHTML = opts;
+          $('after').selectedIndex = 0;
+          $('before').selectedIndex = Math.min(1, runs.length - 1);
+          ['mode', 'after', 'before'].forEach(id => $(id).addEventListener('change', render));
+          render();
+        } catch (e) { fail('failed to load runs.json: ' + (e.message || e)); }
+      }
+      boot();
+    </script>
+  </body>
+</html>
