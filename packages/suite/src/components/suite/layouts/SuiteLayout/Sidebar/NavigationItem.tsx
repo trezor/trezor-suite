@@ -11,6 +11,8 @@ import {
     Row,
     ShortcutBadge,
     type ShortcutBadgeProps,
+    TOOLTIP_DELAY_LONG,
+    TOOLTIP_DELAY_SHORT,
     Tooltip,
 } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
@@ -104,27 +106,31 @@ const NavItem = ({
     const isActiveRoute = routes?.some(route => route === activeRoute);
     const isItemActive = isActive || isActiveRoute;
 
+    const isTooltipActive = expanded ? shortcut !== undefined : true;
+
     return (
-        <Container
-            $isActive={isItemActive}
-            onClick={handleClick}
-            data-testid={dataTest || `@suite/menu/${goToRoute}`}
-            type="button"
-        >
-            <Tooltip
-                cursor="pointer"
-                content={
-                    shortcut ? (
-                        <Row gap={spacings.sm}>
-                            <Title nameId={nameId} values={values} />
-                            <ShortcutBadge shortcut={shortcut} />
-                        </Row>
-                    ) : (
+        <Tooltip
+            cursor="pointer"
+            flex="1"
+            content={
+                shortcut ? (
+                    <Row gap={spacings.sm}>
                         <Title nameId={nameId} values={values} />
-                    )
-                }
-                isActive={!expanded}
-                placement="right"
+                        <ShortcutBadge shortcut={shortcut} />
+                    </Row>
+                ) : (
+                    <Title nameId={nameId} values={values} />
+                )
+            }
+            isActive={isTooltipActive}
+            delayShow={expanded ? TOOLTIP_DELAY_LONG : TOOLTIP_DELAY_SHORT}
+            placement="right"
+        >
+            <Container
+                $isActive={isItemActive}
+                onClick={handleClick}
+                data-testid={dataTest || `@suite/menu/${goToRoute}`}
+                type="button"
             >
                 <Icon
                     name={icon}
@@ -133,17 +139,17 @@ const NavItem = ({
                     priority={isItemActive ? 'primary' : 'secondary'}
                     pointerEvents="none"
                 />
-            </Tooltip>
-            {expanded && (
-                <Paragraph
-                    typographyStyle="body-md"
-                    intent="neutral"
-                    priority={isItemActive ? 'primary' : 'secondary'}
-                >
-                    <Translation id={nameId} values={values} />
-                </Paragraph>
-            )}
-        </Container>
+                {expanded && (
+                    <Paragraph
+                        typographyStyle="body-md"
+                        intent="neutral"
+                        priority={isItemActive ? 'primary' : 'secondary'}
+                    >
+                        <Translation id={nameId} values={values} />
+                    </Paragraph>
+                )}
+            </Container>
+        </Tooltip>
     );
 };
 
