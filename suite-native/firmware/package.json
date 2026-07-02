@@ -35,6 +35,7 @@
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
