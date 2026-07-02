@@ -139,7 +139,7 @@ jobs:
           cache: yarn
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@0fb6faa951dcdf5dcb461e799a5bd863397cb64e # v0.21.3
         continue-on-error: true
         with:
           version: v0.19.1
