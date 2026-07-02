@@ -442,6 +442,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
+    [RootStackRoutes.MessageSystemManager]: undefined;
     [RootStackRoutes.AccountAssets]: {
         accountKey: AccountKey;
         tab?: AccountAssetsTab;

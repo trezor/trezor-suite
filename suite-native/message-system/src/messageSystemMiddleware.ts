@@ -15,6 +15,8 @@ import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discov
 
 const isAnyOfMessageSystemAffectingActions = isAnyOf(
     messageSystemActions.fetchSuccessUpdate,
+    messageSystemActions.addMessage,
+    messageSystemActions.removeMessage,
     deviceActions.selectDevice,
     deviceActions.connectDevice,
     changeNetworks,

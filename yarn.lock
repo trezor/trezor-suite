@@ -13084,6 +13084,7 @@ __metadata:
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-native/alerts": "workspace:*"
