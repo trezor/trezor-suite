@@ -65,7 +65,7 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbclear']);
+const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear']);
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
@@ -231,6 +231,37 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const { mac, identifier: deviceId } = approveResult.payload;
                 db.setApproval(address, networkSymbol, mac, deviceId);
                 console.log(JSON.stringify({ method: 'dbapprove', address, networkSymbol, mac, deviceId }, null, 2));
+            }
+
+            if (method === 'dbsetroot') {
+                if (!device) {
+                    console.error('dbsetroot requires a connected device');
+                    process.exit(1);
+                }
+                const treeState = db.getTreeState();
+                if (treeState === null || !treeState.root) {
+                    console.error('dbsetroot: no root stored in local database — run dbchange first');
+                    process.exit(1);
+                }
+                const setRootParams: Parameters<typeof TrezorConnect.authDbSetRoot>[0] = {
+                    device,
+                    root: treeState.root,
+                    ...(treeState.mac !== null && { mac: treeState.mac }),
+                    ...(treeState.deviceId !== null && { device_id: treeState.deviceId }),
+                };
+                const setRootResult = await TrezorConnect.authDbSetRoot(setRootParams);
+                if (!setRootResult.success) {
+                    console.error('dbsetroot failed:', setRootResult);
+                    process.exit(1);
+                }
+                console.log(JSON.stringify({
+                    method: 'dbsetroot',
+                    root: treeState.root,
+                    counter: setRootResult.payload.counter,
+                    identifier: setRootResult.payload.identifier,
+                    mac: treeState.mac,
+                    deviceId: treeState.deviceId,
+                }, null, 2));
             }
 
             if (method === 'dbclear') {

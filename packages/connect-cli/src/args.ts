@@ -39,6 +39,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=dblookup   Look up a Bitcoin address in the local SQLite DB
                                                 --method=dbchange   Upsert metadata for a Bitcoin address in the local SQLite DB
                                                 --method=dbapprove  Approve an address record on device; stores MAC signature in DB
+                                                --method=dbsetroot  Send stored root + MAC from DB to device (for initial sync)
                                                 --method=dbclear    Clear the Merkle root on device and wipe the local DB
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
