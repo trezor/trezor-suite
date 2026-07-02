@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Image } from 'expo-image';
 
@@ -12,6 +12,7 @@ import {
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { useKeyedAsyncValue } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CryptoIconPlaceholder } from './CryptoIconPlaceholder';
@@ -44,8 +45,6 @@ export type CryptoIconSize = keyof typeof cryptoIconSizes;
 export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIconProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const [logoIndex, setLogoIndex] = useState(0);
-    const [showPlaceholder, setShowPlaceholder] = useState(false);
 
     const sizeNumber = typeof size === 'number' ? size : cryptoIconSizes[size];
     const iconContainerStyle = useMemo(
@@ -53,44 +52,43 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
         [applyStyle, sizeNumber],
     );
 
-    const key = `${symbol}${contractAddress ?? ''}`;
+    // FlashList recycling reuses this instance for different assets, so the async and retry
+    // state is keyed by the asset and discarded on mismatch to never render a stale icon
+    const key = contractAddress ? `${symbol}:${contractAddress}` : symbol;
+    // size is part of the source identity because it is encoded in the CDN filename
+    const asyncKey = `${key}#${sizeNumber}`;
 
-    const [sourceUrls, setSourceUrls] = useState([
-        cryptoIcons[symbol.toLowerCase() as CryptoIconName],
-    ]);
+    const [loadState, setLoadState] = useState<{
+        sourceKey: string;
+        logoIndex: number;
+        failed: boolean;
+    } | null>(null);
 
-    useEffect(() => {
-        const getUrls = async () => {
-            if (isNetworkSymbol(symbol)) {
-                const coingeckoId = getCoingeckoId(symbol);
-                if (coingeckoId && contractAddress) {
-                    const logoAddresses = await getAssetLogoContractAddresses(
-                        symbol,
-                        contractAddress,
+    const resolvedUrls = useKeyedAsyncValue(asyncKey, async (): Promise<(string | number)[]> => {
+        if (isNetworkSymbol(symbol)) {
+            const coingeckoId = getCoingeckoId(symbol);
+            if (coingeckoId && contractAddress) {
+                const logoAddresses = await getAssetLogoContractAddresses(symbol, contractAddress);
+                if (logoAddresses?.length) {
+                    return logoAddresses.map(address =>
+                        getAssetLogoUrl({
+                            coingeckoId,
+                            contractAddress: address,
+                            density: 2,
+                            size: sizeNumber,
+                        }),
                     );
-                    if (logoAddresses?.length) {
-                        return logoAddresses.map(address =>
-                            getAssetLogoUrl({
-                                coingeckoId,
-                                contractAddress: address,
-                                density: 2,
-                                size: sizeNumber,
-                            }),
-                        );
-                    }
                 }
             }
+        }
 
-            return [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
-        };
+        return [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+    });
 
-        getUrls().then(setSourceUrls);
-    }, [contractAddress, sizeNumber, symbol]);
-
-    useEffect(() => {
-        setLogoIndex(0);
-        setShowPlaceholder(false);
-    }, [sourceUrls]);
+    const sourceUrls = resolvedUrls ?? [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+    const sourceKey = resolvedUrls ? `${asyncKey}#resolved` : `${asyncKey}#fallback`;
+    const logoIndex = loadState?.sourceKey === sourceKey ? loadState.logoIndex : 0;
+    const showPlaceholder = loadState?.sourceKey === sourceKey ? loadState.failed : false;
 
     /**
      * Retries loading the icon with the next available address in sourceUrls.
@@ -103,9 +101,9 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
      */
     const handleLoadError = () => {
         if (logoIndex + 1 >= sourceUrls.length) {
-            setShowPlaceholder(true);
+            setLoadState({ sourceKey, logoIndex, failed: true });
         } else {
-            setLogoIndex(prevState => prevState + 1);
+            setLoadState({ sourceKey, logoIndex: logoIndex + 1, failed: false });
         }
     };
 
@@ -123,7 +121,7 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
             source={sourceUrls[logoIndex]}
             accessibilityHint={translate('icons.cryptoIconHint')}
             accessibilityLabel={key}
-            recyclingKey={key}
+            recyclingKey={asyncKey}
             style={iconContainerStyle}
             placeholder={genericTokenIcon}
             onError={handleLoadError}

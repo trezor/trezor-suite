@@ -16,6 +16,7 @@
         { "path": "../theme" },
         { "path": "../../packages/asset-utils" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"
         },

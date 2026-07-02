@@ -39,7 +39,7 @@ describe('IconByCryptoId', () => {
             cryptoId: usdcAsset.cryptoId,
         });
 
-        expect(getByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
+        expect(getByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
         expect(queryByHintText(networkIconHint)).toBeNull();
     });
 
@@ -48,7 +48,7 @@ describe('IconByCryptoId', () => {
             cryptoId: rethOnBaseAsset.cryptoId,
         });
 
-        expect(getByLabelText('base0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c')).toBeTruthy();
+        expect(getByLabelText('base:0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c')).toBeTruthy();
         expect(queryByHintText(networkIconHint)).toBeNull();
     });
 
@@ -88,7 +88,7 @@ describe('IconByCryptoId', () => {
             });
 
             expect(getByHintText(cryptoIconHint)).toBeTruthy();
-            expect(getByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
+            expect(getByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
             expect(getByHintText(networkIconHint)).toBeTruthy();
         });
 
@@ -99,7 +99,7 @@ describe('IconByCryptoId', () => {
             });
 
             expect(getByHintText(cryptoIconHint)).toBeTruthy();
-            expect(getByLabelText('base0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c')).toBeTruthy();
+            expect(getByLabelText('base:0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c')).toBeTruthy();
             expect(getByHintText(networkIconHint)).toBeTruthy();
         });
     });

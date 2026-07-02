@@ -42,7 +42,7 @@ describe('ExchangeApprovalLimitCard', () => {
             contractAddress: '0x123456789',
         });
 
-        expect(getByLabelText('eth0x123456789')).toBeTruthy();
+        expect(getByLabelText('eth:0x123456789')).toBeTruthy();
     });
 
     it('should call onChange when card is pressed', () => {

@@ -12648,6 +12648,7 @@ __metadata:
     "@suite-native/theme": "workspace:*"
     "@trezor/asset-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"

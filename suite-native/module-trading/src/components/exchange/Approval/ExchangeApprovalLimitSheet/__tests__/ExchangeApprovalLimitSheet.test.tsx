@@ -76,7 +76,7 @@ describe('ExchangeApprovalLimitSheet', () => {
     it('should render crypto icons for both cards', () => {
         const { getAllByLabelText } = renderSheet();
 
-        const cryptoIcons = getAllByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+        const cryptoIcons = getAllByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         expect(cryptoIcons).toHaveLength(2);
     });
 
