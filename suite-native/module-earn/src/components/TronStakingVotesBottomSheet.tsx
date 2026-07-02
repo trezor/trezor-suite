@@ -15,15 +15,11 @@ export const TronStakingVotesBottomSheet = ({ ref, onClose }: TronStakingVotesBo
     const { applyStyle } = useNativeStyles();
 
     return (
-        <BottomSheetModal
-            ref={ref}
-            title={
-                <Text variant="headline-sm" textAlign="center">
-                    <Translation id="earn.tron.votesBottomSheet.title" />
-                </Text>
-            }
-            paddingHorizontal="sp24"
-        >
+        <BottomSheetModal ref={ref} paddingHorizontal="sp4">
+            <Text variant="headline-sm" textAlign="center">
+                <Translation id="earn.tron.votesBottomSheet.title" />
+            </Text>
+
             <Text
                 color="contentSecondary"
                 textAlign="center"
