@@ -178,7 +178,7 @@ export const TransactionItem = memo(
                             />
                         }
                         actions={
-                            isTxBumpable && (
+                            (isTxBumpable || isTxCancellable) && (
                                 <Row gap={12}>
                                     {isTxBumpable && (
                                         <Tooltip
