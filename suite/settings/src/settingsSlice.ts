@@ -6,7 +6,7 @@ import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import type { ConnectSettingsTransport } from '@trezor/connect-common';
+import type { ConnectSettingsTransport, DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
@@ -19,6 +19,7 @@ export interface DebugModeOptions {
     transports: Extract<ConnectSettingsTransport, string>[];
     isUnlockedBootloaderAllowed: boolean;
     showConnectLogs: boolean;
+    definitionsChannel?: DefinitionsChannel;
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
 }

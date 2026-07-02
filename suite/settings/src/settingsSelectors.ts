@@ -22,6 +22,8 @@ export const selectDebugTransports = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.transports;
 export const selectShowConnectLogs = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showConnectLogs;
+export const selectDefinitionsChannel = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.definitionsChannel;
 export const selectInvityServerEnvironment = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.invityServerEnvironment;
 export const selectEarnYieldWorkerBaseUrl = (state: SuiteSettingsRootState) =>

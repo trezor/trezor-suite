@@ -134,7 +134,7 @@ export const connectInitThunk = createThunk<void, void, void>(
             ...firmwareHashCheckTimeoutsOverride,
         };
 
-        const { transports, showConnectLogs } = selectDebugSettings(getState());
+        const { transports, showConnectLogs, definitionsChannel } = selectDebugSettings(getState());
         const thp = selectThpSettings(getState());
         // desktop thp appName/hostName enhanced in ./packages/suite-desktop-core/src/modules/trezor-connect.ts
         if (isWeb()) {
@@ -152,6 +152,7 @@ export const connectInitThunk = createThunk<void, void, void>(
                 createLogger,
                 firmwareHashCheckTimeouts,
                 firmwareChannel: getEffectiveFirmwareChannel(getState()),
+                definitionsChannel,
                 // Suite's enabled coins, declared to Connect one-way (Suite is the source of truth).
                 enabledNetworks: selectEnabledNetworks(getState()).map(coin => ({ coin })),
             });
