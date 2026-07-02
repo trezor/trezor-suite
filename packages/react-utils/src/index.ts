@@ -1,6 +1,7 @@
 export { useDebounce } from './hooks/useDebounce';
 export { useDebouncedValue } from './hooks/useDebouncedValue';
 export { useDidUpdate } from './hooks/useDidUpdate';
+export { useKeyedAsyncValue } from './hooks/useKeyedAsyncValue';
 export { useKeyPress } from './hooks/useKeyPress';
 export { useOnce } from './hooks/useOnce';
 export { useOnClickOutside } from './hooks/useOnClickOutside';
