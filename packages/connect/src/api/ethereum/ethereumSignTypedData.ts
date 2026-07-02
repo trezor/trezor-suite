@@ -112,7 +112,8 @@ export function encodeData(typeName: string, data: any) {
     if (numberMatch) {
         const intType = numberMatch[1] ?? '';
         const bits = numberMatch[2] ?? '';
-        const bytes = Math.ceil(parseInt(bits, 10) / 8);
+        // bare `uint`/`int` are aliases for `uint256`/`int256`, so default empty bits to 256
+        const bytes = Math.ceil((bits === '' ? 256 : parseInt(bits, 10)) / 8);
 
         return intToHex(data, bytes, intType === 'int');
     }
@@ -164,7 +165,8 @@ export function getFieldType(
 
         return {
             data_type: type === 'uint' ? PROTO.EthereumDataType.UINT : PROTO.EthereumDataType.INT,
-            size: Math.floor(parseInt(bits, 10) / 8),
+            // bare `uint`/`int` are aliases for `uint256`/`int256`, so default empty bits to 256
+            size: Math.floor((bits === '' ? 256 : parseInt(bits, 10)) / 8),
         };
     }
 
