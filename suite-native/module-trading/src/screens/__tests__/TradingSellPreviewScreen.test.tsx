@@ -241,4 +241,32 @@ describe('TradingSellPreviewScreen', () => {
 
         expect(getByText('last error message')).toBeOnTheScreen();
     });
+
+    it('should show the error banner and hide the continue button when the quote has final ERROR status', async () => {
+        const trade = getSellTrade({ status: 'ERROR' });
+        mockUseTradingDetailData.trade = trade;
+
+        const { getByText, queryByTestId } = await renderTradingSellPreviewScreen({
+            wallet: {
+                trading: {
+                    sell: {
+                        selectedQuote: {
+                            ...banxaCreditCardSellQuote,
+                            status: 'ERROR',
+                        },
+                    },
+                },
+            },
+        });
+
+        expect(
+            getByText(
+                getTranslation(
+                    'moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.button',
+                ),
+            ),
+        ).toBeOnTheScreen();
+        expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeNull();
+        expect(queryByTestId('@trading/sell-preview/continue-button')).toBeNull();
+    });
 });
