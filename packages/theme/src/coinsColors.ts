@@ -33,4 +33,5 @@ export const coinsColors: CoinsColors = {
     xrp: '#24292e',
     zec: '#f5b300',
     xlm: '#000000',
+    xmr: '#ff6600',
 };

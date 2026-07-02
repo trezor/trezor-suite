@@ -50,7 +50,9 @@ export type Protocol =
     | 'dsol'
     | 'tron'
     | 'trx'
-    | 'ttrx';
+    | 'ttrx'
+    | 'monero'
+    | 'xmr';
 
 export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     btc: ['bitcoin', 'btc'],
@@ -79,4 +81,5 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     dsol: ['dsol'],
     xlm: ['stellar', 'xlm'],
     txlm: ['txlm'],
+    xmr: ['monero', 'xmr'],
 };
