@@ -67,9 +67,23 @@ export const verifyAndUpdateEntry = async (
         }),
     };
 
+    /* eslint-disable no-console */
+    console.log('[authDbUpdateLeaf] params:', JSON.stringify({
+        address: addressHex,
+        old_value: oldValueHex,
+        new_value: newValueHex,
+        proof: currentProof,
+        ...(isInsert && witnessAddress !== null && {
+            witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
+            witness_value: witnessValue!.toString('hex'),
+        }),
+    }, null, 2));
+    /* eslint-enable no-console */
+
     const result = await TrezorConnect.authDbUpdateLeaf(updateParams);
 
     if (!result.success) {
+        console.error('[authDbUpdateLeaf] FAILED:', result); // eslint-disable-line no-console
         return { authentic: false, newEntryCounter, newRoot: null };
     }
 
