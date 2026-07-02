@@ -88,7 +88,7 @@ on:
 jobs:
   run-e2e-tests:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 90 # [throwaway] bumped from 45 to fit 3 coins x 10min idle steady-state measurement
     steps:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
@@ -208,7 +208,7 @@ jobs:
           # [throwaway: bcl request baseline] backend-request taps + discovery-test markers write here
           BCL_LOG: ${{ github.workspace }}/bcl.jsonl
           BCL_COINS: "btc,eth,sol"
-          BCL_IDLE_MS: "180000"
+          BCL_IDLE_MS: "600000"
         run: |
           if [[ -z "${{ inputs.base-url }}" ]]; then
             BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
