@@ -8,27 +8,15 @@ export type VerifyAndUpdateResult = {
     authentic: boolean;
     newEntryCounter: number;
     newRoot: string | null;
+    mac: string | null;
+    deviceId: string | null;
 };
 
 /**
  * Update a leaf in the device's Merkle tree via AuthDbUpdateLeaf.
  *
- * Operations:
- *   INIT   : empty tree, old_value empty, proof [], no witness
- *   INSERT : old_value empty, non-membership proof + witness
- *   UPDATE : old_value non-empty, membership proof
- *   DELETE : new_value empty, membership proof (not currently used)
- *
- * @param address          Bitcoin address (utf8 string)
- * @param networkSymbol    Network symbol (e.g. "btc")
- * @param oldEntry         Existing DB entry (null for new addresses)
- * @param newMetadata      Metadata being written
- * @param currentProof     Proof computed from current MPT (membership or non-membership)
- * @param treeState        Current tree state (null if tree is empty)
- * @param newEntryCounter  Provisional counter to embed in new value
- * @param witnessAddress   For INSERT: witness leaf address (null if empty tree)
- * @param witnessValue     For INSERT: witness leaf value bytes (null if empty tree)
- * @param device           Connected Trezor device (undefined = offline mode)
+ * @param inputMac       Pre-approval MAC from a prior dbapprove (skips device confirmation if valid)
+ * @param inputDeviceId  Identifier of the device that produced inputMac
  */
 export const verifyAndUpdateEntry = async (
     address: string,
@@ -40,6 +28,8 @@ export const verifyAndUpdateEntry = async (
     newEntryCounter: number,
     witnessAddress: string | null,
     witnessValue: Buffer | null,
+    inputMac?: string,
+    inputDeviceId?: string,
     device?: Device,
 ): Promise<VerifyAndUpdateResult> => {
     const newEntry: AddressEntry = { metadata: newMetadata, counter: newEntryCounter };
@@ -50,7 +40,7 @@ export const verifyAndUpdateEntry = async (
     const addressHex = Buffer.from(address, 'utf8').toString('hex');
 
     if (!device) {
-        return { authentic: true, newEntryCounter, newRoot: null };
+        return { authentic: true, newEntryCounter, newRoot: null, mac: null, deviceId: null };
     }
 
     const isInsert = oldEntry === null;
@@ -65,6 +55,8 @@ export const verifyAndUpdateEntry = async (
             witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
             witness_value: witnessValue!.toString('hex'),
         }),
+        ...(inputMac !== undefined && { mac: inputMac }),
+        ...(inputDeviceId !== undefined && { device_id: inputDeviceId }),
     };
 
     /* eslint-disable no-console */
@@ -77,6 +69,8 @@ export const verifyAndUpdateEntry = async (
             witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
             witness_value: witnessValue!.toString('hex'),
         }),
+        ...(inputMac !== undefined && { mac: inputMac }),
+        ...(inputDeviceId !== undefined && { device_id: inputDeviceId }),
     }, null, 2));
     /* eslint-enable no-console */
 
@@ -84,18 +78,20 @@ export const verifyAndUpdateEntry = async (
 
     if (!result.success) {
         console.error('[authDbUpdateLeaf] FAILED:', result); // eslint-disable-line no-console
-        return { authentic: false, newEntryCounter, newRoot: null };
+        return { authentic: false, newEntryCounter, newRoot: null, mac: null, deviceId: null };
     }
 
-    const deviceCounter = result.payload.counter;
-    const newRoot = result.payload.new_root ?? null;
-
-    return { authentic: true, newEntryCounter: deviceCounter, newRoot };
+    return {
+        authentic: true,
+        newEntryCounter: result.payload.counter,
+        newRoot: result.payload.new_root ?? null,
+        mac: result.payload.mac ?? null,
+        deviceId: result.payload.identifier ?? null,
+    };
 };
 
 /**
  * Verify a single address entry against the device root (used by dblookup).
- * Returns true if the device confirms the proof is valid, false on any error.
  */
 export const verifyEntry = async (
     address: string,
@@ -121,7 +117,6 @@ export const verifyEntry = async (
 
 /**
  * Verify that an address is NOT in the device's Merkle tree (used by dblookup when address absent).
- * Sends a non-membership proof + witness to the device; returns true if device confirms non-membership.
  */
 export const verifyNonMembership = async (
     address: string,

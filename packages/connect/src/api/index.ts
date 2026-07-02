@@ -25,6 +25,7 @@ export { default as changeLanguage } from './changeLanguage';
 export { default as changePin } from './changePin';
 export { default as changeWipeCode } from './changeWipeCode';
 export { default as cipherKeyValue } from './cipherKeyValue';
+export { default as authDbApprove } from './authDbApprove';
 export { default as authDbClearRoot } from './authDbClearRoot';
 export { default as authDbLookup } from './authDbLookup';
 export { default as authDbSetRoot } from './authDbSetRoot';

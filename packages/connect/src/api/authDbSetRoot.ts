@@ -12,6 +12,8 @@ export default class AuthDbSetRoot extends AbstractMethod<'authDbSetRoot', PROTO
 
         const params = {
             root: payload.root,
+            ...(payload.mac !== undefined && { mac: payload.mac }),
+            ...(payload.device_id !== undefined && { device_id: payload.device_id }),
         };
 
         super(message, params);

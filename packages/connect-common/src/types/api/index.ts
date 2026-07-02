@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import type { authDbApprove } from './authDbApprove';
 import type { authDbClearRoot } from './authDbClearRoot';
 import type { authDbLookup } from './authDbLookup';
 import type { authDbSetRoot } from './authDbSetRoot';
@@ -211,6 +212,7 @@ export const TrezorConnectDevice = Type.Object({
 
     // https://connect.trezor.io/9/methods/device/pingDevice/
     pingDevice: Type.Unsafe<typeof pingDevice>(),
+    authDbApprove: Type.Unsafe<typeof authDbApprove>(),
     authDbSetRoot: Type.Unsafe<typeof authDbSetRoot>(),
     authDbLookup: Type.Unsafe<typeof authDbLookup>(),
     authDbUpdateLeaf: Type.Unsafe<typeof authDbUpdateLeaf>(),

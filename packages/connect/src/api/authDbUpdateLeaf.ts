@@ -17,6 +17,8 @@ export default class AuthDbUpdateLeaf extends AbstractMethod<'authDbUpdateLeaf',
             proof: payload.proof ?? [],
             ...(payload.witness_address !== undefined && { witness_address: payload.witness_address }),
             ...(payload.witness_value !== undefined && { witness_value: payload.witness_value }),
+            ...(payload.mac !== undefined && { mac: payload.mac }),
+            ...(payload.device_id !== undefined && { device_id: payload.device_id }),
         };
 
         super(message, params);

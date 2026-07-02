@@ -7,6 +7,8 @@ export type AuthDbSetRoot = Static<typeof AuthDbSetRoot>;
 export const AuthDbSetRoot = Type.Object(
     {
         root: Type.String(),
+        mac: Type.Optional(Type.String()),
+        device_id: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbSetRoot' },
 );
@@ -52,6 +54,8 @@ export const AuthDbUpdateLeaf = Type.Object(
         proof: Type.Optional(Type.Array(Type.String())),
         witness_address: Type.Optional(Type.String()),
         witness_value: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
+        device_id: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbUpdateLeaf' },
 );
@@ -62,6 +66,7 @@ export const AuthDbUpdateLeafResponse = Type.Object(
         counter: Type.Number(),
         new_root: Type.Optional(Type.String()),
         identifier: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbUpdateLeafResponse' },
 );
@@ -75,4 +80,22 @@ export const AuthDbClearRootResponse = Type.Object(
         identifier: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbClearRootResponse' },
+);
+
+export type AuthDbApprove = Static<typeof AuthDbApprove>;
+export const AuthDbApprove = Type.Object(
+    {
+        address: Type.String(),
+        value: Type.String(),
+    },
+    { $id: 'AuthDbApprove' },
+);
+
+export type AuthDbApproveResponse = Static<typeof AuthDbApproveResponse>;
+export const AuthDbApproveResponse = Type.Object(
+    {
+        mac: Type.String(),
+        identifier: Type.String(),
+    },
+    { $id: 'AuthDbApproveResponse' },
 );

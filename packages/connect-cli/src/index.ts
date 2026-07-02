@@ -4,7 +4,7 @@ import os from 'os';
 import path from 'path';
 
 import { BitcoinAddressDb } from './bitcoin-address-db';
-import { computeMerkleRoot, generateMerkleProof, generateNonMembershipProof } from './merkle-tree';
+import { computeMerkleRoot, entryToValueBytes, generateMerkleProof, generateNonMembershipProof } from './merkle-tree';
 import { verifyAndUpdateEntry, verifyEntry, verifyNonMembership } from './verify-authenticity';
 import TrezorConnect, {
     type AddressMetadata,
@@ -65,7 +65,7 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbclear']);
+const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbclear']);
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
@@ -145,7 +145,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
 
             if (method === 'dbchange') {
-                const { address, networkSymbol, metadata: rawMetadata } = params;
+                const { address, networkSymbol, metadata: rawMetadata, mac: inputMac, deviceId: inputDeviceId } = params;
                 if (!address || !networkSymbol || !rawMetadata) {
                     console.error(
                         'dbchange requires --params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
@@ -176,7 +176,8 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
 
                 const result = await verifyAndUpdateEntry(
                     address, networkSymbol, oldEntry, metadata, currentProof, treeState,
-                    provisionalCounter, witnessAddress, witnessValue, device,
+                    provisionalCounter, witnessAddress, witnessValue,
+                    inputMac, inputDeviceId, device,
                 );
 
                 if (!result.authentic) {
@@ -186,21 +187,50 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
 
                     let newTreeState = treeState;
                     if (result.newRoot !== null) {
-                        newTreeState = { root: result.newRoot, counter: result.newEntryCounter };
-                        db.setTreeState(newTreeState);
+                        const mac = result.mac ?? undefined;
+                        const deviceId = result.deviceId ?? undefined;
+                        newTreeState = { root: result.newRoot, counter: result.newEntryCounter, mac: mac ?? null, deviceId: deviceId ?? null };
+                        db.setTreeState({ root: result.newRoot, counter: result.newEntryCounter }, mac, deviceId);
                     } else if (!device) {
                         // Offline: recompute root locally
                         const updatedEntries = db.getAllEntries();
                         const newRoot = computeMerkleRoot(updatedEntries);
-                        newTreeState = { root: newRoot, counter: result.newEntryCounter };
-                        db.setTreeState(newTreeState);
+                        newTreeState = { root: newRoot, counter: result.newEntryCounter, mac: null, deviceId: null };
+                        db.setTreeState({ root: newRoot, counter: result.newEntryCounter });
                     }
 
                     const updatedEntries = db.getAllEntries();
                     const updatedProof = generateMerkleProof(updatedEntries, address, networkSymbol);
-                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState }, null, 2));
+                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: updatedProof, treeState: newTreeState, mac: result.mac }, null, 2));
                     console.log('Authenticity verified:', result.authentic);
                 }
+            }
+
+            if (method === 'dbapprove') {
+                const { address, networkSymbol } = params;
+                if (!address || !networkSymbol) {
+                    console.error('dbapprove requires --params=\'{"address":"...","networkSymbol":"..."}\' ');
+                    process.exit(1);
+                }
+                if (!device) {
+                    console.error('dbapprove requires a connected device');
+                    process.exit(1);
+                }
+                const entry = db.lookup(address, networkSymbol);
+                if (entry === null) {
+                    console.error('dbapprove: address not found in database — run dbchange first');
+                    process.exit(1);
+                }
+                const addressHex = Buffer.from(address, 'utf8').toString('hex');
+                const valueHex = entryToValueBytes(networkSymbol, entry).toString('hex');
+                const approveResult = await TrezorConnect.authDbApprove({ device, address: addressHex, value: valueHex });
+                if (!approveResult.success) {
+                    console.error('dbapprove failed:', approveResult);
+                    process.exit(1);
+                }
+                const { mac, identifier: deviceId } = approveResult.payload;
+                db.setApproval(address, networkSymbol, mac, deviceId);
+                console.log(JSON.stringify({ method: 'dbapprove', address, networkSymbol, mac, deviceId }, null, 2));
             }
 
             if (method === 'dbclear') {

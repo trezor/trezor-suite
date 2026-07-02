@@ -63,6 +63,7 @@ const connectCallableMethodGroups = {
         'thpRemoveCredentials',
         'telemetryGet',
         'pingDevice',
+        'authDbApprove',
         'authDbSetRoot',
         'authDbLookup',
         'authDbUpdateLeaf',

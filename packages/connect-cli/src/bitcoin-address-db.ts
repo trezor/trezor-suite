@@ -6,8 +6,10 @@ import Database from 'better-sqlite3';
 
 import type { AddressEntry, AddressLookupProvider, AddressMetadata, AllEntriesRow, TreeState } from '@trezor/connect';
 
-type AddressRow = { address: string; network_symbol: string; data: string; counter: number };
-type TreeStateRow = { root: string; counter: number };
+export type TreeStateWithMac = TreeState & { mac: string | null; deviceId: string | null };
+
+type AddressRow = { address: string; network_symbol: string; data: string; counter: number; mac: string | null; device_id: string | null };
+type TreeStateRow = { root: string; counter: number; mac: string | null; device_id: string | null };
 
 const parseRow = (row: AddressRow): AddressEntry => ({
     metadata: JSON.parse(row.data) as AddressMetadata,
@@ -26,47 +28,36 @@ export class BitcoinAddressDb implements AddressLookupProvider {
                 network_symbol TEXT NOT NULL,
                 counter        INTEGER NOT NULL DEFAULT 0,
                 data           TEXT NOT NULL,
+                mac            TEXT,
+                device_id      TEXT,
                 PRIMARY KEY (address, network_symbol)
             );
             CREATE TABLE IF NOT EXISTS tree_state (
-                id      INTEGER PRIMARY KEY CHECK (id = 1),
-                root    TEXT NOT NULL,
-                counter INTEGER NOT NULL DEFAULT 0
+                id        INTEGER PRIMARY KEY CHECK (id = 1),
+                root      TEXT NOT NULL,
+                counter   INTEGER NOT NULL DEFAULT 0,
+                mac       TEXT,
+                device_id TEXT
             );
         `);
-        this._migrate();
-    }
-
-    private _migrate(): void {
-        const cols = (this.db.pragma('table_info(addresses)') as { name: string }[]).map(c => c.name);
-        // proof was stored in earlier versions — drop it; proof is now computed from the MPT.
-        if (!cols.includes('counter')) {
-            this.db.exec(`ALTER TABLE addresses ADD COLUMN counter INTEGER NOT NULL DEFAULT 0`);
-        }
-        if (cols.includes('proof')) {
-            // SQLite doesn't support DROP COLUMN before 3.35; recreate the table instead.
-            this.db.exec(`
-                CREATE TABLE IF NOT EXISTS addresses_new (
-                    address        TEXT NOT NULL,
-                    network_symbol TEXT NOT NULL,
-                    counter        INTEGER NOT NULL DEFAULT 0,
-                    data           TEXT NOT NULL,
-                    PRIMARY KEY (address, network_symbol)
-                );
-                INSERT INTO addresses_new (address, network_symbol, counter, data)
-                    SELECT address, network_symbol, counter, data FROM addresses;
-                DROP TABLE addresses;
-                ALTER TABLE addresses_new RENAME TO addresses;
-            `);
-        }
     }
 
     lookup(address: string, networkSymbol: string): AddressEntry | null {
         const row = this.db
-            .prepare('SELECT data, counter FROM addresses WHERE address = ? AND network_symbol = ?')
-            .get(address, networkSymbol) as Pick<AddressRow, 'data' | 'counter'> | undefined;
+            .prepare('SELECT data, counter, mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?')
+            .get(address, networkSymbol) as Pick<AddressRow, 'data' | 'counter' | 'mac' | 'device_id'> | undefined;
 
         return row ? parseRow({ address, network_symbol: networkSymbol, ...row }) : null;
+    }
+
+    lookupApproval(address: string, networkSymbol: string): { mac: string; deviceId: string } | null {
+        const row = this.db
+            .prepare('SELECT mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?')
+            .get(address, networkSymbol) as Pick<AddressRow, 'mac' | 'device_id'> | undefined;
+
+        if (!row || row.mac === null || row.device_id === null) return null;
+
+        return { mac: row.mac, deviceId: row.device_id };
     }
 
     upsert(address: string, networkSymbol: string, entry: AddressEntry): void {
@@ -81,6 +72,15 @@ export class BitcoinAddressDb implements AddressLookupProvider {
             .run(address, networkSymbol, entry.counter, JSON.stringify(entry.metadata));
     }
 
+    setApproval(address: string, networkSymbol: string, mac: string, deviceId: string): void {
+        this.db
+            .prepare(
+                `UPDATE addresses SET mac = ?, device_id = ?
+                 WHERE address = ? AND network_symbol = ?`,
+            )
+            .run(mac, deviceId, address, networkSymbol);
+    }
+
     getAllEntries(): AllEntriesRow[] {
         const rows = this.db
             .prepare('SELECT address, network_symbol, counter, data FROM addresses ORDER BY rowid')
@@ -93,21 +93,27 @@ export class BitcoinAddressDb implements AddressLookupProvider {
         }));
     }
 
-    getTreeState(): TreeState | null {
+    getTreeState(): TreeStateWithMac | null {
         const row = this.db
-            .prepare('SELECT root, counter FROM tree_state WHERE id = 1')
+            .prepare('SELECT root, counter, mac, device_id FROM tree_state WHERE id = 1')
             .get() as TreeStateRow | undefined;
 
-        return row ? { root: row.root, counter: row.counter } : null;
+        return row
+            ? { root: row.root, counter: row.counter, mac: row.mac, deviceId: row.device_id }
+            : null;
     }
 
-    setTreeState(state: TreeState): void {
+    setTreeState(state: TreeState, mac?: string, deviceId?: string): void {
         this.db
             .prepare(
-                `INSERT INTO tree_state (id, root, counter) VALUES (1, ?, ?)
-                 ON CONFLICT(id) DO UPDATE SET root = excluded.root, counter = excluded.counter`,
+                `INSERT INTO tree_state (id, root, counter, mac, device_id) VALUES (1, ?, ?, ?, ?)
+                 ON CONFLICT(id) DO UPDATE SET
+                     root      = excluded.root,
+                     counter   = excluded.counter,
+                     mac       = excluded.mac,
+                     device_id = excluded.device_id`,
             )
-            .run(state.root, state.counter);
+            .run(state.root, state.counter, mac ?? null, deviceId ?? null);
     }
 
     clearAll(): void {
