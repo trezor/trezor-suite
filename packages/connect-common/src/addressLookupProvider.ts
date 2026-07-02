@@ -7,7 +7,8 @@ import type { BlockchainEvent } from './events/blockchain';
  */
 export type AddressMetadata = {
     label?: string;
-    data?: unknown; // arbitrary JSON payload — extensible without schema changes
+    data?: unknown;    // arbitrary JSON payload — not stored in device offline cache
+    data_mac?: string; // MAC authorizing the data field — stored in device offline cache
 };
 
 /**
