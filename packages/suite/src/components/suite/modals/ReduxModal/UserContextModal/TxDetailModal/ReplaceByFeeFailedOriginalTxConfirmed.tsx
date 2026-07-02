@@ -42,6 +42,7 @@ const helpLink: Record<
     solana: null,
     stellar: null,
     tron: null,
+    monero: null,
 };
 
 export const ReplaceByFeeFailedOriginalTxConfirmed = ({

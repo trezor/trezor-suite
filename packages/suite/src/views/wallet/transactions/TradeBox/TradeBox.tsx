@@ -4,7 +4,11 @@ import { Translation } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import {
+    getNetwork,
+    getNetworkDisplaySymbol,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
@@ -32,6 +36,11 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
     const isStakeNetwork = hasNetworkFeatures(account, 'staking');
+
+    // Privacy coins (e.g. Monero) have no buy/sell/swap offering — hide the whole box.
+    if (getNetwork(account.symbol).isTradingDisabled) {
+        return null;
+    }
 
     const ActionButton = ({
         type,

@@ -4,6 +4,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { isDesktop } from '@trezor/env-utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -17,11 +18,20 @@ export const useNetworkSupport = () => {
     const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
+    // Desktop-only networks (e.g. Monero, which needs a locally managed full node) must not be
+    // offered on the web/native builds.
+    const isAvailableOnThisBuild = (network: Network) =>
+        !network.isDesktopOnlyNetwork || isDesktop();
+
     const mainnets = getMainnets({
         debug: isDebug,
         useExperimentalNetworks,
-    });
-    const testnets = getTestnets({ debug: isDebug, useExperimentalNetworks, useTestnetNetworks });
+    }).filter(isAvailableOnThisBuild);
+    const testnets = getTestnets({
+        debug: isDebug,
+        useExperimentalNetworks,
+        useTestnetNetworks,
+    }).filter(isAvailableOnThisBuild);
 
     const isNetworkSupported = (network: Network) =>
         deviceSupportedNetworkSymbols.includes(network.symbol);

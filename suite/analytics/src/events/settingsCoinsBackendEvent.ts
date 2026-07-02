@@ -14,6 +14,7 @@ type Attributes = {
         | 'solana'
         | 'stellar'
         | 'evm-rpc'
+        | 'monero'
     >;
     totalRegular: AttributeDef<number>;
     totalOnion: AttributeDef<number>;
@@ -38,7 +39,10 @@ export const settingsCoinsBackendEvent: EventDef<Attributes, EventType.SettingsC
                 'The blockchain network symbol for which the backend is being configured (e.g., `btc`, `eth`, `ltc`)',
         },
         type: {
-            changelog: [{ version: '1.17.0', notes: 'added' }],
+            changelog: [
+                { version: '1.17.0', notes: 'added' },
+                { version: '1.24.0', notes: 'Added `monero` (local Monero node backend)' },
+            ],
             description: `
             - **default**: user is using servers provided by Trezor (**default**)
 - **electrum:** user changed backend to **electrum**, available only for Bitcoin

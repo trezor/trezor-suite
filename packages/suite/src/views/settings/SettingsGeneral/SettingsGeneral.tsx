@@ -40,6 +40,7 @@ import { Language } from './Language';
 import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
 import { MevProtection } from './MevProtection';
+import { Monerod } from './Monerod';
 import { NetworkReserve } from './NetworkReserve';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
@@ -72,6 +73,9 @@ export const SettingsGeneral = () => {
         selectHasExperimentalFeature('tor-external'),
     );
     const mcpServerEnabled = useSelector(selectHasExperimentalFeature('mcp-server'));
+    const experimentalNetworksEnabled = useSelector(
+        selectHasExperimentalFeature('experimental-networks'),
+    );
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
@@ -102,6 +106,7 @@ export const SettingsGeneral = () => {
                             {torExternalExperimentalFeature && <TorExternal />}
                         </>
                     )}
+                    {isDesktop() && experimentalNetworksEnabled && <Monerod />}
                 </SettingsSection>
             </div>
 

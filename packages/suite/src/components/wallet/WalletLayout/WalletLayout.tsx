@@ -13,6 +13,7 @@ import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';
 import { AccountNavigation } from './AccountNavigation';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
+import { MoneroAccountSync } from './MoneroAccountSync/MoneroAccountSync';
 
 type WalletPageHeaderProps = {
     balanceSectionRef: React.RefObject<HTMLDivElement | null>;
@@ -34,32 +35,44 @@ type WalletBodyProps = {
 const WalletBody = ({ account, children }: WalletBodyProps) => {
     const { status, account: selectedAccount, loader, network } = account;
 
-    switch (status) {
-        case 'loading': {
-            if (selectedAccount?.accountType === 'coinjoin') {
-                return <CoinjoinAccountDiscovery />;
+    const body = (() => {
+        switch (status) {
+            case 'loading': {
+                if (selectedAccount?.accountType === 'coinjoin') {
+                    return <CoinjoinAccountDiscovery />;
+                }
+
+                return (
+                    <Skeleton
+                        width="100%"
+                        height={300}
+                        borderRadius={12}
+                        animate={loader === 'account-loading'}
+                    />
+                );
             }
 
-            return (
-                <Skeleton
-                    width="100%"
-                    height={300}
-                    borderRadius={12}
-                    animate={loader === 'account-loading'}
-                />
-            );
+            case 'exception':
+                return children ?? <AccountException loader={loader} network={network} />;
+
+            case 'loaded':
+            case 'none':
+                return children;
+
+            default:
+                return exhaustive(status);
         }
+    })();
 
-        case 'exception':
-            return children ?? <AccountException loader={loader} network={network} />;
-
-        case 'loaded':
-        case 'none':
-            return children;
-
-        default:
-            return exhaustive(status);
+    // Monero accounts require a local node. Until it is synced, show the pre-flight/sync view (disk
+    // requirements + start button, then sync progress, coinjoin-discovery-style) instead of the
+    // (empty) account body. The node's sync state lives outside redux (desktop IPC), so the wrapper
+    // decides based on it and renders the real body once the node is fully synced.
+    if (selectedAccount?.networkType === 'monero') {
+        return <MoneroAccountSync account={selectedAccount}>{body}</MoneroAccountSync>;
     }
+
+    return body;
 };
 
 type WalletLayoutProps = {
