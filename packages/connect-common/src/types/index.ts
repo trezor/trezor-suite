@@ -1,6 +1,7 @@
 export * from './api';
 export type * from './account';
 export * from './coinInfo';
+export * from './definitions';
 export * from './device';
 export * from './fees';
 export type * from './firmware';

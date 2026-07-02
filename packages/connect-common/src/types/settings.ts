@@ -8,6 +8,7 @@ import type { PartialRecord } from '@trezor/type-utils';
 import type { Logger } from '@trezor/utils';
 
 import type { CoinSymbol } from './coinInfo';
+import type { DefinitionsChannel } from './definitions';
 import type { FirmwareChannel } from './firmware';
 
 export const Manifest = Type.Object({
@@ -79,6 +80,7 @@ export interface ConnectSettings {
     enableFirmwareHashCheck?: boolean;
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
     firmwareChannel?: FirmwareChannel;
+    definitionsChannel?: DefinitionsChannel;
     localFirmwares?: LocalFirmwares;
     thp?: ThpSettings;
     enabledNetworks?: EnabledNetwork[];

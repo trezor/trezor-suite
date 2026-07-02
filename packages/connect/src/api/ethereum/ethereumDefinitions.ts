@@ -1,6 +1,9 @@
 import fetch from 'cross-fetch';
 
-import type { EthereumNetworkInfoDefinitionValues } from '@trezor/connect-common';
+import type {
+    DefinitionsChannel,
+    EthereumNetworkInfoDefinitionValues,
+} from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
@@ -8,6 +11,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
+import * as settingsStore from '../../data/settingsStore';
 
 interface GetEthereumDefinitions {
     chainId?: number;
@@ -15,6 +19,19 @@ interface GetEthereumDefinitions {
     contractAddress?: string;
     functionSignature?: string;
 }
+
+const getDefinitionsBaseUrl = (channel: DefinitionsChannel = 'production') => {
+    switch (channel) {
+        case 'production':
+            return 'https://data.trezor.io/firmware/eth-definitions';
+        case 'development':
+            return 'https://data.trezor.io/dev/firmware/dev-definitions/eth';
+        case 'local':
+            return 'http://localhost:3000';
+        default:
+            throw new Error(`Unknown channel: ${channel}`);
+    }
+};
 
 /**
  * For given chainId and optionally contractAddress download ethereum definitions for transaction signing.
@@ -33,10 +50,13 @@ export const getEthereumDefinitions = async ({
         throw new Error('argument chainId or slip44 is required');
     }
 
+    // The channel is a global connect setting; fall back to `production` when settings are not
+    // loaded (e.g. when this helper is exercised outside of a running connect core).
+    const channel = settingsStore.isLoaded() ? settingsStore.get('definitionsChannel') : undefined;
+    const baseUrl = getDefinitionsBaseUrl(channel);
+
     try {
-        const networkDefinitionUrl = `https://data.trezor.io/firmware/eth-definitions/${
-            chainId ? 'chain-id' : 'slip44'
-        }/${chainId ?? slip44}/network.dat`;
+        const networkDefinitionUrl = `${baseUrl}/${chainId ? 'chain-id' : 'slip44'}/${chainId ?? slip44}/network.dat`;
         const networkDefinition = await fetch(networkDefinitionUrl);
         if (networkDefinition.status === 200) {
             definitions.encoded_network = await networkDefinition.arrayBuffer();
@@ -51,9 +71,7 @@ export const getEthereumDefinitions = async ({
         if (contractAddress) {
             // Contract address has to be in lowercase in order to be found in eth-definitions.
             const lowerCaseContractAddress = contractAddress.toLowerCase();
-            const tokenDefinitionUrl = `https://data.trezor.io/firmware/eth-definitions/${
-                chainId ? 'chain-id' : 'slip44'
-            }/${chainId ?? slip44}/token-${lowerCaseContractAddress}.dat`;
+            const tokenDefinitionUrl = `${baseUrl}/${chainId ? 'chain-id' : 'slip44'}/${chainId ?? slip44}/token-${lowerCaseContractAddress}.dat`;
             const tokenDefinition = await fetch(tokenDefinitionUrl);
             if (tokenDefinition.status === 200) {
                 definitions.encoded_token = await tokenDefinition.arrayBuffer();
@@ -72,11 +90,9 @@ export const getEthereumDefinitions = async ({
         if (chainId && contractAddress && functionSignature) {
             const lowerCaseContractAddress = contractAddress.toLowerCase();
             const lowerCaseFunctionSignature = functionSignature.toLowerCase();
-            // TODO: DEV URL, wait for prod URL to be available and update it here before release
-            const displayFormatUrl = `https://data.trezor.io/dev/firmware/dev-definitions/eth/chain-id/${chainId}/display-format/${lowerCaseContractAddress}-${lowerCaseFunctionSignature}.dat`;
+            const displayFormatUrl = `${baseUrl}/chain-id/${chainId}/display-format/${lowerCaseContractAddress}-${lowerCaseFunctionSignature}.dat`;
             const displayFormatDefinition = await fetch(displayFormatUrl);
             if (displayFormatDefinition.status === 200) {
-                // encoded_display_format is a protobuf bytes field represented as a hex string.
                 const encodedDisplayFormat = await displayFormatDefinition.arrayBuffer();
                 definitions.encoded_display_format =
                     Buffer.from(encodedDisplayFormat).toString('hex');
