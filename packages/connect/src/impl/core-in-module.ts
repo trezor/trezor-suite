@@ -27,8 +27,9 @@ import {
     createCoreCallCancelMessage,
 } from '@trezor/connect-common/src/utils/cancelParams';
 import { noopLogger } from '@trezor/connect-common/src/utils/debug';
+import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/deferred';
 import { TRANSPORT } from '@trezor/transport-common';
-import { type Logger, cloneObject, createDeferredManager } from '@trezor/utils';
+import { type Logger, cloneObject } from '@trezor/utils';
 
 import { initCoreState } from '../core';
 
@@ -49,10 +50,8 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
         // No-op until init() resolves the host logger settings.
         this.log = noopLogger;
         this.coreManager = initCoreState();
-        this.messagePromises = createDeferredManager<
-            Omit<MethodResponseMessage, 'event' | 'type'>,
-            string
-        >({ generateId: (): string => crypto.randomUUID() });
+        this.messagePromises =
+            createUUIDDeferredManager<Omit<MethodResponseMessage, 'event' | 'type'>>();
     }
 
     // handle messages to core

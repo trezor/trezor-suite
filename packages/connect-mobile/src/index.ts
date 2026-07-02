@@ -20,8 +20,9 @@ import {
     type CancelParams,
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
+import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/deferred';
 import { createUpdateConnectSettingsUnsupportedMessage } from '@trezor/connect-common/src/utils/updateConnectSettings';
-import { createDeferredManager, removeTrailingSlashes } from '@trezor/utils';
+import { removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
     method: string;
@@ -49,7 +50,7 @@ const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: Bui
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectMobileSettings> {
     public eventEmitter = new ConnectEmitter();
-    private messages = createDeferredManager({ generateId: (): string => crypto.randomUUID() });
+    private messages = createUUIDDeferredManager();
 
     private manifest?: Manifest;
 
