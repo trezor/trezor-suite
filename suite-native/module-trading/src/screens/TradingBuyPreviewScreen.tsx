@@ -7,13 +7,13 @@ import {
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { KYCWarning } from '@suite-native/trading-atoms';
 import { Footer } from '@suite-native/trading-provider-utils';
 
 import { BuyGeneralErrorScreen } from '../components/buy/BuyPreview/BuyGeneralErrorScreen';
 import { BuyPreviewContinueButton } from '../components/buy/BuyPreview/BuyPreviewContinueButton';
 import { BuyPreviewInfoCard } from '../components/buy/BuyPreview/BuyPreviewInfoCard';
 import { BuyPreviewReceiveCard } from '../components/buy/BuyPreview/BuyPreviewReceiveCard';
-import { BuySellKYCWarning } from '../components/general/BuySellKYCWarning';
 import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
 
 export const TradingBuyPreviewScreen = () => {
@@ -46,7 +46,7 @@ export const TradingBuyPreviewScreen = () => {
                 <LastErrorMessage tradingType="buy" />
                 <BuyPreviewReceiveCard quote={quote} />
                 <BuyPreviewInfoCard quote={quote} />
-                <BuySellKYCWarning type="buy" />
+                <KYCWarning />
                 <Footer />
             </VStack>
         </Screen>
