@@ -19,7 +19,7 @@ export const TronCurrencySwitchButton = ({
 }: TronCurrencySwitchButtonProps) => {
     if (!rate?.rate) return null;
 
-    const currencySymbol = currency === 'crypto' ? cryptoCurrencySymbol : fiatCurrencySymbol;
+    const currencySymbol = currency === 'crypto' ? fiatCurrencySymbol : cryptoCurrencySymbol;
 
     const onToggle = () => {
         const newCurrency = currency === 'crypto' ? 'fiat' : 'crypto';
