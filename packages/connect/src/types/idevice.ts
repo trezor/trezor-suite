@@ -173,6 +173,7 @@ export interface IDevice {
 
     // ─── Event methods ──────────────────────────────────────────────────────────
     emit: TypedEmitter<DeviceEvents>['emit'];
+    emitDeviceChanged(): void;
     prompt<T extends 'pin' | 'passphrase' | 'word' | 'thp_pairing'>(
         type: T,
         args: Omit<DeviceEvents[T], 'callback'>,

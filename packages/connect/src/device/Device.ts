@@ -35,7 +35,14 @@ import {
     type TransportDeviceEvent,
 } from '@trezor/transport-common';
 import type { Deferred, Logger } from '@trezor/utils';
-import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import {
+    TypedEmitter,
+    cloneObject,
+    createDeferred,
+    deepEqual,
+    isArrayMember,
+    versionUtils,
+} from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import { DeviceCommands } from './DeviceCommands';
@@ -175,6 +182,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     readonly lifecycle = new TypedEmitter<DeviceLifecycleEvents>();
 
+    // Last DEVICE.CHANGED payload emitted to clients; used to suppress redundant emits.
+    private lastEmittedMessage?: DeviceTyped;
+
     private sessionDfd?: Deferred<Session | null>;
 
     constructor({ id, transport, descriptor, createLogger }: DeviceParams) {
@@ -293,6 +303,8 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         this._protocol = protocolV1;
         this.thp?.resetState();
         this.thp = undefined;
+        // drop the dedup baseline so the next change is always emitted after a reset
+        this.lastEmittedMessage = undefined;
     }
 
     setBusy(value?: DeviceBusyStatus) {
@@ -398,6 +410,22 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             this.keepTransportSession = false;
         }
 
+        this.emitDeviceChanged();
+    }
+
+    // Emit DEVICE.CHANGED only when the client-visible device representation actually changed.
+    // The transport reports a session change on every acquire/release, which would otherwise
+    // surface as a redundant DEVICE.CHANGED (causing needless re-renders in clients such as
+    // Suite) even though no client-visible state changed.
+    // See https://github.com/trezor/trezor-suite/issues/6446.
+    emitDeviceChanged() {
+        const message = this.toMessageObject();
+        if (this.lastEmittedMessage && deepEqual(this.lastEmittedMessage, message)) {
+            return;
+        }
+        // Store an immutable snapshot: toMessageObject() embeds live references (e.g. features),
+        // which can be mutated in place (e.g. setBusy), and would otherwise corrupt the baseline.
+        this.lastEmittedMessage = cloneObject(message);
         this.lifecycle.emit(DEVICE.CHANGED);
     }
 
@@ -888,7 +916,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 ...this._features,
                 [key]: value,
             };
-            this.lifecycle.emit(DEVICE.CHANGED);
+            this.emitDeviceChanged();
         }
     }
 

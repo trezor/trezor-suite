@@ -394,7 +394,7 @@ const onCallDevice = async (
             method.deviceState.sessionId !== device.getState()?.sessionId
         ) {
             // if session was changed from the one that was sent, send a device changed event
-            sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
+            device.emitDeviceChanged();
         }
 
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323

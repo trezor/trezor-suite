@@ -1,4 +1,4 @@
-import { DEVICE, UI_REQUEST, createDeviceMessage, createUiMessage } from '@trezor/connect-common';
+import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
 import type { StaticSessionId } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
@@ -166,7 +166,7 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
 };
 
 export const validateState = async (context: WorkflowContext) => {
-    const { device, sendCoreMessage } = context;
+    const { device } = context;
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
@@ -191,6 +191,6 @@ export const validateState = async (context: WorkflowContext) => {
     // emit additional CHANGE event if device becomes unlocked after authorization
     // features were automatically updated after PinMatrixAck in DeviceCommands
     if (!isDeviceUnlocked && device.features.unlocked) {
-        sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
+        device.emitDeviceChanged();
     }
 };
