@@ -4,7 +4,11 @@ import { initialRedirection, routerInit } from '@suite/router';
 import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
-import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
+import {
+    initMessageSystemThunk,
+    prepareCachedEnvData,
+    selectActiveKillswitchMessage,
+} from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
     initBlockchainThunk,
@@ -70,8 +74,11 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 5. redirecting user into welcome screen (if needed)
     dispatch(initialRedirection({ isInitialRun: selectFlags(getState()).initialRun }));
 
-    // 6. init connect (could throw an error,
-    // then the error is caught in <ErrorBoundary /> in Main.tsx
+    // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
+    const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
+    if (activeKillswitchMessage) return;
+
+    // 6. init connect (could throw an error, then the error is caught in <ErrorBoundary /> in Main.tsx.
     try {
         // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions

@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import RNRestart from 'react-native-restart';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -8,7 +10,10 @@ import {
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const APP_RESTART_DELAY_MILLISECONDS = 100;
 
 const screenStyle = prepareNativeStyle(utils => ({
     flexGrow: 1,
@@ -42,6 +47,14 @@ export const KillswitchMessageScreen = () => {
 
     const killswitch = useSelector(selectActiveKillswitchMessage);
 
+    // Destroy Connect instance, to prevent any device or backend interaction on the background.
+    // Connect won't init if there is an active killswitch (see initActions.init), but message system can be updated anytime later.
+    useEffect(() => {
+        if (killswitch) {
+            TrezorConnect.dispose();
+        }
+    }, [killswitch]);
+
     if (!killswitch) return null;
 
     const {
@@ -72,6 +85,12 @@ export const KillswitchMessageScreen = () => {
     const handleDismiss = () => {
         if (!isDismissible) return;
         dispatch(messageSystemActions.dismissMessage({ id: messageId, category: 'feature' }));
+
+        // To reinitialize Connect, we need to restart the native app.
+        // Leave some time for DB persistence.
+        setTimeout(() => {
+            RNRestart.restart();
+        }, APP_RESTART_DELAY_MILLISECONDS);
     };
 
     return (

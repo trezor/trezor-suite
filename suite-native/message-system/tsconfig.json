@@ -23,6 +23,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/styles-native"
         },
