@@ -4,6 +4,7 @@ import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { useDevice } from '@suite/device';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
+import { selectActiveKillswitchMessage } from '@suite-common/message-system';
 import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
@@ -27,6 +28,7 @@ import { InitialLoading } from './InitialLoading';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
+import { KillswitchMessageScreen } from '../SecurityCheck/KillswitchMessageScreen';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
@@ -52,6 +54,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
         selectShouldDisplayDeviceCompromisedOnRoute,
     );
+    const killswitch = useSelector(selectActiveKillswitchMessage);
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
@@ -99,6 +102,10 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     }
     if (lifecycle.status === 'db-corrupted') {
         return <DatabaseCorruptedModal />;
+    }
+
+    if (killswitch) {
+        return <KillswitchMessageScreen />;
     }
 
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
