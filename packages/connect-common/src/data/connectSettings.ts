@@ -2,6 +2,8 @@
 
 import { parseThpSettings } from './thpSettings';
 import { VERSION } from './version';
+import { DEFINITIONS_CHANNELS } from '../types/definitions';
+import type { DefinitionsChannel } from '../types/definitions';
 import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/settings';
 
 /*
@@ -88,6 +90,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.firmwareChannel === 'string') {
         settings.firmwareChannel = input.firmwareChannel;
+    }
+
+    if (DEFINITIONS_CHANNELS.includes(input.definitionsChannel as DefinitionsChannel)) {
+        settings.definitionsChannel = input.definitionsChannel;
     }
 
     if (Array.isArray(input.transports)) {
