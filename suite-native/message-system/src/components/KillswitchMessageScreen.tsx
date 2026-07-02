@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
-
-import { messageSystemActions, selectActiveKillswitchMessage } from '@suite-common/message-system';
+import {
+    messageSystemActions,
+    resolveMessageContent,
+    selectActiveKillswitchMessage,
+} from '@suite-common/message-system';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -34,6 +36,7 @@ const buttonsWrapperStyle = prepareNativeStyle(_ => ({
 
 export const KillswitchMessageScreen = () => {
     const dispatch = useDispatch();
+    const language = useSelector(selectSupportedLanguageLocale);
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
 
@@ -48,15 +51,11 @@ export const KillswitchMessageScreen = () => {
         content,
         cta,
         dismissible: isDismissible,
-        category,
     } = killswitch;
 
-    // TODO: We use only English locale in suite-native so far. When the localization to other
-    // languages is implemented, the language selection logic has to be added here.
-    const language = 'en';
-    const messageTitle = headline?.[language];
-    const messageContent = content[language];
-    const ctaLabel = cta?.label[language];
+    const messageTitle = headline ? resolveMessageContent(headline, language) : null;
+    const messageContent = resolveMessageContent(content, language);
+    const ctaLabel = cta ? resolveMessageContent(cta.label, language) : null;
     const ctaLink = cta?.link;
     const isExternalCta = cta?.action === 'external-link';
 
@@ -72,16 +71,7 @@ export const KillswitchMessageScreen = () => {
 
     const handleDismiss = () => {
         if (!isDismissible) return;
-
-        const categories = G.isArray(category) ? category : [category];
-        categories.forEach(item => {
-            dispatch(
-                messageSystemActions.dismissMessage({
-                    id: messageId,
-                    category: item,
-                }),
-            );
-        });
+        dispatch(messageSystemActions.dismissMessage({ id: messageId, category: 'feature' }));
     };
 
     return (
