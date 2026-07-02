@@ -1,5 +1,5 @@
 import { getTorUrlIfAvailable } from '@suite/external-links';
-import { goto } from '@suite/router';
+import { type Route, goto } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
 import { resolveMessageContent } from '@suite-common/message-system';
@@ -26,7 +26,6 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
     const onClick = () => {
         switch (action) {
             case 'internal-link':
-                // @ts-expect-error: impossible to add all href options to the message system config json schema
                 dispatch(goto({ routeName: link as Route['name'], anchor, preserveParams: true }));
                 break;
             case 'external-link':
