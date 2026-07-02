@@ -65,7 +65,8 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear']);
+const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear', 'dblistroots']);
+const DB_METHODS_REQUIRING_PARAMS = new Set(['dblookup', 'dbchange', 'dbapprove']);
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
@@ -87,20 +88,23 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     const dbMethods = methods.filter(m => DB_METHODS.has(m));
     if (dbMethods.length === 0) return false;
 
-    if (!args['db-params']) {
-        console.error(
-            'DB methods require --db-params (note the double dash). Example:\n' +
-            '  --db-params=\'{"address":"...","networkSymbol":"btc"}\'',
-        );
-        process.exit(1);
-    }
-    let params: any;
-    try {
-        params = JSON.parse(args['db-params']);
-    } catch (e) {
-        console.error('Invalid JSON in --db-params:', (e as Error).message);
-        console.error('Received:', args['db-params']);
-        process.exit(1);
+    const needsParams = dbMethods.some(m => DB_METHODS_REQUIRING_PARAMS.has(m));
+    let params: any = {};
+    if (needsParams) {
+        if (!args['db-params']) {
+            console.error(
+                'This DB method requires --db-params (note the double dash). Example:\n' +
+                '  --db-params=\'{"address":"...","networkSymbol":"btc"}\'',
+            );
+            process.exit(1);
+        }
+        try {
+            params = JSON.parse(args['db-params']);
+        } catch (e) {
+            console.error('Invalid JSON in --db-params:', (e as Error).message);
+            console.error('Received:', args['db-params']);
+            process.exit(1);
+        }
     }
     if (!device) {
         console.error('A connected device is required to derive the database path.');
@@ -266,6 +270,23 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     mac: treeState.mac,
                     deviceId: treeState.deviceId,
                 }, null, 2));
+            }
+
+            if (method === 'dblistroots') {
+                const treeState = db.getTreeState();
+                if (treeState === null || !treeState.root) {
+                    console.log(JSON.stringify({ method: 'dblistroots', treeState: null }, null, 2));
+                    console.log('No root stored — run dbchange first.');
+                } else {
+                    const dbPath = getDbPath(identifierHex);
+                    const setrootCmd = [
+                        `yarn workspace @trezor/connect-cli usb --method=dbsetroot`,
+                        `--db-path=${dbPath}`,
+                    ].join(' \\\n  ');
+                    console.log(JSON.stringify({ method: 'dblistroots', treeState }, null, 2));
+                    console.log('To sync this root to another device:');
+                    console.log(`  ${setrootCmd}`);
+                }
             }
 
             if (method === 'dbclear') {
