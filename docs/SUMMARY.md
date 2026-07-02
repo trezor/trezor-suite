@@ -52,6 +52,7 @@
     - [fiat rates](./features/fiat-rates.md)
     - [guide](./features/guide.md)
     - [coinjoin](./features/coinjoin.md)
+    - [monero](./features/monero.md)
     - [localization](./features/localization.md)
     - [messaging system](./features/message-system.md)
     - [feature flags](./features/feature-flags.md)

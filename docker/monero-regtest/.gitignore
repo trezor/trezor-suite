@@ -1,0 +1,4 @@
+# Downloaded monerod / monero-wallet-rpc binaries (fetched by setup-local.sh) and the
+# private regtest chain + wallet data. Neither belongs in git.
+bin/
+data/
