@@ -1381,6 +1381,70 @@
             }
         },
         {
+            "conditions": [{ "environment": { "desktop": "*", "mobile": "*", "web": "*" } }],
+            "message": {
+                "id": "ff47049a-7a0b-496d-b25c-ea32ce1120d9",
+                "priority": 1,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "feature",
+                "headline": {
+                    "en-GB": "Tady vidím velký špatný!",
+                    "en": "Tady vidím velký špatný!",
+                    "es": "Tady vidím velký špatný!",
+                    "cs": "Tady vidím velký špatný!",
+                    "de": "Tady vidím velký špatný!",
+                    "fr": "Tady vidím velký špatný!",
+                    "it": "Tady vidím velký špatný!",
+                    "pt": "Tady vidím velký špatný!",
+                    "tr": "Tady vidím velký špatný!",
+                    "ru": "Tady vidím velký špatný!",
+                    "ja": "Tady vidím velký špatný!",
+                    "uk": "Tady vidím velký špatný!",
+                    "hu": "Tady vidím velký špatný!"
+                },
+                "content": {
+                    "en-GB": "Pls reinstall Suite 🙏",
+                    "en": "Pls reinstall Suite 🙏",
+                    "es": "Pls reinstall Suite 🙏",
+                    "cs": "Pls reinstall Suite 🙏",
+                    "de": "Pls reinstall Suite 🙏",
+                    "fr": "Pls reinstall Suite 🙏",
+                    "it": "Pls reinstall Suite 🙏",
+                    "pt": "Pls reinstall Suite 🙏",
+                    "tr": "Pls reinstall Suite 🙏",
+                    "ru": "Pls reinstall Suite 🙏",
+                    "ja": "Pls reinstall Suite 🙏",
+                    "uk": "Pls reinstall Suite 🙏",
+                    "hu": "Pls reinstall Suite 🙏"
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/trezor-suite",
+                    "label": {
+                        "en": "Go to trezor.io/trezor-suite",
+                        "es": "Visita trezor.io/trezor-suite",
+                        "cs": "Přejít na trezor.io/trezor-suite",
+                        "ru": "Перейти на trezor.io/trezor-suite",
+                        "ja": "trezor.io/trezor-suite に移動",
+                        "hu": "Tovább a trezor.io/trezor-suite oldalra",
+                        "it": "Vai a trezor.io/trezor-suite",
+                        "fr": "Accédez à trezor.io/trezor-suite",
+                        "de": "Gehe zu trezor.io/trezor-suite",
+                        "tr": "trezor.io/trezor-suite adresine git",
+                        "pt": "Ir para trezor.io/trezor-suite",
+                        "uk": "Перейти на trezor.io/trezor-suite"
+                    }
+                },
+                "feature": [
+                    {
+                        "domain": "killswitch",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
             "conditions": [
                 {
                     "environment": {
