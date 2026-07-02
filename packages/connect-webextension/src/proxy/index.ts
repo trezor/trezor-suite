@@ -1,10 +1,5 @@
 import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
-import {
-    CORE_CALL,
-    CORE_CALL_CANCEL,
-    type CallMethod,
-    POPUP,
-} from '@trezor/connect-common/src/events';
+import { CORE_CALL, type CallMethod, POPUP } from '@trezor/connect-common/src/events';
 import { createErrorMessage } from '@trezor/connect-common/src/events';
 import { factory } from '@trezor/connect-common/src/factory';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
@@ -15,7 +10,7 @@ import type {
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import {
     type CancelParams,
-    normalizeCancelParams,
+    createCoreCallCancelMessage,
 } from '@trezor/connect-common/src/utils/cancelParams';
 
 const eventEmitter = new ConnectEmitter();
@@ -29,14 +24,7 @@ const dispose = () => {
 
 const cancel = (params?: CancelParams) => {
     if (_channel) {
-        const { reason, callId } = normalizeCancelParams(params);
-        _channel.postMessage(
-            {
-                type: CORE_CALL_CANCEL,
-                payload: reason || callId ? { reason, callId } : null,
-            },
-            { usePromise: false },
-        );
+        _channel.postMessage(createCoreCallCancelMessage(params), { usePromise: false });
 
         return Promise.resolve(_channel.clear());
     }
