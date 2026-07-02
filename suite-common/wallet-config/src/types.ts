@@ -27,7 +27,8 @@ export type NetworkSymbol =
     | 'thod'
     | 'txrp'
     | 'txlm'
-    | 'dsol';
+    | 'dsol'
+    | 'xmr';
 
 export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
 
@@ -44,7 +45,8 @@ export type NetworkType =
     | 'cardano'
     | 'solana'
     | 'stellar'
-    | 'tron';
+    | 'tron'
+    | 'monero';
 
 type UtilityAccountType = 'normal' | 'imported' | 'placeholder'; // reserved accountTypes to stand in for a real accountType
 type RealAccountType = 'legacy' | 'segwit' | 'coinjoin' | 'taproot' | 'ledger';
@@ -58,6 +60,7 @@ export const TREZOR_CONNECT_BACKENDS = [
     'solana',
     'stellar',
     'evm-rpc',
+    'monero',
 ] as const;
 
 export type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];
@@ -141,6 +144,15 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     isExperimentalOnlyNetwork?: boolean;
+    // Network relies on desktop-only infrastructure (e.g. a locally managed full node) and must not
+    // be offered on the web/native builds.
+    isDesktopOnlyNetwork?: boolean;
+    // Hide all buy/sell/swap/trade entry points for this network (e.g. privacy coins not offered by
+    // the trading providers). `tradeCryptoId` may still be set for type-completeness.
+    isTradingDisabled?: boolean;
+    // The default backend is a node running locally on the user's machine (e.g. Monero's managed
+    // monerod), not Trezor's/third-party servers — labelled "Local node" instead of "Trezor (default)".
+    usesLocalNodeBackend?: boolean;
     coingeckoId?: string;
     tradeCryptoId?: string;
     caipId?: string; // CAIP-2 chain id, used by WalletConnect

@@ -109,6 +109,21 @@ type AccountNetworkSpecific =
           marker: undefined;
           stellarCursor: AccountInfo['stellarCursor'];
           page: undefined;
+      }
+    | {
+          networkType: 'monero';
+          misc:
+              | {
+                    // The wallet "birthday" — unix seconds of the scan's start block; shown in details.
+                    birthdayTimestamp?: number;
+                    // The client-side view-key scan has caught up — the account is usable (can
+                    // receive/send). False/absent while the node syncs or the wallet is still scanning.
+                    synced?: boolean;
+                }
+              | undefined;
+          marker: undefined;
+          stellarCursor: undefined;
+          page: AccountInfo['page'];
       };
 
 export type AccountWithNetworkType<NetworkType extends AccountNetworkSpecific['networkType']> =

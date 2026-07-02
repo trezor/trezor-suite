@@ -81,6 +81,7 @@ export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
         case 'solana':
         case 'stellar':
         case 'tron':
+        case 'monero':
             return true;
 
         case 'bitcoin':

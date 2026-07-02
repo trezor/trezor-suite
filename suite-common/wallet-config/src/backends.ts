@@ -15,6 +15,9 @@ export const getServerAddressExample = (networkSymbol: NetworkSymbol, serverType
             return `wss://${networkSymbol}.trezor.io`;
         case 'electrum':
             return `electrum.example.com:50002:s`;
+        case 'monero':
+            // Local monerod restricted RPC managed by the desktop app.
+            return `http://127.0.0.1:18081`;
         case 'coinjoin':
         case 'default':
             return undefined;

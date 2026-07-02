@@ -37,6 +37,7 @@ const networkTypeToDisplayedParametersMap: Record<NetworkType, TransactionParame
     solana: [],
     stellar: [],
     tron: [],
+    monero: [],
 };
 
 const getEnabledTitleTranslationId = (enabled: boolean) =>
