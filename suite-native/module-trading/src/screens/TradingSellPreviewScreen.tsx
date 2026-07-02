@@ -88,7 +88,7 @@ const TradingSellPreviewScreenContent = () => {
         <Screen header={<SellPreviewScreenHeader />}>
             <ProviderStatusDevButtons />
             <LastErrorMessage tradingType="sell" />
-            <ProviderConfirmationStatusInfo />
+            <ProviderConfirmationStatusInfo quoteStatus={currentQuote?.status} />
             <SellPreviewView quote={currentQuote} txnErrorString={errorString} />
             {!isFinalized && (
                 <SellPreviewContinueButton

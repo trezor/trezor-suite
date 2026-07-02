@@ -25,7 +25,11 @@ const FINAL_ANIMATION_STATUSES: ProviderConfirmationStatus[] = [
 
 const RESOLVE_ANIMATION_DURATION_MS = 2_000;
 
-export const ProviderConfirmationStatusInfo = () => {
+type Props = {
+    quoteStatus?: string;
+};
+
+export const ProviderConfirmationStatusInfo = ({ quoteStatus }: Props) => {
     const status = useProviderConfirmationStatus();
 
     const [displayStatus, setDisplayStatus] = useState(status);
@@ -50,12 +54,12 @@ export const ProviderConfirmationStatusInfo = () => {
         }
     }, [displayStatus, status]);
 
-    if (NOT_VISIBLE_STATUSES.includes(displayStatus)) {
-        return null;
+    if (displayStatus === 'confirmation_failed' || quoteStatus === 'ERROR') {
+        return <ConfirmationFailed />;
     }
 
-    if (displayStatus === 'confirmation_failed') {
-        return <ConfirmationFailed />;
+    if (NOT_VISIBLE_STATUSES.includes(displayStatus)) {
+        return null;
     }
 
     return <ConfirmationInProgress status={displayStatus} loadingState={loadingState} />;
