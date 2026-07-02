@@ -14256,6 +14256,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"

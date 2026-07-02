@@ -12,6 +12,8 @@ export type {
     StakingNavigateFrom,
     StakingStakeStep,
     StakingUnstakeStep,
+    TradingBuyAction,
+    TradingBuyStep,
     TradingExchangeAction,
     TradingExchangeStep,
     TradingNavigateFrom,
