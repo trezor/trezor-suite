@@ -12,6 +12,7 @@ import {
     type CancelParams,
     createCoreCallCancelMessage,
 } from '@trezor/connect-common/src/utils/cancelParams';
+import { createUpdateConnectSettingsUnsupportedMessage } from '@trezor/connect-common/src/utils/updateConnectSettings';
 
 const eventEmitter = new ConnectEmitter();
 let _channel: any;
@@ -70,14 +71,7 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
 };
 
 const updateConnectSettings = (_params: UpdateConnectSettings) =>
-    Promise.resolve(
-        createErrorMessage(
-            ERRORS.TypedError(
-                'Method_InvalidPackage',
-                'updateConnectSettings is not supported in this implementation',
-            ),
-        ),
-    );
+    createUpdateConnectSettingsUnsupportedMessage();
 const call: CallMethod = async (params: any) => {
     try {
         const response = await _channel.postMessage({

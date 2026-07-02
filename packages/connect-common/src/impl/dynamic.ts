@@ -8,6 +8,7 @@ import type { ConnectDynamicSettings, ConnectImplSettings } from '../types';
 import type { UpdateConnectSettings } from '../types/api/core/updateConnectSettings';
 import { ConnectEmitter } from '../types/emitter';
 import { type CancelParams } from '../utils/cancelParams';
+import { createUpdateConnectSettingsUnsupportedMessage } from '../utils/updateConnectSettings';
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
@@ -106,14 +107,7 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<Record<n
     }
 
     public updateConnectSettings(_params: UpdateConnectSettings) {
-        return Promise.resolve(
-            createErrorMessage(
-                ERRORS.TypedError(
-                    'Method_InvalidPackage',
-                    'updateConnectSettings is not supported in this implementation',
-                ),
-            ),
-        );
+        return createUpdateConnectSettingsUnsupportedMessage();
     }
 
     public async call(params: CallMethodPayload) {

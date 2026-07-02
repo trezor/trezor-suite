@@ -5,7 +5,6 @@ import {
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
 import { type CallMethodPayload } from '@trezor/connect-common/src/events';
-import { createErrorMessage } from '@trezor/connect-common/src/events';
 import {
     type ConnectFactoryDependencies,
     bindConnectFactoryDependencies,
@@ -21,6 +20,7 @@ import {
     type CancelParams,
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
+import { createUpdateConnectSettingsUnsupportedMessage } from '@trezor/connect-common/src/utils/updateConnectSettings';
 import { createDeferredManager, removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
@@ -54,7 +54,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     private manifest?: Manifest;
 
     public updateConnectSettings(_params: UpdateConnectSettings) {
-        return Promise.resolve(createErrorMessage(ERRORS.TypedError('Method_InvalidPackage')));
+        return createUpdateConnectSettingsUnsupportedMessage();
     }
 
     private openDeeplink: (method: string, id: string, params: any) => void = () => {
