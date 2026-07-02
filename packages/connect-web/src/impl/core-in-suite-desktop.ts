@@ -1,7 +1,6 @@
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     CORE_CALL,
-    CORE_CALL_CANCEL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     POPUP,
@@ -10,7 +9,7 @@ import type { ConnectImpl } from '@trezor/connect-common/src/impl/dynamic';
 import type { ConnectImplSettings, Manifest } from '@trezor/connect-common/src/types/settings';
 import {
     type CancelParams,
-    normalizeCancelParams,
+    createCoreCallCancelMessage,
 } from '@trezor/connect-common/src/utils/cancelParams';
 import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 
@@ -36,11 +35,7 @@ export class CoreInSuiteDesktop implements ConnectImpl {
     }
 
     public cancel(params?: CancelParams) {
-        const { reason, callId } = normalizeCancelParams(params);
-        this.ws.sendMessage({
-            type: CORE_CALL_CANCEL,
-            payload: reason || callId ? { reason, callId } : null,
-        });
+        this.ws.sendMessage(createCoreCallCancelMessage(params));
     }
 
     private async handshake() {
