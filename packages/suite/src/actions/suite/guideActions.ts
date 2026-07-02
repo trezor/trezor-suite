@@ -1,6 +1,6 @@
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 
-import { type Dispatch } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 
 import { GUIDE } from './constants';
 
@@ -36,6 +36,21 @@ export const setView = (payload: ActiveView) => (dispatch: Dispatch) => {
     }
 
     dispatch({ type: GUIDE.SET_VIEW, payload });
+};
+
+// Reads state at dispatch-time (via getState) rather than relying on a value captured by
+// a keyboard-shortcut handler's render closure, so the toggle can't act on a stale open/view.
+export const toggleView = (payload: ActiveView) => (dispatch: Dispatch, getState: GetState) => {
+    const { open: isOpen, view } = getState().guide;
+
+    if (isOpen && view === payload) {
+        dispatch(close());
+    } else {
+        dispatch(setView(payload));
+        if (!isOpen) {
+            dispatch(open());
+        }
+    }
 };
 
 export const openNode = (payload: GuideNode) => (dispatch: Dispatch) => {
