@@ -19,6 +19,7 @@ import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { ClearDevicePersistentData } from './ClearDevicePersistentData';
 import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
+import { DefinitionsEnvironmentSelect } from './DefinitionsEnvironmentSelect';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { EarnApi } from './EarnApi';
@@ -152,6 +153,7 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="TrezorConnect">
                 <TrezorConnectLogs />
+                <DefinitionsEnvironmentSelect />
                 {isDesktop() && <ConnectPopup />}
             </SettingsSection>
             <SettingsSection
