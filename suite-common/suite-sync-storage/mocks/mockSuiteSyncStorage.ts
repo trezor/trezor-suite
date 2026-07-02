@@ -9,6 +9,7 @@ export const createMockSuiteSyncTable = <T extends object>(): SuiteSyncTable<T> 
 });
 
 type MockSuiteSyncStorageOverrides = {
+    disconnectRelay?: SuiteSyncStorage['disconnectRelay'];
     dispose?: SuiteSyncStorage['dispose'];
     updateRelayUrl?: SuiteSyncStorage['updateRelayUrl'];
 };
@@ -22,6 +23,7 @@ export const mockSuiteSyncStorage = (
         addresses: createMockSuiteSyncTable(),
         outputs: createMockSuiteSyncTable(),
     },
+    disconnectRelay: overrides.disconnectRelay ?? (async () => {}),
     updateRelayUrl: overrides.updateRelayUrl ?? (async (_url: string) => {}),
     dispose: overrides.dispose ?? (async () => {}),
 });

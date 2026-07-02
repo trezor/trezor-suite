@@ -50,6 +50,10 @@ export type SuiteSyncState = {
     suiteSyncOwners: Record<StaticSessionId, EncryptedHex<SuiteSyncOwnerSerialized>>;
 };
 
+export type WithSuiteSyncState = {
+    suiteSync: SuiteSyncState;
+};
+
 export const initialSuiteSyncState: SuiteSyncState = {
     settings: {
         isSuiteSyncEnabled: false,

@@ -11160,6 +11160,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -11222,6 +11223,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -15420,6 +15422,7 @@ __metadata:
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"
+    "@suite/tor": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"

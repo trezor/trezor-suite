@@ -5,7 +5,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
-import { DEFAULT_DEVICE_SIZE_QUOTA } from '../../constants';
+import { DEFAULT_DEVICE_SIZE_QUOTA } from '../../quotaManagerQuotaSize';
 import { type RegisterDeviceDeps, createRegisterDevice } from '../createRegisterDevice';
 
 const deviceWithLegacyRegistrationRequest = mockSuiteDevice(

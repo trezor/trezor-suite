@@ -20,6 +20,7 @@ import {
     type CreateSuiteSyncOwnerDep,
 } from '@suite-common/suite-sync-storage';
 import {
+    type GetIsTorEnabledDep,
     type OnStorageEnsured,
     type OnStorageEnsuredDep,
     type SuiteSync,
@@ -50,7 +51,10 @@ import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOw
 import { createRetrieveSuiteSyncOwner } from './owner/createRetrieveSuiteSyncOwner';
 import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
 import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
+import { createDisconnectAll } from './relay/createDisconnectAll';
+import { createReconnectAll } from './relay/createReconnectAll';
 import { isUsingTrezorServer } from './relay/isUsingTrezorServer';
+import { selectSuiteSyncRelayUrl } from './relay/relayUrl';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOnUncontrolled } from './storage/createEnsureWalletSuiteSyncOnUncontrolled';
@@ -62,7 +66,6 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
     selectSuiteSyncOwnerForDeviceStaticId,
-    selectSuiteSyncRelayUrl,
 } from './suiteSyncSelectors';
 import { type SuiteSyncUncontrolledErrorHandlerDep } from './suiteSyncUncontrolledErrorHandler';
 
@@ -90,7 +93,8 @@ type CreateSuiteSyncCompositionRootDeps = {
     CreateSuiteSyncOwnerDep &
     PlatformEncryptionDep &
     FetchDep &
-    SuiteSyncUncontrolledErrorHandlerDep;
+    SuiteSyncUncontrolledErrorHandlerDep &
+    GetIsTorEnabledDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -127,13 +131,15 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
     });
 
+    const getRelayUrl = () => selectSuiteSyncRelayUrl(deps.getState(), deps.getIsTorEnabled());
+
     const { ensureQuota, allocateOwnerQuota, getOwnerHasAllowance } =
         createSuiteSyncQuotaManagerCompositionRoot({
             dispatch: deps.dispatch,
             getState: deps.getState,
             getDeviceForStaticSessionId,
-            getIsUsingTrezorRelay: () =>
-                isUsingTrezorServer(selectSuiteSyncRelayUrl(deps.getState())),
+            getIsUsingTrezorRelay: () => isUsingTrezorServer(getRelayUrl()),
+            getIsTorEnabled: deps.getIsTorEnabled,
             trezorConnect: deps.trezorConnect,
             fetch: deps.fetch,
         });
@@ -152,7 +158,7 @@ export const createSuiteSyncCompositionRoot = (
         ensureQuota,
         suiteSyncStorageRepository,
         createSuiteStorage: deps.createSuiteStorage,
-        getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
+        getRelayUrl,
         getDeviceForStaticSessionId,
         getOwnerHasAllowance,
     });
@@ -218,12 +224,24 @@ export const createSuiteSyncCompositionRoot = (
         writeAddressLabel: writeLabels.writeAddressLabel,
     });
 
+    const disconnectAll = createDisconnectAll({
+        suiteSyncStorageRepository,
+        getAllDeviceSessionIds,
+    });
+    const reconnectAll = createReconnectAll({
+        suiteSyncStorageRepository,
+        getAllDeviceSessionIds,
+        getState: deps.getState,
+    });
+
     return {
         changeRelayUrl: createChangeRelayUrl({
-            suiteSyncStorageRepository,
-            getAllDeviceSessionIds,
             dispatch: deps.dispatch,
+            getIsTorEnabled: deps.getIsTorEnabled,
+            reconnectAll,
         }),
+        disconnectAll,
+        reconnectAll,
         ensureWalletSuiteSyncOnUncontrolled,
         ensureWalletSuiteSyncOn,
         turnOffSuiteSyncForWallet,

@@ -44,6 +44,7 @@
         { "path": "../firmware-upgrade" },
         { "path": "../intl" },
         { "path": "../router" },
+        { "path": "../tor" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

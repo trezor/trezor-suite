@@ -1,35 +1,22 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
-import { mockNotExpected } from '@suite-common/dependency-injection';
-import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
-import { type StaticSessionId } from '@trezor/connect';
+import { mock } from '@suite-common/dependency-injection';
 
 import { setSuiteSyncRelayUrl } from '../../suiteSyncSlice';
 import { type ChangeRelayUrlDeps, createChangeRelayUrl } from '../createChangeRelayUrl';
 
-const deviceStaticSessionId: StaticSessionId = '1@2:3';
-
 describe(createChangeRelayUrl.name, () => {
-    it('changes url', () => {
+    it('saves relay url and reconnects all storages', async () => {
         const actions: UnknownAction[] = [];
 
-        const mockStorage = mockSuiteSyncStorage({
-            dispose: mockNotExpected('dispose'),
-            updateRelayUrl: jest.fn(),
-        });
-
         const deps: ChangeRelayUrlDeps = {
-            getAllDeviceSessionIds: () => [deviceStaticSessionId],
             dispatch: (action: any) => actions.push(action),
-            suiteSyncStorageRepository: {
-                delete: mockNotExpected('delete'),
-                get: jest.fn(() => mockStorage),
-                set: mockNotExpected('set'),
-            },
+            getIsTorEnabled: mock(() => true),
+            reconnectAll: mock(() => Promise.resolve()),
         };
 
         const changeRelayUrl = createChangeRelayUrl(deps);
-        changeRelayUrl({ relayUrl: 'http://localhost:4000' });
+        await changeRelayUrl({ relayUrl: 'http://localhost:4000' });
 
         expect(actions).toStrictEqual([
             {
@@ -37,8 +24,27 @@ describe(createChangeRelayUrl.name, () => {
                 type: setSuiteSyncRelayUrl.type,
             },
         ]);
+        expect(deps.reconnectAll).toHaveBeenCalledWith({ isTorEnabled: true });
+    });
 
-        expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith('1'); // <--- "1" is the WalletDescriptor
-        expect(mockStorage.updateRelayUrl).toHaveBeenCalledWith('http://localhost:4000');
+    it('saves empty relay url and reconnects all storages', async () => {
+        const actions: UnknownAction[] = [];
+
+        const deps: ChangeRelayUrlDeps = {
+            dispatch: (action: any) => actions.push(action),
+            getIsTorEnabled: mock(() => false),
+            reconnectAll: mock(() => Promise.resolve()),
+        };
+
+        const changeRelayUrl = createChangeRelayUrl(deps);
+        await changeRelayUrl({ relayUrl: '' });
+
+        expect(actions).toStrictEqual([
+            {
+                payload: { url: '' },
+                type: setSuiteSyncRelayUrl.type,
+            },
+        ]);
+        expect(deps.reconnectAll).toHaveBeenCalledWith({ isTorEnabled: false });
     });
 });

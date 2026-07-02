@@ -17,12 +17,12 @@ import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { DEFAULT_DEVICE_SIZE_QUOTA } from '../constants';
-import { QuotaManagerCommunicationFailed } from '../errors';
-import { type RegisterDeviceFetchDep } from './createRegisterDeviceFetch';
-import { quotaManagerDeviceFetched } from '../quotaManagerActions';
-import { prepareMessageBufferEvoluSignRegistrationRequest } from './prepareMessageBufferEvoluSignRegistrationRequest';
 import { type PrepareChallengeSessionFetchDep } from '../challenge/createPrepareChallengeSessionFetch';
+import { QuotaManagerCommunicationFailed } from '../errors';
+import { quotaManagerDeviceFetched } from '../quotaManagerActions';
+import { DEFAULT_DEVICE_SIZE_QUOTA } from '../quotaManagerQuotaSize';
+import { type RegisterDeviceFetchDep } from './createRegisterDeviceFetch';
+import { prepareMessageBufferEvoluSignRegistrationRequest } from './prepareMessageBufferEvoluSignRegistrationRequest';
 
 const EVOLU_SIGN_REGISTRATION_REQUEST_HEADER = 'EvoluSignRegistrationRequest';
 const EVOLU_SIGN_REGISTRATION_REQUEST_V2_MIN_FIRMWARE_VERSION = '2.12.2';

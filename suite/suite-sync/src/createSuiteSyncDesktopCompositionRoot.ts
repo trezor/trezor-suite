@@ -3,7 +3,9 @@ import { createEvoluDeps, createRun } from '@evolu/web';
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsTorEnabled } from '@suite/tor';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { toGetter } from '@suite-common/dependency-injection';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
@@ -54,6 +56,7 @@ export const createSuiteSyncDesktopCompositionRoot = (
             createEvoluInstance: createEvoluInstanceFactory({ run }),
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
         analytics: deps.analytics,
         subscribeError: suiteSyncInternalErrorHandler => {
             evoluDeps.evoluError.subscribe(

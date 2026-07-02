@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
-    DEFAULT_SUITE_SYNC_RELAY_URL,
+    type WithSuiteSyncState,
+    getSuiteSyncDefaultRelayUrl,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
@@ -16,8 +17,11 @@ import { useToast } from '@suite-native/toasts';
 const DEFAULT_CUSTOM_RELAY_URL = '';
 
 export const SuiteSyncRelaySettings = () => {
-    const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
+    const suiteSyncRelayUrl = useSelector((state: WithSuiteSyncState) =>
+        selectSuiteSyncRelayUrl(state, false),
+    );
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
+    const defaultSuiteSyncRelayUrl = getSuiteSyncDefaultRelayUrl({ isTorEnabled: false });
 
     const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
 
@@ -50,8 +54,8 @@ export const SuiteSyncRelaySettings = () => {
     };
 
     const handleResetToDefault = async () => {
-        await changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
-        form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
+        await changeRelayUrl({ relayUrl: defaultSuiteSyncRelayUrl });
+        form.reset({ suiteSyncRelayUrl: defaultSuiteSyncRelayUrl });
         showToast({
             message: 'Suite Sync relay URL reset to default',
             intent: 'brand',
@@ -104,7 +108,7 @@ export const SuiteSyncRelaySettings = () => {
                                 color="contentSecondary"
                                 style={{ fontFamily: 'monospace' }}
                             >
-                                {DEFAULT_SUITE_SYNC_RELAY_URL}
+                                {defaultSuiteSyncRelayUrl}
                             </Text>
                         </Text>
                     </VStack>

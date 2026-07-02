@@ -1,7 +1,5 @@
 export {
     selectIsSuiteSyncEnabled,
-    selectSuiteSyncCustomRelayUrl,
-    selectSuiteSyncRelayUrl,
     selectSuiteSyncInteraction,
     selectSuiteSyncOwnerForDeviceStaticId,
     selectIsSuiteSyncDebugEnabled,
@@ -9,7 +7,13 @@ export {
     selectIsSuiteSyncFeatureAvailable,
     selectIsSuiteSyncInitPossible,
 } from './suiteSyncSelectors';
-export type { WithSuiteSyncAndDeviceState, WithSuiteSyncState } from './suiteSyncSelectors';
+export {
+    getSuiteSyncDefaultRelayUrl,
+    getSuiteSyncRelayUrl,
+    selectSuiteSyncCustomRelayUrl,
+    selectSuiteSyncRelayUrl,
+} from './relay/relayUrl';
+export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 export type { SuiteSyncInteraction } from './suiteSyncTypes';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
 export type { SuiteSyncAnalytics, SuiteSyncAnalyticsDep } from './createSuiteSyncCompositionRoot';
@@ -22,13 +26,7 @@ export {
     setSuiteSyncRelayUrl,
     setSuiteSyncOwner,
 } from './suiteSyncSlice';
-export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncSlice';
-export {
-    DEFAULT_SUITE_SYNC_RELAY_URL,
-    DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
-    DEFAULT_SUITE_SYNC_RELAY_URL_PROD,
-    SUITE_SYNC_RELAY_SERVERS,
-} from './relay/relayUrl';
+export type { SuiteSyncState, SuiteSyncSettings, WithSuiteSyncState } from './suiteSyncSlice';
 export type {
     SuiteSyncServerTypeSelectValue,
     SuiteSyncServerTypeOption,
