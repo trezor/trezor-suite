@@ -1,0 +1,42 @@
+name: "[throwaway] BCL baseline viewer deploy"
+# Fast path to iterate on the request-baseline dashboard: uploads ONLY suite/e2e/scripts/bcl/index.html
+# to sldev, decoupled from the ~40min desktop e2e measurement. DO NOT MERGE.
+
+on:
+  push:
+    branches:
+      - mroz22/blockchain-link-request-baseline
+    paths:
+      - "suite/e2e/scripts/bcl/index.html"
+      - ".github/workflows/bcl-deploy-viewer.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write # OIDC token for AWS role assumption
+  contents: read
+
+concurrency:
+  group: bcl-deploy-viewer-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-viewer:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
+
+      - name: Upload viewer to sldev
+        shell: bash
+        run: |
+          aws s3api put-object --bucket dev.suite.sldev.cz \
+            --key coverage/e2e/bcl-baseline/index.html \
+            --body suite/e2e/scripts/bcl/index.html \
+            --content-type text/html --cache-control "no-cache, max-age=0"
+          echo "Viewer: https://dev.suite.sldev.cz/coverage/e2e/bcl-baseline/index.html"

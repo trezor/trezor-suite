@@ -348,7 +348,7 @@ jobs:
           SHA="${{ github.event.pull_request.head.sha || github.sha }}"
           SHA_SHORT="${SHA:0:7}"
           export RUN_TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          aws s3api put-object --bucket dev.suite.sldev.cz --key "$PREFIX/runs/summary-$SHA_SHORT.json" \
+          aws s3api put-object --bucket dev.suite.sldev.cz --key "$PREFIX/runs/summary-$SHA_SHORT-${{ github.run_id }}-${{ github.run_attempt }}.json" \
             --body "$GITHUB_WORKSPACE/summary.json" --content-type application/json --cache-control "no-cache, max-age=0"
           mkdir -p /tmp/bcl-runs
           aws s3 sync "s3://dev.suite.sldev.cz/$PREFIX/runs/" /tmp/bcl-runs/ || true
