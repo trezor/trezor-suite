@@ -103,16 +103,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: ${{ fromJSON(needs.resolve-spec-list.outputs.matrix-desktop) }}
+        # [throwaway: bcl request baseline] single worker so all per-coin discovery tests run on
+        # ONE runner and write to ONE bcl.jsonl (per-coin marker windows must not split across machines)
+        TEST_GROUP: [1]
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "desktop"
-      pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-desktop-pr-all.config.ts' || './playwright-config/playwright-desktop-pr.config.ts' }}
+      # [throwaway] always the spec-scoped config + force only the request-baseline discovery test
+      pw-config: "./playwright-config/playwright-desktop-pr-all.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "7"
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
-      spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
+      spec-list: "suite/e2e/tests/wallet/discovery.test.ts"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

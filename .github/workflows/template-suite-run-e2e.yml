@@ -205,6 +205,10 @@ jobs:
           ELECTRON_DISABLE_SANDBOX: 1
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
+          # [throwaway: bcl request baseline] backend-request taps + discovery-test markers write here
+          BCL_LOG: ${{ github.workspace }}/bcl.jsonl
+          BCL_COINS: "btc,eth,sol"
+          BCL_IDLE_MS: "180000"
         run: |
           if [[ -z "${{ inputs.base-url }}" ]]; then
             BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
@@ -301,6 +305,15 @@ jobs:
         with:
           target: ${{ inputs.target }}
           test-group: ${{ inputs.test-group }}
+
+      - name: Upload BCL request log
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: bcl-log-${{ github.run_attempt }}-${{ inputs.target }}-${{ inputs.test-group }}
+          path: ${{ github.workspace }}/bcl.jsonl
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Upload per-test coverage map
         if: inputs.enable-coverage == 'true' && !cancelled()

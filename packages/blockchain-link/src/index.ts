@@ -97,6 +97,12 @@ export class BlockchainLink extends TypedEmitter<Events> {
     async sendMessage<R>(message: any): Promise<R> {
         const worker = await this.lazyWorker.getOrInit();
         const { promiseId, promise } = this.deferred.create();
+        // [throwaway: blockchain-link request baseline] logical-layer tap
+        (globalThis as any).__bclWrite__?.({
+            lvl: 'logical',
+            coin: this.settings.name,
+            method: message.type,
+        });
         worker.postMessage({ id: promiseId, ...message });
 
         return promise;
