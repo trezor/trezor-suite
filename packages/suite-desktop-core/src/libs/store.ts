@@ -19,6 +19,7 @@ export class Store {
         updateSettings: UpdateSettings;
         themeSettings: SuiteThemeVariant;
         torSettings: TorSettings;
+        monerodSettings: MonerodSettings;
         bridgeSettings: BridgeSettings;
         traySettings: TraySettings;
         connectSettings: ElectronConnectSettings;
@@ -86,6 +87,22 @@ export class Store {
 
     public onTorSettingsChange(callback: OnDidChangeCallback<TorSettings>): Unsubscribe {
         return this.store.onDidChange('torSettings', callback);
+    }
+
+    public getMonerodSettings() {
+        return this.store.get('monerodSettings', {
+            running: false,
+            network: 'mainnet',
+            host: '127.0.0.1',
+            rpcPort: 18081,
+            p2pPort: 18080,
+            zmqPort: 18082,
+            dataDir: '',
+        });
+    }
+
+    public setMonerodSettings(monerodSettings: MonerodSettings) {
+        this.store.set('monerodSettings', monerodSettings);
     }
 
     public getBridgeSettings() {

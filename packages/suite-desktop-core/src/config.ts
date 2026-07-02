@@ -24,6 +24,7 @@ export const allowedDomains = [
     'sldev.cz', // Test environment, available only with VPN
     'invity.io',
     'api.github.com',
+    'getmonero.org', // monerod binary download (downloads.getmonero.org) + signed hashes (www.getmonero.org)
     'api.dropboxapi.com',
     'content.dropboxapi.com',
     'notify.dropboxapi.com',

@@ -28,6 +28,7 @@
         "_______ DO NOT REMOVE DEPENDENCIES unless you are sure of consequences! _______": "In this package they have special meaning, see core.webpack.config"
     },
     "dependencies": {
+        "monero-ts": "0.11.10",
         "openpgp": "^6.3.0",
         "usb": "^2.17.0"
     },
