@@ -86,6 +86,7 @@ export const getComposeAddressPlaceholder = async (
         case 'solana':
         case 'ripple':
         case 'stellar':
+        case 'monero':
             return account.descriptor;
         case 'tron':
             // keep the form address empty; the fee uses composeContext.feeEstimationRecipient

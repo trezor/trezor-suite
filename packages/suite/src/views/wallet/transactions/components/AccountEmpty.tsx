@@ -25,6 +25,8 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const networkName = getNetwork(account.symbol).name;
+    // Privacy coins (e.g. Monero) have no buy offering — only show the receive action.
+    const isTradingDisabled = !!getNetwork(account.symbol).isTradingDisabled;
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto({ routeName: 'wallet-receive', preserveParams: true }));
@@ -74,21 +76,25 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             icon={ArrowsLeftRightIcon}
             iconVariant="neutral"
             actions={[
-                {
-                    'data-testid': '@accounts/empty-account/buy',
-                    key: '1',
-                    onClick: handleNavigateToBuyPage,
-                    iconLeft: CurrencyCircleDollarIcon,
-                    size: 'medium',
-                    children: isTokensNetwork ? (
-                        <Translation id="TR_BUY" />
-                    ) : (
-                        <Translation
-                            id="TR_BUY_NETWORK"
-                            values={{ networkDisplaySymbol: displaySymbol }}
-                        />
-                    ),
-                },
+                ...(isTradingDisabled
+                    ? []
+                    : [
+                          {
+                              'data-testid': '@accounts/empty-account/buy',
+                              key: '1',
+                              onClick: handleNavigateToBuyPage,
+                              iconLeft: CurrencyCircleDollarIcon,
+                              size: 'medium' as const,
+                              children: isTokensNetwork ? (
+                                  <Translation id="TR_BUY" />
+                              ) : (
+                                  <Translation
+                                      id="TR_BUY_NETWORK"
+                                      values={{ networkDisplaySymbol: displaySymbol }}
+                                  />
+                              ),
+                          },
+                      ]),
                 {
                     'data-testid': '@accounts/empty-account/receive',
                     key: '2',
