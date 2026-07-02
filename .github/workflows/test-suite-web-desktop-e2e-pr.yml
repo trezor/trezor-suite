@@ -124,7 +124,9 @@ jobs:
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
-    if: github.repository == 'trezor/trezor-suite'
+    # [throwaway] web e2e is irrelevant to the request-baseline measurement; disabled to save CI.
+    # This cascades: run-e2e-suite-web-tests + web post jobs skip because build-web isn't 'success'.
+    if: false
     uses: ./.github/workflows/build-suite-web-e2e.yml
 
   extract-branch:
@@ -140,6 +142,7 @@ jobs:
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
   build-connect:
+    if: false # [throwaway] only feeds web e2e, which is disabled
     needs: [extract-branch]
     runs-on: ubuntu-latest
     timeout-minutes: 60

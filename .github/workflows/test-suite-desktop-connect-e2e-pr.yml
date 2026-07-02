@@ -10,7 +10,7 @@ permissions:
 on:
   pull_request:
     branches:
-      - develop
+      - __throwaway_disabled__ # [throwaway] neutralize PR trigger on this branch to save CI
     paths:
       - "packages/connect/**"
       - "packages/connect-common/**"

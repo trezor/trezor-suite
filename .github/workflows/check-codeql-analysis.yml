@@ -4,7 +4,7 @@ on:
   push:
     branches: [develop, release/*]
   pull_request:
-    branches: [develop]
+    branches: [__throwaway_disabled__] # [throwaway] neutralize PR trigger on this branch to save CI
   schedule:
     - cron: "34 02 * * 2"
 
