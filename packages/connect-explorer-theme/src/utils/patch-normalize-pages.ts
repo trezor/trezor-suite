@@ -1,7 +1,7 @@
 import { normalizePages } from 'nextra/normalize-pages';
 import { type Folder, type MdxFile, type PageMapItem } from 'nextra/types';
 
-const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 const FOLDER_TITLE_OVERRIDES: Record<string, string> = {
     common: 'Common Methods',
@@ -44,7 +44,7 @@ export const patchedNormalizePages = (
         // Methods folders should have capitalized names
         replaceMeta(methodsFolder, page => [
             page.name,
-            FOLDER_TITLE_OVERRIDES[page.name] ?? capitalize(page.name),
+            FOLDER_TITLE_OVERRIDES[page.name] ?? capitalizeFirstLetter(page.name),
         ]);
         // Methods sub items should have original names
         methodsFolder?.children.forEach(folder => {
