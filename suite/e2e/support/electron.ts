@@ -53,6 +53,8 @@ const buildArgs = (params: LaunchSuiteParams) => {
         logLevelArgument,
         disableHWAccelerationArgument,
         showConnectLogsArgument,
+        // Never download the real (~150MB) monerod binary in e2e — emit synthetic progress instead.
+        '--mock-monerod',
     ];
 
     if (params.bridgeDaemon) {
