@@ -1,4 +1,7 @@
+import { type ReactNode } from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
+import { ThemeProvider, useTheme } from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
@@ -7,7 +10,7 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Box, Button, Column, Image, Paragraph, Row, Text } from '@trezor/components';
+import { Box, Button, Column, Image, Paragraph, Row, intermediaryTheme } from '@trezor/components';
 import { borders } from '@trezor/theme';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
@@ -20,12 +23,15 @@ import { bannerAnimationConfig } from '../banner-animations';
 
 const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
     const { isBelowLaptop } = useLayoutSize();
+    const { variant } = useTheme();
+    const isDarkMode = variant === 'dark';
 
     return (
         <Paragraph
             typographyStyle={isBelowLaptop ? 'headline-sm' : 'headline-md'}
             flex="1"
             margin={{ right: isVerticalLayout ? 32 : 0 }}
+            color={isBelowLaptop && !isDarkMode ? 'contentPrimaryInverse' : 'contentPrimary'}
         >
             <Translation id="TR_ONBOARDING_FEEDBACK_BANNER_TITLE" />
         </Paragraph>
@@ -33,14 +39,34 @@ const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
 };
 
 const Description = () => {
-    const { isBelowDesktop } = useLayoutSize();
+    const { isBelowDesktop, isBelowLaptop } = useLayoutSize();
+    const { variant } = useTheme();
+    const isDarkMode = variant === 'dark';
 
     return (
-        <Text typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}>
+        <Paragraph
+            typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}
+            color={isBelowLaptop && !isDarkMode ? 'contentPrimaryInverse' : 'contentPrimary'}
+        >
             <Translation id="TR_ONBOARDING_FEEDBACK_BANNER_DESCRIPTION" />
-        </Text>
+        </Paragraph>
     );
 };
+
+export const ForceDarkTheme = ({
+    children,
+    isActive,
+}: {
+    children: ReactNode;
+    isActive: boolean;
+}) =>
+    isActive ? (
+        <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
+            {children}
+        </ThemeProvider>
+    ) : (
+        children
+    );
 
 const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLaptop: boolean }) => {
     const href = useExternalLink(DASHBOARD_ONBOARDING_FEEDBACK_URL);
@@ -93,61 +119,66 @@ export const OnboardingFeedbackBanner = () => {
     };
 
     return (
-        <AnimatePresence>
-            {isEligible && (
-                <motion.div key="onboarding-feedback-banner" {...bannerAnimationConfig}>
-                    <Box
-                        height={isVerticalLayout ? undefined : 213}
-                        backgroundColor="elementFillNeutralSofter"
-                        borderRadius={borders.radii.sm}
-                        overflow="hidden"
-                        data-testid="@dashboard/onboarding-feedback-banner"
-                    >
-                        <ContentFlex
-                            height="100%"
-                            margin={{ right: isBelowDesktop ? undefined : 48 }}
-                            justifyContent="space-between"
-                            gap={24}
+        <ForceDarkTheme isActive={isBelowLaptop}>
+            <AnimatePresence>
+                {isEligible && (
+                    <motion.div key="onboarding-feedback-banner" {...bannerAnimationConfig}>
+                        <Box
+                            height={isVerticalLayout ? undefined : 213}
+                            backgroundColor="elementFillNeutralSofter"
+                            borderRadius={borders.radii.sm}
+                            overflow="hidden"
+                            data-testid="@dashboard/onboarding-feedback-banner"
                         >
-                            <Column
-                                gap={isBelowDesktop ? 16 : 24}
-                                margin={{ horizontal: 24, vertical: isVerticalLayout ? 16 : 0 }}
-                                zIndex={1}
+                            <ContentFlex
+                                height="100%"
+                                margin={{ right: isBelowDesktop ? undefined : 48 }}
+                                justifyContent="space-between"
+                                gap={24}
                             >
-                                <Column gap={isBelowLaptop ? 4 : 8}>
-                                    <Title isVerticalLayout={isVerticalLayout} />
-                                    <Description />
+                                <Column
+                                    gap={isBelowDesktop ? 16 : 24}
+                                    margin={{ horizontal: 24, vertical: isVerticalLayout ? 16 : 0 }}
+                                    zIndex={1}
+                                >
+                                    <Column gap={isBelowLaptop ? 4 : 8}>
+                                        <Title isVerticalLayout={isVerticalLayout} />
+                                        <Description />
+                                    </Column>
+
+                                    <CTAButton
+                                        onClick={handleCTAClick}
+                                        isBelowLaptop={isBelowLaptop}
+                                    />
                                 </Column>
 
-                                <CTAButton onClick={handleCTAClick} isBelowLaptop={isBelowLaptop} />
-                            </Column>
-
-                            <Row
-                                height="100%"
-                                alignItems="flex-end"
-                                padding={isBelowLaptop ? 0 : 12}
-                                margin={{ right: isBelowLaptop ? 0 : 60 }}
-                                position={
-                                    isBelowLaptop
-                                        ? { type: 'absolute', top: 0, left: 0 }
-                                        : undefined
-                                }
-                                width={isBelowLaptop ? '100%' : undefined}
-                            >
-                                <Image
-                                    image="DASHBOARD_FEEDBACK_BANNER"
+                                <Row
                                     height="100%"
-                                    objectFit="cover"
-                                    objectPosition="left"
-                                    borderRadius={borders.radii.sm}
+                                    alignItems="flex-end"
+                                    padding={isBelowLaptop ? 0 : 12}
+                                    margin={{ right: isBelowLaptop ? 0 : 60 }}
+                                    position={
+                                        isBelowLaptop
+                                            ? { type: 'absolute', top: 0, left: 0 }
+                                            : undefined
+                                    }
                                     width={isBelowLaptop ? '100%' : undefined}
-                                />
-                            </Row>
-                        </ContentFlex>
-                        <CloseButton onClose={handleClose} />
-                    </Box>
-                </motion.div>
-            )}
-        </AnimatePresence>
+                                >
+                                    <Image
+                                        image="DASHBOARD_FEEDBACK_BANNER"
+                                        height="100%"
+                                        objectFit="cover"
+                                        objectPosition="left"
+                                        borderRadius={borders.radii.sm}
+                                        width={isBelowLaptop ? '100%' : undefined}
+                                    />
+                                </Row>
+                            </ContentFlex>
+                            <CloseButton onClose={handleClose} />
+                        </Box>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </ForceDarkTheme>
     );
 };

@@ -347,8 +347,8 @@ export const DASHBOARD_BANNER_TEX_URL: Url =
 export const DASHBOARD_BANNER_TS7_URL: Url =
     'https://trezor.io/trezor-safe-7?utm_source=trezor_suite&utm_medium=suite_desktop_banner&utm_campaign=ts7_introduction';
 
-// TODO(onboarding-feedback): replace with the final Typeform survey link before release.
-export const DASHBOARD_ONBOARDING_FEEDBACK_URL: Url = 'https://trezor.io';
+export const DASHBOARD_ONBOARDING_FEEDBACK_URL: Url =
+    'https://satoshilabs.typeform.com/to/fsiLqgmd';
 
 export const ESHOP_KEEP_METAL_MULTI_SHARE_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-keep-metal-multi-share',
