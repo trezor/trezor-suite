@@ -18,6 +18,7 @@ export enum RootStackRoutes {
     ClaimReview = 'ClaimReview',
     ClaimTransactionDataReview = 'ClaimTransactionDataReview',
     DevUtils = 'DevUtils',
+    MessageSystemManager = 'MessageSystemManager',
     AccountSettings = 'AccountSettings',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
