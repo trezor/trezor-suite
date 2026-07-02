@@ -15,7 +15,16 @@ export const filterNetworksByName = (networks: Network[], searchQuery: string) =
     return networks.filter(({ name }) => name.toLowerCase().includes(normalizedQuery));
 };
 
-export const useNetworkSettingsSearch = (allNetworks: Network[]) => {
+type NetworkSettingsSearchOrigin = 'network-settings' | 'add-account';
+
+type UseNetworkSettingsSearchOptions = {
+    origin?: NetworkSettingsSearchOrigin;
+};
+
+export const useNetworkSettingsSearch = (
+    allNetworks: Network[],
+    { origin = 'network-settings' }: UseNetworkSettingsSearchOptions = {},
+) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [searchQuery, setSearchQuery] = useState('');
     const hasReportedSearchUsed = useRef(false);
@@ -45,12 +54,12 @@ export const useNetworkSettingsSearch = (allNetworks: Network[]) => {
                     type: events.settingsNetworkSearchUsedEvent.name,
                     payload: {
                         platform: 'desktop',
-                        origin: 'network-settings',
+                        origin,
                     },
                 });
             }
         },
-        [analytics],
+        [analytics, origin],
     );
 
     const handleSearchClear = useCallback(() => {

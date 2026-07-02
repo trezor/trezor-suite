@@ -1877,8 +1877,13 @@ export const messages = defineMessages({
         id: 'TR_SEARCH_NETWORK',
     },
     TR_NO_NETWORKS_FOUND: {
-        defaultMessage: 'No networks found',
+        defaultMessage: 'No results',
         id: 'TR_NO_NETWORKS_FOUND',
+    },
+    TR_NO_NETWORKS_FOUND_DESCRIPTION: {
+        defaultMessage:
+            'Make sure your search terms are spelled correctly or try different keywords.',
+        id: 'TR_NO_NETWORKS_FOUND_DESCRIPTION',
     },
     TR_HIDDEN: {
         defaultMessage: 'Hidden',
