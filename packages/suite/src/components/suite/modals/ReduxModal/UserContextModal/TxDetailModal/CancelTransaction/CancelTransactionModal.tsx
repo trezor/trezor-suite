@@ -107,7 +107,10 @@ export const CancelTransactionModal = ({
                                 <Banner
                                     intent="critical"
                                     description={
-                                        <>Error: transaction cannot be canceled ({error})</>
+                                        <Translation
+                                            id="TR_CANCEL_TX_GENERIC_ERROR"
+                                            values={{ error }}
+                                        />
                                     }
                                 />
                             ) : null}

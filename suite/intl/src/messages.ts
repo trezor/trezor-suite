@@ -7553,6 +7553,10 @@ export const messages = defineMessages({
         defaultMessage:
             "The transaction couldn't be canceled as it's just been confirmed on the network.",
     },
+    TR_CANCEL_TX_GENERIC_ERROR: {
+        id: 'TR_CANCEL_TX_GENERIC_ERROR',
+        defaultMessage: 'Error: transaction cannot be canceled ({error})',
+    },
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
         defaultMessage: 'Replace transaction failed',
