@@ -197,7 +197,8 @@ export const getUnusedAddressFromAccount = (account: Account) => {
         case 'ethereum':
         case 'solana':
         case 'tron':
-        case 'stellar': {
+        case 'stellar':
+        case 'monero': {
             return {
                 address: account.descriptor,
                 path: account.path,

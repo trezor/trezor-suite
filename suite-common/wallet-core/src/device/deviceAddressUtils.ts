@@ -107,6 +107,17 @@ export const getAddressForNetworkType = ({
             return TrezorConnect.solanaGetAddress(params);
         case 'stellar':
             return TrezorConnect.stellarGetAddress(params);
+        case 'monero':
+            // The Monero account descriptor is its primary address (account 0, minor 0).
+            // moneroGetAddress takes Monero-specific params, not the shared coin/unlockPath shape.
+            return TrezorConnect.moneroGetAddress({
+                device,
+                path,
+                account: 0,
+                minor: 0,
+                chunkify,
+                showOnTrezor,
+            });
         default:
             return methodNotDefinedError('getAddress');
     }
