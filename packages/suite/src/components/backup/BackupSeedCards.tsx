@@ -43,6 +43,7 @@ export const BackupSeedCards = () => {
                         key={item.key}
                         onClick={() => dispatch(backupActions.toggleCheckboxByKey(item.key))}
                         data-testid={`@backup/check-item/${item.key}`}
+                        type="contrast"
                     >
                         <Column height="100%" justifyContent="space-between">
                             <Row gap={16} alignItems="center" justifyContent="space-between">
