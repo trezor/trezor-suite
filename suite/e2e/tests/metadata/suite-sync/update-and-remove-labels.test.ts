@@ -20,6 +20,21 @@ const defaultWalletIndex = 0;
 const BTC_ADDRESS = 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa';
 const addressSeed = createAddressSeed(BTC_ADDRESS);
 const outputSeed = createOutputSeed();
+const updatedAccountLabel = 'Evolu updated BTC account';
+const updatedWalletLabel = 'Evolu updated wallet';
+const updatedAddressLabel = 'Evolu updated BTC address';
+const updatedOutputLabel = 'Evolu updated output';
+const expectedUpdatedAccount = buildExpectedAccount({ label: updatedAccountLabel });
+const expectedUpdatedWallet = buildExpectedWallet({ label: updatedWalletLabel });
+const expectedUpdatedAddress = buildExpectedAddress({
+    address: addressSeed.address,
+    label: updatedAddressLabel,
+});
+const expectedUpdatedOutput = buildExpectedOutput({
+    txId: outputSeed.txId,
+    outputIndex: outputSeed.outputIndex,
+    label: updatedOutputLabel,
+});
 const expectedAccount = buildExpectedAccount({ label: null });
 const expectedWallet = buildExpectedWallet({ label: null });
 const expectedAddress = buildExpectedAddress({ address: addressSeed.address, label: null });
@@ -29,7 +44,7 @@ const expectedOutput = buildExpectedOutput({
     label: null,
 });
 
-test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
     test.beforeEach(async ({ evoluClient, onboardingPage, settingsPage }) => {
@@ -48,7 +63,7 @@ test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
-    test('Remove labels syncs null to relay', async ({
+    test('Update and remove labels syncs correctly to relay', async ({
         evoluClient,
         dashboardPage,
         walletPage,
@@ -59,6 +74,69 @@ test.describe('Suite Sync - Remove Labels', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect
                 .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
                 .toHaveText(accountSeed.label, { timeout: 30_000 });
+        });
+
+        await test.step('Update account label', async () => {
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+            await metadataPage.account.changeLabel({
+                accountId: AccountLabelId.BitcoinDefault1,
+                label: updatedAccountLabel,
+            });
+            await expect
+                .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                .toHaveText(updatedAccountLabel);
+        });
+
+        await test.step('Update wallet label', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await metadataPage.wallet.changeLabel({
+                index: defaultWalletIndex,
+                label: updatedWalletLabel,
+            });
+            await expect
+                .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
+                .toHaveText(updatedWalletLabel);
+            await dashboardPage.deviceSwitchingCloseButton.click();
+        });
+
+        await test.step('Update address label', async () => {
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+            await walletPage.receiveButton.click();
+            await metadataPage.address.changeLabel({
+                address: addressSeed.address,
+                label: updatedAddressLabel,
+            });
+            await expect
+                .soft(metadataPage.address.label(addressSeed.address))
+                .toHaveText(updatedAddressLabel);
+        });
+
+        await test.step('Update output label', async () => {
+            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+            await metadataPage.output.changeLabel({
+                outputId: outputSeed.txId,
+                txNumber: Number(outputSeed.outputIndex),
+                label: updatedOutputLabel,
+            });
+            await expect(
+                metadataPage.output.outputLabel(outputSeed.txId, Number(outputSeed.outputIndex)),
+            ).toHaveText(updatedOutputLabel);
+        });
+
+        await test.step('Verify updated labels are synced to relay', async () => {
+            await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
+            await evoluClient.expectInTable('account', [expectedUpdatedAccount], {
+                softExpect: true,
+            });
+            await evoluClient.expectInTable('wallet', [expectedUpdatedWallet], {
+                softExpect: true,
+            });
+            await evoluClient.expectInTable('address', [expectedUpdatedAddress], {
+                softExpect: true,
+            });
+            await evoluClient.expectInTable('output', [expectedUpdatedOutput], {
+                softExpect: true,
+            });
         });
 
         await test.step('Remove account label', async () => {
