@@ -1,7 +1,6 @@
 import {
     BLOCKCHAIN_EVENT,
     CORE_CALL,
-    CORE_CALL_CANCEL,
     DEVICE_EVENT,
     RESPONSE_EVENT,
     SET_ENABLED_NETWORKS,
@@ -25,7 +24,7 @@ import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSet
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import {
     type CancelParams,
-    normalizeCancelParams,
+    createCoreCallCancelMessage,
 } from '@trezor/connect-common/src/utils/cancelParams';
 import { noopLogger } from '@trezor/connect-common/src/utils/debug';
 import { TRANSPORT } from '@trezor/transport-common';
@@ -203,11 +202,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     }
 
     public cancel(params?: CancelParams) {
-        const { reason, callId } = normalizeCancelParams(params);
-        this.handleCoreMessage({
-            type: CORE_CALL_CANCEL,
-            payload: reason || callId ? { reason, callId } : null,
-        });
+        this.handleCoreMessage(createCoreCallCancelMessage(params));
     }
 
     public dispose() {

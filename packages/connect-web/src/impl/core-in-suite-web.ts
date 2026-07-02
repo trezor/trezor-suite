@@ -1,7 +1,6 @@
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
     CORE_CALL,
-    CORE_CALL_CANCEL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     createErrorMessage,
@@ -10,6 +9,7 @@ import type { ConnectImpl } from '@trezor/connect-common/src/impl/dynamic';
 import type { ConnectImplSettings } from '@trezor/connect-common/src/types/settings';
 import {
     type CancelParams,
+    createCoreCallCancelMessage,
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
 import { type Log, initLog } from '@trezor/connect-common/src/utils/debug';
@@ -45,13 +45,9 @@ export class CoreInSuiteWeb implements ConnectImpl {
         // delayed behind queued sends (relevant for the webextension
         // channel whose sendChain serialises chrome.tabs.update calls).
         this._popupManager?.channel?.clearPendingSends();
-        this._popupManager?.channel?.postMessage(
-            {
-                type: CORE_CALL_CANCEL,
-                payload: reason || callId ? { reason, callId } : null,
-            },
-            { usePromise: false },
-        );
+        this._popupManager?.channel?.postMessage(createCoreCallCancelMessage(params), {
+            usePromise: false,
+        });
     }
 
     public init({ env, manifest, version, debug }: ConnectImplSettings): Promise<void> {
