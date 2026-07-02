@@ -8,6 +8,8 @@ export type BuyPreviewContinueButtonProps = {
     companyName: string;
 };
 
+const BUY_PREVIEW_CONTINUE_BUTTON_TEST_ID = '@trading/buy-preview/continue-button';
+
 const footerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
@@ -26,6 +28,7 @@ export const BuyPreviewContinueButton = ({ companyName }: BuyPreviewContinueButt
                     iconRight="arrowSquareOut"
                     isDisabled={!canProceed}
                     isLoading={isLoading}
+                    testID={BUY_PREVIEW_CONTINUE_BUTTON_TEST_ID}
                 >
                     <Translation
                         id="moduleTrading.tradingBuyPreviewScreen.buyVia"

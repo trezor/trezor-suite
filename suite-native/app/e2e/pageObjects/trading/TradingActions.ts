@@ -10,6 +10,7 @@ export class TradingActions {
     constructor(
         screenPrefix:
             | 'buy'
+            | 'buy-preview'
             | 'sell'
             | 'exchange'
             | 'history'
