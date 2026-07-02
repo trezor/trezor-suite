@@ -33,6 +33,7 @@ export {
     PaymentMethodTranslation,
     type PaymentMethodTranslationProps,
 } from './components/PaymentMethodTranslation';
+export { KYCWarning } from './components/KYCWarning';
 
 export * from './hooks/useAnimatedBorderStyle';
 export * from './hooks/useBottomSheetBackButtonSubscription';
