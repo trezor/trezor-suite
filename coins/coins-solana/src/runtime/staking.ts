@@ -19,7 +19,7 @@ import {
     MAX_CLAIM_ACCOUNTS,
     MAX_DEACTIVATE_ACCOUNTS,
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
-    MIN_AMOUNT,
+    MIN_STAKE_DELEGATION,
     STAKE_ACCOUNT_V2_SIZE,
     StakeState,
 } from '../constants';
@@ -188,7 +188,6 @@ export const unstake = async ({
         const epoch = params?.epoch || (await connection.getEpochInfo().send()).epoch;
         const tm = timestampInSec();
 
-        let unstakeAmount = lamports;
         let totalActiveStake: bigint = 0n;
         const activeStakeAccounts = stakeAccounts.filter(acc => {
             if (acc.data.state.__kind !== 'Stake') {
@@ -224,8 +223,10 @@ export const unstake = async ({
         const accountsToDeactivate: Delegations = [];
         const accountsToSplit: [Account<StakeStateAccount, Address>, bigint][] = [];
 
+        let remaining = lamports;
+        let unstakeAmount = 0n;
         let i = 0;
-        while (lamports > 0n && i < activeStakeAccounts.length) {
+        while (remaining > 0n && i < activeStakeAccounts.length) {
             const acc = activeStakeAccounts[i];
             if (acc === undefined || !isStake(acc.data.state)) {
                 i++;
@@ -234,16 +235,15 @@ export const unstake = async ({
 
             const stakeAmount = acc.data.state.fields[1].delegation.stake;
 
-            // If reminder amount less than min stake amount stake account automatically become disabled
-            const isBelowThreshold = stakeAmount <= lamports || stakeAmount - lamports < MIN_AMOUNT;
-            if (isBelowThreshold) {
+            // The whole account is needed to reach the requested amount: deactivate it entirely.
+            if (stakeAmount <= remaining) {
                 accountsToDeactivate.push(acc);
-                lamports = lamports - stakeAmount;
+                unstakeAmount += stakeAmount;
+                remaining -= stakeAmount;
                 i++;
 
                 // Max num of deactivate instructions reached
                 if (accountsToDeactivate.length === MAX_DEACTIVATE_ACCOUNTS) {
-                    unstakeAmount -= lamports;
                     break;
                 }
                 continue;
@@ -251,11 +251,19 @@ export const unstake = async ({
 
             // Max num of deactivate instructions with split reached
             if (accountsToDeactivate.length > MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT) {
-                unstakeAmount -= lamports;
                 break;
             }
 
-            accountsToSplit.push([acc, lamports]);
+            // Split `remaining` off only if both legs stay above the minimum; otherwise deactivate the whole account.
+            const splitProducesValidAccount = remaining >= MIN_STAKE_DELEGATION;
+            const splitLeavesValidRemainder = stakeAmount - remaining >= MIN_STAKE_DELEGATION;
+            if (splitProducesValidAccount && splitLeavesValidRemainder) {
+                accountsToSplit.push([acc, remaining]);
+                unstakeAmount += remaining;
+            } else {
+                accountsToDeactivate.push(acc);
+                unstakeAmount += stakeAmount;
+            }
             break;
         }
 
