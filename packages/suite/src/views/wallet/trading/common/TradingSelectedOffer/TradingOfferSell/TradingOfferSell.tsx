@@ -1,13 +1,22 @@
 import { Fragment, type JSX } from 'react';
 
-import { type TradingSellType, selectTradingSellFormStep } from '@suite-common/trading';
+import styled from 'styled-components';
+
+import {
+    selectTradingComposedTransactionInfo,
+    selectTradingSellActiveTrade,
+    selectTradingSellFormStep,
+    selectTradingSellInfo,
+    selectTradingSellQuotesRequest,
+    selectTradingSellSelectedQuote,
+} from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Card, Divider } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, Column, Divider } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingOfferSellProps } from 'src/types/trading/tradingForm';
+import { type TradingSellConfirmValues } from 'src/hooks/wallet/trading/useTradingSellConfirm';
+import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingOfferSellBankAccount } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellBankAccount';
 import { TradingSelectedOfferSellTransaction } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellTransaction';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
@@ -15,13 +24,39 @@ import {
     TradingSelectedOfferStepper,
     type TradingSelectedOfferStepperItemProps,
 } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
+import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
-export const TradingOfferSell = (props: TradingOfferSellProps) => {
+const Wrapper = styled.div`
+    ${TradingWrapper}
+`;
+
+interface TradingOfferSellProps {
+    confirm: TradingSellConfirmValues;
+}
+
+export const TradingOfferSell = ({ confirm }: TradingOfferSellProps) => {
     const accounts = useSelector(selectAccounts);
     const formStep = useSelector(selectTradingSellFormStep);
-    const { trade } = useTradingFormContext<TradingSellType>();
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const sellInfo = useSelector(selectTradingSellInfo);
+    const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const { composed } = useSelector(selectTradingComposedTransactionInfo);
+    const trade = useSelector(selectTradingSellActiveTrade);
 
     const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
+    const selectedTrade = trade?.data ?? selectedQuote;
+    const isDeviceDisconnected = !confirm.device?.connected;
+
+    if (!selectedTrade) return null;
+
+    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
+        amountInCrypto: quotesRequest?.amountInCrypto,
+        sendAmount: selectedTrade.fiatStringAmount ?? '',
+        sendCurrency: selectedTrade.fiatCurrency,
+        receiveAmount: selectedTrade.cryptoStringAmount ?? '',
+        receiveCurrency: selectedTrade.cryptoCurrency,
+        networkFee: composed?.fee,
+    };
 
     const steps: (TradingSelectedOfferStepperItemProps & {
         component: JSX.Element | null;
@@ -30,28 +65,40 @@ export const TradingOfferSell = (props: TradingOfferSellProps) => {
             step: 'BANK_ACCOUNT',
             translationId: 'TR_SELL_BANK_ACCOUNT_STEP',
             isActive: formStep === 'BANK_ACCOUNT',
-            component: <TradingOfferSellBankAccount />,
+            component: <TradingOfferSellBankAccount confirm={confirm} />,
         },
         {
             step: 'SEND_TRANSACTION',
             translationId: 'TR_SELL_CONFIRM_SEND_STEP',
             isActive: formStep === 'SEND_TRANSACTION',
-            component: <TradingSelectedOfferSellTransaction />,
+            component: <TradingSelectedOfferSellTransaction confirm={confirm} />,
         },
     ];
 
     return (
-        <>
-            <Card>
-                <TradingSelectedOfferStepper steps={steps} />
-                <Divider margin={{ top: spacings.lg, bottom: spacings.xl }} />
-                {steps.map((step, index) => (
-                    <Fragment key={index}>{step.isActive && step.component}</Fragment>
-                ))}
-            </Card>
-            <Card>
-                <TradingSelectedOfferInfo {...props} selectedAccount={sendAccount} />
-            </Card>
-        </>
+        <Column gap={16}>
+            {isDeviceDisconnected && <ConnectDeviceGenericPromo />}
+
+            <Wrapper data-testid="@trading/selected-offer">
+                <Card>
+                    <TradingSelectedOfferStepper steps={steps} />
+                    <Divider margin={{ top: 20, bottom: 24 }} />
+                    {steps.map((step, index) => (
+                        <Fragment key={index}>{step.isActive && step.component}</Fragment>
+                    ))}
+                </Card>
+                <Card>
+                    <TradingSelectedOfferInfo
+                        type="sell"
+                        selectedQuote={selectedTrade}
+                        providers={sellInfo?.providerInfos}
+                        quoteAmounts={quoteAmounts}
+                        paymentMethod={selectedTrade.paymentMethod}
+                        paymentMethodName={selectedTrade.paymentMethodName}
+                        selectedAccount={sendAccount}
+                    />
+                </Card>
+            </Wrapper>
+        </Column>
     );
 };

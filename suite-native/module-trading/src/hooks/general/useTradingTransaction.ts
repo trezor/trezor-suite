@@ -8,7 +8,6 @@ import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
-    type TradingSellFormProps,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     cryptoIdToNetworkAndContractAddress,
@@ -218,7 +217,6 @@ export const useTradingTransaction = ({
                     sellThunks.sendTransactionThunk({
                         account: sendAccount,
                         trade: selectedQuote as SellFiatTrade,
-                        formValues: draft as TradingSellFormProps,
                         decimals,
                         shouldSendInSats,
                         isSlip24Active,
