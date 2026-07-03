@@ -4,6 +4,7 @@ import {
     type AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
+import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
@@ -143,4 +144,14 @@ export const selectAssetFiatValuePercentage = createMemoizedSelector(
             fiatPercentageOffset: Math.floor(asset?.fiatPercentageOffset ?? 0),
         };
     },
+);
+
+export const selectIsAssetListLoading = createMemoizedSelector(
+    [selectHasRunningDiscovery, selectIsDeviceAuthorized],
+    (hasDiscovery, isDeviceAuthorized): boolean => hasDiscovery || !isDeviceAuthorized,
+);
+
+export const selectIsAssetListEmpty = createMemoizedSelector(
+    [selectDeviceNetworkSymbolsWithAssets],
+    (deviceNetworkSymbols): boolean => deviceNetworkSymbols.length === 0,
 );

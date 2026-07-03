@@ -1,14 +1,10 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
-import { Badge, Box } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { AccountsListItemBase } from '@suite-native/accounts';
 import {
     AccountsStackRoutes,
     type AppTabsParamList,
@@ -24,11 +20,12 @@ import {
 import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 
 import { selectSingleDeviceAccountKeyForNetworkSymbol } from '../assetsSelectors';
-import { AccountsCount } from './AccountsCount';
+import { type AssetsRootState } from '../types';
+import { AssetItemBadges } from './AssetItemBadges';
+import { AssetItemTitle } from './AssetItemTitle';
 import { CryptoAmount } from './CryptoAmount';
 import { FiatAmount } from './FiatAmount';
 import { PercentageIcon } from './PercentageIcon';
-import { type AssetsRootState } from '../types';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -40,11 +37,8 @@ type NavigationType = TabToStackCompositeNavigationProp<
     RootStackParamList
 >;
 
-// Memoized so existing rows bail when `Assets` re-renders to add a newly discovered network.
-// Sub-components aren't memoized: each subscribes to its own value, and this rarely re-renders.
 export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
-    const { NetworkNameFormatter } = useFormatters();
     const singleAccountKey = useSelector((state: AssetsRootState) =>
         selectSingleDeviceAccountKeyForNetworkSymbol(state, cryptoCurrencySymbol),
     );
@@ -55,40 +49,35 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
 
-    const handleAssetPress = () => {
+    const handleAssetPress = useCallback(() => {
         // A single tokenless account opens its detail directly; anything else opens the list.
         if (singleAccountKey && !hasAnyTokens && !hasAnyAccountsWithStaking) {
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey: singleAccountKey,
                 closeActionType: 'back',
             });
-        } else {
-            navigation.navigate(AppTabsRoutes.AccountsStack, {
-                screen: AccountsStackRoutes.Accounts,
-                params: { networksFilter: [cryptoCurrencySymbol] },
-            });
+
+            return;
         }
-    };
+
+        navigation.navigate(AppTabsRoutes.AccountsStack, {
+            screen: AccountsStackRoutes.Accounts,
+            params: { networksFilter: [cryptoCurrencySymbol] },
+        });
+    }, [
+        cryptoCurrencySymbol,
+        hasAnyAccountsWithStaking,
+        hasAnyTokens,
+        navigation,
+        singleAccountKey,
+    ]);
 
     return (
         <AccountsListItemBase
             onPress={handleAssetPress}
             icon={<PercentageIcon symbol={cryptoCurrencySymbol} />}
-            title={<NetworkNameFormatter value={cryptoCurrencySymbol} />}
-            badges={
-                <>
-                    <Box>
-                        <Icon size="medium" color="contentSecondary" name="wallet" />
-                    </Box>
-                    <AccountsCount symbol={cryptoCurrencySymbol} />
-                    {hasAnyAccountsWithStaking && (
-                        <StakingBadge networkSymbol={cryptoCurrencySymbol} />
-                    )}
-                    {hasAnyTokens && (
-                        <Badge size="small" label={<Translation id="generic.tokens" />} />
-                    )}
-                </>
-            }
+            title={<AssetItemTitle symbol={cryptoCurrencySymbol} />}
+            badges={<AssetItemBadges symbol={cryptoCurrencySymbol} />}
             mainValue={<FiatAmount symbol={cryptoCurrencySymbol} />}
             secondaryValue={<CryptoAmount symbol={cryptoCurrencySymbol} />}
         />

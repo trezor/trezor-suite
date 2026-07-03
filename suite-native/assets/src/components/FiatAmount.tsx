@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -10,7 +11,7 @@ import { type AssetsRootState } from '../types';
 
 type FiatAmountProps = { symbol: NetworkSymbol };
 
-export const FiatAmount = ({ symbol }: FiatAmountProps) => {
+export const FiatAmount = memo(({ symbol }: FiatAmountProps) => {
     const fiatValue = useSelector((state: AssetsRootState) => selectAssetFiatValue(state, symbol));
 
     return (
@@ -19,4 +20,6 @@ export const FiatAmount = ({ symbol }: FiatAmountProps) => {
             value={fiatValue !== null ? asBaseCurrencyAmount(new BigNumber(fiatValue)) : null}
         />
     );
-};
+});
+
+FiatAmount.displayName = 'FiatAmount';

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -8,7 +9,7 @@ import { type AssetsRootState } from '../types';
 
 type PercentageIconProps = { symbol: NetworkSymbol };
 
-export const PercentageIcon = ({ symbol }: PercentageIconProps) => {
+export const PercentageIcon = memo(({ symbol }: PercentageIconProps) => {
     const assetPercentages = useSelector((state: AssetsRootState) =>
         selectAssetFiatValuePercentage(state, symbol),
     );
@@ -20,4 +21,6 @@ export const PercentageIcon = ({ symbol }: PercentageIconProps) => {
             percentageOffset={assetPercentages.fiatPercentageOffset}
         />
     );
-};
+});
+
+PercentageIcon.displayName = 'PercentageIcon';
