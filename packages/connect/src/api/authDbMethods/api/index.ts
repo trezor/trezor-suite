@@ -7,3 +7,5 @@ export { default as authDbSetDeviceId } from './authDbSetDeviceId';
 export { default as authDbUpdateAddress } from './authDbUpdateAddress';
 export { default as authDbVerifyAddress } from './authDbVerifyAddress';
 export { default as authDbApproveAddress } from './authDbApproveAddress';
+export { default as authDbFastForwardRoot } from './authDbFastForwardRoot';
+export { default as authDbReplayQueue } from './authDbReplayQueue';

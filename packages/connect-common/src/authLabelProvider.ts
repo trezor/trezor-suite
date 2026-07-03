@@ -12,6 +12,7 @@ type BlockchainEventEmitter = {
 type Deps = {
     trezorConnect: BlockchainEventEmitter;
     provider: AuthLabelLookupProvider;
+    walletId: string;
     onAddressAnnotated: (descriptor: string, entry: AuthLabelEntry) => void;
 };
 
@@ -25,6 +26,7 @@ type Deps = {
 export const createAuthLabelNotificationHandler = ({
     trezorConnect,
     provider,
+    walletId,
     onAddressAnnotated,
 }: Deps): (() => void) => {
     const handler = async (event: BlockchainEvent) => {
@@ -34,7 +36,7 @@ export const createAuthLabelNotificationHandler = ({
         const { descriptor } = event.payload.notification;
         const networkSymbol = event.payload.coin.shortcut.toLowerCase();
 
-        const entry = await provider.lookupOrCreate(descriptor, networkSymbol);
+        const entry = await provider.lookupOrCreate(walletId, descriptor, networkSymbol);
         onAddressAnnotated(descriptor, entry);
     };
 

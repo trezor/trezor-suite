@@ -69,8 +69,8 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         const { address, networkSymbol, walletId } = this.params;
 
         const [rows, entry] = await Promise.all([
-            provider.getAllEntries(),
-            provider.lookup(address, networkSymbol),
+            provider.getAllEntries(walletId),
+            provider.lookup(walletId, address, networkSymbol),
         ]);
 
         const isMember = entry !== null;

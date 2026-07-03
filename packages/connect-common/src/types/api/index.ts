@@ -6,7 +6,9 @@ import type { applySettings } from './applySettings';
 import type { authDbApprove } from './authDbApprove';
 import type { authDbApproveAddress } from './authDbApproveAddress';
 import type { authDbClearRoot } from './authDbClearRoot';
+import type { authDbFastForwardRoot } from './authDbFastForwardRoot';
 import type { authDbLookup } from './authDbLookup';
+import type { authDbReplayQueue } from './authDbReplayQueue';
 import type { authDbSetDeviceId } from './authDbSetDeviceId';
 import type { authDbSetRoot } from './authDbSetRoot';
 import type { authDbUpdateAddress } from './authDbUpdateAddress';
@@ -225,6 +227,8 @@ export const TrezorConnectDevice = Type.Object({
     authDbClearRoot: Type.Unsafe<typeof authDbClearRoot>(),
     authDbUpdateAddress: Type.Unsafe<typeof authDbUpdateAddress>(),
     authDbVerifyAddress: Type.Unsafe<typeof authDbVerifyAddress>(),
+    authDbFastForwardRoot: Type.Unsafe<typeof authDbFastForwardRoot>(),
+    authDbReplayQueue: Type.Unsafe<typeof authDbReplayQueue>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 

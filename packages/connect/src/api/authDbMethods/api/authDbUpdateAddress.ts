@@ -69,16 +69,16 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         const { address, networkSymbol, metadata, walletId } = this.params;
 
         const [rows, oldEntry] = await Promise.all([
-            provider.getAllEntries(),
-            provider.lookup(address, networkSymbol),
+            provider.getAllEntries(walletId),
+            provider.lookup(walletId, address, networkSymbol),
         ]);
 
         const newEntry: AuthLabelEntry = { metadata, counter: (oldEntry?.counter ?? 0) + 1 };
         const isInsert = oldEntry === null;
 
         if (!this.useDevice) {
-            await provider.upsert(address, networkSymbol, newEntry);
-            const updatedRows = await provider.getAllEntries();
+            await provider.upsert(walletId, address, networkSymbol, newEntry);
+            const updatedRows = await provider.getAllEntries(walletId);
             const root = computeMerkleRoot(updatedRows);
             await provider.setTreeState(walletId, { root, counter: newEntry.counter });
 
@@ -97,7 +97,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
 
         // Auto-pick up a prior dbapprove-style pre-approval, if the provider supports it,
         // so callers don't need to plumb mac/deviceId through this call themselves.
-        const approval = await provider.lookupApproval?.(address, networkSymbol);
+        const approval = await provider.lookupApproval?.(walletId, address, networkSymbol);
 
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('AuthDbUpdateLeaf', 'AuthDbUpdateLeafResponse', {
@@ -120,7 +120,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         // how to react (e.g. resync from getAllEntries()).
         let localCacheError: string | undefined;
         try {
-            await provider.upsert(address, networkSymbol, newEntry);
+            await provider.upsert(walletId, address, networkSymbol, newEntry);
             if (response.message.new_root !== undefined) {
                 await provider.setTreeState(walletId, {
                     root: response.message.new_root,

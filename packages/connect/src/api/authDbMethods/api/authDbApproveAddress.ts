@@ -23,6 +23,7 @@ export default class AuthDbApproveAddress extends AbstractMethod<
         const params = {
             address: payload.address,
             networkSymbol: payload.networkSymbol,
+            walletId: payload.walletId,
         };
 
         super(message, params);
@@ -61,9 +62,9 @@ export default class AuthDbApproveAddress extends AbstractMethod<
             );
         }
 
-        const { address, networkSymbol } = this.params;
+        const { address, networkSymbol, walletId } = this.params;
 
-        const entry = await provider.lookup(address, networkSymbol);
+        const entry = await provider.lookup(walletId, address, networkSymbol);
         if (entry === null) {
             throw ERRORS.TypedError(
                 'Runtime',
@@ -81,7 +82,7 @@ export default class AuthDbApproveAddress extends AbstractMethod<
 
         const { mac, identifier: deviceId } = response.message;
 
-        await provider.setApproval(address, networkSymbol, mac, deviceId);
+        await provider.setApproval(walletId, address, networkSymbol, mac, deviceId);
 
         return { mac, deviceId };
     }

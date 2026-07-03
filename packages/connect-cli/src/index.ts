@@ -276,6 +276,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     device,
                     address,
                     networkSymbol,
+                    walletId,
                 });
                 if (!approveResult.success) {
                     console.error('dbapprove failed:', approveResult);
@@ -306,8 +307,8 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const setRootParams: Parameters<typeof TrezorConnect.authDbSetRoot>[0] = {
                     device,
                     root: treeState.root,
-                    ...(treeState.mac !== null && { mac: treeState.mac }),
-                    ...(treeState.deviceId !== null && { device_id: treeState.deviceId }),
+                    ...(treeState.mac !== undefined && { mac: treeState.mac }),
+                    ...(treeState.deviceId !== undefined && { device_id: treeState.deviceId }),
                 };
                 const setRootResult = await TrezorConnect.authDbSetRoot(setRootParams);
                 if (!setRootResult.success) {

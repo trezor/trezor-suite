@@ -70,7 +70,7 @@ describe('authDbUpdateAddress', () => {
             'AuthDbUpdateLeafResponse',
             expect.objectContaining({ old_value: '', proof: expect.any(Array) }),
         );
-        expect(provider.upsert).toHaveBeenCalledWith('bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith('wallet1', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
         });
@@ -105,7 +105,7 @@ describe('authDbUpdateAddress', () => {
         const [, , params] = typedCall.mock.calls[0];
         expect(params.old_value).not.toBe('');
         expect(params.witness_address).toBeUndefined();
-        expect(provider.upsert).toHaveBeenCalledWith('bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith('wallet1', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 4,
         });
@@ -136,7 +136,7 @@ describe('authDbUpdateAddress', () => {
         const method = buildMethod({});
         const result = await method.run();
 
-        expect(provider.upsert).toHaveBeenCalledWith('bc1qaddr', 'btc', {
+        expect(provider.upsert).toHaveBeenCalledWith('wallet1', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
         });

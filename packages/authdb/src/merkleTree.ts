@@ -19,6 +19,23 @@ export const entryToValueBytes = (networkSymbol: string, entry: AuthLabelEntry):
     return utf8(encoded);
 };
 
+// Inverse of entryToValueBytes — decodes a hex-encoded value (e.g. an offline-queue
+// entry's new_value) back into its networkSymbol and AuthLabelEntry. Splits on only the
+// first two colons since the trailing JSON metadata may itself contain colons.
+export const valueHexToEntry = (
+    valueHex: string,
+): { networkSymbol: string; entry: AuthLabelEntry } => {
+    const decoded = new TextDecoder().decode(hexToBytes(valueHex));
+    const firstColon = decoded.indexOf(':');
+    const secondColon = decoded.indexOf(':', firstColon + 1);
+
+    const networkSymbol = decoded.slice(0, firstColon);
+    const counter = Number(decoded.slice(firstColon + 1, secondColon));
+    const metadata = JSON.parse(decoded.slice(secondColon + 1));
+
+    return { networkSymbol, entry: { metadata, counter } };
+};
+
 // leaf_hash = SHA-256(b"\x00" + address_bytes + value_bytes)
 export const computeLeafHash = (
     address: string,

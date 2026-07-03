@@ -72,6 +72,8 @@ const connectCallableMethodGroups = {
         'authDbClearRoot',
         'authDbUpdateAddress',
         'authDbVerifyAddress',
+        'authDbFastForwardRoot',
+        'authDbReplayQueue',
     ],
     blockchain: [
         'blockchainSubscribe',

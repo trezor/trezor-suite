@@ -16,6 +16,8 @@ export type AuthDbApproveAddressSchema = Static<typeof AuthDbApproveAddressSchem
 export const AuthDbApproveAddressSchema = Type.Object({
     address: Type.String(),
     networkSymbol: Type.String(),
+    /** Identifies which wallet's entry to look up and approve. */
+    walletId: Type.String(),
 });
 
 export interface AuthDbApproveAddressResult {

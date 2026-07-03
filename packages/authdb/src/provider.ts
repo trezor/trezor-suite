@@ -27,15 +27,20 @@ export type AuthLabelEntry = {
 
 /**
  * Merkle tree state checkpoint stored in the database, scoped per wallet.
- * root    — current Merkle root hash as maintained by the Trezor device.
- * counter — monotonically increasing version; incremented by the device on every tree mutation.
+ * root      — current Merkle root hash as maintained by the Trezor device.
+ * counter   — monotonically increasing version; incremented by the device on every tree mutation.
+ * mac       — MAC authorizing this root value, if the provider tracks one (used by
+ *             the fast-forward AuthDbSetRoot wire call to skip-ahead without replaying entries).
+ * deviceId  — which device last advanced this checkpoint.
  */
 export type TreeState = {
     root: string;
     counter: number;
+    mac?: string;
+    deviceId?: string;
 };
 
-/** A single row returned for MPT construction. */
+/** A single row returned for MPT construction, scoped to one wallet. */
 export type AuthLabelRow = {
     address: string;
     networkSymbol: string;
@@ -43,21 +48,30 @@ export type AuthLabelRow = {
 };
 
 /**
- * Required storage contract for auth-label entries.
+ * Required storage contract for auth-label entries. Every entry lives under a
+ * walletId — the Merkle tree (and its root/counter checkpoint in TreeState) is
+ * computed per wallet, so two wallets' addresses never mix into one root.
  * The only implementation today is AuthLabelDb (better-sqlite3, connect-cli dev/testing).
  * An Evolu-backed implementation for suite-desktop production is planned but not yet built.
  */
 export type AuthLabelLookupProvider = {
     lookup(
+        walletId: string,
         address: string,
         networkSymbol: string,
     ): AuthLabelEntry | null | Promise<AuthLabelEntry | null>;
     lookupOrCreate(
+        walletId: string,
         address: string,
         networkSymbol: string,
     ): AuthLabelEntry | Promise<AuthLabelEntry>;
-    upsert(address: string, networkSymbol: string, entry: AuthLabelEntry): void | Promise<void>;
-    getAllEntries(): AuthLabelRow[] | Promise<AuthLabelRow[]>;
+    upsert(
+        walletId: string,
+        address: string,
+        networkSymbol: string,
+        entry: AuthLabelEntry,
+    ): void | Promise<void>;
+    getAllEntries(walletId: string): AuthLabelRow[] | Promise<AuthLabelRow[]>;
     /** Each wallet keeps its own root checkpoint, identified by walletId. */
     getTreeState(walletId: string): TreeState | null | Promise<TreeState | null>;
     setTreeState(walletId: string, state: TreeState): void | Promise<void>;
@@ -72,10 +86,12 @@ export type AuthLabelLookupProvider = {
  */
 export type AuthLabelApprovalProvider = {
     lookupApproval(
+        walletId: string,
         address: string,
         networkSymbol: string,
     ): { mac: string; deviceId: string } | null | Promise<{ mac: string; deviceId: string } | null>;
     setApproval(
+        walletId: string,
         address: string,
         networkSymbol: string,
         mac: string,

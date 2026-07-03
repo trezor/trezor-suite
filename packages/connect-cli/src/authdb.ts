@@ -12,9 +12,8 @@ import type {
     TreeState,
 } from '@trezor/connect';
 
-export type TreeStateWithMac = TreeState & { mac: string | null; deviceId: string | null };
-
 type SqliteAddressRow = {
+    wallet_id: string;
     address: string;
     network_symbol: string;
     data: string;
@@ -58,13 +57,14 @@ export class AuthLabelDb
         this.db = new Database(dbPath);
         this.db.exec(`
             CREATE TABLE IF NOT EXISTS addresses (
+                wallet_id      TEXT NOT NULL,
                 address        TEXT NOT NULL,
                 network_symbol TEXT NOT NULL,
                 counter        INTEGER NOT NULL DEFAULT 0,
                 data           TEXT NOT NULL,
                 mac            TEXT,
                 device_id      TEXT,
-                PRIMARY KEY (address, network_symbol)
+                PRIMARY KEY (wallet_id, address, network_symbol)
             );
             CREATE TABLE IF NOT EXISTS tree_state (
                 wallet_id TEXT PRIMARY KEY,
@@ -86,68 +86,84 @@ export class AuthLabelDb
         `);
     }
 
-    lookup(address: string, networkSymbol: string): AuthLabelEntry | null {
+    lookup(walletId: string, address: string, networkSymbol: string): AuthLabelEntry | null {
         const row = this.db
             .prepare(
-                'SELECT data, counter, mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?',
+                `SELECT data, counter, mac, device_id FROM addresses
+                 WHERE wallet_id = ? AND address = ? AND network_symbol = ?`,
             )
-            .get(address, networkSymbol) as
+            .get(walletId, address, networkSymbol) as
             | Pick<SqliteAddressRow, 'data' | 'counter' | 'mac' | 'device_id'>
             | undefined;
 
-        return row ? parseRow({ address, network_symbol: networkSymbol, ...row }) : null;
+        return row
+            ? parseRow({ wallet_id: walletId, address, network_symbol: networkSymbol, ...row })
+            : null;
     }
 
-    lookupOrCreate(address: string, networkSymbol: string): AuthLabelEntry {
-        const existing = this.lookup(address, networkSymbol);
+    lookupOrCreate(walletId: string, address: string, networkSymbol: string): AuthLabelEntry {
+        const existing = this.lookup(walletId, address, networkSymbol);
         if (existing) return existing;
 
         const entry: AuthLabelEntry = { metadata: {}, counter: 0 };
-        this.upsert(address, networkSymbol, entry);
+        this.upsert(walletId, address, networkSymbol, entry);
 
         return entry;
     }
 
     lookupApproval(
+        walletId: string,
         address: string,
         networkSymbol: string,
     ): { mac: string; deviceId: string } | null {
         const row = this.db
             .prepare(
-                'SELECT mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?',
+                `SELECT mac, device_id FROM addresses
+                 WHERE wallet_id = ? AND address = ? AND network_symbol = ?`,
             )
-            .get(address, networkSymbol) as Pick<SqliteAddressRow, 'mac' | 'device_id'> | undefined;
+            .get(walletId, address, networkSymbol) as
+            | Pick<SqliteAddressRow, 'mac' | 'device_id'>
+            | undefined;
 
         if (!row?.mac || row.device_id === null) return null;
 
         return { mac: row.mac, deviceId: row.device_id };
     }
 
-    upsert(address: string, networkSymbol: string, entry: AuthLabelEntry): void {
+    upsert(walletId: string, address: string, networkSymbol: string, entry: AuthLabelEntry): void {
         this.db
             .prepare(
-                `INSERT INTO addresses (address, network_symbol, counter, data)
-                 VALUES (?, ?, ?, ?)
-                 ON CONFLICT(address, network_symbol) DO UPDATE SET
+                `INSERT INTO addresses (wallet_id, address, network_symbol, counter, data)
+                 VALUES (?, ?, ?, ?, ?)
+                 ON CONFLICT(wallet_id, address, network_symbol) DO UPDATE SET
                      counter = excluded.counter,
                      data    = excluded.data`,
             )
-            .run(address, networkSymbol, entry.counter, JSON.stringify(entry.metadata));
+            .run(walletId, address, networkSymbol, entry.counter, JSON.stringify(entry.metadata));
     }
 
-    setApproval(address: string, networkSymbol: string, mac: string, deviceId: string): void {
+    setApproval(
+        walletId: string,
+        address: string,
+        networkSymbol: string,
+        mac: string,
+        deviceId: string,
+    ): void {
         this.db
             .prepare(
                 `UPDATE addresses SET mac = ?, device_id = ?
-                 WHERE address = ? AND network_symbol = ?`,
+                 WHERE wallet_id = ? AND address = ? AND network_symbol = ?`,
             )
-            .run(mac, deviceId, address, networkSymbol);
+            .run(mac, deviceId, walletId, address, networkSymbol);
     }
 
-    getAllEntries(): AuthLabelRow[] {
+    getAllEntries(walletId: string): AuthLabelRow[] {
         const rows = this.db
-            .prepare('SELECT address, network_symbol, counter, data FROM addresses ORDER BY rowid')
-            .all() as SqliteAddressRow[];
+            .prepare(
+                `SELECT wallet_id, address, network_symbol, counter, data FROM addresses
+                 WHERE wallet_id = ? ORDER BY rowid`,
+            )
+            .all(walletId) as SqliteAddressRow[];
 
         return rows.map(r => ({
             address: r.address,
@@ -156,17 +172,22 @@ export class AuthLabelDb
         }));
     }
 
-    getTreeState(walletId: string): TreeStateWithMac | null {
+    getTreeState(walletId: string): TreeState | null {
         const row = this.db
             .prepare('SELECT root, counter, mac, device_id FROM tree_state WHERE wallet_id = ?')
             .get(walletId) as TreeStateRow | undefined;
 
         return row
-            ? { root: row.root, counter: row.counter, mac: row.mac, deviceId: row.device_id }
+            ? {
+                  root: row.root,
+                  counter: row.counter,
+                  mac: row.mac ?? undefined,
+                  deviceId: row.device_id ?? undefined,
+              }
             : null;
     }
 
-    setTreeState(walletId: string, state: TreeState, mac?: string, deviceId?: string): void {
+    setTreeState(walletId: string, state: TreeState): void {
         this.db
             .prepare(
                 `INSERT INTO tree_state (wallet_id, root, counter, mac, device_id) VALUES (?, ?, ?, ?, ?)
@@ -176,7 +197,7 @@ export class AuthLabelDb
                      mac       = excluded.mac,
                      device_id = excluded.device_id`,
             )
-            .run(walletId, state.root, state.counter, mac ?? null, deviceId ?? null);
+            .run(walletId, state.root, state.counter, state.mac ?? null, state.deviceId ?? null);
     }
 
     appendQueueEntries(entries: OfflineQueueEntry[]): void {

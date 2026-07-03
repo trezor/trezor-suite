@@ -22,6 +22,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
             method: 'authDbApproveAddress',
             address: 'bc1qaddr',
             networkSymbol: 'btc',
+            walletId: 'wallet1',
             ...payload,
         } as any,
     });
@@ -74,7 +75,13 @@ describe('authDbApproveAddress', () => {
             'AuthDbApproveResponse',
             expect.objectContaining({ address: expect.any(String), value: expect.any(String) }),
         );
-        expect(provider.setApproval).toHaveBeenCalledWith('bc1qaddr', 'btc', 'deadbeef', 'cafe');
+        expect(provider.setApproval).toHaveBeenCalledWith(
+            'wallet1',
+            'bc1qaddr',
+            'btc',
+            'deadbeef',
+            'cafe',
+        );
         expect(result).toEqual({ mac: 'deadbeef', deviceId: 'cafe' });
     });
 });

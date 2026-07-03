@@ -1,6 +1,7 @@
 export {
     computeLeafHash,
     entryToValueBytes,
+    valueHexToEntry,
     generateMerkleProof,
     computeMerkleRoot,
     generateNonMembershipProof,
