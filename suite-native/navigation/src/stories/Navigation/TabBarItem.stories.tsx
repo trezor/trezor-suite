@@ -14,7 +14,9 @@ const meta: Meta<typeof TabBarItemComponent> = {
             const [args, updateArgs] = useArgs();
 
             return (
-                <Box style={{ width: 100 }}>
+                // TabBarItem uses `flex: 1`. A row wrapper lets it fill the fixed width on the main
+                // axis while its height stays content-driven (like it does inside the real tab bar).
+                <Box style={{ width: 100, flexDirection: 'row' }}>
                     <Story
                         args={{
                             ...args,
