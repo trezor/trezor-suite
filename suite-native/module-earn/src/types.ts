@@ -93,12 +93,18 @@ export type EarnProviderListItem = {
     provider: EarnProvider;
 };
 
+export type EarnStakingProvidersInfoListItem = {
+    type: 'staking-providers-info';
+    id: string;
+};
+
 export type EarnPromoListDataItem =
     | EarnPromoItem
     | EarnPromoSectionType
     | SkeletonLoaderItem
     | StablecoinYieldLoadErrorListItem
-    | EarnProviderListItem;
+    | EarnProviderListItem
+    | EarnStakingProvidersInfoListItem;
 
 export type EarnDepositsCardActiveItem =
     | {

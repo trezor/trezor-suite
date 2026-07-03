@@ -21,6 +21,7 @@ import {
     EarnPromoListSkeletonRow,
 } from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
+import { EarnStakingProvidersInfo } from '../components/EarnStakingProvidersInfo';
 import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
 import { StablecoinYieldLoadErrorAlert } from '../components/StablecoinYieldLoadErrorAlert';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
@@ -36,7 +37,10 @@ const getEarnListItemKey = (item: EarnPromoListDataItem) =>
     typeof item === 'string' ? item : item.id;
 
 const isSectionBoundaryItem = (item: EarnPromoListDataItem | undefined) =>
-    item === undefined || typeof item === 'string' || item.type === 'provider';
+    item === undefined ||
+    typeof item === 'string' ||
+    item.type === 'provider' ||
+    item.type === 'staking-providers-info';
 
 const EarnScreenContent = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -101,6 +105,10 @@ const EarnScreenContent = () => {
 
             if (item.type === 'provider') {
                 return <EarnPoweredByProvider provider={item.provider} />;
+            }
+
+            if (item.type === 'staking-providers-info') {
+                return <EarnStakingProvidersInfo />;
             }
 
             const nextItem = earnListData[index + 1];

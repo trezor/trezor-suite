@@ -13,15 +13,14 @@ import { selectAreTestnetsEnabled } from '@suite-native/settings';
 
 import {
     type EarnPromoListDataItem,
-    type EarnProviderListItem,
+    type EarnStakingProvidersInfoListItem,
     type StakingEarnItem,
 } from '../types';
 
-export const EVERSTAKE_PROVIDER_LIST_ITEM = {
-    id: 'everstake-provider',
-    type: 'provider',
-    provider: 'everstake',
-} as const satisfies EarnProviderListItem;
+export const STAKING_PROVIDERS_INFO_LIST_ITEM = {
+    id: 'staking-providers-info',
+    type: 'staking-providers-info',
+} as const satisfies EarnStakingProvidersInfoListItem;
 
 type UseStakingListDataReturn = {
     activeItems: StakingEarnItem[];
@@ -79,7 +78,7 @@ export const useStakingListData = () => {
         const promoListData: EarnPromoListDataItem[] = [
             'staking',
             ...promoItems,
-            EVERSTAKE_PROVIDER_LIST_ITEM,
+            STAKING_PROVIDERS_INFO_LIST_ITEM,
         ];
 
         return {
