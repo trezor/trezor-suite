@@ -113,6 +113,7 @@ export const YieldDepositApprovalScreen = () => {
     const {
         formState: { isValid },
     } = form;
+    const shouldShowApprovalFee = isValid && !!amountValue;
     const footerApprovalAction =
         allowanceStatus === 'loaded'
             ? getYieldApprovalAction({
@@ -305,17 +306,19 @@ export const YieldDepositApprovalScreen = () => {
                             </Box>
                         )}
 
-                        <Box paddingHorizontal="sp16">
-                            <FeeSelector
-                                accountKey={account.key}
-                                tokenContract={route.params.tokenContract}
-                                updateThunk={updateApprovalFeeLevelThunk}
-                                selectedFee={selectedApprovalFee}
-                                selectedFeePerUnit={approvalFeeFormDraft?.feePerUnit}
-                                formDraft={approvalFeeFormDraft}
-                                formDraftKey={approvalFeeFormDraftKey}
-                            />
-                        </Box>
+                        {shouldShowApprovalFee && (
+                            <Box paddingHorizontal="sp16">
+                                <FeeSelector
+                                    accountKey={account.key}
+                                    tokenContract={route.params.tokenContract}
+                                    updateThunk={updateApprovalFeeLevelThunk}
+                                    selectedFee={selectedApprovalFee}
+                                    selectedFeePerUnit={approvalFeeFormDraft?.feePerUnit}
+                                    formDraft={approvalFeeFormDraft}
+                                    formDraftKey={approvalFeeFormDraftKey}
+                                />
+                            </Box>
+                        )}
                     </VStack>
                 </Form>
             </Box>
