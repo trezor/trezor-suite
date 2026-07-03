@@ -44,18 +44,23 @@ export const ScreenHeaderWithCustomContent: StoryObj<typeof ScreenHeaderComponen
     name: 'ScreenHeader with custom content',
     args: {
         closeActionType: 'back',
-        customContent: <ScreenHeaderCustomContent />,
-        rightIcon: (
-            <IconButton
-                intent="neutral"
-                priority="secondary"
-                size="medium"
-                iconName="gear"
-                onPress={() => {}}
-            />
-        ),
     },
     argTypes: {
         title: { table: { disable: true } },
     },
+    render: args => (
+        <ScreenHeaderComponent
+            {...args}
+            customContent={<ScreenHeaderCustomContent />}
+            rightIcon={
+                <IconButton
+                    intent="neutral"
+                    priority="secondary"
+                    size="medium"
+                    iconName="gear"
+                    onPress={() => {}}
+                />
+            }
+        />
+    ),
 };
