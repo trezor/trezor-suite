@@ -11,11 +11,11 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useStakingYield } from 'src/hooks/earn/useStakingYield';
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export interface EmptyStakingCardData {
-    apy: number | null;
+    rate: number | null;
     account: Account | undefined;
     potentialRewards: string;
     hasPotentialRewards: boolean;
@@ -32,7 +32,7 @@ export const useEmptyStakingCardData = ({
     account,
 }: UseEmptyStakingCardDataProps): EmptyStakingCardData => {
     const { CryptoAmountFormatter } = useFormatters();
-    const { apy } = useStakingYield({ symbol: account?.symbol, accountKey: account?.key });
+    const { rate } = useStakingRate({ symbol: account?.symbol, accountKey: account?.key });
     const { isStakingDisabled } = useMessageSystemStaking(account?.symbol);
     const isStartStakingDisabled = isStakingDisabled || !account;
 
@@ -50,7 +50,7 @@ export const useEmptyStakingCardData = ({
         const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
         const amount = calculateRewards(
             getNetworkAdjustedStakingBalance(totalBalance, account),
-            apy,
+            rate,
         );
 
         return CryptoAmountFormatter.format(amount.toString(), {
@@ -60,14 +60,14 @@ export const useEmptyStakingCardData = ({
             isEllipsisAppended: false,
             maxDisplayedDecimals: 8,
         });
-    }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
+    }, [accountBalance, stakingBalance, rate, account, CryptoAmountFormatter]);
 
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
 
     const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
 
     return {
-        apy,
+        rate,
         account,
         potentialRewards,
         hasPotentialRewards,
