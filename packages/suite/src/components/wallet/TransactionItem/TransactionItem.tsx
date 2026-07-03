@@ -109,6 +109,10 @@ export const TransactionItem = memo(
         const isSuperseded = pendingEvmNonce !== undefined && pendingEvmNonce < confirmedNonce;
         const hasNonceGap = pendingEvmNonce !== undefined && pendingEvmNonce > nextNonce;
 
+        // Bumping the fee re-sends at this same nonce, which does nothing when that nonce can
+        // never confirm (gapped) or already did under another tx (superseded).
+        const isBumpFeeDisabled = disableBumpFee || hasNonceGap || isSuperseded;
+
         const renderNonceWarning = () => {
             if (isSuperseded)
                 return (
@@ -185,11 +189,11 @@ export const TransactionItem = memo(
                                         <Tooltip
                                             content={
                                                 <EvmBumpFeeTooltip
-                                                    isDisabled={disableBumpFee}
+                                                    isDisabled={isBumpFeeDisabled}
                                                     nonce={evmNonce}
                                                 />
                                             }
-                                            isActive={disableBumpFee || evmNonce !== undefined}
+                                            isActive={isBumpFeeDisabled || evmNonce !== undefined}
                                         >
                                             <Button
                                                 intent="neutral"
@@ -201,7 +205,7 @@ export const TransactionItem = memo(
                                                     });
                                                     e.stopPropagation();
                                                 }}
-                                                isDisabled={disableBumpFee}
+                                                isDisabled={isBumpFeeDisabled}
                                                 data-testid="@transaction-item/bump-fee-button"
                                                 size="medium"
                                             >
