@@ -111,17 +111,28 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             ...(approval && { mac: approval.mac, device_id: approval.deviceId }),
         });
 
-        await provider.upsert(address, networkSymbol, newEntry);
-        if (response.message.new_root !== undefined) {
-            await provider.setTreeState({
-                root: response.message.new_root,
-                counter: response.message.counter,
-            });
+        // The device already committed this update by the time we reach this point — a
+        // failure below means the local cache is now stale, not that the operation failed.
+        // Surface that as `localCacheError` on an otherwise-successful result instead of
+        // throwing, so callers still get the device-confirmed counter/root and can decide
+        // how to react (e.g. resync from getAllEntries()).
+        let localCacheError: string | undefined;
+        try {
+            await provider.upsert(address, networkSymbol, newEntry);
+            if (response.message.new_root !== undefined) {
+                await provider.setTreeState({
+                    root: response.message.new_root,
+                    counter: response.message.counter,
+                });
+            }
+        } catch (err) {
+            localCacheError = err instanceof Error ? err.message : String(err);
         }
 
         return {
             counter: response.message.counter,
             root: response.message.new_root ?? '',
+            ...(localCacheError !== undefined && { localCacheError }),
         };
     }
 }

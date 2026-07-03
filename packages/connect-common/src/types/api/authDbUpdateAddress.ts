@@ -26,6 +26,13 @@ export const AuthDbUpdateAddressSchema = Type.Object({
 export interface AuthDbUpdateAddressResult {
     counter: number;
     root: string;
+    /**
+     * Set when the device committed the update but the local provider write
+     * (upsert/setTreeState) failed afterwards — the device root is authoritative and
+     * already reflects `counter`/`root` above, but the local cache is now stale. Callers
+     * should react (e.g. resync from getAllEntries()) rather than assume it's up to date.
+     */
+    localCacheError?: string;
 }
 
 export declare function authDbUpdateAddress(
