@@ -8,8 +8,7 @@ import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { getAccountMovementEvents } from './graphBalanceEvents';
-import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';
+import { fetchGraphData } from './fetchGraphData';
 import {
     type AccountItem,
     type FiatGraphPoint,
@@ -39,35 +38,6 @@ type CommonUseGraphReturnType = {
 
 // if start date is null we are fetching all data till first account movement
 type StartOfTimeFrameDate = Date | null;
-
-/** The value is equal to 2% of the graph time length (x-axis). It is a minimal offset from the edge of the graph,
- * to make the whole event visible even on very small devices such as iPhone SE 1st gen. */
-const EVENT_MINIMAL_PROPORTIONAL_EDGE_OFFSET = 0.02;
-
-/** Ensures that the edge events are not too close to the interval extremes so they would not be fully visible. */
-const normalizeExtremeGraphEvents = (
-    events: GroupedBalanceMovementEvent[],
-    startOfTimeFrameDate: Date,
-    endOfTimeFrameDate: Date,
-) => {
-    if (A.isEmpty(events)) return;
-
-    const timeframeUnixLength = endOfTimeFrameDate.getTime() - startOfTimeFrameDate.getTime();
-    const minimalEdgeOffset = timeframeUnixLength * EVENT_MINIMAL_PROPORTIONAL_EDGE_OFFSET;
-
-    const firstEvent = events[0];
-    const lastEvent = events[events.length - 1];
-    const minimalEventDate = startOfTimeFrameDate.getTime() + minimalEdgeOffset;
-    const maximalEventDate = endOfTimeFrameDate.getTime() - minimalEdgeOffset;
-
-    if (firstEvent && firstEvent.date.getTime() < minimalEventDate) {
-        firstEvent.date = new Date(minimalEventDate);
-    }
-
-    if (lastEvent && lastEvent.date.getTime() > maximalEventDate) {
-        lastEvent.date = new Date(maximalEventDate);
-    }
-};
 
 export function useGraphForAccounts(params: useGraphForAccountsParams<false>): {
     graphPoints: FiatGraphPointWithCryptoBalance[];
@@ -113,36 +83,22 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
 
                 setIsLoading(true);
                 try {
-                    const points = await getMultipleAccountBalanceHistoryWithFiat({
+                    const { points, events } = await fetchGraphData({
                         accounts,
                         baseCurrencyCode,
                         startOfTimeFrameDate,
                         endOfTimeFrameDate,
-                        forceRefetch,
+                        // Transaction events are displayed only in the single account detail graph.
+                        eventsAccount: isPortfolioGraph ? undefined : accounts[0],
                         isElectrumBackend,
+                        forceRefetch,
                         dispatch,
                     });
 
-                    // Process transaction events only for the single account detail graph.
-                    if (!isPortfolioGraph) {
-                        const firstAccount = accounts[0];
-                        if (firstAccount) {
-                            await getAccountMovementEvents({
-                                account: firstAccount,
-                                startOfTimeFrameDate,
-                                endOfTimeFrameDate,
-                                dispatch,
-                            }).then(events => {
-                                normalizeExtremeGraphEvents(
-                                    events,
-                                    startOfTimeFrameDate ?? points[0]?.date ?? new Date(),
-                                    endOfTimeFrameDate,
-                                );
-                                // We need to set events after graph points, othewise it will mess up events randomly
-                                // because of strange useEffect in AnimatedLineGraph component
-                                setGraphEvents(events);
-                            });
-                        }
+                    if (events) {
+                        // We need to set events after graph points, othewise it will mess up events randomly
+                        // because of strange useEffect in AnimatedLineGraph component
+                        setGraphEvents(events);
                     }
 
                     // If the fetch was interrupted by a new fetch, do not set the values.
