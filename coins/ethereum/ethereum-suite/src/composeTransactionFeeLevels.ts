@@ -2,6 +2,8 @@ import type {
     AddToastDep,
     ComposeTransactionFeeLevels,
     GetIsApprovalFlowSupportedDep,
+    PrecomposedLevels,
+    PrecomposedTransaction,
 } from '@network-module/suite-types';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,8 +17,6 @@ import type {
     ComposeActionContext,
     ExternalOutput,
     FormState,
-    PrecomposedLevels,
-    PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,

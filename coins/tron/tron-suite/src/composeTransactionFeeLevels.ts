@@ -1,4 +1,9 @@
-import type { AddToastDep, ComposeTransactionFeeLevels } from '@network-module/suite-types';
+import type {
+    AddToastDep,
+    ComposeTransactionFeeLevels,
+    PrecomposedLevels,
+    PrecomposedTransaction,
+} from '@network-module/suite-types';
 
 import {
     buildTransferContract,
@@ -181,5 +186,7 @@ export const createComposeTronTransactionFeeLevels =
             tx.estimatedFeeLimit = tx.fee;
         }
 
-        return { normal: tx };
+        const resultLevels: PrecomposedLevels = { normal: tx as PrecomposedTransaction };
+
+        return resultLevels;
     };

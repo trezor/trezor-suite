@@ -1,13 +1,11 @@
-import type { ComposeTransactionFeeLevels } from '@network-module/suite-types';
-
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import type {
-    ComposeActionContext,
-    ExternalOutput,
-    FormState,
+    ComposeTransactionFeeLevels,
     PrecomposedLevels,
     PrecomposedTransaction,
-} from '@suite-common/wallet-types';
+} from '@network-module/suite-types';
+
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+import type { ComposeActionContext, ExternalOutput, FormState } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     calculateMax,

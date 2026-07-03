@@ -9,6 +9,22 @@ export type {
 } from './ComposeTransactionFeeLevels';
 export type { NetworkModule } from './NetworkModule';
 export type {
+    GeneralPrecomposedLevels,
+    GeneralPrecomposedTransaction,
+    GeneralPrecomposedTransactionFinal,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+    PrecomposedTransaction,
+    PrecomposedTransactionCardano,
+    PrecomposedTransactionCardanoFinal,
+    PrecomposedTransactionError,
+    PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalBumpFeeRbf,
+    PrecomposedTransactionFinalCancelRbf,
+    PrecomposedTransactionFinalCardano,
+    RbfTransactionType,
+} from './PrecomposedTransaction';
+export type {
     AddToastDep,
     GetAreSatsAmountUnitDep,
     GetBlockchainBlockInfoBySymbolDep,

@@ -1,11 +1,11 @@
-import type { AddToastDep, ComposeTransactionFeeLevels } from '@network-module/suite-types';
-
 import type {
-    ComposeActionContext,
-    FormState,
+    AddToastDep,
+    ComposeTransactionFeeLevels,
     PrecomposedLevelsCardano,
     PrecomposedTransactionCardano,
-} from '@suite-common/wallet-types';
+} from '@network-module/suite-types';
+
+import type { ComposeActionContext, FormState } from '@suite-common/wallet-types';
 import {
     formatMaxOutputAmount,
     getAddressParameters,

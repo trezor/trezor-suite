@@ -3,16 +3,12 @@ import type {
     ComposeTransactionFeeLevels,
     GetAreSatsAmountUnitDep,
     GetSelectedDeviceDep,
+    PrecomposedLevels,
+    PrecomposedTransaction,
 } from '@network-module/suite-types';
 
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
-import type {
-    Account,
-    ComposeActionContext,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-} from '@suite-common/wallet-types';
+import type { Account, ComposeActionContext, FormState } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getBitcoinComposeOutputs,
@@ -213,7 +209,7 @@ export const createComposeBitcoinTransactionFeeLevels =
             } else {
                 deps.addToast({
                     type: 'sign-tx-error',
-                    error: 'message' in tx ? tx.message : tx.error,
+                    error: 'message' in tx ? (tx.message ?? tx.error) : tx.error,
                 });
             }
         });

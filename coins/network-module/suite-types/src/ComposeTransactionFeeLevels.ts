@@ -1,3 +1,5 @@
+import type { GeneralPrecomposedLevels } from './PrecomposedTransaction';
+
 export type ComposeFeeLevelsError = {
     error: 'fee-levels-compose-failed';
     message?: string;
@@ -15,7 +17,7 @@ export type ComposeTransactionFeeLevelsArgs<TSymbol extends string> = {
     isNetworkReserveEnabled?: boolean;
 };
 
-export type ComposeTransactionFeeLevelsResult = object | ComposeFeeLevelsError;
+export type ComposeTransactionFeeLevelsResult = GeneralPrecomposedLevels | ComposeFeeLevelsError;
 
 export type ComposeTransactionFeeLevels<TSymbol extends string> = (
     args: ComposeTransactionFeeLevelsArgs<TSymbol>,
