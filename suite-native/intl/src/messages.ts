@@ -2488,6 +2488,7 @@ export const messages = {
         staking: 'Staking',
         stablecoinYield: 'Stablecoin yield',
         poweredBy: 'Powered by',
+        stakingOperatedByProviders: 'Staking is operated by independent providers',
         portfolioTracker: {
             alert: {
                 title: 'Staking is disabled in the portfolio tracker',
