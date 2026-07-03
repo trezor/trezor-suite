@@ -2,12 +2,12 @@ import { BLOCKCHAIN, BLOCKCHAIN_EVENT } from './events/blockchain';
 import type { BlockchainEvent } from './events/blockchain';
 
 /**
- * Arbitrary metadata stored per Bitcoin address.
+ * Arbitrary metadata stored per Bitcoin address (an "auth label").
  * Serialized as JSON in the database (future: protobuf BLOB).
  */
-export type AddressMetadata = {
+export type AuthLabelMetadata = {
     label?: string;
-    data?: unknown;    // arbitrary JSON payload — not stored in device offline cache
+    data?: unknown; // arbitrary JSON payload — not stored in device offline cache
     data_mac?: string; // MAC authorizing the data field — stored in device offline cache
 };
 
@@ -18,13 +18,13 @@ export type AddressMetadata = {
 export type MerkleProof = string[];
 
 /**
- * A full address entry as stored in the database.
+ * A full auth-label entry as stored in the database.
  * counter tracks the version of this entry in the Merkle tree — incremented by the device
  * on each successful dbchange so stale updates can be rejected.
  * proof is NOT stored; it is generated from the MPT before each device interaction.
  */
-export type AddressEntry = {
-    metadata: AddressMetadata;
+export type AuthLabelEntry = {
+    metadata: AuthLabelMetadata;
     counter: number;
 };
 
@@ -38,26 +38,55 @@ export type TreeState = {
     counter: number;
 };
 
-/** All entries returned for MPT construction. */
-export type AllEntriesRow = {
+/** A single row returned for MPT construction. */
+export type AuthLabelRow = {
     address: string;
     networkSymbol: string;
-    entry: AddressEntry;
+    entry: AuthLabelEntry;
 };
 
 /**
- * Provider interface for Bitcoin address entry storage.
- * Implementations: BitcoinAddressDb/better-sqlite3 (connect-cli dev/testing),
- * Evolu (suite-desktop production).
+ * Required storage contract for auth-label entries.
+ * The only implementation today is AuthLabelDb (better-sqlite3, connect-cli dev/testing).
+ * An Evolu-backed implementation for suite-desktop production is planned but not yet built.
  */
-export type AddressLookupProvider = {
-    lookup(address: string, networkSymbol: string): AddressEntry | null | Promise<AddressEntry | null>;
-    lookupOrCreate(address: string, networkSymbol: string): AddressEntry | Promise<AddressEntry>;
-    upsert(address: string, networkSymbol: string, entry: AddressEntry): void | Promise<void>;
-    getAllEntries(): AllEntriesRow[] | Promise<AllEntriesRow[]>;
+export type AuthLabelLookupProvider = {
+    lookup(
+        address: string,
+        networkSymbol: string,
+    ): AuthLabelEntry | null | Promise<AuthLabelEntry | null>;
+    lookupOrCreate(
+        address: string,
+        networkSymbol: string,
+    ): AuthLabelEntry | Promise<AuthLabelEntry>;
+    upsert(address: string, networkSymbol: string, entry: AuthLabelEntry): void | Promise<void>;
+    getAllEntries(): AuthLabelRow[] | Promise<AuthLabelRow[]>;
     getTreeState(): TreeState | null | Promise<TreeState | null>;
     setTreeState(state: TreeState): void | Promise<void>;
+    /** Releases any held resources (e.g. an open database handle). */
+    dispose?(): void | Promise<void>;
 };
+
+/**
+ * Optional MAC pre-approval extension. A provider implementing this alongside
+ * AuthLabelLookupProvider lets high-level AuthDB methods skip a redundant device
+ * confirmation when a valid prior approval already exists for an entry.
+ */
+export type AuthLabelApprovalProvider = {
+    lookupApproval(
+        address: string,
+        networkSymbol: string,
+    ): { mac: string; deviceId: string } | null | Promise<{ mac: string; deviceId: string } | null>;
+    setApproval(
+        address: string,
+        networkSymbol: string,
+        mac: string,
+        deviceId: string,
+    ): void | Promise<void>;
+};
+
+/** Combined provider type accepted by ConnectSettings — approval support is optional. */
+export type AuthLabelProvider = AuthLabelLookupProvider & Partial<AuthLabelApprovalProvider>;
 
 // Minimal interface for the TrezorConnect event emitter — avoids circular dep on @trezor/connect.
 type BlockchainEventEmitter = {
@@ -67,18 +96,18 @@ type BlockchainEventEmitter = {
 
 type Deps = {
     trezorConnect: BlockchainEventEmitter;
-    provider: AddressLookupProvider;
-    onAddressAnnotated: (descriptor: string, entry: AddressEntry) => void;
+    provider: AuthLabelLookupProvider;
+    onAddressAnnotated: (descriptor: string, entry: AuthLabelEntry) => void;
 };
 
 /**
  * Subscribes to TrezorConnect BLOCKCHAIN_EVENT notifications for Bitcoin addresses.
- * On each notification the address entry is looked up (or auto-created) via the provider,
- * then onAddressAnnotated is called with the AddressEntry (metadata + counter).
+ * On each notification the auth-label entry is looked up (or auto-created) via the provider,
+ * then onAddressAnnotated is called with the AuthLabelEntry (metadata + counter).
  *
  * Returns a cleanup function that removes the listener.
  */
-export const createBitcoinAddressNotificationHandler = ({
+export const createAuthLabelNotificationHandler = ({
     trezorConnect,
     provider,
     onAddressAnnotated,
@@ -87,7 +116,7 @@ export const createBitcoinAddressNotificationHandler = ({
         if (event.type !== BLOCKCHAIN.NOTIFICATION) return;
         if (event.payload.coin.type !== 'bitcoin') return;
 
-        const descriptor = event.payload.notification.descriptor;
+        const { descriptor } = event.payload.notification;
         const networkSymbol = event.payload.coin.shortcut.toLowerCase();
 
         const entry = await provider.lookupOrCreate(descriptor, networkSymbol);

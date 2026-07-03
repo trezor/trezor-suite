@@ -2,8 +2,8 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { entryToValueBytes } from '@trezor/authdb-merkle-tree';
 import type {
-    AddressEntry,
-    AddressMetadata,
+    AuthLabelEntry,
+    AuthLabelMetadata,
     Device,
     MerkleProof,
     TreeState,
@@ -30,8 +30,8 @@ export type VerifyAndUpdateResult = {
 export const verifyAndUpdateEntry = async (
     address: string,
     networkSymbol: string,
-    oldEntry: AddressEntry | null,
-    newMetadata: AddressMetadata,
+    oldEntry: AuthLabelEntry | null,
+    newMetadata: AuthLabelMetadata,
     currentProof: MerkleProof,
     treeState: TreeState | null,
     newEntryCounter: number,
@@ -41,7 +41,7 @@ export const verifyAndUpdateEntry = async (
     inputDeviceId?: string,
     device?: Device,
 ): Promise<VerifyAndUpdateResult> => {
-    const newEntry: AddressEntry = { metadata: newMetadata, counter: newEntryCounter };
+    const newEntry: AuthLabelEntry = { metadata: newMetadata, counter: newEntryCounter };
     const oldValueHex =
         oldEntry !== null ? bytesToHex(entryToValueBytes(networkSymbol, oldEntry)) : '';
     const newValueHex = bytesToHex(entryToValueBytes(networkSymbol, newEntry));
@@ -129,7 +129,7 @@ export const verifyAndUpdateEntry = async (
 export const verifyEntry = async (
     address: string,
     networkSymbol: string,
-    entry: AddressEntry,
+    entry: AuthLabelEntry,
     proof: MerkleProof,
     device?: Device,
 ): Promise<boolean> => {

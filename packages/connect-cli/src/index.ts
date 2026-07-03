@@ -11,7 +11,7 @@ import {
     generateNonMembershipProof,
 } from '@trezor/authdb-merkle-tree';
 import TrezorConnect, {
-    type AddressMetadata,
+    type AuthLabelMetadata,
     type Device,
     type MerkleProof,
     ThpPairingMethod,
@@ -19,7 +19,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 
 import { HELP, args } from './args';
-import { BitcoinAddressDb } from './authdb';
+import { AuthLabelDb } from './authdb';
 import { stdioManager } from './stdio';
 import {
     debugLinkDecision,
@@ -93,14 +93,14 @@ const DB_METHODS_NEEDING_DEVICE = new Set([
 
 // When --db-path is explicit, the DB path is known upfront (independent of the
 // device), so it can be constructed before TrezorConnect.init() and injected as
-// `addressLookupProvider`. dbchange/dblookup then call the high-level
+// `authLabelLookupProvider`. dbchange/dblookup then call the high-level
 // authDbUpdateAddress/authDbVerifyAddress methods, which compute Merkle proofs
 // internally instead of connect-cli doing it. When the path must be derived from
 // the device's pubkey (no --db-path), the provider isn't known until after a
 // device round-trip, so that flow still computes proofs manually via the
 // low-level authDbUpdateLeaf/authDbLookup methods (see verify-authenticity.ts).
 const hasExplicitDbPath = typeof args['db-path'] === 'string';
-const explicitDb = hasExplicitDbPath ? new BitcoinAddressDb(args['db-path'] as string) : null;
+const explicitDb = hasExplicitDbPath ? new AuthLabelDb(args['db-path'] as string) : null;
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
@@ -149,7 +149,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
 
     let identifierHex: string;
-    let db: BitcoinAddressDb;
+    let db: AuthLabelDb;
 
     if (explicitDb) {
         if (needsDevice && !device) {
@@ -178,10 +178,10 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             .update(Buffer.from(pubKeyResult.payload.publicKey, 'hex'))
             .digest('hex');
         console.log('Using database identifier:', identifierHex);
-        db = new BitcoinAddressDb(getDbPath(identifierHex));
+        db = new AuthLabelDb(getDbPath(identifierHex));
     }
 
-    // When the DB is the one injected into TrezorConnect at init() (addressLookupProvider),
+    // When the DB is the one injected into TrezorConnect at init() (authLabelLookupProvider),
     // dbchange/dblookup can use the high-level, proof-free API. mac/deviceId (pre-approval)
     // aren't supported by the high-level method yet, so that combination still falls back
     // to the manual low-level flow.
@@ -294,7 +294,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     );
                     process.exit(1);
                 }
-                const metadata: AddressMetadata = {
+                const metadata: AuthLabelMetadata = {
                     ...(rawMetadata.label !== undefined && { label: String(rawMetadata.label) }),
                     ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
                 };
@@ -568,7 +568,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
         }
     } finally {
-        // explicitDb is injected into TrezorConnect as addressLookupProvider and may be
+        // explicitDb is injected into TrezorConnect as authLabelLookupProvider and may be
         // reused across multiple runDbMethods() invocations within this process — leave it open.
         if (db !== explicitDb) db.close();
     }
@@ -828,7 +828,7 @@ const run = async () => {
             knownCredentials: getThpCredentials(),
             pairingMethods,
         },
-        ...(explicitDb && { addressLookupProvider: explicitDb }),
+        ...(explicitDb && { authLabelLookupProvider: explicitDb }),
     });
 
     // Blockchain notification handler requires a seed-derived DB path; it is wired up

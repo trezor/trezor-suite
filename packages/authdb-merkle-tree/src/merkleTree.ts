@@ -1,7 +1,7 @@
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
-import type { AddressEntry, AllEntriesRow, MerkleProof } from '@trezor/connect-common';
+import type { AuthLabelEntry, AuthLabelRow, MerkleProof } from '@trezor/connect-common';
 
 // ---------------------------------------------------------------------------
 // MPT hashing primitives — must match authdb_tree.py exactly
@@ -10,7 +10,7 @@ import type { AddressEntry, AllEntriesRow, MerkleProof } from '@trezor/connect-c
 const utf8 = (s: string) => new TextEncoder().encode(s);
 
 // Deterministic value encoding (networkSymbol + counter + sorted metadata).
-export const entryToValueBytes = (networkSymbol: string, entry: AddressEntry): Uint8Array => {
+export const entryToValueBytes = (networkSymbol: string, entry: AuthLabelEntry): Uint8Array => {
     const metaSorted = Object.fromEntries(
         Object.entries(entry.metadata).sort(([a], [b]) => a.localeCompare(b)),
     );
@@ -23,7 +23,7 @@ export const entryToValueBytes = (networkSymbol: string, entry: AddressEntry): U
 export const computeLeafHash = (
     address: string,
     networkSymbol: string,
-    entry: AddressEntry,
+    entry: AuthLabelEntry,
 ): Uint8Array => {
     const addrBytes = utf8(address);
     const valBytes = entryToValueBytes(networkSymbol, entry);
@@ -107,7 +107,7 @@ const hashMpt = (node: MptNode): Uint8Array => {
     return internalHash(hashMpt(node.left), hashMpt(node.right));
 };
 
-const rowsToLeaves = (rows: AllEntriesRow[]): LeafInfo[] =>
+const rowsToLeaves = (rows: AuthLabelRow[]): LeafInfo[] =>
     rows.map(r => ({
         addrHash: addressHash(r.address),
         leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
@@ -124,7 +124,7 @@ const rowsToLeaves = (rows: AllEntriesRow[]): LeafInfo[] =>
  * Matches authdb_tree.py get_proof / firmware verifier evaluate_proof.
  */
 export const generateMerkleProof = (
-    rows: AllEntriesRow[],
+    rows: AuthLabelRow[],
     address: string,
     networkSymbol: string,
 ): MerkleProof => {
@@ -169,7 +169,7 @@ export const generateMerkleProof = (
  * Recompute the MPT root hash from all stored entries.
  * Returns an empty string when there are no entries.
  */
-export const computeMerkleRoot = (rows: AllEntriesRow[]): string => {
+export const computeMerkleRoot = (rows: AuthLabelRow[]): string => {
     if (rows.length === 0) return '';
 
     return bytesToHex(hashMpt(buildMpt(rowsToLeaves(rows))));
@@ -182,7 +182,7 @@ export const computeMerkleRoot = (rows: AllEntriesRow[]): string => {
  * Returns null if the tree is empty (address trivially not in tree).
  */
 export const generateNonMembershipProof = (
-    rows: AllEntriesRow[],
+    rows: AuthLabelRow[],
     address: string,
     _networkSymbol: string,
 ): { proof: MerkleProof; witnessAddress: string | null; witnessValue: Uint8Array | null } => {
@@ -251,7 +251,7 @@ export const generateNonMembershipProof = (
 export const evaluateProof = (
     address: string,
     networkSymbol: string,
-    entry: AddressEntry,
+    entry: AuthLabelEntry,
     proof: MerkleProof,
 ): string => {
     const addrHash = addressHash(address);

@@ -5,7 +5,7 @@ import {
     generateMerkleProof,
     generateNonMembershipProof,
 } from '@trezor/authdb-merkle-tree';
-import type { AddressEntry, MethodPermission } from '@trezor/connect-common';
+import type { AuthLabelEntry, MethodPermission } from '@trezor/connect-common';
 import { AuthDbUpdateAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
@@ -44,11 +44,11 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
     }
 
     async run() {
-        const provider = settingsStore.get('addressLookupProvider');
+        const provider = settingsStore.get('authLabelLookupProvider');
         if (!provider) {
             throw ERRORS.TypedError(
                 'Runtime',
-                'authDbUpdateAddress requires addressLookupProvider to be set via TrezorConnect.init()',
+                'authDbUpdateAddress requires authLabelLookupProvider to be set via TrezorConnect.init()',
             );
         }
 
@@ -59,7 +59,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             provider.lookup(address, networkSymbol),
         ]);
 
-        const newEntry: AddressEntry = { metadata, counter: (oldEntry?.counter ?? 0) + 1 };
+        const newEntry: AuthLabelEntry = { metadata, counter: (oldEntry?.counter ?? 0) + 1 };
         const isInsert = oldEntry === null;
 
         const oldValueHex = isInsert ? '' : bytesToHex(entryToValueBytes(networkSymbol, oldEntry));

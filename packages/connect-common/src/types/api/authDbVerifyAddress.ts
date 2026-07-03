@@ -1,8 +1,8 @@
 /**
  * High-level AuthDB verification. Unlike authDbLookup, no Merkle proof is passed
  * by the caller — @trezor/connect computes the membership or non-membership proof
- * internally from the injected `addressLookupProvider` (see
- * ConnectSettings.addressLookupProvider).
+ * internally from the injected `authLabelLookupProvider` (see
+ * ConnectSettings.authLabelLookupProvider).
  */
 
 import type { Static } from '@trezor/schema-utils';

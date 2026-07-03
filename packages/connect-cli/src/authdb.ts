@@ -3,16 +3,17 @@ import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type {
-    AddressEntry,
-    AddressLookupProvider,
-    AddressMetadata,
-    AllEntriesRow,
+    AuthLabelApprovalProvider,
+    AuthLabelEntry,
+    AuthLabelLookupProvider,
+    AuthLabelMetadata,
+    AuthLabelRow,
     TreeState,
 } from '@trezor/connect';
 
 export type TreeStateWithMac = TreeState & { mac: string | null; deviceId: string | null };
 
-type AddressRow = {
+type SqliteAddressRow = {
     address: string;
     network_symbol: string;
     data: string;
@@ -22,12 +23,12 @@ type AddressRow = {
 };
 type TreeStateRow = { root: string; counter: number; mac: string | null; device_id: string | null };
 
-const parseRow = (row: AddressRow): AddressEntry => ({
-    metadata: JSON.parse(row.data) as AddressMetadata,
+const parseRow = (row: SqliteAddressRow): AuthLabelEntry => ({
+    metadata: JSON.parse(row.data) as AuthLabelMetadata,
     counter: row.counter ?? 0,
 });
 
-export class BitcoinAddressDb implements AddressLookupProvider {
+export class AuthLabelDb implements AuthLabelLookupProvider, AuthLabelApprovalProvider {
     private db: Database.Database;
 
     constructor(dbPath: string) {
@@ -53,23 +54,23 @@ export class BitcoinAddressDb implements AddressLookupProvider {
         `);
     }
 
-    lookup(address: string, networkSymbol: string): AddressEntry | null {
+    lookup(address: string, networkSymbol: string): AuthLabelEntry | null {
         const row = this.db
             .prepare(
                 'SELECT data, counter, mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?',
             )
             .get(address, networkSymbol) as
-            | Pick<AddressRow, 'data' | 'counter' | 'mac' | 'device_id'>
+            | Pick<SqliteAddressRow, 'data' | 'counter' | 'mac' | 'device_id'>
             | undefined;
 
         return row ? parseRow({ address, network_symbol: networkSymbol, ...row }) : null;
     }
 
-    lookupOrCreate(address: string, networkSymbol: string): AddressEntry {
+    lookupOrCreate(address: string, networkSymbol: string): AuthLabelEntry {
         const existing = this.lookup(address, networkSymbol);
         if (existing) return existing;
 
-        const entry: AddressEntry = { metadata: {}, counter: 0 };
+        const entry: AuthLabelEntry = { metadata: {}, counter: 0 };
         this.upsert(address, networkSymbol, entry);
 
         return entry;
@@ -83,14 +84,14 @@ export class BitcoinAddressDb implements AddressLookupProvider {
             .prepare(
                 'SELECT mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?',
             )
-            .get(address, networkSymbol) as Pick<AddressRow, 'mac' | 'device_id'> | undefined;
+            .get(address, networkSymbol) as Pick<SqliteAddressRow, 'mac' | 'device_id'> | undefined;
 
         if (!row?.mac || row.device_id === null) return null;
 
         return { mac: row.mac, deviceId: row.device_id };
     }
 
-    upsert(address: string, networkSymbol: string, entry: AddressEntry): void {
+    upsert(address: string, networkSymbol: string, entry: AuthLabelEntry): void {
         this.db
             .prepare(
                 `INSERT INTO addresses (address, network_symbol, counter, data)
@@ -111,10 +112,10 @@ export class BitcoinAddressDb implements AddressLookupProvider {
             .run(mac, deviceId, address, networkSymbol);
     }
 
-    getAllEntries(): AllEntriesRow[] {
+    getAllEntries(): AuthLabelRow[] {
         const rows = this.db
             .prepare('SELECT address, network_symbol, counter, data FROM addresses ORDER BY rowid')
-            .all() as AddressRow[];
+            .all() as SqliteAddressRow[];
 
         return rows.map(r => ({
             address: r.address,

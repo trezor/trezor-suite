@@ -154,8 +154,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.version = input.version;
     }
 
-    if (typeof input.addressLookupProvider === 'object' && input.addressLookupProvider !== null) {
-        settings.addressLookupProvider = input.addressLookupProvider;
+    if (
+        typeof input.authLabelLookupProvider === 'object' &&
+        input.authLabelLookupProvider !== null
+    ) {
+        settings.authLabelLookupProvider = input.authLabelLookupProvider;
     }
 
     settings.thp = parseThpSettings(input);

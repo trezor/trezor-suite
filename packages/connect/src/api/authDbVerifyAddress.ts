@@ -43,11 +43,11 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
     }
 
     async run() {
-        const provider = settingsStore.get('addressLookupProvider');
+        const provider = settingsStore.get('authLabelLookupProvider');
         if (!provider) {
             throw ERRORS.TypedError(
                 'Runtime',
-                'authDbVerifyAddress requires addressLookupProvider to be set via TrezorConnect.init()',
+                'authDbVerifyAddress requires authLabelLookupProvider to be set via TrezorConnect.init()',
             );
         }
 
