@@ -19,7 +19,6 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
-import { ApyValue } from '../components/ApyValue';
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
@@ -36,9 +35,7 @@ export const YieldWithdrawCompleteScreen = () => {
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { CryptoAmountFormatter } = useFormatters();
-    const { account, apy, flowKey, resolutionStatus, vault } = useResolvedYieldFlowData(
-        route.params,
-    );
+    const { account, flowKey, resolutionStatus, vault } = useResolvedYieldFlowData(route.params);
     const flowType = route.params.withdrawFlowType ?? 'withdraw';
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
@@ -107,13 +104,12 @@ export const YieldWithdrawCompleteScreen = () => {
 
         return getYieldWithdrawCompleteRows({
             accountSymbol: account.symbol,
-            apyValue: <ApyValue apy={apy} />,
             receivedAmount,
             receivedTokenContract: vault.token.address ?? undefined,
             withdrawalAmount,
             withdrawalTokenContract: vault.outputToken.address ?? undefined,
         });
-    }, [CryptoAmountFormatter, account, apy, isSharesInput, resolutionStatus, session, vault]);
+    }, [CryptoAmountFormatter, account, isSharesInput, resolutionStatus, session, vault]);
 
     if (resolutionStatus !== 'resolved' || session?.step !== 'complete') {
         return null;
