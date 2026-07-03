@@ -58,6 +58,7 @@ import {
     selectTradingComposedTransactionInfo,
     selectTradingDisplayComposedFee,
     selectTradingExchange,
+    selectTradingExchangeActiveTrade,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeCexQuotes,
@@ -782,6 +783,43 @@ describe('tradingSelectors', () => {
             ['a transactionId matching no trade', 'unknown'],
         ])('should return undefined for %s', (_, transactionId) => {
             expect(selectTradingSellActiveTrade(buildState(transactionId))).toBeUndefined();
+        });
+    });
+
+    describe(selectTradingExchangeActiveTrade.name, () => {
+        const sellTrade: TradingTransactionSell = {
+            tradeType: 'sell',
+            key: 'sell1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId1' },
+            sendAccountKey: undefined,
+        };
+        const exchangeTrade: TradingTransactionExchange = {
+            tradeType: 'exchange',
+            key: 'exchange1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId2' },
+            sendAccountKey: undefined,
+        };
+        const buildState = (transactionId: string | undefined): TradingRootState => ({
+            wallet: {
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, transactionId },
+                    trades: [sellTrade, exchangeTrade],
+                },
+            },
+        });
+
+        it('should return the exchange trade matching the exchange transactionId', () => {
+            expect(selectTradingExchangeActiveTrade(buildState('orderId2'))).toEqual(exchangeTrade);
+        });
+
+        it.each([
+            ['no active exchange transactionId', undefined],
+            ['a transactionId matching no trade', 'unknown'],
+        ])('should return undefined for %s', (_, transactionId) => {
+            expect(selectTradingExchangeActiveTrade(buildState(transactionId))).toBeUndefined();
         });
     });
 

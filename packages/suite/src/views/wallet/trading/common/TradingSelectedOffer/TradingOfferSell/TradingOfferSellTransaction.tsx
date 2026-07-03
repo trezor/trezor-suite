@@ -1,6 +1,13 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import {
+    selectTradingSellActiveTrade,
+    selectTradingSellInfo,
+    selectTradingSellIsLoading,
+    selectTradingSellSelectedQuote,
+} from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Divider, Spinner, Text } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
@@ -8,20 +15,19 @@ import { spacings } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { useSelector } from 'src/hooks/suite';
-import { type TradingSellConfirmValues } from 'src/hooks/wallet/trading/useTradingSellConfirm';
+import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 
-interface TradingSelectedOfferSellTransactionProps {
-    confirm: TradingSellConfirmValues;
-}
-
-export const TradingSelectedOfferSellTransaction = ({
-    confirm,
-}: TradingSelectedOfferSellTransactionProps) => {
+export const TradingSelectedOfferSellTransaction = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { handleClick, disabled } = useAsyncClickHandler();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { device, account, selectedQuote, sellInfo, sendTransaction, trade, isLoading } = confirm;
+    const { device } = useDevice();
+    const { account, sendTransaction } = useTradingSellTradeActions();
+    const sellInfo = useSelector(selectTradingSellInfo);
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const trade = useSelector(selectTradingSellActiveTrade);
 
     useTradingWatchTrade({
         account,

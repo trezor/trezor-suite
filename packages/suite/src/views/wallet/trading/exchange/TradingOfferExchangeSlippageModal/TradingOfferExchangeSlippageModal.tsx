@@ -8,13 +8,12 @@ import { Translation, useTranslation } from '@suite/intl';
 import {
     type SlippageFormValues,
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
-    type TradingExchangeType,
     getSlippageFormValidationSchema,
 } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import { Banner, Column, Modal } from '@trezor/components';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 
 import { TradingOfferExchangeSlippageInput } from './TradingOfferExchangeSlippageInput';
 import { TradingOfferExchangeSlippageSummary } from './TradingOfferExchangeSlippageSummary';
@@ -29,7 +28,7 @@ export const TradingOfferExchangeSlippageModal = ({
     selectedQuote,
 }: TradingOfferExchangeSlippageModalProps) => {
     const { translationString } = useTranslation();
-    const { confirmTrade } = useTradingFormContext<TradingExchangeType>();
+    const { confirmTrade } = useTradingExchangeTradeActions();
     const [hasSubmitError, setHasSubmitError] = useState(false);
 
     const form = useForm<SlippageFormValues>({

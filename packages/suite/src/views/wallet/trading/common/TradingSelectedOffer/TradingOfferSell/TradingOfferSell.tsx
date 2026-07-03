@@ -2,6 +2,7 @@ import { Fragment, type JSX } from 'react';
 
 import styled from 'styled-components';
 
+import { useDevice } from '@suite/device';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingSellActiveTrade,
@@ -14,7 +15,6 @@ import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Divider } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { type TradingSellConfirmValues } from 'src/hooks/wallet/trading/useTradingSellConfirm';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingOfferSellBankAccount } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellBankAccount';
@@ -30,11 +30,7 @@ const Wrapper = styled.div`
     ${TradingWrapper}
 `;
 
-interface TradingOfferSellProps {
-    confirm: TradingSellConfirmValues;
-}
-
-export const TradingOfferSell = ({ confirm }: TradingOfferSellProps) => {
+export const TradingOfferSell = () => {
     const accounts = useSelector(selectAccounts);
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
@@ -42,10 +38,11 @@ export const TradingOfferSell = ({ confirm }: TradingOfferSellProps) => {
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
     const { composed } = useSelector(selectTradingComposedTransactionInfo);
     const trade = useSelector(selectTradingSellActiveTrade);
+    const { device } = useDevice();
 
     const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
     const selectedTrade = trade?.data ?? selectedQuote;
-    const isDeviceDisconnected = !confirm.device?.connected;
+    const isDeviceDisconnected = !device?.connected;
 
     if (!selectedTrade) return null;
 
@@ -65,13 +62,13 @@ export const TradingOfferSell = ({ confirm }: TradingOfferSellProps) => {
             step: 'BANK_ACCOUNT',
             translationId: 'TR_SELL_BANK_ACCOUNT_STEP',
             isActive: formStep === 'BANK_ACCOUNT',
-            component: <TradingOfferSellBankAccount confirm={confirm} />,
+            component: <TradingOfferSellBankAccount />,
         },
         {
             step: 'SEND_TRANSACTION',
             translationId: 'TR_SELL_CONFIRM_SEND_STEP',
             isActive: formStep === 'SEND_TRANSACTION',
-            component: <TradingSelectedOfferSellTransaction confirm={confirm} />,
+            component: <TradingSelectedOfferSellTransaction />,
         },
     ];
 
