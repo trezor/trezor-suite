@@ -403,9 +403,10 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
         }
     } finally {
-        // explicitDb is injected into TrezorConnect as authLabelLookupProvider and may be
-        // reused across multiple runDbMethods() invocations within this process — leave it open.
-        if (db !== explicitDb) db.close();
+        // db.dispose() is idempotent, so this is safe even though connect may also dispose
+        // the same instance (via TrezorConnect.dispose() or a provider swap) — whichever
+        // fires first wins, the sqlite handle only ever closes once.
+        db.dispose();
     }
 
     // Return true only if every requested method was a DB method

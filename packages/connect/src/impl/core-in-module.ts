@@ -200,6 +200,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
 
     public dispose() {
         this.eventEmitter.removeAllListeners();
+        void this.settings.authLabelLookupProvider?.dispose?.();
         this.settings = parseConnectSettings();
 
         // Only dispose coreManager if initialization has completed.

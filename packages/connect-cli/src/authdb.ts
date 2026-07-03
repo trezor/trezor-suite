@@ -152,7 +152,18 @@ export class AuthLabelDb implements AuthLabelLookupProvider, AuthLabelApprovalPr
         this.db.prepare('DELETE FROM tree_state').run();
     }
 
+    private closed = false;
+
+    // Idempotent: safe to call from both connect-cli's own bookkeeping and connect's
+    // dispose lifecycle (TrezorConnect.dispose() / a provider being swapped out via
+    // updateConnectSettings) without risking a double-close on the sqlite handle.
     close(): void {
+        if (this.closed) return;
+        this.closed = true;
         this.db.close();
+    }
+
+    dispose(): void {
+        this.close();
     }
 }
