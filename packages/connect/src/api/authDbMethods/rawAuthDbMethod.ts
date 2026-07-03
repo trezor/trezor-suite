@@ -9,6 +9,15 @@ import type { MethodMessage } from '../../core/AbstractMethod';
 import { AbstractMethod } from '../../core/AbstractMethod';
 
 /**
+ * This directory (api/authDbMethods/) holds only the thin `AbstractMethod` wire-protocol
+ * shells for the AuthDB methods — they stay in @trezor/connect because they depend on
+ * connect-internal device/session/UI machinery (AbstractMethod, settingsStore) that isn't
+ * part of connect's public export surface. The portable Merkle-tree logic and the
+ * AuthLabelProvider contract live in the separate @trezor/authdb package, following the
+ * same split as authenticateDevice.ts (shell, here) + @trezor/device-authenticity (logic).
+ */
+
+/**
  * The six low-level AuthDB methods (authDbLookup, authDbUpdateLeaf, authDbSetRoot,
  * authDbApprove, authDbClearRoot, authDbSetDeviceId) are thin passthroughs to a single
  * proto request/response pair with no per-method business logic. This factory produces
