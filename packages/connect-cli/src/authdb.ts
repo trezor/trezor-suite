@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
+import type { OfflineQueueEntry, OfflineQueueProvider } from '@trezor/authdb';
 import type {
     AuthLabelApprovalProvider,
     AuthLabelEntry,
@@ -22,13 +23,34 @@ type SqliteAddressRow = {
     device_id: string | null;
 };
 type TreeStateRow = { root: string; counter: number; mac: string | null; device_id: string | null };
+type SqliteQueueRow = {
+    device_id: string;
+    wallet_id: string;
+    mac: string;
+    sequence: number;
+    address: string;
+    old_value: string;
+    new_value: string;
+};
+
+const parseQueueRow = (row: SqliteQueueRow): OfflineQueueEntry => ({
+    deviceId: row.device_id,
+    walletId: row.wallet_id,
+    mac: row.mac,
+    sequence: row.sequence,
+    address: row.address,
+    oldValue: row.old_value,
+    newValue: row.new_value,
+});
 
 const parseRow = (row: SqliteAddressRow): AuthLabelEntry => ({
     metadata: JSON.parse(row.data) as AuthLabelMetadata,
     counter: row.counter ?? 0,
 });
 
-export class AuthLabelDb implements AuthLabelLookupProvider, AuthLabelApprovalProvider {
+export class AuthLabelDb
+    implements AuthLabelLookupProvider, AuthLabelApprovalProvider, OfflineQueueProvider
+{
     private db: Database.Database;
 
     constructor(dbPath: string) {
@@ -45,11 +67,21 @@ export class AuthLabelDb implements AuthLabelLookupProvider, AuthLabelApprovalPr
                 PRIMARY KEY (address, network_symbol)
             );
             CREATE TABLE IF NOT EXISTS tree_state (
-                id        INTEGER PRIMARY KEY CHECK (id = 1),
+                wallet_id TEXT PRIMARY KEY,
                 root      TEXT NOT NULL,
                 counter   INTEGER NOT NULL DEFAULT 0,
                 mac       TEXT,
                 device_id TEXT
+            );
+            CREATE TABLE IF NOT EXISTS auth_queue (
+                device_id TEXT NOT NULL,
+                wallet_id TEXT NOT NULL,
+                mac       TEXT NOT NULL,
+                sequence  INTEGER NOT NULL,
+                address   TEXT NOT NULL,
+                old_value TEXT NOT NULL,
+                new_value TEXT NOT NULL,
+                PRIMARY KEY (wallet_id, sequence)
             );
         `);
     }
@@ -124,32 +156,62 @@ export class AuthLabelDb implements AuthLabelLookupProvider, AuthLabelApprovalPr
         }));
     }
 
-    getTreeState(): TreeStateWithMac | null {
+    getTreeState(walletId: string): TreeStateWithMac | null {
         const row = this.db
-            .prepare('SELECT root, counter, mac, device_id FROM tree_state WHERE id = 1')
-            .get() as TreeStateRow | undefined;
+            .prepare('SELECT root, counter, mac, device_id FROM tree_state WHERE wallet_id = ?')
+            .get(walletId) as TreeStateRow | undefined;
 
         return row
             ? { root: row.root, counter: row.counter, mac: row.mac, deviceId: row.device_id }
             : null;
     }
 
-    setTreeState(state: TreeState, mac?: string, deviceId?: string): void {
+    setTreeState(walletId: string, state: TreeState, mac?: string, deviceId?: string): void {
         this.db
             .prepare(
-                `INSERT INTO tree_state (id, root, counter, mac, device_id) VALUES (1, ?, ?, ?, ?)
-                 ON CONFLICT(id) DO UPDATE SET
+                `INSERT INTO tree_state (wallet_id, root, counter, mac, device_id) VALUES (?, ?, ?, ?, ?)
+                 ON CONFLICT(wallet_id) DO UPDATE SET
                      root      = excluded.root,
                      counter   = excluded.counter,
                      mac       = excluded.mac,
                      device_id = excluded.device_id`,
             )
-            .run(state.root, state.counter, mac ?? null, deviceId ?? null);
+            .run(walletId, state.root, state.counter, mac ?? null, deviceId ?? null);
+    }
+
+    appendQueueEntries(entries: OfflineQueueEntry[]): void {
+        const insert = this.db.prepare(
+            `INSERT INTO auth_queue (device_id, wallet_id, mac, sequence, address, old_value, new_value)
+             VALUES (@deviceId, @walletId, @mac, @sequence, @address, @oldValue, @newValue)
+             ON CONFLICT(wallet_id, sequence) DO NOTHING`,
+        );
+        const insertAll = this.db.transaction((rows: OfflineQueueEntry[]) => {
+            rows.forEach(row => insert.run(row));
+        });
+        insertAll(entries);
+    }
+
+    getQueueEntries(walletId: string): OfflineQueueEntry[] {
+        const rows = this.db
+            .prepare(
+                `SELECT device_id, wallet_id, mac, sequence, address, old_value, new_value
+                 FROM auth_queue WHERE wallet_id = ? ORDER BY sequence`,
+            )
+            .all(walletId) as SqliteQueueRow[];
+
+        return rows.map(parseQueueRow);
+    }
+
+    clearQueueEntries(walletId: string, throughSequence: number): void {
+        this.db
+            .prepare('DELETE FROM auth_queue WHERE wallet_id = ? AND sequence <= ?')
+            .run(walletId, throughSequence);
     }
 
     clearAll(): void {
         this.db.prepare('DELETE FROM addresses').run();
         this.db.prepare('DELETE FROM tree_state').run();
+        this.db.prepare('DELETE FROM auth_queue').run();
     }
 
     private closed = false;

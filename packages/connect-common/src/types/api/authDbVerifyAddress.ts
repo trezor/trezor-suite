@@ -14,6 +14,8 @@ export type AuthDbVerifyAddressSchema = Static<typeof AuthDbVerifyAddressSchema>
 export const AuthDbVerifyAddressSchema = Type.Object({
     address: Type.String(),
     networkSymbol: Type.String(),
+    /** Identifies which wallet's root checkpoint to verify against. */
+    walletId: Type.String(),
 });
 
 export interface AuthDbVerifyAddressResult {

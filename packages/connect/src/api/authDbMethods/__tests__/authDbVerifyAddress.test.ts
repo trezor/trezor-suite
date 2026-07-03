@@ -23,6 +23,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
             method: 'authDbVerifyAddress',
             address: 'bc1qaddr',
             networkSymbol: 'btc',
+            walletId: 'wallet1',
             ...payload,
         } as any,
     });

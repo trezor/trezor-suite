@@ -52,6 +52,8 @@ export const HELP = `@trezor/connect CLI arguments:
 
   Database options
     --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
+    --wallet-id=<id>                          Wallet whose root checkpoint to read/write in tree_state (default: "default")
+                                                Lets one shared DB track a separate checkpoint per wallet, alongside device_id.
     --db-params=<json>                        Params for database commands (JSON object)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange; pre-approval mac/deviceId from a prior dbapprove are picked up automatically)

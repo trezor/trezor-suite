@@ -29,6 +29,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         const params = {
             address: payload.address,
             networkSymbol: payload.networkSymbol,
+            walletId: payload.walletId,
         };
 
         super(message, params);
@@ -65,7 +66,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
             );
         }
 
-        const { address, networkSymbol } = this.params;
+        const { address, networkSymbol, walletId } = this.params;
 
         const [rows, entry] = await Promise.all([
             provider.getAllEntries(),
@@ -75,7 +76,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         const isMember = entry !== null;
 
         if (!this.useDevice) {
-            const treeState = await provider.getTreeState();
+            const treeState = await provider.getTreeState(walletId);
             const localRoot = treeState?.root ?? computeMerkleRoot(rows);
             const computedRoot = isMember
                 ? evaluateProof(

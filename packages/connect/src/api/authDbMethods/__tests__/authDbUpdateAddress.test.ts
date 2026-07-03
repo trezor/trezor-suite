@@ -28,6 +28,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
             address: 'bc1qaddr',
             networkSymbol: 'btc',
             metadata: { label: 'x' },
+            walletId: 'wallet1',
             ...payload,
         } as any,
     });
@@ -73,7 +74,10 @@ describe('authDbUpdateAddress', () => {
             metadata: { label: 'x' },
             counter: 1,
         });
-        expect(provider.setTreeState).toHaveBeenCalledWith({ root: 'root1', counter: 1 });
+        expect(provider.setTreeState).toHaveBeenCalledWith('wallet1', {
+            root: 'root1',
+            counter: 1,
+        });
         expect(result).toEqual({ counter: 1, root: 'root1' });
     });
 
@@ -136,7 +140,7 @@ describe('authDbUpdateAddress', () => {
             metadata: { label: 'x' },
             counter: 1,
         });
-        expect(provider.setTreeState).toHaveBeenCalledWith({
+        expect(provider.setTreeState).toHaveBeenCalledWith('wallet1', {
             root: expect.any(String),
             counter: 1,
         });

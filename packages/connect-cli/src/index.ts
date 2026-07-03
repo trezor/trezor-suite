@@ -137,6 +137,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         }
     }
     const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
+    const walletId = typeof args['wallet-id'] === 'string' ? args['wallet-id'] : 'default';
 
     let identifierHex: string;
     let db: AuthLabelDb;
@@ -191,6 +192,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     device: device!,
                     address,
                     networkSymbol,
+                    walletId,
                 });
                 if (!result.success) {
                     console.error('authDbVerifyAddress failed:', result);
@@ -233,6 +235,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     address,
                     networkSymbol,
                     metadata,
+                    walletId,
                 });
                 if (!result.success) {
                     console.error('authDbUpdateAddress failed:', result);
@@ -293,7 +296,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dbsetroot requires a connected device');
                     process.exit(1);
                 }
-                const treeState = db.getTreeState();
+                const treeState = db.getTreeState(walletId);
                 if (!treeState?.root) {
                     console.error(
                         'dbsetroot: no root stored in local database — run dbchange first',
@@ -328,7 +331,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
 
             if (method === 'dblistroots') {
-                const treeState = db.getTreeState();
+                const treeState = db.getTreeState(walletId);
                 if (!treeState?.root) {
                     console.log(
                         JSON.stringify({ method: 'dblistroots', treeState: null }, null, 2),

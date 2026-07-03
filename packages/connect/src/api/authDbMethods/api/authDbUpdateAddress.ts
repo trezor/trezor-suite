@@ -30,6 +30,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             address: payload.address,
             networkSymbol: payload.networkSymbol,
             metadata: payload.metadata,
+            walletId: payload.walletId,
         };
 
         super(message, params);
@@ -65,7 +66,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             );
         }
 
-        const { address, networkSymbol, metadata } = this.params;
+        const { address, networkSymbol, metadata, walletId } = this.params;
 
         const [rows, oldEntry] = await Promise.all([
             provider.getAllEntries(),
@@ -79,7 +80,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             await provider.upsert(address, networkSymbol, newEntry);
             const updatedRows = await provider.getAllEntries();
             const root = computeMerkleRoot(updatedRows);
-            await provider.setTreeState({ root, counter: newEntry.counter });
+            await provider.setTreeState(walletId, { root, counter: newEntry.counter });
 
             return { counter: newEntry.counter, root };
         }
@@ -121,7 +122,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         try {
             await provider.upsert(address, networkSymbol, newEntry);
             if (response.message.new_root !== undefined) {
-                await provider.setTreeState({
+                await provider.setTreeState(walletId, {
                     root: response.message.new_root,
                     counter: response.message.counter,
                 });

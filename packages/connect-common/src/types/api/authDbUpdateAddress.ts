@@ -21,6 +21,8 @@ export const AuthDbUpdateAddressSchema = Type.Object({
     address: Type.String(),
     networkSymbol: Type.String(),
     metadata: AuthDbAuthLabelMetadataSchema,
+    /** Identifies which wallet's root checkpoint this update belongs to. */
+    walletId: Type.String(),
 });
 
 export interface AuthDbUpdateAddressResult {

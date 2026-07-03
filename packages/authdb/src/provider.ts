@@ -26,7 +26,7 @@ export type AuthLabelEntry = {
 };
 
 /**
- * Global Merkle tree state stored in the database.
+ * Merkle tree state checkpoint stored in the database, scoped per wallet.
  * root    — current Merkle root hash as maintained by the Trezor device.
  * counter — monotonically increasing version; incremented by the device on every tree mutation.
  */
@@ -58,8 +58,9 @@ export type AuthLabelLookupProvider = {
     ): AuthLabelEntry | Promise<AuthLabelEntry>;
     upsert(address: string, networkSymbol: string, entry: AuthLabelEntry): void | Promise<void>;
     getAllEntries(): AuthLabelRow[] | Promise<AuthLabelRow[]>;
-    getTreeState(): TreeState | null | Promise<TreeState | null>;
-    setTreeState(state: TreeState): void | Promise<void>;
+    /** Each wallet keeps its own root checkpoint, identified by walletId. */
+    getTreeState(walletId: string): TreeState | null | Promise<TreeState | null>;
+    setTreeState(walletId: string, state: TreeState): void | Promise<void>;
     /** Releases any held resources (e.g. an open database handle). */
     dispose?(): void | Promise<void>;
 };
@@ -82,5 +83,40 @@ export type AuthLabelApprovalProvider = {
     ): void | Promise<void>;
 };
 
-/** Combined provider type accepted by ConnectSettings — approval support is optional. */
-export type AuthLabelProvider = AuthLabelLookupProvider & Partial<AuthLabelApprovalProvider>;
+/**
+ * A single mutation drained from a Trezor device's offline queue.
+ * Hex-encoded byte fields, mirroring the on-wire framing (EntryT) the device sends:
+ *   [wallet_id: 32B][mac: 32B][sequence: 4B BE u32]
+ *   [addr_len: 4B][address][old_len: 4B][old_value][new_len: 4B][new_value]
+ * oldValue === '' means the address was absent before this entry (insert).
+ * newValue === '' means this entry deletes the address.
+ * Once persisted host-side (EntryDB), a deviceId is attached to record which device
+ * flushed the entry.
+ */
+export type OfflineQueueEntry = {
+    deviceId: string;
+    walletId: string;
+    mac: string;
+    sequence: number;
+    address: string;
+    oldValue: string;
+    newValue: string;
+};
+
+/**
+ * Optional extension for providers that persist a device's offline queue (EntryDB)
+ * ahead of applying it to the Merkle tree — lets a device flush queued mutations in
+ * one round-trip when it comes back online, and lets the host replay them in
+ * `sequence` order before advancing the wallet's tree state.
+ */
+export type OfflineQueueProvider = {
+    appendQueueEntries(entries: OfflineQueueEntry[]): void | Promise<void>;
+    getQueueEntries(walletId: string): OfflineQueueEntry[] | Promise<OfflineQueueEntry[]>;
+    /** Drops walletId's queue entries once applied, up to and including throughSequence. */
+    clearQueueEntries(walletId: string, throughSequence: number): void | Promise<void>;
+};
+
+/** Combined provider type accepted by ConnectSettings — approval/queue support is optional. */
+export type AuthLabelProvider = AuthLabelLookupProvider &
+    Partial<AuthLabelApprovalProvider> &
+    Partial<OfflineQueueProvider>;
