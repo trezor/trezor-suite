@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
+import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import {
     GraphBaseCurrencyBalance,
     selectHasDeviceHistoryEnabledAccounts,
@@ -16,11 +16,11 @@ import {
 
 type PortfolioHeaderProps = {
     isLoading: boolean;
-    totalFiatBalance?: BaseCurrencyAmount;
 };
 
-export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeaderProps) => {
+export const PortfolioHeader = ({ isLoading }: PortfolioHeaderProps) => {
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
+    const totalFiatBalance = useSelector(selectSelectedDeviceTotalFiatBalance);
 
     return (
         <Box testID="@home/portfolio/header">
