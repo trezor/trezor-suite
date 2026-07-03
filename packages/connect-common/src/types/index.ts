@@ -66,6 +66,7 @@ export { RequestLoginSchema } from './api/requestLogin';
 export { UnlockPathParams } from './api/unlockPath';
 export { AuthDbUpdateAddressSchema } from './api/authDbUpdateAddress';
 export { AuthDbVerifyAddressSchema } from './api/authDbVerifyAddress';
+export { AuthDbApproveAddressSchema } from './api/authDbApproveAddress';
 export { FirmwareType } from '@trezor/device-utils';
 
 export type {

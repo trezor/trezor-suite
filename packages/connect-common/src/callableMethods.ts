@@ -64,6 +64,7 @@ const connectCallableMethodGroups = {
         'telemetryGet',
         'pingDevice',
         'authDbApprove',
+        'authDbApproveAddress',
         'authDbSetRoot',
         'authDbSetDeviceId',
         'authDbLookup',

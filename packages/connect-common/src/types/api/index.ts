@@ -4,6 +4,7 @@ import { Type } from '@trezor/schema-utils';
 import type { applyFlags } from './applyFlags';
 import type { applySettings } from './applySettings';
 import type { authDbApprove } from './authDbApprove';
+import type { authDbApproveAddress } from './authDbApproveAddress';
 import type { authDbClearRoot } from './authDbClearRoot';
 import type { authDbLookup } from './authDbLookup';
 import type { authDbSetDeviceId } from './authDbSetDeviceId';
@@ -216,6 +217,7 @@ export const TrezorConnectDevice = Type.Object({
     // https://connect.trezor.io/9/methods/device/pingDevice/
     pingDevice: Type.Unsafe<typeof pingDevice>(),
     authDbApprove: Type.Unsafe<typeof authDbApprove>(),
+    authDbApproveAddress: Type.Unsafe<typeof authDbApproveAddress>(),
     authDbSetRoot: Type.Unsafe<typeof authDbSetRoot>(),
     authDbSetDeviceId: Type.Unsafe<typeof authDbSetDeviceId>(),
     authDbLookup: Type.Unsafe<typeof authDbLookup>(),

@@ -6,3 +6,4 @@ export { default as authDbClearRoot } from './authDbClearRoot';
 export { default as authDbSetDeviceId } from './authDbSetDeviceId';
 export { default as authDbUpdateAddress } from './authDbUpdateAddress';
 export { default as authDbVerifyAddress } from './authDbVerifyAddress';
+export { default as authDbApproveAddress } from './authDbApproveAddress';

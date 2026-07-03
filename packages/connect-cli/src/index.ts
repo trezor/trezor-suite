@@ -1,10 +1,8 @@
-import { bytesToHex } from '@noble/hashes/utils.js';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { entryToValueBytes } from '@trezor/authdb';
 import TrezorConnect, {
     type AuthLabelMetadata,
     type Device,
@@ -270,24 +268,17 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dbapprove requires a connected device');
                     process.exit(1);
                 }
-                const entry = db.lookup(address, networkSymbol);
-                if (entry === null) {
-                    console.error('dbapprove: address not found in database — run dbchange first');
-                    process.exit(1);
-                }
-                const addressHex = Buffer.from(address, 'utf8').toString('hex');
-                const valueHex = bytesToHex(entryToValueBytes(networkSymbol, entry));
-                const approveResult = await TrezorConnect.authDbApprove({
+
+                const approveResult = await TrezorConnect.authDbApproveAddress({
                     device,
-                    address: addressHex,
-                    value: valueHex,
+                    address,
+                    networkSymbol,
                 });
                 if (!approveResult.success) {
                     console.error('dbapprove failed:', approveResult);
                     process.exit(1);
                 }
-                const { mac, identifier: deviceId } = approveResult.payload;
-                db.setApproval(address, networkSymbol, mac, deviceId);
+                const { mac, deviceId } = approveResult.payload;
                 console.log(
                     JSON.stringify(
                         { method: 'dbapprove', address, networkSymbol, mac, deviceId },
