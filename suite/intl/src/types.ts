@@ -1,11 +1,12 @@
 import type { ComponentProps } from 'react';
 import type { FormattedMessage } from 'react-intl';
 
+import type { TranslationId, TranslationKey } from './generated/translationKeys';
 import { messages } from './messages';
 
-export type Messages = typeof messages;
-export type TranslationKey = keyof Messages;
-export type TranslationId = Messages[keyof Messages]['id'];
+export type { TranslationId, TranslationKey };
+
+export type Messages = Record<TranslationKey, { id: TranslationId; defaultMessage: string }>;
 
 export type ExtendedMessageDescriptor = Pick<
     ComponentProps<typeof FormattedMessage>,

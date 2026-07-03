@@ -1,6 +1,6 @@
 import { ElectronApplication, Page } from '@playwright/test';
 
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import TrezorConnect from '@trezor/connect-web';
 
 import { DeviceFixture } from '../../support/device';

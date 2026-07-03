@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
+import { Translation } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { Box, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 

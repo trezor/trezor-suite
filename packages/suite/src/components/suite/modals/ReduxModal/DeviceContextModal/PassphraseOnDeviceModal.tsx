@@ -2,7 +2,8 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { Translation, messages } from '@suite/intl';
+import { Translation } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { selectIsDiscoveryStatusConfirmEmptyPassphrase } from '@suite-common/wallet-core';
 import { H2, Modal, Paragraph } from '@trezor/components';

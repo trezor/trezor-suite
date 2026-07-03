@@ -4,7 +4,8 @@ import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
 import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
-import { type TranslationKey, messages } from '@suite/intl';
+import { type TranslationKey } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { isAddressValid } from '@suite-common/address';
 import { type Account } from '@suite-common/wallet-types';
 import { Model } from '@trezor/trezor-user-env-link';

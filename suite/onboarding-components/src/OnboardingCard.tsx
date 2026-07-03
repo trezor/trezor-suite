@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
+import { Translation } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     Box,

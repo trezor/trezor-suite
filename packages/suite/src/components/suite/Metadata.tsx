@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useIntl } from 'react-intl';
 
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { SUITE_URL } from '@trezor/urls';
 
 type MetadataProps = {

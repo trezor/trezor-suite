@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
+import { Translation } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { onReceiveFee } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { type NetworkSymbol } from '@suite-common/wallet-config';

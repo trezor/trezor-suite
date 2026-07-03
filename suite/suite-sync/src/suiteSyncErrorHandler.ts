@@ -1,6 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { type SuiteSyncUncontrolledError } from '@suite-common/suite-sync';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';

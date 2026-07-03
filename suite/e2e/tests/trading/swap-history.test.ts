@@ -1,4 +1,4 @@
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';

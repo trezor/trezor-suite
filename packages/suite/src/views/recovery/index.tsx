@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { useDevice } from '@suite/device';
-import { Translation, messages } from '@suite/intl';
+import { Translation } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
 import {
     type RecoveryType,

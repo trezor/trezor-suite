@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
+import { Translation } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
 import {
     selectDeviceModel,

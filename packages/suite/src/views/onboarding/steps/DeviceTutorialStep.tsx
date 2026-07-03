@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
+import { Translation } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';

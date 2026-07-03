@@ -1,4 +1,4 @@
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { formatAddressWithNewlines, replaceTemplatesInTranslation } from '../../support/common';

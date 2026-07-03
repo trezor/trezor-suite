@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash';
 
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { expect, test } from '../../support/fixtures';

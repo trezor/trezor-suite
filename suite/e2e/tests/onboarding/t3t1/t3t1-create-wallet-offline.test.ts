@@ -1,4 +1,4 @@
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';

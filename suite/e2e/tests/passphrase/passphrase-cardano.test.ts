@@ -1,4 +1,4 @@
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 
 import { formatAddress, replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';

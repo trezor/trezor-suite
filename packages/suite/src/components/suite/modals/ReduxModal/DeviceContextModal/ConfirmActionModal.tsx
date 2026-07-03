@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl';
 
-import { Translation, type TranslationKey, messages } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Column, H2, Modal } from '@trezor/components';

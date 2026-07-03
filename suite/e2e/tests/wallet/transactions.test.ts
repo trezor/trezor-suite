@@ -1,4 +1,4 @@
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 
 import { expect, test } from '../../support/fixtures';
 import { graphRangeOptions } from '../../support/pageObjects/dashboardPage';

@@ -1,4 +1,4 @@
-import { messages } from '@suite/intl';
+import { messages } from '@suite/intl/src/messages';
 import TrezorConnect from '@trezor/connect-web';
 
 import { expect, test } from '../../support/fixtures';
