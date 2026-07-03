@@ -13,7 +13,6 @@ import {
     useGetTimeFrameForHistoryHours,
     useGraphForAccounts,
 } from '@suite-common/graph';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -155,10 +154,7 @@ export const useGraphForSingleAccount = ({
 };
 
 export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGraphParams) => {
-    // Use deep comparison because account items are rebuilt from account data.
-    const accountItems = useSelectorDeepComparison(
-        selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning,
-    );
+    const accountItems = useSelector(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning);
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, 'btc'),
