@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
-import { selectTorState } from '@suite/tor';
+import { TorStatus, selectTorState } from '@suite/tor';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -19,7 +19,6 @@ import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';
 import { Analytics } from './Analytics';
