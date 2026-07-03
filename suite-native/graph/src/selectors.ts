@@ -68,6 +68,9 @@ export const selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning = (
     return selectPortfolioGraphAccountItems(state);
 };
 
+export const selectHasPortfolioGraphAccounts = (state: PortfolioGraphRootState): boolean =>
+    A.isNotEmpty(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning(state));
+
 export const selectHasDeviceHistoryEnabledAccounts = createMemoizedSelector(
     [selectDeviceMainnetAccounts],
     (accounts): boolean =>

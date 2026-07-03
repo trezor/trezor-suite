@@ -3,16 +3,13 @@ import { RefreshControl } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
+import { refetchPortfolioGraphThunk } from '@suite-native/graph';
 import { useNativeStyles } from '@trezor/styles-native';
-
-import { type PortfolioGraphRef } from './components/PortfolioGraph';
 
 export const useHomeRefreshControl = ({
     isDiscoveredDeviceAccountless,
-    portfolioContentRef,
 }: {
     isDiscoveredDeviceAccountless: boolean;
-    portfolioContentRef: React.MutableRefObject<PortfolioGraphRef | null>;
 }) => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const dispatch = useDispatch();
@@ -24,14 +21,14 @@ export const useHomeRefreshControl = ({
         setIsRefreshing(true);
         try {
             await Promise.all([
-                portfolioContentRef.current?.refetchGraph?.(),
+                dispatch(refetchPortfolioGraphThunk({ forceRefetch: true })),
                 dispatch(syncAllAccountsWithBlockchainThunk()),
             ]);
         } catch {
             // Do nothing
         }
         setIsRefreshing(false);
-    }, [dispatch, portfolioContentRef]);
+    }, [dispatch]);
 
     const refreshControl = useMemo(() => {
         if (isDiscoveredDeviceAccountless) return undefined;

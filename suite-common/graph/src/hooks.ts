@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { roundToNearestMinutes, subHours } from 'date-fns';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { fetchGraphData } from './fetchGraphData';
+import { getTimeFrameForHistoryHours } from './graphUtils';
 import {
     type AccountItem,
     type FiatGraphPoint,
@@ -140,14 +140,4 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
 }
 
 export const useGetTimeFrameForHistoryHours = (timeframeHours: number | null) =>
-    useMemo(() => {
-        const endOfTimeFrameDate = roundToNearestMinutes(new Date(), {
-            nearestTo: 10,
-            roundingMethod: 'floor',
-        });
-        const startOfTimeFrameDate = timeframeHours
-            ? subHours(endOfTimeFrameDate, timeframeHours)
-            : null;
-
-        return { endOfTimeFrameDate, startOfTimeFrameDate };
-    }, [timeframeHours]);
+    useMemo(() => getTimeFrameForHistoryHours(timeframeHours), [timeframeHours]);
