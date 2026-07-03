@@ -1,12 +1,11 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import solSimulateStakeTransactionResponse from '../../../fixtures/staking/sol-simulate-stake-more-transaction.json';
+import solSimulateStakeMoreTransaction from '../../../fixtures/staking/sol-simulate-stake-more-transaction.json';
 import {
     solStakingAccountFirst,
     solStakingAccountSecond,
 } from '../../../fixtures/staking/sol-staking-accounts';
 import { expect, test } from '../../../support/fixtures';
-import { fulfillWithResult } from '../../../support/mocks/solanaStakingMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
@@ -15,7 +14,7 @@ const stakeMoreAmount = solStakingAccountSecond.stakeInSol;
 const stakeMoreAndRentFormatted = `${solStakingAccountSecond.stakeAndRentInSol} SOL`;
 const totalStakedAmount = (Number(stakedAmount) + Number(stakeMoreAmount)).toFixed(9);
 
-test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
@@ -23,18 +22,11 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     });
 
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
-        await solanaStakingMock.setupStakedAccount();
-        await solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
-        // Mock simulate stake-more transaction response
-        await solanaStakingMock.replaceRoute('simulateTransaction', {
-            respond: async (route, body) => {
-                await fulfillWithResult(route, body, {
-                    value: solSimulateStakeTransactionResponse,
-                });
-            },
-        });
+        solanaStakingMock.setupStakedAccount();
+        solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
+        solanaStakingMock.setSimulatedTransaction(solSimulateStakeMoreTransaction);
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+        await settingsPage.enableNetworkWithCustomBackend('sol', 'solana', solanaStakingMock.url);
     });
 
     test(
@@ -121,8 +113,8 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Stake', async () => {
-                solanaStakingMock.enableRoutesForTransactions();
-                await solanaStakingMock.setProgramAccounts([
+                solanaStakingMock.confirmTransaction();
+                solanaStakingMock.setStakeAccounts([
                     solStakingAccountFirst.payload,
                     solStakingAccountSecond.payload,
                 ]);
@@ -148,7 +140,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Wait an epoch and amount moved from pending to staked', async () => {
-                await solanaStakingMock.advanceEpoch();
+                solanaStakingMock.advanceEpoch();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
                     expected: {

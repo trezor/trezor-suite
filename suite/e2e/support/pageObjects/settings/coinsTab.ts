@@ -20,7 +20,7 @@ export class CoinsTab {
         this.page.getByTestId(`@settings/wallet/network/${symbol}/advance`);
     readonly coinBackendSelector: Locator;
     readonly coinBackendSelectorOption = (backend: BackendType) =>
-        this.page.getByTestId(`@settings/advance/${backend}`);
+        this.page.getByTestId(`@settings/advance/select-type/option/${backend}`);
     readonly coinAddressInput: Locator;
     readonly coinAdvanceSettingSaveButton: Locator;
     readonly modal: Locator;

@@ -1,7 +1,7 @@
 import { Locator, Page, test } from '@playwright/test';
 
 import type { LabelingSelectValue } from '@suite/labeling';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -272,6 +272,21 @@ export class SettingsPage {
             await this.coinsTab.disableNetwork(network);
         }
 
+        await this.coinsTab.activateCoinsButton.click();
+        await this.page.discoveryShouldFinish();
+    }
+
+    @step()
+    async enableNetworkWithCustomBackend(
+        symbol: NetworkSymbol,
+        backendType: BackendType,
+        backendUrl: string,
+    ) {
+        await this.navigateTo('coins');
+        await this.coinsTab.enableNetwork(symbol);
+        await this.coinsTab.openNetworkAdvanceSettings(symbol);
+        await this.coinsTab.changeBackend(backendType, backendUrl);
+        await expect(this.coinsTab.modal).toBeHidden();
         await this.coinsTab.activateCoinsButton.click();
         await this.page.discoveryShouldFinish();
     }

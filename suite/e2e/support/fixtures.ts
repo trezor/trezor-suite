@@ -117,8 +117,11 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(blockbookMock);
         blockbookMock.stop();
     },
-    solanaStakingMock: async ({ page }, use) => {
-        await use(new SolanaStakingMock(page));
+    solanaStakingMock: async ({ target }, use) => {
+        const solanaStakingMock = new SolanaStakingMock(target);
+        await solanaStakingMock.start();
+        await use(solanaStakingMock);
+        await solanaStakingMock.stop();
     },
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));

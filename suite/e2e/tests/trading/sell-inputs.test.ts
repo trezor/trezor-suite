@@ -2,14 +2,13 @@ import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
-import { fulfillWithResult } from '../../support/mocks/solanaStakingMock';
 
 const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
 const customFeeRate = 1;
 let bitcoinBalance: string | null;
 let solanaBalance: string | null;
 
-test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
@@ -17,20 +16,16 @@ test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage, solanaStakingMock }) => {
         await onboardingPage.completeOnboarding();
 
-        await test.step('Mock Solana account to have 5 SOL', async ({}) => {
-            await solanaStakingMock.replaceRoute('getBalance', {
-                predicate: params => params?.[0] === solanaBalanceAddress,
-                respond: async (route, body) => {
-                    await fulfillWithResult(route, body, {
-                        context: { slot: 0 },
-                        value: 5_000_000_000,
-                    });
-                },
-            });
-        });
+        solanaStakingMock.setBalance(solanaBalanceAddress, 5_000_000_000);
 
         await test.step('Enable Bitcoin and Solana', async () => {
-            await settingsPage.changeNetworks({ enableNetworks: ['btc', 'sol'] });
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coinsTab.enableNetwork('btc');
+            await settingsPage.enableNetworkWithCustomBackend(
+                'sol',
+                'solana',
+                solanaStakingMock.url,
+            );
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         });
