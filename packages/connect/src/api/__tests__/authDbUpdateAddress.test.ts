@@ -2,7 +2,7 @@ import type {
     AuthLabelApprovalProvider,
     AuthLabelLookupProvider,
     AuthLabelRow,
-} from '@trezor/connect-common';
+} from '@trezor/authdb';
 
 import * as settingsStore from '../../data/settingsStore';
 import AuthDbUpdateAddress from '../authDbUpdateAddress';

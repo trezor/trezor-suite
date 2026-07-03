@@ -4,7 +4,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { entryToValueBytes } from '@trezor/authdb-merkle-tree';
+import { entryToValueBytes } from '@trezor/authdb';
 import TrezorConnect, {
     type AuthLabelMetadata,
     type Device,

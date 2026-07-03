@@ -6,7 +6,7 @@ import {
     evaluateProof,
     generateMerkleProof,
     generateNonMembershipProof,
-} from '@trezor/authdb-merkle-tree';
+} from '@trezor/authdb';
 import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbVerifyAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';

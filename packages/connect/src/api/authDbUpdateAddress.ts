@@ -5,8 +5,9 @@ import {
     entryToValueBytes,
     generateMerkleProof,
     generateNonMembershipProof,
-} from '@trezor/authdb-merkle-tree';
-import type { AuthLabelEntry, MethodPermission } from '@trezor/connect-common';
+} from '@trezor/authdb';
+import type { AuthLabelEntry } from '@trezor/authdb';
+import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbUpdateAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';

@@ -1,4 +1,7 @@
 export * from '@trezor/connect-common';
+// AuthDB storage-provider contract + Merkle proof helpers — kept as their own package
+// so a future Evolu-backed provider can depend on it without pulling in connect-common.
+export * from '@trezor/authdb';
 
 // note: only @trezor/connect re-exports protobuf runtime
 export { MessagesSchema as PROTO } from '@trezor/protobuf';

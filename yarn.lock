@@ -15496,12 +15496,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/authdb-merkle-tree@workspace:*, @trezor/authdb-merkle-tree@workspace:packages/authdb-merkle-tree":
+"@trezor/authdb@workspace:*, @trezor/authdb@workspace:packages/authdb":
   version: 0.0.0-use.local
-  resolution: "@trezor/authdb-merkle-tree@workspace:packages/authdb-merkle-tree"
+  resolution: "@trezor/authdb@workspace:packages/authdb"
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
-    "@trezor/connect-common": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -15665,7 +15664,7 @@ __metadata:
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
-    "@trezor/authdb-merkle-tree": "workspace:*"
+    "@trezor/authdb": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
@@ -15680,6 +15679,7 @@ __metadata:
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     "@fivebinaries/coin-selection": "npm:3.0.0"
+    "@trezor/authdb": "workspace:*"
     "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/device-authenticity": "workspace:^"
@@ -15892,7 +15892,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
-    "@trezor/authdb-merkle-tree": "workspace:*"
+    "@trezor/authdb": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/coins-solana": "workspace:*"

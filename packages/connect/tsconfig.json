@@ -10,7 +10,7 @@
         ]
     },
     "references": [
-        { "path": "../authdb-merkle-tree" },
+        { "path": "../authdb" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../../coins/coins-solana" },

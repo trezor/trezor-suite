@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../authdb-merkle-tree" },
+        { "path": "../authdb" },
         { "path": "../connect" },
         { "path": "../transport" },
         { "path": "../transport-bluetooth" }

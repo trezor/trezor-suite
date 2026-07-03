@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1",
-        "@trezor/authdb-merkle-tree": "workspace:*",
+        "@trezor/authdb": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",

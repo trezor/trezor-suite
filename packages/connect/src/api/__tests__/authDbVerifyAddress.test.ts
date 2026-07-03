@@ -1,4 +1,4 @@
-import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/connect-common';
+import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/authdb';
 
 import * as settingsStore from '../../data/settingsStore';
 import AuthDbVerifyAddress from '../authDbVerifyAddress';
