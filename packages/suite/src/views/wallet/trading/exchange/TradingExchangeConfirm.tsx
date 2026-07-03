@@ -1,23 +1,35 @@
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
-import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { getTradeProvider } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
-import { TradingSelectedOffer } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOffer';
+import {
+    selectTradingExchangeSelectedQuote,
+    selectTradingProviderByNameAndTradeType,
+} from '@suite-common/trading';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Column } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite';
+import { useTradingExchangeConfirm } from 'src/hooks/wallet/trading/useTradingExchangeConfirm';
+import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
+import { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/TradingFooter';
+import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
+import { TradingOfferExchange } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange';
 
 export const TradingExchangeConfirm = () => {
-    const tradingExchangeContextValues = useTradingExchangeForm({
-        pageType: 'confirm',
-    });
-
-    const provider = getTradeProvider({
-        trade: tradingExchangeContextValues.selectedQuote,
-        providerInfo: getProvidersInfoProps(tradingExchangeContextValues),
-    });
+    useTradingExchangeConfirm();
+    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const provider = useSelector(state =>
+        selectTradingProviderByNameAndTradeType(state, selectedQuote?.exchange, 'exchange'),
+    );
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    useTradingPageHeader();
 
     return (
-        <TradingFormContext.Provider value={tradingExchangeContextValues}>
-            <TradingContainer SectionComponent={TradingSelectedOffer} provider={provider} />
-        </TradingFormContext.Provider>
+        <>
+            {isDiscoveryRunning && (
+                <Column margin={{ bottom: 16 }}>
+                    <DiscoveryWarning />
+                </Column>
+            )}
+            <TradingOfferExchange />
+            <TradingFooter provider={provider} />
+        </>
     );
 };

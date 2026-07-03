@@ -2,7 +2,7 @@ import { sendFormActions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
+import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
@@ -23,10 +23,7 @@ export const TransactionReviewModalExchange = ({
     precomposedForm,
 }: TransactionReviewModalExchangeProps) => {
     const dispatch = useDispatch();
-
-    const tradingExchangeForm = useTradingExchangeForm({
-        pageType: 'retry',
-    });
+    const { sendTransaction } = useTradingExchangeTradeActions();
 
     if (!precomposedForm) {
         return null;
@@ -34,7 +31,7 @@ export const TransactionReviewModalExchange = ({
 
     const handleTryAgainSignTx = async () => {
         dispatch(sendFormActions.discardTransaction());
-        await tradingExchangeForm.sendTransaction();
+        await sendTransaction();
     };
 
     return (

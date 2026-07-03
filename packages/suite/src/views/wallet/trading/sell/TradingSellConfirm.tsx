@@ -13,7 +13,7 @@ import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLay
 import { TradingOfferSell } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSell';
 
 export const TradingSellConfirm = () => {
-    const confirm = useTradingSellConfirm();
+    useTradingSellConfirm();
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const provider = useSelector(state =>
         selectTradingProviderByNameAndTradeType(state, selectedQuote?.exchange, 'sell'),
@@ -28,7 +28,7 @@ export const TradingSellConfirm = () => {
                     <DiscoveryWarning />
                 </Column>
             )}
-            <TradingOfferSell confirm={confirm} />
+            <TradingOfferSell />
             <TradingFooter provider={provider} />
         </>
     );

@@ -4,12 +4,17 @@ import { type BankAccount } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { sellUtils } from '@suite-common/trading';
+import {
+    selectTradingSellIsLoading,
+    selectTradingSellSelectedQuote,
+    sellUtils,
+} from '@suite-common/trading';
 import { Button, Column, Divider, Icon, Row, Select, Text } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { QuestionTooltip } from 'src/components/suite';
-import { type TradingSellConfirmValues } from 'src/hooks/wallet/trading/useTradingSellConfirm';
+import { useSelector } from 'src/hooks/suite';
+import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 
 const SelectWrapper = styled.div`
     width: 100%;
@@ -24,12 +29,10 @@ const SelectWrapper = styled.div`
     }
 `;
 
-interface TradingOfferSellBankAccountProps {
-    confirm: TradingSellConfirmValues;
-}
-
-export const TradingOfferSellBankAccount = ({ confirm }: TradingOfferSellBankAccountProps) => {
-    const { confirmTrade, addBankAccount, selectedQuote, isLoading } = confirm;
+export const TradingOfferSellBankAccount = () => {
+    const { confirmTrade, addBankAccount } = useTradingSellTradeActions();
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );

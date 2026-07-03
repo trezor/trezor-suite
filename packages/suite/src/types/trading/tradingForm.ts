@@ -226,8 +226,6 @@ export interface TradingExchangeFormContextProps
         extraField,
         trade,
     }: TradingExchangeConfirmTradeProps) => Promise<ExchangeTrade | undefined>;
-    sendTransaction: () => Promise<boolean>;
-    signDataAndConfirm: () => Promise<void>;
     selectQuote: (quote: ExchangeTrade) => void;
     onQuoteSelected: (quote: ExchangeTrade) => void;
     verifyAddress: TradingVerifyAccountProps;

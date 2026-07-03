@@ -2,7 +2,7 @@ import { sendFormActions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useTradingSellConfirm } from 'src/hooks/wallet/trading/useTradingSellConfirm';
+import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
@@ -23,7 +23,7 @@ export const TransactionReviewModalSell = ({
     precomposedForm,
 }: TransactionReviewModalSellProps) => {
     const dispatch = useDispatch();
-    const { sendTransaction } = useTradingSellConfirm();
+    const { sendTransaction } = useTradingSellTradeActions();
 
     const handleTryAgainSignTx = async () => {
         dispatch(sendFormActions.discardTransaction());
