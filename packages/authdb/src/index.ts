@@ -6,3 +6,4 @@ export {
     generateNonMembershipProof,
     evaluateProof,
 } from './merkleTree';
+export type * from './provider';

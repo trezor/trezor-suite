@@ -1,7 +1,7 @@
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
-import type { AuthLabelEntry, AuthLabelRow, MerkleProof } from '@trezor/connect-common';
+import type { AuthLabelEntry, AuthLabelRow, MerkleProof } from './provider';
 
 // ---------------------------------------------------------------------------
 // MPT hashing primitives — must match authdb_tree.py exactly

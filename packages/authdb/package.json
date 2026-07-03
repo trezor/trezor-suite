@@ -1,10 +1,10 @@
 {
-    "name": "@trezor/authdb-merkle-tree",
+    "name": "@trezor/authdb",
     "version": "1.0.0",
     "type": "module",
     "author": "Trezor <info@trezor.io>",
-    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/authdb-merkle-tree",
-    "description": "Merkle Patricia Trie proof computation for Trezor AuthDB (address database).",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/authdb",
+    "description": "Merkle Patricia Trie proof computation and storage-provider contract for Trezor AuthDB (address database).",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",
@@ -37,7 +37,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@noble/hashes": "^2.0.1",
-        "@trezor/connect-common": "workspace:*"
+        "@noble/hashes": "^2.0.1"
     }
 }
