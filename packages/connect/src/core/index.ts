@@ -2,6 +2,7 @@
 import EventEmitter from 'events';
 
 import {
+    AUTH_LABEL,
     CORE_CALL,
     CORE_CALL_CANCEL,
     CORE_EVENT,
@@ -835,6 +836,19 @@ export class Core extends EventEmitter {
                 settingsStore.update({ transports: message.payload.transports });
                 resetTransports(this.getCoreContext());
                 break;
+
+            case AUTH_LABEL.SET_PROVIDER: {
+                // Dispose the outgoing provider before swapping it in, so a resource it holds
+                // (e.g. an open database handle) isn't leaked across re-init.
+                const outgoingProvider = settingsStore.isLoaded()
+                    ? settingsStore.get('authLabelLookupProvider')
+                    : undefined;
+                void outgoingProvider?.dispose?.();
+                settingsStore.update({
+                    authLabelLookupProvider: message.payload.authLabelLookupProvider,
+                });
+                break;
+            }
 
             case TRANSPORT.REQUEST_DEVICE:
                 /**

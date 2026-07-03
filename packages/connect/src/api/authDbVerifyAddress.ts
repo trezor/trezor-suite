@@ -1,7 +1,9 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import {
+    computeMerkleRoot,
     entryToValueBytes,
+    evaluateProof,
     generateMerkleProof,
     generateNonMembershipProof,
 } from '@trezor/authdb-merkle-tree';
@@ -30,6 +32,11 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         };
 
         super(message, params);
+        // No `device` supplied means offline mode: verify local consistency (does the
+        // proof over the stored entries round-trip to the stored root?) without a device
+        // round-trip. This does not confirm authenticity against firmware, only that the
+        // local database is internally consistent (see run()).
+        this.useDevice = payload.device !== undefined;
         this.useDeviceState = false;
         this.useEmptyPassphrase = true;
     }
@@ -65,8 +72,28 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
             provider.lookup(address, networkSymbol),
         ]);
 
-        const cmd = this.getDevice().getCommands();
         const isMember = entry !== null;
+
+        if (!this.useDevice) {
+            const treeState = await provider.getTreeState();
+            const localRoot = treeState?.root ?? computeMerkleRoot(rows);
+            const computedRoot = isMember
+                ? evaluateProof(
+                      address,
+                      networkSymbol,
+                      entry,
+                      generateMerkleProof(rows, address, networkSymbol),
+                  )
+                : computeMerkleRoot(rows);
+
+            return {
+                isMember,
+                valid: computedRoot === localRoot,
+                counter: entry?.counter ?? 0,
+            };
+        }
+
+        const cmd = this.getDevice().getCommands();
 
         const response = isMember
             ? await cmd.typedCall('AuthDbLookup', 'AuthDbLookupResponse', {

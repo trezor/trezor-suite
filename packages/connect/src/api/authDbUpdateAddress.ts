@@ -1,6 +1,7 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import {
+    computeMerkleRoot,
     entryToValueBytes,
     generateMerkleProof,
     generateNonMembershipProof,
@@ -31,6 +32,10 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         };
 
         super(message, params);
+        // No `device` supplied means offline mode: persist locally and recompute the root
+        // without a device round-trip (see run()). Auto-selecting a connected device is not
+        // supported for this method — callers that want the device must name it explicitly.
+        this.useDevice = payload.device !== undefined;
         this.useDeviceState = false;
         this.useEmptyPassphrase = true;
     }
@@ -69,6 +74,15 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         const newEntry: AuthLabelEntry = { metadata, counter: (oldEntry?.counter ?? 0) + 1 };
         const isInsert = oldEntry === null;
 
+        if (!this.useDevice) {
+            await provider.upsert(address, networkSymbol, newEntry);
+            const updatedRows = await provider.getAllEntries();
+            const root = computeMerkleRoot(updatedRows);
+            await provider.setTreeState({ root, counter: newEntry.counter });
+
+            return { counter: newEntry.counter, root };
+        }
+
         const oldValueHex = isInsert ? '' : bytesToHex(entryToValueBytes(networkSymbol, oldEntry));
         const newValueHex = bytesToHex(entryToValueBytes(networkSymbol, newEntry));
 
@@ -78,6 +92,10 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         const proof = isInsert
             ? (nonMembership?.proof ?? [])
             : generateMerkleProof(rows, address, networkSymbol);
+
+        // Auto-pick up a prior dbapprove-style pre-approval, if the provider supports it,
+        // so callers don't need to plumb mac/deviceId through this call themselves.
+        const approval = await provider.lookupApproval?.(address, networkSymbol);
 
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('AuthDbUpdateLeaf', 'AuthDbUpdateLeafResponse', {
@@ -90,6 +108,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                     witness_address: utf8Hex(nonMembership.witnessAddress),
                     witness_value: bytesToHex(nonMembership.witnessValue!),
                 }),
+            ...(approval && { mac: approval.mac, device_id: approval.deviceId }),
         });
 
         await provider.upsert(address, networkSymbol, newEntry);

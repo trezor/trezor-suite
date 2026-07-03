@@ -1,4 +1,5 @@
 import {
+    AUTH_LABEL,
     BLOCKCHAIN_EVENT,
     CORE_CALL,
     CORE_CALL_CANCEL,
@@ -132,7 +133,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     protected abstract updateProxy(proxy: UpdateConnectSettings['proxy']): Promise<void>;
 
     public async updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports: newTransports } = params;
+        const { proxy, transports: newTransports, authLabelLookupProvider } = params;
 
         try {
             await this.updateProxy(proxy);
@@ -145,6 +146,14 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
 
             this.settings = parseConnectSettings({ ...this.settings, transports });
             this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+        }
+
+        if (authLabelLookupProvider !== undefined) {
+            this.settings = parseConnectSettings({ ...this.settings, authLabelLookupProvider });
+            this.handleCoreMessage({
+                type: AUTH_LABEL.SET_PROVIDER,
+                payload: { authLabelLookupProvider },
+            });
         }
 
         return { success: true as const, payload: { message: 'success' } } as const;

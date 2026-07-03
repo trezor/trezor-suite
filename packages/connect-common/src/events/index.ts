@@ -1,3 +1,4 @@
+export * from './authLabel';
 export * from './blockchain';
 export * from './call';
 export * from './core';

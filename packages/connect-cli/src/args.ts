@@ -54,8 +54,7 @@ export const HELP = `@trezor/connect CLI arguments:
     --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
     --db-params=<json>                        Params for database commands (JSON object)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
-                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
-                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{...},"mac":"<hex>","deviceId":"<hex>"}' (dbchange with pre-approval)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange; pre-approval mac/deviceId from a prior dbapprove are picked up automatically)
                                                 --db-params='{"deviceId":"<hex>"}' (dbsetdeviceid)
 `;
 

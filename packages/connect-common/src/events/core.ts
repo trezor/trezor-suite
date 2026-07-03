@@ -1,5 +1,6 @@
 import type { Err } from '@trezor/type-utils';
 
+import type { AuthLabelSetProvider } from './authLabel';
 import type { BlockchainEventMessage } from './blockchain';
 import type { CoreCallCancelMessage, CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
@@ -22,6 +23,7 @@ export type CoreRequestMessage =
     | TransportSetTransports
     | TransportRequestWebUSBDevice
     | TransportGetInfo
+    | AuthLabelSetProvider
     | UiResponseEvent
     | CoreCallMessage;
 
