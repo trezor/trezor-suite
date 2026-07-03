@@ -9,11 +9,9 @@ import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
-    selectTradingSellInfo,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
 } from '../../selectors/tradingSelectors';
-import { type TradingSellFormProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
@@ -24,7 +22,6 @@ export type SendSellTransactionThunkProps = {
     trade: SellFiatTrade | undefined;
     shouldSendInSats: boolean | undefined;
     decimals: number;
-    formValues: TradingSellFormProps;
     isSlip24Active?: boolean;
 
     nextStep: () => void;
@@ -39,7 +36,6 @@ export const sendSellTransactionThunk = createThunk(
             trade,
             shouldSendInSats,
             decimals,
-            formValues,
             isSlip24Active,
             nextStep,
             signAndPushSendFormTransaction,
@@ -47,13 +43,10 @@ export const sendSellTransactionThunk = createThunk(
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingSellSelectedQuote(getState());
-        const sellInfo = selectTradingSellInfo(getState());
         const providers = selectTradingSellProviders(getState());
         const selectedTrade = trade ?? selectedQuote;
         // destinationAddress may be set by useTradingWatchTrade hook to the trade object
         const destinationAddress = selectedTrade?.destinationAddress ?? trade?.destinationAddress;
-        const lockSendAmount =
-            !!sellInfo?.providerInfos[selectedTrade?.exchange ?? '']?.lockSendAmount;
 
         dispatch(tradingActions.setModalAccountKey(account.key));
 
@@ -85,8 +78,6 @@ export const sendSellTransactionThunk = createThunk(
                 ...recomposeInputs,
                 isSlip24Active,
                 signAndPushSendFormTransaction,
-                // when lockSendAmount is true, the amount should not be recomputed based on the maximum balance.
-                setMaxOutputId: lockSendAmount ? undefined : formValues.setMaxOutputId,
                 tradingFormState,
             }),
         );

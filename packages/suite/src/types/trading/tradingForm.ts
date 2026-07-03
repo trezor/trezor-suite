@@ -2,7 +2,6 @@ import type React from 'react';
 import type { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import type {
-    BankAccount,
     BuyTrade,
     BuyTradeQuoteRequest,
     CryptoId,
@@ -175,9 +174,6 @@ export interface TradingSellFormContextProps
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
     setAmountLimits: (limits?: AmountLimitProps) => void;
 
-    addBankAccount: () => void;
-    confirmTrade: (bankAccount: BankAccount) => void;
-    sendTransaction: () => Promise<boolean>;
     selectQuote: (quote: SellFiatTrade) => void;
     onQuoteSelected: (quote: SellFiatTrade) => void;
     methods: UseFormReturn<TradingSellFormProps>;
@@ -384,10 +380,6 @@ export interface TradingOfferBuyProps {
     selectedQuote: BuyTrade;
     isConfirmDisabled: boolean;
     confirmTrade: () => Promise<BuyTrade | undefined>;
-}
-
-export interface TradingOfferSellProps extends TradingOfferCommonProps {
-    selectedQuote: SellFiatTrade;
 }
 
 export interface TradingOfferExchangeProps extends Omit<

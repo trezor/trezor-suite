@@ -23,7 +23,7 @@ import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
 import { type ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
 import { type SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
-import type { TradingType } from '../../types';
+import type { TradingTransactionExchange, TradingTransactionSell, TradingType } from '../../types';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     bestBuyQuotePerPaymentMethodProjection,
@@ -90,6 +90,7 @@ import {
     selectTradingQuotesPerPaymentMethodByType,
     selectTradingSelectedPaymentMethodByType,
     selectTradingSellAccountKey,
+    selectTradingSellActiveTrade,
     selectTradingSellAmountLimits,
     selectTradingSellFormStep,
     selectTradingSellInfo,
@@ -744,6 +745,44 @@ describe('tradingSelectors', () => {
 
     it('selectTradingTradeByOrderId should return undefined when orderId is not found', () => {
         expect(selectTradingTradeByOrderId(state, 'unknown_order')).toBeUndefined();
+    });
+
+    describe(selectTradingSellActiveTrade.name, () => {
+        const sellTrade: TradingTransactionSell = {
+            tradeType: 'sell',
+            key: 'sell1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId1' },
+            sendAccountKey: undefined,
+        };
+        const exchangeTrade: TradingTransactionExchange = {
+            tradeType: 'exchange',
+            key: 'exchange1',
+            date: '2024-01-01T00:00:00.000Z',
+            data: { orderId: 'orderId2' },
+            sendAccountKey: undefined,
+        };
+        const buildState = (transactionId: string | undefined): TradingRootState => ({
+            wallet: {
+                trading: {
+                    ...initialState,
+                    sell: { ...initialState.sell, transactionId },
+                    trades: [sellTrade, exchangeTrade],
+                },
+            },
+        });
+
+        it('should return the sell trade matching the sell transactionId', () => {
+            expect(selectTradingSellActiveTrade(buildState('sell1'))).toEqual(sellTrade);
+        });
+
+        it.each([
+            ['a non-sell trade sharing the same key', 'exchange1'],
+            ['no active sell transactionId', undefined],
+            ['a transactionId matching no trade', 'unknown'],
+        ])('should return undefined for %s', (_, transactionId) => {
+            expect(selectTradingSellActiveTrade(buildState(transactionId))).toBeUndefined();
+        });
     });
 
     describe(selectTradingCoinInfoByCryptoId.name, () => {

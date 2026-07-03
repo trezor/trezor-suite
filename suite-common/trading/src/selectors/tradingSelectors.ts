@@ -52,6 +52,7 @@ import {
     type TradingPaymentMethodProps,
     type TradingSellPaymentMethodProps,
     type TradingTransaction,
+    type TradingTransactionSell,
     type TradingType,
 } from '../types';
 import {
@@ -900,6 +901,17 @@ export const selectTradingExchangeTransactionId = (state: TradingRootState) =>
 
 export const selectTradingSellTransactionId = (state: TradingRootState) =>
     state.wallet.trading.sell.transactionId;
+
+export const selectTradingSellActiveTrade = (
+    state: TradingRootState,
+): TradingTransactionSell | undefined => {
+    const transactionId = selectTradingSellTransactionId(state);
+
+    return selectTradingTrades(state).find(
+        (trade): trade is TradingTransactionSell =>
+            trade.tradeType === 'sell' && trade.key === transactionId,
+    );
+};
 
 export const selectTradingBuyTransactionId = (state: TradingRootState) =>
     state.wallet.trading.buy.transactionId;
