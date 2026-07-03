@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -8,7 +9,7 @@ import { type AssetsRootState } from '../types';
 
 type AccountsCountProps = { symbol: NetworkSymbol };
 
-export const AccountsCount = ({ symbol }: AccountsCountProps) => {
+export const AccountsCount = memo(({ symbol }: AccountsCountProps) => {
     const accountsCount = useSelector(
         (state: AssetsRootState) =>
             selectVisibleDeviceAccountsByNetworkSymbol(state, symbol).length,
@@ -19,4 +20,6 @@ export const AccountsCount = ({ symbol }: AccountsCountProps) => {
             {accountsCount}
         </Text>
     );
-};
+});
+
+AccountsCount.displayName = 'AccountsCount';

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
@@ -9,7 +10,7 @@ import { type AssetsRootState } from '../types';
 
 type CryptoAmountProps = { symbol: NetworkSymbol };
 
-export const CryptoAmount = ({ symbol }: CryptoAmountProps) => {
+export const CryptoAmount = memo(({ symbol }: CryptoAmountProps) => {
     const cryptoValue = useSelector((state: AssetsRootState) =>
         selectAssetCryptoValue(state, symbol),
     );
@@ -23,4 +24,6 @@ export const CryptoAmount = ({ symbol }: CryptoAmountProps) => {
             testID={`@assets/cryptoAmount/${symbol}`}
         />
     );
-};
+});
+
+CryptoAmount.displayName = 'CryptoAmount';
