@@ -137,4 +137,26 @@ describe('clearAndUnlockDeviceAccessQueue', () => {
         expect(deviceAccessMutex.isLocked).toBe(false);
         expect(deviceAccessMutex.taskQueue.length).toBe(0);
     });
+
+    test('prioritized task is cancelled by clearing the queue', async () => {
+        // Reset shared singleton state possibly left over from previous tests.
+        clearAndUnlockDeviceAccessQueue();
+
+        // Hold the lock so the prioritized request has to wait in the queue. Locking
+        // synchronously (no timer callback) keeps the setup free of leaked timers and
+        // lets us reach the clearing call without an await where a stray task could run.
+        void deviceAccessMutex.lock();
+        const prioritizedTask = requestPrioritizedDeviceAccess(deviceAccessCallbackMock);
+
+        expect(deviceAccessMutex.isLocked).toBe(true);
+        expect(deviceAccessMutex.taskQueue.length).toBe(1);
+
+        clearAndUnlockDeviceAccessQueue();
+
+        // The prioritized waiter must be rejected like any other queued task instead of
+        // resolving `true` and running its device callback after the queue was cleared.
+        expect(await prioritizedTask).toBe(DEVICE_ACCESS_ERROR);
+        expect(deviceAccessMutex.isLocked).toBe(false);
+        expect(deviceAccessMutex.taskQueue.length).toBe(0);
+    });
 });
