@@ -21,7 +21,8 @@ export const MEMO_PROGRAM_PUBLIC_KEY_V1 = 'Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQ
 export const MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT = 16;
 export const MAX_DEACTIVATE_ACCOUNTS = 22;
 export const MAX_CLAIM_ACCOUNTS = 16;
-export const MIN_AMOUNT = 10000000; // 0.01 SOL
+
+export const MIN_STAKE_DELEGATION = 1_000_000_000n;
 
 export const tokenProgramNames = ['spl-token', 'spl-token-2022'] as const;
 
