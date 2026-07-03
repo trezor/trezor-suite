@@ -38,6 +38,7 @@
 
         commonBuildInputs = [
           pkgs.bash
+          pkgs.jq
           pkgs.git
           pkgs.git-lfs
           pkgs.gnupg

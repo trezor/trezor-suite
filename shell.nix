@@ -34,6 +34,7 @@ in
     name = "trezor-suite-dev";
     buildInputs = [
       bash
+      jq
       git
       git-lfs
       gnupg
