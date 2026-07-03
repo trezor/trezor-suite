@@ -1,11 +1,15 @@
+import { bytesToHex } from '@noble/hashes/utils.js';
 import { createHash } from 'crypto';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { BitcoinAddressDb } from './authdb';
-import { computeMerkleRoot, entryToValueBytes, generateMerkleProof, generateNonMembershipProof } from './merkle-tree';
-import { verifyAndUpdateEntry, verifyEntry, verifyNonMembership } from './verify-authenticity';
+import {
+    computeMerkleRoot,
+    entryToValueBytes,
+    generateMerkleProof,
+    generateNonMembershipProof,
+} from '@trezor/authdb-merkle-tree';
 import TrezorConnect, {
     type AddressMetadata,
     type Device,
@@ -15,6 +19,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 
 import { HELP, args } from './args';
+import { BitcoinAddressDb } from './authdb';
 import { stdioManager } from './stdio';
 import {
     debugLinkDecision,
@@ -23,6 +28,7 @@ import {
     initDebugLink,
     isDebugLinkInteraction,
 } from './transport';
+import { verifyAndUpdateEntry, verifyEntry, verifyNonMembership } from './verify-authenticity';
 
 /* eslint-disable no-console */
 
@@ -65,14 +71,41 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear', 'dblistroots', 'dbsetdeviceid']);
+const DB_METHODS = new Set([
+    'dblookup',
+    'dbchange',
+    'dbapprove',
+    'dbsetroot',
+    'dbclear',
+    'dblistroots',
+    'dbsetdeviceid',
+]);
 const DB_METHODS_REQUIRING_PARAMS = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetdeviceid']);
 // Methods that must send a command to firmware (need a connected device even when --db-path is set)
-const DB_METHODS_NEEDING_DEVICE = new Set(['dblookup', 'dbchange', 'dbapprove', 'dbsetroot', 'dbclear', 'dbsetdeviceid']);
+const DB_METHODS_NEEDING_DEVICE = new Set([
+    'dblookup',
+    'dbchange',
+    'dbapprove',
+    'dbsetroot',
+    'dbclear',
+    'dbsetdeviceid',
+]);
+
+// When --db-path is explicit, the DB path is known upfront (independent of the
+// device), so it can be constructed before TrezorConnect.init() and injected as
+// `addressLookupProvider`. dbchange/dblookup then call the high-level
+// authDbUpdateAddress/authDbVerifyAddress methods, which compute Merkle proofs
+// internally instead of connect-cli doing it. When the path must be derived from
+// the device's pubkey (no --db-path), the provider isn't known until after a
+// device round-trip, so that flow still computes proofs manually via the
+// low-level authDbUpdateLeaf/authDbLookup methods (see verify-authenticity.ts).
+const hasExplicitDbPath = typeof args['db-path'] === 'string';
+const explicitDb = hasExplicitDbPath ? new BitcoinAddressDb(args['db-path'] as string) : null;
 
 const getDbPath = (identifierHex: string) => {
     if (typeof args['db-path'] === 'string') return args['db-path'];
     const profileDir = path.join(os.homedir(), '.trezor');
+
     return path.join(profileDir, `auth_database_${identifierHex}.db`);
 };
 
@@ -101,7 +134,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         if (!args['db-params']) {
             console.error(
                 'This DB method requires --db-params (note the double dash). Example:\n' +
-                '  --db-params=\'{"address":"...","networkSymbol":"btc"}\'',
+                    '  --db-params=\'{"address":"...","networkSymbol":"btc"}\'',
             );
             process.exit(1);
         }
@@ -113,19 +146,18 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             process.exit(1);
         }
     }
-    const hasExplicitPath = typeof args['db-path'] === 'string';
     const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
 
     let identifierHex: string;
     let db: BitcoinAddressDb;
 
-    if (hasExplicitPath) {
+    if (explicitDb) {
         if (needsDevice && !device) {
             console.error('A connected device is required for this DB method.');
             process.exit(1);
         }
         identifierHex = '(explicit-path)';
-        db = new BitcoinAddressDb(args['db-path'] as string);
+        db = explicitDb;
     } else {
         if (!device) {
             console.error('A connected device is required to derive the database path.');
@@ -133,7 +165,11 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         }
         // Derive identifier: SHA-256 of compressed public key at m/44'/0'/0'/0/0,
         // matching the firmware's own identifier derivation.
-        const pubKeyResult = await TrezorConnect.getPublicKey({ device, path: "m/44'/0'/0'/0/0", coin: 'btc' });
+        const pubKeyResult = await TrezorConnect.getPublicKey({
+            device,
+            path: "m/44'/0'/0'/0/0",
+            coin: 'btc',
+        });
         if (!pubKeyResult.success) {
             console.error('Failed to get public key from device:', pubKeyResult);
             process.exit(1);
@@ -145,33 +181,113 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         db = new BitcoinAddressDb(getDbPath(identifierHex));
     }
 
+    // When the DB is the one injected into TrezorConnect at init() (addressLookupProvider),
+    // dbchange/dblookup can use the high-level, proof-free API. mac/deviceId (pre-approval)
+    // aren't supported by the high-level method yet, so that combination still falls back
+    // to the manual low-level flow.
+    const useHighLevel = db === explicitDb;
+
     try {
         for (const method of dbMethods) {
             if (method === 'dblookup') {
                 const { address, networkSymbol } = params;
                 if (!address || !networkSymbol) {
-                    console.error('dblookup requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ');
+                    console.error(
+                        'dblookup requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ',
+                    );
                     process.exit(1);
                 }
-                const entry = db.lookup(address, networkSymbol);
-                const treeState = db.getTreeState();
-                const allEntries = db.getAllEntries();
-                if (entry === null) {
-                    const nm = generateNonMembershipProof(allEntries, address, networkSymbol);
-                    const absent = await verifyNonMembership(address, nm.proof, nm.witnessAddress, nm.witnessValue, device);
-                    console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: null, counter: null, proof: nm.proof, treeState }, null, 2));
-                    console.log('Authenticity verified (non-membership):', absent);
+
+                if (useHighLevel) {
+                    const result = await TrezorConnect.authDbVerifyAddress({
+                        device: device!,
+                        address,
+                        networkSymbol,
+                    });
+                    if (!result.success) {
+                        console.error('authDbVerifyAddress failed:', result);
+                        process.exit(1);
+                    }
+                    console.log(
+                        JSON.stringify(
+                            {
+                                method: 'dblookup',
+                                address,
+                                networkSymbol,
+                                isMember: result.payload.isMember,
+                                counter: result.payload.counter,
+                            },
+                            null,
+                            2,
+                        ),
+                    );
+                    console.log('Authenticity verified:', result.payload.valid);
                 } else {
+                    const entry = db.lookup(address, networkSymbol);
+                    const treeState = db.getTreeState();
                     const allEntries = db.getAllEntries();
-                    const proof = generateMerkleProof(allEntries, address, networkSymbol);
-                    const authentic = await verifyEntry(address, networkSymbol, entry, proof, device);
-                    console.log(JSON.stringify({ method: 'dblookup', address, networkSymbol, metadata: entry.metadata, counter: entry.counter, proof, treeState }, null, 2));
-                    console.log('Authenticity verified:', authentic);
+                    if (entry === null) {
+                        const nm = generateNonMembershipProof(allEntries, address, networkSymbol);
+                        const absent = await verifyNonMembership(
+                            address,
+                            nm.proof,
+                            nm.witnessAddress,
+                            nm.witnessValue,
+                            device,
+                        );
+                        console.log(
+                            JSON.stringify(
+                                {
+                                    method: 'dblookup',
+                                    address,
+                                    networkSymbol,
+                                    metadata: null,
+                                    counter: null,
+                                    proof: nm.proof,
+                                    treeState,
+                                },
+                                null,
+                                2,
+                            ),
+                        );
+                        console.log('Authenticity verified (non-membership):', absent);
+                    } else {
+                        const proof = generateMerkleProof(allEntries, address, networkSymbol);
+                        const authentic = await verifyEntry(
+                            address,
+                            networkSymbol,
+                            entry,
+                            proof,
+                            device,
+                        );
+                        console.log(
+                            JSON.stringify(
+                                {
+                                    method: 'dblookup',
+                                    address,
+                                    networkSymbol,
+                                    metadata: entry.metadata,
+                                    counter: entry.counter,
+                                    proof,
+                                    treeState,
+                                },
+                                null,
+                                2,
+                            ),
+                        );
+                        console.log('Authenticity verified:', authentic);
+                    }
                 }
             }
 
             if (method === 'dbchange') {
-                const { address, networkSymbol, metadata: rawMetadata, mac: inputMac, deviceId: inputDeviceId } = params;
+                const {
+                    address,
+                    networkSymbol,
+                    metadata: rawMetadata,
+                    mac: inputMac,
+                    deviceId: inputDeviceId,
+                } = params;
                 if (!address || !networkSymbol || !rawMetadata) {
                     console.error(
                         'dbchange requires --db-params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
@@ -182,64 +298,137 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     ...(rawMetadata.label !== undefined && { label: String(rawMetadata.label) }),
                     ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
                 };
-                const oldEntry = db.lookup(address, networkSymbol);
-                const allEntries = db.getAllEntries();
-                const treeState = db.getTreeState();
-                const provisionalCounter = (treeState?.counter ?? 0) + 1;
 
-                let currentProof: MerkleProof;
-                let witnessAddress: string | null = null;
-                let witnessValue: Buffer | null = null;
-
-                if (oldEntry !== null) {
-                    currentProof = generateMerkleProof(allEntries, address, networkSymbol);
+                if (useHighLevel && inputMac === undefined && inputDeviceId === undefined) {
+                    const result = await TrezorConnect.authDbUpdateAddress({
+                        device: device!,
+                        address,
+                        networkSymbol,
+                        metadata,
+                    });
+                    if (!result.success) {
+                        console.error('authDbUpdateAddress failed:', result);
+                        console.log('Authenticity verified: false — database not updated');
+                    } else {
+                        console.log(
+                            JSON.stringify(
+                                {
+                                    method: 'dbchange',
+                                    address,
+                                    networkSymbol,
+                                    metadata,
+                                    counter: result.payload.counter,
+                                    root: result.payload.root,
+                                },
+                                null,
+                                2,
+                            ),
+                        );
+                        console.log('Authenticity verified: true');
+                    }
                 } else {
-                    const nm = generateNonMembershipProof(allEntries, address, networkSymbol);
-                    currentProof = nm.proof;
-                    witnessAddress = nm.witnessAddress;
-                    witnessValue = nm.witnessValue;
-                }
+                    const oldEntry = db.lookup(address, networkSymbol);
+                    const allEntries = db.getAllEntries();
+                    const treeState = db.getTreeState();
+                    const provisionalCounter = (treeState?.counter ?? 0) + 1;
 
-                const result = await verifyAndUpdateEntry(
-                    address, networkSymbol, oldEntry, metadata, currentProof, treeState,
-                    provisionalCounter, witnessAddress, witnessValue,
-                    inputMac, inputDeviceId, device,
-                );
+                    let currentProof: MerkleProof;
+                    let witnessAddress: string | null = null;
+                    let witnessValue: Uint8Array | null = null;
 
-                if (!result.authentic) {
-                    console.log('Authenticity verified: false — database not updated');
-                } else {
-                    db.upsert(address, networkSymbol, { metadata, counter: result.newEntryCounter });
-
-                    // Store auth_mac (leaf authorization MAC) per-address so it can be passed
-                    // as mac+device_id in a future dbchange on another device to skip confirmation
-                    if (result.authMac !== null && result.deviceId !== null) {
-                        db.setApproval(address, networkSymbol, result.authMac, result.deviceId);
+                    if (oldEntry !== null) {
+                        currentProof = generateMerkleProof(allEntries, address, networkSymbol);
+                    } else {
+                        const nm = generateNonMembershipProof(allEntries, address, networkSymbol);
+                        currentProof = nm.proof;
+                        witnessAddress = nm.witnessAddress;
+                        witnessValue = nm.witnessValue;
                     }
 
-                    let newTreeState = treeState;
-                    if (result.newRoot !== null) {
-                        const rootMac = result.mac ?? undefined;
-                        const deviceId = result.deviceId ?? undefined;
-                        newTreeState = { root: result.newRoot, counter: result.newEntryCounter, mac: rootMac ?? null, deviceId: deviceId ?? null };
-                        db.setTreeState({ root: result.newRoot, counter: result.newEntryCounter }, rootMac, deviceId);
-                    } else if (!device) {
-                        // Offline: recompute root locally
-                        const updatedEntries = db.getAllEntries();
-                        const newRoot = computeMerkleRoot(updatedEntries);
-                        newTreeState = { root: newRoot, counter: result.newEntryCounter, mac: null, deviceId: null };
-                        db.setTreeState({ root: newRoot, counter: result.newEntryCounter });
-                    }
+                    const result = await verifyAndUpdateEntry(
+                        address,
+                        networkSymbol,
+                        oldEntry,
+                        metadata,
+                        currentProof,
+                        treeState,
+                        provisionalCounter,
+                        witnessAddress,
+                        witnessValue,
+                        inputMac,
+                        inputDeviceId,
+                        device,
+                    );
 
-                    console.log(JSON.stringify({ method: 'dbchange', address, networkSymbol, metadata, counter: result.newEntryCounter, proof: currentProof, treeState: newTreeState, authMac: result.authMac }, null, 2));
-                    console.log('Authenticity verified:', result.authentic);
+                    if (!result.authentic) {
+                        console.log('Authenticity verified: false — database not updated');
+                    } else {
+                        db.upsert(address, networkSymbol, {
+                            metadata,
+                            counter: result.newEntryCounter,
+                        });
+
+                        // Store auth_mac (leaf authorization MAC) per-address so it can be passed
+                        // as mac+device_id in a future dbchange on another device to skip confirmation
+                        if (result.authMac !== null && result.deviceId !== null) {
+                            db.setApproval(address, networkSymbol, result.authMac, result.deviceId);
+                        }
+
+                        let newTreeState = treeState;
+                        if (result.newRoot !== null) {
+                            const rootMac = result.mac ?? undefined;
+                            const deviceId = result.deviceId ?? undefined;
+                            newTreeState = {
+                                root: result.newRoot,
+                                counter: result.newEntryCounter,
+                                mac: rootMac ?? null,
+                                deviceId: deviceId ?? null,
+                            };
+                            db.setTreeState(
+                                { root: result.newRoot, counter: result.newEntryCounter },
+                                rootMac,
+                                deviceId,
+                            );
+                        } else if (!device) {
+                            // Offline: recompute root locally
+                            const updatedEntries = db.getAllEntries();
+                            const newRoot = computeMerkleRoot(updatedEntries);
+                            newTreeState = {
+                                root: newRoot,
+                                counter: result.newEntryCounter,
+                                mac: null,
+                                deviceId: null,
+                            };
+                            db.setTreeState({ root: newRoot, counter: result.newEntryCounter });
+                        }
+
+                        console.log(
+                            JSON.stringify(
+                                {
+                                    method: 'dbchange',
+                                    address,
+                                    networkSymbol,
+                                    metadata,
+                                    counter: result.newEntryCounter,
+                                    proof: currentProof,
+                                    treeState: newTreeState,
+                                    authMac: result.authMac,
+                                },
+                                null,
+                                2,
+                            ),
+                        );
+                        console.log('Authenticity verified:', result.authentic);
+                    }
                 }
             }
 
             if (method === 'dbapprove') {
                 const { address, networkSymbol } = params;
                 if (!address || !networkSymbol) {
-                    console.error('dbapprove requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ');
+                    console.error(
+                        'dbapprove requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ',
+                    );
                     process.exit(1);
                 }
                 if (!device) {
@@ -252,15 +441,25 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
                 const addressHex = Buffer.from(address, 'utf8').toString('hex');
-                const valueHex = entryToValueBytes(networkSymbol, entry).toString('hex');
-                const approveResult = await TrezorConnect.authDbApprove({ device, address: addressHex, value: valueHex });
+                const valueHex = bytesToHex(entryToValueBytes(networkSymbol, entry));
+                const approveResult = await TrezorConnect.authDbApprove({
+                    device,
+                    address: addressHex,
+                    value: valueHex,
+                });
                 if (!approveResult.success) {
                     console.error('dbapprove failed:', approveResult);
                     process.exit(1);
                 }
                 const { mac, identifier: deviceId } = approveResult.payload;
                 db.setApproval(address, networkSymbol, mac, deviceId);
-                console.log(JSON.stringify({ method: 'dbapprove', address, networkSymbol, mac, deviceId }, null, 2));
+                console.log(
+                    JSON.stringify(
+                        { method: 'dbapprove', address, networkSymbol, mac, deviceId },
+                        null,
+                        2,
+                    ),
+                );
             }
 
             if (method === 'dbsetroot') {
@@ -269,8 +468,10 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
                 const treeState = db.getTreeState();
-                if (treeState === null || !treeState.root) {
-                    console.error('dbsetroot: no root stored in local database — run dbchange first');
+                if (!treeState?.root) {
+                    console.error(
+                        'dbsetroot: no root stored in local database — run dbchange first',
+                    );
                     process.exit(1);
                 }
                 const setRootParams: Parameters<typeof TrezorConnect.authDbSetRoot>[0] = {
@@ -284,20 +485,28 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dbsetroot failed:', setRootResult);
                     process.exit(1);
                 }
-                console.log(JSON.stringify({
-                    method: 'dbsetroot',
-                    root: treeState.root,
-                    counter: setRootResult.payload.counter,
-                    identifier: setRootResult.payload.identifier,
-                    mac: treeState.mac,
-                    deviceId: treeState.deviceId,
-                }, null, 2));
+                console.log(
+                    JSON.stringify(
+                        {
+                            method: 'dbsetroot',
+                            root: treeState.root,
+                            counter: setRootResult.payload.counter,
+                            identifier: setRootResult.payload.identifier,
+                            mac: treeState.mac,
+                            deviceId: treeState.deviceId,
+                        },
+                        null,
+                        2,
+                    ),
+                );
             }
 
             if (method === 'dblistroots') {
                 const treeState = db.getTreeState();
-                if (treeState === null || !treeState.root) {
-                    console.log(JSON.stringify({ method: 'dblistroots', treeState: null }, null, 2));
+                if (!treeState?.root) {
+                    console.log(
+                        JSON.stringify({ method: 'dblistroots', treeState: null }, null, 2),
+                    );
                     console.log('No root stored — run dbchange first.');
                 } else {
                     const dbPath = getDbPath(identifierHex);
@@ -322,7 +531,13 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     process.exit(1);
                 }
                 db.clearAll();
-                console.log(JSON.stringify({ method: 'dbclear', identifier: result.payload.identifier }, null, 2));
+                console.log(
+                    JSON.stringify(
+                        { method: 'dbclear', identifier: result.payload.identifier },
+                        null,
+                        2,
+                    ),
+                );
             }
 
             if (method === 'dbsetdeviceid') {
@@ -335,16 +550,27 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.error('dbsetdeviceid requires a connected device');
                     process.exit(1);
                 }
-                const result = await TrezorConnect.authDbSetDeviceId({ device, device_id: deviceId });
+                const result = await TrezorConnect.authDbSetDeviceId({
+                    device,
+                    device_id: deviceId,
+                });
                 if (!result.success) {
                     console.error('dbsetdeviceid failed:', result);
                     process.exit(1);
                 }
-                console.log(JSON.stringify({ method: 'dbsetdeviceid', deviceId: result.payload.device_id }, null, 2));
+                console.log(
+                    JSON.stringify(
+                        { method: 'dbsetdeviceid', deviceId: result.payload.device_id },
+                        null,
+                        2,
+                    ),
+                );
             }
         }
     } finally {
-        db.close();
+        // explicitDb is injected into TrezorConnect as addressLookupProvider and may be
+        // reused across multiple runDbMethods() invocations within this process — leave it open.
+        if (db !== explicitDb) db.close();
     }
 
     // Return true only if every requested method was a DB method
@@ -451,10 +677,9 @@ const run = async () => {
 
     // Skip device initialization entirely when --db-path is explicit and no requested
     // method needs to contact firmware (e.g. --dblistroots --db-path=...).
-    const hasExplicitPath = typeof args['db-path'] === 'string';
     const requestedDbMethods = getMethods().filter(m => DB_METHODS.has(m));
     const dbNeedsDevice = requestedDbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
-    const canSkipDevice = hasExplicitPath && !dbNeedsDevice;
+    const canSkipDevice = hasExplicitDbPath && !dbNeedsDevice;
 
     const wantsDevice = args.autoconnect || args.credentials;
     if ((!wantsDevice || canSkipDevice) && (await runDbMethods())) {
@@ -603,6 +828,7 @@ const run = async () => {
             knownCredentials: getThpCredentials(),
             pairingMethods,
         },
+        ...(explicitDb && { addressLookupProvider: explicitDb }),
     });
 
     // Blockchain notification handler requires a seed-derived DB path; it is wired up

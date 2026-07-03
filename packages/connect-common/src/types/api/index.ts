@@ -1,14 +1,16 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import type { applyFlags } from './applyFlags';
+import type { applySettings } from './applySettings';
 import type { authDbApprove } from './authDbApprove';
 import type { authDbClearRoot } from './authDbClearRoot';
 import type { authDbLookup } from './authDbLookup';
-import type { authDbSetRoot } from './authDbSetRoot';
 import type { authDbSetDeviceId } from './authDbSetDeviceId';
+import type { authDbSetRoot } from './authDbSetRoot';
+import type { authDbUpdateAddress } from './authDbUpdateAddress';
 import type { authDbUpdateLeaf } from './authDbUpdateLeaf';
-import type { applyFlags } from './applyFlags';
-import type { applySettings } from './applySettings';
+import type { authDbVerifyAddress } from './authDbVerifyAddress';
 import type { authenticateDevice } from './authenticateDevice';
 import type { authorizeCoinjoin } from './authorizeCoinjoin';
 import type { backupDevice } from './backupDevice';
@@ -219,6 +221,8 @@ export const TrezorConnectDevice = Type.Object({
     authDbLookup: Type.Unsafe<typeof authDbLookup>(),
     authDbUpdateLeaf: Type.Unsafe<typeof authDbUpdateLeaf>(),
     authDbClearRoot: Type.Unsafe<typeof authDbClearRoot>(),
+    authDbUpdateAddress: Type.Unsafe<typeof authDbUpdateAddress>(),
+    authDbVerifyAddress: Type.Unsafe<typeof authDbVerifyAddress>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 

@@ -1,8 +1,14 @@
-import type { AddressEntry, AddressMetadata, MerkleProof, TreeState } from '@trezor/connect';
-import type { Device } from '@trezor/connect';
-import TrezorConnect from '@trezor/connect';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
-import { entryToValueBytes } from './merkle-tree';
+import { entryToValueBytes } from '@trezor/authdb-merkle-tree';
+import type {
+    AddressEntry,
+    AddressMetadata,
+    Device,
+    MerkleProof,
+    TreeState,
+} from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 export type VerifyAndUpdateResult = {
     authentic: boolean;
@@ -30,20 +36,26 @@ export const verifyAndUpdateEntry = async (
     treeState: TreeState | null,
     newEntryCounter: number,
     witnessAddress: string | null,
-    witnessValue: Buffer | null,
+    witnessValue: Uint8Array | null,
     inputMac?: string,
     inputDeviceId?: string,
     device?: Device,
 ): Promise<VerifyAndUpdateResult> => {
     const newEntry: AddressEntry = { metadata: newMetadata, counter: newEntryCounter };
-    const oldValueHex = oldEntry !== null
-        ? entryToValueBytes(networkSymbol, oldEntry).toString('hex')
-        : '';
-    const newValueHex = entryToValueBytes(networkSymbol, newEntry).toString('hex');
+    const oldValueHex =
+        oldEntry !== null ? bytesToHex(entryToValueBytes(networkSymbol, oldEntry)) : '';
+    const newValueHex = bytesToHex(entryToValueBytes(networkSymbol, newEntry));
     const addressHex = Buffer.from(address, 'utf8').toString('hex');
 
     if (!device) {
-        return { authentic: true, newEntryCounter, newRoot: null, mac: null, authMac: null, deviceId: null };
+        return {
+            authentic: true,
+            newEntryCounter,
+            newRoot: null,
+            mac: null,
+            authMac: null,
+            deviceId: null,
+        };
     }
 
     const isInsert = oldEntry === null;
@@ -54,34 +66,51 @@ export const verifyAndUpdateEntry = async (
         old_value: oldValueHex,
         new_value: newValueHex,
         proof: currentProof,
-        ...(isInsert && witnessAddress !== null && {
-            witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
-            witness_value: witnessValue!.toString('hex'),
-        }),
+        ...(isInsert &&
+            witnessAddress !== null && {
+                witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
+                witness_value: bytesToHex(witnessValue!),
+            }),
         ...(inputMac !== undefined && { mac: inputMac }),
         ...(inputDeviceId !== undefined && { device_id: inputDeviceId }),
     };
 
     /* eslint-disable no-console */
-    console.log('[authDbUpdateLeaf] params:', JSON.stringify({
-        address: addressHex,
-        old_value: oldValueHex,
-        new_value: newValueHex,
-        proof: currentProof,
-        ...(isInsert && witnessAddress !== null && {
-            witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
-            witness_value: witnessValue!.toString('hex'),
-        }),
-        ...(inputMac !== undefined && { mac: inputMac }),
-        ...(inputDeviceId !== undefined && { device_id: inputDeviceId }),
-    }, null, 2));
+    console.log(
+        '[authDbUpdateLeaf] params:',
+        JSON.stringify(
+            {
+                address: addressHex,
+                old_value: oldValueHex,
+                new_value: newValueHex,
+                proof: currentProof,
+                ...(isInsert &&
+                    witnessAddress !== null && {
+                        witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
+                        witness_value: bytesToHex(witnessValue!),
+                    }),
+                ...(inputMac !== undefined && { mac: inputMac }),
+                ...(inputDeviceId !== undefined && { device_id: inputDeviceId }),
+            },
+            null,
+            2,
+        ),
+    );
     /* eslint-enable no-console */
 
     const result = await TrezorConnect.authDbUpdateLeaf(updateParams);
 
     if (!result.success) {
-        console.error('[authDbUpdateLeaf] FAILED:', result); // eslint-disable-line no-console
-        return { authentic: false, newEntryCounter, newRoot: null, mac: null, authMac: null, deviceId: null };
+        console.error('[authDbUpdateLeaf] FAILED:', result);
+
+        return {
+            authentic: false,
+            newEntryCounter,
+            newRoot: null,
+            mac: null,
+            authMac: null,
+            deviceId: null,
+        };
     }
 
     return {
@@ -107,7 +136,7 @@ export const verifyEntry = async (
     if (!device) return true;
 
     const addressHex = Buffer.from(address, 'utf8').toString('hex');
-    const valueHex = entryToValueBytes(networkSymbol, entry).toString('hex');
+    const valueHex = bytesToHex(entryToValueBytes(networkSymbol, entry));
 
     const result = await TrezorConnect.authDbLookup({
         device,
@@ -126,7 +155,7 @@ export const verifyNonMembership = async (
     address: string,
     proof: MerkleProof,
     witnessAddress: string | null,
-    witnessValue: Buffer | null,
+    witnessValue: Uint8Array | null,
     device?: Device,
 ): Promise<boolean> => {
     if (!device) return true;
@@ -139,7 +168,7 @@ export const verifyNonMembership = async (
         proof,
         ...(witnessAddress !== null && {
             witness_address: Buffer.from(witnessAddress, 'utf8').toString('hex'),
-            witness_value: witnessValue!.toString('hex'),
+            witness_value: bytesToHex(witnessValue!),
         }),
     });
 

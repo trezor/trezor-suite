@@ -7,6 +7,7 @@
         "types": ["w3c-web-usb"]
     },
     "references": [
+        { "path": "../authdb-merkle-tree" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../../coins/coins-solana" },

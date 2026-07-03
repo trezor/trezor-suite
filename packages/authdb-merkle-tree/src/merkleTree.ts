@@ -1,49 +1,46 @@
-import { createHash } from 'crypto';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
-import type { AddressEntry, AllEntriesRow, MerkleProof } from '@trezor/connect';
+import type { AddressEntry, AllEntriesRow, MerkleProof } from '@trezor/connect-common';
 
 // ---------------------------------------------------------------------------
 // MPT hashing primitives — must match authdb_tree.py exactly
 // ---------------------------------------------------------------------------
+
+const utf8 = (s: string) => new TextEncoder().encode(s);
+
+// Deterministic value encoding (networkSymbol + counter + sorted metadata).
+export const entryToValueBytes = (networkSymbol: string, entry: AddressEntry): Uint8Array => {
+    const metaSorted = Object.fromEntries(
+        Object.entries(entry.metadata).sort(([a], [b]) => a.localeCompare(b)),
+    );
+    const encoded = `${networkSymbol}:${entry.counter}:${JSON.stringify(metaSorted)}`;
+
+    return utf8(encoded);
+};
 
 // leaf_hash = SHA-256(b"\x00" + address_bytes + value_bytes)
 export const computeLeafHash = (
     address: string,
     networkSymbol: string,
     entry: AddressEntry,
-): Buffer => {
-    const addrBytes = Buffer.from(address, 'utf8');
+): Uint8Array => {
+    const addrBytes = utf8(address);
     const valBytes = entryToValueBytes(networkSymbol, entry);
 
-    return createHash('sha256')
-        .update(Buffer.from([0x00]))
-        .update(addrBytes)
-        .update(valBytes)
-        .digest();
-};
-
-// Deterministic value encoding (networkSymbol + counter + sorted metadata).
-export const entryToValueBytes = (networkSymbol: string, entry: AddressEntry): Buffer => {
-    const metaSorted = Object.fromEntries(
-        Object.entries(entry.metadata).sort(([a], [b]) => a.localeCompare(b)),
-    );
-    const encoded = `${networkSymbol}:${entry.counter}:${JSON.stringify(metaSorted)}`;
-
-    return Buffer.from(encoded, 'utf8');
+    return sha256(concatBytes(new Uint8Array([0x00]), addrBytes, valBytes));
 };
 
 // internal_hash(left, right) = SHA-256(b"\x01" + left + right)  — positional, no sorting
-const internalHash = (left: Buffer, right: Buffer): Buffer =>
-    createHash('sha256')
-        .update(Buffer.from([0x01]))
-        .update(left)
-        .update(right)
-        .digest();
+const internalHash = (left: Uint8Array, right: Uint8Array): Uint8Array =>
+    sha256(concatBytes(new Uint8Array([0x01]), left, right));
+
+const addressHash = (address: string): Uint8Array => sha256(utf8(address));
 
 // Return the bit at position `bit` of `addrHash`, MSB first.
 // bit 0 = MSB of byte 0; bit 7 = LSB of byte 0; bit 8 = MSB of byte 1; …
-const getBit = (addrHash: Buffer, bit: number): 0 | 1 =>
-    ((addrHash[Math.floor(bit / 8)] >> (7 - (bit % 8))) & 1) as 0 | 1;
+const getBit = (addrHash: Uint8Array, bit: number): 0 | 1 =>
+    (((addrHash[Math.floor(bit / 8)] ?? 0) >> (7 - (bit % 8))) & 1) as 0 | 1;
 
 // ---------------------------------------------------------------------------
 // MPT (Merkle Patricia Trie) — path-compressed positional trie
@@ -62,16 +59,16 @@ const getBit = (addrHash: Buffer, bit: number): 0 | 1 =>
 // This is O(log N) elements for N entries, far below the firmware's buffer limit.
 // ---------------------------------------------------------------------------
 
-type LeafInfo = { addrHash: Buffer; leafHash: Buffer };
+type LeafInfo = { addrHash: Uint8Array; leafHash: Uint8Array };
 
-type LeafNode = { kind: 'leaf'; addrHash: Buffer; leafHash: Buffer };
+type LeafNode = { kind: 'leaf'; addrHash: Uint8Array; leafHash: Uint8Array };
 type BranchNode = { kind: 'branch'; bit: number; left: MptNode; right: MptNode };
 type MptNode = LeafNode | BranchNode;
 
 // Graft-based INSERT matching firmware's insert_leaf algorithm.
 // When reaching a leaf, create a branch at the first bit where new and existing diverge.
 // This may produce branches with non-monotonically increasing bit positions, matching firmware.
-const graftInsert = (tree: MptNode | null, addrHash: Buffer, leafHash: Buffer): MptNode => {
+const graftInsert = (tree: MptNode | null, addrHash: Uint8Array, leafHash: Uint8Array): MptNode => {
     if (tree === null) {
         return { kind: 'leaf', addrHash, leafHash };
     }
@@ -79,11 +76,13 @@ const graftInsert = (tree: MptNode | null, addrHash: Buffer, leafHash: Buffer): 
         let bit = 0;
         while (bit < 256 && getBit(tree.addrHash, bit) === getBit(addrHash, bit)) bit++;
         const newLeaf: MptNode = { kind: 'leaf', addrHash, leafHash };
+
         return getBit(addrHash, bit) === 0
             ? { kind: 'branch', bit, left: newLeaf, right: tree }
             : { kind: 'branch', bit, left: tree, right: newLeaf };
     }
     const b = getBit(addrHash, tree.bit);
+
     return b === 0
         ? { ...tree, left: graftInsert(tree.left, addrHash, leafHash) }
         : { ...tree, right: graftInsert(tree.right, addrHash, leafHash) };
@@ -97,15 +96,22 @@ const buildMpt = (leaves: LeafInfo[]): MptNode => {
         tree = graftInsert(tree, leaf.addrHash, leaf.leafHash);
     }
     if (tree === null) throw new Error('MPT: no leaves');
+
     return tree;
 };
 
 // Hash a subtree recursively.
-const hashMpt = (node: MptNode): Buffer => {
+const hashMpt = (node: MptNode): Uint8Array => {
     if (node.kind === 'leaf') return node.leafHash;
 
     return internalHash(hashMpt(node.left), hashMpt(node.right));
 };
+
+const rowsToLeaves = (rows: AllEntriesRow[]): LeafInfo[] =>
+    rows.map(r => ({
+        addrHash: addressHash(r.address),
+        leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
+    }));
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -125,19 +131,15 @@ export const generateMerkleProof = (
     const target = rows.find(r => r.address === address && r.networkSymbol === networkSymbol);
     if (!target) return [];
 
-    const leaves: LeafInfo[] = rows.map(r => ({
-        addrHash: createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest(),
-        leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
-    }));
-
-    const targetAddrHash = createHash('sha256').update(Buffer.from(address, 'utf8')).digest();
+    const leaves = rowsToLeaves(rows);
+    const targetAddrHash = addressHash(address);
     const mptRoot = buildMpt(leaves);
 
     const proof: string[] = [];
 
     // Walk the MPT toward the target leaf, collecting siblings at each branch.
     // Proof elements are pushed as we unwind (leaf-to-root order).
-    const walk = (node: MptNode): Buffer => {
+    const walk = (node: MptNode): Uint8Array => {
         if (node.kind === 'leaf') return node.leafHash;
 
         const targetBit = getBit(targetAddrHash, node.bit);
@@ -146,13 +148,13 @@ export const generateMerkleProof = (
         if (targetBit === 0) {
             const leftHash = walk(node.left);
             const rightHash = hashMpt(node.right);
-            proof.push(bitHex + rightHash.toString('hex'));
+            proof.push(bitHex + bytesToHex(rightHash));
 
             return internalHash(leftHash, rightHash);
         } else {
             const leftHash = hashMpt(node.left);
             const rightHash = walk(node.right);
-            proof.push(bitHex + leftHash.toString('hex'));
+            proof.push(bitHex + bytesToHex(leftHash));
 
             return internalHash(leftHash, rightHash);
         }
@@ -170,12 +172,7 @@ export const generateMerkleProof = (
 export const computeMerkleRoot = (rows: AllEntriesRow[]): string => {
     if (rows.length === 0) return '';
 
-    const leaves: LeafInfo[] = rows.map(r => ({
-        addrHash: createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest(),
-        leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
-    }));
-
-    return hashMpt(buildMpt(leaves)).toString('hex');
+    return bytesToHex(hashMpt(buildMpt(rowsToLeaves(rows))));
 };
 
 /**
@@ -187,19 +184,14 @@ export const computeMerkleRoot = (rows: AllEntriesRow[]): string => {
 export const generateNonMembershipProof = (
     rows: AllEntriesRow[],
     address: string,
-    networkSymbol: string,
-): { proof: MerkleProof; witnessAddress: string | null; witnessValue: Buffer | null } => {
+    _networkSymbol: string,
+): { proof: MerkleProof; witnessAddress: string | null; witnessValue: Uint8Array | null } => {
     if (rows.length === 0) {
         return { proof: [], witnessAddress: null, witnessValue: null };
     }
 
-    const targetAddrHash = createHash('sha256').update(Buffer.from(address, 'utf8')).digest();
-
-    const leaves: LeafInfo[] = rows.map(r => ({
-        addrHash: createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest(),
-        leafHash: computeLeafHash(r.address, r.networkSymbol, r.entry),
-    }));
-
+    const targetAddrHash = addressHash(address);
+    const leaves = rowsToLeaves(rows);
     const mptRoot = buildMpt(leaves);
 
     // Walk the MPT following the target address path, collecting siblings.
@@ -207,9 +199,10 @@ export const generateNonMembershipProof = (
     let witnessLeaf: LeafInfo | null = null;
     const proof: string[] = [];
 
-    const walk = (node: MptNode): Buffer => {
+    const walk = (node: MptNode): Uint8Array => {
         if (node.kind === 'leaf') {
             witnessLeaf = node;
+
             return node.leafHash;
         }
 
@@ -219,12 +212,14 @@ export const generateNonMembershipProof = (
         if (targetBit === 0) {
             const leftHash = walk(node.left);
             const rightHash = hashMpt(node.right);
-            proof.push(bitHex + rightHash.toString('hex'));
+            proof.push(bitHex + bytesToHex(rightHash));
+
             return internalHash(leftHash, rightHash);
         } else {
             const leftHash = hashMpt(node.left);
             const rightHash = walk(node.right);
-            proof.push(bitHex + leftHash.toString('hex'));
+            proof.push(bitHex + bytesToHex(leftHash));
+
             return internalHash(leftHash, rightHash);
         }
     };
@@ -235,10 +230,8 @@ export const generateNonMembershipProof = (
         return { proof: [], witnessAddress: null, witnessValue: null };
     }
 
-    const wl = witnessLeaf as LeafInfo;
-    const wr = rows.find(r =>
-        createHash('sha256').update(Buffer.from(r.address, 'utf8')).digest().equals(wl.addrHash),
-    );
+    const wl: LeafInfo = witnessLeaf;
+    const wr = rows.find(r => bytesToHex(addressHash(r.address)) === bytesToHex(wl.addrHash));
     if (!wr) {
         return { proof: [], witnessAddress: null, witnessValue: null };
     }
@@ -261,15 +254,15 @@ export const evaluateProof = (
     entry: AddressEntry,
     proof: MerkleProof,
 ): string => {
-    const addrHash = createHash('sha256').update(Buffer.from(address, 'utf8')).digest();
+    const addrHash = addressHash(address);
     let current = computeLeafHash(address, networkSymbol, entry);
 
     for (const elem of proof) {
         const bit = parseInt(elem.slice(0, 2), 16);
-        const sibling = Buffer.from(elem.slice(2), 'hex');
+        const sibling = hexToBytes(elem.slice(2));
         const targetBit = getBit(addrHash, bit);
         current = targetBit === 0 ? internalHash(current, sibling) : internalHash(sibling, current);
     }
 
-    return current.toString('hex');
+    return bytesToHex(current);
 };

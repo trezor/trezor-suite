@@ -15496,6 +15496,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/authdb-merkle-tree@workspace:*, @trezor/authdb-merkle-tree@workspace:packages/authdb-merkle-tree":
+  version: 0.0.0-use.local
+  resolution: "@trezor/authdb-merkle-tree@workspace:packages/authdb-merkle-tree"
+  dependencies:
+    "@noble/hashes": "npm:^2.0.1"
+    "@trezor/connect-common": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/blockchain-link-types@workspace:*, @trezor/blockchain-link-types@workspace:^, @trezor/blockchain-link-types@workspace:packages/blockchain-link-types":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
@@ -15655,9 +15664,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
   dependencies:
+    "@noble/hashes": "npm:^2.0.1"
+    "@trezor/authdb-merkle-tree": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
+    "@types/better-sqlite3": "npm:^7.6.0"
+    better-sqlite3: "npm:^12.6.2"
     tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
@@ -15879,6 +15892,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
+    "@trezor/authdb-merkle-tree": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
@@ -17036,6 +17050,15 @@ __metadata:
   dependencies:
     "@babel/types": "npm:^7.28.2"
   checksum: 10/371c5e1b40399ef17570e630b2943617b84fafde2860a56f0ebc113d8edb1d0534ade0175af89eda1ae35160903c33057ed42457e165d4aa287fedab2c82abcf
+  languageName: node
+  linkType: hard
+
+"@types/better-sqlite3@npm:^7.6.0":
+  version: 7.6.13
+  resolution: "@types/better-sqlite3@npm:7.6.13"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/c74dafa3c550ac866737870016d7b1a735c7d450c16d40962eeb54510fa150e91752bfdf678f55e91894d8853771b95f909b0062122116cddac4d80491b74411
   languageName: node
   linkType: hard
 

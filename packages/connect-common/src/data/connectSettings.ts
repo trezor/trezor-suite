@@ -154,6 +154,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.version = input.version;
     }
 
+    if (typeof input.addressLookupProvider === 'object' && input.addressLookupProvider !== null) {
+        settings.addressLookupProvider = input.addressLookupProvider;
+    }
+
     settings.thp = parseThpSettings(input);
 
     return settings;

@@ -31,6 +31,8 @@ export { default as authDbClearRoot } from './authDbClearRoot';
 export { default as authDbLookup } from './authDbLookup';
 export { default as authDbSetRoot } from './authDbSetRoot';
 export { default as authDbUpdateLeaf } from './authDbUpdateLeaf';
+export { default as authDbUpdateAddress } from './authDbUpdateAddress';
+export { default as authDbVerifyAddress } from './authDbVerifyAddress';
 export { default as evoluGetNode } from './evoluGetNode';
 export { default as evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
 export { default as evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';

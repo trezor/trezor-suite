@@ -1,14 +1,25 @@
-
+import Database from 'better-sqlite3';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
-import Database from 'better-sqlite3';
-
-import type { AddressEntry, AddressLookupProvider, AddressMetadata, AllEntriesRow, TreeState } from '@trezor/connect';
+import type {
+    AddressEntry,
+    AddressLookupProvider,
+    AddressMetadata,
+    AllEntriesRow,
+    TreeState,
+} from '@trezor/connect';
 
 export type TreeStateWithMac = TreeState & { mac: string | null; deviceId: string | null };
 
-type AddressRow = { address: string; network_symbol: string; data: string; counter: number; mac: string | null; device_id: string | null };
+type AddressRow = {
+    address: string;
+    network_symbol: string;
+    data: string;
+    counter: number;
+    mac: string | null;
+    device_id: string | null;
+};
 type TreeStateRow = { root: string; counter: number; mac: string | null; device_id: string | null };
 
 const parseRow = (row: AddressRow): AddressEntry => ({
@@ -44,18 +55,37 @@ export class BitcoinAddressDb implements AddressLookupProvider {
 
     lookup(address: string, networkSymbol: string): AddressEntry | null {
         const row = this.db
-            .prepare('SELECT data, counter, mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?')
-            .get(address, networkSymbol) as Pick<AddressRow, 'data' | 'counter' | 'mac' | 'device_id'> | undefined;
+            .prepare(
+                'SELECT data, counter, mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?',
+            )
+            .get(address, networkSymbol) as
+            | Pick<AddressRow, 'data' | 'counter' | 'mac' | 'device_id'>
+            | undefined;
 
         return row ? parseRow({ address, network_symbol: networkSymbol, ...row }) : null;
     }
 
-    lookupApproval(address: string, networkSymbol: string): { mac: string; deviceId: string } | null {
+    lookupOrCreate(address: string, networkSymbol: string): AddressEntry {
+        const existing = this.lookup(address, networkSymbol);
+        if (existing) return existing;
+
+        const entry: AddressEntry = { metadata: {}, counter: 0 };
+        this.upsert(address, networkSymbol, entry);
+
+        return entry;
+    }
+
+    lookupApproval(
+        address: string,
+        networkSymbol: string,
+    ): { mac: string; deviceId: string } | null {
         const row = this.db
-            .prepare('SELECT mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?')
+            .prepare(
+                'SELECT mac, device_id FROM addresses WHERE address = ? AND network_symbol = ?',
+            )
             .get(address, networkSymbol) as Pick<AddressRow, 'mac' | 'device_id'> | undefined;
 
-        if (!row || row.mac === null || row.device_id === null) return null;
+        if (!row?.mac || row.device_id === null) return null;
 
         return { mac: row.mac, deviceId: row.device_id };
     }

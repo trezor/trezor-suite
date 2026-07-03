@@ -1,0 +1,28 @@
+/**
+ * High-level AuthDB verification. Unlike authDbLookup, no Merkle proof is passed
+ * by the caller — @trezor/connect computes the membership or non-membership proof
+ * internally from the injected `addressLookupProvider` (see
+ * ConnectSettings.addressLookupProvider).
+ */
+
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
+
+import type { Params, Response } from '../params';
+
+export type AuthDbVerifyAddressSchema = Static<typeof AuthDbVerifyAddressSchema>;
+export const AuthDbVerifyAddressSchema = Type.Object({
+    address: Type.String(),
+    networkSymbol: Type.String(),
+});
+
+export interface AuthDbVerifyAddressResult {
+    isMember: boolean;
+    valid: boolean;
+    counter: number;
+    identifier?: string;
+}
+
+export declare function authDbVerifyAddress(
+    params: Params<AuthDbVerifyAddressSchema>,
+): Response<AuthDbVerifyAddressResult>;

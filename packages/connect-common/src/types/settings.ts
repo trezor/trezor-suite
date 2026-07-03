@@ -6,6 +6,7 @@ import { Type } from '@trezor/schema-utils';
 import type { Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
 
+import type { AddressLookupProvider } from '../addressLookupProvider';
 import type { FirmwareChannel } from './firmware';
 
 export const Manifest = Type.Object({
@@ -52,6 +53,10 @@ export interface ConnectSettingsPublic {
     enableFirmwareHashCheck?: boolean;
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
     thp?: ThpSettings;
+    // storage backend for AuthDB address entries, injected by the host application.
+    // when set, high-level AuthDB methods (e.g. authDbUpdateAddress, authDbVerifyAddress)
+    // compute Merkle proofs internally instead of requiring the caller to supply one.
+    addressLookupProvider?: AddressLookupProvider;
 }
 
 // internal part, not to be accepted from .init()
