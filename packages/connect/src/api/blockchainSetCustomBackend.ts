@@ -37,8 +37,6 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
 
         const { blockchainLink } = payload;
 
-        setCustomBackend(coinInfo, payload.blockchainLink);
-
         const params = { coinInfo, blockchainLink };
 
         super(message, params);
