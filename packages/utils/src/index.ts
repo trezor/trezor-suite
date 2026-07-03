@@ -32,6 +32,7 @@ export * from './getSynchronize';
 export * from './getWeakRandomId';
 export * from './getWeakRandomInt';
 export * from './getWeakRandomNumberInRange';
+export * from './getWeakRandomUUID';
 export { hexToRgba } from './hexToRgba';
 export { hexToRgbaArray } from './hexToRgbaArray';
 export * from './isArrayMember';
