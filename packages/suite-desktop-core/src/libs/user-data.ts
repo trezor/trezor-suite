@@ -14,14 +14,14 @@ export const resolveDirectoryInUserDataDir = (
     const userDataDir = path.resolve(app.getPath('userData'));
     const dir = path.resolve(path.join(userDataDir, directory));
 
-    if (!dir.startsWith(userDataDir)) {
-        return {
-            success: false,
-            error: `Path traversal attempt detected, directory: "${directory}"`,
-        };
+    if (dir.startsWith(userDataDir + path.sep) || dir === userDataDir) {
+        return { success: true, payload: { dir } };
     }
 
-    return { success: true, payload: { dir } };
+    return {
+        success: false,
+        error: `Path traversal attempt detected, directory: "${directory}"`,
+    };
 };
 
 export const resolvePathInUserDataDir = (

@@ -51,6 +51,15 @@ describe('resolveDirectoryInUserDataDir', () => {
             error: 'Path traversal attempt detected, directory: "../../OtherApp"',
         });
     });
+
+    it('rejects directory path traversal partially matching the user-data path', () => {
+        const result = resolveDirectoryInUserDataDir('../user-data-but-now-different');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected, directory: "../user-data-but-now-different"',
+        });
+    });
 });
 
 describe('resolvePathInUserDataDir', () => {
