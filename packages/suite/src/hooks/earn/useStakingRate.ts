@@ -10,16 +10,16 @@ import { getTronVotes } from '@suite-common/wallet-utils';
 
 import { useSelector } from '../suite';
 
-interface UseStakingYieldProps {
+interface UseStakingRateProps {
     symbol?: NetworkSymbol;
     accountKey?: AccountKey;
 }
 
-interface StakingYield {
-    apy: number | null;
+interface StakingRate {
+    rate: number | null;
 }
 
-export const useStakingYield = ({ symbol, accountKey }: UseStakingYieldProps): StakingYield => {
+export const useStakingRate = ({ symbol, accountKey }: UseStakingRateProps): StakingRate => {
     const account = useSelector(state => selectAccountByKey(state, accountKey));
 
     const apy = useSelector(state =>
@@ -31,11 +31,11 @@ export const useStakingYield = ({ symbol, accountKey }: UseStakingYieldProps): S
     });
 
     if (symbol !== 'trx') {
-        return { apy };
+        return { rate: apy };
     }
 
     if (!accountKey || !account) {
-        return { apy: formatTronApr(maxApr) };
+        return { rate: formatTronApr(maxApr) };
     }
 
     const votes = getTronVotes(account);
@@ -47,5 +47,5 @@ export const useStakingYield = ({ symbol, accountKey }: UseStakingYieldProps): S
 
     const apr = votedApr ?? maxApr;
 
-    return { apy: formatTronApr(apr) };
+    return { rate: formatTronApr(apr) };
 };

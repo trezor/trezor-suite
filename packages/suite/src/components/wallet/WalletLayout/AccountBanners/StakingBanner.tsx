@@ -21,7 +21,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useStakingYield } from 'src/hooks/earn/useStakingYield';
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type StakingBannerProps = {
@@ -39,7 +39,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         stakeTronBannerClosed,
     } = useSelector(selectFlags);
     const { route } = useSelector(state => state.router);
-    const { apy } = useStakingYield({ symbol: account.symbol, accountKey: account.key });
+    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const displaySymbol = getDisplaySymbol(account.symbol);
@@ -52,7 +52,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         const totalBalance = new BigNumber(stakingBalance || '0').plus(accountBalance).toString();
         const amount = calculateRewards(
             getNetworkAdjustedStakingBalance(totalBalance, account),
-            apy,
+            rate,
         );
 
         return CryptoAmountFormatter.format(amount, {
@@ -62,7 +62,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             isEllipsisAppended: false,
             maxDisplayedDecimals: 8,
         });
-    }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
+    }, [accountBalance, stakingBalance, rate, account, CryptoAmountFormatter]);
 
     const closeBanner = () => {
         switch (account.networkType) {
@@ -156,7 +156,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             title={
                 <Translation
                     id="TR_STAKING_BANNER_DETAIL_TITLE"
-                    values={{ apy: formatApyValue(apy), displaySymbol }}
+                    values={{ apy: formatApyValue(rate), displaySymbol }}
                 />
             }
             description={

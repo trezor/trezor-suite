@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 
-import { useStakingYield } from 'src/hooks/earn/useStakingYield';
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { EarnInactiveNetworkOpportunity } from '../common/EarnInactiveNetworkOpportunity';
@@ -13,7 +13,7 @@ interface EarnStakingActivateRowProps {
 }
 
 export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActivateRowProps) => {
-    const { apy } = useStakingYield({ symbol });
+    const { rate } = useStakingRate({ symbol });
 
     const { isStakingDisabled } = useMessageSystemStaking(symbol);
 
@@ -26,7 +26,7 @@ export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActi
     return (
         <EarnInactiveNetworkOpportunity
             symbol={symbol}
-            apy={apy}
+            rate={rate}
             isCardLayout={isCardLayout}
             note={
                 <Translation

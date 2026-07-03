@@ -24,16 +24,16 @@ import {
 import { Card, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useStakingYield } from 'src/hooks/earn/useStakingYield';
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { EarnStakingActionButtons } from './EarnStakingActionButtons';
-import { EarnStakingApyTooltip } from './EarnStakingApyTooltip';
 import { EarnStakingCurrentRewards } from './EarnStakingCurrentRewards';
 import { EarnStakingOutdatedProvider } from './EarnStakingOutdatedProvider';
 import { EarnStakingPotentialRewards } from './EarnStakingPotentialRewards';
+import { EarnStakingRateTooltip } from './EarnStakingRateTooltip';
 import { EarnStakingRemainingVotes } from './EarnStakingRemainingVotes';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
@@ -49,7 +49,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowMobile } = useLayoutSize();
 
-    const { apy } = useStakingYield({ symbol: account.symbol, accountKey: account.key });
+    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
 
     // Promoted (best) pool APY, shown when suggesting a switch to a new provider.
     const newProviderApy = useSelector(state =>
@@ -189,11 +189,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             maxDisplayedDecimals: 8,
         });
 
-    const currentRewards = calculateRewards(stakingBalance, apy);
+    const currentRewards = calculateRewards(stakingBalance, rate);
     const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
     const potentialRewards = calculateRewards(
         getNetworkAdjustedStakingBalance(totalBalance, account),
-        apy,
+        rate,
     );
     const formattedStakingBalance = formatCryptoAmount(stakingBalance);
     const formattedAccountBalance = formatCryptoAmount(accountBalance);
@@ -201,7 +201,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const currentRewardsProps = {
         symbol: account.symbol,
         rewards: currentRewards,
-        apy,
+        apy: rate,
         isStakingActive,
         formattedStakingBalance,
         displaySymbol,
@@ -210,7 +210,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const potentialRewardsProps = {
         symbol: account.symbol,
         rewards: potentialRewards,
-        apy,
+        apy: rate,
         isCardanoNetworkType,
         formattedAccountBalance,
         displaySymbol,
@@ -288,7 +288,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         <EarnAccountCell account={account} />
 
                         {apyAvailable ? (
-                            <EarnStakingApyTooltip symbol={account.symbol} apy={apy} />
+                            <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
                         ) : (
                             <Translation id="TR_EARN_NOT_AVAILABLE" />
                         )}
@@ -301,14 +301,14 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     )}
 
                     {stakingStatus === 'staking-remaining-votes' && (
-                        <EarnStakingRemainingVotes apr={apy} />
+                        <EarnStakingRemainingVotes apr={rate} />
                     )}
 
                     {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') &&
                         (isBelowMobile ? (
                             <Column gap={4}>
                                 <EarnStakingCurrentRewards {...currentRewardsProps} />
-                                {apy && (
+                                {rate && (
                                     <Icon
                                         name="arrowDown"
                                         intent="neutral"
@@ -323,7 +323,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                                 <Column flex="2">
                                     <EarnStakingCurrentRewards {...currentRewardsProps} />
                                 </Column>
-                                {apy && (
+                                {rate && (
                                     <Column flex="1" alignItems="center">
                                         <Icon
                                             name="arrowRight"
@@ -385,7 +385,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
             <Table.Cell>
                 {apyAvailable ? (
-                    <EarnStakingApyTooltip symbol={account.symbol} apy={apy} />
+                    <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
                 ) : (
                     <Translation id="TR_EARN_NOT_AVAILABLE" />
                 )}
@@ -405,7 +405,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     <Table.Cell>
                         <Row width="100%" alignItems="center" justifyContent="space-between">
                             <EarnStakingCurrentRewards {...currentRewardsProps} />
-                            {apy && (
+                            {rate && (
                                 <Icon
                                     name="arrowRight"
                                     intent="neutral"
@@ -466,7 +466,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             {stakingStatus === 'staking-remaining-votes' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <EarnStakingRemainingVotes apr={apy} />
+                        <EarnStakingRemainingVotes apr={rate} />
                     </Table.Cell>
                     <Table.Cell align="end">
                         <EarnStakingActionButtons {...actionButtonsProps} />

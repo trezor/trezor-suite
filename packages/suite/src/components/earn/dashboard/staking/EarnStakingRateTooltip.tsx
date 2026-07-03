@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
@@ -13,13 +13,13 @@ const Abbr = styled.abbr`
     text-underline-offset: 3px;
 `;
 
-interface EarnStakingApyTooltipProps {
-    symbol: NetworkSymbol;
-    apy: number | null;
+interface EarnStakingRateTooltipProps {
+    networkType: NetworkType;
+    rate: number | null;
 }
 
-export const EarnStakingApyTooltip = ({ symbol, apy }: EarnStakingApyTooltipProps) => {
-    if (!apy) {
+export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateTooltipProps) => {
+    if (!rate) {
         return <Translation id="TR_EARN_NOT_AVAILABLE" />;
     }
 
@@ -28,7 +28,7 @@ export const EarnStakingApyTooltip = ({ symbol, apy }: EarnStakingApyTooltipProp
             content={
                 <Translation
                     id={
-                        symbol === 'trx'
+                        networkType === 'tron'
                             ? 'TR_EARN_STAKING_APR_TOOLTIP'
                             : 'TR_EARN_STAKING_APY_TOOLTIP'
                     }
@@ -38,7 +38,7 @@ export const EarnStakingApyTooltip = ({ symbol, apy }: EarnStakingApyTooltipProp
             placement="top"
         >
             <Abbr>
-                <ApyValue apy={apy} />
+                <ApyValue apy={rate} />
             </Abbr>
         </Tooltip>
     );

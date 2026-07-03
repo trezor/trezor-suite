@@ -41,10 +41,12 @@ interface UseNetworkContentProps {
 }
 
 const getTronContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakingCardContent => {
-    const apr = formatApyValue(data.apy);
+    const rate = formatApyValue(data.rate);
     const { displaySymbol, isStartStakingDisabled, account } = data;
 
-    const title = <Translation id="TR_STAKING_CARD_TITLE_TRON" values={{ apr, displaySymbol }} />;
+    const title = (
+        <Translation id="TR_STAKING_CARD_TITLE_TRON" values={{ apr: rate, displaySymbol }} />
+    );
 
     const text = <Translation id="TR_STAKING_CARD_TEXT_TRON" />;
 
@@ -88,7 +90,7 @@ const getTronContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakin
 };
 
 const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakingCardContent => {
-    const apy = formatApyValue(data.apy);
+    const rate = formatApyValue(data.rate);
 
     const {
         displaySymbol,
@@ -99,7 +101,7 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
         potentialRewards,
     } = data;
 
-    const title = <Translation id="TR_STAKING_CARD_TITLE" values={{ apy, displaySymbol }} />;
+    const title = <Translation id="TR_STAKING_CARD_TITLE" values={{ apy: rate, displaySymbol }} />;
 
     const text =
         !hasEnoughBalanceForStaking || !hasPotentialRewards ? (
@@ -171,7 +173,7 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
 };
 
 const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakingCardContent => {
-    const apy = formatApyValue(data.apy);
+    const rate = formatApyValue(data.rate);
 
     const {
         displaySymbol,
@@ -182,7 +184,7 @@ const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
         potentialRewards,
     } = data;
 
-    const title = <Translation id="TR_STAKING_CARD_TITLE" values={{ apy, displaySymbol }} />;
+    const title = <Translation id="TR_STAKING_CARD_TITLE" values={{ apy: rate, displaySymbol }} />;
 
     const text =
         !hasEnoughBalanceForStaking || !hasPotentialRewards ? (
