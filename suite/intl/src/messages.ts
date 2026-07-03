@@ -9412,19 +9412,19 @@ export const messages = defineMessages({
     },
     TR_SESSION_PHASE_COIN_SELECTION: {
         id: 'TR_SESSION_PHASE_COIN_SELECTION',
-        defaultMessage: 'Choosing coins',
+        defaultMessage: 'Choosing networks',
     },
     TR_SESSION_PHASE_ROUND_PAIRING: {
         id: 'TR_SESSION_PHASE_ROUND_PAIRING',
-        defaultMessage: 'Selecting coins for the next round',
+        defaultMessage: 'Selecting networks for the next round',
     },
     TR_SESSION_PHASE_COIN_REGISTRATION: {
         id: 'TR_SESSION_PHASE_COIN_REGISTRATION',
-        defaultMessage: 'Registering coins',
+        defaultMessage: 'Registering networks',
     },
     TR_SESSION_ERROR_PHASE_MISSING_UTXOS: {
         id: 'TR_SESSION_ERROR_PHASE_MISSING_UTXOS',
-        defaultMessage: 'Looking for available coins',
+        defaultMessage: 'Looking for available networks',
     },
     TR_SESSION_ERROR_PHASE_SKIPPING_ROUND: {
         id: 'TR_SESSION_ERROR_PHASE_SKIPPING_ROUND',
@@ -9444,7 +9444,7 @@ export const messages = defineMessages({
     },
     TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS: {
         id: 'TR_SESSION_ERROR_PHASE_BLOCKED_UTXOS',
-        defaultMessage: 'Coins not ready. Wait to try again.',
+        defaultMessage: 'Networks not ready. Wait to try again.',
         description: 'Some of utxos are temporary banned, disable session for a while',
     },
     TR_SESSION_PHASE_AWAITING_CONFIRMATION: {
