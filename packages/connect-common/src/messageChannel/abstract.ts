@@ -3,15 +3,10 @@
  * this file is bundled into content script so be careful what you are importing not to bloat the bundle
  */
 
-import {
-    type Deferred,
-    TypedEmitter,
-    createDeferred,
-    createDeferredManager,
-    scheduleAction,
-} from '@trezor/utils';
+import { type Deferred, TypedEmitter, createDeferred, scheduleAction } from '@trezor/utils';
 
 import type { Log } from '../utils/debug';
+import { createUUIDDeferredManager } from '../utils/deferred';
 
 export interface AbstractMessageChannelConstructorParams {
     sendFn: (message: any) => void;
@@ -40,7 +35,7 @@ export abstract class AbstractMessageChannel<
 > extends TypedEmitter<{
     message: Message<IncomingMessages>;
 }> {
-    protected messages = createDeferredManager({ generateId: (): string => crypto.randomUUID() });
+    protected messages = createUUIDDeferredManager();
     /** queue of messages that were scheduled before handshake */
     protected messagesQueue: any[] = [];
 
