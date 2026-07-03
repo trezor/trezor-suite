@@ -16488,7 +16488,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-electron@workspace:packages/connect-electron":
+"@trezor/connect-electron@workspace:*, @trezor/connect-electron@workspace:packages/connect-electron":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-electron@workspace:packages/connect-electron"
   dependencies:
@@ -17181,6 +17181,7 @@ __metadata:
     "@suite/sentry": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-electron": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/suite": "workspace:*"
