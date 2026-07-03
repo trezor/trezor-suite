@@ -17,7 +17,7 @@ import {
     type CancelParams,
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
-import { createDeferredManager, removeTrailingSlashes } from '@trezor/utils';
+import { createDeferredManager, getWeakRandomUUID, removeTrailingSlashes } from '@trezor/utils';
 
 type BuildUrlParams = {
     method: string;
@@ -45,7 +45,15 @@ const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: Bui
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectMobileSettings> {
     public eventEmitter = new ConnectEmitter();
-    private messages = createDeferredManager({ generateId: (): string => crypto.randomUUID() });
+    // Prefer crypto.randomUUID, but fall back to a weak id where `crypto` is absent: connect-mobile
+    // is a published deeplink transport for third-party React Native apps that may lack a `crypto`
+    // polyfill. These ids are only request/response correlation keys, so the weak fallback is fine.
+    private messages = createDeferredManager({
+        generateId: () =>
+            typeof globalThis.crypto?.randomUUID === 'function'
+                ? globalThis.crypto.randomUUID()
+                : getWeakRandomUUID(),
+    });
 
     private manifest?: Manifest;
 
