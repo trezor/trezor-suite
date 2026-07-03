@@ -2664,6 +2664,7 @@ export const messages = {
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
                 amountExceedsMax: 'The amount exceeds the maximum allowed value of {maxAmount}.',
+                amountBelowMin: 'The minimum amount to unstake is {minAmount} {networkSymbol}.',
                 insufficientBalance: 'You don’t have enough staked balance to unstake this amount.',
                 tooManyDecimals: 'Too many decimals.',
             },

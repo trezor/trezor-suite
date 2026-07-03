@@ -50,10 +50,12 @@ export const UnstakeTransactionDataReviewStepList = () => {
         return null;
     }
 
-    const amountInBaseUnits = unitsToSubunits({
-        value: asAmountUnit(new BigNumber(amount)),
-        symbol: accountSymbol,
-    }).toString();
+    const amountInBaseUnits =
+        selectedPrecomposed?.solanaTxMeta?.deviceAmountLamports ??
+        unitsToSubunits({
+            value: asAmountUnit(new BigNumber(amount)),
+            symbol: accountSymbol,
+        }).toString();
 
     return (
         <View>
