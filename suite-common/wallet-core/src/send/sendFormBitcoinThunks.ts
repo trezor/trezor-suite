@@ -1,7 +1,11 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import type {
+    AddToastDep,
+    GetAreSatsAmountUnitDep,
+    GetSelectedDeviceDep,
+} from '@network-module/suite-types';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
     type Account,
@@ -40,7 +44,6 @@ import {
 } from './sendFormTypes';
 import {
     selectAddressDisplayType,
-    selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
@@ -59,198 +62,197 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
 
-export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
-    PrecomposedLevels,
-    ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
->(
-    `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, getState, rejectWithValue }) => {
-        const { account, excludedUtxos, feeInfo, prison } = composeContext;
+type ComposeBitcoinTransactionFeeLevelsParams = ComposeTransactionThunkArguments & {
+    suiteModuleApi: AddToastDep & GetAreSatsAmountUnitDep & GetSelectedDeviceDep;
+};
 
-        const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
-        const device = selectSelectedDevice(getState());
+export const composeBitcoinTransactionFeeLevels = async ({
+    formState,
+    composeContext,
+    suiteModuleApi,
+}: ComposeBitcoinTransactionFeeLevelsParams): Promise<
+    PrecomposedLevels | ComposeFeeLevelsError
+> => {
+    const { account, excludedUtxos, feeInfo, prison } = composeContext;
 
-        const isSatoshis =
-            areSatsAmountUnit &&
-            !device?.unavailableCapabilities?.amountUnit &&
-            hasNetworkFeatures(account, 'amount-unit');
+    const areSatsAmountUnit = suiteModuleApi.getAreSatsAmountUnit();
+    const device = suiteModuleApi.getSelectedDevice();
 
-        if (!account.addresses || !account.utxo)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Account is missing addresses or utxos.',
-            });
+    const isSatoshis =
+        areSatsAmountUnit &&
+        !device?.unavailableCapabilities?.amountUnit &&
+        hasNetworkFeatures(account, 'amount-unit');
 
-        const composeOutputs = getBitcoinComposeOutputs(formState, account.symbol, isSatoshis);
-        if (composeOutputs.length < 1)
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
-
-        const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
-        // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formState.selectedFee === 'custom') {
-            predefinedLevels.push({
-                label: 'custom',
-                feePerUnit: formState.feePerUnit,
-                blocks: -1,
-            });
-        }
-
-        const sequence = getSequence({ account, formValues: formState });
-
-        // exclude unspendable utxos if coin control is not enabled
-        // unspendable utxos are defined in `useSendForm` hook
-        const utxo = formState.isCoinControlEnabled
-            ? formState.selectedUtxos?.map(u => ({ ...u, required: true }))
-            : account.utxo.filter((u: ComposeUtxo) => {
-                  const outpoint = getUtxoOutpoint(u);
-
-                  return u.required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
-              });
-
-        // certain change addresses might be temporary blocked by coinjoin process
-        // exclude addresses which exists in "prison" dataset (see coinjoinReducer/selectRegisteredUtxosByAccountKey)
-        const changeAddresses = prison
-            ? account.addresses.change.filter(a => !prison[a.address])
-            : account.addresses.change;
-
-        const params: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
-            // needs to be present in order to correct resolve of @trezor/connect params overload
-            account: {
-                path: account.path,
-                addresses: {
-                    ...account.addresses,
-                    change: changeAddresses,
-                },
-                utxo,
-            },
-            feeLevels: predefinedLevels,
-            baseFee: formState.baseFee,
-            sequence,
-            outputs: composeOutputs,
-            sortingStrategy: formState.rbfParams !== undefined ? 'none' : DEFAULT_SORTING_STRATEGY,
-            coin: account.symbol,
+    if (!account.addresses || !account.utxo)
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Account is missing addresses or utxos.',
         };
 
-        const response = await TrezorConnect.composeTransaction(params);
+    const composeOutputs = getBitcoinComposeOutputs(formState, account.symbol, isSatoshis);
+    if (composeOutputs.length < 1)
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Unable to compose output.',
+        };
 
-        if (!response.success) {
-            if (response.error.code !== 'Method_InvalidParameter') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'sign-tx-error',
-                        error: response.error.message,
-                    }),
-                );
-            }
+    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    if (formState.selectedFee === 'custom') {
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit: formState.feePerUnit,
+            blocks: -1,
+        });
+    }
 
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: response.error.message,
+    const sequence = getSequence({ account, formValues: formState });
+
+    // exclude unspendable utxos if coin control is not enabled
+    // unspendable utxos are defined in `useSendForm` hook
+    const utxo = formState.isCoinControlEnabled
+        ? formState.selectedUtxos?.map(u => ({ ...u, required: true }))
+        : account.utxo.filter((u: ComposeUtxo) => {
+              const outpoint = getUtxoOutpoint(u);
+
+              return u.required || (!excludedUtxos?.[outpoint] && !prison?.[outpoint]);
+          });
+
+    // certain change addresses might be temporary blocked by coinjoin process
+    // exclude addresses which exists in "prison" dataset (see coinjoinReducer/selectRegisteredUtxosByAccountKey)
+    const changeAddresses = prison
+        ? account.addresses.change.filter(a => !prison[a.address])
+        : account.addresses.change;
+
+    const params: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
+        // needs to be present in order to correct resolve of @trezor/connect params overload
+        account: {
+            path: account.path,
+            addresses: {
+                ...account.addresses,
+                change: changeAddresses,
+            },
+            utxo,
+        },
+        feeLevels: predefinedLevels,
+        baseFee: formState.baseFee,
+        sequence,
+        outputs: composeOutputs,
+        sortingStrategy: formState.rbfParams !== undefined ? 'none' : DEFAULT_SORTING_STRATEGY,
+        coin: account.symbol,
+    };
+
+    const response = await TrezorConnect.composeTransaction(params);
+
+    if (!response.success) {
+        if (response.error.code !== 'Method_InvalidParameter') {
+            suiteModuleApi.addToast({
+                type: 'sign-tx-error',
+                error: response.error.message,
             });
         }
 
-        // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const resultLevels: PrecomposedLevels = {};
-        response.payload.forEach((tx, index) => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
-            resultLevels[feeLabel] = tx as PrecomposedTransaction;
-        });
+        return {
+            error: 'fee-levels-compose-failed',
+            message: response.error.message,
+        };
+    }
 
-        const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
-        // there is no valid tx in predefinedLevels and there is no custom level
-        if (!hasAtLeastOneValid && !resultLevels.custom) {
-            const { minFee } = feeInfo;
-            const lastIndex = predefinedLevels.length - 1;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
-            const lastKnownFee = lastLevel.feePerUnit;
-            // define coefficient for maxFee
-            // NOTE: DOGE has very large values of FeeLevels, up to several thousands sat/B, rangeGap should be greater in this case otherwise calculation takes too long
-            // TODO: calculate rangeGap more precisely (percentage of range?)
-            const range = new BigNumber(lastKnownFee).minus(minFee);
-            const rangeGap = range.gt(1000) ? 1000 : 1;
-            let maxFee = new BigNumber(lastKnownFee).minus(rangeGap);
-            // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in @trezor/connect)
-            const customLevels: FeeLevel[] = [];
-            while (maxFee.gte(minFee)) {
-                customLevels.push({
-                    feePerUnit: maxFee.toString(),
-                    label: 'custom',
-                    blocks: -1,
-                });
-                maxFee = maxFee.minus(rangeGap);
-            }
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
+    const resultLevels: PrecomposedLevels = {};
+    response.payload.forEach((tx, index) => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
+        const feeLabel = predefinedLevel.label;
+        resultLevels[feeLabel] = tx as PrecomposedTransaction;
+    });
 
-            // check if any custom level is possible
-            const customLevelsResponse =
-                customLevels.length > 0
-                    ? await TrezorConnect.composeTransaction({
-                          ...params,
-                          account: params.account, // needs to be present in order to correct resolve type of @trezor/connect params overload
-                          feeLevels: customLevels,
-                      })
-                    : ({ success: false } as const);
-
-            if (customLevelsResponse.success) {
-                const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
-                if (customValid >= 0) {
-                    resultLevels.custom = customLevelsResponse.payload[
-                        customValid
-                    ] as PrecomposedTransaction;
-                }
-            }
+    const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
+    // there is no valid tx in predefinedLevels and there is no custom level
+    if (!hasAtLeastOneValid && !resultLevels.custom) {
+        const { minFee } = feeInfo;
+        const lastIndex = predefinedLevels.length - 1;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
+        const lastKnownFee = lastLevel.feePerUnit;
+        // define coefficient for maxFee
+        // NOTE: DOGE has very large values of FeeLevels, up to several thousands sat/B, rangeGap should be greater in this case otherwise calculation takes too long
+        // TODO: calculate rangeGap more precisely (percentage of range?)
+        const range = new BigNumber(lastKnownFee).minus(minFee);
+        const rangeGap = range.gt(1000) ? 1000 : 1;
+        let maxFee = new BigNumber(lastKnownFee).minus(rangeGap);
+        // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in @trezor/connect)
+        const customLevels: FeeLevel[] = [];
+        while (maxFee.gte(minFee)) {
+            customLevels.push({
+                feePerUnit: maxFee.toString(),
+                label: 'custom',
+                blocks: -1,
+            });
+            maxFee = maxFee.minus(rangeGap);
         }
 
-        // format max (@trezor/connect sends it as satoshi)
-        // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
-        Object.keys(resultLevels).forEach(key => {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const tx: (typeof resultLevels)[string] = resultLevels[key];
+        // check if any custom level is possible
+        const customLevelsResponse =
+            customLevels.length > 0
+                ? await TrezorConnect.composeTransaction({
+                      ...params,
+                      account: params.account, // needs to be present in order to correct resolve type of @trezor/connect params overload
+                      feeLevels: customLevels,
+                  })
+                : ({ success: false } as const);
 
-            if (tx.type !== 'error') {
-                // round to
-                tx.feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(2).toString();
-                if (typeof tx.max === 'string') {
-                    tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
-                }
-            } else if (['MISSING-UTXOS', 'NOT-ENOUGH-FUNDS'].includes(tx.error)) {
-                const getErrorMessage = () => {
-                    const isLowAnonymity =
-                        account.accountType === 'coinjoin' &&
-                        excludedUtxos &&
-                        !!Object.values(excludedUtxos).filter(reason => reason === 'low-anonymity')
-                            .length;
-
-                    if (isLowAnonymity && !formState.isCoinControlEnabled) {
-                        return 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
-                    }
-
-                    return formState.isCoinControlEnabled
-                        ? 'TR_NOT_ENOUGH_SELECTED'
-                        : 'AMOUNT_IS_NOT_ENOUGH';
-                };
-
-                tx.errorMessage = { id: getErrorMessage() };
-            } else {
-                // catch unexpected error
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'sign-tx-error',
-                        error: 'message' in tx ? tx.message : tx.error, // tx.error = 'COINSELECT' contains additional message
-                    }),
-                );
+        if (customLevelsResponse.success) {
+            const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
+            if (customValid >= 0) {
+                resultLevels.custom = customLevelsResponse.payload[
+                    customValid
+                ] as PrecomposedTransaction;
             }
-        });
+        }
+    }
 
-        return resultLevels;
-    },
-);
+    // format max (@trezor/connect sends it as satoshi)
+    // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
+    Object.keys(resultLevels).forEach(key => {
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const tx: (typeof resultLevels)[string] = resultLevels[key];
+
+        if (tx.type !== 'error') {
+            // round to
+            tx.feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(2).toString();
+            if (typeof tx.max === 'string') {
+                tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
+            }
+        } else if (['MISSING-UTXOS', 'NOT-ENOUGH-FUNDS'].includes(tx.error)) {
+            const getErrorMessage = () => {
+                const isLowAnonymity =
+                    account.accountType === 'coinjoin' &&
+                    excludedUtxos &&
+                    !!Object.values(excludedUtxos).filter(reason => reason === 'low-anonymity')
+                        .length;
+
+                if (isLowAnonymity && !formState.isCoinControlEnabled) {
+                    return 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
+                }
+
+                return formState.isCoinControlEnabled
+                    ? 'TR_NOT_ENOUGH_SELECTED'
+                    : 'AMOUNT_IS_NOT_ENOUGH';
+            };
+
+            tx.errorMessage = { id: getErrorMessage() };
+        } else {
+            // catch unexpected error
+            suiteModuleApi.addToast({
+                type: 'sign-tx-error',
+                error: 'message' in tx ? tx.message : tx.error, // tx.error = 'COINSELECT' contains additional message
+            });
+        }
+    });
+
+    return resultLevels;
+};
 
 export const signBitcoinSendFormTransactionThunk = createThunk<
     SignedTransaction,

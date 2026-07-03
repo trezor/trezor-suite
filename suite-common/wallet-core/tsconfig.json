@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../coins/network-module/suite-types"
+        },
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../calldata" },

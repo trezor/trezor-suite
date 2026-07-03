@@ -1,5 +1,6 @@
+import type { AddToastDep } from '@network-module/suite-types';
+
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
@@ -28,168 +29,168 @@ import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
 
-export const composeTronTransactionFeeLevelsThunk = createThunk<
-    PrecomposedLevels,
-    ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
->(
-    `${SEND_MODULE_PREFIX}/composeTronTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
-        const { account, network } = composeContext;
+type ComposeTronTransactionFeeLevelsParams = ComposeTransactionThunkArguments & {
+    suiteModuleApi: AddToastDep;
+};
 
-        if (account.networkType !== 'tron') {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Invalid network type.',
-            });
-        }
+export const composeTronTransactionFeeLevels = async ({
+    formState,
+    composeContext,
+    suiteModuleApi,
+}: ComposeTronTransactionFeeLevelsParams): Promise<PrecomposedLevels | ComposeFeeLevelsError> => {
+    const { account, network } = composeContext;
 
-        const composeOutputs = getExternalComposeOutput(formState, account, network);
+    if (account.networkType !== 'tron') {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Invalid network type.',
+        };
+    }
 
-        if (!composeOutputs) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Unable to compose output.',
-            });
-        }
+    const composeOutputs = getExternalComposeOutput(formState, account, network);
 
-        const { output, tokenInfo: token, decimals } = composeOutputs;
-        const to = 'address' in output && output.address ? output.address : account.descriptor;
+    if (!composeOutputs) {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Unable to compose output.',
+        };
+    }
 
-        const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
-        const fallbackAmount = token
-            ? unitsToSubunits({
-                  value: asAmountUnit(new BigNumber(token.balance ?? '0')),
-                  decimals: token.decimals,
-              }).toString()
-            : account.availableBalance;
-        const amountForEstimation =
-            isSendMax || !('amount' in output) || !output.amount ? fallbackAmount : output.amount;
+    const { output, tokenInfo: token, decimals } = composeOutputs;
+    const to = 'address' in output && output.address ? output.address : account.descriptor;
 
-        const ownerHex = tronUtils.tronAddressToHex(account.descriptor);
-        const recipientHex = token
-            ? tronUtils.tronAddressToHex(token.contract)
-            : tronUtils.tronAddressToHex(to);
+    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
+    const fallbackAmount = token
+        ? unitsToSubunits({
+              value: asAmountUnit(new BigNumber(token.balance ?? '0')),
+              decimals: token.decimals,
+          }).toString()
+        : account.availableBalance;
+    const amountForEstimation =
+        isSendMax || !('amount' in output) || !output.amount ? fallbackAmount : output.amount;
 
-        if (!ownerHex || !recipientHex) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Invalid address checksum.',
-            });
-        }
+    const ownerHex = tronUtils.tronAddressToHex(account.descriptor);
+    const recipientHex = token
+        ? tronUtils.tronAddressToHex(token.contract)
+        : tronUtils.tronAddressToHex(to);
 
-        // Dummy block values — block fields are fixed-size in protobuf so bandwidth is identical
-        // to what we'd get with real block data.
-        const DUMMY_BLOCK_HASH = '0'.repeat(64);
-        const DUMMY_BLOCK_HEIGHT = 0;
+    if (!ownerHex || !recipientHex) {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Invalid address checksum.',
+        };
+    }
 
-        const userCallDataHex = formState.transactionData
-            ? formState.transactionData.replace(/^0x/, '')
-            : '';
+    // Dummy block values — block fields are fixed-size in protobuf so bandwidth is identical
+    // to what we'd get with real block data.
+    const DUMMY_BLOCK_HASH = '0'.repeat(64);
+    const DUMMY_BLOCK_HEIGHT = 0;
 
-        const calldata = resolveCalldata({
-            token,
-            outputAddress: to,
-            amountInSubunits: amountForEstimation,
-            userCallDataHex,
-        });
+    const userCallDataHex = formState.transactionData
+        ? formState.transactionData.replace(/^0x/, '')
+        : '';
 
-        if ('error' in calldata) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: calldata.error,
-            });
-        }
+    const calldata = resolveCalldata({
+        token,
+        outputAddress: to,
+        amountInSubunits: amountForEstimation,
+        userCallDataHex,
+    });
 
-        const contract =
-            calldata.data !== null
-                ? buildTriggerContract({ ownerHex, recipientHex, data: calldata.data })
-                : buildTransferContract({ ownerHex, recipientHex, amount: amountForEstimation });
+    if ('error' in calldata) {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: calldata.error,
+        };
+    }
 
-        const noteHex = formState.destinationTag
-            ? Buffer.from(formState.destinationTag, 'utf8').toString('hex')
-            : undefined;
+    const contract =
+        calldata.data !== null
+            ? buildTriggerContract({ ownerHex, recipientHex, data: calldata.data })
+            : buildTransferContract({ ownerHex, recipientHex, amount: amountForEstimation });
 
-        const bandwidthEstimate = await TrezorConnect.tronComposeTransaction({
-            contract,
-            blockHash: DUMMY_BLOCK_HASH,
-            blockHeight: DUMMY_BLOCK_HEIGHT,
-            data: noteHex || undefined,
-        });
+    const noteHex = formState.destinationTag
+        ? Buffer.from(formState.destinationTag, 'utf8').toString('hex')
+        : undefined;
 
-        if (!bandwidthEstimate.success) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: bandwidthEstimate.error.message,
-            });
-        }
+    const bandwidthEstimate = await TrezorConnect.tronComposeTransaction({
+        contract,
+        blockHash: DUMMY_BLOCK_HASH,
+        blockHeight: DUMMY_BLOCK_HEIGHT,
+        data: noteHex || undefined,
+    });
 
-        const bytes = bandwidthEstimate.payload.bandwidth;
+    if (!bandwidthEstimate.success) {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: bandwidthEstimate.error.message,
+        };
+    }
 
-        const feeLevel =
-            calldata.data !== null
-                ? await estimateContractCallFeeLevel({
-                      symbol: account.symbol,
-                      identity: getAccountIdentity(account),
-                      from: account.descriptor,
-                      to: token ? token.contract : to,
-                      data: calldata.data,
-                  })
-                : computeBandwidthFeeLevel({
-                      availableStakedBandwidth:
-                          account.misc?.tronResources?.availableStakedBandwidth ?? 0,
-                      availableFreeBandwidth:
-                          account.misc?.tronResources?.availableFreeBandwidth ?? 0,
-                      bytes,
-                  });
+    const bytes = bandwidthEstimate.payload.bandwidth;
 
-        if ('error' in feeLevel) {
-            dispatch(notificationsActions.addToast({ type: 'estimated-fee-error' }));
+    const feeLevel =
+        calldata.data !== null
+            ? await estimateContractCallFeeLevel({
+                  symbol: account.symbol,
+                  identity: getAccountIdentity(account),
+                  from: account.descriptor,
+                  to: token ? token.contract : to,
+                  data: calldata.data,
+              })
+            : computeBandwidthFeeLevel({
+                  availableStakedBandwidth:
+                      account.misc?.tronResources?.availableStakedBandwidth ?? 0,
+                  availableFreeBandwidth: account.misc?.tronResources?.availableFreeBandwidth ?? 0,
+                  bytes,
+              });
 
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: feeLevel.error,
-            });
-        }
+    if ('error' in feeLevel) {
+        suiteModuleApi.addToast({ type: 'estimated-fee-error' });
 
-        const [firstComposeOutput] = formState.outputs;
+        return {
+            error: 'fee-levels-compose-failed',
+            message: feeLevel.error,
+        };
+    }
 
-        if (!firstComposeOutput) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Missing transaction output.',
-            });
-        }
+    const [firstComposeOutput] = formState.outputs;
 
-        const isNewAccount =
-            calldata.data === null && (await isNewTronAccount(firstComposeOutput.address, account));
+    if (!firstComposeOutput) {
+        return {
+            error: 'fee-levels-compose-failed',
+            message: 'Missing transaction output.',
+        };
+    }
 
-        const tx = calculate(
-            account.availableBalance,
-            output,
-            feeLevel,
-            account.symbol,
-            bytes,
-            noteHex !== undefined,
-            token,
-            isNewAccount,
-            userCallDataHex,
-        );
+    const isNewAccount =
+        calldata.data === null && (await isNewTronAccount(firstComposeOutput.address, account));
 
-        if (tx.type !== 'error' && tx.max !== undefined) {
-            tx.max = subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(tx.max)),
-                decimals,
-            }).toString();
-        }
+    const tx = calculate(
+        account.availableBalance,
+        output,
+        feeLevel,
+        account.symbol,
+        bytes,
+        noteHex !== undefined,
+        token,
+        isNewAccount,
+        userCallDataHex,
+    );
 
-        if (calldata.data !== null && tx.type !== 'error') {
-            tx.estimatedFeeLimit = tx.fee;
-        }
+    if (tx.type !== 'error' && tx.max !== undefined) {
+        tx.max = subunitsToUnits({
+            value: asAmountSubunit(new BigNumber(tx.max)),
+            decimals,
+        }).toString();
+    }
 
-        return { normal: tx };
-    },
-);
+    if (calldata.data !== null && tx.type !== 'error') {
+        tx.estimatedFeeLimit = tx.fee;
+    }
+
+    return { normal: tx };
+};
 
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },

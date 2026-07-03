@@ -2,12 +2,13 @@ import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
+import { mockSuiteModuleApi } from '@suite-common/test-utils';
 
 import { createAddressValidator } from '../AddressValidator';
 import { autocorrectAddress } from '../autocorrectAddress';
 
 describe('autocorrectAddress', () => {
-    const networkModules = createNetworksCompositionRoot();
+    const networkModules = createNetworksCompositionRoot({ suiteModuleApi: mockSuiteModuleApi });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({
         networkModuleRepository,

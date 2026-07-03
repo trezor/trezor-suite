@@ -1,6 +1,7 @@
 export * from './mocks';
 export * from './configureMockStore';
 export * from './extraDependenciesCommonMock';
+export * from './mockSuiteModuleApi';
 export * from './wireEnabledNetworksMock';
 export { renderHookWithStoreProvider, type TestStore } from './renderWithStore';
 

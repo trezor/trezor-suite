@@ -1,3 +1,4 @@
+import type { SuiteModuleApi } from '@network-module/suite-types';
 import type { Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
@@ -29,7 +30,12 @@ import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
-import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
+import {
+    type DeviceReducerState,
+    isApprovalFlowSupported,
+    selectDeviceByStaticSessionId,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
     createNetworkModuleRepository,
@@ -48,6 +54,7 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -63,6 +70,8 @@ import {
     type TransactionsState,
     type WalletSettingsState,
     selectAccountsByDeviceState,
+    selectAreSatsAmountUnit,
+    selectBlockchainBlockInfoBySymbol,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
@@ -156,7 +165,23 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
-    const networkModules = createNetworksCompositionRoot();
+    const suiteModuleApi: SuiteModuleApi = {
+        getAreSatsAmountUnit: () => selectAreSatsAmountUnit(deps.getState()),
+        getBlockchainBlockInfoBySymbol: symbol => {
+            if (!isNetworkSymbol(symbol)) {
+                throw new Error(`Invalid network symbol ${symbol}.`);
+            }
+
+            return selectBlockchainBlockInfoBySymbol(deps.getState(), symbol);
+        },
+        getIsApprovalFlowSupported: () =>
+            isApprovalFlowSupported(selectSelectedDevice(deps.getState())),
+        getSelectedDevice: () => selectSelectedDevice(deps.getState()),
+        addToast: payload => deps.dispatch(notificationsActions.addToast(payload)),
+    };
+    const networkModules = createNetworksCompositionRoot({
+        suiteModuleApi,
+    });
     const networkModuleRepository = createNetworkModuleRepository({ networkModules });
     const addressValidator = createAddressValidator({
         networkModuleRepository,
