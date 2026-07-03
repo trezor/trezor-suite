@@ -50,7 +50,14 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
     private manifest?: Manifest;
 
     public updateConnectSettings(_params: UpdateConnectSettings) {
-        return Promise.resolve(createErrorMessage(ERRORS.TypedError('Method_InvalidPackage')));
+        return Promise.resolve(
+            createErrorMessage(
+                ERRORS.TypedError(
+                    'Method_InvalidPackage',
+                    'updateConnectSettings is not supported in this implementation',
+                ),
+            ),
+        );
     }
 
     private openDeeplink: (method: string, id: string, params: any) => void = () => {
