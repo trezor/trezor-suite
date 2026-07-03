@@ -1,6 +1,16 @@
 import fs from 'fs';
+import path from 'path';
 
-import { clearAppData, open, read, readDir, rename, save } from '../libs/user-data';
+import {
+    clearAppData,
+    open,
+    read,
+    readDir,
+    rename,
+    resolveDirectoryInUserDataDir,
+    resolvePathInUserDataDir,
+    save,
+} from '../libs/user-data';
 
 jest.mock('electron', () => ({
     app: {
@@ -11,6 +21,79 @@ jest.mock('electron', () => ({
 jest.mock('@suite-common/suite-utils', () => ({
     isDevEnv: false,
 }));
+
+describe('resolveDirectoryInUserDataDir', () => {
+    it('resolves a directory inside the user data directory', () => {
+        const metadataResult = resolveDirectoryInUserDataDir('metadata');
+
+        expect(metadataResult).toStrictEqual({
+            success: true,
+            payload: {
+                dir: path.resolve('/tmp/user-data', 'metadata'),
+            },
+        });
+
+        const rootDirResult = resolveDirectoryInUserDataDir('');
+
+        expect(rootDirResult).toStrictEqual({
+            success: true,
+            payload: {
+                dir: path.resolve('/tmp/user-data'),
+            },
+        });
+    });
+
+    it('rejects directory path traversal', () => {
+        const result = resolveDirectoryInUserDataDir('../../OtherApp');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected, directory: "../../OtherApp"',
+        });
+    });
+});
+
+describe('resolvePathInUserDataDir', () => {
+    it('resolves a file inside the user data directory', () => {
+        const metadataResult = resolvePathInUserDataDir('metadata', 'labels.json');
+
+        expect(metadataResult).toStrictEqual({
+            success: true,
+            payload: {
+                dir: path.resolve('/tmp/user-data', 'metadata'),
+                file: path.resolve('/tmp/user-data', 'metadata', 'labels.json'),
+            },
+        });
+
+        const rootDirResult = resolvePathInUserDataDir('', 'labels.json');
+
+        expect(rootDirResult).toStrictEqual({
+            success: true,
+            payload: {
+                dir: path.resolve('/tmp/user-data'),
+                file: path.resolve('/tmp/user-data', 'labels.json'),
+            },
+        });
+    });
+
+    it('rejects directory path traversal', () => {
+        const result = resolvePathInUserDataDir('../../OtherApp', 'labels.json');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected, directory: "../../OtherApp"',
+        });
+    });
+
+    it('rejects file path traversal', () => {
+        const result = resolvePathInUserDataDir('metadata', '../outside.txt');
+
+        expect(result).toStrictEqual({
+            success: false,
+            error: 'Path traversal attempt detected, file: "../outside.txt"',
+        });
+    });
+});
 
 describe('user-data path traversal protection', () => {
     beforeEach(() => {
