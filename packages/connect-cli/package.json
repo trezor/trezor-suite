@@ -4,6 +4,7 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
+    "type": "module",
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",

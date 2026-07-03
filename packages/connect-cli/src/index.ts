@@ -413,7 +413,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     return methods.every(m => DB_METHODS.has(m));
 };
 
-const cliStatePath = path.join(__dirname, 'thp-state.dat');
+const cliStatePath = path.join(import.meta.dirname, 'thp-state.dat');
 const readCliState = (): { credentials: NonNullable<Device['thp']>['credentials'] } => {
     try {
         return JSON.parse(fs.readFileSync(cliStatePath, 'utf8'));
@@ -446,7 +446,7 @@ const getFeatures = (device: Device) =>
 const fwUpdate = (device: Device) =>
     TrezorConnect.firmwareUpdate({
         device,
-        baseUrl: path.resolve(__dirname, '../connect-data/files'),
+        baseUrl: path.resolve(import.meta.dirname, '../connect-data/files'),
     });
 
 const runTestCase = async (device: Device) => {

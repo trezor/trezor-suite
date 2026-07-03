@@ -14,6 +14,7 @@
         "Trezor",
         "transport"
     ],
+    "type": "module",
     "main": "./src/index.ts",
     "browser": "./src/browser.ts",
     "scripts": {
