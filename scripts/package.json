@@ -7,7 +7,8 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "generate-package": "tsx generatePackage.ts"
+        "generate-package": "tsx generatePackage.ts",
+        "list-largest-dts-files": "tsx listLargestDTSFiles.ts"
     },
     "devDependencies": {
         "@babel/cli": "7.29.7",
