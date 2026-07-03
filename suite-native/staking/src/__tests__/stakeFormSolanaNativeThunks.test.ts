@@ -149,6 +149,7 @@ const buildSolanaPrecomposedTransaction = (): PrecomposedTransactionFinal =>
 
 const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mock;
 const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
+const blockchainEstimateFeeMock = TrezorConnect.blockchainEstimateFee as jest.Mock;
 
 const dispatchCompose = async (
     store: ReturnType<typeof buildStore>,
@@ -185,6 +186,8 @@ beforeEach(() => {
         success: false,
         payload: { error: 'backend not connected' },
     });
+
+    blockchainEstimateFeeMock.mockClear();
 
     prepareStakeSolTxMock.mockReset();
     prepareStakeSolTxMock.mockResolvedValue({
@@ -280,6 +283,45 @@ describe('composeSolanaStakingTransactionFeeLevelsNativeThunk', () => {
         // applySolanaTxMeta overrides the fee with feeIncludingRentLamports
         expect(levels.normal.fee).toBe('2287880');
         expect(levels.normal.solanaTxMeta.feeIncludingRentLamports).toBe('2287880');
+    });
+
+    it('omits newAccountProgramName when an unstake only deactivates (creates no stake account)', async () => {
+        // A plain deactivate reserves no rent, so the fee estimate must not add a phantom rent reserve.
+        prepareUnstakeSolTxMock.mockResolvedValue({
+            success: true,
+            txShim: solanaTxShim,
+            solanaTxMeta: { ...solanaTxMetaMock, rentLamports: '0' },
+        });
+        const store = buildStore();
+
+        await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        expect(blockchainEstimateFeeMock).toHaveBeenCalled();
+        const request = blockchainEstimateFeeMock.mock.calls.at(-1)?.[0];
+        expect(request.request.specific).not.toHaveProperty('newAccountProgramName');
+    });
+
+    it('passes newAccountProgramName when an unstake splits a stake account (reserves rent)', async () => {
+        // A split creates a new rent-exempt stake account, so that reserve must be counted.
+        prepareUnstakeSolTxMock.mockResolvedValue({
+            success: true,
+            txShim: solanaTxShim,
+            solanaTxMeta: { ...solanaTxMetaMock, rentLamports: '2282880' },
+        });
+        const store = buildStore();
+
+        await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        const request = blockchainEstimateFeeMock.mock.calls.at(-1)?.[0];
+        expect(request.request.specific.newAccountProgramName).toBe('staking');
     });
 });
 

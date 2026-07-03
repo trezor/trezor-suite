@@ -1,6 +1,10 @@
 import { yup } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { getStakingLimitsByNetworkSymbol, isDecimalsValid } from '@suite-common/wallet-utils';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    getStakingLimitsByNetworkSymbol,
+    isDecimalsValid,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
 import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
@@ -41,6 +45,26 @@ export const unstakeFormValidationSchema = yup.object({
                 return this.createError({
                     message: translate('earn.unstakeFormScreen.validation.amountExceedsMax', {
                         maxAmount: limits.MAX_AMOUNT_FOR_STAKING.toString(),
+                    }),
+                });
+            }
+
+            return true;
+        })
+        .test('min-amount', 'Amount is below the minimum.', function (value) {
+            const { symbol, translate } = this.options.context as UnstakeFormContext;
+
+            // Solana can't split off an unstake below its minimum delegation; other networks have no such floor.
+            if (!value || !symbol || !isSupportedSolStakingNetworkSymbol(symbol)) return true;
+
+            const limits = getStakingLimitsByNetworkSymbol(symbol);
+            if (!limits) return true;
+
+            if (new BigNumber(value).lt(limits.MIN_AMOUNT_FOR_STAKING)) {
+                return this.createError({
+                    message: translate('earn.unstakeFormScreen.validation.amountBelowMin', {
+                        minAmount: limits.MIN_AMOUNT_FOR_STAKING.toString(),
+                        networkSymbol: getNetworkDisplaySymbol(symbol),
                     }),
                 });
             }
