@@ -8,7 +8,9 @@ import type { Result } from '@trezor/type-utils';
 
 import { setAutoStartEnabled } from './auto-start';
 
-const resolveDirectoryInUserDataDir = (directory: string): Result<{ dir: string }, string> => {
+export const resolveDirectoryInUserDataDir = (
+    directory: string,
+): Result<{ dir: string }, string> => {
     const userDataDir = path.resolve(app.getPath('userData'));
     const dir = path.resolve(path.join(userDataDir, directory));
 
@@ -22,7 +24,7 @@ const resolveDirectoryInUserDataDir = (directory: string): Result<{ dir: string 
     return { success: true, payload: { dir } };
 };
 
-const resolvePathInUserDataDir = (
+export const resolvePathInUserDataDir = (
     directory: string,
     filename: string,
 ): Result<{ dir: string; file: string }, string> => {
