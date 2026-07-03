@@ -187,6 +187,12 @@ const getPlugins = (): ExpoPlugins => {
                 useSQLCipher: true,
             },
         ],
+        [
+            'expo-dev-client',
+            {
+                toolsButton: false,
+            },
+        ],
     ];
 
     return [
