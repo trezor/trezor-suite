@@ -2,7 +2,7 @@ import { type ComponentType, type ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';
-import { selectTorState } from '@suite/tor';
+import { TorStatus, selectTorState } from '@suite/tor';
 import {
     Banner,
     Card,
@@ -18,7 +18,6 @@ import { spacings } from '@trezor/theme';
 
 import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { TorStatus } from 'src/types/suite';
 
 type TorLoadingScreenProps = {
     ModalWrapper?: ComponentType<{ children: ReactNode }>;

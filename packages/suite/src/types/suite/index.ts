@@ -13,7 +13,7 @@ import type { recoveryActions } from '@suite/recovery';
 import { type Route, type RouterAction } from '@suite/router';
 import { type suiteSettingsActions } from '@suite/settings';
 import { type suiteSyncSlice } from '@suite/suite-sync';
-import { type torActions } from '@suite/tor';
+import { type TorAction } from '@suite/tor';
 import { type analyticsActions } from '@suite-common/analytics-redux';
 import { type bluetoothActions } from '@suite-common/bluetooth';
 import { type deviceActions } from '@suite-common/device';
@@ -134,7 +134,6 @@ type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions
 type DiscreetModeAction = ReturnType<
     (typeof discreetModeActions)[keyof typeof discreetModeActions]
 >;
-type TorAction = ReturnType<(typeof torActions)[keyof typeof torActions]>;
 type DebugAction = ReturnType<(typeof debugActions)[keyof typeof debugActions]>;
 type DesktopUpdateAction = ReturnType<
     (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
@@ -205,9 +204,6 @@ export type ForegroundAppProps = {
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
-
-export { TorStatus } from '@suite/tor';
-export type { TorBootstrap } from '@suite/tor';
 
 export enum DisplayMode {
     CHUNKS = 1,
