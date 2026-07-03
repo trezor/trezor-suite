@@ -7,6 +7,7 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { type BottomSheetModalRef, useBottomSheetModal } from '@suite-native/atoms';
 import {
@@ -135,6 +136,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             const accountsForNetwork = accounts.filter(
                 account => account.symbol === item.networkSymbol,
             );
+            sortByCoin(accountsForNetwork);
 
             if (accountsForNetwork.length === 0) {
                 setPendingEnableSymbol(item.networkSymbol);

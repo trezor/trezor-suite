@@ -8,6 +8,7 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
@@ -140,6 +141,7 @@ export const useStakingPromoNavigation = () => {
             }
 
             const accountsForSymbol = accounts.filter(acc => acc.symbol === item.symbol);
+            sortByCoin(accountsForSymbol);
 
             if (isPortfolioTrackerDevice) {
                 openPortfolioTrackerSheet();
