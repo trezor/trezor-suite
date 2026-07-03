@@ -80,6 +80,7 @@ export const TransactionItem = memo(
         const showFeeRow = isTxFeePaid(transaction);
 
         const isTxCancellable =
+            isPending &&
             transaction.type !== 'self' &&
             transaction.type !== 'joint' &&
             (network.networkType === 'bitcoin' || network.networkType === 'ethereum');
