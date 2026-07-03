@@ -29,6 +29,7 @@ import { suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type ReloadAppDep } from '@suite-common/suite-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { type NetworkAvailabilityDep } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
@@ -135,7 +136,8 @@ export type SuiteStoreDeps = HistoryDep &
     PlatformEncryptionDep &
     CreateConnectLoggerFactoryDep &
     ReloadAppDep &
-    ThpHostNameDep;
+    ThpHostNameDep &
+    NetworkAvailabilityDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -167,6 +169,7 @@ export const initStore = (
             reloadApp: deps.reloadApp,
             createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
             thpHostName: deps.thpHostName,
+            networkAvailability: deps.networkAvailability,
         }),
     });
 
