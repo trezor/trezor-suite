@@ -1960,6 +1960,24 @@ export const messages = {
                 inputs: 'Inputs & outputs',
             },
         },
+        cancel: {
+            button: 'Cancel transaction',
+            review: {
+                title: 'Cancel transaction',
+                description:
+                    'This sends a replacement transaction with no value to your own address, using a higher fee to cancel the pending one.',
+                feeLabel: 'Cancellation fee',
+                submitButton: 'Cancel transaction',
+            },
+            alreadyConfirmed: {
+                title: 'Transaction already confirmed',
+                description: 'This transaction has been confirmed and can no longer be cancelled.',
+            },
+            error: {
+                title: 'Cancellation failed',
+                description: 'The transaction was confirmed and can no longer be cancelled.',
+            },
+        },
         name: {
             received: 'Received',
             receiving: 'Receiving',

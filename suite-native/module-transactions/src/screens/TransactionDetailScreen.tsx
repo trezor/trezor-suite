@@ -1,21 +1,26 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import {
+    type RootStackParamList,
     Screen,
     ScreenHeader,
     type StackProps,
+    type StackToStackCompositeNavigationProps,
     type TransactionDetailStackParamList,
-    type TransactionDetailStackRoutes,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
 import { useTransactionDetails } from '@suite-native/transaction-management';
@@ -28,11 +33,17 @@ import {
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
 
+type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes.TransactionDetail,
+    RootStackParamList
+>;
+
 export const TransactionDetailScreen = ({
     route,
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
-    const navigation = useNavigation();
+    const navigation = useNavigation<TransactionDetailNavigation>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
@@ -43,6 +54,25 @@ export const TransactionDetailScreen = ({
         txid,
         tokenContract,
     });
+
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+
+    // A cancel is only possible for a still-pending EVM transaction that carries RBF params
+    // (populated only for pending, replaceable, outgoing EVM txs).
+    const canCancelTransaction =
+        isPending &&
+        transaction?.rbfParams?.type === 'ethereum' &&
+        !!account &&
+        hasNetworkFeatures(account, 'rbf');
+
+    const handleCancelTransaction = () => {
+        navigation.navigate(TransactionDetailStackRoutes.CancelTransactionReview, {
+            accountKey,
+            txid,
+        });
+    };
 
     usePreventRemove(source === 'send', ({ data }) => {
         navigation.dispatch(data.action);
@@ -139,14 +169,26 @@ export const TransactionDetailScreen = ({
                         tokenTransfer={tokenTransfer as TypedTokenTransfer}
                     />
                 </VStack>
-                <Button
-                    iconRight="arrowUpRight"
-                    onPress={handleOpenBlockchain}
-                    intent="neutral"
-                    priority="secondary"
-                >
-                    <Translation id="transactions.detail.exploreButton" />
-                </Button>
+                <VStack spacing="sp12">
+                    {canCancelTransaction && (
+                        <Button
+                            intent="critical"
+                            priority="secondary"
+                            testID="@transactions/detail/cancel-transaction-button"
+                            onPress={handleCancelTransaction}
+                        >
+                            <Translation id="transactions.cancel.button" />
+                        </Button>
+                    )}
+                    <Button
+                        iconRight="arrowUpRight"
+                        onPress={handleOpenBlockchain}
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        <Translation id="transactions.detail.exploreButton" />
+                    </Button>
+                </VStack>
             </VStack>
         </Screen>
     );

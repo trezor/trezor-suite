@@ -302,6 +302,7 @@ export enum TradingStackRoutes {
 export enum TransactionDetailStackRoutes {
     TransactionDetail = 'TransactionDetail',
     TransactionDetailOverview = 'TransactionDetailOverview',
+    CancelTransactionReview = 'CancelTransactionReview',
 }
 
 export enum StellarManageTokenStackRoutes {

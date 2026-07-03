@@ -3,11 +3,14 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     composeSendFormTransactionFeeLevelsThunk,
+    getEthereumRbfFeeInfo,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectSendFormDraftByKey,
+    selectTransactionByAccountKeyAndTxid,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
@@ -168,5 +171,86 @@ export const calculateCustomFeeLevelThunk = createThunk<
         }
 
         return fulfillWithValue(feeLevels);
+    },
+);
+
+export const composeEthereumCancelTransactionThunk = createThunk<
+    GeneralPrecomposedTransactionFinal,
+    { accountKey: AccountKey; txid: string },
+    { rejectValue: string }
+>(
+    `${TRANSACTION_MANAGEMENT_PREFIX}/composeEthereumCancelTransactionThunk`,
+    async ({ accountKey, txid }, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (account?.networkType !== 'ethereum') {
+            return rejectWithValue('Ethereum account not found.');
+        }
+
+        const transaction = selectTransactionByAccountKeyAndTxid(getState(), accountKey, txid);
+        const rbfParams = transaction?.rbfParams;
+
+        if (rbfParams?.type !== 'ethereum') {
+            return rejectWithValue('Transaction cannot be cancelled.');
+        }
+
+        const networkFeeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
+
+        if (!networkFeeInfo) {
+            return rejectWithValue('Network fees not found.');
+        }
+
+        // Bump the fee above the stuck tx's gas so the replacement is accepted by the mempool.
+        const feeInfo = getEthereumRbfFeeInfo(networkFeeInfo, {
+            gasPrice: rbfParams.gasPrice,
+            maxFeePerGas: rbfParams.maxFeePerGas,
+            maxPriorityFeePerGas: rbfParams.maxPriorityFeePerGas,
+        });
+
+        // A cancel is a zero-value self-send with empty calldata that reuses the stuck tx's nonce.
+        // The nonce is carried via rbfParams and re-applied during signing. Empty calldata makes it
+        // a true cancel rather than a replay of the original transfer/contract call.
+        const cancelFormState: FormState = {
+            ...DEFAULT_VALUES,
+            outputs: [
+                {
+                    ...DEFAULT_PAYMENT,
+                    address: account.descriptor,
+                    amount: '0',
+                },
+            ],
+            selectedFee: 'normal',
+            rbfParams,
+        };
+
+        const network = getNetwork(account.symbol);
+
+        const response = await dispatch(
+            composeSendFormTransactionFeeLevelsThunk({
+                formState: cancelFormState,
+                composeContext: { account, network, feeInfo },
+            }),
+        );
+
+        if (isRejected(response)) {
+            return rejectWithValue(
+                response.payload?.message ?? 'Unable to compose cancel transaction.',
+            );
+        }
+
+        const feeLevels = response.payload;
+        const composedCancel = feeLevels.normal;
+
+        if (!isFinalPrecomposedTransaction(composedCancel)) {
+            return rejectWithValue('Unable to compose cancel transaction.');
+        }
+
+        dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
+
+        // Persist the cancel form as the account draft so the shared sign/push pipeline
+        // (signTransactionNativeThunk → selectSendFormDraftByKey) reuses the stuck tx's nonce.
+        dispatch(sendFormActions.storeDraft({ accountKey, formState: cancelFormState }));
+
+        return fulfillWithValue(composedCancel);
     },
 );

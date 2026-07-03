@@ -544,6 +544,10 @@ export type TransactionDetailStackParamList = {
         txid: string;
         accountKey: AccountKey;
     };
+    [TransactionDetailStackRoutes.CancelTransactionReview]: {
+        txid: string;
+        accountKey: AccountKey;
+    };
 };
 
 export type ConfirmingScreenFlowType = 'approve' | 'revoke' | 'revoke-and-approve';
