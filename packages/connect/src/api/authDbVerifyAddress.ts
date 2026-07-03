@@ -38,6 +38,13 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         return ['management'];
     }
 
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            label: 'Verify the auth-label entry for this address against the device?',
+        };
+    }
+
     get info() {
         return 'Verify AuthDB address entry';
     }

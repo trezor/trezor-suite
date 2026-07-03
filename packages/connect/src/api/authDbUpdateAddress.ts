@@ -39,6 +39,13 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         return ['management'];
     }
 
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            label: 'Update the auth-label entry for this address on the device?',
+        };
+    }
+
     get info() {
         return 'Update AuthDB address entry';
     }
