@@ -2511,6 +2511,7 @@ export const messages = {
             totalRewardsLabel: 'Total rewards',
             autoRestakedBadge: 'Automatically restaked',
             nextRewardLabel: 'Next reward in {value, plural, one {# day} other {# days}}',
+            solRewardsFrequencyLabel: 'Rewards every ~{value, plural, one {# day} other {# days}}',
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
             stakeMoreButton: 'Stake more',
