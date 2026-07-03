@@ -108,12 +108,14 @@ const estimateSolanaStakeFee = async (
 ): Promise<EstimatedFee> => {
     if (!txData?.success) return { success: false };
 
+    const createsStakeAccount = txData.solanaTxMeta.rentLamports !== '0';
+
     const estimatedFee = await TrezorConnect.blockchainEstimateFee({
         coin: symbol,
         request: {
             specific: {
                 data: txData.txShim.serialize(),
-                newAccountProgramName: 'staking',
+                ...(createsStakeAccount ? { newAccountProgramName: 'staking' } : {}),
             },
         },
     });

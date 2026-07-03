@@ -140,6 +140,13 @@ export type PrecomposedTransactionError = PrecomposedTransactionErrorExtended & 
 type PrecomposedTransactionCardanoError = PrecomposedTransactionCardanoConnectResponseError &
     ComposeError;
 
+export type SolanaTxMeta = {
+    deviceAmountLamports: string;
+    feeLamports: string;
+    rentLamports: string;
+    feeIncludingRentLamports: string;
+};
+
 type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFinal & {
     max: string | undefined;
     feeLimit?: string;
@@ -148,6 +155,7 @@ type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFi
     energyConsumed?: number;
     accountActivationFee?: string;
     memoFee?: string;
+    solanaTxMeta?: SolanaTxMeta;
 };
 
 // base of PrecomposedTransactionFinal
@@ -166,6 +174,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     createdTimestamp?: number;
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
+    solanaTxMeta?: SolanaTxMeta;
 };
 
 // base of PrecomposedTransactionFinal
