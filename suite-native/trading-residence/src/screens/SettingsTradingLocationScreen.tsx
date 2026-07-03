@@ -26,7 +26,10 @@ export const SettingsTradingLocationScreen = () => {
     return (
         <Screen header={<ScreenHeader closeAction={reportCancelAndGoBack} />}>
             <TradingLocationSettings context="settings">
-                <ConfirmLocationButton afterConfirm={navigation.goBack} />
+                <ConfirmLocationButton
+                    afterConfirm={navigation.goBack}
+                    testId="@settings/confirmLocation"
+                />
             </TradingLocationSettings>
         </Screen>
     );
