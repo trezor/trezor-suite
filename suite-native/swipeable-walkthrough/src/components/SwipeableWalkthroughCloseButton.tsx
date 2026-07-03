@@ -46,6 +46,7 @@ export const SwipeableWalkthroughCloseButton = ({
                 onPress={onPressBack}
                 accessibilityRole="button"
                 accessibilityLabel="Go back"
+                size="medium"
                 style={animatedCaretStyle}
             />
             <IconButton
@@ -56,6 +57,7 @@ export const SwipeableWalkthroughCloseButton = ({
                 onPress={onPressBack}
                 accessibilityRole="button"
                 accessibilityLabel="Go back"
+                size="medium"
             />
         </Animated.View>
     );
