@@ -16488,6 +16488,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-electron@workspace:packages/connect-electron":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-electron@workspace:packages/connect-electron"
+  dependencies:
+    "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-explorer-theme@workspace:^, @trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme"
