@@ -125,7 +125,7 @@ export const TronFreezeAmount = () => {
                 rate: currentRate.rate,
             })?.toFixed(2, BigNumber.ROUND_FLOOR);
 
-            setValue('fiatAmount', fiatValue ?? '', { shouldDirty: true });
+            setValue('fiatAmount', fiatValue ?? '', { shouldDirty: true, shouldValidate: true });
         }
     };
 
