@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { A } from '@mobily/ts-belt';
-import { captureException } from '@sentry/react-native';
 import { type WritableAtom, useSetAtom } from 'jotai';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectIsDeviceAuthorized } from '@suite-common/device';
 import {
     type AccountItem,
     type CommonUseGraphParams,
@@ -18,6 +17,8 @@ import {
     type AccountsRootState,
     type BlockchainRootState,
     selectAccountByKey,
+    selectBaseCurrency,
+    selectHasRunningDiscovery,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -25,6 +26,7 @@ import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
+import { refetchPortfolioGraphThunk } from './graphThunks';
 import { selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning } from './selectors';
 import {
     type GraphSliceRootState,
@@ -33,7 +35,7 @@ import {
     setAccountGraphTimeframe,
 } from './slice';
 import { type TimeframeHoursValue } from './types';
-import { omitErrorMessageSensitiveData } from './utils';
+import { checkAndReportGraphError } from './utils';
 
 const useWatchTimeframeChangeForAnalytics = (
     timeframeHours: TimeframeHoursValue,
@@ -53,33 +55,15 @@ const useWatchTimeframeChangeForAnalytics = (
             item => item.valueBackInHours === timeframeHours,
         )?.key;
 
-        if (timeframeKey) {
-            if (symbol) {
-                // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
-                // related to issue: https://github.com/trezor/trezor-suite/issues/7839
-                analytics.report({
-                    type: events.assetDetailTimeframeChangeEvent.name,
-                    payload: { timeframe: timeframeKey, assetSymbol: symbol },
-                });
-            } else {
-                analytics.report({
-                    type: events.watchPortfolioTimeframeChangeEvent.name,
-                    payload: { timeframe: timeframeKey },
-                });
-            }
+        if (timeframeKey && symbol) {
+            // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
+            // related to issue: https://github.com/trezor/trezor-suite/issues/7839
+            analytics.report({
+                type: events.assetDetailTimeframeChangeEvent.name,
+                payload: { timeframe: timeframeKey, assetSymbol: symbol },
+            });
         }
     }, [timeframeHours, symbol, isFirstRender, analytics]);
-};
-
-const checkAndReportGraphError = (error: Error | null) => {
-    if (error) {
-        // new Error object has to be created, to not override the original data
-        const errorCopy = new Error(omitErrorMessageSensitiveData(error.message));
-        errorCopy.stack = omitErrorMessageSensitiveData(error.stack ?? '');
-        errorCopy.name = error.name;
-
-        captureException(errorCopy);
-    }
 };
 
 export const useGraphForSingleAccount = ({
@@ -153,34 +137,37 @@ export const useGraphForSingleAccount = ({
     };
 };
 
-export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGraphParams) => {
+/**
+ * Watches the portfolio graph fetch inputs and refetches the graph data into
+ * `portfolioGraphAtoms` whenever any of them changes. Components of the graph subscribe
+ * to the atoms directly, so this hook returns nothing and no props have to be drilled.
+ */
+export const usePortfolioGraphData = () => {
+    const dispatch = useDispatch();
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const hasRunningDiscovery = useSelector(selectHasRunningDiscovery);
     const accountItems = useSelector(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning);
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, 'btc'),
     );
 
-    const { startOfTimeFrameDate, endOfTimeFrameDate } =
-        useGetTimeFrameForHistoryHours(portfolioGraphTimeframe);
+    useEffect(() => {
+        if (!isDeviceAuthorized) return;
 
-    useWatchTimeframeChangeForAnalytics(portfolioGraphTimeframe);
-
-    const graphForAccounts = useGraphForAccounts({
-        accounts: accountItems,
+        dispatch(refetchPortfolioGraphThunk({}));
+        // The thunk reads all the fetch inputs from the store by itself. They are listed
+        // as dependencies only to trigger a refetch whenever any of them changes.
+    }, [
+        dispatch,
+        isDeviceAuthorized,
+        hasRunningDiscovery,
+        accountItems,
+        portfolioGraphTimeframe,
         baseCurrencyCode,
-        startOfTimeFrameDate,
-        endOfTimeFrameDate,
-        isPortfolioGraph: true,
         isElectrumBackend,
-    });
-
-    useEffect(() => checkAndReportGraphError(graphForAccounts.error), [graphForAccounts.error]);
-
-    return {
-        ...graphForAccounts,
-        isAnyMainnetAccountPresent: A.isNotEmpty(accountItems),
-        timeframe: portfolioGraphTimeframe,
-    };
+    ]);
 };
 
 type UseGraphAtomsParams<TGraphPoint extends FiatGraphPoint> = {
