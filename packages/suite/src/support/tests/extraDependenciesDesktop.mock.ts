@@ -1,6 +1,7 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { createNetworkAvailability } from '@suite-common/wallet-config';
 import { ok } from '@trezor/type-utils';
 
 import { type SuiteServices } from '../extraDependencies';
@@ -12,6 +13,7 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     services: {
         ...extraDependenciesCommonMock.services,
         analytics: mockDesktopAnalytics(),
+        networkAvailability: createNetworkAvailability({ allowDesktopOnlyNetworks: true }),
         suiteRouterHistory: {
             getLocation: () => ({
                 pathname: '/mocked_path',
