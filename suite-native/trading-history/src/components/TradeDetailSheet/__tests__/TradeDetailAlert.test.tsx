@@ -1,7 +1,12 @@
 import { type TradingTransaction } from '@suite-common/trading';
 import { type TxKeyPath, getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import {
+    getBuyTrade,
+    getExchangeTrade,
+    getInitializedTradingState,
+    getSellTrade,
+} from '@suite-native/trading-fixtures';
 import { type TradeStatusStep } from '@suite-native/trading-quote-utils';
 
 import { TradeDetailAlert } from '../TradeDetailAlert';
@@ -25,7 +30,7 @@ const alertLabelsCases: AlertLabelsCase[] = [
     {
         alertType: 'error',
         titleKey: 'moduleTrading.tradeHistory.detail.errorAlert.title',
-        descriptionKey: 'moduleTrading.tradeHistory.detail.errorAlert.description',
+        descriptionKey: 'moduleTrading.tradeHistory.detail.errorAlert.buyDescription',
     },
     {
         alertType: 'waiting',
@@ -91,5 +96,24 @@ describe('TradeDetailAlert', () => {
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.waitingAlert.button')),
         ).toBeOnTheScreen();
+    });
+
+    it.each([
+        [
+            getBuyTrade({ status: 'ERROR' }),
+            'moduleTrading.tradeHistory.detail.errorAlert.buyDescription',
+        ],
+        [
+            getSellTrade({ status: 'ERROR' }),
+            'moduleTrading.tradeHistory.detail.errorAlert.sellDescription',
+        ],
+        [
+            getExchangeTrade({ status: 'ERROR' }),
+            'moduleTrading.tradeHistory.detail.errorAlert.swapDescription',
+        ],
+    ] as const)('should use trade-specific error description key', (trade, key) => {
+        const { getByText } = renderAlert({ alertType: 'error', trade });
+
+        expect(getByText(getTranslation(key))).toBeOnTheScreen();
     });
 });

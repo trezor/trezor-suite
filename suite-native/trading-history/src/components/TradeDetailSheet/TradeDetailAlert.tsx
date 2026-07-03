@@ -28,19 +28,44 @@ type TradeDetailAlertProps = {
     onOpenedBrowser?: () => void;
 };
 
+type GetAlertConfigParams = {
+    alertType: TradeStatusStep;
+    tradeType?: TradingTransaction['tradeType'];
+};
+
 const isBuyOrSell = (
     trade?: TradingTransaction,
 ): trade is TradingTransactionBuy | TradingTransactionSell =>
     !!trade && ['buy', 'sell'].includes(trade.tradeType);
 
-const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => {
+const getErrorAlertDescriptionKey = (tradeType: TradingTransaction['tradeType']): TxKeyPath => {
+    switch (tradeType) {
+        case 'buy':
+            return 'moduleTrading.tradeHistory.detail.errorAlert.buyDescription';
+        case 'sell':
+            return 'moduleTrading.tradeHistory.detail.errorAlert.sellDescription';
+        case 'exchange':
+            return 'moduleTrading.tradeHistory.detail.errorAlert.swapDescription';
+        default:
+            return exhaustive(tradeType);
+    }
+};
+
+const getAlertConfig = ({
+    alertType,
+    tradeType,
+}: GetAlertConfigParams): AlertConfig | undefined => {
     switch (alertType) {
         case 'error':
+            if (!tradeType) {
+                return undefined;
+            }
+
             return {
                 iconName: 'warningCircle',
                 intent: 'critical',
                 titleKey: 'moduleTrading.tradeHistory.detail.errorAlert.title',
-                descriptionKey: 'moduleTrading.tradeHistory.detail.errorAlert.description',
+                descriptionKey: getErrorAlertDescriptionKey(tradeType),
             };
         case 'waiting':
             return {
@@ -92,12 +117,12 @@ export const TradeDetailAlert = ({
     const { translate } = useTranslate();
 
     const trade = useSelector((state: TradingRootState) =>
-        orderId ? selectTradingTradeByOrderId(state, orderId) : undefined,
+        selectTradingTradeByOrderId(state, orderId),
     );
 
-    const alertConfig = getAlertConfig(alertType);
-
     const { openBrowser } = useBrowserAuth(trade?.tradeType);
+
+    const alertConfig = getAlertConfig({ alertType, tradeType: trade?.tradeType });
 
     if (!alertConfig || !trade) {
         return null;
