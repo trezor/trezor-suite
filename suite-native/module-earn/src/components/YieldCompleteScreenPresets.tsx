@@ -85,7 +85,6 @@ export const getYieldDepositCompleteRows = ({
 
 type GetYieldWithdrawCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
-    apyValue: ReactNode;
     receivedAmount: string;
     receivedTokenContract?: string;
     withdrawalAmount?: string;
@@ -94,42 +93,12 @@ type GetYieldWithdrawCompleteRowsParams = {
 
 export const getYieldWithdrawCompleteRows = ({
     accountSymbol,
-    apyValue,
     receivedAmount,
     receivedTokenContract,
     withdrawalAmount,
     withdrawalTokenContract,
 }: GetYieldWithdrawCompleteRowsParams): YieldCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
-    {
-        key: 'apy',
-        label: <Translation id="earn.yieldCompleteScreen.apy" />,
-        value: (
-            <Text variant="body-md" color="contentPrimary">
-                {apyValue}
-            </Text>
-        ),
-    },
-    ...(withdrawalAmount
-        ? [
-              {
-                  key: 'withdrawal-amount',
-                  label: <Translation id="earn.yieldCompleteScreen.withdrawalAmount" />,
-                  value: (
-                      <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                          <CryptoIcon
-                              symbol={accountSymbol}
-                              contractAddress={withdrawalTokenContract}
-                              size="extraSmall"
-                          />
-                          <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
-                              {withdrawalAmount}
-                          </Text>
-                      </HStack>
-                  ),
-              },
-          ]
-        : []),
     {
         key: 'received',
         label: <Translation id="earn.yieldCompleteScreen.received" />,
@@ -146,6 +115,26 @@ export const getYieldWithdrawCompleteRows = ({
             </HStack>
         ),
     },
+    ...(withdrawalAmount
+        ? [
+              {
+                  key: 'sent',
+                  label: <Translation id="earn.yieldCompleteScreen.sent" />,
+                  value: (
+                      <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+                          <CryptoIcon
+                              symbol={accountSymbol}
+                              contractAddress={withdrawalTokenContract}
+                              size="extraSmall"
+                          />
+                          <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
+                              -{withdrawalAmount}
+                          </Text>
+                      </HStack>
+                  ),
+              },
+          ]
+        : []),
 ];
 
 export const getYieldClaimCompleteRows = (
