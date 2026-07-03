@@ -1,13 +1,12 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import solSimulateClaimTransactionResponse from '../../../fixtures/staking/sol-simulate-claim-transaction.json';
-import solSimulateUnstakeTransactionResponse from '../../../fixtures/staking/sol-simulate-unstake-transaction.json';
+import solSimulateClaimTransaction from '../../../fixtures/staking/sol-simulate-claim-transaction.json';
+import solSimulateUnstakeTransaction from '../../../fixtures/staking/sol-simulate-unstake-transaction.json';
 import {
     solStakingAccountDeactivating,
     solStakingAccountFirst,
 } from '../../../fixtures/staking/sol-staking-accounts';
 import { expect, test } from '../../../support/fixtures';
-import { fulfillWithResult } from '../../../support/mocks/solanaStakingMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
@@ -17,7 +16,7 @@ const unstakingAmount = solStakingAccountDeactivating.stakeInSol;
 const unstakingAmountFormatted = `${unstakingAmount} SOL`;
 const unstakingAndRentFormatted = `${solStakingAccountDeactivating.stakeAndRentInSol} SOL`;
 
-test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
@@ -25,17 +24,10 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     });
 
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
-        await solanaStakingMock.setupStakedAccount();
-        // Mock simulate unstake transaction response
-        await solanaStakingMock.replaceRoute('simulateTransaction', {
-            respond: async (route, body) => {
-                await fulfillWithResult(route, body, {
-                    value: solSimulateUnstakeTransactionResponse,
-                });
-            },
-        });
+        solanaStakingMock.setupStakedAccount();
+        solanaStakingMock.setSimulatedTransaction(solSimulateUnstakeTransaction);
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+        await settingsPage.enableNetworkWithCustomBackend('sol', 'solana', solanaStakingMock.url);
     });
 
     test(
@@ -116,13 +108,13 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Send Unstake and verify on dashboard', async () => {
-                solanaStakingMock.enableRoutesForTransactions();
+                solanaStakingMock.confirmTransaction();
                 await devicePrompt.sendButton.click();
                 await expect(stakingSection.unstakedToastAccount).toContainText('Solana #1');
                 await expect(stakingSection.unstakedToastAmount).toContainText(
                     stakedAmountFormatted,
                 );
-                await solanaStakingMock.setupUnstakingAccount();
+                solanaStakingMock.setupUnstakingAccount();
                 await stakingSection.expectStakingAmounts({
                     expected: {
                         pending: 'hidden',
@@ -136,17 +128,10 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
             });
 
-            // Mock simulate claim transaction response
-            await solanaStakingMock.replaceRoute('simulateTransaction', {
-                respond: async (route, body) => {
-                    await fulfillWithResult(route, body, {
-                        value: solSimulateClaimTransactionResponse,
-                    });
-                },
-            });
+            solanaStakingMock.setSimulatedTransaction(solSimulateClaimTransaction);
 
             await test.step('Wait few epochs for claim to be available', async () => {
-                await solanaStakingMock.advanceEpoch();
+                solanaStakingMock.advanceEpoch();
                 await stakingSection.expectStakingAmounts({
                     expected: {
                         pending: 'hidden',
@@ -210,7 +195,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
-                await solanaStakingMock.setProgramAccounts([]);
+                solanaStakingMock.setStakeAccounts([]);
                 await devicePrompt.sendButton.click();
                 await expect(stakingSection.claimedToastAccount).toContainText('Solana #1');
                 await expect(stakingSection.claimedToastAmount).toContainText(
@@ -219,7 +204,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify dashboard is back to initial state', async () => {
-                await solanaStakingMock.advanceEpoch();
+                solanaStakingMock.advanceEpoch();
                 await expect(async () => {
                     await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                     await expect(stakingSection.stakingEmptyCard).toBeVisible();

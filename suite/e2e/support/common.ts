@@ -34,10 +34,19 @@ export function step(stepName?: string) {
     /* eslint-disable @typescript-eslint/no-unsafe-function-type */
     return function decorator(target: Function, context: ClassMethodDecoratorContext) {
         return function replacementMethod(this: any, ...args: any) {
-            const name = stepName || `${this.constructor.name + '.' + (context.name as string)}`;
-            const params = args.map((arg: any) => JSON.stringify(arg)).join(', '); // Serialize arguments
+            const result = target.call(this, ...args);
 
-            return test.step(`${name}(${params})`, async () => await target.call(this, ...args));
+            // Only wrap async results in test.step. Wrapping synchronous methods could introduce
+            // race conditions, so we return their result untouched.
+            if (result instanceof Promise) {
+                const name =
+                    stepName || `${this.constructor.name + '.' + (context.name as string)}`;
+                const params = args.map((arg: any) => JSON.stringify(arg)).join(', '); // Serialize arguments
+
+                return test.step(`${name}(${params})`, async () => await result);
+            }
+
+            return result;
         };
     };
     /* eslint-enable @typescript-eslint/no-unsafe-function-type */

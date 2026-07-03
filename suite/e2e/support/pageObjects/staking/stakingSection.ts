@@ -210,8 +210,16 @@ export class StakingSection {
                 await this.page.clock.fastForward(options.fastForward);
             }
 
-            const getStatus = async (locator: Locator) =>
-                (await locator.isVisible()) ? locator.innerText() : 'hidden';
+            const getStatus = async (locator: Locator) => {
+                if ((await locator.count()) === 0) return 'hidden';
+                try {
+                    return await locator.innerText({ timeout: 100 });
+                } catch (error) {
+                    // Unmounted mid-read -> 'hidden'; any other error must surface.
+                    if ((await locator.count()) === 0) return 'hidden';
+                    throw error;
+                }
+            };
 
             const [pending, staked, rewards, unstaking] = await Promise.all([
                 getStatus(this.pendingAmount),
