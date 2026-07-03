@@ -14,9 +14,10 @@ import { getPreferredCountryOption } from '../utils/getPreferredCountryOption';
 
 export type ConfirmLocationButtonProps = {
     afterConfirm: () => void;
+    testId?: string;
 };
 
-export const ConfirmLocationButton = ({ afterConfirm }: ConfirmLocationButtonProps) => {
+export const ConfirmLocationButton = ({ afterConfirm, testId }: ConfirmLocationButtonProps) => {
     const countryCode = useFormCountryCode();
     const { watch } = useFormContext<TradingLocationFormValues>();
     const countrySubdivision = watch('countrySubdivision');
@@ -42,7 +43,7 @@ export const ConfirmLocationButton = ({ afterConfirm }: ConfirmLocationButtonPro
     const handlePress = isSubdivisionMissing ? showCountrySubdivisionPicker : confirmLocation;
 
     return (
-        <Button intent="brand" priority="primary" onPress={handlePress}>
+        <Button intent="brand" priority="primary" onPress={handlePress} testID={testId}>
             <Translation
                 id={
                     isSubdivisionMissing
