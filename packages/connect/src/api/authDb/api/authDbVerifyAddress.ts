@@ -12,9 +12,9 @@ import { AuthDbVerifyAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
-import * as settingsStore from '../data/settingsStore';
+import type { MethodMessage } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import * as settingsStore from '../../../data/settingsStore';
 
 const utf8Hex = (s: string) => bytesToHex(new TextEncoder().encode(s));
 

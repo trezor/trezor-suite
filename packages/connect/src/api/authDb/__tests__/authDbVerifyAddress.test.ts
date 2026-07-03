@@ -1,7 +1,7 @@
 import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/authdb';
 
-import * as settingsStore from '../../data/settingsStore';
-import AuthDbVerifyAddress from '../authDbVerifyAddress';
+import * as settingsStore from '../../../data/settingsStore';
+import AuthDbVerifyAddress from '../api/authDbVerifyAddress';
 
 const buildProvider = (
     overrides: Partial<AuthLabelLookupProvider> = {},

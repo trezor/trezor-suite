@@ -1,6 +1,6 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { createRawAuthDbMethod } from './authDb/rawAuthDbMethod';
+import { createRawAuthDbMethod } from '../rawAuthDbMethod';
 
 export default createRawAuthDbMethod({
     name: 'authDbLookup',

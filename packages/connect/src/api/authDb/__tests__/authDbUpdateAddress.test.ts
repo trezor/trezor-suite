@@ -4,8 +4,8 @@ import type {
     AuthLabelRow,
 } from '@trezor/authdb';
 
-import * as settingsStore from '../../data/settingsStore';
-import AuthDbUpdateAddress from '../authDbUpdateAddress';
+import * as settingsStore from '../../../data/settingsStore';
+import AuthDbUpdateAddress from '../api/authDbUpdateAddress';
 
 type MockProvider = AuthLabelLookupProvider & Partial<AuthLabelApprovalProvider>;
 
