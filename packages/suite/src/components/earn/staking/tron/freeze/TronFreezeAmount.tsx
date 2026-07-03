@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
 import { useFormState } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { composeTronFreezeFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     asAmountSubunit,
     getStakingLimitsByNetworkSymbol,
@@ -16,7 +18,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     validateDecimals,
     validateMin,
@@ -27,10 +29,11 @@ import { TronCurrencySwitchButton } from '../TronCurrencySwitchButton';
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronFreezeAmount = () => {
+    const dispatch = useDispatch();
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
     const { account, form, actions, amountInput } = useTronStakeContext();
-    const { control, getValues, setValue } = form.methods;
+    const { control, setValue } = form.methods;
     const { errors } = useFormState({ control });
     const isDisabled = !!actions.pendingTxid;
 
@@ -53,6 +56,31 @@ export const TronFreezeAmount = () => {
 
     const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
 
+    const resourceType = form.methods.watch('resourceType');
+
+    const maxFreezeAmount = useMemo(async () => {
+        const availableBalance = subunitsToUnits({
+            value: asAmountSubunit(new BigNumber(account.availableBalance)),
+            symbol: account.symbol,
+        }).toString();
+
+        const levels = await dispatch(
+            composeTronFreezeFeeLevelsThunk({ account, amount: availableBalance, resourceType }),
+        )
+            .unwrap()
+            .catch(() => undefined);
+
+        const feeInSun = levels?.normal?.type === 'final' ? levels.normal.fee : '0';
+        const maxInSun = BigNumber.max(new BigNumber(account.availableBalance).minus(feeInSun), 0);
+
+        const maxAmount = subunitsToUnits({
+            value: asAmountSubunit(maxInSun),
+            symbol: account.symbol,
+        }).toString();
+
+        return maxAmount;
+    }, [account, resourceType, dispatch]);
+
     const cryptoInputRules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
@@ -68,7 +96,24 @@ export const TronFreezeAmount = () => {
             decimals: validateDecimals(translationString, {
                 decimals: getNetwork(account.symbol).decimals,
             }),
-            reserveOrBalance: validateReserveOrBalance(translationString, { account }),
+            reserveOrBalance: async (value: string) => {
+                const reserveOrBalanceResult = validateReserveOrBalance(translationString, {
+                    account,
+                })(value);
+
+                if (reserveOrBalanceResult) {
+                    return reserveOrBalanceResult;
+                }
+
+                const maxFreezeAmountInUnits = await maxFreezeAmount;
+
+                if (
+                    maxFreezeAmountInUnits &&
+                    new BigNumber(value).isGreaterThan(maxFreezeAmountInUnits)
+                ) {
+                    return translationString('AMOUNT_IS_NOT_ENOUGH');
+                }
+            },
         },
     };
 
@@ -95,19 +140,22 @@ export const TronFreezeAmount = () => {
                 }
             },
             decimals: validateDecimals(translationString, { decimals: 2 }),
-            balance: (value: string) => {
+            balance: async (value: string) => {
                 if (!currentRate?.rate) return true;
 
-                const availableFiat = toFiatCurrency({
-                    amount: availableBalance,
+                const maxFreezeAmountInUnits = await maxFreezeAmount;
+
+                const maxFreezeAmountInFiat = toFiatCurrency({
+                    amount: maxFreezeAmountInUnits,
                     rate: currentRate.rate,
                 })?.toFixed(2, BigNumber.ROUND_FLOOR);
 
-                return (
-                    !availableFiat ||
-                    new BigNumber(value || 0).lte(availableFiat) ||
-                    translationString('AMOUNT_IS_NOT_ENOUGH')
-                );
+                if (
+                    maxFreezeAmountInFiat &&
+                    new BigNumber(value).isGreaterThan(maxFreezeAmountInFiat)
+                ) {
+                    return translationString('AMOUNT_IS_NOT_ENOUGH');
+                }
             },
         },
     };
@@ -115,11 +163,11 @@ export const TronFreezeAmount = () => {
     const handleSetMax = async () => {
         form.methods.clearErrors(['amount', 'fiatAmount']);
 
-        await actions.setMax();
+        const maxAmount = await maxFreezeAmount;
+
+        form.methods.setValue('amount', maxAmount, { shouldValidate: true });
 
         if (currentRate?.rate) {
-            const maxAmount = getValues('amount');
-
             const fiatValue = toFiatCurrency({
                 amount: maxAmount,
                 rate: currentRate.rate,
