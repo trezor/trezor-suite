@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 show_help() {
     cat << EOF
@@ -44,6 +44,9 @@ copy_to_clipboard() {
     if command -v pbcopy &> /dev/null; then
         echo -e "$content" | pbcopy
         return 0
+    elif command -v wl-copy &> /dev/null; then
+        echo -e "$content" | wl-copy
+        return 0
     elif command -v xsel &> /dev/null; then
         echo -e "$content" | xsel --clipboard --input
         return 0
@@ -51,7 +54,7 @@ copy_to_clipboard() {
         echo -e "$content" | xclip -selection clipboard
         return 0
     else
-        echo -e "\033[0;33mWarning: No clipboard utility found (pbcopy, xsel, or xclip).\033[0m" >&2
+        echo -e "\033[0;33mWarning: No clipboard utility found (pbcopy, wl-copy, xsel, or xclip).\033[0m" >&2
         echo -e "\033[0;33mSkipping clipboard copy. Please copy the message manually.\033[0m" >&2
         return 1
     fi
