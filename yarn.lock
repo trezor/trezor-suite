@@ -14068,6 +14068,7 @@ __metadata:
     "@react-native-community/datetimepicker": "npm:^8.6.0"
     "@react-native-community/slider": "npm:^5.1.2"
     "@react-navigation/native": "npm:7.1.28"
+    "@react-navigation/native-stack": "npm:7.12.0"
     "@shopify/react-native-skia": "npm:2.5.1"
     "@storybook/addon-ondevice-controls": "npm:^10.2.1"
     "@storybook/react": "npm:^10.3.4"
