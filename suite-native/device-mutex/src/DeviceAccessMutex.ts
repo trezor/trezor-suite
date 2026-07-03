@@ -11,9 +11,9 @@ class DeviceAccessMutex {
 
     prioritizedLock() {
         if (this.isLocked) {
-            return new Promise(resolve => {
+            return new Promise<boolean>(resolve => {
                 // Put prioritized task at the beginning of the queue.
-                this.taskQueue.unshift(() => resolve(true));
+                this.taskQueue.unshift(resolve);
             });
         }
         this.isLocked = true;
