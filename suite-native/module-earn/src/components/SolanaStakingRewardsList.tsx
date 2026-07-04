@@ -1,4 +1,5 @@
 import { type JSX, useCallback, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FlashList } from '@shopify/flash-list';
 
@@ -8,6 +9,7 @@ import {
 } from '@suite-common/earn-staking-api';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, ListItemSkeleton, Loader, VStack } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SolanaStakingRewardItem } from './SolanaStakingRewardItem';
 import { SolanaStakingRewardsEmptyState } from './SolanaStakingRewardsEmptyState';
@@ -18,6 +20,10 @@ type SolanaStakingRewardsListProps = {
     account: Account;
     listHeaderComponent: JSX.Element;
 };
+
+const listFooterStyle = prepareNativeStyle<{ insetBottom: number }>((utils, { insetBottom }) => ({
+    paddingBottom: insetBottom + utils.spacings.sp32,
+}));
 
 const RewardsSkeleton = () => (
     <VStack marginTop="sp24" marginHorizontal="sp16" spacing="sp24">
@@ -31,6 +37,8 @@ export const SolanaStakingRewardsList = ({
     account,
     listHeaderComponent,
 }: SolanaStakingRewardsListProps) => {
+    const { applyStyle } = useNativeStyles();
+    const { bottom: insetBottom } = useSafeAreaInsets();
     const [limit, setLimit] = useState(SOL_REWARDS_PAGE_SIZE);
 
     const rewardsQuery = useSolanaRewardsHistory(account, { limit, offset: 0 });
@@ -72,8 +80,11 @@ export const SolanaStakingRewardsList = ({
                         <VStack marginVertical="sp24" alignItems="center">
                             <Loader />
                         </VStack>
-                    ) : null
+                    ) : (
+                        <Box />
+                    )
                 }
+                ListFooterComponentStyle={applyStyle(listFooterStyle, { insetBottom })}
                 onEndReached={handleEndReached}
                 onEndReachedThreshold={0.5}
             />

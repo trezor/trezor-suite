@@ -72,6 +72,10 @@ const sectionListContainerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
 }));
 
+const listFooterStyle = prepareNativeStyle(utils => ({
+    paddingBottom: utils.spacings.sp32,
+}));
+
 const sortKeysPendingFirst = (a: string, b: string) => {
     if (a === 'pending' && b === 'pending') return 0;
     if (a === 'pending') return -1;
@@ -301,6 +305,7 @@ export const TransactionList = ({
                         onButtonPress={handleOnLoadMore}
                     />
                 }
+                ListFooterComponentStyle={applyStyle(listFooterStyle)}
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefreshing}

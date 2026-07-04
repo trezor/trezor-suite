@@ -59,6 +59,8 @@ export const AccountDetailContentScreen = ({
                 )
             }
             noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
         >
             <TransactionList
                 account={account}
