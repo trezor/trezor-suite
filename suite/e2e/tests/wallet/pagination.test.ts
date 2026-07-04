@@ -32,7 +32,6 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Complete onboarding', async () => {
                 await onboardingPage.completeOnboarding();
                 await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-                await walletPage.expandAllAccountsInMenu();
                 await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 0 });
             });
 

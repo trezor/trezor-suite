@@ -2856,10 +2856,6 @@ export const messages = defineMessages({
         defaultMessage: 'Accounts',
         id: 'TR_NORMAL_ACCOUNTS',
     },
-    TR_COINJOIN_ACCOUNTS: {
-        defaultMessage: 'Coinjoin accounts',
-        id: 'TR_COINJOIN_ACCOUNTS',
-    },
     TR_TAPROOT_ACCOUNTS: {
         defaultMessage: 'Taproot accounts',
         id: 'TR_TAPROOT_ACCOUNTS',
@@ -2871,10 +2867,6 @@ export const messages = defineMessages({
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
         id: 'TR_LEGACY_ACCOUNTS',
-    },
-    TR_CARDANO_LEDGER_ACCOUNTS: {
-        defaultMessage: 'Ledger accounts',
-        id: 'TR_CARDANO_LEDGER_ACCOUNTS',
     },
     TR_ACCOUNT_TYPE_LEGACY: {
         defaultMessage: 'Legacy',

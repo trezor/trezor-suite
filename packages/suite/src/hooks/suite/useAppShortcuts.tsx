@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
@@ -21,16 +21,6 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 
 type ListedAccount = ReturnType<typeof selectAllAccountsToList>[number];
 
-// Account-group order as rendered in the sidebar (see AccountsList.tsx), so that the
-// digit / arrow account shortcuts step through accounts in the same order the user sees.
-const SIDEBAR_ACCOUNT_TYPE_ORDER = ['coinjoin', 'normal', 'taproot', 'segwit', 'legacy', 'ledger'];
-
-const sidebarTypeRank = (accountType: string) => {
-    const rank = SIDEBAR_ACCOUNT_TYPE_ORDER.indexOf(accountType);
-
-    return rank === -1 ? SIDEBAR_ACCOUNT_TYPE_ORDER.length : rank;
-};
-
 // `?` is a printable character, so the shortcut must not hijack typing in form fields.
 const isTypingTarget = (target: EventTarget | null): boolean => {
     if (!(target instanceof HTMLElement)) return false;
@@ -49,14 +39,6 @@ export const useAppShortcuts = () => {
 
     const accounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(selectSelectedAccount);
-    // Stable sort keeps the per-group order from the selector while matching the sidebar grouping.
-    const orderedAccounts = useMemo(
-        () =>
-            [...accounts].sort(
-                (a, b) => sidebarTypeRank(a.accountType) - sidebarTypeRank(b.accountType),
-            ),
-        [accounts],
-    );
     const currentTheme = useSelector(selectTheme);
     const autodetectTheme = useSelector(selectAutodetectTheme);
 
@@ -236,9 +218,9 @@ export const useAppShortcuts = () => {
             ];
 
             const accountIndex = digitCodes.indexOf(e.code);
-            if (accountIndex !== -1 && accountIndex < orderedAccounts.length) {
+            if (accountIndex !== -1 && accountIndex < accounts.length) {
                 e.preventDefault();
-                gotoAccount(orderedAccounts[accountIndex]);
+                gotoAccount(accounts[accountIndex]);
             }
         }
 
@@ -246,10 +228,10 @@ export const useAppShortcuts = () => {
         const isPrevAccountKey = e.code === KEYBOARD_CODE.KEY_K;
         const isNextAccountKey = e.code === KEYBOARD_CODE.KEY_J;
 
-        if (altOnly && (isPrevAccountKey || isNextAccountKey) && orderedAccounts.length > 0) {
+        if (altOnly && (isPrevAccountKey || isNextAccountKey) && accounts.length > 0) {
             e.preventDefault();
             const offset = isNextAccountKey ? 1 : -1;
-            const currentIndex = orderedAccounts.findIndex(
+            const currentIndex = accounts.findIndex(
                 account =>
                     selectedAccount?.symbol === account.symbol &&
                     selectedAccount?.index === account.index &&
@@ -258,8 +240,8 @@ export const useAppShortcuts = () => {
             // When no account is selected yet, ↓ starts at the first and ↑ at the last one.
             const fallbackBase = offset === 1 ? -1 : 0;
             const base = currentIndex === -1 ? fallbackBase : currentIndex;
-            const nextIndex = (base + offset + orderedAccounts.length) % orderedAccounts.length;
-            gotoAccount(orderedAccounts[nextIndex]);
+            const nextIndex = (base + offset + accounts.length) % accounts.length;
+            gotoAccount(accounts[nextIndex]);
         }
 
         // press CMD/CTRL + ALT + SHIFT + D to toggle the debug mode
