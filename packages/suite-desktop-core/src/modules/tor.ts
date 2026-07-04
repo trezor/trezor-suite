@@ -9,7 +9,7 @@ import { TorStatus } from '@suite/tor';
 import TrezorConnect from '@trezor/connect';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { type BootstrapEvent } from '@trezor/request-manager';
+import { type BootstrapEvent, type TorController } from '@trezor/request-manager';
 import { type BootstrapTorEvent, type HandshakeTorModule } from '@trezor/suite-desktop-api';
 
 import { hasSwitch } from '../libs/process-switches';
@@ -17,6 +17,11 @@ import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
 import { TorProcess, type TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
 import type { Dependencies } from './module';
+
+// Live accessor to the bundled Tor control port, set once the tor module loads. Other modules
+// (totem) use it to publish onion services. Returns null for external Tor (no control port).
+let getTorControllerRef: (() => TorController | null) | null = null;
+export const getTorController = (): TorController | null => getTorControllerRef?.() ?? null;
 
 const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies) => {
     const { logger } = global;
@@ -54,6 +59,13 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         }
 
         return bundledTorProcess;
+    };
+
+    // Only the bundled Tor process exposes a control port (needed for ADD_ONION).
+    getTorControllerRef = () => {
+        const target = getTarget();
+
+        return target instanceof TorProcess ? target.torController : null;
     };
 
     const updateTorPort = (port: number) => {

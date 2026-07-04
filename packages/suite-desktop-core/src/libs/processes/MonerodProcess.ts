@@ -6,6 +6,9 @@ export interface MonerodConnectionOptions {
     network: MonerodNetwork;
     host: string;
     rpcPort: number;
+    // Separate restricted RPC port (loopback) that is safe to expose to remote clients, e.g. over
+    // a Totem Tor onion. Hides admin commands; the local wallet keeps using the unrestricted port.
+    restrictedRpcPort: number;
     p2pPort: number;
     zmqPort: number;
     dataDir: string;
@@ -35,6 +38,7 @@ export class MonerodProcess extends BaseProcess {
     private readonly network: MonerodNetwork;
     private readonly host: string;
     private readonly rpcPort: number;
+    private readonly restrictedRpcPort: number;
     private readonly p2pPort: number;
     private readonly zmqPort: number;
     private readonly dataDir: string;
@@ -45,6 +49,7 @@ export class MonerodProcess extends BaseProcess {
         this.network = options.network;
         this.host = options.host;
         this.rpcPort = options.rpcPort;
+        this.restrictedRpcPort = options.restrictedRpcPort;
         this.p2pPort = options.p2pPort;
         this.zmqPort = options.zmqPort;
         this.dataDir = options.dataDir;
@@ -95,6 +100,11 @@ export class MonerodProcess extends BaseProcess {
             `--data-dir=${this.dataDir}`,
             `--rpc-bind-ip=${this.host}`,
             `--rpc-bind-port=${this.rpcPort}`,
+            // Second, restricted RPC endpoint (loopback) — this is the only port Totem exposes over
+            // the onion, so remote tribe members get block data + tx submission but not admin RPC.
+            // The local wallet still uses the unrestricted port above (see the double-spend note).
+            `--rpc-restricted-bind-ip=${this.host}`,
+            `--rpc-restricted-bind-port=${this.restrictedRpcPort}`,
             `--p2p-bind-port=${this.p2pPort}`,
             `--zmq-rpc-bind-port=${this.zmqPort}`,
             // Loopback-only personal node (the monero-gui local-node model): the RPC is bound to

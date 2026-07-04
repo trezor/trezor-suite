@@ -43,6 +43,7 @@ const validChannels: Array<keyof RendererChannels> = [
     'monerod/download-progress',
     'monerod/sync-progress',
     'monerod/settings',
+    'totem/status',
     'protocol/open',
     'handshake/event',
     'bridge/status',

@@ -40,6 +40,7 @@ import * as shortcuts from './shortcuts';
 import * as store from './store';
 import * as systemSettings from './system-settings';
 import * as theme from './theme';
+import * as totem from './totem';
 import * as tray from './tray';
 import * as trezorConnect from './trezor-connect';
 import * as userData from './user-data';
@@ -82,6 +83,7 @@ const MODULES: Module[] = [
     firmware,
     powerMonitor,
     mcpServer,
+    totem,
     responseHeaders,
 ];
 

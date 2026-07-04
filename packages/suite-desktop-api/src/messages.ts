@@ -101,6 +101,39 @@ export type MonerodSettings = {
     network: MoneroNetwork;
 };
 
+// Totem — the desktop acting as a self-hosted backend ("totem") for a tribe, reachable
+// over a Tor onion service. A string union (not an enum) so it crosses the package
+// boundary as a pure type.
+export type TotemStatus = 'Disabled' | 'Provisioning' | 'Enabled' | 'Error';
+
+// Per-service state shown to the keeper and reported to members through the manifest.
+export type TotemServiceStatus = 'active' | 'pending' | 'non-active';
+
+export type TotemServiceState = {
+    id: string; // service identifier, e.g. 'xmr'
+    virtualPort: number; // port members connect to on the .onion address
+    enabled: boolean; // keeper published this service (members only see enabled ones)
+    status: TotemServiceStatus;
+};
+
+export type TotemStatusEvent = {
+    type: TotemStatus;
+    address?: string; // <serviceId>.onion once the totem is raised
+    services?: TotemServiceState[];
+    message?: string;
+};
+
+export type TotemSettings = {
+    running: boolean;
+    provisioned: boolean; // an onion identity has been derived (Trezor-bound key present)
+    address?: string;
+    services: TotemServiceState[];
+};
+
+export type TotemProvisionResult = {
+    address: string;
+};
+
 // Free/total bytes on the volume holding the app's data directory (generic OS query).
 export type DiskSpace = {
     free: number;

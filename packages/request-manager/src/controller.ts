@@ -7,6 +7,7 @@ import { BOOTSTRAP_EVENT_PROGRESS, bootstrapParser } from './events/bootstrap';
 import { TorControlPort } from './torControlPort';
 import {
     type BootstrapEvent,
+    type OnionPortMapping,
     TOR_CONTROLLER_STATUS,
     type TorConnectionOptions,
     type TorControllerStatus,
@@ -191,6 +192,21 @@ export class TorController extends EventEmitter {
 
     public closeActiveCircuits() {
         return this.controlPort.closeActiveCircuits();
+    }
+
+    // Publish a deterministic v3 onion service forwarding the given virtual ports to
+    // local targets. Requires an established circuit. Gate on cached status only — a ping()
+    // here would write an unread GETINFO whose reply the ADD_ONION reader would swallow.
+    public addOnion(keyBlob: string, ports: OnionPortMapping[]) {
+        if (this.status !== TOR_CONTROLLER_STATUS.CircuitEstablished) {
+            throw new Error('Cannot add onion service: Tor circuit is not established');
+        }
+
+        return this.controlPort.addOnionService({ keyBlob, ports });
+    }
+
+    public removeOnion(serviceId: string) {
+        return this.controlPort.delOnionService(serviceId);
     }
 
     public stop() {

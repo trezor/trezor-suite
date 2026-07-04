@@ -24,6 +24,10 @@ import {
     type SuiteThemeVariant,
     type TorSettings,
     type TorStatusEvent,
+    type TotemProvisionResult,
+    type TotemServiceState,
+    type TotemSettings,
+    type TotemStatusEvent,
     type TraySettings,
     type UpdateInfo,
     type UpdateProgress,
@@ -42,6 +46,7 @@ export interface MainChannels {
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
     'monerod/get-status': void;
+    'totem/get-status': void;
     'update/allow-prerelease': boolean;
     'update/set-automatic-update-enabled': boolean;
     'update/set-auto-install-on-app-quit': void;
@@ -88,6 +93,9 @@ export interface RendererChannels {
     'monerod/download-progress': MonerodDownloadEvent;
     'monerod/sync-progress': MonerodSyncEvent;
     'monerod/settings': MonerodSettings;
+
+    // totem (self-hosted backend published over Tor onion)
+    'totem/status': TotemStatusEvent;
 
     // custom protocol
     'protocol/open': string;
@@ -140,6 +148,11 @@ export interface InvokeChannels {
     'tor/get-settings': () => InvokeResult<TorSettings>;
     'monerod/toggle': (shouldEnable: boolean) => InvokeResult;
     'monerod/get-settings': () => InvokeResult<MonerodSettings>;
+    'totem/toggle': (shouldEnable: boolean) => InvokeResult;
+    'totem/set-service': (payload: { id: string; enabled: boolean }) => InvokeResult;
+    'totem/get-settings': () => InvokeResult<TotemSettings>;
+    'totem/provision': (payload: { seedHex: string }) => InvokeResult<TotemProvisionResult>;
+    'totem/probe': (payload: { onion: string }) => InvokeResult<{ services: TotemServiceState[] }>;
     'os/get-disk-space': () => InvokeResult<DiskSpace>;
     'bridge/toggle': () => InvokeResult;
     'bridge/get-status': () => InvokeResult<Status>;
@@ -244,6 +257,13 @@ export type DesktopApi = {
     getMonerodStatus: DesktopApiSend<'monerod/get-status'>;
     toggleMonerod: DesktopApiInvoke<'monerod/toggle'>;
     getMonerodSettings: DesktopApiInvoke<'monerod/get-settings'>;
+    // Totem (self-hosted backend over Tor onion)
+    getTotemStatus: DesktopApiSend<'totem/get-status'>;
+    toggleTotem: DesktopApiInvoke<'totem/toggle'>;
+    setTotemService: DesktopApiInvoke<'totem/set-service'>;
+    getTotemSettings: DesktopApiInvoke<'totem/get-settings'>;
+    provisionTotem: DesktopApiInvoke<'totem/provision'>;
+    probeTotem: DesktopApiInvoke<'totem/probe'>;
     // Generic OS
     getDiskSpace: DesktopApiInvoke<'os/get-disk-space'>;
     // Store

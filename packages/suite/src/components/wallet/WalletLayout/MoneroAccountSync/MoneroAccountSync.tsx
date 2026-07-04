@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { selectActiveBackendType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
@@ -11,10 +12,12 @@ import {
     ProgressBar,
     Range,
     Row,
+    Spinner,
     Text,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useSelector } from 'src/hooks/suite';
 import { useEta } from 'src/hooks/suite/useEta';
 import { type MoneroBirthday, useMoneroScanProgress } from 'src/hooks/suite/useMoneroScanProgress';
 import { MONERO_REQUIRED_BYTES, useMonerodSync } from 'src/hooks/suite/useMonerodSync';
@@ -115,17 +118,32 @@ const ProgressCard = ({
     </Card>
 );
 
+// Picked slider index per account descriptor, kept across remounts so switching tabs mid-pick
+// doesn't reset a chosen date back to genesis.
+const birthdayIndexCache = new Map<string, number>();
+
 const BirthdayCard = ({
     onStart,
     onCancel,
+    cacheKey,
 }: {
-    onStart: (birthday: MoneroBirthday) => void;
+    onStart: (birthday: MoneroBirthday) => void | Promise<void>;
     onCancel?: () => void;
+    cacheKey?: string;
 }) => {
     const total = monthsSinceGenesis();
     // Default to the genesis block (full scan) — always safe; the user moves the slider forward to
     // their wallet's birthday to skip the empty history and scan much faster.
-    const [index, setIndex] = useState(0);
+    const [index, setIndexState] = useState(() =>
+        cacheKey ? (birthdayIndexCache.get(cacheKey) ?? 0) : 0,
+    );
+    const setIndex = (value: number) => {
+        setIndexState(value);
+        if (cacheKey) birthdayIndexCache.set(cacheKey, value);
+    };
+    // Arming exports the view key (a device confirmation) — keep the button busy so the click reads
+    // as "working / confirm on device" instead of looking unresponsive.
+    const [starting, setStarting] = useState(false);
     const birthday = indexToBirthday(index);
 
     return (
@@ -154,12 +172,21 @@ const BirthdayCard = ({
 
                 <Row gap={spacings.sm}>
                     {onCancel && (
-                        <Button priority="secondary" onClick={onCancel}>
+                        <Button priority="secondary" onClick={onCancel} isDisabled={starting}>
                             <Translation id="TR_CANCEL" />
                         </Button>
                     )}
                     <Button
-                        onClick={() => onStart(birthday)}
+                        onClick={async () => {
+                            setStarting(true);
+                            try {
+                                await onStart(birthday);
+                            } finally {
+                                setStarting(false);
+                            }
+                        }}
+                        isLoading={starting}
+                        isDisabled={starting}
                         data-testid="@account/monero/start-sync"
                     >
                         <Translation id="TR_MONERO_ACCOUNT_START_SYNC" />
@@ -182,17 +209,46 @@ interface MoneroAccountSyncProps {
  * progress → the real account body (`children`) once the wallet has scanned to the chain tip.
  */
 export const MoneroAccountSync = ({ account, children }: MoneroAccountSyncProps) => {
-    const { status, statusMessage, percent, blocks, diskSpace, start } = useMonerodSync();
-    // The wallet scan only runs against a synced node; poll it once the node is up.
-    const { scan, needsArm, startScan } = useMoneroScanProgress(account, status === 'Enabled');
+    const { status, statusKnown, statusMessage, percent, blocks, diskSpace, start } =
+        useMonerodSync();
+    // A custom (remote) backend — e.g. a Totem node reached over Tor — means the wallet scans
+    // against that node, so the local-node download/sync gate below is skipped entirely and we go
+    // straight to the wallet scan.
+    const hasRemoteBackend = useSelector(state =>
+        account ? !!selectActiveBackendType(state, account.symbol) : false,
+    );
+    // The wallet scan runs against a synced local node or any configured remote backend.
+    const { scan, needsArm, unreachable, startScan } = useMoneroScanProgress(
+        account,
+        status === 'Enabled' || hasRemoteBackend,
+    );
     // The user is mid-scan but wants to pick a different birthday (the picker is shown again).
     const [changingBirthday, setChangingBirthday] = useState(false);
+    // Keep the "Start" button busy from the click until the node reports its first status, so
+    // launching monerod doesn't look unresponsive.
+    const [startingNode, setStartingNode] = useState(false);
 
     // Time-left estimates from the recent rate of progress (node block sync + wallet block scan).
     const nodeEtaMs = useEta(blocks?.height ?? 0, blocks?.target ?? 0);
     const scanEtaMs = useEta(scan?.scannedHeight ?? 0, scan?.chainHeight ?? 0);
 
-    if (status === 'Error') {
+    // Until the first status arrives, we don't yet know if the node is off, starting or already
+    // synced — show an indeterminate loader instead of prematurely flashing the disk-space /
+    // start-sync screen (the daemon can take a while to open a large existing database).
+    if (!hasRemoteBackend && !statusKnown) {
+        return (
+            <Card>
+                <Column gap={spacings.md} alignItems="center">
+                    <Spinner size={24} />
+                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                        <Translation id="TR_MONERO_ACCOUNT_CHECKING" />
+                    </Text>
+                </Column>
+            </Card>
+        );
+    }
+
+    if (!hasRemoteBackend && status === 'Error') {
         return (
             <Card>
                 <Text typographyStyle="body-md" intent="critical">
@@ -202,7 +258,7 @@ export const MoneroAccountSync = ({ account, children }: MoneroAccountSyncProps)
         );
     }
 
-    if (status === 'Disabled') {
+    if (!hasRemoteBackend && status === 'Disabled') {
         const free = diskSpace?.free ?? null;
         const enoughSpace = free === null || free >= MONERO_REQUIRED_BYTES;
 
@@ -236,8 +292,12 @@ export const MoneroAccountSync = ({ account, children }: MoneroAccountSyncProps)
                     )}
 
                     <Button
-                        onClick={start}
-                        isDisabled={!enoughSpace}
+                        onClick={() => {
+                            setStartingNode(true);
+                            start();
+                        }}
+                        isDisabled={!enoughSpace || startingNode}
+                        isLoading={startingNode}
                         data-testid="@account/monero/start-node"
                     >
                         <Translation id="TR_MONERO_ACCOUNT_START_SYNC" />
@@ -247,8 +307,11 @@ export const MoneroAccountSync = ({ account, children }: MoneroAccountSyncProps)
         );
     }
 
-    // Node is still downloading / starting / syncing.
-    if (status !== 'Enabled') {
+    // Node is still downloading / starting / syncing (local node only).
+    if (
+        !hasRemoteBackend &&
+        (status === 'Downloading' || status === 'Starting' || status === 'Syncing')
+    ) {
         return (
             <ProgressCard
                 label={NODE_LABEL[status]}
@@ -266,11 +329,12 @@ export const MoneroAccountSync = ({ account, children }: MoneroAccountSyncProps)
     if (changingBirthday) {
         return (
             <BirthdayCard
-                onStart={birthday => {
-                    startScan(birthday, { reset: true });
+                onStart={async birthday => {
+                    await startScan(birthday, { reset: true });
                     setChangingBirthday(false);
                 }}
                 onCancel={() => setChangingBirthday(false)}
+                cacheKey={account?.descriptor}
             />
         );
     }
@@ -328,9 +392,38 @@ export const MoneroAccountSync = ({ account, children }: MoneroAccountSyncProps)
 
     // First run — nothing persisted yet; let the user pick a birthday and arm the scan.
     if (needsArm) {
-        return <BirthdayCard onStart={startScan} />;
+        return <BirthdayCard onStart={startScan} cacheKey={account?.descriptor} />;
     }
 
-    // The wallet is being opened/built (no scan event yet) — show an indeterminate loader.
-    return <ProgressCard label="TR_MONERO_ACCOUNT_SCANNING" percent={null} blocks={null} />;
+    // Remote (Totem) node unreachable for several polls and nothing has scanned yet — surface it
+    // instead of an endless "connecting" spinner. The poll loop keeps retrying underneath, so this
+    // recovers on its own once the node answers again (an offline totem often just needs to come
+    // back / finish publishing over Tor).
+    if (hasRemoteBackend && unreachable) {
+        return (
+            <Card>
+                <Column gap={spacings.md} alignItems="center">
+                    <Spinner size={24} />
+                    <Text typographyStyle="body-md" intent="warning">
+                        <Translation id="TR_MONERO_ACCOUNT_REMOTE_UNREACHABLE" />
+                    </Text>
+                </Column>
+            </Card>
+        );
+    }
+
+    // The wallet is being opened/built (no scan event yet) — show an indeterminate loader. Over a
+    // remote (Totem) node the first block-fetch travels over Tor, so this "building" phase can take a
+    // while; a remote-aware label keeps it from looking stuck.
+    return (
+        <ProgressCard
+            label={
+                hasRemoteBackend
+                    ? 'TR_MONERO_ACCOUNT_CONNECTING_REMOTE'
+                    : 'TR_MONERO_ACCOUNT_SCANNING'
+            }
+            percent={null}
+            blocks={null}
+        />
+    );
 };

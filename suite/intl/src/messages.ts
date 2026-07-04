@@ -4384,6 +4384,125 @@ export const messages = defineMessages({
         id: 'TR_MONEROD_ERROR',
         defaultMessage: 'Monero node error: {error}',
     },
+    TR_TOTEM: {
+        id: 'TR_TOTEM',
+        defaultMessage: 'Totem',
+    },
+    TR_TOTEM_KEEPER_TITLE: {
+        id: 'TR_TOTEM_KEEPER_TITLE',
+        defaultMessage: 'Raise your totem',
+    },
+    TR_TOTEM_KEEPER_DESCRIPTION: {
+        id: 'TR_TOTEM_KEEPER_DESCRIPTION',
+        defaultMessage:
+            'Publish the services running on this device as a private Tor onion so your tribe can use it as a backend. The onion address is derived from your Trezor and this secret.',
+    },
+    TR_TOTEM_SECRET_LABEL: {
+        id: 'TR_TOTEM_SECRET_LABEL',
+        defaultMessage: 'Totem secret',
+    },
+    TR_TOTEM_RAISE: {
+        id: 'TR_TOTEM_RAISE',
+        defaultMessage: 'Raise totem',
+    },
+    TR_TOTEM_ADDRESS: {
+        id: 'TR_TOTEM_ADDRESS',
+        defaultMessage: 'Totem address: {address}',
+    },
+    TR_TOTEM_SERVICE_XMR: {
+        id: 'TR_TOTEM_SERVICE_XMR',
+        defaultMessage: 'Monero node (monerod)',
+    },
+    TR_TOTEM_SERVICE_ACTIVE: {
+        id: 'TR_TOTEM_SERVICE_ACTIVE',
+        defaultMessage: 'Active',
+    },
+    TR_TOTEM_SERVICE_PENDING: {
+        id: 'TR_TOTEM_SERVICE_PENDING',
+        defaultMessage: 'Syncing',
+    },
+    TR_TOTEM_SERVICE_INACTIVE: {
+        id: 'TR_TOTEM_SERVICE_INACTIVE',
+        defaultMessage: 'Off',
+    },
+    TR_TOTEM_MEMBER_TITLE: {
+        id: 'TR_TOTEM_MEMBER_TITLE',
+        defaultMessage: 'Join a totem',
+    },
+    TR_TOTEM_MEMBER_DESCRIPTION: {
+        id: 'TR_TOTEM_MEMBER_DESCRIPTION',
+        defaultMessage:
+            "Paste a totem's onion address to discover the services it offers and connect to them as your backend.",
+    },
+    TR_TOTEM_ONION_LABEL: {
+        id: 'TR_TOTEM_ONION_LABEL',
+        defaultMessage: 'Totem onion address',
+    },
+    TR_TOTEM_REQUIRES_TOR: {
+        id: 'TR_TOTEM_REQUIRES_TOR',
+        defaultMessage: 'Enable Tor to reach a totem over its onion address.',
+    },
+    TR_TOTEM_MEMBER_CONNECTED: {
+        id: 'TR_TOTEM_MEMBER_CONNECTED',
+        defaultMessage: 'Connected to {address} (xmr). Open the Monero account to start syncing.',
+    },
+    TR_TOTEM_PROBE_HINT: {
+        id: 'TR_TOTEM_PROBE_HINT',
+        defaultMessage:
+            'A freshly raised totem takes ~1 minute to become reachable over Tor. Make sure Tor is enabled and try again.',
+    },
+    TR_TOTEM_PROPAGATION_HINT: {
+        id: 'TR_TOTEM_PROPAGATION_HINT',
+        defaultMessage:
+            'Give the onion ~1 minute to propagate over Tor before members can reach it.',
+    },
+    TR_TOTEM_RAISE_NEEDS_DEVICE: {
+        id: 'TR_TOTEM_RAISE_NEEDS_DEVICE',
+        defaultMessage: 'Connect and unlock your Trezor to derive the totem’s onion identity.',
+    },
+    TR_TOTEM_INVALID_ONION: {
+        id: 'TR_TOTEM_INVALID_ONION',
+        defaultMessage:
+            'Enter the totem’s .onion address (56 characters + .onion), not a link to it.',
+    },
+    TR_TOTEM_PROBE: {
+        id: 'TR_TOTEM_PROBE',
+        defaultMessage: 'Discover',
+    },
+    TR_TOTEM_PROBING: {
+        id: 'TR_TOTEM_PROBING',
+        defaultMessage: 'Searching over Tor — this can take up to a minute…',
+    },
+    TR_TOTEM_SCAN_QR: {
+        id: 'TR_TOTEM_SCAN_QR',
+        defaultMessage: 'Scan QR',
+    },
+    TR_TOTEM_PROBE_ERROR: {
+        id: 'TR_TOTEM_PROBE_ERROR',
+        defaultMessage: 'Could not reach the totem: {error}',
+    },
+    TR_TOTEM_NO_SERVICES: {
+        id: 'TR_TOTEM_NO_SERVICES',
+        defaultMessage: "This totem is reachable, but its keeper hasn't enabled any services yet.",
+    },
+    TR_TOTEM_SERVICE_PENDING_HINT: {
+        id: 'TR_TOTEM_SERVICE_PENDING_HINT',
+        defaultMessage:
+            'A service is connectable only once it is “active”. “Pending” means the keeper’s node is still syncing — try again later.',
+    },
+    TR_TOTEM_KEEPER_GUIDANCE: {
+        id: 'TR_TOTEM_KEEPER_GUIDANCE',
+        defaultMessage:
+            'A service becomes “active” once its node has finished syncing. Keep this desktop online with Tor enabled while your tribe is connected.',
+    },
+    TR_TOTEM_CONNECT: {
+        id: 'TR_TOTEM_CONNECT',
+        defaultMessage: 'Connect',
+    },
+    TR_TOTEM_CONNECTED: {
+        id: 'TR_TOTEM_CONNECTED',
+        defaultMessage: 'Connected',
+    },
     TR_MONERO_ACCOUNT_REQUIREMENTS_TITLE: {
         id: 'TR_MONERO_ACCOUNT_REQUIREMENTS_TITLE',
         defaultMessage: 'Local Monero node required',
@@ -4412,6 +4531,19 @@ export const messages = defineMessages({
     TR_MONERO_ACCOUNT_SCANNING: {
         id: 'TR_MONERO_ACCOUNT_SCANNING',
         defaultMessage: 'Node synced — scanning your wallet…',
+    },
+    TR_MONERO_ACCOUNT_CONNECTING_REMOTE: {
+        id: 'TR_MONERO_ACCOUNT_CONNECTING_REMOTE',
+        defaultMessage: 'Connecting to the remote node over Tor and preparing the scan…',
+    },
+    TR_MONERO_ACCOUNT_REMOTE_UNREACHABLE: {
+        id: 'TR_MONERO_ACCOUNT_REMOTE_UNREACHABLE',
+        defaultMessage:
+            "Can't reach the remote node — the totem may be offline or still publishing over Tor. Still trying…",
+    },
+    TR_MONERO_ACCOUNT_CHECKING: {
+        id: 'TR_MONERO_ACCOUNT_CHECKING',
+        defaultMessage: 'Checking node status…',
     },
     TR_MONERO_BIRTHDAY_TITLE: {
         id: 'TR_MONERO_BIRTHDAY_TITLE',

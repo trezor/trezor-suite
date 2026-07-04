@@ -6,7 +6,15 @@ import { type Route } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Column } from '@trezor/components';
-import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
+import { isDesktop } from '@trezor/env-utils';
+import {
+    BellIcon,
+    CampfireIcon,
+    GearSixIcon,
+    HouseIcon,
+    PiggyBankIcon,
+    RepeatIcon,
+} from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -83,6 +91,18 @@ export const Navigation = ({ children }: NavigationProps) => {
                                   'earn-tron-withdraw',
                                   'earn-tron-claim',
                               ],
+                          } as NavigationItemProps,
+                      ]
+                    : []),
+                // Totem is a desktop-only feature (it runs local nodes + a Tor onion server).
+                ...(isDesktop()
+                    ? [
+                          {
+                              nameId: 'TR_TOTEM',
+                              icon: CampfireIcon,
+                              goToRoute: 'suite-totem',
+                              routes: ['suite-totem'],
+                              shortcut: ['ALT', 'KEY_T'],
                           } as NavigationItemProps,
                       ]
                     : []),

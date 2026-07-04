@@ -642,6 +642,20 @@ class MoneroWorker extends BaseWorker<MoneroDaemonRpc> {
 
         this.creating.add(descriptor);
 
+        // A .onion daemon is only reachable through the main-process Tor request interceptor;
+        // monero-ts' worker thread makes its own HTTP requests that bypass that interceptor, so the
+        // scan can never fetch blocks over Tor there. For onion backends run the wallet in-process
+        // (heavier — it shares this thread — but the only way its block-fetch reaches the remote node
+        // over Tor). Local/clearnet nodes keep the off-thread worker so the heavy scan never blocks.
+        const isOnionBackend = (() => {
+            try {
+                return new URL(this.url).hostname.endsWith('.onion');
+            } catch {
+                return false;
+            }
+        })();
+        const proxyToWorker = !isOnionBackend;
+
         const build: Promise<MoneroWalletFull> = key?.privateViewKey
             ? createWalletFull({
                   path,
@@ -651,16 +665,14 @@ class MoneroWorker extends BaseWorker<MoneroDaemonRpc> {
                   privateViewKey: key.privateViewKey,
                   restoreHeight: key.restoreHeight,
                   server: { uri: this.url },
-                  // Run the wallet (and its full-chain view-key scan) on monero-ts' own worker thread
-                  // so it never blocks this process.
-                  proxyToWorker: true,
+                  proxyToWorker,
               })
             : openWalletFull({
                   path,
                   password: '',
                   networkType: MoneroNetworkType.MAINNET,
                   server: { uri: this.url },
-                  proxyToWorker: true,
+                  proxyToWorker,
               });
 
         build

@@ -36,6 +36,11 @@ export const routes = [
         app: 'earn',
     },
     {
+        name: 'suite-totem',
+        pattern: '/totem',
+        app: 'totem',
+    },
+    {
         name: 'earn-yield-deposit',
         pattern: '/earn/yield/deposit',
         app: 'earn-yield',

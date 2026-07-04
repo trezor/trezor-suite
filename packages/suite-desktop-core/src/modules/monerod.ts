@@ -32,6 +32,9 @@ const load = ({ mainWindowProxy, store }: Dependencies) => {
     // backend (coins.json `blockchain_link` for XMR → http://127.0.0.1:18081), so they are fixed
     // rather than dynamically allocated.
     const rpcPort = 18081;
+    // Restricted RPC (loopback) exposed to remote clients via Totem's onion. Monero's conventional
+    // public-node port; kept in sync with the totem module's xmr service target port.
+    const restrictedRpcPort = 18089;
     const p2pPort = 18080;
     const zmqPort = 18082;
     const dataDir = path.join(app.getPath('userData'), 'monero');
@@ -58,6 +61,7 @@ const load = ({ mainWindowProxy, store }: Dependencies) => {
         network: settings.network,
         host: settings.host,
         rpcPort,
+        restrictedRpcPort,
         p2pPort,
         zmqPort,
         dataDir,

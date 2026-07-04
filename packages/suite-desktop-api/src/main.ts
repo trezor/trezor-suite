@@ -25,5 +25,11 @@ export type {
     MonerodSyncEvent,
     MonerodSettings,
     MoneroNetwork,
+    TotemStatus,
+    TotemStatusEvent,
+    TotemServiceStatus,
+    TotemServiceState,
+    TotemSettings,
+    TotemProvisionResult,
     DiskSpace,
 } from './messages';

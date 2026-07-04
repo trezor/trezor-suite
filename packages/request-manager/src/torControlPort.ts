@@ -6,7 +6,12 @@ import util from 'util';
 
 import { promiseAllSequence } from '@trezor/utils';
 
-import { type TorCommandResponse, type TorConnectionOptions } from './types';
+import {
+    type AddOnionResponse,
+    type OnionPortMapping,
+    type TorCommandResponse,
+    type TorConnectionOptions,
+} from './types';
 
 const readFile = util.promisify(fs.readFile);
 const randomBytes = util.promisify(crypto.randomBytes);
@@ -149,6 +154,64 @@ export class TorControlPort {
 
     getInfo(command: string) {
         return this.sendCommand(`GETINFO ${command}`);
+    }
+
+    /**
+     * Publish a v3 onion service that forwards its virtual ports to local targets.
+     * The private key is supplied as an `ED25519-V3` blob so the resulting .onion
+     * address is deterministic (see the derivation in the totem module).
+     *
+     * ADD_ONION replies over multiple lines (`250-ServiceID=...` then `250 OK`), which
+     * can arrive in more than one `data` chunk — hence the accumulating reader instead
+     * of the single-chunk `sendCommand`.
+     * https://spec.torproject.org/control-spec/commands.html#add_onion
+     */
+    addOnionService({
+        keyBlob,
+        ports,
+    }: {
+        keyBlob: string;
+        ports: OnionPortMapping[];
+    }): Promise<AddOnionResponse> {
+        const portArgs = ports
+            .map(({ virtualPort, targetPort }) => `Port=${virtualPort},127.0.0.1:${targetPort}`)
+            .join(' ');
+        const command = `ADD_ONION ED25519-V3:${keyBlob} ${portArgs}`;
+
+        return new Promise<AddOnionResponse>(resolve => {
+            let buffer = '';
+            const onData = (data: Buffer) => {
+                buffer += data.toString();
+                const serviceId = buffer.match(/250-ServiceID=([a-z2-7]+)/i)?.[1];
+
+                // The control port is a single shared socket with no command queue, so a bare
+                // "250 OK" from a concurrent command (ping / circuit-status) can land here first.
+                // Only accept the terminator once our own ServiceID line is present.
+                if (serviceId && /^250 OK\r?$/m.test(buffer)) {
+                    this.socket.removeListener('data', onData);
+                    resolve({ success: true, serviceId, payload: buffer });
+
+                    return;
+                }
+                // A Tor error status for ADD_ONION (e.g. 550/551/512) — no ServiceID will follow.
+                if (!serviceId && /^5\d\d[ -]/m.test(buffer)) {
+                    this.socket.removeListener('data', onData);
+                    resolve({ success: false, payload: buffer });
+                }
+            };
+            this.socket.on('data', onData);
+
+            try {
+                this.write(command);
+            } catch (error) {
+                this.socket.removeListener('data', onData);
+                resolve({ success: false, payload: String(error) });
+            }
+        });
+    }
+
+    delOnionService(serviceId: string): Promise<TorCommandResponse> {
+        return this.sendCommand(`DEL_ONION ${serviceId}`);
     }
 
     /* Tor circuit-status response format

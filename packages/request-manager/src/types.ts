@@ -20,6 +20,23 @@ export type TorCommandResponse =
           payload: string;
       };
 
+// Mapping of a v3 onion service virtual port to a local target port (127.0.0.1:targetPort).
+export type OnionPortMapping = {
+    virtualPort: number;
+    targetPort: number;
+};
+
+export type AddOnionResponse =
+    | {
+          success: true;
+          serviceId: string;
+          payload: string;
+      }
+    | {
+          success: false;
+          payload: string;
+      };
+
 export type BootstrapEvent =
     | {
           type: 'slow';

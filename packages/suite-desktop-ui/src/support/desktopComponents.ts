@@ -23,6 +23,7 @@ import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
 import Notification from 'src/views/suite/notifications';
+import { Totem } from 'src/views/totem';
 import WalletAnonymize from 'src/views/wallet/anonymize';
 import WalletDetails from 'src/views/wallet/details';
 import { Nfts } from 'src/views/wallet/nfts';
@@ -58,6 +59,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-tron-withdraw': EarnTronWithdraw,
     'earn-tron-claim': EarnTronClaim,
     'suite-connect-popup': ConnectPopup,
+    'suite-totem': Totem,
     'notifications-index': Notification,
 
     'wallet-index': Transactions,

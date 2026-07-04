@@ -25,6 +25,7 @@ export class Store {
         connectSettings: ElectronConnectSettings;
         bioAuthSettings: BioAuthSettings;
         mcpSettings: McpSettings;
+        totemSettings: TotemSettings;
     }>;
 
     private constructor() {
@@ -169,6 +170,20 @@ export class Store {
         this.store.set('mcpSettings', {
             ...this.getMcpSettings(),
             ...mcpSettings,
+        });
+    }
+
+    public getTotemSettings(): TotemSettings {
+        return this.store.get('totemSettings', {
+            running: false,
+            services: [],
+        });
+    }
+
+    public setTotemSettings(totemSettings: Partial<TotemSettings>) {
+        this.store.set('totemSettings', {
+            ...this.getTotemSettings(),
+            ...totemSettings,
         });
     }
 

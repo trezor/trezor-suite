@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { addLog } from '@suite-common/logger';
 import { fetchAndUpdateAccountThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
@@ -21,6 +22,11 @@ export interface MoneroBirthday {
 }
 
 const POLL_MS = 8_000;
+
+// Consecutive failed polls before we surface an "unreachable" state. At POLL_MS this is ~24s, long
+// enough to ride out a freshly-published onion still propagating, short enough that a genuinely
+// offline totem doesn't leave the account view spinning forever with no explanation.
+const UNREACHABLE_THRESHOLD = 3;
 
 // Last reported scan state per descriptor, kept across remounts. Switching account tabs (transactions
 // ↔ details) remounts this hook; without a seed the first render would show the sync loader until the
@@ -45,6 +51,10 @@ export const useMoneroScanProgress = (account: Account | undefined, enabled: boo
         account?.descriptor ? (scanCache.get(account.descriptor) ?? null) : null,
     );
     const [needsArm, setNeedsArm] = useState(false);
+    // A remote (Totem) node reached over Tor can be briefly or permanently unreachable. Track
+    // consecutive poll failures so the view can show an error instead of an endless spinner.
+    const [unreachable, setUnreachable] = useState(false);
+    const failuresRef = useRef(0);
 
     const descriptor = account?.descriptor;
     const path = account?.path;
@@ -64,52 +74,89 @@ export const useMoneroScanProgress = (account: Account | undefined, enabled: boo
             if (!descriptor) return;
 
             setNeedsArm(false);
+            dispatch(addLog({ type: 'monero-scan', payload: { at: 'arm', reset, birthday } }));
 
-            if (reset) {
-                // Re-arm only: descriptor-only (no device). The backend reuses the wallet's own view
-                // key, so the device isn't prompted again just to change the birthday.
-                scanCache.delete(descriptor);
-                setScan(null);
-                await TrezorConnect.getAccountInfo({
+            try {
+                if (reset) {
+                    // Re-arm only: descriptor-only (no device). The backend reuses the wallet's own
+                    // view key, so the device isn't prompted again just to change the birthday.
+                    scanCache.delete(descriptor);
+                    setScan(null);
+                    const result = await TrezorConnect.getAccountInfo({
+                        coin: 'xmr',
+                        descriptor,
+                        moneroRestoreDate: birthday,
+                        moneroResetScan: true,
+                        details: 'basic',
+                        suppressBackupWarning: true,
+                    });
+                    dispatch(
+                        addLog({
+                            type: 'monero-scan',
+                            payload: {
+                                at: 'arm-result',
+                                reset,
+                                success: result.success,
+                                error: result.success ? undefined : result,
+                            },
+                        }),
+                    );
+
+                    return;
+                }
+
+                if (!path || !devicePath) return;
+
+                // First arm: export the view key from the device and hand the backend the birthday;
+                // the backend builds + persists the scanning wallet starting from that height.
+                const result = await TrezorConnect.getAccountInfo({
                     coin: 'xmr',
-                    descriptor,
+                    path,
+                    device: {
+                        path: devicePath,
+                        instance: deviceInstance,
+                        state: deviceState,
+                        useEmptyPassphrase,
+                    },
                     moneroRestoreDate: birthday,
-                    moneroResetScan: true,
                     details: 'basic',
                     suppressBackupWarning: true,
                 });
-
-                return;
+                dispatch(
+                    addLog({
+                        type: 'monero-scan',
+                        payload: {
+                            at: 'arm-result',
+                            success: result.success,
+                            error: result.success ? undefined : result,
+                        },
+                    }),
+                );
+            } catch (error) {
+                dispatch(
+                    addLog({
+                        type: 'monero-scan',
+                        payload: { at: 'arm-exception', message: String(error) },
+                    }),
+                );
             }
-
-            if (!path || !devicePath) return;
-
-            // First arm: export the view key from the device and hand the backend the birthday; the
-            // backend builds + persists the scanning wallet starting from that height.
-            await TrezorConnect.getAccountInfo({
-                coin: 'xmr',
-                path,
-                device: {
-                    path: devicePath,
-                    instance: deviceInstance,
-                    state: deviceState,
-                    useEmptyPassphrase,
-                },
-                moneroRestoreDate: birthday,
-                details: 'basic',
-                suppressBackupWarning: true,
-            });
         },
-        [descriptor, path, devicePath, deviceInstance, deviceState, useEmptyPassphrase],
+        [descriptor, path, devicePath, deviceInstance, deviceState, useEmptyPassphrase, dispatch],
     );
 
     useEffect(() => {
         if (!enabled || !descriptor) {
             setScan(null);
             setNeedsArm(false);
+            setUnreachable(false);
+            failuresRef.current = 0;
 
             return;
         }
+
+        // Reset the failure state when (re)starting polling for a new account/backend.
+        failuresRef.current = 0;
+        setUnreachable(false);
 
         let cancelled = false;
         let timer: ReturnType<typeof setTimeout>;
@@ -122,10 +169,34 @@ export const useMoneroScanProgress = (account: Account | undefined, enabled: boo
                     details: 'basic',
                     suppressBackupWarning: true,
                 });
-                if (cancelled || !result.success) return;
+                if (cancelled) return;
+                if (!result.success) {
+                    // Mirrored into the app log (Settings → Show log) to make a remote-backend scan
+                    // debuggable — a silent failure here is why the birthday picker can loop.
+                    dispatch(
+                        addLog({
+                            type: 'monero-scan',
+                            payload: { at: 'poll', error: result },
+                        }),
+                    );
+                    failuresRef.current += 1;
+                    if (failuresRef.current >= UNREACHABLE_THRESHOLD) setUnreachable(true);
+
+                    return;
+                }
+
+                // A successful response means the node is reachable again — clear any error state.
+                failuresRef.current = 0;
+                setUnreachable(false);
 
                 const { misc } = result.payload;
                 if (misc?.moneroScan) {
+                    dispatch(
+                        addLog({
+                            type: 'monero-scan',
+                            payload: { at: 'progress', ...misc.moneroScan },
+                        }),
+                    );
                     scanCache.set(descriptor, misc.moneroScan);
                     setScan(misc.moneroScan);
                     setNeedsArm(false);
@@ -134,12 +205,24 @@ export const useMoneroScanProgress = (account: Account | undefined, enabled: boo
                         dispatch(fetchAndUpdateAccountThunk({ accountKey }));
                     }
                 } else if (misc?.moneroNeedsArm) {
+                    dispatch(addLog({ type: 'monero-scan', payload: { at: 'needs-arm' } }));
                     setNeedsArm(true);
                     setScan(null);
+                } else {
+                    // The wallet is still being opened/built — keep the current state (a loader).
+                    dispatch(addLog({ type: 'monero-scan', payload: { at: 'building' } }));
                 }
-                // Otherwise the wallet is still being opened/built — keep the current state (a loader).
-            } catch {
-                // Scanning backend hiccup — swallow and retry on the next tick.
+            } catch (error) {
+                dispatch(
+                    addLog({
+                        type: 'monero-scan',
+                        payload: { at: 'poll-exception', message: String(error) },
+                    }),
+                );
+                if (!cancelled) {
+                    failuresRef.current += 1;
+                    if (failuresRef.current >= UNREACHABLE_THRESHOLD) setUnreachable(true);
+                }
             }
         };
 
@@ -159,5 +242,5 @@ export const useMoneroScanProgress = (account: Account | undefined, enabled: boo
         };
     }, [descriptor, accountKey, enabled, dispatch]);
 
-    return { scan, needsArm, startScan };
+    return { scan, needsArm, unreachable, startScan };
 };

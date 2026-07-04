@@ -151,6 +151,38 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         },
         getMonerodSettings: () => ipcRenderer.invoke('monerod/get-settings'),
 
+        // Totem (self-hosted backend over Tor onion)
+        getTotemStatus: () => ipcRenderer.send('totem/get-status'),
+        toggleTotem: shouldEnable => {
+            if (validation.isPrimitive('boolean', shouldEnable)) {
+                return ipcRenderer.invoke('totem/toggle', shouldEnable);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
+        setTotemService: payload => {
+            if (validation.isObject({ id: 'string', enabled: 'boolean' }, payload)) {
+                return ipcRenderer.invoke('totem/set-service', payload);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
+        getTotemSettings: () => ipcRenderer.invoke('totem/get-settings'),
+        provisionTotem: payload => {
+            if (validation.isObject({ seedHex: 'string' }, payload)) {
+                return ipcRenderer.invoke('totem/provision', payload);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
+        probeTotem: payload => {
+            if (validation.isObject({ onion: 'string' }, payload)) {
+                return ipcRenderer.invoke('totem/probe', payload);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
+
         // Generic OS
         getDiskSpace: () => ipcRenderer.invoke('os/get-disk-space'),
 

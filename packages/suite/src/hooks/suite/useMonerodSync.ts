@@ -17,6 +17,10 @@ const toPercent = (current: number, total: number) =>
 
 export interface MonerodSyncState {
     status: MonerodStatus;
+    // False until the first status arrives from the main process. Distinguishes "node is genuinely
+    // off" from "we haven't heard back yet", so the view can show a loader instead of flashing the
+    // disk-space / start-sync screen while the daemon is still opening its (large) database.
+    statusKnown: boolean;
     statusMessage: string | null;
     percent: number | null;
     blocks: { height: number; target: number } | null;
@@ -30,6 +34,7 @@ export interface MonerodSyncState {
 export const useMonerodSync = () => {
     const [state, setState] = useState<MonerodSyncState>({
         status: 'Disabled',
+        statusKnown: false,
         statusMessage: null,
         percent: null,
         blocks: null,
@@ -41,6 +46,7 @@ export const useMonerodSync = () => {
             setState(prev => ({
                 ...prev,
                 status: event.type,
+                statusKnown: true,
                 statusMessage: event.message ?? null,
                 ...(event.type === 'Disabled' ? { percent: null, blocks: null } : {}),
             }));

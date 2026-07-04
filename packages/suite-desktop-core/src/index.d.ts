@@ -160,3 +160,20 @@ declare type McpSettings = {
     port: number;
     token?: string;
 };
+
+declare type TotemServiceId = 'xmr';
+
+declare type TotemService = {
+    id: TotemServiceId; // service identifier
+    virtualPort: number; // port exposed on the onion address
+    targetPort: number; // local 127.0.0.1 port the underlying node listens on
+    enabled: boolean; // keeper published this service
+};
+
+declare type TotemSettings = {
+    running: boolean; // totem is raised (onion service published)
+    keyBlob?: string; // ED25519-V3 expanded key (base64), derived from Trezor via cipherKeyValue
+    serviceId?: string; // active onion ServiceID (=> <serviceId>.onion)
+    address?: string; // full .onion address currently published
+    services: TotemService[]; // registry of publishable services
+};

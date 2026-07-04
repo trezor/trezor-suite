@@ -13,6 +13,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: Earn,
         })),
     ),
+    'suite-totem': lazy(() =>
+        import(/* webpackChunkName: "totem" */ 'src/views/totem/index').then(({ Totem }) => ({
+            default: Totem,
+        })),
+    ),
     'earn-yield-deposit': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/deposit/index').then(
             ({ EarnDeposit }) => ({
