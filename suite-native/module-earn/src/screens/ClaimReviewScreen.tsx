@@ -31,10 +31,12 @@ import {
     selectClaimableAmountByAccountKey,
 } from '@suite-native/staking';
 import { FeeSelector } from '@suite-native/transaction-management';
+import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/coins-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useComposeEarnFees } from '../hooks/useComposeEarnFees';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
+import { useSolanaStakingLimit } from '../hooks/useSolanaStakingLimit';
 import { buildEarnComposeFormState } from '../utils';
 
 export const ClaimReviewScreen = () => {
@@ -86,6 +88,9 @@ export const ClaimReviewScreen = () => {
             formState: claimFormState,
             formDraftPrefix: 'claim',
         });
+
+    const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: claimableLimitAmount } =
+        useSolanaStakingLimit({ accountKey, type: 'claim', amount: claimableAmount });
 
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
@@ -185,6 +190,21 @@ export const ClaimReviewScreen = () => {
                             <Translation
                                 id="earn.claimReviewScreen.instantClaimBanner"
                                 values={{ displaySymbol }}
+                            />
+                        }
+                    />
+                )}
+                {isAccountLimitExceeded && (
+                    <InlineAlertBox
+                        intent="info"
+                        title={
+                            <Translation
+                                id="earn.claimReviewScreen.accountLimitBanner"
+                                values={{
+                                    limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
+                                    amount: claimableLimitAmount,
+                                    symbol: displaySymbol,
+                                }}
                             />
                         }
                     />
