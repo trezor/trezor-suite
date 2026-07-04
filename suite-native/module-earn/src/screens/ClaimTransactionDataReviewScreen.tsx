@@ -13,7 +13,6 @@ import {
     type RootStackRoutes,
     ScreenHeader,
     type StackProps,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
     TxValidityTimer,
@@ -34,7 +33,6 @@ export const ClaimTransactionDataReviewScreen = ({
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
-    const navigateToInitialScreen = useNavigateToInitialScreen();
     const [isPushing, setIsPushing] = useState(false);
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
@@ -45,7 +43,7 @@ export const ClaimTransactionDataReviewScreen = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
 
-    const { handleSign, handlePush } = useHandleOnEarnTransactionReview({
+    const { handleSign, handlePush, closeReview } = useHandleOnEarnTransactionReview({
         accountKey,
         stakeType: 'claim',
     });
@@ -98,6 +96,7 @@ export const ClaimTransactionDataReviewScreen = ({
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
             closeActionType="close"
+            closeAction={closeReview}
             defaultHeader={
                 <ScreenHeader
                     customContent={
@@ -106,7 +105,7 @@ export const ClaimTransactionDataReviewScreen = ({
                         </Text>
                     }
                     closeActionType="close"
-                    closeAction={navigateToInitialScreen}
+                    closeAction={closeReview}
                 />
             }
         >

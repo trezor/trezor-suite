@@ -36,7 +36,7 @@ export const useHandleOnEarnTransactionReview = ({
     accountKey,
     stakeType,
 }: HandleOnEarnTransactionReviewProps) => {
-    useEarnReviewBackNavigation(stakeType, accountKey);
+    const { closeReview } = useEarnReviewBackNavigation(stakeType, accountKey);
 
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
@@ -123,5 +123,5 @@ export const useHandleOnEarnTransactionReview = ({
         stakeType,
     ]);
 
-    return { handleSign, handlePush };
+    return { handleSign, handlePush, closeReview };
 };

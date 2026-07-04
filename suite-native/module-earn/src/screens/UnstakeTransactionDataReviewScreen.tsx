@@ -15,7 +15,6 @@ import {
     type RootStackRoutes,
     ScreenHeader,
     type StackProps,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
@@ -40,7 +39,6 @@ export const UnstakeTransactionDataReviewScreen = ({
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
     const { navigateToStakingDetail } = useStakingDetailNavigation();
-    const navigateToInitialScreen = useNavigateToInitialScreen();
     const [isPushing, setIsPushing] = useState(false);
 
     const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
@@ -55,7 +53,7 @@ export const UnstakeTransactionDataReviewScreen = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
 
-    const { handleSign, handlePush } = useHandleOnEarnTransactionReview({
+    const { handleSign, handlePush, closeReview } = useHandleOnEarnTransactionReview({
         accountKey,
         stakeType: 'unstake',
     });
@@ -116,6 +114,7 @@ export const UnstakeTransactionDataReviewScreen = ({
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
             closeActionType="close"
+            closeAction={closeReview}
             defaultHeader={
                 <ScreenHeader
                     customContent={
@@ -124,7 +123,7 @@ export const UnstakeTransactionDataReviewScreen = ({
                         </Text>
                     }
                     closeActionType="close"
-                    closeAction={navigateToInitialScreen}
+                    closeAction={closeReview}
                 />
             }
         >
