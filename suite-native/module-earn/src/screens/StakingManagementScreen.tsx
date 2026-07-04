@@ -93,6 +93,8 @@ export const StakingManagementScreen = () => {
             <Screen
                 header={<StakingManagementScreenHeader />}
                 noHorizontalPadding
+                noBottomPadding
+                hasBottomInset={false}
                 /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
                 isScrollable={false}
             >
