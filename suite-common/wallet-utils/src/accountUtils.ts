@@ -797,12 +797,21 @@ export type AccountSearchParams = {
      * When provided, replaces account.tokens so that hidden/spam tokens are excluded from search.
      */
     searchableTokens?: TokenInfo[];
+
+    /** Localized account type name as displayed in the account type badge (e.g. "Legacy SegWit"). */
+    accountTypeName?: string;
 };
 
 export const accountSearchFn = (
     account: Account,
     rawSearchString: string | undefined,
-    { coinsFilter, accountLabel, tokensMatch = true, searchableTokens }: AccountSearchParams,
+    {
+        coinsFilter,
+        accountLabel,
+        tokensMatch = true,
+        searchableTokens,
+        accountTypeName,
+    }: AccountSearchParams,
 ) => {
     let coinsFilterArray: NetworkSymbol[] = [];
 
@@ -834,6 +843,7 @@ export const accountSearchFn = (
     const symbolMatch = account.symbol.startsWith(searchString);
     const networkNameMatch = network?.name.toLowerCase().includes(searchString);
     const accountTypeMatch = account.accountType.startsWith(searchString);
+    const accountTypeNameMatch = !!accountTypeName?.toLowerCase().includes(searchString);
     const descriptorMatch = account.descriptor.toLowerCase() === searchString;
     const addressMatch = account.addresses
         ? account.addresses.used.find(matchAddressFn) ||
@@ -861,6 +871,7 @@ export const accountSearchFn = (
         symbolMatch ||
         networkNameMatch ||
         accountTypeMatch ||
+        accountTypeNameMatch ||
         descriptorMatch ||
         addressMatch ||
         matchXRPAlternativeName ||

@@ -226,6 +226,40 @@ describe('account utils', () => {
         expect(accountSearchFn(btcAcc, '#1', { accountLabel: 'Bitcoin #1' })).toBe(true);
     });
 
+    it('accountSearchFn matches displayed account type name', () => {
+        const segwitAcc = mockWalletAccount({
+            symbol: 'btc',
+            accountType: 'segwit',
+        });
+
+        // Matched only via the displayed name, the raw account type key alone would not match.
+        expect(
+            accountSearchFn(segwitAcc, 'legacy segwit', {
+                accountLabel: '',
+                accountTypeName: 'Legacy SegWit',
+            }),
+        ).toBe(true);
+        expect(
+            accountSearchFn(segwitAcc, 'legacy', {
+                accountLabel: '',
+                accountTypeName: 'Legacy SegWit',
+            }),
+        ).toBe(true);
+        expect(
+            accountSearchFn(segwitAcc, 'LEGACY SEGWIT', {
+                accountLabel: '',
+                accountTypeName: 'Legacy SegWit',
+            }),
+        ).toBe(true);
+        expect(accountSearchFn(segwitAcc, 'legacy segwit', { accountLabel: '' })).toBe(false);
+        expect(
+            accountSearchFn(segwitAcc, 'taproot', {
+                accountLabel: '',
+                accountTypeName: 'Legacy SegWit',
+            }),
+        ).toBe(false);
+    });
+
     it('accountSearchFn empty tokens', () => {
         const ethAcc = mockWalletAccount({
             symbol: 'eth',
