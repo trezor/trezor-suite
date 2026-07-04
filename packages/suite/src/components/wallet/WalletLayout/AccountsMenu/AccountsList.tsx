@@ -7,7 +7,7 @@ import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { accountSearchFn } from '@suite-common/wallet-utils';
+import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
@@ -108,10 +108,23 @@ export const AccountsList = ({
                       tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
                   });
 
+                  // Mirror the account type badge, which is hidden for normal accounts.
+                  const accountTypeTranslationId =
+                      account.accountType === 'normal'
+                          ? null
+                          : getAccountTypeName({
+                                path: account.path,
+                                accountType: account.accountType,
+                                networkType: account.networkType,
+                            });
+
                   return accountSearchFn(account, searchString, {
                       coinsFilter: coinFilter,
                       accountLabel,
                       searchableTokens: shownWithBalance,
+                      accountTypeName: accountTypeTranslationId
+                          ? translationString(accountTypeTranslationId)
+                          : undefined,
                   });
               })
             : accounts;
