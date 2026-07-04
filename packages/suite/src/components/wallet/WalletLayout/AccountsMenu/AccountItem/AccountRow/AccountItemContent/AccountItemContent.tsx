@@ -18,7 +18,6 @@ type AccountItemContentProps = {
     formattedBalance: string;
     dataTestKey?: string;
     isFiatLoading?: boolean;
-    showAccountTypeBadge?: boolean;
 };
 
 export const AccountItemContent = ({
@@ -28,7 +27,6 @@ export const AccountItemContent = ({
     formattedBalance,
     dataTestKey,
     isFiatLoading,
-    showAccountTypeBadge,
 }: AccountItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
 
@@ -66,11 +64,7 @@ export const AccountItemContent = ({
                     ellipsisLineCount={1}
                     data-testid={`${dataTestKey}/label`}
                 >
-                    <AccountItemLabel
-                        account={account}
-                        type={type}
-                        showAccountTypeBadge={showAccountTypeBadge}
-                    />
+                    <AccountItemLabel account={account} type={type} />
                 </Text>
 
                 <AccountItemRightSide
