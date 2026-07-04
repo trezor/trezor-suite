@@ -133,10 +133,9 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
                 return;
             }
 
-            const accountsForNetwork = accounts.filter(
-                account => account.symbol === item.networkSymbol,
+            const accountsForNetwork = sortByCoin(
+                accounts.filter(account => account.symbol === item.networkSymbol),
             );
-            sortByCoin(accountsForNetwork);
 
             if (accountsForNetwork.length === 0) {
                 setPendingEnableSymbol(item.networkSymbol);

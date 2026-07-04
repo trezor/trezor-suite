@@ -267,9 +267,11 @@ export const getAccountTypeUrl = (path: string) => {
  * Sort accounts as they are defined in `networksConfig`, by two criteria:
  * - primary: by network `symbol`
  * - secondary: by `accountType`
+ *
+ * Returns a new array, the input is not mutated.
  */
 export const sortByCoin = <T extends Account>(accounts: T[]) =>
-    accounts.sort((a, b) => {
+    accounts.toSorted((a, b) => {
         // primary sorting: by order of network keys
         const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
         const bSymbolIndex = networkSymbolCollection.indexOf(b.symbol);
