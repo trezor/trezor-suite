@@ -5,6 +5,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { Hint } from '../Hint';
+import { VStack } from '../Stack';
 import { Text } from '../Text';
 
 export type InputWrapperProps = {
@@ -16,22 +17,7 @@ export type InputWrapperProps = {
 
 const labelStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp8,
-    marginLeft: 11,
-    marginBottom: 18,
 }));
-
-const hintStyle = prepareNativeStyle(
-    (utils, { error, hint }: Pick<InputWrapperProps, 'error' | 'hint'>) => ({
-        marginTop: 0,
-        marginLeft: utils.spacings.sp12,
-        extend: {
-            condition: !!error || !!hint,
-            style: {
-                marginTop: utils.spacings.sp8,
-            },
-        },
-    }),
-);
 
 // Temperorary translation of the error messages used in the native app.
 // Should be later replaced by an implementation of a localization module.
@@ -46,18 +32,14 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
     const errorMessage = (error && errorToMessageMap[error]) ?? error;
 
     return (
-        <Box>
-            {label && (
-                <Text
-                    variant="body-md-strong"
-                    color="contentSecondary"
-                    style={applyStyle(labelStyle)}
-                >
+        <VStack spacing="sp6">
+            {!!label && (
+                <Text variant="body-md" color="contentPrimary" style={applyStyle(labelStyle)}>
                     {label}
                 </Text>
             )}
             <Box>{children}</Box>
-            <Box style={applyStyle(hintStyle, { error, hint })}>
+            <Box marginLeft="sp12">
                 {!!error && (
                     <Animated.View entering={FadeIn} exiting={FadeOut}>
                         <Hint variant="error">{errorMessage}</Hint>
@@ -69,6 +51,6 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
                     </Animated.View>
                 )}
             </Box>
-        </Box>
+        </VStack>
     );
 };
