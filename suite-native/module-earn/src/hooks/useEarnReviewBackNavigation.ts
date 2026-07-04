@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, StackActions, useNavigation } from '@react-navigation/native';
 
-import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    cancelSignSendFormTransactionThunk,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AppTabsRoutes, RootStackRoutes } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
@@ -12,8 +17,10 @@ import {
 } from '@suite-native/transaction-management';
 
 import { type EarnFormDraftPrefix } from '../types';
+import { resolveStakingHomeRoute } from '../utils/resolveStakingHomeRoute';
 
-const REVIEW_EXIT_ACTION_TYPES = ['GO_BACK', 'POP_TO_TOP'];
+const CLOSE_FLOW_ACTION_TYPE = StackActions.popToTop().type;
+const REVIEW_EXIT_ACTION_TYPES = ['GO_BACK', CLOSE_FLOW_ACTION_TYPE];
 
 export const useEarnReviewBackNavigation = (
     formType: EarnFormDraftPrefix,
@@ -22,6 +29,9 @@ export const useEarnReviewBackNavigation = (
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, formType, accountKey),
     );
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -29,16 +39,47 @@ export const useEarnReviewBackNavigation = (
 
     const isCancellationAlertVisibleRef = useRef(false);
 
+    const navigateToStakingHome = useCallback(() => {
+        if (!account) {
+            navigation.dispatch(StackActions.popToTop());
+
+            return;
+        }
+
+        const { name, params } = resolveStakingHomeRoute(account);
+
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 1,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: { screen: AppTabsRoutes.EarnStack },
+                    },
+                    { name, params },
+                ],
+            }),
+        );
+    }, [account, navigation]);
+
     useEffect(() => {
         const cleanup = () => {
             dispatch(cancelSignSendFormTransactionThunk());
         };
 
         const unsubscribe = navigation.addListener('beforeRemove', e => {
+            const isClosingWholeFlow = e.data.action.type === CLOSE_FLOW_ACTION_TYPE;
             const isLeavingReview = REVIEW_EXIT_ACTION_TYPES.includes(e.data.action.type);
 
             if (!isLeavingReview || !isTransactionReviewInProgress) {
                 cleanup();
+
+                // Redirect the close button to the staking home; let plain back/swipe proceed.
+                if (isClosingWholeFlow) {
+                    e.preventDefault();
+                    unsubscribe();
+                    navigateToStakingHome();
+                }
 
                 return;
             }
@@ -56,7 +97,12 @@ export const useEarnReviewBackNavigation = (
                 if (wasReviewCanceled) {
                     cleanup();
                     unsubscribe();
-                    navigation.dispatch(e.data.action);
+
+                    if (isClosingWholeFlow) {
+                        navigateToStakingHome();
+                    } else {
+                        navigation.dispatch(e.data.action);
+                    }
                 }
             });
         });
@@ -69,11 +115,16 @@ export const useEarnReviewBackNavigation = (
         showReviewCancellationAlert,
         dispatch,
         formType,
+        navigateToStakingHome,
     ]);
 
     const navigateBack = useCallback(() => {
         navigation.goBack();
     }, [navigation]);
 
-    return { navigateBack };
+    const closeReview = useCallback(() => {
+        navigation.dispatch(StackActions.popToTop());
+    }, [navigation]);
+
+    return { navigateBack, closeReview };
 };

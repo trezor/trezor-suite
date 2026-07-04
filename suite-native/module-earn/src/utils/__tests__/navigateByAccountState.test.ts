@@ -74,14 +74,15 @@ describe('navigateByAccountState', () => {
 
         navigateByAccountState(account, mockNavigate);
 
+        // A first-time Solana staker starts at the intro, not the empty dashboard.
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
             symbol: 'sol',
             accountKey: account.key,
         });
     });
 
-    it('navigates to HowStakeWorksScreen when a Solana account has a zero balance and no stake', () => {
-        const account = createMockAccount({ symbol: 'sol', availableBalance: '0' });
+    it('navigates to HowStakeWorksScreen when a Solana account has insufficient balance and no stake', () => {
+        const account = createMockAccount({ symbol: 'sol', availableBalance: '100' });
         mockGetAccountTotalStakingBalance.mockReturnValue(null);
 
         navigateByAccountState(account, mockNavigate);

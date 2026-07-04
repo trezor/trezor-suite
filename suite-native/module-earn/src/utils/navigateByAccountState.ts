@@ -1,7 +1,6 @@
 import { type Account } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
-    getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
@@ -12,6 +11,7 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
+import { hasAccountStakedBalance } from './hasAccountStakedBalance';
 import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
 
 type StakingNavigateFn = StackNavigationProps<
@@ -20,10 +20,7 @@ type StakingNavigateFn = StackNavigationProps<
 >['navigate'];
 
 export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn) => {
-    const stakedBalance = getAccountTotalStakingBalance(account);
-    const hasStakedBalance = !!stakedBalance && stakedBalance !== '0';
-
-    if (hasStakedBalance) {
+    if (hasAccountStakedBalance(account)) {
         navigate(resolveStakingTargetRoute(account.symbol), {
             accountKey: account.key,
         });
