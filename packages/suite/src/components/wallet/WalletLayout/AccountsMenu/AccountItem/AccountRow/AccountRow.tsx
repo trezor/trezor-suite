@@ -88,6 +88,7 @@ export const AccountRow = ({
                     formattedBalance={formattedBalance}
                     dataTestKey={dataTestKey}
                     isFiatLoading={Boolean(isFiatLoading)}
+                    showAccountTypeBadge
                 />
             )}
         </Row>
