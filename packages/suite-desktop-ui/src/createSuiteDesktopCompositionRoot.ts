@@ -15,7 +15,13 @@ export const createSuiteDesktopCompositionRoot = (
     const reloadApp = desktopApi.appRestart;
 
     return initStore(
-        { history, platformEncryption, createConnectLoggerFactory: undefined, reloadApp },
+        {
+            history,
+            platformEncryption,
+            createConnectLoggerFactory: undefined,
+            reloadApp,
+            thpHostName: undefined,
+        },
         preloadStoreAction,
         { statePatch },
     );

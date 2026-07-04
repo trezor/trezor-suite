@@ -9,6 +9,9 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
         { "path": "../../suite/debug" },
         {
             "path": "../../suite/platform-encryption-webauthn"
@@ -16,6 +19,7 @@
         { "path": "../../suite/router" },
         { "path": "../connect" },
         { "path": "../suite" },
+        { "path": "../utils" },
         { "path": "../../suite/sentry" },
         { "path": "../eslint" }
     ]

@@ -35,6 +35,7 @@ import {
     type CommonServices,
     type ConnectInitSettings,
     type ExtraDependenciesStatic,
+    type ThpHostNameDep,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
@@ -96,7 +97,8 @@ export type SuiteAppDeps = StoreAPIDep &
     HistoryDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
-    ReloadAppDep;
+    ReloadAppDep &
+    ThpHostNameDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
@@ -173,6 +175,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitSettings,
         connectInitHooks,
         createLogger: deps.createLogger,
+        thpHostName: deps.thpHostName,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

@@ -12,7 +12,6 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { getBrowserName } from '@suite-common/suite-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
     deviceConnectThunks,
@@ -25,9 +24,9 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
-import { isDesktop, isWeb } from '@trezor/env-utils';
+import { isDesktop } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
-import { capitalizeFirstLetter, getSynchronize, isArrayMember } from '@trezor/utils';
+import { getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
 import { type ConnectKey } from './types';
@@ -43,7 +42,13 @@ export const connectInitThunk = createThunk<void, void, void>(
         const {
             selectors: { selectDebugSettings, selectThpSettings },
             actions: { lockDevice },
-            services: { connectInitSettings, connectInitHooks, analytics, createLogger },
+            services: {
+                connectInitSettings,
+                connectInitHooks,
+                analytics,
+                createLogger,
+                thpHostName,
+            },
         } = extra;
 
         const getEffectiveFirmwareChannel = selectEffectiveFirmwareChannel(
@@ -137,8 +142,8 @@ export const connectInitThunk = createThunk<void, void, void>(
         const { transports, showConnectLogs, definitionsChannel } = selectDebugSettings(getState());
         const thp = selectThpSettings(getState());
         // desktop thp appName/hostName enhanced in ./packages/suite-desktop-core/src/modules/trezor-connect.ts
-        if (isWeb()) {
-            thp.hostName = capitalizeFirstLetter(getBrowserName());
+        if (thpHostName !== undefined) {
+            thp.hostName = thpHostName;
         }
 
         try {

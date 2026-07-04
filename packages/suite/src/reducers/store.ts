@@ -21,6 +21,7 @@ import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type ExtraDependencies,
+    type ThpHostNameDep,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
@@ -133,7 +134,8 @@ type InferredAction = Parameters<RootReducerShape>[1];
 export type SuiteStoreDeps = HistoryDep &
     PlatformEncryptionDep &
     CreateConnectLoggerFactoryDep &
-    ReloadAppDep;
+    ReloadAppDep &
+    ThpHostNameDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -164,6 +166,7 @@ export const initStore = (
             platformEncryption: deps.platformEncryption,
             reloadApp: deps.reloadApp,
             createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
+            thpHostName: deps.thpHostName,
         }),
     });
 
