@@ -15,7 +15,6 @@ export * from './Image';
 export * from './Input/BottomSheetSearchInput';
 export * from './Input/InputWrapper';
 export * from './Input/SearchInput';
-export * from './Input/BaseSearchInput';
 export * from './Input/SearchInputWithCancel';
 export * from './Input/Input';
 export * from './CheckBox';

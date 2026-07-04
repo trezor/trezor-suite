@@ -11,7 +11,7 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { isSameUtxo } from '@suite-common/wallet-utils';
-import { BaseSearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
+import { SearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import {
     Screen,
@@ -122,7 +122,7 @@ export const SendUtxoScreen = ({
                 <SearchInputWithCancel
                     onChange={onSearchChange}
                     placeholder={translate('moduleSend.coinControl.search.placeholder')}
-                    SearchComponent={BaseSearchInput}
+                    SearchComponent={SearchInput}
                     value={searchQuery}
                     searchRef={searchInputRef}
                 />

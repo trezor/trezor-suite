@@ -1,99 +1,16 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Pressable } from 'react-native';
-import { type TextInput } from 'react-native-gesture-handler';
+import { type Ref, forwardRef } from 'react';
+import { type TextInput } from 'react-native';
 
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { SearchInput, type SearchInputProps } from './SearchInput';
 
-import { useNativeStyles } from '@trezor/styles-native';
-import { noop } from '@trezor/utils';
-
-import { Box } from '../Box';
-import { type SurfaceElevation } from '../types';
-import { SearchInputClearButton } from './SearchInputClearButton';
-import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
-import { inputStyle, inputWrapperStyle } from './searchInputStyles';
-import { useSearchInputCallbacks } from './useSearchInputCallbacks';
-
-export type BottomSheetSearchInputProps = {
-    onChange: (value: string) => void;
-    placeholder?: string;
-    testId?: string;
-    isDisabled?: boolean;
-    maxLength?: number;
-    elevation?: SurfaceElevation;
-    onFocus?: () => void;
-    onBlur?: () => void;
-    value?: string;
-    autoCorrect?: boolean;
-};
-
+export type BottomSheetSearchInputProps = SearchInputProps;
 export type BottomSheetSearchInputRef = TextInput | null;
 
+/**
+ * `SearchInput` preset that renders a `BottomSheetTextInput` so the field works
+ * correctly inside a `@gorhom/bottom-sheet` (keyboard avoidance, gesture handling).
+ */
 export const BottomSheetSearchInput = forwardRef<
     BottomSheetSearchInputRef,
     BottomSheetSearchInputProps
->(
-    (
-        {
-            onChange,
-            placeholder,
-            maxLength,
-            isDisabled = false,
-            elevation = '0',
-            onFocus = noop,
-            onBlur = noop,
-            value,
-            autoCorrect,
-            testId,
-        },
-        ref,
-    ) => {
-        const { applyStyle, utils } = useNativeStyles();
-
-        const searchInputRef = useRef<BottomSheetSearchInputRef>(null);
-
-        const {
-            handleClear,
-            handleInputFocus,
-            handleOnChangeText,
-            isFocused,
-            isClearButtonVisible,
-            setIsFocused,
-        } = useSearchInputCallbacks(searchInputRef, onChange);
-
-        useImperativeHandle(ref, () => searchInputRef.current!, [searchInputRef]);
-
-        return (
-            <Pressable onPress={handleInputFocus}>
-                <Box style={applyStyle(inputWrapperStyle, { isFocused, elevation })}>
-                    <SearchInputMagnifyingGlass />
-                    <BottomSheetTextInput
-                        ref={searchInputRef}
-                        onChangeText={handleOnChangeText}
-                        placeholder={placeholder}
-                        accessibilityLabel={placeholder}
-                        placeholderTextColor={utils.colors.contentSecondary}
-                        editable={!isDisabled}
-                        onFocus={() => {
-                            setIsFocused(true);
-                            onFocus();
-                        }}
-                        onBlur={() => {
-                            setIsFocused(false);
-                            onBlur();
-                        }}
-                        style={applyStyle(inputStyle)}
-                        maxLength={maxLength}
-                        value={value}
-                        autoCorrect={autoCorrect}
-                        testID={testId}
-                    />
-                    <SearchInputClearButton
-                        onPress={handleClear}
-                        isVisible={isClearButtonVisible}
-                    />
-                </Box>
-            </Pressable>
-        );
-    },
-);
+>((props, ref) => <SearchInput ref={ref as Ref<TextInput>} {...props} isBottomSheetInput />);
