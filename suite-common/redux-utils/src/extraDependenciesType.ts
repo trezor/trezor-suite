@@ -43,6 +43,8 @@ export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
 
+export type ThpHostNameDep = { thpHostName?: string };
+
 export type CommonServices = SuiteSyncDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
@@ -54,7 +56,8 @@ export type CommonServices = SuiteSyncDep &
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
-    CreateLoggerDep;
+    CreateLoggerDep &
+    ThpHostNameDep;
 
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */

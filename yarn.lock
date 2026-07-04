@@ -10551,7 +10551,6 @@ __metadata:
     "@suite-common/firmware": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -16948,6 +16947,7 @@ __metadata:
   dependencies:
     "@sentry/browser": "npm:10.53.1"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/router": "workspace:*"
@@ -16955,6 +16955,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/suite": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     "@types/react-dom": "npm:19.2.3"
     core-js: "npm:^3.49.0"
