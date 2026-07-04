@@ -47,7 +47,6 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1'] }, () =
         });
 
         // go to a certain accounts page and verify you are on that page
-        // await page.getByTestId('@account-menu/legacy').click();
         // await walletPage.openAccount({ symbol: 'btc', type: 'legacy' });
     });
 });

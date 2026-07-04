@@ -612,6 +612,9 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<CoinjoinRootState
 
 export const selectCoinjoinAccounts = (state: CoinjoinRootState) => state.wallet.coinjoin.accounts;
 
+export const selectCoinjoinIsPreloading = (state: CoinjoinRootState) =>
+    state.wallet.coinjoin.isPreloading;
+
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
 
 export const selectRoundsDurationInHours = (state: CoinjoinRootState) =>
