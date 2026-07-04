@@ -23,6 +23,7 @@ export * from './reviewTransactionUtils';
 export * from './clearSignedSwapUtils';
 export * from './sendFormUtils';
 export * from './settingsUtils';
+export * from './solanaStakingLimitUtils';
 export * from './solanaStakingUtils';
 export * from './stakingUtils';
 export * from './tokenUtils';
