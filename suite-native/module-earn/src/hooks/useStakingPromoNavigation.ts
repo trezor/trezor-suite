@@ -140,8 +140,9 @@ export const useStakingPromoNavigation = () => {
                 return;
             }
 
-            const accountsForSymbol = accounts.filter(acc => acc.symbol === item.symbol);
-            sortByCoin(accountsForSymbol);
+            const accountsForSymbol = sortByCoin(
+                accounts.filter(acc => acc.symbol === item.symbol),
+            );
 
             if (isPortfolioTrackerDevice) {
                 openPortfolioTrackerSheet();

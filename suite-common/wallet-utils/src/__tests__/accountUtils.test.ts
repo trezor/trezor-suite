@@ -36,7 +36,11 @@ describe('account utils', () => {
 
     fixtures.sortByCoin.forEach(f => {
         it('accountUtils.sortByCoin', () => {
-            expect(sortByCoin(f.accounts as Account[])).toEqual(f.result);
+            const input = [...(f.accounts as Account[])];
+
+            expect(sortByCoin(input)).toEqual(f.result);
+            // The input array is not mutated.
+            expect(input).toEqual(f.accounts);
         });
     });
 
