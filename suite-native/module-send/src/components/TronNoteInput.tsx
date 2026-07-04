@@ -120,6 +120,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
 
                     <VStack spacing="sp4">
                         <Input
+                            labelType="noLabel"
                             value={localNote}
                             onChangeText={setLocalNote}
                             placeholder={translate('moduleSend.tron.note.inputPlaceholder')}

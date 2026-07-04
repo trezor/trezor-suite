@@ -19,35 +19,35 @@ import Animated, {
 
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { D, G, S } from '@mobily/ts-belt';
-import { type RequireOneOrNone } from 'type-fest';
 
+import { Icon, type IconName, isIconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeSpacings } from '@trezor/theme';
 
 import { Box } from '../Box';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
-import { type SurfaceElevation } from '../types';
 
 const LABEL_ANIMATION_DURATION = 200;
 const labelEnteringAnimation = FadeIn.duration(LABEL_ANIMATION_DURATION);
 const labelExitingAnimation = FadeOut.duration(LABEL_ANIMATION_DURATION);
 
-export type InputProps = TextInputProps &
-    RequireOneOrNone<
-        {
-            value: string;
-            label: string;
-            placeholder: string;
-            hasError?: boolean;
-            hasWarning?: boolean;
-            leftIcon?: ReactNode;
-            rightIcon?: ReactNode;
-            elevation?: SurfaceElevation;
-            keepPlaceholderOnFocus?: boolean;
-            asBottomSheetInput?: boolean;
-        },
-        'label' | 'placeholder'
-    >;
+type InputBaseProps = {
+    value: string;
+    hasError?: boolean;
+    hasWarning?: boolean;
+    rightIcon?: IconName | ReactNode;
+    asBottomSheetInput?: boolean;
+};
+
+export type TextInputType = 'innerLabel' | 'outsideLabel' | 'noLabel';
+
+// Placeholder and label combinations defined per label type.
+export type InputLabelVariantProps =
+    | { labelType?: 'innerLabel'; label?: string; placeholder?: never }
+    | { labelType: 'outsideLabel'; label?: string; placeholder?: string }
+    | { labelType: 'noLabel'; label?: never; placeholder?: string };
+
+export type InputProps = TextInputProps & InputBaseProps & InputLabelVariantProps;
 
 export type InputType = TextInput | GHTextInput;
 
@@ -69,28 +69,25 @@ type InputWrapperStyleProps = {
     isLabelMinimized: boolean;
     isDisabled: boolean;
     isFocused: boolean;
-    elevation: SurfaceElevation;
 };
 
 type InputLabelStyleProps = {
     isLabelMinimized: boolean;
-    isLeftIconDisplayed: boolean;
 };
 
 type InputStyleProps = {
-    isLabelDisplayed: boolean;
-    isLeftIconDisplayed: boolean;
+    isInnerLabelDisplayed: boolean;
     isRightIconDisplayed: boolean;
     isDisabled: boolean;
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
-    (utils, { hasError, hasWarning, isDisabled, isFocused, elevation }) => ({
+    (utils, { hasError, hasWarning, isDisabled, isFocused }) => ({
         backgroundColor: isDisabled
-            ? utils.colors.legacyBackgroundNeutralSubtleOnElevation1
-            : utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
+            ? utils.colors.elementFillFieldDisabled
+            : utils.colors.elementFillField,
         borderColor: isDisabled
-            ? utils.colors.legacyBackgroundNeutralSubtleOnElevation1
+            ? utils.colors.elementBorderFieldDisabled
             : utils.colors.elementBorderField,
         borderWidth: utils.borders.widths.small,
         borderRadius: utils.borders.radii.r12,
@@ -120,21 +117,14 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
                     backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation1,
                 },
             },
-            {
-                condition: elevation === '1',
-                style: {
-                    borderColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation1,
-                    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation1,
-                },
-            },
         ],
     }),
 );
 
 const inputStyle = prepareNativeStyle<InputStyleProps>(
-    (utils, { isLabelDisplayed, isLeftIconDisplayed, isRightIconDisplayed, isDisabled }) => {
-        const paddingTop = isLabelDisplayed ? utils.spacings.sp24 : INPUT_VERTICAL_PADDING;
-        const paddingBottom = isLabelDisplayed
+    (utils, { isInnerLabelDisplayed, isRightIconDisplayed, isDisabled }) => {
+        const paddingTop = isInnerLabelDisplayed ? utils.spacings.sp24 : INPUT_VERTICAL_PADDING;
+        const paddingBottom = isInnerLabelDisplayed
             ? INPUT_WITH_LABEL_BOTTOM_PADDING
             : INPUT_VERTICAL_PADDING;
         const minHeight = INPUT_TEXT_HEIGHT + paddingTop + paddingBottom;
@@ -148,7 +138,7 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
             justifyContent: 'center',
             minHeight,
             color: isDisabled ? utils.colors.contentSecondary : utils.colors.contentPrimary,
-            left: isLeftIconDisplayed ? utils.spacings.sp24 : 0,
+            left: 0,
             paddingRight: isRightIconDisplayed ? 40 : 0,
             borderWidth: 0,
             flex: 1,
@@ -166,31 +156,27 @@ const inputHitSlop = {
     bottom: INPUT_WRAPPER_PADDING_VERTICAL,
 };
 
-const labelStyle = prepareNativeStyle(
-    (utils, { isLabelMinimized, isLeftIconDisplayed }: InputLabelStyleProps) => ({
-        ...D.deleteKey(utils.typography['body-md'], 'fontSize'),
-        color: utils.colors.contentSecondary,
-        position: 'absolute',
-        top: INPUT_LABEL_TOP_PADDING,
-        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.sp24 : 0),
-        extend: {
-            condition: isLabelMinimized,
-            style: {
-                ...D.deleteKey(utils.typography['body-xs'], 'fontSize'),
-                top: INPUT_LABEL_TOP_PADDING_MINIMIZED,
-            },
+const labelStyle = prepareNativeStyle((utils, { isLabelMinimized }: InputLabelStyleProps) => ({
+    ...D.deleteKey(utils.typography['body-md'], 'fontSize'),
+    color: utils.colors.contentSecondary,
+    position: 'absolute',
+    top: INPUT_LABEL_TOP_PADDING,
+    left: INPUT_WRAPPER_PADDING_HORIZONTAL,
+    extend: {
+        condition: isLabelMinimized,
+        style: {
+            ...D.deleteKey(utils.typography['body-xs'], 'fontSize'),
+            top: INPUT_LABEL_TOP_PADDING_MINIMIZED,
         },
-    }),
-);
+    },
+}));
 
-const placeholderStyle = prepareNativeStyle(
-    (utils, { isLeftIconDisplayed }: InputLabelStyleProps) => ({
-        position: 'absolute',
-        top: INPUT_VERTICAL_PADDING + utils.borders.widths.large,
-        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.sp24 : 0),
-        color: utils.colors.contentSecondary,
-    }),
-);
+const placeholderStyle = prepareNativeStyle(utils => ({
+    position: 'absolute',
+    top: INPUT_VERTICAL_PADDING + utils.borders.widths.small,
+    left: utils.spacings.sp16 + utils.borders.widths.large + utils.borders.widths.small,
+    color: utils.colors.contentSecondary,
+}));
 
 const iconStyle = prepareNativeStyle(() => ({
     position: 'absolute',
@@ -198,11 +184,6 @@ const iconStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
     top: 0,
     height: '100%',
-}));
-
-const leftIconStyle = prepareNativeStyle(utils => ({
-    marginRight: 3,
-    left: utils.spacings.sp8,
 }));
 
 const rightIconStyle = prepareNativeStyle(utils => ({
@@ -255,23 +236,20 @@ export const Input = forwardRef<TextInput, InputProps>(
             onBlur,
             label,
             placeholder,
-            leftIcon,
             rightIcon,
             style,
             editable,
+            labelType = 'innerLabel',
             hasError = false,
             hasWarning = false,
-            elevation = '0',
-            keepPlaceholderOnFocus = false,
             asBottomSheetInput = false,
             ...props
         }: InputProps,
         ref,
     ) => {
         const [isFocused, setIsFocused] = useState<boolean>(false);
-        const isLabelDisplayed = !!label;
+        const isInnerLabelDisplayed = labelType === 'innerLabel' && !!label;
         const isLabelMinimized = isFocused || !!value?.length;
-        const isLeftIconDisplayed = !!leftIcon;
         const isRightIconDisplayed = !!rightIcon;
         const isDisabled = G.isBoolean(editable) && !editable;
 
@@ -292,9 +270,7 @@ export const Input = forwardRef<TextInput, InputProps>(
             onBlur?.(event);
         };
 
-        const shouldShowPlaceholder = keepPlaceholderOnFocus
-            ? S.isEmpty(value)
-            : !isFocused && S.isEmpty(value);
+        const shouldShowPlaceholder = !!placeholder && S.isEmpty(value);
 
         return (
             <>
@@ -305,15 +281,9 @@ export const Input = forwardRef<TextInput, InputProps>(
                         isLabelMinimized,
                         isDisabled,
                         isFocused,
-                        elevation,
                     })}
                 >
-                    {leftIcon && (
-                        <Box style={[applyStyle(iconStyle), applyStyle(leftIconStyle)]}>
-                            {leftIcon}
-                        </Box>
-                    )}
-                    {label && (
+                    {isInnerLabelDisplayed && (
                         <Animated.Text
                             style={[
                                 /*
@@ -324,7 +294,6 @@ export const Input = forwardRef<TextInput, InputProps>(
                                 animatedInputLabelStyle,
                                 applyStyle(labelStyle, {
                                     isLabelMinimized,
-                                    isLeftIconDisplayed,
                                 }),
                             ]}
                             numberOfLines={1}
@@ -332,14 +301,11 @@ export const Input = forwardRef<TextInput, InputProps>(
                             {label}
                         </Animated.Text>
                     )}
-                    {shouldShowPlaceholder && placeholder && (
+                    {shouldShowPlaceholder && (
                         <Animated.View
                             entering={labelEnteringAnimation}
                             exiting={labelExitingAnimation}
-                            style={applyStyle(placeholderStyle, {
-                                isLabelMinimized,
-                                isLeftIconDisplayed,
-                            })}
+                            style={applyStyle(placeholderStyle)}
                         >
                             <Text color="contentSecondary">{placeholder}</Text>
                         </Animated.View>
@@ -349,8 +315,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                             ref={ref as any}
                             style={[
                                 applyStyle(inputStyle, {
-                                    isLabelDisplayed,
-                                    isLeftIconDisplayed,
+                                    isInnerLabelDisplayed,
                                     isRightIconDisplayed,
                                     isDisabled,
                                 }),
@@ -364,9 +329,9 @@ export const Input = forwardRef<TextInput, InputProps>(
                             {...props}
                         />
                     </Box>
-                    {rightIcon && (
+                    {!!rightIcon && (
                         <Box style={[applyStyle(iconStyle), applyStyle(rightIconStyle)]}>
-                            {rightIcon}
+                            {isIconName(rightIcon) ? <Icon name={rightIcon} /> : rightIcon}
                         </Box>
                     )}
                 </Box>

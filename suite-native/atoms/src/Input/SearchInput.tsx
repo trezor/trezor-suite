@@ -5,7 +5,7 @@ import {
     useImperativeHandle,
     useRef,
 } from 'react';
-import { Pressable, TextInput, type TextInputProps } from 'react-native';
+import { Platform, Pressable, TextInput, type TextInputProps } from 'react-native';
 
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
@@ -41,6 +41,15 @@ const inputStyle = prepareNativeStyle(utils => ({
     textAlignVertical: 'center',
     color: utils.colors.contentPrimary,
     marginLeft: utils.spacings.sp16,
+
+    extend: {
+        // on IOS, when is the default lineHeight used, it causes layout jumps between the placeholder and inputed text.
+        // Probably bug in the underlying native library. Value of 20 is empiricaly found closest value to default of 24 that makes it work correctly.
+        condition: Platform.OS === 'ios',
+        style: {
+            lineHeight: 20,
+        },
+    },
 }));
 
 const inputWrapperStyle = prepareNativeStyle<InputStyleProps>((utils, { isFocused, size }) => ({

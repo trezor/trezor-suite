@@ -159,6 +159,7 @@ export const ManualTokenInputScreen = () => {
                                 <Translation id="moduleStellarToken.manualInput.assetCode" />
                             </Text>
                             <Input
+                                labelType="noLabel"
                                 value={assetCode}
                                 onChangeText={handleAssetCodeChange}
                                 onBlur={() => setAssetCodeTouched(true)}
@@ -182,6 +183,7 @@ export const ManualTokenInputScreen = () => {
                                 <Translation id="moduleStellarToken.tokenDetail.issuerAddress" />
                             </Text>
                             <Input
+                                labelType="noLabel"
                                 value={issuerAddress}
                                 onChangeText={handleIssuerAddressChange}
                                 onBlur={() => setIssuerAddressTouched(true)}
