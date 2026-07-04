@@ -2687,6 +2687,8 @@ export const messages = {
                 infoDescription:
                     'The liquidity of the staking pool can allow for instant unstake of some funds. The remaining funds will follow the unstaking period.',
             },
+            accountLimitBanner:
+                'Due to Solana transaction size restriction, you can unstake from {limit} accounts at once. In the next transaction you can unstake up to {amount} {symbol}. To unstake more, repeat the process.',
         },
         earnScreen: {
             title: 'Earn',
@@ -3183,6 +3185,8 @@ export const messages = {
             reviewAndSignButton: 'Review & sign',
             amountLabel: 'Amount',
             instantClaimBanner: "You'll claim the {displaySymbol} instantly",
+            accountLimitBanner:
+                'Due to Solana transaction size restriction, you can claim from {limit} accounts at once. In the next transaction you can claim up to {amount} {symbol}. To claim more, repeat the process.',
             insufficientFeeBalance: {
                 title: 'Insufficient {displaySymbol} to cover the transaction fee.',
                 description: 'You only have {amount} available.',

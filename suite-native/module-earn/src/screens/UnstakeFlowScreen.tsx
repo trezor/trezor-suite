@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -23,12 +24,14 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
+import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/coins-solana/constants';
 
 import { EarnOutputFields } from '../components/EarnOutputFields';
 import { UnstakeCanClaimAlert } from '../components/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../components/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../components/UnstakingTimelineCard';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
+import { useSolanaStakingLimit } from '../hooks/useSolanaStakingLimit';
 import { useUnstakeForm } from '../hooks/useUnstakeForm';
 
 export const UnstakeFlowScreen = () => {
@@ -55,6 +58,13 @@ export const UnstakeFlowScreen = () => {
             currency: currencyRef.current,
         },
     });
+
+    const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: unstakeLimitAmount } =
+        useSolanaStakingLimit({
+            accountKey,
+            type: 'unstake',
+            amount: unstakeForm?.amountValue,
+        });
 
     if (!unstakeForm) return null;
 
@@ -117,6 +127,24 @@ export const UnstakeFlowScreen = () => {
                 titleLabel={<Translation id="earn.earnFormScreen.staked" />}
                 cryptoAmount={stakedBalance ?? undefined}
             />
+
+            {isAccountLimitExceeded && networkSymbol && (
+                <Box marginTop="sp16">
+                    <InlineAlertBox
+                        intent="info"
+                        title={
+                            <Translation
+                                id="earn.unstakeFlowScreen.accountLimitBanner"
+                                values={{
+                                    limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
+                                    amount: unstakeLimitAmount,
+                                    symbol: getNetworkDisplaySymbol(networkSymbol),
+                                }}
+                            />
+                        }
+                    />
+                </Box>
+            )}
 
             <Box marginTop="sp16">
                 <UnstakingTimelineCard accountKey={accountKey} />
