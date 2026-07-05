@@ -8,6 +8,7 @@ import {
     accountSearchFn,
     enhanceAddresses,
     findAccountDevice,
+    findAccountsByAddress,
     getAccountIdentifier,
     getBip43Type,
     getNetworkAccountFeatures,
@@ -106,6 +107,18 @@ describe('account utils', () => {
                 state: { staticSessionId: '1stTestnet@device_id:0' },
             }),
         );
+    });
+
+    it('findAccountsByAddress matches an ethereum-style account by descriptor equality', () => {
+        // Ethereum-style accounts have no `addresses` (used/unused/change) list,
+        // so matching must fall back to comparing the address against the descriptor.
+        const account = mockWalletAccount({
+            symbol: 'eth',
+            descriptor: asAccountDescriptor('0xAccountAddress'),
+        });
+
+        expect(findAccountsByAddress('eth', '0xAccountAddress', [account])).toEqual([account]);
+        expect(findAccountsByAddress('eth', '0xOtherAddress', [account])).toEqual([]);
     });
 
     it('getAccountKey', () => {
