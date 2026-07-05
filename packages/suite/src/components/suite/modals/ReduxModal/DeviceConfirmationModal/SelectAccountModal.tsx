@@ -42,10 +42,10 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
         }
     }, [data.accountTypes, data.defaultAccountType, data.accounts]);
     const typeLabels = {
-        p2wpkh: <Translation id="TR_NORMAL_ACCOUNTS" />,
-        p2tr: <Translation id="TR_TAPROOT_ACCOUNTS" />,
-        p2sh: <Translation id="TR_LEGACY_SEGWIT_ACCOUNTS" />,
-        p2pkh: <Translation id="TR_LEGACY_ACCOUNTS" />,
+        p2wpkh: <Translation id="TR_ACCOUNT_TYPE_DEFAULT" />,
+        p2tr: <Translation id="TR_ACCOUNT_TYPE_TAPROOT" />,
+        p2sh: <Translation id="TR_ACCOUNT_TYPE_SEGWIT" />,
+        p2pkh: <Translation id="TR_ACCOUNT_TYPE_LEGACY" />,
     };
     const indexedAccounts = accounts?.map((account, index) => ({ ...account, index }));
     const filteredAccounts = indexedAccounts?.filter(
