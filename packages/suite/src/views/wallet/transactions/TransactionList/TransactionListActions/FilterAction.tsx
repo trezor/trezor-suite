@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
@@ -12,6 +11,7 @@ import {
     Badge,
     Box,
     Button,
+    Checkbox,
     Column,
     ComponentWithSubIcon,
     Divider,
@@ -25,6 +25,10 @@ import {
 } from '@trezor/components';
 import { FunnelSimpleIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
+
+import { setSuspiciousTransactionsBlurringDisabled } from 'src/actions/suite/suiteActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsSuspiciousTransactionsBlurringDisabled } from 'src/selectors/suite/suiteSelectors';
 
 type FilterValue = boolean | string;
 
@@ -62,6 +66,7 @@ const getSectionDefaultValue = (section: FilterSection) =>
 export const FilterAction = () => {
     const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
     const suspiciousTransactionsHidden = useSelector(selectIsHideSuspiciousTransactions);
+    const isBlurringDisabled = useSelector(selectIsSuspiciousTransactionsBlurringDisabled);
     const hasActiveModal = useSelector(selectHasActiveModal);
     const dispatch = useDispatch();
 
@@ -203,6 +208,34 @@ export const FilterAction = () => {
                                     })}
                                 </Column>
                             ))}
+                            {!suspiciousTransactionsHidden && (
+                                <Checkbox
+                                    isChecked={isBlurringDisabled}
+                                    onChange={() =>
+                                        dispatch(
+                                            setSuspiciousTransactionsBlurringDisabled(
+                                                !isBlurringDisabled,
+                                            ),
+                                        )
+                                    }
+                                    data-testid={`${dataTest}/disable-blur`}
+                                    verticalAlignment="center"
+                                >
+                                    <Column>
+                                        <Text typographyStyle="body-sm-strong">
+                                            <Translation id="TR_SHOW_SUSPICIOUS_TRANSACTIONS_UNBLURRED" />
+                                        </Text>
+                                        <Paragraph
+                                            typographyStyle="body-xs"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            textWrap="pretty"
+                                        >
+                                            <Translation id="TR_SHOW_SUSPICIOUS_TRANSACTIONS_UNBLURRED_DESCRIPTION" />
+                                        </Paragraph>
+                                    </Column>
+                                </Checkbox>
+                            )}
                         </Column>
                     }
                     data-testid={`${dataTest}/dropdown`}

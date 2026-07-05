@@ -8,6 +8,9 @@ import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/s
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
 
+export const selectIsSuspiciousTransactionsBlurringDisabled = (state: SuiteRootState) =>
+    state.suite.isSuspiciousTransactionsBlurringDisabled;
+
 export const selectSuiteTransports = (state: SuiteRootState) =>
     state.suite.transport?.transports.map(({ type, version }) => ({ type, version }));
 export const selectIsTransportInitialized = (state: SuiteRootState) => !!state.suite.transport;

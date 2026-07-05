@@ -11,6 +11,8 @@ export const ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION =
 export const ONLINE_STATUS = '@suite/online-status';
 export const SET_SEND_FORM_PREFILL = '@suite/set-send-form-prefill';
 export const SET_TRANSACTION_HISTORY_PREFILL = '@suite/set-transaction-history-prefill';
+export const SET_SUSPICIOUS_TRANSACTIONS_BLURRING_DISABLED =
+    '@suite/set-suspicious-transactions-blurring-disabled';
 export const SET_DEFAULT_WALLET_LOADING = '@suite/set-default-wallet-loading';
 export const EVM_CONFIRM_EXPLANATION_MODAL = '@suite/evm-confirm-explanation-modal';
 export const EVM_CLOSE_EXPLANATION_BANNER = '@suite/evm-close-explanation-banner';

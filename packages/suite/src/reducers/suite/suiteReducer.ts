@@ -45,6 +45,7 @@ export type SuiteState = {
     evmSettings: EvmSettings;
     countryCode: CountryCode | null;
     prefillFields: PrefillFields;
+    isSuspiciousTransactionsBlurringDisabled: boolean;
     recentlyConnectedDeviceRef: string | null; // TODO use type DeviceRef from suite-types; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
     recentlyDisconnectedDevice: string | null;
     seenDisconnectNotificationForDeviceIds: string[];
@@ -61,6 +62,7 @@ const initialState: SuiteState = {
         sendForm: '',
         transactionHistory: '',
     },
+    isSuspiciousTransactionsBlurringDisabled: false,
     countryCode: null,
     recentlyConnectedDeviceRef: null,
     recentlyDisconnectedDevice: null,
@@ -141,6 +143,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_TRANSACTION_HISTORY_PREFILL:
                 draft.prefillFields.transactionHistory = action.payload;
+                break;
+
+            case SUITE.SET_SUSPICIOUS_TRANSACTIONS_BLURRING_DISABLED:
+                draft.isSuspiciousTransactionsBlurringDisabled = action.payload;
                 break;
 
             case TRANSPORT.START: {

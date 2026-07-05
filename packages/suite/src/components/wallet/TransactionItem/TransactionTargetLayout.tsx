@@ -3,7 +3,9 @@ import { type ReactNode } from 'react';
 import { Column, Text } from '@trezor/components';
 
 import { HiddenPlaceholder } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { selectIsSuspiciousTransactionsBlurringDisabled } from 'src/selectors/suite/suiteSelectors';
 
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 
@@ -23,6 +25,7 @@ export const TransactionTargetLayout = ({
     isPhishingTransaction,
 }: TransactionTargetLayoutProps) => {
     const { isBelowTablet } = useLayoutSize();
+    const isBlurringDisabled = useSelector(selectIsSuspiciousTransactionsBlurringDisabled);
 
     const commonProps = {
         typographyStyle: 'body-md',
@@ -40,7 +43,11 @@ export const TransactionTargetLayout = ({
         <>
             <Text {...cryptoAmountProps} align="end">
                 {amount && (
-                    <BlurWrapper $isBlurred={isPhishingTransaction ?? false}>{amount}</BlurWrapper>
+                    <BlurWrapper
+                        $isBlurred={(isPhishingTransaction ?? false) && !isBlurringDisabled}
+                    >
+                        {amount}
+                    </BlurWrapper>
                 )}
             </Text>
             <Text {...commonProps} isTabular align="end">

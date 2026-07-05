@@ -23,6 +23,15 @@ export const setSendFormPrefill = createAction<
 
 type SetSendFormPrefillAction = ReturnType<typeof setSendFormPrefill>;
 
+export const setSuspiciousTransactionsBlurringDisabled = createAction<
+    boolean,
+    typeof SUITE.SET_SUSPICIOUS_TRANSACTIONS_BLURRING_DISABLED
+>(SUITE.SET_SUSPICIOUS_TRANSACTIONS_BLURRING_DISABLED);
+
+type SetSuspiciousTransactionsBlurringDisabledAction = ReturnType<
+    typeof setSuspiciousTransactionsBlurringDisabled
+>;
+
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
@@ -55,7 +64,8 @@ export type SuiteAction =
           payload: string;
       }
     | { type: typeof deviceActions.requestDeviceReconnect.type }
-    | SetSendFormPrefillAction;
+    | SetSendFormPrefillAction
+    | SetSuspiciousTransactionsBlurringDisabledAction;
 
 export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     type: SUITE.DESKTOP_HANDSHAKE,
