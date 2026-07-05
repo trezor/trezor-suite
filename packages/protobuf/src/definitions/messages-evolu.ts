@@ -60,6 +60,7 @@ export const EvoluRegistrationRequest = Type.Object(
     {
         certificate_chain: Type.Array(Type.String()),
         signature: Type.String(),
+        rotation_index: Type.Optional(Type.Number()),
     },
     { $id: 'EvoluRegistrationRequest' },
 );
