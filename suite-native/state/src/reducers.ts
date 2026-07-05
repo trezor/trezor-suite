@@ -68,6 +68,7 @@ import {
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
+    sortAccountsByCoin,
     tokenDefinitionsPersistTransform,
     walletPersistTransform,
     walletStopPersistTransform,
@@ -239,7 +240,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: walletReducers,
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
-        version: 3,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.accounts) return oldState;
@@ -260,6 +261,11 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 const migratedState = { ...oldState, accounts: migratedAccounts };
 
                 return migratedState;
+            },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState?.accounts) return oldState;
+
+                return { ...oldState, accounts: sortAccountsByCoin(oldState.accounts) };
             },
         },
         transforms: [walletStopPersistTransform],
@@ -460,7 +466,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         ],
         mergeLevel: 2,
         key: 'root',
-        version: 4,
+        version: 5,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.wallet) return oldState;
@@ -527,6 +533,17 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 };
 
                 return migratedState;
+            },
+            5: (oldState: any /* FIXME */) => {
+                if (!oldState?.wallet?.accounts) return oldState;
+
+                return {
+                    ...oldState,
+                    wallet: {
+                        ...oldState.wallet,
+                        accounts: sortAccountsByCoin(oldState.wallet.accounts),
+                    },
+                };
             },
         },
         storage: deps.mmkvStorage,
