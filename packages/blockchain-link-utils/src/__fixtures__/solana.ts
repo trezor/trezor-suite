@@ -450,7 +450,8 @@ export const fixtures = {
             expectedOutput: 'contract',
         },
         {
-            description: 'should return "unknown" if all transfer instruction are not parsed',
+            description:
+                'should return "sent" if all transfer instruction are not parsed but the account balance decreased by more than the fee',
             input: {
                 transaction: {
                     transaction: {
@@ -463,7 +464,73 @@ export const fixtures = {
                 accountAddress: effects.negative.address,
                 tokenEffects: [],
             },
+            expectedOutput: 'sent',
+        },
+        {
+            description:
+                'should return "recv" if all transfer instruction are not parsed but the account balance increased',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            instructions: [instructions.tokenTransferNotParsed],
+                        },
+                    },
+                },
+                effects: [effects.positive],
+                accountAddress: effects.positive.address,
+                tokenEffects: [],
+            },
+            expectedOutput: 'recv',
+        },
+        {
+            description:
+                'should return "unknown" if all transfer instruction are not parsed and the account balance only decreased by the fee',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            instructions: [instructions.tokenTransferNotParsed],
+                        },
+                    },
+                    meta: {
+                        fee: effects.negative.amount.abs().toString(),
+                    },
+                },
+                effects: [effects.negative],
+                accountAddress: effects.negative.address,
+                tokenEffects: [],
+            },
             expectedOutput: 'unknown',
+        },
+        {
+            description:
+                'should return "sent" if all transfer instruction are not parsed but there are token effects',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            instructions: [instructions.tokenTransferNotParsed],
+                        },
+                    },
+                },
+                effects: [],
+                accountAddress: 'myAddress',
+                tokenEffects: [
+                    {
+                        type: 'sent',
+                        standard: 'SPL',
+                        from: 'myAddress',
+                        to: '',
+                        contract: 'someMint',
+                        decimals: 6,
+                        name: 'someMint',
+                        symbol: 'someMint',
+                        amount: '100',
+                    },
+                ],
+            },
+            expectedOutput: 'sent',
         },
         {
             description: 'should return "self" if it matches a self-transaction with fee',
@@ -604,6 +671,60 @@ export const fixtures = {
                 effects: [effects.positive, effects.negative],
                 txType: 'unknown',
                 accountAddress: 'someOtherAddress',
+            },
+            expectedOutput: [],
+        },
+        {
+            description: 'should return an empty array for "contract" transaction type',
+            input: {
+                effects: [effects.positive, effects.negative],
+                txType: 'contract',
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: [],
+        },
+    ],
+    getInternalTransfers: [
+        {
+            description:
+                'should return a sent internal transfer for "contract" transaction type with a negative account effect',
+            input: {
+                effects: [effects.negative, effects.positiveForeign],
+                txType: 'contract',
+                accountAddress: effects.negative.address,
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    from: effects.negative.address,
+                    to: '',
+                    amount: effects.negative.amount.abs().toString(),
+                },
+            ],
+        },
+        {
+            description:
+                'should return a recv internal transfer for "contract" transaction type with a positive account effect',
+            input: {
+                effects: [effects.positive],
+                txType: 'contract',
+                accountAddress: effects.positive.address,
+            },
+            expectedOutput: [
+                {
+                    type: 'recv',
+                    from: '',
+                    to: effects.positive.address,
+                    amount: effects.positive.amount.abs().toString(),
+                },
+            ],
+        },
+        {
+            description: 'should return an empty array for non-contract transaction types',
+            input: {
+                effects: [effects.negative],
+                txType: 'sent',
+                accountAddress: effects.negative.address,
             },
             expectedOutput: [],
         },
@@ -753,6 +874,86 @@ export const fixtures = {
                 tokenAccountsInfos: [],
             },
             expectedOutput: [],
+        },
+        {
+            description:
+                'derives a sent token transfer from the token balance change when there is no parsed transfer instruction',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: 'myTokenAccount' }],
+                            instructions: [instructions.nonTransfer],
+                        },
+                    },
+                    meta: {
+                        preTokenBalances: [{ accountIndex: 0, uiTokenAmount: { amount: '500' } }],
+                        postTokenBalances: [{ accountIndex: 0, uiTokenAmount: { amount: '200' } }],
+                    },
+                },
+                accountAddress: 'myAddress',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: 'myTokenAccount',
+                        mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                        decimals: 2,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'sent',
+                    standard: 'SPL',
+                    from: 'myAddress',
+                    to: '',
+                    contract: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    decimals: 2,
+                    name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    symbol: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    amount: '300',
+                },
+            ],
+        },
+        {
+            description:
+                'derives a recv token transfer from the token balance change when there is no parsed transfer instruction',
+            input: {
+                transaction: {
+                    transaction: {
+                        message: {
+                            accountKeys: [{ pubkey: 'myTokenAccount' }],
+                            instructions: [instructions.nonTransfer],
+                        },
+                    },
+                    meta: {
+                        preTokenBalances: [{ accountIndex: 0, uiTokenAmount: { amount: '0' } }],
+                        postTokenBalances: [{ accountIndex: 0, uiTokenAmount: { amount: '700' } }],
+                    },
+                },
+                accountAddress: 'myAddress',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [
+                    {
+                        address: 'myTokenAccount',
+                        mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                        decimals: 2,
+                    },
+                ],
+            },
+            expectedOutput: [
+                {
+                    type: 'recv',
+                    standard: 'SPL',
+                    from: '',
+                    to: 'myAddress',
+                    contract: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    decimals: 2,
+                    name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    symbol: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    amount: '700',
+                },
+            ],
         },
         {
             description: 'parses a single token transfer',
