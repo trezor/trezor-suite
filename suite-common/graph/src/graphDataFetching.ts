@@ -24,6 +24,7 @@ import {
     findOldestBalanceMovementTimestamp,
     getTimestampsInTimeFrame,
     mapCryptoBalanceMovementToFixedTimeFrame,
+    mapTickersToFiatRatesItems,
     mergeMultipleFiatBalanceHistories,
 } from './graphUtils';
 import type {
@@ -37,9 +38,11 @@ import type {
     FiatRatesItem,
 } from './types';
 
+// Every returned point carries the balance valid BEFORE its movement, in the same units the
+// movements and initialBalance come in (subunits for the native coin, decimal units for tokens) —
+// converting units is up to the caller.
 const addBalanceForAccountMovementHistory = (
     data: AccountMovementHistory[] | AccountHistoryMovementItem[],
-    symbol: NetworkSymbol,
     initialBalance = '0',
 ): AccountHistoryBalancePoint[] => {
     let balance = new BigNumber(initialBalance);
@@ -63,7 +66,7 @@ const addBalanceForAccountMovementHistory = (
 
         return {
             time: dataPoint.time,
-            cryptoBalance: formatNetworkAmount(balance.toFixed(), symbol),
+            cryptoBalance: balance.toFixed(),
         };
     });
 
@@ -225,11 +228,49 @@ const getAccountBalanceHistory = async ({
         getLatestAccountInfo({ symbol, identity, descriptor }),
     ]);
 
-    const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
-        accountMovementHistory.main,
-        symbol,
+    // Balance points carry the balance valid BEFORE their movement and the fiat-rate mapping picks
+    // the first point at-or-after each rate timestamp, so a movement newer than the end of the
+    // time frame (which is floored to whole 10 minutes) would shadow the synthetic frame-end point
+    // and read as the pre-movement balance for the entire frame. Movements past the frame end are
+    // cut off and un-applied from the present balance instead, so the history describes the state
+    // exactly as of the frame end.
+    const splitMovementsAtEndOfTimeFrame = <TMovement extends { time: number }>(
+        movements: TMovement[],
+    ) => ({
+        inFrame: movements.filter(movement => movement.time <= endTimeFrameTimestamp),
+        afterFrame: movements.filter(movement => movement.time > endTimeFrameTimestamp),
+    });
+
+    const unapplyMovements = (
+        balance: string,
+        movements: AccountMovementHistory[] | AccountHistoryMovementItem[],
+    ) =>
+        movements
+            .reduce((acc, movement) => {
+                const normalizedReceived = movement.sentToSelf
+                    ? new BigNumber(movement.received).minus(movement.sentToSelf || 0)
+                    : new BigNumber(movement.received);
+                const normalizedSent = movement.sentToSelf
+                    ? new BigNumber(movement.sent).minus(movement.sentToSelf || 0)
+                    : new BigNumber(movement.sent);
+
+                return acc.minus(normalizedReceived).plus(normalizedSent);
+            }, new BigNumber(balance))
+            .toFixed();
+
+    const mainMovements = splitMovementsAtEndOfTimeFrame(accountMovementHistory.main);
+    const mainBalanceAtEndOfTimeFrame = unapplyMovements(
         getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, symbol }),
+        mainMovements.afterFrame,
     );
+
+    const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
+        mainMovements.inFrame,
+        mainBalanceAtEndOfTimeFrame,
+    ).map(point => ({
+        ...point,
+        cryptoBalance: formatNetworkAmount(point.cryptoBalance, symbol),
+    }));
 
     const tokens: Array<readonly [TokenAddress, AccountHistoryMovementItem[]]> = pipe(
         latestAccountInfo.tokens ?? [],
@@ -247,20 +288,25 @@ const getAccountBalanceHistory = async ({
     const tokensMovementHistoryWithBalance = D.mapWithKey(
         D.fromPairs(tokens),
         (contractId, tokenHistory) => {
-            const latestBalance = getBalanceFromAccountInfo({
-                accountInfo: latestAccountInfo,
-                symbol,
-                contractId: contractId.toString(),
-            });
+            const tokenMovements = splitMovementsAtEndOfTimeFrame(tokenHistory);
+            // Token movements and getBalanceFromAccountInfo are both already in decimal units, so
+            // unlike the native coin no subunit conversion may be applied to token points.
+            const balanceAtEndOfTimeFrame = unapplyMovements(
+                getBalanceFromAccountInfo({
+                    accountInfo: latestAccountInfo,
+                    symbol,
+                    contractId: contractId.toString(),
+                }),
+                tokenMovements.afterFrame,
+            );
             const historyWithBalance = addBalanceForAccountMovementHistory(
-                tokenHistory,
-                symbol,
-                latestBalance,
+                tokenMovements.inFrame,
+                balanceAtEndOfTimeFrame,
             );
 
             historyWithBalance.push({
                 time: endTimeFrameTimestamp,
-                cryptoBalance: latestBalance,
+                cryptoBalance: balanceAtEndOfTimeFrame,
             });
 
             return historyWithBalance;
@@ -271,10 +317,7 @@ const getAccountBalanceHistory = async ({
     // TODO: We can get value from redux account info instead of fetching it again which could cause minor inconsistency.
     accountMovementHistoryWithBalance.push({
         time: endTimeFrameTimestamp,
-        cryptoBalance: formatNetworkAmount(
-            getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, symbol }),
-            symbol,
-        ),
+        cryptoBalance: formatNetworkAmount(mainBalanceAtEndOfTimeFrame, symbol),
     });
 
     const result: AccountBalanceHistoryWithTokens = {
@@ -320,12 +363,7 @@ const getFiatRatesForNetworkInTimeFrame = async ({
     );
     if (G.isNullable(fiatRates)) return null;
 
-    const formattedFiatRates: FiatRatesItem[] = fiatRates.tickers.flatMap((ticker, index) => {
-        const time = timestamps[index];
-        if (time === undefined) return [];
-
-        return [{ time, rates: ticker.rates }];
-    });
+    const formattedFiatRates = mapTickersToFiatRatesItems(fiatRates.tickers, timestamps);
 
     fiatRatesCache[cacheKey] = formattedFiatRates;
 
@@ -424,9 +462,13 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
         // findOldestBalanceMovementTimestamp returns Infinity when there are no balance movements
         // at all (Math.min of an empty list). Anchor the range to the end of the time frame so the
-        // no-movements branch below fires with a valid start date instead of an Invalid Date.
+        // no-movements branch below fires with a valid start date instead of an Invalid Date. The
+        // end of the time frame also caps the start (clock skew could produce a newer movement),
+        // because an inverted interval makes getTimestampsInTimeFrame throw.
         startOfTimeFrameDate = Number.isFinite(oldestBalanceMovementTimestamp)
-            ? fromUnixTime(oldestBalanceMovementTimestamp)
+            ? fromUnixTime(
+                  Math.min(oldestBalanceMovementTimestamp, getUnixTime(endOfTimeFrameDate)),
+              )
             : new Date(endOfTimeFrameDate);
 
         // if there were no balance movements at all,
