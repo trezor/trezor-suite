@@ -66,7 +66,7 @@ const detailRowStyle = prepareNativeStyle(({ spacings }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: spacings.sp40,
+    minHeight: spacings.sp40,
 }));
 
 const cardStyle = prepareNativeStyle(({ colors, borders, boxShadows, spacings }) => ({
@@ -266,35 +266,43 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <Translation id="moduleAccountManagement.tokenSettings.balance" />
                                 }
                             >
-                                <VStack spacing={0} alignItems="flex-end">
-                                    <TokenAmountFormatter
-                                        value={balance}
-                                        tokenSymbol={token?.symbol ?? toTokenSymbol(account.symbol)}
-                                        variant="body-sm"
-                                        color="contentPrimary"
-                                    />
-
-                                    {!isUnrecognized && (
-                                        <>
-                                            {tokenContract ? (
-                                                <TokenToFiatAmountFormatter
-                                                    symbol={symbol}
-                                                    value={balance}
-                                                    contract={tokenContract}
-                                                    variant="body-sm"
-                                                    color="contentSecondary"
-                                                />
-                                            ) : (
-                                                <CoinToFiatAmountFormatter
-                                                    accountKey={accountKey}
-                                                    value={balance}
-                                                    variant="body-sm"
-                                                    color="contentSecondary"
-                                                />
+                                <Box flex={1} alignItems="flex-end" marginLeft="sp8">
+                                    <VStack spacing={0} alignItems="flex-end">
+                                        <TokenAmountFormatter
+                                            value={balance}
+                                            tokenSymbol={toTokenSymbol(
+                                                getDisplaySymbol(
+                                                    token?.symbol ?? toTokenSymbol(account.symbol),
+                                                ),
                                             )}
-                                        </>
-                                    )}
-                                </VStack>
+                                            variant="body-sm"
+                                            color="contentPrimary"
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        />
+
+                                        {!isUnrecognized && (
+                                            <>
+                                                {tokenContract ? (
+                                                    <TokenToFiatAmountFormatter
+                                                        symbol={symbol}
+                                                        value={balance}
+                                                        contract={tokenContract}
+                                                        variant="body-sm"
+                                                        color="contentSecondary"
+                                                    />
+                                                ) : (
+                                                    <CoinToFiatAmountFormatter
+                                                        accountKey={accountKey}
+                                                        value={balance}
+                                                        variant="body-sm"
+                                                        color="contentSecondary"
+                                                    />
+                                                )}
+                                            </>
+                                        )}
+                                    </VStack>
+                                </Box>
                             </DetailRow>
                         </VStack>
                     </Card>
