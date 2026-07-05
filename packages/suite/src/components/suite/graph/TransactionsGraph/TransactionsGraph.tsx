@@ -164,9 +164,9 @@ export const TransactionsGraph = memo(
         return (
             <Wrapper>
                 <Description>
-                    {isLoading && <GraphSkeleton animate />}
+                    {isLoading && !data?.length && <GraphSkeleton animate />}
 
-                    {!isLoading && data && (
+                    {!!data?.length && (
                         <GraphResponsiveContainer height="100%" width="100%">
                             <ComposedChart
                                 data={extendedDataForInterval}

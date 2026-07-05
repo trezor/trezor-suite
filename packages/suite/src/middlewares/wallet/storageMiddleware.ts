@@ -240,8 +240,17 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             selectDevices(state).find(
                 device => device.state?.staticSessionId === action.payload.account.deviceState,
             ),
-        save: ({ action }) => {
-            storageActions.saveGraph([action.payload]);
+        save: ({ action }, { getState }) => {
+            const { account } = action.payload;
+            const graphEntry = getState().wallet.graph.data.find(
+                d =>
+                    d.account.deviceState === account.deviceState &&
+                    d.account.descriptor === account.descriptor &&
+                    d.account.symbol === account.symbol,
+            );
+            if (graphEntry) {
+                storageActions.saveGraph([graphEntry]);
+            }
         },
     }),
     defineRememberedDeviceHandler({
