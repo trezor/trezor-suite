@@ -113,8 +113,8 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 tokenAddress: token.contract as TokenAddress,
                 protocols: token.protocols,
             })) satisfies TickerId[];
-            // include main account fiat rate ticker
-            const tickers = [...tokenTickers, { symbol }];
+            // include main account fiat rate ticker first so its rate is fetched before tokens
+            const tickers = [{ symbol }, ...tokenTickers];
 
             dispatch(
                 updateFiatRatesThunk({
