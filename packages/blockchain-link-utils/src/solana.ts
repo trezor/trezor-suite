@@ -1,4 +1,5 @@
 import type {
+    InternalTransfer,
     StakeType,
     Target,
     TokenDetailByMint,
@@ -279,6 +280,11 @@ export const getTargets = (
                 return false;
             }
 
+            // the account's own balance change for contract transactions is represented as an internal transfer
+            if (txType === 'contract') {
+                return false;
+            }
+
             // Exclude effects on foreign addresses for tx types other than sent, otherwise it
             // leads to the foreign address being displayed next to user's own address which might lead to confusion.
             if (txType !== 'sent' && effect.address !== accountAddress) {
@@ -299,6 +305,40 @@ export const getTargets = (
 
             return target;
         });
+
+export const getInternalTransfers = (
+    transaction: ParsedTransactionWithMeta,
+    effects: TransactionEffect[],
+    txType: Transaction['type'],
+    accountAddress: string,
+): InternalTransfer[] => {
+    if (txType !== 'contract') {
+        return [];
+    }
+
+    const feePayer = transaction.transaction.message.accountKeys[0]?.pubkey;
+    const fee = new BigNumber(transaction.meta?.fee.toString() || 0);
+
+    return effects
+        .filter(effect => effect.address === accountAddress)
+        .flatMap(effect => {
+            // the fee payer's balance change includes the fee, which is reported separately
+            const amount = effect.address === feePayer ? effect.amount.plus(fee) : effect.amount;
+
+            if (amount.isZero()) {
+                return [];
+            }
+
+            const type = amount.isNegative() ? 'sent' : 'recv';
+
+            return {
+                type,
+                from: type === 'sent' ? accountAddress : '',
+                to: type === 'recv' ? accountAddress : '',
+                amount: amount.abs().toString(),
+            };
+        });
+};
 
 const getTokenTransferTxType = (transfers: TokenTransfer[]) => {
     if (transfers.some(transfer => transfer.to === transfer.from)) {
@@ -373,13 +413,35 @@ export const getTxType = (
         return 'contract';
     }
 
+    // classify by balance changes when instructions alone cannot determine the type
+    const getTxTypeFromBalanceChanges = (): Transaction['type'] => {
+        if (tokenTransfers.length > 0) {
+            const tokenTransferType = getTokenTransferTxType(tokenTransfers);
+            if (tokenTransferType !== 'unknown') {
+                return tokenTransferType;
+            }
+        }
+
+        const accountEffect = effects.find(({ address }) => address === accountAddress);
+        if (accountEffect?.amount.isGreaterThan(0)) {
+            return 'recv';
+        }
+
+        const fee = new BigNumber(transaction.meta?.fee.toString() || 0);
+        if (accountEffect?.amount.isNegative() && accountEffect.amount.abs().isGreaterThan(fee)) {
+            return 'sent';
+        }
+
+        return 'unknown';
+    };
+
     // then, we consider only parsed instructions because only based on them we can determine the type of transaction
     const parsedInstructions = transaction.transaction.message.instructions.filter(
         (instruction): instruction is ParsedInstruction => 'parsed' in instruction,
     );
 
     if (parsedInstructions.length === 0) {
-        return 'unknown';
+        return getTxTypeFromBalanceChanges();
     }
 
     const isInstructionCreatingTokenAccount = (instruction: ParsedInstruction) =>
@@ -402,7 +464,7 @@ export const getTxType = (
             : getNativeTransferTxType(effects, accountAddress, transaction);
     }
 
-    return 'unknown';
+    return getTxTypeFromBalanceChanges();
 };
 
 export const getDetails = (
@@ -617,6 +679,40 @@ export const getTokens = (
         })
         .filter(effect => effect.to === accountAddress || effect.from === accountAddress);
 
+    if (effects.length === 0) {
+        // no transfer instructions to parse, derive token transfers from the account token balance changes
+        return tokenAccountsInfos.flatMap(({ address, mint, decimals }) => {
+            if (!mint) {
+                return [];
+            }
+
+            const balanceDiff = extractAccountBalanceDiff(tx, address, true);
+            if (!balanceDiff) {
+                return [];
+            }
+
+            const amount = balanceDiff.postBalance.minus(balanceDiff.preBalance);
+            if (amount.isZero()) {
+                return [];
+            }
+
+            const type = amount.isNegative() ? 'sent' : 'recv';
+
+            return [
+                {
+                    type,
+                    standard: 'SPL',
+                    from: type === 'sent' ? accountAddress : '',
+                    to: type === 'recv' ? accountAddress : '',
+                    contract: mint,
+                    decimals: decimals ?? 0,
+                    ...getTokenNameAndSymbol(mint, tokenDetailByMint),
+                    amount: amount.abs().toString(),
+                },
+            ];
+        });
+    }
+
     return effects;
 };
 
@@ -728,6 +824,8 @@ export const transformTransaction = (
 
     const targets = getTargets(nativeEffects, txType, accountAddress);
 
+    const internalTransfers = getInternalTransfers(tx, nativeEffects, txType, accountAddress);
+
     const isUnstakeTx = stakeType === 'unstake';
 
     const amount = isUnstakeTx
@@ -754,7 +852,7 @@ export const transformTransaction = (
         fee: (tx.meta?.fee || 0).toString(),
         targets,
         tokens,
-        internalTransfers: [], // not relevant for solana
+        internalTransfers,
         details,
         blockHash: tx.transaction.message.recentBlockhash,
         solanaSpecific: {
