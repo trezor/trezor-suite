@@ -936,6 +936,10 @@ export const getUtxoFromSignedTransaction = ({
             const serialized = output.address_n.slice(3, 5).join('/');
             addr = account.addresses?.change.find(a => a.path.endsWith(serialized));
         }
+        if (!receivingAccount && 'addressParameters' in output && output.addressParameters) {
+            // find cardano change address
+            addr = account.addresses?.change.find(a => a.path === output.addressParameters.path);
+        }
         if ('address' in output) {
             // find self address
             addr = addresses.find(a => a.address === output.address);
