@@ -8,7 +8,7 @@ import { isCardanoStakingActive, isTestnet, isUtxoBased } from '@suite-common/wa
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
-import { formattedAccountTypeMap, formattedAccountTypeWithDefaultMap } from './accountsConstants';
+import { getFormattedAccountType, getFormattedAccountTypeWithDefault } from './accountsConstants';
 import { type AccountsRootState } from './accountsReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -237,20 +237,16 @@ export const selectAccountFormattedBalance = createMemoizedSelector(
 
 export const selectFormattedAccountType = createMemoizedSelector([selectAccountByKey], account => {
     if (!account) return null;
-    const { networkType, accountType } = account;
-    const formattedType = formattedAccountTypeMap[networkType]?.[accountType];
 
-    return formattedType ?? null;
+    return getFormattedAccountType(account.networkType, account.accountType);
 });
 
 export const selectFormattedAccountTypeWithDefault = createMemoizedSelector(
     [selectAccountByKey],
     account => {
         if (!account) return null;
-        const { networkType, accountType } = account;
-        const formattedType = formattedAccountTypeWithDefaultMap[networkType]?.[accountType];
 
-        return formattedType ?? null;
+        return getFormattedAccountTypeWithDefault(account.networkType, account.accountType);
     },
 );
 

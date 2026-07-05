@@ -37,7 +37,7 @@ describe('AccountTypeBadge', () => {
         expect(getByText('Ledger')).toBeOnTheScreen();
     });
 
-    it('should render nothing for an account type without a formatted name', () => {
+    it('should render nothing for a normal non-bitcoin account', () => {
         const { toJSON } = renderAccountTypeBadge(ethNormalAccount.key);
 
         expect(toJSON()).toBeNull();
