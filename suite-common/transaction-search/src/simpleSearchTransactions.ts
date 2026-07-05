@@ -1,6 +1,8 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     isFunctionSelectorMatchesSearch,
+    isNativeDisplaySymbolSearch,
+    isNativeTransferMatchesSearch,
     isTokenTransferMatchesSearch,
 } from '@suite-common/wallet-utils';
 import { BigNumber, typedObjectKeys, unique } from '@trezor/utils';
@@ -188,9 +190,15 @@ export const simpleSearchTransactions = (
 
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
+        const isNativeSymbolSearch = isNativeDisplaySymbolSearch(
+            transaction.symbol,
+            search.toLowerCase(),
+        );
         const hasMatchingToken = transaction.tokens.some(
             token =>
-                isTokenTransferMatchesSearch(token, search.toLowerCase()) ||
+                (isNativeSymbolSearch
+                    ? token.symbol?.toLowerCase() === search.toLowerCase()
+                    : isTokenTransferMatchesSearch(token, search.toLowerCase())) ||
                 token.to?.toLowerCase().includes(search.toLowerCase()) ||
                 token.from?.toLowerCase().includes(search.toLowerCase()),
         );
@@ -202,6 +210,16 @@ export const simpleSearchTransactions = (
         return [];
     });
     txsToSearch.push(...foundTxsForToken);
+
+    // Find by native coin symbol
+    const foundTxsForNativeSymbol = transactions.flatMap(transaction => {
+        if (isNativeTransferMatchesSearch(transaction, search.toLowerCase())) {
+            return transaction.txid;
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForNativeSymbol);
 
     // Find by evm parsed function selector
     const foundTxsForFunctionSelector = transactions.flatMap(transaction => {
