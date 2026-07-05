@@ -8,7 +8,7 @@ import {
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
-import { formattedAccountTypeMap } from '@suite-common/wallet-core';
+import { getFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { orderedAccountTypes, sendDisabledNetworkTypes } from '@suite-native/config';
 
@@ -41,8 +41,10 @@ export const isFilterValueMatchingAccount = (
     const isBitcoinNetworkType = networks[account.symbol].networkType === 'bitcoin';
     const lowercasedSectionHeader = accountTypeToSectionHeader[account.accountType]?.toLowerCase();
 
-    const lowerCasedAccountType =
-        formattedAccountTypeMap[account.networkType]?.[account.accountType]?.toLowerCase();
+    const lowerCasedAccountType = getFormattedAccountType(
+        account.networkType,
+        account.accountType,
+    )?.toLowerCase();
 
     const isMatchingAccountType =
         (lowercasedSectionHeader?.includes(filterValue) ||

@@ -2,56 +2,42 @@ import { type AccountType, type NetworkType } from '@suite-common/wallet-config'
 
 export const ACCOUNTS_MODULE_PREFIX = '@common/wallet-core/accounts';
 
-type AccountTypeMap = Partial<Record<NetworkType, Partial<Record<AccountType, string>>>>;
-
-export const formattedAccountTypeMap: AccountTypeMap = {
-    bitcoin: {
-        normal: 'SegWit',
-        taproot: 'Taproot',
-        segwit: 'Legacy SegWit',
-        legacy: 'Legacy',
-    },
-    cardano: {
-        legacy: 'Legacy',
-        ledger: 'Ledger',
-    },
-    ethereum: {
-        legacy: 'Legacy',
-        ledger: 'Ledger',
-    },
-    solana: {
-        ledger: 'Ledger',
-    },
+const bitcoinFormattedAccountTypeMap: Record<AccountType, string | null> = {
+    normal: 'SegWit',
+    taproot: 'Taproot',
+    segwit: 'Legacy SegWit',
+    legacy: 'Legacy',
+    coinjoin: null,
+    ledger: null,
+    imported: null,
+    placeholder: null,
 };
 
-export const formattedAccountTypeWithDefaultMap: AccountTypeMap = {
-    bitcoin: {
-        normal: 'SegWit',
-        taproot: 'Taproot',
-        segwit: 'Legacy SegWit',
-        legacy: 'Legacy',
-    },
-    cardano: {
-        normal: 'Default',
-        legacy: 'Legacy',
-        ledger: 'Ledger',
-    },
-    ethereum: {
-        normal: 'Default',
-        legacy: 'Legacy',
-        ledger: 'Ledger',
-    },
-    solana: {
-        normal: 'Default',
-        ledger: 'Ledger',
-    },
-    ripple: {
-        normal: 'Default',
-    },
-    stellar: {
-        normal: 'Default',
-    },
-    tron: {
-        normal: 'Default',
-    },
+const formattedAccountTypeMap: Record<AccountType, string | null> = {
+    normal: null,
+    legacy: 'Legacy',
+    ledger: 'Ledger',
+    coinjoin: null,
+    segwit: null,
+    taproot: null,
+    imported: null,
+    placeholder: null,
 };
+
+const formattedAccountTypeWithDefaultMap: Record<AccountType, string | null> = {
+    ...formattedAccountTypeMap,
+    normal: 'Default',
+};
+
+export const getFormattedAccountType = (networkType: NetworkType, accountType: AccountType) =>
+    (networkType === 'bitcoin' ? bitcoinFormattedAccountTypeMap : formattedAccountTypeMap)[
+        accountType
+    ];
+
+export const getFormattedAccountTypeWithDefault = (
+    networkType: NetworkType,
+    accountType: AccountType,
+) =>
+    (networkType === 'bitcoin'
+        ? bitcoinFormattedAccountTypeMap
+        : formattedAccountTypeWithDefaultMap)[accountType];
