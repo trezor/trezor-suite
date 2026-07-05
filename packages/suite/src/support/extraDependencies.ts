@@ -60,7 +60,7 @@ import {
     selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
-import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
+import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CreateLoggerDep, type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -281,8 +281,11 @@ export const extraDependencies: ExtraDependenciesStatic = {
             }
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
-            payload.accounts.map(acc =>
-                acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
+            // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
+            sortByCoin(
+                payload.accounts.map(acc =>
+                    acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
+                ),
             ),
         setDeviceMetadataReducer: (
             state: DeviceReducerState,
