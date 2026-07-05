@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     type PhishingRootState,
@@ -8,7 +9,7 @@ import {
     type WalletSettingsRootState,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -73,7 +74,7 @@ export const TokenTransferListItemValues = ({
             />
             <TokenAmountFormatter
                 value={tokenTransfer.amount}
-                tokenSymbol={tokenTransfer.symbol}
+                tokenSymbol={toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))}
                 decimals={tokenTransfer.decimals}
                 numberOfLines={1}
                 ellipsizeMode="tail"
