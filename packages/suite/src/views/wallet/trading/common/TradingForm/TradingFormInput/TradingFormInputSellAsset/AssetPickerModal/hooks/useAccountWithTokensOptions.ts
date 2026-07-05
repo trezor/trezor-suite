@@ -14,11 +14,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    accountsFiatBalanceInDescOrderComparator,
-    filterAccountsByNetworkSymbol,
-    isTestnet,
-} from '@suite-common/wallet-utils';
+import { filterAccountsByNetworkSymbol, isTestnet, sortByCoin } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
@@ -133,51 +129,42 @@ export function useAccountWithTokensOptions({
             Array.from(includedCryptoIds).filter(cryptoId => !excludedCryptoIds.has(cryptoId)),
         );
 
-        const accountsAndTokensSortedByFiatBalance = supportedNetworkAccounts
-            .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
-                return accountsFiatBalanceInDescOrderComparator({
-                    accountA,
-                    accountB,
-                    baseCurrencyCode,
-                    fiatRates,
-                });
-            })
-            .map(account => {
-                const { shownWithBalance, hiddenWithBalance } = getTokens({
-                    tokens: account.tokens ?? [],
-                    symbol: account.symbol,
-                    tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
-                });
-
-                const { supportedTokens, unsupportedTokens } = getSupportedAndUnsupportedTokens({
-                    networkSymbol: account.symbol,
-                    tokens: shownWithBalance.concat(hiddenWithBalance),
-                    supportedCryptoIds,
-                });
-
-                const sortedSupportedTokensByFiatBalance = enhanceTokensWithRates(
-                    supportedTokens,
-                    baseCurrencyCode,
-                    account.symbol,
-                    fiatRates,
-                ).sort(sortTokensWithRates);
-
-                const sortedUnsupportedTokensByFiatBalance = enhanceTokensWithRates(
-                    unsupportedTokens,
-                    baseCurrencyCode,
-                    account.symbol,
-                    fiatRates,
-                ).sort(sortTokensWithRates);
-
-                return {
-                    account,
-                    tokens: sortedSupportedTokensByFiatBalance,
-                    nonTradableTokens: sortedUnsupportedTokensByFiatBalance,
-                };
+        const accountsAndTokensSortedByCoin = sortByCoin(supportedNetworkAccounts).map(account => {
+            const { shownWithBalance, hiddenWithBalance } = getTokens({
+                tokens: account.tokens ?? [],
+                symbol: account.symbol,
+                tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
             });
 
+            const { supportedTokens, unsupportedTokens } = getSupportedAndUnsupportedTokens({
+                networkSymbol: account.symbol,
+                tokens: shownWithBalance.concat(hiddenWithBalance),
+                supportedCryptoIds,
+            });
+
+            const sortedSupportedTokensByFiatBalance = enhanceTokensWithRates(
+                supportedTokens,
+                baseCurrencyCode,
+                account.symbol,
+                fiatRates,
+            ).sort(sortTokensWithRates);
+
+            const sortedUnsupportedTokensByFiatBalance = enhanceTokensWithRates(
+                unsupportedTokens,
+                baseCurrencyCode,
+                account.symbol,
+                fiatRates,
+            ).sort(sortTokensWithRates);
+
+            return {
+                account,
+                tokens: sortedSupportedTokensByFiatBalance,
+                nonTradableTokens: sortedUnsupportedTokensByFiatBalance,
+            };
+        });
+
         return {
-            accountsWithTokens: accountsAndTokensSortedByFiatBalance,
+            accountsWithTokens: accountsAndTokensSortedByCoin,
             networks: orderedNetworks,
             supportedCryptoIds,
         };
