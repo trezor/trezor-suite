@@ -10,6 +10,7 @@ import {
     extractAccountBalanceDiff,
     getAmount,
     getDetails,
+    getInternalTransfers,
     getNativeEffects,
     getTargets,
     getTokenNameAndSymbol,
@@ -75,6 +76,21 @@ describe('solana/utils', () => {
             it(description, () => {
                 const result = getTargets(
                     // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.effects,
+                    input.txType as Transaction['type'],
+                    input.accountAddress,
+                );
+                expect(result).toEqual(expectedOutput);
+            });
+        });
+    });
+
+    describe('getInternalTransfers', () => {
+        fixtures.getInternalTransfers.forEach(({ description, input, expectedOutput }) => {
+            it(description, () => {
+                const result = getInternalTransfers(
+                    // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.transaction,
                     input.effects,
                     input.txType as Transaction['type'],
                     input.accountAddress,
