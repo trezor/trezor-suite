@@ -10,6 +10,7 @@ import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
@@ -52,11 +53,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
         () =>
-            pendingProposal?.networks
-                .filter(network => network.status === 'active')
-                .flatMap(network =>
-                    accounts.filter(account => account.symbol === network.symbol),
-                ) ?? [],
+            sortByCoin(
+                pendingProposal?.networks
+                    .filter(network => network.status === 'active')
+                    .flatMap(network =>
+                        accounts.filter(account => account.symbol === network.symbol),
+                    ) ?? [],
+            ),
         [accounts, pendingProposal?.networks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
