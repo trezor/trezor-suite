@@ -9,6 +9,7 @@ export * from './atomWithUnecryptedStorage';
 
 export * from './migrations/account/v2';
 export * from './migrations/account/v3';
+export * from './migrations/account/v4';
 export * from './migrations/device/v2';
 export * from './migrations/device/v3';
 export * from './migrations/device/v4';
