@@ -1266,6 +1266,7 @@
     "earn.stakingManagementScreen.totalRewardsLabel": "Total rewards",
     "earn.stakingManagementScreen.autoRestakedBadge": "Automatically restaked",
     "earn.stakingManagementScreen.nextRewardLabel": "Next reward in {value, plural, one {# day} other {# days}}",
+    "earn.stakingManagementScreen.rewardsEveryLabel": "Rewards every ~{value, plural, one {# day} other {# days}}",
     "earn.stakingManagementScreen.unstakeButton": "Unstake",
     "earn.stakingManagementScreen.stakeButton": "Stake",
     "earn.stakingManagementScreen.stakeMoreButton": "Stake more",
