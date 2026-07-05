@@ -2852,22 +2852,6 @@ export const messages = defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
     },
-    TR_NORMAL_ACCOUNTS: {
-        defaultMessage: 'Accounts',
-        id: 'TR_NORMAL_ACCOUNTS',
-    },
-    TR_TAPROOT_ACCOUNTS: {
-        defaultMessage: 'Taproot accounts',
-        id: 'TR_TAPROOT_ACCOUNTS',
-    },
-    TR_LEGACY_SEGWIT_ACCOUNTS: {
-        defaultMessage: 'Legacy SegWit accounts',
-        id: 'TR_LEGACY_SEGWIT_ACCOUNTS',
-    },
-    TR_LEGACY_ACCOUNTS: {
-        defaultMessage: 'Legacy accounts',
-        id: 'TR_LEGACY_ACCOUNTS',
-    },
     TR_ACCOUNT_TYPE_LEGACY: {
         defaultMessage: 'Legacy',
         id: 'TR_ACCOUNT_TYPE_LEGACY',
