@@ -1,13 +1,39 @@
-import type { TokenInfo } from '@trezor/blockchain-link-types';
+import type { TokenInfo, TokenTransfer } from '@trezor/blockchain-link-types';
 
 import { getContractAddressForNetworkSymbolFixtures } from './__fixtures__/tokenUtils';
 import {
     getAssetLogoContractAddresses,
     getContractAddressForNetworkSymbol,
     getErc4626Contracts,
+    isTokenTransferMatchesSearch,
     isWrappedNativeToken,
     sortTokensByName,
 } from './tokenUtils';
+
+describe('isTokenTransferMatchesSearch', () => {
+    const usdt = {
+        type: 'sent',
+        contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        name: 'Tether USD',
+        symbol: 'USDT',
+        decimals: 6,
+        amount: '100',
+    } as TokenTransfer;
+
+    it('matches token name by word prefix', () => {
+        expect(isTokenTransferMatchesSearch(usdt, 'teth')).toBe(true);
+        expect(isTokenTransferMatchesSearch(usdt, 'usd')).toBe(true);
+    });
+
+    it('does not match token name by word infix', () => {
+        expect(isTokenTransferMatchesSearch(usdt, 'eth')).toBe(false);
+    });
+
+    it('matches token symbol and contract by substring', () => {
+        expect(isTokenTransferMatchesSearch(usdt, 'sdt')).toBe(true);
+        expect(isTokenTransferMatchesSearch(usdt, 'dac17f')).toBe(true);
+    });
+});
 
 describe('getContractAddressForNetworkSymbol', () => {
     getContractAddressForNetworkSymbolFixtures.forEach(
