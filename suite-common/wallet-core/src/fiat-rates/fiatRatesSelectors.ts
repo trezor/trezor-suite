@@ -120,6 +120,7 @@ export const selectTickerFromAccounts = (
         A.uniqBy(ticker =>
             ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
         ),
+        A.sortBy(ticker => (ticker.tokenAddress ? 1 : 0)),
         F.toMutable,
     );
 };

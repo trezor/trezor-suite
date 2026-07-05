@@ -24,16 +24,26 @@ const ethAccount = (deviceState: string, tokenContract: TokenAddress): Account =
         tokens: [{ contract: tokenContract, balance: '1000000', protocols: [] }],
     }) as unknown as Account;
 
+const xrpAccount = (deviceState: string): Account =>
+    ({
+        symbol: 'xrp',
+        deviceState,
+        tokens: [],
+    }) as unknown as Account;
+
 type State = FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState & DeviceRootState;
 
-const getState = (selectedDevice: TrezorDevice): State =>
+const getState = (
+    selectedDevice: TrezorDevice,
+    accounts: Account[] = [
+        ethAccount(STANDARD_WALLET_SSID, USDT),
+        ethAccount(PASSPHRASE_WALLET_SSID, USDC),
+    ],
+): State =>
     ({
         wallet: {
             fiat: { current: {}, lastWeek: {}, historic: {} },
-            accounts: [
-                ethAccount(STANDARD_WALLET_SSID, USDT),
-                ethAccount(PASSPHRASE_WALLET_SSID, USDC),
-            ],
+            accounts,
         },
         tokenDefinitions: {
             eth: { coin: { data: [USDT, USDC], error: false, isLoading: false } },
@@ -62,5 +72,25 @@ describe('selectTickerFromAccounts', () => {
             [...tickers].map(ticker => `${ticker.symbol}-${ticker.tokenAddress ?? ''}`).sort();
 
         expect(sortByKey(fromStandard)).toEqual(sortByKey(fromPassphrase));
+    });
+
+    it('orders all native coin tickers before token tickers', () => {
+        const result = selectTickerFromAccounts(
+            getState(STANDARD_WALLET, [
+                ethAccount(STANDARD_WALLET_SSID, USDT),
+                xrpAccount(STANDARD_WALLET_SSID),
+            ]),
+        );
+
+        const nativeIndexes = result.flatMap((ticker, index) =>
+            ticker.tokenAddress ? [] : [index],
+        );
+        const tokenIndexes = result.flatMap((ticker, index) =>
+            ticker.tokenAddress ? [index] : [],
+        );
+
+        expect(result.map(ticker => ticker.symbol)).toContain('xrp');
+        expect(tokenIndexes.length).toBeGreaterThan(0);
+        expect(Math.max(...nativeIndexes)).toBeLessThan(Math.min(...tokenIndexes));
     });
 });
