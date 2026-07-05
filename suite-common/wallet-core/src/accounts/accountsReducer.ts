@@ -4,7 +4,7 @@ import { deviceActions } from '@suite-common/device';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { accountEqualTo, enhanceHistory } from '@suite-common/wallet-utils';
+import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
 
 import { accountsActions } from './accountsActions';
 
@@ -81,7 +81,16 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                     console.warn('Duplicated account found, updating instead: ', account);
                     update(state, account);
                 } else {
-                    state.push(account);
+                    // Keep the state sorted by coin so that consumers get the canonical order for free.
+                    const insertAtIndex = state.findIndex(
+                        existingAccount => compareAccountsByCoin(account, existingAccount) < 0,
+                    );
+
+                    if (insertAtIndex === -1) {
+                        state.push(account);
+                    } else {
+                        state.splice(insertAtIndex, 0, account);
+                    }
                 }
             })
             .addCase(accountsActions.updateAccount, (state, action) => {
