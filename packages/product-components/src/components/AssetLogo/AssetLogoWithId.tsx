@@ -64,17 +64,25 @@ const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number
     ${withFrameProps}
 `;
 
-const Logo = styled.img<{ $size: number; $isBordered: boolean }>`
+const LogoWrapper = styled.div<{ $size: number; $isBordered: boolean }>`
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
     border-radius: ${borders.radii.full};
-    background-color: ${({ theme }) => theme.elementFillElevated};
+    overflow: hidden;
 
     ${({ $isBordered }) =>
         $isBordered &&
         css`
             box-shadow: ${({ theme }) => theme.elementShadowElevated};
         `}
+`;
+
+const Logo = styled.img<{ $size: number }>`
+    display: block;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
+    border-radius: ${borders.radii.full};
+    background-color: ${({ theme }) => theme.elementFillElevated};
 `;
 
 export const AssetLogoWithId = ({
@@ -243,18 +251,19 @@ export const AssetLogoWithId = ({
                 </AssetInitials>
             )}
             {!showPlaceholder && current && (
-                <Logo
-                    src={current.src}
-                    srcSet={current.srcSet}
-                    loading="lazy"
-                    decoding="async"
-                    $size={size}
-                    $isBordered={isBordered}
-                    data-testid={dataTest}
-                    alt={placeholder}
-                    onLoad={handleOnLoad}
-                    onError={handleLoadError}
-                />
+                <LogoWrapper $size={size} $isBordered={isBordered}>
+                    <Logo
+                        src={current.src}
+                        srcSet={current.srcSet}
+                        loading="lazy"
+                        decoding="async"
+                        $size={size}
+                        data-testid={dataTest}
+                        alt={placeholder}
+                        onLoad={handleOnLoad}
+                        onError={handleLoadError}
+                    />
+                </LogoWrapper>
             )}
         </>
     );
