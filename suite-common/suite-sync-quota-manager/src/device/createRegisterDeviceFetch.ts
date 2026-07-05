@@ -9,6 +9,7 @@ export type RegisterDeviceFetchParams = {
     deviceId: string;
     publicKey: string;
     size: number;
+    rotationIndex?: number;
     proof: string;
     certificateChain: {
         deviceCert: string;
