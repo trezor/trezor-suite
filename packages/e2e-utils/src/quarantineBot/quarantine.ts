@@ -1,4 +1,10 @@
-import { computeStats, extractKeyFromAction, getTestKey, normalizeTitlePath } from './actions';
+import {
+    computeStats,
+    extractKeyFromAction,
+    formatEvidence,
+    getTestKey,
+    normalizeTitlePath,
+} from './actions';
 import { createQuarantineAction } from './api';
 import {
     EXPLORER_LOOKBACK_DAYS,
@@ -8,7 +14,6 @@ import {
     UNQUARANTINE_FAILURE_RATE,
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
-import { debug, log, warn } from '../logger';
 import type { SlackEvent } from './types';
 import {
     deleteAction,
@@ -16,6 +21,9 @@ import {
     getLastNResultsFromDistinctBranches,
 } from '../currentsApi/api';
 import type { Action, TestExplorerItem } from '../currentsApi/types';
+import { createLogger } from '../logger';
+
+const logger = createLogger('quarantine');
 
 export async function quarantineFailingTests(
     projectId: string,
@@ -24,12 +32,12 @@ export async function quarantineFailingTests(
     activeTests: TestExplorerItem[],
     slackEvents: SlackEvent[],
 ): Promise<void> {
-    log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
+    logger.log(`\n── [${projectLabel}] Checking for failing tests to quarantine ──`);
 
     const alreadyQuarantinedKeys = new Set(
         existingActions.map(a => extractKeyFromAction(a)).filter(Boolean) as string[],
     );
-    debug(`  already quarantined keys: ${alreadyQuarantinedKeys.size}`);
+    logger.debug(`  already quarantined keys: ${alreadyQuarantinedKeys.size}`);
 
     const candidateTests = activeTests.filter(
         t =>
@@ -37,25 +45,26 @@ export async function quarantineFailingTests(
             t.metrics.executions >= QUARANTINE_LAST_N_EXECUTIONS &&
             t.metrics.failureRate >= PRE_FILTER_FAILURE_RATE,
     );
-    debug(
+    logger.debug(
         `  pre-filter: ${activeTests.length} active test(s) total,`,
         `${activeTests.length - candidateTests.length} filtered out (no signature / <${QUARANTINE_LAST_N_EXECUTIONS} executions / <${Math.round(PRE_FILTER_FAILURE_RATE * 100)}% failure rate),`,
         `${candidateTests.length} candidate(s) remain`,
     );
 
-    log(
+    logger.log(
         `  Found ${activeTests.length} active test(s) in the last ${EXPLORER_LOOKBACK_DAYS} days. ` +
             `${candidateTests.length} candidate(s) have ≥${Math.round(PRE_FILTER_FAILURE_RATE * 100)}% failure rate in the explorer window. ` +
             `Fetching last ${QUARANTINE_LAST_N_EXECUTIONS} individual results for each candidate...`,
     );
 
+    let quarantinedCount = 0;
     for (const test of candidateTests) {
         if (!test.signature) {
             continue;
         }
 
         if (alreadyQuarantinedKeys.has(getTestKey(test))) {
-            log(`  ↳ Already quarantined: "${test.title.slice(0, 80)}"`);
+            logger.log(`  ↳ Already quarantined: "${test.title.slice(0, 80)}"`);
             continue;
         }
 
@@ -66,32 +75,34 @@ export async function quarantineFailingTests(
         );
 
         if (results.length < QUARANTINE_LAST_N_EXECUTIONS) {
-            log(
+            logger.log(
                 `  ↳ Skipping "${test.title.slice(0, 80)}" — only ${results.length}/${QUARANTINE_LAST_N_EXECUTIONS} executions found.`,
             );
             continue;
         }
 
         const stats = computeStats(results);
-        debug(
+        logger.debug(
             `  candidate "${test.title.slice(0, 80)}":`,
             `failureRate=${Math.round(stats.failureRate * 100)}%,`,
             `failures=${stats.failures}, passes=${stats.passes}, executions=${stats.executions}`,
             `(threshold: ≥${Math.round(QUARANTINE_FAILURE_RATE * 100)}%)`,
         );
+        logger.debug(`  evidence (newest first):\n${formatEvidence(results)}`);
 
         if (stats.failureRate < QUARANTINE_FAILURE_RATE) {
             continue;
         }
 
         const failurePercent = Math.round(stats.failureRate * 100);
-        log(
+        logger.log(
             `  ↳ Quarantining: "${test.title.slice(0, 80)}" ` +
                 `(${failurePercent}% fail rate, ${stats.failures}/${stats.executions} latest runs)`,
         );
 
         const action = await createQuarantineAction(projectId, test, stats);
-        debug(`  created action: actionId=${action.actionId}`);
+        logger.debug(`  created action: actionId=${action.actionId}`);
+        quarantinedCount++;
         slackEvents.push({
             kind: 'quarantined',
             projectId,
@@ -104,9 +115,8 @@ export async function quarantineFailingTests(
         });
     }
 
-    const quarantinedCount = slackEvents.filter(e => e.kind === 'quarantined').length;
     if (quarantinedCount === 0) {
-        log('  ✓ No new tests to quarantine.');
+        logger.log('  ✓ No new tests to quarantine.');
     }
 }
 
@@ -117,23 +127,26 @@ export async function unquarantinePassingTests(
     activeTests: TestExplorerItem[],
     slackEvents: SlackEvent[],
 ): Promise<void> {
-    log(`\n── [${projectLabel}] Checking quarantined tests for recovery ──`);
+    logger.log(`\n── [${projectLabel}] Checking quarantined tests for recovery ──`);
 
     if (existingActions.length === 0) {
-        log('  ✓ No auto-quarantined tests to check.');
+        logger.log('  ✓ No auto-quarantined tests to check.');
 
         return;
     }
 
-    log(`  Found ${existingActions.length} auto-quarantined test(s).`);
+    logger.log(`  Found ${existingActions.length} auto-quarantined test(s).`);
 
     const testsByKey = new Map(activeTests.map(t => [getTestKey(t), t]));
-    debug(`  active tests index: ${testsByKey.size} entries`);
+    logger.debug(`  active tests index: ${testsByKey.size} entries`);
 
     for (const action of existingActions) {
         const testKey = extractKeyFromAction(action);
         if (!testKey) {
-            warn(`  ↳ Could not extract title from action "${action.name}", skipping.`);
+            logger.warn(
+                `Could not extract titlePath from action "${action.name}" (${action.actionId}), skipping.`,
+            );
+            logger.debug(`  matcher: ${JSON.stringify(action.matcher)}`);
             continue;
         }
 
@@ -144,8 +157,9 @@ export async function unquarantinePassingTests(
         const test = testsByKey.get(testKey);
 
         if (!test?.signature) {
-            log(
-                `  ↳ "${testTitle.slice(0, 80)}" — not found in explorer (may not have run recently), keeping quarantine.`,
+            logger.warn(
+                `Quarantined test not seen in explorer window, cannot evaluate for recovery ` +
+                    `(kept quarantined): "${testTitle.slice(0, 80)}"`,
             );
             continue;
         }
@@ -157,7 +171,7 @@ export async function unquarantinePassingTests(
         );
 
         if (results.length < UNQUARANTINE_LAST_N_EXECUTIONS) {
-            log(
+            logger.log(
                 `  ↳ "${testTitle.slice(0, 80)}" — only ${results.length}/${UNQUARANTINE_LAST_N_EXECUTIONS} executions found, keeping quarantine.`,
             );
             continue;
@@ -166,21 +180,22 @@ export async function unquarantinePassingTests(
         const stats = computeStats(results);
         const failurePercent = Math.round(stats.failureRate * 100);
         const passPercent = 100 - failurePercent;
-        debug(
+        logger.debug(
             `  quarantined "${testTitle.slice(0, 80)}":`,
             `failureRate=${failurePercent}%,`,
             `failures=${stats.failures}, passes=${stats.passes}, executions=${stats.executions}`,
             `(unquarantine threshold: ≤${Math.round(UNQUARANTINE_FAILURE_RATE * 100)}%)`,
         );
+        logger.debug(`  evidence (newest first):\n${formatEvidence(results)}`);
 
         if (stats.failureRate <= UNQUARANTINE_FAILURE_RATE) {
-            log(
+            logger.log(
                 `  ↳ Unquarantining: "${testTitle.slice(0, 80)}" ` +
                     `(${passPercent}% pass rate, ${stats.passes}/${stats.executions} latest runs) ✓`,
             );
 
             await deleteAction(action.actionId);
-            debug(`  deleted action: actionId=${action.actionId}`);
+            logger.debug(`  deleted action: actionId=${action.actionId}`);
             slackEvents.push({
                 kind: 'unquarantined',
                 projectId,
@@ -191,7 +206,7 @@ export async function unquarantinePassingTests(
                 executions: stats.executions,
             });
         } else {
-            log(
+            logger.log(
                 `  ↳ Still failing: "${testTitle.slice(0, 80)}" ` +
                     `(${failurePercent}% failure rate, ${stats.failures}/${stats.executions} latest runs) — keeping quarantine.`,
             );

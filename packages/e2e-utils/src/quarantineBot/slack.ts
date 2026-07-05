@@ -1,6 +1,8 @@
 import { SLACK_TITLE_MAX_LENGTH } from './config';
-import { debug, log, warn } from '../logger';
+import { createLogger } from '../logger';
 import type { SlackEvent } from './types';
+
+const logger = createLogger('slack');
 
 export function getSlackWebhook(): string | undefined {
     return process.env.E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK;
@@ -106,18 +108,20 @@ export function buildSlackSummary(
 export async function sendSlackNotification(message: string): Promise<void> {
     const webhook = getSlackWebhook();
     if (!webhook) {
-        log('[slack] No E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK configured, skipping notification.');
-        log(`[slack] Message would have been:\n${message}`);
+        logger.log(
+            '[slack] No E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK configured, skipping notification.',
+        );
+        logger.log(`[slack] Message would have been:\n${message}`);
 
         return;
     }
-    debug(`[slack] Sending notification (${message.length} chars) to webhook`);
+    logger.debug(`Sending notification (${message.length} chars) to webhook`);
     const res = await fetch(webhook, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: message }),
     });
     if (!res.ok) {
-        warn(`[slack] Failed to send Slack notification: ${res.status}`);
+        logger.warn(`Failed to send Slack notification: ${res.status}`);
     }
 }
