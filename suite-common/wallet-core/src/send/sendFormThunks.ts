@@ -475,10 +475,11 @@ export const pushSendFormRawTransactionThunk = createThunk(
         payload: {
             tx: string;
             symbol: NetworkSymbol;
+            descriptor: string;
             identity?: string;
             isMevProtectionEnabled: boolean;
         },
-        { dispatch, fulfillWithValue, rejectWithValue },
+        { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const txData = getMevProtectedTxData(
             payload.symbol,
@@ -496,7 +497,11 @@ export const pushSendFormRawTransactionThunk = createThunk(
             dispatch(
                 notificationsActions.addToast({
                     type: 'raw-tx-sent',
+                    device: selectSelectedDevice(getState()),
+                    descriptor: payload.descriptor,
+                    symbol: payload.symbol,
                     txid: sentTx.payload.txid,
+                    style: { maxWidth: 'auto' },
                 }),
             );
             dispatch(syncAccountsWithBlockchainThunk(payload.symbol));

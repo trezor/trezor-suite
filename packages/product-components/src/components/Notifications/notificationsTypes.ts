@@ -18,6 +18,7 @@ export type ExchangeInfoAsset = Pick<ExchangeToastAssetData, 'symbol' | 'contrac
 
 export type TransactionNotificationType =
     | 'tx-sent'
+    | 'raw-tx-sent'
     | 'tx-received'
     | 'tx-confirmed'
     | 'tx-staked'
