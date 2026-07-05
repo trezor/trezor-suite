@@ -110,9 +110,15 @@ export const isTokenMatchesSearch = (token: TokenInfo, rawSearch: string) => {
     );
 };
 
+const isTokenNameMatchesSearch = (name: string | undefined, search: string) =>
+    name
+        ?.toLowerCase()
+        .split(/\s+/)
+        .some(word => word.startsWith(search)) ?? false;
+
 export const isTokenTransferMatchesSearch = (token: TokenTransfer, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
-    token.name?.toLowerCase().includes(search) ||
+    isTokenNameMatchesSearch(token.name, search) ||
     token.contract.toLowerCase().includes(search);
 
 export const isNativeDisplaySymbolSearch = (symbol: NetworkSymbol, search: string) =>
