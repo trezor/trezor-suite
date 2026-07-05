@@ -1,4 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { resetTime } from '@suite-common/suite-utils';
 import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
 import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
@@ -15,6 +16,7 @@ import {
     enhanceBlockchainAccountHistory,
     ensureHistoryRates,
     isNetworkWithGraphFeature,
+    mergeAccountBalanceHistory,
 } from 'src/utils/wallet/graph';
 
 import {
@@ -25,6 +27,16 @@ import {
     AGGREGATED_GRAPH_SUCCESS,
     SET_SELECTED_RANGE,
 } from './constants/graphConstants';
+
+const DAY_IN_SECONDS = 3600 * 24;
+
+const selectAccountGraphData = (state: ReturnType<GetState>, account: Account) =>
+    state.wallet.graph.data.find(
+        d =>
+            d.account.deviceState === account.deviceState &&
+            d.account.descriptor === account.descriptor &&
+            d.account.symbol === account.symbol,
+    )?.data;
 
 export type GraphAction =
     | {
@@ -80,11 +92,18 @@ export const fetchAccountGraphData =
         });
 
         const baseCurrencyCode = selectBaseCurrency(getState());
+
+        const cachedData = selectAccountGraphData(getState(), account);
+        // refetch one day earlier than the last cached point so the last cached bucket is always
+        // recomputed, regardless of how backend bucket boundaries align with the local timezone
+        const lastCachedPoint = cachedData && cachedData.length > 2 ? cachedData.at(-1) : undefined;
+
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin: account.symbol,
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
-            groupBy: 3600 * 24, // day
+            from: lastCachedPoint ? lastCachedPoint.time - DAY_IN_SECONDS : undefined,
+            groupBy: DAY_IN_SECONDS, // day
         });
 
         options.abortSignal?.throwIfAborted();
@@ -99,10 +118,31 @@ export const fetchAccountGraphData =
                 isElectrumBackend,
             );
 
+            const firstFreshTime = responseWithRates[0]
+                ? resetTime(responseWithRates[0].time)
+                : undefined;
+            const balanceBeforeFirstFreshPoint =
+                lastCachedPoint && firstFreshTime !== undefined
+                    ? cachedData?.filter(point => point.time < firstFreshTime).at(-1)?.balance
+                    : undefined;
+
             const enhancedResponse = enhanceBlockchainAccountHistory(
                 responseWithRates,
                 account.symbol,
+                balanceBeforeFirstFreshPoint,
             );
+
+            const getData = () => {
+                if (!lastCachedPoint || !cachedData) {
+                    return enhancedResponse;
+                }
+                if (responseWithRates.length === 0 || balanceBeforeFirstFreshPoint === undefined) {
+                    return cachedData;
+                }
+
+                return mergeAccountBalanceHistory(cachedData, enhancedResponse);
+            };
+            const data = getData();
 
             dispatch({
                 type: ACCOUNT_GRAPH_SUCCESS,
@@ -112,7 +152,7 @@ export const fetchAccountGraphData =
                         descriptor: account.descriptor,
                         symbol: account.symbol,
                     },
-                    data: enhancedResponse,
+                    data,
                     isLoading: false,
                     error: false,
                 },

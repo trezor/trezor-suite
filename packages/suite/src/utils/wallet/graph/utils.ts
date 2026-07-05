@@ -12,11 +12,12 @@ import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, arrayToDictionary } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import {
+    type AccountHistoryWithBalance,
     type CommonAggregatedHistory,
     type GraphData,
     type GraphRange,
@@ -112,6 +113,15 @@ export const enhanceBlockchainAccountHistory = (
     });
 
     return enhancedResponse;
+};
+
+export const mergeAccountBalanceHistory = (
+    cached: AccountHistoryWithBalance[],
+    fresh: AccountHistoryWithBalance[],
+) => {
+    const pointsByTime = arrayToDictionary([...cached, ...fresh], point => point.time);
+
+    return Object.values(pointsByTime).sort((a, b) => a.time - b.time);
 };
 
 /**
