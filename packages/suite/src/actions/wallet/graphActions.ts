@@ -33,11 +33,11 @@ export type GraphAction =
       }
     | {
           type: typeof ACCOUNT_GRAPH_START;
-          payload: GraphData;
+          payload: Omit<GraphData, 'data'>;
       }
     | {
           type: typeof ACCOUNT_GRAPH_FAIL;
-          payload: GraphData;
+          payload: Omit<GraphData, 'data'>;
       }
     | {
           type: typeof AGGREGATED_GRAPH_START;
@@ -74,7 +74,6 @@ export const fetchAccountGraphData =
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                 },
-                data: [],
                 isLoading: true,
                 error: false,
             },
@@ -127,7 +126,6 @@ export const fetchAccountGraphData =
                         descriptor: account.descriptor,
                         symbol: account.symbol,
                     },
-                    data: [],
                     isLoading: false,
                     error: true,
                 },

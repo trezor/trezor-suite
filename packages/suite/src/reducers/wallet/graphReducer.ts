@@ -32,14 +32,17 @@ const updateError = (draft: GraphState) => {
     }
 };
 
-const update = (draft: GraphState, payload: GraphData) => {
-    const { account, data, error, isLoading } = payload;
-    const dataIndex = draft.data.findIndex(
+const findEntryIndex = (draft: GraphState, account: AccountIdentifier) =>
+    draft.data.findIndex(
         d =>
             d.account.deviceState === account.deviceState &&
             d.account.descriptor === account.descriptor &&
             d.account.symbol === account.symbol,
     );
+
+const update = (draft: GraphState, payload: GraphData) => {
+    const { account, data, error, isLoading } = payload;
+    const dataIndex = findEntryIndex(draft, account);
     if (dataIndex !== -1) {
         const entry = draft.data[dataIndex];
         if (entry) {
@@ -53,6 +56,27 @@ const update = (draft: GraphState, payload: GraphData) => {
             isLoading,
             error,
             data,
+        });
+    }
+
+    updateError(draft);
+};
+
+const updateProgress = (draft: GraphState, payload: Omit<GraphData, 'data'>) => {
+    const { account, error, isLoading } = payload;
+    const dataIndex = findEntryIndex(draft, account);
+    if (dataIndex !== -1) {
+        const entry = draft.data[dataIndex];
+        if (entry) {
+            entry.error = error;
+            entry.isLoading = isLoading;
+        }
+    } else {
+        draft.data.push({
+            account,
+            isLoading,
+            error,
+            data: [],
         });
     }
 
@@ -90,13 +114,13 @@ const graphReducer = (
                 loadFromStorage(draft, action.payload.graph);
                 break;
             case GRAPH.ACCOUNT_GRAPH_START:
-                update(draft, action.payload);
+                updateProgress(draft, action.payload);
                 break;
             case GRAPH.ACCOUNT_GRAPH_SUCCESS:
                 update(draft, action.payload);
                 break;
             case GRAPH.ACCOUNT_GRAPH_FAIL:
-                update(draft, action.payload);
+                updateProgress(draft, action.payload);
                 break;
             case GRAPH.AGGREGATED_GRAPH_START:
                 draft.isLoading = true;
