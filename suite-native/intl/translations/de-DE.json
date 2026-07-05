@@ -1265,7 +1265,6 @@
     "earn.stakingManagementScreen.stakedLabel": "Staking durchgeführt",
     "earn.stakingManagementScreen.totalRewardsLabel": "Prämien",
     "earn.stakingManagementScreen.autoRestakedBadge": "Automatisch wieder angelegt",
-    "earn.stakingManagementScreen.nextRewardLabel": "Nächste Reward-Auszahlung in {value, plural, one {# Tag} other {# Tagen}}",
     "earn.stakingManagementScreen.unstakeButton": "Unstaken",
     "earn.stakingManagementScreen.stakeButton": "Stake",
     "earn.stakingManagementScreen.stakeMoreButton": "Stake mehr",
@@ -2100,5 +2099,7 @@
     "networks.initialSetup.title": "Füge deine Coins hinzu",
     "networks.initialSetup.subtitle": "Du kannst Vermögenswerte für jede aktivierte Coin kaufen oder empfangen.",
     "networks.initialSetup.banner": "Du kannst deine Coins jederzeit in den Einstellungen ändern.",
-    "biometricsButton": "Mit Biometrie entsperren"
+    "biometricsButton": "Mit Biometrie entsperren",
+    "earn.stakingManagementScreen.nextRewardEthLabel": "Nächste Reward-Auszahlung in {value, plural, one {# Tag} other {# Tagen}}",
+    "earn.stakingManagementScreen.nextRewardSolLabel": "Rewards every ~{value, plural, one {# day} other {# days}}"
 }

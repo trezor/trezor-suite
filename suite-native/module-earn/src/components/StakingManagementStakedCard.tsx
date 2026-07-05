@@ -159,7 +159,11 @@ export const StakingManagementStakedCard = ({
                 {nextRewardPayout != null && (
                     <Text variant="body-sm">
                         <Translation
-                            id="earn.stakingManagementScreen.nextRewardLabel"
+                            id={
+                                isSolanaStaking
+                                    ? 'earn.stakingManagementScreen.nextRewardSolLabel'
+                                    : 'earn.stakingManagementScreen.nextRewardEthLabel'
+                            }
                             values={{ value: nextRewardPayout }}
                         />
                     </Text>

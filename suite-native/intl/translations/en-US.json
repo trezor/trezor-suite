@@ -1265,7 +1265,6 @@
     "earn.stakingManagementScreen.stakedLabel": "Staked",
     "earn.stakingManagementScreen.totalRewardsLabel": "Total rewards",
     "earn.stakingManagementScreen.autoRestakedBadge": "Automatically restaked",
-    "earn.stakingManagementScreen.nextRewardLabel": "Next reward in {value, plural, one {# day} other {# days}}",
     "earn.stakingManagementScreen.unstakeButton": "Unstake",
     "earn.stakingManagementScreen.stakeButton": "Stake",
     "earn.stakingManagementScreen.stakeMoreButton": "Stake more",
@@ -2101,5 +2100,7 @@
     "networks.initialSetup.title": "Add your coins",
     "networks.initialSetup.subtitle": "You can buy or receive assets on any coin you enable.",
     "networks.initialSetup.banner": "Change your coins anytime in Settings.",
-    "biometricsButton": "Unlock with biometrics"
+    "biometricsButton": "Unlock with biometrics",
+    "earn.stakingManagementScreen.nextRewardEthLabel": "Next reward in {value, plural, one {# day} other {# days}}",
+    "earn.stakingManagementScreen.nextRewardSolLabel": "Rewards every ~{value, plural, one {# day} other {# days}}"
 }

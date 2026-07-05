@@ -1265,7 +1265,6 @@
     "earn.stakingManagementScreen.stakedLabel": "已质押",
     "earn.stakingManagementScreen.totalRewardsLabel": "总收益",
     "earn.stakingManagementScreen.autoRestakedBadge": "自动再质押",
-    "earn.stakingManagementScreen.nextRewardLabel": "下一笔收益在大约 {value, plural, other {# 天}}内发放",
     "earn.stakingManagementScreen.unstakeButton": "解除质押",
     "earn.stakingManagementScreen.stakeButton": "质押",
     "earn.stakingManagementScreen.stakeMoreButton": "质押更多",
@@ -2100,5 +2099,7 @@
     "networks.initialSetup.title": "添加您的网络",
     "networks.initialSetup.subtitle": "您可以在已启用的任何网络上购买或接收资产。",
     "networks.initialSetup.banner": "您可以随时在设置中更改您的网络。",
-    "biometricsButton": "使用生物识别认证解锁"
+    "biometricsButton": "使用生物识别认证解锁",
+    "earn.stakingManagementScreen.nextRewardEthLabel": "下一笔收益在大约 {value, plural, other {# 天}}内发放",
+    "earn.stakingManagementScreen.nextRewardSolLabel": "Rewards every ~{value, plural, one {# day} other {# days}}"
 }

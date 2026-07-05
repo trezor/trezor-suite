@@ -1265,7 +1265,6 @@
     "earn.stakingManagementScreen.stakedLabel": "En staking",
     "earn.stakingManagementScreen.totalRewardsLabel": "Recompensas totales",
     "earn.stakingManagementScreen.autoRestakedBadge": "Restaking automático",
-    "earn.stakingManagementScreen.nextRewardLabel": "Siguiente recompensa en {value, plural, one {# día} other {# días}}",
     "earn.stakingManagementScreen.unstakeButton": "Retirar del staking",
     "earn.stakingManagementScreen.stakeButton": "Staking",
     "earn.stakingManagementScreen.stakeMoreButton": "Haz más staking",
@@ -2100,5 +2099,7 @@
     "networks.initialSetup.title": "Añade tus monedas",
     "networks.initialSetup.subtitle": "Puedes comprar o recibir activos en cualquier moneda que actives.",
     "networks.initialSetup.banner": "Cambia tus monedas en cualquier momento en Ajustes.",
-    "biometricsButton": "Desbloquear con biometría"
+    "biometricsButton": "Desbloquear con biometría",
+    "earn.stakingManagementScreen.nextRewardEthLabel": "Siguiente recompensa en {value, plural, one {# día} other {# días}}",
+    "earn.stakingManagementScreen.nextRewardSolLabel": "Rewards every ~{value, plural, one {# day} other {# days}}"
 }

@@ -1265,7 +1265,6 @@
     "earn.stakingManagementScreen.stakedLabel": "Staké",
     "earn.stakingManagementScreen.totalRewardsLabel": "Récompenses totales",
     "earn.stakingManagementScreen.autoRestakedBadge": "Replacées en staking automatiquement",
-    "earn.stakingManagementScreen.nextRewardLabel": "Prochaine récompense dans {value, plural, one {# jour} other {# jours}}",
     "earn.stakingManagementScreen.unstakeButton": "Unstaker",
     "earn.stakingManagementScreen.stakeButton": "Staker",
     "earn.stakingManagementScreen.stakeMoreButton": "Staker plus",
@@ -2100,5 +2099,7 @@
     "networks.initialSetup.title": "Ajoutez vos crypto",
     "networks.initialSetup.subtitle": "Vous pouvez acheter ou recevoir des actifs sur toutes les crypto que vous activez.",
     "networks.initialSetup.banner": "Changez vos crypto à tout moment dans les Paramètres.",
-    "biometricsButton": "Déverrouiller avec la biométrie"
+    "biometricsButton": "Déverrouiller avec la biométrie",
+    "earn.stakingManagementScreen.nextRewardEthLabel": "Prochaine récompense dans {value, plural, one {# jour} other {# jours}}",
+    "earn.stakingManagementScreen.nextRewardSolLabel": "Rewards every ~{value, plural, one {# day} other {# days}}"
 }

@@ -1265,7 +1265,6 @@
     "earn.stakingManagementScreen.stakedLabel": "Stakováno",
     "earn.stakingManagementScreen.totalRewardsLabel": "Celkové odměny",
     "earn.stakingManagementScreen.autoRestakedBadge": "Automaticky stakovat znovu",
-    "earn.stakingManagementScreen.nextRewardLabel": "Další odměna za {value, plural, one {# den} few {# dny} many {# dní} other {# dní}}",
     "earn.stakingManagementScreen.unstakeButton": "Zrušit staking",
     "earn.stakingManagementScreen.stakeButton": "Stakovat",
     "earn.stakingManagementScreen.stakeMoreButton": "Stakovat víc",
@@ -2100,5 +2099,7 @@
     "networks.initialSetup.title": "Přidejte své mince",
     "networks.initialSetup.subtitle": "Na každé síti, kterou povolíte, můžete nakupovat nebo přijímat aktiva.",
     "networks.initialSetup.banner": "Vaše mince můžete kdykoli změnit v Nastavení.",
-    "biometricsButton": "Odemknout pomocí biometrie"
+    "biometricsButton": "Odemknout pomocí biometrie",
+    "earn.stakingManagementScreen.nextRewardEthLabel": "Další odměna za {value, plural, one {# den} few {# dny} many {# dní} other {# dní}}",
+    "earn.stakingManagementScreen.nextRewardSolLabel": "Rewards every ~{value, plural, one {# day} other {# days}}"
 }

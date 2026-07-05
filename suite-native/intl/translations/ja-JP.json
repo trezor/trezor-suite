@@ -1265,7 +1265,6 @@
     "earn.stakingManagementScreen.stakedLabel": "Staking済み",
     "earn.stakingManagementScreen.totalRewardsLabel": "報酬総額",
     "earn.stakingManagementScreen.autoRestakedBadge": "自動で再ステーキング済み",
-    "earn.stakingManagementScreen.nextRewardLabel": "次の報酬まであと {value, plural, other {# 日}}",
     "earn.stakingManagementScreen.unstakeButton": "ステーキング解除",
     "earn.stakingManagementScreen.stakeButton": "Staking",
     "earn.stakingManagementScreen.stakeMoreButton": "さらにstakingする",
@@ -2100,5 +2099,7 @@
     "networks.initialSetup.title": "コインを追加",
     "networks.initialSetup.subtitle": "有効にしたコインで資産を購入または受け取れます。",
     "networks.initialSetup.banner": "コインは「設定」からいつでも変更できます。",
-    "biometricsButton": "生体認証でロック解除"
+    "biometricsButton": "生体認証でロック解除",
+    "earn.stakingManagementScreen.nextRewardEthLabel": "次の報酬まであと {value, plural, other {# 日}}",
+    "earn.stakingManagementScreen.nextRewardSolLabel": "Rewards every ~{value, plural, one {# day} other {# days}}"
 }
