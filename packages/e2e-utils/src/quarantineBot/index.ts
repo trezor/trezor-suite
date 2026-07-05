@@ -8,7 +8,6 @@ import {
     UNQUARANTINE_LAST_N_EXECUTIONS,
 } from './config';
 import { listAllQuarantinedTests } from './list';
-import { debug, error, log, setVerbose } from '../logger';
 import { quarantineFromRun } from './manualQuarantine';
 import { nightlyUnquarantineFromLatestRun } from './nightlyUnquarantine';
 import { quarantineFailingTests, unquarantinePassingTests } from './quarantine';
@@ -16,17 +15,40 @@ import { buildSlackSummary, sendSlackNotification } from './slack';
 import type { SlackEvent } from './types';
 import { wipeAllAutoQuarantineActions } from './wipe';
 import { getActiveTests } from '../currentsApi/api';
+import { configureLogLevelFromArgs, createLogger, printProblemSummary } from '../logger';
+
+const logger = createLogger('healthcheck');
+
+/**
+ * Print a per-project outcome table followed by the collected problems section.
+ * Returns the number of errors so the caller can set the exit code.
+ */
+function logRunSummary(
+    projects: Array<{ id: string; label: string }>,
+    events: SlackEvent[],
+): number {
+    logger.log('\n=== Summary ===');
+    for (const project of projects) {
+        const quarantined = events.filter(
+            e => e.projectId === project.id && e.kind === 'quarantined',
+        ).length;
+        const restored = events.filter(
+            e => e.projectId === project.id && e.kind === 'unquarantined',
+        ).length;
+        logger.log(`  ${project.label}: ${quarantined} quarantined, ${restored} restored`);
+    }
+
+    return printProblemSummary();
+}
 
 async function main(): Promise<void> {
     const args = process.argv.slice(2);
 
-    // Parse --verbose first so debug() works for everything that follows.
-    if (args.includes('--verbose')) {
-        setVerbose(true);
-    }
+    // Resolve the log level first so every subsequent log honours it.
+    configureLogLevelFromArgs(args);
 
-    debug('args:', args);
-    debug(
+    logger.debug('args:', args);
+    logger.debug(
         'env: CURRENTS_API_KEY',
         process.env.CURRENTS_API_KEY ? 'present' : 'MISSING',
         '| E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK',
@@ -36,7 +58,7 @@ async function main(): Promise<void> {
     );
 
     if (args.includes('--help') || args.includes('-h')) {
-        log(
+        logger.log(
             [
                 'Usage: yarn workspace @trezor/e2e-utils test-health [options]',
                 '',
@@ -66,9 +88,10 @@ async function main(): Promise<void> {
                 '                             each monitored project and unquarantine all auto-quarantined',
                 '                             tests that passed in that run.',
                 '',
-                '  --verbose                  Enable debug logging for all features and CLI switches.',
-                '                             Debug output goes to stderr so stdout (e.g. --list JSON) is',
-                '                             unaffected.',
+                '  --log-level <level>        Set logging verbosity: error | warn | info | debug | trace.',
+                '                             Default: debug. Raw HTTP requests/responses are only shown at',
+                '                             trace. All logging goes to stderr (stdout stays reserved for',
+                '                             machine-readable output such as --list JSON).',
                 '',
                 '  --help, -h                 Show this help message and exit.',
                 '',
@@ -76,6 +99,7 @@ async function main(): Promise<void> {
                 '  CURRENTS_API_KEY                          (required) API key for the Currents.dev API.',
                 '  E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK     (optional) Slack incoming-webhook URL for',
                 '                                            quarantine/unquarantine notifications.',
+                '  LOG_LEVEL                                 (optional) Default log level (see --log-level).',
             ].join('\n'),
         );
 
@@ -85,7 +109,7 @@ async function main(): Promise<void> {
     if (args.includes('--list')) {
         const projectFlagIndex = args.indexOf('--project');
         const projectNameFilter = projectFlagIndex !== -1 ? args[projectFlagIndex + 1] : undefined;
-        debug(
+        logger.debug(
             'operation: list',
             projectNameFilter ? `project=${projectNameFilter}` : '(all projects)',
         );
@@ -95,28 +119,26 @@ async function main(): Promise<void> {
     }
 
     if (args.includes('--wipeAutoQuarantine')) {
-        debug('operation: wipeAutoQuarantine');
+        logger.debug('operation: wipeAutoQuarantine');
         await wipeAllAutoQuarantineActions();
 
         return;
     }
 
     if (args.includes('--nightlyUnquarantine')) {
-        debug('operation: nightlyUnquarantine');
-        log('=== Nightly Unquarantine ===');
-        log(`Timestamp: ${new Date().toISOString()}`);
-        log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
-        log('');
+        logger.debug('operation: nightlyUnquarantine');
+        logger.log('=== Nightly Unquarantine ===');
+        logger.log(`Timestamp: ${new Date().toISOString()}`);
+        logger.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
+        logger.log('');
 
-        let hasError = false;
         const slackEvents: SlackEvent[] = [];
 
         for (const project of PROJECTS) {
             try {
                 await nightlyUnquarantineFromLatestRun(project.id, project.label, slackEvents);
             } catch (err) {
-                error(`\nFailed processing project ${project.label} (${project.id}):`, err);
-                hasError = true;
+                logger.error(`Failed processing project ${project.label} (${project.id}):`, err);
             }
         }
 
@@ -127,9 +149,10 @@ async function main(): Promise<void> {
             await sendSlackNotification(summary);
         }
 
-        log('\n=== Done ===');
+        const errorCount = logRunSummary(PROJECTS, slackEvents);
+        logger.log('\n=== Done ===');
 
-        if (hasError) {
+        if (errorCount > 0) {
             process.exit(1);
         }
 
@@ -140,12 +163,12 @@ async function main(): Promise<void> {
     if (quarantineFlagIndex !== -1) {
         const runId = args[quarantineFlagIndex + 1];
         if (!runId || runId.startsWith('-')) {
-            error('--quarantine requires a run ID argument.');
+            logger.error('--quarantine requires a run ID argument.');
             process.exit(1);
         }
 
         const interactive = args.includes('-i') || args.includes('--interactive');
-        debug('operation: quarantine', `runId=${runId}`, `interactive=${interactive}`);
+        logger.debug('operation: quarantine', `runId=${runId}`, `interactive=${interactive}`);
         const slackEvents: SlackEvent[] = [];
 
         const { projectId, projectLabel } = await quarantineFromRun(
@@ -163,33 +186,36 @@ async function main(): Promise<void> {
             await sendSlackNotification(summary);
         }
 
-        log('\n=== Done ===');
+        const errorCount = logRunSummary([projectEntry], slackEvents);
+        logger.log('\n=== Done ===');
+
+        if (errorCount > 0) {
+            process.exit(1);
+        }
 
         return;
     }
 
-    debug('operation: healthcheck');
-    log('=== Currents Test Health Check ===');
-    log(`Timestamp: ${new Date().toISOString()}`);
-    log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
-    log(
+    logger.debug('operation: healthcheck');
+    logger.log('=== Currents Test Health Check ===');
+    logger.log(`Timestamp: ${new Date().toISOString()}`);
+    logger.log(`Projects: ${PROJECTS.map(p => `${p.label} (${p.id})`).join(', ')}`);
+    logger.log(
         `Thresholds: quarantine ≥${QUARANTINE_FAILURE_RATE * 100}% failures over last ${QUARANTINE_LAST_N_EXECUTIONS} executions, ` +
             `unquarantine ≤${UNQUARANTINE_FAILURE_RATE * 100}% failures over last ${UNQUARANTINE_LAST_N_EXECUTIONS} executions (using Test Results API)`,
     );
-    log('');
+    logger.log('');
 
-    let hasError = false;
     const slackEvents: SlackEvent[] = [];
 
     for (const project of PROJECTS) {
-        debug(`processing project: ${project.label} (${project.id})`);
         try {
             const [existingActions, activeTests] = await Promise.all([
                 getAutoQuarantineActions(project.id),
                 getActiveTests(project.id, EXPLORER_LOOKBACK_DAYS),
             ]);
-            debug(
-                `  project ${project.label}: ${existingActions.length} existing auto-quarantine action(s),`,
+            logger.debug(
+                `project ${project.label}: ${existingActions.length} existing auto-quarantine action(s),`,
                 `${activeTests.length} active test(s) in explorer window`,
             );
             await quarantineFailingTests(
@@ -207,8 +233,7 @@ async function main(): Promise<void> {
                 slackEvents,
             );
         } catch (err) {
-            error(`\nFailed processing project ${project.label} (${project.id}):`, err);
-            hasError = true;
+            logger.error(`Failed processing project ${project.label} (${project.id}):`, err);
         }
     }
 
@@ -217,14 +242,15 @@ async function main(): Promise<void> {
         await sendSlackNotification(summary);
     }
 
-    log('\n=== Done ===');
+    const errorCount = logRunSummary(PROJECTS, slackEvents);
+    logger.log('\n=== Done ===');
 
-    if (hasError) {
+    if (errorCount > 0) {
         process.exit(1);
     }
 }
 
 main().catch(err => {
-    error('[FATAL]', err);
+    logger.error('[FATAL]', err);
     process.exit(1);
 });

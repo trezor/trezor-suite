@@ -2,7 +2,9 @@ import { extractKeyFromAction } from './actions';
 import { AUTO_QUARANTINE_PREFIX, PROJECTS } from './config';
 import { getAllQuarantineActions } from '../currentsApi/api';
 import type { Action } from '../currentsApi/types';
-import { debug, error, log, output } from '../logger';
+import { createLogger, output } from '../logger';
+
+const logger = createLogger('list');
 
 interface QuarantinedTestEntry {
     name: string;
@@ -30,16 +32,16 @@ export async function listAllQuarantinedTests(projectNameFilter?: string): Promi
         : PROJECTS;
 
     if (projectNameFilter && projects.length === 0) {
-        error(
+        logger.error(
             `No project found with name "${projectNameFilter}". Known names: ${PROJECTS.map(p => p.name).join(', ')}`,
         );
         process.exit(1);
     }
 
-    log('=== Currents Quarantine List ===');
-    log(`Timestamp: ${new Date().toISOString()}`);
-    log(`Projects: ${projects.map(p => `${p.label} (${p.id})`).join(', ')}`);
-    log('');
+    logger.log('=== Currents Quarantine List ===');
+    logger.log(`Timestamp: ${new Date().toISOString()}`);
+    logger.log(`Projects: ${projects.map(p => `${p.label} (${p.id})`).join(', ')}`);
+    logger.log('');
 
     const report: ProjectQuarantineReport[] = [];
     let hasError = false;
@@ -70,14 +72,14 @@ export async function listAllQuarantinedTests(projectNameFilter?: string): Promi
                 tests,
             });
 
-            log(`[${project.label}] ${tests.length} quarantined test(s)`);
+            logger.log(`[${project.label}] ${tests.length} quarantined test(s)`);
             for (const t of tests) {
                 const tag = t.isAutoQuarantine ? ' [auto]' : ' [manual]';
-                log(`  - ${t.name}${tag}`);
-                debug(`    spec=${t.spec ?? '(none)'} isAuto=${t.isAutoQuarantine}`);
+                logger.log(`  - ${t.name}${tag}`);
+                logger.debug(`    spec=${t.spec ?? '(none)'} isAuto=${t.isAutoQuarantine}`);
             }
         } catch (err) {
-            error(`Failed fetching quarantine actions for ${project.label}: ${err}`);
+            logger.error(`Failed fetching quarantine actions for ${project.label}: ${err}`);
             hasError = true;
         }
     }
