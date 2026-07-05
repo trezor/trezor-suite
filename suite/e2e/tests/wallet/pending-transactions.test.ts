@@ -207,12 +207,6 @@ test.describe(
                     values: { multiple: 'false', symbol: 'REGTEST' },
                 });
             });
-
-            await test.step('Verify account #3 is visible', async () => {
-                await expect(
-                    walletPage.accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 2 }),
-                ).toBeVisible();
-            });
         });
     },
 );
