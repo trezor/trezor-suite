@@ -786,5 +786,46 @@ describe('transaction utils', () => {
 
             expect(getTargetAmount(selfTarget, transaction)).toBeNull();
         });
+
+        it('returns null for a cardano "sent to self" target even when there is no external target', () => {
+            const selfTarget = buildTarget({ amount: '1000', isAccountTarget: true, n: 1 });
+            const transaction = getWalletTransaction({
+                symbol: 'ada',
+                type: 'self',
+                amount: '1000',
+                cardanoSpecific: {},
+                targets: [selfTarget],
+            });
+
+            expect(getTargetAmount(selfTarget, transaction)).toBeNull();
+        });
+
+        it('returns null for a cardano tx where the amount only echoes the fee (self-send misclassified by blockfrost)', () => {
+            const selfTarget = buildTarget({ amount: '144', isAccountTarget: true, n: 1 });
+            const transaction = getWalletTransaction({
+                symbol: 'ada',
+                type: 'sent',
+                amount: '144',
+                fee: '144',
+                cardanoSpecific: {},
+                targets: [selfTarget],
+            });
+
+            expect(getTargetAmount(selfTarget, transaction)).toBeNull();
+        });
+
+        it('returns null for a cardano "sent to self" target when an external target is also present', () => {
+            const selfTarget = buildTarget({ amount: '1000', isAccountTarget: true, n: 1 });
+            const externalTarget = buildTarget({ amount: '2000', isAccountTarget: false, n: 0 });
+            const transaction = getWalletTransaction({
+                symbol: 'ada',
+                type: 'sent',
+                amount: '1000',
+                cardanoSpecific: {},
+                targets: [externalTarget, selfTarget],
+            });
+
+            expect(getTargetAmount(selfTarget, transaction)).toBeNull();
+        });
     });
 });

@@ -854,6 +854,7 @@ export const getTargetAmountRaw = (
     }
 
     if (
+        !transaction.cardanoSpecific &&
         target === transaction.targets.find(t => t.isAccountTarget) &&
         !transaction.targets.find(t => !t.isAccountTarget) &&
         validTxAmount
