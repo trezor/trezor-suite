@@ -59,6 +59,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
             pushSendFormRawTransactionThunk({
                 tx: inputValue,
                 symbol: account.symbol,
+                descriptor: account.descriptor,
                 identity: tryGetAccountIdentity(account),
                 isMevProtectionEnabled: isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             }),

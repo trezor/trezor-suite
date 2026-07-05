@@ -32,6 +32,10 @@ type SentTransactionNotification = {
     token?: TokenInfo;
 } & TransactionNotificationPayload;
 
+type RawSentTransactionNotification = {
+    type: 'raw-tx-sent';
+} & BaseTransactionNotificationPayload;
+
 type RevokeTransactionNotification = {
     type: 'tx-revoked';
     token: TokenInfo;
@@ -148,10 +152,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | ApproveTransactionNotification
     | RevokeTransactionNotification
     | ExchangeTransactionNotification
-    | {
-          type: 'raw-tx-sent';
-          txid: string;
-      }
+    | RawSentTransactionNotification
     | ErrorToastPayload
     | {
           type: 'trading-error';

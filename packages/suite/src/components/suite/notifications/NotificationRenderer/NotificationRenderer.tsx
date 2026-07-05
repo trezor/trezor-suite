@@ -164,12 +164,18 @@ export const NotificationRenderer = ({
             });
 
         case 'raw-tx-sent':
-            return renderNotificationView(render, notification, {
-                variant: 'success',
-                message: 'TOAST_RAW_TX_SENT',
-                icon: 'arrowUp',
-                values: { txid: notification.txid },
-            });
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowUp"
+                    variant="success"
+                    message="TOAST_TX_SENT"
+                    messageValues={{
+                        account: notification.descriptor,
+                    }}
+                />
+            );
 
         case 'cardano-delegate-error':
             return renderNotificationView(render, notification, {

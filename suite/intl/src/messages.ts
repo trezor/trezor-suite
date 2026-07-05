@@ -4132,10 +4132,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Swap transaction from {sendAccount} to {receiveAccount} has been broadcast',
     },
-    TOAST_RAW_TX_SENT: {
-        id: 'TOAST_RAW_TX_SENT',
-        defaultMessage: 'Transaction sent. Tx ID: {txid}',
-    },
     TOAST_TX_RECEIVED: {
         id: 'TOAST_TX_RECEIVED',
         defaultMessage: 'Received to {account}',
