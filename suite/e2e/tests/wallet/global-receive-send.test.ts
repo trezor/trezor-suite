@@ -43,9 +43,10 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
                 values: { networkName: 'Ethereum', index: '3' },
             });
             // The address is rendered on the receive screen itself, so there is no modal to read
-            // it from; the labeling container is keyed by the address it renders.
+            // it from; account and receive address labels are unified on account based networks,
+            // so the labeling container is keyed by the account path.
             await expect(
-                page.getByTestId(`@metadata/addressLabel/${ETHEREUM_ADDRESS_3}/hover-container`),
+                page.getByTestId("@metadata/receiveAccountLabel/m/44'/60'/0'/0/2/hover-container"),
             ).toBeVisible();
             await walletPage.verifyAddressButton.click();
             const addressDisplayedOnDevice = await devicePrompt.getAddressFromDisplay();

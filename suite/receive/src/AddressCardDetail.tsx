@@ -1,8 +1,16 @@
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AddressLabeling, copyAddressToClipboard } from '@suite/address';
+import { type SelectAccountLabelState, selectAccountLabel } from '@suite/account';
+import {
+    Address,
+    type SelectAddressLabelState,
+    copyAddressToClipboard,
+    selectAddressLabel,
+} from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
+import { Labeling, processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
 import { useServices } from '@suite-common/dependency-injection';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -14,9 +22,15 @@ import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { CoinQrCode } from './CoinQrCode';
 import { type ReceiveAddressItem } from './address/buildReceiveAddressItems';
+import { getReceiveAddressLabelPayload } from './getReceiveAddressLabelPayload';
 import { canShareAddress, shareAddress } from './sharing/share';
 
 const QR_SIZE = 148;
+
+type AddressCardDetailRootState = AccountsRootState &
+    ReceiveRootState &
+    SelectAccountLabelState &
+    SelectAddressLabelState;
 
 type AddressCardDetailProps = {
     item: ReceiveAddressItem;
@@ -46,6 +60,73 @@ export const AddressCardDetail = ({
     );
     const isBelowTablet = useMediaQuery(belowBreakpoint(breakpoints.tablet));
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { translationString } = useTranslation();
+
+    const isAccountBased = account !== null && !isUtxoBased(account);
+
+    const currentFreshAddressLabel = useSelector((state: AddressCardDetailRootState) =>
+        currentFreshAddress?.address && account
+            ? selectAddressLabel(state, {
+                  address: currentFreshAddress.address,
+                  deviceStaticId: account.deviceState,
+              })
+            : undefined,
+    );
+
+    const accountLabel = useSelector((state: AddressCardDetailRootState) =>
+        account && isAccountBased
+            ? selectAccountLabel(state, {
+                  accountDescriptor: account.descriptor,
+                  accountKey: account.key,
+                  deviceStaticId: account.deviceState,
+                  networkSymbol: account.symbol,
+              })
+            : null,
+    );
+
+    // accounts on account based networks have a single receive address, its label and the account label are unified;
+    // adopt a previously set address label as the account label and clear it from storage
+    useEffect(() => {
+        if (
+            !account ||
+            !isAccountBased ||
+            !currentFreshAddress?.address ||
+            !currentFreshAddressLabel
+        ) {
+            return;
+        }
+
+        if (!accountLabel) {
+            dispatch(
+                processLegacyMetadataIntoSuiteSyncThunk({
+                    payload: getReceiveAddressLabelPayload(account, currentFreshAddress.address),
+                    deviceStaticSessionId: account.deviceState,
+                    value: currentFreshAddressLabel,
+                }),
+            );
+        }
+
+        dispatch(
+            processLegacyMetadataIntoSuiteSyncThunk({
+                payload: {
+                    type: 'addressLabel',
+                    entityKey: account.key,
+                    defaultValue: currentFreshAddress.address,
+                    networkSymbol: account.symbol,
+                    accountDescriptor: account.descriptor,
+                },
+                deviceStaticSessionId: account.deviceState,
+                value: undefined,
+            }),
+        );
+    }, [
+        isAccountBased,
+        currentFreshAddress?.address,
+        currentFreshAddressLabel,
+        accountLabel,
+        account,
+        dispatch,
+    ]);
 
     const handleCopy = () => {
         dispatch(copyAddressToClipboard(item.address));
@@ -93,13 +174,22 @@ export const AddressCardDetail = ({
                             </Text>
                         )}
                         <Text typographyStyle="headline-md" data-testid="@wallet/receive/address">
-                            <AddressLabeling
-                                accountDescriptor={account.descriptor}
-                                networkSymbol={account.symbol}
+                            <Labeling
+                                payload={getReceiveAddressLabelPayload(account, item.address)}
+                                {...(!isUtxo && {
+                                    'data-testid': `@metadata/receiveAccountLabel/${account.path}/hover-container`,
+                                })}
                                 deviceStaticSessionId={account.deviceState}
-                                address={item.address}
-                                label={item.label}
-                            />
+                                displayValue={<Address value={item.address} isTruncated />}
+                                placeholder={translationString(
+                                    isUtxo
+                                        ? 'TR_LABELING_ADDRESS_LABEL'
+                                        : 'TR_LABELING_ACCOUNT_LABEL',
+                                )}
+                                minHeight={28}
+                            >
+                                {isUtxo ? item.label : accountLabel}
+                            </Labeling>
                         </Text>
                     </Column>
                     <Row gap={12} flexWrap="wrap">
