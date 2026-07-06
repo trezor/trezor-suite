@@ -1,18 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type WritableAtom, useSetAtom } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
-import {
-    type AccountItem,
-    type CommonUseGraphParams,
-    type FiatGraphPoint,
-    useGetTimeFrameForHistoryHours,
-    useGraphForAccounts,
-} from '@suite-common/graph';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type FiatGraphPoint } from '@suite-common/graph';
 import {
     type AccountsRootState,
     type BlockchainRootState,
@@ -21,121 +13,21 @@ import {
     selectHasRunningDiscovery,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type BaseCurrencyAmount,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 
-import { timeSwitchItems } from './components/TimeSwitch';
-import { refetchPortfolioGraphThunk } from './graphThunks';
+import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
+import { refetchAccountGraphThunk, refetchPortfolioGraphThunk } from './graphThunks';
 import { selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning } from './selectors';
 import {
     type GraphSliceRootState,
     selectAccountGraphTimeframe,
     selectPortfolioGraphTimeframe,
-    setAccountGraphTimeframe,
 } from './slice';
-import { type TimeframeHoursValue } from './types';
-import { checkAndReportGraphError } from './utils';
-
-const useWatchTimeframeChangeForAnalytics = (
-    timeframeHours: TimeframeHoursValue,
-    symbol?: NetworkSymbol,
-) => {
-    const isFirstRender = useRef(true);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-    useEffect(() => {
-        if (isFirstRender.current) {
-            // Do not report default value on first render.
-            isFirstRender.current = false;
-
-            return;
-        }
-
-        const timeframeKey = timeSwitchItems.find(
-            item => item.valueBackInHours === timeframeHours,
-        )?.key;
-
-        if (timeframeKey && symbol) {
-            // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
-            // related to issue: https://github.com/trezor/trezor-suite/issues/7839
-            analytics.report({
-                type: events.assetDetailTimeframeChangeEvent.name,
-                payload: { timeframe: timeframeKey, assetSymbol: symbol },
-            });
-        }
-    }, [timeframeHours, symbol, isFirstRender, analytics]);
-};
-
-export const useGraphForSingleAccount = ({
-    accountKey,
-    baseCurrencyCode,
-    tokensFilter,
-    hideMainAccount = false,
-}: CommonUseGraphParams & Omit<AccountItem, 'symbol' | 'descriptor'>) => {
-    const dispatch = useDispatch();
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const accountGraphTimeframe = useSelector((state: GraphSliceRootState) =>
-        selectAccountGraphTimeframe(state, accountKey),
-    );
-
-    const handleSelectAccountTimeframe = useCallback(
-        (timeframeHours: TimeframeHoursValue) =>
-            dispatch(setAccountGraphTimeframe({ accountKey, timeframeHours })),
-        [dispatch, accountKey],
-    );
-
-    const { startOfTimeFrameDate, endOfTimeFrameDate } =
-        useGetTimeFrameForHistoryHours(accountGraphTimeframe);
-
-    const identity = account ? tryGetAccountIdentity(account) : undefined;
-    const accounts = useMemo<AccountItem[]>(() => {
-        if (!account?.symbol) return [];
-
-        return [
-            {
-                symbol: account.symbol,
-                descriptor: account.descriptor,
-                accountKey: account.key,
-                identity,
-                hideMainAccount,
-                tokensFilter,
-            },
-        ];
-        // We need to specify all dependicies here, because whole account will be updated very often will could result in endless rerendering.
-    }, [
-        identity,
-        account?.symbol,
-        account?.descriptor,
-        account?.key,
-        hideMainAccount,
-        tokensFilter,
-    ]);
-
-    useWatchTimeframeChangeForAnalytics(accountGraphTimeframe, account?.symbol);
-
-    const isElectrumBackend = useSelector((state: BlockchainRootState) =>
-        selectIsElectrumBackendSelected(state, account?.symbol ?? 'btc'),
-    );
-
-    const graphForAccounts = useGraphForAccounts({
-        accounts,
-        baseCurrencyCode,
-        startOfTimeFrameDate,
-        endOfTimeFrameDate,
-        isPortfolioGraph: false,
-        isElectrumBackend,
-    });
-
-    useEffect(() => checkAndReportGraphError(graphForAccounts.error), [graphForAccounts.error]);
-
-    return {
-        ...graphForAccounts,
-        timeframe: accountGraphTimeframe,
-        onSelectTimeFrame: handleSelectAccountTimeframe,
-    };
-};
 
 /**
  * Watches the portfolio graph fetch inputs and refetches the graph data into
@@ -167,6 +59,62 @@ export const usePortfolioGraphData = () => {
         portfolioGraphTimeframe,
         baseCurrencyCode,
         isElectrumBackend,
+    ]);
+};
+
+type UseAccountGraphDataParams = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+};
+
+/**
+ * Watches the account detail graph fetch inputs and refetches the graph data into
+ * `accountDetailGraphAtoms` whenever any of them changes. The bundle is shared by all
+ * account detail screens, so it is reset whenever the displayed account changes.
+ */
+export const useAccountGraphData = ({ accountKey, tokenContract }: UseAccountGraphDataParams) => {
+    const dispatch = useDispatch();
+    const resetGraph = useSetAtom(accountDetailGraphAtoms.resetGraphAtom);
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const accountGraphTimeframe = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphTimeframe(state, accountKey),
+    );
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const isElectrumBackend = useSelector((state: BlockchainRootState) =>
+        selectIsElectrumBackendSelected(state, account?.symbol ?? 'btc'),
+    );
+
+    const identity = account ? tryGetAccountIdentity(account) : undefined;
+
+    useEffect(
+        () => () => {
+            resetGraph();
+        },
+        [accountKey, tokenContract, resetGraph],
+    );
+
+    useEffect(() => {
+        if (!isDeviceAuthorized) return;
+
+        dispatch(refetchAccountGraphThunk({ accountKey, tokenContract }));
+        // The thunk reads the other fetch inputs from the store by itself. They are listed
+        // as dependencies only to trigger a refetch whenever any of them changes. Account
+        // fields are listed individually, because the whole account object is updated on
+        // every sync, which would cause endless refetching.
+    }, [
+        dispatch,
+        isDeviceAuthorized,
+        accountKey,
+        tokenContract,
+        accountGraphTimeframe,
+        baseCurrencyCode,
+        isElectrumBackend,
+        identity,
+        account?.symbol,
+        account?.descriptor,
     ]);
 };
 
