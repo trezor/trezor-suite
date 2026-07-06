@@ -1,49 +1,32 @@
-import { useEffect, useState } from 'react';
-
 import { Translation } from '@suite/intl';
-import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type AccountWithNetworkType } from '@suite-common/wallet-types';
-import { Paragraph } from '@trezor/components';
+import { Paragraph, Skeleton } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
+import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
 
 type AccountNonceProps = {
     account: AccountWithNetworkType<'ethereum'>;
 };
 
 export const AccountNonce = ({ account }: AccountNonceProps) => {
-    const dispatch = useDispatch();
-    const [nonces, setNonces] = useState<{ nonce: string; confirmedNonce: string }>();
+    const { nonceInfo, isLoading } = useEvmNonceInfo(account);
 
-    useEffect(() => {
-        const promise = dispatch(
-            ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: true }),
-        );
+    if (isLoading) return <Skeleton width={80} height={16} />;
 
-        void promise
-            .unwrap()
-            .then(setNonces)
-            .catch(() => {});
-
-        return () => {
-            promise.abort();
-        };
-    }, [account, dispatch]);
-
-    if (!nonces) return null;
+    if (!nonceInfo) return null;
 
     return (
         <>
             <Paragraph typographyStyle="body-sm">
                 <Translation id="TR_ACCOUNT_DETAILS_NONCE_CONFIRMED" />
                 {': '}
-                {nonces.confirmedNonce}
+                {nonceInfo.confirmedNonce}
             </Paragraph>
-            {nonces.nonce !== nonces.confirmedNonce && (
+            {nonceInfo.nextNonce !== nonceInfo.confirmedNonce && (
                 <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ACCOUNT_DETAILS_NONCE_NEXT" />
                     {': '}
-                    {nonces.nonce}
+                    {nonceInfo.nextNonce}
                 </Paragraph>
             )}
         </>

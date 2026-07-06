@@ -33,6 +33,11 @@ export const desktopQueryKeys = {
     proxyImage: (src?: string) => ['proxy-image', src],
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
+    evmConfirmedNonce: (symbol: string, descriptor: string) => [
+        'evm-confirmed-nonce',
+        symbol,
+        descriptor,
+    ],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const tradingQueryKeys = {
