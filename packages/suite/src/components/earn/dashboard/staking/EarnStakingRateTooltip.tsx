@@ -34,7 +34,7 @@ export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateToo
                     }
                 />
             }
-            maxWidth={600}
+            tooltipMaxWidth={280}
             placement="top"
         >
             <Abbr>

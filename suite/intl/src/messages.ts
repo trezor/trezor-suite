@@ -9995,11 +9995,12 @@ export const messages = defineMessages({
     },
     TR_EARN_STAKING_APY_TOOLTIP: {
         id: 'TR_EARN_STAKING_APY_TOOLTIP',
-        defaultMessage: 'Annual percentage yield (APY)',
+        defaultMessage:
+            'This is the annual percentage yield (APY). It includes compounded returns.',
     },
     TR_EARN_STAKING_APR_TOOLTIP: {
         id: 'TR_EARN_STAKING_APR_TOOLTIP',
-        defaultMessage: 'Annual percentage rate (APR)',
+        defaultMessage: "This is the annual percentage rate (APR). It doesn't include compounding.",
     },
     TR_EARN_YIELD_AMOUNT_TO_WITHDRAW: {
         id: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
