@@ -97,7 +97,9 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
     mainWindow.webContents.setUserAgent(`Trezor Suite ${app.getVersion()}`);
 
     const debouncedStoreWinBounds = debounce(() => {
-        if (!mainWindow) return;
+        // The trailing debounced call can fire after the window was destroyed within the debounce
+        // window; getBounds() on a destroyed BrowserWindow throws "Object has been destroyed".
+        if (!isMainWindowUsable(mainWindow)) return;
         const winBound = mainWindow.getBounds();
         Store.getStore().setWinBounds(winBound);
         logger.debug('app', 'new winBounds saved');
