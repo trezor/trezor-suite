@@ -21,6 +21,7 @@ export { TronStakePageHeader } from './staking/tron/TronStakePageHeader';
 export { TronStake } from './staking/tron/TronStake';
 export { TronUnstake } from './staking/tron/TronUnstake';
 export { TronVote } from './staking/tron/TronVote';
+export { TronVoteConsentModal } from './staking/tron/vote/TronVoteConsentModal';
 export { TronWithdraw } from './staking/tron/TronWithdraw';
 export { TronClaim } from './staking/tron/TronClaim';
 export { YieldDeposit } from './yield/deposit/YieldDeposit';

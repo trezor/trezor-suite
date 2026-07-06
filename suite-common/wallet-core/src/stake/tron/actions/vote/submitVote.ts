@@ -14,6 +14,7 @@ import { type TronFlow } from '../../tronStakeTypes';
 interface SubmitVoteThunkArguments extends VoteThunkArguments {
     device: TrezorDevice;
     flow: TronFlow;
+    requestVoteConsent?: () => Promise<boolean>;
     requestPushApproval: () => Promise<boolean>;
     onSigningStart?: () => void;
     onSettled?: () => void;
@@ -27,6 +28,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
             device,
             flow,
             representativeAddress,
+            requestVoteConsent,
             requestPushApproval,
             onSigningStart,
             onSettled,
@@ -34,6 +36,14 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
         { dispatch },
     ) => {
         const { key: accountKey } = account;
+
+        if (requestVoteConsent) {
+            const isConsentGiven = await requestVoteConsent();
+
+            if (!isConsentGiven) {
+                return;
+            }
+        }
 
         if (account.networkType !== 'tron') {
             dispatch(

@@ -171,6 +171,12 @@ export type UserContextPayload =
           actionType?: EarnModalAction;
       }
     | {
+          type: 'tron-vote-consent';
+          representativeName: string;
+          termsOfServiceUrl: string;
+          decision: Deferred<boolean>;
+      }
+    | {
           type: 'stake';
           flow: StakeModalFlow;
           account: Account;
