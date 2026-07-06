@@ -9,9 +9,10 @@ import {
     isAccountBasedNetwork,
     isAccountOfNetwork,
     isNetworkUsingExternalBackend,
+    isSingleAccountType,
 } from './utils';
 
-const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
+const { btc: bitcoin, eth: ethereum, test: testnet, regtest, sol: solana } = networks;
 
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 
@@ -80,6 +81,27 @@ describe(isAccountOfNetwork.name, () => {
 
     it('returns false for non-existing accountType in ethereum', () => {
         expect(isAccountOfNetwork(ethereum, 'segwit')).toBe(false);
+    });
+});
+
+describe(isSingleAccountType.name, () => {
+    it('returns true for solana root accountType', () => {
+        expect(isSingleAccountType(solana, 'root')).toBe(true);
+    });
+
+    it.each(['normal', 'ledger'])('returns false for "%s" accountType in solana', accountType => {
+        expect(isSingleAccountType(solana, accountType)).toBe(false);
+    });
+
+    it.each(['normal', 'taproot', 'segwit', 'legacy', 'coinjoin'])(
+        'returns false for "%s" accountType in bitcoin',
+        accountType => {
+            expect(isSingleAccountType(bitcoin, accountType)).toBe(false);
+        },
+    );
+
+    it('returns false for accountType unknown to the network', () => {
+        expect(isSingleAccountType(ethereum, 'foobar')).toBe(false);
     });
 });
 

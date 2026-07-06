@@ -9,6 +9,7 @@ const bitcoinFormattedAccountTypeMap: Record<AccountType, string | null> = {
     legacy: 'Legacy',
     coinjoin: null,
     ledger: null,
+    root: null,
     imported: null,
     placeholder: null,
 };
@@ -20,6 +21,7 @@ const formattedAccountTypeMap: Record<AccountType, string | null> = {
     coinjoin: null,
     segwit: null,
     taproot: null,
+    root: 'Root',
     imported: null,
     placeholder: null,
 };

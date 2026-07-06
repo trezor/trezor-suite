@@ -1,5 +1,5 @@
 import { type TranslationFunction } from '@suite/intl';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, isSingleAccountType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 
@@ -13,8 +13,15 @@ export const getDefaultAccountLabel = (
         return translationString(getTitleForCoinjoinAccount(symbol));
     }
 
+    const network = getNetwork(symbol);
+
+    // a single-account type has no other accounts to number against
+    if (isSingleAccountType(network, accountType)) {
+        return network.name;
+    }
+
     return translationString('LABELING_ACCOUNT', {
-        networkName: getNetwork(symbol).name,
+        networkName: network.name,
         index: index + 1,
     });
 };
