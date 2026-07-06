@@ -108,4 +108,22 @@ describe('resolveEthereumNonce', () => {
 
         expect(result).toEqual({ nonce: '9', confirmedNonce: '9' });
     });
+
+    it('trusts the backend confirmed nonce even when local tx history has a bogus/corrupted nonce', async () => {
+        // Regression: a single malformed local tx record (e.g. nonce 335753) must not push a
+        // trusted, backend-fetched confirmedNonce upward — that reconciliation only applies to the
+        // untrusted account.misc.nonce fallback, not to a confirmedNonce the backend vouches for.
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { misc: { nonce: '1418', confirmedNonce: '1418' } },
+        } as any);
+
+        const result = await resolveEthereumNonce({
+            selectedAccount: accountWithNonce(1418),
+            accountTransactions: [evmTx(335753, { confirmed: true })],
+            fetchConfirmedNonce: true,
+        });
+
+        expect(result).toEqual({ nonce: '1418', confirmedNonce: '1418' });
+    });
 });
