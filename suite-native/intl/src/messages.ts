@@ -2018,6 +2018,17 @@ export const messages = {
                     copyMessage: 'XPUB copied',
                 },
                 copyButton: 'Copy',
+                viewOnlyWarning: {
+                    title: 'Public key (XPUB) can’t be verified',
+                    description: 'To confirm the public key (XPUB), connect your Trezor.',
+                    primaryButton: 'Continue without verifying',
+                    secondaryButton: 'Back',
+                },
+                unverifiedWarning: {
+                    title: 'Verify the public key (XPUB) on your Trezor',
+                    subtitle:
+                        'To prevent phishing attacks, verify the public key (XPUB) on your Trezor.',
+                },
             },
             renameForm: {
                 title: 'Rename account',

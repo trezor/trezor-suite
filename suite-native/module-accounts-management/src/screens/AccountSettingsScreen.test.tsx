@@ -33,6 +33,7 @@ const buildRoute = (accountKey: string) =>
 
 const buildPreloadedState = (account: ReturnType<typeof mockWalletAccount>) => ({
     device: { devices: [], selectedDevice: undefined },
+    deviceAuthorization: { deviceAuthorizationStep: 'Idle' },
     messageSystem: {
         config: null,
         currentSequence: 0,
