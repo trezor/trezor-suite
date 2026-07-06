@@ -14,10 +14,12 @@ const rows = [
     { address: 'bc1qaddr3', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
 ];
 
-const EXPECTED_ROOT = '15a28bf6a14c4122c73fa7755f7d343aa9c15947a60659eeefbda16e0223e7b6';
+// Recomputed after the leaf-counter protocol change (leaf hash now commits the counter:
+// sha256d(0x00||address||counter(4B BE)||value)).
+const EXPECTED_ROOT = '5faf6c435e566761b5da47c2a13e7fd649b0ddc6a019251ec0a93f818af5d01e';
 const EXPECTED_PROOF = [
-    '05d49ed485b1256e346f0d489c1950d7289be53cd86e6fdf6f4fa4f271ba712830',
-    '005cf93d0d523d44ce47b29a7c4ecd9a71f30ceddd320d36054a2e040a64e434c4',
+    '0551d77cee63c9d41d625b546da1b749b78ab8f3f44c8747187a1e2060dc0a0112',
+    '008766982f6f19d7a2573c2826f1c9450d95c61cc77b5977f77a0160c17b695164',
 ];
 
 describe('generateMerkleProof / computeMerkleRoot', () => {
@@ -78,7 +80,12 @@ describe('generateNonMembershipProof', () => {
     it('returns nulls for an empty tree', () => {
         const result = generateNonMembershipProof([], 'bc1qmissing', 'btc');
 
-        expect(result).toEqual({ proof: [], witnessAddress: null, witnessValue: null });
+        expect(result).toEqual({
+            proof: [],
+            witnessAddress: null,
+            witnessValue: null,
+            witnessCounter: null,
+        });
     });
 });
 

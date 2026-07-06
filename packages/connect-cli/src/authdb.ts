@@ -35,6 +35,8 @@ type SqliteQueueRow = {
     address: string;
     old_value: string;
     new_value: string;
+    old_counter: number | null;
+    new_counter: number;
 };
 type SqliteHistoryRow = {
     wallet_id: string;
@@ -56,6 +58,8 @@ const parseQueueRow = (row: SqliteQueueRow): OfflineQueueEntry => ({
     address: row.address,
     oldValue: row.old_value,
     newValue: row.new_value,
+    oldCounter: row.old_counter ?? undefined,
+    newCounter: row.new_counter,
 });
 
 const parseHistoryRow = (row: SqliteHistoryRow): AuthHistoryEntry => ({
@@ -105,13 +109,15 @@ export class AuthLabelDb
                 mac       TEXT
             );
             CREATE TABLE IF NOT EXISTS auth_queue (
-                device_id TEXT NOT NULL,
-                wallet_id TEXT NOT NULL,
-                mac       TEXT NOT NULL,
-                sequence  INTEGER NOT NULL,
-                address   TEXT NOT NULL,
-                old_value TEXT NOT NULL,
-                new_value TEXT NOT NULL,
+                device_id   TEXT NOT NULL,
+                wallet_id   TEXT NOT NULL,
+                mac         TEXT NOT NULL,
+                sequence    INTEGER NOT NULL,
+                address     TEXT NOT NULL,
+                old_value   TEXT NOT NULL,
+                new_value   TEXT NOT NULL,
+                old_counter INTEGER,
+                new_counter INTEGER NOT NULL DEFAULT 0,
                 PRIMARY KEY (wallet_id, sequence)
             );
             CREATE TABLE IF NOT EXISTS auth_history (
@@ -236,12 +242,13 @@ export class AuthLabelDb
 
     appendQueueEntries(entries: OfflineQueueEntry[]): void {
         const insert = this.db.prepare(
-            `INSERT INTO auth_queue (device_id, wallet_id, mac, sequence, address, old_value, new_value)
-             VALUES (@deviceId, @walletId, @mac, @sequence, @address, @oldValue, @newValue)
+            `INSERT INTO auth_queue
+                (device_id, wallet_id, mac, sequence, address, old_value, new_value, old_counter, new_counter)
+             VALUES (@deviceId, @walletId, @mac, @sequence, @address, @oldValue, @newValue, @oldCounter, @newCounter)
              ON CONFLICT(wallet_id, sequence) DO NOTHING`,
         );
         const insertAll = this.db.transaction((rows: OfflineQueueEntry[]) => {
-            rows.forEach(row => insert.run(row));
+            rows.forEach(row => insert.run({ ...row, oldCounter: row.oldCounter ?? null }));
         });
         insertAll(entries);
     }
@@ -249,7 +256,7 @@ export class AuthLabelDb
     getQueueEntries(walletId: string): OfflineQueueEntry[] {
         const rows = this.db
             .prepare(
-                `SELECT device_id, wallet_id, mac, sequence, address, old_value, new_value
+                `SELECT device_id, wallet_id, mac, sequence, address, old_value, new_value, old_counter, new_counter
                  FROM auth_queue WHERE wallet_id = ? ORDER BY sequence`,
             )
             .all(walletId) as SqliteQueueRow[];

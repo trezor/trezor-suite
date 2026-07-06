@@ -101,7 +101,8 @@ export type AuthLabelApprovalProvider = {
 
 /**
  * A single mutation drained from a Trezor device's offline queue via AuthDbGetOfflineOperations
- * (wire type AuthDbOfflineOperation: sequence, address, old_value, new_value, mac). Hex-encoded
+ * (wire type AuthDbOfflineOperation: sequence, address, old_value, new_value, old_counter,
+ * new_counter, mac). Hex-encoded
  * value fields, same convention as elsewhere: oldValue === '' means the address was absent when
  * queued (insert); newValue === '' means this entry deletes the address. `mac` is
  * HMAC(device_key, sequence||leaf_hash(address,old_value)||leaf_hash(address,new_value)) —
@@ -118,6 +119,10 @@ export type OfflineQueueEntry = {
     address: string;
     oldValue: string;
     newValue: string;
+    /** Leaf counter of oldValue; absent/0 on INSERT. */
+    oldCounter?: number;
+    /** Leaf counter of newValue; 1 on INSERT, oldCounter+1 otherwise. */
+    newCounter: number;
 };
 
 /** A queued entry that failed rebasing against the host's canonical stored state. */
@@ -144,8 +149,8 @@ export type OfflineQueueProvider = {
  * The device itself retains no history — only current root/counter plus its own
  * not-yet-collected offline queue — so this log only ever exists host-side, built up as
  * authDbReplayQueue successfully applies operations.
- * oldCounter/newCounter are decoded from the existing entryToValueBytes value convention
- * (not a dedicated wire field — none exists yet); appliedAtRootCounter is the wallet's
+ * oldCounter/newCounter come from the leaf-counter wire fields (AuthDbOfflineOperation /
+ * AuthDbRebasedOperation); appliedAtRootCounter is the wallet's
  * root-level counter immediately after this specific operation was applied (the device
  * increments it by exactly one per applied operation).
  */

@@ -27,6 +27,9 @@ type RebasedCandidate = {
     proof?: string[];
     witness_address?: string;
     witness_value?: string;
+    witness_counter?: number;
+    old_counter?: number;
+    new_counter: number;
     entry: OfflineQueueEntry;
     networkSymbol: string;
 };
@@ -110,6 +113,8 @@ export default class AuthDbReplayQueue extends AbstractMethod<
                     address: op.address,
                     oldValue: op.old_value ?? '',
                     newValue: op.new_value ?? '',
+                    oldCounter: op.old_counter,
+                    newCounter: op.new_counter,
                 })),
             );
         }
@@ -175,7 +180,10 @@ export default class AuthDbReplayQueue extends AbstractMethod<
                     nonMembership?.witnessAddress !== undefined && {
                         witness_address: nonMembership.witnessAddress,
                         witness_value: bytesToHex(nonMembership.witnessValue!),
+                        witness_counter: nonMembership.witnessCounter!,
                     }),
+                ...(!isInsert && { old_counter: entry.oldCounter }),
+                new_counter: entry.newCounter,
                 entry,
                 networkSymbol,
             });
@@ -211,9 +219,12 @@ export default class AuthDbReplayQueue extends AbstractMethod<
                     new_value: c.new_value,
                     mac: c.mac,
                     proof: c.proof,
+                    ...(c.old_counter !== undefined && { old_counter: c.old_counter }),
+                    new_counter: c.new_counter,
                     ...(c.witness_address !== undefined && {
                         witness_address: utf8Hex(c.witness_address),
                         witness_value: c.witness_value,
+                        witness_counter: c.witness_counter,
                     }),
                 })),
             },
@@ -262,14 +273,8 @@ export default class AuthDbReplayQueue extends AbstractMethod<
                     deviceId: candidate.entry.deviceId,
                     oldValue: candidate.old_value ?? '',
                     newValue: candidate.new_value ?? '',
-                    oldCounter:
-                        candidate.old_value !== '' && candidate.old_value !== undefined
-                            ? valueHexToEntry(candidate.old_value).entry.counter
-                            : undefined,
-                    newCounter:
-                        candidate.new_value !== '' && candidate.new_value !== undefined
-                            ? valueHexToEntry(candidate.new_value).entry.counter
-                            : undefined,
+                    oldCounter: candidate.entry.oldCounter,
+                    newCounter: candidate.entry.newCounter,
                     // The device increments its root counter by exactly one per applied
                     // operation; the response only returns the final counter, so this is
                     // derived rather than read from the wire.

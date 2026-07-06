@@ -36,7 +36,9 @@ export const valueHexToEntry = (
     return { networkSymbol, entry: { metadata, counter } };
 };
 
-// leaf_hash = SHA-256(b"\x00" + address_bytes + value_bytes)
+// leaf_hash = SHA-256(b"\x00" + address_bytes + counter(4B BE) + value_bytes)
+// counter is a first-class, cryptographically-committed per-address version number
+// (docs/authdb-sync-proposal.md Part 1) -- not just text embedded in the value blob.
 export const computeLeafHash = (
     address: string,
     networkSymbol: string,
@@ -44,8 +46,10 @@ export const computeLeafHash = (
 ): Uint8Array => {
     const addrBytes = utf8(address);
     const valBytes = entryToValueBytes(networkSymbol, entry);
+    const counterBytes = new Uint8Array(4);
+    new DataView(counterBytes.buffer).setUint32(0, entry.counter, false);
 
-    return sha256(concatBytes(new Uint8Array([0x00]), addrBytes, valBytes));
+    return sha256(concatBytes(new Uint8Array([0x00]), addrBytes, counterBytes, valBytes));
 };
 
 // internal_hash(left, right) = SHA-256(b"\x01" + left + right)  — positional, no sorting
@@ -202,9 +206,14 @@ export const generateNonMembershipProof = (
     rows: AuthLabelRow[],
     address: string,
     _networkSymbol: string,
-): { proof: MerkleProof; witnessAddress: string | null; witnessValue: Uint8Array | null } => {
+): {
+    proof: MerkleProof;
+    witnessAddress: string | null;
+    witnessValue: Uint8Array | null;
+    witnessCounter: number | null;
+} => {
     if (rows.length === 0) {
-        return { proof: [], witnessAddress: null, witnessValue: null };
+        return { proof: [], witnessAddress: null, witnessValue: null, witnessCounter: null };
     }
 
     const targetAddrHash = addressHash(address);
@@ -244,19 +253,20 @@ export const generateNonMembershipProof = (
     walk(mptRoot);
 
     if (!witnessLeaf) {
-        return { proof: [], witnessAddress: null, witnessValue: null };
+        return { proof: [], witnessAddress: null, witnessValue: null, witnessCounter: null };
     }
 
     const wl: LeafInfo = witnessLeaf;
     const wr = rows.find(r => bytesToHex(addressHash(r.address)) === bytesToHex(wl.addrHash));
     if (!wr) {
-        return { proof: [], witnessAddress: null, witnessValue: null };
+        return { proof: [], witnessAddress: null, witnessValue: null, witnessCounter: null };
     }
 
     return {
         proof,
         witnessAddress: wr.address,
         witnessValue: entryToValueBytes(wr.networkSymbol, wr.entry),
+        witnessCounter: wr.entry.counter,
     };
 };
 

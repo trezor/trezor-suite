@@ -101,6 +101,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
                   address: utf8Hex(address),
                   value: bytesToHex(entryToValueBytes(networkSymbol, entry)),
                   proof: generateMerkleProof(rows, address, networkSymbol),
+                  counter: entry.counter,
               })
             : await (() => {
                   const nonMembership = generateNonMembershipProof(rows, address, networkSymbol);
@@ -111,6 +112,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
                       ...(nonMembership.witnessAddress !== null && {
                           witness_address: utf8Hex(nonMembership.witnessAddress),
                           witness_value: bytesToHex(nonMembership.witnessValue!),
+                          witness_counter: nonMembership.witnessCounter!,
                       }),
                   });
               })();

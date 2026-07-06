@@ -325,7 +325,13 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const setRootParams: Parameters<typeof TrezorConnect.authDbSetRoot>[0] = {
                     device,
                     root: treeState.root,
-                    ...(treeState.mac !== undefined && { mac: treeState.mac, device_id: walletId }),
+                    // mac is required by the wire protocol; all-zero is accepted only on
+                    // debug builds (plain unauthenticated root injection).
+                    mac: treeState.mac ?? '0'.repeat(64),
+                    ...(treeState.mac !== undefined && {
+                        device_id: walletId,
+                        counter: treeState.counter,
+                    }),
                 };
                 const setRootResult = await TrezorConnect.authDbSetRoot(setRootParams);
                 if (!setRootResult.success) {
@@ -424,10 +430,10 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
 
             if (method === 'dbqueueoffline') {
-                const { address, oldValue, newValue } = params;
+                const { address, oldValue, newValue, oldCounter, newCounter } = params;
                 if (!address || newValue === undefined) {
                     console.error(
-                        'dbqueueoffline requires --db-params=\'{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>"}\' (oldValue "" = insert, newValue "" = delete)',
+                        'dbqueueoffline requires --db-params=\'{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>","newCounter":<n>}\' (oldValue "" = insert, newValue "" = delete; newCounter: 1 on insert, oldCounter+1 otherwise)',
                     );
                     process.exit(1);
                 }
@@ -440,6 +446,8 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     address,
                     old_value: oldValue ?? '',
                     new_value: newValue,
+                    ...(oldCounter !== undefined && { old_counter: oldCounter }),
+                    new_counter: newCounter ?? (oldValue ? oldCounter + 1 : 1),
                 });
                 if (!result.success) {
                     console.error('dbqueueoffline failed:', result);

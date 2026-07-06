@@ -64,7 +64,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange; pre-approval mac/deviceId from a prior dbapprove are picked up automatically)
                                                 --db-params='{"deviceId":"<hex>"}' (dbsetdeviceid)
-                                                --db-params='{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>"}' (dbqueueoffline; oldValue "" = insert, newValue "" = delete)
+                                                --db-params='{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>","newCounter":<n>}' (dbqueueoffline; oldValue "" = insert, newValue "" = delete; newCounter: 1 on insert, oldCounter+1 otherwise)
                                                 --db-params='{"address":"<hex>"}' (dbhistory)
 `;
 

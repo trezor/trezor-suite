@@ -14,5 +14,7 @@ export default createRawAuthDbMethod({
         address: payload.address,
         old_value: payload.old_value,
         new_value: payload.new_value,
+        ...(payload.old_counter !== undefined && { old_counter: payload.old_counter }),
+        new_counter: payload.new_counter,
     }),
 });

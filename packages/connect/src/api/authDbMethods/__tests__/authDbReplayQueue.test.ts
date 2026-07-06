@@ -109,6 +109,7 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qaddr',
             oldValue: '',
             newValue: valueHex('x', 1),
+            newCounter: 1,
         };
         const provider = buildProvider({
             getQueueEntries: jest.fn().mockResolvedValue([entry]),
@@ -127,6 +128,7 @@ describe('authDbReplayQueue', () => {
                             old_value: undefined,
                             new_value: entry.newValue,
                             mac: 'mac1',
+                            new_counter: 1,
                         },
                     ],
                 },
@@ -159,6 +161,8 @@ describe('authDbReplayQueue', () => {
                 address: 'bc1qaddr',
                 oldValue: '',
                 newValue: entry.newValue,
+                oldCounter: undefined,
+                newCounter: 1,
             },
         ]);
         expect(typedCall).toHaveBeenCalledWith(
@@ -197,6 +201,8 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qaddr',
             oldValue: valueHex('canonical-was-different', 1), // does NOT match canonical below
             newValue: valueHex('attempted-update', 2),
+            oldCounter: 1,
+            newCounter: 2,
         };
         const laterEntry: OfflineQueueEntry = {
             deviceId: 'dev1',
@@ -206,6 +212,7 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qother',
             oldValue: '',
             newValue: valueHex('unrelated-insert', 1),
+            newCounter: 1,
         };
         const canonicalRows: AuthLabelRow[] = [
             {
@@ -249,6 +256,7 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qgood',
             oldValue: '',
             newValue: valueHex('ok', 1),
+            newCounter: 1,
         };
         const staleEntry: OfflineQueueEntry = {
             deviceId: 'dev1',
@@ -258,6 +266,8 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qstale',
             oldValue: valueHex('wrong-base', 1),
             newValue: valueHex('would-be-update', 2),
+            oldCounter: 1,
+            newCounter: 2,
         };
         const provider = buildProvider({
             getQueueEntries: jest.fn().mockResolvedValue([goodEntry, staleEntry]),
@@ -304,6 +314,7 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qaddr',
             oldValue: '',
             newValue: valueHex('first', 1),
+            newCounter: 1,
         };
         const secondEntry: OfflineQueueEntry = {
             deviceId: 'dev2',
@@ -313,6 +324,8 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qaddr',
             oldValue: valueHex('first', 1),
             newValue: valueHex('second', 2),
+            oldCounter: 1,
+            newCounter: 2,
         };
         const recordHistoryEntry = jest.fn().mockResolvedValue(undefined);
         const provider = buildProvider({
@@ -373,6 +386,7 @@ describe('authDbReplayQueue', () => {
             address: 'bc1qaddr',
             oldValue: '',
             newValue: valueHex('x', 1),
+            newCounter: 1,
         };
         const provider = buildProvider({
             getQueueEntries: jest.fn().mockResolvedValue([entry]),

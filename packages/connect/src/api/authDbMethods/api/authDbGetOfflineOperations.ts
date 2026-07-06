@@ -62,6 +62,8 @@ export default class AuthDbGetOfflineOperations extends AbstractMethod<
                     address: op.address,
                     oldValue: op.old_value ?? '',
                     newValue: op.new_value ?? '',
+                    oldCounter: op.old_counter,
+                    newCounter: op.new_counter,
                 })),
             );
         }

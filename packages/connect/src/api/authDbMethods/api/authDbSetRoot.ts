@@ -12,7 +12,11 @@ export default createRawAuthDbMethod({
     },
     buildParams: (payload: PROTO.AuthDbSetRoot) => ({
         root: payload.root,
-        ...(payload.mac !== undefined && { mac: payload.mac }),
+        // Required by the wire protocol; all-zero is accepted only on debug builds
+        // (plain unauthenticated root injection).
+        mac: payload.mac,
         ...(payload.device_id !== undefined && { device_id: payload.device_id }),
+        ...(payload.counter !== undefined && { counter: payload.counter }),
+        ...(payload.operations !== undefined && { operations: payload.operations }),
     }),
 });

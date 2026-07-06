@@ -3,25 +3,6 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
-export type AuthDbSetRoot = Static<typeof AuthDbSetRoot>;
-export const AuthDbSetRoot = Type.Object(
-    {
-        root: Type.String(),
-        mac: Type.Optional(Type.String()),
-        device_id: Type.Optional(Type.String()),
-    },
-    { $id: 'AuthDbSetRoot' },
-);
-
-export type AuthDbSetRootResponse = Static<typeof AuthDbSetRootResponse>;
-export const AuthDbSetRootResponse = Type.Object(
-    {
-        counter: Type.Number(),
-        wallet_id: Type.Optional(Type.String()),
-    },
-    { $id: 'AuthDbSetRootResponse' },
-);
-
 export type AuthDbLookup = Static<typeof AuthDbLookup>;
 export const AuthDbLookup = Type.Object(
     {
@@ -30,6 +11,10 @@ export const AuthDbLookup = Type.Object(
         proof: Type.Optional(Type.Array(Type.String())),
         witness_address: Type.Optional(Type.String()),
         witness_value: Type.Optional(Type.String()),
+        // Leaf counter for `address` (required for membership); part of the leaf-hash preimage.
+        counter: Type.Optional(Type.Number()),
+        // Leaf counter for `witness_address` (non-membership only).
+        witness_counter: Type.Optional(Type.Number()),
     },
     { $id: 'AuthDbLookup' },
 );
@@ -56,6 +41,13 @@ export const AuthDbUpdateLeaf = Type.Object(
         witness_value: Type.Optional(Type.String()),
         mac: Type.Optional(Type.String()),
         device_id: Type.Optional(Type.String()),
+        // Leaf counter of old_value; absent/0 on INSERT/INIT.
+        old_counter: Type.Optional(Type.Number()),
+        // Leaf counter of new_value; 1 on INSERT/INIT, old_counter+1 on UPDATE. Part of the
+        // leaf-hash preimage: sha256d(0x00||address||counter(4B BE)||value).
+        new_counter: Type.Number(),
+        // Leaf counter of witness_value (INSERT only).
+        witness_counter: Type.Optional(Type.Number()),
     },
     { $id: 'AuthDbUpdateLeaf' },
 );
@@ -206,6 +198,10 @@ export const AuthDbOfflineOperation = Type.Object(
         old_value: Type.Optional(Type.String()),
         new_value: Type.Optional(Type.String()),
         mac: Type.String(),
+        // Leaf counter of old_value; absent/0 on INSERT.
+        old_counter: Type.Optional(Type.Number()),
+        // Leaf counter of new_value; 1 on INSERT, old_counter+1 otherwise.
+        new_counter: Type.Number(),
     },
     { $id: 'AuthDbOfflineOperation' },
 );
@@ -216,6 +212,10 @@ export const AuthDbQueueOfflineOperation = Type.Object(
         address: Type.String(),
         old_value: Type.String(),
         new_value: Type.String(),
+        // Leaf counter of old_value; absent/0 on INSERT.
+        old_counter: Type.Optional(Type.Number()),
+        // Leaf counter of new_value; 1 on INSERT, old_counter+1 otherwise.
+        new_counter: Type.Number(),
     },
     { $id: 'AuthDbQueueOfflineOperation' },
 );
@@ -247,8 +247,9 @@ export const AuthDbGetOfflineOperationsResponse = Type.Object(
 );
 
 // Embedded: one operation rebased by the host against the current canonical root.
-// sequence/address/old_value/new_value/mac must be forwarded byte-for-byte from the
-// original AuthDbOfflineOperation; proof/witness_* are freshly computed by the host.
+// sequence/address/old_value/new_value/old_counter/new_counter/mac must be forwarded
+// byte-for-byte (value-for-value) from the original AuthDbOfflineOperation; proof/witness_*
+// are freshly computed by the host.
 export type AuthDbRebasedOperation = Static<typeof AuthDbRebasedOperation>;
 export const AuthDbRebasedOperation = Type.Object(
     {
@@ -260,6 +261,11 @@ export const AuthDbRebasedOperation = Type.Object(
         proof: Type.Optional(Type.Array(Type.String())),
         witness_address: Type.Optional(Type.String()),
         witness_value: Type.Optional(Type.String()),
+        // Forwarded byte-for-byte from AuthDbOfflineOperation.
+        old_counter: Type.Optional(Type.Number()),
+        new_counter: Type.Number(),
+        // Freshly computed by the host, like proof/witness_*.
+        witness_counter: Type.Optional(Type.Number()),
     },
     { $id: 'AuthDbRebasedOperation' },
 );
@@ -331,4 +337,42 @@ export const AuthDbFastForwardRootResponse = Type.Object(
         wallet_id: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbFastForwardRootResponse' },
+);
+
+// `mac` is now REQUIRED. All-zero (32 bytes) is accepted only on debug builds (plain
+// unauthenticated root injection, +1 counter). Any other value is verified exactly like
+// AuthDbFastForwardRoot (device_id must equal wallet_id, counter strictly greater, HMAC
+// match) and jumps straight to `counter`. After install, `operations` (if any -- this
+// wallet's own pending offline queue) are replayed on top using the same verification
+// AuthDbApplyOfflineOperations uses, in one round trip.
+export type AuthDbSetRoot = Static<typeof AuthDbSetRoot>;
+export const AuthDbSetRoot = Type.Object(
+    {
+        root: Type.String(),
+        mac: Type.String(),
+        device_id: Type.Optional(Type.String()),
+        // Target counter; required when mac is non-zero.
+        counter: Type.Optional(Type.Number()),
+        // Replayed after install, may be empty.
+        operations: Type.Optional(Type.Array(AuthDbRebasedOperation)),
+    },
+    { $id: 'AuthDbSetRoot' },
+);
+
+export type AuthDbSetRootResponse = Static<typeof AuthDbSetRootResponse>;
+export const AuthDbSetRootResponse = Type.Object(
+    {
+        // Final counter, after install + replay.
+        counter: Type.Number(),
+        wallet_id: Type.Optional(Type.String()),
+        // Final root, after install + replay; absent if tree is empty.
+        new_root: Type.Optional(Type.String()),
+        // How many of `operations` were actually applied.
+        applied_count: Type.Number(),
+        // This wallet's persisted watermark after replay.
+        last_applied_sequence: Type.Number(),
+        // HMAC(root_mac_key, wallet_id||counter||new_root); absent if tree is empty.
+        root_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbSetRootResponse' },
 );

@@ -105,10 +105,13 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             old_value: oldValueHex,
             new_value: newValueHex,
             proof,
+            ...(!isInsert && { old_counter: oldEntry.counter }),
+            new_counter: newEntry.counter,
             ...(nonMembership?.witnessAddress !== null &&
                 nonMembership?.witnessAddress !== undefined && {
                     witness_address: utf8Hex(nonMembership.witnessAddress),
                     witness_value: bytesToHex(nonMembership.witnessValue!),
+                    witness_counter: nonMembership.witnessCounter!,
                 }),
             ...(approval && { mac: approval.mac, device_id: approval.deviceId }),
         });
