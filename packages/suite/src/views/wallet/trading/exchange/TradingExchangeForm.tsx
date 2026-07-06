@@ -17,21 +17,19 @@ import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/Tra
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingExchangeFormInputs } from '../common/TradingForm/TradingExchangeFormInputs';
 
-const TradingExchangeFormContent = () => (
-    <TradingFormLayout>
-        <TradingExchangeFormInputs />
-    </TradingFormLayout>
-);
-
 const TradingExchangeFormWrapper = () => {
-    const tradingExchangeContextValue = useTradingExchangeForm({});
+    const tradingExchangeContextValue = useTradingExchangeForm();
     const allowanceContextValue = useAllowance({ account: tradingExchangeContextValue.account });
 
     return (
         <TradingFormContext.Provider value={tradingExchangeContextValue}>
             <AllowanceContext.Provider value={allowanceContextValue}>
                 <FormProvider {...tradingExchangeContextValue.methods}>
-                    <TradingContainer SectionComponent={TradingExchangeFormContent} />
+                    <TradingContainer>
+                        <TradingFormLayout>
+                            <TradingExchangeFormInputs />
+                        </TradingFormLayout>
+                    </TradingContainer>
                 </FormProvider>
             </AllowanceContext.Provider>
         </TradingFormContext.Provider>

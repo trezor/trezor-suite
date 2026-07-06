@@ -1,5 +1,7 @@
+import { selectTradingProviderByNameAndTradeType } from '@suite-common/trading';
+
+import { useSelector } from 'src/hooks/suite';
 import { TradingDetailContext, useTradingDetail } from 'src/hooks/wallet/trading/useTradingDetail';
-import { getTradeProvider } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingDetailSell } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSell';
 
@@ -8,14 +10,19 @@ export const TradingSellDetail = () => {
         tradeType: 'sell',
     });
 
-    const provider = getTradeProvider({
-        trade: tradingDetailContext.trade?.data,
-        providerInfo: tradingDetailContext.info?.providerInfos,
-    });
+    const provider = useSelector(state =>
+        selectTradingProviderByNameAndTradeType(
+            state,
+            tradingDetailContext.trade?.data.exchange,
+            'sell',
+        ),
+    );
 
     return (
         <TradingDetailContext.Provider value={tradingDetailContext}>
-            <TradingContainer SectionComponent={TradingDetailSell} provider={provider} />
+            <TradingContainer provider={provider}>
+                <TradingDetailSell />
+            </TradingContainer>
         </TradingDetailContext.Provider>
     );
 };
