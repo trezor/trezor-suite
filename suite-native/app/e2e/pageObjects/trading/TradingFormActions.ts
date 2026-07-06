@@ -1,8 +1,8 @@
 import { expect as detoxExpect } from 'detox';
 
+import { wait, waitForEnabled, waitForVisible } from '../../support/utils';
 import { onTabBar } from '../tabBarActions';
 import { TradingActions } from './TradingActions';
-import { wait, waitForVisible } from '../../support/utils';
 
 export abstract class TradingFormActions extends TradingActions {
     abstract waitForQuotesToLoad(): Promise<void>;
@@ -137,6 +137,19 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(providersPicker);
     }
 
+    async selectProvider(providerName: string, filter: 'DEX' | 'CEX' | 'FIXED') {
+        const providersPicker = this.getElementById('provider-picker');
+        await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
+        await providersPicker.tap();
+
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await this.expectSheetHeaderTitle('Providers');
+        await element(by.id(`@trading/provider-sheet/filter-tab/${filter}`)).tap();
+        await element(by.text(providerName)).tap();
+
+        await waitForVisible(providersPicker);
+    }
+
     async selectReceiveAsset(asset: string, network?: string, searchString?: string) {
         const receiveAssetButton = this.getElementById('asset-receive-button');
         await waitForVisible(receiveAssetButton, { timeout: this.SHORT_TIMEOUT });
@@ -196,7 +209,15 @@ export abstract class TradingFormActions extends TradingActions {
     }
 
     async confirmTradingForm() {
-        await this.getElementById('continue-button').tap();
+        const continueButton = this.getElementById('continue-button');
+        await waitForEnabled(continueButton, { timeout: this.SHORT_TIMEOUT });
+        await continueButton.tap();
+    }
+
+    async revokeApproval() {
+        const revokeButton = this.getElementById('revoke-button');
+        await waitForVisible(revokeButton, { timeout: this.SHORT_TIMEOUT });
+        await revokeButton.tap();
     }
 
     async tapTradingSectionHeaderTab() {
