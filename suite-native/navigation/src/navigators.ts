@@ -49,7 +49,7 @@ import {
 } from './routes';
 import { type NavigateParameters } from './types';
 
-type AddCoinFlowParams = RequireAllOrNone<
+type AccountIdentityParams = RequireAllOrNone<
     { networkSymbol: NetworkSymbol; accountType: AccountType; accountIndex: number },
     'networkSymbol' | 'accountType' | 'accountIndex'
 >;
@@ -75,7 +75,7 @@ type AccountDetailParams = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
     closeActionType: CloseActionType;
-} & AddCoinFlowParams;
+} & AccountIdentityParams;
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: { networksFilter?: NetworkSymbol[] } | undefined;
@@ -447,7 +447,7 @@ export type RootStackParamList = {
         accountKey: AccountKey;
         tab?: AccountAssetsTab;
         flowType?: AccountAssetsFlow;
-    };
+    } & AccountIdentityParams;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };

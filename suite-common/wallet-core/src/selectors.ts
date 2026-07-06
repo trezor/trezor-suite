@@ -10,6 +10,7 @@ import { type Account, type ReviewOutput } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
+    isAccountFailed,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
@@ -93,7 +94,7 @@ const getDeviceAccountsPerEnabledNetwork = (
     return symbols.map(symbol => ({ symbol, accounts: symbolMap[symbol] }));
 };
 
-const getLastAccountsPerAccountType = (accounts: Account[]) =>
+const getAccountChainsPerAccountType = (accounts: Account[]) =>
     Object.entries(arrayToDictionary(accounts, acc => acc.accountType, true)).map(
         ([type, accs]) => ({
             type,
@@ -101,6 +102,13 @@ const getLastAccountsPerAccountType = (accounts: Account[]) =>
             lastAccount: accs.reduce((last, current) =>
                 current.index > last.index ? current : last,
             ),
+            // failed account with the lowest index; a failed account may sit below other known
+            // accounts when a known-accounts refresh fails for some of them (e.g. flaky backend)
+            firstFailedAccount: accs
+                .filter(isAccountFailed)
+                .reduce<
+                    Account | undefined
+                >((first, current) => (!first || current.index < first.index ? current : first), undefined),
         }),
     );
 
@@ -126,14 +134,16 @@ export const selectDiscoveryAccountsParam = (
                 gap: bitcoinGap,
             } as DiscoveryAccountsParam[number];
 
-        const known = getLastAccountsPerAccountType(accounts).map(({ type, lastAccount }) => {
-            // last account is a failed one; try to discover it again
-            if (lastAccount.failed) return { type, skip: lastAccount.index };
-            // last account is a used one; skip it and try to discover next one
-            else if (!lastAccount.empty) return { type, skip: lastAccount.index + 1 };
-            // last account is an empty one; skip this type completely
-            else return { type };
-        });
+        const known = getAccountChainsPerAccountType(accounts).map(
+            ({ type, lastAccount, firstFailedAccount }) => {
+                // some account failed; rediscover the whole chain from the first failed one
+                if (firstFailedAccount) return { type, skip: firstFailedAccount.index };
+                // last account is a used one; skip it and try to discover next one
+                else if (!lastAccount.empty) return { type, skip: lastAccount.index + 1 };
+                // last account is an empty one; skip this type completely
+                else return { type };
+            },
+        );
 
         return {
             symbol,
@@ -175,7 +185,7 @@ export const selectShouldRediscover = (
     return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
         ({ accounts }) =>
             !accounts ||
-            getLastAccountsPerAccountType(accounts).some(
+            getAccountChainsPerAccountType(accounts).some(
                 ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
             ),
     );

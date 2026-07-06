@@ -105,7 +105,7 @@ export const selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex = create
     (accounts, accountIndex) => {
         if (accountIndex === undefined || accountIndex < 0) return undefined;
 
-        return accounts[accountIndex];
+        return accounts.find(account => account.index === accountIndex);
     },
 );
 

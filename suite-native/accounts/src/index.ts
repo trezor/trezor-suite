@@ -13,6 +13,7 @@ export * from './components/AccountLabelFieldHint';
 export * from './components/AccountDetailsCard';
 export * from './components/TokenReceiveCard';
 export * from './hooks/useAccountLabelForm';
+export * from './hooks/useResolvedAccountKey';
 export * from './selectors';
 export * from './hooks/useAccountAlerts';
 export * from './utils';

@@ -48,6 +48,7 @@ import {
     getAccountFiatBalance,
     getAccountTotalStakingBalance,
     getFiatRateKey,
+    isAccountFailed,
     isCardanoStakingActive,
     isErc4626,
     isStakingSymbol,
@@ -433,6 +434,20 @@ export const selectFreshAccountAddress = createMemoizedSelector(
     [selectAccountByKey, selectPendingAccountAddresses, selectIsAccountUtxoBased],
     (account, pendingAddresses, isAccountUtxoBased) =>
         account ? getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased) : null,
+);
+
+export const selectIsAccountDiscoveryFailed = createMemoizedSelector(
+    [selectAccountByKey],
+    account => !!account && isAccountFailed(account),
+);
+
+export const selectHasDeviceAnyFailedAccountForNetworkSymbol = createMemoizedSelector(
+    [
+        selectVisibleDeviceAccounts,
+        (_state: NativeAccountsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
+    ],
+    (accounts, networkSymbol) =>
+        accounts.some(account => account.symbol === networkSymbol && isAccountFailed(account)),
 );
 
 export const selectHasDeviceAnySendAvailableAccount = createMemoizedSelector(

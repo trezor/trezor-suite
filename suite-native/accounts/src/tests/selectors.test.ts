@@ -6,7 +6,12 @@ import {
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { getAccountListSections, selectFreshAccountAddress } from '../selectors';
+import {
+    getAccountListSections,
+    selectFreshAccountAddress,
+    selectHasDeviceAnyFailedAccountForNetworkSymbol,
+    selectIsAccountDiscoveryFailed,
+} from '../selectors';
 import { isFilterValueMatchingAccount, sortAccountsByNetworksAndAccountTypes } from '../utils';
 
 let mockStakingBalance = '0';
@@ -347,5 +352,78 @@ describe('getAccountListSections', () => {
         expect(sections[1]?.type).toBe('staking');
         expect(sections[2]?.type).toBe('token');
         expect(sections[3]?.type).toBe('token');
+    });
+});
+
+describe('selectIsAccountDiscoveryFailed', () => {
+    const staticSessionId = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1';
+
+    const failedAccount = {
+        key: `failed:0:sol:normal-sol-${staticSessionId}`,
+        descriptor: 'failed:0:sol:normal',
+        symbol: 'sol',
+        accountType: 'normal',
+        index: 0,
+        deviceState: staticSessionId,
+        visible: true,
+        failed: true,
+        error: 'Network request failed',
+    } as unknown as Account;
+
+    const normalAccount = {
+        key: `descriptor1-sol-${staticSessionId}`,
+        descriptor: 'descriptor1',
+        symbol: 'sol',
+        accountType: 'normal',
+        index: 0,
+        deviceState: staticSessionId,
+        visible: true,
+    } as unknown as Account;
+
+    const getState = (accounts: Account[]) =>
+        ({
+            wallet: { accounts },
+            device: { selectedDevice: { state: { staticSessionId } }, devices: [] },
+        }) as any;
+
+    it('returns true for a failed account', () => {
+        expect(selectIsAccountDiscoveryFailed(getState([failedAccount]), failedAccount.key)).toBe(
+            true,
+        );
+    });
+
+    it('returns false for a normal account', () => {
+        expect(selectIsAccountDiscoveryFailed(getState([normalAccount]), normalAccount.key)).toBe(
+            false,
+        );
+    });
+
+    it('returns false for an unknown account key', () => {
+        expect(selectIsAccountDiscoveryFailed(getState([normalAccount]), failedAccount.key)).toBe(
+            false,
+        );
+    });
+
+    describe('selectHasDeviceAnyFailedAccountForNetworkSymbol', () => {
+        it('returns true when any account of the network failed', () => {
+            expect(
+                selectHasDeviceAnyFailedAccountForNetworkSymbol(
+                    getState([normalAccount, failedAccount]),
+                    'sol',
+                ),
+            ).toBe(true);
+        });
+
+        it('returns false when no account of the network failed', () => {
+            expect(
+                selectHasDeviceAnyFailedAccountForNetworkSymbol(getState([normalAccount]), 'sol'),
+            ).toBe(false);
+        });
+
+        it('returns false for another network', () => {
+            expect(
+                selectHasDeviceAnyFailedAccountForNetworkSymbol(getState([failedAccount]), 'btc'),
+            ).toBe(false);
+        });
     });
 });

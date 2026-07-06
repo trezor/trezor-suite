@@ -1874,6 +1874,12 @@ export const messages = {
         },
     },
     moduleAccountManagement: {
+        discoveryFailedBanner: {
+            title: 'Account couldn’t be loaded',
+            description:
+                'Something went wrong while loading this account. Check your internet connection and try again.',
+            retryButton: 'Retry',
+        },
         accountsScreen: {
             title: 'My assets',
             networkFilter: {
