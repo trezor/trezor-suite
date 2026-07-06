@@ -8,6 +8,7 @@ import {
 import { type VinVoutAddress } from './types';
 import {
     groupTargetOutputs,
+    groupTransactionsByMonthWithPending,
     mapTransactionInputsOutputsToAddresses,
     sortTargetAddressesToBeginning,
 } from './utils';
@@ -245,5 +246,59 @@ describe(groupTargetOutputs.name, () => {
         };
         const result = groupTargetOutputs([noAmount, makeSimpleTarget('500', 1)]);
         expect(result[0]).toMatchObject({ type: 'target', payload: { amount: '500' } });
+    });
+});
+
+describe(groupTransactionsByMonthWithPending.name, () => {
+    const confirmedTransaction = transactionWithTargetInOutputs;
+
+    const pendingWithBlockTime = {
+        ...transactionWithTargetInOutputs,
+        txid: 'pending-with-blocktime',
+        blockHeight: undefined,
+        blockTime: 1639707387,
+    };
+
+    const pendingWithoutBlockTime = {
+        ...transactionWithTargetInOutputs,
+        txid: 'pending-without-blocktime',
+        blockHeight: undefined,
+        blockTime: undefined,
+    };
+
+    test('groups pending transaction with blockTime into its real month', () => {
+        const groups = groupTransactionsByMonthWithPending([
+            confirmedTransaction,
+            pendingWithBlockTime,
+        ]);
+
+        expect(groups['pending']).toBeUndefined();
+        const monthGroup = Object.values(groups).find(transactions =>
+            transactions.some(transaction => transaction.txid === 'pending-with-blocktime'),
+        );
+        expect(monthGroup).toBeDefined();
+        expect(monthGroup).toContainEqual(
+            expect.objectContaining({ txid: confirmedTransaction.txid }),
+        );
+    });
+
+    test('groups pending transaction without blockTime into a leading pending group', () => {
+        const groups = groupTransactionsByMonthWithPending([
+            confirmedTransaction,
+            pendingWithoutBlockTime,
+        ]);
+
+        expect(groups['pending']).toEqual([
+            expect.objectContaining({ txid: 'pending-without-blocktime' }),
+        ]);
+        expect(Object.keys(groups)[0]).toBe('pending');
+    });
+
+    test('returns only month groups when nothing is pending', () => {
+        const groups = groupTransactionsByMonthWithPending([confirmedTransaction]);
+
+        expect(groups['pending']).toBeUndefined();
+        expect(groups['no-blocktime']).toBeUndefined();
+        expect(Object.keys(groups)).toHaveLength(1);
     });
 });

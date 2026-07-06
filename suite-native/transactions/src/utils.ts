@@ -4,9 +4,11 @@ import { type SignValue } from '@suite-common/suite-types';
 import { type Target as ProcessedTarget, createSimpleTargetId } from '@suite-common/wallet-core';
 import { type TransactionType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
+    type GroupedTransactionsByDate,
     getTxStakeNameByDataHex,
     getTxStakeType,
     getUnstakeAmountByEthereumDataHex,
+    groupTransactionsByDate,
 } from '@suite-common/wallet-utils';
 import { type EnhancedVinVout, type Target } from '@trezor/blockchain-link-types';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
@@ -98,4 +100,19 @@ export const getUnstakeTxAmount = (tx: WalletAccountTransaction) => {
     }
 
     return getUnstakeAmountByEthereumDataHex(tx.ethereumSpecific?.data) ?? undefined;
+};
+
+export const groupTransactionsByMonthWithPending = (
+    transactions: WalletAccountTransaction[],
+): GroupedTransactionsByDate => {
+    const { 'no-blocktime': pendingTransactions, ...monthGroups } = groupTransactionsByDate(
+        transactions,
+        'month',
+    );
+
+    if (!pendingTransactions) {
+        return monthGroups;
+    }
+
+    return { pending: pendingTransactions, ...monthGroups };
 };
