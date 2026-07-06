@@ -33,6 +33,7 @@ export const useGapLimitForm = (symbol: NetworkSymbol) => {
     const isSame = value.trim() === String(savedGapLimit ?? DEFAULT_GAP_LIMIT);
 
     const save = () => {
+        if (error) return;
         dispatch(blockchainActions.setBackendGapLimit({ symbol, gapLimit: Number(value.trim()) }));
     };
 

@@ -45,7 +45,7 @@ import {
 } from './transactionsSelectors';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsSelectors';
-import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
@@ -585,6 +585,10 @@ export const fetchTransactionsPageThunk = createThunk(
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            gap:
+                account.networkType === 'bitcoin'
+                    ? selectGapLimit(getState(), account.symbol)
+                    : undefined,
         });
 
         // Account might have changed during async getAccountInfo call, so we fetch current state
