@@ -1,4 +1,4 @@
-import { type ElementType } from 'react';
+import { type ReactNode } from 'react';
 
 import type { TradingProviderInfo } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -11,11 +11,11 @@ import { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/Tra
 import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
 
 export interface TradingContainerProps {
-    SectionComponent: ElementType;
+    children: ReactNode;
     provider?: TradingProviderInfo;
 }
 
-export const TradingContainer = ({ SectionComponent, provider }: TradingContainerProps) => {
+export const TradingContainer = ({ children, provider }: TradingContainerProps) => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     useTradingPageHeader();
 
@@ -26,7 +26,7 @@ export const TradingContainer = ({ SectionComponent, provider }: TradingContaine
                     <DiscoveryWarning />
                 </Column>
             )}
-            <SectionComponent />
+            {children}
             <TradingFooter provider={provider} />
         </>
     );
