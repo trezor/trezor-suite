@@ -3,7 +3,14 @@ import styled from 'styled-components';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
-import { fromWei, getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
+import {
+    type PendingEvmNonceStatus,
+    fromWei,
+    getFeeRate,
+    getTxIcon,
+    isEip1559,
+    isPending,
+} from '@suite-common/wallet-utils';
 import {
     Card,
     Divider,
@@ -16,6 +23,7 @@ import {
     Link,
     Row,
     Text,
+    Tooltip,
 } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
@@ -65,6 +73,9 @@ type BasicTxDetailsProps = {
     confirmations: number;
     explorerUrl: string;
     explorerUrlQueryString?: string;
+    // Whether this tx's own nonce is stuck (gapped or already superseded) — see useEvmNonceInfo.
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const BasicTxDetails = ({
@@ -73,6 +84,8 @@ export const BasicTxDetails = ({
     network,
     explorerUrl,
     explorerUrlQueryString,
+    nonceStatus,
+    nextNonce,
 }: BasicTxDetailsProps) => {
     const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
@@ -168,7 +181,28 @@ export const BasicTxDetails = ({
                 {network.networkType === 'ethereum' && tx.ethereumSpecific && (
                     <>
                         <Item label={<Translation id="TR_NONCE" />} iconName="receipt">
-                            {tx.ethereumSpecific?.nonce}
+                            <Row gap={4}>
+                                {tx.ethereumSpecific?.nonce}
+                                {nonceStatus && nonceStatus !== 'ok' && (
+                                    <Tooltip
+                                        content={
+                                            nonceStatus === 'superseded' ? (
+                                                <Translation
+                                                    id="TR_PENDING_NONCE_SUPERSEDED_WARNING"
+                                                    values={{ nonce: nextNonce }}
+                                                />
+                                            ) : (
+                                                <Translation
+                                                    id="TR_BUMP_FEE_NONCE_GAP_WARNING"
+                                                    values={{ nonce: nextNonce }}
+                                                />
+                                            )
+                                        }
+                                    >
+                                        <Icon name="warning" size={16} intent="warning" />
+                                    </Tooltip>
+                                )}
+                            </Row>
                         </Item>
 
                         <Item

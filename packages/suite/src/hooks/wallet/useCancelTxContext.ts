@@ -13,7 +13,7 @@ type CancelTxContextValues = {
 export const CancelTxContext = createContext<CancelTxContextValues | null>(null);
 CancelTxContext.displayName = 'CancelTxContext';
 
-// Used across rbf form components
-// Provide combined context of `react-hook-form` with custom values as RbfContextValues
+// Shares the composed cancel (RBF) transaction and its FormState between CancelTransactionModal
+// and the components it renders below it (CancelTransaction, CancelTransactionButton).
 export const useCancelTxContext = () =>
     useContext(CancelTxContext) ?? throwError('useCancelTxContext used without Context');

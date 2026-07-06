@@ -12,10 +12,19 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
     createAccountKey,
 } from '@suite-common/wallet-types';
-import { findChainedTransactions, isPending } from '@suite-common/wallet-utils';
+import {
+    findChainedTransactions,
+    getPendingEvmNonceStatus,
+    isPending,
+    isSentTransaction,
+    isTransactionBumpable,
+    isTransactionCancellable,
+} from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
+import { type AppState } from 'src/types/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
@@ -26,6 +35,8 @@ import { DetailModal } from './Detail/DetailModal';
 const hasRbfParams = (
     tx: WalletAccountTransaction,
 ): tx is WalletAccountTransactionWithRequiredRbfParams => tx.rbfParams !== undefined;
+
+const selectWalletSelectedAccount = (state: AppState) => state.wallet.selectedAccount;
 
 type TxDetailModalProps = {
     txid: string;
@@ -77,7 +88,9 @@ export const TxDetailModal = ({
     }, [originalTx, filteredInternalTransfers]);
 
     const account = useSelector(state => selectAccountByKey(state, accountKey));
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectWalletSelectedAccount);
+    const nonceAccount = account?.networkType === 'ethereum' ? account : undefined;
+    const { nonceInfo: fetchedNonceInfo } = useEvmNonceInfo(nonceAccount);
 
     const transactions = useSelector(selectAllPendingTransactions);
     // const confirmations = getConfirmations(tx, blockchain.blockHeight);
@@ -121,14 +134,26 @@ export const TxDetailModal = ({
     const network = getNetwork(account.symbol);
     const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
 
-    const canReplaceTransaction =
-        hasRbfParams(tx) && networkFeatures?.includes('rbf') && !tx.deadline && tx.type !== 'joint';
+    // A pending EVM tx whose own nonce is gapped or already superseded can't be bumped OR
+    // cancelled — both re-send at this same nonce, which would land on a nonce that either can't
+    // confirm yet or already confirmed elsewhere (the network would reject a cancel attempt as
+    // "nonce too low"). Same check the account's transaction list uses (see TransactionItem.tsx).
+    // Computed once here and threaded down through DetailModal/BumpFeeModal/CancelTransactionModal
+    // to TxDetailModalBase, instead of each of those independently re-fetching/recomputing it.
+    const evmNonce = network.networkType === 'ethereum' ? tx.ethereumSpecific?.nonce : undefined;
+    const pendingEvmNonce = isPending(tx) && isSentTransaction(tx) ? evmNonce : undefined;
+    const nonceStatus =
+        pendingEvmNonce !== undefined && fetchedNonceInfo
+            ? getPendingEvmNonceStatus(pendingEvmNonce, fetchedNonceInfo)
+            : 'ok';
+    const isNonceStuck = nonceStatus !== 'ok';
+
+    const canReplaceTransaction = hasRbfParams(tx) && isTransactionBumpable(tx, networkFeatures);
 
     const canCancelTransaction =
-        (network.networkType === 'bitcoin' || network.networkType === 'ethereum') &&
-        tx.type !== 'joint';
+        isTransactionCancellable(tx, isPending(tx), network.networkType) && !isNonceStuck;
 
-    if (section === 'bump-fee' && canReplaceTransaction) {
+    if (section === 'bump-fee' && canReplaceTransaction && !isNonceStuck) {
         return (
             <BumpFeeModal
                 tx={tx}
@@ -137,6 +162,8 @@ export const TxDetailModal = ({
                 onShowChained={onShowChained}
                 chainedTxs={chainedTxs}
                 account={account}
+                nonceStatus={nonceStatus}
+                nextNonce={fetchedNonceInfo?.nextNonce}
             />
         );
     }
@@ -144,6 +171,7 @@ export const TxDetailModal = ({
     if (
         section === 'cancel-transaction' &&
         canReplaceTransaction &&
+        !isNonceStuck &&
         selectedAccount.status === 'loaded'
     ) {
         return (
@@ -154,6 +182,8 @@ export const TxDetailModal = ({
                 onShowChained={onShowChained}
                 chainedTxs={chainedTxs}
                 selectedAccount={selectedAccount}
+                nonceStatus={nonceStatus}
+                nextNonce={fetchedNonceInfo?.nextNonce}
             />
         );
     }
@@ -166,8 +196,10 @@ export const TxDetailModal = ({
             onChangeFeeClick={onChangeFeeClick}
             onCancelTxClick={onCancelTxClick}
             chainedTxs={chainedTxs}
-            canReplaceTransaction={canReplaceTransaction}
+            canReplaceTransaction={canReplaceTransaction && !isNonceStuck}
             canCancelTransaction={canCancelTransaction}
+            nonceStatus={nonceStatus}
+            nextNonce={fetchedNonceInfo?.nextNonce}
         />
     );
 };

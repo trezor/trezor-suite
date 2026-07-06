@@ -8,6 +8,7 @@ import {
     type WalletAccountTransaction,
     createAccountKey,
 } from '@suite-common/wallet-types';
+import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -24,6 +25,8 @@ type DetailModalProps = {
     chainedTxs?: ChainedTransactions;
     canReplaceTransaction: boolean;
     canCancelTransaction: boolean;
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const DetailModal = ({
@@ -35,6 +38,8 @@ export const DetailModal = ({
     chainedTxs,
     canReplaceTransaction,
     canCancelTransaction,
+    nonceStatus,
+    nextNonce,
 }: DetailModalProps) => {
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
@@ -75,6 +80,8 @@ export const DetailModal = ({
                 ) : null
             }
             onBackClick={undefined}
+            nonceStatus={nonceStatus}
+            nextNonce={nextNonce}
         >
             <AdvancedTxDetails
                 explorerUrl={getExplorerUrl(explorer, 'tx')!}

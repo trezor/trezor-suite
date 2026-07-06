@@ -15,6 +15,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
+import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
@@ -48,6 +49,11 @@ type TxDetailModalProps = {
     heading: ReactNode;
     bottomContent: ReactNode | undefined;
     children: ReactNode;
+    // Computed once by TxDetailModal (the router) and threaded down through whichever of
+    // DetailModal/BumpFeeModal/CancelTransactionModal is rendered, instead of this shared base
+    // independently re-fetching/recomputing the same thing.
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const TxDetailModalBase = ({
@@ -57,6 +63,8 @@ export const TxDetailModalBase = ({
     heading,
     bottomContent,
     children,
+    nonceStatus,
+    nextNonce,
 }: TxDetailModalProps) => {
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
@@ -117,6 +125,8 @@ export const TxDetailModalBase = ({
                     tx={tx}
                     network={network}
                     confirmations={confirmations}
+                    nonceStatus={nonceStatus}
+                    nextNonce={nextNonce}
                 />
 
                 {isPhishingTransaction && (
