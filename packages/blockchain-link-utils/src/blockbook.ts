@@ -319,10 +319,12 @@ export const transformTransaction = (
         // descriptor), an 'unknown' is a genuine gap worth capturing — including the anomalous case where
         // the supplied addresses were empty (myAddressesCount === 0).
         // Intentionally no txid / addresses / descriptor: these reach Sentry and could deanonymize the user.
-        if (addressesOrDescriptor !== undefined) {
+        if (addresses !== undefined) {
             console.error('[btc-unknown-tx-debug] transformTransaction → type=unknown', {
                 isPending: !tx.blockHeight || tx.blockHeight <= 0,
-                myAddressesCount: myAddresses.length,
+                knownUsedCount: addresses.used.length,
+                knownUnusedCount: addresses.unused.length,
+                knownChangeCount: addresses.change.length,
                 vinCount: inputs.length,
                 voutCount: outputs.length,
                 vinWithAddressesCount: inputs.filter(
