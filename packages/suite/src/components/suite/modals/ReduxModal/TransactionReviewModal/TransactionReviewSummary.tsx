@@ -6,6 +6,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
+    type AccountWithNetworkType,
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
     type SendFormDraftKey,
@@ -20,6 +21,7 @@ import { BigNumber } from '@trezor/utils';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
@@ -40,6 +42,9 @@ const getEstimatedTime = (
     return matchedFeeLevel.blocks * feeInfo.blockTime * 60;
 };
 
+const selectSendFormDrafts = (state: AppState) => state.wallet.send.drafts;
+const selectCurrentAccountKey = (state: AppState) => state.wallet.selectedAccount.account?.key;
+
 type TransactionReviewSummaryProps = {
     tx: GeneralPrecomposedTransactionFinal;
     account: Account;
@@ -57,10 +62,8 @@ export const TransactionReviewSummary = ({
     stakeType,
     timer,
 }: TransactionReviewSummaryProps) => {
-    const drafts = useSelector(state => state.wallet.send.drafts);
-    const currentAccountKey = useSelector(
-        state => state.wallet.selectedAccount.account?.key,
-    ) as string;
+    const drafts = useSelector(selectSendFormDrafts);
+    const currentAccountKey = useSelector(selectCurrentAccountKey) as string;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useLocales();
     const { symbol, networkType } = account;
@@ -98,7 +101,7 @@ export const TransactionReviewSummary = ({
 
                     {isEthereumNetworkType && (
                         <TransactionReviewEthereumNotes
-                            account={account as Account & { networkType: 'ethereum' }}
+                            account={account as AccountWithNetworkType<'ethereum'>}
                             tx={tx}
                         />
                     )}

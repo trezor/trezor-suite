@@ -1,17 +1,12 @@
-import { useEffect, useState } from 'react';
-
 import { Translation } from '@suite/intl';
-import {
-    ethereumGetCurrentNonceThunk,
-    selectResolvedEthereumNonce,
-} from '@suite-common/wallet-core';
+import { selectResolvedEthereumNonce } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 
 type TransactionReviewEthereumNotesProps = {
@@ -19,46 +14,21 @@ type TransactionReviewEthereumNotesProps = {
     tx: GeneralPrecomposedTransactionFinal;
 };
 
+const selectPrecomposedFormEthereumNonce = (state: AppState) =>
+    state.wallet.send.precomposedForm?.ethereumNonce;
+
 export const TransactionReviewEthereumNotes = ({
     account,
     tx,
 }: TransactionReviewEthereumNotesProps) => {
-    const dispatch = useDispatch();
-    const precomposedFormEthereumNonce = useSelector(
-        state => state.wallet.send.precomposedForm?.ethereumNonce,
-    );
-    // In the normal flow the signing thunk stores this before the device button-request fires, so
-    // the modal reads the already-resolved value. The local fallback below covers edge cases where
-    // the modal renders before the thunk has stored it (e.g. in tests, or slow device response).
+    const precomposedFormEthereumNonce = useSelector(selectPrecomposedFormEthereumNonce);
+    // signEthereumSendFormTransactionThunk stores the exact signed-with nonce before the device
+    // button-request fires, so it's normally already set by the time this modal renders. Until
+    // then, fall back to the nonce captured at compose time (a custom override, if any) instead of
+    // re-resolving it independently — this modal only displays the nonce, it never signs with it,
+    // and the Note below simply doesn't render until one of the two is available.
     const storedEthereumNonce = useSelector(selectResolvedEthereumNonce);
-    const [resolvedNonce, setResolvedNonce] = useState<string>();
-    const ethereumNonce = storedEthereumNonce ?? resolvedNonce;
-
-    useEffect(() => {
-        if (storedEthereumNonce !== undefined) return;
-
-        if (precomposedFormEthereumNonce) {
-            setResolvedNonce(precomposedFormEthereumNonce);
-
-            return;
-        }
-
-        const promise = dispatch(
-            ethereumGetCurrentNonceThunk({
-                selectedAccount: account,
-                fetchConfirmedNonce: true,
-            }),
-        );
-
-        void promise
-            .unwrap()
-            .then(({ nonce }) => setResolvedNonce(nonce))
-            .catch(() => {});
-
-        return () => {
-            promise.abort();
-        };
-    }, [account, dispatch, precomposedFormEthereumNonce, storedEthereumNonce]);
+    const ethereumNonce = storedEthereumNonce ?? precomposedFormEthereumNonce;
 
     const fee = getFee(account.networkType, tx);
 

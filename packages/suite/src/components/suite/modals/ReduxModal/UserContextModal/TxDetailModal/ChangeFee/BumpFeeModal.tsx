@@ -5,6 +5,7 @@ import {
     type ChainedTransactions,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
+import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -22,6 +23,8 @@ type BumpFeeModalProps = {
     onShowChained: () => void;
     chainedTxs?: ChainedTransactions;
     account: Account;
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const BumpFeeModal = ({
@@ -31,6 +34,8 @@ export const BumpFeeModal = ({
     onShowChained,
     chainedTxs,
     account,
+    nonceStatus,
+    nextNonce,
 }: BumpFeeModalProps) => {
     const contextValues = useRbf({ rbfParams: tx.rbfParams, chainedTxs, account });
 
@@ -56,6 +61,8 @@ export const BumpFeeModal = ({
                     )
                 }
                 onBackClick={onBackClick}
+                nonceStatus={nonceStatus}
+                nextNonce={nextNonce}
             >
                 {isTxConfirmed ? (
                     <ReplaceByFeeFailedOriginalTxConfirmed
