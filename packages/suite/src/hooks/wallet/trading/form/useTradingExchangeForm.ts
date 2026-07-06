@@ -58,7 +58,6 @@ import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useT
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
-import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
     type TradingExchangeConfirmTradeProps,
     type TradingExchangeFormContextProps,
@@ -70,12 +69,9 @@ import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
-export const useTradingExchangeForm = ({
-    pageType = 'form',
-}: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
+export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const type = 'exchange';
-    const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
@@ -115,10 +111,7 @@ export const useTradingExchangeForm = ({
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const { device } = useTradingInitializer({
-        pageType,
-        isLoading,
-    });
+    const { device } = useTradingInitializer();
 
     const [isApproval, setIsApproval] = useState<boolean>(false);
     const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
@@ -157,7 +150,6 @@ export const useTradingExchangeForm = ({
         type: 'exchange',
         cryptoId: receiveCryptoSelect?.id,
         nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
-        pageType,
     });
     const { receiveAddress, extraField } = tradingReceiveAddress;
     const isReceiveAddressFormValid =
@@ -174,7 +166,6 @@ export const useTradingExchangeForm = ({
     const isAmountEmpty = output?.amount === '';
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
-    const shouldSkipInitialReset = !isFormPage;
     const shouldResetOnInitialExchangeInfoLoad = useRef(isInitialDataLoading);
 
     const setAmountLimits = useCallback(
@@ -202,7 +193,6 @@ export const useTradingExchangeForm = ({
         network,
         values,
         methods,
-        estimateFeeForUnknownRecipient: isFormPage,
         setShowReserveBanner,
     });
 
@@ -231,12 +221,11 @@ export const useTradingExchangeForm = ({
         setIsScheduledQuotesRefresh,
     });
 
-    useTradingClearStaleQuotes({ type, isEnabled: isFormPage, isAmountEmpty });
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     const helpers = useTradingFormActions({
         account,
         methods,
-        pageType,
         type,
         handleChange,
         setAmountLimits,
@@ -437,7 +426,6 @@ export const useTradingExchangeForm = ({
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
-        if (pageType !== 'form') return;
         if (!sendCryptoSelect?.id) return;
         if (isFormLoading || isLoadingQuote) return;
 
@@ -480,10 +468,8 @@ export const useTradingExchangeForm = ({
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
     // fetch fees when transactionData changes
     useEffect(() => {
-        if (pageType !== 'form') return;
-
         fetchFeesAndComposeRef.current();
-    }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType, fetchFeesAndComposeRef]);
+    }, [transactionData, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
@@ -517,24 +503,11 @@ export const useTradingExchangeForm = ({
 
     // bind actual default values when we've got exchangeInfo from Invity API server
     useEffect(() => {
-        if (
-            !shouldSkipInitialReset &&
-            exchangeInfo &&
-            !isInitialDataLoading &&
-            shouldResetOnInitialExchangeInfoLoad.current
-        ) {
+        if (exchangeInfo && !isInitialDataLoading && shouldResetOnInitialExchangeInfoLoad.current) {
             shouldResetOnInitialExchangeInfoLoad.current = false;
             reset(defaultValues);
         }
-    }, [reset, exchangeInfo, defaultValues, isInitialDataLoading, shouldSkipInitialReset]);
-
-    useEffect(() => {
-        if (!quotesRequest && !isFormPage) {
-            dispatch(goto({ routeName: 'wallet-trading-exchange' }));
-
-            return;
-        }
-    }, [isFormPage, quotesRequest, dispatch]);
+    }, [reset, exchangeInfo, defaultValues, isInitialDataLoading]);
 
     useEffect(() => {
         if (isFromRedirect) {

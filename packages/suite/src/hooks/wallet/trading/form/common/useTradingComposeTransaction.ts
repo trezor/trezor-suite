@@ -39,7 +39,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     network,
     values,
     methods,
-    estimateFeeForUnknownRecipient,
     setShowReserveBanner,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
@@ -78,8 +77,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
     useEffect(() => {
         const currentDevice = deviceRef.current;
-        // deriving during sign/review would fire a device call that tears down the modal
-        if (!estimateFeeForUnknownRecipient || networkType !== 'tron' || !currentDevice) {
+        if (networkType !== 'tron' || !currentDevice) {
             setFeeEstimationRecipient(undefined);
 
             return;
@@ -107,7 +105,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         device?.state,
         network,
         chunkify,
-        estimateFeeForUnknownRecipient,
     ]);
 
     const composeContext = useMemo(
