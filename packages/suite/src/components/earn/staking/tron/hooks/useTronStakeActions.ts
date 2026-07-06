@@ -1,5 +1,7 @@
 import { useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import { useTronStakingStats } from '@suite-common/earn-staking-api';
+import { TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS } from '@suite-common/wallet-constants';
 import {
     type TronFlow,
     type TronStakeError,
@@ -44,6 +46,7 @@ export const useTronStakeActions = ({
 }: UseTronStakeActionsProps): TronStakeActions => {
     const dispatch = useDispatch();
     const { device } = useDevice();
+    const { stats } = useTronStakingStats();
     const { step, isSubmitting, error, pendingTxid } = useSelector(state =>
         selectTronStakeSession(state, account.key, flow),
     );
@@ -90,12 +93,35 @@ export const useTronStakeActions = ({
                 const representativeAddress = resolveVotedRepresentativeAddress(
                     form.methods.getValues(),
                 );
+                const representative = stats.data?.find(
+                    ({ address }) => address === representativeAddress,
+                );
+                const representativeName = representative?.name ?? representativeAddress;
+
+                const termsOfServiceUrl =
+                    TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS[representativeAddress];
+
+                const requestVoteConsent =
+                    representative && termsOfServiceUrl
+                        ? async () =>
+                              Boolean(
+                                  await dispatch(
+                                      openDeferredModal({
+                                          type: 'tron-vote-consent',
+                                          representativeName,
+                                          termsOfServiceUrl,
+                                      }),
+                                  ),
+                              )
+                        : undefined;
+
                 dispatch(
                     submitTronVoteThunk({
                         account,
                         device,
                         flow,
                         representativeAddress,
+                        requestVoteConsent,
                         requestPushApproval: async () =>
                             Boolean(
                                 await dispatch(openDeferredModal({ type: 'review-transaction' })),

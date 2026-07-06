@@ -96,7 +96,8 @@ type DeferredModals = Extract<
             | 'tor-loading'
             | 'review-transaction'
             | 'import-transaction'
-            | 'earn-yield-tx-simulation';
+            | 'earn-yield-tx-simulation'
+            | 'tron-vote-consent';
     }
 >;
 // extract single modal by `type` util
