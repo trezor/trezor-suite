@@ -13,7 +13,7 @@ export const UnstakeCanClaimAlert = ({ claimableAmount, symbol }: UnstakeCanClai
 
     return (
         <InlineAlertBox
-            variant="info"
+            intent="info"
             title={
                 <Translation
                     id="earn.unstakeFlowScreen.canClaimWarning"
