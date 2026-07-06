@@ -825,11 +825,28 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         if (feat.device_id !== oldId) {
             // during wipe device, the same device (same path) changes id. This also ignores rare transport-level errors of mismatched response
             if (feat.initialized === this.features?.initialized) {
-                const oldDevice = this.toMessageObject();
+                // This is logged to Sentry via captureConsoleIntegration, so confidential fields
+                // (device id, label, session id) must be stripped first. The mismatch itself plus the
+                // firmware/model info left in features is enough to diagnose the transport-level bug.
+                const stripConfidential = (f: Features) => ({
+                    ...f,
+                    device_id: undefined,
+                    session_id: undefined,
+                    label: undefined,
+                });
+                // this.features is overwritten with feat right after this method returns, so capture
+                // the old features reference synchronously; it is redacted at the log site below.
+                const oldFeatures = this.features;
+                const { uniquePath: path } = this;
                 // transport descriptors are useful debug info, but no need to await, the side-effect to log to Sentry can run async
                 this.transport.enumerate().then(res => {
                     const descriptors = res.success ? res.payload : undefined;
-                    console.error('getFeatures device id mismatch', oldDevice, feat, descriptors);
+                    console.error('getFeatures device id mismatch', {
+                        path,
+                        oldFeatures: oldFeatures && stripConfidential(oldFeatures),
+                        newFeatures: stripConfidential(feat),
+                        descriptors,
+                    });
                 });
             }
 
