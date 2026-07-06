@@ -5,13 +5,13 @@ import * as fixtures from '../__fixtures__/transactionUtils';
 import {
     type MonthKey,
     analyzeTransactions,
-    classifyEvmNonce,
     enhanceTransaction,
     findChainedTransactions,
     generateTransactionMonthKey,
     getAccountTransactions,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
+    getEvmNonceStatus,
     getRbfParams,
     getTransactionWithLowestNonce,
     groupJointTransactions,
@@ -540,30 +540,30 @@ describe('transaction utils', () => {
         });
     });
 
-    describe('classifyEvmNonce', () => {
+    describe('getEvmNonceStatus', () => {
         const bounds = { confirmedNonce: 41, nextNonce: 43, pendingNonces: [41, 42] };
 
         it('below confirmedNonce is superseded', () => {
-            expect(classifyEvmNonce(40, bounds)).toBe('superseded');
+            expect(getEvmNonceStatus(40, bounds)).toBe('superseded');
         });
 
         it('matching an own pending nonce is a replacement', () => {
-            expect(classifyEvmNonce(41, bounds)).toBe('replacement');
-            expect(classifyEvmNonce(42, bounds)).toBe('replacement');
+            expect(getEvmNonceStatus(41, bounds)).toBe('replacement');
+            expect(getEvmNonceStatus(42, bounds)).toBe('replacement');
         });
 
         it('above nextNonce is a gap', () => {
-            expect(classifyEvmNonce(44, bounds)).toBe('gap');
+            expect(getEvmNonceStatus(44, bounds)).toBe('gap');
         });
 
         it('below nextNonce but not a known pending nonce is still a replacement', () => {
             // e.g. displayNonce/pendingNonces resolved from slightly different snapshots of the
             // local tx list — the range itself is authoritative, not just the known nonce set.
-            expect(classifyEvmNonce(42, { ...bounds, pendingNonces: [] })).toBe('replacement');
+            expect(getEvmNonceStatus(42, { ...bounds, pendingNonces: [] })).toBe('replacement');
         });
 
         it('equal to nextNonce with no colliding pending tx is ok', () => {
-            expect(classifyEvmNonce(43, bounds)).toBe('ok');
+            expect(getEvmNonceStatus(43, bounds)).toBe('ok');
         });
     });
 
