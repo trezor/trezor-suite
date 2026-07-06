@@ -32,8 +32,8 @@ export const TradingDetailProviderInfo = ({
 }: TradingDetailProviderInfoProps) => {
     const dispatch = useDispatch();
 
-    const copyOrderId = () => {
-        const result = copyToClipboard(orderId || '');
+    const copyOrderId = async () => {
+        const result = await copyToClipboard(orderId || '');
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }

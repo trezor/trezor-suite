@@ -32,12 +32,12 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
 
     const dispatch = useDispatch();
 
-    const onCopyAddress = () => {
+    const onCopyAddress = async () => {
         if (checked) {
             dispatch(setFlag({ key: 'showCopyAddressModal', value: false }));
         }
 
-        const result = copyToClipboard(address);
+        const result = await copyToClipboard(address);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
