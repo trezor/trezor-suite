@@ -363,6 +363,7 @@ export const useTradingExchangeForm = ({
     const confirmTrade = async ({
         receiveAddress,
         trade,
+        approvalFlow,
         ...props
     }: TradingExchangeConfirmTradeProps): Promise<ExchangeTrade | undefined> => {
         const commonFunctions = await getCommonFunctions(trade);
@@ -379,6 +380,7 @@ export const useTradingExchangeForm = ({
                 account,
                 extraField: props.extraField ?? extraField,
                 trade,
+                approvalFlow,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,

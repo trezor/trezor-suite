@@ -90,7 +90,7 @@ export const TradingFormOfferExchangeActions = () => {
 
                 setIsLoadingQuote(true);
                 try {
-                    await confirmTrade({ trade: quote, receiveAddress });
+                    await confirmTrade({ trade: quote, receiveAddress, approvalFlow: true });
                 } catch {
                     console.error('Failed to confirm trade on quote change');
                 } finally {
