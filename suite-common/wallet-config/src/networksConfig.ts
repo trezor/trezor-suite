@@ -342,7 +342,7 @@ export const networks = {
         bip43Path: "m/44'/195'/0'/0/i",
         decimals: 6,
         testnet: false,
-        features: ['tokens', 'coin-definitions', 'graph', 'staking'],
+        features: ['tokens', 'coin-definitions', 'graph', 'nfts', 'staking'],
         explorer: getExplorerUrls('https://tronscan.org/#', 'tron'),
         support: {
             [DeviceModelInternal.T2T1]: '2.11.0',
@@ -713,7 +713,7 @@ export const networks = {
         bip43Path: "m/44'/195'/0'/0/i",
         decimals: 6,
         testnet: true,
-        features: ['tokens', 'graph'],
+        features: ['tokens', 'graph', 'nfts'],
         explorer: getExplorerUrls('https://nile.tronscan.org/#', 'tron'),
         backendOptions: [{ type: 'blockbook' }],
         accountTypes: {},
