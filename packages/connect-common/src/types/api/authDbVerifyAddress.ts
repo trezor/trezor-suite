@@ -22,7 +22,8 @@ export interface AuthDbVerifyAddressResult {
     isMember: boolean;
     valid: boolean;
     counter: number;
-    identifier?: string;
+    /** wallet_id echoed by the device (online path only). */
+    walletId?: string;
 }
 
 export declare function authDbVerifyAddress(

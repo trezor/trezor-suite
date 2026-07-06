@@ -74,6 +74,9 @@ const connectCallableMethodGroups = {
         'authDbVerifyAddress',
         'authDbFastForwardRoot',
         'authDbReplayQueue',
+        'authDbQueueOfflineOperation',
+        'authDbGetOfflineOperations',
+        'authDbDeleteOfflineOperations',
     ],
     blockchain: [
         'blockchainSubscribe',

@@ -115,11 +115,18 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
                   });
               })();
 
+        if (response.message.wallet_id !== undefined && response.message.wallet_id !== walletId) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                `authDbVerifyAddress: device wallet_id (${response.message.wallet_id}) does not match requested walletId (${walletId})`,
+            );
+        }
+
         return {
             isMember,
             valid: response.message.valid,
             counter: response.message.counter,
-            identifier: response.message.identifier,
+            walletId: response.message.wallet_id,
         };
     }
 }

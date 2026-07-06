@@ -3,6 +3,41 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 import {
+    AuthDbApplyOfflineOperations,
+    AuthDbApplyOfflineOperationsResponse,
+    AuthDbApprove,
+    AuthDbApproveResponse,
+    AuthDbClearRoot,
+    AuthDbClearRootResponse,
+    AuthDbDeleteOfflineOperations,
+    AuthDbDeleteOfflineOperationsResponse,
+    AuthDbFastForwardRoot,
+    AuthDbFastForwardRootResponse,
+    AuthDbGetAllCache,
+    AuthDbGetAllCacheEntry,
+    AuthDbGetAllCacheResponse,
+    AuthDbGetCacheEntry,
+    AuthDbGetCacheEntryResponse,
+    AuthDbGetOfflineOperations,
+    AuthDbGetOfflineOperationsResponse,
+    AuthDbLookup,
+    AuthDbLookupResponse,
+    AuthDbOfflineOperation,
+    AuthDbQueueOfflineOperation,
+    AuthDbQueueOfflineOperationResponse,
+    AuthDbRebasedOperation,
+    AuthDbSetCacheEntry,
+    AuthDbSetCacheEntryResponse,
+    AuthDbSetDeviceId,
+    AuthDbSetDeviceIdResponse,
+    AuthDbSetRoot,
+    AuthDbSetRootResponse,
+    AuthDbUpdateLeaf,
+    AuthDbUpdateLeafResponse,
+    AuthDbWipeCache,
+    AuthDbWipeCacheResponse,
+} from './messages-authdb';
+import {
     Address,
     AuthorizeCoinJoin,
     GetAddress,
@@ -130,18 +165,6 @@ import {
     EthereumTypedDataValueAck,
     EthereumTypedDataValueRequest,
 } from './messages-ethereum-eip712';
-import {
-    AuthDbApprove,
-    AuthDbApproveResponse,
-    AuthDbLookup,
-    AuthDbLookupResponse,
-    AuthDbSetRoot,
-    AuthDbSetRootResponse,
-    AuthDbSetDeviceId,
-    AuthDbSetDeviceIdResponse,
-    AuthDbUpdateLeaf,
-    AuthDbUpdateLeafResponse,
-} from './messages-authdb';
 import {
     EvoluDelegatedIdentityKey,
     EvoluGetDelegatedIdentityKey,
@@ -514,6 +537,27 @@ export const MessageType = Type.Object(
         EthereumTypedDataValueAck,
         AuthDbApprove,
         AuthDbApproveResponse,
+        AuthDbApplyOfflineOperations,
+        AuthDbApplyOfflineOperationsResponse,
+        AuthDbClearRoot,
+        AuthDbClearRootResponse,
+        AuthDbDeleteOfflineOperations,
+        AuthDbDeleteOfflineOperationsResponse,
+        AuthDbFastForwardRoot,
+        AuthDbFastForwardRootResponse,
+        AuthDbGetAllCache,
+        AuthDbGetAllCacheEntry,
+        AuthDbGetAllCacheResponse,
+        AuthDbGetCacheEntry,
+        AuthDbGetCacheEntryResponse,
+        AuthDbGetOfflineOperations,
+        AuthDbGetOfflineOperationsResponse,
+        AuthDbOfflineOperation,
+        AuthDbQueueOfflineOperation,
+        AuthDbQueueOfflineOperationResponse,
+        AuthDbRebasedOperation,
+        AuthDbSetCacheEntry,
+        AuthDbSetCacheEntryResponse,
         AuthDbSetRoot,
         AuthDbSetRootResponse,
         AuthDbSetDeviceId,
@@ -522,6 +566,8 @@ export const MessageType = Type.Object(
         AuthDbLookupResponse,
         AuthDbUpdateLeaf,
         AuthDbUpdateLeafResponse,
+        AuthDbWipeCache,
+        AuthDbWipeCacheResponse,
         EvoluGetNode,
         EvoluNode,
         EvoluSignRegistrationRequest,
@@ -740,10 +786,20 @@ export type WireInMessage =
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
     | 'AuthDbApprove'
+    | 'AuthDbApplyOfflineOperations'
+    | 'AuthDbClearRoot'
+    | 'AuthDbDeleteOfflineOperations'
+    | 'AuthDbFastForwardRoot'
+    | 'AuthDbGetAllCache'
+    | 'AuthDbGetCacheEntry'
+    | 'AuthDbGetOfflineOperations'
+    | 'AuthDbQueueOfflineOperation'
+    | 'AuthDbSetCacheEntry'
     | 'AuthDbSetRoot'
     | 'AuthDbSetDeviceId'
     | 'AuthDbLookup'
     | 'AuthDbUpdateLeaf'
+    | 'AuthDbWipeCache'
     | 'EvoluGetNode'
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
@@ -851,10 +907,20 @@ export type WireOutMessage =
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
     | 'AuthDbApproveResponse'
+    | 'AuthDbApplyOfflineOperationsResponse'
+    | 'AuthDbClearRootResponse'
+    | 'AuthDbDeleteOfflineOperationsResponse'
+    | 'AuthDbFastForwardRootResponse'
+    | 'AuthDbGetAllCacheResponse'
+    | 'AuthDbGetCacheEntryResponse'
+    | 'AuthDbGetOfflineOperationsResponse'
+    | 'AuthDbQueueOfflineOperationResponse'
+    | 'AuthDbSetCacheEntryResponse'
     | 'AuthDbSetRootResponse'
     | 'AuthDbSetDeviceIdResponse'
     | 'AuthDbLookupResponse'
     | 'AuthDbUpdateLeafResponse'
+    | 'AuthDbWipeCacheResponse'
     | 'EvoluNode'
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'

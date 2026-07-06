@@ -6,8 +6,11 @@ import type { applySettings } from './applySettings';
 import type { authDbApprove } from './authDbApprove';
 import type { authDbApproveAddress } from './authDbApproveAddress';
 import type { authDbClearRoot } from './authDbClearRoot';
+import type { authDbDeleteOfflineOperations } from './authDbDeleteOfflineOperations';
 import type { authDbFastForwardRoot } from './authDbFastForwardRoot';
+import type { authDbGetOfflineOperations } from './authDbGetOfflineOperations';
 import type { authDbLookup } from './authDbLookup';
+import type { authDbQueueOfflineOperation } from './authDbQueueOfflineOperation';
 import type { authDbReplayQueue } from './authDbReplayQueue';
 import type { authDbSetDeviceId } from './authDbSetDeviceId';
 import type { authDbSetRoot } from './authDbSetRoot';
@@ -229,6 +232,9 @@ export const TrezorConnectDevice = Type.Object({
     authDbVerifyAddress: Type.Unsafe<typeof authDbVerifyAddress>(),
     authDbFastForwardRoot: Type.Unsafe<typeof authDbFastForwardRoot>(),
     authDbReplayQueue: Type.Unsafe<typeof authDbReplayQueue>(),
+    authDbQueueOfflineOperation: Type.Unsafe<typeof authDbQueueOfflineOperation>(),
+    authDbGetOfflineOperations: Type.Unsafe<typeof authDbGetOfflineOperations>(),
+    authDbDeleteOfflineOperations: Type.Unsafe<typeof authDbDeleteOfflineOperations>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 

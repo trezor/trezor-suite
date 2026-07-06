@@ -113,6 +113,15 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             ...(approval && { mac: approval.mac, device_id: approval.deviceId }),
         });
 
+        // Defense in depth: the caller-supplied walletId scopes local storage, but only the
+        // device's own echoed wallet_id proves which seed+passphrase was actually unlocked.
+        if (response.message.wallet_id !== undefined && response.message.wallet_id !== walletId) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                `authDbUpdateAddress: device wallet_id (${response.message.wallet_id}) does not match requested walletId (${walletId})`,
+            );
+        }
+
         // The device already committed this update by the time we reach this point — a
         // failure below means the local cache is now stale, not that the operation failed.
         // Surface that as `localCacheError` on an otherwise-successful result instead of
@@ -125,6 +134,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                 await provider.setTreeState(walletId, {
                     root: response.message.new_root,
                     counter: response.message.counter,
+                    mac: response.message.mac,
                 });
             }
         } catch (err) {

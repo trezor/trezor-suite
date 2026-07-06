@@ -1,11 +1,11 @@
 /**
- * Skip-ahead ("fast-forward") root sync: sends the wallet's latest known checkpoint
- * to the device in one shot (via the low-level AuthDbSetRoot wire message) instead of
- * replaying every queued entry. The device verifies the checkpoint's `mac` and that its
+ * Skip-ahead ("fast-forward") root sync: sends the wallet's latest known root-attestation
+ * checkpoint to the device via the production-safe AuthDbFastForwardRoot wire message
+ * instead of replaying every queued entry. `mac` must be a root-attestation token
+ * previously returned as AuthDbUpdateLeafResponse.mac or
+ * AuthDbApplyOfflineOperationsResponse.root_mac; the device verifies it and that its
  * `counter` increased, but does not see the individual entries that produced it — a
- * materially weaker guarantee than `authDbReplayQueue`. Intended for bootstrapping a
- * fresh/factory-reset device or deliberately trading replay cost for speed, not as the
- * default routine catch-up path.
+ * materially weaker guarantee than `authDbReplayQueue`.
  */
 
 import type { Static } from '@trezor/schema-utils';
@@ -21,7 +21,7 @@ export const AuthDbFastForwardRootSchema = Type.Object({
 
 export interface AuthDbFastForwardRootResult {
     counter: number;
-    identifier?: string;
+    walletId?: string;
 }
 
 export declare function authDbFastForwardRoot(

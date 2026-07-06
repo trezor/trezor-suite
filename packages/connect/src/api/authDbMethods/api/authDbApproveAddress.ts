@@ -1,6 +1,7 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { entryToValueBytes } from '@trezor/authdb';
+import type { AuthLabelEntry } from '@trezor/authdb';
 import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbApproveAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -23,6 +24,7 @@ export default class AuthDbApproveAddress extends AbstractMethod<
         const params = {
             address: payload.address,
             networkSymbol: payload.networkSymbol,
+            metadata: payload.metadata,
             walletId: payload.walletId,
         };
 
@@ -39,7 +41,7 @@ export default class AuthDbApproveAddress extends AbstractMethod<
     get confirmation() {
         return {
             view: 'device-management' as const,
-            label: 'Pre-approve the auth-label entry for this address on the device?',
+            label: 'Pre-approve this auth-label update for this address on the device?',
         };
     }
 
@@ -62,25 +64,29 @@ export default class AuthDbApproveAddress extends AbstractMethod<
             );
         }
 
-        const { address, networkSymbol, walletId } = this.params;
+        const { address, networkSymbol, metadata, walletId } = this.params;
 
-        const entry = await provider.lookup(walletId, address, networkSymbol);
-        if (entry === null) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'authDbApproveAddress: address not found in the local database — call authDbUpdateAddress first',
-            );
-        }
+        const oldEntry = await provider.lookup(walletId, address, networkSymbol);
+        const isInsert = oldEntry === null;
+        const newEntry: AuthLabelEntry = { metadata, counter: (oldEntry?.counter ?? 0) + 1 };
 
-        const valueHex = bytesToHex(entryToValueBytes(networkSymbol, entry));
+        const oldValueHex = isInsert ? '' : bytesToHex(entryToValueBytes(networkSymbol, oldEntry));
+        const newValueHex = bytesToHex(entryToValueBytes(networkSymbol, newEntry));
 
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('AuthDbApprove', 'AuthDbApproveResponse', {
             address: utf8Hex(address),
-            value: valueHex,
+            new_value: newValueHex,
+            ...(!isInsert && { old_value: oldValueHex }),
         });
 
-        const { mac, identifier: deviceId } = response.message;
+        const { mac, wallet_id: deviceId } = response.message;
+        if (deviceId === undefined) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'authDbApproveAddress: device did not return a wallet_id',
+            );
+        }
 
         await provider.setApproval(walletId, address, networkSymbol, mac, deviceId);
 

@@ -8,6 +8,7 @@ export default createRawAuthDbMethod({
     info: 'Approve address-database record',
     buildParams: (payload: PROTO.AuthDbApprove) => ({
         address: payload.address,
-        value: payload.value,
+        new_value: payload.new_value,
+        ...(payload.old_value !== undefined && { old_value: payload.old_value }),
     }),
 });

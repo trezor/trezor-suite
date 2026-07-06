@@ -43,6 +43,11 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=dblistroots List stored Merkle root(s) from local DB; prints ready-to-run dbsetroot command
                                                 --method=dbclear     Clear the Merkle root on device and wipe the local DB
                                                 --method=dbsetdeviceid Set the authdb device identifier on the Trezor (for testing cross-device sync)
+                                                --method=dbqueueoffline   Queue a signed offline operation on the device (no host DB round-trip)
+                                                --method=dbgetofflineops  Drain the device's offline queue and persist it into the local DB
+                                                --method=dbdeleteofflineops Garbage-collect applied offline operations from the device queue
+                                                --method=dbfastforward    Fast-forward the device to the wallet's latest attested root (skip-ahead)
+                                                --method=dbsyncoffline    Full sync: drain, rebase with conflict detection, and apply the offline queue
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 
@@ -53,11 +58,12 @@ export const HELP = `@trezor/connect CLI arguments:
   Database options
     --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
     --wallet-id=<id>                          Wallet whose root checkpoint to read/write in tree_state (default: "default")
-                                                Lets one shared DB track a separate checkpoint per wallet, alongside device_id.
+                                                Lets one shared DB track a separate checkpoint per wallet.
     --db-params=<json>                        Params for database commands (JSON object)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange; pre-approval mac/deviceId from a prior dbapprove are picked up automatically)
                                                 --db-params='{"deviceId":"<hex>"}' (dbsetdeviceid)
+                                                --db-params='{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>"}' (dbqueueoffline; oldValue "" = insert, newValue "" = delete)
 `;
 
 // read and parse application arguments

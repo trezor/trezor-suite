@@ -21,7 +21,7 @@ type SqliteAddressRow = {
     mac: string | null;
     device_id: string | null;
 };
-type TreeStateRow = { root: string; counter: number; mac: string | null; device_id: string | null };
+type TreeStateRow = { root: string; counter: number; mac: string | null };
 type SqliteQueueRow = {
     device_id: string;
     wallet_id: string;
@@ -70,8 +70,7 @@ export class AuthLabelDb
                 wallet_id TEXT PRIMARY KEY,
                 root      TEXT NOT NULL,
                 counter   INTEGER NOT NULL DEFAULT 0,
-                mac       TEXT,
-                device_id TEXT
+                mac       TEXT
             );
             CREATE TABLE IF NOT EXISTS auth_queue (
                 device_id TEXT NOT NULL,
@@ -174,30 +173,22 @@ export class AuthLabelDb
 
     getTreeState(walletId: string): TreeState | null {
         const row = this.db
-            .prepare('SELECT root, counter, mac, device_id FROM tree_state WHERE wallet_id = ?')
+            .prepare('SELECT root, counter, mac FROM tree_state WHERE wallet_id = ?')
             .get(walletId) as TreeStateRow | undefined;
 
-        return row
-            ? {
-                  root: row.root,
-                  counter: row.counter,
-                  mac: row.mac ?? undefined,
-                  deviceId: row.device_id ?? undefined,
-              }
-            : null;
+        return row ? { root: row.root, counter: row.counter, mac: row.mac ?? undefined } : null;
     }
 
     setTreeState(walletId: string, state: TreeState): void {
         this.db
             .prepare(
-                `INSERT INTO tree_state (wallet_id, root, counter, mac, device_id) VALUES (?, ?, ?, ?, ?)
+                `INSERT INTO tree_state (wallet_id, root, counter, mac) VALUES (?, ?, ?, ?)
                  ON CONFLICT(wallet_id) DO UPDATE SET
-                     root      = excluded.root,
-                     counter   = excluded.counter,
-                     mac       = excluded.mac,
-                     device_id = excluded.device_id`,
+                     root    = excluded.root,
+                     counter = excluded.counter,
+                     mac     = excluded.mac`,
             )
-            .run(walletId, state.root, state.counter, state.mac ?? null, state.deviceId ?? null);
+            .run(walletId, state.root, state.counter, state.mac ?? null);
     }
 
     appendQueueEntries(entries: OfflineQueueEntry[]): void {

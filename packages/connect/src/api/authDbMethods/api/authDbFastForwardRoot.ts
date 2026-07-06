@@ -57,24 +57,34 @@ export default class AuthDbFastForwardRoot extends AbstractMethod<
                 'authDbFastForwardRoot: no stored root for this wallet — run authDbUpdateAddress or authDbReplayQueue first',
             );
         }
+        if (treeState.mac === undefined) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'authDbFastForwardRoot: no root-attestation token for this wallet — run authDbUpdateAddress or authDbReplayQueue first',
+            );
+        }
 
         const cmd = this.getDevice().getCommands();
-        const response = await cmd.typedCall('AuthDbSetRoot', 'AuthDbSetRootResponse', {
-            root: treeState.root,
-            ...(treeState.mac !== undefined && { mac: treeState.mac }),
-            ...(treeState.deviceId !== undefined && { device_id: treeState.deviceId }),
-        });
+        const response = await cmd.typedCall(
+            'AuthDbFastForwardRoot',
+            'AuthDbFastForwardRootResponse',
+            {
+                new_root: treeState.root,
+                counter: treeState.counter,
+                wallet_id: walletId,
+                mac: treeState.mac,
+            },
+        );
 
         await provider.setTreeState(walletId, {
-            root: treeState.root,
+            root: response.message.new_root ?? treeState.root,
             counter: response.message.counter,
             mac: treeState.mac,
-            deviceId: treeState.deviceId,
         });
 
         return {
             counter: response.message.counter,
-            identifier: response.message.identifier,
+            walletId: response.message.wallet_id,
         };
     }
 }

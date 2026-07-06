@@ -6,7 +6,7 @@ import AuthDbApproveAddress from '../api/authDbApproveAddress';
 type MockProvider = AuthLabelLookupProvider & Partial<AuthLabelApprovalProvider>;
 
 const buildProvider = (overrides: Partial<MockProvider> = {}): MockProvider => ({
-    lookup: jest.fn().mockResolvedValue({ metadata: { label: 'x' }, counter: 1 }),
+    lookup: jest.fn().mockResolvedValue({ metadata: { label: 'old' }, counter: 1 }),
     lookupOrCreate: jest.fn(),
     upsert: jest.fn().mockResolvedValue(undefined),
     getAllEntries: jest.fn().mockResolvedValue([]),
@@ -22,6 +22,7 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
             method: 'authDbApproveAddress',
             address: 'bc1qaddr',
             networkSymbol: 'btc',
+            metadata: { label: 'new' },
             walletId: 'wallet1',
             ...payload,
         } as any,
@@ -51,20 +52,12 @@ describe('authDbApproveAddress', () => {
         await expect(method.run()).rejects.toThrow(/AuthLabelApprovalProvider/);
     });
 
-    it('throws when the address is not found locally', async () => {
-        const provider = buildProvider({ lookup: jest.fn().mockResolvedValue(null) });
-        settingsStore.update({ authLabelLookupProvider: provider });
-
-        const method = buildMethod({}, buildDevice(jest.fn()));
-        await expect(method.run()).rejects.toThrow(/not found/);
-    });
-
-    it('approves the current locally-stored value and persists the approval', async () => {
+    it('approves an old->new transition and persists the approval', async () => {
         const provider = buildProvider();
         settingsStore.update({ authLabelLookupProvider: provider });
 
         const typedCall = jest.fn().mockResolvedValue({
-            message: { mac: 'deadbeef', identifier: 'cafe' },
+            message: { mac: 'deadbeef', wallet_id: 'wallet1' },
         });
         const method = buildMethod({}, buildDevice(typedCall));
 
@@ -73,15 +66,45 @@ describe('authDbApproveAddress', () => {
         expect(typedCall).toHaveBeenCalledWith(
             'AuthDbApprove',
             'AuthDbApproveResponse',
-            expect.objectContaining({ address: expect.any(String), value: expect.any(String) }),
+            expect.objectContaining({
+                address: expect.any(String),
+                new_value: expect.any(String),
+                old_value: expect.any(String),
+            }),
         );
         expect(provider.setApproval).toHaveBeenCalledWith(
             'wallet1',
             'bc1qaddr',
             'btc',
             'deadbeef',
-            'cafe',
+            'wallet1',
         );
-        expect(result).toEqual({ mac: 'deadbeef', deviceId: 'cafe' });
+        expect(result).toEqual({ mac: 'deadbeef', deviceId: 'wallet1' });
+    });
+
+    it('approves an insert (no prior entry) with no old_value', async () => {
+        const provider = buildProvider({ lookup: jest.fn().mockResolvedValue(null) });
+        settingsStore.update({ authLabelLookupProvider: provider });
+
+        const typedCall = jest.fn().mockResolvedValue({
+            message: { mac: 'deadbeef', wallet_id: 'wallet1' },
+        });
+        const method = buildMethod({}, buildDevice(typedCall));
+
+        await method.run();
+
+        const [, , params] = typedCall.mock.calls[0];
+        expect(params.old_value).toBeUndefined();
+        expect(params.new_value).toEqual(expect.any(String));
+    });
+
+    it('throws when the device does not return a wallet_id', async () => {
+        const provider = buildProvider();
+        settingsStore.update({ authLabelLookupProvider: provider });
+
+        const typedCall = jest.fn().mockResolvedValue({ message: { mac: 'deadbeef' } });
+        const method = buildMethod({}, buildDevice(typedCall));
+
+        await expect(method.run()).rejects.toThrow(/wallet_id/);
     });
 });

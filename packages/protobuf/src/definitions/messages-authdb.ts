@@ -17,7 +17,7 @@ export type AuthDbSetRootResponse = Static<typeof AuthDbSetRootResponse>;
 export const AuthDbSetRootResponse = Type.Object(
     {
         counter: Type.Number(),
-        identifier: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbSetRootResponse' },
 );
@@ -40,7 +40,7 @@ export const AuthDbLookupResponse = Type.Object(
         valid: Type.Boolean(),
         counter: Type.Number(),
         membership: Type.Optional(Type.Boolean()),
-        identifier: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbLookupResponse' },
 );
@@ -65,8 +65,11 @@ export const AuthDbUpdateLeafResponse = Type.Object(
     {
         counter: Type.Number(),
         new_root: Type.Optional(Type.String()),
-        identifier: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
+        // Root-attestation token: HMAC(mac_key, wallet_id||counter||new_root); absent if the
+        // tree is now empty. Replayable via AuthDbFastForwardRoot on any device sharing the wallet.
         mac: Type.Optional(Type.String()),
+        // HMAC(device_key, old_leafHash||new_leafHash); set in debug/auto_approve mode only.
         auth_mac: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbUpdateLeafResponse' },
@@ -78,7 +81,7 @@ export const AuthDbClearRoot = Type.Object({}, { $id: 'AuthDbClearRoot' });
 export type AuthDbClearRootResponse = Static<typeof AuthDbClearRootResponse>;
 export const AuthDbClearRootResponse = Type.Object(
     {
-        identifier: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbClearRootResponse' },
 );
@@ -87,7 +90,8 @@ export type AuthDbApprove = Static<typeof AuthDbApprove>;
 export const AuthDbApprove = Type.Object(
     {
         address: Type.String(),
-        value: Type.String(),
+        new_value: Type.String(),
+        old_value: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbApprove' },
 );
@@ -95,8 +99,10 @@ export const AuthDbApprove = Type.Object(
 export type AuthDbApproveResponse = Static<typeof AuthDbApproveResponse>;
 export const AuthDbApproveResponse = Type.Object(
     {
+        // HMAC(mac_key, leaf_hash(address,old_value)||leaf_hash(address,new_value)) --
+        // the same formula AuthDbUpdateLeaf verifies against.
         mac: Type.String(),
-        identifier: Type.String(),
+        wallet_id: Type.Optional(Type.String()),
     },
     { $id: 'AuthDbApproveResponse' },
 );
@@ -115,4 +121,214 @@ export const AuthDbSetDeviceIdResponse = Type.Object(
         device_id: Type.String(),
     },
     { $id: 'AuthDbSetDeviceIdResponse' },
+);
+
+// ---------------------------------------------------------------------------
+// Offline cache -- an on-device label cache, unrelated to the sync protocol below.
+// ---------------------------------------------------------------------------
+
+export type AuthDbSetCacheEntry = Static<typeof AuthDbSetCacheEntry>;
+export const AuthDbSetCacheEntry = Type.Object(
+    {
+        address: Type.String(),
+        label: Type.Optional(Type.String()),
+        data_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbSetCacheEntry' },
+);
+
+export type AuthDbSetCacheEntryResponse = Static<typeof AuthDbSetCacheEntryResponse>;
+export const AuthDbSetCacheEntryResponse = Type.Object(
+    {
+        identifier_crc: Type.Number(),
+    },
+    { $id: 'AuthDbSetCacheEntryResponse' },
+);
+
+export type AuthDbGetCacheEntry = Static<typeof AuthDbGetCacheEntry>;
+export const AuthDbGetCacheEntry = Type.Object(
+    {
+        address: Type.String(),
+    },
+    { $id: 'AuthDbGetCacheEntry' },
+);
+
+export type AuthDbGetCacheEntryResponse = Static<typeof AuthDbGetCacheEntryResponse>;
+export const AuthDbGetCacheEntryResponse = Type.Object(
+    {
+        found: Type.Boolean(),
+        label: Type.Optional(Type.String()),
+        data_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbGetCacheEntryResponse' },
+);
+
+export type AuthDbGetAllCacheEntry = Static<typeof AuthDbGetAllCacheEntry>;
+export const AuthDbGetAllCacheEntry = Type.Object(
+    {
+        address: Type.String(),
+        label: Type.Optional(Type.String()),
+        data_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbGetAllCacheEntry' },
+);
+
+export type AuthDbGetAllCache = Static<typeof AuthDbGetAllCache>;
+export const AuthDbGetAllCache = Type.Object({}, { $id: 'AuthDbGetAllCache' });
+
+export type AuthDbGetAllCacheResponse = Static<typeof AuthDbGetAllCacheResponse>;
+export const AuthDbGetAllCacheResponse = Type.Object(
+    {
+        entries: Type.Array(AuthDbGetAllCacheEntry),
+    },
+    { $id: 'AuthDbGetAllCacheResponse' },
+);
+
+export type AuthDbWipeCache = Static<typeof AuthDbWipeCache>;
+export const AuthDbWipeCache = Type.Object({}, { $id: 'AuthDbWipeCache' });
+
+export type AuthDbWipeCacheResponse = Static<typeof AuthDbWipeCacheResponse>;
+export const AuthDbWipeCacheResponse = Type.Object({}, { $id: 'AuthDbWipeCacheResponse' });
+
+// ---------------------------------------------------------------------------
+// Offline synchronization
+// ---------------------------------------------------------------------------
+
+// Embedded: one entry of the on-device offline operation queue, as returned by
+// AuthDbGetOfflineOperations. `mac` is HMAC(device_key, sequence||old_leaf_hash||new_leaf_hash)
+// -- the sequence number is part of the MAC preimage so a rebased operation cannot be
+// replayed under a different (attacker-chosen) sequence number.
+export type AuthDbOfflineOperation = Static<typeof AuthDbOfflineOperation>;
+export const AuthDbOfflineOperation = Type.Object(
+    {
+        sequence: Type.Number(),
+        address: Type.String(),
+        old_value: Type.Optional(Type.String()),
+        new_value: Type.Optional(Type.String()),
+        mac: Type.String(),
+    },
+    { $id: 'AuthDbOfflineOperation' },
+);
+
+export type AuthDbQueueOfflineOperation = Static<typeof AuthDbQueueOfflineOperation>;
+export const AuthDbQueueOfflineOperation = Type.Object(
+    {
+        address: Type.String(),
+        old_value: Type.String(),
+        new_value: Type.String(),
+    },
+    { $id: 'AuthDbQueueOfflineOperation' },
+);
+
+export type AuthDbQueueOfflineOperationResponse = Static<
+    typeof AuthDbQueueOfflineOperationResponse
+>;
+export const AuthDbQueueOfflineOperationResponse = Type.Object(
+    {
+        sequence: Type.Number(),
+        mac: Type.String(),
+        wallet_id: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbQueueOfflineOperationResponse' },
+);
+
+export type AuthDbGetOfflineOperations = Static<typeof AuthDbGetOfflineOperations>;
+export const AuthDbGetOfflineOperations = Type.Object({}, { $id: 'AuthDbGetOfflineOperations' });
+
+export type AuthDbGetOfflineOperationsResponse = Static<typeof AuthDbGetOfflineOperationsResponse>;
+export const AuthDbGetOfflineOperationsResponse = Type.Object(
+    {
+        current_root: Type.Optional(Type.String()),
+        counter: Type.Number(),
+        wallet_id: Type.Optional(Type.String()),
+        operations: Type.Array(AuthDbOfflineOperation),
+    },
+    { $id: 'AuthDbGetOfflineOperationsResponse' },
+);
+
+// Embedded: one operation rebased by the host against the current canonical root.
+// sequence/address/old_value/new_value/mac must be forwarded byte-for-byte from the
+// original AuthDbOfflineOperation; proof/witness_* are freshly computed by the host.
+export type AuthDbRebasedOperation = Static<typeof AuthDbRebasedOperation>;
+export const AuthDbRebasedOperation = Type.Object(
+    {
+        sequence: Type.Number(),
+        address: Type.String(),
+        old_value: Type.Optional(Type.String()),
+        new_value: Type.Optional(Type.String()),
+        mac: Type.String(),
+        proof: Type.Optional(Type.Array(Type.String())),
+        witness_address: Type.Optional(Type.String()),
+        witness_value: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbRebasedOperation' },
+);
+
+export type AuthDbApplyOfflineOperations = Static<typeof AuthDbApplyOfflineOperations>;
+export const AuthDbApplyOfflineOperations = Type.Object(
+    {
+        operations: Type.Array(AuthDbRebasedOperation),
+    },
+    { $id: 'AuthDbApplyOfflineOperations' },
+);
+
+export type AuthDbApplyOfflineOperationsResponse = Static<
+    typeof AuthDbApplyOfflineOperationsResponse
+>;
+export const AuthDbApplyOfflineOperationsResponse = Type.Object(
+    {
+        applied_count: Type.Number(),
+        new_root: Type.Optional(Type.String()),
+        counter: Type.Number(),
+        last_applied_sequence: Type.Number(),
+        wallet_id: Type.Optional(Type.String()),
+        // Root-attestation token, same formula/purpose as AuthDbUpdateLeafResponse.mac --
+        // replayable via AuthDbFastForwardRoot on any device sharing this wallet.
+        root_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbApplyOfflineOperationsResponse' },
+);
+
+// Deliberately takes no input: garbage collection must never trust a host-supplied
+// watermark, only the device's own persisted last_applied_sequence.
+export type AuthDbDeleteOfflineOperations = Static<typeof AuthDbDeleteOfflineOperations>;
+export const AuthDbDeleteOfflineOperations = Type.Object(
+    {},
+    { $id: 'AuthDbDeleteOfflineOperations' },
+);
+
+export type AuthDbDeleteOfflineOperationsResponse = Static<
+    typeof AuthDbDeleteOfflineOperationsResponse
+>;
+export const AuthDbDeleteOfflineOperationsResponse = Type.Object(
+    {
+        deleted_count: Type.Number(),
+        remaining_count: Type.Number(),
+    },
+    { $id: 'AuthDbDeleteOfflineOperationsResponse' },
+);
+
+// `mac` must be a root-attestation token previously issued by this or any other physical
+// device holding the same wallet (AuthDbUpdateLeafResponse.mac or
+// AuthDbApplyOfflineOperationsResponse.root_mac) -- mac_key is wallet-derived, not
+// device-derived, so it verifies on every device that has unlocked this wallet.
+export type AuthDbFastForwardRoot = Static<typeof AuthDbFastForwardRoot>;
+export const AuthDbFastForwardRoot = Type.Object(
+    {
+        new_root: Type.String(),
+        counter: Type.Number(),
+        wallet_id: Type.String(),
+        mac: Type.String(),
+    },
+    { $id: 'AuthDbFastForwardRoot' },
+);
+
+export type AuthDbFastForwardRootResponse = Static<typeof AuthDbFastForwardRootResponse>;
+export const AuthDbFastForwardRootResponse = Type.Object(
+    {
+        counter: Type.Number(),
+        new_root: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbFastForwardRootResponse' },
 );

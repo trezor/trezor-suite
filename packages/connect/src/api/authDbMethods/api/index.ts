@@ -9,3 +9,6 @@ export { default as authDbVerifyAddress } from './authDbVerifyAddress';
 export { default as authDbApproveAddress } from './authDbApproveAddress';
 export { default as authDbFastForwardRoot } from './authDbFastForwardRoot';
 export { default as authDbReplayQueue } from './authDbReplayQueue';
+export { default as authDbQueueOfflineOperation } from './authDbQueueOfflineOperation';
+export { default as authDbGetOfflineOperations } from './authDbGetOfflineOperations';
+export { default as authDbDeleteOfflineOperations } from './authDbDeleteOfflineOperations';

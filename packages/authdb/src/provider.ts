@@ -27,17 +27,17 @@ export type AuthLabelEntry = {
 
 /**
  * Merkle tree state checkpoint stored in the database, scoped per wallet.
- * root      — current Merkle root hash as maintained by the Trezor device.
- * counter   — monotonically increasing version; incremented by the device on every tree mutation.
- * mac       — MAC authorizing this root value, if the provider tracks one (used by
- *             the fast-forward AuthDbSetRoot wire call to skip-ahead without replaying entries).
- * deviceId  — which device last advanced this checkpoint.
+ * root    — current Merkle root hash as maintained by the Trezor device.
+ * counter — monotonically increasing version; incremented by the device on every tree mutation.
+ * mac     — root-attestation token, if the provider has one: HMAC(mac_key, wallet_id||counter||root),
+ *           as returned by AuthDbUpdateLeafResponse.mac / AuthDbApplyOfflineOperationsResponse.root_mac.
+ *           Since mac_key is wallet-derived (not device-derived), this token is replayable via
+ *           AuthDbFastForwardRoot on any physical device that has unlocked the same wallet.
  */
 export type TreeState = {
     root: string;
     counter: number;
     mac?: string;
-    deviceId?: string;
 };
 
 /** A single row returned for MPT construction, scoped to one wallet. */
@@ -100,14 +100,15 @@ export type AuthLabelApprovalProvider = {
 };
 
 /**
- * A single mutation drained from a Trezor device's offline queue.
- * Hex-encoded byte fields, mirroring the on-wire framing (EntryT) the device sends:
- *   [wallet_id: 32B][mac: 32B][sequence: 4B BE u32]
- *   [addr_len: 4B][address][old_len: 4B][old_value][new_len: 4B][new_value]
- * oldValue === '' means the address was absent before this entry (insert).
- * newValue === '' means this entry deletes the address.
- * Once persisted host-side (EntryDB), a deviceId is attached to record which device
- * flushed the entry.
+ * A single mutation drained from a Trezor device's offline queue via AuthDbGetOfflineOperations
+ * (wire type AuthDbOfflineOperation: sequence, address, old_value, new_value, mac). Hex-encoded
+ * value fields, same convention as elsewhere: oldValue === '' means the address was absent when
+ * queued (insert); newValue === '' means this entry deletes the address. `mac` is
+ * HMAC(device_key, sequence||leaf_hash(address,old_value)||leaf_hash(address,new_value)) —
+ * forwarded byte-for-byte when rebasing into AuthDbApplyOfflineOperations, never recomputed
+ * host-side. deviceId is not part of the wire message (AuthDB has no distinct provenance id of
+ * its own) — it's attached once persisted host-side, from the calling Device's ordinary
+ * features.device_id.
  */
 export type OfflineQueueEntry = {
     deviceId: string;
@@ -117,6 +118,12 @@ export type OfflineQueueEntry = {
     address: string;
     oldValue: string;
     newValue: string;
+};
+
+/** A queued entry that failed rebasing against the host's canonical stored state. */
+export type OfflineQueueConflict = {
+    entry: OfflineQueueEntry;
+    reason: string;
 };
 
 /**
