@@ -41,19 +41,15 @@ import { useTradingSellTradeRequest } from 'src/hooks/wallet/trading/form/common
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 
 import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 
-export const useTradingSellForm = ({
-    pageType = 'form',
-}: UseTradingFormCommonProps = {}): TradingSellFormContextProps => {
+export const useTradingSellForm = (): TradingSellFormContextProps => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const type = 'sell';
-    const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingSellIsLoading);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
@@ -76,10 +72,7 @@ export const useTradingSellForm = ({
     const tradeSendAccount = useSelector(state => selectAccountByKey(state, trade?.sendAccountKey));
     const account = tradeSendAccount ?? formAccount;
 
-    const { device } = useTradingInitializer({
-        pageType,
-        isLoading,
-    });
+    const { device } = useTradingInitializer();
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
@@ -96,7 +89,6 @@ export const useTradingSellForm = ({
             sellInfo?.countrySubdivision,
         );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
-    const shouldSkipInitialReset = !isFormPage;
     const shouldResetOnInitialSellInfoLoad = useRef(!sellInfo);
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
@@ -134,7 +126,6 @@ export const useTradingSellForm = ({
         network,
         values: values as TradingSellFormProps,
         methods,
-        estimateFeeForUnknownRecipient: isFormPage,
         setShowReserveBanner,
     });
 
@@ -162,12 +153,11 @@ export const useTradingSellForm = ({
         setValue,
     });
 
-    useTradingClearStaleQuotes({ type, isEnabled: isFormPage, isAmountEmpty });
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     const helpers = useTradingFormActions({
         account,
         methods,
-        pageType,
         type,
         handleChange,
         setAmountLimits,
@@ -263,24 +253,15 @@ export const useTradingSellForm = ({
 
     useEffect(() => {
         // bind actual default values when we've got sellInfo from Invity API server
-        if (!shouldSkipInitialReset && sellInfo && shouldResetOnInitialSellInfoLoad.current) {
+        if (sellInfo && shouldResetOnInitialSellInfoLoad.current) {
             shouldResetOnInitialSellInfoLoad.current = false;
             reset(defaultValues);
         }
-    }, [reset, sellInfo, defaultValues, shouldSkipInitialReset]);
-
-    useEffect(() => {
-        // We need to clear quotes on offers page without redirecting to form page
-        if (!quotesRequest && !isFormPage) {
-            dispatch(goto({ routeName: 'wallet-trading-sell' }));
-
-            return;
-        }
-    }, [quotesRequest, isFormPage, dispatch]);
+    }, [reset, sellInfo, defaultValues]);
 
     useEffect(() => {
         if (isFromRedirect) {
-            if (transactionId && trade && pageType !== 'retry') {
+            if (transactionId && trade) {
                 dispatch(tradingSellActions.saveSelectedQuote(trade.data));
                 dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
                 if (trade.sendAccountKey) {
@@ -290,7 +271,7 @@ export const useTradingSellForm = ({
 
             dispatch(tradingSellActions.setIsFromRedirect(false));
         }
-    }, [isFromRedirect, trade, transactionId, pageType, dispatch]);
+    }, [isFromRedirect, trade, transactionId, dispatch]);
 
     // Subscribe to blocks for Solana, since they are not fetched globally
     useSolanaSubscribeBlocks(account);

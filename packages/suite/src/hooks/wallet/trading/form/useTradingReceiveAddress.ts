@@ -24,7 +24,6 @@ import { isAddressValid } from '@trezor/address-validator';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { type TradingPageType } from 'src/types/trading/trading';
 import {
     type TradingGetTranslationIdsProps,
     type TradingVerifyFormProps,
@@ -51,7 +50,6 @@ const getTranslationIds = (
 interface UseTradingReceiveAddressProps {
     cryptoId?: CryptoId;
     nonSuiteAccount: boolean;
-    pageType: TradingPageType;
     type: TradingType;
 }
 
@@ -59,7 +57,6 @@ export const useTradingReceiveAddress = ({
     type,
     cryptoId,
     nonSuiteAccount,
-    pageType,
 }: UseTradingReceiveAddressProps) => {
     const dispatch = useDispatch();
     const accounts = useSelector(state => state.wallet.accounts);
@@ -310,42 +307,17 @@ export const useTradingReceiveAddress = ({
     }, [extraFieldValue, methods.formState.errors.extraField]);
 
     useEffect(() => {
-        if (pageType === 'retry' || pageType === 'confirm') {
-            return;
-        }
-
         if (type === 'exchange') {
             dispatch(tradingExchangeActions.setReceiveAddress(receiveAddress));
-        }
-
-        if (type === 'buy') {
-            dispatch(tradingBuyActions.setReceiveAddress(receiveAddress));
-        }
-    }, [receiveAddress, pageType, type, dispatch]);
-
-    useEffect(() => {
-        if (pageType === 'retry' || pageType === 'confirm') {
-            return;
-        }
-
-        if (type === 'exchange') {
             dispatch(tradingExchangeActions.setExtraField(extraField));
-        }
-    }, [extraField, pageType, type, dispatch]);
-
-    useEffect(() => {
-        if (pageType === 'retry' || pageType === 'confirm') {
-            return;
-        }
-
-        if (type === 'exchange') {
             dispatch(tradingExchangeActions.setReceiveAccountKey(receiveAccount?.key));
         }
 
         if (type === 'buy') {
+            dispatch(tradingBuyActions.setReceiveAddress(receiveAddress));
             dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount?.key));
         }
-    }, [receiveAccount, pageType, type, dispatch]);
+    }, [receiveAddress, extraField, receiveAccount, type, dispatch]);
 
     return {
         form: {

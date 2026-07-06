@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type UseTradingClearStaleQuotesProps = {
     type: TradingType;
-    isEnabled: boolean;
     isAmountEmpty: boolean;
 };
 
@@ -24,15 +23,14 @@ const clearQuotesActionByType = {
 
 export const useTradingClearStaleQuotes = ({
     type,
-    isEnabled,
     isAmountEmpty,
 }: UseTradingClearStaleQuotesProps) => {
     const dispatch = useDispatch();
     const hasQuotes = useSelector(state => selectTradingQuotesByType(state, type).length > 0);
 
     useEffect(() => {
-        if (isEnabled && isAmountEmpty && hasQuotes) {
+        if (isAmountEmpty && hasQuotes) {
             dispatch(clearQuotesActionByType[type]());
         }
-    }, [type, isEnabled, isAmountEmpty, hasQuotes, dispatch]);
+    }, [type, isAmountEmpty, hasQuotes, dispatch]);
 };

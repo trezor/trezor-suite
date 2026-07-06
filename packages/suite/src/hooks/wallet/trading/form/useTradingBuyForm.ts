@@ -41,7 +41,6 @@ import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/us
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
-import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 
@@ -51,12 +50,9 @@ import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
-export const useTradingBuyForm = ({
-    pageType = 'form',
-}: UseTradingFormCommonProps = {}): TradingBuyFormContextProps => {
+export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const type = 'buy';
-    const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
 
     const buyInfo = useSelector(selectTradingBuyInfo);
@@ -68,10 +64,7 @@ export const useTradingBuyForm = ({
 
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
 
-    const { device } = useTradingInitializer({
-        pageType,
-        isLoading,
-    });
+    const { device } = useTradingInitializer();
 
     const { account, cryptoId } = useTradingFormAccount(type);
 
@@ -95,7 +88,6 @@ export const useTradingBuyForm = ({
     const { defaultValues, defaultSubdivision, defaultCountry, defaultCurrency } =
         useTradingBuyFormDefaultValues(cryptoId, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
-    const shouldSkipInitialReset = !isFormPage;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
         defaultValues: redirectValues || defaultValues,
@@ -111,7 +103,6 @@ export const useTradingBuyForm = ({
         type: 'buy',
         cryptoId: values.cryptoSelect?.id,
         nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
-        pageType,
     });
 
     const { receiveAddress } = tradingReceiveAddress;
@@ -237,10 +228,6 @@ export const useTradingBuyForm = ({
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {
-            if (pageType === 'confirm') {
-                return;
-            }
-
             if (
                 isChanged(previousValues.current?.fiatInput, values.fiatInput) ||
                 isChanged(previousValues.current?.cryptoInput, values.cryptoInput)
@@ -253,24 +240,13 @@ export const useTradingBuyForm = ({
             }
         },
         500,
-        [
-            previousValues,
-            values.fiatInput,
-            values.cryptoInput,
-            pageType,
-            handleChange,
-            handleSubmit,
-        ],
+        [previousValues, values.fiatInput, values.cryptoInput, handleChange, handleSubmit],
     );
 
-    useTradingClearStaleQuotes({ type, isEnabled: isFormPage, isAmountEmpty });
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     // call change handler on every change of select inputs
     useEffect(() => {
-        if (pageType === 'confirm') {
-            return;
-        }
-
         if (!values.cryptoSelect || !values.countrySelect || !values.currencySelect) {
             return;
         }
@@ -301,11 +277,11 @@ export const useTradingBuyForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, isFormPage, pageType, handleChange, handleSubmit]);
+    }, [previousValues, values, handleChange, handleSubmit]);
 
     useEffect(() => {
         // bind actual default values when we've got buyInfo from Invity API server
-        if (!shouldSkipInitialReset && buyInfo && shouldResetOnInitialBuyInfoLoad.current) {
+        if (buyInfo && shouldResetOnInitialBuyInfoLoad.current) {
             shouldResetOnInitialBuyInfoLoad.current = false;
             const currentReceiveAddress = values.receiveAddress;
             reset({
@@ -313,16 +289,7 @@ export const useTradingBuyForm = ({
                 receiveAddress: currentReceiveAddress,
             });
         }
-    }, [reset, buyInfo, defaultValues, shouldSkipInitialReset, values.receiveAddress]);
-
-    useEffect(() => {
-        // We need to clear quotes on offers page without redirecting to form page
-        if (!quotesRequest && !isFormPage) {
-            dispatch(goto({ routeName: 'wallet-trading-buy' }));
-
-            return;
-        }
-    }, [quotesRequest, isFormPage, dispatch]);
+    }, [reset, buyInfo, defaultValues, values.receiveAddress]);
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {

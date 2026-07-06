@@ -57,7 +57,6 @@ import { type Dispatch, type GetState, type TrezorDevice } from 'src/types/suite
 import {
     type TradingGetCryptoQuoteAmountProps,
     type TradingGetProvidersInfoProps,
-    type TradingPageType,
     type TradingTradeSellExchangeType,
 } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
@@ -311,7 +310,6 @@ export interface TradingFormInputCurrencyProps {
 export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormProps> {
     account: Account;
     methods: UseFormReturn<T>;
-    pageType: TradingPageType;
     type: TradingTradeSellExchangeType;
     handleChange: (offLoading?: boolean) => Promise<void>;
     setAmountLimits: (limits?: AmountLimitProps) => void;
@@ -346,7 +344,6 @@ export interface TradingUseComposeTransactionProps<T extends TradingSellExchange
     network: Network;
     methods: UseFormReturn<T>;
     values: T;
-    estimateFeeForUnknownRecipient: boolean;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
 }
 

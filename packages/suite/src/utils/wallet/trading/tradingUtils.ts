@@ -1,5 +1,5 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import type { TradingTradeType, TradingType } from '@suite-common/trading';
+import type { TradingType } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Output,
@@ -16,7 +16,6 @@ import { type TrezorDevice } from 'src/types/suite';
 import {
     type TradingGetAmountLabelsProps,
     type TradingGetAmountLabelsReturnProps,
-    type TradingGetProvidersInfoProps,
 } from 'src/types/trading/trading';
 import { type Account } from 'src/types/wallet';
 
@@ -206,17 +205,6 @@ export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descr
     }
 
     return { address: '', token: tokenContractAddress ?? null };
-};
-
-interface GetTradeProviderProps {
-    trade: TradingTradeType | undefined;
-    providerInfo: TradingGetProvidersInfoProps;
-}
-
-export const getTradeProvider = ({ trade, providerInfo }: GetTradeProviderProps) => {
-    if (!trade?.exchange) return undefined;
-
-    return providerInfo?.[trade.exchange];
 };
 
 interface GetFeeInUnitsProps {

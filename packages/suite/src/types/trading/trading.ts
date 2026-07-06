@@ -26,12 +26,6 @@ import type {
 import { type Account } from '@suite-common/wallet-types';
 import { type AssetLogoProps } from '@trezor/product-components';
 
-export type TradingPageType = 'form' | 'confirm' | 'retry';
-
-export type UseTradingFormCommonProps = {
-    pageType?: TradingPageType;
-};
-
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
