@@ -96,6 +96,9 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
         .addCase(sendFormActions.clearSignedTransactionData, state => {
             delete state.serializedTx;
             delete state.signedTx;
+            // Otherwise a retry after a failed push would briefly show the previous attempt's
+            // nonce in the review modal before signing resolves and stores a fresh one.
+            delete state.resolvedEthereumNonce;
         })
         .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
             state.sendRaw = sendRaw;

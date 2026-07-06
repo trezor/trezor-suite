@@ -35,11 +35,11 @@ import {
     getCryptoMaxAmountWithReserve,
     getEthereumEstimateFeeParams,
     getEvmNonceInfo,
+    getEvmNonceInfoFromConfirmedNonce,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
     isEip1559,
     isEvmApprovalTx,
-    isPending,
     prepareEthereumTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
@@ -58,7 +58,7 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
-import { selectTransactions } from '../transactions/transactionsSelectors';
+import { selectAccountTransactions } from '../transactions/transactionsSelectors';
 
 /**
  * Returns fee info with levels bumped above the original transaction's gas price,
@@ -438,8 +438,10 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
  * Resolves the nonce to use for the next Ethereum transaction.
  *
  * For RBF (cancel / speed-up) the original tx's nonce is reused. Otherwise:
- *  - `confirmedNonce` = the account's current nonce from the backend (account.misc.nonce), or the
- *    mined-only nonce from blockbook when `fetchConfirmedNonce` is true (trezor/blockbook#1562).
+ *  - `confirmedNonce` = the mined-only nonce from blockbook when `fetchConfirmedNonce` is true and
+ *    the backend supports it (trezor/blockbook#1562), trusted as-is; otherwise the account's
+ *    last-synced nonce from the backend (account.misc.nonce), reconciled against local tx data
+ *    since it can be stale/pending-inclusive.
  *  - `nonce` (signing default) = `confirmedNonce` advanced past any *contiguous* outgoing pending
  *    txs. Gapped pending txs (e.g. a stuck tx far above the confirmed nonce) are ignored, so the
  *    suggestion fills the gap instead of queueing behind an unmineable tx.
@@ -474,6 +476,7 @@ export const resolveEthereumNonce = async ({
     // mined-only nonce (trezor/blockbook#1562) when the caller opts in — it costs an extra backend
     // call but is authoritative and unaffected by local pending-tx state.
     let accountNonce = parseInt(selectedAccount.misc?.nonce ?? '0', 10);
+    let accountNonceIsConfirmed = false;
     if (fetchConfirmedNonce) {
         // A backend failure (rejection or unsuccessful response) must not block signing — swallow it
         // and fall back to local derivation below.
@@ -486,19 +489,26 @@ export const resolveEthereumNonce = async ({
                 confirmedNonce: true,
                 suppressBackupWarning: true,
             });
+
             if (
                 accountInfoResponse?.success &&
                 accountInfoResponse.payload.misc?.confirmedNonce != null
             ) {
                 accountNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
+                accountNonceIsConfirmed = true;
             }
         } catch {
             // ignore — local derivation below
         }
     }
 
-    const pendingTxs = accountTransactions.filter(isPending);
-    const { nextNonce, confirmedNonce } = getEvmNonceInfo(accountNonce, pendingTxs);
+    // A properly mined-only nonce fetched above is already trustworthy: reconciling it further
+    // against local tx data (getEvmNonceInfo) would let a single bad locally-known nonce override
+    // an otherwise-correct backend answer. Only account.misc.nonce (unconfirmed/untrusted) needs
+    // that reconciliation.
+    const { nextNonce, confirmedNonce } = accountNonceIsConfirmed
+        ? getEvmNonceInfoFromConfirmedNonce(accountNonce, accountTransactions)
+        : getEvmNonceInfo(accountNonce, accountTransactions);
 
     return { nonce: nextNonce.toString(), confirmedNonce: confirmedNonce.toString() };
 };
@@ -515,13 +525,15 @@ export const ethereumGetCurrentNonceThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
     ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
-        const transactions = selectTransactions(getState());
+        // selectAccountTransactions (not the raw selectTransactions map) filters out the null
+        // pagination placeholders the reducer can hold, which getEvmNonceInfo doesn't guard against.
+        const accountTransactions = selectAccountTransactions(getState(), selectedAccount.key);
 
         return resolveEthereumNonce({
             selectedAccount,
             rbfParams,
             fetchConfirmedNonce,
-            accountTransactions: transactions[selectedAccount.key] ?? [],
+            accountTransactions,
         });
     },
 );
