@@ -107,7 +107,7 @@ export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
 
 // Takes into account just network features, not features for specific accountTypes.
 export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
-    networks[symbol]?.features;
+    networks[symbol]?.features ?? [];
 
 export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
 

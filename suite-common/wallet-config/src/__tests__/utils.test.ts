@@ -3,6 +3,7 @@ import { type NetworkSymbol } from '../types';
 import {
     filterNetworksByName,
     getMainnets,
+    getNetworkFeatures,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
     getTestnets,
@@ -146,5 +147,18 @@ describe(getNetworksWithNativeTokenReserve.name, () => {
         expect(getNetworksWithNativeTokenReserve()).toEqual(
             'Base, Optimism, Robinhood Chain, Solana',
         );
+    });
+});
+
+describe(getNetworkFeatures.name, () => {
+    it('returns the configured features for a known symbol', () => {
+        expect(getNetworkFeatures('eth')).toBe(networks.eth.features);
+    });
+
+    // A persisted transaction can carry a symbol the config lookup does not recognize (observed
+    // in production, Sentry TREZOR-SUITE-1MX4); callers immediately call `.includes()`, so an
+    // empty-array fallback prevents a crash.
+    it('returns an empty array for an unknown symbol', () => {
+        expect(getNetworkFeatures('unknown' as NetworkSymbol)).toEqual([]);
     });
 });
