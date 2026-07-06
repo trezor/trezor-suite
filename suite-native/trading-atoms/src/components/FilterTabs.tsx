@@ -14,6 +14,7 @@ type FilterTabProps = {
     children: React.ReactNode;
     active: boolean;
     onPress: () => void;
+    testID?: string;
 };
 
 export type FilterTabsProps<T = any> = {
@@ -21,13 +22,14 @@ export type FilterTabsProps<T = any> = {
     onChange: (value: T) => void;
     value?: T;
     keyExtractor?: (item: FilterItem<T>) => string;
+    testID?: string;
 };
 
 const tabsStyle = prepareNativeStyle(({ spacings }) => ({
     gap: spacings.sp12,
 }));
 
-const FilterTab = ({ active, onPress, children }: FilterTabProps) => (
+const FilterTab = ({ active, onPress, children, testID }: FilterTabProps) => (
     <Button
         intent="neutral"
         priority={active ? 'primary' : 'secondary'}
@@ -35,6 +37,7 @@ const FilterTab = ({ active, onPress, children }: FilterTabProps) => (
         onPress={onPress}
         accessibilityRole="tab"
         accessibilityState={{ selected: active }}
+        testID={testID}
     >
         {children}
     </Button>
@@ -45,6 +48,7 @@ export const FilterTabs = <T,>({
     onChange,
     value,
     keyExtractor = (item: FilterItem<T>) => String(item.value),
+    testID,
 }: FilterTabsProps<T>) => {
     const listRef = useRef<FlatList>(null);
     const { applyStyle } = useNativeStyles();
@@ -72,7 +76,11 @@ export const FilterTabs = <T,>({
     }, [activeTabIndex]);
 
     const renderFilterTab = ({ item }: { item: FilterItem<T> }) => (
-        <FilterTab active={value === item.value} onPress={() => onChange(item.value)}>
+        <FilterTab
+            active={value === item.value}
+            onPress={() => onChange(item.value)}
+            testID={`${testID}filter-tab/${item.label}`}
+        >
             {item.label}
         </FilterTab>
     );

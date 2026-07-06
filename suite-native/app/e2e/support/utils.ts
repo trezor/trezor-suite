@@ -7,6 +7,8 @@ type ElementAttributes = {
     text?: string;
     label?: string;
     value?: string;
+    enabled?: boolean;
+    disabled?: boolean;
 };
 
 type ElementOrMatcher = Detox.NativeElement | Detox.NativeMatcher;
@@ -124,6 +126,34 @@ export const waitToHaveRegex = async (
             );
         }
     }, RETRY_CONF);
+};
+
+export const waitForEnabled = async (
+    elementOrMatcher: ElementOrMatcher,
+    { timeout = 30_000 }: { timeout?: number } = {},
+) => {
+    const target = getTarget(elementOrMatcher);
+    const invocationStack = new Error().stack || '';
+
+    await waitForVisible(target, { timeout });
+
+    try {
+        await scheduleAction(async () => {
+            const attributes = await target.getAttributes();
+            const { disabled, enabled } = attributes as ElementAttributes;
+
+            if (!enabled || disabled) {
+                throw new Error(
+                    `waitForEnabled(): target attributes ${JSON.stringify(attributes)} are not enabled`,
+                );
+            }
+        }, RETRY_CONF);
+    } catch (error) {
+        const details = `waitForEnabled(): target not enabled after ${timeout}ms`;
+        const appStackError = new Error(details, { cause: error as Error });
+        appStackError.stack = `${appStackError.name}: ${appStackError.message}\n${pruneToAppStack(invocationStack)}`;
+        throw appStackError;
+    }
 };
 
 export const appIsFullyLoaded = async () => {
