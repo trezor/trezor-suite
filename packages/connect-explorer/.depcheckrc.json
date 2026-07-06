@@ -1,5 +1,5 @@
 {
-    "ignore-patterns": ["libDev", "lib"],
+    "ignore-patterns": ["libDev", "lib", "build", "build-webextension"],
     "ignores": [
         "stylelint-config-standard",
         "rimraf",

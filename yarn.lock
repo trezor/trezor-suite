@@ -11932,7 +11932,6 @@ __metadata:
     react-native-permissions: "npm:5.4.4"
     react-native-quick-crypto: "npm:1.1.5"
     react-native-reanimated: "npm:4.3.1"
-    react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:5.6.2"
     react-native-screens: "npm:~4.23.0"
     react-native-svg: "npm:15.15.5"
@@ -12739,6 +12738,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -12757,7 +12757,6 @@ __metadata:
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
     react-native-reanimated: "npm:4.3.1"
-    react-native-restart: "npm:0.0.27"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
@@ -14027,6 +14026,7 @@ __metadata:
     expo-device: "npm:~56.0.4"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
+    react-native-restart: "npm:0.0.27"
     react-redux: "npm:9.3.0"
     redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"

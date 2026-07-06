@@ -25,6 +25,7 @@ import {
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
 import { suiteSyncDataReducer } from '@suite-common/suite-sync';
+import { type ReloadAppDep } from '@suite-common/suite-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -129,7 +130,10 @@ type RootReducerShape = typeof rootReducer;
 export type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export type SuiteStoreDeps = HistoryDep & PlatformEncryptionDep & CreateConnectLoggerFactoryDep;
+export type SuiteStoreDeps = HistoryDep &
+    PlatformEncryptionDep &
+    CreateConnectLoggerFactoryDep &
+    ReloadAppDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -158,6 +162,7 @@ export const initStore = (
             dispatch: api.dispatch,
             history: deps.history,
             platformEncryption: deps.platformEncryption,
+            reloadApp: deps.reloadApp,
             createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
         }),
     });

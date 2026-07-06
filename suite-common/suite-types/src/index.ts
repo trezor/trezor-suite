@@ -9,6 +9,7 @@ export type * from './firmware';
 export type * from './guide';
 export type * from './messageSystem';
 export type * from './modal';
+export * from './reload';
 export * from './staking';
 export * from './walletBackupType';
 export type * from './sign';

@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import RNRestart from 'react-native-restart';
 
 import * as Device from 'expo-device';
 
@@ -88,6 +89,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         analytics,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         reportSecurityCheck,
+        reloadApp: RNRestart.restart,
         saveAs: (data, fileName) =>
             console.warn(
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,

@@ -79,6 +79,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         analytics: analyticsMock,
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckParams) =>
             console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
+        reloadApp: () => {},
         saveAs: (data, fileName) =>
             console.warn(
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,

@@ -43,6 +43,7 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
+import { type ReloadAppDep } from '@suite-common/suite-types';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -91,7 +92,11 @@ export type StoreAPIDep = {
     dispatch: Dispatch;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep & CreateLoggerDep;
+export type SuiteAppDeps = StoreAPIDep &
+    HistoryDep &
+    PlatformEncryptionDep &
+    CreateLoggerDep &
+    ReloadAppDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
@@ -163,6 +168,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             history: deps.history,
         }),
         reportSecurityCheck,
+        reloadApp: deps.reloadApp,
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         connectInitHooks,
