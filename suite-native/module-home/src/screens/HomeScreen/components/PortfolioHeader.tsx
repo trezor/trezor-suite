@@ -23,6 +23,7 @@ export const PortfolioHeader = () => {
                     selectedPointTimestampAtom={portfolioGraphAtoms.selectedPointTimestampAtom}
                     referencePointAtom={portfolioGraphAtoms.referencePointAtom}
                     percentageChangeAtom={portfolioGraphAtoms.percentageChangeAtom}
+                    isGestureActiveAtom={portfolioGraphAtoms.isGestureActiveAtom}
                     showChange={hasDeviceHistoryEnabledAccounts}
                     isLoading={isLoading}
                     totalBaseCurrencyBalance={totalFiatBalance}

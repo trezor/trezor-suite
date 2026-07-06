@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type WritableAtom, useSetAtom } from 'jotai';
+import { type PrimitiveAtom, useSetAtom } from 'jotai';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { type FiatGraphPoint } from '@suite-common/graph';
@@ -13,11 +13,7 @@ import {
     selectHasRunningDiscovery,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type BaseCurrencyAmount,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
@@ -118,69 +114,19 @@ export const useAccountGraphData = ({ accountKey, tokenContract }: UseAccountGra
     ]);
 };
 
-type UseGraphAtomsParams<TGraphPoint extends FiatGraphPoint> = {
-    referencePointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
-    selectedPointAtom: WritableAtom<TGraphPoint | null, [TGraphPoint | null], void>;
-    graphPoints: TGraphPoint[];
-    totalFiatBalance?: BaseCurrencyAmount;
-};
-
-export const useGraphAtoms = <TGraphPoint extends FiatGraphPoint>({
-    referencePointAtom,
-    selectedPointAtom,
-    graphPoints,
-    totalFiatBalance,
-}: UseGraphAtomsParams<TGraphPoint>): {
-    handleGestureStart: () => void;
-    setInitialSelectedPoints: () => void;
-    setSelectedPoint: (point: TGraphPoint) => void;
-} => {
-    const [isGestureActive, setIsGestureActive] = useState(false);
+/**
+ * Provides the swipe gesture callbacks of a graph, writing the point under the user's
+ * finger into the given atom. The selected point is null while there is no gesture.
+ */
+export const useGraphGestureHandlers = <TGraphPoint extends FiatGraphPoint>(
+    selectedPointAtom: PrimitiveAtom<TGraphPoint | null>,
+) => {
     const setSelectedPoint = useSetAtom(selectedPointAtom);
-    const setReferencePoint = useSetAtom(referencePointAtom);
 
-    const lastPoint: TGraphPoint | undefined = graphPoints[graphPoints.length - 1];
-    const referencePoint: TGraphPoint | undefined = useMemo(
-        () => graphPoints.find(point => point.value > 0) ?? graphPoints[0],
-        [graphPoints],
-    );
+    // Make sure no point stays selected when the graph unmounts mid-gesture.
+    useEffect(() => () => setSelectedPoint(null), [setSelectedPoint]);
 
-    useEffect(
-        () => () => {
-            // we should reset everything to default on unmount otherwise it will broke loading state when navigating to same or another account
-            setSelectedPoint(null);
-            setReferencePoint(null);
-        },
-        [setSelectedPoint, setReferencePoint],
-    );
+    const handleGestureEnd = useCallback(() => setSelectedPoint(null), [setSelectedPoint]);
 
-    const setInitialSelectedPoints = useCallback(() => {
-        setIsGestureActive(false);
-        if (lastPoint && referencePoint) {
-            setSelectedPoint({
-                ...lastPoint,
-                valueLatestTotal: totalFiatBalance,
-            });
-            setReferencePoint(referencePoint);
-        }
-    }, [lastPoint, referencePoint, setSelectedPoint, setReferencePoint, totalFiatBalance]);
-
-    const handleGestureStart = useCallback(() => {
-        setIsGestureActive(true);
-    }, [setIsGestureActive]);
-
-    useEffect(() => {
-        if (!isGestureActive && lastPoint) {
-            setSelectedPoint({
-                ...lastPoint,
-                valueLatestTotal: totalFiatBalance,
-            });
-        }
-    }, [isGestureActive, setInitialSelectedPoints, totalFiatBalance, lastPoint, setSelectedPoint]);
-
-    return {
-        handleGestureStart,
-        setInitialSelectedPoints,
-        setSelectedPoint,
-    };
+    return { setSelectedPoint, handleGestureEnd };
 };

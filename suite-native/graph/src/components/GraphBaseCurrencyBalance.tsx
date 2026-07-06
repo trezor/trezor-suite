@@ -19,6 +19,7 @@ type GraphFiatBalanceProps = {
     selectedPointTimestampAtom: Atom<number | null>;
     referencePointAtom: Atom<FiatGraphPoint | null>;
     percentageChangeAtom: Atom<number>;
+    isGestureActiveAtom: Atom<boolean>;
     showChange?: boolean;
     isLoading?: boolean;
     totalBaseCurrencyBalance?: BaseCurrencyAmount;
@@ -57,13 +58,18 @@ const SelectedPointFiatBalance = ({
 
 const Balance = ({
     selectedPointFiatValueAtom,
-    latestValue,
-}: {
-    selectedPointFiatValueAtom: Atom<string>;
-    latestValue?: BaseCurrencyAmount;
-}) => {
-    if (latestValue !== undefined) {
-        return <FormattedBalance value={latestValue} />;
+    isGestureActiveAtom,
+    totalBaseCurrencyBalance,
+}: Pick<
+    GraphFiatBalanceProps,
+    'selectedPointFiatValueAtom' | 'isGestureActiveAtom' | 'totalBaseCurrencyBalance'
+>) => {
+    const isGestureActive = useAtomValue(isGestureActiveAtom);
+
+    // While the user is not swiping the graph, the live total balance is displayed, because
+    // the last graph point is frozen at fetch time and its value goes stale as rates move.
+    if (!isGestureActive && totalBaseCurrencyBalance !== undefined) {
+        return <FormattedBalance value={totalBaseCurrencyBalance} />;
     }
 
     return <SelectedPointFiatBalance selectedPointFiatValueAtom={selectedPointFiatValueAtom} />;
@@ -74,6 +80,7 @@ export const GraphBaseCurrencyBalance = ({
     selectedPointTimestampAtom,
     referencePointAtom,
     percentageChangeAtom,
+    isGestureActiveAtom,
     showChange = true,
     isLoading = false,
     totalBaseCurrencyBalance,
@@ -95,7 +102,8 @@ export const GraphBaseCurrencyBalance = ({
             <Box style={applyStyle(wrapperStyle)}>
                 <Balance
                     selectedPointFiatValueAtom={selectedPointFiatValueAtom}
-                    latestValue={totalBaseCurrencyBalance}
+                    isGestureActiveAtom={isGestureActiveAtom}
+                    totalBaseCurrencyBalance={totalBaseCurrencyBalance}
                 />
                 {showChange && (
                     <HStack alignItems="center">
@@ -115,7 +123,11 @@ export const GraphBaseCurrencyBalance = ({
 
     return (
         <Box style={applyStyle(wrapperStyle)}>
-            <Balance selectedPointFiatValueAtom={selectedPointFiatValueAtom} />
+            <Balance
+                selectedPointFiatValueAtom={selectedPointFiatValueAtom}
+                isGestureActiveAtom={isGestureActiveAtom}
+                totalBaseCurrencyBalance={totalBaseCurrencyBalance}
+            />
             {showChange && (
                 <HStack alignItems="center">
                     <GraphDateFormatter

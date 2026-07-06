@@ -1,17 +1,10 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountKey,
-    type BaseCurrencyAmount,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type BigNumber } from '@trezor/utils';
 
 export type FiatGraphPoint = {
     date: Date;
     value: number;
-    // Because graph latest point doesn't include staking, some tokens etc. we display this value when user is not touching the graph,
-    // But we can't override the value of the "real" latest point, because we calculate percentage change based on it
-    valueLatestTotal?: BaseCurrencyAmount;
 };
 
 export type FiatGraphPointWithCryptoBalance = {

@@ -104,6 +104,7 @@ export const AccountDetailHeader = ({
                 selectedPointTimestampAtom={accountDetailGraphAtoms.selectedPointTimestampAtom}
                 referencePointAtom={accountDetailGraphAtoms.referencePointAtom}
                 percentageChangeAtom={accountDetailGraphAtoms.percentageChangeAtom}
+                isGestureActiveAtom={accountDetailGraphAtoms.isGestureActiveAtom}
                 showChange={isHistoryEnabledAccount}
                 totalBaseCurrencyBalance={totalFiatBalance}
                 isHistoryEnabledAccount={isHistoryEnabledAccount}
