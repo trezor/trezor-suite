@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
-import RNRestart from 'react-native-restart';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     messageSystemActions,
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
+import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -44,6 +45,7 @@ export const KillswitchMessageScreen = () => {
     const language = useSelector(selectSupportedLanguageLocale);
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
+    const { reloadApp } = useServices(selectReloadAppDep);
 
     const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
 
@@ -89,7 +91,7 @@ export const KillswitchMessageScreen = () => {
         // To reinitialize Connect, we need to restart the native app.
         // Leave some time for DB persistence.
         setTimeout(() => {
-            RNRestart.restart();
+            reloadApp();
         }, APP_RESTART_DELAY_MILLISECONDS);
     };
 

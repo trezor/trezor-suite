@@ -12,9 +12,10 @@ export const createSuiteDesktopCompositionRoot = (
 ) => {
     const history = createMemoryHistory();
     const platformEncryption = createElectronPlatformEncryption({ desktopApi });
+    const reloadApp = desktopApi.appRestart;
 
     return initStore(
-        { history, platformEncryption, createConnectLoggerFactory: undefined },
+        { history, platformEncryption, createConnectLoggerFactory: undefined, reloadApp },
         preloadStoreAction,
         { statePatch },
     );

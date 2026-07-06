@@ -11,7 +11,11 @@ import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
-import { type ReportSecurityCheckDep, type UserContextPayload } from '@suite-common/suite-types';
+import {
+    type ReloadAppDep,
+    type ReportSecurityCheckDep,
+    type UserContextPayload,
+} from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -48,6 +52,7 @@ export type CommonServices = SuiteSyncDep &
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
     } & ReportSecurityCheckDep &
+    ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
     CreateLoggerDep;
 

@@ -9,9 +9,10 @@ import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
 export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreAction) => {
     const history = createBrowserHistory();
     const platformEncryption = createWebauthnPlatformEncryption();
+    const reloadApp = () => window.location.reload();
 
     return initStore(
-        { history, platformEncryption, createConnectLoggerFactory },
+        { history, platformEncryption, createConnectLoggerFactory, reloadApp },
         preloadStoreAction,
     );
 };

@@ -4,16 +4,17 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     messageSystemActions,
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
+import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { reloadApp } from 'src/utils/suite/reload';
 
 const APP_RESTART_DELAY_MILLISECONDS = 100;
 
@@ -46,6 +47,7 @@ export const KillswitchMessageScreen = () => {
     const dispatch = useDispatch();
     const language = useSelector(selectLanguage);
     const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
+    const { reloadApp } = useServices(selectReloadAppDep);
 
     // Destroy Connect instance, to prevent any device or backend interaction on the background
     // Connect won't init if there is an active killswitch (see appInitThunks), but message system can be updated anytime later.
@@ -78,8 +80,11 @@ export const KillswitchMessageScreen = () => {
         if (!isDismissible) return;
         dispatch(messageSystemActions.dismissMessage({ id: messageId, category: 'feature' }));
 
-        // To reinitialize Connect, we need to restart whole Desktop App /  refresh Web window.
-        reloadApp(APP_RESTART_DELAY_MILLISECONDS); // Leave some time for DB persistence.
+        // To reinitialize Connect, we need to restart whole Desktop App / refresh Web window.
+        // Leave some time for DB persistence.
+        setTimeout(() => {
+            reloadApp();
+        }, APP_RESTART_DELAY_MILLISECONDS);
     };
 
     return (

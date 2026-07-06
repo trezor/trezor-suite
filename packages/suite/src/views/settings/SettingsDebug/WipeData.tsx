@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectReloadAppDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -17,6 +19,7 @@ const UserDataLink = styled.span`
 export const WipeData = () => {
     const userDataDir = useSelector(state => state.desktop?.paths.userDir);
     const dispatch = useDispatch();
+    const { reloadApp } = useServices(selectReloadAppDep);
 
     const openUserDataDir = async () => {
         const result = await desktopApi.openUserDataDirectory();
@@ -32,7 +35,7 @@ export const WipeData = () => {
 
             return;
         }
-        desktopApi.appRestart();
+        reloadApp();
     };
 
     return (
