@@ -16,6 +16,7 @@ import {
     type PrecomposedLevelsCardano,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalBumpFeeRbf,
+    type PrecomposedTransactionFinalCancelRbf,
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
@@ -700,6 +701,19 @@ export const enhancePrecomposedTransactionThunk = createThunk<
 
         const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
             if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
+                // A cancel (zero-value replace) tx is already tagged rbfType: 'cancel' by its own
+                // compose step (e.g. useEthereumCancelTxCompose) — preserve that instead of always
+                // relabeling as 'bump-fee', which mislabels the review modal/analytics for cancels.
+                if (isRbfCancelTransaction(precomposedTransaction)) {
+                    const enhancedCancelPrecomposedTx: PrecomposedTransactionFinalCancelRbf = {
+                        ...precomposedTransaction,
+                        rbfType: 'cancel',
+                        prevTxid: formValues.rbfParams.txid,
+                    };
+
+                    return enhancedCancelPrecomposedTx;
+                }
+
                 const enhancedRbfPrecomposedTx: PrecomposedTransactionFinalBumpFeeRbf = {
                     ...precomposedTransaction,
                     rbfType: 'bump-fee',
