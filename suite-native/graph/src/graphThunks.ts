@@ -12,15 +12,19 @@ import {
 } from '@suite-common/graph';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    selectAccountByKey,
     selectBaseCurrency,
     selectHasRunningDiscovery,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
+import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
 import { type GraphAtoms } from './createGraphAtoms';
 import { portfolioGraphAtoms } from './portfolioGraphAtoms';
 import { selectPortfolioGraphAccountItems } from './selectors';
-import { selectPortfolioGraphTimeframe } from './slice';
+import { selectAccountGraphTimeframe, selectPortfolioGraphTimeframe } from './slice';
 import { type TimeframeHoursValue } from './types';
 import { checkAndReportGraphError } from './utils';
 
@@ -129,6 +133,53 @@ export const refetchPortfolioGraphThunk = createThunk(
             accounts,
             timeframeHours: selectPortfolioGraphTimeframe(getState()),
             isElectrumBackend: selectIsElectrumBackendSelected(getState(), 'btc'),
+            baseCurrencyCode: selectBaseCurrency(getState()),
+            forceRefetch,
+            dispatch,
+        });
+    },
+);
+
+type RefetchAccountGraphThunkParams = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+    forceRefetch?: boolean;
+};
+
+export const refetchAccountGraphThunk = createThunk(
+    `${GRAPH_MODULE_PREFIX}/refetchAccountGraph`,
+    async (
+        { accountKey, tokenContract, forceRefetch }: RefetchAccountGraphThunkParams,
+        { dispatch, getState },
+    ) => {
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!account) {
+            jotaiStore.set(accountDetailGraphAtoms.isLoadingAtom, false);
+            jotaiStore.set(
+                accountDetailGraphAtoms.errorAtom,
+                new Error('Graph is not available for testnet coins.'),
+            );
+
+            return;
+        }
+
+        const accountItem: AccountItem = {
+            symbol: account.symbol,
+            descriptor: account.descriptor,
+            accountKey: account.key,
+            identity: tryGetAccountIdentity(account),
+            hideMainAccount: !!tokenContract,
+            // Pass empty array to show only the main account, or the token to show only its graph.
+            tokensFilter: tokenContract ? [tokenContract] : [],
+        };
+
+        await fetchGraphDataToAtoms({
+            atoms: accountDetailGraphAtoms,
+            accounts: [accountItem],
+            eventsAccount: accountItem,
+            timeframeHours: selectAccountGraphTimeframe(getState(), accountKey),
+            isElectrumBackend: selectIsElectrumBackendSelected(getState(), account.symbol),
             baseCurrencyCode: selectBaseCurrency(getState()),
             forceRefetch,
             dispatch,
