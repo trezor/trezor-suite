@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { formInputsMaxLength } from '@suite-common/validators';
-import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core';
-import { type Account, type FormOptions } from '@suite-common/wallet-types';
+import { type AccountWithNetworkType, type FormOptions } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
 
 import { EthereumNonce } from './EthereumNonce';
 import { TransactionData } from '../shared/TransactionData';
@@ -15,41 +13,23 @@ import { TransactionData } from '../shared/TransactionData';
 export const EthereumOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction, account, setValue, control } =
         useSendFormContext();
-    const dispatch = useDispatch();
 
-    const [displayNonce, setDisplayNonce] = useState<string>();
-    const [confirmedNonce, setConfirmedNonce] = useState<string>();
     // Nonce editing is toggled from the send-form header dropdown (EVM-only). useWatch keeps this in
     // sync with that cross-component toggle (getValues would not re-render here when it flips).
     // No defaultValue is passed: it would mask the form's current value until the next change event.
     const enabledOptions = useWatch({ name: 'options', control });
     const isEditingNonce = (enabledOptions ?? []).includes('ethereumNonce');
 
-    useEffect(() => {
-        if (account.networkType !== 'ethereum') return;
-
-        // Resolve the nonce from the local tx list (confirmed count + pending-tx adjustment) for an
-        // advisory display and the inline EthereumNonce validation. We deliberately skip
-        // fetchConfirmedNonce here to avoid a backend round-trip on every form open; the authoritative
-        // live-backend check is deferred to signing time (signEthereumSendFormTransactionThunk).
-        const promise = dispatch(
-            ethereumGetCurrentNonceThunk({
-                selectedAccount: account as Account & { networkType: 'ethereum' },
-            }),
-        );
-
-        void promise
-            .unwrap()
-            .then(result => {
-                setDisplayNonce(result.nonce);
-                setConfirmedNonce(result.confirmedNonce);
-            })
-            .catch(() => {});
-
-        return () => {
-            promise.abort();
-        };
-    }, [account, dispatch]);
+    // Gated on isEditingNonce (the user deliberately opening the nonce override) so this doesn't
+    // fetch on every account update; the authoritative check normally deferred to signing time
+    // (signEthereumSendFormTransactionThunk) is worth paying for here too, since a stale display
+    // both misleads the user and can suggest a nonce that's already in use. This component only
+    // ever renders for ethereum accounts (see Options.tsx), hence the cast.
+    const { nonceInfo } = useEvmNonceInfo(account as AccountWithNetworkType<'ethereum'>, {
+        enabled: isEditingNonce,
+    });
+    const displayNonce = nonceInfo?.nextNonce.toString();
+    const confirmedNonce = nonceInfo?.confirmedNonce.toString();
 
     const options = getDefaultValue('options', []);
     const dataEnabled = options.includes('transactionData');
