@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { type MerklUsersRewardsRequestBody } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
 import { useFreshRef } from '@trezor/react-utils';
-import { delay } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { queriesStaleTime } from '../../config';
 import { getMerklUsersRewards } from '../../services';
@@ -59,7 +59,7 @@ export function useGetMerklRewards<Address extends string>(
                 break;
             }
 
-            await delay(2000);
+            await resolveAfter(2000);
             attempts--;
         }
 
