@@ -4,21 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useAtomValue } from 'jotai';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
     Graph,
     portfolioGraphAtoms,
     refetchPortfolioGraphThunk,
     selectHasDeviceHistoryEnabledAccounts,
-    useGraphAtoms,
+    useGraphGestureHandlers,
 } from '@suite-native/graph';
 
 export const PortfolioLineGraph = () => {
     const dispatch = useDispatch();
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
-    const totalFiatBalance = useSelector(selectSelectedDeviceTotalFiatBalance);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
     const graphPoints = useAtomValue(portfolioGraphAtoms.graphPointsAtom);
@@ -27,12 +25,9 @@ export const PortfolioLineGraph = () => {
 
     const showGraph = hasDeviceHistoryEnabledAccounts || hasDeviceDiscovery;
 
-    const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } = useGraphAtoms({
-        referencePointAtom: portfolioGraphAtoms.referencePointAtom,
-        selectedPointAtom: portfolioGraphAtoms.selectedPointAtom,
-        graphPoints,
-        totalFiatBalance,
-    });
+    const { setSelectedPoint, handleGestureEnd } = useGraphGestureHandlers(
+        portfolioGraphAtoms.selectedPointAtom,
+    );
 
     const handleTryAgain = useCallback(() => {
         dispatch(refetchPortfolioGraphThunk({ forceRefetch: true }));
@@ -46,8 +41,7 @@ export const PortfolioLineGraph = () => {
             loading={isLoading}
             loadingTakesLongerThanExpected={loadingTakesLongerThanExpected}
             onPointSelected={setSelectedPoint}
-            onGestureEnd={setInitialSelectedPoints}
-            onGestureStart={handleGestureStart}
+            onGestureEnd={handleGestureEnd}
             onTryAgain={handleTryAgain}
             error={error?.message}
         />

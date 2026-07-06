@@ -3,7 +3,6 @@ export * from './components/TimeSwitch';
 export * from './utils';
 export * from './hooks';
 export * from './createGraphAtoms';
-export * from './graphPointAtoms';
 export * from './accountDetailGraphAtoms';
 export * from './graphThunks';
 export * from './portfolioGraphAtoms';

@@ -18,7 +18,7 @@ import {
     refetchAccountGraphThunk,
     selectIsHistoryEnabledAccountByAccountKey,
     useAccountGraphData,
-    useGraphAtoms,
+    useGraphGestureHandlers,
 } from '@suite-native/graph';
 
 import { AccountDetailGraphTimeSwitch } from './AccountDetailGraphTimeSwitch';
@@ -47,13 +47,9 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     const error = useAtomValue(accountDetailGraphAtoms.errorAtom);
     const graphEvents = useAtomValue(accountDetailGraphAtoms.graphEventsAtom);
 
-    const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } =
-        useGraphAtoms<FiatGraphPointWithCryptoBalance>({
-            referencePointAtom: accountDetailGraphAtoms.referencePointAtom,
-            selectedPointAtom: accountDetailGraphAtoms.selectedPointAtom,
-            graphPoints,
-            totalFiatBalance,
-        });
+    const { setSelectedPoint, handleGestureEnd } = useGraphGestureHandlers(
+        accountDetailGraphAtoms.selectedPointAtom,
+    );
 
     const isTokenPriceUnavailable = !isLoading && (!!error || graphPoints.length <= 1);
     const isGraphHidden = !!tokenContract && isTokenPriceUnavailable;
@@ -74,8 +70,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
                 <>
                     <Graph<FiatGraphPointWithCryptoBalance>
                         onPointSelected={setSelectedPoint}
-                        onGestureEnd={setInitialSelectedPoints}
-                        onGestureStart={handleGestureStart}
+                        onGestureEnd={handleGestureEnd}
                         points={graphPoints}
                         loading={isLoading}
                         error={error?.message}
