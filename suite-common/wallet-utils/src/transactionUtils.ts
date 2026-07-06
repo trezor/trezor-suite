@@ -2,7 +2,7 @@ import { addDays, startOfMonth } from 'date-fns';
 
 import { Calldata } from '@suite-common/calldata';
 import { type SignOperator } from '@suite-common/suite-types';
-import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkFeature, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
@@ -70,36 +70,156 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
     return !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 };
 
+// Also matches 'contract': a contract-deployment tx is signed and broadcast from the account's own
+// address and consumes an EVM nonce exactly like a plain send, so it must count toward the same
+// nonce pool (see getEvmNonceInfo) even though blockbook classifies it under a distinct type.
 export const isSentTransaction = (tx: WalletAccountTransaction | AccountTransaction) =>
-    ['sent', 'self'].includes(tx.type);
+    ['sent', 'self', 'contract'].includes(tx.type);
 
-/**
- * Returns the next EVM nonce to use, walking past any contiguous outgoing pending txs starting
- * from `accountNonce`. Stops at the first gap so a stuck/gapped tx does not inflate the result.
- */
-export const getEvmNonceInfo = (
-    accountNonce: number,
-    pendingTxs: WalletAccountTransaction[],
-): { confirmedNonce: number; nextNonce: number } => {
-    const pendingNonceSet = new Set(
-        pendingTxs
-            .filter(isSentTransaction)
+// Shared by the transaction list and its detail modal so both agree on which pending
+// transactions offer a cancel/bump-fee action.
+export const isTransactionCancellable = (
+    tx: WalletAccountTransaction | AccountTransaction,
+    isPendingTx: boolean,
+    networkType: NetworkType,
+) =>
+    isPendingTx &&
+    tx.type !== 'self' &&
+    tx.type !== 'joint' &&
+    (networkType === 'bitcoin' || networkType === 'ethereum');
+
+export const isTransactionBumpable = (
+    tx: Pick<WalletAccountTransaction, 'rbfParams' | 'deadline' | 'type'>,
+    networkFeatures: NetworkFeature[] | undefined,
+) => !!tx.rbfParams && !!networkFeatures?.includes('rbf') && !tx.deadline && tx.type !== 'joint';
+
+export type EvmNonceInfo = { confirmedNonce: number; nextNonce: number; pendingNonces: number[] };
+
+const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => {
+    const ownNonceTxs = transactions.filter(isSentTransaction);
+
+    // A nonce that's confirmed locally is ground truth. If a stale "pending" record for the same
+    // nonce also lingers (e.g. a speed-up/cancel replacement got confirmed but the original's
+    // local record was never swept — see replaceTransactionThunk), drop the pending duplicate so
+    // it can't inflate nextNonce past where it actually is.
+    const confirmedNonces = new Set(
+        ownNonceTxs
+            .filter(tx => !isPending(tx))
             .map(tx => tx.ethereumSpecific?.nonce)
             .filter((nonce): nonce is number => typeof nonce === 'number'),
     );
 
-    // accountNonce may be blockbook's pending nonce (eth_getTransactionCount("pending")), which
-    // already advances past consecutive mempool txs — including ones Suite doesn't know about
-    // (sent from another wallet). A locally-known pending tx at nonce N proves the chain hasn't
-    // confirmed N yet, so the true confirmed nonce can't exceed the lowest pending nonce we see.
+    const pendingNonceSet = new Set(
+        ownNonceTxs
+            .filter(isPending)
+            .map(tx => tx.ethereumSpecific?.nonce)
+            .filter((nonce): nonce is number => typeof nonce === 'number')
+            .filter(nonce => !confirmedNonces.has(nonce)),
+    );
+
+    return { confirmedNonces, pendingNonceSet };
+};
+
+/**
+ * Returns the next EVM nonce to use, walking past any contiguous outgoing pending txs starting
+ * from `accountNonce`. Stops at the first gap so a stuck/gapped tx does not inflate the result.
+ * Takes the account's full (unfiltered) local tx list — it needs both pending and confirmed
+ * entries to spot a pending tx whose nonce was already confirmed under a different txid.
+ *
+ * `accountNonce` here is treated as *untrusted* (e.g. `account.misc.nonce`, which can be
+ * stale/pending-inclusive — trezor/blockbook#1562) and is reconciled against local tx data. When
+ * a properly mined-only nonce is already available (fetched live via
+ * `TrezorConnect.getAccountInfo({ confirmedNonce: true })`), use `getEvmNonceInfoFromConfirmedNonce`
+ * instead — running an already-trustworthy value through this reconciliation is not just
+ * redundant, it's actively harmful: a single bad locally-known nonce (e.g. corrupted/malformed tx
+ * data) can override an otherwise-correct backend answer.
+ */
+export const getEvmNonceInfo = (
+    accountNonce: number,
+    transactions: WalletAccountTransaction[],
+): EvmNonceInfo => {
+    const { confirmedNonces, pendingNonceSet } = getOwnEvmNonceSets(transactions);
+
+    // accountNonce (e.g. account.misc.nonce) can lag behind the local tx list if it hasn't been
+    // refreshed since a confirmed tx was locally picked up. A locally confirmed nonce proves a
+    // higher true nonce exists, so it's a floor accountNonce can't be below. When no confirmed
+    // nonce is locally known this is 0, so it never lowers accountNonce.
+    const maxLocalConfirmedNonce = confirmedNonces.size > 0 ? Math.max(...confirmedNonces) + 1 : 0;
+    const effectiveAccountNonce = Math.max(accountNonce, maxLocalConfirmedNonce);
+
+    // effectiveAccountNonce may still overstate reality via blockbook's pending nonce
+    // (eth_getTransactionCount("pending")), which already advances past consecutive mempool txs —
+    // including ones Suite doesn't know about (sent from another wallet). A locally-known pending
+    // tx at nonce N proves the chain hasn't confirmed N yet, so the true confirmed nonce can't
+    // exceed the lowest pending nonce we see.
     const lowestPendingNonce =
-        pendingNonceSet.size > 0 ? Math.min(...pendingNonceSet) : accountNonce;
-    const confirmedNonce = Math.min(accountNonce, lowestPendingNonce);
+        pendingNonceSet.size > 0 ? Math.min(...pendingNonceSet) : effectiveAccountNonce;
+    const confirmedNonce = Math.min(effectiveAccountNonce, lowestPendingNonce);
 
     let nextNonce = confirmedNonce;
     while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
 
-    return { confirmedNonce, nextNonce };
+    return { confirmedNonce, nextNonce, pendingNonces: [...pendingNonceSet] };
+};
+
+/**
+ * Same shape as `getEvmNonceInfo`, but for a `confirmedNonce` that's already trustworthy (fetched
+ * live from the backend). Skips `getEvmNonceInfo`'s local-data reconciliation entirely — that
+ * logic exists only to compensate for an unreliable `account.misc.nonce`, and applying it here
+ * would let a single bad locally-known nonce override a correct backend answer. The only local
+ * adjustment still needed is walking forward past the account's own contiguous pending txs, since
+ * those are what a new send must avoid colliding with.
+ */
+export const getEvmNonceInfoFromConfirmedNonce = (
+    confirmedNonce: number,
+    transactions: WalletAccountTransaction[],
+): EvmNonceInfo => {
+    const { pendingNonceSet } = getOwnEvmNonceSets(transactions);
+
+    let nextNonce = confirmedNonce;
+    while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
+
+    return { confirmedNonce, nextNonce, pendingNonces: [...pendingNonceSet] };
+};
+
+export type PendingEvmNonceStatus = 'ok' | 'superseded' | 'gap';
+
+/**
+ * Whether an already-pending transaction's own nonce is stuck, given the account's bounds from
+ * `getEvmNonceInfo`. Used by the transaction list and its detail modal to grey out/warn about a
+ * pending tx that can never confirm. Deliberately ignores `pendingNonces` — a pending tx's own
+ * nonce is trivially a member of that set, which would otherwise always read as a "replacement".
+ */
+export const getPendingEvmNonceStatus = (
+    nonce: number,
+    { confirmedNonce, nextNonce }: Pick<EvmNonceInfo, 'confirmedNonce' | 'nextNonce'>,
+): PendingEvmNonceStatus => {
+    if (nonce < confirmedNonce) return 'superseded'; // already mined under another tx/txid
+    if (nonce > nextNonce) return 'gap'; // a lower nonce is still missing
+
+    return 'ok';
+};
+
+/**
+ * Classifies a *candidate* EVM nonce (e.g. typed into the send-form override) against the bounds
+ * from `getEvmNonceInfo`. Unlike `getPendingEvmNonceStatus`, landing anywhere below `nextNonce` —
+ * whether or not it matches a nonce Suite has a local record for — means the candidate would
+ * replace one of the account's own currently-queued pending txs, which needs a fee bump to be
+ * accepted; only landing exactly on `nextNonce` extends the queue normally. A match against
+ * `pendingNonces` is checked first and takes priority over a gap: a candidate can simultaneously
+ * sit above `nextNonce` (a gap exists below it) and match an existing own pending tx, and
+ * replacement is the actionable case (offer a fee bump) rather than a dead end.
+ */
+export const classifyEvmNonce = (
+    nonce: number,
+    { confirmedNonce, nextNonce, pendingNonces }: EvmNonceInfo,
+): 'ok' | 'superseded' | 'gap' | 'replacement' => {
+    if (nonce < confirmedNonce) return 'superseded'; // already mined under another tx/txid
+    if (pendingNonces.includes(nonce)) return 'replacement'; // collides with a known own pending tx
+    if (nonce > nextNonce) return 'gap'; // a lower nonce is still missing
+    if (nonce < nextNonce) return 'replacement'; // within the contiguous pending range
+
+    return 'ok'; // nonce === nextNonce, extends the queue normally
 };
 
 export const isRbfTransaction = (

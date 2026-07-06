@@ -5,11 +5,13 @@ import * as fixtures from '../__fixtures__/transactionUtils';
 import {
     type MonthKey,
     analyzeTransactions,
+    classifyEvmNonce,
     enhanceTransaction,
     findChainedTransactions,
     generateTransactionMonthKey,
     getAccountTransactions,
     getEvmNonceInfo,
+    getEvmNonceInfoFromConfirmedNonce,
     getRbfParams,
     getTransactionWithLowestNonce,
     groupJointTransactions,
@@ -399,36 +401,169 @@ describe('transaction utils', () => {
             });
 
         it('no pending txs: nextNonce = accountNonce', () => {
-            expect(getEvmNonceInfo(41, [])).toEqual({ confirmedNonce: 41, nextNonce: 41 });
+            expect(getEvmNonceInfo(41, [])).toEqual({
+                confirmedNonce: 41,
+                nextNonce: 41,
+                pendingNonces: [],
+            });
         });
 
         it('contiguous pending txs: nextNonce advances past all of them', () => {
             const pending = [pendingSentTx(41), pendingSentTx(42), pendingSentTx(43)];
-            expect(getEvmNonceInfo(41, pending)).toEqual({ confirmedNonce: 41, nextNonce: 44 });
+            expect(getEvmNonceInfo(41, pending)).toEqual({
+                confirmedNonce: 41,
+                nextNonce: 44,
+                pendingNonces: [41, 42, 43],
+            });
         });
 
         it('gap in pending: nextNonce stops at the gap, confirmedNonce at the lowest pending nonce', () => {
             const pending = [pendingSentTx(41), pendingSentTx(43)];
-            expect(getEvmNonceInfo(41, pending)).toEqual({ confirmedNonce: 41, nextNonce: 42 });
+            expect(getEvmNonceInfo(41, pending)).toEqual({
+                confirmedNonce: 41,
+                nextNonce: 42,
+                pendingNonces: [41, 43],
+            });
         });
 
         it('accountNonce is blockbook pending count (higher than actual confirmed): uses lowest local pending nonce as confirmedNonce', () => {
             // misc.nonce = 44 (node saw txs 41-43 in mempool), but locally only 41 and 43 are known.
             // confirmedNonce must be 41 (the lowest locally-known pending nonce), not 44.
             const pending = [pendingSentTx(41), pendingSentTx(43)];
-            expect(getEvmNonceInfo(44, pending)).toEqual({ confirmedNonce: 41, nextNonce: 42 });
+            expect(getEvmNonceInfo(44, pending)).toEqual({
+                confirmedNonce: 41,
+                nextNonce: 42,
+                pendingNonces: [41, 43],
+            });
         });
 
         it('accountNonce is blockbook pending count with no gap: nextNonce equals accountNonce', () => {
             // misc.nonce = 44 (all of 41-43 are in the mempool, all locally known too)
             const pending = [pendingSentTx(41), pendingSentTx(42), pendingSentTx(43)];
-            expect(getEvmNonceInfo(44, pending)).toEqual({ confirmedNonce: 41, nextNonce: 44 });
+            expect(getEvmNonceInfo(44, pending)).toEqual({
+                confirmedNonce: 41,
+                nextNonce: 44,
+                pendingNonces: [41, 42, 43],
+            });
         });
 
         it('single pending tx above accountNonce (gap at the bottom): nextNonce = accountNonce', () => {
             // Pending tx at 43 but confirmed nonce is 41 — gap at 41 and 42
             const pending = [pendingSentTx(43)];
-            expect(getEvmNonceInfo(41, pending)).toEqual({ confirmedNonce: 41, nextNonce: 41 });
+            expect(getEvmNonceInfo(41, pending)).toEqual({
+                confirmedNonce: 41,
+                nextNonce: 41,
+                pendingNonces: [43],
+            });
+        });
+
+        it('stale pending record superseded by a locally-confirmed tx at the same nonce is ignored', () => {
+            // nonce 41's replacement (e.g. a speed-up) confirmed locally, but the original pending
+            // record for 41 was never swept — it must not count toward the pending nonce pool.
+            const confirmedTx41 = getWalletTransaction({
+                blockHeight: 100,
+                type: 'sent',
+                ethereumSpecific: { nonce: 41 } as any,
+            });
+            const transactions = [confirmedTx41, pendingSentTx(41), pendingSentTx(42)];
+            expect(getEvmNonceInfo(41, transactions)).toEqual({
+                confirmedNonce: 42,
+                nextNonce: 43,
+                pendingNonces: [42],
+            });
+        });
+    });
+
+    describe('getEvmNonceInfoFromConfirmedNonce', () => {
+        const pendingSentTx = (nonce: number) =>
+            getWalletTransaction({
+                blockHeight: -1,
+                type: 'sent',
+                ethereumSpecific: { nonce } as any,
+            });
+
+        it('no pending txs: nextNonce = confirmedNonce', () => {
+            expect(getEvmNonceInfoFromConfirmedNonce(1418, [])).toEqual({
+                confirmedNonce: 1418,
+                nextNonce: 1418,
+                pendingNonces: [],
+            });
+        });
+
+        it('contiguous pending txs: nextNonce advances past all of them', () => {
+            const pending = [pendingSentTx(1418), pendingSentTx(1419)];
+            expect(getEvmNonceInfoFromConfirmedNonce(1418, pending)).toEqual({
+                confirmedNonce: 1418,
+                nextNonce: 1420,
+                pendingNonces: [1418, 1419],
+            });
+        });
+
+        it('gap in pending: nextNonce stops at the gap', () => {
+            const pending = [pendingSentTx(1421)];
+            expect(getEvmNonceInfoFromConfirmedNonce(1418, pending)).toEqual({
+                confirmedNonce: 1418,
+                nextNonce: 1418,
+                pendingNonces: [1421],
+            });
+        });
+
+        it('a bogus/corrupted locally-confirmed nonce does not override the trusted confirmedNonce', () => {
+            // Regression: getEvmNonceInfo's local-data reconciliation (a floor derived from the
+            // highest locally-confirmed nonce) must NOT apply here — a single malformed/corrupted
+            // local tx record with a huge nonce must not push a trusted, backend-fetched
+            // confirmedNonce upward.
+            const corruptedConfirmedTx = getWalletTransaction({
+                blockHeight: 100,
+                type: 'sent',
+                ethereumSpecific: { nonce: 335753 } as any,
+            });
+            expect(getEvmNonceInfoFromConfirmedNonce(1418, [corruptedConfirmedTx])).toEqual({
+                confirmedNonce: 1418,
+                nextNonce: 1418,
+                pendingNonces: [],
+            });
+        });
+
+        it('stale pending record superseded by a locally-confirmed tx at the same nonce is ignored', () => {
+            const confirmedTx1418 = getWalletTransaction({
+                blockHeight: 100,
+                type: 'sent',
+                ethereumSpecific: { nonce: 1418 } as any,
+            });
+            const transactions = [confirmedTx1418, pendingSentTx(1418), pendingSentTx(1419)];
+            expect(getEvmNonceInfoFromConfirmedNonce(1419, transactions)).toEqual({
+                confirmedNonce: 1419,
+                nextNonce: 1420,
+                pendingNonces: [1419],
+            });
+        });
+    });
+
+    describe('classifyEvmNonce', () => {
+        const bounds = { confirmedNonce: 41, nextNonce: 43, pendingNonces: [41, 42] };
+
+        it('below confirmedNonce is superseded', () => {
+            expect(classifyEvmNonce(40, bounds)).toBe('superseded');
+        });
+
+        it('matching an own pending nonce is a replacement', () => {
+            expect(classifyEvmNonce(41, bounds)).toBe('replacement');
+            expect(classifyEvmNonce(42, bounds)).toBe('replacement');
+        });
+
+        it('above nextNonce is a gap', () => {
+            expect(classifyEvmNonce(44, bounds)).toBe('gap');
+        });
+
+        it('below nextNonce but not a known pending nonce is still a replacement', () => {
+            // e.g. displayNonce/pendingNonces resolved from slightly different snapshots of the
+            // local tx list — the range itself is authoritative, not just the known nonce set.
+            expect(classifyEvmNonce(42, { ...bounds, pendingNonces: [] })).toBe('replacement');
+        });
+
+        it('equal to nextNonce with no colliding pending tx is ok', () => {
+            expect(classifyEvmNonce(43, bounds)).toBe('ok');
         });
     });
 
