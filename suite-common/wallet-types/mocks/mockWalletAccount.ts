@@ -119,6 +119,7 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     ttrx: networkSpecificDefaultTron,
     txrp: networkSpecificDefaultBitcoin,
     txlm: networkSpecificDefaultBitcoin,
+    xmr: networkSpecificDefaultBitcoin,
 };
 
 type MandatoryAccountData = {

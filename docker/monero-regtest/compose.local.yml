@@ -1,0 +1,16 @@
+# Optional: run the Monero regtest backend as a container locally (mirrors how it will run
+# inside trezor-user-env). For the bare local feedback loop you don't need Docker at all —
+# just `./setup-local.sh && ./control.sh up`. See README.md.
+#
+#   docker compose -f compose.local.yml up --build
+#
+services:
+  monero-regtest:
+    container_name: monero-regtest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "18081:18081" # monerod RPC — the Suite scan worker connects here
+    # The chain is ephemeral by design (fresh deterministic bootstrap each run); add a volume
+    # on /data only if you want it to persist between runs.

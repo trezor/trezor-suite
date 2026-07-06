@@ -38,6 +38,11 @@ const EvmRpcWorker: WorkerAsyncImporter = () =>
         /* webpackChunkName: "workers/evm-rpc-worker" */
         '@trezor/blockchain-link/src/workers/evm-rpc'
     ).then(w => w.default());
+const MoneroWorker: WorkerAsyncImporter = () =>
+    import(
+        /* webpackChunkName: "workers/monero-worker" */
+        '@trezor/blockchain-link/src/workers/monero'
+    ).then(w => w.default());
 
 export {
     BlockbookWorker,
@@ -47,4 +52,5 @@ export {
     SolanaWorker,
     StellarWorker,
     EvmRpcWorker,
+    MoneroWorker,
 };

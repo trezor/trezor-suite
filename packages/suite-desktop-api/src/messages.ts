@@ -61,6 +61,52 @@ export type TorSettings = {
     externalPort: number;
 };
 
+export type MoneroNetwork = 'mainnet' | 'stagenet';
+
+// Lifecycle of the local Monero daemon (monerod) managed by the desktop app.
+// A string union (not an enum) so it can cross the package boundary as a pure type.
+export type MonerodStatus =
+    | 'Disabled'
+    | 'Downloading'
+    | 'Starting'
+    | 'Syncing'
+    | 'Enabled'
+    | 'Error';
+
+export type MonerodStatusEvent = {
+    type: MonerodStatus;
+    message?: string;
+};
+
+// Progress of the monerod binary download (`current`/`total` in percent).
+export type MonerodDownloadEvent = {
+    progress: {
+        current: number;
+        total: number;
+    };
+};
+
+// Progress of the blockchain sync once monerod is running (`current`/`total` in blocks).
+export type MonerodSyncEvent = {
+    height: number;
+    targetHeight: number;
+    progress: {
+        current: number;
+        total: number;
+    };
+};
+
+export type MonerodSettings = {
+    running: boolean;
+    network: MoneroNetwork;
+};
+
+// Free/total bytes on the volume holding the app's data directory (generic OS query).
+export type DiskSpace = {
+    free: number;
+    total: number;
+};
+
 export type TraySettings = {
     showOnTray: boolean;
 };

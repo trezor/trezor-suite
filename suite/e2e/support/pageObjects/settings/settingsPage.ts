@@ -97,6 +97,10 @@ export class SettingsPage {
     readonly experimentalFeaturesSwitch: Locator;
     readonly resetAppButton: Locator;
     readonly autoEjectWalletSwitch: Locator;
+    readonly monerodToggle: Locator;
+    readonly monerodToggleInput: Locator;
+    readonly monerodProgress: Locator;
+    readonly monerodPercentage: Locator;
 
     constructor(
         private readonly page: Page,
@@ -150,6 +154,10 @@ export class SettingsPage {
         );
         this.resetAppButton = this.page.getByTestId('@settings/reset-app-button');
         this.autoEjectWalletSwitch = this.page.getByTestId('@settings/auto-eject-switch');
+        this.monerodToggle = this.page.getByTestId('@settings/monerod/toggle');
+        this.monerodToggleInput = this.monerodToggle.locator('input');
+        this.monerodProgress = this.page.getByTestId('@settings/monerod/progress');
+        this.monerodPercentage = this.page.getByTestId('@settings/monerod/percentage');
     }
 
     @step()
@@ -298,6 +306,22 @@ export class SettingsPage {
     async enableExperimentalFeatures() {
         await this.navigateTo('application');
         await this.experimentalFeaturesSwitch.click();
+    }
+
+    @step()
+    async enableExperimentalNetworks() {
+        await this.navigateTo('application');
+        await this.experimentalFeaturesSwitch.click();
+        await this.page
+            .getByTestId('@settings/experimental-features/experimental-networks-checkbox')
+            .click();
+    }
+
+    @step()
+    async enableMonerodNode() {
+        await this.navigateTo('application');
+        await expect(this.monerodToggle).toBeVisible();
+        await this.monerodToggle.click({ force: true });
     }
 
     @step()

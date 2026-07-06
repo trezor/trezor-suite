@@ -768,6 +768,22 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
         };
     }
 
+    if (networkType === 'monero') {
+        const moneroScan = accountInfo.misc?.moneroScan;
+
+        return {
+            networkType,
+            // Keep the wallet birthday (start-block timestamp) for the details view and the
+            // scan-synced flag so the header can hide receive/send until the account is usable.
+            misc: moneroScan
+                ? { birthdayTimestamp: moneroScan.startTimestamp, synced: moneroScan.isSynced }
+                : undefined,
+            marker: undefined,
+            stellarCursor: undefined,
+            page: accountInfo.page,
+        };
+    }
+
     return {
         networkType,
         misc: undefined,
@@ -1063,6 +1079,7 @@ export const isAddressBasedNetwork = (networkType: NetworkType) => {
     if (networkType === 'ripple') return true;
     if (networkType === 'solana') return true;
     if (networkType === 'stellar') return true;
+    if (networkType === 'monero') return true;
 
     return exhaustive(networkType);
 };

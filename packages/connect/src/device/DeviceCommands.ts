@@ -281,6 +281,26 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             };
         }
 
+        if (coinInfo.shortcut === 'XMR') {
+            // The Monero account descriptor is its primary address (public, safe to persist).
+            // The private view key needed for scanning is fetched separately and passed to the
+            // backend out-of-band (see getAccountInfo), never stored in the descriptor.
+            const { message } = await typedCall('MoneroGetAddress', 'MoneroAddress', {
+                address_n,
+                network_type: PROTO.MoneroNetworkType.MAINNET,
+                account: 0,
+                minor: 0,
+                show_display: false,
+            });
+            // device returns the address as hex-encoded bytes
+            const descriptor = Buffer.from(message.address, 'hex').toString('utf8');
+
+            return {
+                descriptor,
+                address_n,
+            };
+        }
+
         throw ERRORS.TypedError(
             'Runtime',
             'DeviceCommands.getAccountDescriptor: unsupported coinInfo.type',

@@ -4331,6 +4331,106 @@ export const messages = defineMessages({
         id: 'TR_TOR_TITLE',
         defaultMessage: 'Tor',
     },
+    TR_MONEROD_TITLE: {
+        id: 'TR_MONEROD_TITLE',
+        defaultMessage: 'Local Monero node',
+    },
+    TR_MONEROD_DESCRIPTION: {
+        id: 'TR_MONEROD_DESCRIPTION',
+        defaultMessage:
+            'Download and run a local Monero daemon (monerod) to sync the Monero blockchain on this device.',
+    },
+    TR_MONEROD_DOWNLOADING: {
+        id: 'TR_MONEROD_DOWNLOADING',
+        defaultMessage: 'Downloading Monero daemon…',
+    },
+    TR_MONEROD_SYNCING: {
+        id: 'TR_MONEROD_SYNCING',
+        defaultMessage: 'Syncing blockchain…',
+    },
+    TR_MONEROD_SYNC_BLOCKS: {
+        id: 'TR_MONEROD_SYNC_BLOCKS',
+        defaultMessage: '{current} / {total} blocks',
+    },
+    TR_MONEROD_STARTING: {
+        id: 'TR_MONEROD_STARTING',
+        defaultMessage: 'Starting Monero daemon…',
+    },
+    TR_MONEROD_RUNNING: {
+        id: 'TR_MONEROD_RUNNING',
+        defaultMessage: 'Monero node is running.',
+    },
+    TR_MONEROD_ERROR: {
+        id: 'TR_MONEROD_ERROR',
+        defaultMessage: 'Monero node error: {error}',
+    },
+    TR_MONERO_ACCOUNT_REQUIREMENTS_TITLE: {
+        id: 'TR_MONERO_ACCOUNT_REQUIREMENTS_TITLE',
+        defaultMessage: 'Local Monero node required',
+    },
+    TR_MONERO_ACCOUNT_REQUIREMENTS_DESC: {
+        id: 'TR_MONERO_ACCOUNT_REQUIREMENTS_DESC',
+        defaultMessage:
+            'Monero works against a node you run locally. Downloading and syncing the blockchain takes time and disk space; your balance and history appear once it finishes.',
+    },
+    TR_MONERO_REQUIRED_SPACE: {
+        id: 'TR_MONERO_REQUIRED_SPACE',
+        defaultMessage: 'Required disk space',
+    },
+    TR_MONERO_AVAILABLE_SPACE: {
+        id: 'TR_MONERO_AVAILABLE_SPACE',
+        defaultMessage: 'Available disk space',
+    },
+    TR_MONERO_NOT_ENOUGH_SPACE: {
+        id: 'TR_MONERO_NOT_ENOUGH_SPACE',
+        defaultMessage: 'Not enough free disk space to sync the Monero blockchain.',
+    },
+    TR_MONERO_ACCOUNT_START_SYNC: {
+        id: 'TR_MONERO_ACCOUNT_START_SYNC',
+        defaultMessage: 'Start synchronization',
+    },
+    TR_MONERO_ACCOUNT_SCANNING: {
+        id: 'TR_MONERO_ACCOUNT_SCANNING',
+        defaultMessage: 'Node synced — scanning your wallet…',
+    },
+    TR_MONERO_BIRTHDAY_TITLE: {
+        id: 'TR_MONERO_BIRTHDAY_TITLE',
+        defaultMessage: 'When was this wallet first used?',
+    },
+    TR_MONERO_BIRTHDAY_DESC: {
+        id: 'TR_MONERO_BIRTHDAY_DESC',
+        defaultMessage:
+            'Scanning starts from this date, so a more recent one is much faster. If unsure, pick earlier — choosing a date after your first transaction would skip it.',
+    },
+    TR_MONERO_CHANGE_BIRTHDAY: {
+        id: 'TR_MONERO_CHANGE_BIRTHDAY',
+        defaultMessage: 'Change birthday',
+    },
+    TR_MONERO_MISSING_OLDER_TXS: {
+        id: 'TR_MONERO_MISSING_OLDER_TXS',
+        defaultMessage:
+            'Missing some transactions or balance? Scanning started from your chosen birthday. If you have older transactions, you can rescan from an earlier date — this takes a while and your balance stays incomplete until it finishes.',
+    },
+    TR_MONERO_RESCAN_EARLIER: {
+        id: 'TR_MONERO_RESCAN_EARLIER',
+        defaultMessage: 'Rescan from earlier',
+    },
+    TR_MONERO_SCANNING_FROM: {
+        id: 'TR_MONERO_SCANNING_FROM',
+        defaultMessage: 'Scanning from {birthday}',
+    },
+    TR_MONERO_ETA: {
+        id: 'TR_MONERO_ETA',
+        defaultMessage: 'about {eta} remaining',
+    },
+    TR_MONERO_BIRTHDAY_DETAILS_HEADER: {
+        id: 'TR_MONERO_BIRTHDAY_DETAILS_HEADER',
+        defaultMessage: 'Wallet birthday',
+    },
+    TR_MONERO_BIRTHDAY_DETAILS_DESC: {
+        id: 'TR_MONERO_BIRTHDAY_DETAILS_DESC',
+        defaultMessage: 'The date this account’s scan starts from.',
+    },
     TR_TOR_ENABLE: {
         id: 'TR_TOR_ENABLE',
         defaultMessage: 'Enable Tor',
@@ -6870,6 +6970,10 @@ export const messages = defineMessages({
     TR_REPRESENTATIVE_ASSETS_ON_NETWORK: {
         id: 'TR_REPRESENTATIVE_ASSETS_ON_NETWORK',
         defaultMessage: 'Representative assets on this network',
+    },
+    TR_BACKEND_LOCAL_NODE: {
+        id: 'TR_BACKEND_LOCAL_NODE',
+        defaultMessage: 'Local node',
     },
     TR_BACKEND_DEFAULT_SERVERS: {
         id: 'TR_BACKEND_DEFAULT_SERVERS',

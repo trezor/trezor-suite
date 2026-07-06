@@ -1680,7 +1680,7 @@
             }
         },
         {
-            "blockchain_link": null,
+            "blockchain_link": { "type": "monero", "url": ["http://127.0.0.1:18081"] },
             "curve": "ed25519",
             "decimals": 12,
             "name": "Monero",

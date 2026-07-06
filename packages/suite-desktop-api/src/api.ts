@@ -8,6 +8,7 @@ import {
     type ConnectPopupCall,
     type ConnectPopupCancel,
     type ConnectPopupResponse,
+    type DiskSpace,
     type HandshakeClient,
     type HandshakeElectron,
     type HandshakeEvent,
@@ -15,6 +16,10 @@ import {
     type HandshakeTorModule,
     type InvokeResult,
     type LoggerConfig,
+    type MonerodDownloadEvent,
+    type MonerodSettings,
+    type MonerodStatusEvent,
+    type MonerodSyncEvent,
     type Status,
     type SuiteThemeVariant,
     type TorSettings,
@@ -36,6 +41,7 @@ export interface MainChannels {
     'store/clear': void;
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
+    'monerod/get-status': void;
     'update/allow-prerelease': boolean;
     'update/set-automatic-update-enabled': boolean;
     'update/set-auto-install-on-app-quit': void;
@@ -76,6 +82,12 @@ export interface RendererChannels {
     'tor/status': TorStatusEvent;
     'tor/bootstrap': BootstrapTorEvent;
     'tor/settings': TorSettings;
+
+    // monerod (local Monero daemon)
+    'monerod/status': MonerodStatusEvent;
+    'monerod/download-progress': MonerodDownloadEvent;
+    'monerod/sync-progress': MonerodSyncEvent;
+    'monerod/settings': MonerodSettings;
 
     // custom protocol
     'protocol/open': string;
@@ -126,6 +138,9 @@ export interface InvokeChannels {
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'tor/change-settings': (payload: TorSettings) => InvokeResult;
     'tor/get-settings': () => InvokeResult<TorSettings>;
+    'monerod/toggle': (shouldEnable: boolean) => InvokeResult;
+    'monerod/get-settings': () => InvokeResult<MonerodSettings>;
+    'os/get-disk-space': () => InvokeResult<DiskSpace>;
     'bridge/toggle': () => InvokeResult;
     'bridge/get-status': () => InvokeResult<Status>;
     'bridge/change-settings': (payload: BridgeSettings) => InvokeResult;
@@ -225,6 +240,12 @@ export type DesktopApi = {
     toggleTor: DesktopApiInvoke<'tor/toggle'>;
     changeTorSettings: DesktopApiInvoke<'tor/change-settings'>;
     getTorSettings: DesktopApiInvoke<'tor/get-settings'>;
+    // Monerod (local Monero daemon)
+    getMonerodStatus: DesktopApiSend<'monerod/get-status'>;
+    toggleMonerod: DesktopApiInvoke<'monerod/toggle'>;
+    getMonerodSettings: DesktopApiInvoke<'monerod/get-settings'>;
+    // Generic OS
+    getDiskSpace: DesktopApiInvoke<'os/get-disk-space'>;
     // Store
     clearStore: DesktopApiSend<'store/clear'>;
     clearUserData: DesktopApiInvoke<'user-data/clear'>;

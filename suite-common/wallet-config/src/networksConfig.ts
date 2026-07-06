@@ -334,6 +334,38 @@ export const networks = {
         nativeTokenReserve: '0.003',
         yieldXyzId: 'solana',
     },
+    xmr: {
+        symbol: 'xmr',
+        displaySymbol: 'XMR',
+        name: 'Monero',
+        networkType: 'monero',
+        bip43Path: "m/44'/128'/i'", // SLIP-0010 ed25519, all components hardened
+        decimals: 12,
+        testnet: false,
+        features: [],
+        explorer: getExplorerUrls('https://xmrchain.net', 'monero'),
+        support: {
+            [DeviceModelInternal.T2T1]: '2.0.8',
+            [DeviceModelInternal.T2B1]: '2.6.1',
+            [DeviceModelInternal.T3B1]: '2.8.1',
+            [DeviceModelInternal.T3T1]: '2.6.1',
+            [DeviceModelInternal.T3W1]: '2.6.1',
+        },
+        backendOptions: [{ type: 'monero' }],
+        accountTypes: {},
+        coingeckoId: 'monero',
+        tradeCryptoId: 'monero',
+        yieldXyzId: null,
+        // Gated behind the "experimental networks" toggle: send is not implemented yet
+        // and the local-node scan path is not runtime-verified.
+        isExperimentalOnlyNetwork: true,
+        // Requires a locally managed monerod full node (suite-desktop) — desktop builds only.
+        isDesktopOnlyNetwork: true,
+        // Privacy coin — no buy/sell/swap/trade (not offered by trading providers).
+        isTradingDisabled: true,
+        // The backend is the locally managed monerod, not Trezor's servers.
+        usesLocalNodeBackend: true,
+    },
     trx: {
         symbol: 'trx',
         displaySymbol: 'TRX',

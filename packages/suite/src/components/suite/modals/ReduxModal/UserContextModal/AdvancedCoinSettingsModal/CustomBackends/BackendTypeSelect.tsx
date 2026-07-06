@@ -14,51 +14,54 @@ const Capitalize = styled.span`
     text-transform: capitalize;
 `;
 
-const useBackendOptions = (network: Network, isDebugModeActive: boolean) => {
-    const getBackendLabel = (backend: string) => {
-        switch (backend) {
-            case 'default':
-                return <Translation id="TR_BACKEND_DEFAULT_SERVERS" />;
-            case 'evm-rpc':
-                return <Translation id="TR_BACKEND_CUSTOM_RPC" />;
-            default:
-                return (
-                    <Translation
-                        id="TR_BACKEND_CUSTOM_SERVERS"
-                        values={{
-                            type: (
-                                <Capitalize data-testid={`@settings/advance/${backend}`}>
-                                    {backend}
-                                </Capitalize>
-                            ),
-                        }}
-                    />
-                );
-        }
-    };
+const useBackendOptions = (network: Network, isDebugModeActive: boolean) =>
+    useMemo(() => {
+        const getBackendLabel = (backend: string) => {
+            switch (backend) {
+                case 'default':
+                    // For networks backed by a locally-run node (e.g. Monero's managed monerod), the
+                    // "default" backend is that local node — not Trezor's servers.
+                    return network.usesLocalNodeBackend ? (
+                        <Translation id="TR_BACKEND_LOCAL_NODE" />
+                    ) : (
+                        <Translation id="TR_BACKEND_DEFAULT_SERVERS" />
+                    );
+                case 'evm-rpc':
+                    return <Translation id="TR_BACKEND_CUSTOM_RPC" />;
+                default:
+                    return (
+                        <Translation
+                            id="TR_BACKEND_CUSTOM_SERVERS"
+                            values={{
+                                type: (
+                                    <Capitalize data-testid={`@settings/advance/${backend}`}>
+                                        {backend}
+                                    </Capitalize>
+                                ),
+                            }}
+                        />
+                    );
+            }
+        };
 
-    return useMemo(
-        () =>
-            ['default', ...network.backendOptions.map(option => option.type)]
-                .filter(backend => {
-                    switch (backend) {
-                        case 'default':
-                            return network.symbol !== 'regtest';
-                        case 'electrum':
-                            return isDesktop();
-                        case 'evm-rpc':
-                            return isDebugModeActive;
-                        default:
-                            return true;
-                    }
-                })
-                .map(backend => ({
-                    label: getBackendLabel(backend),
-                    value: backend,
-                })),
-        [network, isDebugModeActive],
-    );
-};
+        return ['default', ...network.backendOptions.map(option => option.type)]
+            .filter(backend => {
+                switch (backend) {
+                    case 'default':
+                        return network.symbol !== 'regtest';
+                    case 'electrum':
+                        return isDesktop();
+                    case 'evm-rpc':
+                        return isDebugModeActive;
+                    default:
+                        return true;
+                }
+            })
+            .map(backend => ({
+                label: getBackendLabel(backend),
+                value: backend,
+            }));
+    }, [network, isDebugModeActive]);
 
 type BackendTypeSelectProps = {
     network: Network;

@@ -273,3 +273,120 @@ export const MoneroSignedTransaction = Type.Object(
         $id: 'MoneroSignedTransaction',
     },
 );
+
+// moneroSendTransaction
+
+export type MoneroSendDestination = Static<typeof MoneroSendDestination>;
+export const MoneroSendDestination = Type.Object({
+    address: Type.String(),
+    amount: Type.String(), // piconero, decimal string
+});
+
+// A decrypted key image (+ its spend signature), hex. Exported from the device and imported into the
+// scanning wallet (wallet2 import_key_images, which verifies the signature).
+export type MoneroSyncKeyImagePair = Static<typeof MoneroSyncKeyImagePair>;
+export const MoneroSyncKeyImagePair = Type.Object({
+    keyImage: Type.String(),
+    signature: Type.String(),
+});
+
+export type MoneroSendTransaction = Static<typeof MoneroSendTransaction>;
+export const MoneroSendTransaction = Type.Object(
+    {
+        path: DerivationPath,
+        coin: Type.Optional(Type.String()),
+        descriptor: Type.String(), // the account's primary (change) address
+        destinations: Type.Array(MoneroSendDestination),
+        account: Type.Optional(Type.Number()),
+        ringSize: Type.Optional(Type.Number()),
+        identity: Type.Optional(Type.String()),
+        // Sweep the whole balance to the (single) destination: spend every output, no change.
+        isMax: Type.Optional(Type.Boolean()),
+        // Build + sign + validate but do not broadcast (the send form relays separately).
+        doNotRelay: Type.Optional(Type.Boolean()),
+    },
+    {
+        $id: 'MoneroSendTransaction',
+    },
+);
+
+export type MoneroSendTransactionResult = Static<typeof MoneroSendTransactionResult>;
+export const MoneroSendTransactionResult = Type.Object(
+    {
+        txHex: Type.String(), // the serialized, relayed transaction
+        txKey: Type.String(), // reserved (tx secret key); empty for now
+        relayed: Type.Boolean(),
+        fee: Type.String(), // piconero, decimal string
+        change: Type.String(), // piconero, decimal string
+        // Key images (+ spend signatures) for every owned output, transfer order — exported on the
+        // device while signing. The send form passes these to moneroSyncKeyImages so the after-send
+        // import is device-free (no second key-image-sync prompt).
+        keyImages: Type.Optional(Type.Array(MoneroSyncKeyImagePair)),
+    },
+    {
+        $id: 'MoneroSendTransactionResult',
+    },
+);
+
+// moneroSyncKeyImages: export key images from the device for every owned output and import them into
+// the scanning wallet, so it learns spent status and shows outgoing / self transactions.
+export type MoneroSyncKeyImages = Static<typeof MoneroSyncKeyImages>;
+export const MoneroSyncKeyImages = Type.Object(
+    {
+        path: DerivationPath,
+        coin: Type.Optional(Type.String()),
+        descriptor: Type.String(), // the account's primary address
+        account: Type.Optional(Type.Number()),
+        identity: Type.Optional(Type.String()),
+        // Pre-exported key images (from a just-completed send). When present the import is device-free
+        // — it skips the key-image-sync device round-trip and imports these straight into the wallet.
+        // When absent, the method exports them from the device (the manual / standalone sync path).
+        keyImages: Type.Optional(Type.Array(MoneroSyncKeyImagePair)),
+    },
+    {
+        $id: 'MoneroSyncKeyImages',
+    },
+);
+
+export type MoneroSyncKeyImagesResult = Static<typeof MoneroSyncKeyImagesResult>;
+export const MoneroSyncKeyImagesResult = Type.Object(
+    {
+        imported: Type.Number(), // number of key images exported + imported
+    },
+    {
+        $id: 'MoneroSyncKeyImagesResult',
+    },
+);
+
+// moneroComposeTransaction (fee estimation for the send form; no device)
+
+export type MoneroComposeTransaction = Static<typeof MoneroComposeTransaction>;
+export const MoneroComposeTransaction = Type.Object(
+    {
+        coin: Type.Optional(Type.String()),
+        descriptor: Type.String(),
+        destinations: Type.Array(MoneroSendDestination),
+        // Estimate spending the whole balance (send-max): returns the maximum sendable amount.
+        isMax: Type.Optional(Type.Boolean()),
+        account: Type.Optional(Type.Number()),
+        ringSize: Type.Optional(Type.Number()),
+        identity: Type.Optional(Type.String()),
+    },
+    {
+        $id: 'MoneroComposeTransaction',
+    },
+);
+
+export type MoneroComposeTransactionResult = Static<typeof MoneroComposeTransactionResult>;
+export const MoneroComposeTransactionResult = Type.Object(
+    {
+        fee: Type.String(), // piconero, decimal string
+        // Whether the spendable outputs cover the requested amount + fee.
+        sufficient: Type.Boolean(),
+        // Maximum amount sendable in one transaction (total - fee for spending all outputs), piconero.
+        max: Type.String(),
+    },
+    {
+        $id: 'MoneroComposeTransactionResult',
+    },
+);

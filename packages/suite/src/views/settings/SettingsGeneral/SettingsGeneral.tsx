@@ -4,9 +4,10 @@ import { LabelingSettings } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, selectNetworkAvailabilityDep } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
     selectIsNetworkReserveSettingsVisible,
@@ -40,6 +41,7 @@ import { Language } from './Language';
 import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
 import { MevProtection } from './MevProtection';
+import { Monerod } from './Monerod';
 import { NetworkReserve } from './NetworkReserve';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
@@ -72,10 +74,18 @@ export const SettingsGeneral = () => {
         selectHasExperimentalFeature('tor-external'),
     );
     const mcpServerEnabled = useSelector(selectHasExperimentalFeature('mcp-server'));
+    const experimentalNetworksEnabled = useSelector(
+        selectHasExperimentalFeature('experimental-networks'),
+    );
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
     const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
+
+    // The local Monero node is a desktop-only network; whether it ships on this build is injected by
+    // the composition root rather than branched on with isDesktop().
+    const { networkAvailability } = useServices(selectNetworkAvailabilityDep);
+    const isMoneroNetworkAvailable = networkAvailability.isNetworkAvailableOnBuild(getNetwork('xmr'));
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -102,6 +112,7 @@ export const SettingsGeneral = () => {
                             {torExternalExperimentalFeature && <TorExternal />}
                         </>
                     )}
+                    {isMoneroNetworkAvailable && experimentalNetworksEnabled && <Monerod />}
                 </SettingsSection>
             </div>
 

@@ -3,6 +3,7 @@ import type { NetworkSymbol } from './networkTypes';
 import { adaValidator } from './validators/ada_validator';
 import { bitcoinValidator } from './validators/bitcoin_validator';
 import { ethereumValidator } from './validators/ethereum_validator';
+import { moneroValidator } from './validators/monero_validator';
 import { rippleValidator } from './validators/ripple_validator';
 import { solanaValidator } from './validators/solana_validator';
 import { stellarValidator } from './validators/stellar_validator';
@@ -16,6 +17,7 @@ const validators = [
     solanaValidator,
     stellarValidator,
     tronValidator,
+    moneroValidator,
 ];
 
 const validatorBySymbol = new Map<NetworkSymbol, AddressValidator>();

@@ -126,6 +126,9 @@ const connectCallableMethodGroups = {
         'moneroGetWatchKey',
         'moneroKeyImageSync',
         'moneroSignTransaction',
+        'moneroSendTransaction',
+        'moneroComposeTransaction',
+        'moneroSyncKeyImages',
     ],
     ripple: ['rippleGetAddress', 'rippleSignTransaction'],
     solana: [

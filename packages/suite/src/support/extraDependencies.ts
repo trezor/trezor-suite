@@ -48,7 +48,7 @@ import {
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkAvailabilityDep, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainState,
     type ExplorerConfig,
@@ -91,12 +91,17 @@ export type StoreAPIDep = {
     dispatch: Dispatch;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep & CreateLoggerDep;
+export type SuiteAppDeps = StoreAPIDep &
+    HistoryDep &
+    PlatformEncryptionDep &
+    CreateLoggerDep &
+    NetworkAvailabilityDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
-    SuiteRouterHistoryDep;
+    SuiteRouterHistoryDep &
+    NetworkAvailabilityDep;
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
@@ -158,6 +163,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
         platformEncryption: deps.platformEncryption,
+        networkAvailability: deps.networkAvailability,
         analytics,
         suiteRouterHistory: createSuiteRouterHistory({
             history: deps.history,

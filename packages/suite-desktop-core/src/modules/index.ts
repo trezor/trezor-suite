@@ -11,7 +11,15 @@ import * as coinjoin from './coinjoin';
 import * as crashRecover from './crash-recover';
 import * as customProtocols from './custom-protocols';
 import * as devTools from './dev-tools';
+import * as diskSpace from './disk-space';
 import * as eventLogging from './event-logging';
+import type {
+    Dependencies,
+    ModuleInit,
+    ModuleInitBackground,
+    ModuleLoad,
+    ModuleQuit,
+} from './module';
 import { type MainWindowProxy } from '../libs/main-window-proxy';
 import * as eventLoggingApp from './event-logging/app';
 import * as eventLoggingContents from './event-logging/contents';
@@ -22,13 +30,7 @@ import * as httpReceiverModule from './http-receiver';
 import * as mcpServer from './mcp-server';
 import * as menu from './menu';
 import * as metadata from './metadata';
-import type {
-    Dependencies,
-    ModuleInit,
-    ModuleInitBackground,
-    ModuleLoad,
-    ModuleQuit,
-} from './module';
+import * as monerod from './monerod';
 import * as powerMonitor from './power-monitor';
 import * as requestFilter from './request-filter';
 import * as requestInterceptor from './request-interceptor';
@@ -70,6 +72,8 @@ const MODULES: Module[] = [
     devTools,
     requestInterceptor,
     coinjoin,
+    monerod,
+    diskSpace,
     autoStart,
     bridge,
     systemSettings,

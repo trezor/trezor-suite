@@ -8,6 +8,7 @@ const mapNetworkTypeToFeeUnits: Record<NetworkType, string> = {
     solana: 'Lamports',
     stellar: 'Stroops',
     tron: 'Sun',
+    monero: 'piconero',
 };
 
 export const getFeeUnits = (networkType: NetworkType) => mapNetworkTypeToFeeUnits[networkType];

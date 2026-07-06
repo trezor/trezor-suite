@@ -1,7 +1,13 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { selectHasExperimentalFeature } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
+import {
+    type Network,
+    getMainnets,
+    getTestnets,
+    selectNetworkAvailabilityDep,
+} from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { arrayPartition } from '@trezor/utils';
@@ -16,12 +22,19 @@ export const useNetworkSupport = () => {
     );
     const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    // Whether desktop-only networks (e.g. Monero, which needs a locally managed full node) ship on
+    // this build is injected by the platform's composition root — no `isDesktop()` branch here.
+    const { networkAvailability } = useServices(selectNetworkAvailabilityDep);
 
     const mainnets = getMainnets({
         debug: isDebug,
         useExperimentalNetworks,
-    });
-    const testnets = getTestnets({ debug: isDebug, useExperimentalNetworks, useTestnetNetworks });
+    }).filter(networkAvailability.isNetworkAvailableOnBuild);
+    const testnets = getTestnets({
+        debug: isDebug,
+        useExperimentalNetworks,
+        useTestnetNetworks,
+    }).filter(networkAvailability.isNetworkAvailableOnBuild);
 
     const isNetworkSupported = (network: Network) =>
         deviceSupportedNetworkSymbols.includes(network.symbol);

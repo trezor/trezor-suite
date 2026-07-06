@@ -51,6 +51,12 @@ export const getExplorerUrls = (
             address: `${baseUrl}/account/`,
             token: `${baseUrl}/asset/`,
         },
+        // Monero stealth addresses are not browsable on-chain; only tx lookup is meaningful.
+        monero: {
+            base: baseUrl,
+            tx: `${baseUrl}/tx/`,
+            address: `${baseUrl}/`,
+        },
     };
 
     return networkTypeExplorerMap[networkType];

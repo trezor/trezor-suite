@@ -327,6 +327,26 @@ export interface TokenInfo {
 }
 
 /**
+ * One spendable output of a Monero account, as known to the view-only scanning wallet. It carries
+ * only what scanning reveals; the data needed to actually spend it (the output's position within its
+ * source transaction and that transaction's public key(s)) is resolved separately from the source
+ * transaction. Confidential — never log or send off-device (CLAUDE.md).
+ */
+export interface MoneroSpendableOutput {
+    amount: string; // piconero, decimal string (a single output can exceed 2^53)
+    globalIndex: number; // global RingCT output index (decoy selection + get_outs reference)
+    subaddrMinor: number; // subaddress minor index the output was received on (0 = main address)
+    stealthPublicKey: string; // the output's one-time public key, hex
+    txHash: string; // hash of the transaction that created the output
+    // Output still time-locked (coinbase / unlock_time not reached) → not yet spendable. Only ever
+    // true in the unfiltered allOutputs set (key-image sync); the send filters these out itself.
+    locked: boolean;
+    // Output the wallet froze (wallet2 marks it unsafe to spend — manual freeze or key-image-reuse /
+    // burning-bug defense). Like `locked`, only ever true in the allOutputs set; the send skips it.
+    frozen: boolean;
+}
+
+/**
  * This is Backend data for the account. Data can change over time as transactions happen.
  * Suite is subscribed to this and updates Account regularly.
  */
@@ -382,6 +402,29 @@ export interface AccountInfo {
         solExternalStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts (non-Everstake)
         solEpoch?: number; // Solana current epoch
         tronResources?: TronAccountExtraData;
+        // Monero: progress of the client-side view-key scan (the local wallet catching up to the
+        // node). Reported only once the scanning wallet exists; absent while it is still being built.
+        moneroScan?: {
+            scannedHeight: number; // last block the wallet has scanned
+            chainHeight: number; // node's current height
+            isSynced: boolean; // wallet has caught up to the node
+            startHeight: number; // block the scan started from (resolved birthday); 0 = from genesis
+            startTimestamp: number; // unix seconds of the start block (the "birthday"); 0 = unknown
+        };
+        // Monero: there is no persisted wallet for this account and no view key in hand, so the user
+        // must pick a birthday and arm the scan (export the view key). Distinguishes "first run" from
+        // "wallet is being opened/built" so the UI shows the birthday picker rather than a loader.
+        moneroNeedsArm?: boolean;
+        // Monero: the scanning wallet's raw spendable outputs, gathered on demand (gatherOutputs) for
+        // the send flow. Carries only what the view-only wallet knows; the in-tx index and tx public
+        // key(s) needed to spend each output are resolved later from its source transaction. These are
+        // confidential (output keys, amounts) and must never be logged or sent off-device (CLAUDE.md).
+        moneroOutputs?: MoneroSpendableOutput[];
+        // Monero: the scanning wallet's private view key (32-byte hex), gathered on demand
+        // (gatherOutputs) so the send pipeline can derive each input's commitment mask. HIGHLY
+        // confidential — only ever populated on the send-internal getAccountInfo response (never the
+        // Suite-facing path) and must never be logged or sent off-device (CLAUDE.md).
+        moneroPrivateViewKey?: string;
     };
     page?: {
         // blockbook and blockfrost

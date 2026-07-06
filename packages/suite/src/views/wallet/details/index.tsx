@@ -135,6 +135,22 @@ const Details = () => {
                     >
                         <Paragraph typographyStyle="body-sm">{account.path}</Paragraph>
                     </DetailsRow>
+                    {account.networkType === 'monero' && account.misc?.birthdayTimestamp ? (
+                        <DetailsRow
+                            title="TR_MONERO_BIRTHDAY_DETAILS_HEADER"
+                            description={<Translation id="TR_MONERO_BIRTHDAY_DETAILS_DESC" />}
+                        >
+                            <Paragraph typographyStyle="body-sm">
+                                {new Date(account.misc.birthdayTimestamp * 1000).toLocaleDateString(
+                                    undefined,
+                                    {
+                                        month: 'long',
+                                        year: 'numeric',
+                                    },
+                                )}
+                            </Paragraph>
+                        </DetailsRow>
+                    ) : null}
                     {!isCoinjoinAccount ? (
                         shouldDisplayXpubSection && (
                             <DetailsRow
