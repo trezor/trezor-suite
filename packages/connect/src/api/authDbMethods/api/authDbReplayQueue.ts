@@ -237,7 +237,9 @@ export default class AuthDbReplayQueue extends AbstractMethod<
         } = applyResponse.message;
 
         // 5. Persist only what the device actually confirmed applying.
-        for (const candidate of candidates.slice(0, appliedCount)) {
+        const initialCounter = lastCounter;
+        const appliedCandidates = candidates.slice(0, appliedCount);
+        for (const [index, candidate] of appliedCandidates.entries()) {
             if (candidate.new_value !== '') {
                 const { entry: decodedEntry } = valueHexToEntry(candidate.new_value ?? '');
                 await provider.upsert(
@@ -249,6 +251,31 @@ export default class AuthDbReplayQueue extends AbstractMethod<
             }
             // Deletions aren't representable via AuthLabelLookupProvider (no delete method) —
             // the tree state below still advances since the device already applied it.
+
+            // Cross-device history/audit log, if the provider retains one — the device itself
+            // has no history, so this only ever exists host-side (optional extension).
+            if (provider.recordHistoryEntry) {
+                await provider.recordHistoryEntry({
+                    walletId,
+                    address: candidate.address,
+                    networkSymbol: candidate.networkSymbol,
+                    deviceId: candidate.entry.deviceId,
+                    oldValue: candidate.old_value ?? '',
+                    newValue: candidate.new_value ?? '',
+                    oldCounter:
+                        candidate.old_value !== '' && candidate.old_value !== undefined
+                            ? valueHexToEntry(candidate.old_value).entry.counter
+                            : undefined,
+                    newCounter:
+                        candidate.new_value !== '' && candidate.new_value !== undefined
+                            ? valueHexToEntry(candidate.new_value).entry.counter
+                            : undefined,
+                    // The device increments its root counter by exactly one per applied
+                    // operation; the response only returns the final counter, so this is
+                    // derived rather than read from the wire.
+                    appliedAtRootCounter: initialCounter + index + 1,
+                });
+            }
         }
 
         lastRoot = newRoot ?? lastRoot;

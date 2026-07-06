@@ -2,7 +2,12 @@ import Database from 'better-sqlite3';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
-import type { OfflineQueueEntry, OfflineQueueProvider } from '@trezor/authdb';
+import type {
+    AuthHistoryEntry,
+    AuthHistoryProvider,
+    OfflineQueueEntry,
+    OfflineQueueProvider,
+} from '@trezor/authdb';
 import type {
     AuthLabelApprovalProvider,
     AuthLabelEntry,
@@ -31,6 +36,17 @@ type SqliteQueueRow = {
     old_value: string;
     new_value: string;
 };
+type SqliteHistoryRow = {
+    wallet_id: string;
+    address: string;
+    network_symbol: string;
+    device_id: string;
+    old_value: string;
+    new_value: string;
+    old_counter: number | null;
+    new_counter: number | null;
+    applied_at_root_counter: number;
+};
 
 const parseQueueRow = (row: SqliteQueueRow): OfflineQueueEntry => ({
     deviceId: row.device_id,
@@ -42,13 +58,29 @@ const parseQueueRow = (row: SqliteQueueRow): OfflineQueueEntry => ({
     newValue: row.new_value,
 });
 
+const parseHistoryRow = (row: SqliteHistoryRow): AuthHistoryEntry => ({
+    walletId: row.wallet_id,
+    address: row.address,
+    networkSymbol: row.network_symbol,
+    deviceId: row.device_id,
+    oldValue: row.old_value,
+    newValue: row.new_value,
+    oldCounter: row.old_counter ?? undefined,
+    newCounter: row.new_counter ?? undefined,
+    appliedAtRootCounter: row.applied_at_root_counter,
+});
+
 const parseRow = (row: SqliteAddressRow): AuthLabelEntry => ({
     metadata: JSON.parse(row.data) as AuthLabelMetadata,
     counter: row.counter ?? 0,
 });
 
 export class AuthLabelDb
-    implements AuthLabelLookupProvider, AuthLabelApprovalProvider, OfflineQueueProvider
+    implements
+        AuthLabelLookupProvider,
+        AuthLabelApprovalProvider,
+        OfflineQueueProvider,
+        AuthHistoryProvider
 {
     private db: Database.Database;
 
@@ -81,6 +113,17 @@ export class AuthLabelDb
                 old_value TEXT NOT NULL,
                 new_value TEXT NOT NULL,
                 PRIMARY KEY (wallet_id, sequence)
+            );
+            CREATE TABLE IF NOT EXISTS auth_history (
+                wallet_id                TEXT NOT NULL,
+                address                  TEXT NOT NULL,
+                network_symbol           TEXT NOT NULL,
+                device_id                TEXT NOT NULL,
+                old_value                TEXT NOT NULL,
+                new_value                TEXT NOT NULL,
+                old_counter              INTEGER,
+                new_counter              INTEGER,
+                applied_at_root_counter  INTEGER NOT NULL
             );
         `);
     }
@@ -220,10 +263,39 @@ export class AuthLabelDb
             .run(walletId, throughSequence);
     }
 
+    recordHistoryEntry(entry: AuthHistoryEntry): void {
+        this.db
+            .prepare(
+                `INSERT INTO auth_history
+                    (wallet_id, address, network_symbol, device_id, old_value, new_value,
+                     old_counter, new_counter, applied_at_root_counter)
+                 VALUES (@walletId, @address, @networkSymbol, @deviceId, @oldValue, @newValue,
+                     @oldCounter, @newCounter, @appliedAtRootCounter)`,
+            )
+            .run({
+                ...entry,
+                oldCounter: entry.oldCounter ?? null,
+                newCounter: entry.newCounter ?? null,
+            });
+    }
+
+    getAddressHistory(walletId: string, address: string): AuthHistoryEntry[] {
+        const rows = this.db
+            .prepare(
+                `SELECT wallet_id, address, network_symbol, device_id, old_value, new_value,
+                        old_counter, new_counter, applied_at_root_counter
+                 FROM auth_history WHERE wallet_id = ? AND address = ? ORDER BY rowid`,
+            )
+            .all(walletId, address) as SqliteHistoryRow[];
+
+        return rows.map(parseHistoryRow);
+    }
+
     clearAll(): void {
         this.db.prepare('DELETE FROM addresses').run();
         this.db.prepare('DELETE FROM tree_state').run();
         this.db.prepare('DELETE FROM auth_queue').run();
+        this.db.prepare('DELETE FROM auth_history').run();
     }
 
     private closed = false;

@@ -139,7 +139,44 @@ export type OfflineQueueProvider = {
     clearQueueEntries(walletId: string, throughSequence: number): void | Promise<void>;
 };
 
-/** Combined provider type accepted by ConnectSettings — approval/queue support is optional. */
+/**
+ * A single applied mutation, recorded for cross-device audit/conflict-display purposes.
+ * The device itself retains no history — only current root/counter plus its own
+ * not-yet-collected offline queue — so this log only ever exists host-side, built up as
+ * authDbReplayQueue successfully applies operations.
+ * oldCounter/newCounter are decoded from the existing entryToValueBytes value convention
+ * (not a dedicated wire field — none exists yet); appliedAtRootCounter is the wallet's
+ * root-level counter immediately after this specific operation was applied (the device
+ * increments it by exactly one per applied operation).
+ */
+export type AuthHistoryEntry = {
+    walletId: string;
+    address: string;
+    networkSymbol: string;
+    deviceId: string;
+    oldValue: string;
+    newValue: string;
+    oldCounter?: number;
+    newCounter?: number;
+    appliedAtRootCounter: number;
+};
+
+/**
+ * Optional extension for providers that retain an append-only history of applied AuthDB
+ * mutations per wallet/address, for later "what changed, and on which physical device"
+ * conflict-display UI.
+ */
+export type AuthHistoryProvider = {
+    recordHistoryEntry(entry: AuthHistoryEntry): void | Promise<void>;
+    /** Returns entries oldest-first. */
+    getAddressHistory(
+        walletId: string,
+        address: string,
+    ): AuthHistoryEntry[] | Promise<AuthHistoryEntry[]>;
+};
+
+/** Combined provider type accepted by ConnectSettings — approval/queue/history support is optional. */
 export type AuthLabelProvider = AuthLabelLookupProvider &
     Partial<AuthLabelApprovalProvider> &
-    Partial<OfflineQueueProvider>;
+    Partial<OfflineQueueProvider> &
+    Partial<AuthHistoryProvider>;

@@ -2,6 +2,7 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { entryToValueBytes } from '@trezor/authdb';
 import type {
+    AuthHistoryProvider,
     AuthLabelLookupProvider,
     AuthLabelRow,
     OfflineQueueEntry,
@@ -11,7 +12,9 @@ import type {
 import * as settingsStore from '../../../data/settingsStore';
 import AuthDbReplayQueue from '../api/authDbReplayQueue';
 
-type MockProvider = AuthLabelLookupProvider & Partial<OfflineQueueProvider>;
+type MockProvider = AuthLabelLookupProvider &
+    Partial<OfflineQueueProvider> &
+    Partial<AuthHistoryProvider>;
 
 const valueHex = (label: string, counter: number) =>
     bytesToHex(entryToValueBytes('btc', { metadata: { label }, counter }));
@@ -290,5 +293,110 @@ describe('authDbReplayQueue', () => {
         expect(result.conflicts).toHaveLength(1);
         const conflict = result.conflicts[0]!;
         expect(conflict.entry).toEqual(staleEntry);
+    });
+
+    it('records a history entry per applied operation when the provider supports it', async () => {
+        const firstEntry: OfflineQueueEntry = {
+            deviceId: 'dev1',
+            walletId: 'wallet1',
+            mac: 'mac1',
+            sequence: 1,
+            address: 'bc1qaddr',
+            oldValue: '',
+            newValue: valueHex('first', 1),
+        };
+        const secondEntry: OfflineQueueEntry = {
+            deviceId: 'dev2',
+            walletId: 'wallet1',
+            mac: 'mac2',
+            sequence: 2,
+            address: 'bc1qaddr',
+            oldValue: valueHex('first', 1),
+            newValue: valueHex('second', 2),
+        };
+        const recordHistoryEntry = jest.fn().mockResolvedValue(undefined);
+        const provider = buildProvider({
+            getQueueEntries: jest.fn().mockResolvedValue([firstEntry, secondEntry]),
+            recordHistoryEntry,
+        });
+        settingsStore.update({ authLabelLookupProvider: provider });
+
+        const device = buildDevice({
+            AuthDbGetOfflineOperations: emptyDrain,
+            AuthDbApplyOfflineOperations: {
+                message: {
+                    applied_count: 2,
+                    new_root: 'root2',
+                    counter: 2,
+                    last_applied_sequence: 2,
+                    wallet_id: 'wallet1',
+                    root_mac: 'root-mac-2',
+                },
+            },
+            AuthDbDeleteOfflineOperations: { message: { deleted_count: 2, remaining_count: 0 } },
+        });
+        const method = buildMethod({}, device);
+
+        await method.run();
+
+        expect(recordHistoryEntry).toHaveBeenCalledTimes(2);
+        expect(recordHistoryEntry).toHaveBeenNthCalledWith(1, {
+            walletId: 'wallet1',
+            address: 'bc1qaddr',
+            networkSymbol: 'btc',
+            deviceId: 'dev1',
+            oldValue: '',
+            newValue: firstEntry.newValue,
+            oldCounter: undefined,
+            newCounter: 1,
+            appliedAtRootCounter: 1,
+        });
+        expect(recordHistoryEntry).toHaveBeenNthCalledWith(2, {
+            walletId: 'wallet1',
+            address: 'bc1qaddr',
+            networkSymbol: 'btc',
+            deviceId: 'dev2',
+            oldValue: firstEntry.newValue,
+            newValue: secondEntry.newValue,
+            oldCounter: 1,
+            newCounter: 2,
+            appliedAtRootCounter: 2,
+        });
+    });
+
+    it('does not require recordHistoryEntry — providers without it still work', async () => {
+        const entry: OfflineQueueEntry = {
+            deviceId: 'dev1',
+            walletId: 'wallet1',
+            mac: 'mac1',
+            sequence: 1,
+            address: 'bc1qaddr',
+            oldValue: '',
+            newValue: valueHex('x', 1),
+        };
+        const provider = buildProvider({
+            getQueueEntries: jest.fn().mockResolvedValue([entry]),
+        });
+        settingsStore.update({ authLabelLookupProvider: provider });
+
+        const device = buildDevice({
+            AuthDbGetOfflineOperations: emptyDrain,
+            AuthDbApplyOfflineOperations: {
+                message: {
+                    applied_count: 1,
+                    new_root: 'root1',
+                    counter: 1,
+                    last_applied_sequence: 1,
+                    wallet_id: 'wallet1',
+                    root_mac: 'root-mac-1',
+                },
+            },
+            AuthDbDeleteOfflineOperations: { message: { deleted_count: 1, remaining_count: 0 } },
+        });
+        const method = buildMethod({}, device);
+
+        const result = await method.run();
+
+        expect(result.appliedCount).toBe(1);
     });
 });

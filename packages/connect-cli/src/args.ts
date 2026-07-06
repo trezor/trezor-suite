@@ -48,6 +48,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=dbdeleteofflineops Garbage-collect applied offline operations from the device queue
                                                 --method=dbfastforward    Fast-forward the device to the wallet's latest attested root (skip-ahead)
                                                 --method=dbsyncoffline    Full sync: drain, rebase with conflict detection, and apply the offline queue
+                                                --method=dbhistory        Print the local cross-device apply history for an address
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 
@@ -64,6 +65,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange; pre-approval mac/deviceId from a prior dbapprove are picked up automatically)
                                                 --db-params='{"deviceId":"<hex>"}' (dbsetdeviceid)
                                                 --db-params='{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>"}' (dbqueueoffline; oldValue "" = insert, newValue "" = delete)
+                                                --db-params='{"address":"<hex>"}' (dbhistory)
 `;
 
 // read and parse application arguments

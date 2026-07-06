@@ -75,6 +75,7 @@ const DB_METHODS = new Set([
     'dbdeleteofflineops',
     'dbfastforward',
     'dbsyncoffline',
+    'dbhistory',
 ]);
 const DB_METHODS_REQUIRING_PARAMS = new Set([
     'dblookup',
@@ -82,6 +83,7 @@ const DB_METHODS_REQUIRING_PARAMS = new Set([
     'dbapprove',
     'dbsetdeviceid',
     'dbqueueoffline',
+    'dbhistory',
 ]);
 // Methods that must send a command to firmware (need a connected device even when --db-path is set)
 const DB_METHODS_NEEDING_DEVICE = new Set([
@@ -362,6 +364,16 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.log('To sync this root to another device:');
                     console.log(`  ${setrootCmd}`);
                 }
+            }
+
+            if (method === 'dbhistory') {
+                const { address } = params;
+                if (!address) {
+                    console.error('dbhistory requires --db-params=\'{"address":"<hex>"}\' ');
+                    process.exit(1);
+                }
+                const history = db.getAddressHistory(walletId, address);
+                console.log(JSON.stringify({ method: 'dbhistory', address, history }, null, 2));
             }
 
             if (method === 'dbclear') {
