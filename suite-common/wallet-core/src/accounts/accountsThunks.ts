@@ -179,6 +179,42 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         if (response.success) {
             const { payload } = response;
+
+            // [btc-unknown-tx-debug] response-level context the low-level blockbook.ts transform cannot
+            // see (symbol / accountType / backendType / details). Fires once per response that carries any
+            // 'unknown' tx; pair with the per-tx blockbook.ts log to tell an expected descriptor case
+            // (EVM, single-address, non-blockbook backend) apart from a genuine gap on a default backend.
+            // Non-PII: low-cardinality enums and counts only — no descriptor / addresses / txids / amounts.
+            try {
+                const unknownTxs = (payload.history.transactions ?? []).filter(
+                    tx => tx.type === 'unknown',
+                );
+                if (unknownTxs.length > 0) {
+                    console.error(
+                        '[btc-unknown-tx-debug] getAccountInfo response contains unknown txs',
+                        {
+                            symbol: account.symbol,
+                            accountType: account.accountType,
+                            backendType: account.backendType,
+                            networkType: account.networkType,
+                            details: 'txs',
+                            page: payload.page?.index,
+                            totalTxs: payload.history.transactions?.length ?? 0,
+                            unknownCount: unknownTxs.length,
+                            unknownConfirmedCount: unknownTxs.filter(
+                                tx => (tx.blockHeight ?? 0) > 0,
+                            ).length,
+                            responseHasAddresses: Boolean(payload.addresses),
+                            knownUsedCount: payload.addresses?.used.length,
+                            knownUnusedCount: payload.addresses?.unused.length,
+                            knownChangeCount: payload.addresses?.change.length,
+                        },
+                    );
+                }
+            } catch {
+                // diagnostics must never break the sync
+            }
+
             const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
             const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs, {

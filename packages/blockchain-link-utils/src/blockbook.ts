@@ -211,6 +211,9 @@ const getTronStakingClassification = (
 export const transformTransaction = (
     tx: BlockbookTransaction,
     addressesOrDescriptor?: TransformAddresses | string,
+    // [btc-unknown-tx-debug] response-level context, supplied only by transformAccountInfo; used purely
+    // to enrich the temporary unknown-tx diagnostics below. Non-PII (a boolean and a page index).
+    debugContext?: { isEVM: boolean; page: number | undefined },
 ): Transaction => {
     const [addresses, descriptor] =
         typeof addressesOrDescriptor === 'object'
@@ -310,21 +313,29 @@ export const transformTransaction = (
         amount = tx.value;
         targets = [];
         // [btc-unknown-tx-debug] 'unknown' is the catch-all the categorizer falls back to when it cannot
-        // tell whether the tx is recv/sent/self for this account — for an account's own tx that is never a
-        // desired outcome, it is a hole in our categorization (we show "something" rather than dropping it).
-        // We log every such case EXCEPT calls that pass no account context at all — transformTransaction(tx)
-        // by id (prev/ref-tx during signing, CoinControl UTXO detail): there is no account to compare
-        // against, so `type` is an unused placeholder that is never shown, not a categorization miss, and
-        // logging it would only flood Sentry. When account context WAS provided (an addresses object or a
-        // descriptor), an 'unknown' is a genuine gap worth capturing — including the anomalous case where
-        // the supplied addresses were empty (myAddressesCount === 0).
+        // tell whether the tx is recv/sent/self — for an account's own tx that is a hole in categorization.
+        // Fire whenever account context was provided (addresses object OR descriptor string); skip only the
+        // no-context calls (transformTransaction(tx) by id: prev/ref-tx during signing, CoinControl UTXO
+        // detail), where `type` is an unused placeholder that is never shown. addressesSource + isEVM +
+        // isXpubDescriptor let a benign EVM / single-address descriptor case be told apart from a UTXO
+        // xpub-fallback (empty tokens), instead of dropping descriptor mode wholesale.
         // Intentionally no txid / addresses / descriptor: these reach Sentry and could deanonymize the user.
-        if (addresses !== undefined) {
+        if (addressesOrDescriptor !== undefined) {
             console.error('[btc-unknown-tx-debug] transformTransaction → type=unknown', {
+                isEVM: debugContext?.isEVM,
+                page: debugContext?.page,
+                addressesSource: addresses !== undefined ? 'addresses' : 'descriptor',
+                // length-only heuristic (xpub ~111 chars vs any single address <64); descriptor never emitted
+                isXpubDescriptor:
+                    addresses === undefined && typeof descriptor === 'string'
+                        ? descriptor.length >= 100
+                        : undefined,
+                knownUsedCount: addresses?.used.length,
+                knownUnusedCount: addresses?.unused.length,
+                knownChangeCount: addresses?.change.length,
                 isPending: !tx.blockHeight || tx.blockHeight <= 0,
-                knownUsedCount: addresses.used.length,
-                knownUnusedCount: addresses.unused.length,
-                knownChangeCount: addresses.change.length,
+                confirmations: tx.confirmations,
+                hasBlockHash: Boolean(tx.blockHash),
                 vinCount: inputs.length,
                 voutCount: outputs.length,
                 vinWithAddressesCount: inputs.filter(
@@ -333,6 +344,8 @@ export const transformTransaction = (
                 voutWithAddressesCount: outputs.filter(
                     v => Array.isArray(v.addresses) && v.addresses.length > 0,
                 ).length,
+                tokenTransferCount: Array.isArray(tx.tokenTransfers) ? tx.tokenTransfers.length : 0,
+                internalTransferCount: tx.ethereumSpecific?.internalTransfers?.length ?? 0,
             });
         }
     }
@@ -479,9 +492,10 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         payload.unconfirmedTxs === 0 &&
         new BigNumber(availableBalance).isZero();
 
-    const unfilteredTransactions = payload.transactions
-        ? payload.transactions.map(t => transformTransaction(t, addresses ?? descriptor))
-        : undefined;
+    const debugContext = { isEVM, page: page?.index };
+    const unfilteredTransactions = payload.transactions?.map(t =>
+        transformTransaction(t, addresses ?? descriptor, debugContext),
+    );
 
     const transactions =
         isEVM && unfilteredTransactions
