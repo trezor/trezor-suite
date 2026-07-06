@@ -2,8 +2,7 @@ import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { type Account, type FormState } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -23,27 +22,13 @@ export const CancelTransactionButton = ({ account, onSuccess }: CancelTransactio
     const { composedCancelTx, cancelFormState } = useCancelTxContext();
 
     const handleCancelTx = async () => {
-        if (composedCancelTx === null) return;
-
-        const formState: FormState = cancelFormState ?? {
-            feeLimit: '', // Eth only
-            feePerUnit: composedCancelTx.feePerByte,
-            hasCoinControlBeenOpened: false,
-            isCoinControlEnabled: false,
-            options: ['broadcast'],
-            outputs: composedCancelTx.outputs.map(output => ({
-                ...DEFAULT_PAYMENT,
-                ...output,
-                amount: output.amount.toString(),
-            })),
-            selectedUtxos: [],
-        };
+        if (composedCancelTx === null || cancelFormState === null) return;
 
         setIsSubmitting(true);
         try {
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
-                    formState,
+                    formState: cancelFormState,
                     precomposedTransaction: composedCancelTx,
                     selectedAccount: account,
                 }),
@@ -60,7 +45,12 @@ export const CancelTransactionButton = ({ account, onSuccess }: CancelTransactio
     };
 
     const isDisabled =
-        isLocked() || !device || !device?.available || composedCancelTx === null || isSubmitting;
+        isLocked() ||
+        !device ||
+        !device?.available ||
+        composedCancelTx === null ||
+        cancelFormState === null ||
+        isSubmitting;
 
     return (
         <Modal.Button
