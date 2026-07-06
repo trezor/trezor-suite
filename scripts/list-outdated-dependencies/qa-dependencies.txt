@@ -32,3 +32,4 @@ react-intl
 ts-jest
 uri-scheme
 xml2js
+babel-plugin-istanbul

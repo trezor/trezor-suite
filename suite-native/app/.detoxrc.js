@@ -28,12 +28,18 @@ module.exports = {
             binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
             build: 'cd android && NODE_ENV=test ./gradlew :app:assembleDebug :app:assembleAndroidTest -DtestBuildType=debug',
             reversePorts: [8081, 21328, 19121],
+            ...(process.env.COLLECT_COVERAGE_MAP
+                ? { launchArgs: { collectCoverageMap: true } }
+                : {}),
         },
         'android.release': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
             build: 'cd android && NODE_ENV=test ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
             reversePorts: [21328, 19121],
+            ...(process.env.COLLECT_COVERAGE_MAP
+                ? { launchArgs: { collectCoverageMap: true } }
+                : {}),
         },
     },
     devices: {

@@ -5,6 +5,9 @@ import './reanimatedLoggerFix';
 import { registerRootComponent } from 'expo';
 
 import { App } from './src/App';
+import { initCoverageDump } from './src/coverageDump';
+
+initCoverageDump();
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,
