@@ -6,7 +6,6 @@ import { type Account } from 'src/types/wallet';
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
     getComposeAddressPlaceholder,
-    getCountryLabelParts,
     resolveAddressAndToken,
     tradingGetAccountLabel,
     tradingGetAmountLabels,
@@ -14,17 +13,6 @@ import {
 } from 'src/utils/wallet/trading/tradingUtils';
 
 describe('trading utils', () => {
-    it('getCountryLabelParts', () => {
-        expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({
-            flag: '🇨🇿',
-            text: 'Czech Republic',
-        });
-        expect(getCountryLabelParts('aaa')).toStrictEqual({
-            flag: '',
-            text: 'aaa',
-        });
-    });
-
     it('tradingGetAmountLabels', () => {
         expect(tradingGetAmountLabels({ type: 'sell', amountInCrypto: true })).toEqual({
             inputLabel: 'TR_TRADING_YOU_PAY',

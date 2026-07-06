@@ -16,7 +16,6 @@ import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 import {
     type TradingGetCryptoQuoteAmountProps,
     type TradingGetFiatCurrenciesProps,
-    type TradingGetPaymentMethodProps,
     type TradingGetProvidersInfoProps,
 } from 'src/types/trading/trading';
 import {
@@ -151,20 +150,6 @@ export const getSelectedTradingCurrency = (
     }
 
     return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
-};
-
-export const getPaymentMethod = (
-    selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
-    context: TradingFormContextValues<TradingType>,
-): TradingGetPaymentMethodProps => {
-    if (isTradingExchangeContext(context)) return {};
-
-    const selectedQuoteTyped = selectedQuote as SellFiatTrade | BuyTrade;
-
-    return {
-        paymentMethod: selectedQuoteTyped.paymentMethod,
-        paymentMethodName: selectedQuoteTyped.paymentMethodName,
-    };
 };
 
 const getQuotesFilteredByProviderAndPaymentMethod = <T extends BuyTrade | SellFiatTrade>(

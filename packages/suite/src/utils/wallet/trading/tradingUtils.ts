@@ -28,25 +28,6 @@ export const translationKeys: Record<
     exchange: 'TR_TRADING_SWAP',
 };
 
-export const getCountryLabelParts = (label: string) => {
-    try {
-        const parts = label.split(' ');
-        if (parts.length === 1) {
-            return {
-                flag: '',
-                text: label,
-            };
-        }
-        const flag = parts[0];
-        parts.shift();
-        const text = parts.join(' ');
-
-        return { flag, text };
-    } catch {
-        return null;
-    }
-};
-
 export const getComposeAddressPlaceholder = async (
     account: Account,
     network: Network,

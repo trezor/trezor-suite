@@ -12,7 +12,6 @@ import type {
     TradingBuyType,
     TradingExchangeInfoSelector,
     TradingExchangeType,
-    TradingPaymentMethodType,
     TradingProviderInfo,
     TradingSellInfoSelector,
     TradingSellType,
@@ -120,11 +119,6 @@ export interface TradingGetCryptoQuoteAmountProps {
     receiveAmount: string;
     receiveCurrency: CryptoId | undefined;
     networkFee?: string | undefined;
-}
-
-export interface TradingGetPaymentMethodProps {
-    paymentMethod?: TradingPaymentMethodType;
-    paymentMethodName?: string;
 }
 
 export interface TradingCryptoAmountProps {
