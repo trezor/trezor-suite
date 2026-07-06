@@ -883,4 +883,89 @@ describe('confirmExchangeTradeThunk', () => {
         expect(exchange.formStep).toEqual('SEND_TRANSACTION');
         expect(!!response).toBeTruthy();
     });
+
+    describe('approvalFlow', () => {
+        it('should forward approvalFlow: true to doExchangeTrade', async () => {
+            const {
+                store,
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                mockProcessResponseData,
+                mockNextStep,
+                mockTriggerAnalyticsTradeConfirmation,
+            } = getMocks();
+
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+            } as ExchangeTrade;
+
+            const doExchangeTradeSpy = jest.fn().mockResolvedValue(tradeResponse);
+            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+
+            await store
+                .dispatch(
+                    exchangeThunks.confirmTradeThunk({
+                        returnUrl,
+                        receiveAddress,
+                        account,
+                        trade,
+                        approvalFlow: true,
+                        nextStep: mockNextStep,
+                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                        processResponseData: mockProcessResponseData,
+                    }),
+                )
+                .unwrap();
+
+            expect(doExchangeTradeSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ approvalFlow: true }),
+                expect.anything(),
+            );
+        });
+
+        it('should default approvalFlow to false when omitted', async () => {
+            const {
+                store,
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                mockProcessResponseData,
+                mockNextStep,
+                mockTriggerAnalyticsTradeConfirmation,
+            } = getMocks();
+
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+            } as ExchangeTrade;
+
+            const doExchangeTradeSpy = jest.fn().mockResolvedValue(tradeResponse);
+            invityAPI.doExchangeTrade = doExchangeTradeSpy;
+
+            await store
+                .dispatch(
+                    exchangeThunks.confirmTradeThunk({
+                        returnUrl,
+                        receiveAddress,
+                        account,
+                        trade,
+                        nextStep: mockNextStep,
+                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                        processResponseData: mockProcessResponseData,
+                    }),
+                )
+                .unwrap();
+
+            expect(doExchangeTradeSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ approvalFlow: false }),
+                expect.anything(),
+            );
+        });
+    });
 });
