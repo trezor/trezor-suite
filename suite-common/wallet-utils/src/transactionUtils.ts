@@ -210,7 +210,7 @@ export const getPendingEvmNonceStatus = (
  * sit above `nextNonce` (a gap exists below it) and match an existing own pending tx, and
  * replacement is the actionable case (offer a fee bump) rather than a dead end.
  */
-export const classifyEvmNonce = (
+export const getEvmNonceStatus = (
     nonce: number,
     { confirmedNonce, nextNonce, pendingNonces }: EvmNonceInfo,
 ): 'ok' | 'superseded' | 'gap' | 'replacement' => {

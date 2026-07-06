@@ -8,6 +8,7 @@ import { getEthereumRbfFeeInfo, selectTransactions } from '@suite-common/wallet-
 import { type FormState } from '@suite-common/wallet-types';
 import {
     fromWei,
+    getEvmNonceStatus,
     isEip1559,
     isInteger,
     isPending,
@@ -78,27 +79,31 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
 
     const error = errors.ethereumNonce;
 
-    // Non-blocking warnings (rules 2 & 3). Only computed for an otherwise-valid nonce so they never
-    // overlap with the blocking error above.
+    const pendingSentTxs = (transactions[account.key] ?? [])
+        .filter(isPending)
+        .filter(isSentTransaction);
+
+    const pendingNonces = pendingSentTxs
+        .map(tx => tx.ethereumSpecific?.nonce)
+        .filter((nonce): nonce is number => typeof nonce === 'number');
+
+    // Non-blocking warnings, computed only for an otherwise-valid nonce so they never overlap with
+    // the blocking error above. Shares `getEvmNonceStatus` with the account's transaction list
+    // (TransactionItem.tsx) so both agree on what counts as a gap vs. a replacement.
     const getWarningType = (): 'gap' | 'replacement' | null => {
-        if (error || !nonceValue || !isInteger(nonceValue)) return null;
+        if (error || !nonceValue || !isInteger(nonceValue) || displayNonce === undefined)
+            return null;
 
         const value = new BigNumber(nonceValue);
+        if (value.lt(0)) return null;
 
-        if (value.lt(0) || (confirmedNonce !== undefined && value.lt(confirmedNonce))) return null;
+        const status = getEvmNonceStatus(value.toNumber(), {
+            confirmedNonce: confirmedNonce !== undefined ? Number(confirmedNonce) : 0,
+            nextNonce: Number(displayNonce),
+            pendingNonces,
+        });
 
-        if (displayNonce === undefined) return null;
-        const next = new BigNumber(displayNonce);
-
-        // Rule 2: a nonce above the next expected one leaves a gap; the tx stays pending until the
-        // gap is filled.
-        if (value.gt(next)) return 'gap';
-
-        // Rule 3: a nonce in [confirmedNonce, nextNonce) lands on an existing pending tx, so this is
-        // a replacement and needs a >= 10% bump on both fee fields to be accepted.
-        if (value.lt(next)) return 'replacement';
-
-        return null;
+        return status === 'gap' || status === 'replacement' ? status : null;
     };
 
     const warningType = getWarningType();
@@ -107,10 +112,9 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
     // fields, so a nonce-replacement isn't rejected as "replacement transaction underpriced".
     // changeFeeLevel('custom') first populates feeLimit + base values; we then override the price.
     const applyFeeBump = () => {
-        const replacedGas = (transactions[account.key] ?? [])
-            .filter(isPending)
-            .filter(isSentTransaction)
-            .find(tx => tx.ethereumSpecific?.nonce === Number(nonceValue))?.ethereumSpecific;
+        const replacedGas = pendingSentTxs.find(
+            tx => tx.ethereumSpecific?.nonce === Number(nonceValue),
+        )?.ethereumSpecific;
 
         // The pending tx may have been confirmed between form-open and clicking "Apply fee bump"
         // (stale displayNonce props). Guard here so we don't silently bump from zero.
