@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -10,7 +11,7 @@ import {
     CryptoToFiatAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
-import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
+import { CryptoIcon, CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
@@ -138,6 +139,11 @@ const AccountsListItemComponent = ({
         />
     );
 
+    const isFailed = isAccountFailed(account);
+    const [primaryBalanceValue, secondaryBalanceValue] = isCryptoBalancePrimary
+        ? [cryptoBalanceValue, fiatBalanceValue]
+        : [fiatBalanceValue, cryptoBalanceValue];
+
     const getTitle = () => {
         if (titleLabel) {
             return titleLabel;
@@ -175,8 +181,14 @@ const AccountsListItemComponent = ({
                     {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
                 </>
             }
-            mainValue={isCryptoBalancePrimary ? cryptoBalanceValue : fiatBalanceValue}
-            secondaryValue={isCryptoBalancePrimary ? fiatBalanceValue : cryptoBalanceValue}
+            mainValue={
+                isFailed ? (
+                    <Icon name="warning" color="contentWarning" size="medium" />
+                ) : (
+                    primaryBalanceValue
+                )
+            }
+            secondaryValue={isFailed ? undefined : secondaryBalanceValue}
         />
     );
 };

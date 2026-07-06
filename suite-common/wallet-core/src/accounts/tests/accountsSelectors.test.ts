@@ -2,12 +2,13 @@ import type { DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { networks } from '@suite-common/wallet-config';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { type AccountsRootState } from '../accountsReducer';
 import {
     selectAddressByNetworkAndPath,
+    selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
     selectVisibleDeviceAccountsMap,
 } from '../accountsSelectors';
 
@@ -229,6 +230,108 @@ describe('accountsSelectors', () => {
             expect(result.get(btcAccount.key)).toEqual(
                 expect.objectContaining({ key: btcAccount.key }),
             );
+        });
+    });
+
+    describe('selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex', () => {
+        const mockSolAccount = (override: Partial<Account>): Account =>
+            ({
+                symbol: 'sol',
+                accountType: 'normal',
+                index: 0,
+                deviceState: BTC_DEVICE_SSID,
+                visible: true,
+                key: mockAccountKey({
+                    descriptor: `descriptor${override.index ?? 0}`,
+                    symbol: 'sol',
+                    deviceStaticSessionId: BTC_DEVICE_SSID,
+                }),
+                ...override,
+            }) as unknown as Account;
+
+        const createState = (accounts: Account[]): AccountsRootState & DeviceRootState =>
+            getStateWithSelectedDevice(
+                {
+                    wallet: { accounts },
+                    device: { devices: [BTC_DEVICE], persistentDeviceData: [] },
+                },
+                BTC_DEVICE,
+            );
+
+        it('matches by account index field even when indexes are not contiguous', () => {
+            const account = mockSolAccount({ index: 2 });
+            const state = createState([mockSolAccount({ index: 0 }), account]);
+
+            expect(
+                selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
+                    state,
+                    'sol',
+                    'normal',
+                    2,
+                ),
+            ).toBe(account.key);
+        });
+
+        it('resolves the replacement key after a failed account is replaced in place', () => {
+            const failedAccount = mockSolAccount({
+                key: mockAccountKey({
+                    descriptor: 'failed:0:sol:normal',
+                    symbol: 'sol',
+                    deviceStaticSessionId: BTC_DEVICE_SSID,
+                }),
+                failed: true,
+            });
+            const replacementAccount = mockSolAccount({ visible: false });
+
+            expect(
+                selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
+                    createState([failedAccount]),
+                    'sol',
+                    'normal',
+                    0,
+                ),
+            ).toBe(failedAccount.key);
+            expect(
+                selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
+                    createState([replacementAccount]),
+                    'sol',
+                    'normal',
+                    0,
+                ),
+            ).toBe(replacementAccount.key);
+        });
+
+        it('does not match an account of another device', () => {
+            const otherDeviceAccount = mockSolAccount({
+                deviceState: ETH_DEVICE_SSID,
+                key: mockAccountKey({
+                    descriptor: 'descriptor0',
+                    symbol: 'sol',
+                    deviceStaticSessionId: ETH_DEVICE_SSID,
+                }),
+            });
+
+            expect(
+                selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
+                    createState([otherDeviceAccount]),
+                    'sol',
+                    'normal',
+                    0,
+                ),
+            ).toBeUndefined();
+        });
+
+        it('does not match an account of another account type with the same index', () => {
+            const legacyAccount = mockSolAccount({ accountType: 'legacy' });
+
+            expect(
+                selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
+                    createState([legacyAccount]),
+                    'sol',
+                    'normal',
+                    0,
+                ),
+            ).toBeUndefined();
         });
     });
 });

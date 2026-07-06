@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isAccountFailed } from '@suite-common/wallet-utils';
 import {
     AccountLabel,
     type NativeAccountsRootState,
@@ -52,11 +53,13 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'
                     numberOfLines={1}
                     showAccountTypeBadge
                 />
-                <BaseCurrencyAmountFormatter
-                    value={fiatBalance}
-                    variant="body-sm"
-                    color="contentSecondary"
-                />
+                {!isAccountFailed(account) && (
+                    <BaseCurrencyAmountFormatter
+                        value={fiatBalance}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
+                )}
             </VStack>
         </HStack>
     );

@@ -4,7 +4,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsListItemBase } from '@suite-native/accounts';
+import {
+    AccountsListItemBase,
+    type NativeAccountsRootState,
+    selectHasDeviceAnyFailedAccountForNetworkSymbol,
+} from '@suite-native/accounts';
+import { Icon } from '@suite-native/icons';
 import {
     AccountsStackRoutes,
     type AppTabsParamList,
@@ -48,6 +53,9 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
     );
+    const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>
+        selectHasDeviceAnyFailedAccountForNetworkSymbol(state, cryptoCurrencySymbol),
+    );
 
     const handleAssetPress = useCallback(() => {
         // A single tokenless account opens its detail directly; anything else opens the list.
@@ -78,8 +86,16 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
             icon={<PercentageIcon symbol={cryptoCurrencySymbol} />}
             title={<AssetItemTitle symbol={cryptoCurrencySymbol} />}
             badges={<AssetItemBadges symbol={cryptoCurrencySymbol} />}
-            mainValue={<FiatAmount symbol={cryptoCurrencySymbol} />}
-            secondaryValue={<CryptoAmount symbol={cryptoCurrencySymbol} />}
+            mainValue={
+                hasAnyFailedAccount ? (
+                    <Icon name="warning" color="contentWarning" size="medium" />
+                ) : (
+                    <FiatAmount symbol={cryptoCurrencySymbol} />
+                )
+            }
+            secondaryValue={
+                hasAnyFailedAccount ? undefined : <CryptoAmount symbol={cryptoCurrencySymbol} />
+            }
         />
     );
 });

@@ -30,6 +30,7 @@ import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/toke
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
 import { selectIsNetworkSendFlowEnabled, selectIsUnrecognizedToken } from '../selectors';
+import { AccountDiscoveryFailedBanner } from './AccountBanners/AccountDiscoveryFailedBanner';
 import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
 import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -182,6 +183,7 @@ export const TransactionListHeader = memo(
         return (
             <>
                 <VStack spacing="sp24">
+                    <AccountDiscoveryFailedBanner accountKey={accountKey} />
                     <TransactionListHeaderContent
                         accountKey={accountKey}
                         tokenContract={tokenContract}
