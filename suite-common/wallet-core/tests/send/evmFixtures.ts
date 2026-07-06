@@ -1,11 +1,11 @@
 import {
-    type Account,
+    type AccountWithNetworkType,
     type FeeInfo,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-export type EthAccount = Account & { networkType: 'ethereum' };
+export type EthAccount = AccountWithNetworkType<'ethereum'>;
 
 export const ethAccount = mockWalletAccount({ symbol: 'eth' }) as EthAccount;
 
