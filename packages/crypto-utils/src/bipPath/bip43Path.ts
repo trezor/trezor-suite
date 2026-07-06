@@ -4,9 +4,11 @@ type HardenedLevel<TIndex extends PathIndex> = `/${TIndex}'`;
 type MaybeLevel<TIndex extends PathIndex> = `/${TIndex}${MaybeApostrophe}` | '';
 
 // The generic keeps template and resolved paths structurally aligned while excluding `i` from
-// resolved paths.
+// resolved paths. Two-level paths (root paths without an account index) describe account types
+// with a single account only.
 type Bip43PathWithIndex<TIndex extends PathIndex> =
-    `m${HardenedLevel<number>}${HardenedLevel<number>}${HardenedLevel<TIndex>}${MaybeLevel<TIndex>}${MaybeLevel<TIndex>}`;
+    | `m${HardenedLevel<number>}${HardenedLevel<number>}`
+    | `m${HardenedLevel<number>}${HardenedLevel<number>}${HardenedLevel<TIndex>}${MaybeLevel<TIndex>}${MaybeLevel<TIndex>}`;
 
 // Template with i in place of an account index, which shall be substituted with a number.
 export type Bip43PathTemplate = Bip43PathWithIndex<PathIndex>;

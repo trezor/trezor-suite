@@ -5,7 +5,12 @@ import {
 } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    isSingleAccountType,
+    networks,
+    networksCollection,
+} from '@suite-common/wallet-config';
 import {
     type Account,
     type ReviewOutput,
@@ -123,7 +128,8 @@ export const selectDiscoveryAccountsParam = (
     knownOnly?: boolean,
 ): DiscoveryAccountsParam =>
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
-        const { networkType } = networks[symbol];
+        const network = networks[symbol];
+        const { networkType } = network;
         const identity = tryGetAccountIdentity({ networkType, deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
 
@@ -144,8 +150,9 @@ export const selectDiscoveryAccountsParam = (
                 // some account failed; rediscover the whole chain from the first failed one
                 if (firstFailedAccount) return { type, skip: firstFailedAccount.index };
                 // last account is a used one; skip it and try to discover next one
-                else if (!lastAccount.empty) return { type, skip: lastAccount.index + 1 };
-                // last account is an empty one; skip this type completely
+                else if (!lastAccount.empty && !isSingleAccountType(network, type))
+                    return { type, skip: lastAccount.index + 1 };
+                // last account is an empty one or the only account of its type; skip this type completely
                 else return { type };
             },
         );

@@ -68,7 +68,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             // validate path if exists
             let address_n: number[] = [];
             if (batch.path) {
-                address_n = validatePath(batch.path, 3);
+                // Length 2 to allow root paths of single-account types.
+                address_n = validatePath(batch.path, 2);
                 // since there is no descriptor device will be used
                 willUseDevice = typeof batch.descriptor !== 'string';
             }

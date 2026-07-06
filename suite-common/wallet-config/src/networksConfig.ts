@@ -403,6 +403,12 @@ export const networks = {
                 bip43Path: "m/44'/501'/i'",
                 isDebugOnlyAccountType: true,
             },
+            root: {
+                // root path - single account used by some wallets
+                accountType: 'root',
+                bip43Path: "m/44'/501'",
+                isDebugOnlyAccountType: true,
+            },
         },
         coingeckoId: 'solana',
         tradeCryptoId: 'solana',
@@ -742,7 +748,14 @@ export const networks = {
             [DeviceModelInternal.T3W1]: '2.0.0',
         },
         backendOptions: [{ type: 'solana', isExternalBackend: true }],
-        accountTypes: {},
+        accountTypes: {
+            root: {
+                // root path - single account used by some wallets
+                accountType: 'root',
+                bip43Path: "m/44'/501'",
+                isDebugOnlyAccountType: true,
+            },
+        },
         coingeckoId: undefined,
         tradeCryptoId: undefined,
         caipId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',

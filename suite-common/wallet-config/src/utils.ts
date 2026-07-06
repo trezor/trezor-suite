@@ -138,6 +138,15 @@ export const isAccountOfNetwork = (
     Object.prototype.hasOwnProperty.call(network.accountTypes, accountType) ||
     accountType === 'normal';
 
+// Account types with an index-less path template (root path) have exactly one account.
+export const isSingleAccountType = (network: Network, accountType: string) => {
+    const bip43Path = isAccountOfNetwork(network, accountType)
+        ? network.accountTypes[accountType]?.bip43Path
+        : undefined;
+
+    return !(bip43Path ?? network.bip43Path).includes('i');
+};
+
 export const getNetworkByCoingeckoId = (coingeckoId: string): Network | undefined =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
 

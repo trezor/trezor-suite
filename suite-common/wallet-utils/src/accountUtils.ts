@@ -164,6 +164,8 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
                 return 'TR_ACCOUNT_TYPE_LEDGER';
             case 'legacy':
                 return 'TR_ACCOUNT_TYPE_LEGACY';
+            case 'root':
+                return 'TR_ACCOUNT_TYPE_ROOT';
             case 'normal':
                 return 'TR_ACCOUNT_TYPE_DEFAULT';
             case 'placeholder':
@@ -218,6 +220,8 @@ export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccoun
     switch (accountType) {
         case 'ledger':
             return 'TR_ACCOUNT_TYPE_LEDGER_DESC';
+        case 'root':
+            return 'TR_ACCOUNT_TYPE_ROOT_DESC';
         case 'legacy':
             if (networkType === 'cardano') {
                 return 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC';

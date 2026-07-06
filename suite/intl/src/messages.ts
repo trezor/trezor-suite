@@ -2952,6 +2952,11 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_LEDGER',
         dynamic: true,
     },
+    TR_ACCOUNT_TYPE_ROOT: {
+        defaultMessage: 'Root',
+        id: 'TR_ACCOUNT_TYPE_ROOT',
+        dynamic: true,
+    },
     TR_ACCOUNT_TYPE_IMPORTED: {
         defaultMessage: 'Imported',
         id: 'TR_ACCOUNT_TYPE_IMPORTED',
@@ -3991,6 +3996,11 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_LEDGER_DESC',
         defaultMessage:
             'Ledger accounts are compatible with Ledger Wallet derivation paths, enabling smooth migration from Ledger to Trezor.',
+    },
+    TR_ACCOUNT_TYPE_ROOT_DESC: {
+        id: 'TR_ACCOUNT_TYPE_ROOT_DESC',
+        defaultMessage:
+            'Root accounts hold funds directly on the coin-level derivation path used by some wallets, enabling smooth migration to Trezor.',
     },
     TR_ACCOUNT_TYPE_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',

@@ -18,6 +18,7 @@ const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>>
     segwit: 'Legacy Segwit',
     legacy: 'Legacy',
     ledger: 'Ledger',
+    root: 'Root',
 };
 
 /**

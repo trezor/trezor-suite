@@ -305,6 +305,8 @@
   "TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC": "The current and most widely accepted method of generating and managing Solana addresses ensures interoperability, security, and support for SOL and SPL tokens.",
   "TR_ACCOUNT_TYPE_NO_CAPABILITY": "Not supported.",
   "TR_ACCOUNT_TYPE_NO_SUPPORT": "This account type is not supported on this Trezor model.",
+  "TR_ACCOUNT_TYPE_ROOT": "Root",
+  "TR_ACCOUNT_TYPE_ROOT_DESC": "Root accounts hold funds directly on the coin-level derivation path used by some wallets, enabling smooth migration to Trezor.",
   "TR_ACCOUNT_TYPE_SEGWIT": "Legacy SegWit",
   "TR_ACCOUNT_TYPE_SHELLEY": "Shelley",
   "TR_ACCOUNT_TYPE_SLIP25_DESC": "On June 1st, 2024, the coinjoin feature was deactivated. Your coinjoin account and funds remain accessible, but you won't be able to initiate new coinjoin rounds.",
