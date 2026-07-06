@@ -102,8 +102,8 @@ export const ConfirmValueModal = ({
     // Do not show Add address label button if there is device interaction needed and device is not connected.
     const shouldShowAddressLabelAction = suiteSyncInteraction === null || !!device?.connected;
 
-    const copy = () => {
-        const result = copyToClipboard(value);
+    const copy = async () => {
+        const result = await copyToClipboard(value);
 
         if (account) {
             analytics.report({

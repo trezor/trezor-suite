@@ -43,10 +43,10 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
         );
     };
 
-    const copy = () => {
+    const copy = async () => {
         const formatted = formatMessage();
 
-        const result = copyToClipboard(formatted);
+        const result = await copyToClipboard(formatted);
 
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));

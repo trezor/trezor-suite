@@ -143,8 +143,8 @@ export const TransactionReviewModalBottomContent = ({
         }
     };
 
-    const handleCopy = () => {
-        const result = copyToClipboard(serializedTx!.tx);
+    const handleCopy = async () => {
+        const result = await copyToClipboard(serializedTx!.tx);
 
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));

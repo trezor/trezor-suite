@@ -11,8 +11,8 @@ interface TradingTransactionIdProps {
 
 export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProps) => {
     const dispatch = useDispatch();
-    const copy = () => {
-        const result = copyToClipboard(transactionId);
+    const copy = async () => {
+        const result = await copyToClipboard(transactionId);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
