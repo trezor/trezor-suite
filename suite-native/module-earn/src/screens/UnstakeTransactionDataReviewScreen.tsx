@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
-
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
@@ -17,9 +15,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import {
-    type TransactionReviewOutputsState,
     TxValidityTimer,
-    selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionAlreadySigned,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
@@ -30,7 +26,6 @@ import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedP
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
-import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 
 export const UnstakeTransactionDataReviewScreen = ({
     route,
@@ -38,12 +33,7 @@ export const UnstakeTransactionDataReviewScreen = ({
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
-    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const [isPushing, setIsPushing] = useState(false);
-
-    const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsReceiveAddressOutputConfirmed(state, 'unstake', accountKey),
-    );
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
@@ -79,15 +69,6 @@ export const UnstakeTransactionDataReviewScreen = ({
         onDeviceReviewReady: revealConfirmOnTrezorSheet,
         onSignFailed: closeSheet,
     });
-
-    useFocusEffect(
-        useCallback(() => {
-            // Solana address outputs would redirect mid-sign, skip until the success card.
-            if (isAddressConfirmed && account && account.networkType !== 'solana') {
-                navigateToStakingDetail({ accountKey, symbol: account.symbol });
-            }
-        }, [account, accountKey, isAddressConfirmed, navigateToStakingDetail]),
-    );
 
     useEffect(() => {
         if (isTransactionAlreadySigned) {
