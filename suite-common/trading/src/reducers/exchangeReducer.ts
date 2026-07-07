@@ -57,61 +57,79 @@ const tradingExchangeSlice = createSlice({
     name: TRADING_EXCHANGE_PREFIX,
     initialState: exchangeInitialState,
     reducers: {
-        saveExchangeInfo(state, action: PayloadAction<ExchangeInfo>) {
+        saveExchangeInfo(state: TradingExchangeState, action: PayloadAction<ExchangeInfo>) {
             state.exchangeInfo = action.payload;
         },
-        saveTransactionId(state, action: PayloadAction<string | undefined>) {
+        saveTransactionId(state: TradingExchangeState, action: PayloadAction<string | undefined>) {
             state.transactionId = action.payload;
         },
-        saveQuoteRequest(state, action: PayloadAction<ExchangeTradeQuoteRequest>) {
+        saveQuoteRequest(
+            state: TradingExchangeState,
+            action: PayloadAction<ExchangeTradeQuoteRequest>,
+        ) {
             state.quotesRequest = action.payload;
         },
-        saveQuotes(state, action: PayloadAction<ExchangeTrade[]>) {
+        saveQuotes(state: TradingExchangeState, action: PayloadAction<ExchangeTrade[]>) {
             state.quotes = action.payload;
         },
-        clearQuotes(state) {
+        clearQuotes(state: TradingExchangeState) {
             state.quotes = [];
             state.selectedQuote = undefined;
         },
-        setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+        setTradingAccountKey(
+            state: TradingExchangeState,
+            action: PayloadAction<AccountKey | undefined>,
+        ) {
             state.tradingAccountKey = action.payload;
         },
-        setReceiveAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+        setReceiveAccountKey(
+            state: TradingExchangeState,
+            action: PayloadAction<AccountKey | undefined>,
+        ) {
             state.receiveAccountKey = action.payload;
         },
-        setReceiveAddress(state, action: PayloadAction<string | undefined>) {
+        setReceiveAddress(state: TradingExchangeState, action: PayloadAction<string | undefined>) {
             state.receiveAddress = action.payload;
         },
-        setExtraField(state, action: PayloadAction<string | undefined>) {
+        setExtraField(state: TradingExchangeState, action: PayloadAction<string | undefined>) {
             state.extraField = action.payload;
         },
-        saveSelectedQuote(state, action: PayloadAction<ExchangeTrade | undefined>) {
+        saveSelectedQuote(
+            state: TradingExchangeState,
+            action: PayloadAction<ExchangeTrade | undefined>,
+        ) {
             state.selectedQuote = action.payload;
         },
-        setSelectedQuoteSwapSlippage(state, action: PayloadAction<string>) {
+        setSelectedQuoteSwapSlippage(state: TradingExchangeState, action: PayloadAction<string>) {
             if (state.selectedQuote?.isDex) {
                 state.selectedQuote.swapSlippage = action.payload;
             }
         },
-        setIsFromRedirect(state, action: PayloadAction<boolean>) {
+        setIsFromRedirect(state: TradingExchangeState, action: PayloadAction<boolean>) {
             state.isFromRedirect = action.payload;
         },
-        setIsLoading(state, action: PayloadAction<boolean>) {
+        setIsLoading(state: TradingExchangeState, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },
         setDexQuoteApprovalPrefetchLoadingQuoteId(
-            state,
+            state: TradingExchangeState,
             action: PayloadAction<string | undefined>,
         ) {
             state.dexQuoteApprovalPrefetchLoadingQuoteId = action.payload;
         },
-        setAmountLimits(state, action: PayloadAction<TradingExchangeAmountLimitProps | undefined>) {
+        setAmountLimits(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAmountLimitProps | undefined>,
+        ) {
             state.amountLimits = action.payload;
         },
-        setFormStep(state, action: PayloadAction<TradingExchangeStepType>) {
+        setFormStep(state: TradingExchangeState, action: PayloadAction<TradingExchangeStepType>) {
             state.formStep = action.payload;
         },
-        setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
+        setLastErrorMessage(
+            state: TradingExchangeState,
+            action: PayloadAction<string | undefined>,
+        ) {
             state.lastErrorMessage = action.payload;
         },
     },
