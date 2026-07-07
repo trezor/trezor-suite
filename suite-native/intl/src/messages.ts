@@ -3547,9 +3547,9 @@ export const messages = {
                     buyDescription:
                         "Your transaction failed or was rejected. Your payment method hasn't been charged.",
                     sellDescription:
-                        'The transaction didn’t go through. We’re looking into it, but your funds are safe in your account.',
+                        'The transaction didn’t go through. Your funds are safe in your account.',
                     swapDescription:
-                        'The transaction didn’t go through. We’re looking into it, but your funds are safe in your account.',
+                        'The transaction didn’t go through. Your funds are safe in your account.',
                 },
                 waitingAlert: {
                     title: 'Waiting for your payment ...',
