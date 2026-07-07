@@ -10,8 +10,9 @@ import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
 
 export const TronClaimAmount = () => {
-    const { account } = useTronStakeContext();
-    const reward = getTronStakingRewards(account);
+    const { account, form } = useTronStakeContext();
+    const snapshotAmount = form.methods.watch('amount');
+    const reward = snapshotAmount || getTronStakingRewards(account);
 
     return (
         <Card paddingType="none">
