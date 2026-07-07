@@ -11,13 +11,6 @@ export type YieldPositionFlowType = Exclude<YieldFlowType, 'claim'>;
 export type YieldWithdrawFlowType = Extract<YieldFlowType, 'withdraw' | 'redeem'>;
 export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];
 
-export const YIELD_FLOW_STEP_SEQUENCES = {
-    deposit: ['approve', 'action', 'complete'],
-    withdraw: ['action', 'complete'],
-    redeem: ['action', 'complete'],
-    claim: ['action', 'complete'],
-} as const satisfies Record<YieldFlowType, readonly YieldFlowStepId[]>;
-
 export type YieldFlowFormValues = {
     amountInput: string;
 };

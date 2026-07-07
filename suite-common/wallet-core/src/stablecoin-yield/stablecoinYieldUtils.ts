@@ -11,14 +11,14 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    YIELD_FLOW_STEP_SEQUENCES,
-    type YieldFlowDisplayToken,
-    type YieldFlowResolvedData,
-    type YieldFlowStepId,
-    type YieldFlowType,
-    type YieldPendingTransactionState,
-    type YieldWithdrawFlowType,
+import { YIELD_FLOW_STEP_SEQUENCES } from './stablecoinYieldConstants';
+import type {
+    YieldFlowDisplayToken,
+    YieldFlowResolvedData,
+    YieldFlowStepId,
+    YieldFlowType,
+    YieldPendingTransactionState,
+    YieldWithdrawFlowType,
 } from './stablecoinYieldTypes';
 
 type TokenLike = {

@@ -27,7 +27,6 @@ import {
     submitYieldRevokeThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import type { StepListItemState } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -42,7 +41,6 @@ import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import {
     type YieldApprovalAction,
-    getStepListItemStates,
     getYieldApprovalAction,
     getYieldModifyAmountInput,
     isAmountGreaterThan,
@@ -57,8 +55,6 @@ type UseYieldFlowProps = {
 
 type UseYieldFlowStepsResult = {
     currentStep: YieldFlowStepId;
-    stepStates: Record<YieldFlowStepId, StepListItemState>;
-    goToStep: (step: YieldFlowStepId) => void;
 };
 
 export type UseYieldFlowResult = {
@@ -178,10 +174,6 @@ export const useYieldFlow = ({
         dispatch(stablecoinYieldActions.initSession({ flowType, flowKey }));
         dispatch(stablecoinYieldActions.resetSession({ flowType, flowKey }));
 
-        if (isYieldWithdrawFlow(flowType)) {
-            dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
-        }
-
         methodsRef.current.reset({ amountInput: '' });
 
         return () => {
@@ -287,21 +279,7 @@ export const useYieldFlow = ({
         prevStepRef.current = nextStep;
     }, [session.step, session.action.amount, methodsRef, maxAmount]);
 
-    const goToStep = useCallback(
-        (step: YieldFlowStepId) => {
-            dispatch(stablecoinYieldActions.goToStep({ flowType, flowKey, step }));
-        },
-        [dispatch, flowKey, flowType],
-    );
-
-    const flow = useMemo(
-        () => ({
-            currentStep: session.step,
-            stepStates: getStepListItemStates(session.step),
-            goToStep,
-        }),
-        [session.step, goToStep],
-    );
+    const flow = useMemo(() => ({ currentStep: session.step }), [session.step]);
 
     const openPendingTransaction = useCallback(
         (txid: string) => {

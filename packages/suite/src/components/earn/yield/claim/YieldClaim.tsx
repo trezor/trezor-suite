@@ -28,6 +28,7 @@ import { YieldRewardsList } from './YieldRewardsList';
 import { useMerklRewards } from './hooks';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
+import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
 import { useEnsureYieldDeviceSession } from '../hooks/useEnsureYieldDeviceSession';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
@@ -62,6 +63,9 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const accountRewards: YieldAccountRewards | undefined =
         merklRewardsQuery.data?.accountsRewards[0];
     const isRewardsLoading = merklRewardsQuery.isLoading || missingRateTickersQuery.isLoading;
+
+    // Completion shows the claimed-rewards snapshot; until it is available, keep the claim screen.
+    const currentStep = claimSession.step === 'complete' && accountRewards ? 'complete' : 'action';
 
     useEffect(() => {
         dispatch(stablecoinYieldActions.initSession({ flowType: 'claim', flowKey }));
@@ -146,19 +150,9 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         [account, analytics, dispatch],
     );
 
-    if (claimSession.step === 'complete' && accountRewards) {
-        return (
-            <Column width="100%" alignItems="center">
-                <Column gap={24} width="100%" maxWidth={500}>
-                    <YieldFlowCompleteClaim accountRewards={accountRewards} />
-                </Column>
-            </Column>
-        );
-    }
-
     return (
         <Column width="100%" alignItems="center">
-            {isFirmwareModalOpen && (
+            {currentStep !== 'complete' && isFirmwareModalOpen && (
                 <FirmwareUpgradeNeededModal
                     onClose={closeFirmwareModal}
                     onUpdate={updateFirmware}
@@ -166,66 +160,96 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 />
             )}
             <Column gap={24} width="100%" maxWidth={500}>
-                <ContextMessage context={Context.getEarnYield('claim')} />
+                {currentStep !== 'complete' && (
+                    <>
+                        <ContextMessage context={Context.getEarnYield('claim')} />
 
-                <Text typographyStyle="headline-md">
-                    <Translation id="TR_EARN_CLAIM_REWARDS" />
-                </Text>
+                        <Text typographyStyle="headline-md">
+                            <Translation id="TR_EARN_CLAIM_REWARDS" />
+                        </Text>
+                    </>
+                )}
 
-                {isDisabled ? (
+                {isDisabled && currentStep !== 'complete' ? (
                     <YieldDisabledBanner type="claim" content={content} variant={variant} />
                 ) : (
-                    <>
-                        <Card>
-                            <Column gap={24}>
-                                <Text typographyStyle="body-md-strong">
-                                    <Translation id="TR_STAKE_REWARDS" />
-                                </Text>
+                    <YieldFlowStepList
+                        flowType="claim"
+                        currentStep={currentStep}
+                        steps={{
+                            action: {
+                                title: <Translation id="TR_EARN_CLAIM_REWARDS" />,
+                                content: () => (
+                                    <>
+                                        <Card>
+                                            <Column gap={24}>
+                                                <Text typographyStyle="body-md-strong">
+                                                    <Translation id="TR_STAKE_REWARDS" />
+                                                </Text>
 
-                                <YieldRewardsList
-                                    accountRewards={accountRewards}
-                                    isLoading={isRewardsLoading}
-                                />
-                            </Column>
-                        </Card>
+                                                <YieldRewardsList
+                                                    accountRewards={accountRewards}
+                                                    isLoading={isRewardsLoading}
+                                                />
+                                            </Column>
+                                        </Card>
 
-                        {merklRewardsQuery.isSuccess &&
-                            (accountRewards?.rewards?.length ?? 0) > 0 &&
-                            !claimSession.action.pendingTransaction && (
-                                <Banner
-                                    intent="warning"
-                                    icon="warning"
-                                    description={
-                                        <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
-                                    }
-                                />
-                            )}
+                                        {merklRewardsQuery.isSuccess &&
+                                            (accountRewards?.rewards?.length ?? 0) > 0 &&
+                                            !claimSession.action.pendingTransaction && (
+                                                <Banner
+                                                    intent="warning"
+                                                    icon="warning"
+                                                    description={
+                                                        <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
+                                                    }
+                                                />
+                                            )}
 
-                        {claimSession.error && (
-                            <Banner
-                                intent="warning"
-                                description={<Translation id={claimSession.error} />}
-                            />
-                        )}
+                                        {claimSession.error && (
+                                            <Banner
+                                                intent="warning"
+                                                description={
+                                                    <Translation id={claimSession.error} />
+                                                }
+                                            />
+                                        )}
 
-                        <Button
-                            size="large"
-                            width="100%"
-                            isDisabled={
-                                isRewardsLoading || !accountRewards?.rewards.length || isClaiming
-                            }
-                            isLoading={isClaimSubmitting || merklRewardsQuery.isLoading}
-                            onClick={handleClaim}
-                        >
-                            <Translation id="TR_EARN_YIELD_CLAIM" />
-                        </Button>
-                        {claimSession.action.pendingTransaction && (
-                            <YieldPendingTransaction
-                                pendingTransaction={claimSession.action.pendingTransaction}
-                                onTxClick={handleTxClick}
-                            />
-                        )}
-                    </>
+                                        <Button
+                                            size="large"
+                                            width="100%"
+                                            isDisabled={
+                                                isRewardsLoading ||
+                                                !accountRewards?.rewards.length ||
+                                                isClaiming
+                                            }
+                                            isLoading={
+                                                isClaimSubmitting || merklRewardsQuery.isLoading
+                                            }
+                                            onClick={handleClaim}
+                                        >
+                                            <Translation id="TR_EARN_YIELD_CLAIM" />
+                                        </Button>
+                                        {claimSession.action.pendingTransaction && (
+                                            <YieldPendingTransaction
+                                                pendingTransaction={
+                                                    claimSession.action.pendingTransaction
+                                                }
+                                                onTxClick={handleTxClick}
+                                            />
+                                        )}
+                                    </>
+                                ),
+                            },
+                            complete: {
+                                isListItem: false,
+                                content: () =>
+                                    accountRewards ? (
+                                        <YieldFlowCompleteClaim accountRewards={accountRewards} />
+                                    ) : null,
+                            },
+                        }}
+                    />
                 )}
             </Column>
         </Column>

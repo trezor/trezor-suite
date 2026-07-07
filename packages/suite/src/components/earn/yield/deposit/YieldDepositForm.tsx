@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
-import { Banner, Button, Column, Row, StepList, Text } from '@trezor/components';
+import { Banner, Button, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
@@ -11,7 +11,9 @@ import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldApproveModal } from '../common/YieldApproveModal';
 import { YieldApproveStep } from '../common/YieldApproveStep';
+import { YieldApprovedAmountCard } from '../common/YieldApprovedAmountCard';
 import { YieldFlowCompleteDeposit } from '../common/YieldFlowCompleteDeposit';
+import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { getApyBreakdown } from '../yieldFlowUtils';
 
 export const YieldDepositForm = () => {
@@ -50,8 +52,6 @@ export const YieldDepositForm = () => {
         retryInitAllowance,
         flow,
     } = useYieldDepositContext();
-
-    const { approve: approveStepState, action: actionStepState } = flow.stepStates;
 
     const { approvalPendingTransaction, actionPendingTransaction: depositPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
@@ -144,21 +144,7 @@ export const YieldDepositForm = () => {
         <>
             <Column width="100%" alignItems="center">
                 <Column gap={24} width="100%" maxWidth={500}>
-                    {flow.currentStep === 'complete' ? (
-                        <YieldFlowCompleteDeposit
-                            apy={apy}
-                            vault={vault}
-                            networkSymbol={account.symbol}
-                            input={{
-                                token,
-                                amount: completedAmount,
-                            }}
-                            output={{
-                                token: receiptToken,
-                                amount: completedReceiptAmount,
-                            }}
-                        />
-                    ) : (
+                    {flow.currentStep !== 'complete' && (
                         <>
                             <Text typographyStyle="headline-md">
                                 <Translation id="TR_EARN_YIELD_DEPOSIT" />
@@ -185,57 +171,30 @@ export const YieldDepositForm = () => {
                                     }
                                 />
                             )}
+                        </>
+                    )}
 
-                            <StepList
-                                isOrdered
-                                bulletSize="large"
-                                bulletGap={12}
-                                gap={24}
-                                titleGap={16}
-                            >
-                                <StepList.Item
-                                    state={approveStepState}
-                                    title={
-                                        <Column gap={8} width="100%">
-                                            <Text
-                                                typographyStyle="body-xs"
-                                                intent="neutral"
-                                                priority="secondary"
-                                                case="uppercase"
-                                            >
-                                                <Translation
-                                                    id="TR_STEP_OF_TOTAL"
-                                                    values={{
-                                                        index: 1,
-                                                        total: 2,
-                                                    }}
-                                                />
-                                            </Text>
-
-                                            <Row
-                                                justifyContent="space-between"
-                                                alignItems="center"
-                                                width="100%"
-                                                gap={16}
-                                            >
-                                                <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />
-                                                {approveStepState === 'done' && (
-                                                    <Button
-                                                        size="small"
-                                                        intent="neutral"
-                                                        priority="secondary"
-                                                        onClick={handleOnModify}
-                                                    >
-                                                        <Translation id="TR_MODIFY" />
-                                                    </Button>
-                                                )}
-                                            </Row>
-                                        </Column>
-                                    }
-                                >
+                    <YieldFlowStepList
+                        flowType="deposit"
+                        currentStep={flow.currentStep}
+                        hasStepList
+                        steps={{
+                            approve: {
+                                title: <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />,
+                                rightContent: view =>
+                                    view.state === 'done' && (
+                                        <Button
+                                            size="small"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            onClick={handleOnModify}
+                                        >
+                                            <Translation id="TR_MODIFY" />
+                                        </Button>
+                                    ),
+                                content: () => (
                                     <YieldApproveStep
                                         token={token}
-                                        variant={approveStepState === 'done' ? 'done' : 'active'}
                                         summaryValue={
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
@@ -267,78 +226,73 @@ export const YieldDepositForm = () => {
                                         onRevoke={handleOnRevoke}
                                         onPendingTxClick={openPendingTransaction}
                                     />
-                                </StepList.Item>
-
-                                <StepList.Item
-                                    state={actionStepState}
-                                    title={
-                                        <Column gap={8} width="100%">
-                                            <Text
-                                                typographyStyle="body-xs"
-                                                intent="neutral"
-                                                priority="secondary"
-                                                case="uppercase"
-                                            >
-                                                <Translation
-                                                    id="TR_STEP_OF_TOTAL"
-                                                    values={{
-                                                        index: 2,
-                                                        total: 2,
-                                                    }}
+                                ),
+                                inactiveContent: () => (
+                                    <YieldApprovedAmountCard
+                                        token={token}
+                                        amount={allowanceAmount || '0'}
+                                        isLoading={allowanceStatus === 'loading'}
+                                        hasError={allowanceStatus === 'error'}
+                                    />
+                                ),
+                            },
+                            action: {
+                                title: <Translation id="TR_EARN_YIELD_DEPOSIT" />,
+                                content: () => (
+                                    <YieldActionStep
+                                        flowType="deposit"
+                                        token={token}
+                                        summaryValue={
+                                            <FormattedCryptoAmount
+                                                value={maxAmount}
+                                                symbol={token.symbol}
+                                            />
+                                        }
+                                        warning={
+                                            !isAmountInvalidDecimals ? (
+                                                <YieldActionStepWarning
+                                                    isInsufficientFunds={isAmountTooHigh}
+                                                    isApprovalInsufficient={isApprovalInsufficient}
+                                                    onModifyApproval={handleOnModify}
                                                 />
-                                            </Text>
-
-                                            <Row
-                                                justifyContent="space-between"
-                                                alignItems="center"
-                                                width="100%"
-                                                gap={16}
-                                            >
-                                                <Translation id="TR_EARN_YIELD_DEPOSIT" />
-                                            </Row>
-                                        </Column>
-                                    }
-                                >
-                                    {actionStepState === 'active' && (
-                                        <YieldActionStep
-                                            flowType="deposit"
-                                            token={token}
-                                            summaryValue={
-                                                <FormattedCryptoAmount
-                                                    value={maxAmount}
-                                                    symbol={token.symbol}
-                                                />
-                                            }
-                                            warning={
-                                                !isAmountInvalidDecimals ? (
-                                                    <YieldActionStepWarning
-                                                        isInsufficientFunds={isAmountTooHigh}
-                                                        isApprovalInsufficient={
-                                                            isApprovalInsufficient
-                                                        }
-                                                        onModifyApproval={handleOnModify}
-                                                    />
-                                                ) : undefined
-                                            }
-                                            isDisabled={
-                                                isAmountEmpty ||
-                                                isAmountTooHigh ||
-                                                isAmountInvalidDecimals ||
-                                                isApprovalInsufficient ||
-                                                isSubmittingAction ||
-                                                !!depositPendingTransaction
-                                            }
-                                            isPending={isSubmittingAction}
-                                            pendingTransaction={depositPendingTransaction}
-                                            onMaxClick={handleMaxClick}
-                                            onSubmit={handleOnDeposit}
-                                            onPendingTxClick={openPendingTransaction}
-                                        />
-                                    )}
-                                </StepList.Item>
-                            </StepList>
-                        </>
-                    )}
+                                            ) : undefined
+                                        }
+                                        isDisabled={
+                                            isAmountEmpty ||
+                                            isAmountTooHigh ||
+                                            isAmountInvalidDecimals ||
+                                            isApprovalInsufficient ||
+                                            isSubmittingAction ||
+                                            !!depositPendingTransaction
+                                        }
+                                        isPending={isSubmittingAction}
+                                        pendingTransaction={depositPendingTransaction}
+                                        onMaxClick={handleMaxClick}
+                                        onSubmit={handleOnDeposit}
+                                        onPendingTxClick={openPendingTransaction}
+                                    />
+                                ),
+                            },
+                            complete: {
+                                isListItem: false,
+                                content: () => (
+                                    <YieldFlowCompleteDeposit
+                                        apy={apy}
+                                        vault={vault}
+                                        networkSymbol={account.symbol}
+                                        input={{
+                                            token,
+                                            amount: completedAmount,
+                                        }}
+                                        output={{
+                                            token: receiptToken,
+                                            amount: completedReceiptAmount,
+                                        }}
+                                    />
+                                ),
+                            },
+                        }}
+                    />
                 </Column>
             </Column>
 
