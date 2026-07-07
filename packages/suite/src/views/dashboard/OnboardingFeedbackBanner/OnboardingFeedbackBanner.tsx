@@ -5,19 +5,18 @@ import { ThemeProvider, useTheme } from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
-import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
+import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Box, Button, Column, Image, Paragraph, Row, intermediaryTheme } from '@trezor/components';
 import { borders } from '@trezor/theme';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
+import { selectShouldShowOnboardingFeedbackBanner } from './onboardingFeedbackBannerSelectors';
 import { CloseButton } from '../DashboardPromoBanner/CommonPromoBannerComponents';
 import { bannerAnimationConfig } from '../banner-animations';
 
@@ -90,13 +89,7 @@ export const OnboardingFeedbackBanner = () => {
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
 
-    const isBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
-    const accounts = useSelector(selectAllAccountsToList);
-    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-
-    const isDeviceEmpty = accounts.every(account => account.empty);
-
-    const isEligible = isBannerShown && isDeviceEmpty && discoveryStatus?.status !== 'loading';
+    const isEligible = useSelector(selectShouldShowOnboardingFeedbackBanner);
 
     const clearBanner = () => {
         dispatch(setFlag({ key: 'showOnboardingFeedbackBanner', value: false }));

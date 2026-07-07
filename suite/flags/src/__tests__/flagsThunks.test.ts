@@ -31,9 +31,9 @@ describe('initialRunCompleted', () => {
         expect(store.getState().flags.showOnboardingFeedbackBanner).toBe(true);
     });
 
-    it('should not show the onboarding feedback banner for a returning user (initialRun already false)', async () => {
+    it('should re-enable the onboarding feedback banner when a returning user completes onboarding again', async () => {
         const store = initStore({ initialRun: false, showOnboardingFeedbackBanner: false });
         await store.dispatch(initialRunCompleted());
-        expect(store.getState().flags.showOnboardingFeedbackBanner).toBe(false);
+        expect(store.getState().flags.showOnboardingFeedbackBanner).toBe(true);
     });
 });
