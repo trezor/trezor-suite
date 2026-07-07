@@ -121,6 +121,48 @@ describe('sendDexTransactionThunk', () => {
         });
     });
 
+    it('should reject without signing when swap quote still carries the approval calldata', async () => {
+        const approvalCalldata =
+            '0x095ea7b3000000000000000000000000beef047a543e45807105e51a8bbefcc5950fcfba00000000000000000000000000000000000000000000000000000000000f4240';
+        const quote = getQuote();
+        const { store, returnUrl, account } = getMocks({
+            selectedQuote: {
+                ...quote,
+                status: 'CONFIRM',
+                approvalType: 'INFINITE',
+                dexTx: { ...quote.dexTx, data: approvalCalldata },
+            } as TradingExchangeState['selectedQuote'],
+        });
+
+        (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
+            .fn()
+            .mockImplementation(
+                createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
+                    fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
+                ),
+            );
+
+        const result = await store.dispatch(
+            exchangeThunks.sendDexTransactionThunk({
+                account,
+                returnUrl,
+                nextStep: jest.fn(),
+                triggerAnalyticsTradeConfirmation: jest.fn(),
+                processResponseData: jest.fn(),
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+
+        expect(result.meta.requestStatus).toEqual('rejected');
+        expect(result.payload).toEqual({
+            type: 'error',
+            error: {
+                id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
+            },
+        });
+        expect(tradingThunks.recomposeAndSignTxThunk).not.toHaveBeenCalled();
+    });
+
     describe('should return error after recompose and sign transaction', () => {
         it.each([
             ['when payload is undefined', undefined],

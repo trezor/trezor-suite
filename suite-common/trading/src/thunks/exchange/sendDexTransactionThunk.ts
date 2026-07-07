@@ -3,6 +3,7 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { isEvmApprovalTx } from '@suite-common/wallet-utils';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -70,6 +71,21 @@ export const sendDexTransactionThunk = createThunk<
             });
         }
 
+        const isSwapTx =
+            selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO';
+
+        // The swap quote must carry the swap calldata. If dexTx still holds the approval
+        // transaction (API has not indexed the confirmed approval yet), signing it would
+        // broadcast the approval a second time instead of the swap.
+        if (isSwapTx && isEvmApprovalTx(selectedQuote.dexTx.data)) {
+            console.error('Failed to send dex transaction - swap quote carries approval calldata');
+
+            return rejectWithValue({
+                type: 'error',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+        }
+
         const tradingFormState = getTradingFormState({
             activeSection: 'exchange',
             providers,
@@ -130,9 +146,6 @@ export const sendDexTransactionThunk = createThunk<
             ...selectedQuote,
             receiveAddress: selectedQuote.receiveAddress, // just for type assurance
         };
-
-        const isSwapTx =
-            selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO';
 
         if (isSwapTx) {
             trade.receiveTxHash = txid;

@@ -39,6 +39,8 @@ export type TradingConfirmingScreenProps = StackProps<
     RootStackRoutes.TradingConfirming
 >;
 
+export const APPROVAL_STATUS_POLL_INTERVAL_MS = 5000;
+
 export const TradingConfirmingScreen = ({
     route: { params },
     navigation,
@@ -115,22 +117,29 @@ export const TradingConfirmingScreen = ({
             const handleConfirmed = async () => {
                 switch (flowType) {
                     case 'approve': {
-                        const response = await confirmApproval(activeQuote);
+                        let response = await confirmApproval(activeQuote);
 
-                        if (response?.status === 'APPROVAL_PENDING') {
-                            // we know it was confirmed, so we can set the status to CONFIRM even if it came as APPROVAL_PENDING
-                            // that is basically what api does (but it takes time)
-                            // so we need to do it here to avoid the approval screen transition through useExchangeFlow
-                            dispatch(
-                                tradingExchangeActions.saveSelectedQuote({
-                                    ...response,
-                                    status: 'CONFIRM',
-                                }),
-                            );
+                        // The API keeps returning APPROVAL_PENDING (with the approval dexTx)
+                        // until it indexes the confirmed approval. Poll until it returns the
+                        // follow-up status carrying the swap transaction — navigating earlier
+                        // would leave the approval calldata in the quote to be signed again
+                        // as the swap.
+                        while (response?.status === 'APPROVAL_PENDING' && navigation.isFocused()) {
+                            await new Promise(resolve => {
+                                setTimeout(resolve, APPROVAL_STATUS_POLL_INTERVAL_MS);
+                            });
+                            response = await confirmApproval(response);
                         }
 
                         if (!response) {
                             // confirmApproval already sets the error state — stay on this screen.
+                            hasConfirmedRef.current = false;
+
+                            return;
+                        }
+
+                        if (response.status === 'APPROVAL_PENDING') {
+                            // Polling was interrupted by losing focus — allow restart on refocus.
                             hasConfirmedRef.current = false;
 
                             return;

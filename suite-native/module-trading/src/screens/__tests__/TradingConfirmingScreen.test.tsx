@@ -15,7 +15,10 @@ import {
 } from '@suite-native/transaction-management';
 
 import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
-import { TradingConfirmingScreen } from '../TradingConfirmingScreen';
+import {
+    APPROVAL_STATUS_POLL_INTERVAL_MS,
+    TradingConfirmingScreen,
+} from '../TradingConfirmingScreen';
 
 const mockOpenInBlockchain = jest.fn();
 
@@ -61,6 +64,7 @@ const mockNavigation = {
     setOptions: jest.fn(),
     addListener: mockAddListener,
     canGoBack: jest.fn(() => true),
+    isFocused: jest.fn(() => true),
     getState: jest.fn(() => ({ routes: [{ key: 'root' }, { key: 'confirming' }] })),
 } as any;
 
@@ -189,20 +193,34 @@ describe('TradingConfirmingScreen', () => {
         });
     });
 
-    it('approve: saves quote with CONFIRM status when confirmApproval returns APPROVAL_PENDING', async () => {
+    it('approve: polls confirmApproval while API returns APPROVAL_PENDING and navigates only on CONFIRM', async () => {
+        jest.useFakeTimers();
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-        mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'APPROVAL_PENDING' });
+        mockConfirmApproval
+            .mockResolvedValueOnce({ ...testQuote, status: 'APPROVAL_PENDING' })
+            .mockResolvedValueOnce({ ...testQuote, status: 'CONFIRM' });
 
         renderScreen({ flowType: 'approve' });
 
         await act(async () => {
-            await Promise.resolve();
+            await jest.advanceTimersByTimeAsync(0);
         });
 
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
-            expect.objectContaining({ status: 'CONFIRM' }),
-        );
+        // The swap transaction is not ready yet — no fabricated CONFIRM, no navigation.
+        expect(selectTradingExchangeSelectedQuote(store.getState())?.status).not.toBe('CONFIRM');
+        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
+
+        await act(async () => {
+            await jest.advanceTimersByTimeAsync(APPROVAL_STATUS_POLL_INTERVAL_MS);
+        });
+
+        expect(mockConfirmApproval).toHaveBeenCalledTimes(2);
         expect(mockNavigation.popToTop).toHaveBeenCalled();
+        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangePreview, {
+            isApproved: true,
+        });
+
+        jest.useRealTimers();
     });
 
     it('approve: does not navigate when confirmApproval fails', async () => {
@@ -365,7 +383,7 @@ describe('TradingConfirmingScreen', () => {
 
         it('should report continue when on navigation to next screen', async () => {
             mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-            mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'APPROVAL_PENDING' });
+            mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'CONFIRM' });
 
             renderScreen({ flowType: 'approve' });
 
