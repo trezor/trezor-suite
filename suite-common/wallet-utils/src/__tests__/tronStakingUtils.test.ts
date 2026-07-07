@@ -7,6 +7,7 @@ import {
 } from '@trezor/blockchain-link-types';
 
 import {
+    TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
     calculateTronFreezeSuggestion,
     getResourceGain,
     getTronAccountTotalStakingBalance,
@@ -14,6 +15,7 @@ import {
     getTronCryptoBalanceWithStaking,
     getTronPendingUnstakeBalance,
     getTronResources,
+    getTronRewardClaimCooldownEndsAt,
     getTronStakingInfo,
     getTronStakingRewards,
     getTronTotalVotingPower,
@@ -21,6 +23,7 @@ import {
     getTronVotes,
     getTronWithdrawableBalance,
     isSupportedTronStakingNetworkSymbol,
+    isTronRewardClaimOnCooldown,
     isTronStakingActive,
 } from '../tronStakingUtils';
 
@@ -36,6 +39,7 @@ const buildStakingInfo = (overrides: Partial<TronStakingInfo> = {}): TronStaking
     availableVotingPower: '0',
     votes: [],
     unclaimedReward: '0',
+    latestWithdrawTime: 0,
     delegatedBalanceEnergy: '0',
     delegatedBalanceBandwidth: '0',
     ...overrides,
@@ -188,6 +192,60 @@ describe('getTronStakingRewards', () => {
             stakingInfo: buildStakingInfo({ unclaimedReward: String(2 * TRX) }),
         });
         expect(getTronStakingRewards(account)).toBe('2');
+    });
+});
+
+describe('Tron reward claim cooldown', () => {
+    beforeEach(() => {
+        jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    describe('getTronRewardClaimCooldownEndsAt', () => {
+        it('returns null when there is no stakingInfo', () => {
+            expect(getTronRewardClaimCooldownEndsAt(buildTronAccount())).toBe(null);
+        });
+
+        it('returns null when rewards were never withdrawn', () => {
+            const account = buildTronAccount({
+                stakingInfo: buildStakingInfo({ latestWithdrawTime: 0 }),
+            });
+            expect(getTronRewardClaimCooldownEndsAt(account)).toBe(null);
+        });
+
+        it('adds the 24h cooldown to the last withdrawal time', () => {
+            const account = buildTronAccount({
+                stakingInfo: buildStakingInfo({ latestWithdrawTime: NOW_SECONDS }),
+            });
+            expect(getTronRewardClaimCooldownEndsAt(account)).toBe(
+                NOW_SECONDS + TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
+            );
+        });
+    });
+
+    describe('isTronRewardClaimOnCooldown', () => {
+        it('returns false when rewards were never withdrawn', () => {
+            expect(isTronRewardClaimOnCooldown(buildTronAccount())).toBe(false);
+        });
+
+        it('returns true within 24h of the last withdrawal', () => {
+            const account = buildTronAccount({
+                stakingInfo: buildStakingInfo({ latestWithdrawTime: NOW_SECONDS - 100 }),
+            });
+            expect(isTronRewardClaimOnCooldown(account)).toBe(true);
+        });
+
+        it('returns false once the 24h cooldown has passed', () => {
+            const account = buildTronAccount({
+                stakingInfo: buildStakingInfo({
+                    latestWithdrawTime: NOW_SECONDS - TRON_REWARD_CLAIM_COOLDOWN_SECONDS - 1,
+                }),
+            });
+            expect(isTronRewardClaimOnCooldown(account)).toBe(false);
+        });
     });
 });
 

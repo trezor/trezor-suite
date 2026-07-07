@@ -54,6 +54,8 @@ export interface TronStakingInfo {
     votes: TronVote[];
     /** Unclaimed voting reward, in Sun. */
     unclaimedReward: string;
+    /** Unix timestamp in seconds of the last voting-reward withdrawal, or 0 if never withdrawn. */
+    latestWithdrawTime: number;
     /** TRX delegated to other accounts for the ENERGY resource, in Sun. */
     delegatedBalanceEnergy: string;
     /** TRX delegated to other accounts for the BANDWIDTH resource, in Sun. */

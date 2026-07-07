@@ -67,6 +67,22 @@ export const getTronStakingRewards = (account: Account): string => {
     return sunToTrx(stakingInfo.unclaimedReward, account.symbol);
 };
 
+export const TRON_REWARD_CLAIM_COOLDOWN_SECONDS = 24 * 60 * 60;
+
+export const getTronRewardClaimCooldownEndsAt = (account: Account): number | null => {
+    const stakingInfo = getTronStakingInfo(account);
+    if (!stakingInfo?.latestWithdrawTime) return null;
+
+    return stakingInfo.latestWithdrawTime + TRON_REWARD_CLAIM_COOLDOWN_SECONDS;
+};
+
+export const isTronRewardClaimOnCooldown = (account: Account): boolean => {
+    const cooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
+    if (cooldownEndsAt === null) return false;
+
+    return Date.now() / 1000 < cooldownEndsAt;
+};
+
 const sumUnstakingBatchesSun = (
     account: Account,
     predicate: (batch: TronUnstakingBatch) => boolean,
