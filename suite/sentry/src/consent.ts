@@ -1,10 +1,3 @@
-import type { BrowserOptions } from '@sentry/browser';
-
-import { isCodesignBuild } from '@trezor/env-utils';
-
-const isProd = isCodesignBuild();
-const DEFAULT_TRACES_SAMPLE_RATE = isProd ? 0.1 : 1;
-
 const STORAGE_KEY = 'analytics-confirmed-and-enabled';
 
 /**
@@ -17,20 +10,9 @@ const STORAGE_KEY = 'analytics-confirmed-and-enabled';
  *
  * Known issue: the first fresh app load will not emit trace, that is due to design (need to confirm analytics first).
  */
-export const setShouldCaptureBrowserTracing = (newValue: boolean) => {
+export const setAnalyticsConfirmedAndEnabled = (newValue: boolean) => {
     localStorage.setItem(STORAGE_KEY, String(newValue));
 };
 
-export const getShouldCaptureBrowserTracing = (): boolean =>
+export const getAnalyticsConfirmedAndEnabled = (): boolean =>
     localStorage.getItem(STORAGE_KEY) === 'true';
-
-/**
- * Drop Sentry tracing & profiling when analytics are not explicitly enabled, by dynamically setting the sample rate.
- * As per Sentry docs, that is the recommended way for arbitrary traces filtering.
- */
-export const tracesSampler: NonNullable<BrowserOptions['tracesSampler']> = samplingContext => {
-    const shouldCaptureBrowserTracing = getShouldCaptureBrowserTracing();
-    if (shouldCaptureBrowserTracing !== true) return 0;
-
-    return samplingContext.inheritOrSampleWith(DEFAULT_TRACES_SAMPLE_RATE);
-};
