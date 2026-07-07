@@ -187,18 +187,20 @@ export const TradingExchangeFormInputs = () => {
                     />
                 </TradingFormSection>
             </TradingFormCard>
-            <TradingFormCard>
-                {receiveCryptoSelect && !isLoading && <TradingReceiveAddress />}
-                {!!quotes.length && (
-                    <TradingFormFees
-                        feeInfo={feeInfo}
-                        account={account}
-                        composedLevels={displayComposedLevels}
-                        changeFeeLevel={changeFeeLevel}
-                    />
-                )}
-                <TradingSelectedOfferProvider />
-            </TradingFormCard>
+            {receiveCryptoSelect && (
+                <TradingFormCard>
+                    {receiveCryptoSelect && !isLoading && <TradingReceiveAddress />}
+                    {!!quotes.length && (
+                        <TradingFormFees
+                            feeInfo={feeInfo}
+                            account={account}
+                            composedLevels={displayComposedLevels}
+                            changeFeeLevel={changeFeeLevel}
+                        />
+                    )}
+                    <TradingSelectedOfferProvider />
+                </TradingFormCard>
+            )}
         </Column>
     );
 };

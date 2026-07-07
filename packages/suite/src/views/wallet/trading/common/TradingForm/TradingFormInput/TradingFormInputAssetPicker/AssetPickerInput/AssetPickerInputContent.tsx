@@ -48,7 +48,14 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
                 />
             )}
             <Column alignItems="start">
-                <Text data-testid="@asset-picker/display-symbol">{displaySymbolName ?? name}</Text>
+                <Text
+                    intent="neutral"
+                    priority="primary"
+                    typographyStyle="body-md"
+                    data-testid="@asset-picker/display-symbol"
+                >
+                    {displaySymbolName ?? name}
+                </Text>
                 {showNetwork && (
                     <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                         {networkName}
