@@ -3,7 +3,7 @@ import { useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getEthereumRbfFeeInfo, selectTransactions } from '@suite-common/wallet-core';
+import { getEthereumRbfFeeInfo, selectAccountTransactions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     fromWei,
@@ -43,7 +43,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
         setValue,
     } = useSendFormContext();
 
-    const transactions = useSelector(selectTransactions);
+    const transactions = useSelector(state => selectAccountTransactions(state, account.key));
     const { translationString } = useTranslation();
 
     const nonceValue = useWatch({ name: 'ethereumNonce', control });
@@ -86,9 +86,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
 
     const error = errors.ethereumNonce;
 
-    const pendingSentTxs = (transactions[account.key] ?? [])
-        .filter(isPending)
-        .filter(isSentTransaction);
+    const pendingSentTxs = transactions.filter(isPending).filter(isSentTransaction);
 
     const pendingNonces = pendingSentTxs
         .map(tx => tx.ethereumSpecific?.nonce)
