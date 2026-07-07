@@ -189,7 +189,7 @@ jobs:
         if: steps.check-size.outputs.is_small_pr == 'true'
         uses: ./.github/actions/llm-test-selector
         with:
-          claude-api-key: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          claude-api-key: ${{ secrets.E2E_SELECTOR_CLAUDE_API_KEY }}
       - name: Post LLM analysis to PR description
         if: steps.check-size.outputs.is_small_pr == 'true'
         uses: ./.github/actions/post-llm-analysis
