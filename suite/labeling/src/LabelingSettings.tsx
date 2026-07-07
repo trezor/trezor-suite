@@ -16,18 +16,27 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
+    type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
     selectIsSuiteSyncFeatureAvailable,
+    selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import {
     selectTurnOffSuiteSyncDep,
     selectTurnOnSuiteSyncDep,
 } from '@suite-common/suite-sync-types';
-import { Box, LoadingContent, Tooltip } from '@trezor/components';
+import { Box, Column, LoadingContent, Tooltip } from '@trezor/components';
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { Option as SelectOption } from '@trezor/components/src/components/form/Select/customComponents';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import {
+    ActionColumn,
+    ActionSelect,
+    SectionItem,
+    SettingsRequirementBanner,
+    TextColumn,
+} from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 import { typedObjectValues } from '@trezor/utils';
@@ -38,6 +47,7 @@ export type LabelingSelectValue = 'off' | 'suite-sync' | 'legacy';
 
 type LabelingOption<T> = { label: T; value: LabelingSelectValue };
 type LabelingOptionTranslated = LabelingOption<TranslationKey>;
+type LabelingSettingsRootState = WithSuiteSyncAndDeviceState & MessageSystemRootState;
 
 const LABELING_SELECT_OPTIONS_MAP: Record<LabelingSelectValue, LabelingOption<TranslationKey>> = {
     off: { label: 'TR_LABELING_OFF', value: 'off' },
@@ -93,8 +103,16 @@ export const LabelingSettings = () => {
     const deviceStaticSessionId = device?.state?.staticSessionId;
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
-    const showSuiteSync = useSelector(selectIsSuiteSyncFeatureAvailable);
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const showSuiteSync = useSelector((state: LabelingSettingsRootState) =>
+        selectIsSuiteSyncFeatureAvailable(state),
+    );
+    const isSuiteSyncEnabled = useSelector((state: LabelingSettingsRootState) =>
+        selectIsSuiteSyncEnabled(state),
+    );
+    const suiteSyncInteraction = useSelector((state: LabelingSettingsRootState) =>
+        selectSuiteSyncInteraction(state, deviceStaticSessionId ?? null),
+    );
+    const isSuiteSyncUnsupported = suiteSyncInteraction === 'unsupported';
 
     const legacyMetadataState = useSelector(selectMetadata);
 
@@ -224,7 +242,16 @@ export const LabelingSettings = () => {
                                 </LoadingContent>
                             }
                             description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
-                            bottomContent={<LearnMoreButton url={HELP_CENTER_LABELING} />}
+                            bottomContent={
+                                <Column gap={8} alignItems="flex-start">
+                                    {showSuiteSync && isSuiteSyncUnsupported && (
+                                        <SettingsRequirementBanner>
+                                            <Translation id="TR_NOT_SUPPORTED_ON_THIS_DEVICE" />
+                                        </SettingsRequirementBanner>
+                                    )}
+                                    <LearnMoreButton url={HELP_CENTER_LABELING} />
+                                </Column>
+                            }
                         />
                         <ActionColumn>
                             <ActionSelect

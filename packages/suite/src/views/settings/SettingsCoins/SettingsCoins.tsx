@@ -8,7 +8,7 @@ import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { selectHasExperimentalFeature } from '@suite/settings';
+import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
@@ -67,7 +67,7 @@ export const SettingsCoins = () => {
     const isDiscoveryButtonVisible = useSelector(state =>
         selectShowRediscoverButton(state, device),
     );
-    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
+    const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
 
     const allSearchableNetworks = useMemo(
         () => [

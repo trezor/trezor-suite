@@ -2,22 +2,38 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { Column } from '@trezor/components';
+import {
+    ActionButton,
+    ActionColumn,
+    SectionItem,
+    SettingsRequirementBanner,
+    TextColumn,
+} from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-export const DeviceAuthenticityOptOut = () => {
+type DeviceAuthenticityOptOutProps = {
+    isDeviceAuthenticityCheckSupported: boolean;
+};
+
+export const DeviceAuthenticityOptOut = ({
+    isDeviceAuthenticityCheckSupported,
+}: DeviceAuthenticityOptOutProps) => {
     const dispatch = useDispatch();
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
 
-    const handleClick = () =>
+    const handleClick = () => {
+        if (!isDeviceAuthenticityCheckSupported) return;
+
         dispatch(
             isDeviceAuthenticityCheckEnabled
                 ? openModal({ type: 'device-authenticity-check-opt-out' })
                 : toggleDeviceAuthenticityCheck(true),
         );
+    };
 
     return (
         <SectionItem>
@@ -40,12 +56,22 @@ export const DeviceAuthenticityOptOut = () => {
                         }
                     />
                 }
-                bottomContent={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
+                bottomContent={
+                    <Column gap={8} alignItems="flex-start">
+                        {!isDeviceAuthenticityCheckSupported && (
+                            <SettingsRequirementBanner>
+                                <Translation id="TR_NOT_SUPPORTED_ON_THIS_DEVICE" />
+                            </SettingsRequirementBanner>
+                        )}
+                        <LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />
+                    </Column>
+                }
             />
             <ActionColumn>
                 <ActionButton
                     onClick={handleClick}
                     intent={isDeviceAuthenticityCheckEnabled ? 'critical' : 'brand'}
+                    isDisabled={!isDeviceAuthenticityCheckSupported}
                     data-testid="@settings/device/open-device-authenticity-check-opt-out-modal-button"
                 >
                     <Translation

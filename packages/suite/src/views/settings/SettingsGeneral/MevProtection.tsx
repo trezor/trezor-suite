@@ -1,13 +1,16 @@
-import { FormattedList } from 'react-intl';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksWithMevProtection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
-import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { Column, Switch } from '@trezor/components';
+import {
+    ActionColumn,
+    SectionItem,
+    SettingsRequirementBanner,
+    TextColumn,
+} from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -16,9 +19,7 @@ export const MevProtection = () => {
     const dispatch = useDispatch();
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
 
-    const supportedNetworks = networksCollection
-        .filter(network => network.features.includes('mev-protection'))
-        .map(network => network.name);
+    const supportedNetworks = getNetworksWithMevProtection();
 
     const handleSwitchChange = () => {
         const nextIsMevProtectionEnabled = !isMevProtectionEnabled;
@@ -41,22 +42,16 @@ export const MevProtection = () => {
                 >
                     <TextColumn
                         title={<Translation id="TR_MEV" />}
-                        description={
-                            <>
-                                <Translation id="TR_MEV_DESCRIPTION" />
-                                <br />
-                                <Translation
-                                    id="TR_MEV_AVAILABLE_ON"
-                                    values={{
-                                        supportedNetworks: (
-                                            <FormattedList
-                                                type="conjunction"
-                                                value={supportedNetworks}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            </>
+                        description={<Translation id="TR_MEV_DESCRIPTION" />}
+                        bottomContent={
+                            <Column gap={8} alignItems="flex-start">
+                                <SettingsRequirementBanner>
+                                    <Translation
+                                        id="TR_MEV_AVAILABLE_ON"
+                                        values={{ supportedNetworks }}
+                                    />
+                                </SettingsRequirementBanner>
+                            </Column>
                         }
                     />
                     <ActionColumn>

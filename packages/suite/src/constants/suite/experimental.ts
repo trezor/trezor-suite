@@ -59,14 +59,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             }
         },
     },
-    'testnet-networks': {
-        title: { id: 'TR_EXPERIMENTAL_TESTNET_NETWORKS' },
-        description: { id: 'TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION' },
-    },
-    'nft-section': {
-        title: { id: 'TR_EXPERIMENTAL_NFT_SECTION' },
-        description: { id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION' },
-    },
     slip24: {
         title: { id: 'TR_EXPERIMENTAL_SLIP24' },
         description: { id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION' },

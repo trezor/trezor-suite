@@ -1,5 +1,5 @@
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectHasExperimentalFeature } from '@suite/settings';
+import { selectHasExperimentalFeature, selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
@@ -14,7 +14,7 @@ export const useNetworkSupport = () => {
     const useExperimentalNetworks = useSelector(
         selectHasExperimentalFeature('experimental-networks'),
     );
-    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
+    const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const mainnets = getMainnets({

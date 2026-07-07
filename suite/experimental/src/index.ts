@@ -7,8 +7,6 @@ type ExperimentalFeatureTranslation = {
 export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
-    | 'testnet-networks'
-    | 'nft-section'
     | 'slip24'
     | 'experimental-networks'
     | 'mcp-server'
@@ -18,12 +16,10 @@ export type ExperimentalFeature =
  * Set of features that are truly experimental (as opposed to regular features
  * behind a feature toggle). Used to determine the feedback category.
  */
-export const experimentalFeatureSet: ReadonlySet<ExperimentalFeature> =
+export const experimentalFeedbackFeatureSet: ReadonlySet<ExperimentalFeature> =
     new Set<ExperimentalFeature>([
         'password-manager',
         'tor-external',
-        'testnet-networks',
-        'nft-section',
         'slip24',
         'experimental-networks',
     ]);
@@ -33,10 +29,8 @@ export const experimentalFeatureSet: ReadonlySet<ExperimentalFeature> =
  */
 export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     'experimental-networks': 'TR_EXPERIMENTAL_NETWORKS',
-    'nft-section': 'TR_EXPERIMENTAL_NFT_SECTION',
     'tor-external': 'TR_EXPERIMENTAL_TOR_EXTERNAL',
     'password-manager': 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
-    'testnet-networks': 'TR_EXPERIMENTAL_TESTNET_NETWORKS',
     slip24: 'TR_EXPERIMENTAL_SLIP24',
     'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',

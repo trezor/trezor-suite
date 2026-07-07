@@ -204,7 +204,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 rememberedHiddenWallets: '0',
                 theme: 'dark',
                 earlyAccessProgram: 'false',
-                experimentalFeatures: 'testnet-networks',
+                experimentalFeatures: '',
                 autodetectLanguage: 'false',
                 autodetectTheme: 'false',
                 isAutomaticUpdateEnabled: 'false',

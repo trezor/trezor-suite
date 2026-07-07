@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import type { ExperimentalFeature } from '@suite/experimental';
+import { type ExperimentalFeature } from '@suite/experimental';
 import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
@@ -53,6 +53,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
             console.error('Could not turn on an experimental feature: ', error);
         }
     };
+
     const handleClick = () => {
         if (!config.routeName) return;
         dispatch(goto({ routeName: config.routeName }));

@@ -4,7 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
-import { selectHasExperimentalFeature } from '@suite/settings';
+import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -68,7 +68,7 @@ export const AddAccountModal = ({
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
-    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
+    const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
     const dispatch = useDispatch();
 
     const { analytics } = useServices(selectDesktopAnalyticsDep);

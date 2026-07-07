@@ -59,11 +59,11 @@ describe(featureFeedbackReducer.name, () => {
 
         it('tracks usage counts independently per feature', () => {
             let state = featureFeedbackReducer(initialState, featureUsed('suite-sync'));
-            state = featureFeedbackReducer(state, featureUsed('nft-section'));
-            state = featureFeedbackReducer(state, featureUsed('nft-section'));
+            state = featureFeedbackReducer(state, featureUsed('stablecoin-yield'));
+            state = featureFeedbackReducer(state, featureUsed('stablecoin-yield'));
 
             expect(state.usageCounts['suite-sync']).toBe(1);
-            expect(state.usageCounts['nft-section']).toBe(2);
+            expect(state.usageCounts['stablecoin-yield']).toBe(2);
         });
     });
 
@@ -156,13 +156,13 @@ describe(featureFeedbackReducer.name, () => {
         it('removes only the target feature when multiple are pending', () => {
             const stateWithPending = {
                 ...initialState,
-                pendingFeedbackFeatures: ['suite-sync' as const, 'nft-section' as const],
+                pendingFeedbackFeatures: ['suite-sync' as const, 'stablecoin-yield' as const],
             };
 
             const state = featureFeedbackReducer(stateWithPending, feedbackDismissed('suite-sync'));
 
             expect(state.pendingFeedbackFeatures).not.toContain('suite-sync');
-            expect(state.pendingFeedbackFeatures).toContain('nft-section');
+            expect(state.pendingFeedbackFeatures).toContain('stablecoin-yield');
         });
     });
 });

@@ -1625,7 +1625,6 @@
   "TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW": "Trezor вже використовується.",
   "TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW": "Trezor вже використовується.",
   "TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING": "Виявлено Trezor Safe 7",
-  "TR_NETWORKS": "Мережі",
   "TR_NETWORK_COINJOIN_BITCOIN": "Coinjoin",
   "TR_NETWORK_COINJOIN_BITCOIN_REGTEST": "Coinjoin Regtest",
   "TR_NETWORK_COINJOIN_BITCOIN_TESTNET": "Coinjoin Testnet",

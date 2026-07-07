@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     type FeedbackFeatureName,
-    experimentalFeatureSet,
+    experimentalFeedbackFeatureSet,
     translatedFeedbackFeatures,
 } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
@@ -49,7 +49,9 @@ export const FeedbackFormManager = () => {
             sendFeedbackAction({
                 type: 'SUGGESTION',
                 payload: {
-                    category: (experimentalFeatureSet as ReadonlySet<string>).has(pendingFeature)
+                    category: (experimentalFeedbackFeatureSet as ReadonlySet<string>).has(
+                        pendingFeature,
+                    )
                         ? 'experimental'
                         : 'feature',
                     description,
