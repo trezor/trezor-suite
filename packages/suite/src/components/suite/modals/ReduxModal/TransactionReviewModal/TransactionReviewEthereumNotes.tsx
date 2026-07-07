@@ -47,21 +47,17 @@ export const TransactionReviewEthereumNotes = ({
                 {tx.feeLimit}
             </Note>
             <Note data-testid="@modal/ethereum/fee" iconName="gasPump">
-                {isEip1559(tx) ? (
-                    <Translation id="TR_MAX_FEE_PER_GAS" />
-                ) : (
-                    <Translation id="TR_GAS_PRICE" />
-                )}
+                <Translation id={isEip1559(tx) ? 'TR_MAX_FEE_PER_GAS' : 'TR_GAS_PRICE'} />
                 {': '}
                 <FeeRate feeRate={fee} networkType={account.networkType} />
             </Note>
-            {hasEip1559MaxPriorityFee(tx) ? (
+            {hasEip1559MaxPriorityFee(tx) && (
                 <Note data-testid="@modal/ethereum/priority-fee" iconName="gasPump">
                     <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
                     {': '}
                     <FeeRate feeRate={tx.maxPriorityFeePerGas} networkType={account.networkType} />
                 </Note>
-            ) : undefined}
+            )}
         </>
     );
 };
