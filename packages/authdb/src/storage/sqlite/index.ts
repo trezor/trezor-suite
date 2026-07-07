@@ -11,6 +11,7 @@ import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type {
+    AuthConflictResolutionProvider,
     AuthHistoryProvider,
     AuthLabelApprovalProvider,
     AuthLabelLookupProvider,
@@ -22,6 +23,7 @@ import type {
     AuthLabelMetadata,
     AuthLabelRow,
     OfflineQueueEntry,
+    SignedConflictResolution,
     TreeState,
 } from '../../types';
 
@@ -92,7 +94,8 @@ export class AuthLabelDb
         AuthLabelLookupProvider,
         AuthLabelApprovalProvider,
         OfflineQueueProvider,
-        AuthHistoryProvider
+        AuthHistoryProvider,
+        AuthConflictResolutionProvider
 {
     private db: Database.Database;
 
@@ -139,6 +142,18 @@ export class AuthLabelDb
                 old_counter              INTEGER,
                 new_counter              INTEGER,
                 applied_at_root_counter  INTEGER NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS auth_conflict_resolution (
+                wallet_id            TEXT NOT NULL,
+                address              TEXT NOT NULL,
+                network_symbol       TEXT NOT NULL,
+                sequence             INTEGER NOT NULL,
+                resolved_old_value   TEXT NOT NULL,
+                resolved_old_counter INTEGER NOT NULL,
+                resolved_new_value   TEXT NOT NULL,
+                resolved_new_counter INTEGER NOT NULL,
+                mac                  TEXT NOT NULL,
+                PRIMARY KEY (wallet_id, address, network_symbol, sequence)
             );
         `);
     }
@@ -307,11 +322,65 @@ export class AuthLabelDb
         return rows.map(parseHistoryRow);
     }
 
+    getConflictResolution(
+        walletId: string,
+        address: string,
+        networkSymbol: string,
+        sequence: number,
+    ): SignedConflictResolution | null {
+        const row = this.db
+            .prepare(
+                `SELECT resolved_old_value, resolved_old_counter, resolved_new_value,
+                        resolved_new_counter, mac
+                 FROM auth_conflict_resolution
+                 WHERE wallet_id = ? AND address = ? AND network_symbol = ? AND sequence = ?`,
+            )
+            .get(walletId, address, networkSymbol, sequence) as
+            | Omit<SignedConflictResolution, 'address'>
+            | undefined;
+
+        return row ? { address, ...row } : null;
+    }
+
+    putConflictResolution(
+        walletId: string,
+        address: string,
+        networkSymbol: string,
+        sequence: number,
+        record: SignedConflictResolution,
+    ): void {
+        this.db
+            .prepare(
+                `INSERT INTO auth_conflict_resolution
+                    (wallet_id, address, network_symbol, sequence, resolved_old_value,
+                     resolved_old_counter, resolved_new_value, resolved_new_counter, mac)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 ON CONFLICT(wallet_id, address, network_symbol, sequence) DO UPDATE SET
+                     resolved_old_value   = excluded.resolved_old_value,
+                     resolved_old_counter = excluded.resolved_old_counter,
+                     resolved_new_value   = excluded.resolved_new_value,
+                     resolved_new_counter = excluded.resolved_new_counter,
+                     mac                  = excluded.mac`,
+            )
+            .run(
+                walletId,
+                address,
+                networkSymbol,
+                sequence,
+                record.resolved_old_value,
+                record.resolved_old_counter,
+                record.resolved_new_value,
+                record.resolved_new_counter,
+                record.mac,
+            );
+    }
+
     clearAll(): void {
         this.db.prepare('DELETE FROM addresses').run();
         this.db.prepare('DELETE FROM tree_state').run();
         this.db.prepare('DELETE FROM auth_queue').run();
         this.db.prepare('DELETE FROM auth_history').run();
+        this.db.prepare('DELETE FROM auth_conflict_resolution').run();
     }
 
     private closed = false;

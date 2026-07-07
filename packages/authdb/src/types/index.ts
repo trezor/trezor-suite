@@ -107,3 +107,60 @@ export type AuthHistoryEntry = {
     newCounter?: number;
     appliedAtRootCounter: number;
 };
+
+// ---------------------------------------------------------------------------
+// Device-confirmed conflict resolution (phase 5 of docs/authdb-suite-architecture.md).
+// These are wire-adjacent (they map 1:1 onto the AuthDbResolveConflict /
+// AuthDbSignedConflictResolution protobuf messages and attach to AuthDbRebasedOperation),
+// so they use snake_case field names and hex-encoded value/hash fields to match the wire
+// boundary — unlike the camelCase domain DTOs above.
+// ---------------------------------------------------------------------------
+
+/**
+ * Proof, sent to the device with a conflict-resolution advice, that backs the host's
+ * claim about the CURRENT canonical state for one address — so the device can trust it
+ * without holding any history of its own:
+ *  - old_root_mac proves old_root is a genuine device-attested state
+ *    (HMAC(root_mac_key, wallet_id||counter||old_root));
+ *  - membership_proof proves the canonical leaf (canonical_value @ canonical_counter) is
+ *    actually in old_root.
+ */
+export type ConflictProof = {
+    old_root: string;
+    old_root_mac: string;
+    membership_proof: MerkleProof;
+    canonical_value: string;
+    canonical_counter: number;
+};
+
+/**
+ * A device-signed record authorizing a single conflict-resolving leaf transition. Minted
+ * by AuthDbResolveConflict and attached (optionally) to the rebased op during replay; the
+ * device verifies `mac` with the conflict_resolution key instead of the op's original
+ * leaf_approval mac. Hex-encoded value fields ('' = absent/delete), same convention as
+ * OfflineQueueEntry.
+ */
+export type SignedConflictResolution = {
+    address: string;
+    resolved_old_value: string;
+    resolved_old_counter: number;
+    resolved_new_value: string;
+    resolved_new_counter: number;
+    mac: string;
+};
+
+/**
+ * The advice the host sends to AuthDbResolveConflict: the queued op's (now-stale)
+ * transition, the proposed resolved transition, and the ConflictProof backing the
+ * host's canonical-state claim.
+ */
+export type ConflictAdvice = {
+    address: string;
+    op_old_value: string;
+    op_old_counter: number;
+    op_new_value: string;
+    op_new_counter: number;
+    resolved_new_value: string;
+    resolved_new_counter: number;
+    proof: ConflictProof;
+};

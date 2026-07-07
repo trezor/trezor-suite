@@ -20,7 +20,13 @@ import {
     valueHexToEntry,
 } from '../proof';
 import type { AuthLabelProvider } from '../storage';
-import type { AuthLabelRow, OfflineQueueConflict, OfflineQueueEntry } from '../types';
+import type {
+    AuthLabelRow,
+    ConflictAdvice,
+    OfflineQueueConflict,
+    OfflineQueueEntry,
+    SignedConflictResolution,
+} from '../types';
 
 const utf8Hex = (s: string) => bytesToHex(new TextEncoder().encode(s));
 
@@ -59,6 +65,10 @@ export type WireRebasedOperation = {
     witness_counter?: number;
     old_counter?: number;
     new_counter: number;
+    /** Phase 5: device-signed authorization for a conflict-resolving transition. When
+     * present the device verifies it with the conflict_resolution key instead of the op's
+     * original leaf_approval mac. */
+    conflict_resolution?: SignedConflictResolution;
 };
 
 export type ApplyOfflineOperationsResponse = {
@@ -96,6 +106,10 @@ export interface AuthDbDeviceClient {
     ): Promise<ApplyOfflineOperationsResponse>;
     deleteOfflineOperations(): Promise<void>;
     fastForwardRoot(request: FastForwardRootRequest): Promise<FastForwardRootResponse>;
+    /** Phase 5, OPTIONAL: advise the device of a conflict; it verifies the proof, confirms
+     * on-screen, and returns a signed resolution. When absent (or the provider lacks a
+     * conflict-resolution store) the engine falls back to stopping at the first conflict. */
+    resolveConflict?(advice: ConflictAdvice): Promise<SignedConflictResolution>;
 }
 
 /** Thrown for host-side invariant violations (e.g. wallet_id mismatch). The connect shell
@@ -126,6 +140,7 @@ type RebasedCandidate = {
     witness_counter?: number;
     old_counter?: number;
     new_counter: number;
+    conflict_resolution?: SignedConflictResolution;
     entry: OfflineQueueEntry;
     networkSymbol: string;
 };
@@ -204,29 +219,120 @@ export const replayQueue = async ({
     const candidates: RebasedCandidate[] = [];
     const conflicts: OfflineQueueConflict[] = [];
 
+    // Phase 5: device-confirmed conflict resolution is available only when the device
+    // exposes resolveConflict AND the provider persists signed records AND the wallet has
+    // a root-attestation mac (needed to build the ConflictProof). Otherwise we keep the
+    // shipped behavior — stop at the first conflict.
+    const canResolve =
+        !!device.resolveConflict &&
+        !!provider.getConflictResolution &&
+        !!provider.putConflictResolution &&
+        !!initialTreeState?.mac &&
+        !!initialTreeState?.root;
+
     for (const entry of entries) {
         const isDelete = entry.newValue === '';
-        const isInsert = entry.oldValue === '';
         const { networkSymbol } = valueHexToEntry(isDelete ? entry.oldValue : entry.newValue);
 
         const currentValue = canonicalValue.get(entry.address) ?? '';
+
+        // Effective transition to submit: the queued op, unless a conflict is resolved —
+        // then the device-signed resolved transition.
+        let effOldValue = entry.oldValue;
+        let effOldCounter = entry.oldCounter;
+        let effNewValue = entry.newValue;
+        let effNewCounter = entry.newCounter;
+        let resolution: SignedConflictResolution | undefined;
+
         if (currentValue !== entry.oldValue) {
-            conflicts.push({ entry, reason: 'stale old_value: canonical state has moved on' });
-            break;
+            // CONFLICT: canonical has moved since the op was queued.
+            if (!canResolve) {
+                conflicts.push({
+                    entry,
+                    reason: 'stale old_value: canonical state has moved on',
+                });
+                break;
+            }
+            resolution =
+                (await provider.getConflictResolution!(
+                    walletId,
+                    entry.address,
+                    networkSymbol,
+                    entry.sequence,
+                )) ?? undefined;
+            if (!resolution) {
+                // Propose a resolution (last-writer-wins): apply the op's intent on top of
+                // the current canonical value. Delete stays a delete; otherwise re-encode
+                // the op's metadata chained onto canonical (counter+1, or 1 if absent).
+                const currentPresent = currentValue !== '';
+                const currentCounter = currentPresent
+                    ? valueHexToEntry(currentValue).entry.counter
+                    : 0;
+                let resolvedNewValue: string;
+                let resolvedNewCounter: number;
+                if (isDelete) {
+                    resolvedNewValue = '';
+                    resolvedNewCounter = currentCounter; // delete ignores new_counter device-side
+                } else {
+                    const opNew = valueHexToEntry(entry.newValue).entry;
+                    resolvedNewCounter = currentPresent ? currentCounter + 1 : 1;
+                    resolvedNewValue = bytesToHex(
+                        entryToValueBytes(networkSymbol, {
+                            metadata: opNew.metadata,
+                            counter: resolvedNewCounter,
+                        }),
+                    );
+                }
+                const advice: ConflictAdvice = {
+                    address: entry.address,
+                    op_old_value: entry.oldValue,
+                    op_old_counter: entry.oldCounter ?? 0,
+                    op_new_value: entry.newValue,
+                    op_new_counter: entry.newCounter,
+                    resolved_new_value: resolvedNewValue,
+                    resolved_new_counter: resolvedNewCounter,
+                    proof: {
+                        old_root: initialTreeState!.root,
+                        old_root_mac: initialTreeState!.mac!,
+                        membership_proof: currentPresent
+                            ? generateMerkleProof(rows, entry.address, networkSymbol)
+                            : generateNonMembershipProof(rows, entry.address, networkSymbol).proof,
+                        canonical_value: currentValue,
+                        canonical_counter: currentCounter,
+                    },
+                };
+                resolution = await device.resolveConflict!(advice);
+                await provider.putConflictResolution!(
+                    walletId,
+                    entry.address,
+                    networkSymbol,
+                    entry.sequence,
+                    resolution,
+                );
+            }
+            effOldValue = resolution.resolved_old_value;
+            effOldCounter = resolution.resolved_old_counter;
+            effNewValue = resolution.resolved_new_value;
+            effNewCounter = resolution.resolved_new_counter;
         }
 
-        const nonMembership = isInsert
+        // Rebase the EFFECTIVE transition against the current canonical tree. An empty
+        // effOldValue is an insert (non-membership proof); otherwise a membership proof of
+        // the current leaf covers both update and delete.
+        const effIsInsert = effOldValue === '';
+        const effIsDelete = effNewValue === '';
+        const nonMembership = effIsInsert
             ? generateNonMembershipProof(rows, entry.address, networkSymbol)
             : null;
-        const proof = isInsert
+        const proof = effIsInsert
             ? (nonMembership?.proof ?? [])
             : generateMerkleProof(rows, entry.address, networkSymbol);
 
         candidates.push({
             sequence: entry.sequence,
             address: entry.address,
-            old_value: entry.oldValue,
-            new_value: entry.newValue,
+            old_value: effOldValue,
+            new_value: effNewValue,
             mac: entry.mac,
             proof,
             ...(nonMembership?.witnessAddress !== null &&
@@ -235,21 +341,21 @@ export const replayQueue = async ({
                     witness_value: bytesToHex(nonMembership.witnessValue!),
                     witness_counter: nonMembership.witnessCounter!,
                 }),
-            ...(!isInsert && { old_counter: entry.oldCounter }),
-            new_counter: entry.newCounter,
+            ...(!effIsInsert && { old_counter: effOldCounter }),
+            new_counter: effNewCounter,
+            ...(resolution && { conflict_resolution: resolution }),
             entry,
             networkSymbol,
         });
 
-        // Simulate applying this op so the NEXT op's staleness check and proof
-        // reflect it, matching the order the device will actually apply them in.
+        // Simulate applying the effective transition so later ops chain on top.
         const rowIndex = rows.findIndex(r => r.address === entry.address);
-        if (isDelete) {
+        if (effIsDelete) {
             canonicalValue.delete(entry.address);
             if (rowIndex >= 0) rows.splice(rowIndex, 1);
         } else {
-            const { entry: decoded } = valueHexToEntry(entry.newValue);
-            canonicalValue.set(entry.address, entry.newValue);
+            const { entry: decoded } = valueHexToEntry(effNewValue);
+            canonicalValue.set(entry.address, effNewValue);
             const row = { address: entry.address, networkSymbol, entry: decoded };
             if (rowIndex >= 0) rows[rowIndex] = row;
             else rows.push(row);
@@ -275,6 +381,12 @@ export const replayQueue = async ({
                 witness_address: utf8Hex(c.witness_address),
                 witness_value: c.witness_value,
                 witness_counter: c.witness_counter,
+            }),
+            ...(c.conflict_resolution && {
+                conflict_resolution: {
+                    ...c.conflict_resolution,
+                    address: utf8Hex(c.conflict_resolution.address),
+                },
             }),
         })),
     );
