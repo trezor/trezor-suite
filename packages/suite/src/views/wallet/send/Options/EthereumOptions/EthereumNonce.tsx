@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectLanguage } from '@suite/settings';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getEthereumRbfFeeInfo, selectTransactions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -14,8 +13,7 @@ import {
     isPending,
     isSentTransaction,
 } from '@suite-common/wallet-utils';
-import { Card, Column, H4, IconButton, Note, Row, TextButton } from '@trezor/components';
-import { NumberInput } from '@trezor/product-components';
+import { Card, Column, H4, IconButton, Input, Note, Row, TextButton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -35,6 +33,8 @@ type EthereumNonceProps = {
 export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: EthereumNonceProps) => {
     const {
         control,
+        register,
+        getDefaultValue,
         formState: { errors },
         account,
         feeInfo,
@@ -43,7 +43,6 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
         setValue,
     } = useSendFormContext();
 
-    const locale = useSelector(selectLanguage);
     const transactions = useSelector(selectTransactions);
     const { translationString } = useTranslation();
 
@@ -53,7 +52,15 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
 
     if (account.networkType !== 'ethereum') return null;
 
-    const rules = {
+    const nonceFieldName = 'ethereumNonce' satisfies keyof FormState;
+
+    // The custom nonce is an identifier, not a formatted amount, so unlike NumberInput this is a
+    // plain uncontrolled Input (no locale-based thousands-separator formatting).
+    const { ref: nonceRef, ...nonceField } = register(nonceFieldName, {
+        onChange: () => {
+            setBumpedNonce(undefined);
+            composeTransaction();
+        },
         validate: (value: string | undefined) => {
             if (!value) return;
 
@@ -75,7 +82,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
                 });
             }
         },
-    };
+    });
 
     const error = errors.ethereumNonce;
 
@@ -165,16 +172,12 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
                     />
                 </Row>
 
-                <NumberInput
-                    control={control}
-                    name={'ethereumNonce' satisfies keyof FormState}
-                    locale={locale}
+                <Input
+                    innerRef={nonceRef}
+                    {...nonceField}
+                    defaultValue={getDefaultValue(nonceFieldName) || ''}
+                    inputMode="numeric"
                     hasError={!!error}
-                    onChange={() => {
-                        setBumpedNonce(undefined);
-                        composeTransaction();
-                    }}
-                    rules={rules}
                     maxLength={formInputsMaxLength.ethereumNonce}
                     placeholder={displayNonce}
                     bottomText={error?.message || null}
