@@ -5,6 +5,7 @@ import {
     type FormState,
     type FormStateTrading,
     type GeneralPrecomposedTransactionFinal,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
@@ -26,6 +27,12 @@ const LIFI_SWAP_DATA = `0x5fd9ae2e${'00'.repeat(32 * 4)}`;
 
 // ERC-20 transfer (global selector a9059cbb) — works on any contract
 const ERC20_TRANSFER_DATA = `0xa9059cbb${'00'.repeat(32 * 2)}`;
+
+// Everstake staking pool
+const EVERSTAKE_POOL = '0xD523794C879D9eC028960a231F866758e405bE34';
+const STAKE_DATA = `0x3a29dbae${'00'.repeat(32)}`;
+const UNSTAKE_DATA = `0x76ec871c${'00'.repeat(32 * 3)}`;
+const CLAIM_DATA = '0x33986ffa';
 
 const ERC20_APPROVE_SPENDER = '0x0000000000000000000000000000000000001234';
 const ERC20_APPROVE_DATA = buildApprovalTransactionData({
@@ -273,6 +280,68 @@ describe('constructTransactionReviewOutputs', () => {
             expect.arrayContaining([
                 expect.objectContaining({ type: 'swap_intent' }),
                 expect.objectContaining({ type: 'traded_assets' }),
+            ]),
+        );
+    });
+
+    it.each([
+        { stakeType: 'stake', transactionData: STAKE_DATA },
+        { stakeType: 'unstake', transactionData: UNSTAKE_DATA },
+        { stakeType: 'claim', transactionData: CLAIM_DATA },
+    ])(
+        'renders a single address output for a clear-signed $stakeType transaction',
+        ({ transactionData }) => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                device,
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ transactionData }),
+                precomposedTx: buildPrecomposedTransaction({ to: EVERSTAKE_POOL }),
+            });
+
+            // The firmware clear-signs staking as one screen plus the amount/fee summary,
+            // so any extra output would desynchronize the review steps from the device.
+            expect(outputs).toEqual([{ type: 'address', value: EVERSTAKE_POOL }]);
+        },
+    );
+
+    it('renders a single address output for the stake form without transaction data', () => {
+        const stakeFormState: StakeFormState = {
+            ...buildFormState({ transactionData: '' }),
+            stakeType: 'stake',
+        };
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: stakeFormState,
+            precomposedTx: buildPrecomposedTransaction({ to: EVERSTAKE_POOL }),
+        });
+
+        expect(outputs).toEqual([{ type: 'address', value: EVERSTAKE_POOL }]);
+    });
+
+    it('renders the generic contract flow for staking on firmware without clear signing', () => {
+        // 2.6.0 is the last version before the updated Ethereum send flow.
+        const oldFirmwareDevice = mockSuiteDevice(undefined, {
+            major_version: 2,
+            minor_version: 6,
+            patch_version: 0,
+        });
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: oldFirmwareDevice,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: STAKE_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: EVERSTAKE_POOL }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'data', value: STAKE_DATA }),
+                expect.objectContaining({ type: 'contract', value: EVERSTAKE_POOL }),
             ]),
         );
     });

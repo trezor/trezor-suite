@@ -2,7 +2,6 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
-    type ReviewOutput,
     type StakeFormState,
     type StakeType,
     type StakingPoolExtended,
@@ -130,13 +129,10 @@ export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {
 export const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
     'stakeType' in form;
 
-export const getStakeType = (precomposedForm: FormState, outputs: ReviewOutput[]) =>
+export const getStakeType = (precomposedForm: FormState) =>
     isStakeForm(precomposedForm)
         ? precomposedForm.stakeType
-        : outputs
-              .filter(output => output.type === 'data')
-              .map(output => getTxStakeNameByDataHex(output?.value))
-              .find(type => type) || null;
+        : getTxStakeNameByDataHex(precomposedForm.transactionData);
 
 export const hasStakeInPendingDepositedState = (account: Account) => {
     if (account?.networkType !== 'ethereum') return false;
