@@ -12,7 +12,7 @@ import {
     useApprovalStep,
     useTradingUtils,
 } from '@suite-common/trading';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column } from '@trezor/components';
 import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
@@ -49,8 +49,9 @@ export const TradingFormApproval = () => {
         resetSelectedOffer,
         selectedQuote,
         isScheduledQuotesRefresh,
+        isComposing,
         form: {
-            state: { isFormLoading },
+            state: { isFormLoading, isFormInvalid },
         },
         account,
     } = context;
@@ -58,6 +59,7 @@ export const TradingFormApproval = () => {
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
 
     const { handleClick: handleApproveClick, disabled: isApproveButtonLoading } =
         useAsyncClickHandler();
@@ -160,29 +162,26 @@ export const TradingFormApproval = () => {
         await refreshQuotes();
     };
 
-    const isApproveButtonDisabled =
-        isApproveButtonLoading ||
-        (approvalStep === 'LOADING' && allowanceState.approvalType === 'REVOKE') ||
+    const isCommonButtonBusy =
         isFormLoading ||
+        isFormInvalid ||
+        areFeesLoading ||
+        isComposing ||
         isScheduledQuotesRefresh ||
         isDiscoveryRunning ||
         allowanceState.isWaitingForDevice;
 
-    const isSwapButtonDisabled =
-        isSwapButtonLoading ||
-        (approvalStep === 'LOADING' && allowanceState.approvalType === 'APPROVE') ||
-        isFormLoading ||
-        isScheduledQuotesRefresh ||
-        isDiscoveryRunning ||
-        allowanceState.isWaitingForDevice;
+    const isActionButtonDisabled = (
+        isButtonLoading: boolean,
+        blockingApprovalType: 'APPROVE' | 'REVOKE',
+    ) =>
+        isButtonLoading ||
+        (approvalStep === 'LOADING' && allowanceState.approvalType === blockingApprovalType) ||
+        isCommonButtonBusy;
 
-    const isRevokeButtonDisabled =
-        isRevokeButtonLoading ||
-        (approvalStep === 'LOADING' && allowanceState.approvalType === 'APPROVE') ||
-        isFormLoading ||
-        isScheduledQuotesRefresh ||
-        isDiscoveryRunning ||
-        allowanceState.isWaitingForDevice;
+    const isApproveButtonDisabled = isActionButtonDisabled(isApproveButtonLoading, 'REVOKE');
+    const isSwapButtonDisabled = isActionButtonDisabled(isSwapButtonLoading, 'APPROVE');
+    const isRevokeButtonDisabled = isActionButtonDisabled(isRevokeButtonLoading, 'APPROVE');
 
     const isRefreshButtonDisabled =
         isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh || isDiscoveryRunning;
@@ -232,7 +231,9 @@ export const TradingFormApproval = () => {
                                         isLoading={
                                             isApproveButtonLoading ||
                                             isRevokeButtonLoading ||
-                                            isFormLoading
+                                            isFormLoading ||
+                                            areFeesLoading ||
+                                            isComposing
                                         }
                                         isDisabled={
                                             isApproveButtonDisabled || isRevokeButtonDisabled
@@ -265,7 +266,7 @@ export const TradingFormApproval = () => {
                             intent="brand"
                             size="large"
                             width="100%"
-                            isLoading={isApproveButtonLoading}
+                            isLoading={isApproveButtonLoading || areFeesLoading || isComposing}
                             isDisabled={isApproveButtonDisabled}
                         >
                             <Translation id="TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON" />
@@ -281,7 +282,13 @@ export const TradingFormApproval = () => {
                         intent="brand"
                         size="large"
                         width="100%"
-                        isLoading={isSwapButtonLoading || isRevokeButtonLoading || isFormLoading}
+                        isLoading={
+                            isSwapButtonLoading ||
+                            isRevokeButtonLoading ||
+                            isFormLoading ||
+                            areFeesLoading ||
+                            isComposing
+                        }
                         isDisabled={isSwapButtonDisabled || isRevokeButtonDisabled}
                     >
                         <Translation id="TR_TRADING_SWAP" />

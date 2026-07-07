@@ -206,6 +206,7 @@ export interface TradingExchangeFormContextProps
     exchangeInfo?: TradingExchangeInfoSelector;
     defaultCurrency: TradingFiatCurrencyOption;
     amountLimits?: CryptoAmountLimitProps;
+    isComposing: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     composedTransactionInfo: TradingComposedTransactionInfo;
     quotes: ExchangeTrade[];
