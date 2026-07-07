@@ -4,7 +4,7 @@ import {
     evaluateProof,
     generateMerkleProof,
     generateNonMembershipProof,
-} from '../merkleTree';
+} from '../proof';
 
 // Golden vectors captured from the pre-port connect-cli implementation
 // (Node's `crypto`/`Buffer`), to prove the @noble/hashes port is byte-identical.

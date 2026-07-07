@@ -1,4 +1,12 @@
 /**
+ * @trezor/authdb/types — shared AuthDB DTOs.
+ *
+ * Pure data types with zero dependencies. Extracted so the /proof, /storage and /sync
+ * modules can each depend only on the types they need, without a package-level cycle
+ * (previously /proof imported its types from /storage's provider.ts).
+ */
+
+/**
  * Arbitrary metadata stored per Bitcoin address (an "auth label").
  * Serialized as JSON in the database (future: protobuf BLOB).
  */
@@ -48,61 +56,8 @@ export type AuthLabelRow = {
 };
 
 /**
- * Required storage contract for auth-label entries. Every entry lives under a
- * walletId — the Merkle tree (and its root/counter checkpoint in TreeState) is
- * computed per wallet, so two wallets' addresses never mix into one root.
- * The only implementation today is AuthLabelDb (better-sqlite3, connect-cli dev/testing).
- * An Evolu-backed implementation for suite-desktop production is planned but not yet built.
- */
-export type AuthLabelLookupProvider = {
-    lookup(
-        walletId: string,
-        address: string,
-        networkSymbol: string,
-    ): AuthLabelEntry | null | Promise<AuthLabelEntry | null>;
-    lookupOrCreate(
-        walletId: string,
-        address: string,
-        networkSymbol: string,
-    ): AuthLabelEntry | Promise<AuthLabelEntry>;
-    upsert(
-        walletId: string,
-        address: string,
-        networkSymbol: string,
-        entry: AuthLabelEntry,
-    ): void | Promise<void>;
-    getAllEntries(walletId: string): AuthLabelRow[] | Promise<AuthLabelRow[]>;
-    /** Each wallet keeps its own root checkpoint, identified by walletId. */
-    getTreeState(walletId: string): TreeState | null | Promise<TreeState | null>;
-    setTreeState(walletId: string, state: TreeState): void | Promise<void>;
-    /** Releases any held resources (e.g. an open database handle). */
-    dispose?(): void | Promise<void>;
-};
-
-/**
- * Optional MAC pre-approval extension. A provider implementing this alongside
- * AuthLabelLookupProvider lets high-level AuthDB methods skip a redundant device
- * confirmation when a valid prior approval already exists for an entry.
- */
-export type AuthLabelApprovalProvider = {
-    lookupApproval(
-        walletId: string,
-        address: string,
-        networkSymbol: string,
-    ): { mac: string; deviceId: string } | null | Promise<{ mac: string; deviceId: string } | null>;
-    setApproval(
-        walletId: string,
-        address: string,
-        networkSymbol: string,
-        mac: string,
-        deviceId: string,
-    ): void | Promise<void>;
-};
-
-/**
  * A single mutation drained from a Trezor device's offline queue via AuthDbGetOfflineOperations
- * (wire type AuthDbOfflineOperation: sequence, address, old_value, new_value, old_counter,
- * new_counter, mac). Hex-encoded
+ * (wire type AuthDbOfflineOperation: sequence, address, old_value, new_value, mac). Hex-encoded
  * value fields, same convention as elsewhere: oldValue === '' means the address was absent when
  * queued (insert); newValue === '' means this entry deletes the address. `mac` is
  * HMAC(device_key, sequence||leaf_hash(address,old_value)||leaf_hash(address,new_value)) —
@@ -132,25 +87,12 @@ export type OfflineQueueConflict = {
 };
 
 /**
- * Optional extension for providers that persist a device's offline queue (EntryDB)
- * ahead of applying it to the Merkle tree — lets a device flush queued mutations in
- * one round-trip when it comes back online, and lets the host replay them in
- * `sequence` order before advancing the wallet's tree state.
- */
-export type OfflineQueueProvider = {
-    appendQueueEntries(entries: OfflineQueueEntry[]): void | Promise<void>;
-    getQueueEntries(walletId: string): OfflineQueueEntry[] | Promise<OfflineQueueEntry[]>;
-    /** Drops walletId's queue entries once applied, up to and including throughSequence. */
-    clearQueueEntries(walletId: string, throughSequence: number): void | Promise<void>;
-};
-
-/**
  * A single applied mutation, recorded for cross-device audit/conflict-display purposes.
  * The device itself retains no history — only current root/counter plus its own
  * not-yet-collected offline queue — so this log only ever exists host-side, built up as
  * authDbReplayQueue successfully applies operations.
- * oldCounter/newCounter come from the leaf-counter wire fields (AuthDbOfflineOperation /
- * AuthDbRebasedOperation); appliedAtRootCounter is the wallet's
+ * oldCounter/newCounter are decoded from the existing entryToValueBytes value convention
+ * (not a dedicated wire field — none exists yet); appliedAtRootCounter is the wallet's
  * root-level counter immediately after this specific operation was applied (the device
  * increments it by exactly one per applied operation).
  */
@@ -165,23 +107,3 @@ export type AuthHistoryEntry = {
     newCounter?: number;
     appliedAtRootCounter: number;
 };
-
-/**
- * Optional extension for providers that retain an append-only history of applied AuthDB
- * mutations per wallet/address, for later "what changed, and on which physical device"
- * conflict-display UI.
- */
-export type AuthHistoryProvider = {
-    recordHistoryEntry(entry: AuthHistoryEntry): void | Promise<void>;
-    /** Returns entries oldest-first. */
-    getAddressHistory(
-        walletId: string,
-        address: string,
-    ): AuthHistoryEntry[] | Promise<AuthHistoryEntry[]>;
-};
-
-/** Combined provider type accepted by ConnectSettings — approval/queue/history support is optional. */
-export type AuthLabelProvider = AuthLabelLookupProvider &
-    Partial<AuthLabelApprovalProvider> &
-    Partial<OfflineQueueProvider> &
-    Partial<AuthHistoryProvider>;

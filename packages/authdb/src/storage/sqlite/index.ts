@@ -1,22 +1,29 @@
-/* eslint-disable no-console -- verbose AuthDB diagnostics (dev/testing CLI backend) */
+/* eslint-disable no-console -- verbose AuthDB diagnostics (dev/testing sqlite backend) */
+/**
+ * @trezor/authdb/storage/sqlite — better-sqlite3-backed reference implementation of the
+ * storage-provider contracts. Isolated behind its own subpath so that importing the
+ * contracts, /proof or /sync never pulls the native better-sqlite3 module (declared as an
+ * optionalDependency). Used by connect-cli for dev/testing; suite-desktop will supply an
+ * Evolu-backed implementation instead.
+ */
 import Database from 'better-sqlite3';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type {
-    AuthHistoryEntry,
     AuthHistoryProvider,
-    OfflineQueueEntry,
-    OfflineQueueProvider,
-} from '@trezor/authdb';
-import type {
     AuthLabelApprovalProvider,
-    AuthLabelEntry,
     AuthLabelLookupProvider,
+    OfflineQueueProvider,
+} from '../';
+import type {
+    AuthHistoryEntry,
+    AuthLabelEntry,
     AuthLabelMetadata,
     AuthLabelRow,
+    OfflineQueueEntry,
     TreeState,
-} from '@trezor/connect';
+} from '../../types';
 
 type SqliteAddressRow = {
     wallet_id: string;

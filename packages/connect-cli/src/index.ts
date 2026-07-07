@@ -3,6 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
+import { AuthLabelDb } from '@trezor/authdb/src/storage/sqlite';
 import TrezorConnect, {
     type AuthLabelMetadata,
     type Device,
@@ -11,7 +12,6 @@ import TrezorConnect, {
 } from '@trezor/connect';
 
 import { HELP, args } from './args';
-import { AuthLabelDb } from './authdb';
 import { stdioManager } from './stdio';
 import {
     debugLinkDecision,

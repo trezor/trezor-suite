@@ -1,3 +1,5 @@
+import { AuthDbSyncError, fastForwardRoot } from '@trezor/authdb';
+import type { AuthDbDeviceClient } from '@trezor/authdb';
 import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbFastForwardRootSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -7,6 +9,10 @@ import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import * as settingsStore from '../../../data/settingsStore';
 
+/**
+ * Wire shell over @trezor/authdb/sync's fastForwardRoot engine: resolves the provider from
+ * settingsStore and builds an AuthDbDeviceClient from the device's typedCall bus.
+ */
 export default class AuthDbFastForwardRoot extends AbstractMethod<
     'authDbFastForwardRoot',
     AuthDbFastForwardRootSchema
@@ -49,42 +55,50 @@ export default class AuthDbFastForwardRoot extends AbstractMethod<
         }
 
         const { walletId } = this.params;
-
-        const treeState = await provider.getTreeState(walletId);
-        if (!treeState) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'authDbFastForwardRoot: no stored root for this wallet — run authDbUpdateAddress or authDbReplayQueue first',
-            );
-        }
-        if (treeState.mac === undefined) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'authDbFastForwardRoot: no root-attestation token for this wallet — run authDbUpdateAddress or authDbReplayQueue first',
-            );
-        }
-
         const cmd = this.getDevice().getCommands();
-        const response = await cmd.typedCall(
-            'AuthDbFastForwardRoot',
-            'AuthDbFastForwardRootResponse',
-            {
-                new_root: treeState.root,
-                counter: treeState.counter,
-                wallet_id: walletId,
-                mac: treeState.mac,
+
+        const device: AuthDbDeviceClient = {
+            deviceId: this.getDevice().features?.device_id ?? '',
+            getOfflineOperations: async () =>
+                (
+                    await cmd.typedCall(
+                        'AuthDbGetOfflineOperations',
+                        'AuthDbGetOfflineOperationsResponse',
+                        {},
+                    )
+                ).message,
+            applyOfflineOperations: async operations =>
+                (
+                    await cmd.typedCall(
+                        'AuthDbApplyOfflineOperations',
+                        'AuthDbApplyOfflineOperationsResponse',
+                        { operations },
+                    )
+                ).message,
+            deleteOfflineOperations: async () => {
+                await cmd.typedCall(
+                    'AuthDbDeleteOfflineOperations',
+                    'AuthDbDeleteOfflineOperationsResponse',
+                    {},
+                );
             },
-        );
-
-        await provider.setTreeState(walletId, {
-            root: response.message.new_root ?? treeState.root,
-            counter: response.message.counter,
-            mac: treeState.mac,
-        });
-
-        return {
-            counter: response.message.counter,
-            walletId: response.message.wallet_id,
+            fastForwardRoot: async request =>
+                (
+                    await cmd.typedCall(
+                        'AuthDbFastForwardRoot',
+                        'AuthDbFastForwardRootResponse',
+                        request,
+                    )
+                ).message,
         };
+
+        try {
+            return await fastForwardRoot({ provider, device, walletId });
+        } catch (err) {
+            if (err instanceof AuthDbSyncError) {
+                throw ERRORS.TypedError('Runtime', err.message);
+            }
+            throw err;
+        }
     }
 }

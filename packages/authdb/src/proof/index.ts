@@ -1,7 +1,7 @@
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
-import type { AuthLabelEntry, AuthLabelRow, MerkleProof } from './provider';
+import type { AuthLabelEntry, AuthLabelRow, MerkleProof } from '../types';
 
 // ---------------------------------------------------------------------------
 // MPT hashing primitives — must match authdb_tree.py exactly

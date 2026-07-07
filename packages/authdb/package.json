@@ -21,6 +21,26 @@
             ".": {
                 "types": "./lib/index.d.mts",
                 "default": "./lib/index.mjs"
+            },
+            "./types": {
+                "types": "./lib/types/index.d.mts",
+                "default": "./lib/types/index.mjs"
+            },
+            "./proof": {
+                "types": "./lib/proof/index.d.mts",
+                "default": "./lib/proof/index.mjs"
+            },
+            "./storage": {
+                "types": "./lib/storage/index.d.mts",
+                "default": "./lib/storage/index.mjs"
+            },
+            "./storage/sqlite": {
+                "types": "./lib/storage/sqlite/index.d.mts",
+                "default": "./lib/storage/sqlite/index.mjs"
+            },
+            "./sync": {
+                "types": "./lib/sync/index.d.mts",
+                "default": "./lib/sync/index.mjs"
             }
         }
     },
@@ -38,5 +58,11 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1"
+    },
+    "optionalDependencies": {
+        "better-sqlite3": "^12.6.2"
+    },
+    "devDependencies": {
+        "@types/better-sqlite3": "^7.6.0"
     }
 }
