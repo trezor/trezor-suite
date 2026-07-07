@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useQuery } from '@suite-common/react-query';
 import { simulateUnstake } from '@suite-common/staking';
+import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
@@ -38,7 +39,12 @@ export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amoun
                     return null;
                 }
 
-                const result = await simulateUnstake({ amount, from: descriptor, symbol });
+                const result = await simulateUnstake({
+                    amount,
+                    from: descriptor,
+                    symbol,
+                    source: WALLET_SDK_SOURCE_MOBILE,
+                });
 
                 if (signal.aborted || !result || !new BigNumber(result).gt(0)) {
                     return null;

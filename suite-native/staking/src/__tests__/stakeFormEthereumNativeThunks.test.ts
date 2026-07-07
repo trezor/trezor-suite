@@ -8,7 +8,7 @@ import {
 } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { UNSTAKE_INTERCHANGES } from '@suite-common/wallet-constants';
+import { UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -86,8 +86,13 @@ const buildPrecomposedTransaction = (
     }) as PrecomposedTransactionFinal;
 
 const buildCalldataForKind = (kind: StakeNativeType): string => {
-    if (kind === 'stake') return buildStakeData();
-    if (kind === 'unstake') return buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES);
+    if (kind === 'stake') return buildStakeData(WALLET_SDK_SOURCE_MOBILE);
+    if (kind === 'unstake')
+        return buildUnstakeData(
+            '1500000000000000000',
+            UNSTAKE_INTERCHANGES,
+            WALLET_SDK_SOURCE_MOBILE,
+        );
 
     return buildClaimWithdrawRequestData();
 };
@@ -195,7 +200,7 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
         // 1.5 ETH = 1.5 * 10^18 wei = 1500000000000000000 = 0x14d1120d7b160000
         expect(signCall.transaction.value).toBe('0x14d1120d7b160000');
-        expect(signCall.transaction.data).toBe(buildStakeData());
+        expect(signCall.transaction.data).toBe(buildStakeData(WALLET_SDK_SOURCE_MOBILE));
     });
 
     it('passes value=0 and unstake calldata for an unstake variant', async () => {
@@ -221,7 +226,7 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
         expect(signCall.transaction.value).toBe('0x0');
         expect(signCall.transaction.data).toBe(
-            buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES),
+            buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE),
         );
     });
 
