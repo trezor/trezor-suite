@@ -36,7 +36,7 @@ export const confirmApprovalThunk = createThunk(
             extraField,
             processResponseData,
         }: ConfirmApprovalThunkProps,
-        { dispatch, getState },
+        { dispatch, getState, signal },
     ) => {
         const getCoinSymbol = (cryptoId: CryptoId) =>
             selectTradingCoinSymbolByCryptoId(getState(), cryptoId);
@@ -62,13 +62,22 @@ export const confirmApprovalThunk = createThunk(
 
         dispatch(tradingExchangeActions.saveTransactionId(undefined));
 
-        const rawResponse = await invityAPI.doExchangeTrade({
-            trade,
-            receiveAddress,
-            refundAddress,
-            extraField,
-            returnUrl: undefined,
-        });
+        const rawResponse = await invityAPI.doExchangeTrade(
+            {
+                trade,
+                receiveAddress,
+                refundAddress,
+                extraField,
+                returnUrl: undefined,
+            },
+            signal,
+        );
+
+        // The flow was cancelled while the request was in flight — do not
+        // overwrite the store with a response the user no longer wants.
+        if (signal.aborted) {
+            return undefined;
+        }
 
         // invity drops DEX-specific fields on the response — preserve those the review flow needs
         const response = rawResponse && {

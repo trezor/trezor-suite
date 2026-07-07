@@ -2,6 +2,7 @@ import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
+import type { ExchangeTrade } from 'invity-api';
 
 import {
     selectTradingExchangeSelectedQuote,
@@ -9,6 +10,10 @@ import {
     useAllowanceTxTracking,
 } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
+import {
+    getEvmTransactionTextSignature,
+    isEvmApprovalTxByTextSignature,
+} from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -25,6 +30,7 @@ import {
     useTransactionDetails,
 } from '@suite-native/transaction-management';
 import { exhaustive } from '@trezor/type-utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
 import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/ExchangeConfirmationHeader';
@@ -40,6 +46,60 @@ export type TradingConfirmingScreenProps = StackProps<
 >;
 
 export const APPROVAL_STATUS_POLL_INTERVAL_MS = 5000;
+// Give up after ~5 minutes of polling; the user can leave or refocus to retry.
+export const APPROVAL_STATUS_POLL_MAX_ATTEMPTS = 60;
+
+// Until the API indexes the confirmed approval it keeps returning
+// APPROVAL_PENDING — or CONFIRM still carrying the approval dexTx.
+const isStaleApprovalQuote = (quote: ExchangeTrade) =>
+    !quote.error &&
+    (quote.status === 'APPROVAL_PENDING' ||
+        (quote.status === 'CONFIRM' &&
+            isEvmApprovalTxByTextSignature(getEvmTransactionTextSignature(quote.dexTx?.data))));
+
+// Until the API indexes the confirmed revoke it still sees the old allowance
+// and keeps returning the revoke dexTx instead of the follow-up approval.
+const isStaleRevokeQuote = (quote: ExchangeTrade) =>
+    !quote.error && getEvmTransactionTextSignature(quote.dexTx?.data) === 'revoke';
+
+type PollConfirmApprovalProps = {
+    initialQuote: ExchangeTrade;
+    confirmApproval: (quote: ExchangeTrade) => Promise<ExchangeTrade | undefined>;
+    isStale: (quote: ExchangeTrade) => boolean;
+    signal: AbortSignal;
+};
+
+// Re-requests the trade until the API acknowledges the confirmed on-chain state.
+// Resolves with the settled quote, or undefined when the flow should stay on the
+// confirming screen (request failed, polling aborted, or attempts exhausted).
+const pollConfirmApproval = async ({
+    initialQuote,
+    confirmApproval,
+    isStale,
+    signal,
+}: PollConfirmApprovalProps): Promise<ExchangeTrade | undefined> => {
+    let response = await confirmApproval(initialQuote);
+
+    for (
+        let attempt = 0;
+        response && isStale(response) && attempt < APPROVAL_STATUS_POLL_MAX_ATTEMPTS;
+        attempt += 1
+    ) {
+        try {
+            await resolveAfter(APPROVAL_STATUS_POLL_INTERVAL_MS, signal);
+        } catch {
+            // Aborted by blur, unmount, or flow cancellation.
+            return undefined;
+        }
+        response = await confirmApproval(response);
+    }
+
+    if (!response || isStale(response) || signal.aborted) {
+        return undefined;
+    }
+
+    return response;
+};
 
 export const TradingConfirmingScreen = ({
     route: { params },
@@ -56,9 +116,23 @@ export const TradingConfirmingScreen = ({
         flowType === 'approve' ? 'approval-confirming' : 'revoke-confirming',
     );
 
-    const { confirmApproval } = useApprovalFlow();
+    const { confirmApproval, abortConfirmApproval } = useApprovalFlow();
 
     const hasConfirmedRef = useRef(false);
+    const pollAbortControllerRef = useRef(new AbortController());
+
+    // Recreate the abort controller on focus; abort polling on blur or unmount.
+    useFocusEffect(
+        useCallback(() => {
+            pollAbortControllerRef.current = new AbortController();
+
+            return () => {
+                pollAbortControllerRef.current.abort();
+                abortConfirmApproval();
+                hasConfirmedRef.current = false;
+            };
+        }, [abortConfirmApproval]),
+    );
 
     const {
         status: originalStatus,
@@ -90,10 +164,13 @@ export const TradingConfirmingScreen = ({
 
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const handleRemoveConfirmed = useCallback(() => {
+        // Stop polling first so an in-flight response cannot resurrect the quote.
+        pollAbortControllerRef.current.abort();
+        abortConfirmApproval();
         dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
         reportToAnalytics('cancel');
         navigateToInitialScreen();
-    }, [dispatch, navigateToInitialScreen, reportToAnalytics]);
+    }, [abortConfirmApproval, dispatch, navigateToInitialScreen, reportToAnalytics]);
 
     useNavigationRemoveInterceptorAlert({
         shouldPrevent: !isFailed,
@@ -117,29 +194,19 @@ export const TradingConfirmingScreen = ({
             const handleConfirmed = async () => {
                 switch (flowType) {
                     case 'approve': {
-                        let response = await confirmApproval(activeQuote);
+                        // Poll until the API returns the follow-up quote carrying the swap
+                        // transaction — navigating earlier would leave the approval calldata
+                        // in the quote to be signed again as the swap.
+                        const settledQuote = await pollConfirmApproval({
+                            initialQuote: activeQuote,
+                            confirmApproval,
+                            isStale: isStaleApprovalQuote,
+                            signal: pollAbortControllerRef.current.signal,
+                        });
 
-                        // The API keeps returning APPROVAL_PENDING (with the approval dexTx)
-                        // until it indexes the confirmed approval. Poll until it returns the
-                        // follow-up status carrying the swap transaction — navigating earlier
-                        // would leave the approval calldata in the quote to be signed again
-                        // as the swap.
-                        while (response?.status === 'APPROVAL_PENDING' && navigation.isFocused()) {
-                            await new Promise(resolve => {
-                                setTimeout(resolve, APPROVAL_STATUS_POLL_INTERVAL_MS);
-                            });
-                            response = await confirmApproval(response);
-                        }
-
-                        if (!response) {
-                            // confirmApproval already sets the error state — stay on this screen.
-                            hasConfirmedRef.current = false;
-
-                            return;
-                        }
-
-                        if (response.status === 'APPROVAL_PENDING') {
-                            // Polling was interrupted by losing focus — allow restart on refocus.
+                        if (!settledQuote) {
+                            // Request failed, polling aborted, or attempts exhausted —
+                            // stay on this screen; refocusing restarts the confirmation.
                             hasConfirmedRef.current = false;
 
                             return;
@@ -153,27 +220,44 @@ export const TradingConfirmingScreen = ({
                         break;
                     }
 
-                    case 'revoke-and-approve':
+                    case 'revoke-and-approve': {
                         dispatch(sendFormActions.dispose());
                         // The post-revoke quote carries the revoke transaction's
                         // approvalSendTxHash and approvalType: 'ZERO'. Strip them so the
                         // next confirmApproval call requests a fresh approval rather than
                         // re-using the revoke txid as the approval txid.
-                        if (activeQuote) {
-                            dispatch(
-                                tradingExchangeActions.saveSelectedQuote({
-                                    ...activeQuote,
-                                    approvalSendTxHash: undefined,
-                                    approvalType: undefined,
-                                    status: 'APPROVAL_REQ',
-                                }),
-                            );
+                        const approvalQuote = {
+                            ...activeQuote,
+                            approvalSendTxHash: undefined,
+                            approvalType: 'MINIMAL',
+                            status: 'APPROVAL_REQ',
+                        } satisfies ExchangeTrade;
+                        dispatch(tradingExchangeActions.saveSelectedQuote(approvalQuote));
+
+                        // Same stale window as 'approve': poll until the API indexes the
+                        // confirmed revoke and returns the approval dexTx — navigating with
+                        // the revoke calldata would let it be signed again as the approval.
+                        const settledQuote = await pollConfirmApproval({
+                            initialQuote: approvalQuote,
+                            confirmApproval,
+                            isStale: isStaleRevokeQuote,
+                            signal: pollAbortControllerRef.current.signal,
+                        });
+
+                        if (!settledQuote) {
+                            // Request failed, polling aborted, or attempts exhausted —
+                            // stay on this screen; refocusing restarts the confirmation.
+                            hasConfirmedRef.current = false;
+
+                            return;
                         }
+
                         navigation.popToTop();
                         navigation.push(RootStackRoutes.TradingExchangeApproval, {
                             isRevoked: true,
                         });
                         break;
+                    }
 
                     case 'revoke':
                         dispatch(sendFormActions.dispose());

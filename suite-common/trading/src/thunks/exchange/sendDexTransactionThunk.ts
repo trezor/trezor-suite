@@ -3,7 +3,10 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
-import { isEvmApprovalTx } from '@suite-common/wallet-utils';
+import {
+    getEvmTransactionTextSignature,
+    isEvmApprovalTxByTextSignature,
+} from '@suite-common/wallet-utils';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -71,14 +74,24 @@ export const sendDexTransactionThunk = createThunk<
             });
         }
 
-        const isSwapTx =
-            selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO';
+        const dexTxPurpose = getEvmTransactionTextSignature(selectedQuote.dexTx.data);
+        const isApprovalTx = isEvmApprovalTxByTextSignature(dexTxPurpose);
+        const isSwapTx = selectedQuote.status === 'CONFIRM' && !isApprovalTx;
 
-        // The swap quote must carry the swap calldata. If dexTx still holds the approval
-        // transaction (API has not indexed the confirmed approval yet), signing it would
-        // broadcast the approval a second time instead of the swap.
-        if (isSwapTx && isEvmApprovalTx(selectedQuote.dexTx.data)) {
-            console.error('Failed to send dex transaction - swap quote carries approval calldata');
+        const expectedApprovalPurpose =
+            selectedQuote.approvalType === 'ZERO' ? 'revoke' : 'approve';
+
+        // The quote must carry calldata matching its step. CONFIRM must never sign
+        // approve/revoke calldata (per the API contract it carries the swap tx), and
+        // the approval step must sign the direction requested by approvalType. A
+        // mismatch means the quote still holds the previous step's transaction (API
+        // has not indexed it yet) — signing it would broadcast that transaction again.
+        const isStaleDexTx =
+            isApprovalTx &&
+            (selectedQuote.status === 'CONFIRM' || dexTxPurpose !== expectedApprovalPurpose);
+
+        if (isStaleDexTx) {
+            console.error('Failed to send dex transaction - dexTx does not match the current step');
 
             return rejectWithValue({
                 type: 'error',

@@ -4,6 +4,7 @@ import { type CryptoId } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
+import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
@@ -121,46 +122,99 @@ describe('sendDexTransactionThunk', () => {
         });
     });
 
-    it('should reject without signing when swap quote still carries the approval calldata', async () => {
-        const approvalCalldata =
-            '0x095ea7b3000000000000000000000000beef047a543e45807105e51a8bbefcc5950fcfba00000000000000000000000000000000000000000000000000000000000f4240';
-        const quote = getQuote();
-        const { store, returnUrl, account } = getMocks({
-            selectedQuote: {
-                ...quote,
-                status: 'CONFIRM',
-                approvalType: 'INFINITE',
-                dexTx: { ...quote.dexTx, data: approvalCalldata },
-            } as TradingExchangeState['selectedQuote'],
+    describe('stale dexTx guard', () => {
+        const testSpender = '0x1234567890123456789012345678901234567890';
+        const approveCalldata = buildApprovalTransactionData({
+            spender: testSpender,
+            amount: '1000000',
+        });
+        const revokeCalldata = buildApprovalTransactionData({ spender: testSpender, amount: '0' });
+
+        const mockRecomposeAndSignTxThunk = () => {
+            (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
+                .fn()
+                .mockImplementation(
+                    createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
+                        fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
+                    ),
+                );
+        };
+
+        type QuoteOverrides = { status: string; approvalType: string; dexTx: { data: string } };
+
+        const dispatchSendDexTransactionThunk = (quoteOverrides: QuoteOverrides) => {
+            const quote = getQuote();
+            const { store, returnUrl, account } = getMocks({
+                selectedQuote: {
+                    ...quote,
+                    ...quoteOverrides,
+                    dexTx: { ...quote.dexTx, ...quoteOverrides.dexTx },
+                } as TradingExchangeState['selectedQuote'],
+            });
+
+            return store.dispatch(
+                exchangeThunks.sendDexTransactionThunk({
+                    account,
+                    returnUrl,
+                    nextStep: jest.fn(),
+                    triggerAnalyticsTradeConfirmation: jest.fn(),
+                    processResponseData: jest.fn(),
+                    signAndPushSendFormTransaction: jest.fn(),
+                }),
+            );
+        };
+
+        it.each([
+            [
+                'swap quote carries approval calldata',
+                { status: 'CONFIRM', approvalType: 'INFINITE', dexTx: { data: approveCalldata } },
+            ],
+            [
+                'swap quote carries revoke calldata',
+                { status: 'CONFIRM', approvalType: 'INFINITE', dexTx: { data: revokeCalldata } },
+            ],
+            [
+                'approval quote carries revoke calldata',
+                {
+                    status: 'APPROVAL_REQ',
+                    approvalType: 'MINIMAL',
+                    dexTx: { data: revokeCalldata },
+                },
+            ],
+            [
+                'revoke quote carries approval calldata',
+                { status: 'APPROVAL_REQ', approvalType: 'ZERO', dexTx: { data: approveCalldata } },
+            ],
+        ])('should reject without signing when %s', async (_, quoteOverrides) => {
+            mockRecomposeAndSignTxThunk();
+
+            const result = await dispatchSendDexTransactionThunk(quoteOverrides);
+
+            expect(result.meta.requestStatus).toEqual('rejected');
+            expect(result.payload).toEqual({
+                type: 'error',
+                error: {
+                    id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
+                },
+            });
+            expect(tradingThunks.recomposeAndSignTxThunk).not.toHaveBeenCalled();
         });
 
-        (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
-            .fn()
-            .mockImplementation(
-                createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
-                    fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
-                ),
+        it('should sign a revoke quote carrying revoke calldata', async () => {
+            mockRecomposeAndSignTxThunk();
+            (confirmExchangeTradeThunk as unknown as jest.Mock).mockImplementation(
+                createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
             );
 
-        const result = await store.dispatch(
-            exchangeThunks.sendDexTransactionThunk({
-                account,
-                returnUrl,
-                nextStep: jest.fn(),
-                triggerAnalyticsTradeConfirmation: jest.fn(),
-                processResponseData: jest.fn(),
-                signAndPushSendFormTransaction: jest.fn(),
-            }),
-        );
+            const result = await dispatchSendDexTransactionThunk({
+                status: 'APPROVAL_REQ',
+                approvalType: 'ZERO',
+                dexTx: { data: revokeCalldata },
+            });
 
-        expect(result.meta.requestStatus).toEqual('rejected');
-        expect(result.payload).toEqual({
-            type: 'error',
-            error: {
-                id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
-            },
+            expect(result.meta.requestStatus).toEqual('fulfilled');
+            expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
         });
-        expect(tradingThunks.recomposeAndSignTxThunk).not.toHaveBeenCalled();
     });
 
     describe('should return error after recompose and sign transaction', () => {

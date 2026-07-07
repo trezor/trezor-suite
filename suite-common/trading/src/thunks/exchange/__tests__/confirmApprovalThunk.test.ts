@@ -167,6 +167,7 @@ describe('confirmApprovalThunk', () => {
                 expect.objectContaining({
                     trade: expect.objectContaining({ fromAddress: refundAddress }),
                 }),
+                expect.anything(),
             );
         });
 
@@ -192,7 +193,34 @@ describe('confirmApprovalThunk', () => {
                 expect.objectContaining({
                     trade: expect.objectContaining({ fromAddress: 'fromAddress' }),
                 }),
+                expect.anything(),
             );
+        });
+
+        it('should not overwrite the quote when aborted mid-request', async () => {
+            const { store, receiveAddress, account, trade, mockProcessResponseData } = getMocks();
+
+            invityAPI.doExchangeTrade = jest.fn().mockResolvedValue({
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+            } as ExchangeTrade);
+
+            const quoteBefore = getExchangeState(store).selectedQuote;
+
+            const promiseAction = store.dispatch(
+                exchangeThunks.confirmApprovalThunk({
+                    receiveAddress,
+                    account,
+                    trade,
+                    processResponseData: mockProcessResponseData,
+                }),
+            );
+            promiseAction.abort();
+            const response = await promiseAction.unwrap().catch(() => undefined);
+
+            expect(response).toBeUndefined();
+            expect(getExchangeState(store).selectedQuote).toEqual(quoteBefore);
         });
     });
 

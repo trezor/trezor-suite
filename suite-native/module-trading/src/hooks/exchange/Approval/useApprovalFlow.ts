@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
@@ -28,6 +28,8 @@ export const useApprovalFlow = () => {
     const [isConfirming, setIsConfirming] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const inFlightConfirmApprovalRef = useRef<{ abort: (reason?: string) => void } | null>(null);
+
     const confirmApproval = useCallback(
         async (quoteToConfirm: ExchangeTrade) => {
             if (!sendAccount || !receiveAddress || !quoteToConfirm) {
@@ -38,14 +40,17 @@ export const useApprovalFlow = () => {
             setError(null);
 
             try {
-                const response = await dispatch(
+                const promiseAction = dispatch(
                     exchangeThunks.confirmApprovalThunk({
                         trade: quoteToConfirm,
                         receiveAddress,
                         account: sendAccount,
                         processResponseData: () => {},
                     }),
-                ).unwrap();
+                );
+                inFlightConfirmApprovalRef.current = promiseAction;
+
+                const response = await promiseAction.unwrap();
 
                 if (!response) {
                     setError(translate('moduleTrading.confirmApprovalError'));
@@ -55,16 +60,27 @@ export const useApprovalFlow = () => {
 
                 return response;
             } catch (e) {
+                if ((e as Error)?.name === 'AbortError') {
+                    // The flow was cancelled — not an error to surface.
+                    return undefined;
+                }
+
                 console.error('Failed to confirm approval trade', e);
                 setError(translate('moduleTrading.confirmApprovalError'));
 
                 return undefined;
             } finally {
+                inFlightConfirmApprovalRef.current = null;
                 setIsConfirming(false);
             }
         },
         [dispatch, receiveAddress, sendAccount, translate],
     );
+
+    const abortConfirmApproval = useCallback(() => {
+        inFlightConfirmApprovalRef.current?.abort();
+        inFlightConfirmApprovalRef.current = null;
+    }, []);
 
     const isReady = !!sendAccount && !!receiveAddress;
 
@@ -91,6 +107,7 @@ export const useApprovalFlow = () => {
         isConfirming,
         error,
         confirmApproval,
+        abortConfirmApproval,
         onApprovalTypeChange,
     };
 };

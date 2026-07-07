@@ -4,6 +4,7 @@ import {
     tradingExchangeActions,
     useAllowanceTxTracking,
 } from '@suite-common/trading';
+import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { type TestStore, act, renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -17,8 +18,13 @@ import {
 import { createTradingLightStore } from '../../__tests__/tradingTestUtils';
 import {
     APPROVAL_STATUS_POLL_INTERVAL_MS,
+    APPROVAL_STATUS_POLL_MAX_ATTEMPTS,
     TradingConfirmingScreen,
 } from '../TradingConfirmingScreen';
+
+const testSpender = '0x1234567890123456789012345678901234567890';
+const approveCalldata = buildApprovalTransactionData({ spender: testSpender, amount: '1000000' });
+const revokeCalldata = buildApprovalTransactionData({ spender: testSpender, amount: '0' });
 
 const mockOpenInBlockchain = jest.fn();
 
@@ -34,10 +40,12 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 const mockConfirmApproval = jest.fn().mockResolvedValue({});
+const mockAbortConfirmApproval = jest.fn();
 
 jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
     useApprovalFlow: () => ({
         confirmApproval: mockConfirmApproval,
+        abortConfirmApproval: mockAbortConfirmApproval,
     }),
 }));
 
@@ -223,6 +231,62 @@ describe('TradingConfirmingScreen', () => {
         jest.useRealTimers();
     });
 
+    it('approve: keeps polling while CONFIRM still carries the approval calldata', async () => {
+        jest.useFakeTimers();
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+        mockConfirmApproval
+            .mockResolvedValueOnce({
+                ...testQuote,
+                status: 'CONFIRM',
+                dexTx: { data: approveCalldata },
+            })
+            .mockResolvedValueOnce({
+                ...testQuote,
+                status: 'CONFIRM',
+                dexTx: { data: '0xdeadbeef' },
+            });
+
+        renderScreen({ flowType: 'approve' });
+
+        await act(async () => {
+            await jest.advanceTimersByTimeAsync(0);
+        });
+
+        // CONFIRM but still approval calldata — must keep polling, not navigate.
+        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
+
+        await act(async () => {
+            await jest.advanceTimersByTimeAsync(APPROVAL_STATUS_POLL_INTERVAL_MS);
+        });
+
+        expect(mockConfirmApproval).toHaveBeenCalledTimes(2);
+        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangePreview, {
+            isApproved: true,
+        });
+
+        jest.useRealTimers();
+    });
+
+    it('approve: stops polling and stays on screen after max attempts', async () => {
+        jest.useFakeTimers();
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+        mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'APPROVAL_PENDING' });
+
+        renderScreen({ flowType: 'approve' });
+
+        await act(async () => {
+            await jest.advanceTimersByTimeAsync(
+                APPROVAL_STATUS_POLL_INTERVAL_MS * (APPROVAL_STATUS_POLL_MAX_ATTEMPTS + 1),
+            );
+        });
+
+        // Initial call + one per attempt, then it gives up without navigating.
+        expect(mockConfirmApproval).toHaveBeenCalledTimes(APPROVAL_STATUS_POLL_MAX_ATTEMPTS + 1);
+        expect(mockNavigation.push).not.toHaveBeenCalled();
+
+        jest.useRealTimers();
+    });
+
     it('approve: does not navigate when confirmApproval fails', async () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
         mockConfirmApproval.mockResolvedValue(undefined);
@@ -237,7 +301,7 @@ describe('TradingConfirmingScreen', () => {
         expect(mockNavigation.push).not.toHaveBeenCalled();
     });
 
-    it('revoke-and-approve: navigates to TradingExchangeApproval and strips revoke-tx artifacts from selectedQuote', () => {
+    it('revoke-and-approve: navigates to TradingExchangeApproval and strips revoke-tx artifacts from selectedQuote', async () => {
         // Seed selectedQuote with revoke artifacts that the post-revoke confirmExchangeTradeThunk would have written.
         store.dispatch(
             tradingExchangeActions.saveSelectedQuote({
@@ -253,6 +317,17 @@ describe('TradingConfirmingScreen', () => {
 
         renderScreen({ flowType: 'revoke-and-approve' });
 
+        await act(async () => {
+            await Promise.resolve();
+        });
+
+        expect(mockConfirmApproval).toHaveBeenCalledWith(
+            expect.objectContaining({
+                approvalSendTxHash: undefined,
+                approvalType: 'MINIMAL',
+                status: 'APPROVAL_REQ',
+            }),
+        );
         expect(mockNavigation.popToTop).toHaveBeenCalled();
         expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {
             isRevoked: true,
@@ -267,10 +342,55 @@ describe('TradingConfirmingScreen', () => {
         const persisted = selectTradingExchangeSelectedQuote(store.getState());
         expect(persisted).toBeDefined();
         expect(persisted?.approvalSendTxHash).toBeUndefined();
-        expect(persisted?.approvalType).toBeUndefined();
+        expect(persisted?.approvalType).toBe('MINIMAL');
         expect(persisted?.status).toBe('APPROVAL_REQ');
 
         dispatchSpy.mockRestore();
+    });
+
+    it('revoke-and-approve: polls confirmApproval while API still returns the revoke dexTx', async () => {
+        jest.useFakeTimers();
+        store.dispatch(
+            tradingExchangeActions.saveSelectedQuote({
+                ...testQuote,
+                approvalType: 'ZERO',
+                approvalSendTxHash: 'revoke-txid',
+                status: 'APPROVAL_PENDING',
+            }),
+        );
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+        mockConfirmApproval
+            .mockResolvedValueOnce({
+                ...testQuote,
+                status: 'APPROVAL_REQ',
+                dexTx: { data: revokeCalldata },
+            })
+            .mockResolvedValueOnce({
+                ...testQuote,
+                status: 'APPROVAL_REQ',
+                dexTx: { data: approveCalldata },
+            });
+
+        renderScreen({ flowType: 'revoke-and-approve' });
+
+        await act(async () => {
+            await jest.advanceTimersByTimeAsync(0);
+        });
+
+        // The API still returns the revoke dexTx — no navigation yet.
+        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
+
+        await act(async () => {
+            await jest.advanceTimersByTimeAsync(APPROVAL_STATUS_POLL_INTERVAL_MS);
+        });
+
+        expect(mockConfirmApproval).toHaveBeenCalledTimes(2);
+        expect(mockNavigation.popToTop).toHaveBeenCalled();
+        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {
+            isRevoked: true,
+        });
+
+        jest.useRealTimers();
     });
 
     it('revoke: pops to top and clears selectedQuote', () => {
