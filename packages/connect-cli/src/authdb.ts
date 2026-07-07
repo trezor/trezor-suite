@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- verbose AuthDB diagnostics (dev/testing CLI backend) */
 import Database from 'better-sqlite3';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
@@ -91,6 +92,7 @@ export class AuthLabelDb
     constructor(dbPath: string) {
         mkdirSync(dirname(dbPath), { recursive: true });
         this.db = new Database(dbPath);
+        console.log('[AuthLabelDb] opened SQLite database:', dbPath);
         this.db.exec(`
             CREATE TABLE IF NOT EXISTS addresses (
                 wallet_id      TEXT NOT NULL,

@@ -155,7 +155,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         }
     }
     const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
-    const walletId = typeof args['wallet-id'] === 'string' ? args['wallet-id'] : 'default';
+    // The high-level AuthDb methods require walletId to equal the device's own
+    // SLIP-21-derived wallet_id (they reject a mismatch AFTER the device commits, which
+    // also strands the local cache). It can't be derived host-side, so unless the caller
+    // pins it with --wallet-id we fetch it from the device below, once the provider is set.
+    const walletIdExplicit = typeof args['wallet-id'] === 'string';
+    let walletId = walletIdExplicit ? (args['wallet-id'] as string) : 'default';
 
     let identifierHex: string;
     let db: AuthLabelDb;
@@ -193,6 +198,37 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         // device's pubkey — so inject it now via updateConnectSettings before dbchange/
         // dblookup below call the high-level methods that read it.
         await TrezorConnect.updateConnectSettings({ authLabelLookupProvider: db });
+    }
+
+    // Resolve walletId to the device's real wallet_id (SLIP-21 "AUTHDB DEVICE ID").
+    // AuthDbGetOfflineOperations is a read-only call that echoes it (the queue is empty on
+    // a fresh device). Without this, walletId stays 'default' and every high-level method
+    // rejects the device's echoed wallet_id as a mismatch. Skipped when the caller pinned
+    // --wallet-id, or when there's no device (pure offline verify/lookup).
+    if (!walletIdExplicit && device) {
+        try {
+            const opsResult = await TrezorConnect.authDbGetOfflineOperations({ device });
+            console.log(
+                '[walletId] authDbGetOfflineOperations raw result:',
+                JSON.stringify(opsResult),
+            );
+            if (opsResult.success && opsResult.payload.wallet_id) {
+                walletId = opsResult.payload.wallet_id;
+                console.log('Using device wallet_id:', walletId);
+            } else {
+                // Loud, not silent: if we can't resolve the device's real wallet_id here, the
+                // high-level methods will reject every call ('default' != device wallet_id).
+                console.warn(
+                    '[walletId] could NOT resolve device wallet_id; falling back to',
+                    JSON.stringify(walletId),
+                );
+            }
+        } catch (err) {
+            console.warn(
+                '[walletId] authDbGetOfflineOperations THREW:',
+                err instanceof Error ? `${err.name}: ${err.message}` : String(err),
+            );
+        }
     }
 
     try {

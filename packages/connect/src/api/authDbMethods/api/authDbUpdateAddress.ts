@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- verbose AuthDB dbchange diagnostics */
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import {
@@ -67,6 +68,8 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         }
 
         const { address, networkSymbol, metadata, walletId } = this.params;
+        // Verbose diagnostics — prefixed so they're greppable in connect-cli output.
+        const vlog = (...m: unknown[]) => console.log('[authDbUpdateAddress]', ...m);
 
         const [rows, oldEntry] = await Promise.all([
             provider.getAllEntries(walletId),
@@ -76,11 +79,32 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         const newEntry: AuthLabelEntry = { metadata, counter: (oldEntry?.counter ?? 0) + 1 };
         const isInsert = oldEntry === null;
 
+        vlog('ENTER', {
+            walletId,
+            address,
+            networkSymbol,
+            mode: this.useDevice ? 'device' : 'offline',
+            op: isInsert ? 'INSERT/INIT' : 'UPDATE',
+            localRows: rows.length,
+            oldCounter: oldEntry?.counter ?? null,
+            newCounter: newEntry.counter,
+            metadata,
+        });
+
+        // Current locally-stored root before this operation (mirrors the device's own
+        // stored_root log), so host and device roots can be compared side by side.
+        const currentTreeState = await provider.getTreeState(walletId);
+        vlog('current local root (before op)', {
+            root: currentTreeState?.root ?? '(none — empty tree)',
+            counter: currentTreeState?.counter ?? 0,
+        });
+
         if (!this.useDevice) {
             await provider.upsert(walletId, address, networkSymbol, newEntry);
             const updatedRows = await provider.getAllEntries(walletId);
             const root = computeMerkleRoot(updatedRows);
             await provider.setTreeState(walletId, { root, counter: newEntry.counter });
+            vlog('OFFLINE done', { counter: newEntry.counter, root });
 
             return { counter: newEntry.counter, root };
         }
@@ -99,7 +123,21 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         // so callers don't need to plumb mac/deviceId through this call themselves.
         const approval = await provider.lookupApproval?.(walletId, address, networkSymbol);
 
+        vlog('proof built', {
+            oldValueHex: oldValueHex || '(empty)',
+            newValueHex,
+            proofLen: proof.length,
+            proof,
+            witnessAddress: nonMembership?.witnessAddress ?? null,
+            witnessValue: nonMembership?.witnessValue
+                ? bytesToHex(nonMembership.witnessValue)
+                : null,
+            witnessCounter: nonMembership?.witnessCounter ?? null,
+            preApproval: approval ? { mac: approval.mac, deviceId: approval.deviceId } : null,
+        });
+
         const cmd = this.getDevice().getCommands();
+        vlog('-> AuthDbUpdateLeaf (device)');
         const response = await cmd.typedCall('AuthDbUpdateLeaf', 'AuthDbUpdateLeafResponse', {
             address: utf8Hex(address),
             old_value: oldValueHex,
@@ -115,10 +153,20 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                 }),
             ...(approval && { mac: approval.mac, device_id: approval.deviceId }),
         });
+        vlog('<- AuthDbUpdateLeafResponse', {
+            counter: response.message.counter,
+            new_root: response.message.new_root,
+            wallet_id: response.message.wallet_id,
+            mac: response.message.mac,
+        });
 
         // Defense in depth: the caller-supplied walletId scopes local storage, but only the
         // device's own echoed wallet_id proves which seed+passphrase was actually unlocked.
         if (response.message.wallet_id !== undefined && response.message.wallet_id !== walletId) {
+            vlog('REJECT wallet_id mismatch', {
+                deviceWalletId: response.message.wallet_id,
+                requestedWalletId: walletId,
+            });
             throw ERRORS.TypedError(
                 'Runtime',
                 `authDbUpdateAddress: device wallet_id (${response.message.wallet_id}) does not match requested walletId (${walletId})`,
@@ -140,9 +188,13 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                     mac: response.message.mac,
                 });
             }
+            vlog('local cache updated (upsert + setTreeState)');
         } catch (err) {
             localCacheError = err instanceof Error ? err.message : String(err);
+            vlog('LOCAL CACHE ERROR (device already committed)', localCacheError);
         }
+
+        vlog('DONE', { counter: response.message.counter, root: response.message.new_root ?? '' });
 
         return {
             counter: response.message.counter,
