@@ -32,4 +32,5 @@ export enum EventType {
     OnboardingStepViewed = 'onboarding/step-viewed',
     OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',
     PromoNoDeviceEshopCta = 'promo/no-device-eshop-cta',
+    GuideSupportChatOpened = 'guide/support-chat-opened',
 }

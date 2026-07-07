@@ -1,7 +1,10 @@
 import { type ReactNode, useState } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { Button, Card, Checkbox, Column, Paragraph, Popover, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
@@ -19,6 +22,15 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const [isSystemInfoShared, setIsSystemInfoShared] = useState(isAnalyticsEnabled);
     const supportChatUrl = useSelector(state => selectSupportChatUrl(state, isSystemInfoShared));
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+
+    const handleOpenSupportChat = () => {
+        analytics.report({
+            type: events.guideSupportChatOpenedEvent.name,
+            payload: { systemInfoShared: isSystemInfoShared, platform: 'desktop' },
+        });
+        window.open(supportChatUrl, '_blank');
+    };
 
     return (
         <Popover
@@ -51,7 +63,7 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
                         </Column>
                         <Button
                             iconRight="arrowLineUpRight"
-                            onClick={() => window.open(supportChatUrl, '_blank')}
+                            onClick={handleOpenSupportChat}
                             width="100%"
                         >
                             <Translation id="TR_GUIDE_SUPPORT_CONSENT_BUTTON" />
