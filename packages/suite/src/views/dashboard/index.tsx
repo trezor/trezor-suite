@@ -1,10 +1,10 @@
+import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';

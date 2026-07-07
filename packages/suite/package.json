@@ -100,6 +100,7 @@
         "@suite/labeling": "workspace:*",
         "@suite/locks": "workspace:*",
         "@suite/macos": "workspace:*",
+        "@suite/message-system": "workspace:*",
         "@suite/metadata": "workspace:*",
         "@suite/metadata-migration": "workspace:*",
         "@suite/modal": "workspace:*",

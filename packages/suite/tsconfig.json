@@ -186,6 +186,7 @@
         { "path": "../../suite/labeling" },
         { "path": "../../suite/locks" },
         { "path": "../../suite/macos" },
+        { "path": "../../suite/message-system" },
         { "path": "../../suite/metadata" },
         {
             "path": "../../suite/metadata-migration"

@@ -6,6 +6,7 @@ import {
 } from '@suite/backup';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
@@ -18,7 +19,6 @@ import { breakpoints } from '@trezor/theme';
 import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';

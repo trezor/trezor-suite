@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
 import { EarnAnchor, useAnchor } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';

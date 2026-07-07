@@ -1,10 +1,10 @@
 import { FormProvider } from 'react-hook-form';
 
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
+import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { type TradingType } from '@suite-common/trading';
 
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

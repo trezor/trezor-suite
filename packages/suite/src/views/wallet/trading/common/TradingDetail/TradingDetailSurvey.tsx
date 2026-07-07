@@ -1,3 +1,4 @@
+import { MessageSystemButton } from '@suite/message-system';
 import { selectLanguage } from '@suite/settings';
 import {
     Feature,
@@ -9,7 +10,6 @@ import {
 import { Card, Column, H2, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { MessageSystemButton } from 'src/components/suite/banners/MessageSystemButton';
 import { useSelector } from 'src/hooks/suite';
 
 const safeValidateTradingSurvey = (data: unknown): TradingSurveyPayload | null => {

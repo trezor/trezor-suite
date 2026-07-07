@@ -1,3 +1,5 @@
+import { useDispatch, useSelector } from 'react-redux';
+
 import { getTorUrlIfAvailable } from '@suite/external-links';
 import { type Route, goto } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
@@ -5,8 +7,6 @@ import { selectTorState } from '@suite/tor';
 import { resolveMessageContent } from '@suite-common/message-system';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type ButtonProps } from '@trezor/components';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type MessageSystemButtonProps = {
     cta?: Message['cta'];

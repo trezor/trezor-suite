@@ -1,11 +1,11 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Card, Column, Grid, H3, Paragraph, Tooltip } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 

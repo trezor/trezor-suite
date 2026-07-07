@@ -2,6 +2,7 @@ import { type FC, type PropsWithChildren, useEffect } from 'react';
 
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { useDevice } from '@suite/device';
+import { KillswitchMessageScreen } from '@suite/message-system';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
@@ -28,7 +29,6 @@ import { InitialLoading } from './InitialLoading';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
-import { KillswitchMessageScreen } from '../SecurityCheck/KillswitchMessageScreen';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
