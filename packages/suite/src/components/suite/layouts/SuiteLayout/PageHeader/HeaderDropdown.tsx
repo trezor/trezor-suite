@@ -2,6 +2,7 @@ import { type JSX } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { getNetwork } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
 
@@ -44,6 +45,19 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                   },
               ]
             : []),
+        {
+            id: 'settings-connected-apps',
+            callback: () => {
+                goToWithAnalytics({
+                    routeName: 'settings-connected-apps',
+                    preserveParams: true,
+                });
+            },
+            title: <Translation id="TR_WALLETCONNECT" />,
+            icon: 'walletConnect' as const,
+            // caipId marks networks with a WalletConnect adapter (see suite-common/walletconnect)
+            isHidden: account ? !getNetwork(account.symbol).caipId : true,
+        },
     ];
 
     const visibleAdditionalActions = additionalActions?.filter(action => !action.isHidden);
