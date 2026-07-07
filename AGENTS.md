@@ -11,6 +11,7 @@ Code is organized into four workspace scopes with a strict one-way dependency di
 - `suite/` (`@suite/*`) — desktop & web app feature code; imports from `packages/` and `suite-common/`.
 - `suite-native/` (`@suite-native/*`) — mobile app (React Native); imports from `packages/` and `suite-common/`.
 
+**Redux**: both apps compose their store (see `packages/suite/src/reducers/store.ts` for web/desktop, `suite-native/state` for mobile) from `@suite-common/wallet-core` slices plus their own platform-specific reducers/`@suite/*` or `module-*` packages. Follow [Redux conventions](skills/redux/SKILL.md).
 A package may only import from scopes listed above it (e.g. `suite` can depend on `suite-common`, never the reverse).
 
 `suite-common/AGENTS.md` and `suite-native/AGENTS.md` layer additional mandatory skills (test utilities) on top of this file — check for one when working inside those trees.
