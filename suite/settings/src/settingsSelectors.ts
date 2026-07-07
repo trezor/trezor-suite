@@ -37,6 +37,10 @@ export const selectIsExperimentalEnabled = (state: SuiteSettingsRootState) =>
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteSettingsRootState) =>
         state.suiteSettings.experimental?.includes(feature) ?? false;
+export const selectIsTestnetNetworksEnabled = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.isTestnetNetworksEnabled;
+export const selectIsNftSectionEnabled = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.isNftSectionEnabled;
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.enabledSecurityChecks.deviceAuthenticity;
 export const selectIsEntropyCheckEnabled = (state: SuiteSettingsRootState) =>

@@ -40,8 +40,10 @@ import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
 import { MevProtection } from './MevProtection';
 import { NetworkReserve } from './NetworkReserve';
+import { NftSection } from './NftSection';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
+import { TestnetNetworks } from './TestnetNetworks';
 import { Theme } from './Theme';
 import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
@@ -135,7 +137,6 @@ export const SettingsGeneral = () => {
                 icon="appWindow"
             >
                 <Theme />
-                <AddressDisplay />
                 <Analytics />
                 <ShowApplicationLog />
                 <ClearStorage />
@@ -152,15 +153,17 @@ export const SettingsGeneral = () => {
                 <DustPhishing />
             </SettingsSection>
 
-            {isNetworkReserveSettingsVisible && (
-                <SettingsSection
-                    hasVerticalLayout={hasContentBelowTabletWidth}
-                    title={<Translation id="TR_NETWORKS" />}
-                    icon="graph"
-                >
-                    <NetworkReserve />
-                </SettingsSection>
-            )}
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_SETTINGS_ADVANCED" />}
+                icon="shieldWarning"
+            >
+                {desktopUpdate.enabled && <EarlyAccess />}
+                <AddressDisplay />
+                {isNetworkReserveSettingsVisible && <NetworkReserve />}
+                <TestnetNetworks />
+                <NftSection />
+            </SettingsSection>
 
             {isDesktop() && (
                 <SettingsSection
@@ -178,7 +181,6 @@ export const SettingsGeneral = () => {
                 title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
                 icon="atom"
             >
-                {desktopUpdate.enabled && <EarlyAccess />}
                 <Experimental />
             </SettingsSection>
 

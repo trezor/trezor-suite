@@ -1,14 +1,17 @@
-import { FormattedList } from 'react-intl';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
-import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { Column, Switch } from '@trezor/components';
+import {
+    ActionColumn,
+    SectionItem,
+    SettingsRequirementBanner,
+    TextColumn,
+} from '@trezor/product-components';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -18,9 +21,7 @@ export const NetworkReserve = () => {
     const dispatch = useDispatch();
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
-    const supportedNetworks = networksCollection
-        .filter(network => !!network.nativeTokenReserve)
-        .map(network => network.name);
+    const supportedNetworks = getNetworksWithNativeTokenReserve();
 
     const handleSwitchChange = () => {
         const nextIsNetworkReserveEnabled = !isNetworkReserveEnabled;
@@ -46,17 +47,20 @@ export const NetworkReserve = () => {
                         description={
                             <Translation
                                 id="TR_NETWORK_RESERVE_DESCRIPTION"
-                                values={{
-                                    supportedNetworks: (
-                                        <FormattedList
-                                            type="conjunction"
-                                            value={supportedNetworks}
-                                        />
-                                    ),
-                                }}
+                                values={{ supportedNetworks }}
                             />
                         }
-                        bottomContent={<LearnMoreButton url={NETWORK_RESERVE_URL} />}
+                        bottomContent={
+                            <Column gap={8} alignItems="flex-start">
+                                <SettingsRequirementBanner>
+                                    <Translation
+                                        id="TR_MEV_AVAILABLE_ON"
+                                        values={{ supportedNetworks }}
+                                    />
+                                </SettingsRequirementBanner>
+                                <LearnMoreButton url={NETWORK_RESERVE_URL} />
+                            </Column>
+                        }
                     />
                     <ActionColumn>
                         <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />

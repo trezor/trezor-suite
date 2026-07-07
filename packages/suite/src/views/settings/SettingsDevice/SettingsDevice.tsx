@@ -8,8 +8,8 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
+import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { Banner } from '@trezor/components';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -76,6 +76,7 @@ export const SettingsDevice = () => {
     const deviceRemembered = getIsDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const shouldShowNoDeviceEshopBanner = useSelector(selectShouldShowNoDeviceEshopSettingsBanner);
+    const supportsDeviceAuthentication = useSelector(selectIsDeviceAuthenticityCheckSupported);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
@@ -127,7 +128,6 @@ export const SettingsDevice = () => {
 
     const deviceModelInternal = device.features.internal_model;
 
-    const supportsDeviceAuthentication = SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModelInternal];
     // because Device authenticity check is something you can (and have to) do on a device with FW but without seed
     const isSecuritySectionVisible =
         isNormalMode || (initializeMode && supportsDeviceAuthentication);
@@ -241,14 +241,23 @@ export const SettingsDevice = () => {
 
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_SETTINGS_ADVANCED" />}
+                icon="shieldWarning"
+            >
+                <DeviceAuthenticityOptOut
+                    isDeviceAuthenticityCheckSupported={supportsDeviceAuthentication}
+                />
+                <FirmwareAuthenticityChecks />
+            </SettingsSection>
+
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_ADVANCED" />}
                 icon="ghost"
             >
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />
-                {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
-                <FirmwareAuthenticityChecks />
             </SettingsSection>
         </SettingsLayout>
     );

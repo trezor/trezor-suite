@@ -44,6 +44,7 @@ export { ActionColumn } from './components/Settings/ActionColumn';
 export { ActionSelect } from './components/Settings/ActionSelect';
 export { OutlineHighlight } from './components/Settings/OutlineHighlight';
 export { SectionItem } from './components/Settings/SectionItem';
+export { SettingsRequirementBanner } from './components/Settings/SettingsRequirementBanner';
 export { SettingsSection } from './components/Settings/SettingsSection';
 export { TextColumn } from './components/Settings/TextColumn';
 export { StepCard } from './components/StepCard/StepCard';

@@ -47,6 +47,8 @@ export interface SuiteSettingsState {
         deviceMeta: boolean;
     };
     experimental?: ExperimentalFeature[];
+    isTestnetNetworksEnabled: boolean;
+    isNftSectionEnabled: boolean;
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
     suiteSyncRelayUrl: string | null;
@@ -85,6 +87,8 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         language: true,
         theme: true,
     },
+    isTestnetNetworksEnabled: false,
+    isNftSectionEnabled: false,
     sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
     isCoinsFilterVisible: false,
     suiteSyncRelayUrl: null,
@@ -106,6 +110,12 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
             { payload }: PayloadAction<ExperimentalFeature[] | undefined>,
         ) => {
             state.experimental = payload;
+        },
+        setIsTestnetNetworksEnabled: (state, { payload }: PayloadAction<boolean>) => {
+            state.isTestnetNetworksEnabled = payload;
+        },
+        setIsNftSectionEnabled: (state, { payload }: PayloadAction<boolean>) => {
+            state.isNftSectionEnabled = payload;
         },
         setTheme: (state, { payload }: PayloadAction<SuiteSettingsState['theme']['variant']>) => {
             state.theme.variant = payload;

@@ -2707,10 +2707,6 @@ export const messages = defineMessages({
         defaultMessage: 'Available on {supportedNetworks}.',
         id: 'TR_MEV_AVAILABLE_ON',
     },
-    TR_NETWORKS: {
-        defaultMessage: 'Networks',
-        id: 'TR_NETWORKS',
-    },
     TR_NETWORK_RESERVE: {
         defaultMessage: 'Network reserve',
         id: 'TR_NETWORK_RESERVE',
@@ -2719,6 +2715,10 @@ export const messages = defineMessages({
         defaultMessage:
             'Reserve a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
         id: 'TR_NETWORK_RESERVE_DESCRIPTION',
+    },
+    TR_SETTINGS_ADVANCED: {
+        defaultMessage: 'Advanced',
+        id: 'TR_SETTINGS_ADVANCED',
     },
     TR_DUST_PHISHING_PROTECTION: {
         defaultMessage: 'Dust phishing protection',
@@ -8339,6 +8339,10 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED',
         defaultMessage:
             'Device authenticity check is turned off. Trezor Suite won’t verify your device. A fake or tampered device could connect without warning. We recommend turning it on.',
+    },
+    TR_NOT_SUPPORTED_ON_THIS_DEVICE: {
+        id: 'TR_NOT_SUPPORTED_ON_THIS_DEVICE',
+        defaultMessage: 'Not supported on this device.',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON',

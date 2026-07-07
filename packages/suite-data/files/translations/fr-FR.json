@@ -1626,7 +1626,6 @@
   "TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW": "Votre Trezor est déjà utilisé.",
   "TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW": "Votre Trezor est déjà utilisé.",
   "TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING": "Trezor Safe 7 détecté",
-  "TR_NETWORKS": "Réseaux",
   "TR_NETWORK_COINJOIN_BITCOIN": "Coinjoin",
   "TR_NETWORK_COINJOIN_BITCOIN_REGTEST": "Coinjoin Regtest",
   "TR_NETWORK_COINJOIN_BITCOIN_TESTNET": "Coinjoin Testnet",

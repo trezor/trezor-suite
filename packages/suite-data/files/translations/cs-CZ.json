@@ -1626,7 +1626,6 @@
   "TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW": "Trezor se již používá.",
   "TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW": "Trezor se již používá.",
   "TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING": "Detekováno zařízení Trezor Safe 7",
-  "TR_NETWORKS": "Sítě",
   "TR_NETWORK_COINJOIN_BITCOIN": "Coinjoin",
   "TR_NETWORK_COINJOIN_BITCOIN_REGTEST": "Coinjoin Regtest",
   "TR_NETWORK_COINJOIN_BITCOIN_TESTNET": "Coinjoin Testnet",
