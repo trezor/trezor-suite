@@ -20,6 +20,7 @@ import {
     cryptoIdToNetwork,
     exchangeThunks,
     getDexEstimationData,
+    hasEip712SignDataType,
     isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
@@ -191,6 +192,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         values,
         methods,
         setShowReserveBanner,
+        shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
     });
 
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;

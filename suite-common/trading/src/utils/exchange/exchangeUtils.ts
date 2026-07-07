@@ -143,7 +143,7 @@ export const getDisplayComposedLevels = <T extends GeneralPrecomposedLevels>(
         return Object.fromEntries(
             Object.entries(composedLevels).map(([label, level]) => [
                 label,
-                level.type === 'error' ? level : { ...level, fee: '0' },
+                level.type === 'error' ? { type: 'nonfinal', fee: '0' } : { ...level, fee: '0' },
             ]),
         ) as T;
     }
