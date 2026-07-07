@@ -30,7 +30,6 @@ const getApproveButtonTranslationId = (approvalAction: YieldApprovalAction) => {
 
 export type YieldApproveStepProps = {
     token: YieldFlowDisplayToken;
-    variant: 'active' | 'done';
     summaryValue: ReactNode;
     isDisabled?: boolean;
     isLoading?: boolean;
@@ -50,7 +49,6 @@ export type YieldApproveStepProps = {
 
 export const YieldApproveStep = ({
     token,
-    variant,
     summaryValue,
     isDisabled = false,
     isLoading = false,
@@ -72,69 +70,55 @@ export const YieldApproveStep = ({
         canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError && !isLoading;
     const onRevokeClick = shouldEnableRevoke ? onRevoke : undefined;
 
-    switch (variant) {
-        case 'active':
-            return (
-                <Column gap={16}>
-                    <YieldApprovedAmountCard
-                        token={token}
-                        amount={approvedAmountValue}
-                        isLoading={isApprovedAmountLoading}
-                        hasError={hasApprovedAmountError}
-                        onRevoke={onRevokeClick}
-                    />
+    return (
+        <Column gap={16}>
+            <YieldApprovedAmountCard
+                token={token}
+                amount={approvedAmountValue}
+                isLoading={isApprovedAmountLoading}
+                hasError={hasApprovedAmountError}
+                onRevoke={onRevokeClick}
+            />
 
-                    <YieldAmountCard
-                        tokenSymbol={token.symbol}
-                        decimals={token.decimals}
-                        summary={{
-                            labelTranslationId: 'TR_BALANCE',
-                            value: summaryValue,
-                            onMaxClick: pendingApproveTransaction ? undefined : onMaxClick,
-                        }}
-                        heading={{
-                            amountLabelTranslationId: 'AMOUNT',
-                        }}
-                        warning={warning}
-                        isDisabled={!!pendingApproveTransaction}
-                    />
+            <YieldAmountCard
+                tokenSymbol={token.symbol}
+                decimals={token.decimals}
+                summary={{
+                    labelTranslationId: 'TR_BALANCE',
+                    value: summaryValue,
+                    onMaxClick: pendingApproveTransaction ? undefined : onMaxClick,
+                }}
+                heading={{
+                    amountLabelTranslationId: 'AMOUNT',
+                }}
+                warning={warning}
+                isDisabled={!!pendingApproveTransaction}
+            />
 
-                    <Button
-                        size="large"
-                        width="100%"
-                        onClick={onApprovalSubmit}
-                        isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
-                        isLoading={isLoading}
-                    >
-                        <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
-                    </Button>
+            <Button
+                size="large"
+                width="100%"
+                onClick={onApprovalSubmit}
+                isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
+                isLoading={isLoading}
+            >
+                <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
+            </Button>
 
-                    {approvalAction === 'revoke' && !isDisabled && (
-                        <Banner
-                            intent="warning"
-                            icon="warning"
-                            description={
-                                <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />
-                            }
-                        />
-                    )}
-
-                    {pendingApproveTransaction && (
-                        <YieldPendingTransaction
-                            pendingTransaction={pendingApproveTransaction}
-                            onTxClick={onPendingTxClick}
-                        />
-                    )}
-                </Column>
-            );
-        case 'done':
-            return (
-                <YieldApprovedAmountCard
-                    token={token}
-                    amount={approvedAmountValue}
-                    isLoading={isApprovedAmountLoading}
-                    hasError={hasApprovedAmountError}
+            {approvalAction === 'revoke' && !isDisabled && (
+                <Banner
+                    intent="warning"
+                    icon="warning"
+                    description={<Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />}
                 />
-            );
-    }
+            )}
+
+            {pendingApproveTransaction && (
+                <YieldPendingTransaction
+                    pendingTransaction={pendingApproveTransaction}
+                    onTxClick={onPendingTxClick}
+                />
+            )}
+        </Column>
+    );
 };

@@ -13,7 +13,8 @@ import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { getApprovalRequestAmount, setYieldGenericError } from './stablecoinYieldApprovalThunks';
-import { STABLECOIN_YIELD_PREFIX, stablecoinYieldActions } from './stablecoinYieldReducer';
+import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
+import { stablecoinYieldActions } from './stablecoinYieldReducer';
 import type { YieldFlowResolvedData } from './stablecoinYieldTypes';
 import {
     buildYieldDepositCalldata,

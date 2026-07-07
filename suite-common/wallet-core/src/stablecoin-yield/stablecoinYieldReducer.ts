@@ -9,9 +9,9 @@ import {
 } from '@suite-common/wallet-types';
 import { isSafeObjectKey } from '@trezor/utils';
 
+import { STABLECOIN_YIELD_PREFIX, YIELD_FLOW_STEP_SEQUENCES } from './stablecoinYieldConstants';
 import {
     type StablecoinYieldClaimUnsignedTransaction,
-    YIELD_FLOW_STEP_SEQUENCES,
     type YieldApproveModalState,
     type YieldFlowCompleteRewardItem,
     type YieldFlowStepId,
@@ -61,8 +61,6 @@ type StablecoinYieldStoreActionReviewDataPayload =
       });
 
 export type YieldAllowanceStatus = 'idle' | 'loading' | 'loaded' | 'error';
-
-export const STABLECOIN_YIELD_PREFIX = '@suite-common/wallet-core/stablecoin-yield';
 
 export type StablecoinYieldTxReviewState = {
     precomposedTx?: PrecomposedTransactionFinal;
@@ -436,18 +434,6 @@ export const stablecoinYieldSlice = createSlice({
             withSession(state, action.payload, session => {
                 session.action.pendingTransaction = null;
                 session.error = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
-            });
-        },
-        goToStep(
-            state,
-            action: PayloadAction<
-                StablecoinYieldSessionActionPayload & {
-                    step: YieldFlowStepId;
-                }
-            >,
-        ) {
-            withSession(state, action.payload, session => {
-                session.step = action.payload.step;
             });
         },
         storePrecomposedTransaction(

@@ -12,6 +12,7 @@ import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
+import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { getApyBreakdown } from '../yieldFlowUtils';
 
 export const YieldWithdrawForm = () => {
@@ -118,13 +119,7 @@ export const YieldWithdrawForm = () => {
     return (
         <Column width="100%" alignItems="center">
             <Column gap={24} width="100%" maxWidth={500}>
-                {flow.currentStep === 'complete' ? (
-                    <YieldFlowCompleteWithdraw
-                        input={completedInput}
-                        output={completedOutput}
-                        vaultId={vault.id}
-                    />
-                ) : (
+                {flow.currentStep !== 'complete' && (
                     <>
                         <Text typographyStyle="headline-md">
                             <Translation id="TR_EARN_YIELD_WITHDRAW" />
@@ -136,44 +131,67 @@ export const YieldWithdrawForm = () => {
                                 description={<Translation id={errorMessage} />}
                             />
                         )}
-
-                        <YieldActionStep
-                            flowType={flowType}
-                            token={flowType === 'redeem' ? receiptToken : token}
-                            summaryValue={
-                                <FormattedCryptoAmount
-                                    value={maxAmount}
-                                    symbol={inputTokenSymbol}
-                                />
-                            }
-                            warning={
-                                !isAmountInvalidDecimals && isAmountTooHigh ? (
-                                    <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />
-                                ) : undefined
-                            }
-                            isDisabled={
-                                isAmountEmpty ||
-                                isAmountTooHigh ||
-                                isAmountInvalidDecimals ||
-                                isSubmittingAction ||
-                                !!withdrawPendingTransaction
-                            }
-                            isPending={isSubmittingAction}
-                            pendingTransaction={withdrawPendingTransaction}
-                            unitToggle={
-                                canToggleWithdrawUnit
-                                    ? {
-                                          otherTokenSymbol: otherUnitTokenSymbol,
-                                          onClick: handleToggleWithdrawInputUnit,
-                                      }
-                                    : undefined
-                            }
-                            onMaxClick={handleMaxClick}
-                            onSubmit={handleOnWithdraw}
-                            onPendingTxClick={openPendingTransaction}
-                        />
                     </>
                 )}
+
+                <YieldFlowStepList
+                    flowType={flowType}
+                    currentStep={flow.currentStep}
+                    steps={{
+                        action: {
+                            title: <Translation id="TR_EARN_YIELD_WITHDRAW" />,
+                            content: () => (
+                                <YieldActionStep
+                                    flowType={flowType}
+                                    token={flowType === 'redeem' ? receiptToken : token}
+                                    summaryValue={
+                                        <FormattedCryptoAmount
+                                            value={maxAmount}
+                                            symbol={inputTokenSymbol}
+                                        />
+                                    }
+                                    warning={
+                                        !isAmountInvalidDecimals && isAmountTooHigh ? (
+                                            <YieldActionStepWarning
+                                                isInsufficientFunds={isAmountTooHigh}
+                                            />
+                                        ) : undefined
+                                    }
+                                    isDisabled={
+                                        isAmountEmpty ||
+                                        isAmountTooHigh ||
+                                        isAmountInvalidDecimals ||
+                                        isSubmittingAction ||
+                                        !!withdrawPendingTransaction
+                                    }
+                                    isPending={isSubmittingAction}
+                                    pendingTransaction={withdrawPendingTransaction}
+                                    unitToggle={
+                                        canToggleWithdrawUnit
+                                            ? {
+                                                  otherTokenSymbol: otherUnitTokenSymbol,
+                                                  onClick: handleToggleWithdrawInputUnit,
+                                              }
+                                            : undefined
+                                    }
+                                    onMaxClick={handleMaxClick}
+                                    onSubmit={handleOnWithdraw}
+                                    onPendingTxClick={openPendingTransaction}
+                                />
+                            ),
+                        },
+                        complete: {
+                            isListItem: false,
+                            content: () => (
+                                <YieldFlowCompleteWithdraw
+                                    input={completedInput}
+                                    output={completedOutput}
+                                    vaultId={vault.id}
+                                />
+                            ),
+                        },
+                    }}
+                />
             </Column>
         </Column>
     );

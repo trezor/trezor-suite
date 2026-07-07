@@ -9,7 +9,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { STABLECOIN_YIELD_PREFIX, stablecoinYieldActions } from './stablecoinYieldReducer';
+import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
+import { stablecoinYieldActions } from './stablecoinYieldReducer';
 import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
 import type { YieldFlowResolvedData, YieldPositionFlowType } from './stablecoinYieldTypes';
 import { getAllowanceSpender, getWithdrawRequestAmount } from './stablecoinYieldUtils';

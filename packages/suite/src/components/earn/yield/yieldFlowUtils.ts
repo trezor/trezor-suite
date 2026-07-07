@@ -1,21 +1,25 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { YIELD_FLOW_STEPS, type YieldFlowStepId } from '@suite-common/wallet-core';
+import {
+    YIELD_FLOW_STEP_SEQUENCES,
+    type YieldFlowStepId,
+    type YieldFlowType,
+} from '@suite-common/wallet-core';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import type { StepListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 export { getYieldApprovalAction, type YieldApprovalAction } from '@suite-common/wallet-core';
 
-interface AmountComparisonParams {
+type AmountComparisonParams = {
     amount?: string;
     threshold?: string;
-}
+};
 
-interface YieldModifyAmountInputParams {
+type YieldModifyAmountInputParams = {
     liveAmount?: string;
     actionAmount?: string | null;
     maxAmount: string;
-}
+};
 
 export const isAmountGreaterThan = ({ amount, threshold }: AmountComparisonParams): boolean =>
     !!amount && !!threshold && new BigNumber(amount).gt(threshold);
@@ -55,13 +59,33 @@ export const getApyBreakdown = (
         .flatMap(([symbol, componentApy]) => [symbol, String(componentApy)])
         .join(',');
 
-export const getStepListItemStates = (
-    currentStep: YieldFlowStepId,
-): Record<YieldFlowStepId, StepListItemState> => {
-    const currentStepIndex = YIELD_FLOW_STEPS.indexOf(currentStep);
+export type YieldFlowStepView = {
+    state: StepListItemState;
+    /**
+     * 1-based position within the flow's step list. Steps that are not list items of
+     * the flow get index 0 — they are never rendered in the StepList.
+     */
+    indicator: { index: number; total: number };
+};
 
-    const getStepState = (stepId: YieldFlowStepId): StepListItemState => {
-        const stepIndex = YIELD_FLOW_STEPS.indexOf(stepId);
+/** `listSteps` are the steps rendered as list items; they default to the flow's sequence without 'complete'. */
+export const getYieldFlowSteps = (
+    flowType: YieldFlowType,
+    currentStep: YieldFlowStepId,
+    listSteps?: readonly YieldFlowStepId[],
+): Record<YieldFlowStepId, YieldFlowStepView> => {
+    // Both annotations widen the per-flow tuples (and the filter's inferred type predicate)
+    // so indexOf below accepts any step id.
+    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    const effectiveListSteps: readonly YieldFlowStepId[] =
+        listSteps ?? sequence.filter(stepId => stepId !== 'complete');
+    const currentStepIndex = sequence.indexOf(currentStep);
+
+    const getStepState = (stepIndex: number): StepListItemState => {
+        // Steps outside the flow's sequence are never rendered for it; report them as passed.
+        if (stepIndex === -1) {
+            return 'done';
+        }
 
         if (stepIndex < currentStepIndex) {
             return 'done';
@@ -74,11 +98,17 @@ export const getStepListItemStates = (
         return 'pending';
     };
 
-    const stepStates = {
-        approve: getStepState('approve'),
-        action: getStepState('action'),
-        complete: getStepState('complete'),
-    } satisfies Record<YieldFlowStepId, StepListItemState>;
+    const getStepView = (stepId: YieldFlowStepId): YieldFlowStepView => ({
+        state: getStepState(sequence.indexOf(stepId)),
+        indicator: {
+            index: effectiveListSteps.indexOf(stepId) + 1,
+            total: effectiveListSteps.length,
+        },
+    });
 
-    return stepStates;
+    return {
+        approve: getStepView('approve'),
+        action: getStepView('action'),
+        complete: getStepView('complete'),
+    };
 };
