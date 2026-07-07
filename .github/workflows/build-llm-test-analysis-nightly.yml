@@ -71,7 +71,7 @@ jobs:
 
       - name: Build LLM test analysis cache
         env:
-          CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          CLAUDE_API_KEY: ${{ secrets.E2E_COVERAGE_ANALYSIS_CLAUDE_API_KEY }}
         run: |
           yarn workspace @trezor/e2e-utils analyze-tests ../../suite/e2e/tests --buildCache --exclude "manual/**" ${{ inputs.no_cache && '--force' || '' }}
 
