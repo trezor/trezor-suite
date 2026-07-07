@@ -23,8 +23,17 @@ export const navigateByAccountState = (account: Account, navigate: StakingNaviga
     const stakedBalance = getAccountTotalStakingBalance(account);
     const hasStakedBalance = !!stakedBalance && stakedBalance !== '0';
 
-    if (isSupportedSolStakingNetworkSymbol(account.symbol) || hasStakedBalance) {
+    if (hasStakedBalance) {
         navigate(resolveStakingTargetRoute(account.symbol), {
+            accountKey: account.key,
+        });
+
+        return;
+    }
+
+    if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
+        navigate(RootStackRoutes.HowStakeWorksScreen, {
+            symbol: account.symbol,
             accountKey: account.key,
         });
 
