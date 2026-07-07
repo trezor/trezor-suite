@@ -126,7 +126,7 @@ const getFiatRatesTickersList = async (request: Request<MessageTypes.GetFiatRate
 
 const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => {
     const api = await request.connect();
-    const rawtx = await api.getTransaction(request.payload);
+    const rawtx = await api.getTransaction(request.payload.txid);
     const tx = utils.transformTransaction(rawtx);
 
     return {

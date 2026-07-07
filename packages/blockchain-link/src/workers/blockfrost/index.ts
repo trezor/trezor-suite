@@ -56,7 +56,7 @@ const getAccountBalanceHistory = async (
 
 const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => {
     const api = await request.connect();
-    const txData = await api.getTransaction(request.payload);
+    const txData = await api.getTransaction(request.payload.txid);
     const tx = transformTransaction({ txData });
 
     return {
