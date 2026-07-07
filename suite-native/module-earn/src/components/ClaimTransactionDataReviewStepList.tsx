@@ -23,7 +23,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { ClaimOutputItem } from './ClaimOutputItem';
-import { ClaimSummaryOutputItem } from './ClaimSummaryOutputItem';
+import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.ClaimTransactionDataReview>;
@@ -58,8 +58,7 @@ export const ClaimTransactionDataReviewStepList = () => {
     const networkDecimals = accountSymbol ? (getNetworkDecimals(accountSymbol) ?? 18) : 18;
     const isSolanaClaim = !!accountSymbol && isSupportedSolStakingNetworkSymbol(accountSymbol);
 
-    // Solana: show composed lamports (totalSpent − fee)
-    // Ethereum: show claimable amount (calldata-only)
+    // Solana: show composed lamports (totalSpent − fee), fall back to the claimable amount.
     const claimableAmountInWei =
         isSolanaClaim && precomposedTransaction
             ? new BigNumber(precomposedTransaction.totalSpent)
@@ -81,9 +80,10 @@ export const ClaimTransactionDataReviewStepList = () => {
                 )}
 
                 {!!accountSymbol && (
-                    <ClaimSummaryOutputItem
+                    <EarnSummaryOutputItem
                         accountKey={accountKey}
-                        claimableAmountInWei={claimableAmountInWei}
+                        stakeType="claim"
+                        amount={claimableAmountInWei}
                         fee={summaryOutput?.fee ?? precomposedTransaction?.fee ?? '0'}
                         outputState={summaryOutput?.state}
                         onLayout={event => handleReadListItemHeight(event, 1)}

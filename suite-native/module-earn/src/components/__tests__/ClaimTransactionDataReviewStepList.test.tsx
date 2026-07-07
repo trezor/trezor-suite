@@ -6,7 +6,7 @@ import { type ReviewSummaryOutput } from '@suite-native/transaction-management';
 import { ClaimTransactionDataReviewStepList } from '../ClaimTransactionDataReviewStepList';
 
 const mockClaimOutputItem = jest.fn();
-const mockClaimSummaryOutputItem = jest.fn();
+const mockEarnSummaryOutputItem = jest.fn();
 
 let mockIsTransactionAlreadySigned: boolean;
 let mockSummaryOutput: ReviewSummaryOutput | null;
@@ -43,9 +43,9 @@ jest.mock('../ClaimOutputItem', () => ({
     },
 }));
 
-jest.mock('../ClaimSummaryOutputItem', () => ({
-    ClaimSummaryOutputItem: (props: { outputState?: string; fee?: string }) => {
-        mockClaimSummaryOutputItem(props);
+jest.mock('../EarnSummaryOutputItem', () => ({
+    EarnSummaryOutputItem: (props: { outputState?: string; fee?: string }) => {
+        mockEarnSummaryOutputItem(props);
 
         return null;
     },
@@ -69,7 +69,7 @@ describe('ClaimTransactionDataReviewStepList', () => {
         const { queryByText, queryByTestId } = renderStepList();
 
         expect(mockClaimOutputItem).toHaveBeenCalledTimes(1);
-        expect(mockClaimSummaryOutputItem).toHaveBeenCalledTimes(1);
+        expect(mockEarnSummaryOutputItem).toHaveBeenCalledTimes(1);
         expect(queryByText(getTranslation('generic.buttons.next'))).toBeNull();
         expect(queryByTestId('@earn/claim-review-continue')).toBeNull();
     });
@@ -82,7 +82,7 @@ describe('ClaimTransactionDataReviewStepList', () => {
         expect(mockClaimOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'active' }),
         );
-        expect(mockClaimSummaryOutputItem).toHaveBeenCalledWith(
+        expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: undefined }),
         );
     });
@@ -95,7 +95,7 @@ describe('ClaimTransactionDataReviewStepList', () => {
         expect(mockClaimOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'success' }),
         );
-        expect(mockClaimSummaryOutputItem).toHaveBeenCalledWith(
+        expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'active' }),
         );
     });
@@ -109,7 +109,7 @@ describe('ClaimTransactionDataReviewStepList', () => {
         expect(mockClaimOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'success' }),
         );
-        expect(mockClaimSummaryOutputItem).toHaveBeenCalledWith(
+        expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'success' }),
         );
         expect(queryByTestId('sliding-footer-overlay')).toBeNull();

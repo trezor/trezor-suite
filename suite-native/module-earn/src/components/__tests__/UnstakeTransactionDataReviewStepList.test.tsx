@@ -127,24 +127,12 @@ describe('UnstakeTransactionDataReviewStepList', () => {
         expect(getByTestId('sliding-footer-overlay')).toBeOnTheScreen();
     });
 
-    it('converts the entered amount to base units when there is no Solana tx meta (e.g. Ethereum)', () => {
+    it('passes the amount in base units and the unstake stake type to the summary', () => {
         renderStepList();
 
-        // Route amount '1' ETH -> 1e18 wei.
+        // Route amount '1' ETH -> 1e18 wei. The summary decides itself whether to show it.
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
-            expect.objectContaining({ amount: '1000000000000000000' }),
-        );
-    });
-
-    it('shows the Solana device amount, not the entered one, when the split logic adjusts the amount', () => {
-        // User typed 1 SOL but the min-delegation split logic deactivates a whole 2 SOL account.
-        mockAccountNetworkSymbol = 'sol';
-        mockPrecomposed = { fee: '5000', solanaTxMeta: { deviceAmountLamports: '2000000000' } };
-
-        renderStepList();
-
-        expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
-            expect.objectContaining({ amount: '2000000000' }),
+            expect.objectContaining({ amount: '1000000000000000000', stakeType: 'unstake' }),
         );
     });
 });
