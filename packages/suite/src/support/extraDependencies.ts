@@ -355,7 +355,16 @@ export const extraDependencies: ExtraDependenciesStatic = {
             return state;
         },
         storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
-            payload.suiteSettings?.flags ? { ...state, ...payload.suiteSettings.flags } : state,
+            payload.suiteSettings?.flags
+                ? {
+                      ...state,
+                      ...payload.suiteSettings.flags,
+                      // The onboarding feedback banner is session-only: it is enabled when onboarding
+                      // is completed and must not survive an app restart. Reset it on every load so a
+                      // returning user only sees it again after completing onboarding once more.
+                      showOnboardingFeedbackBanner: false,
+                  }
+                : state,
         storageLoadSuiteSettings: (state: SuiteSettingsState, { payload }: StorageLoadAction) => {
             if (!payload.suiteSettings?.settings) return state;
 
