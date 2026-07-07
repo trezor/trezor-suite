@@ -1,10 +1,10 @@
-# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/5ae3b07d8d6527c42f17c876e404993199144b6a
+# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/f614e907b485bf0ea684552d626f2cc569313fe2
 # we need to use nixos-unstable to be able to use nodejs_24, once there is a stable release with it we can change.
 let
   pkgs = import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/5ae3b07d8d6527c42f17c876e404993199144b6a.tar.gz";
-    sha256 = "1zb5ca8jqavb19j7g06a41jg6bvpr20b9lihvham6qywhgaqprz9";
+    url = "https://github.com/NixOS/nixpkgs/archive/f614e907b485bf0ea684552d626f2cc569313fe2.tar.gz";
+    sha256 = "17m87ra13d3kwlrw8p4vv7w5yyq5pc2qlpl983r47cflw9mzgdz7";
    }) {
     system = builtins.currentSystem;
     config.allowUnfree = true;
@@ -15,7 +15,7 @@ with pkgs;
 
 let
   # unstable packages
-  electron = electron_39;
+  electron = electron_42;
   nodejs = nodejs_24;
   # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
   # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
