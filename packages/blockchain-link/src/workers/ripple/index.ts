@@ -183,6 +183,7 @@ const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTran
         rawTx.result.hash,
         rawTx.result.tx_json,
         rawTx.result.meta,
+        payload.descriptor,
     );
 
     return {
