@@ -100,12 +100,12 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
         await connectSelectAccountModal.closeButton.click();
     });
 
-    // Characterization test documenting that `requireOnDeviceVerification` is currently a dead
-    // option: even when the app explicitly requires on-device verification, the picker exposes no
-    // blocking gate — selecting an account is enough to confirm and export, without ever verifying
-    // it on the device. This locks in the present (broken) behaviour so the follow-up fix that wires
-    // the option to an actual gate has a red test to flip.
-    test('requireOnDeviceVerification is not enforced (dead option)', async ({
+    // With requireOnDeviceVerification set (the default), the picker must not let the user export a
+    // selection until it has been confirmed on the device: selecting alone keeps confirm disabled,
+    // and only verifying the address unlocks it.
+    test('requireOnDeviceVerification blocks confirm until the address is verified', async ({
+        page,
+        device,
         connectPermissionsModal,
         connectSelectAccountModal,
     }) => {
@@ -119,20 +119,22 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
 
         await expect(connectSelectAccountModal.account(0)).toBeVisible();
 
-        // Selection count is the only gate: disabled with nothing selected, enabled the moment an
-        // account is picked — regardless of verification state.
-        await expect(connectSelectAccountModal.confirmButton).toBeDisabled();
+        // Selecting an account is not enough — confirm stays disabled while it is unverified.
         await connectSelectAccountModal.checkbox(0).click();
+        await expect(connectSelectAccountModal.verifiedBadge(0)).toBeHidden();
+        await expect(connectSelectAccountModal.confirmButton).toBeDisabled();
 
-        // Account is selected but never verified on the device...
-        await expect(connectSelectAccountModal.verifiedBadge(0)).not.toBeVisible();
-        // ...yet confirm is enabled despite requireOnDeviceVerification: true — no blocking gate.
+        // Verify the selected address on the device; only then does confirm unlock.
+        await connectSelectAccountModal.verifyButton(0).click();
+        // TODO: 'verifying' is set right after clicking; give the device call time to start.
+        await page.waitForTimeout(1000);
+        await device.pressYes();
+        await expect(connectSelectAccountModal.verifiedBadge(0)).toBeVisible();
         await expect(connectSelectAccountModal.confirmButton).toBeEnabled();
 
         await connectSelectAccountModal.confirmButton.click();
 
         const response = await res;
-        // Export succeeds with an unverified address — the option had no effect.
         expect(response.success).toBe(true);
         if (!response.success) return;
 

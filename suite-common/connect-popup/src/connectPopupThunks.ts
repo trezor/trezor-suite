@@ -899,20 +899,30 @@ export const connectPopupResolveSelectAccountThunk = createThunk<void, { confirm
             return;
         }
 
+        const selectedCandidates = call.candidates.filter(c => c.selected && (c.address || c.xpub));
+
+        // Safety net for the confirm gate in ConnectSelectAccount: when the app requires on-device
+        // verification, never export a selection that hasn't been fully verified, even if this thunk
+        // is somehow reached with an unverified candidate.
+        if (
+            call.options.requireOnDeviceVerification &&
+            !selectedCandidates.every(c => c.validated === 'valid')
+        ) {
+            return;
+        }
+
         // Always an array, even for a 'single' selection — mirrors eth_requestAccounts. `address`
         // and `xpub` are mutually exclusive per candidate (see SelectAccountCandidate).
-        const payload = call.candidates
-            .filter(c => c.selected && (c.address || c.xpub))
-            .map(c => ({
-                symbol: c.symbol,
-                path: c.path,
-                address: c.address,
-                xpub: c.xpub,
-                // undefined for custom (non-built-in) account-type tabs — no real AccountType to report
-                accountType: call.options.accountTypeTabs.find(tab => tab.key === c.accountTypeKey)
-                    ?.accountType,
-                mac: c.mac,
-            }));
+        const payload = selectedCandidates.map(c => ({
+            symbol: c.symbol,
+            path: c.path,
+            address: c.address,
+            xpub: c.xpub,
+            // undefined for custom (non-built-in) account-type tabs — no real AccountType to report
+            accountType: call.options.accountTypeTabs.find(tab => tab.key === c.accountTypeKey)
+                ?.accountType,
+            mac: c.mac,
+        }));
 
         // Export: deliver the selection to the 3rd-party app and flip the picker into its `exported`
         // phase, then unblock the methodHook. Do NOT finishCall — keep the modal open so the user can
