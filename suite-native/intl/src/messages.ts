@@ -2579,11 +2579,6 @@ export const messages = {
                 stepReadyToClaim: 'Ready to claim',
             },
         },
-        stakingInsufficientBalance: {
-            title: "You don't have enough {displaySymbol}",
-            subtitle: 'Minimum amount to stake is {minAmount} {displaySymbol}.',
-            getButton: 'Get more {displaySymbol}',
-        },
         yieldInsufficientBalance: {
             title: "You don't have enough {tokenSymbol}",
             subtitle: 'Get more {tokenSymbol} in this account to start earning yield.',
@@ -2668,6 +2663,9 @@ export const messages = {
             unstakeMaxButton: 'Unstake max',
             withdrawalFeesBanner:
                 "We've left {amount} {displaySymbol} in your account so you can pay withdrawal fees.",
+            insufficientBalanceBanner:
+                'Not enough {displaySymbol}. Staking requires at least {minAmount} {displaySymbol} plus network fees.',
+            insufficientBalanceBannerButton: 'Buy {displaySymbol}',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
