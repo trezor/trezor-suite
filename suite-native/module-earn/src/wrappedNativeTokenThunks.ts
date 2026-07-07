@@ -1,11 +1,13 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type WrappedNativeFlowType,
     type YieldFlowDisplayToken,
     isWrappedNativeFlowSupported,
     selectAddressDisplayType,
+    selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
     trackWrappedNativeTokenThunk,
 } from '@suite-common/wallet-core';
@@ -134,10 +136,13 @@ export const pushWrappedNativeTokenThunk = createThunk<
     { rejectValue: WrappedNativeTokenPushError }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/push`,
-    async ({ account, flowType, signedTransaction }, { dispatch, rejectWithValue }) => {
+    async ({ account, flowType, signedTransaction }, { dispatch, getState, rejectWithValue }) => {
         const pushResponse = await pushYieldTransaction({
             tx: signedTransaction.serializedTx,
             account,
+            isMevProtectionEnabled:
+                selectIsMevProtectionEnabled(getState()) &&
+                selectIsMevProtectionFeatureEnabled(getState()),
         });
 
         if (!pushResponse.success) {

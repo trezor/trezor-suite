@@ -40,6 +40,7 @@ jest.mock('@suite-common/wallet-core', () => ({
         type: 'test/synchronizeSentTransactionThunk',
         payload: params,
     })),
+    selectIsMevProtectionEnabled: () => false,
 }));
 
 const STATIC_SESSION_ID: StaticSessionId = '1stTestnetAddress@device_id:0';
@@ -184,7 +185,7 @@ describe('pushYieldClaimReviewThunk', () => {
 
         expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
         expect(pushTransactionMock).toHaveBeenCalledWith({
-            tx: '0xsignedtx',
+            tx: { hex: '0xsignedtx', disableAlternativeRPC: true },
             coin: account.symbol,
             identity: account.deviceState,
         });
