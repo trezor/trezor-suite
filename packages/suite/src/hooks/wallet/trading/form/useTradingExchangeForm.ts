@@ -221,16 +221,22 @@ export const useTradingExchangeForm = ({
         setValue,
     });
 
-    const { composedLevels, feeInfo, changeFeeLevel, setComposedLevels, composeRequest } =
-        useTradingComposeTransaction<TradingExchangeFormProps>({
-            type: 'exchange',
-            account,
-            network,
-            values,
-            methods,
-            estimateFeeForUnknownRecipient: isFormPage,
-            setShowReserveBanner,
-        });
+    const {
+        isComposing,
+        composedLevels,
+        feeInfo,
+        changeFeeLevel,
+        setComposedLevels,
+        composeRequest,
+    } = useTradingComposeTransaction<TradingExchangeFormProps>({
+        type: 'exchange',
+        account,
+        network,
+        values,
+        methods,
+        estimateFeeForUnknownRecipient: isFormPage,
+        setShowReserveBanner,
+    });
 
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
@@ -724,6 +730,7 @@ export const useTradingExchangeForm = ({
         dexQuotes,
         cexQuotes,
         quotesRequest,
+        isComposing,
         composedLevels,
         defaultCurrency,
         feeInfo,

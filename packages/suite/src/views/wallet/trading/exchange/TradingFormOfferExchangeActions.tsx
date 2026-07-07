@@ -33,6 +33,7 @@ export const TradingFormOfferExchangeActions = () => {
         isLoadingQuote,
         setIsLoadingQuote,
         confirmTrade,
+        isComposing,
         form: { state },
     } = context;
 
@@ -76,7 +77,7 @@ export const TradingFormOfferExchangeActions = () => {
         : state.isFormLoading || isLoadingQuote;
 
     const isButtonDisabled =
-        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || isLoading;
+        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || isComposing || isLoading;
 
     useEffect(() => {
         const initConfirmTrade = async () => {
@@ -135,7 +136,7 @@ export const TradingFormOfferExchangeActions = () => {
                     intent="brand"
                     margin={{ top: 16 }}
                     isDisabled={isButtonDisabled}
-                    isLoading={areFeesLoading || state.isFormLoading}
+                    isLoading={areFeesLoading || state.isFormLoading || isComposing}
                     size="large"
                     minWidth={160}
                     width="100%"
@@ -156,6 +157,7 @@ export const TradingFormOfferExchangeActions = () => {
         return (
             <TradingFormOfferConfirmButton
                 {...confirmButtonData}
+                isLoading={confirmButtonData.isLoading || isComposing}
                 onClick={onSelectQuote}
                 isDisabled={isButtonDisabled}
                 testId="@trading/form/exchange-button"
