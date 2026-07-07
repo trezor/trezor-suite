@@ -46,7 +46,9 @@ const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 
 const buildStore = (storeAccount: Account) =>
     configureMockStore({
-        preloadedState: { wallet: { accounts: [storeAccount] } },
+        preloadedState: {
+            wallet: { accounts: [storeAccount], settings: { mevProtection: false } },
+        },
     });
 
 const getTrackedTokenUpdates = (store: ReturnType<typeof buildStore>) =>

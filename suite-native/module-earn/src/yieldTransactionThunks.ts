@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type YieldFlowDisplayToken,
@@ -9,6 +10,7 @@ import {
     isYieldTxReviewForFlow,
     isYieldWithdrawFlow,
     selectAddressDisplayType,
+    selectIsMevProtectionEnabled,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
     stablecoinYieldActions,
@@ -194,6 +196,9 @@ export const pushYieldActionReviewThunk = createThunk<
         const pushResponse = await pushYieldTransaction({
             tx: serializedTx.tx,
             account: flowData.account,
+            isMevProtectionEnabled:
+                selectIsMevProtectionEnabled(getState()) &&
+                selectIsMevProtectionFeatureEnabled(getState()),
         });
 
         dispatch(stablecoinYieldActions.discardTransaction());
