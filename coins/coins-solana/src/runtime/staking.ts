@@ -414,6 +414,7 @@ export const prepareStakeSolTx = async ({
     connection,
     validator,
     estimatedFee,
+    source = WALLET_SDK_SOURCE,
 }: PrepareStakeSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
         const lamports = toLamports(amount);
@@ -423,7 +424,7 @@ export const prepareStakeSolTx = async ({
             validator,
             sender: from,
             lamports: BigInt(lamports),
-            source: WALLET_SDK_SOURCE,
+            source,
             params,
         });
 
@@ -455,6 +456,7 @@ export const prepareUnstakeSolTx = async ({
     amount,
     connection,
     estimatedFee,
+    source = WALLET_SDK_SOURCE,
 }: PrepareStakeSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
         const lamports = toLamports(amount);
@@ -463,7 +465,7 @@ export const prepareUnstakeSolTx = async ({
             connection,
             sender: from,
             lamports: BigInt(lamports),
-            source: WALLET_SDK_SOURCE,
+            source,
             params,
         });
         const txShim = createTransactionShim(tx.unstakeTx);

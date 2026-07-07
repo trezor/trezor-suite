@@ -50,9 +50,6 @@ import {
     type StakeTxBaseArgs,
 } from '../types';
 
-const STAKE_SOURCE = new BigNumber(WALLET_SDK_SOURCE);
-const STAKE_SOURCE_BIGINT = BigInt(WALLET_SDK_SOURCE);
-
 const encodeCalldata = <D extends string>(
     label: string,
     result: { isValid: boolean; data: D | null },
@@ -70,23 +67,27 @@ const verifyCalldata = (label: string, result: { isValid: boolean; issues: Verif
     }
 };
 
-export const buildStakeData = () => {
+export const buildStakeData = (source: string = WALLET_SDK_SOURCE) => {
     const data = encodeCalldata(
         'stake',
-        Calldata.evm.everstake.stake.encode({ source: STAKE_SOURCE }),
+        Calldata.evm.everstake.stake.encode({ source: new BigNumber(source) }),
     );
-    verifyCalldata('stake', Verifier.evm.everstake.stake(data, { source: STAKE_SOURCE_BIGINT }));
+    verifyCalldata('stake', Verifier.evm.everstake.stake(data, { source: BigInt(source) }));
 
     return data;
 };
 
-export const buildUnstakeData = (amountWei: string, interchanges: number) => {
+export const buildUnstakeData = (
+    amountWei: string,
+    interchanges: number,
+    source: string = WALLET_SDK_SOURCE,
+) => {
     const data = encodeCalldata(
         'unstake',
         Calldata.evm.everstake.unstake.encode({
             value: new BigNumber(amountWei),
             allowedInterchangeNum: new BigNumber(interchanges),
-            source: STAKE_SOURCE,
+            source: new BigNumber(source),
         }),
     );
     verifyCalldata(
@@ -94,7 +95,7 @@ export const buildUnstakeData = (amountWei: string, interchanges: number) => {
         Verifier.evm.everstake.unstake(data, {
             value: BigInt(amountWei),
             allowedInterchangeNum: interchanges,
-            source: STAKE_SOURCE_BIGINT,
+            source: BigInt(source),
         }),
     );
 
@@ -115,19 +116,22 @@ export const buildClaimWithdrawRequestData = () => {
 export const verifyEthereumStakingCalldata = ({
     stakeType,
     calldata,
+    source = WALLET_SDK_SOURCE,
 }: {
     stakeType: StakeType;
     calldata: string;
+    source?: string;
 }): { isValid: boolean; issues: VerifyIssue[] } => {
     const data = calldata as `0x${string}`;
+    const sourceBigInt = BigInt(source);
 
     if (stakeType === 'stake') {
-        return Verifier.evm.everstake.stake(data, { source: STAKE_SOURCE_BIGINT });
+        return Verifier.evm.everstake.stake(data, { source: sourceBigInt });
     }
     if (stakeType === 'unstake') {
         return Verifier.evm.everstake.unstake(
             data,
-            { value: 0n, allowedInterchangeNum: 0, source: STAKE_SOURCE_BIGINT },
+            { value: 0n, allowedInterchangeNum: 0, source: sourceBigInt },
             ['source'],
         );
     }
@@ -737,7 +741,8 @@ export const simulateUnstake = async ({
     amount,
     from,
     symbol,
-}: StakeTxBaseArgs & { amount: string }) => {
+    source = WALLET_SDK_SOURCE,
+}: StakeTxBaseArgs & { amount: string; source?: string }) => {
     if (!isSupportedEthStakingNetworkSymbol(symbol)) return null;
     if (!amount || !from || !symbol) return null;
 
@@ -746,7 +751,7 @@ export const simulateUnstake = async ({
     const { addressContractPool } = ethAddresses;
 
     const amountWei = fromEther(amount).toWei();
-    const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES);
+    const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, source);
 
     const transactionData = await TrezorConnect.blockchainEvmRpcCall({
         coin: symbol,

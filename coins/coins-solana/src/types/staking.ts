@@ -48,6 +48,8 @@ export interface PrepareStakeSolTxParams {
     connection: Connection;
     validator: Address;
     estimatedFee?: Fee;
+    // Everstake Wallet SDK source, identifies the integrating app for TVL attribution.
+    source?: string;
 }
 
 export type PrepareClaimSolTxParams = Omit<PrepareStakeSolTxParams, 'amount' | 'validator'>;

@@ -4,6 +4,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { buildStakeData } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -185,7 +186,7 @@ const buildEthStakeFormDraft = (): FormState =>
             },
         ],
         options: ['transactionData'],
-        transactionData: buildStakeData(),
+        transactionData: buildStakeData(WALLET_SDK_SOURCE_MOBILE),
         isCoinControlEnabled: false,
         hasCoinControlBeenOpened: false,
         selectedUtxos: [],

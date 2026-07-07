@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { buildUnstakeData, getEthereumStakingAddressByType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
-import { UNSTAKE_INTERCHANGES } from '@suite-common/wallet-constants';
+import { UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -77,7 +77,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         return buildEarnComposeFormState(
             getEthereumStakingAddressByType(account.symbol, 'unstake'),
             '0',
-            buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES),
+            buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE),
         );
     }, [account, isValid, amountValue]);
 

@@ -2,6 +2,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { transformTx, verifyEthereumStakingCalldata } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
+import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
     ethereumGetCurrentNonceThunk,
     selectAccountByKey,
@@ -126,6 +127,7 @@ const prepareEthereumStakingContext = (
     const calldataCheck = verifyEthereumStakingCalldata({
         stakeType,
         calldata: variant.calldata,
+        source: WALLET_SDK_SOURCE_MOBILE,
     });
     if (!calldataCheck.isValid) {
         return failed(

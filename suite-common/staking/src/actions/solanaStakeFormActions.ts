@@ -136,6 +136,7 @@ type PrepareSolanaStakeTxDataParams = {
     blockchainUrl: string;
     userAgent: string;
     estimatedFee?: Fee;
+    source?: string;
 };
 
 // Builds stake/unstake/claim tx via Solana runtime; `userAgent` differs for Suite vs Lite.
@@ -147,6 +148,7 @@ export const prepareSolanaStakeTxData = async ({
     blockchainUrl,
     userAgent,
     estimatedFee,
+    source,
 }: PrepareSolanaStakeTxDataParams): Promise<PrepareStakeSolTxResponse | undefined> => {
     const {
         selectSolanaConnection,
@@ -160,11 +162,11 @@ export const prepareSolanaStakeTxData = async ({
     const validator = selectSolanaValidator(symbol);
 
     if (stakeType === 'stake') {
-        return prepareStakeSolTx({ from, amount, connection, validator, estimatedFee });
+        return prepareStakeSolTx({ from, amount, connection, validator, estimatedFee, source });
     }
 
     if (stakeType === 'unstake') {
-        return prepareUnstakeSolTx({ from, amount, connection, validator, estimatedFee });
+        return prepareUnstakeSolTx({ from, amount, connection, validator, estimatedFee, source });
     }
 
     if (stakeType === 'claim') {
@@ -179,6 +181,7 @@ type ComposeSolanaStakingTransactionParams = {
     composeContext: ComposeActionContext;
     blockchainUrl: string;
     userAgent: string;
+    source?: string;
 };
 
 // Solana stake compose: build tx, estimate fee, rebuild with fee and solanaTxMeta (not send-form).
@@ -187,6 +190,7 @@ export const composeSolanaStakingTransaction = async ({
     composeContext,
     blockchainUrl,
     userAgent,
+    source,
 }: ComposeSolanaStakingTransactionParams): Promise<PrecomposedLevels | undefined> => {
     const { account, feeInfo } = composeContext;
     const amount = formValues.outputs[0]?.amount;
@@ -205,6 +209,7 @@ export const composeSolanaStakingTransaction = async ({
         stakeType,
         blockchainUrl,
         userAgent,
+        source,
     });
 
     const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);
@@ -229,6 +234,7 @@ export const composeSolanaStakingTransaction = async ({
             stakeType,
             blockchainUrl,
             userAgent,
+            source,
             estimatedFee: estimatedFee.payload,
         });
 
