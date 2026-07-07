@@ -195,23 +195,19 @@ import IconWeb from '../components/icons/IconWeb';
         </Button>
     </SdkHeading>
 
-    <Tabs items={['Suite desktop popup', 'Suite Web popup', 'Auto mode selection']}>
+    <Tabs items={['Suite desktop popup', 'Suite Web popup']}>
         <Tabs.Tab>
-            {/* todo: add image */}
-            <div> Suite desktop is focused and popup is presented to user</div>
+            <ZoomableIllustration
+                src="/images/schema-connect-desktop.svg"
+                $darkMode
+                alt="connect schema when used with Suite Desktop popup"
+            />
         </Tabs.Tab>
         <Tabs.Tab>
             <ZoomableIllustration
                 src="/images/schema-connect-web.svg"
                 $darkMode
                 alt="connect schema when used on web"
-            />
-        </Tabs.Tab>
-        <Tabs.Tab>
-            <ZoomableIllustration
-                src="/images/schema-connect-web-core-auto.svg"
-                $darkMode
-                alt="connect auto flowchart"
             />
         </Tabs.Tab>
     </Tabs>
