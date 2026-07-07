@@ -1,19 +1,12 @@
-import { useMemo } from 'react';
 import { Pressable } from 'react-native';
 
-import { LinearGradient } from 'expo-linear-gradient';
-
-import { invariant } from '@suite-common/suite-utils';
-import { cryptoIdToSymbol } from '@suite-common/trading';
 import { Box, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { hexToRgba } from '@trezor/utils';
 
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
-import { useTradeableAssetDominantColor } from '../../hooks/general/useTradeableAssetDominantColor';
 
 export type TradeableAssetButtonProps = {
     asset: TradeableAsset;
@@ -23,27 +16,19 @@ export type TradeableAssetButtonProps = {
     testID?: string;
 };
 
-const GRADIENT_START = { x: 0, y: 0.5 } as const;
-const GRADIENT_END = { x: 1, y: 0.5 } as const;
-
-const buttonStyle = prepareNativeStyle<{ borderColor: ReturnType<typeof hexToRgba> }>(
-    ({ spacings, borders }, { borderColor }) => ({
-        ...buttonSizeToDimensionsMap.medium,
-        borderWidth: borders.widths.small,
-        borderColor,
-        gap: spacings.sp8,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    }),
-);
-
-const gradientBackgroundStyle = prepareNativeStyle(() => ({
-    borderRadius: buttonSizeToDimensionsMap.medium.borderRadius,
+const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
+    ...buttonSizeToDimensionsMap.medium,
+    gap: spacings.sp8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.elementFillNeutralSofter,
+    borderColor: colors.elementBorderNeutralSofter,
+    borderWidth: borders.widths.small,
 }));
 
 export const TradeableAssetButton = ({
-    asset: { symbol, contractAddress, cryptoId },
+    asset: { symbol, cryptoId },
     caret,
     onPress,
     accessibilityLabel,
@@ -51,42 +36,25 @@ export const TradeableAssetButton = ({
 }: TradeableAssetButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const networkSymbol = cryptoIdToSymbol(cryptoId);
-    invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
-
-    const dominantAssetColor = useTradeableAssetDominantColor(networkSymbol, contractAddress);
-    const borderColor = useMemo(() => hexToRgba(dominantAssetColor, 0.16), [dominantAssetColor]);
-    const gradientColors = useMemo<[string, string]>(
-        () => [hexToRgba(dominantAssetColor, 0.3), hexToRgba(dominantAssetColor, 0.01)],
-        [dominantAssetColor],
-    );
-
     const symbolTestID = testID ? `${testID}/symbol` : undefined;
 
     return (
-        <LinearGradient
-            colors={gradientColors}
-            style={applyStyle(gradientBackgroundStyle)}
-            start={GRADIENT_START}
-            end={GRADIENT_END}
+        <Pressable
+            onPress={onPress}
+            style={applyStyle(buttonStyle)}
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel={accessibilityLabel}
+            testID={testID}
         >
-            <Pressable
-                onPress={onPress}
-                style={applyStyle(buttonStyle, { borderColor })}
-                accessible
-                accessibilityRole="button"
-                accessibilityLabel={accessibilityLabel}
-                testID={testID}
-            >
-                <IconByCryptoId cryptoId={cryptoId} size="tiny" />
-                <NetworkSymbolExtendedFormatter
-                    symbol={symbol}
-                    variant="body-sm-strong"
-                    color="contentPrimary"
-                    testID={symbolTestID}
-                />
-                {caret ? <Icon name="caretDown" color="contentPrimary" size="medium" /> : <Box />}
-            </Pressable>
-        </LinearGradient>
+            <IconByCryptoId cryptoId={cryptoId} size="tiny" />
+            <NetworkSymbolExtendedFormatter
+                symbol={symbol}
+                variant="body-sm-strong"
+                color="contentPrimary"
+                testID={symbolTestID}
+            />
+            {caret ? <Icon name="caretDown" color="contentPrimary" size="medium" /> : <Box />}
+        </Pressable>
     );
 };
