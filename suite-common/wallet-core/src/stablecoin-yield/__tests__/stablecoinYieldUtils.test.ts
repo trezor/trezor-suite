@@ -6,6 +6,7 @@ import {
     buildYieldDepositCalldata,
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
+    getNextYieldFlowStep,
     splitYieldPendingTransaction,
 } from '../stablecoinYieldUtils';
 
@@ -84,6 +85,29 @@ describe('stablecoinYieldUtils', () => {
                     flowType: 'withdraw',
                 }),
             ).toThrow('Failed to encode withdraw calldata');
+        });
+    });
+
+    describe('getNextYieldFlowStep', () => {
+        it('advances deposit through approve → action → complete', () => {
+            expect(getNextYieldFlowStep('deposit', 'approve')).toBe('action');
+            expect(getNextYieldFlowStep('deposit', 'action')).toBe('complete');
+        });
+
+        it.each(['withdraw', 'redeem', 'claim'] as const)(
+            'advances %s from action to complete',
+            flowType => {
+                expect(getNextYieldFlowStep(flowType, 'action')).toBe('complete');
+            },
+        );
+
+        it('stays on the last step of the flow', () => {
+            expect(getNextYieldFlowStep('deposit', 'complete')).toBe('complete');
+            expect(getNextYieldFlowStep('claim', 'complete')).toBe('complete');
+        });
+
+        it('stays on a step that is not part of the flow', () => {
+            expect(getNextYieldFlowStep('withdraw', 'approve')).toBe('approve');
         });
     });
 
