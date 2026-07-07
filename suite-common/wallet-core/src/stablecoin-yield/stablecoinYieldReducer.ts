@@ -9,15 +9,17 @@ import {
 } from '@suite-common/wallet-types';
 import { isSafeObjectKey } from '@trezor/utils';
 
-import type {
-    StablecoinYieldClaimUnsignedTransaction,
-    YieldApproveModalState,
-    YieldFlowCompleteRewardItem,
-    YieldFlowStepId,
-    YieldFlowType,
-    YieldPendingTransactionState,
-    YieldPositionFlowType,
+import {
+    type StablecoinYieldClaimUnsignedTransaction,
+    YIELD_FLOW_STEP_SEQUENCES,
+    type YieldApproveModalState,
+    type YieldFlowCompleteRewardItem,
+    type YieldFlowStepId,
+    type YieldFlowType,
+    type YieldPendingTransactionState,
+    type YieldPositionFlowType,
 } from './stablecoinYieldTypes';
+import { getNextYieldFlowStep } from './stablecoinYieldUtils';
 import { transactionsActions } from '../transactions/transactionsActions';
 
 // Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
@@ -151,8 +153,11 @@ export const initialStablecoinYieldState: StablecoinYieldState = {
     txReview: initialStablecoinYieldTxReviewState,
 };
 
-const createInitialStablecoinYieldSessionState = (): StablecoinYieldSessionState => ({
+const createInitialStablecoinYieldSessionState = (
+    flowType: YieldFlowType,
+): StablecoinYieldSessionState => ({
     ...initialStablecoinYieldSessionState,
+    step: YIELD_FLOW_STEP_SEQUENCES[flowType][0],
     approval: { ...initialStablecoinYieldSessionState.approval },
     action: { ...initialStablecoinYieldSessionState.action },
     result: {
@@ -195,7 +200,7 @@ export const stablecoinYieldSlice = createSlice({
             const sessionKey = getStablecoinYieldSessionKey(flowKey);
 
             if (!state[flowType][sessionKey]) {
-                state[flowType][sessionKey] = createInitialStablecoinYieldSessionState();
+                state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(flowType);
             }
         },
         disposeSession(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
@@ -215,7 +220,7 @@ export const stablecoinYieldSlice = createSlice({
             }
 
             state[flowType][getStablecoinYieldSessionKey(flowKey)] =
-                createInitialStablecoinYieldSessionState();
+                createInitialStablecoinYieldSessionState(flowType);
         },
         setError(
             state,
@@ -330,12 +335,12 @@ export const stablecoinYieldSlice = createSlice({
                 session.action.amount = action.payload.amount;
                 session.action.pendingTransaction = null;
                 session.action.review = null;
-                session.step = 'action';
+                session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
             });
         },
         skipApprovalStep(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
-                session.step = 'action';
+                session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
             });
         },
         revokeSuccess(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
@@ -424,7 +429,7 @@ export const stablecoinYieldSlice = createSlice({
 
                 session.action.pendingTransaction = null;
                 session.action.review = null;
-                session.step = 'complete';
+                session.step = getNextYieldFlowStep(action.payload.flowType, 'action');
             });
         },
         transactionFailed(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {

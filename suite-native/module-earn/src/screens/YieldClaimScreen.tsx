@@ -115,14 +115,6 @@ export const YieldClaimScreen = () => {
     });
 
     useEffect(() => {
-        if (!flowKey || session?.step !== 'approve') {
-            return;
-        }
-
-        dispatch(stablecoinYieldActions.skipApprovalStep({ flowType: 'claim', flowKey }));
-    }, [dispatch, flowKey, session?.step]);
-
-    useEffect(() => {
         if (session?.step === 'complete') {
             navigation.replace(YieldStackRoutes.YieldClaimComplete, route.params);
         }

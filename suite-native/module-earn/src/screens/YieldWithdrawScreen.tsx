@@ -266,14 +266,6 @@ export const YieldWithdrawScreen = () => {
     }, [closePendingBottomSheet, isFocused, isWithdrawPending, openPendingBottomSheet]);
 
     useEffect(() => {
-        if (resolutionStatus !== 'resolved' || !flowKey || session?.step !== 'approve') {
-            return;
-        }
-
-        dispatch(stablecoinYieldActions.skipApprovalStep({ flowType, flowKey }));
-    }, [dispatch, flowKey, flowType, resolutionStatus, session?.step]);
-
-    useEffect(() => {
         if (session?.step === 'complete') {
             navigation.replace(YieldStackRoutes.YieldWithdrawComplete, {
                 ...route.params,

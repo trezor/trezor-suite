@@ -11,12 +11,14 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import type {
-    YieldFlowDisplayToken,
-    YieldFlowResolvedData,
-    YieldFlowType,
-    YieldPendingTransactionState,
-    YieldWithdrawFlowType,
+import {
+    YIELD_FLOW_STEP_SEQUENCES,
+    type YieldFlowDisplayToken,
+    type YieldFlowResolvedData,
+    type YieldFlowStepId,
+    type YieldFlowType,
+    type YieldPendingTransactionState,
+    type YieldWithdrawFlowType,
 } from './stablecoinYieldTypes';
 
 type TokenLike = {
@@ -108,6 +110,25 @@ export const getStablecoinYieldFlowKey = ({
 
 export const isYieldWithdrawFlow = (flowType: YieldFlowType): flowType is YieldWithdrawFlowType =>
     flowType === 'withdraw' || flowType === 'redeem';
+
+/**
+ * Returns the step that follows `step` in the flow's step sequence. Stays on `step`
+ * when it is the last one or not part of the flow at all.
+ */
+export const getNextYieldFlowStep = (
+    flowType: YieldFlowType,
+    step: YieldFlowStepId,
+): YieldFlowStepId => {
+    // Widened so indexOf accepts any step id across the per-flow tuples.
+    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    const stepIndex = sequence.indexOf(step);
+
+    if (stepIndex === -1) {
+        return step;
+    }
+
+    return sequence[stepIndex + 1] ?? step;
+};
 
 export const getYieldWithdrawInputToken = ({
     flowData,
