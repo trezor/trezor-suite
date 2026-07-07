@@ -21,8 +21,8 @@ const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.legacyBackgroundNeutralSubtleOnElevation1,
-    borderColor: colors.borderNeutral,
+    backgroundColor: colors.elementFillNeutralSofter,
+    borderColor: colors.elementBorderNeutralSofter,
     borderWidth: borders.widths.small,
 }));
 
