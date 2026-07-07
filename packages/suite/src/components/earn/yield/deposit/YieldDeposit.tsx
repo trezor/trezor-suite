@@ -1,5 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
+import { ContextMessage } from '@suite/message-system';
 import { type EarnParams } from '@suite/router';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
@@ -7,7 +8,6 @@ import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { useAllowance } from 'src/hooks/wallet/allowance/useAllowance';
 import { AllowanceContext } from 'src/hooks/wallet/allowance/useAllowanceContext';

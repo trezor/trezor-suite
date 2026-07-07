@@ -6,6 +6,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
@@ -26,7 +27,6 @@ import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';

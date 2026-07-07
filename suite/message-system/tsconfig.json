@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["."],
+    "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../external-links" },
+        { "path": "../intl" },
+        { "path": "../router" },
+        { "path": "../settings" },
+        { "path": "../tor" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" }
+    ]
+}

@@ -15104,6 +15104,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/message-system@workspace:*, @suite/message-system@workspace:suite/message-system":
+  version: 0.0.0-use.local
+  resolution: "@suite/message-system@workspace:suite/message-system"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite/external-links": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@suite/settings": "workspace:*"
+    "@suite/tor": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+    redux: "npm:^5.0.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite/metadata-migration@workspace:*, @suite/metadata-migration@workspace:suite/metadata-migration":
   version: 0.0.0-use.local
   resolution: "@suite/metadata-migration@workspace:suite/metadata-migration"
@@ -17061,6 +17082,7 @@ __metadata:
     "@suite/labeling": "workspace:*"
     "@suite/locks": "workspace:*"
     "@suite/macos": "workspace:*"
+    "@suite/message-system": "workspace:*"
     "@suite/metadata": "workspace:*"
     "@suite/metadata-migration": "workspace:*"
     "@suite/modal": "workspace:*"

@@ -4,6 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
@@ -19,7 +20,6 @@ import { Banner, Button, Card, Column, Text } from '@trezor/components';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';

@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
@@ -9,7 +10,6 @@ import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDispatch } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 

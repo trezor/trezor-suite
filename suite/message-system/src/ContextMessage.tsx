@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -12,7 +13,7 @@ import {
 } from '@suite-common/message-system';
 import { Banner } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import type { MessageSystemSuiteWithTorRootState } from './messageSystemRootState';
 
 type ContextMessageProps = {
     context: ContextDomain;
@@ -20,7 +21,9 @@ type ContextMessageProps = {
 
 export const ContextMessage = ({ context }: ContextMessageProps) => {
     const language = useSelector(selectLanguage);
-    const message = useSelector(state => selectContextMessageContent(state, context, language));
+    const message = useSelector((state: MessageSystemSuiteWithTorRootState) =>
+        selectContextMessageContent(state, context, language),
+    );
     const { isTorEnabled } = useSelector(selectTorState);
     const torOnionLinks = useSelector(selectTorOnionLinks);
     const dispatch = useDispatch();
@@ -70,7 +73,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
                 <>
                     {actionConfig && (
                         <Banner.Button
-                            onClick={actionConfig?.onClick}
+                            onClick={actionConfig.onClick}
                             data-testid={actionConfig['data-testid']}
                         >
                             {actionConfig.label}

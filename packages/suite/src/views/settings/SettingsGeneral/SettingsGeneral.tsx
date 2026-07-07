@@ -1,6 +1,7 @@
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
+import { ContextMessage } from '@suite/message-system';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { TorStatus, selectTorState } from '@suite/tor';
@@ -16,7 +17,6 @@ import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 

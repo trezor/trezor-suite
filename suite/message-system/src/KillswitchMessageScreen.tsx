@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -13,8 +14,6 @@ import {
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const APP_RESTART_DELAY_MILLISECONDS = 100;
 
