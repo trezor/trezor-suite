@@ -1,11 +1,12 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type FeeInfo } from '@suite-common/wallet-types';
+import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
+import { DEFAULT_FEE_INFO } from './feesConstants';
 import { getNewFeeInfo, sortLevels } from './feesUtils';
 import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
@@ -81,6 +82,19 @@ export const updateFeeInfoThunk = createThunk<
         const network = getNetwork(networkSymbol);
         const { symbol } = network;
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
+
+        // Tron fees are derived per transaction from bandwidth/energy, there is no
+        // network-level fee estimate to fetch. Keep the current (preloaded) data.
+        if (network.networkType === 'tron') {
+            const currentFeeInfo = (getState() as { wallet: { fees: FeesState } }).wallet.fees[
+                symbol
+            ]?.data;
+
+            return fulfillWithValue(
+                currentFeeInfo ?? { ...DEFAULT_FEE_INFO, blockHeight: blockchainInfo.blockHeight },
+            );
+        }
+
         const device = selectSelectedDevice(getState());
 
         const [newFeeInfo] = await Promise.all([
