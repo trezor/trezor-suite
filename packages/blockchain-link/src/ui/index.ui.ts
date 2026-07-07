@@ -64,7 +64,7 @@ const handleClick = (event: MouseEvent) => {
         case 'get-tx': {
             try {
                 blockchain
-                    .getTransaction(getInputValue('get-tx-id'))
+                    .getTransaction({ txid: getInputValue('get-tx-id') })
                     .then(onResponse)
                     .catch(onError);
             } catch (error) {

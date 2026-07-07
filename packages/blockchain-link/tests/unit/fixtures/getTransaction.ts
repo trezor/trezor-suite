@@ -138,7 +138,7 @@ export default {
     blockbook: [
         {
             description: 'Successful',
-            params: '28451eff296d05f25cdb08c8bb7956d4f18d0c1e09fe4a1d337f347afdf9a7a1',
+            params: { txid: '28451eff296d05f25cdb08c8bb7956d4f18d0c1e09fe4a1d337f347afdf9a7a1' },
             serverFixtures: [
                 {
                     method: 'getTransaction',
@@ -151,14 +151,14 @@ export default {
         },
         {
             description: 'Not found',
-            params: 'AA',
+            params: { txid: 'AA' },
             error: 'Transaction not found',
         },
     ],
     ripple: [
         {
             description: 'Successful',
-            params: '6390FE5EE3B22239B2CA403C32DAFCA613B7FEEE55473A50CB8602CE0FE3EB3F',
+            params: { txid: '6390FE5EE3B22239B2CA403C32DAFCA613B7FEEE55473A50CB8602CE0FE3EB3F' },
             serverFixtures: [
                 {
                     method: 'tx',
@@ -173,14 +173,14 @@ export default {
         },
         {
             description: 'Not found',
-            params: '6390FE5EE3B22239B2CA403C32DAFCA613B7FEEE55473A50CB8602CE0FE3EB3F',
+            params: { txid: '6390FE5EE3B22239B2CA403C32DAFCA613B7FEEE55473A50CB8602CE0FE3EB3F' },
             error: 'Transaction not found',
         },
     ],
     blockfrost: [
         {
             description: 'Successful',
-            params: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+            params: { txid: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026' },
             serverFixtures: [{ method: 'GET_TRANSACTION', response: { data: blockfrostFixture } }],
             response: blockfrostTx,
         },
@@ -200,7 +200,7 @@ export default {
                     },
                 },
             ],
-            params: 'non_existing_tx',
+            params: { txid: 'non_existing_tx' },
             error: 'The requested component has not been found.',
         },
     ],
