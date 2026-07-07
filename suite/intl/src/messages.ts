@@ -594,7 +594,7 @@ export const messages = defineMessages({
     },
     TR_APPROVAL_MODAL_REVOKE_BANNER: {
         defaultMessage:
-            'The spending limit too low. Revoke the current spending limit and approve a higher amount.',
+            'The spending limit is too low. Revoke the current spending limit and approve a higher amount.',
         id: 'TR_APPROVAL_MODAL_REVOKE_BANNER',
     },
     TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON: {
@@ -1241,7 +1241,7 @@ export const messages = defineMessages({
     },
     TR_TRADING_BUY_CONFIRM_DESCRIPTION: {
         id: 'TR_TRADING_BUY_CONFIRM_DESCRIPTION',
-        defaultMessage: "You'll be redirected to provider's website to finish the payment.",
+        defaultMessage: "You'll be redirected to the provider's website to finish the payment.",
     },
     TR_TRADING_SELL_VIA: {
         id: 'TR_TRADING_SELL_VIA',
@@ -1555,7 +1555,7 @@ export const messages = defineMessages({
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
     TR_ASSETS: {
-        defaultMessage: 'Coin',
+        defaultMessage: 'Network',
         id: 'TR_ASSETS',
     },
     TR_BACK: {
@@ -2067,7 +2067,7 @@ export const messages = defineMessages({
     },
     TR_CREATE_ADDITIONAL_BACKUP_CURRENT_DESCRIPTION: {
         defaultMessage:
-            'Your current wallet backup is still valid and can be used to recover your funds. Store it securely, if you want to keep it. Otherwise destroy it.',
+            'Your current wallet backup is still valid and can be used to recover your funds. Store it securely if you want to keep it. Otherwise destroy it.',
         id: 'TR_CREATE_ADDITIONAL_BACKUP_CURRENT_DESCRIPTION',
     },
     TR_CREATE_ADDITIONAL_BACKUP_UNDERSTAND: {
@@ -5427,7 +5427,7 @@ export const messages = defineMessages({
         id: 'TR_WALLET_BACKUP_CREATED',
     },
     TR_WALLET_BACKUP_CREATED_DESCRIPTION: {
-        defaultMessage: 'Make sure to store your wallet backup in a secure, private place.',
+        defaultMessage: 'Make sure you store your wallet backup in a secure, private place.',
         id: 'TR_WALLET_BACKUP_CREATED_DESCRIPTION',
     },
     TR_WALLET_BACKUP_TYPE: {
@@ -8363,7 +8363,7 @@ export const messages = defineMessages({
     TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED',
         defaultMessage:
-            'Trezor Suite will not check whether your connected device is a genuine Trezor. You could use a fake or tampered device without a warning.',
+            'Device authenticity check is turned off. Trezor Suite won’t verify your device. A fake or tampered device could connect without warning. We recommend turning it on.',
     },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON',
@@ -8412,7 +8412,7 @@ export const messages = defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED',
         defaultMessage:
-            'Trezor Suite will not check whether the firmware on your Trezor is genuine. You could use modified or unofficial firmware without a warning.',
+            'Firmware authenticity check is turned off. Trezor Suite won’t verify your firmware. Modified or unofficial firmware could run without warning. We recommend turning this check on.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON',
@@ -8595,7 +8595,7 @@ export const messages = defineMessages({
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION',
         defaultMessage:
-            "Devices set up in seedless mode can't access Trezor Suite to prevent irreversible asset loss, which can occur if a device is used incorrectly.",
+            "Devices set up in seedless mode can't access Trezor Suite to prevent irreversible asset loss, which can occur if the device is used incorrectly.",
     },
     TR_FORMAT: {
         id: 'TR_FORMAT',
@@ -9152,7 +9152,7 @@ export const messages = defineMessages({
     TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING: {
         id: 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING',
         description: 'Warning in coinjoin rbf form',
-        defaultMessage: 'Your networks are in use. Turn off the coinjoin first.',
+        defaultMessage: 'Your coins are in use. Turn off the coinjoin first.',
     },
     TR_BREAKING_ANONYMITY_CHECKBOX: {
         id: 'TR_BREAKING_ANONYMITY_CHECKBOX',
@@ -9199,12 +9199,12 @@ export const messages = defineMessages({
     TR_SEND_NOT_ANONYMIZED_COINS: {
         id: 'TR_SEND_NOT_ANONYMIZED_COINS',
         description: 'Send button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Send non-private assets',
+        defaultMessage: 'Send non-private coins',
     },
     TR_SIGN_WITH_NOT_ANONYMIZED_COINS: {
         id: 'TR_SIGN_WITH_NOT_ANONYMIZED_COINS',
         description: 'Sign button text in coinjoin account when low-anonymity UTXOs are selected',
-        defaultMessage: 'Sign with non-private assets',
+        defaultMessage: 'Sign with non-private coins',
     },
     TR_YOU_SHOULD_ANONYMIZE: {
         id: 'TR_YOU_SHOULD_ANONYMIZE',
@@ -10060,12 +10060,11 @@ export const messages = defineMessages({
     },
     TR_EARN_STAKING_APY_TOOLTIP: {
         id: 'TR_EARN_STAKING_APY_TOOLTIP',
-        defaultMessage:
-            'This is the annual percentage yield (APY). It includes compounded returns.',
+        defaultMessage: 'Annual percentage yield (APY)',
     },
     TR_EARN_STAKING_APR_TOOLTIP: {
         id: 'TR_EARN_STAKING_APR_TOOLTIP',
-        defaultMessage: "This is the annual percentage rate (APR). It doesn't include compounding.",
+        defaultMessage: 'Annual percentage rate (APR)',
     },
     TR_EARN_YIELD_AMOUNT_TO_WITHDRAW: {
         id: 'TR_EARN_YIELD_AMOUNT_TO_WITHDRAW',
@@ -10430,7 +10429,7 @@ export const messages = defineMessages({
     TR_STAKING_CARD_TEXT_TRON: {
         id: 'TR_STAKING_CARD_TEXT_TRON',
         defaultMessage:
-            'Freeze your TRX to earn staking rewards and get resources that reduce fees on your transactions.',
+            'Freeze your TRX to earn staking rewards and get resources that reduce transaction fees.',
     },
     TR_STAKING_CARD_START_STAKING: {
         id: 'TR_STAKING_CARD_START_STAKING',
@@ -10648,11 +10647,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_BANDWIDTH: {
         id: 'TR_EARN_TRON_BANDWIDTH',
-        defaultMessage: '{count, plural, =0 {Bandwidth} other {+# bandwidth}}',
+        defaultMessage: '{count, plural, one {}=0 {Bandwidth} other {+# bandwidth}}',
     },
     TR_EARN_TRON_ENERGY: {
         id: 'TR_EARN_TRON_ENERGY',
-        defaultMessage: '{count, plural, =0 {Energy} other {+# energy}}',
+        defaultMessage: '{count, plural, one {}=0 {Energy} other {+# energy}}',
     },
     TR_EARN_TRON_STAKE_TITLE: {
         id: 'TR_EARN_TRON_STAKE_TITLE',
@@ -10836,7 +10835,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_WITHDRAW_READY: {
         id: 'TR_EARN_TRON_WITHDRAW_READY',
-        defaultMessage: '{amount} unstaked & ready to be withdrawn',
+        defaultMessage: '{amount} unstaked and ready to withdraw',
     },
     TR_EARN_TRON_HOW_IT_WORKS: {
         id: 'TR_EARN_TRON_HOW_IT_WORKS',
@@ -10865,7 +10864,7 @@ export const messages = defineMessages({
     TR_EARN_TRON_FREE_BANDWIDTH_TOOLTIP: {
         id: 'TR_EARN_TRON_FREE_BANDWIDTH_TOOLTIP',
         defaultMessage:
-            'Each account includes free bandwidth. For any transaction, you can use free or earned bandwidth, not both.',
+            'Each account includes free bandwidth. For any transaction, you can use either free or earned bandwidth, not both.',
     },
     TR_EARN_TRON_TOTAL_ENERGY: {
         id: 'TR_EARN_TRON_TOTAL_ENERGY',
@@ -10905,11 +10904,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_BANDWIDTH_REDUCTION: {
         id: 'TR_EARN_TRON_BANDWIDTH_REDUCTION',
-        defaultMessage: '{count, plural, other {-# bandwidth}}',
+        defaultMessage: '{count, plural, one {}other {-# bandwidth}}',
     },
     TR_EARN_TRON_ENERGY_REDUCTION: {
         id: 'TR_EARN_TRON_ENERGY_REDUCTION',
-        defaultMessage: '{count, plural, other {-# energy}}',
+        defaultMessage: '{count, plural, one {}other {-# energy}}',
     },
     TR_EARN_TRON_SELECT_REPRESENTATIVE: {
         id: 'TR_EARN_TRON_SELECT_REPRESENTATIVE',
@@ -12152,11 +12151,11 @@ export const messages = defineMessages({
     },
     TR_PERMISSION_SIGN: {
         id: 'TR_PERMISSION_SIGN',
-        defaultMessage: 'Permit transaction and data signing on Trezor',
+        defaultMessage: 'Allow transaction and data signing on Trezor',
     },
     TR_PERMISSION_SIGN_MESSAGE: {
         id: 'TR_PERMISSION_SIGN_MESSAGE',
-        defaultMessage: 'Permit message signing on Trezor',
+        defaultMessage: 'Allow message signing on Trezor',
     },
     TR_PERMISSION_VERIFY_MESSAGE: {
         id: 'TR_PERMISSION_VERIFY_MESSAGE',
@@ -12257,7 +12256,7 @@ export const messages = defineMessages({
     },
     TR_SUITE_SYNC_ENABLED_SUCCESS: {
         id: 'TR_SUITE_SYNC_ENABLED_SUCCESS',
-        defaultMessage: 'Suite Sync turned on successfully.',
+        defaultMessage: 'Suite Sync turned on.',
     },
     TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
