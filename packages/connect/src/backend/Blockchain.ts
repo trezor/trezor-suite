@@ -182,8 +182,8 @@ export class Blockchain {
         return this.initPromise;
     }
 
-    getTransactions(txs: string[]) {
-        return Promise.all(txs.map(id => this.link.getTransaction(id)));
+    getTransactions(txs: string[], descriptor?: string) {
+        return Promise.all(txs.map(txid => this.link.getTransaction({ txid, descriptor })));
     }
 
     getTransactionHexes(txids: string[]) {

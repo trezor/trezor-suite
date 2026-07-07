@@ -13,6 +13,7 @@ type Params = {
     txs: string[];
     coinInfo: CoinInfo;
     identity?: string;
+    descriptor?: string;
 };
 
 export default class BlockchainGetTransactions extends AbstractMethod<
@@ -27,6 +28,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             { name: 'txs', type: 'array', required: true },
             { name: 'coin', type: 'string', required: true },
             { name: 'identity', type: 'string' },
+            { name: 'descriptor', type: 'string' },
         ]);
 
         const coinInfo = getCoinInfo(payload.coin);
@@ -40,6 +42,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             txs: payload.txs,
             coinInfo,
             identity: payload.identity,
+            descriptor: payload.descriptor,
         };
 
         super(message, params);
@@ -60,6 +63,6 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             this.params.identity,
         );
 
-        return backend.getTransactions(this.params.txs);
+        return backend.getTransactions(this.params.txs, this.params.descriptor);
     }
 }
