@@ -33,11 +33,11 @@ export const sendFormSlice = createSliceWithExtraDeps({
     name: 'send',
     initialState: sendFormInitialState,
     reducers: {
-        clearFeeLevels: state => {
+        clearFeeLevels: (state: NativeSendState) => {
             state.feeLevels = {};
         },
         storeFeeLevels: (
-            state,
+            state: NativeSendState,
             { payload }: PayloadAction<{ feeLevels: GeneralPrecomposedLevels }>,
         ) => {
             state.feeLevels = payload.feeLevels;
