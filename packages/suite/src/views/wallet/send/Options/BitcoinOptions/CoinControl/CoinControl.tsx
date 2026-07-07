@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -7,8 +7,11 @@ import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { fetchUtxoTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { convertAmountUnitsToSubunits, formatNetworkAmount } from '@suite-common/wallet-utils';
+import {
+    convertAmountUnitsToSubunits,
+    fetchUtxoTransactionsForAccount,
+    formatNetworkAmount,
+} from '@suite-common/wallet-utils';
 import {
     Banner,
     Card,
@@ -22,11 +25,12 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
+import { useAsyncMemo } from '@trezor/react-utils';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
@@ -69,7 +73,6 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     } = useSendFormContext();
     const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const dispatch = useDispatch();
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
@@ -143,17 +146,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const hasEligibleUtxos = spendableUtxos.length + lowAnonymityUtxos.length > 0;
 
     // fetch all transactions so that we can show a transaction timestamp for each UTXO
-    useEffect(() => {
-        const promise = dispatch(
-            fetchUtxoTransactionsForAccountThunk({
-                accountKey: account.key,
-            }),
-        );
-
-        return () => {
-            promise.abort();
-        };
-    }, [account, dispatch]);
+    const utxoTxs = useAsyncMemo(() => fetchUtxoTransactionsForAccount(account), [account]);
 
     const missingToInputValues = {
         amount: <FormattedCryptoAmount value={formattedMissing} symbol={account.symbol} />,
@@ -225,6 +218,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         icon={ShieldCheckIcon}
                         iconIntent="brand"
                         utxos={spendableUtxosOnPage}
+                        utxoTxs={utxoTxs}
                     />
                 )}
                 {!!lowAnonymityUtxosOnPage.length && (
@@ -240,6 +234,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         icon={ShieldWarningIcon}
                         iconIntent="warning"
                         utxos={lowAnonymityUtxosOnPage}
+                        utxoTxs={utxoTxs}
                     />
                 )}
                 {!hasEligibleUtxos && (
@@ -255,6 +250,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         icon={InfoIcon}
                         iconIntent="neutral"
                         utxos={dustUtxosOnPage}
+                        utxoTxs={utxoTxs}
                     />
                 )}
                 {showPagination && (

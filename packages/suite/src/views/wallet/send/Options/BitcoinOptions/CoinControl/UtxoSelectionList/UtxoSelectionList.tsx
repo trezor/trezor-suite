@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { selectAccountTransactions } from '@suite-common/wallet-core';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     Column,
     IconCircle,
@@ -32,6 +33,7 @@ interface UtxoSelectionListProps {
     icon: IconComponent;
     iconIntent?: IconCircleIntent;
     utxos: AccountUtxo[];
+    utxoTxs?: { [txid: string]: WalletAccountTransaction };
     withHeader: boolean;
 }
 
@@ -41,6 +43,7 @@ export const UtxoSelectionList = ({
     icon,
     iconIntent = 'neutral',
     utxos,
+    utxoTxs = {},
     withHeader,
 }: UtxoSelectionListProps) => {
     const { account } = useSendFormContext();
@@ -71,9 +74,11 @@ export const UtxoSelectionList = ({
                 {utxos.map(utxo => (
                     <UtxoSelection
                         key={`${utxo.txid}-${utxo.vout}`}
-                        transaction={accountTransactions.find(
-                            transaction => transaction.txid === utxo.txid,
-                        )}
+                        transaction={
+                            accountTransactions.find(
+                                transaction => transaction.txid === utxo.txid,
+                            ) ?? utxoTxs[utxo.txid]
+                        }
                         utxo={utxo}
                     />
                 ))}
