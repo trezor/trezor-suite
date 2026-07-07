@@ -45,9 +45,14 @@ export const useEvmNonceInfo = (
     const isEnabled = enabled && account !== undefined;
 
     const { data, isLoading } = useQuery({
+        // account.misc.nonce is included so a delayed store update (e.g. fetchAndUpdateAccountThunk
+        // dispatches the tx-list update, then updates account.misc.nonce only after an `await` a few
+        // lines later — see accountsThunks.ts) invalidates the query instead of leaving it stuck on
+        // whatever nonce happened to be current when this hook's very first fetch fired.
         queryKey: desktopQueryKeys.evmConfirmedNonce(
             account?.symbol ?? '',
             account?.descriptor ?? '',
+            account?.misc.nonce ?? '',
         ),
         queryFn: async () => {
             // Unreachable while disabled — `enabled` below is false whenever `account` is undefined.
