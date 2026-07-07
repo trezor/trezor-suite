@@ -10,7 +10,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -18,7 +18,7 @@ import {
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     Box,
@@ -31,6 +31,7 @@ import {
 } from '@suite-native/atoms';
 import {
     AddressFormatter,
+    CoinToFiatAmountFormatter,
     TokenAmountFormatter,
     TokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
@@ -77,7 +78,7 @@ const DetailRow = ({ label, children }: DetailRowProps) => {
 
 type TokenSettingsBottomSheetProps = {
     accountKey: AccountKey;
-    tokenContract: TokenAddress;
+    tokenContract?: TokenAddress;
 };
 
 export const TokenSettingsBottomSheet = forwardRef(
@@ -104,16 +105,20 @@ export const TokenSettingsBottomSheet = forwardRef(
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
 
-        if (!token || !account || !symbol) return null;
+        if (!account || !symbol) return null;
 
-        const balance = token.balance ?? '0';
+        const displaySymbol = getDisplaySymbol(account.symbol);
+
+        const balance = token?.balance ?? account.balance;
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
-            t => t.contract.toLowerCase() === tokenContract.toLowerCase(),
+            t => t.contract.toLowerCase() === tokenContract?.toLowerCase(),
         );
 
         const handleToggleHide = () => {
+            if (!tokenContract) return;
+
             dispatch(
                 tokenDefinitionsActions.setTokenStatus({
                     symbol,
@@ -125,24 +130,30 @@ export const TokenSettingsBottomSheet = forwardRef(
         };
 
         return (
-            <BottomSheetModal ref={ref} title={token.name ?? tokenContract} isCloseDisplayed>
+            <BottomSheetModal ref={ref} title={token?.name ?? displaySymbol} isCloseDisplayed>
                 <VStack spacing="sp16" paddingBottom="sp16">
                     <Card style={applyStyle(cardStyle)}>
                         <VStack>
-                            <DetailRow
-                                label={
-                                    <Translation id="moduleAccountManagement.tokenSettings.contractAddress" />
-                                }
-                            >
-                                <Box flex={1} alignItems="flex-end" marginLeft="sp8">
-                                    <AddressFormatter
-                                        value={tokenContract}
-                                        variant="body-sm"
-                                        format="long"
-                                    />
-                                </Box>
-                            </DetailRow>
-                            <CardDivider />
+                            {tokenContract && (
+                                <>
+                                    <DetailRow
+                                        label={
+                                            <Translation id="moduleAccountManagement.tokenSettings.contractAddress" />
+                                        }
+                                    >
+                                        <Box flex={1} alignItems="flex-end" marginLeft="sp8">
+                                            <AddressFormatter
+                                                value={tokenContract}
+                                                variant="body-sm"
+                                                format="long"
+                                            />
+                                        </Box>
+                                    </DetailRow>
+
+                                    <CardDivider />
+                                </>
+                            )}
+
                             <DetailRow
                                 label={
                                     <Translation id="moduleAccountManagement.tokenSettings.network" />
@@ -162,31 +173,48 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 <VStack spacing={0} alignItems="flex-end">
                                     <TokenAmountFormatter
                                         value={balance}
-                                        tokenSymbol={token.symbol}
+                                        tokenSymbol={token?.symbol ?? toTokenSymbol(account.symbol)}
                                         variant="body-sm"
                                         color="contentPrimary"
                                     />
+
                                     {!isUnrecognized && (
-                                        <TokenToFiatAmountFormatter
-                                            symbol={symbol}
-                                            value={balance}
-                                            contract={tokenContract}
-                                            variant="body-sm"
-                                            color="contentSecondary"
-                                        />
+                                        <>
+                                            {tokenContract ? (
+                                                <TokenToFiatAmountFormatter
+                                                    symbol={symbol}
+                                                    value={balance}
+                                                    contract={tokenContract}
+                                                    variant="body-sm"
+                                                    color="contentSecondary"
+                                                />
+                                            ) : (
+                                                <CoinToFiatAmountFormatter
+                                                    accountKey={accountKey}
+                                                    value={balance}
+                                                    variant="body-sm"
+                                                    color="contentSecondary"
+                                                />
+                                            )}
+                                        </>
                                     )}
                                 </VStack>
                             </DetailRow>
                         </VStack>
                     </Card>
-                    <TouchableSwitchRow
-                        icon="eyeSlash"
-                        accessibilityLabel="Hide token"
-                        text={<Translation id="moduleAccountManagement.tokenSettings.hideToken" />}
-                        isChecked={isHidden}
-                        onChange={handleToggleHide}
-                        testID="@token-detail/hide-token-switch"
-                    />
+
+                    {!!tokenContract && (
+                        <TouchableSwitchRow
+                            icon="eyeSlash"
+                            accessibilityLabel="Hide token"
+                            text={
+                                <Translation id="moduleAccountManagement.tokenSettings.hideToken" />
+                            }
+                            isChecked={isHidden}
+                            onChange={handleToggleHide}
+                            testID="@token-detail/hide-token-switch"
+                        />
+                    )}
                 </VStack>
             </BottomSheetModal>
         );
