@@ -8,7 +8,7 @@ import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,
-    selectFormattedAccountType,
+    selectFormattedAccountTypeWithDefault,
     selectIsAccountUtxoBased,
 } from '@suite-common/wallet-core';
 import { AccountLabel } from '@suite-native/accounts';
@@ -28,13 +28,12 @@ import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
-const AccountDetailSettingsRow = ({
-    title,
-    children,
-}: {
+interface AccountDetailSettingsRowProps {
     title: ReactNode;
     children: ReactNode;
-}) => (
+}
+
+const AccountDetailSettingsRow = ({ title, children }: AccountDetailSettingsRowProps) => (
     <Box
         paddingVertical="sp8"
         flexDirection="row"
@@ -67,7 +66,7 @@ export const AccountSettingsScreen = ({
     );
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
-        selectFormattedAccountType(state, accountKey),
+        selectFormattedAccountTypeWithDefault(state, accountKey),
     );
 
     const isUtxoBasedAccount = useSelector((state: AccountsRootState) =>
@@ -102,6 +101,7 @@ export const AccountSettingsScreen = ({
                             >
                                 <CryptoNameWithIcon symbol={account.symbol} />
                             </AccountDetailSettingsRow>
+
                             {!!formattedAccountType && (
                                 <AccountDetailSettingsRow
                                     title={
@@ -109,6 +109,16 @@ export const AccountSettingsScreen = ({
                                     }
                                 >
                                     <Text variant="body-sm">{formattedAccountType}</Text>
+                                </AccountDetailSettingsRow>
+                            )}
+
+                            {account.path && (
+                                <AccountDetailSettingsRow
+                                    title={
+                                        <Translation id="moduleAccountManagement.accountSettingsScreen.derivationPath" />
+                                    }
+                                >
+                                    <Text variant="body-sm">{account.path}</Text>
                                 </AccountDetailSettingsRow>
                             )}
                         </VStack>

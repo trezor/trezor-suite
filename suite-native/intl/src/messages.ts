@@ -1902,6 +1902,7 @@ export const messages = {
         accountSettingsScreen: {
             coin: 'Coin',
             accountType: 'Account type',
+            derivationPath: 'Derivation path',
             xpubBottomSheet: {
                 xpub: {
                     title: 'Public key (XPUB)',
