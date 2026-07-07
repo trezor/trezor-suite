@@ -139,14 +139,13 @@ export const sendCryptoAmountValidationSchema = yup
             });
         }
 
+        // undefined means the max amount is unknown (still loading or its calculation
+        // failed), there is nothing to validate against
         if (maxSpendableAmount === undefined) {
-            return testContext.createError({
-                type: 'dust-limit',
-                message: translate('moduleTrading.validators.dustLimit'),
-            });
+            return true;
         }
 
-        if (maxSpendableAmount && convertedValue > parseFloat(maxSpendableAmount)) {
+        if (convertedValue > parseFloat(maxSpendableAmount)) {
             return testContext.createError({
                 type: 'network-reserve',
                 message: translate('moduleTrading.validators.networkReserve', {
