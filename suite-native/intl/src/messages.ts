@@ -2533,7 +2533,7 @@ export const messages = {
             solRewardsWarning:
                 'Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.',
             rewardsList: {
-                title: 'Total rewards',
+                title: 'Rewards history',
                 itemLabel: 'Reward',
                 epoch: 'Epoch number {epoch}',
                 empty: {
