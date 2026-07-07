@@ -104,7 +104,7 @@ export const TransactionReviewModalContent = ({
         ],
     );
 
-    const stakeType = getStakeType(precomposedForm, outputs);
+    const stakeType = getStakeType(precomposedForm);
 
     const shouldCheckTxTimeValidity = useMemo(
         () => account.networkType === 'solana' && createdTxTimestamp !== 0,

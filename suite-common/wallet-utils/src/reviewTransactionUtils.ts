@@ -318,9 +318,7 @@ const constructOldFlow = ({
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
     }
 
-    // For bump fee we have to analyze tx data,
-    // so outputs must already include type 'data' beforehand
-    const stakeType = getStakeType(precomposedForm, outputs);
+    const stakeType = getStakeType(precomposedForm);
 
     if (networkType === 'ripple') {
         // ripple displays requests on device in different order:
@@ -371,7 +369,7 @@ const constructNewFlow = ({
     const isTronStakeFreeze = tronStaking?.kind === 'freeze' || tronStaking?.kind === 'unstake';
     const evmApprovalTxData = Calldata.evm.erc20.approve.decode(precomposedForm.transactionData);
     const isEvmApproval = isEvmApprovalTx(precomposedForm.transactionData);
-    const stakeType = getStakeType(precomposedForm, outputs);
+    const stakeType = getStakeType(precomposedForm);
 
     const { networkType, symbol } = account;
 
@@ -382,6 +380,18 @@ const constructNewFlow = ({
     const isClaimOp = evmTxType === 'claim';
     const isYieldOp = isEvmYieldTxByTextSignature(evmTxType);
     const isEvmClaimClearSign = isUpdatedEthereumSendFlow && isEvmClearSigningSupported;
+
+    if (networkType === 'ethereum' && stakeType && isUpdatedEthereumSendFlow) {
+        // The firmware clear-signs staking operations as a single confirmation screen followed
+        // by the amount/fee summary, so the review consists of one output only.
+        precomposedTx.outputs.forEach(o => {
+            if ('address' in o && typeof o.address === 'string') {
+                outputs.push({ type: 'address', value: o.address });
+            }
+        });
+
+        return outputs;
+    }
 
     if (isClaimOp && isEvmClaimClearSign) {
         outputs.push(
