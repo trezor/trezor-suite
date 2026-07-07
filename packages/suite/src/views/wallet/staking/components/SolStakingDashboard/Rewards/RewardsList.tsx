@@ -3,8 +3,7 @@ import React, { useRef } from 'react';
 import { Translation } from '@suite/intl';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
-import { Card, Column, Grid, IconCircle, Row, Text, Tooltip } from '@trezor/components';
+import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
@@ -92,25 +91,12 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
                                             >
                                                 <TransactionTargetLayout
                                                     addressLabel={
-                                                        <Tooltip
-                                                            maxWidth={250}
-                                                            content={
-                                                                <Translation
-                                                                    id="TR_STAKE_REWARDS_TOOLTIP"
-                                                                    values={{
-                                                                        count: SOLANA_EPOCH_DAYS,
-                                                                    }}
-                                                                />
-                                                            }
-                                                            hasIcon
-                                                        >
-                                                            <span data-testid={`${TEST_ID}/epoch`}>
-                                                                <Translation
-                                                                    id="TR_STAKE_REWARDS_BADGE"
-                                                                    values={{ count: reward.epoch }}
-                                                                />
-                                                            </span>
-                                                        </Tooltip>
+                                                        <span data-testid={`${TEST_ID}/epoch`}>
+                                                            <Translation
+                                                                id="TR_STAKE_REWARDS_BADGE"
+                                                                values={{ count: reward.epoch }}
+                                                            />
+                                                        </span>
                                                     }
                                                     amount={
                                                         reward?.amount && (
