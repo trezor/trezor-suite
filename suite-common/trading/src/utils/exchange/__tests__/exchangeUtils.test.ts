@@ -412,11 +412,11 @@ describe('getDisplayComposedLevels', () => {
         expect(getDisplayComposedLevels(quote, composedLevels)).toBe(composedLevels);
     });
 
-    it('should zero the fee on final and nonfinal levels, leaving error levels untouched', () => {
+    it('should zero the fee on all levels, replacing error levels with a zero-fee nonfinal level', () => {
         expect(getDisplayComposedLevels(gaslessQuote, composedLevels)).toEqual({
             normal: { type: 'final', fee: '0' },
             high: { type: 'nonfinal', fee: '0' },
-            custom: { type: 'error', error: 'NOT_ENOUGH_FUNDS' },
+            custom: { type: 'nonfinal', fee: '0' },
         });
     });
 });

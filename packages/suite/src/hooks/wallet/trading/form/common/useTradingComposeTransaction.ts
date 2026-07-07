@@ -40,6 +40,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     values,
     methods,
     setShowReserveBanner,
+    shouldSuppressComposeErrors,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
@@ -193,11 +194,18 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
         if (!composed) return;
 
-        if (composed.type === 'error' && isTranslationKey(composed.errorMessage?.id)) {
-            setError(TRADING_FORM_OUTPUT_AMOUNT, {
-                type: COMPOSE_ERROR_TYPES.COMPOSE,
-                message: translationString(composed.errorMessage.id, composed.errorMessage.values),
-            });
+        if (composed.type === 'error') {
+            if (shouldSuppressComposeErrors) {
+                clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
+            } else if (isTranslationKey(composed.errorMessage?.id)) {
+                setError(TRADING_FORM_OUTPUT_AMOUNT, {
+                    type: COMPOSE_ERROR_TYPES.COMPOSE,
+                    message: translationString(
+                        composed.errorMessage.id,
+                        composed.errorMessage.values,
+                    ),
+                });
+            }
         }
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
@@ -237,6 +245,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setError,
         setValue,
         translationString,
+        shouldSuppressComposeErrors,
     ]);
 
     return {
