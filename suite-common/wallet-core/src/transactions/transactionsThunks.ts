@@ -625,6 +625,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
         const result = await TrezorConnect.blockchainGetTransactions({
             coin: account.symbol,
             txs: account.utxo.map(utxo => utxo.txid),
+            descriptor: account.descriptor,
         });
 
         if (signal.aborted) {
