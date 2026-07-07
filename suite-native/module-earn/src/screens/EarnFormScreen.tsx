@@ -19,6 +19,7 @@ import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnFormScreenFooter } from '../components/EarnFormScreenFooter';
 import { EarnFormScreenHeader } from '../components/EarnFormScreenHeader';
+import { EarnInsufficientBalanceBanner } from '../components/EarnInsufficientBalanceBanner';
 import { EarnOutputFields } from '../components/EarnOutputFields';
 import { useEarnForm } from '../hooks/useEarnForm';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
@@ -106,6 +107,7 @@ export const EarnFormScreen = () => {
                     />
                 </Form>
             </Box>
+            <EarnInsufficientBalanceBanner accountKey={accountKey} />
             {isValid && (
                 <Box marginTop="sp24">
                     <FeeSelector

@@ -1,15 +1,10 @@
 import { type Account } from '@suite-common/wallet-types';
-import {
-    formatNetworkAmount,
-    getStakingLimitsByNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
+import { isStakingSymbol } from '@suite-common/wallet-utils';
 import {
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { BigNumber } from '@trezor/utils';
 
 import { hasAccountStakedBalance } from './hasAccountStakedBalance';
 import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
@@ -28,31 +23,12 @@ export const navigateByAccountState = (account: Account, navigate: StakingNaviga
         return;
     }
 
-    if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
-        navigate(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: account.symbol,
-            accountKey: account.key,
-        });
-
+    if (!isStakingSymbol(account.symbol)) {
         return;
     }
 
-    const limits = getStakingLimitsByNetworkSymbol(account.symbol);
-
-    if (!limits) {
-        return;
-    }
-
-    const formattedBalance = formatNetworkAmount(account.availableBalance, account.symbol);
-
-    if (new BigNumber(formattedBalance).gte(limits.MIN_AMOUNT_FOR_STAKING)) {
-        navigate(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: account.symbol,
-            accountKey: account.key,
-        });
-    } else {
-        navigate(RootStackRoutes.StakingInsufficientBalance, {
-            accountKey: account.key,
-        });
-    }
+    navigate(RootStackRoutes.HowStakeWorksScreen, {
+        symbol: account.symbol,
+        accountKey: account.key,
+    });
 };
