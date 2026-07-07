@@ -50,12 +50,10 @@ export const UnstakeTransactionDataReviewStepList = () => {
         return null;
     }
 
-    const amountInBaseUnits =
-        selectedPrecomposed?.solanaTxMeta?.deviceAmountLamports ??
-        unitsToSubunits({
-            value: asAmountUnit(new BigNumber(amount)),
-            symbol: accountSymbol,
-        }).toString();
+    const amountInBaseUnits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(amount)),
+        symbol: accountSymbol,
+    }).toString();
 
     return (
         <View>
@@ -68,6 +66,7 @@ export const UnstakeTransactionDataReviewStepList = () => {
 
                 <EarnSummaryOutputItem
                     accountKey={accountKey}
+                    stakeType="unstake"
                     amount={amountInBaseUnits}
                     fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
                     outputState={summaryOutput?.state}

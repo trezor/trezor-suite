@@ -2631,6 +2631,7 @@ export const messages = {
         earnUnstakeOutputItem: {
             title: 'Unstake',
             description: 'Unstake {displaySymbol} from stake account?',
+            descriptionEverstake: 'Unstake {displaySymbol} from Everstake?',
         },
         earnStakeOutputItem: {
             title: 'Stake',
@@ -2641,10 +2642,8 @@ export const messages = {
         },
         claimOutputItem: {
             title: 'Claim',
-            description: 'Claim {displaySymbol} from account?',
-        },
-        claimSummaryOutputItem: {
-            title: 'Total including fee',
+            description: 'Claim {displaySymbol} from stake account?',
+            descriptionEverstake: 'Claim {displaySymbol} from Everstake?',
         },
         earnFormScreen: {
             title: '{assetName} staking',

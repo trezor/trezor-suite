@@ -73,6 +73,7 @@ export const EarnTransactionDataReviewStepList = ({
 
                 <EarnSummaryOutputItem
                     accountKey={accountKey}
+                    stakeType="stake"
                     amount={displayedAmountInBaseUnits}
                     fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
                     outputState={summaryOutput?.state}
