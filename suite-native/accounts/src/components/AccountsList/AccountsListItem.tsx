@@ -104,8 +104,10 @@ const AccountsListItemComponent = ({
 
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
-    const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
-    const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
+    const shouldShowTokenBadge =
+        accountHasKnownTokensWithBalance && !isNativeCoinOnly && !isCryptoBalancePrimary;
+    const shouldShowStakingBadge =
+        accountHasStaking && !isNativeCoinOnly && !isCryptoBalancePrimary;
     const [primaryBalanceTextProps, secondaryBalanceTextProps] = isCryptoBalancePrimary
         ? CRYPTO_PRIMARY_BALANCE_TEXT_PROPS
         : [undefined, undefined];
