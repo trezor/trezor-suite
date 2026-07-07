@@ -7,6 +7,7 @@ import {
     type YieldPositionFlowType,
     isStablecoinYieldSupported,
     isYieldTxReviewForFlow,
+    isYieldWithdrawFlow,
     selectAddressDisplayType,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -67,7 +68,7 @@ export const signYieldActionReviewThunk = createThunk<
             });
         }
 
-        if (flowType === 'withdraw' && !selectedFee) {
+        if (isYieldWithdrawFlow(flowType) && !selectedFee) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Fee information is missing for the transaction.',
