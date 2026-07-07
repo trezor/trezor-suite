@@ -2856,7 +2856,6 @@ export const messages = {
             approvalStepTitle: 'Select amount & approve',
             modalTitle: 'Deposit',
             depositTransactionStepTitle: 'Deposit transaction',
-            depositCompleteStepTitle: 'Deposit complete',
             depositPendingTitle: 'Confirming deposit',
             amountToDeposit: 'Amount to deposit',
             depositMax: 'Deposit max',
