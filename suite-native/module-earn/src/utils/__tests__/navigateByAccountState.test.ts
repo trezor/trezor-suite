@@ -68,25 +68,26 @@ describe('navigateByAccountState', () => {
         });
     });
 
-    it('navigates to StakingManagement when a Solana account has a balance but no stake', () => {
+    it('navigates to HowStakeWorksScreen when a Solana account has a balance but no stake', () => {
         const account = createMockAccount({ symbol: 'sol' });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
         navigateByAccountState(account, mockNavigate);
 
-        // Solana onboards through its dashboard, not the stake form.
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
+            symbol: 'sol',
             accountKey: account.key,
         });
     });
 
-    it('navigates to StakingManagement when a Solana account has insufficient balance and no stake', () => {
-        const account = createMockAccount({ symbol: 'sol', availableBalance: '100' });
+    it('navigates to HowStakeWorksScreen when a Solana account has a zero balance and no stake', () => {
+        const account = createMockAccount({ symbol: 'sol', availableBalance: '0' });
         mockGetAccountTotalStakingBalance.mockReturnValue(null);
 
         navigateByAccountState(account, mockNavigate);
 
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
+            symbol: 'sol',
             accountKey: account.key,
         });
     });
