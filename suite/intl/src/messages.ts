@@ -6092,7 +6092,7 @@ export const messages = defineMessages({
     },
     TR_REWARDS: {
         id: 'TR_REWARDS',
-        defaultMessage: 'Total rewards',
+        defaultMessage: 'Rewards history',
     },
     TR_ALL_TRANSACTIONS: {
         id: 'TR_ALL_TRANSACTIONS',
@@ -10495,11 +10495,6 @@ export const messages = defineMessages({
     TR_STAKE_REWARDS_BADGE: {
         id: 'TR_STAKE_REWARDS_BADGE',
         defaultMessage: 'Epoch number {count}',
-    },
-    TR_STAKE_REWARDS_TOOLTIP: {
-        id: 'TR_STAKE_REWARDS_TOOLTIP',
-        defaultMessage:
-            'An epoch in Solana is approximately {count, plural, one {# day} other {# days}} long.',
     },
     TR_EARN_REWARDS_ARE_EMPTY: {
         id: 'TR_EARN_REWARDS_ARE_EMPTY',
