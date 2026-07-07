@@ -12,7 +12,7 @@ import {
     selectFiatRatesByFiatRateKey,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import {
     Card,
@@ -45,6 +45,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 export type Props = {
     utxo: Utxo;
+    utxoTx?: WalletAccountTransaction;
     deviceStaticSessionId: StaticSessionId;
     onToggle: (utxo: Utxo) => void;
     accountKey: AccountKey;
@@ -60,6 +61,7 @@ type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
 
 export const UtxoCard = ({
     utxo,
+    utxoTx,
     onToggle,
     deviceStaticSessionId,
     accountKey,
@@ -70,9 +72,13 @@ export const UtxoCard = ({
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<TransactionDetailNavigation>();
 
-    const transactionBlockTime = useSelector((state: TransactionsRootState) =>
+    const stateTransactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, accountKey, utxo.txid),
     );
+
+    const transactionBlockTime = utxoTx?.blockTime
+        ? utxoTx.blockTime * 1000
+        : stateTransactionBlockTime;
 
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
