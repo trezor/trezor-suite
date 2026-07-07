@@ -6,6 +6,7 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 
 import {
     DefinitionType,
+    type TokenDefinitionsRootState,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
@@ -40,6 +41,8 @@ import {
     selectAccountTokenInfo,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { selectIsUnrecognizedToken } from '../selectors';
 
 const detailRowStyle = prepareNativeStyle(({ spacings }) => ({
     flexDirection: 'row',
@@ -97,11 +100,15 @@ export const TokenSettingsBottomSheet = forwardRef(
         const hiddenTokens = useSelector((state: TokensRootState) =>
             selectAccountHiddenTokens(state, accountKey),
         );
+        const isUnrecognized = useSelector((state: TokenDefinitionsRootState & AccountsRootState) =>
+            selectIsUnrecognizedToken(state, accountKey, tokenContract),
+        );
 
         if (!token || !account || !symbol) return null;
 
         const balance = token.balance ?? '0';
         const networkName = getNetwork(symbol).name;
+
         const isHidden = hiddenTokens.some(
             t => t.contract.toLowerCase() === tokenContract.toLowerCase(),
         );
@@ -159,13 +166,15 @@ export const TokenSettingsBottomSheet = forwardRef(
                                         variant="body-sm"
                                         color="contentPrimary"
                                     />
-                                    <TokenToFiatAmountFormatter
-                                        symbol={symbol}
-                                        value={balance}
-                                        contract={tokenContract}
-                                        variant="body-sm"
-                                        color="contentSecondary"
-                                    />
+                                    {!isUnrecognized && (
+                                        <TokenToFiatAmountFormatter
+                                            symbol={symbol}
+                                            value={balance}
+                                            contract={tokenContract}
+                                            variant="body-sm"
+                                            color="contentSecondary"
+                                        />
+                                    )}
                                 </VStack>
                             </DetailRow>
                         </VStack>
