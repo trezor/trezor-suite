@@ -32,6 +32,7 @@ const Harness = ({ displayNonce, confirmedNonce }: Props) => {
         account: ethAccount,
         composeTransaction: jest.fn(),
         changeFeeLevel: changeFeeLevelMock,
+        getDefaultValue: (fieldName: string) => methods.getValues(fieldName),
         feeInfo: {
             levels: [
                 {
