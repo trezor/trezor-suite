@@ -1277,7 +1277,7 @@
     "earn.stakingManagementScreen.outsideStakingBanner.title": "You're staking outside of Trezor Suite.",
     "earn.stakingManagementScreen.outsideStakingBanner.description": "{amount} {symbol} (≈ {fiat}) is currently staked elsewhere.",
     "earn.stakingManagementScreen.solRewardsWarning": "Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.",
-    "earn.stakingManagementScreen.rewardsList.title": "Total rewards",
+    "earn.stakingManagementScreen.rewardsList.title": "Rewards history",
     "earn.stakingManagementScreen.rewardsList.itemLabel": "Reward",
     "earn.stakingManagementScreen.rewardsList.epoch": "Epoch number {epoch}",
     "earn.stakingManagementScreen.rewardsList.empty.title": "No rewards",
