@@ -32,3 +32,4 @@ export {
     promoNoDeviceEshopCtaEvent,
     type NoDeviceEshopCtaOrigin,
 } from './promoNoDeviceEshopCtaEvent';
+export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';

@@ -1,6 +1,9 @@
 import { useCallback, useRef } from 'react';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
@@ -13,6 +16,7 @@ export const useContactSupportAlert = () => {
     const appendixRef = useRef<ContactSupportAlertAppendixRef>(null);
     const { showAlert } = useAlert();
     const openLink = useOpenLink();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const showContactSupportAlert = useCallback(() => {
         showAlert({
@@ -26,13 +30,20 @@ export const useContactSupportAlert = () => {
             onPressPrimaryButton: async () => {
                 if (appendixRef.current) {
                     // We need to access the URL via a ref to ensure it's always up to date, even if the value changes while the alert is already displayed.
+                    analytics.report({
+                        type: events.guideSupportChatOpenedEvent.name,
+                        payload: {
+                            systemInfoShared: appendixRef.current.getIsSystemInfoShared(),
+                            platform: 'mobile',
+                        },
+                    });
                     await openLink(appendixRef.current.getSupportChatUrl());
                 }
             },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
             testID: '@contact-support-alert',
         });
-    }, [showAlert, openLink]);
+    }, [showAlert, openLink, analytics]);
 
     return { showContactSupportAlert };
 };

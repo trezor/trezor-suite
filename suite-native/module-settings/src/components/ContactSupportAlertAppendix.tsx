@@ -16,6 +16,7 @@ const checkboxRowStyle = prepareNativeStyle(utils => ({
 
 export type ContactSupportAlertAppendixRef = {
     getSupportChatUrl: () => string;
+    getIsSystemInfoShared: () => boolean;
 };
 
 export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendixRef>((_, ref) => {
@@ -29,7 +30,17 @@ export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendi
     const supportChatUrlRef = useRef(supportChatUrl);
     supportChatUrlRef.current = supportChatUrl;
 
-    useImperativeHandle(ref, () => ({ getSupportChatUrl: () => supportChatUrlRef.current }), []);
+    const isCheckedRef = useRef(isChecked);
+    isCheckedRef.current = isChecked;
+
+    useImperativeHandle(
+        ref,
+        () => ({
+            getSupportChatUrl: () => supportChatUrlRef.current,
+            getIsSystemInfoShared: () => isCheckedRef.current,
+        }),
+        [],
+    );
 
     return (
         <VStack spacing="sp12">
