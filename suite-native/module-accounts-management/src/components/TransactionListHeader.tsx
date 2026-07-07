@@ -86,6 +86,7 @@ const TransactionListHeaderContent = ({
             <AccountDetailCryptoValue value={account.formattedBalance} symbol={account.symbol} />
         );
     }
+
     if (token && isUnrecognizedToken) {
         const { balance = '0', symbol: tokenSymbol } = token;
 
