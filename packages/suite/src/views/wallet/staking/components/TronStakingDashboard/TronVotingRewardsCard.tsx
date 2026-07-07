@@ -1,11 +1,24 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
-import { getTronStakingRewards } from '@suite-common/wallet-utils';
-import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
+import {
+    getTronRewardClaimCooldownEndsAt,
+    getTronStakingRewards,
+    isTronRewardClaimOnCooldown,
+} from '@suite-common/wallet-utils';
+import {
+    Box,
+    Button,
+    Card,
+    Column,
+    Row,
+    TOOLTIP_DELAY_NONE,
+    Text,
+    Tooltip,
+} from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
 interface TronVotingRewardsCardProps {
@@ -14,7 +27,10 @@ interface TronVotingRewardsCardProps {
 
 export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) => {
     const dispatch = useDispatch();
+
     const rewards = getTronStakingRewards(account);
+    const isClaimOnCooldown = isTronRewardClaimOnCooldown(account);
+    const claimCooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
 
     if (new BigNumber(rewards).lte(0)) {
         return null;
@@ -52,9 +68,32 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                                 />
                             </Text>
                         </Column>
-                        <Button intent="neutral" priority="secondary" onClick={goToClaim}>
-                            <Translation id="TR_STAKE_CLAIM" />
-                        </Button>
+                        <Tooltip
+                            isActive={isClaimOnCooldown}
+                            tooltipMaxWidth={220}
+                            content={
+                                claimCooldownEndsAt !== null && (
+                                    <CountdownTimer
+                                        deadline={claimCooldownEndsAt * 1000}
+                                        message="TR_EARN_TRON_CLAIM_COOLDOWN"
+                                        minUnit="minute"
+                                        unitDisplay="narrow"
+                                    />
+                                )
+                            }
+                            placement="top"
+                            cursor="not-allowed"
+                            delayShow={TOOLTIP_DELAY_NONE}
+                        >
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={goToClaim}
+                                isDisabled={isClaimOnCooldown}
+                            >
+                                <Translation id="TR_STAKE_CLAIM" />
+                            </Button>
+                        </Tooltip>
                     </Row>
                 </Row>
             </Box>

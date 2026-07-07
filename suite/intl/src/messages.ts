@@ -10793,6 +10793,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_VOTING_REWARDS',
         defaultMessage: 'Voting rewards',
     },
+    TR_EARN_TRON_CLAIM_COOLDOWN: {
+        id: 'TR_EARN_TRON_CLAIM_COOLDOWN',
+        defaultMessage: 'Rewards can be claimed again in {value}.',
+    },
     TR_EARN_TRON_WITHDRAW_READY: {
         id: 'TR_EARN_TRON_WITHDRAW_READY',
         defaultMessage: '{amount} unstaked & ready to be withdrawn',
