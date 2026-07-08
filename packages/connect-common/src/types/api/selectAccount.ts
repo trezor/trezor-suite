@@ -42,6 +42,16 @@ export const SelectionType = Type.Union([
     MultiSelectBounds,
 ]);
 
+// UTXO-only sharing flow (see the `addressSelection` field on SelectAccount for the full
+// semantics). 'fullAccount' shares the whole account as an xpub; 'firstFresh' | 'manual' export
+// only an individual address.
+export type AddressSelection = Static<typeof AddressSelection>;
+export const AddressSelection = Type.Union([
+    Type.Literal('fullAccount'),
+    Type.Literal('firstFresh'),
+    Type.Literal('manual'),
+]);
+
 export type SelectAccount = Static<typeof SelectAccount>;
 export const SelectAccount = Type.Object({
     // Network to select an account for, e.g. 'eth' | 'btc' | 'ada'.
@@ -59,13 +69,7 @@ export const SelectAccount = Type.Object({
     // - 'firstFresh' | 'manual': only the individual address(es) the user picks are exported —
     //   'firstFresh' auto-selects the next unused receive address, 'manual' lets the user pick a
     //   used one. The xpub is never exported here; requires the narrower `read_address` instead.
-    addressSelection: Type.Optional(
-        Type.Union([
-            Type.Literal('fullAccount'),
-            Type.Literal('firstFresh'),
-            Type.Literal('manual'),
-        ]),
-    ),
+    addressSelection: Type.Optional(AddressSelection),
     // Require the selected address(es) to be confirmed on the device. Default true.
     requireOnDeviceVerification: Type.Optional(Type.Boolean()),
 });
