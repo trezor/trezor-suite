@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
-
 import {
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
     useAllowanceTxTracking,
+    useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
@@ -24,7 +23,6 @@ import {
     useNavigationRemoveInterceptorAlert,
     useTransactionDetails,
 } from '@suite-native/transaction-management';
-import { exhaustive } from '@trezor/type-utils';
 
 import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
 import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/ExchangeConfirmationHeader';
@@ -32,7 +30,6 @@ import { ExchangeConfirmationInfo } from '../components/exchange/Confirmation/Ex
 import { ExchangeConfirmationTitle } from '../components/exchange/Confirmation/ExchangeConfirmationTitle';
 import { ExploreInBlockchainButton } from '../components/exchange/Confirmation/ExploreInBlockchainButton';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
-import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 
 export type TradingConfirmingScreenProps = StackProps<
     RootStackParamList,
@@ -54,9 +51,7 @@ export const TradingConfirmingScreen = ({
         flowType === 'approve' ? 'approval-confirming' : 'revoke-confirming',
     );
 
-    const { confirmApproval } = useApprovalFlow();
-
-    const hasConfirmedRef = useRef(false);
+    const hasNavigatedRef = useRef(false);
 
     const {
         status: originalStatus,
@@ -84,7 +79,11 @@ export const TradingConfirmingScreen = ({
         txid: approvalTxid,
     });
 
-    const { isConfirmed, isFailed, isPending } = status;
+    const { isConfirmed, isFailed: isTxFailed } = status;
+
+    const isFailed = isTxFailed || activeQuote?.status === 'ERROR';
+
+    const isPending = !isFailed && activeQuote?.status === 'APPROVAL_PENDING';
 
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const handleRemoveConfirmed = useCallback(() => {
@@ -106,92 +105,53 @@ export const TradingConfirmingScreen = ({
         },
     });
 
-    useFocusEffect(
-        useCallback(() => {
-            if (!isConfirmed || !activeQuote || hasConfirmedRef.current) return;
+    useTradingExchangeWatchApproval({
+        account: sendAccount,
+        isEnabled: isConfirmed && flowType !== 'revoke',
+    });
 
-            hasConfirmedRef.current = true;
+    useEffect(() => {
+        if (!activeQuote || hasNavigatedRef.current || !isConfirmed) {
+            return;
+        }
 
-            const handleConfirmed = async () => {
-                switch (flowType) {
-                    case 'approve': {
-                        const response = await confirmApproval(activeQuote);
+        if (flowType === 'revoke') {
+            hasNavigatedRef.current = true;
+            dispatch(sendFormActions.dispose());
+            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+            navigation.popToTop();
+            reportToAnalytics('continue');
 
-                        if (response?.status === 'APPROVAL_PENDING') {
-                            // we know it was confirmed, so we can set the status to CONFIRM even if it came as APPROVAL_PENDING
-                            // that is basically what api does (but it takes time)
-                            // so we need to do it here to avoid the approval screen transition through useExchangeFlow
-                            dispatch(
-                                tradingExchangeActions.saveSelectedQuote({
-                                    ...response,
-                                    status: 'CONFIRM',
-                                }),
-                            );
-                        }
+            return;
+        }
 
-                        if (!response) {
-                            // confirmApproval already sets the error state — stay on this screen.
-                            hasConfirmedRef.current = false;
+        if (activeQuote.status === 'CONFIRM') {
+            hasNavigatedRef.current = true;
+            dispatch(sendFormActions.dispose());
+            navigation.popToTop();
+            navigation.push(RootStackRoutes.TradingExchangePreview, { isApproved: true });
+            reportToAnalytics('continue');
 
-                            return;
-                        }
+            return;
+        }
 
-                        dispatch(sendFormActions.dispose());
-                        navigation.popToTop();
-                        navigation.push(RootStackRoutes.TradingExchangePreview, {
-                            isApproved: true,
-                        });
-                        break;
-                    }
-
-                    case 'revoke-and-approve':
-                        dispatch(sendFormActions.dispose());
-                        // The post-revoke quote carries the revoke transaction's
-                        // approvalSendTxHash and approvalType: 'ZERO'. Strip them so the
-                        // next confirmApproval call requests a fresh approval rather than
-                        // re-using the revoke txid as the approval txid.
-                        if (activeQuote) {
-                            dispatch(
-                                tradingExchangeActions.saveSelectedQuote({
-                                    ...activeQuote,
-                                    approvalSendTxHash: undefined,
-                                    approvalType: undefined,
-                                    status: 'APPROVAL_REQ',
-                                }),
-                            );
-                        }
-                        navigation.popToTop();
-                        navigation.push(RootStackRoutes.TradingExchangeApproval, {
-                            isRevoked: true,
-                        });
-                        break;
-
-                    case 'revoke':
-                        dispatch(sendFormActions.dispose());
-                        dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-                        navigation.popToTop();
-                        break;
-
-                    default:
-                        exhaustive(flowType);
-                }
-
-                reportToAnalytics('continue');
-            };
-
-            void handleConfirmed().catch(() => {
-                hasConfirmedRef.current = false;
+        if (activeQuote.status === 'APPROVAL_REQ') {
+            hasNavigatedRef.current = true;
+            dispatch(sendFormActions.dispose());
+            dispatch(
+                tradingExchangeActions.saveSelectedQuote({
+                    ...activeQuote,
+                    approvalSendTxHash: undefined,
+                    approvalType: undefined,
+                }),
+            );
+            navigation.popToTop();
+            navigation.push(RootStackRoutes.TradingExchangeApproval, {
+                isRevoked: flowType === 'revoke-and-approve',
             });
-        }, [
-            isConfirmed,
-            activeQuote,
-            flowType,
-            confirmApproval,
-            dispatch,
-            navigation,
-            reportToAnalytics,
-        ]),
-    );
+            reportToAnalytics('continue');
+        }
+    }, [activeQuote, flowType, isConfirmed, dispatch, navigation, reportToAnalytics]);
 
     return (
         <TradingDeviceConnectionGuard>
