@@ -1,6 +1,9 @@
 import { type CoinInfo, type PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { SelectAccount as SelectAccountSchema } from '@trezor/connect-common/src/types/api/selectAccount';
+import {
+    type AddressSelection,
+    SelectAccount as SelectAccountSchema,
+} from '@trezor/connect-common/src/types/api/selectAccount';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodReturnType } from '../core/AbstractMethod';
@@ -11,7 +14,7 @@ import { getLabel } from '../utils/pathUtils';
 
 type Params = {
     coinInfo: CoinInfo;
-    addressSelection?: 'fullAccount' | 'firstFresh' | 'manual';
+    addressSelection?: AddressSelection;
 };
 
 export default class SelectAccount extends AbstractMethod<'selectAccount', Params> {

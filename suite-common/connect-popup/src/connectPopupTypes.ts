@@ -2,6 +2,7 @@ import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
 import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type AddressSelection } from '@trezor/connect-common/src/types/api/selectAccount';
 
 // UTXO coins have accounts with many addresses (mirrors `isUtxoBased` in
 // wallet-utils/accountUtils, which operates on an already-loaded `Account` instead of a symbol) —
@@ -128,7 +129,7 @@ export type SelectAccountOptions = {
     mode: 'xpub' | 'address';
     // Normalized: 'fullAccount' when the coin is UTXO-based and the param was omitted or explicit;
     // undefined only for account-based networks, where `addressSelection` is ignored entirely.
-    addressSelection?: 'fullAccount' | 'firstFresh' | 'manual';
+    addressSelection?: AddressSelection;
     requireOnDeviceVerification: boolean;
     minCount: number;
     maxCount?: number;
