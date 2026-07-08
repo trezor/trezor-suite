@@ -7,7 +7,6 @@ import { type TradingType } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { Text, VStack } from '@suite-native/atoms';
-import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
@@ -20,8 +19,6 @@ import {
 import { OverviewRow } from '@suite-native/trading-atoms';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type Color } from '@trezor/theme';
-
-import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 
 export type ReceiveAccountPickerProps = {
     symbol: NetworkSymbol | undefined;
@@ -40,7 +37,6 @@ type RightTextProps = {
 
 type ReceiveAccountPickerRightProps = {
     accountLabel: string | undefined;
-    addressText: string | undefined;
     testID?: string;
 };
 
@@ -63,11 +59,7 @@ const RightText = ({ color, variant = 'body-sm', testID, children }: RightTextPr
     </Text>
 );
 
-const ReceiveAccountPickerRight = ({
-    accountLabel,
-    addressText,
-    testID,
-}: ReceiveAccountPickerRightProps) => {
+const ReceiveAccountPickerRight = ({ accountLabel, testID }: ReceiveAccountPickerRightProps) => {
     if (accountLabel == null) {
         return (
             <RightText
@@ -79,33 +71,13 @@ const ReceiveAccountPickerRight = ({
         );
     }
 
-    if (!addressText) {
-        return (
-            <RightText
-                color="contentPrimary"
-                testID={testID ? `${testID}/selected-account` : undefined}
-            >
-                {accountLabel}
-            </RightText>
-        );
-    }
-
     return (
-        <>
-            <RightText
-                color="contentPrimary"
-                testID={testID ? `${testID}/selected-account` : undefined}
-            >
-                {accountLabel}
-            </RightText>
-            <AddressFormatter
-                value={addressText}
-                format="short"
-                color="contentSecondary"
-                variant="body-sm"
-                textAlign="right"
-            />
-        </>
+        <RightText
+            color="contentPrimary"
+            testID={testID ? `${testID}/selected-account` : undefined}
+        >
+            {accountLabel}
+        </RightText>
     );
 };
 
@@ -135,8 +107,6 @@ export const ReceiveAccountPicker = ({
     const openAccountPicker = () =>
         navigation.navigate(RootStackRoutes.ReceiveAccounts, { symbol, tradingType });
 
-    const addressText = getReceiveAccountAddressText(receiveAccount) ?? '';
-
     return (
         <OverviewRow
             title={translate('moduleTrading.tradingScreen.receiveAccount')}
@@ -145,11 +115,7 @@ export const ReceiveAccountPicker = ({
             noBottomBorder={noBottomBorder}
         >
             <VStack spacing={0} paddingLeft="sp20">
-                <ReceiveAccountPickerRight
-                    accountLabel={accountLabel}
-                    addressText={addressText}
-                    testID={testID}
-                />
+                <ReceiveAccountPickerRight accountLabel={accountLabel} testID={testID} />
             </VStack>
         </OverviewRow>
     );

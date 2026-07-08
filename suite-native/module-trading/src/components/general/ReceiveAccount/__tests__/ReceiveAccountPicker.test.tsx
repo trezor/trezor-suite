@@ -110,7 +110,7 @@ describe('ReceiveAccountPicker', () => {
         expect(getByText('BTC Account #1')).toBeTruthy();
     });
 
-    it('should display account name and address', () => {
+    it('should display account name when address is selected', () => {
         const { getByText } = renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
@@ -119,7 +119,6 @@ describe('ReceiveAccountPicker', () => {
         });
 
         expect(getByText('BTC Account #1')).toBeTruthy();
-        expect(getByText('USED1')).toBeTruthy();
     });
 
     describe('with testID specified', () => {
