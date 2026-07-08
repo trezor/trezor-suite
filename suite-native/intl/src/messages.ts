@@ -2811,6 +2811,10 @@ export const messages = {
                     title: 'Deposit {tokenSymbol} to receive {vaultTokenSymbol}',
                     description: 'This is your vault position.',
                 },
+                fourth: {
+                    title: 'You will also earn {bonusRewardTokenName} tokens as rewards.',
+                    description: 'These must be claimed separately.',
+                },
             },
             timelineCardTitle: 'Deposit timeline',
             timelineBottomSheetTitle: 'Deposit timeline',

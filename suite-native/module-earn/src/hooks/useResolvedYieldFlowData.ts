@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import {
+    type YieldDtoV2,
+    getBonusRewardToken,
+    useAllYieldOpportunities,
+} from '@suite-common/earn-stablecoin-api';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -30,6 +34,7 @@ export type YieldFlowResolutionStatus =
 type UnresolvedYieldFlowData = {
     account: Account | null;
     apy: number | null;
+    bonusRewardTokenName: string | null;
     flowKey: string | null;
     providerName: string | null;
     receiptToken: YieldFlowDisplayToken | null;
@@ -46,6 +51,7 @@ type UnresolvedYieldFlowData = {
 type YieldFlowDataResolved = {
     account: Account;
     apy: number | null;
+    bonusRewardTokenName: string | null;
     flowKey: string;
     providerName: string;
     receiptToken: YieldFlowDisplayToken;
@@ -78,6 +84,7 @@ type YieldFlowProps = { displayError?: boolean } & YieldFlowParams;
 const defaultFlowData: ResolvedYieldFlowData = {
     account: null,
     apy: null,
+    bonusRewardTokenName: null,
     flowKey: null,
     providerName: null,
     receiptToken: null,
@@ -136,8 +143,10 @@ export const resolveYieldFlowData = ({
     const providerName = capitalizeFirstLetter(vault.providerId);
     const vaultTokenName = vault.outputToken?.name;
     const vaultTokenSymbol = vault.outputToken.symbol;
+    const bonusRewardToken = getBonusRewardToken(vault.rewardRate.components, vault.token);
     const resolvedVaultData = {
         apy,
+        bonusRewardTokenName: bonusRewardToken?.name ?? null,
         providerName,
         tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
         vault,

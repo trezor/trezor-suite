@@ -21,9 +21,8 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const HowYieldWorksScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
-    const { apy, tokenSymbol, vaultTokenSymbol, resolutionStatus } = useResolvedYieldFlowData(
-        route.params,
-    );
+    const { apy, tokenSymbol, vaultTokenSymbol, bonusRewardTokenName, resolutionStatus } =
+        useResolvedYieldFlowData(route.params);
 
     const handleNavigateToYieldConsents = () => {
         navigation.navigate(YieldStackRoutes.YieldConsents, route.params);
@@ -37,6 +36,7 @@ export const HowYieldWorksScreen = () => {
         tokenSymbol,
         vaultTokenSymbol,
         apy,
+        bonusRewardTokenName,
     });
 
     return (

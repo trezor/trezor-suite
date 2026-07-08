@@ -1413,6 +1413,8 @@
     "earn.howYieldWorksScreen.benefits.second.description": "Most rewards compound automatically—some must be claimed manually.",
     "earn.howYieldWorksScreen.benefits.third.title": "Deposit {tokenSymbol} to receive {vaultTokenSymbol}",
     "earn.howYieldWorksScreen.benefits.third.description": "This is your vault position.",
+    "earn.howYieldWorksScreen.benefits.fourth.title": "You will also earn {bonusRewardTokenName} tokens as rewards.",
+    "earn.howYieldWorksScreen.benefits.fourth.description": "These must be claimed separately.",
     "earn.howYieldWorksScreen.timelineCardTitle": "Deposit timeline",
     "earn.howYieldWorksScreen.timelineBottomSheetTitle": "Deposit timeline",
     "earn.howYieldWorksScreen.depositTimelineTitle": "Deposit",
