@@ -1,7 +1,15 @@
 import { forwardRef, useImperativeHandle } from 'react';
+import { useSelector } from 'react-redux';
 
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
-import { type RefetchPortfolioGraphParams, usePortfolioGraphData } from '@suite-native/graph';
+import {
+    type RefetchGraphParams,
+    getPortfolioGraphInstanceId,
+    selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning,
+    selectPortfolioGraphTimeframe,
+    useGraphData,
+} from '@suite-native/graph';
 
 import { IgnoredNetworksBanner } from './IgnoredNetworksBanner';
 import { PortfolioGraphTimeSwitch } from './PortfolioGraphTimeSwitch';
@@ -9,24 +17,34 @@ import { PortfolioHeader } from './PortfolioHeader';
 import { PortfolioLineGraph } from './PortfolioLineGraph';
 
 export type PortfolioGraphRef = {
-    refetchGraph: (params?: RefetchPortfolioGraphParams) => void;
+    refetchGraph: (params?: RefetchGraphParams) => void;
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
-    const { refetchPortfolioGraph } = usePortfolioGraphData();
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const accounts = useSelector(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning);
+    const timeframeHours = useSelector(selectPortfolioGraphTimeframe);
+
+    const { refetchGraph } = useGraphData({
+        instanceId: getPortfolioGraphInstanceId(),
+        accounts,
+        isDiscoveryRunning,
+        timeframeHours,
+        backendSymbol: 'btc',
+    });
 
     useImperativeHandle(
         ref,
         () => ({
-            refetchGraph: refetchPortfolioGraph,
+            refetchGraph,
         }),
-        [refetchPortfolioGraph],
+        [refetchGraph],
     );
 
     return (
         <VStack spacing="sp24" testID="@home/portfolio/graph">
             <PortfolioHeader />
-            <PortfolioLineGraph refetchPortfolioGraph={refetchPortfolioGraph} />
+            <PortfolioLineGraph refetchGraph={refetchGraph} />
             <IgnoredNetworksBanner />
             <PortfolioGraphTimeSwitch />
         </VStack>

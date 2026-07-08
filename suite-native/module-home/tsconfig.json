@@ -10,7 +10,6 @@
         },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
-        { "path": "../../suite-common/graph" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -31,9 +30,6 @@
         },
         {
             "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
         },
         { "path": "../accounts" },
         { "path": "../alerts" },

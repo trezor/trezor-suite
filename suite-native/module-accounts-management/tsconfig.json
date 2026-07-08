@@ -12,6 +12,9 @@
         },
         { "path": "../../suite-common/graph" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {
