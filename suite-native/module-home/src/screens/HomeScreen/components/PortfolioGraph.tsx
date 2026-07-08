@@ -1,3 +1,4 @@
+import { forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
@@ -5,6 +6,7 @@ import { useAtomValue } from 'jotai';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import {
+    type RefetchPortfolioGraphParams,
     portfolioGraphAtoms,
     selectHasDeviceHistoryEnabledAccounts,
     selectHasPortfolioGraphAccounts,
@@ -16,13 +18,24 @@ import { PortfolioGraphTimeSwitch } from './PortfolioGraphTimeSwitch';
 import { PortfolioHeader } from './PortfolioHeader';
 import { PortfolioLineGraph } from './PortfolioLineGraph';
 
-export const PortfolioGraph = () => {
+export type PortfolioGraphRef = {
+    refetchGraph: (params?: RefetchPortfolioGraphParams) => void;
+};
+
+export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
+    const { refetchPortfolioGraph } = usePortfolioGraphData();
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const hasPortfolioGraphAccounts = useSelector(selectHasPortfolioGraphAccounts);
     const isLoading = useAtomValue(portfolioGraphAtoms.isLoadingAtom);
 
-    usePortfolioGraphData();
+    useImperativeHandle(
+        ref,
+        () => ({
+            refetchGraph: refetchPortfolioGraph,
+        }),
+        [refetchPortfolioGraph],
+    );
 
     const showHeader = hasPortfolioGraphAccounts || isLoading;
 
@@ -31,9 +44,9 @@ export const PortfolioGraph = () => {
     return (
         <VStack spacing="sp24" testID="@home/portfolio/graph">
             {showHeader && <PortfolioHeader />}
-            <PortfolioLineGraph />
+            <PortfolioLineGraph refetchPortfolioGraph={refetchPortfolioGraph} />
             <IgnoredNetworksBanner />
             {showGraph && <PortfolioGraphTimeSwitch />}
         </VStack>
     );
-};
+});

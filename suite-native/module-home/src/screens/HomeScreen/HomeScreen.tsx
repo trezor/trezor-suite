@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -17,6 +17,7 @@ import { EmptyPortfolioCrossroads } from './components/EmptyPortfolioCrossroads'
 import { EmptyPortfolioTrackerState } from './components/EmptyPortfolioTrackerState';
 import { NoNetworksConfigured } from './components/NoNetworksConfigured';
 import { PortfolioContent } from './components/PortfolioContent';
+import { type PortfolioGraphRef } from './components/PortfolioGraph';
 import { UninitializedConnectedDeviceState } from './components/UninitializedConnectedDeviceState';
 import { selectHomeScreenState } from './homescreenSelectors';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
@@ -24,6 +25,7 @@ import { useShowAutoEjectAlert } from './useShowAutoEjectAlert';
 
 export const HomeScreen = () => {
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
+    const portfolioGraphRef = useRef<PortfolioGraphRef>(null);
 
     const homeScreenState = useSelector(selectHomeScreenState);
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
@@ -31,7 +33,10 @@ export const HomeScreen = () => {
         selectIsBluetoothDeviceOsUnpairingRequired,
     );
 
-    const refreshControl = useHomeRefreshControl({ isDiscoveredDeviceAccountless });
+    const refreshControl = useHomeRefreshControl({
+        isDiscoveredDeviceAccountless,
+        portfolioGraphRef,
+    });
 
     useFocusEffect(
         useCallback(() => {
@@ -56,7 +61,7 @@ export const HomeScreen = () => {
             case 'discoveryNotFinished':
                 return <DiscoveryNotFinished />;
             case 'portfolioContent':
-                return <PortfolioContent />;
+                return <PortfolioContent ref={portfolioGraphRef} />;
             default:
                 return exhaustive(homeScreenState);
         }

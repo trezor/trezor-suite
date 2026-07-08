@@ -11,20 +11,10 @@ import {
     getTimeFrameForHistoryHours,
 } from '@suite-common/graph';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    selectAccountByKey,
-    selectBaseCurrency,
-    selectHasRunningDiscovery,
-    selectIsElectrumBackendSelected,
-} from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
 import { type GraphAtoms } from './createGraphAtoms';
 import { portfolioGraphAtoms } from './portfolioGraphAtoms';
-import { selectPortfolioGraphAccountItems } from './selectors';
-import { selectAccountGraphTimeframe, selectPortfolioGraphTimeframe } from './slice';
 import { type TimeframeHoursValue } from './types';
 import { checkAndReportGraphError } from './utils';
 
@@ -107,17 +97,26 @@ const fetchGraphDataToAtoms = async <TGraphPoint extends FiatGraphPoint>({
 
 export const refetchPortfolioGraphThunk = createThunk(
     `${GRAPH_MODULE_PREFIX}/refetchPortfolioGraph`,
-    async ({ forceRefetch }: { forceRefetch?: boolean }, { dispatch, getState }) => {
+    async (
+        {
+            accounts,
+            isDiscoveryRunning,
+            timeframeHours,
+            isElectrumBackend,
+            baseCurrencyCode,
+            forceRefetch,
+        }: RefetchPortfolioGraphThunkParams,
+        { dispatch },
+    ) => {
         // The account list is not final while discovery is running, so the graph just
         // keeps loading and waits for it to finish before starting to fetch values.
-        if (selectHasRunningDiscovery(getState())) {
+        if (isDiscoveryRunning) {
             jotaiStore.set(portfolioGraphAtoms.isLoadingAtom, true);
             jotaiStore.set(portfolioGraphAtoms.errorAtom, null);
 
             return;
         }
 
-        const accounts = selectPortfolioGraphAccountItems(getState());
         if (A.isEmpty(accounts)) {
             jotaiStore.set(portfolioGraphAtoms.isLoadingAtom, false);
             jotaiStore.set(
@@ -131,30 +130,45 @@ export const refetchPortfolioGraphThunk = createThunk(
         await fetchGraphDataToAtoms({
             atoms: portfolioGraphAtoms,
             accounts,
-            timeframeHours: selectPortfolioGraphTimeframe(getState()),
-            isElectrumBackend: selectIsElectrumBackendSelected(getState(), 'btc'),
-            baseCurrencyCode: selectBaseCurrency(getState()),
+            timeframeHours,
+            isElectrumBackend,
+            baseCurrencyCode,
             forceRefetch,
             dispatch,
         });
     },
 );
 
-type RefetchAccountGraphThunkParams = {
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
+export type RefetchPortfolioGraphThunkParams = {
+    accounts: AccountItem[];
+    isDiscoveryRunning: boolean;
+    timeframeHours: TimeframeHoursValue;
+    isElectrumBackend: boolean;
+    baseCurrencyCode: FetchGraphDataParams['baseCurrencyCode'];
+    forceRefetch?: boolean;
+};
+
+export type RefetchAccountGraphThunkParams = {
+    accountItem?: AccountItem;
+    timeframeHours: TimeframeHoursValue;
+    isElectrumBackend: boolean;
+    baseCurrencyCode: FetchGraphDataParams['baseCurrencyCode'];
     forceRefetch?: boolean;
 };
 
 export const refetchAccountGraphThunk = createThunk(
     `${GRAPH_MODULE_PREFIX}/refetchAccountGraph`,
     async (
-        { accountKey, tokenContract, forceRefetch }: RefetchAccountGraphThunkParams,
-        { dispatch, getState },
+        {
+            accountItem,
+            timeframeHours,
+            isElectrumBackend,
+            baseCurrencyCode,
+            forceRefetch,
+        }: RefetchAccountGraphThunkParams,
+        { dispatch },
     ) => {
-        const account = selectAccountByKey(getState(), accountKey);
-
-        if (!account) {
+        if (!accountItem) {
             jotaiStore.set(accountDetailGraphAtoms.isLoadingAtom, false);
             jotaiStore.set(
                 accountDetailGraphAtoms.errorAtom,
@@ -164,23 +178,13 @@ export const refetchAccountGraphThunk = createThunk(
             return;
         }
 
-        const accountItem: AccountItem = {
-            symbol: account.symbol,
-            descriptor: account.descriptor,
-            accountKey: account.key,
-            identity: tryGetAccountIdentity(account),
-            hideMainAccount: !!tokenContract,
-            // Pass empty array to show only the main account, or the token to show only its graph.
-            tokensFilter: tokenContract ? [tokenContract] : [],
-        };
-
         await fetchGraphDataToAtoms({
             atoms: accountDetailGraphAtoms,
             accounts: [accountItem],
             eventsAccount: accountItem,
-            timeframeHours: selectAccountGraphTimeframe(getState(), accountKey),
-            isElectrumBackend: selectIsElectrumBackendSelected(getState(), account.symbol),
-            baseCurrencyCode: selectBaseCurrency(getState()),
+            timeframeHours,
+            isElectrumBackend,
+            baseCurrencyCode,
             forceRefetch,
             dispatch,
         });

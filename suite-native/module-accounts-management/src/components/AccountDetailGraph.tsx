@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
@@ -15,7 +15,6 @@ import { VStack } from '@suite-native/atoms';
 import {
     Graph,
     accountDetailGraphAtoms,
-    refetchAccountGraphThunk,
     selectIsHistoryEnabledAccountByAccountKey,
     useAccountGraphData,
     useGraphGestureHandlers,
@@ -30,7 +29,6 @@ type AccountDetailGraphProps = {
 };
 
 export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
-    const dispatch = useDispatch();
     const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
         selectIsHistoryEnabledAccountByAccountKey(state, accountKey),
     );
@@ -40,7 +38,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
             : selectAccountFiatBalance(state, accountKey, false, false),
     );
 
-    useAccountGraphData({ accountKey, tokenContract });
+    const { refetchAccountGraph } = useAccountGraphData({ accountKey, tokenContract });
 
     const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);
     const isLoading = useAtomValue(accountDetailGraphAtoms.isLoadingAtom);
@@ -55,8 +53,8 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     const isGraphHidden = !!tokenContract && isTokenPriceUnavailable;
 
     const handleTryAgain = useCallback(() => {
-        dispatch(refetchAccountGraphThunk({ accountKey, tokenContract, forceRefetch: true }));
-    }, [dispatch, accountKey, tokenContract]);
+        refetchAccountGraph({ forceRefetch: true });
+    }, [refetchAccountGraph]);
 
     return (
         <VStack spacing="sp24">
