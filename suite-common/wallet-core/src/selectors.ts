@@ -10,7 +10,6 @@ import { type Account, type ReviewOutput } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
-    sortByCoin,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
@@ -67,9 +66,7 @@ export const selectAllAccountsToList = createMemoizedSelector(
             enabledSupportedNetworks.includes(symbol),
         );
 
-        const sortedAccounts = sortByCoin(filteredAccounts);
-
-        return returnStableArrayIfEmpty(sortedAccounts);
+        return returnStableArrayIfEmpty(filteredAccounts);
     },
 );
 
