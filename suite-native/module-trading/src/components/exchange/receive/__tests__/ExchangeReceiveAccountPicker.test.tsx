@@ -21,7 +21,6 @@ import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
 const btcAccountName1 = 'BTC Account #1';
-const btcAddressAddress = 'USED1';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -91,7 +90,7 @@ describe('ExchangeReceiveAccountPicker', () => {
         expect(getByText(getTranslation('moduleTrading.notSelected'))).toBeTruthy();
     });
 
-    it('should display selected account name and address', () => {
+    it('should display selected account name', () => {
         setSelectedAsset(btcAsset);
         const { getByText } = renderPicker(
             exchangeStateWithReceiveAccount({
@@ -101,7 +100,6 @@ describe('ExchangeReceiveAccountPicker', () => {
         );
 
         expect(getByText(btcAccountName1)).toBeTruthy();
-        expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 
     it('should call navigate with correct params on press', () => {
