@@ -30,14 +30,6 @@ jest.mock('@suite-common/device', () => ({
     selectIsDeviceConnected: () => true,
 }));
 
-const mockConfirmApproval = jest.fn().mockResolvedValue({});
-
-jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
-    useApprovalFlow: () => ({
-        confirmApproval: mockConfirmApproval,
-    }),
-}));
-
 const mockUseTransactionDetails = useTransactionDetails as jest.Mock;
 const mockUseNavigationRemoveInterceptorAlert = jest.mocked(useNavigationRemoveInterceptorAlert);
 
@@ -124,7 +116,6 @@ describe('TradingConfirmingScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockConfirmApproval.mockResolvedValue({});
         store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         mockUseAllowanceTxTracking.mockReturnValue({
@@ -174,13 +165,18 @@ describe('TradingConfirmingScreen', () => {
         expect(mockNavigation.push).not.toHaveBeenCalled();
     });
 
-    it('approve: navigates to TradingExchangePreview after confirmApproval succeeds', async () => {
+    it('approve: navigates to TradingExchangePreview when the quote status becomes CONFIRM', () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
         renderScreen({ flowType: 'approve' });
 
-        await act(async () => {
-            await Promise.resolve(); // flush confirmApproval promise
+        expect(mockNavigation.push).not.toHaveBeenCalled();
+
+        // Simulate the backend advancing the status (what the watch poll saves).
+        act(() => {
+            store.dispatch(
+                tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'CONFIRM' }),
+            );
         });
 
         expect(mockNavigation.popToTop).toHaveBeenCalled();
@@ -189,31 +185,13 @@ describe('TradingConfirmingScreen', () => {
         });
     });
 
-    it('approve: saves quote with CONFIRM status when confirmApproval returns APPROVAL_PENDING', async () => {
+    it('approve: does not navigate while status stays APPROVAL_PENDING', () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-        mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'APPROVAL_PENDING' });
-
-        renderScreen({ flowType: 'approve' });
-
-        await act(async () => {
-            await Promise.resolve();
-        });
-
-        expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
-            expect.objectContaining({ status: 'CONFIRM' }),
+        store.dispatch(
+            tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'APPROVAL_PENDING' }),
         );
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-    });
-
-    it('approve: does not navigate when confirmApproval fails', async () => {
-        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-        mockConfirmApproval.mockResolvedValue(undefined);
 
         renderScreen({ flowType: 'approve' });
-
-        await act(async () => {
-            await Promise.resolve();
-        });
 
         expect(mockNavigation.popToTop).not.toHaveBeenCalled();
         expect(mockNavigation.push).not.toHaveBeenCalled();
@@ -231,28 +209,31 @@ describe('TradingConfirmingScreen', () => {
         );
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-
         renderScreen({ flowType: 'revoke-and-approve' });
+
+        expect(mockNavigation.push).not.toHaveBeenCalled();
+
+        // Simulate the backend reporting the follow-up approval is required.
+        act(() => {
+            store.dispatch(
+                tradingExchangeActions.saveSelectedQuote({
+                    ...testQuote,
+                    approvalType: 'ZERO',
+                    approvalSendTxHash: 'revoke-txid',
+                    status: 'APPROVAL_REQ',
+                }),
+            );
+        });
 
         expect(mockNavigation.popToTop).toHaveBeenCalled();
         expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {
             isRevoked: true,
         });
-        const dispatchedActions = dispatchSpy.mock.calls.map(([action]) => action);
-        // savePreselectedQuote action no longer exists; assert against the action-type string.
-        expect(
-            dispatchedActions.find(
-                (action: any) => action?.type === '@trading-exchange/savePreselectedQuote',
-            ),
-        ).toBeUndefined();
         const persisted = selectTradingExchangeSelectedQuote(store.getState());
         expect(persisted).toBeDefined();
         expect(persisted?.approvalSendTxHash).toBeUndefined();
         expect(persisted?.approvalType).toBeUndefined();
         expect(persisted?.status).toBe('APPROVAL_REQ');
-
-        dispatchSpy.mockRestore();
     });
 
     it('revoke: pops to top and clears selectedQuote', () => {
@@ -327,6 +308,18 @@ describe('TradingConfirmingScreen', () => {
         );
     });
 
+    it('surfaces a backend error status and allows leaving without confirmation', () => {
+        mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
+        store.dispatch(tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'ERROR' }));
+
+        renderScreen({ flowType: 'approve' });
+
+        expect(mockUseNavigationRemoveInterceptorAlert).toHaveBeenCalledWith(
+            expect.objectContaining({ shouldPrevent: false }),
+        );
+        expect(mockNavigation.push).not.toHaveBeenCalled();
+    });
+
     describe('analytics', () => {
         it('should report approval-confirming visit ', () => {
             renderScreen();
@@ -363,14 +356,15 @@ describe('TradingConfirmingScreen', () => {
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
-        it('should report continue when on navigation to next screen', async () => {
+        it('should report continue when on navigation to next screen', () => {
             mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
-            mockConfirmApproval.mockResolvedValue({ ...testQuote, status: 'APPROVAL_PENDING' });
 
             renderScreen({ flowType: 'approve' });
 
-            await act(async () => {
-                await Promise.resolve();
+            act(() => {
+                store.dispatch(
+                    tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'CONFIRM' }),
+                );
             });
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'continue');
