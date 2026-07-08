@@ -16,12 +16,10 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
-    type TradingExchangeType,
     type TradingTransactionExchange,
     cryptoIdToNetwork,
     exchangeThunks,
     getDexEstimationData,
-    invityAPI,
     isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
@@ -40,7 +38,6 @@ import {
 import { getNetwork, isAccountBasedNetwork } from '@suite-common/wallet-config';
 import {
     ETHEREUM_ADJUST_GAS_LIMIT,
-    fetchAndUpdateAccountThunk,
     selectAccountByKey,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
@@ -339,39 +336,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         ).unwrap();
     };
 
-    const watchApproval = async ({ refreshCount }: { refreshCount: number }) => {
-        if (!selectedQuote) return;
-
-        const response = await invityAPI.watchTrade<TradingExchangeType>(
-            selectedQuote,
-            'exchange',
-            refreshCount,
-        );
-
-        if (!response.status || response.status === selectedQuote.status) {
-            return;
-        }
-
-        const updatedSelectedQuote = {
-            ...selectedQuote,
-            status: response.status,
-            error: response.error,
-            approvalType: undefined,
-        };
-
-        if (!updatedSelectedQuote.dexTx || !updatedSelectedQuote.receiveAddress) {
-            return;
-        }
-
-        const newTrade = await confirmApproval({
-            trade: updatedSelectedQuote,
-            receiveAddress: updatedSelectedQuote.receiveAddress,
-        });
-
-        dispatch(tradingExchangeActions.saveSelectedQuote(newTrade));
-        await dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
-    };
-
     const approveTransaction = async (exchangeTrade: ExchangeTrade) => {
         if (!receiveAddress) return false;
 
@@ -569,7 +533,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         approveTransaction,
         revokeApproval,
         confirmApproval,
-        watchApproval,
         refreshQuotes,
         isScheduledQuotesRefresh,
         resetSelectedOffer,
