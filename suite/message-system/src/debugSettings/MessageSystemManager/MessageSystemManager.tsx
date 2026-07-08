@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     messageSystemActions,
@@ -9,8 +10,6 @@ import { type Action } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { MessageSystemConditionGroup } from '../MessageSystemConditionGroup';
 import { MessageSystemManagerDetail } from './MessageSystemManagerDetail';

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     type ExperimentsItemType,
@@ -9,8 +10,6 @@ import {
 import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
 import { useDebounce } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
-
-import { useDispatch } from 'src/hooks/suite';
 
 type MessageSystemExperimentInfoProps = {
     experiment: ExperimentsItemType;

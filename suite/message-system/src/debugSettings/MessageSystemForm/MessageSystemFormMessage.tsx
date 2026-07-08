@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import {
@@ -9,8 +10,6 @@ import {
 } from '@suite-common/message-system';
 import { Column, Modal, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
 import { MessageSystemManagerToolbar } from '../MessageSystemManager/MessageSystemManagerToolbar';
