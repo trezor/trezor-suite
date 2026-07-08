@@ -10058,6 +10058,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
         defaultMessage: 'APY can change over time',
     },
+    TR_EARN_YIELD_APY_APR_TOOLTIP_FOOTER: {
+        id: 'TR_EARN_YIELD_APY_APR_TOOLTIP_FOOTER',
+        defaultMessage: 'APY and APR rates can change over time',
+    },
+    TR_EARN_YIELD_RATE_APY: {
+        id: 'TR_EARN_YIELD_RATE_APY',
+        defaultMessage: '+{rate}% APY',
+    },
+    TR_EARN_YIELD_RATE_APR: {
+        id: 'TR_EARN_YIELD_RATE_APR',
+        defaultMessage: '+{rate}% APR',
+    },
     TR_EARN_STAKING_APY_TOOLTIP: {
         id: 'TR_EARN_STAKING_APY_TOOLTIP',
         defaultMessage: 'Annual percentage yield (APY)',
