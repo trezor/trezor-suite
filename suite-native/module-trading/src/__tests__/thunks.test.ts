@@ -209,6 +209,34 @@ describe('thunks', () => {
             expect(result.type).toContain('fulfilled');
         });
 
+        it('should derive the spender from dexTx.to when dexTx is the swap tx (LiFi)', async () => {
+            // LiFi returns the swap dexTx (non-approve calldata); the router that must be
+            // approved is dexTx.to, not encoded in the calldata.
+            const lifiSwapQuote: ExchangeTrade = {
+                ...dexQuoteWithApprovalData,
+                dexTx: {
+                    from: '0x0000000000000000000000000000000000000000',
+                    to: '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae',
+                    data: '0x4630a0d8000000000000000000000000000000000000000000000000000000000000dead',
+                    value: '0x0',
+                },
+            };
+
+            const ethAccount = store
+                .getState()
+                .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
+
+            const result = await store.dispatch(
+                composeEvmApprovalFeeLevelsThunk({
+                    quote: lifiSwapQuote,
+                    account: ethAccount!,
+                    feeInfo,
+                }),
+            );
+
+            expect(result.type).toContain('fulfilled');
+        });
+
         it('should merge composed approval fees into existing exchange form draft without dropping fields', async () => {
             const formDraftKey = getFormDraftKey('trading-exchange', '');
 

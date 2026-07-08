@@ -288,8 +288,10 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk(
                 return rejectWithValue('DEX quote with dexTx data is required');
             }
 
-            const approvalData = Calldata.evm.erc20.approve.decode(dexTx.data);
-            const spender = approvalData?.spender;
+            // 1inch returns an approve() dexTx with the spender encoded in the calldata;
+            // LiFi returns the swap dexTx whose `to` is the router that must be approved
+            // to pull the token. Both identify the same spender.
+            const spender = Calldata.evm.erc20.approve.decode(dexTx.data)?.spender ?? dexTx.to;
             if (!spender) {
                 return rejectWithValue('Could not extract spender from dexTx data');
             }
