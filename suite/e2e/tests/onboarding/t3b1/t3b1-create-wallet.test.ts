@@ -3,7 +3,7 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - create wallet', { tag: ['@T3T1'] }, () => {
+test.describe('Onboarding - create wallet', { tag: ['@T3B1'] }, () => {
     test.use({
         setupEmulator: false,
     });
@@ -22,7 +22,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1'] }, () => {
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ device, onboardingPage, devicePrompt, analyticsSection }) => {
+        async ({ page, device, onboardingPage, devicePrompt, analyticsSection }) => {
             await analyticsSection.passThroughAnalytics();
 
             // Device onboarding steps
@@ -37,9 +37,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1'] }, () => {
             // In the new atomic flow, wallet creation and backup happen together
             const shares = 3;
             const threshold = 2;
-            await onboardingPage.backup.passThroughShamirBackup({
-                shares,
-                threshold,
+            await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
                 deviceConfirmations: 3,
             });
 

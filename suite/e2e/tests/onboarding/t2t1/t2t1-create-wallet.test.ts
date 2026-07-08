@@ -35,8 +35,8 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
         await devicePrompt.confirmOnDevicePromptIsShown();
 
         await device.pressYes();
-        await device.type('12');
-        await device.type('12');
+        await device.inputPin('12');
+        await device.inputPin('12');
         await devicePrompt.confirmOnDevicePromptIsShown();
         await device.pressYes();
         await onboardingPage.finalButton.click();

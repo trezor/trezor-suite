@@ -72,8 +72,8 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
                 await onboardingPage.pin.setPinButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
-                await device.selectNumberOfWords(12);
-                await device.selectNumberOfWords(12);
+                await device.inputPin('12');
+                await device.inputPin('12');
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();

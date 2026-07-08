@@ -58,9 +58,8 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
             await onboardingPage.pin.setPinButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
-            // method is used as a workaround to setup PIN with value 12
-            await device.selectNumberOfWords(12);
-            await device.selectNumberOfWords(12);
+            await device.inputPin('12');
+            await device.inputPin('12');
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
 

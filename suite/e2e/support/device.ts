@@ -82,6 +82,11 @@ export class DeviceFixture {
     }
 
     @step()
+    async inputPin(pin: string) {
+        await TrezorUserEnvLink.inputPin(pin);
+    }
+
+    @step()
     async tapCenter() {
         await TrezorUserEnvLink.clickEmu(EMULATOR_CENTER_COORDINATES[this.model]);
     }
