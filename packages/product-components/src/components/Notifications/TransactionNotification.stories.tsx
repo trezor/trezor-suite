@@ -125,6 +125,16 @@ const transactionNotificationConfig: Record<
             },
         },
     },
+    'raw-tx-sent': {
+        toastIcon: 'arrowUp',
+        intent: 'brand',
+        message: 'Raw transaction sent from Ethereum #1',
+        amount: '',
+        transaction: {
+            notificationType: 'raw-tx-sent',
+            symbol: 'eth',
+        },
+    },
     'tx-yield-deposit': {
         toastIcon: 'arrowUp',
         intent: 'brand',
