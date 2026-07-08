@@ -10,6 +10,8 @@ import {
     type RefetchPortfolioGraphParams,
     portfolioGraphAtoms,
     selectHasDeviceHistoryEnabledAccounts,
+    selectPortfolioGraphError,
+    selectPortfolioGraphIsLoading,
     useGraphGestureHandlers,
 } from '@suite-native/graph';
 
@@ -23,8 +25,8 @@ export const PortfolioLineGraph = ({ refetchPortfolioGraph }: PortfolioLineGraph
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
     const graphPoints = useAtomValue(portfolioGraphAtoms.graphPointsAtom);
-    const isLoading = useAtomValue(portfolioGraphAtoms.isLoadingAtom);
-    const error = useAtomValue(portfolioGraphAtoms.errorAtom);
+    const isLoading = useSelector(selectPortfolioGraphIsLoading);
+    const error = useSelector(selectPortfolioGraphError);
 
     const showGraph = hasDeviceHistoryEnabledAccounts || hasDeviceDiscovery;
 
@@ -46,7 +48,7 @@ export const PortfolioLineGraph = ({ refetchPortfolioGraph }: PortfolioLineGraph
             onPointSelected={setSelectedPoint}
             onGestureEnd={handleGestureEnd}
             onTryAgain={handleTryAgain}
-            error={error?.message}
+            error={error}
         />
     );
 };

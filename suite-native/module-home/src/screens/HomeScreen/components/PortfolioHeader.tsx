@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useAtomValue } from 'jotai';
-
 import { Box, VStack } from '@suite-native/atoms';
 import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import {
@@ -9,6 +7,7 @@ import {
     portfolioGraphAtoms,
     selectHasDeviceHistoryEnabledAccounts,
     selectHasPortfolioGraphAccounts,
+    selectPortfolioGraphIsLoading,
 } from '@suite-native/graph';
 
 type PortfolioHeaderContentProps = {
@@ -39,7 +38,7 @@ const PortfolioHeaderContent = ({ isLoading }: PortfolioHeaderContentProps) => {
 
 export const PortfolioHeader = () => {
     const hasPortfolioGraphAccounts = useSelector(selectHasPortfolioGraphAccounts);
-    const isLoading = useAtomValue(portfolioGraphAtoms.isLoadingAtom);
+    const isLoading = useSelector(selectPortfolioGraphIsLoading);
 
     if (!hasPortfolioGraphAccounts && !isLoading) return null;
 

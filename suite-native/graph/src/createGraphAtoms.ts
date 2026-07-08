@@ -7,8 +7,6 @@ import { percentageDiff } from './utils';
 export type GraphAtoms<TGraphPoint extends FiatGraphPoint = FiatGraphPoint> = {
     /** Points of the graph line, written by the graph data source. */
     graphPointsAtom: PrimitiveAtom<TGraphPoint[]>;
-    isLoadingAtom: PrimitiveAtom<boolean>;
-    errorAtom: PrimitiveAtom<Error | null>;
     /** Transaction events displayed on the account detail graph line. */
     graphEventsAtom: PrimitiveAtom<GroupedBalanceMovementEvent[] | undefined>;
     /** Point of the graph line selected by the swipe gesture. Null while there is no gesture. */
@@ -37,8 +35,6 @@ export const createGraphAtoms = <
     TGraphPoint extends FiatGraphPoint = FiatGraphPoint,
 >(): GraphAtoms<TGraphPoint> => {
     const graphPointsAtom = atom<TGraphPoint[]>([]);
-    const isLoadingAtom = atom(true);
-    const errorAtom = atom<Error | null>(null);
     const graphEventsAtom = atom<GroupedBalanceMovementEvent[] | undefined>(undefined);
     const selectedPointAtom = atom<TGraphPoint | null>(null);
 
@@ -77,16 +73,12 @@ export const createGraphAtoms = <
 
     const resetGraphAtom = atom(null, (_get, set) => {
         set(graphPointsAtom, []);
-        set(isLoadingAtom, true);
-        set(errorAtom, null);
         set(graphEventsAtom, undefined);
         set(selectedPointAtom, null);
     });
 
     return {
         graphPointsAtom,
-        isLoadingAtom,
-        errorAtom,
         graphEventsAtom,
         selectedPointAtom,
         isGestureActiveAtom,
