@@ -3,7 +3,6 @@ import { Icon, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { TradingTestWrapper } from 'src/views/wallet/trading';
 
 const Arrow = () => (
     <Row margin={{ left: spacings.xs, right: spacings.xs }}>
@@ -72,13 +71,12 @@ export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsPr
                 {fiatStringAmount} {fiatCurrency}
             </HiddenPlaceholder>
             <Arrow />
-            <TradingTestWrapper data-testid="@trading/transaction/crypto-amount">
-                <FormattedCryptoAmount
-                    value={receiveStringAmount}
-                    symbol={coinSymbol}
-                    contractAddress={contractAddress}
-                />
-            </TradingTestWrapper>
+            <FormattedCryptoAmount
+                value={receiveStringAmount}
+                symbol={coinSymbol}
+                contractAddress={contractAddress}
+                data-testid="@trading/transaction/crypto-amount"
+            />
         </Row>
     );
 };
