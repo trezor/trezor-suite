@@ -15,6 +15,7 @@ import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets'
 
 type YieldDepositInfoBottomSheetProps = {
     apy: number | null;
+    bonusRewardTokenName?: string | null;
     onClose: () => void;
     ref: BottomSheetModalRef;
     tokenSymbol: string;
@@ -23,6 +24,7 @@ type YieldDepositInfoBottomSheetProps = {
 
 export const YieldDepositInfoBottomSheet = ({
     apy,
+    bonusRewardTokenName,
     onClose,
     ref,
     tokenSymbol,
@@ -30,6 +32,7 @@ export const YieldDepositInfoBottomSheet = ({
 }: YieldDepositInfoBottomSheetProps) => {
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({
         apy,
+        bonusRewardTokenName,
         tokenSymbol,
         vaultTokenSymbol,
     });

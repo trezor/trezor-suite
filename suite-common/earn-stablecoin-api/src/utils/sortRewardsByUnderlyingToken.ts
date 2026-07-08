@@ -27,3 +27,14 @@ export const sortRewardsByUnderlyingToken = (
 
         return b.rate - a.rate;
     });
+
+export const getBonusRewardToken = (
+    rewards: RewardDtoV2[],
+    underlyingToken: TokenDtoV2 | undefined,
+) => {
+    if (!underlyingToken) {
+        return null;
+    }
+
+    return rewards.find(reward => !isSameToken(reward.token, underlyingToken))?.token ?? null;
+};

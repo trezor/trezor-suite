@@ -6,12 +6,14 @@ type CreateHowYieldWorksPresetProps = {
     tokenSymbol: string;
     vaultTokenSymbol: string;
     apy: number | null;
+    bonusRewardTokenName?: string | null;
 };
 
 export const createHowYieldWorksPreset = ({
     tokenSymbol,
     vaultTokenSymbol,
     apy,
+    bonusRewardTokenName,
 }: CreateHowYieldWorksPresetProps): HowEarnWorksScreenPreset => ({
     benefitItems: [
         {
@@ -42,6 +44,23 @@ export const createHowYieldWorksPreset = ({
             ),
             description: <Translation id="earn.howYieldWorksScreen.benefits.third.description" />,
         },
+        ...(bonusRewardTokenName
+            ? [
+                  {
+                      id: 'yield-benefit-bonus-reward',
+                      icon: 'coin' as const,
+                      title: (
+                          <Translation
+                              id="earn.howYieldWorksScreen.benefits.fourth.title"
+                              values={{ bonusRewardTokenName }}
+                          />
+                      ),
+                      description: (
+                          <Translation id="earn.howYieldWorksScreen.benefits.fourth.description" />
+                      ),
+                  },
+              ]
+            : []),
     ],
     timelineSections: [
         {

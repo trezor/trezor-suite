@@ -67,6 +67,7 @@ export const YieldDepositScreen = () => {
     const {
         account,
         apy,
+        bonusRewardTokenName,
         flowData,
         flowKey,
         token,
@@ -349,6 +350,7 @@ export const YieldDepositScreen = () => {
             <YieldDepositInfoBottomSheet
                 ref={infoBottomSheetRef}
                 apy={apy}
+                bonusRewardTokenName={bonusRewardTokenName}
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenSymbol={vaultTokenSymbol}
