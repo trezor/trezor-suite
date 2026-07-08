@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -16,8 +17,6 @@ import { type Experiments } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { MessageSystemExperimentDetail } from './MessageSystemExperimentDetail';
 import { MessageSystemExperimentFilters } from './MessageSystemExperimentFilters';

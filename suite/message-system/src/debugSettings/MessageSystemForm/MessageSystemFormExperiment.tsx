@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import {
@@ -14,8 +15,6 @@ import { type Experiments } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
 import { MessageSystemExperimentToolbar } from '../MessageSystemExperiment/MessageSystemExperimentToolbar';

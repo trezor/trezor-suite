@@ -1,5 +1,9 @@
 import { Translation } from '@suite/intl';
-import { ContextMessage } from '@suite/message-system';
+import {
+    ContextMessage,
+    MessageSystemConfigSourceSelect,
+    MessageSystemDebug,
+} from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
@@ -27,8 +31,6 @@ import { FirmwareUpdateEnvironmentSelect } from './FirmwareUpdateEnvironmentSele
 import { Flags } from './Flags';
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
-import { MessageSystemConfigSourceSelect } from './MessageSystem/MessageSystemConfigSourceSelect';
-import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
 import { N4w1Backup } from './N4w1Backup';
 import { OAuthApi } from './OAuthApi';

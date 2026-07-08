@@ -1,11 +1,10 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectMessageSystemConfig } from '@suite-common/message-system';
 import { Box, Button, ButtonGroup, Paragraph, Row } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { SectionItem } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { MessageSystemExperiments } from './MessageSystemExperiment/MessageSystemExperiments';
 import { MessageSystemManager } from './MessageSystemManager/MessageSystemManager';
