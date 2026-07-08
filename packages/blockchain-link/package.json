@@ -33,21 +33,21 @@
         "socks-proxy-agent": "@trezor/blockchain-link/src/utils/socks-proxy-agent.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*"
         },
         "browser": {
-            "socks-proxy-agent": "./lib/utils/socks-proxy-agent.mjs"
+            "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.mjs"
+            "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
         }
     },
     "scripts": {

@@ -14,7 +14,7 @@ const sanitizeInternalImports = (src, moduleType) => {
 
 const sanitizeDynamicImport = src =>
     // Manually replace .ts extensions with .js (for dynamic imports)
-    src.replace(/\.ts(['"`]|$)/g, '.mjs$1');
+    src.replace(/\.ts(['"`]|$)/g, '.js$1');
 /**
  * Babel plugin to sanitize non-index internal imports, from src to the built lib folder.
  * e.g. @trezor/utils/src/bufferUtils → @trezor/utils/lib/bufferUtils

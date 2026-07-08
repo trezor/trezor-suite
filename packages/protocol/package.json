@@ -13,25 +13,25 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*",
             "./lib/protocol-thp": {
-                "types": "./lib/protocol-thp/index.d.mts",
-                "default": "./lib/protocol-thp/index.mjs"
+                "types": "./lib/protocol-thp/index.d.ts",
+                "default": "./lib/protocol-thp/index.js"
             },
             "./lib/protocol-thp/messages": {
-                "types": "./lib/protocol-thp/messages/index.d.mts",
-                "default": "./lib/protocol-thp/messages/index.mjs"
+                "types": "./lib/protocol-thp/messages/index.d.ts",
+                "default": "./lib/protocol-thp/messages/index.js"
             },
             "./lib/protocol-tpn": {
-                "types": "./lib/protocol-tpn/index.d.mts",
-                "default": "./lib/protocol-tpn/index.mjs"
+                "types": "./lib/protocol-tpn/index.d.ts",
+                "default": "./lib/protocol-tpn/index.js"
             }
         }
     },

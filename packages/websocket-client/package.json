@@ -23,20 +23,20 @@
         "ws": "@trezor/websocket-client/src/ws.native.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             }
         },
         "browser": {
-            "ws": "./lib/ws.browser.mjs"
+            "ws": "./lib/ws.browser.js"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "ws": "@trezor/websocket-client/lib/ws.native.mjs"
+            "ws": "@trezor/websocket-client/lib/ws.native.js"
         }
     },
     "files": [

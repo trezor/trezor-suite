@@ -39,7 +39,7 @@ cat > package.json << EOF
   "version": "1.0.0",
   "description": "Test local @trezor/connect packages",
   "type": "module",
-  "main": "index.mjs",
+  "main": "index.js",
   "dependencies": {
     "@trezor/connect": "${CONNECT_PATH}",
     "@trezor/connect-web": "${CONNECT_WEB_PATH}",
@@ -55,7 +55,7 @@ npm install
 
 cat package.json
 
-cat > index.mjs << 'EOF'
+cat > index.js << 'EOF'
 import assert from 'node:assert';
 import TrezorConnect from '@trezor/connect';
 import TrezorConnectWeb from '@trezor/connect-web';
@@ -113,12 +113,12 @@ echo "=== Type-checking consumer (tsc --noEmit) ==="
 ./node_modules/.bin/tsc --noEmit --project tsconfig.json
 
 echo ""
-echo "=== Testing ESM with tsx (yarn tsx index.mjs) ==="
-yarn tsx index.mjs
+echo "=== Testing ESM with tsx (yarn tsx index.js) ==="
+yarn tsx index.js
 
 echo ""
-echo "=== Testing ESM with node (node index.mjs) ==="
-node index.mjs
+echo "=== Testing ESM with node (node index.js) ==="
+node index.js
 
 echo ""
 echo "All tests passed!"
