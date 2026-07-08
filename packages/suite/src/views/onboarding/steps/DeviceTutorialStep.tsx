@@ -21,6 +21,11 @@ export const DeviceTutorialStep = () => {
         dispatch(beginOnboardingTutorial());
     }, [dispatch]);
 
+    // Cancelling before the `showDeviceTutorial` call reaches the device (and registers in Connect
+    // core) is a no-op, leaving the device stuck showing the tutorial. Wait for the device to report
+    // it is waiting for interaction before allowing Skip.
+    const isDeviceReady = !!device?.buttonRequests.length;
+
     const handleSkipClick = () =>
         TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
 
@@ -38,6 +43,8 @@ export const DeviceTutorialStep = () => {
                     intent="neutral"
                     priority="secondary"
                     onClick={handleSkipClick}
+                    isDisabled={!isDeviceReady}
+                    isLoading={!isDeviceReady}
                 >
                     <Translation id="TR_SKIP" />
                 </OnboardingCard.Button>
