@@ -1,10 +1,10 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type PrimitiveAtom, useSetAtom } from 'jotai';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
-import { type FiatGraphPoint } from '@suite-common/graph';
+import { type AccountItem, type FiatGraphPoint } from '@suite-common/graph';
 import {
     type AccountsRootState,
     type BlockchainRootState,
@@ -27,40 +27,66 @@ import {
 
 /**
  * Watches the portfolio graph fetch inputs and refetches the graph data into
- * `portfolioGraphAtoms` whenever any of them changes. Components of the graph subscribe
- * to the atoms directly, so this hook returns nothing and no props have to be drilled.
+ * `portfolioGraphAtoms` whenever any of them changes. Graph display components subscribe
+ * to the atoms directly, so only command callbacks are passed down.
  */
-export const usePortfolioGraphData = () => {
+export type RefetchPortfolioGraphParams = {
+    forceRefetch?: boolean;
+};
+
+type UsePortfolioGraphDataParams = {
+    isEnabled?: boolean;
+};
+
+export const usePortfolioGraphData = ({ isEnabled = true }: UsePortfolioGraphDataParams = {}) => {
     const dispatch = useDispatch();
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-    const hasRunningDiscovery = useSelector(selectHasRunningDiscovery);
-    const accountItems = useSelector(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning);
-    const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const accounts = useSelector(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning);
+    const timeframeHours = useSelector(selectPortfolioGraphTimeframe);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, 'btc'),
     );
 
-    useEffect(() => {
-        if (!isDeviceAuthorized) return;
+    const refetchPortfolioGraph = useCallback(
+        ({ forceRefetch }: RefetchPortfolioGraphParams = {}) =>
+            dispatch(
+                refetchPortfolioGraphThunk({
+                    accounts,
+                    isDiscoveryRunning,
+                    timeframeHours,
+                    baseCurrencyCode,
+                    isElectrumBackend,
+                    forceRefetch,
+                }),
+            ),
+        [
+            accounts,
+            baseCurrencyCode,
+            dispatch,
+            isDiscoveryRunning,
+            isElectrumBackend,
+            timeframeHours,
+        ],
+    );
 
-        dispatch(refetchPortfolioGraphThunk({}));
-        // The thunk reads all the fetch inputs from the store by itself. They are listed
-        // as dependencies only to trigger a refetch whenever any of them changes.
-    }, [
-        dispatch,
-        isDeviceAuthorized,
-        hasRunningDiscovery,
-        accountItems,
-        portfolioGraphTimeframe,
-        baseCurrencyCode,
-        isElectrumBackend,
-    ]);
+    useEffect(() => {
+        if (!isEnabled || !isDeviceAuthorized) return;
+
+        refetchPortfolioGraph();
+    }, [isEnabled, isDeviceAuthorized, refetchPortfolioGraph]);
+
+    return { refetchPortfolioGraph };
 };
 
 type UseAccountGraphDataParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+};
+
+type RefetchAccountGraphParams = {
+    forceRefetch?: boolean;
 };
 
 /**
@@ -83,7 +109,37 @@ export const useAccountGraphData = ({ accountKey, tokenContract }: UseAccountGra
         selectIsElectrumBackendSelected(state, account?.symbol ?? 'btc'),
     );
 
+    const accountSymbol = account?.symbol;
+    const accountDescriptor = account?.descriptor;
+    const selectedAccountKey = account?.key;
     const identity = account ? tryGetAccountIdentity(account) : undefined;
+    const accountItem = useMemo<AccountItem | undefined>(() => {
+        if (!accountSymbol || !accountDescriptor || !selectedAccountKey) return undefined;
+
+        return {
+            symbol: accountSymbol,
+            descriptor: accountDescriptor,
+            accountKey: selectedAccountKey,
+            identity,
+            hideMainAccount: !!tokenContract,
+            // Pass empty array to show only the main account, or the token to show only its graph.
+            tokensFilter: tokenContract ? [tokenContract] : [],
+        };
+    }, [accountDescriptor, accountSymbol, identity, selectedAccountKey, tokenContract]);
+
+    const refetchAccountGraph = useCallback(
+        ({ forceRefetch }: RefetchAccountGraphParams = {}) =>
+            dispatch(
+                refetchAccountGraphThunk({
+                    accountItem,
+                    timeframeHours: accountGraphTimeframe,
+                    baseCurrencyCode,
+                    isElectrumBackend,
+                    forceRefetch,
+                }),
+            ),
+        [accountGraphTimeframe, accountItem, baseCurrencyCode, dispatch, isElectrumBackend],
+    );
 
     useEffect(
         () => () => {
@@ -95,23 +151,10 @@ export const useAccountGraphData = ({ accountKey, tokenContract }: UseAccountGra
     useEffect(() => {
         if (!isDeviceAuthorized) return;
 
-        dispatch(refetchAccountGraphThunk({ accountKey, tokenContract }));
-        // The thunk reads the other fetch inputs from the store by itself. They are listed
-        // as dependencies only to trigger a refetch whenever any of them changes. Account
-        // fields are listed individually, because the whole account object is updated on
-        // every sync, which would cause endless refetching.
-    }, [
-        dispatch,
-        isDeviceAuthorized,
-        accountKey,
-        tokenContract,
-        accountGraphTimeframe,
-        baseCurrencyCode,
-        isElectrumBackend,
-        identity,
-        account?.symbol,
-        account?.descriptor,
-    ]);
+        refetchAccountGraph();
+    }, [isDeviceAuthorized, refetchAccountGraph]);
+
+    return { refetchAccountGraph };
 };
 
 /**

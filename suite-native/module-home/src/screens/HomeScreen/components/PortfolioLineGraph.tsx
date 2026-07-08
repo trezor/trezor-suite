@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
@@ -7,14 +7,17 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
     Graph,
+    type RefetchPortfolioGraphParams,
     portfolioGraphAtoms,
-    refetchPortfolioGraphThunk,
     selectHasDeviceHistoryEnabledAccounts,
     useGraphGestureHandlers,
 } from '@suite-native/graph';
 
-export const PortfolioLineGraph = () => {
-    const dispatch = useDispatch();
+type PortfolioLineGraphProps = {
+    refetchPortfolioGraph: (params?: RefetchPortfolioGraphParams) => void;
+};
+
+export const PortfolioLineGraph = ({ refetchPortfolioGraph }: PortfolioLineGraphProps) => {
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
@@ -30,8 +33,8 @@ export const PortfolioLineGraph = () => {
     );
 
     const handleTryAgain = useCallback(() => {
-        dispatch(refetchPortfolioGraphThunk({ forceRefetch: true }));
-    }, [dispatch]);
+        refetchPortfolioGraph({ forceRefetch: true });
+    }, [refetchPortfolioGraph]);
 
     if (!showGraph) return null;
 
