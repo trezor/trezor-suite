@@ -89,6 +89,7 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
 
 const isProd = isCodesignBuild();
 
+// Common Sentry config for all Suite Desktop & Web envs
 export const SENTRY_CONFIG = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
 
@@ -108,6 +109,7 @@ export const SENTRY_CONFIG = {
     },
 } satisfies Options;
 
+// Common Sentry config for Suite browser-based envs (i.e. Web & Electron Renderer, but not Electron Main)
 export const SENTRY_BROWSER_CONFIG = {
     ...SENTRY_CONFIG,
     profileSessionSampleRate: isProd ? 0.1 : 1,
@@ -115,11 +117,7 @@ export const SENTRY_BROWSER_CONFIG = {
     profileLifecycle: 'trace',
 } satisfies BrowserOptions;
 
-/**
- * Get a list of extra Sentry integrations that should be added on top of the default ones for browser-based envs.
- * Warning: if you set integrations[] as the final config, it erases default integrations → must be a function,
- * as in packages/suite-web/src/sentry.ts or packages/suite-desktop-ui/src/sentry.ts
- */
+// Get Sentry integrations common for Suite browser-based envs, that should be added on top of the default ones.
 export const getCommonBrowserIntegrations = () => {
     const areAnalyticsConfirmedAndEnabled = getAnalyticsConfirmedAndEnabled();
 

@@ -19,6 +19,7 @@ interface InitSentryParams {
 
 const ELECTRON_MAIN_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,
+    // Important: must be a function to keep default Sentry integrations; an array would mean ONLY those specific integrations.
     integrations: defaults => [
         ...defaults.filter(i => i.name !== 'MainProcessSession'),
         captureConsoleIntegration({ levels: ['error'] }),
