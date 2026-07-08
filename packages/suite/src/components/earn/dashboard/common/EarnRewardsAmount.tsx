@@ -12,6 +12,7 @@ type EarnRewardsAmountProps = {
     intent?: TextProps['intent'];
     priority?: TextProps['priority'];
     isDisabled?: TextProps['isDisabled'];
+    'data-testid'?: string;
 };
 
 export const EarnRewardsAmount = ({
@@ -21,6 +22,7 @@ export const EarnRewardsAmount = ({
     intent,
     priority,
     isDisabled,
+    'data-testid': dataTestId,
 }: EarnRewardsAmountProps) => {
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -32,7 +34,7 @@ export const EarnRewardsAmount = ({
         );
 
     return (
-        <H4 intent={intent} priority={priority} isDisabled={isDisabled}>
+        <H4 data-testid={dataTestId} intent={intent} priority={priority} isDisabled={isDisabled}>
             <HiddenPlaceholder>
                 <CryptoAmountFormatter
                     value={rewards}

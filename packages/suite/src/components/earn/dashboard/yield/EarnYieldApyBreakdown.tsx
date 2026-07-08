@@ -96,13 +96,19 @@ export const EarnYieldApyBreakdown = ({
                             isBordered={false}
                         />
                         <Column flex="1">
-                            <Text typographyStyle="body-sm">{reward.token.symbol}</Text>
+                            <Text
+                                data-testid="@earn/dashboard/apy-breakdown/symbol"
+                                typographyStyle="body-sm"
+                            >
+                                {reward.token.symbol}
+                            </Text>
                             {descriptionId && (
                                 <Text
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
                                     isInverse
+                                    data-testid="@earn/dashboard/apy-breakdown/description"
                                 >
                                     <Translation id={descriptionId} />
                                 </Text>
@@ -113,6 +119,7 @@ export const EarnYieldApyBreakdown = ({
                             intent={hasRatePercent ? 'brand' : 'neutral'}
                             priority={hasRatePercent ? 'primary' : 'secondary'}
                             isInverse
+                            data-testid="@earn/dashboard/apy-breakdown/rate-percent"
                         >
                             {rateNode}
                         </Text>
@@ -127,7 +134,13 @@ export const EarnYieldApyBreakdown = ({
                     priority="secondary"
                     isInverse
                 />
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary" isInverse>
+                <Text
+                    data-testid="@earn/dashboard/apy-breakdown/footer"
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                    isInverse
+                >
                     <Translation id={footerId} />
                 </Text>
             </Row>

@@ -32,7 +32,7 @@ export function TxSimulationAssetRow({
                 {children}
             </Text>
             {fiatAmount && (
-                <Text intent="neutral" priority="secondary">
+                <Text intent="neutral" priority="secondary" data-testid={`${dataTestId}/fiat`}>
                     {fiatAmount.prefix}
                     <BaseCurrencyAmountFormatter
                         value={asBaseCurrencyAmount(new BigNumber(fiatAmount.value))}

@@ -80,6 +80,7 @@ export const YieldActionStep = ({
             <Button
                 size="large"
                 width="100%"
+                data-testid={`@yield/form/${flowType}-button`}
                 onClick={onSubmit}
                 isDisabled={isDisabled}
                 isLoading={isPending}

@@ -20,6 +20,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('coins');
         await blockbookMock.start('eth');
+        blockbookMock.updateCurrentFiatRate(0.5);
 
         await settingsPage.changeNetworks({
             enableNetworks: [

@@ -38,6 +38,7 @@ export const EarnYieldActionButtons = ({
             <>
                 <Tooltip content={depositMessageContent}>
                     <Button
+                        data-testid="@earn/dashboard/deposit-more-button"
                         size="small"
                         isDisabled={isDepositMoreDisabled}
                         iconLeft={isDepositDisabled ? InfoIcon : undefined}
@@ -48,6 +49,7 @@ export const EarnYieldActionButtons = ({
                 </Tooltip>
                 <Tooltip content={withdrawMessageContent}>
                     <Button
+                        data-testid="@earn/dashboard/withdraw-button"
                         size="small"
                         intent="brand"
                         priority="secondary"
@@ -64,6 +66,7 @@ export const EarnYieldActionButtons = ({
         {!hasDepositedBalance && hasAdditionalDepositAmount && (
             <Tooltip content={depositMessageContent}>
                 <Button
+                    data-testid="@earn/dashboard/deposit-now-button"
                     size="small"
                     isDisabled={isDepositNowDisabled}
                     iconLeft={isDepositDisabled ? InfoIcon : undefined}
@@ -75,7 +78,13 @@ export const EarnYieldActionButtons = ({
         )}
 
         {!hasDepositedBalance && !hasAdditionalDepositAmount && (
-            <Button size="small" intent="neutral" priority="secondary" onClick={onBuy}>
+            <Button
+                data-testid="@earn/dashboard/buy-button"
+                size="small"
+                intent="neutral"
+                priority="secondary"
+                onClick={onBuy}
+            >
                 <Translation id="TR_BUY" />
             </Button>
         )}

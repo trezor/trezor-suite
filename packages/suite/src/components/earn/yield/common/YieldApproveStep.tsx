@@ -98,6 +98,7 @@ export const YieldApproveStep = ({
             <Button
                 size="large"
                 width="100%"
+                data-testid="@yield/form/approve-button"
                 onClick={onApprovalSubmit}
                 isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
                 isLoading={isLoading}

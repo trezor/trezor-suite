@@ -38,7 +38,13 @@ export const EarnYieldPotentialRewards = ({
 
     return (
         <Column>
-            <EarnRewardsAmount symbol={symbol} rewards={rewards} apy={apy} intent="brand" />
+            <EarnRewardsAmount
+                data-testid="@earn/dashboard/potential-rewards/amount"
+                symbol={symbol}
+                rewards={rewards}
+                apy={apy}
+                intent="brand"
+            />
 
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <HiddenPlaceholder>

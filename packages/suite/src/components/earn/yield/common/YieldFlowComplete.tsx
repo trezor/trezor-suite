@@ -78,7 +78,9 @@ export const YieldFlowComplete = ({
             <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
 
             <Column gap={4}>
-                <Text typographyStyle="headline-md">{heading}</Text>
+                <Text typographyStyle="headline-md" data-testid="@yield/flow-complete/heading">
+                    {heading}
+                </Text>
 
                 <Text intent="neutral" priority="secondary">
                     {description}
@@ -97,7 +99,11 @@ export const YieldFlowComplete = ({
                         </Text>
                         <Row alignItems="center" gap={8}>
                             <Icon as={CheckCircleFilledIcon} intent="brand" />
-                            <Text typographyStyle="body-md" intent="brand">
+                            <Text
+                                data-testid="@yield/flow-complete/status"
+                                typographyStyle="body-md"
+                                intent="brand"
+                            >
                                 <Translation id="TR_EARN_YIELD_COMPLETED" />
                             </Text>
                         </Row>

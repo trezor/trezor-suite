@@ -26,6 +26,7 @@ export const PendingTransactionInfo = ({
             <Column flex="1">
                 <Row width="100%" justifyContent="space-between" alignItems="center" gap={8}>
                     <Paragraph
+                        data-testid="@pending-transaction/title"
                         typographyStyle="body-md"
                         intent="neutral"
                         priority="secondary"

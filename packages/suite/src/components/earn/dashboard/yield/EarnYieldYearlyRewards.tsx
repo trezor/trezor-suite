@@ -23,7 +23,12 @@ export const EarnYieldYearlyRewards = ({
     displaySymbol,
 }: EarnYieldYearlyRewardsProps) => (
     <Column>
-        <EarnRewardsAmount symbol={symbol} rewards={rewards} apy={apy} />
+        <EarnRewardsAmount
+            data-testid="@earn/dashboard/yearly-rewards/amount"
+            symbol={symbol}
+            rewards={rewards}
+            apy={apy}
+        />
 
         {hasDisplayableDepositedAmount && (
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
