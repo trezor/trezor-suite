@@ -2,14 +2,21 @@ import { useEffect, useState } from 'react';
 
 import { useFreshRef } from './useFreshRef';
 
+/** Shallow comparison identical to React's internal `areHookInputsEqual`. */
+const depsEqual = (prev: readonly unknown[], next: readonly unknown[]) =>
+    prev.length === next.length && prev.every((dep, i) => Object.is(dep, next[i]));
+
 /**
- * Resolves `getValue` asynchronously and returns the result only while `key` matches the key
+ * Resolves `getValue` asynchronously and returns the result only while `deps` match the deps
  * it was resolved for, otherwise `undefined`. A reused component instance (e.g. recycled list
  * cell) therefore never renders a stale resolution, even when promises settle out of order.
- * A rejected `getValue` is swallowed and the hook keeps returning `undefined` for that key.
+ * A rejected `getValue` is swallowed and the hook keeps returning `undefined` for those deps.
  */
-export function useKeyedAsyncValue<T>(key: string, getValue: () => Promise<T>): T | undefined {
-    const [resolved, setResolved] = useState<{ key: string; value: T }>();
+export function useAsyncMemo<T>(
+    getValue: () => Promise<T>,
+    deps: readonly unknown[],
+): T | undefined {
+    const [resolved, setResolved] = useState<{ deps: readonly unknown[]; value: T }>();
     const getValueRef = useFreshRef(getValue);
 
     useEffect(() => {
@@ -18,7 +25,7 @@ export function useKeyedAsyncValue<T>(key: string, getValue: () => Promise<T>): 
         getValueRef.current().then(
             value => {
                 if (!cancelled) {
-                    setResolved({ key, value });
+                    setResolved({ deps, value });
                 }
             },
             () => {}, // reject → stay undefined, callers render their fallback
@@ -27,7 +34,8 @@ export function useKeyedAsyncValue<T>(key: string, getValue: () => Promise<T>): 
         return () => {
             cancelled = true;
         };
-    }, [key, getValueRef]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, deps);
 
-    return resolved?.key === key ? resolved.value : undefined;
+    return resolved && depsEqual(resolved.deps, deps) ? resolved.value : undefined;
 }

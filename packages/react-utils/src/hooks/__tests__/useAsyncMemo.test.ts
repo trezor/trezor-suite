@@ -2,11 +2,12 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { createDeferred } from '@trezor/utils';
 
-import { useKeyedAsyncValue } from '../useAsyncMemo';
+import { useAsyncMemo } from '../useAsyncMemo';
 
-describe('useKeyedAsyncValue', () => {
+describe('useAsyncMemo', () => {
     it('returns undefined until the value resolves, then the value', async () => {
-        const { result } = renderHook(() => useKeyedAsyncValue('a', () => Promise.resolve(1)));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        const { result } = renderHook(() => useAsyncMemo(() => Promise.resolve(1), ['a']));
 
         expect(result.current).toBeUndefined();
 
@@ -15,9 +16,10 @@ describe('useKeyedAsyncValue', () => {
         });
     });
 
-    it('returns undefined immediately after the key changes', async () => {
+    it('returns undefined immediately after the deps change', async () => {
         const { result, rerender } = renderHook(
-            ({ key, value }) => useKeyedAsyncValue(key, () => Promise.resolve(value)),
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            ({ key, value }) => useAsyncMemo(() => Promise.resolve(value), [key]),
             { initialProps: { key: 'a', value: 1 } },
         );
 
@@ -34,10 +36,11 @@ describe('useKeyedAsyncValue', () => {
         });
     });
 
-    it('ignores a stale resolution that arrives after the key changed', async () => {
+    it('ignores a stale resolution that arrives after the deps changed', async () => {
         const deferredA = createDeferred<number>();
         const { result, rerender } = renderHook(
-            ({ key, promise }) => useKeyedAsyncValue(key, () => promise),
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            ({ key, promise }) => useAsyncMemo(() => promise, [key]),
             { initialProps: { key: 'a', promise: deferredA.promise } },
         );
 
@@ -55,7 +58,8 @@ describe('useKeyedAsyncValue', () => {
 
     it('keeps returning undefined when getValue rejects', async () => {
         const { result } = renderHook(() =>
-            useKeyedAsyncValue('a', () => Promise.reject(new Error('failed'))),
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            useAsyncMemo(() => Promise.reject(new Error('failed')), ['a']),
         );
 
         await act(async () => {});
@@ -63,9 +67,10 @@ describe('useKeyedAsyncValue', () => {
         expect(result.current).toBeUndefined();
     });
 
-    it('uses the latest getValue closure when only the key changes', async () => {
+    it('uses the latest getValue closure when only the deps change', async () => {
         const { result, rerender } = renderHook(
-            ({ key, value }) => useKeyedAsyncValue(key, () => Promise.resolve(value)),
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            ({ key, value }) => useAsyncMemo(() => Promise.resolve(value), [key]),
             { initialProps: { key: 'a', value: 1 } },
         );
 

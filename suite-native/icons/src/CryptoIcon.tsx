@@ -12,7 +12,7 @@ import {
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
-import { useKeyedAsyncValue } from '@trezor/react-utils';
+import { useAsyncMemo } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CryptoIconPlaceholder } from './CryptoIconPlaceholder';
@@ -64,7 +64,7 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
         failed: boolean;
     } | null>(null);
 
-    const resolvedUrls = useKeyedAsyncValue(asyncKey, async (): Promise<(string | number)[]> => {
+    const resolvedUrls = useAsyncMemo(async (): Promise<(string | number)[]> => {
         if (isNetworkSymbol(symbol)) {
             const coingeckoId = getCoingeckoId(symbol);
             if (coingeckoId && contractAddress) {
@@ -83,7 +83,7 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
         }
 
         return [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
-    });
+    }, [contractAddress, sizeNumber, symbol]);
 
     const sourceUrls = resolvedUrls ?? [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
     const sourceKey = resolvedUrls ? `${asyncKey}#resolved` : `${asyncKey}#fallback`;
