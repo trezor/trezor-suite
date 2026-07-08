@@ -10,6 +10,7 @@ import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/com
 import { Pagination } from 'src/components/wallet';
 import { TransactionTargetLayout } from 'src/components/wallet/TransactionItem/TransactionTargetLayout';
 import { type UsePagination } from 'src/hooks/general/usePagination';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
@@ -25,6 +26,7 @@ interface RewardsListProps {
 
 export const RewardsList = ({ account, rewardsQueryResult, pagination }: RewardsListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
+    const { isBelowTablet } = useLayoutSize();
     const isSolanaMainnet = !isTestnet(account.symbol);
 
     const onPageSelected = (page: number) => {
@@ -76,6 +78,7 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
                                         year="numeric"
                                     />
                                 </Text>
+
                                 <Card paddingType="none">
                                     <Row gap={32} padding={{ vertical: 16, horizontal: 24 }}>
                                         <IconCircle name="piggyBank" intent="neutral" size={40} />
@@ -84,7 +87,11 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
                                                 <Translation id="TR_REWARD" />
                                             </Text>
                                             <Grid
-                                                columns="1fr max-content minmax(110px, max-content)"
+                                                columns={
+                                                    isBelowTablet
+                                                        ? '1fr max-content'
+                                                        : '1fr max-content minmax(110px, max-content)'
+                                                }
                                                 rowGap={6}
                                                 columnGap={24}
                                                 flex="1"
