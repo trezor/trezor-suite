@@ -30,6 +30,7 @@ import { useMerklRewards } from './hooks';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 import { YieldPendingTransaction } from '../common/YieldPendingTransaction';
+import { useEnsureYieldDeviceSession } from '../hooks/useEnsureYieldDeviceSession';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 
 type YieldClaimProps = {
@@ -58,6 +59,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const isDeviceConnected = !!device?.connected && device.available;
     const isClaimFirmwareOutdated = !isStablecoinYieldSupported(device, 'claim');
 
+    const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType: 'claim', flowKey });
     const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
     const accountRewards: YieldAccountRewards | undefined =
         merklRewardsQuery.data?.accountsRewards[0];
@@ -117,6 +119,12 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 rewardCount: rewards.length,
             },
         });
+
+        const isSessionReady = await ensureDeviceSession();
+
+        if (!isSessionReady) {
+            return;
+        }
 
         try {
             await dispatch(claimMerklRewardsThunk({ account, flowKey, rewards })).unwrap();

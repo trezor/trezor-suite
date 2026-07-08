@@ -37,6 +37,7 @@ import {
 } from 'src/actions/wallet/stablecoin-yield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
+import { useEnsureYieldDeviceSession } from './useEnsureYieldDeviceSession';
 import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import {
@@ -145,6 +146,7 @@ export const useYieldFlow = ({
         receiptToken,
     });
 
+    const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType, flowKey });
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
     const sessionRef = useCurrentRef(session);
 
@@ -350,7 +352,7 @@ export const useYieldFlow = ({
 
     const isDeviceConnected = !!device?.connected && !!device?.available;
 
-    const submitApprove = useCallback(() => {
+    const submitApprove = useCallback(async () => {
         if (flowType !== 'deposit') {
             return;
         }
@@ -375,7 +377,13 @@ export const useYieldFlow = ({
 
         const amount = methodsRef.current.getValues('amountInput');
 
-        void dispatch(
+        const isSessionReady = await ensureDeviceSession();
+
+        if (!isSessionReady) {
+            return;
+        }
+
+        await dispatch(
             submitYieldApproveThunk({
                 flowKey,
                 flowType,
@@ -392,11 +400,12 @@ export const useYieldFlow = ({
         token,
         vault,
         methodsRef,
+        ensureDeviceSession,
         isDeviceConnected,
         openDeviceConnectionModal,
     ]);
 
-    const revokeAllowance = useCallback(() => {
+    const revokeAllowance = useCallback(async () => {
         if (!isDeviceConnected) {
             openDeviceConnectionModal();
 
@@ -417,16 +426,21 @@ export const useYieldFlow = ({
 
         const amount = session.approval.allowanceAmount || '0';
 
-        void dispatch(
+        const isSessionReady = await ensureDeviceSession();
+
+        if (!isSessionReady) {
+            return;
+        }
+
+        await dispatch(
             submitYieldRevokeThunk({
                 flowKey,
                 flowType,
                 flowData: { account, vault, token, receiptToken },
                 amount,
             }),
-        ).then(() => {
-            methodsRef.current.reset({ amountInput: '' });
-        });
+        );
+        methodsRef.current.reset({ amountInput: '' });
     }, [
         account,
         flowKey,
@@ -437,6 +451,7 @@ export const useYieldFlow = ({
         vault,
         methodsRef,
         session.approval.allowanceAmount,
+        ensureDeviceSession,
         isDeviceConnected,
         openDeviceConnectionModal,
     ]);
@@ -451,17 +466,17 @@ export const useYieldFlow = ({
         tokenContractAddress: token?.contractAddress,
     });
 
-    const submitApprovalAction = useCallback(() => {
+    const submitApprovalAction = useCallback(async () => {
         if (approvalAction === 'revoke') {
-            revokeAllowance();
+            await revokeAllowance();
 
             return;
         }
 
-        submitApprove();
+        await submitApprove();
     }, [approvalAction, revokeAllowance, submitApprove]);
 
-    const submitAction = useCallback(() => {
+    const submitAction = useCallback(async () => {
         if (!isDeviceConnected) {
             openDeviceConnectionModal();
 
@@ -482,8 +497,14 @@ export const useYieldFlow = ({
 
         const amount = methodsRef.current.getValues('amountInput');
 
+        const isSessionReady = await ensureDeviceSession();
+
+        if (!isSessionReady) {
+            return;
+        }
+
         if (isYieldWithdrawFlow(flowType)) {
-            void dispatch(
+            await dispatch(
                 submitYieldWithdrawThunk({
                     flowKey,
                     flowData: { account, vault, token, receiptToken },
@@ -495,7 +516,7 @@ export const useYieldFlow = ({
             return;
         }
 
-        void dispatch(
+        await dispatch(
             submitYieldDepositThunk({
                 flowKey,
                 flowData: { account, vault, token, receiptToken },
@@ -511,6 +532,7 @@ export const useYieldFlow = ({
         token,
         vault,
         methodsRef,
+        ensureDeviceSession,
         isDeviceConnected,
         openDeviceConnectionModal,
     ]);
