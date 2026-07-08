@@ -1,3 +1,5 @@
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { testMocks } from '@suite-common/test-utils';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type TronAccountExtraData,
@@ -5,6 +7,7 @@ import {
     type TronUnstakingBatch,
     type TronVote,
 } from '@trezor/blockchain-link-types';
+import { type Features } from '@trezor/connect';
 
 import {
     TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
@@ -23,6 +26,7 @@ import {
     getTronVotes,
     getTronWithdrawableBalance,
     isSupportedTronStakingNetworkSymbol,
+    isTronClaimSupported,
     isTronRewardClaimOnCooldown,
     isTronStakingActive,
 } from '../tronStakingUtils';
@@ -456,5 +460,31 @@ describe(calculateTronFreezeSuggestion.name, () => {
 
     it('no resources data — no suggestion', () => {
         expect(calculateTronFreezeSuggestion(makeTrc20Tx(), undefined)).toBeNull();
+    });
+});
+
+const createDevice = (features: Partial<Features>): TrezorDevice =>
+    ({
+        features: testMocks.getDeviceFeatures(features),
+    }) as unknown as TrezorDevice;
+
+const createDeviceWithFirmware = ([major, minor, patch]: [number, number, number]): TrezorDevice =>
+    createDevice({ major_version: major, minor_version: minor, patch_version: patch });
+
+describe(isTronClaimSupported.name, () => {
+    it('returns false when no device is selected', () => {
+        expect(isTronClaimSupported(undefined)).toBe(false);
+    });
+
+    it('returns false when device has no features', () => {
+        const deviceWithoutFeatures = {} as unknown as TrezorDevice;
+
+        expect(isTronClaimSupported(deviceWithoutFeatures)).toBe(false);
+    });
+
+    it('requires firmware 2.12.2', () => {
+        expect(isTronClaimSupported(createDeviceWithFirmware([2, 12, 1]))).toBe(false);
+        expect(isTronClaimSupported(createDeviceWithFirmware([2, 12, 2]))).toBe(true);
+        expect(isTronClaimSupported(createDeviceWithFirmware([2, 13, 0]))).toBe(true);
     });
 });

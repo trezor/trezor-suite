@@ -1,3 +1,4 @@
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { TRON_STAKING_CONTRACT_TYPES } from '@suite-common/wallet-constants';
 import {
@@ -14,7 +15,8 @@ import {
     type TronUnstakingBatch,
     type TronVote,
 } from '@trezor/blockchain-link-types';
-import { BigNumber, isArrayMember } from '@trezor/utils';
+import { getFirmwareVersionArray } from '@trezor/device-utils';
+import { BigNumber, isArrayMember, versionUtils } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
@@ -24,6 +26,16 @@ export function isSupportedTronStakingNetworkSymbol(
 ): symbol is SupportedTronNetworkSymbols {
     return isArrayMember(symbol, supportedTronNetworkSymbols);
 }
+
+export const isTronClaimSupported = (device: TrezorDevice | undefined): boolean => {
+    const firmware = getFirmwareVersionArray(device);
+
+    if (firmware === null) {
+        return false;
+    }
+
+    return versionUtils.isNewerOrEqual(firmware, [2, 12, 2]);
+};
 
 export const isTronStakingTx = (transaction: WalletAccountTransaction) =>
     TRON_STAKING_CONTRACT_TYPES.some(type => type === transaction.tronSpecific?.contractType);
