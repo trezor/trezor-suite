@@ -36,6 +36,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=get-features
                                                 --method=apply-settings
                                                 --method=authenticate-device
+                                                --method=dbinit      Initialize device AuthDB state from the Quota Manager counter + stored root
                                                 --method=dblookup    Look up a Bitcoin address in the local SQLite DB
                                                 --method=dbchange    Upsert metadata for a Bitcoin address in the local SQLite DB
                                                 --method=dbsetroot   Send stored root + MAC from DB to device (for initial sync)
@@ -52,6 +53,7 @@ export const HELP = `@trezor/connect CLI arguments:
     --wallet-id=<id>                          Wallet whose root checkpoint to read/write in tree_state (default: "default")
                                                 Lets one shared DB track a separate checkpoint per wallet.
     --db-params=<json>                        Params for database commands (JSON object)
+                                                --db-params='{"qmCounter":<n>,"qmSignature":"<hex>"}' (dbinit)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
 `;

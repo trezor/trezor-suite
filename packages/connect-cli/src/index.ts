@@ -62,10 +62,10 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbsetroot', 'dblistroots']);
-const DB_METHODS_REQUIRING_PARAMS = new Set(['dblookup', 'dbchange']);
+const DB_METHODS = new Set(['dbinit', 'dblookup', 'dbchange', 'dbsetroot', 'dblistroots']);
+const DB_METHODS_REQUIRING_PARAMS = new Set(['dbinit', 'dblookup', 'dbchange']);
 // Methods that must send a command to firmware (need a connected device even when --db-path is set)
-const DB_METHODS_NEEDING_DEVICE = new Set(['dblookup', 'dbchange', 'dbsetroot']);
+const DB_METHODS_NEEDING_DEVICE = new Set(['dbinit', 'dblookup', 'dbchange', 'dbsetroot']);
 
 // When --db-path is explicit, the DB path is known upfront (independent of the
 // device), so it can be constructed before TrezorConnect.init() and injected as
@@ -201,6 +201,43 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
 
     try {
         for (const method of dbMethods) {
+            if (method === 'dbinit') {
+                // qmCounter/qmSignature come from the Quota Manager (relayed here via
+                // --db-params for testing); the root + its attesting counter/mac come from
+                // the local tree_state (Evolu's role). The device verifies the QM signature,
+                // then (if a root is supplied) that counter == qm_last_counter and that the
+                // root_mac is one it produced itself.
+                const { qmCounter, qmSignature } = params;
+                if (qmCounter === undefined || !qmSignature) {
+                    console.error(
+                        'dbinit requires --db-params=\'{"qmCounter":<n>,"qmSignature":"<hex>"}\' ',
+                    );
+                    process.exit(1);
+                }
+                if (!device) {
+                    console.error('dbinit requires a connected device');
+                    process.exit(1);
+                }
+                const treeState = db.getTreeState(walletId);
+                const initParams: Parameters<typeof TrezorConnect.authDbInit>[0] = {
+                    device,
+                    qm_counter: qmCounter,
+                    qm_signature: qmSignature,
+                    ...(treeState?.root &&
+                        treeState.mac && {
+                            root: treeState.root,
+                            counter: treeState.counter,
+                            root_mac: treeState.mac,
+                        }),
+                };
+                const initResult = await TrezorConnect.authDbInit(initParams);
+                if (!initResult.success) {
+                    console.error('dbinit failed:', initResult);
+                    process.exit(1);
+                }
+                console.log(JSON.stringify({ method: 'dbinit', ...initResult.payload }, null, 2));
+            }
+
             if (method === 'dblookup') {
                 const { address, networkSymbol } = params;
                 if (!address || !networkSymbol) {

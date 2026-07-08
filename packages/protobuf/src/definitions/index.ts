@@ -3,6 +3,8 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 import {
+    AuthDbInit,
+    AuthDbInitResponse,
     AuthDbLookup,
     AuthDbLookupResponse,
     AuthDbSetRoot,
@@ -508,6 +510,8 @@ export const MessageType = Type.Object(
         EthereumTypedDataStructAck,
         EthereumTypedDataValueRequest,
         EthereumTypedDataValueAck,
+        AuthDbInit,
+        AuthDbInitResponse,
         AuthDbSetRoot,
         AuthDbSetRootResponse,
         AuthDbLookup,
@@ -731,6 +735,7 @@ export type WireInMessage =
     | 'EthereumSignTypedData'
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
+    | 'AuthDbInit'
     | 'AuthDbSetRoot'
     | 'AuthDbLookup'
     | 'AuthDbUpdateLeaf'
@@ -840,6 +845,7 @@ export type WireOutMessage =
     | 'EthereumTypedDataSignature'
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
+    | 'AuthDbInitResponse'
     | 'AuthDbSetRootResponse'
     | 'AuthDbLookupResponse'
     | 'AuthDbUpdateLeafResponse'

@@ -3,6 +3,30 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
+export type AuthDbInit = Static<typeof AuthDbInit>;
+export const AuthDbInit = Type.Object(
+    {
+        qm_counter: Type.Number(),
+        qm_signature: Type.String(),
+        root: Type.Optional(Type.String()),
+        counter: Type.Optional(Type.Number()),
+        root_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbInit' },
+);
+
+export type AuthDbInitResponse = Static<typeof AuthDbInitResponse>;
+export const AuthDbInitResponse = Type.Object(
+    {
+        qm_last_counter: Type.Number(),
+        wallet_id: Type.Optional(Type.String()),
+        counter: Type.Optional(Type.Number()),
+        root: Type.Optional(Type.String()),
+        root_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'AuthDbInitResponse' },
+);
+
 export type AuthDbLookup = Static<typeof AuthDbLookup>;
 export const AuthDbLookup = Type.Object(
     {

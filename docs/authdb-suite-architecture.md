@@ -1,14 +1,21 @@
 # AuthDB — suite-side architecture
 
 Status: **implemented**. Describes the suite-side AuthDB code after the teardown to a
-minimal, three-interface device surface. Earlier revisions of this document described an
-offline-queue / device-confirmed conflict-resolution / Quota-Manager design; that surface
-was removed and is no longer part of AuthDB.
+minimal device surface. Earlier revisions of this document described an offline-queue /
+device-confirmed conflict-resolution design; that surface was removed. The Quota Manager
+survives only as the counter authority consulted by `AuthDbInit` (below).
 
-## Device surface (three wire interfaces)
+## Device surface (four wire interfaces)
 
-The firmware exposes exactly three request/response pairs:
+The firmware exposes four request/response pairs:
 
+- **`AuthDbInit`** — bootstrap the device's trusted state from untrusted host storage. The
+  host relays (1) the Quota-Manager-signed latest counter — the device verifies the Ed25519
+  signature over `b"AUTHDB QM v1" ‖ wallet_id ‖ counter(4B BE)` against its provisioned QM
+  public key and stores it as `qm_last_counter` (anti-rollback ceiling) — and (2) the latest
+  root from Evolu with its `root_mac`, which is installed only if `counter == qm_last_counter`
+  and `root_mac` is one this device produced. A fresh wallet supplies no root and only sets
+  the ceiling.
 - **`AuthDbLookup`** — prove membership / non-membership of an address against the device's
   attested root. Read-only; echoes the device's `wallet_id`.
 - **`AuthDbSetRoot`** — install a root (+ MAC) on the device (initial cross-device sync).
@@ -82,8 +89,9 @@ interface AuthLabelLookupProvider {
 
 `@trezor/connect`'s `api/authDbMethods/` holds:
 
-- **Raw wire shells** produced by `createRawAuthDbMethod`: `authDbLookup`, `authDbSetRoot`,
-  `authDbUpdateLeaf` — thin passthroughs to one proto request/response pair each.
+- **Raw wire shells** produced by `createRawAuthDbMethod`: `authDbInit`, `authDbLookup`,
+  `authDbSetRoot`, `authDbUpdateLeaf` — thin passthroughs to one proto request/response pair
+  each.
 - **Two high-level orchestrators** that compute Merkle proofs (from `@trezor/authdb/proof`)
   and read/write the provider (from `settingsStore`):
     - `authDbUpdateAddress` (CLI `dbchange`) — builds the leaf transition + proof, stamps the
@@ -102,7 +110,8 @@ consumes `@trezor/authdb/storage/sqlite`.
 
 ## connect-cli
 
-`connect-cli` exposes four DB commands: `dblookup`, `dbchange`, `dbsetroot`, `dblistroots`.
+`connect-cli` exposes five DB commands: `dbinit`, `dblookup`, `dbchange`, `dbsetroot`,
+`dblistroots`.
 Because the high-level methods reject a `wallet_id` mismatch, the CLI first resolves the
 device's real `wallet_id` with a throwaway **low-level `AuthDbLookup` probe** (the low-level
 call echoes `wallet_id` without the mismatch rejection), unless `--wallet-id` is pinned.
