@@ -228,7 +228,7 @@ describe('Storage actions', () => {
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
-        await store.dispatch(initialRunCompleted());
+        await store.dispatch(initialRunCompleted({ isFreshDeviceSetup: true }));
         store.dispatch(await preloadStore());
 
         expect(store.getState().flags.initialRun).toEqual(false);

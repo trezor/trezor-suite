@@ -135,7 +135,11 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
     dispatch(closeModal());
 
-    dispatch(initialRunCompleted());
+    // A non-empty onboarding path means the user went through a create or recovery flow, i.e. set up
+    // a device from scratch. Pairing an already set up device leaves the path empty.
+    const isFreshDeviceSetup = getState().onboarding.path.length > 0;
+
+    dispatch(initialRunCompleted({ isFreshDeviceSetup }));
     dispatch(resetOnboarding());
     dispatch(closeModalApp(true));
 
