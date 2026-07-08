@@ -8,10 +8,14 @@ const createDeferredWrapper = <Resolve = void>(id: string) => {
     const getDeferred = (clear: boolean = false) => {
         if (!_deferred || clear) {
             _deferred = createDeferred(id);
-            _deferred.promise.finally(() => {
-                // Reset when the call is finished
-                _deferred = undefined;
-            });
+            // Reset when the call is finished. Swallow here — this internal cleanup chain has no
+            // consumer of its own; without the catch, a rejection (e.g. Method_Cancel) becomes an
+            // unhandled promise rejection even though callers of `.promise` handle it themselves.
+            _deferred.promise
+                .finally(() => {
+                    _deferred = undefined;
+                })
+                .catch(() => {});
         }
 
         return _deferred;
