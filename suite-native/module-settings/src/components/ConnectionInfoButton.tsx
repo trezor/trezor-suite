@@ -45,9 +45,10 @@ export const ConnectionInfoButton = ({ network }: ConnectionInfoButtonProps) => 
     return (
         <>
             <IconButton
+                iconName="info"
                 intent="neutral"
                 priority="secondary"
-                iconName="info"
+                size="medium"
                 onPress={openBottomSheet}
             />
             <BottomSheetModal
