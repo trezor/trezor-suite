@@ -39,8 +39,12 @@ export const FeeCard = ({
     isLoading,
     'data-testid': dataTestId,
 }: FeeCardProps) => (
-    <Box data-testid={dataTestId} minWidth={FEE_CARD_MIN_WIDTH}>
-        <Tooltip content={tooltipContent} delayShow={TOOLTIP_DELAY_NORMAL}>
+    <Box
+        data-testid={dataTestId}
+        minWidth={FEE_CARD_MIN_WIDTH}
+        flex={`1 1 ${FEE_CARD_MIN_WIDTH}px`}
+    >
+        <Tooltip content={tooltipContent} delayShow={TOOLTIP_DELAY_NORMAL} display="block">
             <RadioCard onClick={() => changeFeeLevel(value)} isSelected={isSelected}>
                 <Column>
                     <Row justifyContent="space-between">

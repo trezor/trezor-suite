@@ -18,7 +18,7 @@ import {
     useTxSimulation,
 } from '@suite-common/tx-simulation';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
-import { Banner, Column, Modal } from '@trezor/components';
+import { Banner, Card, Column, Modal } from '@trezor/components';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
@@ -156,14 +156,16 @@ export function EarnYieldTxSimulationModalInner({
 
                         {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (
                             <FormProvider {...form}>
-                                <Fees
-                                    account={account}
-                                    feeInfo={feeInfo}
-                                    changeFeeLevel={changeFeeLevel}
-                                    composedLevels={
-                                        txSimulationQuery.isSuccess ? composedLevels : null
-                                    }
-                                />
+                                <Card>
+                                    <Fees
+                                        account={account}
+                                        feeInfo={feeInfo}
+                                        changeFeeLevel={changeFeeLevel}
+                                        composedLevels={
+                                            txSimulationQuery.isSuccess ? composedLevels : null
+                                        }
+                                    />
+                                </Card>
                             </FormProvider>
                         )}
 
