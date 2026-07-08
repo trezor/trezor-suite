@@ -655,8 +655,17 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                     };
                 });
 
+                // Keep candidates from other tabs AND from other pages of this tab, so selections
+                // made on previously-loaded pages survive pagination (mirrors loadAccountIndexPage).
+                // Filtering by tab alone would drop every prior page, since in the manual address
+                // phase all rows share the single active tab.
                 const otherCandidates = current.candidates.filter(
-                    c => c.accountTypeKey !== activeTab.key,
+                    c =>
+                        !(
+                            c.accountTypeKey === activeTab.key &&
+                            c.accountIndex >= startIndex &&
+                            c.accountIndex < startIndex + SELECT_ACCOUNT_PAGE_SIZE
+                        ),
                 );
                 dispatch(
                     connectPopupActions.updateSelectAccount({
