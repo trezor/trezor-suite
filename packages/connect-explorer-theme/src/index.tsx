@@ -138,6 +138,13 @@ const InnerLayout = ({
         [pageMap, locale, defaultLocale, fsPath],
     );
 
+    // Nextra derives the document title from the filename and title-cases it at build time
+    // (e.g. `selectAccount` → `SelectAccount`), which is independent of the sidebar titles fixed
+    // by `patchedNormalizePages`. Method names must stay in their original casing, so for method
+    // pages reuse the already-corrected title from `activePath`.
+    const documentTitle =
+        activePath[0]?.route === '/methods' ? activePath[activePath.length - 1]?.title : undefined;
+
     const themeContext = { ...activeThemeContext, ...frontMatter };
     const hideSidebar =
         !themeContext.sidebar || themeContext.layout === 'raw' || activeType === 'page';
@@ -172,7 +179,7 @@ const InnerLayout = ({
                     __html: `document.documentElement.setAttribute('dir','${direction}')`,
                 }}
             />
-            <Head />
+            <Head title={documentTitle} />
             <Banner />
             {themeContext.navbar && (
                 <Navbar flatDirectories={flatDirectories} items={topLevelNavbarItems} />
