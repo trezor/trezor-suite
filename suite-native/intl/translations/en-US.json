@@ -1434,6 +1434,7 @@
     "earn.yieldConsentsScreen.providerCard.title": "Deposit to {providerName}",
     "earn.yieldConsentsScreen.providerCard.firstItem": "{providerName} maintains and protects your supplied {tokenSymbol} with their smart contracts, infrastructure, and technology.",
     "earn.yieldConsentsScreen.providerCard.secondItem": "When you deposit, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
+    "earn.yieldConsentsScreen.providerCard.thirdItem": "Supplying assets involves smart contract risks. {providerName} applies rigorous security measures, but cannot guarantee against all losses.",
     "earn.yieldDepositFlowScreen.step": "Step {stepNumber} of {stepCount}",
     "earn.yieldDepositFlowScreen.approvalStepTitle": "Select amount & approve",
     "earn.yieldDepositFlowScreen.modalTitle": "Deposit",

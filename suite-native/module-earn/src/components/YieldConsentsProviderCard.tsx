@@ -63,6 +63,12 @@ export const YieldConsentsProviderCard = ({
                         values={{ providerName }}
                     />
                 </EarnConsentsItem>
+                <EarnConsentsItem iconName="warningCircle" color="contentPrimary">
+                    <Translation
+                        id="earn.yieldConsentsScreen.providerCard.thirdItem"
+                        values={{ providerName }}
+                    />
+                </EarnConsentsItem>
             </VStack>
             <HStack style={applyStyle(buttonRowStyle)}>
                 <Button intent="info" onPress={onConfirm} style={applyStyle(buttonStyle)}>
