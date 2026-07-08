@@ -17,13 +17,11 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
-import { refetchAccountGraphThunk, refetchPortfolioGraphThunk } from './graphThunks';
+import { getAccountGraphInstanceId, getPortfolioGraphInstanceId } from './graphInstances';
+import { selectAccountGraphTimeframe, selectPortfolioGraphTimeframe } from './graphSelectors';
+import { refetchGraphThunk } from './graphThunks';
 import { selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning } from './selectors';
-import {
-    type GraphSliceRootState,
-    selectAccountGraphTimeframe,
-    selectPortfolioGraphTimeframe,
-} from './slice';
+import { type GraphSliceRootState, resetGraphRuntimeState } from './slice';
 
 /**
  * Watches the portfolio graph fetch inputs and refetches the graph data into
@@ -40,6 +38,7 @@ type UsePortfolioGraphDataParams = {
 
 export const usePortfolioGraphData = ({ isEnabled = true }: UsePortfolioGraphDataParams = {}) => {
     const dispatch = useDispatch();
+    const graphInstanceId = getPortfolioGraphInstanceId();
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const accounts = useSelector(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning);
@@ -52,7 +51,8 @@ export const usePortfolioGraphData = ({ isEnabled = true }: UsePortfolioGraphDat
     const refetchPortfolioGraph = useCallback(
         ({ forceRefetch }: RefetchPortfolioGraphParams = {}) =>
             dispatch(
-                refetchPortfolioGraphThunk({
+                refetchGraphThunk({
+                    instanceId: graphInstanceId,
                     accounts,
                     isDiscoveryRunning,
                     timeframeHours,
@@ -65,6 +65,7 @@ export const usePortfolioGraphData = ({ isEnabled = true }: UsePortfolioGraphDat
             accounts,
             baseCurrencyCode,
             dispatch,
+            graphInstanceId,
             isDiscoveryRunning,
             isElectrumBackend,
             timeframeHours,
@@ -97,12 +98,13 @@ type RefetchAccountGraphParams = {
 export const useAccountGraphData = ({ accountKey, tokenContract }: UseAccountGraphDataParams) => {
     const dispatch = useDispatch();
     const resetGraph = useSetAtom(accountDetailGraphAtoms.resetGraphAtom);
+    const graphInstanceId = getAccountGraphInstanceId({ accountKey, tokenContract });
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
     const accountGraphTimeframe = useSelector((state: GraphSliceRootState) =>
-        selectAccountGraphTimeframe(state, accountKey),
+        selectAccountGraphTimeframe(state, accountKey, tokenContract),
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
@@ -130,22 +132,32 @@ export const useAccountGraphData = ({ accountKey, tokenContract }: UseAccountGra
     const refetchAccountGraph = useCallback(
         ({ forceRefetch }: RefetchAccountGraphParams = {}) =>
             dispatch(
-                refetchAccountGraphThunk({
-                    accountItem,
+                refetchGraphThunk({
+                    instanceId: graphInstanceId,
+                    accounts: accountItem ? [accountItem] : [],
+                    eventsAccount: accountItem,
                     timeframeHours: accountGraphTimeframe,
                     baseCurrencyCode,
                     isElectrumBackend,
                     forceRefetch,
                 }),
             ),
-        [accountGraphTimeframe, accountItem, baseCurrencyCode, dispatch, isElectrumBackend],
+        [
+            accountGraphTimeframe,
+            accountItem,
+            baseCurrencyCode,
+            dispatch,
+            graphInstanceId,
+            isElectrumBackend,
+        ],
     );
 
     useEffect(
         () => () => {
+            dispatch(resetGraphRuntimeState({ instanceId: graphInstanceId }));
             resetGraph();
         },
-        [accountKey, tokenContract, resetGraph],
+        [dispatch, graphInstanceId, resetGraph],
     );
 
     useEffect(() => {

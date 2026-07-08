@@ -14,7 +14,10 @@ import {
 import { VStack } from '@suite-native/atoms';
 import {
     Graph,
+    type GraphSliceRootState,
     accountDetailGraphAtoms,
+    selectAccountGraphError,
+    selectAccountGraphIsLoading,
     selectIsHistoryEnabledAccountByAccountKey,
     useAccountGraphData,
     useGraphGestureHandlers,
@@ -41,8 +44,12 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     const { refetchAccountGraph } = useAccountGraphData({ accountKey, tokenContract });
 
     const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);
-    const isLoading = useAtomValue(accountDetailGraphAtoms.isLoadingAtom);
-    const error = useAtomValue(accountDetailGraphAtoms.errorAtom);
+    const isLoading = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphIsLoading(state, accountKey, tokenContract),
+    );
+    const error = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphError(state, accountKey, tokenContract),
+    );
     const graphEvents = useAtomValue(accountDetailGraphAtoms.graphEventsAtom);
 
     const { setSelectedPoint, handleGestureEnd } = useGraphGestureHandlers(
@@ -71,11 +78,14 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
                         onGestureEnd={handleGestureEnd}
                         points={graphPoints}
                         loading={isLoading}
-                        error={error?.message}
+                        error={error}
                         onTryAgain={handleTryAgain}
                         events={graphEvents}
                     />
-                    <AccountDetailGraphTimeSwitch accountKey={accountKey} />
+                    <AccountDetailGraphTimeSwitch
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
                 </>
             )}
         </VStack>

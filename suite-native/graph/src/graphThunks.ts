@@ -7,18 +7,25 @@ import {
     type AccountItem,
     type FetchGraphDataParams,
     type FiatGraphPoint,
+    type FiatGraphPointWithCryptoBalance,
     fetchGraphData,
     getTimeFrameForHistoryHours,
 } from '@suite-common/graph';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
-import { type GraphAtoms } from './createGraphAtoms';
+import { type GraphInstanceId, isPortfolioGraphInstanceId } from './graphInstances';
+import {
+    type RefetchGraphThunkParams,
+    type RefetchGraphThunkResult,
+    RefetchGraphThunkStatus,
+} from './graphThunkTypes';
 import { portfolioGraphAtoms } from './portfolioGraphAtoms';
 import { type TimeframeHoursValue } from './types';
-import { checkAndReportGraphError } from './utils';
+import { checkAndReportGraphError, omitErrorMessageSensitiveData } from './utils';
 
 const GRAPH_MODULE_PREFIX = '@suite-native/graph';
+const GRAPH_NOT_AVAILABLE_ERROR_MESSAGE = 'Graph is not available for testnet coins.';
 
 // The app doesn't mount any jotai Provider, so all atoms live in the default store
 // and it is safe to write them from outside of React. Do not add a jotai Provider.
@@ -28,8 +35,8 @@ const jotaiStore = getDefaultStore();
 // that it was interrupted by a newer one and its result should be thrown away.
 const lastFetchTimestamps = new WeakMap<object, number>();
 
-type FetchGraphDataToAtomsParams<TGraphPoint extends FiatGraphPoint> = {
-    atoms: GraphAtoms<TGraphPoint>;
+type FetchGraphDataToAtomsParams = {
+    instanceId: GraphInstanceId;
     accounts: AccountItem[];
     eventsAccount?: AccountItem;
     timeframeHours: TimeframeHoursValue;
@@ -39,8 +46,40 @@ type FetchGraphDataToAtomsParams<TGraphPoint extends FiatGraphPoint> = {
     dispatch: ReturnType<typeof useDispatch>;
 };
 
-const fetchGraphDataToAtoms = async <TGraphPoint extends FiatGraphPoint>({
-    atoms,
+const getGraphAtomsForInstanceId = (instanceId: GraphInstanceId) => {
+    if (isPortfolioGraphInstanceId(instanceId)) {
+        return portfolioGraphAtoms;
+    }
+
+    return accountDetailGraphAtoms;
+};
+
+const setGraphPointsForInstanceId = (
+    instanceId: GraphInstanceId,
+    points: FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[],
+) => {
+    if (isPortfolioGraphInstanceId(instanceId)) {
+        jotaiStore.set(portfolioGraphAtoms.graphPointsAtom, points as FiatGraphPoint[]);
+
+        return;
+    }
+
+    jotaiStore.set(
+        accountDetailGraphAtoms.graphPointsAtom,
+        points as FiatGraphPointWithCryptoBalance[],
+    );
+};
+
+const getGraphError = (error: unknown): Error => {
+    if (error instanceof Error) {
+        return error;
+    }
+
+    return new Error(String(error));
+};
+
+const fetchGraphDataToAtoms = async ({
+    instanceId,
     accounts,
     eventsAccount,
     timeframeHours,
@@ -48,145 +87,85 @@ const fetchGraphDataToAtoms = async <TGraphPoint extends FiatGraphPoint>({
     baseCurrencyCode,
     forceRefetch,
     dispatch,
-}: FetchGraphDataToAtomsParams<TGraphPoint>) => {
+}: FetchGraphDataToAtomsParams): Promise<RefetchGraphThunkResult> => {
+    const atoms = getGraphAtomsForInstanceId(instanceId);
     const fetchTimestamp = Date.now();
     lastFetchTimestamps.set(atoms, fetchTimestamp);
 
-    jotaiStore.set(atoms.isLoadingAtom, true);
+    const { startOfTimeFrameDate, endOfTimeFrameDate } =
+        getTimeFrameForHistoryHours(timeframeHours);
 
-    try {
-        const { startOfTimeFrameDate, endOfTimeFrameDate } =
-            getTimeFrameForHistoryHours(timeframeHours);
+    const { points, events } = await fetchGraphData({
+        accounts,
+        baseCurrencyCode,
+        startOfTimeFrameDate,
+        endOfTimeFrameDate,
+        eventsAccount,
+        isElectrumBackend,
+        forceRefetch,
+        dispatch,
+    });
 
-        const { points, events } = await fetchGraphData({
-            accounts,
-            baseCurrencyCode,
-            startOfTimeFrameDate,
-            endOfTimeFrameDate,
-            eventsAccount,
-            isElectrumBackend,
-            forceRefetch,
-            dispatch,
-        });
-
-        if (events) {
-            // We need to set events after graph points, othewise it will mess up events randomly
-            // because of strange useEffect in AnimatedLineGraph component.
-            jotaiStore.set(atoms.graphEventsAtom, events);
-        }
-
-        // If the fetch was interrupted by a newer fetch, do not set the values.
-        if (lastFetchTimestamps.get(atoms) !== fetchTimestamp) return;
-
-        jotaiStore.set(atoms.errorAtom, null);
-        // The point type is determined by the accounts of the graph the bundle belongs to.
-        jotaiStore.set(atoms.graphPointsAtom, points as TGraphPoint[]);
-    } catch (error) {
-        // Rethrow error because we get stack trace in console.
-        console.error(error);
-
-        // If the fetch was interrupted by a newer fetch, do not set the error.
-        if (lastFetchTimestamps.get(atoms) !== fetchTimestamp) return;
-
-        checkAndReportGraphError(error as Error);
-        jotaiStore.set(atoms.errorAtom, error as Error);
+    if (events) {
+        // We need to set events after graph points, othewise it will mess up events randomly
+        // because of strange useEffect in AnimatedLineGraph component.
+        jotaiStore.set(atoms.graphEventsAtom, events);
     }
 
-    jotaiStore.set(atoms.isLoadingAtom, false);
+    if (lastFetchTimestamps.get(atoms) !== fetchTimestamp) {
+        return { status: RefetchGraphThunkStatus.Interrupted };
+    }
+
+    // The point type is determined by the accounts of the graph the bundle belongs to.
+    setGraphPointsForInstanceId(instanceId, points);
+
+    return { status: RefetchGraphThunkStatus.Fetched };
 };
 
-export const refetchPortfolioGraphThunk = createThunk(
-    `${GRAPH_MODULE_PREFIX}/refetchPortfolioGraph`,
-    async (
-        {
+export const refetchGraphThunk = createThunk<
+    RefetchGraphThunkResult,
+    RefetchGraphThunkParams,
+    { rejectValue: string }
+>(`${GRAPH_MODULE_PREFIX}/refetchGraph`, async (params, { dispatch, rejectWithValue }) => {
+    const {
+        instanceId,
+        accounts,
+        eventsAccount,
+        isDiscoveryRunning,
+        timeframeHours,
+        isElectrumBackend,
+        baseCurrencyCode,
+        forceRefetch,
+    } = params;
+
+    // The account list is not final while discovery is running, so the graph just
+    // keeps loading and waits for it to finish before starting to fetch values.
+    if (isDiscoveryRunning) {
+        return { status: RefetchGraphThunkStatus.WaitingForDiscovery };
+    }
+
+    if (A.isEmpty(accounts)) {
+        return rejectWithValue(GRAPH_NOT_AVAILABLE_ERROR_MESSAGE);
+    }
+
+    try {
+        return await fetchGraphDataToAtoms({
+            instanceId,
             accounts,
-            isDiscoveryRunning,
-            timeframeHours,
-            isElectrumBackend,
-            baseCurrencyCode,
-            forceRefetch,
-        }: RefetchPortfolioGraphThunkParams,
-        { dispatch },
-    ) => {
-        // The account list is not final while discovery is running, so the graph just
-        // keeps loading and waits for it to finish before starting to fetch values.
-        if (isDiscoveryRunning) {
-            jotaiStore.set(portfolioGraphAtoms.isLoadingAtom, true);
-            jotaiStore.set(portfolioGraphAtoms.errorAtom, null);
-
-            return;
-        }
-
-        if (A.isEmpty(accounts)) {
-            jotaiStore.set(portfolioGraphAtoms.isLoadingAtom, false);
-            jotaiStore.set(
-                portfolioGraphAtoms.errorAtom,
-                new Error('Graph is not available for testnet coins.'),
-            );
-
-            return;
-        }
-
-        await fetchGraphDataToAtoms({
-            atoms: portfolioGraphAtoms,
-            accounts,
+            eventsAccount,
             timeframeHours,
             isElectrumBackend,
             baseCurrencyCode,
             forceRefetch,
             dispatch,
         });
-    },
-);
+    } catch (error) {
+        // Preserve the stack trace in the local console while storing only a sanitized message.
+        console.error(error);
 
-export type RefetchPortfolioGraphThunkParams = {
-    accounts: AccountItem[];
-    isDiscoveryRunning: boolean;
-    timeframeHours: TimeframeHoursValue;
-    isElectrumBackend: boolean;
-    baseCurrencyCode: FetchGraphDataParams['baseCurrencyCode'];
-    forceRefetch?: boolean;
-};
+        const graphError = getGraphError(error);
+        checkAndReportGraphError(graphError);
 
-export type RefetchAccountGraphThunkParams = {
-    accountItem?: AccountItem;
-    timeframeHours: TimeframeHoursValue;
-    isElectrumBackend: boolean;
-    baseCurrencyCode: FetchGraphDataParams['baseCurrencyCode'];
-    forceRefetch?: boolean;
-};
-
-export const refetchAccountGraphThunk = createThunk(
-    `${GRAPH_MODULE_PREFIX}/refetchAccountGraph`,
-    async (
-        {
-            accountItem,
-            timeframeHours,
-            isElectrumBackend,
-            baseCurrencyCode,
-            forceRefetch,
-        }: RefetchAccountGraphThunkParams,
-        { dispatch },
-    ) => {
-        if (!accountItem) {
-            jotaiStore.set(accountDetailGraphAtoms.isLoadingAtom, false);
-            jotaiStore.set(
-                accountDetailGraphAtoms.errorAtom,
-                new Error('Graph is not available for testnet coins.'),
-            );
-
-            return;
-        }
-
-        await fetchGraphDataToAtoms({
-            atoms: accountDetailGraphAtoms,
-            accounts: [accountItem],
-            eventsAccount: accountItem,
-            timeframeHours,
-            isElectrumBackend,
-            baseCurrencyCode,
-            forceRefetch,
-            dispatch,
-        });
-    },
-);
+        return rejectWithValue(omitErrorMessageSensitiveData(graphError.message));
+    }
+});

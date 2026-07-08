@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type GraphSliceRootState,
@@ -16,13 +16,17 @@ import {
 
 type AccountDetailGraphTimeSwitchProps = {
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
 };
 
-export const AccountDetailGraphTimeSwitch = ({ accountKey }: AccountDetailGraphTimeSwitchProps) => {
+export const AccountDetailGraphTimeSwitch = ({
+    accountKey,
+    tokenContract,
+}: AccountDetailGraphTimeSwitchProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const timeframe = useSelector((state: GraphSliceRootState) =>
-        selectAccountGraphTimeframe(state, accountKey),
+        selectAccountGraphTimeframe(state, accountKey, tokenContract),
     );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -32,7 +36,7 @@ export const AccountDetailGraphTimeSwitch = ({ accountKey }: AccountDetailGraphT
         (timeframeHours: TimeframeHoursValue) => {
             if (timeframe === timeframeHours) return;
 
-            dispatch(setAccountGraphTimeframe({ accountKey, timeframeHours }));
+            dispatch(setAccountGraphTimeframe({ accountKey, tokenContract, timeframeHours }));
 
             const timeframeKey = timeSwitchItems.find(
                 item => item.valueBackInHours === timeframeHours,
@@ -46,7 +50,7 @@ export const AccountDetailGraphTimeSwitch = ({ accountKey }: AccountDetailGraphT
                 });
             }
         },
-        [dispatch, timeframe, accountKey, symbol, analytics],
+        [dispatch, timeframe, accountKey, tokenContract, symbol, analytics],
     );
 
     return <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={handleSelectTimeframe} />;
