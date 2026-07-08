@@ -58,6 +58,7 @@ const setGraphPointsForInstanceId = (
     instanceId: GraphInstanceId,
     points: FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[],
 ) => {
+    // FIXME: Remove this atom-specific branch once graph points/events are stored in Redux graph instances.
     if (isPortfolioGraphInstanceId(instanceId)) {
         jotaiStore.set(portfolioGraphAtoms.graphPointsAtom, points as FiatGraphPoint[]);
 

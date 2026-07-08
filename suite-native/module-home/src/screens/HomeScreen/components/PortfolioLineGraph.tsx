@@ -7,7 +7,7 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
     Graph,
-    type RefetchPortfolioGraphParams,
+    type RefetchGraphParams,
     portfolioGraphAtoms,
     selectHasDeviceHistoryEnabledAccounts,
     selectPortfolioGraphError,
@@ -16,10 +16,10 @@ import {
 } from '@suite-native/graph';
 
 type PortfolioLineGraphProps = {
-    refetchPortfolioGraph: (params?: RefetchPortfolioGraphParams) => void;
+    refetchGraph: (params?: RefetchGraphParams) => void;
 };
 
-export const PortfolioLineGraph = ({ refetchPortfolioGraph }: PortfolioLineGraphProps) => {
+export const PortfolioLineGraph = ({ refetchGraph }: PortfolioLineGraphProps) => {
     const hasDeviceDiscovery = useSelector(selectHasRunningDiscovery);
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
@@ -35,8 +35,8 @@ export const PortfolioLineGraph = ({ refetchPortfolioGraph }: PortfolioLineGraph
     );
 
     const handleTryAgain = useCallback(() => {
-        refetchPortfolioGraph({ forceRefetch: true });
-    }, [refetchPortfolioGraph]);
+        refetchGraph({ forceRefetch: true });
+    }, [refetchGraph]);
 
     if (!showGraph) return null;
 

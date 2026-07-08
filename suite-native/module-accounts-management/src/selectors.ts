@@ -1,3 +1,5 @@
+import { type AccountItem } from '@suite-common/graph';
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -13,14 +15,46 @@ import {
     selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { type TokensRootState } from '@suite-native/tokens';
+import { deepEqual } from '@trezor/utils';
 
 import { type AccountAssetsTab } from './components/AccountAssets/types';
+
+const createAccountsMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState>();
+
+export const selectAccountItemForGraph = createAccountsMemoizedSelector(
+    [
+        selectAccountByKey,
+        (_state: AccountsRootState, _accountKey: AccountKey, tokenContract?: TokenAddress) =>
+            tokenContract,
+    ],
+    (account, tokenContract): AccountItem | undefined => {
+        if (!account) return undefined;
+
+        return {
+            symbol: account.symbol,
+            descriptor: account.descriptor,
+            accountKey: account.key,
+            identity: tryGetAccountIdentity(account),
+            hideMainAccount: !!tokenContract,
+            // Pass empty array to show only the main account, or the token to show only its graph.
+            tokensFilter: tokenContract ? [tokenContract] : [],
+        };
+    },
+    {
+        memoizeOptions: {
+            // Account objects churn on every blockchain sync, but the graph fetch input uses
+            // only stable account identity fields. Keep the same object ref when they are equal.
+            resultEqualityCheck: deepEqual,
+        },
+    },
+);
 
 export const selectIsUnrecognizedToken = (
     state: TokenDefinitionsRootState & AccountsRootState,

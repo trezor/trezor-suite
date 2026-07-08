@@ -1,59 +1,62 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type PrimitiveAtom, useSetAtom } from 'jotai';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { type AccountItem, type FiatGraphPoint } from '@suite-common/graph';
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
     type BlockchainRootState,
-    selectAccountByKey,
     selectBaseCurrency,
-    selectHasRunningDiscovery,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
-import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
-import { getAccountGraphInstanceId, getPortfolioGraphInstanceId } from './graphInstances';
-import { selectAccountGraphTimeframe, selectPortfolioGraphTimeframe } from './graphSelectors';
+import { type RefetchGraphThunkParams } from './graphThunkTypes';
 import { refetchGraphThunk } from './graphThunks';
-import { selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning } from './selectors';
-import { type GraphSliceRootState, resetGraphRuntimeState } from './slice';
 
 /**
- * Watches the portfolio graph fetch inputs and refetches the graph data into
- * `portfolioGraphAtoms` whenever any of them changes. Graph display components subscribe
- * to the atoms directly, so only command callbacks are passed down.
+ * Watches graph fetch inputs and refetches graph data whenever any of them changes.
+ * Graph display components subscribe to the atoms directly, so only command callbacks are passed down.
  */
-export type RefetchPortfolioGraphParams = {
+export type RefetchGraphParams = {
     forceRefetch?: boolean;
 };
 
-type UsePortfolioGraphDataParams = {
+type UseGraphDataParams = Omit<
+    RefetchGraphThunkParams,
+    'accounts' | 'baseCurrencyCode' | 'forceRefetch' | 'isElectrumBackend'
+> & {
+    accounts?: AccountItem[];
+    backendSymbol: NetworkSymbol;
     isEnabled?: boolean;
 };
 
-export const usePortfolioGraphData = ({ isEnabled = true }: UsePortfolioGraphDataParams = {}) => {
+export const useGraphData = ({
+    instanceId,
+    accounts,
+    eventsAccount,
+    isDiscoveryRunning,
+    timeframeHours,
+    backendSymbol,
+    isEnabled = true,
+}: UseGraphDataParams) => {
     const dispatch = useDispatch();
-    const graphInstanceId = getPortfolioGraphInstanceId();
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const accounts = useSelector(selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning);
-    const timeframeHours = useSelector(selectPortfolioGraphTimeframe);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
-        selectIsElectrumBackendSelected(state, 'btc'),
+        selectIsElectrumBackendSelected(state, backendSymbol),
     );
+    const graphAccounts = accounts ?? returnStableArrayIfEmpty<AccountItem>();
 
-    const refetchPortfolioGraph = useCallback(
-        ({ forceRefetch }: RefetchPortfolioGraphParams = {}) =>
+    const refetchGraph = useCallback(
+        ({ forceRefetch }: RefetchGraphParams = {}) =>
             dispatch(
                 refetchGraphThunk({
-                    instanceId: graphInstanceId,
-                    accounts,
+                    instanceId,
+                    accounts: graphAccounts,
+                    eventsAccount,
                     isDiscoveryRunning,
                     timeframeHours,
                     baseCurrencyCode,
@@ -62,10 +65,11 @@ export const usePortfolioGraphData = ({ isEnabled = true }: UsePortfolioGraphDat
                 }),
             ),
         [
-            accounts,
             baseCurrencyCode,
             dispatch,
-            graphInstanceId,
+            eventsAccount,
+            graphAccounts,
+            instanceId,
             isDiscoveryRunning,
             isElectrumBackend,
             timeframeHours,
@@ -75,98 +79,10 @@ export const usePortfolioGraphData = ({ isEnabled = true }: UsePortfolioGraphDat
     useEffect(() => {
         if (!isEnabled || !isDeviceAuthorized) return;
 
-        refetchPortfolioGraph();
-    }, [isEnabled, isDeviceAuthorized, refetchPortfolioGraph]);
+        refetchGraph();
+    }, [isEnabled, isDeviceAuthorized, refetchGraph]);
 
-    return { refetchPortfolioGraph };
-};
-
-type UseAccountGraphDataParams = {
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
-};
-
-type RefetchAccountGraphParams = {
-    forceRefetch?: boolean;
-};
-
-/**
- * Watches the account detail graph fetch inputs and refetches the graph data into
- * `accountDetailGraphAtoms` whenever any of them changes. The bundle is shared by all
- * account detail screens, so it is reset whenever the displayed account changes.
- */
-export const useAccountGraphData = ({ accountKey, tokenContract }: UseAccountGraphDataParams) => {
-    const dispatch = useDispatch();
-    const resetGraph = useSetAtom(accountDetailGraphAtoms.resetGraphAtom);
-    const graphInstanceId = getAccountGraphInstanceId({ accountKey, tokenContract });
-    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const accountGraphTimeframe = useSelector((state: GraphSliceRootState) =>
-        selectAccountGraphTimeframe(state, accountKey, tokenContract),
-    );
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const isElectrumBackend = useSelector((state: BlockchainRootState) =>
-        selectIsElectrumBackendSelected(state, account?.symbol ?? 'btc'),
-    );
-
-    const accountSymbol = account?.symbol;
-    const accountDescriptor = account?.descriptor;
-    const selectedAccountKey = account?.key;
-    const identity = account ? tryGetAccountIdentity(account) : undefined;
-    const accountItem = useMemo<AccountItem | undefined>(() => {
-        if (!accountSymbol || !accountDescriptor || !selectedAccountKey) return undefined;
-
-        return {
-            symbol: accountSymbol,
-            descriptor: accountDescriptor,
-            accountKey: selectedAccountKey,
-            identity,
-            hideMainAccount: !!tokenContract,
-            // Pass empty array to show only the main account, or the token to show only its graph.
-            tokensFilter: tokenContract ? [tokenContract] : [],
-        };
-    }, [accountDescriptor, accountSymbol, identity, selectedAccountKey, tokenContract]);
-
-    const refetchAccountGraph = useCallback(
-        ({ forceRefetch }: RefetchAccountGraphParams = {}) =>
-            dispatch(
-                refetchGraphThunk({
-                    instanceId: graphInstanceId,
-                    accounts: accountItem ? [accountItem] : [],
-                    eventsAccount: accountItem,
-                    timeframeHours: accountGraphTimeframe,
-                    baseCurrencyCode,
-                    isElectrumBackend,
-                    forceRefetch,
-                }),
-            ),
-        [
-            accountGraphTimeframe,
-            accountItem,
-            baseCurrencyCode,
-            dispatch,
-            graphInstanceId,
-            isElectrumBackend,
-        ],
-    );
-
-    useEffect(
-        () => () => {
-            dispatch(resetGraphRuntimeState({ instanceId: graphInstanceId }));
-            resetGraph();
-        },
-        [dispatch, graphInstanceId, resetGraph],
-    );
-
-    useEffect(() => {
-        if (!isDeviceAuthorized) return;
-
-        refetchAccountGraph();
-    }, [isDeviceAuthorized, refetchAccountGraph]);
-
-    return { refetchAccountGraph };
+    return { refetchGraph };
 };
 
 /**
