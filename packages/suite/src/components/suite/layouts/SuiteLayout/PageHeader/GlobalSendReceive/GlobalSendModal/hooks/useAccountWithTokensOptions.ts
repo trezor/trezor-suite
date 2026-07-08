@@ -10,7 +10,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { filterAccountsByNetworkSymbol, sortByCoin } from '@suite-common/wallet-utils';
+import { filterAccountsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -68,7 +68,7 @@ export function useAccountWithTokensOptions({
             networkSymbolFilter,
         );
 
-        return sortByCoin(networkAccounts).map(account => {
+        return networkAccounts.map(account => {
             const { shownWithBalance, hiddenWithBalance } = getTokens({
                 tokens: account.tokens ?? [],
                 symbol: account.symbol,

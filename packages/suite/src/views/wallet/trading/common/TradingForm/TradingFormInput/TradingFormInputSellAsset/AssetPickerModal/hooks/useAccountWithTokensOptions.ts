@@ -14,7 +14,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { filterAccountsByNetworkSymbol, isTestnet, sortByCoin } from '@suite-common/wallet-utils';
+import { filterAccountsByNetworkSymbol, isTestnet } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
@@ -129,7 +129,7 @@ export function useAccountWithTokensOptions({
             Array.from(includedCryptoIds).filter(cryptoId => !excludedCryptoIds.has(cryptoId)),
         );
 
-        const accountsAndTokensSortedByCoin = sortByCoin(supportedNetworkAccounts).map(account => {
+        const accountsAndTokensSortedByCoin = supportedNetworkAccounts.map(account => {
             const { shownWithBalance, hiddenWithBalance } = getTokens({
                 tokens: account.tokens ?? [],
                 symbol: account.symbol,
