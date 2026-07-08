@@ -58,6 +58,7 @@ public
 !packages/analytics-docs/public/
 coverage
 tmp
+*.tgz
 
 
 ## React Native section ##
