@@ -14,9 +14,14 @@ type YieldTokenValueToken = {
 type YieldTokenValueProps = {
     token: YieldTokenValueToken;
     amount: string;
+    'data-testid'?: string;
 };
 
-export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => {
+export const YieldTokenValue = ({
+    token,
+    amount,
+    'data-testid': dataTestId,
+}: YieldTokenValueProps) => {
     const roundedAmount = new BigNumber(amount).decimalPlaces(2, BigNumber.ROUND_DOWN).toFixed();
 
     return (
@@ -30,7 +35,11 @@ export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => {
                 isBordered={false}
             />
             <Text typographyStyle="body-md-strong">
-                <FormattedCryptoAmount value={roundedAmount} symbol={token.symbol} />
+                <FormattedCryptoAmount
+                    value={roundedAmount}
+                    symbol={token.symbol}
+                    data-testid={dataTestId}
+                />
             </Text>
         </Row>
     );

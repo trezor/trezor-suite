@@ -5,6 +5,7 @@ import { Badge, CollapsibleBox, Column, Row, Text } from '@trezor/components';
 
 export type EarnInANutshellProcess = {
     processType?: YieldFlowType;
+    'data-testid'?: string;
     heading: ReactNode;
     badge?: ReactNode;
     content: ReactNode;
@@ -20,9 +21,10 @@ export const EarnInANutshellProcesses = ({
     onItemToggle,
 }: EarnInANutshellProcessesProps) => (
     <Column gap={20}>
-        {items.map(({ processType, heading, badge, content }, index) => (
+        {items.map(({ processType, 'data-testid': dataTestId, heading, badge, content }, index) => (
             <CollapsibleBox
                 key={index}
+                data-testid={dataTestId}
                 heading={
                     <Row gap={8}>
                         <Text intent="neutral" priority="secondary">

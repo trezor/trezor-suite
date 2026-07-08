@@ -92,6 +92,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                 bottomContent={
                     <>
                         <Modal.Button
+                            data-testid="@modal/approve/continue-button"
                             isLoading={isLoading || isConfirmInProgress}
                             isDisabled={!device?.connected || !canSubmit || isConfirmInProgress}
                             onClick={() => handleClick(confirmAndSend)}

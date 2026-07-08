@@ -34,5 +34,11 @@ export const ApprovedAmountValue = ({
         );
     }
 
-    return <FormattedCryptoAmount value={amount} symbol={token.symbol} />;
+    return (
+        <FormattedCryptoAmount
+            value={amount}
+            symbol={token.symbol}
+            data-testid="@yield/approve/approved-amount"
+        />
+    );
 };

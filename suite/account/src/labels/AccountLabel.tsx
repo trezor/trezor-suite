@@ -16,6 +16,7 @@ type AccountLabelProps = {
     isDisabled?: TextProps['isDisabled'];
     typographyStyle?: TypographyStyle;
     rowProps?: Omit<FlexProps, 'children'>;
+    'data-testid'?: string;
 };
 
 export const AccountLabel = ({
@@ -27,6 +28,7 @@ export const AccountLabel = ({
     priority,
     isDisabled,
     rowProps,
+    'data-testid': dataTestId,
 }: AccountLabelProps) => {
     const { label } = useAccountLabel({ account });
 
@@ -35,6 +37,7 @@ export const AccountLabel = ({
     return (
         <Row gap={12} overflow="hidden" maxWidth="100%" {...rowProps}>
             <Text
+                data-testid={dataTestId}
                 intent={intent}
                 priority={priority}
                 isDisabled={isDisabled}

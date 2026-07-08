@@ -342,7 +342,10 @@ export const EarnYieldAccountOpportunity = ({
         return (
             <>
                 {firmwareModal}
-                <Card paddingType="small">
+                <Card
+                    paddingType="small"
+                    data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}
+                >
                     <Column gap={12} width="100%">
                         <Row justifyContent="space-between" alignItems="flex-start">
                             {accountCell}
@@ -408,7 +411,7 @@ export const EarnYieldAccountOpportunity = ({
     return (
         <>
             {firmwareModal}
-            <Table.Row>
+            <Table.Row data-testid={`@earn/dashboard/row/${opportunity.vault.id}`}>
                 <Table.Cell>{accountCell}</Table.Cell>
 
                 <Table.Cell>{apyCell}</Table.Cell>

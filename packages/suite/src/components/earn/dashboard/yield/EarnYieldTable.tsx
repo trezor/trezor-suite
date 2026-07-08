@@ -144,7 +144,7 @@ export const EarnYieldTable = () => {
     };
 
     return (
-        <Column gap={16}>
+        <Column data-testid="@earn/dashboard" gap={16}>
             <ContextMessage context={Context.getEarnDashboard('yield')} />
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>

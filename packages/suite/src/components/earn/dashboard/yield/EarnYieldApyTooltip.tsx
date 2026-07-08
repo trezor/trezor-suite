@@ -87,7 +87,11 @@ export const EarnYieldApyTooltip = ({
             maxWidth={600}
             placement="top"
         >
-            <Abbr onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <Abbr
+                data-testid="@earn/dashboard/apy-percentage"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
                 {children ?? <ApyValue apy={apyPercentage} />}
             </Abbr>
         </Tooltip>

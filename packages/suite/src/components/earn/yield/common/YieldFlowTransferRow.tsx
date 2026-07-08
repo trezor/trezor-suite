@@ -33,6 +33,7 @@ export const YieldFlowTransferRow = ({
                     contractAddress: input.token.contractAddress ?? null,
                 }}
                 amount={input.amount}
+                data-testid="@yield/flow-complete/transfer/input"
             />
         </Column>
     );
@@ -48,13 +49,18 @@ export const YieldFlowTransferRow = ({
                     contractAddress: output.token.contractAddress ?? null,
                 }}
                 amount={output.amount}
+                data-testid="@yield/flow-complete/transfer/output"
             />
         </Column>
     );
 
     if (isBelowTablet) {
         return (
-            <Column gap={12} padding={{ vertical: 16, horizontal: 20 }}>
+            <Column
+                gap={12}
+                padding={{ vertical: 16, horizontal: 20 }}
+                data-testid="@yield/flow-complete/transfer"
+            >
                 {inputColumn}
                 <Icon as={ArrowDownIcon} size={20} intent="neutral" priority="secondary" />
                 {outputColumn}
@@ -67,6 +73,7 @@ export const YieldFlowTransferRow = ({
             justifyContent="space-between"
             alignItems="center"
             padding={{ vertical: 16, horizontal: 20 }}
+            data-testid="@yield/flow-complete/transfer"
         >
             {inputColumn}
             <Icon as={ArrowRightIcon} size={20} intent="neutral" priority="secondary" />

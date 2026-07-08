@@ -109,4 +109,51 @@ export class BlockbookMock {
 
         this.mockServer.setFixtures(updatedFixtures);
     }
+
+    @step()
+    updateCurrentFiatRate(usdRate: number) {
+        const currentFixtures = this.mockServer.getFixtures();
+        const updatedFixtures = currentFixtures.map(fixture => {
+            if (fixture.method !== 'getCurrentFiatRates') {
+                return fixture;
+            }
+
+            return {
+                method: 'getCurrentFiatRates',
+                default: true,
+                response: {
+                    data: {
+                        ts: 1752167345,
+                        rates: {
+                            usd: usdRate,
+                        },
+                    },
+                },
+            };
+        });
+
+        this.mockServer.setFixtures(updatedFixtures);
+    }
+
+    // Updates the `rpcCall` fixture used by ERC-20 allowance checks. `rawAmount` is the
+    // token allowance in subunits (e.g. '10000000' for 10 USDC with 6 decimals), returned
+    // ABI-encoded as a uint256.
+    @step()
+    updateAllowance(rawAmount: string) {
+        const hexValue = BigInt(rawAmount).toString(16).padStart(64, '0');
+        const currentFixtures = this.mockServer.getFixtures();
+        const updatedFixtures = currentFixtures.map(fixture => {
+            if (fixture.method !== 'rpcCall') {
+                return fixture;
+            }
+
+            return {
+                method: 'rpcCall',
+                default: true,
+                response: { data: { data: `0x${hexValue}` } },
+            };
+        });
+
+        this.mockServer.setFixtures(updatedFixtures);
+    }
 }
