@@ -12,7 +12,7 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 
-import { sendYieldTransaction } from './signingHelpers';
+import { getYieldErrorTranslationKey, sendYieldTransaction } from './signingHelpers';
 
 type SubmitYieldDepositPayload = {
     flowKey: string;
@@ -151,7 +151,13 @@ export const submitYieldDepositThunk = createThunk(
                     errorMessage: 'submit-failed',
                 },
             });
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            dispatch(
+                stablecoinYieldActions.setError({
+                    flowType,
+                    flowKey,
+                    error: getYieldErrorTranslationKey(error),
+                }),
+            );
         } finally {
             dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
         }
