@@ -9,11 +9,14 @@ import { Box, Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';
 
+import {
+    type NativeAccountsRootState,
+    selectIsAccountsListNetworkFilterVisible,
+} from '../selectors';
+import { type OnSelectAccount } from '../types';
 import { AccountsList } from './AccountsList/AccountsList';
 import { NetworkFilterBottomSheet } from './NetworkFilterBottomSheet';
 import { SearchableAccountsListHeader } from './SearchableAccountsListHeader';
-import { type NativeAccountsRootState, selectNetworkFilterOptions } from '../selectors';
-import { type OnSelectAccount } from '../types';
 
 const EMPTY_NETWORKS_FILTER: NetworkSymbol[] = [];
 
@@ -43,10 +46,9 @@ export const AccountsListWithFilter = ({
     const [filteredNetworks, setFilteredNetworks] = useState<NetworkSymbol[]>(networksFilter);
     const filterBottomSheetRef = useRef<BottomSheetModalMethods>(null);
 
-    const networkFilterOptions = useSelector((state: NativeAccountsRootState) =>
-        selectNetworkFilterOptions(state, isSendFlow),
+    const isNetworkFilterVisible = useSelector((state: NativeAccountsRootState) =>
+        selectIsAccountsListNetworkFilterVisible(state, isSendFlow),
     );
-    const isNetworkFilterVisible = networkFilterOptions.length > 1;
 
     useEffect(() => {
         setFilteredNetworks(networksFilter);
@@ -129,10 +131,10 @@ export const AccountsListWithFilter = ({
             </VStack>
             <NetworkFilterBottomSheet
                 ref={filterBottomSheetRef}
-                options={networkFilterOptions}
                 selectedNetworks={filteredNetworks}
                 onApply={handleApplyFilter}
                 onClear={handleClearFilters}
+                isSendFlow={isSendFlow ?? false}
             />
         </>
     );

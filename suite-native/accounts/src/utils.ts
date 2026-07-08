@@ -1,4 +1,4 @@
-import { A, D, G } from '@mobily/ts-belt';
+import { A } from '@mobily/ts-belt';
 
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
@@ -86,21 +86,6 @@ export const filterSendAvailableAccounts = <T extends Account>(accounts: readonl
             !sendDisabledNetworkTypes.includes(account.networkType) &&
             Number(account.availableBalance) > 0,
     );
-
-/**
- * Returns object with key equal string composed by network name and account type. Values are arrays of corresponding accounts.
- */
-export const groupAccountsByNetworkAccountType = A.groupBy((account: Account) => {
-    const { symbol, accountType } = account;
-    const networkConfig = networks[symbol];
-    const networkName = networkConfig.name;
-    const formattedAccountType = accountTypeToSectionHeader[accountType];
-
-    if (D.isEmpty(networkConfig.accountTypes) || G.isNullable(formattedAccountType))
-        return `${networkName} accounts`;
-
-    return `${networkName} ${formattedAccountType} accounts`;
-});
 
 export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(accounts: readonly T[]) =>
     A.sort(accounts, (a, b) => {
