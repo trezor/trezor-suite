@@ -109,7 +109,7 @@ export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
 export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
     networks[symbol]?.features ?? [];
 
-export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
+export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coingeckoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
     Object.hasOwn(networks, symbol);

@@ -2,6 +2,7 @@ import { networks } from '../networksConfig';
 import { type NetworkSymbol } from '../types';
 import {
     filterNetworksByName,
+    getCoingeckoId,
     getMainnets,
     getNetworkFeatures,
     getNetworksWithMevProtection,
@@ -160,5 +161,17 @@ describe(getNetworkFeatures.name, () => {
     // empty-array fallback prevents a crash.
     it('returns an empty array for an unknown symbol', () => {
         expect(getNetworkFeatures('unknown' as NetworkSymbol)).toEqual([]);
+    });
+});
+
+describe(getCoingeckoId.name, () => {
+    it('returns the configured CoinGecko id for a known symbol', () => {
+        expect(getCoingeckoId('eth')).toBe(networks.eth.coingeckoId);
+    });
+
+    // Same crash class as getNetworkFeatures: an unknown symbol must not throw on the missing
+    // network object (coingeckoId is already optional, so undefined is an expected value).
+    it('returns undefined for an unknown symbol', () => {
+        expect(getCoingeckoId('unknown' as NetworkSymbol)).toBeUndefined();
     });
 });
