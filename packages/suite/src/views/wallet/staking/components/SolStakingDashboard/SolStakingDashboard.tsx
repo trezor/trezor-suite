@@ -82,21 +82,23 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
         selectSolExternalStakingAccountsTotalStaked(state, account.key),
     );
 
+    const externalStakingProviderCard = hasExternalStakingAccounts ? (
+        <ExternalStakingProviderCard
+            symbol={account.symbol}
+            totalStaked={externalStakingTotalStaked}
+        />
+    ) : null;
+
     return (
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
                 <Column alignItems="normal" gap={spacings.xxxxl}>
-                    {hasExternalStakingAccounts && (
-                        <ExternalStakingProviderCard
-                            symbol={account.symbol}
-                            totalStaked={externalStakingTotalStaked}
-                        />
-                    )}
                     {isStakingActive ? (
                         <>
                             <DashboardSection>
                                 <Column alignItems="normal" gap={spacings.sm}>
+                                    {externalStakingProviderCard}
                                     {isDiscoveryRunning && <DiscoveryWarning />}
                                     {shouldShowWarning && <StakingRewardsWarning />}
 
@@ -130,9 +132,10 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                             />
                         </>
                     ) : (
-                        <>
+                        <Column alignItems="normal" gap={spacings.sm}>
+                            {externalStakingProviderCard}
                             <EmptyStakingCard />
-                        </>
+                        </Column>
                     )}
                 </Column>
             }

@@ -2,6 +2,8 @@ import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-con
 import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import {
+    MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
+    MIN_STAKE_DELEGATION,
     SOLANA_EPOCH_DAYS,
     StakeState,
     supportedSolanaNetworkSymbols,
@@ -9,7 +11,7 @@ import {
 import type { SupportedSolanaNetworkSymbols } from '@trezor/coins-solana/types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
-import { formatNetworkAmount } from './amountUtils';
+import { formatNetworkAmount, networkAmountToSmallestUnit } from './amountUtils';
 
 export function isSupportedSolStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -108,6 +110,73 @@ export const getSolStakingAccountTotalBalanceByStatus = (account: Account, statu
     const stakingBalance = calculateTotalSolStakingBalance(selectedStakingAccounts) ?? '0';
 
     return formatNetworkAmount(stakingBalance, account.symbol);
+};
+
+export type SolanaUnstakeAmountBounds = {
+    closestLower?: string;
+    closestHigher: string;
+};
+
+// Mirrors the stake account selection of `unstake` in @trezor/coins-solana/runtime/staking.ts:
+// accounts are consumed whole in ASC order and the requested remainder is split off the next one,
+// which is only possible when both split legs stay above MIN_STAKE_DELEGATION.
+export const getSolanaUnstakeAmountBounds = (
+    account: Account,
+    requestedAmount: string,
+): SolanaUnstakeAmountBounds | null => {
+    if (account.networkType !== 'solana') return null;
+
+    const requested = new BigNumber(networkAmountToSmallestUnit(requestedAmount, account.symbol));
+    if (!requested.isFinite() || requested.lte(0)) return null;
+
+    const activeAccounts = getSolanaStakingAccountsByStatus(account, StakeState.Active);
+    // With this many accounts the runtime consumes them DESC and caps the transaction size;
+    // SolanaStakingLimitBanner covers that case.
+    if (!activeAccounts.length || activeAccounts.length >= MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT) {
+        return null;
+    }
+
+    const stakes = activeAccounts
+        .map(({ stake }) => new BigNumber(stake ?? '0'))
+        .filter(stake => stake.gt(0))
+        .sort((a, b) => a.comparedTo(b) ?? 0);
+
+    const totalStake = stakes.reduce((acc, stake) => acc.plus(stake), new BigNumber(0));
+    if (requested.gte(totalStake)) return null;
+
+    const minDelegation = new BigNumber(MIN_STAKE_DELEGATION.toString());
+
+    let remaining = requested;
+    let consumedStake = new BigNumber(0);
+    for (const stake of stakes) {
+        if (stake.lte(remaining)) {
+            remaining = remaining.minus(stake);
+            consumedStake = consumedStake.plus(stake);
+            continue;
+        }
+
+        const isSplitAccountValid = remaining.gte(minDelegation);
+        const isSplitRemainderValid = stake.minus(remaining).gte(minDelegation);
+        if (remaining.isZero() || (isSplitAccountValid && isSplitRemainderValid)) return null;
+
+        const canSplit = stake.gte(minDelegation.times(2));
+        const closestLower = isSplitAccountValid
+            ? consumedStake.plus(canSplit ? stake.minus(minDelegation) : 0)
+            : consumedStake;
+        const closestHigher =
+            !isSplitAccountValid && canSplit
+                ? consumedStake.plus(minDelegation)
+                : consumedStake.plus(stake);
+
+        return {
+            ...(closestLower.gt(0)
+                ? { closestLower: formatNetworkAmount(closestLower.toString(), account.symbol) }
+                : {}),
+            closestHigher: formatNetworkAmount(closestHigher.toString(), account.symbol),
+        };
+    }
+
+    return null;
 };
 
 type StakeStateType = (typeof StakeState)[keyof typeof StakeState];

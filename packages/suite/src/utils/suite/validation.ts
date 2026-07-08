@@ -1,10 +1,15 @@
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter, type Formatters } from '@suite-common/formatters';
-import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    getDisplaySymbol,
+    getNetworkDisplaySymbol,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,
+    getSolanaUnstakeAmountBounds,
     isAmountWithinNetworkReserve,
     isDecimalsValid,
     isInteger,
@@ -127,6 +132,32 @@ export const validateCryptoLimits =
                 });
             }
         }
+    };
+
+interface ValidateSolanaUnstakeAmountOptions {
+    account: Account;
+}
+
+export const validateSolanaUnstakeAmount =
+    (translationString: TranslationFunction, { account }: ValidateSolanaUnstakeAmountOptions) =>
+    (value: string) => {
+        if (!value) return;
+
+        const bounds = getSolanaUnstakeAmountBounds(account, value);
+        if (!bounds) return;
+
+        const symbol = getNetworkDisplaySymbol(account.symbol);
+
+        return bounds.closestLower
+            ? translationString('TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT', {
+                  lower: bounds.closestLower,
+                  higher: bounds.closestHigher,
+                  symbol,
+              })
+            : translationString('TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY', {
+                  higher: bounds.closestHigher,
+                  symbol,
+              });
     };
 
 interface ValidateFiatLimitsOptions {

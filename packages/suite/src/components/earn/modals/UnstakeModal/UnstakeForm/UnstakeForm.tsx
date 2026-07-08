@@ -1,15 +1,16 @@
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Banner, Card, Column, InfoItem, Tooltip } from '@trezor/components';
+import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getSolanaUnstakeAmountBounds, getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { getStakingHelpCenterLink } from 'src/components/earn/utils/getStakingHelpCenterLink';
 import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/ApproximateInstantEthAmount';
 
 import { UnstakeInputs } from './UnstakeInputs';
@@ -26,6 +27,8 @@ export const UnstakeForm = () => {
         feeInfo,
         composedLevels,
         methods,
+        onCryptoAmountChange,
+        getValues,
     } = useWithdrawalFormContext();
 
     const { symbol, networkType } = account;
@@ -40,6 +43,15 @@ export const UnstakeForm = () => {
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);
+
+    const unstakeAmountBounds =
+        inputError?.type === 'solanaUnstakeAmount'
+            ? getSolanaUnstakeAmountBounds(account, getValues(OUTPUT_AMOUNT) ?? '')
+            : null;
+
+    const renderClickableUnstakeAmount = (amount: string) => (
+        <Link onClick={() => onCryptoAmountChange(amount)}>{amount}</Link>
+    );
     const shouldShowInstantWithdrawalEthAmount =
         approximatedInstantEthAmount && BigNumber(approximatedInstantEthAmount).gt(0);
 
@@ -79,7 +91,46 @@ export const UnstakeForm = () => {
                             <Column gap={20}>
                                 <UnstakeInputs />
                                 {showError && (
-                                    <Banner intent="critical" description={inputError?.message} />
+                                    <Banner
+                                        intent="critical"
+                                        description={
+                                            unstakeAmountBounds ? (
+                                                <Translation
+                                                    id={
+                                                        unstakeAmountBounds.closestLower
+                                                            ? 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT'
+                                                            : 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY'
+                                                    }
+                                                    values={{
+                                                        symbol: getNetworkDisplaySymbol(
+                                                            account.symbol,
+                                                        ),
+                                                        higher: renderClickableUnstakeAmount(
+                                                            unstakeAmountBounds.closestHigher,
+                                                        ),
+                                                        lower: unstakeAmountBounds.closestLower
+                                                            ? renderClickableUnstakeAmount(
+                                                                  unstakeAmountBounds.closestLower,
+                                                              )
+                                                            : undefined,
+                                                    }}
+                                                />
+                                            ) : (
+                                                inputError?.message
+                                            )
+                                        }
+                                        rightContent={
+                                            inputError?.type === 'solanaUnstakeAmount' ? (
+                                                <Banner.Button
+                                                    href={getStakingHelpCenterLink(
+                                                        account.networkType,
+                                                    )}
+                                                >
+                                                    <Translation id="TR_STAKE_FIND_OUT_MORE" />
+                                                </Banner.Button>
+                                            ) : undefined
+                                        }
+                                    />
                                 )}
                             </Column>
                         </>
