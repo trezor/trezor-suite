@@ -18,14 +18,13 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  */
 
 /**
- * The six low-level AuthDB methods (authDbLookup, authDbUpdateLeaf, authDbSetRoot,
- * authDbApprove, authDbClearRoot, authDbSetDeviceId) are thin passthroughs to a single
- * proto request/response pair with no per-method business logic. This factory produces
- * a MethodClass for one of them, removing the identical constructor/run() boilerplate
- * that used to be duplicated six times.
+ * The three low-level AuthDB methods (authDbLookup, authDbSetRoot, authDbUpdateLeaf) are
+ * thin passthroughs to a single proto request/response pair with no per-method business
+ * logic. This factory produces a MethodClass for one of them, removing the identical
+ * constructor/run() boilerplate.
  *
  * Wire message names are derived from `name` (PascalCase + optional 'Response' suffix)
- * since all six already follow that convention — e.g. 'authDbLookup' maps to the
+ * since all three already follow that convention — e.g. 'authDbLookup' maps to the
  * 'AuthDbLookup'/'AuthDbLookupResponse' proto messages.
  */
 type RawAuthDbMethodConfig<Name extends CallMethodPayload['method']> = {

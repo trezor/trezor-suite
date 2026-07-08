@@ -37,10 +37,6 @@
             "./storage/sqlite": {
                 "types": "./lib/storage/sqlite/index.d.mts",
                 "default": "./lib/storage/sqlite/index.mjs"
-            },
-            "./sync": {
-                "types": "./lib/sync/index.d.mts",
-                "default": "./lib/sync/index.mjs"
             }
         }
     },

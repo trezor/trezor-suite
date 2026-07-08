@@ -1,13 +1,9 @@
-import type {
-    AuthLabelApprovalProvider,
-    AuthLabelLookupProvider,
-    AuthLabelRow,
-} from '@trezor/authdb';
+import type { AuthLabelLookupProvider, AuthLabelRow } from '@trezor/authdb';
 
 import * as settingsStore from '../../../data/settingsStore';
 import AuthDbUpdateAddress from '../api/authDbUpdateAddress';
 
-type MockProvider = AuthLabelLookupProvider & Partial<AuthLabelApprovalProvider>;
+type MockProvider = AuthLabelLookupProvider;
 
 const buildProvider = (overrides: Partial<MockProvider> = {}): MockProvider => ({
     lookup: jest.fn().mockResolvedValue(null),
@@ -68,20 +64,17 @@ describe('authDbUpdateAddress', () => {
         expect(typedCall).toHaveBeenCalledWith(
             'AuthDbUpdateLeaf',
             'AuthDbUpdateLeafResponse',
-            expect.objectContaining({ old_value: '', proof: expect.any(Array) }),
+            // global-counter stamp: empty tree_state -> new_counter = 1
+            expect.objectContaining({ old_value: '', proof: expect.any(Array), new_counter: 1 }),
         );
         expect(provider.upsert).toHaveBeenCalledWith('wallet1', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
         });
-        expect(provider.setTreeState).toHaveBeenCalledWith('wallet1', {
-            root: 'root1',
-            counter: 1,
-        });
         expect(result).toEqual({ counter: 1, root: 'root1' });
     });
 
-    it('updates an existing entry with a membership proof and a populated old_value', async () => {
+    it('updates an existing entry, stamping the new leaf with the global counter + 1', async () => {
         const existingRows: AuthLabelRow[] = [
             {
                 address: 'bc1qaddr',
@@ -92,6 +85,8 @@ describe('authDbUpdateAddress', () => {
         const provider = buildProvider({
             lookup: jest.fn().mockResolvedValue({ metadata: { label: 'old' }, counter: 3 }),
             getAllEntries: jest.fn().mockResolvedValue(existingRows),
+            // global counter is 3 -> the new leaf is stamped 4
+            getTreeState: jest.fn().mockResolvedValue({ root: 'r', counter: 3 }),
         });
         settingsStore.update({ authLabelLookupProvider: provider });
 
@@ -105,28 +100,12 @@ describe('authDbUpdateAddress', () => {
         const [, , params] = typedCall.mock.calls[0];
         expect(params.old_value).not.toBe('');
         expect(params.witness_address).toBeUndefined();
+        expect(params.old_counter).toBe(3); // previous global stamp of the leaf
+        expect(params.new_counter).toBe(4); // global counter 3 -> 4
         expect(provider.upsert).toHaveBeenCalledWith('wallet1', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 4,
         });
-    });
-
-    it('auto-picks-up a prior pre-approval via lookupApproval', async () => {
-        const provider = buildProvider({
-            lookupApproval: jest.fn().mockResolvedValue({ mac: 'deadbeef', deviceId: 'cafe' }),
-        });
-        settingsStore.update({ authLabelLookupProvider: provider });
-
-        const typedCall = jest
-            .fn()
-            .mockResolvedValue({ message: { counter: 1, new_root: 'root' } });
-        const method = buildMethod({ device: {} }, buildDevice(typedCall));
-
-        await method.run();
-
-        const [, , params] = typedCall.mock.calls[0];
-        expect(params.mac).toBe('deadbeef');
-        expect(params.device_id).toBe('cafe');
     });
 
     it('runs offline (no device) by persisting locally and recomputing the root', async () => {
@@ -138,10 +117,6 @@ describe('authDbUpdateAddress', () => {
 
         expect(provider.upsert).toHaveBeenCalledWith('wallet1', 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
-            counter: 1,
-        });
-        expect(provider.setTreeState).toHaveBeenCalledWith('wallet1', {
-            root: expect.any(String),
             counter: 1,
         });
         expect(result.counter).toBe(1);

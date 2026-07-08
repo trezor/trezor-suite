@@ -17,6 +17,5 @@ export default createRawAuthDbMethod({
         mac: payload.mac,
         ...(payload.device_id !== undefined && { device_id: payload.device_id }),
         ...(payload.counter !== undefined && { counter: payload.counter }),
-        ...(payload.operations !== undefined && { operations: payload.operations }),
     }),
 });

@@ -3,16 +3,7 @@ import { Type } from '@trezor/schema-utils';
 
 import type { applyFlags } from './applyFlags';
 import type { applySettings } from './applySettings';
-import type { authDbApprove } from './authDbApprove';
-import type { authDbApproveAddress } from './authDbApproveAddress';
-import type { authDbClearRoot } from './authDbClearRoot';
-import type { authDbDeleteOfflineOperations } from './authDbDeleteOfflineOperations';
-import type { authDbFastForwardRoot } from './authDbFastForwardRoot';
-import type { authDbGetOfflineOperations } from './authDbGetOfflineOperations';
 import type { authDbLookup } from './authDbLookup';
-import type { authDbQueueOfflineOperation } from './authDbQueueOfflineOperation';
-import type { authDbReplayQueue } from './authDbReplayQueue';
-import type { authDbSetDeviceId } from './authDbSetDeviceId';
 import type { authDbSetRoot } from './authDbSetRoot';
 import type { authDbUpdateAddress } from './authDbUpdateAddress';
 import type { authDbUpdateLeaf } from './authDbUpdateLeaf';
@@ -221,20 +212,11 @@ export const TrezorConnectDevice = Type.Object({
 
     // https://connect.trezor.io/9/methods/device/pingDevice/
     pingDevice: Type.Unsafe<typeof pingDevice>(),
-    authDbApprove: Type.Unsafe<typeof authDbApprove>(),
-    authDbApproveAddress: Type.Unsafe<typeof authDbApproveAddress>(),
     authDbSetRoot: Type.Unsafe<typeof authDbSetRoot>(),
-    authDbSetDeviceId: Type.Unsafe<typeof authDbSetDeviceId>(),
     authDbLookup: Type.Unsafe<typeof authDbLookup>(),
     authDbUpdateLeaf: Type.Unsafe<typeof authDbUpdateLeaf>(),
-    authDbClearRoot: Type.Unsafe<typeof authDbClearRoot>(),
     authDbUpdateAddress: Type.Unsafe<typeof authDbUpdateAddress>(),
     authDbVerifyAddress: Type.Unsafe<typeof authDbVerifyAddress>(),
-    authDbFastForwardRoot: Type.Unsafe<typeof authDbFastForwardRoot>(),
-    authDbReplayQueue: Type.Unsafe<typeof authDbReplayQueue>(),
-    authDbQueueOfflineOperation: Type.Unsafe<typeof authDbQueueOfflineOperation>(),
-    authDbGetOfflineOperations: Type.Unsafe<typeof authDbGetOfflineOperations>(),
-    authDbDeleteOfflineOperations: Type.Unsafe<typeof authDbDeleteOfflineOperations>(),
 });
 export type TrezorConnectDevice = Static<typeof TrezorConnectDevice>;
 

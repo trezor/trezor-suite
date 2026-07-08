@@ -38,17 +38,8 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=authenticate-device
                                                 --method=dblookup    Look up a Bitcoin address in the local SQLite DB
                                                 --method=dbchange    Upsert metadata for a Bitcoin address in the local SQLite DB
-                                                --method=dbapprove   Approve an address record on device; stores MAC signature in DB
                                                 --method=dbsetroot   Send stored root + MAC from DB to device (for initial sync)
                                                 --method=dblistroots List stored Merkle root(s) from local DB; prints ready-to-run dbsetroot command
-                                                --method=dbclear     Clear the Merkle root on device and wipe the local DB
-                                                --method=dbsetdeviceid Set the authdb device identifier on the Trezor (for testing cross-device sync)
-                                                --method=dbqueueoffline   Queue a signed offline operation on the device (no host DB round-trip)
-                                                --method=dbgetofflineops  Drain the device's offline queue and persist it into the local DB
-                                                --method=dbdeleteofflineops Garbage-collect applied offline operations from the device queue
-                                                --method=dbfastforward    Fast-forward the device to the wallet's latest attested root (skip-ahead)
-                                                --method=dbsyncoffline    Full sync: drain, rebase with conflict detection, and apply the offline queue
-                                                --method=dbhistory        Print the local cross-device apply history for an address
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 
@@ -61,11 +52,8 @@ export const HELP = `@trezor/connect CLI arguments:
     --wallet-id=<id>                          Wallet whose root checkpoint to read/write in tree_state (default: "default")
                                                 Lets one shared DB track a separate checkpoint per wallet.
     --db-params=<json>                        Params for database commands (JSON object)
-                                                --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup, dbapprove)
-                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange; pre-approval mac/deviceId from a prior dbapprove are picked up automatically)
-                                                --db-params='{"deviceId":"<hex>"}' (dbsetdeviceid)
-                                                --db-params='{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>","newCounter":<n>}' (dbqueueoffline; oldValue "" = insert, newValue "" = delete; newCounter: 1 on insert, oldCounter+1 otherwise)
-                                                --db-params='{"address":"<hex>"}' (dbhistory)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
 `;
 
 // read and parse application arguments

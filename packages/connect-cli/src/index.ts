@@ -62,43 +62,10 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const DB_METHODS = new Set([
-    'dblookup',
-    'dbchange',
-    'dbapprove',
-    'dbsetroot',
-    'dbclear',
-    'dblistroots',
-    'dbsetdeviceid',
-    'dbqueueoffline',
-    'dbgetofflineops',
-    'dbdeleteofflineops',
-    'dbfastforward',
-    'dbsyncoffline',
-    'dbhistory',
-]);
-const DB_METHODS_REQUIRING_PARAMS = new Set([
-    'dblookup',
-    'dbchange',
-    'dbapprove',
-    'dbsetdeviceid',
-    'dbqueueoffline',
-    'dbhistory',
-]);
+const DB_METHODS = new Set(['dblookup', 'dbchange', 'dbsetroot', 'dblistroots']);
+const DB_METHODS_REQUIRING_PARAMS = new Set(['dblookup', 'dbchange']);
 // Methods that must send a command to firmware (need a connected device even when --db-path is set)
-const DB_METHODS_NEEDING_DEVICE = new Set([
-    'dblookup',
-    'dbchange',
-    'dbapprove',
-    'dbsetroot',
-    'dbclear',
-    'dbsetdeviceid',
-    'dbqueueoffline',
-    'dbgetofflineops',
-    'dbdeleteofflineops',
-    'dbfastforward',
-    'dbsyncoffline',
-]);
+const DB_METHODS_NEEDING_DEVICE = new Set(['dblookup', 'dbchange', 'dbsetroot']);
 
 // When --db-path is explicit, the DB path is known upfront (independent of the
 // device), so it can be constructed before TrezorConnect.init() and injected as
@@ -201,19 +168,20 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     }
 
     // Resolve walletId to the device's real wallet_id (SLIP-21 "AUTHDB DEVICE ID").
-    // AuthDbGetOfflineOperations is a read-only call that echoes it (the queue is empty on
-    // a fresh device). Without this, walletId stays 'default' and every high-level method
-    // rejects the device's echoed wallet_id as a mismatch. Skipped when the caller pinned
-    // --wallet-id, or when there's no device (pure offline verify/lookup).
+    // The low-level AuthDbLookup echoes it and — unlike the high-level methods — does NOT
+    // reject a wallet_id mismatch, so a throwaway probe works even while walletId is still
+    // 'default'. Without this, every high-level method rejects the device's echoed wallet_id
+    // as a mismatch. Skipped when the caller pinned --wallet-id, or when there's no device.
     if (!walletIdExplicit && device) {
         try {
-            const opsResult = await TrezorConnect.authDbGetOfflineOperations({ device });
-            console.log(
-                '[walletId] authDbGetOfflineOperations raw result:',
-                JSON.stringify(opsResult),
-            );
-            if (opsResult.success && opsResult.payload.wallet_id) {
-                walletId = opsResult.payload.wallet_id;
+            const probe = await TrezorConnect.authDbLookup({
+                device,
+                address: Buffer.from('__walletid_probe__').toString('hex'),
+                proof: [],
+            });
+            console.log('[walletId] authDbLookup probe raw result:', JSON.stringify(probe));
+            if (probe.success && probe.payload.wallet_id) {
+                walletId = probe.payload.wallet_id;
                 console.log('Using device wallet_id:', walletId);
             } else {
                 // Loud, not silent: if we can't resolve the device's real wallet_id here, the
@@ -225,7 +193,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
         } catch (err) {
             console.warn(
-                '[walletId] authDbGetOfflineOperations THREW:',
+                '[walletId] authDbLookup probe THREW:',
                 err instanceof Error ? `${err.name}: ${err.message}` : String(err),
             );
         }
@@ -281,9 +249,6 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
                 };
 
-                // Pre-approval mac/deviceId (from a prior dbapprove) are picked up
-                // automatically by authDbUpdateAddress via provider.lookupApproval() —
-                // no need to pass them through --db-params here.
                 const result = await TrezorConnect.authDbUpdateAddress({
                     device: device!,
                     address,
@@ -311,39 +276,6 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     );
                     console.log('Authenticity verified: true');
                 }
-            }
-
-            if (method === 'dbapprove') {
-                const { address, networkSymbol } = params;
-                if (!address || !networkSymbol) {
-                    console.error(
-                        'dbapprove requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ',
-                    );
-                    process.exit(1);
-                }
-                if (!device) {
-                    console.error('dbapprove requires a connected device');
-                    process.exit(1);
-                }
-
-                const approveResult = await TrezorConnect.authDbApproveAddress({
-                    device,
-                    address,
-                    networkSymbol,
-                    walletId,
-                });
-                if (!approveResult.success) {
-                    console.error('dbapprove failed:', approveResult);
-                    process.exit(1);
-                }
-                const { mac, deviceId } = approveResult.payload;
-                console.log(
-                    JSON.stringify(
-                        { method: 'dbapprove', address, networkSymbol, mac, deviceId },
-                        null,
-                        2,
-                    ),
-                );
             }
 
             if (method === 'dbsetroot') {
@@ -405,157 +337,6 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     console.log(JSON.stringify({ method: 'dblistroots', treeState }, null, 2));
                     console.log('To sync this root to another device:');
                     console.log(`  ${setrootCmd}`);
-                }
-            }
-
-            if (method === 'dbhistory') {
-                const { address } = params;
-                if (!address) {
-                    console.error('dbhistory requires --db-params=\'{"address":"<hex>"}\' ');
-                    process.exit(1);
-                }
-                const history = db.getAddressHistory(walletId, address);
-                console.log(JSON.stringify({ method: 'dbhistory', address, history }, null, 2));
-            }
-
-            if (method === 'dbclear') {
-                if (!device) {
-                    console.error('dbclear requires a connected device');
-                    process.exit(1);
-                }
-                const result = await TrezorConnect.authDbClearRoot({ device });
-                if (!result.success) {
-                    console.error('dbclear failed:', result.payload.error);
-                    process.exit(1);
-                }
-                db.clearAll();
-                console.log(
-                    JSON.stringify(
-                        { method: 'dbclear', walletId: result.payload.wallet_id },
-                        null,
-                        2,
-                    ),
-                );
-            }
-
-            if (method === 'dbsetdeviceid') {
-                const { deviceId } = params;
-                if (!deviceId) {
-                    console.error('dbsetdeviceid requires --db-params=\'{"deviceId":"<hex>"}\'');
-                    process.exit(1);
-                }
-                if (!device) {
-                    console.error('dbsetdeviceid requires a connected device');
-                    process.exit(1);
-                }
-                const result = await TrezorConnect.authDbSetDeviceId({
-                    device,
-                    device_id: deviceId,
-                });
-                if (!result.success) {
-                    console.error('dbsetdeviceid failed:', result);
-                    process.exit(1);
-                }
-                console.log(
-                    JSON.stringify(
-                        { method: 'dbsetdeviceid', deviceId: result.payload.device_id },
-                        null,
-                        2,
-                    ),
-                );
-            }
-
-            if (method === 'dbqueueoffline') {
-                const { address, oldValue, newValue, oldCounter, newCounter } = params;
-                if (!address || newValue === undefined) {
-                    console.error(
-                        'dbqueueoffline requires --db-params=\'{"address":"<hex>","oldValue":"<hex>","newValue":"<hex>","newCounter":<n>}\' (oldValue "" = insert, newValue "" = delete; newCounter: 1 on insert, oldCounter+1 otherwise)',
-                    );
-                    process.exit(1);
-                }
-                if (!device) {
-                    console.error('dbqueueoffline requires a connected device');
-                    process.exit(1);
-                }
-                const result = await TrezorConnect.authDbQueueOfflineOperation({
-                    device,
-                    address,
-                    old_value: oldValue ?? '',
-                    new_value: newValue,
-                    ...(oldCounter !== undefined && { old_counter: oldCounter }),
-                    new_counter: newCounter ?? (oldValue ? oldCounter + 1 : 1),
-                });
-                if (!result.success) {
-                    console.error('dbqueueoffline failed:', result);
-                    process.exit(1);
-                }
-                console.log(
-                    JSON.stringify({ method: 'dbqueueoffline', ...result.payload }, null, 2),
-                );
-            }
-
-            if (method === 'dbgetofflineops') {
-                if (!device) {
-                    console.error('dbgetofflineops requires a connected device');
-                    process.exit(1);
-                }
-                const result = await TrezorConnect.authDbGetOfflineOperations({ device });
-                if (!result.success) {
-                    console.error('dbgetofflineops failed:', result);
-                    process.exit(1);
-                }
-                console.log(
-                    JSON.stringify({ method: 'dbgetofflineops', ...result.payload }, null, 2),
-                );
-            }
-
-            if (method === 'dbdeleteofflineops') {
-                if (!device) {
-                    console.error('dbdeleteofflineops requires a connected device');
-                    process.exit(1);
-                }
-                const result = await TrezorConnect.authDbDeleteOfflineOperations({ device });
-                if (!result.success) {
-                    console.error('dbdeleteofflineops failed:', result);
-                    process.exit(1);
-                }
-                console.log(
-                    JSON.stringify({ method: 'dbdeleteofflineops', ...result.payload }, null, 2),
-                );
-            }
-
-            if (method === 'dbfastforward') {
-                if (!device) {
-                    console.error('dbfastforward requires a connected device');
-                    process.exit(1);
-                }
-                const result = await TrezorConnect.authDbFastForwardRoot({ device, walletId });
-                if (!result.success) {
-                    console.error('dbfastforward failed:', result);
-                    process.exit(1);
-                }
-                console.log(
-                    JSON.stringify({ method: 'dbfastforward', ...result.payload }, null, 2),
-                );
-            }
-
-            if (method === 'dbsyncoffline') {
-                if (!device) {
-                    console.error('dbsyncoffline requires a connected device');
-                    process.exit(1);
-                }
-                const result = await TrezorConnect.authDbReplayQueue({ device, walletId });
-                if (!result.success) {
-                    console.error('dbsyncoffline failed:', result);
-                    process.exit(1);
-                }
-                console.log(
-                    JSON.stringify({ method: 'dbsyncoffline', ...result.payload }, null, 2),
-                );
-                if (result.payload.conflicts.length > 0) {
-                    console.log(
-                        `${result.payload.conflicts.length} conflicting entr${result.payload.conflicts.length === 1 ? 'y' : 'ies'} left queued for retry.`,
-                    );
                 }
             }
         }

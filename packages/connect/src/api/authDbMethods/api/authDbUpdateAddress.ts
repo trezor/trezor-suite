@@ -71,13 +71,20 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         // Verbose diagnostics — prefixed so they're greppable in connect-cli output.
         const vlog = (...m: unknown[]) => console.log('[authDbUpdateAddress]', ...m);
 
-        const [rows, oldEntry] = await Promise.all([
+        const [rows, oldEntry, currentTreeState] = await Promise.all([
             provider.getAllEntries(walletId),
             provider.lookup(walletId, address, networkSymbol),
+            provider.getTreeState(walletId),
         ]);
 
-        const newEntry: AuthLabelEntry = { metadata, counter: (oldEntry?.counter ?? 0) + 1 };
         const isInsert = oldEntry === null;
+        // Leaf counter is the GLOBAL counter stamp: the new global counter this change
+        // produces (current global counter + 1) -- not a per-address increment. Matches
+        // the firmware, which requires new_counter == current root counter + 1.
+        const newEntry: AuthLabelEntry = {
+            metadata,
+            counter: (currentTreeState?.counter ?? 0) + 1,
+        };
 
         vlog('ENTER', {
             walletId,
@@ -88,12 +95,9 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             localRows: rows.length,
             oldCounter: oldEntry?.counter ?? null,
             newCounter: newEntry.counter,
+            currentGlobalCounter: currentTreeState?.counter ?? 0,
             metadata,
         });
-
-        // Current locally-stored root before this operation (mirrors the device's own
-        // stored_root log), so host and device roots can be compared side by side.
-        const currentTreeState = await provider.getTreeState(walletId);
         vlog('current local root (before op)', {
             root: currentTreeState?.root ?? '(none — empty tree)',
             counter: currentTreeState?.counter ?? 0,
@@ -119,10 +123,6 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             ? (nonMembership?.proof ?? [])
             : generateMerkleProof(rows, address, networkSymbol);
 
-        // Auto-pick up a prior dbapprove-style pre-approval, if the provider supports it,
-        // so callers don't need to plumb mac/deviceId through this call themselves.
-        const approval = await provider.lookupApproval?.(walletId, address, networkSymbol);
-
         vlog('proof built', {
             oldValueHex: oldValueHex || '(empty)',
             newValueHex,
@@ -133,7 +133,6 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                 ? bytesToHex(nonMembership.witnessValue)
                 : null,
             witnessCounter: nonMembership?.witnessCounter ?? null,
-            preApproval: approval ? { mac: approval.mac, deviceId: approval.deviceId } : null,
         });
 
         const cmd = this.getDevice().getCommands();
@@ -151,7 +150,6 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                     witness_value: bytesToHex(nonMembership.witnessValue!),
                     witness_counter: nonMembership.witnessCounter!,
                 }),
-            ...(approval && { mac: approval.mac, device_id: approval.deviceId }),
         });
         vlog('<- AuthDbUpdateLeafResponse', {
             counter: response.message.counter,
