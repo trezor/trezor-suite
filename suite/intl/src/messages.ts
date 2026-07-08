@@ -11465,6 +11465,20 @@ export const messages = defineMessages({
         defaultMessage:
             'Unstaking is limited to {limit} accounts per transaction. You can unstake up to {amount} {symbol}. Repeat to unstake more.',
     },
+    TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT: {
+        id: 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT',
+        defaultMessage:
+            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol} or more, or {lower} {symbol} or less.",
+    },
+    TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY: {
+        id: 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY',
+        defaultMessage:
+            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol} or more.",
+    },
+    TR_STAKE_FIND_OUT_MORE: {
+        id: 'TR_STAKE_FIND_OUT_MORE',
+        defaultMessage: 'Find out more',
+    },
     TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS: {
         id: 'TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS',
         defaultMessage:

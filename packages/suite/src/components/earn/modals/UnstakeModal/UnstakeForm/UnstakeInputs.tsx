@@ -18,6 +18,7 @@ import {
     validateDecimals,
     validateFiatLimits,
     validateMin,
+    validateSolanaUnstakeAmount,
 } from 'src/utils/suite/validation';
 
 export const UnstakeInputs = () => {
@@ -83,6 +84,7 @@ export const UnstakeInputs = () => {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),
+            solanaUnstakeAmount: validateSolanaUnstakeAmount(translationString, { account }),
         },
     };
 
