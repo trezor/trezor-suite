@@ -18,10 +18,13 @@ if [ "$#" -ne 1 ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BABEL_CONFIG="$SCRIPT_DIR/babel.config.json"
 
 # Transform .js files using Babel
-yarn run -T babel "$1" --out-dir "$1" --extensions ".js" --config-file "$BABEL_CONFIG"
+yarn run -T babel "$1" --out-dir "$1" --extensions ".js" --config-file "$SCRIPT_DIR/babel.config.json"
+
+# Transform .d.ts files using Babel.
+# TODO maybe it'd be better to get rid of babel-plugin-sanitize-internal-imports.js and use only the regex to unify it? Then we can unify the babel configs too.
+yarn run -T babel "$1" --out-dir "$1" --extensions ".ts" --keep-file-extension --config-file "$SCRIPT_DIR/babel.config.ts.json"
 
 # Determine the operating system
 OS="$(uname)"
