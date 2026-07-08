@@ -7,12 +7,11 @@ import {
     STABLECOIN_YIELD_PREFIX,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
-    setYieldGenericError,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 
 import { composeYieldWithdrawTransaction } from './composeYieldWithdrawTransaction';
-import { sendYieldTransaction } from './signingHelpers';
+import { getYieldErrorTranslationKey, sendYieldTransaction } from './signingHelpers';
 
 type SubmitYieldWithdrawPayload = {
     flowKey: string;
@@ -135,7 +134,13 @@ export const submitYieldWithdrawThunk = createThunk(
                     errorMessage: 'submit-failed',
                 },
             });
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            dispatch(
+                stablecoinYieldActions.setError({
+                    flowType,
+                    flowKey,
+                    error: getYieldErrorTranslationKey(error),
+                }),
+            );
         } finally {
             dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
         }

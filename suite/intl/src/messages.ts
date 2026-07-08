@@ -10183,6 +10183,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_ERROR_GENERIC',
         defaultMessage: 'Something went wrong. Try again.',
     },
+    TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT: {
+        id: 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT',
+        defaultMessage: 'Passphrase is incorrect. Try again.',
+    },
     TR_EARN_YIELD_LOAD_ERROR_TITLE: {
         id: 'TR_EARN_YIELD_LOAD_ERROR_TITLE',
         defaultMessage: 'Unable to load yield opportunities',

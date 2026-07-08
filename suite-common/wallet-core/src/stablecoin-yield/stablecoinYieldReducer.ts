@@ -20,7 +20,12 @@ import type {
 } from './stablecoinYieldTypes';
 import { transactionsActions } from '../transactions/transactionsActions';
 
-type StablecoinYieldTranslationKey = string;
+// Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
+// `session.error` directly via `<Translation>`.
+type StablecoinYieldTranslationKey =
+    | 'TR_EARN_YIELD_ERROR_GENERIC'
+    | 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT'
+    | 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
 
 type StablecoinYieldSerializedTx = {
     tx: string;
