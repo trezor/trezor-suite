@@ -20,6 +20,8 @@ export type DropdownProps = Omit<MenuProps, 'onClose'> &
         iconSize?: ButtonSize;
         isLoading?: boolean;
         icon?: IconComponent;
+        intent?: IconButtonProps['intent'];
+        priority?: IconButtonProps['priority'];
         tooltip?: IconButtonProps['tooltip'];
         'data-testid'?: string;
     };
@@ -41,6 +43,8 @@ export const Dropdown = forwardRef(
             isLoading,
             placement,
             icon = DotsThreeIcon,
+            intent = 'neutral',
+            priority = 'secondary',
             'data-testid': dataTest,
             minWidth,
             maxWidth,
@@ -78,8 +82,8 @@ export const Dropdown = forwardRef(
                 }
             >
                 <IconButton
-                    intent="neutral"
-                    priority="secondary"
+                    intent={intent}
+                    priority={priority}
                     icon={icon}
                     size={iconSize}
                     tabIndex={-1}

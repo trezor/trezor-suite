@@ -65,3 +65,45 @@ export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
         ...getFramePropsStory(allowedComponentWithSubIconFrameProps).argTypes,
     },
 };
+
+export const ComponentWithSubContent: StoryObj<ComponentWithSubIconProps> = {
+    args: {
+        subContent: '2',
+        intent: 'brand',
+        children: (
+            <IconButton
+                icon={generatedIcons.FunnelSimpleIcon}
+                size="large"
+                intent="neutral"
+                priority="secondary"
+                tooltip={{ content: 'Filters' }}
+            />
+        ),
+        iconOffset: 4,
+        ...getFramePropsStory(allowedComponentWithSubIconFrameProps).args,
+    },
+    argTypes: {
+        subContent: {
+            control: {
+                type: 'text',
+            },
+        },
+        intent: {
+            options: componentWithSubIconIntents,
+            control: {
+                type: 'select',
+            },
+        },
+        iconOffset: {
+            control: {
+                type: 'number',
+            },
+        },
+        icon: {
+            options: ['none', ...Object.keys(generatedIcons)],
+            mapping: { none: undefined, ...generatedIcons },
+            control: { type: 'select' },
+        },
+        ...getFramePropsStory(allowedComponentWithSubIconFrameProps).argTypes,
+    },
+};
