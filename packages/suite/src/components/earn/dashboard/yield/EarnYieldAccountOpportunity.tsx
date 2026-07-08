@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
@@ -22,9 +20,8 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
@@ -50,46 +47,10 @@ export const EarnYieldAccountOpportunity = ({
     const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
-    const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
-    const [isAwaitingConnectionForFwUpdate, setIsAwaitingConnectionForFwUpdate] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
-
-    useEffect(() => {
-        if (isAwaitingConnectionForFwUpdate && !isConnectionModalOpen) {
-            setIsAwaitingConnectionForFwUpdate(false);
-            if (selectedDevice?.connected) {
-                setIsFirmwareModalOpen(false);
-                dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
-            }
-        }
-    }, [
-        isAwaitingConnectionForFwUpdate,
-        isConnectionModalOpen,
-        selectedDevice?.connected,
-        dispatch,
-    ]);
-
-    const handleFirmwareModalClose = () => {
-        setIsFirmwareModalOpen(false);
-        setIsAwaitingConnectionForFwUpdate(false);
-    };
-
-    const handleFirmwareUpdate = () => {
-        if (!selectedDevice?.connected) {
-            if (selectedDevice?.descriptor?.apiType === 'bluetooth') {
-                dispatch(setConnectionMode('bluetooth'));
-            }
-            setIsAwaitingConnectionForFwUpdate(true);
-            dispatch(setConnectionModal(true));
-
-            return;
-        }
-
-        setIsFirmwareModalOpen(false);
-        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
-    };
+    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
+        useFirmwareUpgradeModal();
 
     const vaultContractAddress = getYieldVaultContractAddress(opportunity.vault);
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
@@ -187,7 +148,7 @@ export const EarnYieldAccountOpportunity = ({
                     vaultId: opportunity.vault.id,
                 },
             });
-            setIsFirmwareModalOpen(true);
+            openFirmwareModal();
 
             return;
         }
@@ -233,7 +194,7 @@ export const EarnYieldAccountOpportunity = ({
                     vaultId: opportunity.vault.id,
                 },
             });
-            setIsFirmwareModalOpen(true);
+            openFirmwareModal();
 
             return;
         }
@@ -276,7 +237,7 @@ export const EarnYieldAccountOpportunity = ({
                     vaultId: opportunity.vault.id,
                 },
             });
-            setIsFirmwareModalOpen(true);
+            openFirmwareModal();
 
             return;
         }
@@ -312,8 +273,8 @@ export const EarnYieldAccountOpportunity = ({
 
     const firmwareModal = isFirmwareModalOpen && (
         <FirmwareUpgradeNeededModal
-            onClose={handleFirmwareModalClose}
-            onUpdate={handleFirmwareUpdate}
+            onClose={closeFirmwareModal}
+            onUpdate={updateFirmware}
             featureName={translationString('TR_EARN_STABLECOIN_YIELD_TITLE')}
         />
     );
