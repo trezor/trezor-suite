@@ -109,7 +109,7 @@ export const AccountItem = ({
                     cursor="pointer"
                     content={
                         <Box padding={4}>
-                            <AccountItemContent {...commonProps} />
+                            <AccountItemContent {...commonProps} showAccountTypeBadge />
                         </Box>
                     }
                     placement="right"

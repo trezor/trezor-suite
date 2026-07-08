@@ -9,13 +9,22 @@ import { type AccountItemType } from 'src/types/wallet';
 type AccountItemLabelProps = {
     account: Account;
     type: AccountItemType;
+    showAccountTypeBadge?: boolean;
 };
 
-export const AccountItemLabel = ({ account, type }: AccountItemLabelProps) => {
+export const AccountItemLabel = ({
+    account,
+    type,
+    showAccountTypeBadge,
+}: AccountItemLabelProps) => {
     switch (type) {
         case 'coin':
             return (
-                <AccountLabel account={account} showAccountTypeBadge accountTypeBadgeSize="small" />
+                <AccountLabel
+                    account={account}
+                    showAccountTypeBadge={showAccountTypeBadge}
+                    accountTypeBadgeSize="small"
+                />
             );
 
         case 'staking':
