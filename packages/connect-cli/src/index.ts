@@ -334,7 +334,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     // debug builds (plain unauthenticated root injection).
                     mac: treeState.mac ?? '0'.repeat(64),
                     ...(treeState.mac !== undefined && {
-                        device_id: walletId,
+                        wallet_id: walletId,
                         counter: treeState.counter,
                     }),
                 };

@@ -57,7 +57,7 @@ export const AuthDbSetRoot = Type.Object(
     {
         root: Type.String(),
         mac: Type.String(),
-        device_id: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
         counter: Type.Optional(Type.Number()),
     },
     { $id: 'AuthDbSetRoot' },

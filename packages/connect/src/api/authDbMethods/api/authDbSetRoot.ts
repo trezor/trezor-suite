@@ -15,7 +15,7 @@ export default createRawAuthDbMethod({
         // Required by the wire protocol; all-zero is accepted only on debug builds
         // (plain unauthenticated root injection).
         mac: payload.mac,
-        ...(payload.device_id !== undefined && { device_id: payload.device_id }),
+        ...(payload.wallet_id !== undefined && { wallet_id: payload.wallet_id }),
         ...(payload.counter !== undefined && { counter: payload.counter }),
     }),
 });
