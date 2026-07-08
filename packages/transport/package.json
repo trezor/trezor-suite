@@ -27,23 +27,23 @@
         "./src/transports/udp": "./src/transports/udp.native.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*"
         },
         "browser": {
-            "./lib/pinger/ping": "./lib/pinger/ping.browser.mjs",
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.mjs",
-            "./lib/transports/udp": "./lib/transports/udp.browser.mjs"
+            "./lib/pinger/ping": "./lib/pinger/ping.browser.js",
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
+            "./lib/transports/udp": "./lib/transports/udp.browser.js"
         },
         "react-native": {
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.native.mjs",
-            "./lib/transports/udp": "./lib/transports/udp.native.mjs"
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.native.js",
+            "./lib/transports/udp": "./lib/transports/udp.native.js"
         }
     },
     "files": [

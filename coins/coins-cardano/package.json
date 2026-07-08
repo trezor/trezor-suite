@@ -12,24 +12,24 @@
         ".": "./src/index.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             "./constants": {
-                "types": "./lib/constants/index.d.mts",
-                "default": "./lib/constants/index.mjs"
+                "types": "./lib/constants/index.d.ts",
+                "default": "./lib/constants/index.js"
             },
             "./runtime": {
-                "types": "./lib/runtime/index.d.mts",
-                "default": "./lib/runtime/index.mjs"
+                "types": "./lib/runtime/index.d.ts",
+                "default": "./lib/runtime/index.js"
             },
             "./types": {
-                "types": "./lib/types/index.d.mts",
-                "default": "./lib/types/index.mjs"
+                "types": "./lib/types/index.d.ts",
+                "default": "./lib/types/index.js"
             },
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             }
         }
     },

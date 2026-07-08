@@ -3,7 +3,6 @@ import path from 'node:path';
 
 // Match relative imports without extension: "./x", "../x", "./x/y"
 const isRelativeImport = src => src.startsWith('.') && !path.extname(src);
-const isRelativeJsImport = src => src.startsWith('.') && path.extname(src) === '.js';
 
 // Match @trezor package imports to lib without extension: "@trezor/utils/lib/bigNumber"
 const trezorLibPattern = /^@trezor\/[^/]+\/lib\/[^.]+$/;
@@ -21,9 +20,9 @@ const externalJsonImports = [];
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
  *
  * For Node.js ESM compatibility:
- * - File imports: ./utils/helper → ./utils/helper.mjs
- * - Directory imports: ./constants → ./constants/index.mjs
- * - @trezor package imports: @trezor/utils/lib/bigNumber → @trezor/utils/lib/bigNumber.mjs
+ * - File imports: ./utils/helper → ./utils/helper.js
+ * - Directory imports: ./constants → ./constants/index.js
+ * - @trezor package imports: @trezor/utils/lib/bigNumber → @trezor/utils/lib/bigNumber.js
  * - External CJS subpaths: some-package/subpath → some-package/subpath.js
  */
 const addEsmExtensionPlugin = ({ types }) => {
@@ -63,9 +62,9 @@ const addEsmExtensionPlugin = ({ types }) => {
             // e.g., @trezor/protocol/lib/protocol-tpn -> @trezor/protocol/lib/protocol-tpn/index.js
             // e.g., @trezor/protocol/lib/bigNumber -> @trezor/protocol/lib/bigNumber.js
             if (isDirectory) {
-                nodePath.node.source = types.stringLiteral(src + '/index.mjs');
+                nodePath.node.source = types.stringLiteral(src + '/index.js');
             } else {
-                nodePath.node.source = types.stringLiteral(src + '.mjs');
+                nodePath.node.source = types.stringLiteral(src + '.js');
             }
 
             return;
@@ -86,21 +85,12 @@ const addEsmExtensionPlugin = ({ types }) => {
                 fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
 
             if (isDirectory) {
-                nodePath.node.source = types.stringLiteral(src + '/index.mjs');
+                nodePath.node.source = types.stringLiteral(src + '/index.js');
             } else {
-                nodePath.node.source = types.stringLiteral(src + '.mjs');
+                nodePath.node.source = types.stringLiteral(src + '.js');
             }
 
             return;
-        }
-
-        if (isRelativeJsImport(src)) {
-            const currentFileDir = path.dirname(state.filename);
-            const resolvedPath = path.resolve(currentFileDir, src);
-
-            if (fs.existsSync(resolvedPath)) {
-                nodePath.node.source = types.stringLiteral(src.replace(/\.js$/, '.mjs'));
-            }
         }
     };
 

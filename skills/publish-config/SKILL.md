@@ -15,8 +15,8 @@ Applies to any package with `publishConfig`.
 2. **`files`** — must include `"lib/"`.
 3. **`publishConfig.main`** and **`publishConfig.types`** — both required.
 4. **`publishConfig.exports["."].default`** and **`publishConfig.exports["."].types`** — must export the same files as in Rule 3.
-5. **Wildcard exports** — (`./lib/*`) must be a passthrough string (`"./lib/*"`) — an object would double the `.mjs` extension.
-6. **Explicit (non-wildcard) exports** — not shape-checked (intentional overrides). Typically used to route a directory import to its `index.mjs`, e.g. `"./lib/protocol-thp": { "types": "./lib/protocol-thp/index.d.mts", "default": "./lib/protocol-thp/index.mjs" }` — without this, the wildcard would resolve to `protocol-thp.mjs` instead of `protocol-thp/index.mjs`.
+5. **Wildcard exports** — (`./lib/*`) must be a passthrough string (`"./lib/*"`) — an object would double the `.js` extension.
+6. **Explicit (non-wildcard) exports** — not shape-checked (intentional overrides). Typically used to route a directory import to its `index.js`, e.g. `"./lib/protocol-thp": { "types": "./lib/protocol-thp/index.d.ts", "default": "./lib/protocol-thp/index.js" }` — without this, the wildcard would resolve to `protocol-thp.js` instead of `protocol-thp/index.js`.
 7. **Key order** — `"types"` must come before `"default"` in every condition object (recursive). TypeScript evaluates conditions in declaration order.
 8. **`type`** — must declare top-level `"type": "module"`. Do not duplicate it under `publishConfig.type` — `publishConfig` would only shadow the top level with the same value at publish time, so we keep a single source of truth.
 
@@ -29,13 +29,13 @@ Applies to any package with `publishConfig`.
     "type": "module", // Rule 8
     "files": ["lib/", "CHANGELOG.md"], // Rule 2
     "publishConfig": {
-        "main": "./lib/index.mjs", // Rule 3
-        "types": "./lib/index.d.mts", // Rule 3
+        "main": "./lib/index.js", // Rule 3
+        "types": "./lib/index.d.ts", // Rule 3
         "exports": {
             ".": {
                 // Rule 4: exact shape required
-                "types": "./lib/index.d.mts", // Rule 7: "types" before "default"
-                "default": "./lib/index.mjs",
+                "types": "./lib/index.d.ts", // Rule 7: "types" before "default"
+                "default": "./lib/index.js",
             },
             // Rule 5: ESM wildcard — passthrough string
             "./lib/*": "./lib/*",

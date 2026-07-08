@@ -13,17 +13,17 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*",
             "./lib/definitions": {
-                "types": "./lib/definitions/index.d.mts",
-                "default": "./lib/definitions/index.mjs"
+                "types": "./lib/definitions/index.d.ts",
+                "default": "./lib/definitions/index.js"
             },
             "./lib/definitions/*": "./lib/definitions/*"
         }

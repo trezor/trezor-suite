@@ -33,30 +33,30 @@
         "./src/workers/workers": "./src/workers/workers.native.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*"
         },
         "browser": {
-            "./lib/index.mjs": "./lib/index.browser.mjs",
-            "./lib/utils/assets.mjs": "./lib/utils/assets.browser.mjs",
-            "./lib/workers/workers.mjs": "./lib/workers/workers.browser.mjs",
+            "./lib/index.js": "./lib/index.browser.js",
+            "./lib/utils/assets.js": "./lib/utils/assets.browser.js",
+            "./lib/workers/workers.js": "./lib/workers/workers.browser.js",
             "./lib/data/*": "./lib/data/*",
-            "./lib/exports.mjs": "./lib/exports.mjs",
+            "./lib/exports.js": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*",
             "./lib/utils/*": "./lib/utils/*"
         },
         "react-native": {
-            "./lib/index.mjs": "./lib/index.mjs",
-            "./lib/utils/assets.mjs": "./lib/utils/assets.native.mjs",
-            "./lib/workers/workers.mjs": "./lib/workers/workers.native.mjs",
+            "./lib/index.js": "./lib/index.js",
+            "./lib/utils/assets.js": "./lib/utils/assets.native.js",
+            "./lib/workers/workers.js": "./lib/workers/workers.native.js",
             "./lib/data/*": "./lib/data/*",
-            "./lib/exports.mjs": "./lib/exports.mjs",
+            "./lib/exports.js": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*",
             "./lib/utils/*": "./lib/utils/*"
         }

@@ -18,21 +18,21 @@
     "sideEffects": false,
     "type": "module",
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*",
             "./lib/thp": {
-                "types": "./lib/thp/index.d.mts",
-                "default": "./lib/thp/index.mjs"
+                "types": "./lib/thp/index.d.ts",
+                "default": "./lib/thp/index.js"
             },
             "./lib/types": {
-                "types": "./lib/types/index.d.mts",
-                "default": "./lib/types/index.mjs"
+                "types": "./lib/types/index.d.ts",
+                "default": "./lib/types/index.js"
             }
         }
     },

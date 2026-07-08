@@ -12,10 +12,10 @@ const validPublicPackageJson = {
     main: 'src/index.ts',
     type: 'module',
     publishConfig: {
-        main: './lib/index.mjs',
-        types: './lib/index.d.mts',
+        main: './lib/index.js',
+        types: './lib/index.d.ts',
         exports: {
-            '.': { types: './lib/index.d.mts', default: './lib/index.mjs' },
+            '.': { types: './lib/index.d.ts', default: './lib/index.js' },
             './lib/*': './lib/*',
         },
     },
@@ -56,7 +56,7 @@ describe(requirePublishConfig.name, () => {
         it('applies to packages with publishConfig but no exports', () => {
             writeFileSync(
                 join(workspaceDir, 'package.json'),
-                JSON.stringify({ publishConfig: { main: './lib/index.mjs' } }),
+                JSON.stringify({ publishConfig: { main: './lib/index.js' } }),
             );
 
             expect(requirePublishConfig.applies?.(context)).toBe(true);
@@ -117,7 +117,7 @@ describe(requirePublishConfig.name, () => {
                 ...validPublicPackageJson,
                 publishConfig: {
                     ...validPublicPackageJson.publishConfig,
-                    main: './lib/index.js',
+                    main: './lib/index.mjs',
                 },
             };
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
@@ -125,7 +125,7 @@ describe(requirePublishConfig.name, () => {
             const errors = await requirePublishConfig.verify(context);
 
             expect(errors).toContain(
-                '@trezor/example: Invalid "publishConfig.main": expected "./lib/index.mjs", got "./lib/index.js"',
+                '@trezor/example: Invalid "publishConfig.main": expected "./lib/index.js", got "./lib/index.mjs"',
             );
         });
 
@@ -149,7 +149,7 @@ describe(requirePublishConfig.name, () => {
                 ...validPublicPackageJson,
                 publishConfig: {
                     ...validPublicPackageJson.publishConfig,
-                    types: './lib/index.d.ts',
+                    types: './lib/index.d.mts',
                 },
             };
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
@@ -157,7 +157,7 @@ describe(requirePublishConfig.name, () => {
             const errors = await requirePublishConfig.verify(context);
 
             expect(errors).toContain(
-                '@trezor/example: Invalid "publishConfig.types": expected "./lib/index.d.mts", got "./lib/index.d.ts"',
+                '@trezor/example: Invalid "publishConfig.types": expected "./lib/index.d.ts", got "./lib/index.d.mts"',
             );
         });
 
@@ -230,8 +230,8 @@ describe(requirePublishConfig.name, () => {
             const pkg = {
                 ...validPublicPackageJson,
                 publishConfig: {
-                    main: './lib/index.mjs',
-                    types: './lib/index.d.mts',
+                    main: './lib/index.js',
+                    types: './lib/index.d.ts',
                 },
             };
             writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify(pkg));
@@ -264,7 +264,7 @@ describe(requirePublishConfig.name, () => {
                 publishConfig: {
                     ...validPublicPackageJson.publishConfig,
                     exports: {
-                        '.': { types: './lib/index.d.ts', default: './lib/index.js' },
+                        '.': { types: './lib/index.d.mts', default: './lib/index.mjs' },
                         './lib/*': './lib/*',
                     },
                 },
@@ -302,8 +302,8 @@ describe(requirePublishConfig.name, () => {
                     exports: {
                         ...validPublicPackageJson.publishConfig.exports,
                         './lib/events': {
-                            types: './lib/events/index.d.mts',
-                            default: './lib/events/index.mjs',
+                            types: './lib/events/index.d.ts',
+                            default: './lib/events/index.js',
                         },
                     },
                 },
@@ -337,8 +337,8 @@ describe(requirePublishConfig.name, () => {
                     ...validPublicPackageJson.publishConfig,
                     exports: {
                         '.': {
-                            default: './lib/index.mjs',
-                            types: './lib/index.d.mts',
+                            default: './lib/index.js',
+                            types: './lib/index.d.ts',
                         },
                         './lib/*': './lib/*',
                     },
@@ -359,8 +359,8 @@ describe(requirePublishConfig.name, () => {
                     exports: {
                         ...validPublicPackageJson.publishConfig.exports,
                         './lib/events': {
-                            default: './lib/events/index.mjs',
-                            types: './lib/events/index.d.mts',
+                            default: './lib/events/index.js',
+                            types: './lib/events/index.d.ts',
                         },
                     },
                 },

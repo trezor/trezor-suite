@@ -9,15 +9,7 @@
 
 import { resolve, dirname, relative, join } from 'path';
 import { fileURLToPath } from 'url';
-import {
-    existsSync,
-    readFileSync,
-    writeFileSync,
-    readdirSync,
-    statSync,
-    rmSync,
-    renameSync,
-} from 'fs';
+import { existsSync, readFileSync, writeFileSync, readdirSync, statSync, rmSync } from 'fs';
 
 import { rollup } from 'rollup';
 import dts from 'rollup-plugin-dts';
@@ -135,7 +127,7 @@ function vendorBaseName(pkg) {
     return `_vendor_${pkg.replace('@trezor/', '').replace(/-/g, '_')}`;
 }
 
-async function buildVendorForPackage(pkg, prodClosure, leakSet, libAbs, ext) {
+async function buildVendorForPackage(pkg, prodClosure, leakSet, libAbs) {
     const baseName = vendorBaseName(pkg);
     const entryPath = resolve(libAbs, `${baseName}-entry.d.ts`);
     writeFileSync(entryPath, `export * from '${pkg}';\n`);
@@ -158,12 +150,8 @@ async function buildVendorForPackage(pkg, prodClosure, leakSet, libAbs, ext) {
                 warn(warning);
             },
         });
-        const tmpOut = resolve(libAbs, `${baseName}.d.ts`);
-        await bundle.write({ file: tmpOut, format: 'es' });
+        await bundle.write({ file: resolve(libAbs, `${baseName}.d.ts`), format: 'es' });
         await bundle.close();
-        if (ext !== '.d.ts') {
-            renameSync(tmpOut, resolve(libAbs, `${baseName}${ext}`));
-        }
     } finally {
         rmSync(entryPath, { force: true });
     }
@@ -185,9 +173,9 @@ function rewriteFile(file, leakSet, libAbs) {
     if (rewritten !== original) writeFileSync(file, rewritten);
 }
 
-// In ESM mode (.d.mts), TypeScript with NodeNext/Node16 module resolution requires
+// In ESM mode (.d.ts), TypeScript with NodeNext/Node16 module resolution requires
 // explicit file extensions in relative imports. tsc emits extensionless imports
-// (`from './foo'`); we resolve each to the right `.mjs` extension (file or directory).
+// (`from './foo'`); we resolve each to the right `.js` extension (file or directory).
 function addEsmExtensions(file) {
     const original = readFileSync(file, 'utf8');
     const fileDir = dirname(file);
@@ -195,14 +183,14 @@ function addEsmExtensions(file) {
     const rewritten = original.replace(
         /((?:from|import)\s*\(?\s*['"])(\.\.?(?:\/[^'"]*)?)(['"])/g,
         (full, pre, spec, post) => {
-            if (/\.(mjs|cjs|js|json)$/.test(spec)) return full;
+            if (/\.(js|json)$/.test(spec)) return full;
             const absPath = resolve(fileDir, spec);
-            if (existsSync(`${absPath}.d.mts`)) {
-                return `${pre}${spec}.mjs${post}`;
+            if (existsSync(`${absPath}.d.ts`)) {
+                return `${pre}${spec}.js${post}`;
             }
-            if (existsSync(`${absPath}/index.d.mts`)) {
+            if (existsSync(`${absPath}/index.d.ts`)) {
                 const sep = spec.endsWith('/') ? '' : '/';
-                return `${pre}${spec}${sep}index.mjs${post}`;
+                return `${pre}${spec}${sep}index.js${post}`;
             }
             return full;
         },
@@ -218,9 +206,7 @@ async function main() {
         process.exit(1);
     }
 
-    // Detect output extension by sampling lib/index.d.{ts,mts}.
-    const ext = existsSync(resolve(libAbs, 'index.d.mts')) ? '.d.mts' : '.d.ts';
-    const dtsFiles = walkDts(libAbs, ext);
+    const dtsFiles = walkDts(libAbs, '.d.ts');
 
     const prodClosure = readProdClosure(process.cwd());
     const initialLeaks = scanLeaks(dtsFiles, prodClosure);
@@ -235,19 +221,17 @@ async function main() {
     for (const pkg of leakSet) console.log(`  - ${pkg}`);
 
     for (const pkg of leakSet) {
-        await buildVendorForPackage(pkg, prodClosure, leakSet, libAbs, ext);
+        await buildVendorForPackage(pkg, prodClosure, leakSet, libAbs);
     }
 
     // Rewrite imports in the package's own .d.ts files AND in the just-built vendor
     // files (they may import each other when leak packages cross-reference).
-    const allFiles = walkDts(libAbs, ext);
+    const allFiles = walkDts(libAbs, '.d.ts');
     for (const file of allFiles) rewriteFile(file, leakSet, libAbs);
 
-    // Add explicit `.mjs` extensions to relative imports in ESM declaration files.
+    // Add explicit `.js` extensions to relative imports in ESM declaration files.
     // tsc emits extensionless imports; ESM (NodeNext/Node16) resolution requires them.
-    if (ext === '.d.mts') {
-        for (const file of allFiles) addEsmExtensions(file);
-    }
+    for (const file of allFiles) addEsmExtensions(file);
 }
 
 main().catch(err => {
