@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { type ReactNode } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFlags, setFlag } from '@suite/flags';
@@ -9,31 +9,55 @@ import {
     toggleHideSuspiciousTransactions,
 } from '@suite-common/wallet-core';
 import {
+    Badge,
     Box,
     Button,
     Column,
+    ComponentWithSubIcon,
+    Divider,
     Dropdown,
-    type DropdownRef,
     Paragraph,
     Radio,
     Row,
     Text,
+    TextButton,
     Tooltip,
 } from '@trezor/components';
 import { FunnelSimpleIcon } from '@trezor/icons';
-import { spacings, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
-const options = [
+type FilterValue = boolean | string;
+
+type FilterOption = {
+    value: FilterValue;
+    label: ReactNode;
+    description?: ReactNode;
+    isDefault?: boolean;
+};
+
+type FilterSection = {
+    key: string;
+    title: ReactNode;
+    options: readonly FilterOption[];
+    value: FilterValue;
+    onChange: (value: FilterValue) => void;
+};
+
+const suspiciousTransactionsOptions: readonly FilterOption[] = [
     {
-        id: 0,
-        label: <Translation id="TR_SHOW_SUSPICIOUS_TRANSACTIONS" />,
+        value: false,
+        label: <Translation id="TR_SHOW_ALL" />,
+        isDefault: true,
     },
     {
-        id: 1,
-        label: <Translation id="TR_HIDE_SUSPICIOUS_TRANSACTIONS" />,
+        value: true,
+        label: <Translation id="TR_HIDE_SUSPICIOUS" />,
         description: <Translation id="TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION" />,
     },
-] as const;
+];
+
+const getSectionDefaultValue = (section: FilterSection) =>
+    section.options.find(option => option.isDefault)?.value;
 
 export const FilterAction = () => {
     const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
@@ -48,12 +72,32 @@ export const FilterAction = () => {
     };
     const dataTest = '@wallet/accounts/hide-scam-transactions';
 
-    const dropdownRef = useRef<DropdownRef>(undefined);
-
-    const handleToggleSuspiciousTransactionsRequest = (requestedHidden: boolean) => {
-        if (requestedHidden === suspiciousTransactionsHidden) return;
-        dropdownRef.current?.close();
+    const handleToggleSuspiciousTransactionsRequest = (requestedHidden: FilterValue) => {
+        if (requestedHidden === Boolean(suspiciousTransactionsHidden)) return;
         dispatch(toggleHideSuspiciousTransactions());
+    };
+
+    const filterSections: FilterSection[] = [
+        {
+            key: 'suspiciousTransactions',
+            title: <Translation id="TR_SUSPICIOUS_TRANSACTIONS" />,
+            options: suspiciousTransactionsOptions,
+            value: Boolean(suspiciousTransactionsHidden),
+            onChange: handleToggleSuspiciousTransactionsRequest,
+        },
+    ];
+
+    const activeFilterCount = filterSections.filter(
+        section => section.value !== getSectionDefaultValue(section),
+    ).length;
+
+    const handleClearAll = () => {
+        filterSections.forEach(section => {
+            const defaultValue = getSectionDefaultValue(section);
+            if (defaultValue !== undefined && section.value !== defaultValue) {
+                section.onChange(defaultValue);
+            }
+        });
     };
 
     return (
@@ -63,7 +107,7 @@ export const FilterAction = () => {
             placement="bottom-end"
             zIndex={zIndices.popover}
             content={
-                <Row gap={spacings.sm} padding={spacings.xs}>
+                <Row gap={12} padding={8}>
                     <Box maxWidth={290}>
                         <Paragraph>
                             <Translation id="TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP" />
@@ -81,55 +125,89 @@ export const FilterAction = () => {
                 </Row>
             }
         >
-            <Dropdown
-                icon={FunnelSimpleIcon}
-                ref={dropdownRef}
-                placement={{ position: 'bottom', alignment: 'end' }}
-                isDisabled={false}
-                tooltip={{ content: <Translation id="TR_FILTER" />, placement: 'left' }}
-                content={
-                    <Column maxWidth={250} padding={spacings.xxs} gap={spacings.md}>
-                        {options.map(option => (
-                            <Radio
-                                key={option.id}
-                                isChecked={
-                                    Boolean(suspiciousTransactionsHidden) === Boolean(option.id)
-                                }
-                                onChange={() => {
-                                    handleToggleSuspiciousTransactionsRequest(Boolean(option.id));
-                                }}
-                                data-testid={dataTest}
-                                verticalAlignment="center"
-                            >
-                                <Column>
+            <ComponentWithSubIcon
+                intent="brand"
+                subContent={activeFilterCount > 0 ? activeFilterCount : undefined}
+            >
+                <Dropdown
+                    icon={FunnelSimpleIcon}
+                    intent={activeFilterCount > 0 ? 'brand' : 'neutral'}
+                    placement={{ position: 'bottom', alignment: 'end' }}
+                    isDisabled={false}
+                    tooltip={{ content: <Translation id="TR_FILTERS" />, placement: 'left' }}
+                    content={
+                        <Column width={250} padding={4} gap={16}>
+                            <Row justifyContent="space-between" gap={16}>
+                                <Text typographyStyle="body-md-strong">
+                                    <Translation id="TR_FILTERS" />
+                                </Text>
+                                <TextButton
+                                    size="small"
+                                    isDisabled={activeFilterCount === 0}
+                                    onClick={handleClearAll}
+                                    data-testid={`${dataTest}/clear-all`}
+                                >
+                                    <Translation id="TR_CLEAR_ALL" />
+                                </TextButton>
+                            </Row>
+                            <Divider margin={{ vertical: 0 }} />
+                            {filterSections.map(section => (
+                                <Column key={section.key} gap={16}>
                                     <Text
-                                        typographyStyle="body-sm-strong"
-                                        intent={
-                                            Boolean(suspiciousTransactionsHidden) ===
-                                            Boolean(option.id)
-                                                ? 'brand'
-                                                : 'neutral'
-                                        }
+                                        typographyStyle="body-xs"
+                                        intent="neutral"
+                                        priority="secondary"
                                     >
-                                        {option.label}
+                                        {section.title}
                                     </Text>
-                                    {'description' in option && option.description && (
-                                        <Paragraph
-                                            typographyStyle="body-xs"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            textWrap="pretty"
-                                        >
-                                            {option.description}
-                                        </Paragraph>
-                                    )}
+                                    {section.options.map(option => {
+                                        const isChecked = section.value === option.value;
+
+                                        return (
+                                            <Radio
+                                                key={String(option.value)}
+                                                isChecked={isChecked}
+                                                onChange={() => {
+                                                    section.onChange(option.value);
+                                                }}
+                                                data-testid={dataTest}
+                                                verticalAlignment="center"
+                                            >
+                                                <Column>
+                                                    <Row gap={8}>
+                                                        <Text
+                                                            typographyStyle="body-sm-strong"
+                                                            intent={isChecked ? 'brand' : 'neutral'}
+                                                        >
+                                                            {option.label}
+                                                        </Text>
+                                                        {option.isDefault && (
+                                                            <Badge size="small">
+                                                                <Translation id="TR_DEFAULT" />
+                                                            </Badge>
+                                                        )}
+                                                    </Row>
+                                                    {option.description && (
+                                                        <Paragraph
+                                                            typographyStyle="body-xs"
+                                                            intent="neutral"
+                                                            priority="secondary"
+                                                            textWrap="pretty"
+                                                        >
+                                                            {option.description}
+                                                        </Paragraph>
+                                                    )}
+                                                </Column>
+                                            </Radio>
+                                        );
+                                    })}
                                 </Column>
-                            </Radio>
-                        ))}
-                    </Column>
-                }
-                data-testid={`${dataTest}/dropdown`}
-            />
+                            ))}
+                        </Column>
+                    }
+                    data-testid={`${dataTest}/dropdown`}
+                />
+            </ComponentWithSubIcon>
         </Tooltip>
     );
 };

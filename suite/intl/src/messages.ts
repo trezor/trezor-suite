@@ -111,21 +111,29 @@ export const messages = defineMessages({
         description: 'Used as a variable for device name',
         id: 'TR_ANY_TREZOR',
     },
-    TR_FILTER: {
-        defaultMessage: 'Filter',
-        id: 'TR_FILTER',
+    TR_FILTERS: {
+        defaultMessage: 'Filters',
+        id: 'TR_FILTERS',
+    },
+    TR_SUSPICIOUS_TRANSACTIONS: {
+        defaultMessage: 'Suspicious transactions',
+        id: 'TR_SUSPICIOUS_TRANSACTIONS',
+    },
+    TR_SHOW_ALL: {
+        defaultMessage: 'Show all',
+        id: 'TR_SHOW_ALL',
+    },
+    TR_HIDE_SUSPICIOUS: {
+        defaultMessage: 'Hide suspicious',
+        id: 'TR_HIDE_SUSPICIOUS',
+    },
+    TR_DEFAULT: {
+        defaultMessage: 'Default',
+        id: 'TR_DEFAULT',
     },
     TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP: {
         defaultMessage: 'Hide suspicious transactions for a cleaner view.',
         id: 'TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP',
-    },
-    TR_SHOW_SUSPICIOUS_TRANSACTIONS: {
-        defaultMessage: 'Show suspicious transactions',
-        id: 'TR_SHOW_SUSPICIOUS_TRANSACTIONS',
-    },
-    TR_HIDE_SUSPICIOUS_TRANSACTIONS: {
-        defaultMessage: 'Hide suspicious transactions',
-        id: 'TR_HIDE_SUSPICIOUS_TRANSACTIONS',
     },
     TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION: {
         defaultMessage: 'Crypto moves fast. Our filters may not always be 100% up to date.',
