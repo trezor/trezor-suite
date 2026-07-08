@@ -246,7 +246,7 @@
   "TR_ACCOUNT_TYPE_IMPORTED": "Importált",
   "TR_ACCOUNT_TYPE_LEDGER": "Ledger",
   "TR_ACCOUNT_TYPE_LEDGER_DESC": "A Ledger fiókok kompatibilisek a Ledger Live származtatási útvonalaival, lehetővé téve a zökkenőmentes átállást a Ledgerről a Trezorra.",
-  "TR_ACCOUNT_TYPE_LEGACY": "Legacy (hagyományos)",
+  "TR_ACCOUNT_TYPE_LEGACY": "Legacy",
   "TR_ACCOUNT_TYPE_LEGACY_DESC": "A Legacy fiókok kompatibilisek a Ledger Legacy származtatási útvonalaival, lehetővé téve a zökkenőmentes átállást a Ledgerről a Trezorra.",
   "TR_ACCOUNT_TYPE_NORMAL_EVM_DESC": "A(z) {value} címek generálásának és kezelésének aktuális és legszélesebb körben elfogadott módszere biztosítja az interoperabilitást, a biztonságot és az összes típusú token támogatását.",
   "TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC": "A Solana címek generálásának és kezelésének aktuális és legszélesebb körben elfogadott módszere biztosítja az interoperabilitást, a biztonságot és a SOL és SPL típusú token én támogatását.",

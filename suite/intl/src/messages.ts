@@ -1877,7 +1877,7 @@ export const messages = defineMessages({
         id: 'TR_SEARCH_NETWORK',
     },
     TR_NO_NETWORKS_FOUND: {
-        defaultMessage: 'No results',
+        defaultMessage: 'No networks found',
         id: 'TR_NO_NETWORKS_FOUND',
     },
     TR_NO_NETWORKS_FOUND_DESCRIPTION: {
@@ -5605,7 +5605,7 @@ export const messages = defineMessages({
     TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT: {
         id: 'TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT',
         defaultMessage:
-            'With Trezor Suite, securely delegate your voting rights to {representativeName}. Enjoy competitive rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times.',
+            'Use Trezor Suite to securely delegate your voting rights to {representativeName}. Enjoy competitive rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times.',
     },
     TR_TRON_BANDWIDTH: {
         id: 'TR_TRON_BANDWIDTH',
@@ -7849,7 +7849,7 @@ export const messages = defineMessages({
     },
     TR_GUIDE_SUPPORT_AND_FEEDBACK: {
         id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
-        defaultMessage: 'Support & Feedback',
+        defaultMessage: 'Help & Support',
     },
     TR_GUIDE_KEYBOARD_SHORTCUTS: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS',
@@ -10056,7 +10056,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_APY_TOOLTIP_FOOTER: {
         id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
-        defaultMessage: 'APY can change over time',
+        defaultMessage: 'APY rate can change over time',
     },
     TR_EARN_YIELD_APY_APR_TOOLTIP_FOOTER: {
         id: 'TR_EARN_YIELD_APY_APR_TOOLTIP_FOOTER',
@@ -11822,7 +11822,7 @@ export const messages = defineMessages({
     TR_BUMP_FEE_DISABLED_TOOLTIP: {
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
         defaultMessage:
-            'Nonce: {nonce}. To speed up your transactions, increase the fee on the oldest pending transaction in the queue (by nonce), as transactions must be confirmed in order. If you want to speed up this transaction specifically, open its detail and use the "Speed up" option. <a>Learn more</a>',
+            'To speed up your transactions, increase the fee on the oldest pending transaction in the queue (by nonce), as transactions must be confirmed in order. If you want to speed up this transaction specifically, open its detail and use the "Speed up" option. <a>Learn more</a>',
     },
     TR_BUMP_FEE_NONCE_GAP_WARNING: {
         id: 'TR_BUMP_FEE_NONCE_GAP_WARNING',
