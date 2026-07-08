@@ -31,54 +31,97 @@ const getYieldSourceDescriptionId = (
     }
 };
 
+// The compounded native yield is quoted as APY; incentive rewards are simple, non-compounded APR.
+const getRateTranslationId = (yieldSource: RewardDtoV2['yieldSource']): TranslationKey | null => {
+    switch (yieldSource) {
+        case 'lending':
+            return 'TR_EARN_YIELD_RATE_APY';
+        case 'protocol_incentive':
+        case 'campaign_incentive':
+            return 'TR_EARN_YIELD_RATE_APR';
+        default:
+            return null;
+    }
+};
+
+const isAprReward = (reward: RewardDtoV2): boolean => {
+    const ratePercent = getApyPercent(reward.rate);
+
+    return (
+        getRateTranslationId(reward.yieldSource) === 'TR_EARN_YIELD_RATE_APR' &&
+        ratePercent !== null &&
+        ratePercent > 0
+    );
+};
+
 export const EarnYieldApyBreakdown = ({
     rewards,
     networkSymbol,
     underlyingToken,
-}: EarnYieldApyBreakdownProps) => (
-    <Column gap={16} padding={{ vertical: 10, horizontal: 8 }}>
-        {sortRewardsByUnderlyingToken(rewards, underlyingToken).map((reward, index) => {
-            const ratePercent = getApyPercent(reward.rate);
-            const hasRatePercent = ratePercent !== null && ratePercent > 0;
-            const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
+}: EarnYieldApyBreakdownProps) => {
+    const sortedRewards = sortRewardsByUnderlyingToken(rewards, underlyingToken);
+    // Only mention APR in the footer when a row actually shows an APR rate.
+    const footerId = sortedRewards.some(isAprReward)
+        ? 'TR_EARN_YIELD_APY_APR_TOOLTIP_FOOTER'
+        : 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER';
 
-            return (
-                <Row key={index} gap={8} alignItems="center">
-                    <AssetLogo
-                        placeholder={reward.token.symbol || reward.token.name || 'token'}
-                        symbol={networkSymbol}
-                        contractAddress={reward.token.address}
-                        showNetworkIcon
-                        size={20}
-                        isBordered={false}
-                    />
-                    <Column flex="1">
-                        <Text typographyStyle="body-sm">{reward.token.symbol}</Text>
-                        {descriptionId && (
-                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                                <Translation id={descriptionId} />
-                            </Text>
-                        )}
-                    </Column>
-                    <Text
-                        typographyStyle="body-sm"
-                        intent={hasRatePercent ? 'brand' : 'neutral'}
-                        priority={hasRatePercent ? 'primary' : 'secondary'}
-                    >
-                        {hasRatePercent ? (
-                            <>+{ratePercent}%</>
-                        ) : (
-                            <Translation id="TR_EARN_APY_N_A" />
-                        )}
-                    </Text>
-                </Row>
-            );
-        })}
-        <Row gap={4} alignItems="center" margin={{ top: 4 }}>
-            <Icon name="chartLine" size={14} intent="neutral" priority="secondary" />
-            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id="TR_EARN_YIELD_APY_TOOLTIP_FOOTER" />
-            </Text>
-        </Row>
-    </Column>
-);
+    return (
+        <Column gap={16} padding={{ vertical: 10, horizontal: 8 }}>
+            {sortedRewards.map((reward, index) => {
+                const ratePercent = getApyPercent(reward.rate);
+                const hasRatePercent = ratePercent !== null && ratePercent > 0;
+                const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
+                const rateTranslationId = getRateTranslationId(reward.yieldSource);
+
+                let rateNode;
+                if (!hasRatePercent) {
+                    rateNode = <Translation id="TR_EARN_APY_N_A" />;
+                } else if (rateTranslationId) {
+                    rateNode = (
+                        <Translation id={rateTranslationId} values={{ rate: ratePercent }} />
+                    );
+                } else {
+                    rateNode = <>+{ratePercent}%</>;
+                }
+
+                return (
+                    <Row key={index} gap={8} alignItems="center">
+                        <AssetLogo
+                            placeholder={reward.token.symbol || reward.token.name || 'token'}
+                            symbol={networkSymbol}
+                            contractAddress={reward.token.address}
+                            showNetworkIcon
+                            size={20}
+                            isBordered={false}
+                        />
+                        <Column flex="1">
+                            <Text typographyStyle="body-sm">{reward.token.symbol}</Text>
+                            {descriptionId && (
+                                <Text
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <Translation id={descriptionId} />
+                                </Text>
+                            )}
+                        </Column>
+                        <Text
+                            typographyStyle="body-sm"
+                            intent={hasRatePercent ? 'brand' : 'neutral'}
+                            priority={hasRatePercent ? 'primary' : 'secondary'}
+                        >
+                            {rateNode}
+                        </Text>
+                    </Row>
+                );
+            })}
+            <Row gap={4} alignItems="center" margin={{ top: 4 }}>
+                <Icon name="chartLine" size={14} intent="neutral" priority="secondary" />
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    <Translation id={footerId} />
+                </Text>
+            </Row>
+        </Column>
+    );
+};
