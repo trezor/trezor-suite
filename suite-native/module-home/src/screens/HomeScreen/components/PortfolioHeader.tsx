@@ -8,12 +8,16 @@ import {
     GraphBaseCurrencyBalance,
     portfolioGraphAtoms,
     selectHasDeviceHistoryEnabledAccounts,
+    selectHasPortfolioGraphAccounts,
 } from '@suite-native/graph';
 
-export const PortfolioHeader = () => {
+type PortfolioHeaderContentProps = {
+    isLoading: boolean;
+};
+
+const PortfolioHeaderContent = ({ isLoading }: PortfolioHeaderContentProps) => {
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const totalFiatBalance = useSelector(selectSelectedDeviceTotalFiatBalance);
-    const isLoading = useAtomValue(portfolioGraphAtoms.isLoadingAtom);
 
     return (
         <Box testID="@home/portfolio/header">
@@ -31,6 +35,15 @@ export const PortfolioHeader = () => {
             </VStack>
         </Box>
     );
+};
+
+export const PortfolioHeader = () => {
+    const hasPortfolioGraphAccounts = useSelector(selectHasPortfolioGraphAccounts);
+    const isLoading = useAtomValue(portfolioGraphAtoms.isLoadingAtom);
+
+    if (!hasPortfolioGraphAccounts && !isLoading) return null;
+
+    return <PortfolioHeaderContent isLoading={isLoading} />;
 };
 
 PortfolioHeader.displayName = 'PortfolioHeader';
