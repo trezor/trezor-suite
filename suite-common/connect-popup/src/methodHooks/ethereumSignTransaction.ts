@@ -43,7 +43,11 @@ const _storePrecomposedTransaction = ({
             options: ['ethereumNonce', 'transactionData'],
             selectedFee: 'custom',
             transactionData: typedPayload.transaction.data?.replace(/^0x/, ''),
-            ethereumNonce: typedPayload.transaction.nonce,
+            // The signing payload carries the nonce in hex; show it as a decimal string in the
+            // review modal to match the Send flow (otherwise it renders e.g. "0x5").
+            ethereumNonce: typedPayload.transaction.nonce
+                ? parseInt(typedPayload.transaction.nonce, 16).toString()
+                : typedPayload.transaction.nonce,
         },
         precomposedTransaction: {
             ...txSigningPrecomposed,

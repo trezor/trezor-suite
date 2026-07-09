@@ -1,5 +1,10 @@
 import { Translation } from '@suite/intl';
-import { selectResolvedEthereumNonce } from '@suite-common/wallet-core';
+import {
+    selectResolvedEthereumNonce,
+    selectStablecoinYieldTxReview,
+    selectStake,
+    selectTronStakeTxReview,
+} from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
@@ -15,21 +20,30 @@ type TransactionReviewEthereumNotesProps = {
     tx: GeneralPrecomposedTransactionFinal;
 };
 
-const selectPrecomposedFormEthereumNonce = (state: AppState) =>
-    state.wallet.send.precomposedForm?.ethereumNonce;
+// The nonce shown must come from the flow whose transaction is actually under review. This mirrors
+// getReviewSource() in TransactionReviewModal.tsx and keys off each flow's own precomposedTx, so a
+// nonce resolved for one flow can never leak into another's review (each flow only sets its own
+// state). Every flow resolves the exact signed-with nonce before the device button-request fires,
+// so it's normally set by the time this modal renders; the Note simply doesn't render until then.
+const selectReviewEthereumNonce = (state: AppState) => {
+    if (selectTronStakeTxReview(state).precomposedTx) return undefined; // TRON has no EVM nonce
+    const yieldTxReview = selectStablecoinYieldTxReview(state);
+    if (yieldTxReview.precomposedTx) return yieldTxReview.precomposedForm?.ethereumNonce;
+    if (state.wallet.send?.precomposedTx) {
+        // Send stores the resolved nonce; WalletConnect fills precomposedForm instead.
+        return (
+            selectResolvedEthereumNonce(state) ?? state.wallet.send.precomposedForm?.ethereumNonce
+        );
+    }
+
+    return selectStake(state).resolvedEthereumNonce; // staking (getReviewSource default branch)
+};
 
 export const TransactionReviewEthereumNotes = ({
     account,
     tx,
 }: TransactionReviewEthereumNotesProps) => {
-    const precomposedFormEthereumNonce = useSelector(selectPrecomposedFormEthereumNonce);
-    // signEthereumSendFormTransactionThunk stores the exact signed-with nonce before the device
-    // button-request fires, so it's normally already set by the time this modal renders. Until
-    // then, fall back to the nonce captured at compose time (a custom override, if any) instead of
-    // re-resolving it independently — this modal only displays the nonce, it never signs with it,
-    // and the Note below simply doesn't render until one of the two is available.
-    const storedEthereumNonce = useSelector(selectResolvedEthereumNonce);
-    const ethereumNonce = storedEthereumNonce ?? precomposedFormEthereumNonce;
+    const ethereumNonce = useSelector(selectReviewEthereumNonce);
 
     const fee = getFee(account.networkType, tx);
 
