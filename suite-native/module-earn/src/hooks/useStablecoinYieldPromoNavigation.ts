@@ -24,9 +24,7 @@ import { navigateByYieldAccountState } from '../utils/navigateByYieldAccountStat
 type UseStablecoinYieldPromoNavigationReturn = {
     handleStablecoinYieldPromoPress: (item: StablecoinYieldPromoNavigationItem) => void;
     handleAccountSelected: (account: Account) => void;
-    handleChooseAccountDismiss: () => void;
     handleEnableNetworkPress: () => void;
-    handleEnableNetworkDismiss: () => void;
     chosenAccounts: Account[];
     pendingEnableSymbol: NetworkSymbol | null;
     chooseAccountSheetRef: BottomSheetModalRef;
@@ -61,11 +59,6 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         useState<StablecoinYieldPromoNavigationItem | null>(null);
     const [pendingEnableSymbol, setPendingEnableSymbol] = useState<NetworkSymbol | null>(null);
 
-    const handleChooseAccountDismiss = useCallback(() => {
-        setChosenAccounts([]);
-        setChosenYieldItem(null);
-    }, []);
-
     const handleAccountSelected = useCallback(
         (account: Account) => {
             if (!chosenYieldItem) {
@@ -80,8 +73,6 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
                 isFirmwareSupported,
                 showFirmwareUpdateAlert,
             );
-            setChosenAccounts([]);
-            setChosenYieldItem(null);
         },
         [
             chosenYieldItem,
@@ -119,10 +110,6 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         showViewOnlyAddAccountAlert,
         navigation,
     ]);
-
-    const handleEnableNetworkDismiss = useCallback(() => {
-        setPendingEnableSymbol(null);
-    }, []);
 
     const handleStablecoinYieldPromoPress = useCallback(
         (item: StablecoinYieldPromoNavigationItem) => {
@@ -175,9 +162,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     return {
         handleStablecoinYieldPromoPress,
         handleAccountSelected,
-        handleChooseAccountDismiss,
         handleEnableNetworkPress,
-        handleEnableNetworkDismiss,
         chosenAccounts,
         pendingEnableSymbol,
         chooseAccountSheetRef,
