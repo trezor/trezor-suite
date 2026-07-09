@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
@@ -16,13 +16,13 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
-    type TradingTransactionExchange,
     cryptoIdToNetwork,
     exchangeThunks,
     getDexEstimationData,
     hasEip712SignDataType,
     isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
+    selectTradingExchangeActiveTrade,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
@@ -31,7 +31,7 @@ import {
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeTransactionId,
-    selectTradingTrades,
+    selectTradingSendAccount,
     selectTradingVerifiedAddress,
     tradingExchangeActions,
     tradingThunks,
@@ -39,7 +39,6 @@ import {
 import { getNetwork, isAccountBasedNetwork } from '@suite-common/wallet-config';
 import {
     ETHEREUM_ADJUST_GAS_LIMIT,
-    selectAccountByKey,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -81,26 +80,10 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
-    const {
-        account: formAccount,
-        tradingAccountKey: accountKey,
-        cryptoId,
-    } = useTradingFormAccount(type);
+    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const trades = useSelector(selectTradingTrades);
-    const trade = useMemo(
-        () =>
-            trades.find(
-                (transaction): transaction is TradingTransactionExchange =>
-                    transaction.tradeType === 'exchange' &&
-                    !!transactionId &&
-                    transaction.data.orderId === transactionId,
-            ),
-        [trades, transactionId],
-    );
-
-    const tradeSendAccount = useSelector(state => selectAccountByKey(state, trade?.sendAccountKey));
-    const account = tradeSendAccount ?? formAccount;
+    const trade = useSelector(selectTradingExchangeActiveTrade);
+    const account = useSelector(state => selectTradingSendAccount(state, type));
 
     const { getTradeRequestParams } = useTradingExchangeTradeRequest(account);
 
