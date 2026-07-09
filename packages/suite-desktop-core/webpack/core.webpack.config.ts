@@ -76,6 +76,7 @@ const dependencies = Object.keys(pkg.dependencies);
 const config: webpack.Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
+    ...(isDev ? { parallelism: 3 } : {}),
     devtool: 'source-map',
     // Note that the entries key is important, it sets the the output file name in dist/
     entry: [

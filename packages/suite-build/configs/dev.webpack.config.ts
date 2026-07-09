@@ -9,6 +9,7 @@ import { getPathForProject } from '../utils/path';
 
 const distPath = path.join(getPathForProject(project), 'build');
 const config: webpack.Configuration = {
+    parallelism: 3,
     stats: {
         children: true,
         errorDetails: true,
